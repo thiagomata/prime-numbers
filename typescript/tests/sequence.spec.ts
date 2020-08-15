@@ -43,4 +43,7 @@ describe('Sequence Tests', function () {
         expect(sequence.until(10)).to.deep.equal([2,3,5,7,9]);
     })
 
+    it('Test allPrimesUntil 11', function () {
+        expect(Sequence.allPrimesUntil(11)).to.deep.equal([2,3,5,7,11]);
+    })    
 });
