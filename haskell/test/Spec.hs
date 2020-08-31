@@ -9,7 +9,7 @@ test :: TestTree
 test = testGroup "Tests" [maintests]
 
 maintests :: TestTree
-maintests = testGroup "unit tests" [testClassicPrime]
+maintests = testGroup "unit tests" [testClassicPrime, testFirstMultiple]
 
 testClassicPrime :: TestTree
 testClassicPrime = testGroup
@@ -23,4 +23,10 @@ testClassicPrime = testGroup
   , testCase "-1 is not prime" $ classicIsPrime (-1) @?= False
   , testCase "-10 is not prime" $ classicIsPrime (-10) @?= False
   , testCase "117 is not prime" $ classicIsPrime 117 @?= False
+  ]
+
+testFirstMultiple :: TestTree
+testFirstMultiple = testGroup
+  "testFirstMultiple"
+  [ testCase "first multiple of 2 is 1" $ (firstMultiple 2) @?= 1
   ]
