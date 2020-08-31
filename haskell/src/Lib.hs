@@ -2,6 +2,8 @@ module Lib
     ( someFunc, classicIsPrime, firstMultiple
     ) where
 
+import Data.List
+
 -------------------------------------------------------------------------------------
 -- # classic prime 
 -------------------------------------------------------------------------------------
@@ -69,15 +71,18 @@ nextNotMultipleLoop step v xs = if not (isMultipleByList v xs)
                         else nextNotMultipleLoop step (v + step) xs
 
 nextNotMultiple :: [Integer] -> Integer
--- nextNotMultiple [2] = nextNotMultipleLoop 1 (maximum xs) xs
 nextNotMultiple xs  = if xs == [2]
                         then nextNotMultipleLoop 1 (maximum xs) xs
                         else nextNotMultipleLoop 2 (maximum xs) xs
+---
+--- @link https://stackoverflow.com/questions/63670787/how-to-create-a-infinite-list-in-haskell-where-the-new-value-consumes-all-the-pr?noredirect=1#comment112592628_63670787
+---
+nextPrimeVal xs = Just (s,xs ++ [s]) 
+  where s = nextNotMultiple xs
 
+firstPrimes = [2]
+infinitePrimeList = firstPrimes ++ ( unfoldr nextPrimeVal firstPrimes)
 
-addNextNotMultiple xs = xs ++ [nextNotMultiple xs] 
-
-infinitePrimeList = [2,3] : map (addNextNotMultiple) infinitePrimeList
 
 -- classicNextPrime :: [Integer] -> Integer
 -- classicNextPrime [] = 2
