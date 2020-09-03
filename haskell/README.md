@@ -5,3 +5,9 @@
 ```
     stack test
 ```
+
+### To build
+
+```
+    cabal build -O
+```
