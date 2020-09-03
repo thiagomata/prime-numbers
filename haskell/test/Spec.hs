@@ -1,6 +1,7 @@
 import           Lib
 import           Test.Tasty
 import           Test.Tasty.HUnit
+import           ClassicIsPrime
 
 main :: IO ()
 main = defaultMain test
@@ -14,15 +15,15 @@ maintests = testGroup "unit tests" [testClassicPrime, testFirstMultiple]
 testClassicPrime :: TestTree
 testClassicPrime = testGroup
   "testClassicPrime"
-  [ testCase "2 is prime" $ classicIsPrime 2 @?= True
-  , testCase "3 is prime" $ classicIsPrime 3 @?= True
-  , testCase "7 is prime" $ classicIsPrime 7 @?= True
-  , testCase "8 is not prime" $ classicIsPrime 8 @?= False
-  , testCase "1 is not prime" $ classicIsPrime 1 @?= False
-  , testCase "0 is not prime" $ classicIsPrime 0 @?= False
-  , testCase "-1 is not prime" $ classicIsPrime (-1) @?= False
-  , testCase "-10 is not prime" $ classicIsPrime (-10) @?= False
-  , testCase "117 is not prime" $ classicIsPrime 117 @?= False
+  [ testCase "2 is prime" $ ClassicIsPrime 2 @?= True
+  , testCase "3 is prime" $ ClassicIsPrime 3 @?= True
+  , testCase "7 is prime" $ ClassicIsPrime 7 @?= True
+  , testCase "8 is not prime" $ ClassicIsPrime 8 @?= False
+  , testCase "1 is not prime" $ ClassicIsPrime 1 @?= False
+  , testCase "0 is not prime" $ ClassicIsPrime 0 @?= False
+  , testCase "-1 is not prime" $ ClassicIsPrime (-1) @?= False
+  , testCase "-10 is not prime" $ ClassicIsPrime (-10) @?= False
+  , testCase "117 is not prime" $ ClassicIsPrime 117 @?= False
   ]
 
 testFirstMultiple :: TestTree
