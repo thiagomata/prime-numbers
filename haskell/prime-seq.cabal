@@ -6,14 +6,14 @@ cabal-version: 1.12
 --
 -- hash: 69012071f90282fd7e25aab15c8944e7a421ab0681920fd30c317bdf4531f1e6
 
-name:           prime-seq
+name:           prime-numbers
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/prime-seq#readme>
-homepage:       https://github.com/githubuser/prime-seq#readme
-bug-reports:    https://github.com/githubuser/prime-seq/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+description:    Please see the README on GitHub at <https://github.com/thiagomata/prime-numbers#readme>
+homepage:       https://github.com/thiagomata/prime-numbers#readme
+bug-reports:    https://github.com/thiagomata/prime-numbers/issues
+author:         Thiago Mata
+maintainer:     thiago.henrique.mata@gmail.com
+copyright:      2020 Thiago Mata
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -23,13 +23,13 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/prime-seq
+  location: https://github.com/thiagomata/prime-numbers
 
 library
   exposed-modules:
       Lib
   other-modules:
-      Paths_prime_seq
+      -- Paths_prime_seq
   hs-source-dirs:
       src
   build-depends:
@@ -39,13 +39,13 @@ library
 executable prime-seq-exe
   main-is: Main.hs
   other-modules:
-      Paths_prime_seq
+      -- Paths_prime_seq
+    --   Lib
   hs-source-dirs:
-      app
+      src
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , prime-seq
   default-language: Haskell2010
 
 test-suite prime-seq-test
