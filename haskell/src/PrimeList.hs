@@ -1,5 +1,5 @@
 module PrimeList
-    ( infiniteFusePrimeList, infinitePrimeListUnfoldr ) where
+    ( infiniteFusePrimeList, infinitePrimeListUnfoldr, infiniteSumFuse, infiniteSumUnfoldr ) where
 
 import Multiples
 import Data.List
@@ -32,3 +32,25 @@ recursivePrimeList xs = [nextValue] ++ (recursivePrimeList (nextList)) where
 
 initialPrimes = [2]
 infiniteFusePrimeList =  initialPrimes ++ recursivePrimeList initialPrimes
+
+
+-------------------------------------------------------------------------------------
+-- # infinite sum list using unfoldr
+-------------------------------------------------------------------------------------
+
+nextSumVal xs = Just (s,xs ++ [s]) 
+  where s = sum(xs)
+
+firstSumValue = [1]
+infiniteSumUnfoldr = firstSumValue ++ ( unfoldr nextPrimeVal firstSumValue)
+
+-------------------------------------------------------------------------------------
+-- # infinite sum of the previous using fuse
+-------------------------------------------------------------------------------------
+
+recursiveSum xs = [nextValue] ++ (recursiveSum (nextList)) where
+      nextValue = sum(xs)
+      nextList = xs ++ [nextValue]
+
+initialSumValues = [1]
+infiniteSumFuse =  initialPrimes ++ recursiveSum initialPrimes

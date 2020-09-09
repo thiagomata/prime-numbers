@@ -9,5 +9,6 @@
 ### To build
 
 ```
+    rm -rf dist-newstyle
     cabal build -O
 ```
