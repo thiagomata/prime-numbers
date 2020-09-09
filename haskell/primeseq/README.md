@@ -1,4 +1,4 @@
-# prime-seq
+# primeseq
 
 ## To run the tests
 

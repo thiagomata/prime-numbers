@@ -1,3 +1,3 @@
-# Changelog for prime-seq
+# Changelog for primeseq
 
 ## Unreleased changes
