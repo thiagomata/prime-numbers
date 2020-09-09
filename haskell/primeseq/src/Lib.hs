@@ -3,9 +3,9 @@ module Lib
 
 import Data.List
 import Classic
-import PrimeList
+import PrimeListBetter
 
 
 firstPrimes :: Int -> [Integer]
-firstPrimes (-1) = infiniteFusePrimeList
-firstPrimes n = (take n infiniteFusePrimeList)
+firstPrimes (-1) = infiniteFusePrimeListBetter
+firstPrimes n = (take n infiniteFusePrimeListBetter)
