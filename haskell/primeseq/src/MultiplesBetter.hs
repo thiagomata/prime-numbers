@@ -1,5 +1,5 @@
 module MultiplesBetter
-    ( firstMultiple, nextNonMultiple ) where
+    ( firstMultipleBetter, nextNonMultipleBetter ) where
 
 
 caseWhenLists search []          _          notFound = notFound
@@ -19,25 +19,25 @@ caseWhenTuples search ((value,result):xs) notFound = if ( search == value )
 
 isqrt :: Int -> Int
 isqrt n = floor (sqrt (fromIntegral n) :: Double)
-firstMultipleLoop :: Int -> Int -> Int
+firstMultipleLoopBetter :: Int -> Int -> Int
 -- # any number is multiple of 1
-firstMultipleLoop _ 1 = 1
+firstMultipleLoopBetter _ 1 = 1
 -- # 1 is multiple of any number
-firstMultipleLoop 1 _ = 1
+firstMultipleLoopBetter 1 _ = 1
 -- # check negative values or zero values and return -1 as error
 -- # check if the number n is multiple by the current previous value
 -- # and also to the value before that
-firstMultipleLoop n m = if n < 1
+firstMultipleLoopBetter n m = if n < 1
                     then -1 
                     else
                         if mod n m == 0
                         then m
-                        else firstMultipleLoop n (m-1)
+                        else firstMultipleLoopBetter n (m-1)
 
 -- # get the first biggest multiple from a number n
 -- # call the loop check from n-1 until 1
-firstMultiple :: Int -> Int
-firstMultiple n = firstMultipleLoop n (isqrt(n))
+firstMultipleBetter :: Int -> Int
+firstMultipleBetter n = firstMultipleLoopBetter n (isqrt(n))
 
 -------------------------------------------------------------------------------------
 -- # next non multiple
@@ -54,17 +54,17 @@ isMultipleByList v (x:xs) = caseWhenTuples True [
         ((mod v x == 0),    True)  -- if mod of v and x is zero then is Multiple 
     ] (isMultipleByList v xs)
  
-nextNonMultipleLoop :: Integer -> Integer -> [Integer] -> Integer
-nextNonMultipleLoop step v xs = if not (isMultipleByList v xs)
+nextNonMultipleLoopBetter :: Integer -> Integer -> [Integer] -> Integer
+nextNonMultipleLoopBetter step v xs = if not (isMultipleByList v xs)
                         then v
-                        else nextNonMultipleLoop step (v + step) xs
+                        else nextNonMultipleLoopBetter step (v + step) xs
 
-nextNonMultiple :: [Integer] -> Integer
-nextNonMultiple xs  = if xs == [2]
+nextNonMultipleBetter :: [Integer] -> Integer
+nextNonMultipleBetter xs  = if xs == [2]
                         -- simple optimization in the search
                         -- before 2 search one by one
                         -- after 2 search two by two
-                        then nextNonMultipleLoop 1 (1 + maximum xs) xs
-                        else nextNonMultipleLoop 2 (2 + maximum xs) xs
+                        then nextNonMultipleLoopBetter 1 (1 + maximum xs) xs
+                        else nextNonMultipleLoopBetter 2 (2 + maximum xs) xs
 
 
