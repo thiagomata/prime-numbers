@@ -1,5 +1,5 @@
 module Classic
-    ( classicIsPrime) where
+    ( classicIsPrime, classicPrimeList) where
 
 -------------------------------------------------------------------------------------
 -- # classic prime 
@@ -8,7 +8,7 @@ module Classic
 -- # Classic is prime is the most trivial
 -- # and not optmized function to calculate
 -- # if a giving number is prime
-classicIsPrimeLoop :: Int -> Int -> Bool
+classicIsPrimeLoop :: Integer -> Integer -> Bool
 -- # if is multiple only by 1 is prime
 classicIsPrimeLoop _ 1 = True
 -- # if the value is 1 is not prime
@@ -24,5 +24,20 @@ classicIsPrimeLoop n m = if n < 0 then False else mod n m /= 0 && classicIsPrime
 -- # define the classic prime
 -- # calling the loop check to all the previous number
 -- # until 1
-classicIsPrime :: Int -> Bool
+classicIsPrime :: Integer -> Bool
 classicIsPrime n = classicIsPrimeLoop n (n-1)
+
+-- Simple and not optimized search for the next prime
+classicPrimeSearch :: Integer -> Integer
+classicPrimeSearch n = if classicIsPrime n
+                        then n
+                        else classicPrimeSearch (n+1)
+
+-- create a infinite list always searching for the next prime
+classicIsPrimeListLoop :: Integer -> [Integer]
+classicIsPrimeListLoop v = [p] ++ classicIsPrimeListLoop (p+1)
+                        where p = classicPrimeSearch v
+
+-- init the infinite list with the initial value [2]
+classicPrimeList :: [Integer]
+classicPrimeList = [2] ++ classicIsPrimeListLoop 3

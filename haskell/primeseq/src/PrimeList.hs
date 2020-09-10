@@ -1,5 +1,5 @@
 module PrimeList
-    ( infiniteFusePrimeList, infinitePrimeListUnfoldr, infiniteSumFuse, infiniteSumUnfoldr ) where
+    ( infiniteFusePrimeList, infinitePrimeListUnfoldr, infiniteSumFuse, infiniteSumUnfoldr, infiniteFusePrimeListInverted ) where
 
 import Multiples
 import Data.List
@@ -32,6 +32,18 @@ recursivePrimeList xs = [nextValue] ++ (recursivePrimeList (nextList)) where
 
 initialPrimes = [2]
 infiniteFusePrimeList =  initialPrimes ++ recursivePrimeList initialPrimes
+
+-------------------------------------------------------------------------------------
+-- # infinite prime list using fuse inverted
+-------------------------------------------------------------------------------------
+
+-- calculate the current value based in the current list
+-- call the same function with the new combined value
+recursivePrimeListInverted xs = [nextValue] ++ (recursivePrimeListInverted (nextList)) where
+      nextValue = nextNonMultiple(xs)
+      nextList = [nextValue] ++ xs
+
+infiniteFusePrimeListInverted =  initialPrimes ++ recursivePrimeListInverted initialPrimes
 
 
 -------------------------------------------------------------------------------------
