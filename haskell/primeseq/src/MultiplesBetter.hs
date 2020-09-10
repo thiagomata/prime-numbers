@@ -2,17 +2,7 @@ module MultiplesBetter
     ( firstMultipleBetter, nextNonMultipleBetter ) where
 
 
-caseWhenLists search []          _          notFound = notFound
-caseWhenLists search (v:values) (r:returns) notFound = if ( search == v )
-                        then r
-                        else caseWhenLists search values returns notFound
-
-
-caseWhenTuples search []                  notFound = notFound
-caseWhenTuples search ((value,result):xs) notFound = if ( search == value )
-                        then result
-                        else caseWhenTuples search xs notFound
-
+import CaseWhen
 -------------------------------------------------------------------------------------
 -- # first multiple
 -------------------------------------------------------------------------------------
