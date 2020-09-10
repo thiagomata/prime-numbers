@@ -7,9 +7,10 @@ import CaseWhen
 -- # first multiple
 -------------------------------------------------------------------------------------
 
-isqrt :: Int -> Int
-isqrt n = floor (sqrt (fromIntegral n) :: Double)
-firstMultipleLoopBetter :: Int -> Int -> Int
+isqrt :: Integer-> Integer
+isqrt n = toInteger( floor (sqrt (fromIntegral n) :: Double) )
+
+firstMultipleLoopBetter :: Integer -> Integer -> Integer
 -- # any number is multiple of 1
 firstMultipleLoopBetter _ 1 = 1
 -- # 1 is multiple of any number
@@ -26,26 +27,26 @@ firstMultipleLoopBetter n m = if n < 1
 
 -- # get the first biggest multiple from a number n
 -- # call the loop check from n-1 until 1
-firstMultipleBetter :: Int -> Int
+firstMultipleBetter :: Integer -> Integer
 firstMultipleBetter n = firstMultipleLoopBetter n (isqrt(n))
 
 -------------------------------------------------------------------------------------
 -- # next non multiple
 -------------------------------------------------------------------------------------
 -- Receiving a list of values
+-- receive the sqrt of the value ( any value bigger than the sqrt is not multiple )
 -- returns the next bigger number that is not multiple of any ofthe values 
 -- in the list
 
-isMultipleByList :: Integer -> [Integer] -> Bool
-isMultipleByList _ [] = False
-isMultipleByList v (x:xs) = caseWhenTuples True [
-        ((v == x),          True), -- if v equals x then is Multiple
-        ((v < x * x),       False),-- if v is smaller than x squared then is Not Multiple 
-        ((mod v x == 0),    True)  -- if mod of v and x is zero then is Multiple 
-    ] (isMultipleByList v xs)
+isMultipleByListBetter :: Integer -> Integer -> [Integer] -> Bool
+isMultipleByListBetter _ _ [] = False
+isMultipleByListBetter v s (x:xs) = if v == x then True
+    else if x > s then False
+    else if mod v x == 0 then True
+    else (isMultipleByListBetter v s xs)
  
 nextNonMultipleLoopBetter :: Integer -> Integer -> [Integer] -> Integer
-nextNonMultipleLoopBetter step v xs = if not (isMultipleByList v xs)
+nextNonMultipleLoopBetter step v xs = if not (isMultipleByListBetter v (isqrt v) xs)
                         then v
                         else nextNonMultipleLoopBetter step (v + step) xs
 

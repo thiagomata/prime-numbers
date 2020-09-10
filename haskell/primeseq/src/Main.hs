@@ -3,8 +3,9 @@ import System.Environment
 
 import Lib
 
-firstPrimesProg [] = (firstPrimes 10)
-firstPrimesProg (x:_) =  (firstPrimes (read x :: Int))
+firstPrimesProg []         =  (firstPrimes "classic" 10     )
+firstPrimesProg (v:[])     =  (firstPrimes v 10             )
+firstPrimesProg (v:x:xs)   =  (firstPrimes v (read x :: Int))
 
 -- printElements :: [Integer] => IO ()
 printElements [] = putStrLn("")
