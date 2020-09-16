@@ -6,6 +6,7 @@ import qualified Classic
 import qualified PrimeList
 import qualified PrimeListBetter
 import qualified CaseWhen
+import qualified Sequence
 
 getPrimeList :: [Char] -> [Integer]
 getPrimeList primeSearch = CaseWhen.caseWhenTuples search values notFound
