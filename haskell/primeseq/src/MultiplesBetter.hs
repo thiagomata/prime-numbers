@@ -1,8 +1,6 @@
 module MultiplesBetter
     ( firstMultipleBetter, nextNonMultipleBetter ) where
 
-
-import CaseWhen
 -------------------------------------------------------------------------------------
 -- # first multiple
 -------------------------------------------------------------------------------------
@@ -18,12 +16,10 @@ firstMultipleLoopBetter 1 _ = 1
 -- # check negative values or zero values and return -1 as error
 -- # check if the number n is multiple by the current previous value
 -- # and also to the value before that
-firstMultipleLoopBetter n m = if n < 1
-                    then -1 
-                    else
-                        if mod n m == 0
-                        then m
-                        else firstMultipleLoopBetter n (m-1)
+firstMultipleLoopBetter n m
+    | n < 1           = -1
+    | mod n m == 0    = m
+    | otherwise       = firstMultipleLoopBetter n (m-1)
 
 -- # get the first biggest multiple from a number n
 -- # call the loop check from n-1 until 1

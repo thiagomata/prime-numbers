@@ -19,7 +19,10 @@ classicIsPrimeLoop _ 0 = False
 -- # is not multiple by any previous number bigger than 1
 -- # using n to define the number that we are evaluating
 -- # using m to define the number smaller than n
-classicIsPrimeLoop n m = if n < 0 then False else mod n m /= 0 && classicIsPrimeLoop n (m-1)
+classicIsPrimeLoop n m
+    | n < 0        = False
+    | mod n m == 0 = False 
+    | otherwise    = classicIsPrimeLoop n (m-1)
 
 -- # define the classic prime
 -- # calling the loop check to all the previous number
