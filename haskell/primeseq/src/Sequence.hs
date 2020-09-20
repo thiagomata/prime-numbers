@@ -11,7 +11,10 @@ module Sequence
         Sequence.getNextSequence,
         Sequence.infiniteSequences,
         Sequence.seqTo,
-        Sequence.seqToLoop
+        Sequence.seqToLoop,
+        Sequence.untilValue,
+        Sequence.safePreview,
+        Sequence.primesFromSeq
     ) where
 
 imod :: Integer -> Integer -> Integer
@@ -22,20 +25,28 @@ itake 0 xs = []
 itake _ [] = []
 itake n (x:xs) = [x] ++ itake (n - 1) xs
 
+ijump :: Integer -> [Integer] -> [Integer]
+ijump 0 xs = xs
+ijump _ [] = []
+ijump n (x:xs) = ijump (n-1) xs
+
+ilength :: [a] -> Integer
+ilength [] = 0
+ilength [x] = 1
+ilength (x:xs) = 1 + ilength(xs)
+
 untilValue [] _ = []
-untilValue (x:xs) v = if x >= v then [x] else [x] ++ untilValue xs v
+untilValue (x:xs) v = if x > v then [   ] else [x] ++ untilValue xs v
 
 sequenceLoop :: [Integer] -> Integer -> Integer -> Integer -> [Integer]
 sequenceLoop []       n acc l = []
 sequenceLoop xs       n acc 0 = []
 sequenceLoop [x]      n acc l = [x]
---sequenceLoop (x:y:xs) n acc l = [acc,x,y]
-sequenceLoop (x:y:xs) n acc l = 
-    if (acc+x == l ) then [x] else
-    if (acc+x+y == l ) then [x+y] else
-    if m == 0
-    then [x+y] ++ sequenceLoop xs     n (acc+x+y) l
-    else [x]   ++ sequenceLoop (y:xs) n (acc+x)   l
+sequenceLoop (x:y:xs) n acc l 
+    | (acc+x   == l )     = [x]
+    | (acc+x+y == l )     = [x+y]
+    | m == 0              = [x+y] ++ sequenceLoop xs     n (acc+x+y) l
+    | otherwise           = [x]   ++ sequenceLoop (y:xs) n (acc+x)   l
     where 
         m = imod (acc+x) n
         c = (acc+x+y) == l
@@ -66,11 +77,11 @@ next seq = Seq { values = nextValues
                , steps = nextSteps
                , seqLength = nextSeqLength
                } where
-               h = head(currentSteps)
-               nextValue     = currentValue + h
-               nextValues    = (nextValue:currentValues)
-               nextSteps     = ( Sequence.getNextSequence rotatedSteps currentValue nextValue nextSeqLength )
-               nextSeqLength = currentSeqLength * currentValue
+               h                 = head(currentSteps)
+               nextValue         = currentValue + h
+               nextValues        = (nextValue:currentValues)
+               nextSteps         = ( Sequence.getNextSequence rotatedSteps currentValue nextValue nextSeqLength )
+               nextSeqLength     = currentSeqLength * currentValue
                currentValues     = Sequence.values         seq
                currentSteps      = Sequence.steps          seq
                currentSeqLength  = Sequence.seqLength      seq
@@ -101,6 +112,29 @@ infinitePreview seq  = reverse(currentValues) ++ infinitePreviewLoop (cycle curr
         currentValue      = head(currentValues)
         acc = currentValue
 
+infinitePreviewAfter :: Seq -> Integer -> [Integer]
+infinitePreviewAfter seq  after = reverse(currentValues) ++ infinitePreviewLoop (cycle currentSteps) acc where
+        currentSteps      = Sequence.steps          seq
+        currentValues     = Sequence.values         seq 
+        currentValue      = head(currentValues)
+        acc = currentValue
+
+safePreview :: Seq -> [Integer]
+safePreview seq = Sequence.untilValue list safeMax where
+        list = Sequence.infinitePreview seq
+        maxValue = head( Sequence.values seq )
+        safeMax = maxValue * maxValue - 1       
+
+
+primesFromSeqLoop :: Seq -> Integer -> [Integer]
+primesFromSeqLoop seq jump = safePreviewList ++ (primesFromSeqLoop nextSeq nextJump) where
+        prev = safePreview seq
+        safePreviewList = ijump jump prev
+        nextJump = jump + ilength( safePreviewList )
+        nextSeq = Sequence.next seq
+
+primesFromSeq :: [Integer]
+primesFromSeq = primesFromSeqLoop Sequence.firstSequence 0
 
 infiniteSequencesLoop seq = [n] ++ infiniteSequencesLoop(n) where n = Sequence.next( seq )
 
