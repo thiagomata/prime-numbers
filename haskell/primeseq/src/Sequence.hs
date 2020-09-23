@@ -7,6 +7,7 @@ module Sequence
         Sequence.rotateList, 
         Sequence.next, 
         Sequence.preview,
+        Sequence.previewLoop,
         Sequence.infinitePreview,
         Sequence.getNextSequence,
         Sequence.infiniteSequences,
@@ -14,7 +15,11 @@ module Sequence
         Sequence.seqToLoop,
         Sequence.untilValue,
         Sequence.safePreview,
-        Sequence.primesFromSeq
+        Sequence.safePreviewAfter,
+        Sequence.primesFromSeq,
+        Sequence.afterValue,
+        Sequence.infinitePreviewAfter,
+        Sequence.infinitePreviewLoop
     ) where
 
 imod :: Integer -> Integer -> Integer
@@ -37,6 +42,13 @@ ilength (x:xs) = 1 + ilength(xs)
 
 untilValue [] _ = []
 untilValue (x:xs) v = if x > v then [   ] else [x] ++ untilValue xs v
+
+afterValue [] _ = []
+afterValue xs 0 = xs
+afterValue (x:xs) v
+    | v < 0  = xs
+    | v == 0 = xs
+    | otherwise = afterValue xs (v-x) 
 
 sequenceLoop :: [Integer] -> Integer -> Integer -> Integer -> [Integer]
 sequenceLoop []       n acc l = []
@@ -112,12 +124,12 @@ infinitePreview seq  = reverse(currentValues) ++ infinitePreviewLoop (cycle curr
         currentValue      = head(currentValues)
         acc = currentValue
 
-infinitePreviewAfter :: Seq -> Integer -> [Integer]
-infinitePreviewAfter seq  after = reverse(currentValues) ++ infinitePreviewLoop (cycle currentSteps) acc where
-        currentSteps      = Sequence.steps          seq
-        currentValues     = Sequence.values         seq 
-        currentValue      = head(currentValues)
-        acc = currentValue
+-- infinitePreviewAfter :: Seq -> Integer -> [Integer]
+-- infinitePreviewAfter seq  after = reverse(currentValues) ++ infinitePreviewLoop (cycle currentSteps) acc where
+--         currentSteps      = Sequence.steps          seq
+--         currentValues     = Sequence.values         seq 
+--         currentValue      = head(currentValues)
+--         acc = currentValue
 
 safePreview :: Seq -> [Integer]
 safePreview seq = Sequence.untilValue list safeMax where
@@ -125,12 +137,30 @@ safePreview seq = Sequence.untilValue list safeMax where
         maxValue = head( Sequence.values seq )
         safeMax = maxValue * maxValue - 1       
 
+infinitePreviewAfter :: Seq -> Integer -> [Integer]
+infinitePreviewAfter seq lastPreviewValue = list where
+        currentSteps      = Sequence.steps          seq
+        currentValues     = Sequence.values         seq 
+        loopSteps         = cycle (Sequence.steps seq)
+        seqLength         = Sequence.seqLength seq
+        lastSeqValue      = head( Sequence.values seq )
+        jump              = imod (lastPreviewValue - lastSeqValue) seqLength
+        afterSteps        = Sequence.afterValue     loopSteps jump
+        list = if lastPreviewValue > lastSeqValue
+                then Sequence.infinitePreviewLoop afterSteps lastPreviewValue
+                else previousValues ++ infinitePreviewLoop (cycle currentSteps) lastSeqValue
+        previousValues = [v | v <- reverse(currentValues), v > lastPreviewValue]
+
+safePreviewAfter :: Seq -> Integer -> [Integer]
+safePreviewAfter seq lastPreviewValue = Sequence.untilValue list safeMax where
+        list = Sequence.infinitePreviewAfter seq lastPreviewValue
+        maxValue = head( Sequence.values seq )
+        safeMax = maxValue * maxValue - 1       
 
 primesFromSeqLoop :: Seq -> Integer -> [Integer]
-primesFromSeqLoop seq jump = safePreviewList ++ (primesFromSeqLoop nextSeq nextJump) where
-        prev = safePreview seq
-        safePreviewList = ijump jump prev
-        nextJump = jump + ilength( safePreviewList )
+primesFromSeqLoop seq lastPreviewValue = safePreviewList ++ (primesFromSeqLoop nextSeq nextPreviewValue) where
+        safePreviewList = safePreviewAfter seq lastPreviewValue
+        nextPreviewValue = last(safePreviewList)
         nextSeq = Sequence.next seq
 
 primesFromSeq :: [Integer]
