@@ -33,9 +33,13 @@
 ### Run the tests
 ```bash
 
-    $ time ./primeseq "fuse-inverted" 10
+    $ time ./primeseq "fuse-inverted" 1000 | md5sum
     # 4bf5485d099fc858d97e679a08ff293a  -
     # ./primeseq "fuse-inverted" 1000  0.83s user 0.19s system 818% cpu 0.124 total
+
+    $ time ./primeseq "sequence" 1000 | md5sum
+    # 4bf5485d099fc858d97e679a08ff293a  -
+    # "sequence" 1000  0.12s user 0.15s system 549% cpu 0.049 total
 
     $ time ./primeseq "classic" 1000 | md5sum
     # 4bf5485d099fc858d97e679a08ff293a  -
