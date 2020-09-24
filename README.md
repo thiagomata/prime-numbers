@@ -70,7 +70,7 @@ First, we had to find the next value. Then, we have to create the new steps.
 ### Current Last value
 The goal is create a new list that still avoids the pair numbers, multiples of 2, but that also avoids the numbers that are multipes of 3. So, we are going to call the 3 as our current last value.
 ```javascript
-val currentLastValue  = head(currentSequence.values)
+val currentLastValue  = max(currentSequence.values)
 ```
 
 ### Next value
@@ -78,7 +78,7 @@ val currentLastValue  = head(currentSequence.values)
 Loading the next step is a trivial operation. Since we are avoiding all the numbers that a multiples from the previous values, the next number in the Sequence should be our next value.
 
 ```javascript
-val nextValue = head(currentSequence.values) + currentSequence.step[0] = 3 + 2 = 5
+val nextValue = max(currentSequence.values) + currentSequence.step[0] = 3 + 2 = 5
 ```
 
 ### Next steps
