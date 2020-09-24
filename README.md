@@ -112,7 +112,7 @@ To improve performance and make a good use of the Haskell lazy evaluation, the i
 
 # Sequences
 
-## S1
+## S1 - All natural numbers, starting at 2
 
 Using the presented definiton, we can define the first sequence as
 ```javascript
@@ -124,7 +124,7 @@ s1.preview(100) = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,
 ```
 That should include all integer numbers bigger than 1.
 
-## S2
+## S2 - Non multiples of 2, starting at 3
 ```javascript
 val s2 = Sequence {
     values = [3,2], 
@@ -134,7 +134,7 @@ s2.preview(100) = [2,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,
 
 ```
 
-## S3
+## S3 - Non multiples of 2 and 3, starting at 5
 ```javascript
 val s3 = Sequence {
     values = [2,3,5],
@@ -143,16 +143,7 @@ val s3 = Sequence {
 s3.preview(100) = [2,3,5,7,11,13,17,19,23,25,29,31,35,37,41,43,47,49,53,55,59,61,65,67,71,73,77,79,83,85,89,91,95,97,101,103,107,109,113,115,119,121,125,127,131,133,137,139,143,145,149,151,155,157,161,163,167,169,173,175,179,181,185,187,191,193,197,199,203,205,209,211,215,217,221,223,227,229,233,235,239,241,245,247,251,253,257,259,263,265,269,271,275,277,281,283,287,289,293,295,299,301,305]
 ```
 
-## S4
-```javascript
-val s3 = Sequence {
-    values = [2,3,5],
-    steps = [2,4]
-}
-s3.preview(100) = [2,3,5,7,11,13,17,19,23,25,29,31,35,37,41,43,47,49,53,55,59,61,65,67,71,73,77,79,83,85,89,91,95,97,101,103,107,109,113,115,119,121,125,127,131,133,137,139,143,145,149,151,155,157,161,163,167,169,173,175,179,181,185,187,191,193,197,199,203,205,209,211,215,217,221,223,227,229,233,235,239,241,245,247,251,253,257,259,263,265,269,271,275,277,281,283,287,289,293,295,299,301,305]
-```
-
-## S5
+## S4 - Non multiples of 2, 3 and 5, starting at 7
 ```javascript
 val s3 = Sequence {
     values = [2,3,5,7],
@@ -161,7 +152,7 @@ val s3 = Sequence {
 s3.preview(100) = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,49,53,59,61,67,71,73,77,79,83,89,91,97,101,103,107,109,113,119,121,127,131,133,137,139,143,149,151,157,161,163,167,169,173,179,181,187,191,193,197,199,203,209,211,217,221,223,227,229,233,239,241,247,251,253,257,259,263,269,271,277,281,283,287,289,293,299,301,307,311,313,317,319,323,329,331,337,341,343,347,349,353,359,361,367,371,373,377,379]
 ```
 
-## S6
+## S5 - Non multiples of 2, 3, 5 and 7, starting at 11
 ```javascript
 val s3 = Sequence {
     values = [2,3,5,7,11],
@@ -170,7 +161,7 @@ val s3 = Sequence {
 s3.preview(100) = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,121,127,131,137,139,143,149,151,157,163,167,169,173,179,181,187,191,193,197,199,209,211,221,223,227,229,233,239,241,247,251,253,257,263,269,271,277,281,283,289,293,299,307,311,313,317,319,323,331,337,341,347,349,353,359,361,367,373,377,379,383,389,391,397,401,403,407,409,419,421,431,433,437,439,443]
 ```
 
-## S7
+## S6 - Non multiples of 2, 3, 5, 7 and 11, starting at 13
 ```javascript
 val s3 = Sequence {
     values = [2,3,5,7,11,13],
@@ -184,8 +175,11 @@ s3.preview(100) = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79
 If we just look up until the square of the maximum value of the Sequence, all the values returned should be prime.
 But, differently of the Sieve of Eratosthenes, we can apply these sequences beyond their safe limits and they will still reduce the amount of elements that are not prime without removing any prime.
 
-If we take the s7 above, for example, and try to evalute if the next 100 numbers from that sequence are prime, starting at 2310013, (s7.steps.sum() * 1000 + max(s7.values)), we can see that 32% of them are primes.
+If we take the s6 above, for example, and try to evalute if the next 100 numbers from that sequence are prime, starting at 2310013, ``(s6.steps.sum() * 1000 + max(s6.values))``, we can see that 32% of them are primes.
 
+```javascript
+[2310019,2310029,2310043,2310067,2310083,2310107,2310137,2310157,2310167,2310193,2310211,2310221,2310223,2310233,2310241,2310277,2310289,2310293,2310311,2310331,2310349,2310359,2310367,2310389,2310421,2310431,2310439,2310449,2310463,2310479,2310481,2310491]
+```
 So, these Sequences can be used to evaluate all the prime numbers or can be used at some limit to reduce the number of non primes to be evaluated by some other algorithm.
 
 # Benchmark
