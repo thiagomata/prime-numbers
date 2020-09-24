@@ -98,7 +98,7 @@ input {nextValue:5,toEvaluate:[2,2,2]}
 { accumulator: 5, nextSteps: []. toEvaluate: [2,2,2], mustCombine: false }
 { accumulator: 7, nextSteps: [2]. toEvaluate: [2,2], mustCombine: false }
 { accumulator: 9, nextSteps: [2,2]. toEvaluate: [2], mustCombine: true }
-{ accumulator: 11, nextSteps: [2,4]. toEvaluate: [], mustCombine: true }
+{ accumulator: 11, nextSteps: [2,4]. toEvaluate: [], mustCombine: false }
 output [2,4]
 ```
 
