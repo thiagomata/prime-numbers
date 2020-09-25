@@ -125,9 +125,9 @@ s2.getNextSteps() = [2,4]
 ```
 
 We can say that the new list will create a list avoiding the multiples from the old and new Sequences because:
-    * The sum of the new steps is multiple the current element;
-    * We are avoiding all the steps that would collide with a multiple of the next elements;
-    * We are still avoiding the same elements from the previous list;
+- The sum of the new steps is multiple the current element;
+- We are avoiding all the steps that would collide with a multiple of the next elements;
+- We are still avoiding the same elements from the previous list;
 
 Since the sum of the steps is multiple from the current element, when we rerun the steps in a cycle, the mod should also be in the same cycle.
 
