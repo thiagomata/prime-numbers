@@ -205,7 +205,7 @@ s6.preview(100) = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79
 # Probabilistic Approach
 
 If we look up until the square of the maximum value of the Sequence, all the values returned should be prime. But, differently from the Sieve of Eratosthenes, we can apply these sequences beyond their safe limits, and they will still reduce the number of elements that are not prime without removing any prime.
-If we take the s6 above, for example, and try to evaluate if the next 100 numbers from that Sequence are prime, starting at 2310013, (s6.steps.sum() * 1000 + max(s6.values)), we can see that 32% of them are primes.
+If we take the s6 above, for example, and try to evaluate if the next 100 numbers from that Sequence are prime, starting at 2310013, `(s6.steps.sum() * 1000 + max(s6.values))`, we can see that 32% of them are primes.
 
 ```java
 [2310019,2310029,2310043,2310067,2310083,2310107,2310137,2310157,2310167,2310193,2310211,2310221,2310223,2310233,2310241,2310277,2310289,2310293,2310311,2310331,2310349,2310359,2310367,2310389,2310421,2310431,2310439,2310449,2310463,2310479,2310481,2310491]
