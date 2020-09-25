@@ -19,7 +19,7 @@ One different way to see this is looking at the distance between the numbers aft
 
 ```java
 // Example of Sequence that loads 2, 3 and them all the non pair values
-let s2 = Sequence {
+val s2 = Sequence {
     values: [2,3]
     steps: [2,2,2,2,2....]
 }
@@ -29,7 +29,7 @@ Basically, after loading all the previous found values, we keep our list applyin
 
 ```java
 // Same Sequence, but more compact
-let s2 = Sequence {
+val s2 = Sequence {
     values: [2,3]
     steps: [2]
 }
@@ -42,7 +42,7 @@ The question that started this study is if it would be possible to create more c
 Let's consider the Sequence that should avoid the multiples of 2 and 3. That Sequence should be like this:
 
 ```java
-Sequence s3 {
+s3 = Sequence {
     values: [2,3,5]
     steps: [2,4]
 }
@@ -101,15 +101,15 @@ Then, we create an accumulator that starts with the next value (5) and walks thr
 
 ```java
 Sequence.getNextSteps(): Array<Integer> {
-   val accumulator = this.getNextValue();
    val currentLastValue = this.getCurrentLastValue();
    val stepsToEvaluate = this.steps.repeat(currentLastValue);
+   var accumulator = this.getNextValue();
    var newSteps: Array<Integer> = [];
    stepsToEvaluate.foreach(
       (currentElement) => {
           val currentElement = stepsToEvaluate[ i ];
           if ( ( accumulator + currentElement ) mod currentLastValue == 0 ) {
-            var previousElement = newSteps.pop();
+            val previousElement = newSteps.pop();
             newSteps.push( previousElement + currentElement );
           } else {
              newSteps.push( currentElement );
