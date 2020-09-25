@@ -101,8 +101,8 @@ Then, we create an accumulator that starts with the next value (5) and walks thr
 
 ```java
 Sequence.getNextSteps(): Array<Integer> {
-   Integer accumulator = this.getNextValue();
-   Integer currentLastValue = this.getCurrentLastValue();
+   val accumulator = this.getNextValue();
+   val currentLastValue = this.getCurrentLastValue();
    val stepsToEvaluate = this.steps.repeat(currentLastValue);
    var newSteps: Array<Integer> = [];
    stepsToEvaluate.foreach(
