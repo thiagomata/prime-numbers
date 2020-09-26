@@ -52,11 +52,11 @@ using
 
 So
 
-``
+```
 s2.steps.cycle(0) = 2
 s2.steps.cycle(1) = 2
 s2.steps.cycle(100) = 2
-``
+```
 
 That should also work for more complex steps
 
