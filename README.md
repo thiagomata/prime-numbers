@@ -7,7 +7,7 @@ This study intends to compare different ways to calculate prime numbers, especia
 
 ## Avoiding even numbers
 
-One widespread improvement to the classic prime search is avoiding evaluate even numbers different of the number 2. This is because after 2, all evn numbers are not prime, and we should avoid wasting time considering them.
+One widespread improvement to the classic prime search is avoiding evaluate even numbers different of the number 2. This is because after 2, all the even numbers are not prime, and we should avoid wasting time considering them.
 
 So, if we look at the numbers evaluated by this solution, we would see something like:
 
