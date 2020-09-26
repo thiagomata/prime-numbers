@@ -5,9 +5,9 @@ A small study about prime numbers using different approaches and programming lan
 
 This study intends to compare different ways to calculate prime numbers, especially related to evaluating one (possible new?) way using sequences and steps.
 
-## Avoiding pair numbers
+## Avoiding even numbers
 
-One widespread improvement to the classic prime search is avoiding evaluate pair numbers different of the number 2. This is because after 2, all pair numbers are not prime, and we should avoid wasting time considering them.
+One widespread improvement to the classic prime search is avoiding evaluate even numbers different of the number 2. This is because after 2, all evn numbers are not prime, and we should avoid wasting time considering them.
 
 So, if we look at the numbers evaluated by this solution, we would see something like:
 
@@ -18,7 +18,7 @@ So, if we look at the numbers evaluated by this solution, we would see something
 One different way to see this is looking at the distance between the numbers after separating the previously found primes. In this study, we are naming this distance between the numbers that we should evaluate as "steps". Also, we are calling the previous values as "values" and the struct with the "values" and "steps" as "Sequence".
 
 ```java
-// Example of Sequence that loads 2, 3 and them all the non pair values
+// Example of Sequence that loads 2, 3 and them all the non even values
 val s2 = Sequence {
     values: [2,3]
     steps: [2,2,2,2,2....]
