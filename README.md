@@ -24,15 +24,66 @@ val s2 = Sequence {
     steps: [2,2,2,2,2....]
 }
 ```
-
 Basically, after loading all the previous found values, we keep our list applying the steps. As you can see, the steps in this particular list are always the same. So, considering that this is a cycle list, that is, after loading the last element we are going to return to the first, we can rewrite our Sequence in this format:
 
 ```java
 // Same Sequence, but more compact
 val s2 = Sequence {
-    values: [2,3]
-    steps: [2]
+    List<Integer> values: [2,3]
+    Steps         steps: [2]
 }
+```
+using
+
+```java
+  Steps<T>.cycle(pos: Integer): <T> {
+    if (this.length == 0 ) {
+      return null;
+    }
+    while (pos < 0) {
+      pos += this.length * Math.abs(pos);
+    }
+    if (pos < this.length) {
+      return this[pos];
+    }
+    return this[pos % this.length];
+  }
+```
+
+So
+
+``
+s2.steps.cycle(0) = 2
+s2.steps.cycle(1) = 2
+s2.steps.cycle(100) = 2
+``
+
+That should also work for more complex steps
+
+```
+val stepsExample = new Steps([1,2,3]);
+stepsExample.cycle(0) = 1
+stepsExample.cycle(1) = 2
+stepsExample.cycle(2) = 3
+stepsExample.cycle(3) = 1
+stepsExample.cycle(4) = 2
+stepsExample.cycle(5) = 3
+stepsExample.cycle(6) = 1
+
+// the list restat every time that hit the size limit,
+// so is easy to predict the result for some big numbers
+stepsExample.cycle(3) = 1
+stepsExample.cycle(2 * 3) = 1
+stepsExample.cycle(1000 * 3) = 1
+stepsExample.cycle(10000 * 3 + 1) = 2
+stepsExample.cycle(100000 * 3 + 2) = 3
+
+// just dealing with some edge cases when we try look the previous value
+// but the counter is negative
+// so, we made the cycle also able to deal with negative nnumbers
+stepsExample.cycle(-1) = 3
+stepsExample.cycle(-2) = 2
+stepsExample.cycle(-3) = 1
 ```
 
 ## Creating a new sequence based on the previous
