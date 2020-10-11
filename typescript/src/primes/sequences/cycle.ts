@@ -1,4 +1,4 @@
-export class SequenceList extends Array<number> {
+export class Cycle extends Array<number> {
 
     first(): number {
         return this[0];
@@ -14,12 +14,12 @@ export class SequenceList extends Array<number> {
         );
     }
 
-    concat(...items: (number | ConcatArray<number>)[]): SequenceList {
-        return super.concat(...items) as SequenceList;
+    concat(...items: (number | ConcatArray<number>)[]): Cycle {
+        return super.concat(...items) as Cycle;
     }
 
-    circular(pos: number): number{
-        if (this.length == 0 ) {
+    get(pos: number): number{
+        if (this.length === 0 ) {
             return undefined;
         }
         while (pos < 0) {
@@ -31,13 +31,13 @@ export class SequenceList extends Array<number> {
         return this[pos % this.length];
     }
 
-    rotateLeft(): SequenceList {        
+    rotateLeft(): Cycle {
         return [this.last()]
-            .concat(this.slice(0, this.length - 1)) as SequenceList;
+            .concat(this.slice(0, this.length - 1)) as Cycle;
     }
 
-    rotateRight(): SequenceList {        
+    rotateRight(): Cycle {
         return this.slice(1, this.length)
-            .concat(this.first()) as SequenceList;
+            .concat(this.first()) as Cycle;
     }
 }

@@ -18,3 +18,17 @@ After `npm install`
 
 1. Set a breakpoint in your code ending in `.ts` or your test ending in `.spec.ts`
 2. Run Either `src/index.ts` or `All Tests` in the debug pane. 
+
+# Running the Benchmark
+
+This should become a separated project in the future.
+
+## Compare percentile execution times of different commands
+```shell script
+node dist/index.js get-metrics \
+  --times 20 \
+  --commands "sleep 1; ls -lha | md5sum " \
+  --commands "echo 1"  \
+   --show-as-table \
+   --show-as-json
+```
