@@ -1,0 +1,64 @@
+{
+  _: [ 'get-metrics' ],
+  name: 'md5 of ls',
+  command: 'ls -lha | md5sum ',
+  'get-each-execution-result': true,
+  getEachExecutionResult: true,
+  'get-each-execution-time': true,
+  getEachExecutionTime: true,
+  'show-as-json': true,
+  showAsJson: true,
+  percentiles: [ 50, 90, 95, 99 ],
+  times: 10,
+  '$0': 'dist/index.js'
+}
+{
+  "md5 of ls": {
+    "executionResults": [
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 3
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 4
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 3
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 3
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 4
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 3
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 4
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 4
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 4
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 3
+      },
+      {
+        "executionResult": "1228ec1d57677ef436ff2e332e832038  -",
+        "executionTime": 5
+      }
+    ]
+  }
+}

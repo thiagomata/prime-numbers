@@ -1,11 +1,11 @@
-import { SequenceList } from "./sequenceList";
+import { Cycle } from "./cycle";
 
 export class Sequence {
   constructor(
-    readonly steps: SequenceList,
-    readonly previousSteps: SequenceList,
+    readonly steps: Cycle,
+    readonly previousSteps: Cycle,
     readonly currentNumber: number,
-    readonly previousNumbers: SequenceList
+    readonly previousNumbers: Cycle
   ) {}
 
   public getNextNumber(): number {
@@ -16,10 +16,10 @@ export class Sequence {
     buildingStep: Array<number>,
     currentNumber: number,
     nextNumber: number
-  ): SequenceList {
+  ): Cycle {
     let acc: number = nextNumber;
     let pass: number = 0;
-    let result: SequenceList = new SequenceList();
+    let result: Cycle = new Cycle();
     buildingStep.forEach((value) => {
       acc += value;
       if (acc % currentNumber === 0) {
@@ -45,7 +45,7 @@ export class Sequence {
     let buildingSteps = this.steps.rotateRight();
     let nextNumber = this.getNextNumber();
     let addStep = [].concat(buildingSteps);
-    let loopStep = new SequenceList();
+    let loopStep = new Cycle();
     do {
       loopStep = loopStep.concat(addStep);
       let totalStep = loopStep.sum();
@@ -67,29 +67,29 @@ export class Sequence {
     let preview = [].concat(this.previousNumbers);
     let circularValue = 0;
     for (let i = preview.length; i < size; i++) {
-      preview[i] = preview[i - 1] + this.steps.circular(circularValue);
+      preview[i] = preview[i - 1] + this.steps.get(circularValue);
       circularValue++;
     }
     return preview;
   }
 
   public static readonly firstSequence = new Sequence(
-    new SequenceList().concat(1),
-    new SequenceList().concat(0),
+    new Cycle().concat(1),
+    new Cycle().concat(0),
     2,
-    new SequenceList().concat(2)
+    new Cycle().concat(2)
   );
 
   public until(last = 100): Array<number> {
-    let preview = new SequenceList().concat(this.previousNumbers);
+    let preview = new Cycle().concat(this.previousNumbers);
     if( preview.last() >= last ) {
       return preview.filter( v => v <= last );
     }
-    
+
     let circularCounter = 0;
     let i = preview.length
     while (preview.last() < last ) {
-      preview[i] = preview[i - 1] + this.steps.circular(circularCounter);
+      preview[i] = preview[i - 1] + this.steps.get(circularCounter);
       circularCounter++;
       i++
     }
