@@ -1,6 +1,7 @@
 module Sequence
     ( 
         Sequence.itake, 
+        Sequence.ilength,
         Sequence.sequenceLoop, 
         Seq(..), 
         Sequence.firstSequence, 
