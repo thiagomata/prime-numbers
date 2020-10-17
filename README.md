@@ -265,3 +265,79 @@ If we take the s6 above, for example, and try to evaluate if the next 100 number
 So, Sequences can evaluate all the prime numbers and can reduce the number of non-primes evaluated by some other algorithm.
 Benchmark
 We are still working in the benchmark comparing the different implementations.
+
+# Some Properties of the Sequences
+
+## Sum of the Sequence Steps
+
+The sum of the steps of a sequence is the size of the previous one times the current prime less one.
+
+```
+sequenceStepsLength(1) = 1
+sequenceStepsLength(n) = sequenceStepsLength(n-1) * (prime(n) - 1)
+```
+
+## Length of the Sequence Steps
+
+The length of the sequence steps, total of elements, of a sequence is the length of the previous one times the current prime.
+
+```
+sequenceStepsSum(1) = 1
+sequenceStepsSum(n) = sequenceStepsSum(n-1) * prime(n)
+```
+
+## Proportion
+
+The sum of the values inside of the steps of the sequence is the total distance after applying all the steps into one cycle.
+The number of elements in the steps is the number of elements that are not multiple by the previous primes into each step cycle.
+Dividing the length of the steps by the sum of the steps we have the proportion of prime numbers into that sequence.
+
+Every new prime number, or in other words, new Sequence, reduces that proportion. 
+
+The reducion follows this rule:
+```
+sequenceStepsProp(1) = 0.5
+sequenceStepsProp(n) = sequenceStepsProp(n-1) * ( ( prime(n) - 1 ) / prime(n) )
+```
+
+```
+sequenceStepsProp(1) = 0.5
+sequenceStepsProp(n) = sequenceStepsLength(n) / sequenceStepsSum(n)
+sequenceStepsProp(n) = sequenceStepsLength(n-1) * (prime(n) - 1) / sequenceStepsSum(n-1) * prime(n)
+sequenceStepsProp(n) = ( sequenceStepsLength(n-1) / sequenceStepsSum(n-1) ) * ( (prime(n) - 1) / prime(n) )
+sequenceStepsProp(n) = sequenceStepsProp(n-1) * ( (prime(n) - 1) / prime(n) )
+```
+
+So, considering that ``( Prime(n) - 1 ) / Prime(n) )`` will become more and more close to 1, as the prime numbers increase, this function converges to the value aproximated of ``0.027116331``. 
+
+```
+sequenceStepsProp(50000000) = sequenceStepsProp(49999999) * ( (prime(49999999) - 1) / prime(49999999) )
+sequenceStepsProp(50000000) = sequenceStepsProp(49999999) * 0.9999999989821382080772986393458692 
+```
+ 
+That information let us to the conclusion that despide that new primes become more and more distant, the proportion between total number and prime numbers converges to around ``2.7 %``.
+
+Bellow, is presented the proportion of primes to the total of elements, to some sequences:
+
+```
+sequenceStepsProp(1) = 0.50
+sequenceStepsProp(2) = 0.33
+sequenceStepsProp(3) = 0.26
+sequenceStepsProp(4) = 0.22
+sequenceStepsProp(5) = 0.20
+sequenceStepsProp(6) = 0.19
+sequenceStepsProp(7) = 0.18
+sequenceStepsProp(8) = 0.17
+sequenceStepsProp(9) = 0.16
+sequenceStepsProp(10) = 0.15
+sequenceStepsProp(100) = 0.0887
+sequenceStepsProp(1000) = 0.0624
+sequenceStepsProp(10000) = 0.0485
+sequenceStepsProp(100000) = 0.0398
+sequenceStepsProp(1000000) = 0.0398
+sequenceStepsProp(10000000) = 0.02954
+sequenceStepsProp(20000000) = 0.02844
+sequenceStepsProp(30000000) = 0.02784
+sequenceStepsProp(40000000) = 0.029
+sequenceStepsProp(50000000) = 0.02711
+```
