@@ -338,6 +338,6 @@ sequenceStepsProp(1000000) = 0.0398
 sequenceStepsProp(10000000) = 0.02954
 sequenceStepsProp(20000000) = 0.02844
 sequenceStepsProp(30000000) = 0.02784
-sequenceStepsProp(40000000) = 0.029
+sequenceStepsProp(40000000) = 0.02742
 sequenceStepsProp(50000000) = 0.02711
 ```
