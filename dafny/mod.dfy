@@ -102,24 +102,37 @@ module Mod {
 
     }
 
-    function cycle(list: seq<nat>, pos: nat): nat
+    function method cyclePos(list: seq<nat>, pos: nat): nat
         requires |list| > 0;
         decreases pos;
     {
-        if pos < |list| then list[pos] else cycle(list, pos - |list|)
+        if pos < |list| then list[pos] else cyclePos(list, pos - |list|)
     }
 
-    lemma modList(list: seq<nat>, source: seq<nat>)
+    function method cycleListLoop(source: seq<nat>, size: nat, pos: nat): seq<nat>
+        requires |source| > 0;
+        decreases size;
+    {
+        if size  == 0 then [] else [cyclePos(source, pos)] + cycleListLoop(source, size - 1, pos + 1 )
+    }
+
+    function method cycleList(source: seq<nat>, size: nat): seq<nat>
+        requires |source| > 0;
+    {
+        var result := cycleListLoop(source, size, 0);
+        result
+    }
+
+    lemma checkCycle(list: seq<nat>, source: seq<nat>)
         requires |list| > 0;
         requires |source| > 0;
         requires |list| > |source|;
         ensures  forall k: nat :: 0 <= k < |list|  ==> mod(k,|source|) < |source|;
-        requires forall k: nat :: 0 <= k < |list|  ==> list[k] == cycle(source, k);
+        requires forall k: nat :: 0 <= k < |list|  ==> list[k] == cyclePos(source, k);
         ensures  forall k: nat :: 0 <= k < |source| ==> list[k] == source[k];
         ensures  forall k: nat :: |source| <= k < |list| ==> list[k] == list[k - |source|];
     {
         assert forall k: nat :: 0 <= k < |list|  ==> mod(k,|source|) < |source|;
-        //loopList(list);
     }
 
     lemma loopList(list: seq<nat>)

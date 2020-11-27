@@ -42,17 +42,20 @@ module List {
     method cycleUntil(list:seq<nat>, size: nat, gap: nat) returns (result: seq<nat>) 
         requires |list| > 0;
         ensures |result| == size;
+//        ensures forall pos : nat :: 0 <= pos < |result| ==> ;
         ensures forall pos : nat :: 0 <= pos < |result| ==> result[pos] == list[Mod.mod(pos + gap,|list|)]
     {
         if (size == 0 ) {
             result := [];
             return;
+        } else {
+            var key := Mod.mod(gap,|list|);
+            Mod.remainderShouldBeSmall(gap, |list|, key);
+            Mod.modList(result, list);
+            var current := list[key];
+            var others := cycleUntil(list, size - 1, gap + 1);
+            result := [current] + others;
         }
-        var key := Mod.mod(gap,|list|);
-        Mod.remainderShouldBeSmall(gap, |list|, key);
-        var current := list[key];
-        var others := cycleUntil(list, size - 1, gap + 1);
-        result := [current] + others;
     }
 //     method cycleUntil(list:seq<nat>, size: nat) returns (result: seq<nat>)
 //         requires |list| > 0;
