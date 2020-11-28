@@ -1,5 +1,12 @@
 include "mod.dfy"
 
+/**
+ * Define the cycle function
+ * Ensure some important properties into the cycle function
+ * assert forall k: nat :: |source| <= k  < |dest|  ==> Mod.mod(k,|source|) < |source|;
+ * assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == source[Mod.mod(k,|source|)];
+ * assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == dest[k-|source|];
+ */
 module Cycle {
 
     import Mod
