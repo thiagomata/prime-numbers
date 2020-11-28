@@ -116,56 +116,6 @@ module Mod {
 
     }
 
-    function method cyclePos(list: seq<nat>, pos: nat): nat
-        requires |list| > 0;
-    {
-        var l := |list|;
-        var k := mod(pos, l);
-        remainderShouldBeSmall(pos,l,k);
-        assert k < l;
-        var result := list[k];
-        result
-    }
-
-    lemma checkCyclePos(list: seq<nat>, pos: nat, key: nat, result: nat)
-        requires |list| > 0;
-        requires key == mod(pos,|list|);
-        requires result == cyclePos(list, pos);
-        ensures key < |list|;
-        ensures result == list[key];
-    {
-        remainderShouldBeSmall(pos,|list|,key);
-    }
-
-    method cycle(source: seq<nat>, size: nat) returns (result: seq<nat>)
-        requires |source| > 0;
-        ensures forall k : nat :: 0 <= k < |result| ==> mod(k,|source|) < |source|;
-        ensures forall k : nat :: 0 <= k < |result| ==> result[k] == source[mod(k,|source|)];
-        ensures |result| == size;
-    {
-        result := [];   
-        while( |result| < size ) 
-            invariant forall k : nat :: 0 <= k < |result| ==> result[k] == source[mod(k,|source|)];
-            invariant |result| <= size;
-            decreases size - |result|;
-        {
-            var value := cyclePos(source, |result|);            
-            result := result + [value];
-        }
-        assert |result| == size;
-    }
-
-    method checkCycle(source: seq<nat>, m: nat)
-        requires |source| > 0;
-        requires m > 0;
-    {
-        var dest := cycle( source, |source| * m);
-        assert |dest| == |source| * m;
-        assert forall k: nat :: 0 <= k < |source|  ==> dest[k] == source[k];
-        assert forall k: nat :: |source| <= k  < |dest|  ==> mod(k,|source|) < |source|;
-        assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == source[mod(k,|source|)];
-        assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == dest[k-|source|];
-    }
 
     ghost method testMod()
     {
@@ -173,7 +123,7 @@ module Mod {
         assert mod(5, 2) == 1;
     }
 
-    ghost method testMod2(n: nat)
+    method testMod2(n: nat)
         ensures mod(2*n, 2) == 0;
         ensures mod(0, n + 1) == 0;
         ensures mod(n, 1) == 0;
@@ -184,25 +134,34 @@ module Mod {
     {
         modBto1ShouldBeB(n);
         assert mod(n, 1) == 0;
+        print("\n mod(n,1) == 0\n");
 
         modATimesBModBZero(n,2);
         assert mod(2*n, 2) == 0;
+        print("\n mod(2*n,2) == 0\n");
 
         modAtoBshouldBeEqualToModAPlusBtimesMToB(1, 2, n);
         assert mod(2 * n + 1, 2) == mod(1,2);
+        print("\nmod(2 * n + 1, 2) == mod(1,2)\n");
         
         modATimesBModBZero(n, 3);
         assert mod(3 * n, 3) == 0;
+        print("\nmod(3 * n, 3) == 0\n");
 
         modAtoBshouldBeEqualToModAPlusBtimesMToB(1, 3, n);
         assert mod(3 * n + 1, 3) == mod(1,3) == 1;
+        print("\nmod(3 * n + 1, 3) == mod(1,3) == 1\n");
     }
 
-    method Main()
-    {
-        print("\ntesting mod\n");
+    method test() {
         testMod();
         testMod2(123);
-        print("\n:D\n");
     }
+
+    // method Main()
+    // {
+    //     print("\ntesting mod\n");
+    //     test();
+    //     print("\n:D\n");
+    // }
 }
