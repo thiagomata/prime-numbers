@@ -167,12 +167,6 @@ module Mod {
         assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == dest[k-|source|];
     }
 
-    lemma loopList(list: seq<nat>)
-        requires |list| > 0;
-        ensures forall k:nat :: k >= |list| ==> mod(k,|list|) == mod(k - |list|,|list|);
-    {
-    }
-
     ghost method testMod()
     {
         assert mod(4, 2) == 0;
