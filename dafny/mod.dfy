@@ -15,10 +15,22 @@ module Mod {
        requires b > 0;
        requires a >= 0;
        decreases a;
+       ensures mod(a,b) <= a;
+       ensures mod(a,b) <  b;
+       ensures a == 0 ==> mod(a,b) == 0;
     {
         var remainder := if a >= b then mod( a-b, b) else a;
 
         assert a == 0 ==> remainder == 0;
+
+        assert a >= b ==> remainder == mod(a-b,b);
+        assert a >= b ==> remainder == mod(a-b,b) ==> remainder <= a;
+        assert a == b ==> remainder == 0;
+        assert a == b ==> remainder <= a;
+        assert a <  b ==> remainder == a;
+        assert a <  b ==> remainder <= a;
+        assert b >  0 ==> remainder <= (a - b) ==> remainder <= a;
+        assert remainder <= a;
         remainder
     }
 
@@ -55,7 +67,9 @@ module Mod {
         var x := a + b * m;
         assert mod(x, b) == mod((a + b * m), b);
         assert mod(x, b) == if x >= b then mod(x-b, b) else x;
-        assert mod(x, b) == if ( a + b * m ) >= b then mod(a + b * m-b, b) else a + b * m;
+        assert x == ( a + b * m);
+        assert x - b == (a + b * m ) - b == a + b * m - b == a + b * ( m - 1);
+        assert mod(x, b) == if ( a + b * m ) >= b then mod(a + b * m - b, b) else a + b * m;
         assert m == 1 ==> mod(x,b) == if ( a + b ) >= b then mod(a + b - b, b) else a + b * m;
         assert m == 1 ==> mod(x,b) == if ( a + b ) >= b then mod(a, b) else a + b;
         
@@ -104,35 +118,53 @@ module Mod {
 
     function method cyclePos(list: seq<nat>, pos: nat): nat
         requires |list| > 0;
-        decreases pos;
     {
-        if pos < |list| then list[pos] else cyclePos(list, pos - |list|)
-    }
-
-    function method cycleListLoop(source: seq<nat>, size: nat, pos: nat): seq<nat>
-        requires |source| > 0;
-        decreases size;
-    {
-        if size  == 0 then [] else [cyclePos(source, pos)] + cycleListLoop(source, size - 1, pos + 1 )
-    }
-
-    function method cycleList(source: seq<nat>, size: nat): seq<nat>
-        requires |source| > 0;
-    {
-        var result := cycleListLoop(source, size, 0);
+        var l := |list|;
+        var k := mod(pos, l);
+        remainderShouldBeSmall(pos,l,k);
+        assert k < l;
+        var result := list[k];
         result
     }
 
-    lemma checkCycle(list: seq<nat>, source: seq<nat>)
+    lemma checkCyclePos(list: seq<nat>, pos: nat, key: nat, result: nat)
         requires |list| > 0;
-        requires |source| > 0;
-        requires |list| > |source|;
-        ensures  forall k: nat :: 0 <= k < |list|  ==> mod(k,|source|) < |source|;
-        requires forall k: nat :: 0 <= k < |list|  ==> list[k] == cyclePos(source, k);
-        ensures  forall k: nat :: 0 <= k < |source| ==> list[k] == source[k];
-        ensures  forall k: nat :: |source| <= k < |list| ==> list[k] == list[k - |source|];
+        requires key == mod(pos,|list|);
+        requires result == cyclePos(list, pos);
+        ensures key < |list|;
+        ensures result == list[key];
     {
-        assert forall k: nat :: 0 <= k < |list|  ==> mod(k,|source|) < |source|;
+        remainderShouldBeSmall(pos,|list|,key);
+    }
+
+    method cycle(source: seq<nat>, size: nat) returns (result: seq<nat>)
+        requires |source| > 0;
+        ensures forall k : nat :: 0 <= k < |result| ==> mod(k,|source|) < |source|;
+        ensures forall k : nat :: 0 <= k < |result| ==> result[k] == source[mod(k,|source|)];
+        ensures |result| == size;
+    {
+        result := [];   
+        while( |result| < size ) 
+            invariant forall k : nat :: 0 <= k < |result| ==> result[k] == source[mod(k,|source|)];
+            invariant |result| <= size;
+            decreases size - |result|;
+        {
+            var value := cyclePos(source, |result|);            
+            result := result + [value];
+        }
+        assert |result| == size;
+    }
+
+    method checkCycle(source: seq<nat>, m: nat)
+        requires |source| > 0;
+        requires m > 0;
+    {
+        var dest := cycle( source, |source| * m);
+        assert |dest| == |source| * m;
+        assert forall k: nat :: 0 <= k < |source|  ==> dest[k] == source[k];
+        assert forall k: nat :: |source| <= k  < |dest|  ==> mod(k,|source|) < |source|;
+        assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == source[mod(k,|source|)];
+        assert forall k: nat :: |source| <= k  < |dest|  ==> dest[k] == dest[k-|source|];
     }
 
     lemma loopList(list: seq<nat>)
@@ -174,9 +206,9 @@ module Mod {
 
     method Main()
     {
-        print("testing mod");
+        print("\ntesting mod\n");
         testMod();
         testMod2(123);
-        print(":D");
+        print("\n:D\n");
     }
 }
