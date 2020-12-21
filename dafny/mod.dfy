@@ -18,8 +18,8 @@ module Mod {
        ensures mod(a,b) <= a;
        ensures mod(a,b) <  b;
        ensures a == 0 ==> mod(a,b) == 0;
-       ensures a > b ==> mod(a,b) == mod(a-b,b);
-       ensures a < b ==> mod(a,b) == a;
+       ensures a >= b ==> mod(a,b) == mod(a-b,b);
+       ensures a < b  ==> mod(a,b) == a;
     {
         var remainder := if a >= b then mod( a-b, b) else a;
 
@@ -37,6 +37,49 @@ module Mod {
         remainder
     }
 
+    lemma modABequalsMinusB(a: nat, b: nat)
+       requires b > 0;
+       ensures a == 0 ==> mod(a,b) == 0;
+       ensures a > b ==> mod(a,b) == mod(a-b,b);
+       ensures a < b ==> mod(a,b) == a;
+    {
+
+    }
+
+    lemma modModEqualsMod(a: nat, b: nat)
+        requires b > 0;
+        ensures mod(a,b) == mod(mod(a,b),b);
+    {
+    }
+
+    lemma modAplusB(v1: nat, v2: nat, m: nat)
+        requires m > 0;
+        ensures mod(v1+v2,m) == mod(mod(v1,m) + mod(v2,m), m);
+        decreases v1, v2;
+    {
+        if ( v1 < m && v2 < m ) {
+            assert 0 <= v1 < m;
+            assert 0 <= v2 < m;
+            assert v1 == mod(v1, m);
+            assert v2 == mod(v2, m);
+            assert mod( v1 + v2, m) ==  mod( mod(v1,m) + mod(v2,m), m);
+        }
+        else if (v1 >= m) {
+            var smallV1 := v1 - m;
+            assert mod(v1,m) == mod(smallV1,m);
+            assert mod(v1+v2,m) == mod(smallV1+m+v2,m);
+            assert mod(smallV1+m+v2,m) == mod(smallV1+v2, m);
+            assert mod(smallV1+v2, m) == mod( mod(smallV1,m) + mod(v2,m), m);
+        }
+        else if (v2 >= m) {
+            var smallV2 := v2 - m;
+            assert mod(v2,m) == mod(smallV2,m);
+            assert mod(v1+v2,m) == mod(v1+smallV2+m,m);
+            assert mod(v1+smallV2+m,m) == mod(v1+smallV2, m);
+            assert mod(v1+smallV2, m) == mod( mod(v1,m) + mod(smallV2,m), m);
+        }
+    }
+
     lemma modBtoBShouldBeZero(b: nat)
        requires b > 0;
        ensures mod(b ,b) == 0;
@@ -44,7 +87,8 @@ module Mod {
         assert mod(b,b) == if ( b >= b ) then mod(b-b, b) else b;
         assert b >= b;
         assert mod(b,b) == mod(b-b, b);
-        assert mod(b,b) == mod(0,b) == 0;
+        assert b - b == 0;
+        assert mod(b, b) == mod((b-b), b) == mod(0, b) == 0;
     }
 
     lemma modBto1ShouldBeB(b: nat)

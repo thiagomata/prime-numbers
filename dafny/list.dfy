@@ -67,29 +67,15 @@ module List {
         assert forall pos : nat :: 0 <= pos < |list|   ==> result[pos] == list[pos];
     }
 
+    lemma cycleShouldContainsList(list: seq<nat>, cycleList: seq<nat>)
+        requires |list| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        ensures cycleList[0..|list|] == list;
+    {
 
-    // lemma cycleValueRepeatsEveryM(list: seq<nat>, result: seq<nat>, a: nat, m: nat, n: nat)
-    //     requires |list| > 0;
-    //     requires |result| == |list| * m;
-    //     requires m > 0;
-    //     requires n < m;
-    //     requires a < |list|;
-    //     requires isCycle(list,result);
-    //     ensures a + n * |list| < |result|;
-    //     ensures result[a + n * |list| ] == list[a];
-    // {
-    //     Mod.modAtoBshouldBeEqualToModAPlusBtimesMToB(a, |list|, n);
-    //     var l := |list|;
-    //     assert l > 0;
-    //     assert Mod.mod(a + n * l, l) == a;
-    //     assert |result| == l * m;
-    //     assert n < m;
-    //     assert n * l < m * l;
-    //     assert l + n * l <= m * l;
-    //     assert l + n * l > a + n * l;
-    //     assert result[a + n * l] == list[a];
-    //     assert result[a + n * |list|] == list[a];
-    // }
+    }
+
 
     lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat, n: nat, a: nat)
         requires |list| > 0;
@@ -271,13 +257,14 @@ module List {
         modIntegralCycle: seq<nat>
     )
 
+    // m is bigger than zero
+    requires m > 0;
+
     // list is non zero, non empty and the sum of the list is multiple of m
     requires |list| > 0;
     requires nonZero(list);
     requires Mod.mod(sum(list),m) == 0;
 
-    // m is bigger than zero
-    requires m > 0;
 
     // integral list def
     requires |integralList| == |list|;
@@ -289,6 +276,7 @@ module List {
 
     // cylce list def
     requires |cycleList| == |list| * m;
+    requires |cycleList| >= |list|;
     requires isCycle(list, cycleList)
 
     // integral cycle def
@@ -300,14 +288,23 @@ module List {
     requires isModList(integralCycle, m, modIntegralCycle);
 
     // mod of integral should be cycle
-    ensures isCycle(modIntegralList, modIntegralCycle);
+//    ensures isCycle(modIntegralList, modIntegralCycle);
     {
         if ( m == 1 ) {
             assert cycleList == list;
             assert integralCycle == integralList;
             assert modIntegralCycle == modIntegralList;
         } else {
-            assert cycleList[..|list|] == list;
+            assert cycleList[0..|list|] == list;
+
+            assert forall v: nat :: 0 <= v < |integralList| ==> integralList[v] == sum(list[..v+1]) + initial;
+            var last := |list| - 1;
+            assert integralList[last] == sum(list[..(last+1)]) + initial;
+            assert list[..(last+1)] == list;
+            assert sum(list[..(last+1)]) == sum(list);
+            assert integralList[last] == sum(list) + initial;
+            assert Mod.mod(sum(list),m) == 0;
+            
         }
     }
 
