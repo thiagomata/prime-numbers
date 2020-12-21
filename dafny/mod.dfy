@@ -18,6 +18,8 @@ module Mod {
        ensures mod(a,b) <= a;
        ensures mod(a,b) <  b;
        ensures a == 0 ==> mod(a,b) == 0;
+       ensures a > b ==> mod(a,b) == mod(a-b,b);
+       ensures a < b ==> mod(a,b) == a;
     {
         var remainder := if a >= b then mod( a-b, b) else a;
 
@@ -31,6 +33,7 @@ module Mod {
         assert a <  b ==> remainder <= a;
         assert b >  0 ==> remainder <= (a - b) ==> remainder <= a;
         assert remainder <= a;
+
         remainder
     }
 
