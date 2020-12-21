@@ -50,6 +50,15 @@ module Cycle {
         assert |result| == size;
     }
 
+    function isCycle(list: seq<nat>, listCycle: seq<nat>): bool
+        requires |list| > 0;
+        requires |listCycle| >= |list|;
+    {
+        assert forall k : nat :: |list| <= k < |listCycle| ==> Mod.mod(k,|list|) == Mod.mod(k - |list|,|list|);
+        assert forall k : nat :: 0 <= k < |list| ==> Mod.mod(k,|list|) == k;
+        forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[Mod.mod(k,|list|)]
+    }
+
     method checkCycle(source: seq<nat>, m: nat)
         requires |source| > 0;
         requires m > 0;
