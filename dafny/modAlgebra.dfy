@@ -1,11 +1,16 @@
 /**
  * Define our own mod function ( since I could not proof that mod(a,b) == a % b)
+ *
+ * Using the difference between the real div and the nat div to calculate mod
+ *
  * Ensure some important properties into the mod function
  *  mod(n,n) == 0
  *  mod(m*n,n) == 0
  *  mod(a+m*n,n) == mod(a,n)
+ *
+ * I am giving up this strategy since I could not proof some important properties using it
  */
-module ModOld {
+module ModAlgebra {
 
     function floor(r: real): int {
         var i: int := r.Floor as int;
