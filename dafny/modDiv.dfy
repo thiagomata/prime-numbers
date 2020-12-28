@@ -169,7 +169,7 @@ module ModDiv {
         if (r1 >= r2) {
             diff := r1 - r2;
             assert diff == r1 - r2;
-            assert diff < b;
+            assert 0 <= diff < b;
             assert r1 == diff + r2;
             assert div1 * b + r1 == div2 * b + r2;
             assert div1 * b + diff + r2 == div2 * b + r2;
@@ -177,7 +177,8 @@ module ModDiv {
             assert div2 * b - div1 * b == diff;
             assert b * ( div2 - div1 ) == diff;
             var diffDiv := div2 - div1;
-            assert div2 < div1 ==> diffDiv < 0; // impossible
+            assert div2 < div1 ==> diffDiv < 0;
+            assert diffDiv < 0 ==> diff < 0;  // impossible 
             assert div2 > div1 ==> diffDiv > 0;
             assert div2 > div1 ==> diffDiv >= 1;
             assert diffDiv > 0 ==> diff > b; // impossible
@@ -187,14 +188,20 @@ module ModDiv {
         if (r2 >= r1) {
             diff := r2 - r1;
             assert diff == r2 - r1;
-            assert diff < b;
+            assert 0 <= diff < b;
             assert r2 == diff + r1;
             assert div2 * b + r2 == div1 * b + r1;
             assert div2 * b + diff + r1 == div1 * b + r1;
             assert div2 * b + diff == div1 * b;
             assert div1 * b - div2 * b == diff;
-            assert div1 > div2 ==> div1 - div2 > 0;
-            assert div1 > div2 ==> div1 - div2 >= 1;
+            assert b * ( div1 - div2 ) == diff;
+            var diffDiv := div1 - div2;
+            assert b * diffDiv == diff;
+            assert div1 < div2 ==> diffDiv < 0;
+            assert diffDiv < 0 ==> diff < 0;  // impossible 
+            assert div1 > div2 ==> diffDiv > 0;
+            assert div1 > div2 ==> diffDiv > 1;
+            assert diffDiv > 0 ==> diff > b; // impossible
             assert diff == 0;
         }
         assert diff == 0;
@@ -380,44 +387,6 @@ module ModDiv {
             assert b * 0 == r2 - r1;
             assert r2 == r1;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // if ( m > 0 ) {
-        //     assert isModDiv(a, b, div1, r1);
-        //     isModDivPlus(a, b, div1, r1);
-        //     assert isModDiv(a + b, b, div1 + 1, r1);
-        //     modAOnBEqualsModAPlusBOnB(
-        //         a, b, r1, r1, div1, div1 + 1
-        //     );
-        //     modAOnBEqualsModAMoreMTimesB(
-        //         a + b, b, r1, r1, div1 + 1, div2, m - 1
-        //     );
-        // } else {
-        //     assert a + m * b == a + 0 * b == a;
-        //     modAB1equals2(a, b, r1, r2, div1, div2);
-        // }
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // if ( m == 0 ) {
-        //     assert a + m * b == a + 0 * b == a;
-        // } else {
-        //     // proof that a + m * b == a + ( m - 1 ) * b;
-        //     modAOnBEqualsModAPlusBOnB(
-        //         a + m * b, b, r1, r2, div1, div1 + 1
-        //     );
-        //     // now we just need to apply the same lemma in loop
-        //     modAOnBEqualsModAMoreMTimesB( a, b, r2, r2, div1, div1 + 1, m - 1 );
-        // }
-        ////////////////////////////////////////////////////////////////////////////////////////
-        // var mCurrent := 0;
-        // while ( mCurrent  < m )
-        //     decreases m - mCurrent;
-        // {
-        //     modAOnBEqualsModAPlusBOnB(
-        //         a + mCurrent * b, b, r1, r1, div1, div1 + mCurrent
-        //     );
-        //     mCurrent := mCurrent + 1;
-        // }        
-        ////////////////////////////////////////////////////////////////////////////////////////
     }
 
     /**
