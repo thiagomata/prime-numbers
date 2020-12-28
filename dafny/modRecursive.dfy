@@ -1,5 +1,8 @@
 /**
  * Define our own mod function ( since I could not proof that mod(a,b) == a % b)
+ * 
+ * Using a recursive function to define mod
+ *
  * Ensure some important properties into the mod function
  *  mod(0,n) == 0
  *  mod(n,1) == 0
@@ -8,8 +11,10 @@
  *  mod(a+m*n,n) == mod(a,n)
  *  mod(a,b) <= a
  *  mod(a,b) <= b
+ *
+ * I am giving up this strategy since I could not proof some important properties using it
  */
-module Mod {
+module ModRecursive {
 
     function method mod(a: nat, b: nat): nat
        requires b > 0;
@@ -52,43 +57,121 @@ module Mod {
     {
     }
 
-    lemma modAplusB(v1: nat, v2: nat, m: nat)
-        requires m > 0;
-        ensures mod(v1+v2,m) == mod(mod(v1,m) + mod(v2,m), m);
-        decreases v1, v2;
-    {
-        if ( v1 < m && v2 < m ) {
-            assert 0 <= v1 < m;
-            assert 0 <= v2 < m;
-            assert v1 == mod(v1, m);
-            assert v2 == mod(v2, m);
-            assert mod( v1 + v2, m) ==  mod( mod(v1,m) + mod(v2,m), m);
-        }
-        else if (v1 >= m) {
-            var smallV1 := v1 - m;
-            assert mod(v1,m) == mod(smallV1,m);
-            assert mod(v1+v2,m) == mod(smallV1+m+v2,m);
-            assert mod(smallV1+m+v2,m) == mod(smallV1+v2, m);
-            assert mod(smallV1+v2, m) == mod( mod(smallV1,m) + mod(v2,m), m);
-        }
-        else if (v2 >= m) {
-            var smallV2 := v2 - m;
-            assert mod(v2,m) == mod(smallV2,m);
-            assert mod(v1+v2,m) == mod(v1+smallV2+m,m);
-            assert mod(v1+smallV2+m,m) == mod(v1+smallV2, m);
-            assert mod(v1+smallV2, m) == mod( mod(v1,m) + mod(smallV2,m), m);
-        }
-    }
+    // lemma modAplusB(v1: nat, v2: nat, m: nat)
+    //     requires m > 0;
+    //     ensures mod(v1+v2,m) == mod(mod(v1,m) + mod(v2,m), m);
+    //     decreases v1, v2;
+    // {
+    //     var smallV1 := v1;
+    //     var mV1 := 0;
+    //     var smallV2 := v2;
+    //     var mV2 := 0;
+    //     while ( smallV1 >= m ) 
+    //         invariant v1 == smallV1 + m * mV1;
+    //         decreases smallV1;
+    //     {
+    //         smallV1 := smallV1 - m;
+    //         mV1 := mV1 + 1;
+    //     }
+    //     assert smallV1 < m;
+    //     assert v1  == smallV1 + m * mV1;
+    //     assert mod(v1, m) == mod(smallV1 + m * mV1, m);
+    //     modAtoBshouldBeEqualToModAPlusBtimesMToB(smallV1,mV1,m);
+    //     assert mod(smallV1 + m * mV1, m) == mod(smallV1, m);
+    //     assert mod(smallV1, m) == mod(v1, m);
+    //     assert mod(smallV1, m) == smallV1;
+    //     assert mod(v1, m) == smallV1;
+    //     while ( smallV2 >= m ) 
+    //         invariant v2 == smallV2 + m * mV2;
+    //         decreases smallV2;
+    //     {
+    //         smallV2 := smallV2 - m;
+    //         mV2 := mV2 + 1;
+    //     }
+    //     assert smallV2 < m;
+    //     assert v2  == smallV2 + m * mV2;
+    //     assert mod(v2, m) == mod(smallV2 + m * mV2, m);
+    //     modAtoBshouldBeEqualToModAPlusBtimesMToB(smallV2,mV2,m);
+    //     assert mod(smallV2 + m * mV2, m) == mod(smallV2, m);
+    //     assert mod(smallV2, m) == mod(v2, m);
+    //     assert mod(smallV2, m) == smallV2;
+    //     assert mod(v2, m) == smallV2;
+    //     var smallSum := v1 + v2;
+    //     var mSum := 0;
+    //     while ( smallSum > m ) 
+    //         invariant mSum == v1 + v2 + m * mSum;
+    //         decreases smallSum;
+    //     {
+    //         smallSum := smallSum - m;
+    //         mSum := mSum + 1;
+    //     }
+    //     assert smallSum < m;
+    //     assert v1 + v2 == smallSum + m * mSum;
+    //     assert mod(v1 + v2, m) == mod(smallSum + m * mSum, m);
+    //     modAtoBshouldBeEqualToModAPlusBtimesMToB(smallSum,mSum,m);
+    //     assert mod(smallSum + m * mSum, m) == mod(smallSum, m);
+    //     assert mod(v1+v2,m) == mod(smallSum, m);
+    //     assert mod(v1,m) + mod(v2,m) == smallV1 + smallV2;        
+    //     assert v1 + v2 == smallV1 + m * mV1 + smallV2 + m * mV2;
+    //     assert smallSum + m * mSum == smallV1 + m * mV1 + smallV2 + m * mV2;
+    //     assert mod(smallSum + m * mSum, m) == mod(smallV1 + m * mV1 + smallV2 + m * mV2, m);
+    //     assert mod(smallSum + m * mSum, m) == mod(smallV1 + smallV2 + m * (mV1 + mV2), m);
+    //     modAtoBshouldBeEqualToModAPlusBtimesMToB(smallV1 + smallV2, mV1 + mV2, m);
+    //     assert mod(smallSum, m) == mod(smallV1 + smallV2, m);
+    //     assert mod(smallSum, m) == mod(mod(v1,m) + mod(v2,m), m);
+    //     assert mod(v1+v2, m) == mod(mod(v1,m) + mod(v2,m), m);
+    // }
+
+
+    // lemma modAplusB(v1: nat, v2: nat, m: nat)
+    //     requires m > 0;
+    //     ensures mod(v1+v2,m) == mod(mod(v1,m) + mod(v2,m), m);
+    //     decreases v1, v2;
+    // {
+    //     if ( v1 < m && v2 < m ) {
+    //         assert 0 <= v1 < m;
+    //         assert 0 <= v2 < m;
+    //         assert v1 == mod(v1, m);
+    //         assert v2 == mod(v2, m);
+    //         assert mod( v1 + v2, m) ==  mod( mod(v1,m) + mod(v2,m), m);
+    //     }
+    //     else if (v1 >= m) {
+    //         var smallV1 := v1 - m;
+    //         assert mod(v1,m) == mod(smallV1,m);
+    //         assert mod(v1+v2,m) == mod( (smallV1 + m) + v2, m);
+    //         assert mod(smallV1+m+v2,m) == mod(smallV1+v2, m);
+    //         assert mod(v1+v2,m) == mod(smallV1+v2, m);
+    //         assert mod(smallV1+v2, m) == mod( mod(smallV1,m) + mod(v2,m), m);
+    //         assert mod(smallV1+v2, m) == mod( mod(v1,m) + mod(v2,m), m);
+    //         assert mod(v1+v2, m) == mod( mod(v1,m) + mod(v2, m), m);
+    //     }
+    //     else if (v2 >= m) {
+    //         var smallV2 := v2 - m;
+    //         assert mod(v2,m) == mod(smallV2,m);
+    //         assert mod(v1+v2,m) == mod( v1 + (smallV2 + m),m);
+    //         assert mod(v1+smallV2+m,m) == mod(v1+smallV2, m);
+    //         assert mod(v1+smallV2, m) == mod(v1+v2, m);
+    //         assert mod(v1+smallV2, m) == mod( mod(v1,m) + mod(smallV2, m), m);
+    //         assert mod(v1+smallV2, m) == mod( mod(v1,m) + mod(v2, m), m);
+    //         assert mod(v1+v2, m) == mod( mod(v1,m) + mod(v2, m), m);
+    //     }
+    // }
 
     lemma modBtoBShouldBeZero(b: nat)
        requires b > 0;
-       ensures mod(b ,b) == 0;
+       requires mod(0, b) == 0;
+       ensures mod(b, b) == 0;
     {
         assert mod(b,b) == if ( b >= b ) then mod(b-b, b) else b;
         assert b >= b;
         assert mod(b,b) == mod(b-b, b);
         assert b - b == 0;
-        assert mod(b, b) == mod((b-b), b) == mod(0, b) == 0;
+       
+        // assert mod(b, b) == mod((b-b), b) == mod(0, b) == 0;
+        assert mod(b, b) == if b >= b then mod( b-b, b) else b;
+        assert mod(b, b) == mod( b-b, b);
+        assert b - b == 0;        
+        assert mod(b, b) == mod( 0, b);
     }
 
     lemma modBto1ShouldBeB(b: nat)
