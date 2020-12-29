@@ -1,8 +1,10 @@
-include "mod.dfy"
+include "modDiv.dfy"
+include "cycle.dfy"
 
 module List {
 
-    import Mod
+    import ModDiv
+    import Cycle
 
     function sorted(list: seq<nat>): bool {
         forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1]
@@ -15,93 +17,6 @@ module List {
 
     function unique(list: seq<nat>): bool {
         forall n,m : nat :: 0 <= n < m < |list| ==> list[n] != list[m]
-    }
-
-    function isCycle(list: seq<nat>, listCycle: seq<nat>): bool
-        requires |list| > 0;
-        requires |listCycle| >= |list|;
-    {
-        assert forall k : nat :: |list| <= k < |listCycle| ==> Mod.mod(k,|list|) == Mod.mod(k - |list|,|list|);
-        assert forall k : nat :: 0 <= k < |list| ==> Mod.mod(k,|list|) == k;
-        forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[Mod.mod(k,|list|)]
-    }
-
-    function method cyclePos(list:seq<nat>,pos:nat): nat
-        requires |list| > 0;
-    {
-        var result := Mod.mod(pos, |list|);
-        assert result < |list|;
-
-        result
-    }
-
-    method cycleUntil(list:seq<nat>, size: nat, gap: nat) returns (result: seq<nat>) 
-        requires |list| > 0;
-        ensures |result| == size;
-        ensures forall pos : nat :: 0 <= pos < |result| ==> result[pos] == list[Mod.mod(pos + gap,|list|)]
-    {
-        if (size == 0 ) {
-            result := [];
-            return;
-        } else {
-            var key := Mod.mod(gap,|list|);
-            Mod.remainderShouldBeSmall(gap, |list|, key);
-            var current := list[key];
-            var others := cycleUntil(list, size - 1, gap + 1);
-            result := [current] + others;
-        }
-    }
-
-    method cycle(list: seq<nat>, m: nat) returns (result: seq<nat>)
-        requires m > 0;
-        requires |list| > 0;
-        ensures |result| == |list| * m;
-        ensures forall pos : nat :: 0 <= pos < |result| ==> result[pos] == list[Mod.mod(pos,|list|)];
-        ensures forall pos : nat :: 0 <= pos < |list|   ==> result[pos] == list[pos];
-    {
-        result := cycleUntil(list, |list| * m, 0);
-        assert |result| >= |list|;
-        assert forall pos : nat :: 0 <= pos < |result| ==> result[pos] == list[Mod.mod(pos,|list|)];
-        assert forall pos : nat :: 0 <= pos < |result| ==> Mod.mod(pos, |list|) < |list|;
-        assert forall pos : nat :: 0 <= pos < |list|   ==> Mod.mod(pos, |list|) == pos;
-        assert forall pos : nat :: 0 <= pos < |list|   ==> result[pos] == list[pos];
-    }
-
-    lemma cycleShouldContainsList(list: seq<nat>, cycleList: seq<nat>)
-        requires |list| > 0;
-        requires |cycleList| >= |list|;
-        requires isCycle(list, cycleList);
-        ensures cycleList[0..|list|] == list;
-    {
-
-    }
-
-
-    lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat, n: nat, a: nat)
-        requires |list| > 0;
-        requires |cycleList| > |list|;
-        requires |smallCycle| > |list|;
-        requires isCycle(list, cycleList);
-        requires isCycle(list, smallCycle);
-        requires a < |list|;
-        requires |cycleList| == |list| * m;
-        requires |smallCycle| == |cycleList| - |list|;
-        requires |smallCycle| == |list| * ( m - 1 );
-        requires m > 0;
-        requires n < m;
-        ensures cycleList == list + cycleList[|list|..];
-        ensures cycleList == list + smallCycle;
-        ensures sum(cycleList) == sum(list) + sum(smallCycle);
-        // ensures m == 1 ==> sum(cycleList) == sum(list);
-        // ensures m == 1 ==> sum(smallCycle) == 0;
-        // ensures m > 1 ==> sum(cycleList) == sum(list) + sum(smallCycle);
-        // ensures m > 1 ==> sum(cycleList) == sum(list) + sum(smallCycle);
-        // ensures sum(cycleList) == m * sum(list);
-    {
-        Mod.modAtoBshouldBeEqualToModAPlusBtimesMToB(a, |list|, n);
-        assert Mod.mod(a + |list| * n, |list|) == a;
-        assert cycleList[0..|list|] == list;
-        distributiveSum(list,smallCycle);
     }
 
     function first(list: seq<nat>): nat 
@@ -236,14 +151,14 @@ module List {
     requires |list| > 0;
     requires value > 0;
     {
-        forall v: nat :: 0 <= v < |list| ==> modList[v] == Mod.mod(list[v], value)
+        forall v: nat :: 0 <= v < |list| ==> modList[v] == ModDiv.mod(list[v], value)
     }
 
     function isNotMultiple(list: seq<nat>, value: nat): bool
     requires value > 0;
     requires |list| > 0;
     {
-        forall v: nat :: 0 <= v < |list| ==> Mod.mod(list[v], value) != 0
+        forall v: nat :: 0 <= v < |list| ==> ModDiv.mod(list[v], value) != 0
     }
 
     lemma modOfIntegral(
@@ -263,7 +178,7 @@ module List {
     // list is non zero, non empty and the sum of the list is multiple of m
     requires |list| > 0;
     requires nonZero(list);
-    requires Mod.mod(sum(list),m) == 0;
+    requires ModDiv.mod(sum(list),m) == 0;
 
 
     // integral list def
@@ -303,7 +218,7 @@ module List {
             assert list[..(last+1)] == list;
             assert sum(list[..(last+1)]) == sum(list);
             assert integralList[last] == sum(list) + initial;
-            assert Mod.mod(sum(list),m) == 0;
+            assert ModDiv.mod(sum(list),m) == 0;
             
         }
     }
@@ -344,7 +259,7 @@ module List {
     //     requires |modIntegralCycle| == |integralCycle|;
     //     requires isModList(integralCycle, m, modIntegralCycle);
 
-    //     requires Mod.mod(sum(list), m) == 0; // [2 4] ==> 2 + 4 == 6 ==> 6 % 3 == 0;
+    //     requires ModDiv.mod(sum(list), m) == 0; // [2 4] ==> 2 + 4 == 6 ==> 6 % 3 == 0;
         
     //     // the next integral should also be not multiple of m
     //     ensures isNotMultiple(integralCycle, m);
