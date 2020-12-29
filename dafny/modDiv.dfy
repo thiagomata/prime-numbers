@@ -35,7 +35,7 @@ module ModDiv {
      */
     function method isModDiv(a: nat, b: nat, division: nat, remainder: nat): bool
         requires b > 0;
-        requires a >= 0;
+//        requires a >= 0;
     {
         var validIsModDiv := if ! ( division * b + remainder == a ) then false
         else if ! ( remainder < b ) then false
@@ -73,12 +73,13 @@ module ModDiv {
      * required properties to assert that ModDiv IsModDiv
      */
     function method modDiv(a: nat, b:nat, div: nat, remainder: nat): (nat,nat)
+        requires b > 0;
         requires div * b + remainder == a;
         ensures pairFirst(modDiv(a,b,div,remainder)) * b + pairLast(modDiv(a,b,div,remainder)) == a;
         ensures pairLast(modDiv(a,b,div,remainder)) <= remainder;
         ensures pairLast(modDiv(a,b,div,remainder)) < b;
+        ensures isModDiv(a,b,pairFirst(modDiv(a,b,div,remainder)),pairLast(modDiv(a,b,div,remainder)));
         decreases remainder;
-        requires b > 0;
     {
         assert div * b + remainder == a;
         assert remainder >= b ==> div * b + b + remainder - b == a;
@@ -112,6 +113,8 @@ module ModDiv {
         assert remainder >= b ==> new_remainder < remainder;
         assert remainder <  b ==> new_remainder == remainder;
         assert remainder <  b ==> new_remainder < b;
+
+        assert isModDiv(a,b,new_div,new_remainder);
         result
     }
 
@@ -128,7 +131,8 @@ module ModDiv {
     }
 
     function method mod(a: nat, b: nat): nat
-       requires b > 0;       
+       requires b > 0;
+       ensures mod(a,b) < b;
     {
         assert 0 * b + a == a;
         var result := modDiv(a, b, 0, a);
@@ -136,6 +140,8 @@ module ModDiv {
         var remainder := pairLast(result);
         assertModDivIsModDiv(a, b, div, remainder);
         assert isModDiv(a, b, div, remainder);
+        assert remainder < b;
+        assert remainder <= a;
         remainder
     }
 
@@ -157,7 +163,7 @@ module ModDiv {
      */
     lemma modNOnNIsZero(a: nat, b: nat, division: nat, remainder: nat)
         requires b > 0;
-        requires a >= 0;
+        // requires a >= 0;
         requires a == b;
         requires isModDiv(a, b, division, remainder)
         ensures remainder == 0;
@@ -186,7 +192,7 @@ module ModDiv {
      */
     lemma isModDivPlus(a: nat, b: nat, division: nat, remainder: nat)
         requires b > 0;
-        requires a >= 0;
+        // requires a >= 0;
         requires isModDiv(a, b, division, remainder)
         ensures isModDiv( a + b, b, division + 1, remainder)
     {
@@ -277,7 +283,7 @@ module ModDiv {
             assert diffDiv < 0 ==> diff < 0;  // impossible 
             assert div1 > div2 ==> diffDiv > 0;
             assert div1 > div2 ==> diffDiv > 1;
-            // assert diffDiv > 0 ==> diff > b; // impossible
+            assert diffDiv > 0 ==> diff > b; // impossible
             assert diff == 0;
         }
         assert diff == 0;
@@ -288,9 +294,9 @@ module ModDiv {
 
     /**
      * if a < b then mod(a,b) == a
-     * Mod of smal values are the values itself
+     * Mod of small values are the values itself
      */
-    lemma modSmallValues(a: nat, b: nat, r1: nat, div1: nat)
+    lemma modSmallValuesFull(a: nat, b: nat, r1: nat, div1: nat)
        requires b > 0;
        requires a < b;
        requires isModDiv(a, b, div1, r1);
@@ -304,6 +310,17 @@ module ModDiv {
         assert div1 >= 1 ==> div1 * b + r1 > b; // impossible
         assert div1 == 0;
         assert r1 == a;
+    }
+
+    lemma modSmallValues(a: nat, b: nat)
+       requires b > 0;
+       requires a < b;
+    {
+        assert 0 * b + a == a;
+        assert isModDiv(a, b, 0, a);
+        var result := modDiv(a,b,0,a);
+        assert isModDiv(a,b,pairFirst(result),pairLast(result));
+        modSmallValuesFull(a,b,pairLast(result),pairFirst(result));
     }
 
     /**
@@ -321,7 +338,7 @@ module ModDiv {
        ensures div2 == 0;
     {
         assert r1 < b;
-        modSmallValues(r1,b,r2,div2);
+        modSmallValuesFull(r1,b,r2,div2);
     }
 
     /**
@@ -552,7 +569,7 @@ module ModDiv {
 
             assert diffR < div;
             assert div * divFactor ==  rSum - rModSum;
-            // assert divFactor > 1 ==> div * divFactor >= div; // impossible
+            assert divFactor > 1 ==> div * divFactor >= div; // impossible
             assert divFactor == 0;
             assert rSum - rModSum == div * 0;
             assert rSum - rModSum == 0;
@@ -562,12 +579,51 @@ module ModDiv {
         assert rSum == rModSum;
     }
 
-    // method Main() {
-    //     print("hello from ModDiv \n");
-    //     print("\n mod(5,2) \n");
-    //     print(mod(5,2));
-    //     print("\n mod(10,2) \n");
-    //     print(mod(10,5));
-    //     print("\n");
-    // }
+    function isModList(size: nat, loop: nat, result: seq<nat>): bool
+        requires loop > 0;
+        // requires |result| == size;
+    {
+        forall v: nat :: 0 <= v < |result| ==> result[v] == mod(v, loop)
+    }
+
+    method modList(size: nat, loop: nat) returns (result: seq<nat>)
+        requires loop > 0;
+        ensures |result| == size;
+        ensures isModList( size, loop, result );
+    {
+        var arr := new nat[size];
+        var k := 0;
+        while (k < size)
+            decreases size - k;
+            invariant 0 <= k <= size;
+            invariant forall v: nat :: 0 <= v < k ==> arr[v] == mod(v, loop);
+        {
+            assert 0 * loop + k == k;
+            var resultModDiv := modDiv(k, loop, 0, k);
+            var div := pairFirst(resultModDiv);
+            var remainder := pairLast(resultModDiv);
+            assert div * loop + remainder == k;
+            assert remainder < loop;
+            assert isModDiv(k, loop, div, remainder);
+
+            arr[k] := remainder;
+            k := k + 1;
+        }
+        assert k == size;
+        assert forall v: nat :: 0 <= v < k ==> arr[v] == mod(v, loop);
+        // array to seq
+        result := arr[..];
+        assert |result| == size;
+    }
+
+    method Main() {
+        print("hello from ModDiv \n");
+        print("\n mod(5,2) \n");
+        print(mod(5,2));
+        print("\n mod(10,2) \n");
+        print(mod(10,5));
+        print("\n");
+        var modList := modList(12,3);
+        print(modList);
+    }
 }
