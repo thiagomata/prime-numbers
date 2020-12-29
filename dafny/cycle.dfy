@@ -13,90 +13,62 @@ module Cycle {
 
     function method isCycle(list: seq<nat>, listCycle: seq<nat>): bool
         requires |list| > 0;
-//        requires |listCycle| >= |list|;
     {
-        var limit := if |listCycle| > |list| then |list| else |listCycle|;
-        var equalsFirst    := listCycle[..limit] == list;
-        var equalsPrevious := forall k : nat :: |list| <= k < |listCycle| ==> listCycle[k] == listCycle[k - |list|];
-        var equalsMod      := forall k : nat :: 0      <= k < |listCycle| ==> listCycle[k] == list[ k % |list| ];
+        var equalsMod := forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ ModDiv.mod(k, |list|) ];
 
-        assert equalsFirst    ==> listCycle[..limit] == list[..limit];
-        assert equalsPrevious ==> forall k : nat :: |list| <= k < |listCycle| ==> listCycle[k] == listCycle[k - |list|];
-        assert equalsMod      ==> forall k : nat :: 0      <= k < |listCycle| ==> listCycle[k] == list[ k % |list| ];
+        equalsMod
+    }
+    function method isCycleGap(list: seq<nat>, listCycle: seq<nat>, gap: nat): bool
+        requires |list| > 0;
+    {
+        var equalsMod := forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ ModDiv.mod(k + gap, |list|) ];
 
-        equalsFirst && equalsPrevious && equalsMod
+        equalsMod
     }
 
-    method cycleUntil(list:seq<nat>, size: nat, gap: nat) returns (result: seq<nat>) 
+    function method cyclePos(list: seq<nat>, pos: nat): nat
         requires |list| > 0;
-        requires size >= |list|;
+        ensures cyclePos(list,pos) == list[ModDiv.mod(pos,|list|)];
+    {
+        var l := |list|;
+        var k := ModDiv.mod(pos, l);
+        assert k < l;
+        var result := list[k];
+        result
+    }
+
+    method cycle(source: seq<nat>, size: nat) returns (result: seq<nat>)
+        requires |source| > 0;
+        ensures forall k : nat :: 0 <= k < |result| ==> ModDiv.mod(k,|source|) < |source|;
+        ensures forall k : nat :: 0 <= k < |result| ==> result[k] == source[ModDiv.mod(k,|source|)];
         ensures |result| == size;
-        ensures isCycle(list, result);
-        decreases size;
     {
-        var arr := new nat[size];
-        var key := 0;
-        var modKey := 0;
-        while ( key < size )
-            decreases size - key;
-            invariant key <= size;
-            invariant key > 0 ==> isCycle(list, arr[..key]);
+        result := [];   
+        while( |result| < size ) 
+            invariant forall k : nat :: 0 <= k < |result| ==> result[k] == source[ModDiv.mod(k,|source|)];
+            invariant |result| <= size;
+            decreases size - |result|;
         {
-            var mod, div := ModDiv.modDiv(key,|list|);
-            assert ModDiv.isModDiv(key,|list|,mod,div);
-            if ( key < |list| ) {
-                ModDiv.modSmallValues(key,|list|,mod,div);
-                assert modKey < |list| ==> modKey == key;
-            }
-            arr[key] := list[modKey];
-            assert key < |list| ==> arr[..key] == list[..key];
-            if ( key >= |list| ) {
-                ModDiv.isModDivMinus(key,|list|,mod,div);
-            }
-            assert forall k : nat :: |list| <= k < key ==> arr[k] == arr[k - |list|];
-            assert forall k : nat :: 0      <= k < key ==> arr[k] == list[ k % |list| ];
-            key := key + 1;
+            var value := cyclePos(source, |result|);
+            result := result + [value];
         }
-        assert key == size;
-        result := arr[..];
-
-        // if (size == 0 ) {
-        //     result := [];
-        //     return;
-        // } else {
-        //     var key := ModDiv.mod(gap,|list|);
-        //     assert key < |list|;
-        //     var current := list[key];
-        //     var others := cycleUntil(list, size - 1, gap + 1);
-        //     result := [current] + others;
-        // }
-    }
-    
-    lemma modIscycle(list: seq<nat>, listCycle: seq<nat>)
-        requires |list| > 0;
-        requires forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[k % |list|];
-        ensures isCycle(list, listCycle);
-    {
-        var limit := if |listCycle| > |list| then |list| else |listCycle|;
-        assert forall k : nat :: 0      <= k < |listCycle| ==> ModDiv.isMod(k, |list|, k % |list|);
-        // assert listCycle[..limit] == list[..limit];
-        assert forall k : nat :: |list| <= k < |listCycle| ==> listCycle[k] == listCycle[k - |list|];
-        assert forall k : nat :: 0      <= k < |listCycle| ==> listCycle[k] == list[ k % |list| ];
-
-    }
+        assert |result| == size;
+    }    
 
     /**
      * Since the current definition of the cycle mod is alligned with the definition of the isModDiv
      * all the properties defined to the isModDiv can be applied to the cycle.
      */
-    lemma cycleIsMod(list: seq<nat>, listCycle: seq<nat>)
+    lemma cycleIsMod(list: seq<nat>, listCycle: seq<nat>, m: nat)
         requires |list| > 0;
-        requires |listCycle| >= |list|;
+        requires |listCycle| == |list| * m;
         requires isCycle(list, listCycle);
-        ensures forall k : nat :: 0 <= k < |listCycle| ==> ModDiv.isModDiv(k, |list|, k / |list|, k % |list|);
+        ensures forall k : nat :: 0 <= k < |listCycle| ==> ModDiv.isModDiv(k, |list|, m, ModDiv.mod(k, |list|));
     {
-        assert forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ k % |list| ];
-        assert forall k : nat :: 0 <= k < |listCycle| ==> ModDiv.isModDiv(k, |list|, k / |list|, k % |list|);
+        assert forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ ModDiv.mod(k, |list|) ];
+        //  * assert division * b + remainder == a
+        //  * assert remainder < b;
+        //  * assert remainder <= a;
     }
 
     lemma cycleShouldContainsList(list: seq<nat>, cycleList: seq<nat>)
