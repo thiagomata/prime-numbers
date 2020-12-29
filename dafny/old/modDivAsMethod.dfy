@@ -1,31 +1,13 @@
 /**
- * Define our own modDiv function that defines how division and remainder should work.
- * assert division * b + remainder == a
- * assert remainder < b;
- * assert remainder <= a;
+ * This method fits into the isModDiv requirements, being able to assume all the properties
+ * of the isModDiv.
  *
- * Using the definition of isModDiv and not the implementation to create the
- * lemmas.
- *
- * Requires that the modDiv method implements that isModDiv definition.
- * Extracts the mod and div from the modDiv definition
- *
- * Ensure some important properties into the mod function
- *  mod(a,b) == mod(a,b) // there is only one single remainder value every a,b pair
- *  mod(n,n) == 0
- *  mod(a + b, b) == mod(a, b)
- *  div(a + b, b) == div(a, b) + 1
- *  if a < b then mod(a,b) == a
- *  mod(mod(a,b)) == mod(a,b)
- *  mod(a + m * b, b) == mod(a,b);
- *  div(a + m * b, b) == div(a,b) * m;
- *
- * This strategy of breaking the function and lemmas from the method implementation
- * seems more aligned with the expectations of the dafny language.
+ * But, since is a method not an function, using it to define requirements was too restricted.
+ * So, we translate this method to some functions.
  */
-module ModDiv {
+module ModDivAsMethod {
 
-    /**
+     /**
      * Ensures that mod(a,b) == remainder and div(a,b) == div
      *
      * That is:
@@ -47,108 +29,35 @@ module ModDiv {
         assert validIsModDiv ==> remainder < b;
         assert validIsModDiv ==> remainder <= a;
         validIsModDiv
-    }
-
-    function method pairFirst(pair:(nat,nat)): nat
-    {
-        var (a, b) := pair;
-        a
-    }
-
-    function method pairLast(pair:(nat,nat)): nat
-    {
-        var (a, b) := pair;
-        b
-    }
+    }  
 
     /**
-     * Starting from one valid input of a,b,div and remainder where
-     * div * b + remainder == a, decreases the remainder and increases
-     * the div until remainder < b;
-     *
-     * The input (a,b,0,a) is an valid input, since
-     * 0 * b + a == a
-     *
-     * Using this input, we could get the mod and div ensuring the
-     * required properties to assert that ModDiv IsModDiv
-     */
-    function method modDiv(a: nat, b:nat, div: nat, remainder: nat): (nat,nat)
-        requires div * b + remainder == a;
-        ensures pairFirst(modDiv(a,b,div,remainder)) * b + pairLast(modDiv(a,b,div,remainder)) == a;
-        ensures pairLast(modDiv(a,b,div,remainder)) <= remainder;
-        ensures pairLast(modDiv(a,b,div,remainder)) < b;
-        decreases remainder;
-        requires b > 0;
+     * replaced by the function method
+     */   
+    method modDiv(a: nat, b: nat) returns (division: nat, remainder: nat)
+       requires b > 0;
+       requires a >= 0;
+       ensures division * b + remainder == a;
+       ensures remainder <= a;
+       ensures remainder <  b;
+       ensures a == 0 ==> remainder == 0;
+       ensures a < b  ==> remainder == a;
+       ensures isModDiv(a, b, division, remainder);
     {
-        assert div * b + remainder == a;
-        assert remainder >= b ==> div * b + b + remainder - b == a;
-        assert remainder >= b ==> (div + 1 ) * b + (remainder - b) == a;
-
-        var next_remainder := if remainder >= b then remainder - b else remainder;
-
-        assert next_remainder <= remainder;
-
-        var next_div := div + 1;
-        var result := if remainder < b then (div, remainder) else modDiv(a, b, next_div, next_remainder);
-        var new_div := pairFirst(result);
-        var new_remainder := pairLast(result);
-
-        /**
-         * Induction proof that pairFirst(result) * b + pairLast(result) == a;
-         */
-        assert remainder >= b ==> pairFirst(modDiv(a,b,next_div,next_remainder )) * b + pairLast(modDiv(a,b,div + 1,next_remainder)) == a;
-        assert remainder >= b ==> result == modDiv(a,b,next_div,next_remainder );
-        assert remainder >= b ==> pairFirst(result) * b + pairLast(result) == a;
-        assert remainder >= b ==> pairFirst(result) * b + pairLast(result) == a;
-        assert remainder <  b ==> result == (div,remainder);
-        assert pairFirst(result) * b + pairLast(result) == a;
-        assert new_div * b + new_remainder == a;
-
-        /**
-         * Induction proof that remainder < b;
-         */
-        assert remainder >= b ==> new_remainder == pairLast( modDiv( a, b, div + 1, remainder - b ));
-        assert remainder >= b ==> pairLast( modDiv( a, b, div + 1, remainder - b )) <= remainder - b;
-        assert remainder >= b ==> new_remainder < remainder;
-        assert remainder <  b ==> new_remainder == remainder;
-        assert remainder <  b ==> new_remainder < b;
-        result
-    }
-
-    lemma assertModDivIsModDiv(a: nat, b: nat, div: nat, remainder: nat)
-        requires 0 * b + a == a;
-        requires b > 0;
-        requires div == pairFirst(modDiv(a,b,0,a));
-        requires remainder == pairLast(modDiv(a,b,0,a));
-        ensures div * b + remainder == a;
-        ensures remainder < b;
-        ensures isModDiv(a, b, div, remainder);
-    {
-        // thanks
-    }
-
-    function method mod(a: nat, b: nat): nat
-       requires b > 0;       
-    {
-        assert 0 * b + a == a;
-        var result := modDiv(a, b, 0, a);
-        var div := pairFirst(result);
-        var remainder := pairLast(result);
-        assertModDivIsModDiv(a, b, div, remainder);
-        assert isModDiv(a, b, div, remainder);
-        remainder
-    }
-
-    function method div(a: nat, b: nat): nat
-       requires b > 0;       
-    {
-        assert 0 * b + a == a;
-        var result := modDiv(a, b, 0, a);
-        var div := pairFirst(result);
-        var remainder := pairLast(result);
-        assertModDivIsModDiv(a, b, div, remainder);
-        assert isModDiv(a, b, div, remainder);
-        div
+        remainder := a;
+        division := 0;
+        assert division == 0;
+        assert division * b == 0 * b == 0;
+        assert remainder == a;
+        assert division * b + remainder == a;
+        while( remainder >= b ) 
+            invariant division * b + remainder == a;
+            decreases remainder;
+        {
+            remainder := remainder - b;
+            division := division + 1;
+        }
+        assert division * b + remainder == a;
     }
 
     /**
@@ -561,13 +470,4 @@ module ModDiv {
 
         assert rSum == rModSum;
     }
-
-    // method Main() {
-    //     print("hello from ModDiv \n");
-    //     print("\n mod(5,2) \n");
-    //     print(mod(5,2));
-    //     print("\n mod(10,2) \n");
-    //     print(mod(10,5));
-    //     print("\n");
-    // }
 }

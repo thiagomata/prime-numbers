@@ -184,32 +184,45 @@ module ModRecursive {
        ensures mod(a, b) == mod(a + b * m, b);
        requires b > 0;
        decreases m; 
-       decreases a;
+//       decreases a;
     {
         assert mod(b,b) == 0;
         assert mod(0,b) == 0;
-        assert a == 0 ==> mod(a,b) == 0;
-        assert a == 0 ==> mod(a + b * m, b) == mod(b * m, b);
-        assert m == 1 ==> mod(b * m, b ) == mod(b,b) == 0;
-        assert m >  1 ==> mod(b * m, b ) == if b * m >= b then mod( b*m - b, b) else b;
-        assert m >  1 ==> mod(b * m, b ) == mod( b * m - b, b) == mod(b * (m-1),b);
 
         var x := a + b * m;
+        assert x == ( a + b * m);
+
         assert mod(x, b) == mod((a + b * m), b);
         assert mod(x, b) == if x >= b then mod(x-b, b) else x;
-        assert x == ( a + b * m);
-        assert x - b == (a + b * m ) - b == a + b * m - b == a + b * ( m - 1);
-        assert mod(x, b) == if ( a + b * m ) >= b then mod(a + b * m - b, b) else a + b * m;
-        assert m == 1 ==> mod(x,b) == if ( a + b ) >= b then mod(a + b - b, b) else a + b * m;
-        assert m == 1 ==> mod(x,b) == if ( a + b ) >= b then mod(a, b) else a + b;
+        assert x - b == (a + b * m ) - b;
+        assert x - b ==    a + b * m - b;
+        assert x - b == a + b * ( m - 1);
         
-        assert a >  0 ==> ( a + b ) > b;
-        assert m == 1 && a  > 0 ==> mod(x,b) == mod(a,b);
+        // by def
+        assert mod(x, b) == if ( a + b * m ) >= b then mod(a + b * m - b, b) else a + b * m;
 
-        assert m > 1  ==> a + b * m > b;
-        assert m > 1  ==> mod(x,b) == mod(a + b * m - b, b) == mod(x-b,b);
-        assert m > 1  ==> mod(a + b * m,b) == mod(a + b * (m - 1), b);
-        assert m > 1  ==> mod(a + b * m,b) == mod(a, b);
+        if ( a == 0 ) {
+            assert mod(a,b) == 0;
+            assert mod(a + b * m, b) == mod(b * m, b);
+        }
+        assert a > 0 ==> ( a + b ) > b;
+
+        if ( m == 1 ) {
+            assert mod(b * m, b ) == mod(b,b) == 0;
+            assert mod(x,b) == if ( a + b ) >= b then mod(a + b - b, b) else a + b * m;
+            assert mod(x,b) == if ( a + b ) >= b then mod(a, b) else a + b;        
+            assert a  > 0 ==> mod(x,b) == mod(a,b);
+        }
+        if ( m > 1 ) {
+            assert mod(b * m, b ) == if b * m >= b then mod( b*m - b, b) else b;
+            assert mod(b * m, b ) == mod( b * m - b, b) == mod(b * (m-1),b);
+            assert a + b * m > b;
+            assert mod(x,b) == mod(a + b * m - b, b) == mod(x-b,b);
+            // recursive call decreasing m
+            modAtoBshouldBeEqualToModAPlusBtimesMToB(a, b, m-1);
+            assert mod(a + b * m,b) == mod(a + b * (m - 1), b);
+            assert mod(a + b * m,b) == mod(a, b);
+        }
         // qed.
     }
 
