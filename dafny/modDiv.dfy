@@ -35,7 +35,6 @@ module ModDiv {
      */
     function method isModDiv(a: nat, b: nat, division: nat, remainder: nat): bool
         requires b > 0;
-//        requires a >= 0;
     {
         var validIsModDiv := if ! ( division * b + remainder == a ) then false
         else if ! ( remainder < b ) then false
@@ -65,12 +64,6 @@ module ModDiv {
      * Starting from one valid input of a,b,div and remainder where
      * div * b + remainder == a, decreases the remainder and increases
      * the div until remainder < b;
-     *
-     * The input (a,b,0,a) is an valid input, since
-     * 0 * b + a == a
-     *
-     * Using this input, we could get the mod and div ensuring the
-     * required properties to assert that ModDiv IsModDiv
      */
     function method modDiv(a: nat, b:nat, div: nat, remainder: nat): (nat,nat)
         requires b > 0;
@@ -118,11 +111,26 @@ module ModDiv {
         result
     }
 
+    /**
+     * The input (a,b,0,a) is an valid input, since
+     * 0 * b + a == a
+     *
+     * Using this input, we could get the mod and div ensuring the
+     * required properties to assert that ModDiv IsModDiv
+     */
+    function method getModDiv(a: nat, b: nat): (nat,nat)
+        requires b > 0;
+    {
+        assert 0 * b + a == a;
+        assert a <= a;
+        modDiv(a, b, 0, a)
+    }
+
     lemma assertModDivIsModDiv(a: nat, b: nat, div: nat, remainder: nat)
         requires 0 * b + a == a;
         requires b > 0;
-        requires div == pairFirst(modDiv(a,b,0,a));
-        requires remainder == pairLast(modDiv(a,b,0,a));
+        requires div == pairFirst(getModDiv(a,b));
+        requires remainder == pairLast(getModDiv(a,b));
         ensures div * b + remainder == a;
         ensures remainder < b;
         ensures isModDiv(a, b, div, remainder);
@@ -134,8 +142,7 @@ module ModDiv {
        requires b > 0;
        ensures mod(a,b) < b;
     {
-        assert 0 * b + a == a;
-        var result := modDiv(a, b, 0, a);
+        var result := getModDiv(a, b);
         var div := pairFirst(result);
         var remainder := pairLast(result);
         assertModDivIsModDiv(a, b, div, remainder);
@@ -148,8 +155,7 @@ module ModDiv {
     function method div(a: nat, b: nat): nat
        requires b > 0;       
     {
-        assert 0 * b + a == a;
-        var result := modDiv(a, b, 0, a);
+        var result := getModDiv(a, b);
         var div := pairFirst(result);
         var remainder := pairLast(result);
         assertModDivIsModDiv(a, b, div, remainder);
@@ -163,7 +169,6 @@ module ModDiv {
      */
     lemma modNOnNIsZero(a: nat, b: nat, division: nat, remainder: nat)
         requires b > 0;
-        // requires a >= 0;
         requires a == b;
         requires isModDiv(a, b, division, remainder)
         ensures remainder == 0;
@@ -192,7 +197,6 @@ module ModDiv {
      */
     lemma isModDivPlus(a: nat, b: nat, division: nat, remainder: nat)
         requires b > 0;
-        // requires a >= 0;
         requires isModDiv(a, b, division, remainder)
         ensures isModDiv( a + b, b, division + 1, remainder)
     {
@@ -259,11 +263,27 @@ module ModDiv {
             assert div2 * b - div1 * b == diff;
             assert b * ( div2 - div1 ) == diff;
             var diffDiv := div2 - div1;
+            assert b * diffDiv == diff;
             assert div2 < div1 ==> diffDiv < 0;
-            assert diffDiv < 0 ==> diff < 0;  // impossible 
+
+            if ( diffDiv < 0 ) // proof by contradiction
+            {
+                assert b >= 1;
+                assert b * diffDiv == diff;
+                assert diff < 0;  // impossible 
+                assert false;
+            }
+
             assert div2 > div1 ==> diffDiv > 0;
             assert div2 > div1 ==> diffDiv >= 1;
-            assert diffDiv > 0 ==> diff > b; // impossible
+            
+            if ( diffDiv > 0 ) // proof by contradiction  
+            {
+                assert b >= 1;
+                assert b * diffDiv == diff;
+                assert diff > b; // impossible
+                assert false;
+            }
             assert div2 == div1;
             assert diff == 0;
         }
@@ -280,10 +300,23 @@ module ModDiv {
             var diffDiv := div1 - div2;
             assert b * diffDiv == diff;
             assert div1 < div2 ==> diffDiv < 0;
-            assert diffDiv < 0 ==> diff < 0;  // impossible 
+            
+            if (diffDiv < 0 ) { // proof by contradiction
+                assert b * diffDiv == diff;
+                assert diff < 0;  // impossible 
+                assert false;
+            }
+
             assert div1 > div2 ==> diffDiv > 0;
             assert div1 > div2 ==> diffDiv > 1;
-            assert diffDiv > 0 ==> diff > b; // impossible
+
+            if (diffDiv > 0) { // proof by contradiction
+                assert b >= 1;
+                assert diffDiv >= 1;
+                assert b * diffDiv == diff;
+                assert b * diffDiv > b ==> diff > b; // impossible
+                assert false;
+            }
             assert diff == 0;
         }
         assert diff == 0;
@@ -307,7 +340,16 @@ module ModDiv {
         assert r1 <= a;
         assert a < b;
         assert div1 * b + r1 < b;
-        assert div1 >= 1 ==> div1 * b + r1 > b; // impossible
+
+        if ( div1 >= 1 ) // proof by contradiction 
+        {
+            assert r1 >= 0;
+            assert b > 0;
+            assert div1 >= 1;
+            assert div1 * b + r1 >= b; // impossible
+            assert false;
+        }
+
         assert div1 == 0;
         assert r1 == a;
     }
@@ -318,7 +360,7 @@ module ModDiv {
     {
         assert 0 * b + a == a;
         assert isModDiv(a, b, 0, a);
-        var result := modDiv(a,b,0,a);
+        var result := getModDiv(a,b);
         assert isModDiv(a,b,pairFirst(result),pairLast(result));
         modSmallValuesFull(a,b,pairLast(result),pairFirst(result));
     }
@@ -344,9 +386,8 @@ module ModDiv {
     /**
      * mod(a, b) == mod(a + b, b)
      */
-    lemma modAOnBEqualsModAPlusBOnB(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat)
+    lemma modAOnBEqualsModAPlusBOnBFull(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat)
        requires b > 0;
-       requires a >= b;
        requires isModDiv(a, b, div1, r1);
        requires isModDiv(a + b, b, div2, r2);
        ensures r1 == r2;
@@ -379,7 +420,16 @@ module ModDiv {
             assert b * diffDiv == diff;
             assert diff < b;
             assert b > 0;
-            assert diffDiv >= 1 ==> diff >= b; // impossible
+
+            if ( diffDiv >= 1 ) // proof by contradiction 
+            {
+                assert b >= 1;
+                assert diffDiv >= 1;
+                assert b * diffDiv == diff;
+                assert diff >= b; // impossible
+                assert false;
+            }
+
             assert diffDiv < 1;
             assert diffDiv == 0;
             assert 0 == div2 - div1 - 1;
@@ -405,7 +455,15 @@ module ModDiv {
             assert b * diffDiv == diff;
             assert diff < b;
             assert b > 0;
-            assert diffDiv >= 1 ==> b * diffDiv >= b; // impossible
+
+            if ( diffDiv >= 1 ) // proof by contradiction
+            { 
+                assert b >= 1;
+                assert diffDiv >= 1;
+                assert b * diffDiv >= b; // impossible
+                assert false;
+            }
+            
             assert diffDiv < 1;
             assert diffDiv == 0;
             assert 0 == div1 - div2 + 1;
@@ -418,18 +476,33 @@ module ModDiv {
         assert div2 == div1 + 1;       
     }
 
+    lemma modAOnBEqualsModAPlusBOnB(a: nat, b: nat)
+        requires b > 0;
+        ensures mod(a,b) == mod(a + b, b);
+    {
+        var result := getModDiv(a, b);
+        var result2 := getModDiv(a + b, b);
+        modAOnBEqualsModAPlusBOnBFull(
+            a, b,
+            pairLast(result), pairLast(result2),
+            pairFirst(result), pairFirst(result2)
+        );
+    }
+
     /**
      * mod(a + m * b, b) == mod(a,b);
-     * div(a + m * b, b) == div(a,b) * m;
+     * div(a + m * b, b) == div(a,b) + m;
      */
-    lemma modAOnBEqualsModAMoreMTimesB(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat, m: nat)
+    lemma modAOnBEqualsModAMoreMTimesBFull(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat, m: nat)
        requires b > 0;
-       requires a >= b;
+    //    requires a >= b;
        requires isModDiv(a, b, div1, r1);
        requires isModDiv(a + m * b, b, div2, r2);
        ensures r1 == r2;
        ensures div2 == div1 + m;
     {
+        assert m > 1 ==> a + m * b > b;
+        assert m == 0 ==> a + m * b == a;
         var mCurrent: nat := 0;
         assert isModDiv( a, b, div1, r1);
         assert isModDiv(a + b * mCurrent, b, div1 + mCurrent, r1);
@@ -458,7 +531,15 @@ module ModDiv {
             assert b * ( div2 - div1 - m ) == r1 - r2;
             var divDiff := div2 - div1 - m;
             assert b * divDiff == r1 - r2;
-            assert divDiff >= 1 ==> b * divDiff >= b; // impossible
+            
+            if( divDiff >= 1 ) // proof by contradiction 
+            {
+                assert r1 - r2 < b;
+                assert b >= 1;
+                assert b * divDiff == r1 - r2;
+                assert b * divDiff >= b; // impossible
+                assert false;
+            }
             assert divDiff == 0;
             assert div2 - div1 - m == 0;
             assert div2 == div1 + m;
@@ -473,13 +554,46 @@ module ModDiv {
             assert r2 - r1 == ( div1 + m - div2 ) * b;
             var divDiff := div1 + m - div2;
             assert b * divDiff == r2 - r1;
-            assert divDiff >= 1 ==> b * divDiff >= b; // impossible
+            if ( divDiff  >= 1 ) // proof by contradiction 
+            {
+                assert r2 - r1 < b;
+                assert b * divDiff == r2 - r1;
+                assert b >= 1;
+                assert divDiff >= 1;
+                assert divDiff * b >= b; // impossible
+                assert false;
+            }
             assert divDiff == 0;
             assert div1 + m - div2 == 0;
             assert div2 == div1 + m;
             assert b * 0 == r2 - r1;
             assert r2 == r1;
         }
+    }
+
+    lemma modAOnBEqualsModAMoreMTimesB(a: nat, b: nat, m: nat)
+       requires b > 0;
+       ensures mod(a,b) == mod(a + m * b, b);
+       ensures div(a + m * b, b) == div(a,b) + m;
+    //    requires a >= b;
+    {
+        var modDivAB := getModDiv(a,b);
+        var modDivAMB := getModDiv(a + m * b, b);
+
+        var div1 := pairFirst(modDivAB);
+        var div2 := pairFirst(modDivAMB);
+
+        var r1 := pairLast(modDivAB);
+        var r2 := pairLast(modDivAMB);
+
+        modAOnBEqualsModAMoreMTimesBFull(
+            a, b, 
+            r1, r2, 
+            div1, div2,
+            m
+        );
+        assert mod(a,b) == mod(a + m * b, b);
+        assert div(a + m * b, b) == div(a,b) + m;
     }
 
     /**
@@ -548,7 +662,16 @@ module ModDiv {
 
             assert diffR < div;
             assert div * divFactor ==  rModSum - rSum;
-            assert divFactor > 1 ==> div * divFactor >= div; // impossible
+            assert div * divFactor ==  diffR;
+            assert div * divFactor < div;
+            
+            if ( divFactor > 1 ) // proof by contradiction 
+            {
+                assert div >= 1;
+                assert divFactor > 1;
+                assert div * divFactor >= div; // impossible
+                assert false;
+            }
             assert divFactor == 0;
             assert rModSum - rSum == div * divFactor;
             assert rSum - rModSum == div * 0;
@@ -569,7 +692,17 @@ module ModDiv {
 
             assert diffR < div;
             assert div * divFactor ==  rSum - rModSum;
-            assert divFactor > 1 ==> div * divFactor >= div; // impossible
+            assert div * divFactor ==  diffR;
+            assert div * divFactor < div;
+
+            if (divFactor > 1 ) // proof by contradiction 
+            {
+                assert div >= 1;
+                assert divFactor > 1;
+                assert div * divFactor >= div; // impossible
+                assert false;
+            }
+
             assert divFactor == 0;
             assert rSum - rModSum == div * 0;
             assert rSum - rModSum == 0;
@@ -579,51 +712,103 @@ module ModDiv {
         assert rSum == rModSum;
     }
 
-    function isModList(size: nat, loop: nat, result: seq<nat>): bool
+    function isModList(loop: nat, result: seq<nat>): bool
         requires loop > 0;
-        // requires |result| == size;
     {
         forall v: nat :: 0 <= v < |result| ==> result[v] == mod(v, loop)
     }
 
-    method modList(size: nat, loop: nat) returns (result: seq<nat>)
+    method modList(size: nat, loop: nat) returns (resultModList: seq<nat>, resultDivList: seq<nat>)
         requires loop > 0;
-        ensures |result| == size;
-        ensures isModList( size, loop, result );
+        ensures |resultModList| == size;
+        ensures |resultDivList| == size;
+        ensures isModList( loop, resultModList );
+        ensures forall k : nat :: 0    <= k < |resultDivList| ==> isModDiv(k, loop, resultDivList[k], resultModList[k]);
+        ensures forall k : nat :: 0    <= k < |resultModList| ==> resultModList[k] < loop;
+        ensures forall k : nat :: loop <  k < |resultModList| ==> resultModList[k] == resultModList[k - loop];
     {
-        var arr := new nat[size];
+        var arrMod := new nat[size];
+        var arrDiv := new nat[size];
         var k := 0;
         while (k < size)
             decreases size - k;
             invariant 0 <= k <= size;
-            invariant forall v: nat :: 0 <= v < k ==> arr[v] == mod(v, loop);
+            invariant forall v: nat :: 0 <= v < k ==> arrMod[v] == mod(v, loop);
+            invariant forall v: nat :: 0 <= v < k ==> arrDiv[v] == div(v, loop);
+            invariant forall v: nat :: 0 <= v < k ==> arrMod[v] == mod(v + loop, loop);
         {
-            assert 0 * loop + k == k;
-            var resultModDiv := modDiv(k, loop, 0, k);
+            var resultModDiv := getModDiv(k, loop);
             var div := pairFirst(resultModDiv);
             var remainder := pairLast(resultModDiv);
             assert div * loop + remainder == k;
             assert remainder < loop;
+            assert remainder == mod(k, loop);
+            modAOnBEqualsModAPlusBOnB(k, loop);
+            assert mod(k,loop) == mod(k + loop, loop);
+            assert remainder == mod(k + loop, loop);
             assert isModDiv(k, loop, div, remainder);
 
-            arr[k] := remainder;
+            arrMod[k] := remainder;
+            arrDiv[k] := div;
             k := k + 1;
         }
         assert k == size;
-        assert forall v: nat :: 0 <= v < k ==> arr[v] == mod(v, loop);
+        assert forall v: nat :: 0 <= v < k ==> arrMod[v] == mod(v, loop);
+        assert forall v: nat :: 0 <= v < k ==> arrDiv[v] == div(v, loop);
+        assert forall v: nat :: 0 <= v < k ==> mod(v, loop) == mod( v + loop, loop);
+        assert forall v: nat :: loop < v < k ==> arrMod[v - loop] == arrMod[v];
         // array to seq
-        result := arr[..];
-        assert |result| == size;
+        resultModList := arrMod[..];
+        resultDivList := arrDiv[..];
+        assert |resultModList| == size;
+        assert |resultDivList| == size;
     }
 
-    method Main() {
-        print("hello from ModDiv \n");
-        print("\n mod(5,2) \n");
-        print(mod(5,2));
-        print("\n mod(10,2) \n");
-        print(mod(10,5));
-        print("\n");
-        var modList := modList(12,3);
-        print(modList);
+    /**
+     * Since is a modList modList[v] == modList[v + loopValue] == modList[v - loopValue]
+     */
+    lemma modListValuesRepeat(modList: seq<nat>, loopValue: nat)
+        requires loopValue > 0;
+        requires isModList(loopValue, modList);
+        ensures forall v: nat :: loopValue < v < |modList| ==> modList[v - loopValue] == modList[v];
+        ensures forall v: nat :: 0 < v < |modList| - loopValue ==> modList[v] == modList[v + loopValue];
+    {
+        assert forall v: nat :: 0 <= v < |modList| ==> modList[v] == mod(v, loopValue);
+        var v := 0;
+        while ( v < |modList| )
+            decreases |modList| - v;
+            invariant v <= |modList|;
+            invariant forall k: nat :: 0 <= k < v ==> modList[k] == mod(k, loopValue);
+            invariant forall k: nat :: 0 <= k < v ==> modList[k] == mod(k + loopValue, loopValue);
+            invariant forall k: nat :: loopValue <= k < v ==> modList[k - loopValue] == mod(k, loopValue);
+            invariant forall k: nat :: loopValue <= k < v ==> modList[k - loopValue] == modList[k];
+            invariant forall k: nat :: 0 <= k < v - loopValue ==> modList[k] == modList[ k + loopValue ];
+        {
+            modAOnBEqualsModAPlusBOnB(v, loopValue);
+            assert mod(v, loopValue) == mod(v + loopValue, loopValue);
+            assert modList[v] == mod(v, loopValue);
+            assert modList[v] == mod(v + loopValue, loopValue);
+            v := v + 1;
+        }
+        assert v == |modList|;
     }
+
+    function isNotMultiple(list: seq<nat>, value: nat): bool
+        requires value > 0;
+        requires |list| > 0;
+    {
+        forall v: nat :: 0 <= v < |list| ==> mod(list[v], value) != 0
+    }
+
+    // method Main() {
+    //     print("hello from ModDiv \n");
+    //     print("\n mod(5,2) \n");
+    //     print(mod(5,2));
+    //     print("\n mod(10,2) \n");
+    //     print(mod(10,5));
+    //     print("\n");
+    //     var modList, divList := modList(12,3);
+    //     print(modList);
+    //     print(divList);
+    // }
 }
