@@ -83,7 +83,6 @@ module Cycle {
     }
 
     lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>, m: nat)
-        requires m > 1;
         requires |list| > 0;
         requires |listCycle| == |list| * m;        
         requires isCycle(list, listCycle);
