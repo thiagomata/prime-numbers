@@ -87,8 +87,8 @@ module Cycle {
         requires |list| > 0;
         requires |listCycle| == |list| * m;        
         requires isCycle(list, listCycle);
+        ensures forall k : nat :: k <= 0 < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     {
-        // going up //
         var k := 0;
         while ( k < |list| )
             decreases |list| - k;
@@ -132,92 +132,6 @@ module Cycle {
         
         assert forall k : nat :: k <= 0 < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     }
-
-    // sounds good, does not work
-    //
-    // lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>, m: nat)
-    //     requires m > 1;
-    //     requires |list| > 0;
-    //     requires |listCycle| == |list| * m;        
-    //     requires isCycle(list, listCycle);
-    //     ensures
-    //         forall k : nat :: 0 <= k < |list|   ==> 
-    //         forall n : nat :: 0 <= n < m        ==> 
-    //         k + n * |list| < |listCycle|        ==> 
-    //         listCycle[k + n * |list|] == list[k];
-    // {
-    //     assert forall k : nat :: 0      <= k < |list|      ==> listCycle[k] == list[k];
-    //     assert forall k : nat :: |list| <= k < |listCycle| ==> listCycle[k] == listCycle[k - |list|];
-
-
-    //     // going up //
-    //     var k := 0;
-    //     while ( k < |list| )
-    //         decreases |list| - k;
-    //         invariant k <= |list|;
-    //     {
-    //         var current := list[k];
-    //         var next := k;
-    //         var n := 0;
-    //         assert next == k + n * |list|;
-    //         while ( next < |listCycle| )
-    //             decreases |listCycle| - next;
-    //             invariant next < |listCycle| ==> current == listCycle[next];
-    //             invariant next < |listCycle| ==> current == list[k];
-    //             invariant next < |listCycle| ==> listCycle[next] == list[k];
-    //             invariant next == k + n * |list|;
-    //             invariant next < |listCycle| ==> listCycle[k + n * |list|] == list[k];
-    //             invariant 
-    //                 k + n * |list| < |listCycle|        ==> 
-    //                 listCycle[k + n * |list|] == list[k];
-    //         {
-    //             assert current == listCycle[next];
-    //             assert next == k + n * |list|;
-    //             assert listCycle[k + n * |list|] == list[k];
-    //             n := n + 1;
-    //             next := next + |list|;
-    //         }
-    //         assert next >= |listCycle|;
-    //         k := k + 1;
-    //     }
-    //     assert k == |list|;
-
-    //     // going down //
-    //     k := 0;
-    //     while ( k < |listCycle| )
-    //         decreases |listCycle| - k;
-    //         invariant k <= |listCycle|;
-    //     {
-    //         var current := listCycle[k];
-    //         var prev := k;
-    //         var n := 0;
-    //         assert prev == k - n * |list|;
-    //         while ( prev > |list| )
-    //             decreases prev;
-    //             invariant prev >= 0 ==> current == listCycle[prev];
-    //             invariant prev >= |list| ==> current == listCycle[prev - |list|];
-    //             invariant prev == k - n * |list|;
-    //             // invariant 
-    //             //     k + n * |list| < |listCycle|        ==> 
-    //             //     listCycle[k + n * |list|] == list[k];
-    //         {
-    //             assert current == listCycle[prev];
-    //             assert listCycle[prev] == listCycle[prev - |list|];
-    //             assert prev == k - n * |list|;
-    //             assert listCycle[k - n * |list|] == listCycle[prev - |list|];
-    //             n := n + 1;
-    //             prev := prev - |list|;
-    //         }
-    //         assert prev <= |list|;
-    //         k := k + 1;
-    //     }
-
-    //     assert
-    //         forall k : nat :: 0 <= k < |list|   ==> 
-    //         forall n : nat :: 0 <= n < m        ==> 
-    //         k + n * |list| < |listCycle|        ==> 
-    //         listCycle[k + n * |list|] == list[k];
-    // }
 
     // lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
     //     requires |list| > 0;
