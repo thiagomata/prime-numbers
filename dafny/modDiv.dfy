@@ -575,7 +575,6 @@ module ModDiv {
        requires b > 0;
        ensures mod(a,b) == mod(a + m * b, b);
        ensures div(a + m * b, b) == div(a,b) + m;
-    //    requires a >= b;
     {
         var modDivAB := getModDiv(a,b);
         var modDivAMB := getModDiv(a + m * b, b);
@@ -604,7 +603,7 @@ module ModDiv {
      * and   vModSum = mod(v1,div) + mod(v2,div)
      * and   rModSum == mod(vModSum,div)
      */
-    lemma modAplusB(
+    lemma modAplusBFull(
         div: nat, 
         v1: nat, v2: nat, vSum: nat, vModSum: nat,
         r1: nat, r2: nat, rSum: nat, rModSum: nat,
@@ -710,6 +709,35 @@ module ModDiv {
         }
 
         assert rSum == rModSum;
+    }
+
+    lemma modAplusB(
+        div: nat, v1: nat, v2: nat
+    )
+       requires div > 0;
+       ensures mod(v1+v2,div) == mod( mod(v1, div) + mod(v2, div), div);
+    {
+       var vSum := v1 + v2;
+       var v1ModDiv := getModDiv(v1, div);
+       var div1 := pairFirst(v1ModDiv);
+       var r1 := pairLast(v1ModDiv);
+       var v2ModDiv := getModDiv(v2, div);
+       var div2 := pairFirst(v2ModDiv);
+       var r2 := pairLast(v2ModDiv);
+       var vModSum := r1 + r2;
+       var vSumModDiv := getModDiv(vSum, div);
+       var divSum := pairFirst(vSumModDiv);
+       var rSum := pairLast(vSumModDiv);
+       var vModSumDiv := getModDiv(vModSum, div);
+       var divModSum := pairFirst(vModSumDiv);
+       var rModSum := pairLast(vModSumDiv);
+        
+        modAplusBFull(
+            div, 
+            v1, v2, vSum, vModSum,
+            r1, r2, rSum, rModSum,
+            div1, div2, divSum, divModSum
+        );
     }
 
     function isModList(loop: nat, result: seq<nat>): bool
