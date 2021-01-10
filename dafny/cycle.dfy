@@ -82,122 +82,123 @@ module Cycle {
     {
     }
 
+    /**
+     * We can predict the values of the cycle list based in the original list
+     * using mod function
+     *
+     * listCycle[k] == list[mod(k,|list|
+     */
     lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>, m: nat)
         requires |list| > 0;
         requires |listCycle| == |list| * m;        
         requires isCycle(list, listCycle);
-        ensures forall k : nat :: k <= 0 < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
+        ensures forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     {
         var k := 0;
-        while ( k < |list| )
-            decreases |list| - k;
-            invariant k <= |list|;
+        while ( k < |listCycle| )
+            decreases |listCycle| - k;
+            invariant k <= |listCycle|;
+            invariant forall i : nat :: 0 <= i < k ==> listCycle[i] == list[ModDiv.mod(i, |list|)];
         {
-            var smallListValue := list[k];
-            var bigKey := k;
-            var n := 0;
-            while ( bigKey < |listCycle| )
-                decreases |listCycle| - bigKey;
-                invariant bigKey == k + n * |list|;
-                invariant ModDiv.mod(k + n * |list|,|list|) == ModDiv.mod(k,|list|);
-                invariant ModDiv.mod(k,|list|) == k;
-                invariant ModDiv.mod(bigKey,|list|) == k;
-                invariant list[k] == list[ModDiv.mod(bigKey,|list|)];
-                invariant bigKey < |listCycle| ==> listCycle[bigKey] == list[k];
-                invariant bigKey < |listCycle| ==> listCycle[bigKey] == list[ModDiv.mod(bigKey,|list|)];
-            {
-                assert smallListValue == listCycle[bigKey];
-                assert bigKey == k + n * |list|;
-                assert smallListValue == listCycle[bigKey];
-                ModDiv.modSmallValues(k,|list|);
-                assert k < |list|;
-                assert ModDiv.mod(k,|list|) == k;
-                ModDiv.modAOnBEqualsModAMoreMTimesB(k,|list|,n);
-                assert ModDiv.mod(k + n * |list|,|list|) == ModDiv.mod(k,|list|);
-                assert ModDiv.mod(bigKey,|list|) == ModDiv.mod(k,|list|);
-                assert ModDiv.mod(bigKey,|list|) == k;
-                if ( bigKey + |list| < |listCycle| )
-                {
-                    assert listCycle[bigKey] == listCycle[bigKey + |list|];
-                }
-                n := n + 1;
-                bigKey := bigKey + |list|;
-                ModDiv.modAOnBEqualsModAMoreMTimesB(k,|list|,n);
-                assert ModDiv.mod(k + n * |list|,|list|) == ModDiv.mod(k,|list|);
-                assert ModDiv.mod(bigKey,|list|) == ModDiv.mod(k,|list|);
+            if ( k < |list| ) {
+                assert ModDiv.mod(k, |list|) == k;
+                assert listCycle[k] == list[k];
+                assert listCycle[k] == list[ModDiv.mod(k, |list|)];
+            } else {
+                assert listCycle[k] == listCycle[k-|list|];
+                assert listCycle[k-|list|] == list[ModDiv.mod(k - |list|, |list|)];
+                ModDiv.modAOnBEqualsModAPlusBOnB(k - |list|, |list|);
+                assert ModDiv.mod(k - |list|, |list|) == ModDiv.mod(k, |list|);
+                assert listCycle[k] == list[ModDiv.mod(k, |list|)];
             }
             k := k + 1;
         }
-        
-        assert forall k : nat :: k <= 0 < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
+        assert forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     }
 
-    // lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
-    //     requires |list| > 0;
-    //     requires |cycleList| > |list|;
-    //     requires |smallCycle| > |list|;
-    //     requires isCycle(list, cycleList);
-    //     requires isCycle(list, smallCycle);
-    //     requires |cycleList| == |list| * m;
-    //     requires |smallCycle| == |cycleList| - |list|;
-    //     requires |smallCycle| == |list| * ( m - 1 );
-    //     requires m > 0;
-    //     ensures cycleList == list + cycleList[|list|..];
-    //     ensures smallCycle == cycleList[..|smallCycle|];
-    //     ensures cycleList == list + smallCycle;
-    // {
-    //     assert smallCycle[0..|list|] == list;
-    //     assert cycleList[0..|list|] == list;
-    //     assert forall k: nat 
-    // }
+    /**
+     * Every cycle list can be replaced by the original list concatenated by
+     * a smaller cycle list.
+     *
+     * cycleList == list + smallCycle
+     */
+    lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
+        requires |list| > 0;
+        requires |cycleList| > |list|;
+        requires |smallCycle| > |list|;
+        requires isCycle(list, cycleList);
+        requires isCycle(list, smallCycle);
+        requires |cycleList| == |list| * m;
+        requires |smallCycle| == |cycleList| - |list|;
+        requires |smallCycle| == |list| * ( m - 1 );
+        requires m > 0;
+        ensures cycleList == list + cycleList[|list|..];
+        ensures smallCycle == cycleList[..|smallCycle|];
+        ensures cycleList == list + smallCycle;
+    {
 
+        cycleAlwaysRepeatTheSameValues( list, cycleList, m);
+        cycleAlwaysRepeatTheSameValues( list, smallCycle, m - 1);
+    }
 
-//     lemma sumMultipleList(list: seq<nat>, cycleList: seq<nat>, m: nat)
-//         requires m > 0;
-//         requires |list| > 0;
-//         requires |cycleList| > 0;
-//         requires |cycleList| >= |list|;
-//         requires isCycle(list, cycleList);
-//         requires |cycleList| == |list| * m;
-//         ensures List.sum(cycleList) == List.sum(list) * m;
-//         decreases cycleList, m;
+    /**
+     * if cycleList is list n times then the sum of the cycle list
+     * is the sum of the list times n.
+     *
+     * List.sum(cycleList) == List.sum(list) * m
+     */
+    lemma sumMultipleList(list: seq<nat>, cycleList: seq<nat>, m: nat)
+        requires m > 0;
+        requires |list| > 0;
+        requires |cycleList| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        requires |cycleList| == |list| * m;
+        ensures List.sum(cycleList) == List.sum(list) * m;
+        decreases cycleList, m;
+    {
+        if m == 1 {
+            assert cycleList == list;
+        } else {
+            var smallCycle := cycleList[|list|..];
+            assert cycleList == list + smallCycle;
+            assert isCycle(list, smallCycle);
+            List.distributiveSum(list,smallCycle);
+            assert List.sum(cycleList) == List.sum(list) + List.sum(smallCycle);
+            sumMultipleList(list,smallCycle, m-1);
+        }
+    }
+
+    /**
+     * list = [1,2,3]
+     * sum(list) == 6
+     * mod(sum(list),v) == 0 ==> v * n == 6;
+     * cycleList = [1,2,3,1,2,3,....,1,2,3]
+     * sum(cycleList) == sum(list) * m == 6 * m == v * n * m
+     * mod(sum(cyleList,v)) == 0
+     */
+    lemma cycleSameMod(list: seq<nat>, cycleList: seq<nat>, m: nat, v: nat)
+        requires m > 0;
+        requires v > 0;
+        requires |list| > 0;
+        requires |cycleList| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        requires |cycleList| == |list| * m;
+        requires ModDiv.mod(v, m) == 0;
+        requires ModDiv.mod(List.sum(list), v) == ModDiv.mod(List.sum(cycleList), v);
+    {
+        sumMultipleList(list,cycleList,m);
+        var listSum := List.sum(list);
+        var cycleListSum := List.sum(cycleList);
+        assert listSum * m == cycleListSum;
+        ModDiv.modAOnBEqualsModAMoreMTimesB(listSum, v, m);
+    }
+
+//     method Main()
 //     {
-//         if m == 1 {
-//             assert cycleList == list;
-//         } else {
-//             var smallCycle := cycleList[|list|..];
-//             assert cycleList == list + smallCycle;
-//             assert isCycle(list, smallCycle);
-//             List.distributiveSum(list,smallCycle);
-//             assert List.sum(cycleList) == List.sum(list) + List.sum(smallCycle);
-//             sumMultipleList(list,smallCycle, m-1);
-//         }
+//         print("\ntesting cycle\n");
+//         print(isCycle([1,2,3],[1,2,3,1,2,3,1,4]));
+//         print("\n:D\n");
 //     }
-
-//     lemma cycleListIsListPlusSmallCycleList(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
-//         requires |list| > 0;
-//         requires |cycleList| >= |list|;
-//         requires m > 0;
-//         requires isCycle(list, cycleList);
-//         requires |cycleList| == |list| * m;
-//         requires smallCycle == cycleList[|list|..];
-//         ensures cycleList == list + smallCycle;
-//         ensures List.sum(cycleList) == List.sum(list) + List.sum(smallCycle);
-//         ensures |smallCycle| > 0 ==> isCycle(list, smallCycle);
-//         ensures |smallCycle| == |list| * (m - 1);
-//     {
-//         List.distributiveSum(list,smallCycle);
-//         assert |cycleList| == |list| * m;
-//         assert forall v : nat :: 0 <= v < |list| ==> cycleList[v] == list[v];
-//         assert |cycleList| >= |list|;
-//         assert cycleList == list + smallCycle;
-//         assert |smallCycle| > 0 ==> isCycle(list,smallCycle);
-//         assert |smallCycle| == |list| * (m - 1);
-//     }
-// //     method Main()
-// //     {
-// //         print("\ntesting cycle\n");
-// //         print(isCycle([1,2,3],[1,2,3,1,2,3,1,4]));
-// //         print("\n:D\n");
-// //     }
 }
