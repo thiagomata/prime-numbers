@@ -242,6 +242,7 @@ module Integral {
 
     requires Cycle.isCycle(list, listV2A); // [2,4,2,4,2,4,2,4,2,4]
     requires |listV2A| == |list| * v2; // 2 * 5 == 10
+    requires List.sum(listV2A) == List.sum(list) * v2; // 6 * 5 == 30
     
     requires listV2B == stepsAvoidMultiple(List.shift(listV2A), v2); // [4,2,4,2,4,6,2,6]
     
@@ -253,7 +254,7 @@ module Integral {
     ensures isNotMultiple(integralListV2, v1);
     ensures isNotMultiple(integralListV2, v2);
     {
-        
+        // wip
     }
 
     // lemma bigProoff(
