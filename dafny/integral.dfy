@@ -1,103 +1,30 @@
 include "modDiv.dfy"
 include "list.dfy"
-include "cycleFromMod.dfy"
+include "cycle.dfy"
 
 module Integral {
 
     import ModDiv
+    import Cycle
+    import List
 
-    function sorted(list: seq<nat>): bool {
-        forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1]
-    }
-
-    function nonZero(list: seq<nat>): bool
+    lemma modListSumUp(listA: seq<nat>, listB: seq<nat>, v: nat)
+        requires  v > 0;
+        ensures ModDiv.mod( List.sum( listA + listB ), v) == ModDiv.mod( ModDiv.mod( List.sum(listA), v) + ModDiv.mod( List.sum(listB),v), v)
     {
-        forall l: nat :: 0 <= l < |list| ==> list[l] > 0
-    }
-
-    function unique(list: seq<nat>): bool {
-        forall n,m : nat :: 0 <= n < m < |list| ==> list[n] != list[m]
-    }
-
-    function first(list: seq<nat>): nat 
-        requires |list| > 0;
-    {
-        list[0]
-    }
-
-    function last(list: seq<nat>): nat 
-        requires |list| > 0;
-    {
-        list[|list|-1]
-    }
-
-    function method sum(list: seq<nat>): nat
-        decreases |list|;
-    {
-        if (|list| == 0 ) then 0 else
-        list[0] + sum(list[1..])
-    }
-
-
-    ghost method distributiveSum(a: seq<nat>, b: seq<nat> )
-        ensures sum(a + b) == sum(a) + sum(b); 
-    {
-        assert |a| == 0 && |b| == 0 ==> sum(a) + sum(b) == 0 == sum(a + b);
-        assert |a|  > 0 && |b| == 0 ==> a + b == a;    
-        assert |a|  > 0 && |b| == 0 ==> sum(a) + sum(b) == sum(a) + 0 == sum(a) == sum(a + b);
-        assert |a| == 0 && |b|  > 0 ==> a + b == b;
-        assert |a| == 0 && |b|  > 0 ==> sum(a) + sum(b) == sum(b) + 0 == sum(b) == sum( a + b);
-        assert |a|  > 0 && |b|  > 0 ==> sum(a) + sum(b) == a[0] + sum(a[1..]) + b[0] + sum(b[1..]) == a[0] + b[0] + sum(a[1..]) + sum(b[1..]);
-        assert |a|  > 0 && |b|  > 0 ==> a + b == [a[0]] + (a[1..] + b);
-        assert |a|  > 0 && |b|  > 0 ==> sum(a + b) == sum([a[0]]) + sum(a[1..] + b);
-    }
-
-    lemma divSum(list: seq<nat>, n: nat)
-        requires 0 <= n < |list|;
-        ensures sum(list) == sum(list[0..n]) + sum(list[n..]); 
-    {
-        assert list[0..n] + list[n..] == list;
-        var a := list[0..n];
-        var b := list[n..];
-        distributiveSum(a,b);
-    }
-
-    lemma sumListPlusValue(list: seq<nat>, value: nat)
-        ensures sum(list) + value == sum([value] + list);
-        ensures sum(list) + value == sum(list + [value]);
-        ensures value + sum(list) == sum(list) + value;
-    {
-        assert sum(list) + value == sum([value] + list);
-        var a := list;
-        var b := [value];
-        distributiveSum(a, b);
-    }
-
-    lemma cycleListIsListPlusSmallCycleList(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
-        requires |list| > 0;
-        requires |cycleList| >= |list|;
-        requires m > 0;
-        requires isCycle(list, cycleList);
-        requires |cycleList| == |list| * m;
-        requires  smallCycle == cycleList[|list|..];
-        ensures cycleList == list + smallCycle;
-        ensures sum(cycleList) == sum(list) + sum(smallCycle);
-        ensures |smallCycle| > 0 ==> isCycle(list, smallCycle);
-        ensures |smallCycle| == |list| * (m - 1);
-    {
-        distributiveSum(list,smallCycle);
-        assert |cycleList| == |list| * m;
-        assert forall v : nat :: 0 <= v < |list| ==> cycleList[v] == list[v];
-        assert |cycleList| >= |list|;
-        assert cycleList == list + smallCycle;
-        assert |smallCycle| > 0 ==> isCycle(list,smallCycle);
-        assert |smallCycle| == |list| * (m - 1);
+        List.distributiveSum(listA, listB);
+        var sa := List.sum(listA);
+        var sb := List.sum(listB);
+        var sab := List.sum(listA + listB);
+        assert sab == sa + sb;
+        ModDiv.modAplusB(v, sa, sb);
+        assert ModDiv.mod(sab, v) == ModDiv.mod( ModDiv.mod(sa, v) + ModDiv.mod(sb,v), v);
     }
 
     function isIntegral(list: seq<nat>, initial: nat, listIntegral: seq<nat>): bool
         requires |list| == |listIntegral|;
     {
-        forall v: nat :: 0 <= v < |list| ==> listIntegral[v] == sum(list[0..v+1]) + initial
+        forall v: nat :: 0 <= v < |list| ==> listIntegral[v] == List.sum(list[0..v+1]) + initial
     }
 
     method integral(list: seq<nat>, initial: nat ) returns (result: seq<nat>)
@@ -111,30 +38,30 @@ module Integral {
         while (k < |list|)
             decreases |list| - k;
             invariant 0 <= k <= |list|;
-            invariant forall v: nat :: 0 <= v < k ==> arr[v] == sum(list[..v+1]) + initial;
+            invariant forall v: nat :: 0 <= v < k ==> arr[v] == List.sum(list[..v+1]) + initial;
         {
             /* 
              * Could not make it work using acc, what would be fast.
              * This is not the fast strategy, but for sure is correct
              */
-            arr[k] := sum(list[..k+1]) + initial;
+            arr[k] := List.sum(list[..k+1]) + initial;
             k := k + 1;
         }
         // array to seq
         result := arr[..];
     }
 
-    function isModList(list: seq<nat>, value: nat, modList: seq<nat>): bool
-    requires |list| == |modList|;
-    requires |list| > 0;
-    requires value > 0;
+    function isListModList(list: seq<nat>, value: nat, modList: seq<nat>): bool
+        requires |list| == |modList|;
+        requires |list| > 0;
+        requires value > 0;
     {
         forall v: nat :: 0 <= v < |list| ==> modList[v] == ModDiv.mod(list[v], value)
     }
 
     function isNotMultiple(list: seq<nat>, value: nat): bool
-    requires value > 0;
-    requires |list| > 0;
+        requires value > 0;
+        requires |list| > 0;
     {
         forall v: nat :: 0 <= v < |list| ==> ModDiv.mod(list[v], value) != 0
     }
@@ -144,62 +71,114 @@ module Integral {
         initial: nat, 
         integralList: seq<nat>, 
         modIntegralList: seq<nat>, 
-        m: nat, 
+        m: nat,
+        v: nat, 
         cycleList: seq<nat>, 
         integralCycle: seq<nat>,
         modIntegralCycle: seq<nat>
     )
 
     // m is bigger than zero
-    requires m > 0;
+    requires m > 0; // 2
+    requires v > 0; // 3
 
-    // list is non zero, non empty and the sum of the list is multiple of m
-    requires |list| > 0;
-    requires nonZero(list);
-    requires ModDiv.mod(sum(list),m) == 0;
+    // list is non zero, non empty and the List.sum of the list is multiple of m
+    requires |list| > 0; // 2
+    requires List.nonZero(list); // [2,4]
+    requires ModDiv.mod(List.sum(list), v) == 0; // 2 + 4 == 6; mod(6,3) == 0
 
 
     // integral list def
-    requires |integralList| == |list|;
-    requires isIntegral(list, initial, integralList);
+    requires |integralList| == |list|; // [7,11] // [2,4]
+    requires isIntegral(list, initial, integralList); // [7 == 5 + 2, 11 == 5 + 2 + 4]
     
     // mod of integral list def
-    requires |modIntegralList| == |integralList|;
-    requires isModList(integralList, m, modIntegralList);
+    requires |modIntegralList| == |integralList|; // [7, 11] // [7 % 3, 11 % 3 ] == [1, 2]
+    requires isListModList(integralList, v, modIntegralList);
 
     // cylce list def
-    requires |cycleList| == |list| * m;
+    requires |cycleList| == |list| * m; // [2,4,2,4]
     requires |cycleList| >= |list|;
-    requires isCycle(list, cycleList)
+    requires Cycle.isCycle(list, cycleList)
 
     // integral cycle def
-    requires |integralCycle| == |cycleList|;
-    requires isIntegral(cycleList, initial, integralCycle);
+    requires |integralCycle| == |cycleList|; // [7, 11, 13, 17]
+    requires isIntegral(cycleList, initial, integralCycle); // [5+2,5+2+4,5+2+4+2,5+2+4+2+4] ...
     
     // mod of integral cycle def
-    requires |modIntegralCycle| == |integralCycle|;
-    requires isModList(integralCycle, m, modIntegralCycle);
+    requires |integralCycle| == |modIntegralCycle|; // [7 % 3, 11 %3, 13 % 3, 17 % 3]
+    requires isListModList(integralCycle, v, modIntegralCycle); // [1, 2, 1, 2]
 
     // mod of integral should be cycle
-//    ensures isCycle(modIntegralList, modIntegralCycle);
+    ensures Cycle.isCycle(modIntegralList, modIntegralCycle); // [1,2,1,2] == cycle([1,2],m)
+    ensures List.nonZero(modIntegralList) ==> List.nonZero(modIntegralCycle);
     {
-        if ( m == 1 ) {
-            assert cycleList == list;
-            assert integralCycle == integralList;
-            assert modIntegralCycle == modIntegralList;
-        } else {
-            assert cycleList[0..|list|] == list;
-
-            assert forall v: nat :: 0 <= v < |integralList| ==> integralList[v] == sum(list[..v+1]) + initial;
-            var last := |list| - 1;
-            assert integralList[last] == sum(list[..(last+1)]) + initial;
-            assert list[..(last+1)] == list;
-            assert sum(list[..(last+1)]) == sum(list);
-            assert integralList[last] == sum(list) + initial;
-            assert ModDiv.mod(sum(list),m) == 0;
+        // for the first elements integralCycle is equal to integralList
+        // and mod integral cycle list equals mod integral list
+        var k: nat;
+        assert list == cycleList[..|list|];
+        forall k | 0 <= k < |list|
+            ensures integralCycle[k] == integralList[k];
+            ensures modIntegralCycle[k] == modIntegralList[k];
+        {
+            assert cycleList[k] == list[k];
             
+            assert integralList[k]   == List.sum(list[0..k+1])      + initial;
+            assert integralCycle[k]  == List.sum(cycleList[0..k+1]) + initial;
+            assert cycleList[k]      == list[k];
+            assert cycleList[0..k+1] == list[0..k+1];
+            
+            assert List.sum(cycleList[0..k+1]) == List.sum(list[0..k+1]);
+            
+            assert integralCycle[k] == List.sum(list[0..k+1]) + initial;
+            assert integralCycle[k] == integralList[k];
+            
+            assert modIntegralList[k]  == ModDiv.mod(integralList[k], v);
+            assert modIntegralCycle[k] == ModDiv.mod(integralCycle[k], v);
+            assert modIntegralCycle[k] == ModDiv.mod(integralList[k], v);
+            assert modIntegralCycle[k] == modIntegralList[k];
         }
+
+        assert integralList    == integralCycle[..|list|];
+        assert modIntegralList == modIntegralCycle[..|list|];
+
+        forall k | |list| <= k < |modIntegralCycle|
+            ensures modIntegralCycle[k-|list|] == modIntegralCycle[k];
+        {
+            assert integralCycle[k] == List.sum(cycleList[0..k+1]) + initial;
+            var c1 := cycleList[0..|list|];
+            var c2 := cycleList[|list|..k+1];
+            assert cycleList[0..k+1] == c1 + c2; 
+            List.distributiveSum(c1,c2);
+            assert List.sum(c1 + c2) == List.sum(c1) + List.sum(c2); 
+            assert integralCycle[k] == List.sum(cycleList[0..|list|] + cycleList[|list|..k+1]) + initial;
+            assert integralCycle[k] == List.sum(cycleList[0..|list|]) + List.sum(cycleList[|list|..k+1]) + initial;
+            assert integralCycle[k] == List.sum(c1) + List.sum(c2) + initial;
+            var listSum := List.sum(cycleList[0..|list|]);
+            assert List.nonZero(list);
+            assert listSum > 0;
+            assert ModDiv.mod(listSum, v) == 0;
+            assert integralCycle[k] == listSum + List.sum(c2) + initial;
+            var otherValue := List.sum(cycleList[|list|..k+1]) + initial;
+            assert integralCycle[k] == listSum + otherValue;
+            ModDiv.modAplusB(v, listSum, otherValue);
+            assert modIntegralCycle[k] == ModDiv.mod(integralCycle[k], v);
+            assert modIntegralCycle[k] == ModDiv.mod(listSum + otherValue, v);
+            assert modIntegralCycle[k] == ModDiv.mod(ModDiv.mod(listSum, v) + ModDiv.mod(otherValue, v), v);
+            assert modIntegralCycle[k] == ModDiv.mod(0 + ModDiv.mod(otherValue, v), v);
+            assert modIntegralCycle[k] == ModDiv.mod(ModDiv.mod(otherValue, v), v);
+            assert modIntegralCycle[k] == ModDiv.mod(otherValue, v);
+            assert cycleList[|list|..k+1] == cycleList[0..k+1-|list|];
+            assert otherValue == List.sum(cycleList[0..k+1-|list|]) + initial;
+            assert modIntegralCycle[k-|list|] == ModDiv.mod(integralCycle[k-|list|],v);
+            assert integralCycle[k-|list|] == otherValue;
+            assert modIntegralCycle[k-|list|] == ModDiv.mod(otherValue,v);
+            assert modIntegralCycle[k-|list|] == modIntegralCycle[k];
+        }
+
+        Cycle.cycleAlwaysRepeatTheSameValues(modIntegralList, modIntegralCycle, m);
     }
+        
 
     // lemma bigProoff(
     //     initial: nat,  // 5
@@ -255,13 +234,16 @@ module Integral {
  
         var single := [v];
         var singleIntegral := integral(single, initial);
-        assert singleIntegral[0] == sum(single[..1]) + initial;
+        assert singleIntegral[0] == List.sum(single[..1]) + initial;
 
         var listIntegral := integral(list, initial);
-        assert forall n: nat ::  0 < n < |list| ==> listIntegral[n] == sum(list[..n+1]) + initial;
+        assert forall n: nat ::  0 < n < |list| ==> listIntegral[n] == List.sum(list[..n+1]) + initial;
         assert |listIntegral| == |list|;
     }
 
-    method Main() {
-    }
+//    method Main() {
+//        var l := [1,2,3];
+//        var i := List.sum(l[..3]);
+//        print(i);
+//    }
 }

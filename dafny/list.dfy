@@ -32,6 +32,10 @@ module List {
         list[0] + sum(list[1..])
     }
 
+    lemma singleSum(value: nat)
+        ensures sum([value]) == value;
+    {
+    }
 
     ghost method distributiveSum(a: seq<nat>, b: seq<nat> )
         ensures sum(a + b) == sum(a) + sum(b); 
@@ -67,6 +71,20 @@ module List {
         distributiveSum(a, b);
     }
 
-   method Main() {
+     lemma sumPop(list: seq<nat>)
+         requires |list| > 0;
+         ensures sum(list) == list[|list|-1] + sum(list[..|list|-1]);
+    {
+        var last := list[|list|-1];
+        var body := list[..|list|-1];
+        assert body + [last] == list;
+        sumListPlusValue(body, last);
+        assert sum(list) == last + sum(body);
     }
+
+//    method Main() {
+//        var l := [1,2,3];
+//     //    print(l[|l|-1]);
+//        print(l[..|l|-1]);
+//     }
 }

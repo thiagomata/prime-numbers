@@ -170,29 +170,24 @@ module Cycle {
     }
 
     /**
-     * list = [1,2,3]
-     * sum(list) == 6
-     * mod(sum(list),v) == 0 ==> v * n == 6;
-     * cycleList = [1,2,3,1,2,3,....,1,2,3]
-     * sum(cycleList) == sum(list) * m == 6 * m == v * n * m
-     * mod(sum(cyleList,v)) == 0
+     * mod(sum(cycle(list,m)),m) == 0
+     *
+     * Any cycle list that is a repetition of the list m times
+     * will have the sum a value that its module by m is zero
      */
-    lemma cycleSameMod(list: seq<nat>, cycleList: seq<nat>, m: nat, v: nat)
+    lemma cycleSameMod(list: seq<nat>, cycleList: seq<nat>, m: nat)
         requires m > 0;
-        requires v > 0;
         requires |list| > 0;
         requires |cycleList| > 0;
         requires |cycleList| >= |list|;
         requires isCycle(list, cycleList);
         requires |cycleList| == |list| * m;
-        requires ModDiv.mod(v, m) == 0;
-        requires ModDiv.mod(List.sum(list), v) == ModDiv.mod(List.sum(cycleList), v);
+        requires ModDiv.mod(List.sum(cycleList), m) == 0;
     {
-        sumMultipleList(list,cycleList,m);
+        sumMultipleList(list,cycleList, m);
         var listSum := List.sum(list);
         var cycleListSum := List.sum(cycleList);
         assert listSum * m == cycleListSum;
-        ModDiv.modAOnBEqualsModAMoreMTimesB(listSum, v, m);
     }
 
 //     method Main()
