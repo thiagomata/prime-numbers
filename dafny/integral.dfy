@@ -66,7 +66,14 @@ module Integral {
         forall v: nat :: 0 <= v < |list| ==> ModDiv.mod(list[v], value) != 0
     }
 
-    lemma modOfIntegral(
+    /**
+     * If we have a list of steps such as 
+     * the integral of the steps plus the initial value are not multiple of v in any moment, 
+     * and the sum of the steps is multiple of the value v, 
+     * we can keep adding the steps in cycle ensuring that they
+     * will also not be multiple of v.
+     */
+    lemma modOfIntegralIsCycle(
         list: seq<nat>, 
         initial: nat, 
         integralList: seq<nat>, 
@@ -78,7 +85,7 @@ module Integral {
         modIntegralCycle: seq<nat>
     )
 
-    // m is bigger than zero
+    // m and v are bigger than zero
     requires m > 0; // 2
     requires v > 0; // 3
 
@@ -124,6 +131,7 @@ module Integral {
             assert cycleList[k] == list[k];
             
             assert integralList[k]   == List.sum(list[0..k+1])      + initial;
+
             assert integralCycle[k]  == List.sum(cycleList[0..k+1]) + initial;
             assert cycleList[k]      == list[k];
             assert cycleList[0..k+1] == list[0..k+1];
@@ -133,9 +141,9 @@ module Integral {
             assert integralCycle[k] == List.sum(list[0..k+1]) + initial;
             assert integralCycle[k] == integralList[k];
             
-            assert modIntegralList[k]  == ModDiv.mod(integralList[k], v);
+            assert modIntegralList[k]  == ModDiv.mod(integralList[k],  v);
             assert modIntegralCycle[k] == ModDiv.mod(integralCycle[k], v);
-            assert modIntegralCycle[k] == ModDiv.mod(integralList[k], v);
+            assert modIntegralCycle[k] == ModDiv.mod(integralList[k],  v);
             assert modIntegralCycle[k] == modIntegralList[k];
         }
 
@@ -178,7 +186,75 @@ module Integral {
 
         Cycle.cycleAlwaysRepeatTheSameValues(modIntegralList, modIntegralCycle, m);
     }
+
+    function method stepsAvoidMultiple(steps: seq<nat>, v: nat): seq<nat>
+    {
+        stepsAvoidMultipleLoop(steps, v, 0, 0)
+    }
+
+    function method stepsAvoidMultipleLoop(steps: seq<nat>, v: nat, current: nat, acc: nat): seq<nat>
+        requires v > 0;
+        decreases |steps|;
+        ensures List.sum(steps) + current == List.sum(stepsAvoidMultipleLoop(steps,v,current,acc));
+    {
+        var result := if ( |steps| == 0 && current == 0 ) then []
+        else if |steps| == 0 then [current]
+        else if ( ModDiv.mod(steps[0] + acc + current, v) == 0 ) 
+        then stepsAvoidMultipleLoop(steps[1..], v, steps[0] + current, acc)
+        else [steps[0] + current] + 
+        stepsAvoidMultipleLoop(steps[1..], v, 0, steps[0] + current + acc);
+
+        result
+    }
+
+    lemma makingAListNotMultipleOfNextValue(
+        list: seq<nat>, 
+        initial: nat,  // 5
+        initialV2: nat, // 7
+        integralList: seq<nat>, 
+        integralListV2: seq<nat>,
+        modIntegralList: seq<nat>, 
+        v1: nat,
+        v2: nat,
+        listV2A: seq<nat>,
+        listV2B: seq<nat>
+    )
+    // v1 and v2 are diff and bigger than zero
+    requires v1 > 0; // 3
+    requires v2 > 0; // 5
+    requires v1 != v2;
+
+    // list is non zero, non empty and the List.sum of the list is multiple of m
+    requires |list| > 0; // 2
+    requires List.nonZero(list); // [2,4]
+    requires ModDiv.mod(List.sum(list), v1) == 0; // 2 + 4 == 6; mod(6,3) == 0
+
+    // integral list def
+    requires |integralList| == |list|; // [7,11] // [2,4]
+    requires isIntegral(list, initial, integralList); // [7 == 5 + 2, 11 == 5 + 2 + 4]
+    
+    // mod of integral list def
+    requires |modIntegralList| == |integralList|; // [7, 11] // [7 % 3, 11 % 3 ] == [1, 2]
+    requires isListModList(integralList, v1, modIntegralList);
+
+    requires isNotMultiple(integralList, v1);
+    requires List.nonZero(modIntegralList);
+
+    requires Cycle.isCycle(list, listV2A); // [2,4,2,4,2,4,2,4,2,4]
+    requires |listV2A| == |list| * v2; // 2 * 5 == 10
+    
+    requires listV2B == stepsAvoidMultiple(List.shift(listV2A), v2); // [4,2,4,2,4,6,2,6]
+    
+    requires initialV2 == initial + List.first(list); // 5 + 2 == 7
+
+    requires |integralListV2| == |listV2B|; // [11,13,17,19,23,29,31,37] // 8
+    requires isIntegral(listV2B, initialV2, integralListV2); // 11 = 7 + 4, 13 = 11 + 2, ...
+
+    ensures isNotMultiple(integralListV2, v1);
+    ensures isNotMultiple(integralListV2, v2);
+    {
         
+    }
 
     // lemma bigProoff(
     //     initial: nat,  // 5
@@ -241,9 +317,9 @@ module Integral {
         assert |listIntegral| == |list|;
     }
 
-//    method Main() {
-//        var l := [1,2,3];
-//        var i := List.sum(l[..3]);
-//        print(i);
-//    }
+   method Main() {
+       var l := [2,4,2,4,2,4,2,4,2,4];
+       var i := stepsAvoidMultipleLoop(List.shift(l),5,0,7);
+       print(i);
+   }
 }

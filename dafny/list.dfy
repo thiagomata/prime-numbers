@@ -32,6 +32,12 @@ module List {
         list[0] + sum(list[1..])
     }
 
+    function method shift(list: seq<nat>):seq<nat>
+    {
+        if |list| == 0 then [] else
+        list[1..] + [list[0]]
+    }
+
     lemma singleSum(value: nat)
         ensures sum([value]) == value;
     {
@@ -71,7 +77,7 @@ module List {
         distributiveSum(a, b);
     }
 
-     lemma sumPop(list: seq<nat>)
+     lemma sumPopLast(list: seq<nat>)
          requires |list| > 0;
          ensures sum(list) == list[|list|-1] + sum(list[..|list|-1]);
     {
@@ -80,6 +86,17 @@ module List {
         assert body + [last] == list;
         sumListPlusValue(body, last);
         assert sum(list) == last + sum(body);
+    }
+
+     lemma sumPopFirst(list: seq<nat>)
+         requires |list| > 0;
+         ensures sum(list) == list[0] + sum(list[1..]);
+    {
+        var first := list[0];
+        var body := list[1..];
+        assert [first] + body == list;
+        sumListPlusValue(body, first);
+        assert sum(list) == first + sum(body);
     }
 
 //    method Main() {
