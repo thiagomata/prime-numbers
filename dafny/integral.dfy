@@ -56,6 +56,8 @@ module Integral {
     {
         ( forall v: nat :: 0 < v < |list| ==> ( list[v] >= list[v-1] && listDerivetive[v] == list[v] - list[v-1] ) )
         && 
+        ( |list| > 0 ==> list[0] > initial )
+        && 
         ( |list| > 0 ==> listDerivetive[0] == list[0] - initial )
     }
 
@@ -411,7 +413,102 @@ module Integral {
         assert forall v: nat :: 0 <= v < |integralList| ==> ModDiv.mod(integralList[v], value) != 0;
 
         assert |shifted| == |list|;
-        if |shifted| > 1 {
+        
+        if ( |shifted| == 0 ) {
+            assert isNotMultiple(shiftedIntegral, value);
+        } else if ( |shifted| == 1 ) {
+            assert shifted == list;
+            assert List.sum(shifted) == List.sum(list);
+            assert list == [list[0]];
+            List.singleSum(list[0]);
+            assert List.sum([list[0]]) == list[0];
+            assert List.sum(list) == list[0];
+            assert ModDiv.mod(List.sum(list), value) == 0;
+            assert ModDiv.mod(list[0], value) == 0;
+            assert shiftedIntegral[0] == List.sum(shifted[..1]) + initial + list[0];
+            assert integralList[0] == List.sum(list[..1]) + initial;
+            assert integralList[0] == List.sum(list) + initial;
+            assert integralList[0] == list[0] + initial;
+            assert shiftedIntegral[0] == List.sum(list[..1]) + initial + list[0];
+            assert shiftedIntegral[0] == List.sum([list[0]]) + initial + list[0];
+            assert shiftedIntegral[0] == list[0] + initial + list[0];
+            var a := list[0];
+            assert a == List.sum(list);
+            assert ModDiv.mod(List.sum(list), value) == 0;
+            assert ModDiv.mod(a, value) == 0;
+            var b := initial + list[0];
+            assert b == list[0] + initial;
+            assert integralList[0] == b; 
+            assert ModDiv.mod(integralList[0], value) != 0;
+            assert ModDiv.mod(List.sum(list), value) == 0;
+            assert ModDiv.mod(b, value) != 0;
+            ModDiv.modAplusB(value, a, b);
+            assert ModDiv.mod(a + b, value) == ModDiv.mod(
+                ModDiv.mod(a, value) +
+                ModDiv.mod(b, value)
+                ,
+                value
+            );
+            assert ModDiv.mod(integralList[0], value) == ModDiv.mod(b, value);
+            assert ModDiv.mod(integralList[0], value) != 0;
+            assert a + b == list[0] + initial + list[0];
+            var c := a + b;
+            assert c == list[0] + initial + list[0];
+            assert c == shiftedIntegral[0];
+            assert c == a + b;
+            assert ModDiv.mod(a + b, value) == ModDiv.mod(
+                ModDiv.mod(a, value)
+                + 
+                ModDiv.mod(b, value),
+                value
+            );
+            assert ModDiv.mod(a + b, value) == ModDiv.mod(
+                0
+                +
+                ModDiv.mod(b, value)
+                ,
+                value
+            );            
+            assert ModDiv.mod(a + b, value) == ModDiv.mod(
+                ModDiv.mod(b, value)
+                ,
+                value
+            );            
+            ModDiv.modMod(b, value);
+            assert ModDiv.mod( ModDiv.mod(b, value), value) == ModDiv.mod(b, value);
+            assert ModDiv.mod(a + b, value) == ModDiv.mod(b, value);
+            assert ModDiv.mod(b, value) != 0;
+            assert ModDiv.mod(c, value) != 0;
+            assert ModDiv.mod(shiftedIntegral[0], value) != 0;
+            assert isNotMultiple(shiftedIntegral, value);
+        }
+        if ( |shifted| > 1 ) {
+
+            /**
+             * First is fine
+             */
+            assert shifted[0] == list[1];
+            assert shiftedIntegral[0] == List.sum(shifted[..1]) + initial + list[0];
+            assert shifted[..1] == [shifted[0]];
+            List.singleSum(shifted[0]);
+            assert List.sum(shifted[..1]) == shifted[0];
+            assert shiftedIntegral[0] == shifted[0] + initial + list[0];
+            assert shiftedIntegral[0] == list[1] + initial + list[0];
+            assert shiftedIntegral[0] == list[0] + list[1] + initial;
+            List.sumListPlusValue([list[0]],list[1]);
+            List.singleSum(list[0]);
+            assert shiftedIntegral[0] == List.sum([list[0]]) + list[1] + initial;
+            assert shiftedIntegral[0] == List.sum([list[0]] + [list[1]]) + initial;
+            assert [list[0]] + [list[1]] == list[..2];
+            assert shiftedIntegral[0] == List.sum(list[..2]) + initial;
+            assert integralList[1] == List.sum(list[..2]) + initial;
+            assert integralList[1] == shiftedIntegral[0];
+            assert ModDiv.mod(integralList[1], value) != 0;
+            assert ModDiv.mod(shiftedIntegral[0], value) != 0;
+
+            /**
+             * For all elements except the first and the last
+             */
             forall k | 1 <= k < |list| - 1
                 ensures shiftedIntegral[k] == List.sum(list[..k+2]) + initial;
                 ensures shiftedIntegral[k] == integralList[k+1];
@@ -447,118 +544,63 @@ module Integral {
                 assert list[..k+1] + [list[k+1]] == list[..k+2];
                 assert shiftedIntegral[k] == List.sum(list[..k+2]) + initial;
                 assert shiftedIntegral[k] == integralList[k+1];
+                assert ModDiv.mod(integralList[k+1], value) != 0;
+                assert ModDiv.mod(shiftedIntegral[k], value) != 0;
             }
-        }
 
-        assert shifted == list[1..] + [list[0]];
-        assert List.sum(shifted) == List.sum(list[1..]+[list[0]]);
-        List.sumListPlusValue(list[1..],list[0]);
-        assert List.sum(shifted) == List.sum(list[1..])+List.sum([list[0]]);
-        assert List.sum(shifted) == List.sum([list[0]])+List.sum(list[1..]);
-        assert List.sum(shifted) == List.sum([list[0]]+list[1..]);
-        assert List.sum(shifted) == List.sum(list);
-
-        if ( |shifted| > 1 ) {
-            assert shifted[0] == list[1];
-            assert shiftedIntegral[0] == List.sum(shifted[..1]) + initial + list[0];
-            assert shifted[..1] == [shifted[0]];
-            List.singleSum(shifted[0]);
-            assert List.sum(shifted[..1]) == shifted[0];
-            assert shiftedIntegral[0] == shifted[0] + initial + list[0];
-            assert shiftedIntegral[0] == list[1] + initial + list[0];
-            assert shiftedIntegral[0] == list[0] + list[1] + initial;
-            List.sumListPlusValue([list[0]],list[1]);
-            List.singleSum(list[0]);
-            assert shiftedIntegral[0] == List.sum([list[0]]) + list[1] + initial;
-            assert shiftedIntegral[0] == List.sum([list[0]] + [list[1]]) + initial;
-            assert [list[0]] + [list[1]] == list[..2];
-            assert shiftedIntegral[0] == List.sum(list[..2]) + initial;
-            assert integralList[1] == List.sum(list[..2]) + initial;
-            assert integralList[1] == shiftedIntegral[0];
-            assert ModDiv.mod(integralList[1], value) != 0;
-            assert ModDiv.mod(shiftedIntegral[0], value) != 0;
-        } 
-        if ( |shifted| == 1 ) {
-            assert shifted == list;
+            /*
+             * Sum shifted equals sum list 
+             */
+            assert shifted == list[1..] + [list[0]];
+            assert List.sum(shifted) == List.sum(list[1..]+[list[0]]);
+            List.sumListPlusValue(list[1..],list[0]);
+            assert List.sum(shifted) == List.sum(list[1..])+List.sum([list[0]]);
+            assert List.sum(shifted) == List.sum([list[0]])+List.sum(list[1..]);
+            assert List.sum(shifted) == List.sum([list[0]]+list[1..]);
             assert List.sum(shifted) == List.sum(list);
-            assert list == [list[0]];
-            List.singleSum(list[0]);
-            assert List.sum([list[0]]) == list[0];
-            assert List.sum(list) == list[0];
-            assert ModDiv.mod(List.sum(list), value) == 0;
-            assert ModDiv.mod(list[0], value) == 0;
-            assert shiftedIntegral[0] == List.sum(shifted[..1]) + initial + list[0];
-            assert integralList[0] == List.sum(list[..1]) + initial;
-            assert integralList[0] == List.sum(list) + initial;
-            assert integralList[0] == list[0] + initial;
-            assert shiftedIntegral[0] == List.sum(list[..1]) + initial + list[0];
-            assert shiftedIntegral[0] == List.sum([list[0]]) + initial + list[0];
-            assert shiftedIntegral[0] == list[0] + initial + list[0];
-            var a := list[0];
-            var b := initial + list[0];
-            assert b == list[0] + initial;
-            assert integralList[0] == b;
-            assert ModDiv.mod(integralList[0], value) == 0;
-            assert ModDiv.mod(b, value) == 0;
-            ModDiv.modAplusB(value, a, b);
-            assert ModDiv.mod(a + b, value) == ModDiv.mod(
-                ModDiv.mod(a, value) +
-                ModDiv.mod(b, value)
-                ,
-                value
-            );
-            assert ModDiv.mod(integralList[0], value) == ModDiv.mod(a, value);
+
+            /*
+             * last is not multiple
+             */
+            var last := |list| - 1;
+            assert |list| == |shifted|;
+            assert shiftedIntegral[last] == List.sum(shifted[..last+1]) + initial + list[0];
+            assert shiftedIntegral[last] == List.sum(shifted[..|list|]) + initial + list[0];
+            assert shiftedIntegral[last] == List.sum(shifted[..|shifted|]) + initial + list[0];
+            assert shifted[..|shifted|] == shifted;
+            assert shiftedIntegral[last] == List.sum(shifted) + initial + list[0];
+            assert shiftedIntegral[last] == List.sum(list) + initial + list[0];
             assert ModDiv.mod(integralList[0], value) != 0;
-            assert ModDiv.mod(a + b, value) == ModDiv.mod(
-                ModDiv.mod(initial + list[0], value)
+            assert integralList[0] == List.sum(list[..1]) + initial;
+            assert integralList[0] == List.sum([list[0]]) + initial;
+            List.singleSum(list[0]);
+            assert integralList[0] == list[0] + initial;
+            assert ModDiv.mod(list[0] + initial, value) != 0;
+            var sumShifted := List.sum(shifted);
+            var firstIntegral := list[0] + initial;
+            ModDiv.modAplusB(value, firstIntegral, sumShifted);
+            assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(
+                ModDiv.mod(firstIntegral, value) +
+                ModDiv.mod(sumShifted, value)
                 ,
                 value
             );
-            ModDiv.modMod(initial + list[0], value);
-            assert ModDiv.mod(list[0] + initial + list[0], value) != 0;
-            assert ModDiv.mod(shiftedIntegral[0], value) != 0;
+            assert ModDiv.mod(sumShifted, value) == 0;
+            assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(
+                ModDiv.mod(firstIntegral, value)
+                ,
+                value
+            );
+            ModDiv.modMod(firstIntegral, value);
+            assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(firstIntegral, value);
+
+            assert shiftedIntegral[last] == List.sum(list) + initial + list[0];
+            assert shiftedIntegral[last] == sumShifted + firstIntegral;
+            assert ModDiv.mod(sumShifted + firstIntegral, value) == ModDiv.mod(firstIntegral, value);
+            assert ModDiv.mod(shiftedIntegral[last], value) == ModDiv.mod(firstIntegral, value);
+            assert ModDiv.mod(shiftedIntegral[last], value) != 0;
             assert isNotMultiple(shiftedIntegral, value);
         }
-
-        // last is not multiple
-        var last := |list| - 1;
-        assert |list| == |shifted|;
-        assert shiftedIntegral[last] == List.sum(shifted[..last+1]) + initial + list[0];
-        assert shiftedIntegral[last] == List.sum(shifted[..|list|]) + initial + list[0];
-        assert shiftedIntegral[last] == List.sum(shifted[..|shifted|]) + initial + list[0];
-        assert shifted[..|shifted|] == shifted;
-        assert shiftedIntegral[last] == List.sum(shifted) + initial + list[0];
-        assert shiftedIntegral[last] == List.sum(list) + initial + list[0];
-        assert ModDiv.mod(integralList[0], value) != 0;
-        assert integralList[0] == List.sum(list[..1]) + initial;
-        assert integralList[0] == List.sum([list[0]]) + initial;
-        List.singleSum(list[0]);
-        assert integralList[0] == list[0] + initial;
-        assert ModDiv.mod(list[0] + initial, value) != 0;
-        var sumShifted := List.sum(shifted);
-        var firstIntegral := list[0] + initial;
-        ModDiv.modAplusB(value, firstIntegral, sumShifted);
-        assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(
-            ModDiv.mod(firstIntegral, value) +
-            ModDiv.mod(sumShifted, value)
-            ,
-            value
-        );
-        assert ModDiv.mod(sumShifted, value) == 0;
-        assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(
-            ModDiv.mod(firstIntegral, value)
-            ,
-            value
-        );
-        ModDiv.modMod(firstIntegral, value);
-        assert ModDiv.mod(firstIntegral + sumShifted, value) == ModDiv.mod(firstIntegral, value);
-
-        assert shiftedIntegral[last] == List.sum(list) + initial + list[0];
-        assert shiftedIntegral[last] == sumShifted + firstIntegral;
-        assert ModDiv.mod(sumShifted + firstIntegral, value) == ModDiv.mod(firstIntegral, value);
-        assert ModDiv.mod(shiftedIntegral[last], value) == ModDiv.mod(firstIntegral, value);
-        assert ModDiv.mod(shiftedIntegral[last], value) != 0;
-        assert isNotMultiple(shiftedIntegral, value);
     }
 
     // function method filterMultiples(list: seq<nat>, v: nat): seq<nat>
