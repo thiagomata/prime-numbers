@@ -86,11 +86,11 @@ module Cycle {
      * We can predict the values of the cycle list based in the original list
      * using mod function
      *
-     * listCycle[k] == list[mod(k,|list|
+     * listCycle[k] == list[mod(k,|list|)]
      */
-    lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>, m: nat)
+    lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>)
         requires |list| > 0;
-        requires |listCycle| == |list| * m;        
+        // requires |listCycle| == |list| * m;        
         requires isCycle(list, listCycle);
         ensures forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     {
@@ -137,8 +137,8 @@ module Cycle {
         ensures cycleList == list + smallCycle;
     {
 
-        cycleAlwaysRepeatTheSameValues( list, cycleList, m);
-        cycleAlwaysRepeatTheSameValues( list, smallCycle, m - 1);
+        cycleAlwaysRepeatTheSameValues( list, cycleList);
+        cycleAlwaysRepeatTheSameValues( list, smallCycle);
     }
 
     /**

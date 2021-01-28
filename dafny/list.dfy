@@ -38,6 +38,19 @@ module List {
         list[1..] + [list[0]]
     }
 
+    lemma shiftedProperties(list: seq<nat>, shifted: seq<nat>)
+        requires shifted == shift(list);
+        ensures forall k :: 1 <= k < |list| - 1 ==> shifted[k-1] == list[k];
+        ensures |shifted| > 0 ==> shifted[|list|-1] == list[0];
+        ensures |list| == |shifted|;
+    {
+        assert list == [] ==> shifted == [];
+        if |list| > 0 {
+            assert forall k :: 1 <= k < |list| - 1 ==> shifted[k-1] == list[k];
+            assert shifted[|list|-1] == list[0];
+        }
+    }
+
     lemma singleSum(value: nat)
         ensures sum([value]) == value;
     {

@@ -365,15 +365,26 @@ module ModDiv {
         modSmallValuesFull(a,b,pairLast(result),pairFirst(result));
     }
 
+    lemma modMod(a: nat, b:nat)
+        requires b > 0;
+        ensures mod(a,b) == mod(mod(a,b),b);
+    {
+        var result := getModDiv(a, b);
+        var result2 := getModDiv(pairLast(result), b);
+        modModFull(
+            a, b,
+            pairLast(result), pairLast(result2),
+            pairFirst(result), pairFirst(result2)
+        );        
+    }
     /**
      * We can replay the mod function into the result of the function many times
      * that will not affect the result.
      *
      * mod(mod(a,b)) == mod(a,b)
      */
-    lemma modReplay(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat)
+    lemma modModFull(a: nat, b: nat, r1: nat, r2: nat, div1: nat, div2: nat)
        requires b > 0;
-       requires a - b > 0;
        requires isModDiv(a, b, div1, r1);
        requires isModDiv(r1, b, div2, r2);
        ensures r1 == r2;
@@ -711,6 +722,10 @@ module ModDiv {
         assert rSum == rModSum;
     }
 
+    /**
+     * ensures mod(a+b,div) == mod( mod(a, div) + mod(b, div), div);
+     *
+     */
     lemma modAplusB(
         div: nat, v1: nat, v2: nat
     )
