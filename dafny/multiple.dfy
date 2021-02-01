@@ -410,6 +410,7 @@ module Multiple {
             assert ModDiv.mod(List.sum(steps), primes[p]) == 0;
             Cycle.sumMultipleList(steps, cycleSteps, nextPrime);
             assert List.sum(cycleSteps) == List.sum(steps) * nextPrime;
+            ModDiv.modATimesNIsZero(primes[p],List.sum(steps),List.sum(cycleSteps),nextPrime);
             shiftedStillNonMultiple(cycleSteps, integral, primes[p], initial, shiftedIntegral);
             assert isNotMultiple(shiftedIntegral, primes[p]);
             filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
