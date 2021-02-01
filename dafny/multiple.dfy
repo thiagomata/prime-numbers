@@ -361,6 +361,7 @@ module Multiple {
      */
     lemma makingAListNotMultipleOfNextValue(
         steps: seq<nat>,
+        cycleSteps: seq<nat>,
         initial: nat, 
         nextInitial: nat,
         shifted: seq<nat>,
@@ -375,14 +376,16 @@ module Multiple {
     requires |steps| > 0;
     requires |primes| > 0;
     requires initial > 0;
-    requires |integral| == |steps|;
     requires nextInitial == initial + steps[0];
     requires nextPrime == initial;
     requires List.nonZero(steps);
     requires List.nonZero(primes);
-    requires Integral.isIntegral(steps, initial, integral);
+    requires Cycle.isCycle(steps, cycleSteps);
+    requires |cycleSteps| == |steps| * nextPrime;
+    requires |integral| == |cycleSteps|;
+    requires Integral.isIntegral(cycleSteps, initial, integral);
     requires forall p :: 0 <= p < |primes| ==> isNotMultiple(integral, primes[p]);
-    requires shifted == List.shift(steps);
+    requires shifted == List.shift(cycleSteps);
     requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(List.sum(steps), primes[p]) == 0;
     requires |integral| == |shiftedIntegral|;
     requires Integral.isIntegral(shifted, nextInitial, shiftedIntegral);
@@ -399,12 +402,15 @@ module Multiple {
     ensures isNotMultiple(integralNextSteps, nextPrime);
     ensures filteredShiftedIntegral == integralNextSteps;
     {
-        shiftedSumEquals(steps, shifted);
+        shiftedSumEquals(cycleSteps, shifted);
         forall p | 0 <= p < |primes|
             ensures isNotMultiple(shiftedIntegral, primes[p])
             ensures isNotMultiple(filteredShiftedIntegral, primes[p])
         {
-            shiftedStillNonMultiple(steps, integral, primes[p], initial, shiftedIntegral);
+            assert ModDiv.mod(List.sum(steps), primes[p]) == 0;
+            Cycle.sumMultipleList(steps, cycleSteps, nextPrime);
+            assert List.sum(cycleSteps) == List.sum(steps) * nextPrime;
+            shiftedStillNonMultiple(cycleSteps, integral, primes[p], initial, shiftedIntegral);
             assert isNotMultiple(shiftedIntegral, primes[p]);
             filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
             assert isNotMultiple(filteredShiftedIntegral, primes[p]);
@@ -416,5 +422,8 @@ module Multiple {
         assert Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
         Derivative.integralOfDerivative(filteredShiftedIntegral, nextSteps, integralNextSteps, nextInitial);
         assert filteredShiftedIntegral == integralNextSteps;
+
+        // assert ModDiv.mod(List.sum(nextSteps), v) == 0;
+
     }
 }

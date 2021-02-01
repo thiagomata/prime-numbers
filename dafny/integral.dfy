@@ -50,7 +50,7 @@ module Integral {
         // array to seq
         result := arr[..];
     }
-    
+
     method modOfIntegralIsCycle(
         list: seq<nat>,
         m: nat,
@@ -106,15 +106,12 @@ module Integral {
         initial: nat, 
         integralList: seq<nat>, 
         modIntegralList: seq<nat>, 
-        // m: nat,
         v: nat, 
         cycleList: seq<nat>, 
         integralCycle: seq<nat>,
         modIntegralCycle: seq<nat>
     )
 
-    // m and v are bigger than zero
-    // requires m > 0; // 2
     requires v > 0; // 3
 
     // list is non zero, non empty and the List.sum of the list is multiple of m
