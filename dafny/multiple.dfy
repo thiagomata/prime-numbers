@@ -2,6 +2,7 @@ include "modDiv.dfy"
 include "list.dfy"
 include "cycle.dfy"
 include "integral.dfy"
+include "derivative.dfy"
 
 module Multiple {
 
@@ -9,6 +10,7 @@ module Multiple {
     import Cycle
     import List
     import Integral
+    import Derivative
 
     function isNotMultiple(list: seq<nat>, value: nat): bool
         requires value > 0;
@@ -80,6 +82,8 @@ module Multiple {
         requires |integralList| == |shiftedIntegral|;
         requires Integral.isIntegral(List.shift(list), initial + list[0], shiftedIntegral);
         ensures  isNotMultiple(shiftedIntegral, value);
+        ensures shiftedIntegral[|list|-1] == List.sum(list) + initial + list[0];
+        ensures List.sum(List.shift(list)) == List.sum(list);
     {
         assert integralList[0] == List.sum(list[0..1]) + initial;
         assert List.sum(list[0..1]) == list[0];
@@ -329,143 +333,88 @@ module Multiple {
         result
     }
 
+    lemma shiftedSumEquals(list: seq<nat>, shifted: seq<nat> )
+      requires shifted == List.shift(list);
+      ensures List.sum(shifted) == List.sum(list);
+    {
+        if ( |list| == 0 ) {
+            assert shifted == [];
+            assert List.sum(list) == 0;
+            assert List.sum(shifted) == 0;
+            assert List.sum(shifted) == List.sum(list);
+        } else {
+            assert list[1..] + [list[0]] == shifted;
+            assert List.sum(shifted) == List.sum(list[1..] + [list[0]]);
+            List.distributiveSum(list[1..],[list[0]]);
+            assert List.sum(shifted) == List.sum(list[1..]) + List.sum([list[0]]);
+            assert List.sum(shifted) == List.sum([list[0]]) + List.sum(list[1..]);
+            assert List.sum(shifted) == List.sum(list);
+        }
+    }
+
     /**
-     * se temos uma lista de passos que nao nunca multipla de um valor
-     * se multiplicamos ciclicamente essa lista por outro valor
-     *
+     * Considering that we can create a sorted list that is never multiple of some primes
+     * from an initial value and some steps that should be added in cycle sequence.
+     * Let's call nextPrime is the first element of that list.
+     * We are able to create a new list that is never multiple from all previous primes
+     * and also is not multiple of next prime.
      */
     lemma makingAListNotMultipleOfNextValue(
-        list: seq<nat>, 
-        initial: nat,  // 5
-        initialV2: nat, // 7
-        integralList: seq<nat>, 
-        cycleList: seq<nat>,
-        modIntegralList: seq<nat>, 
-        integralCycle: seq<nat>,
-        modIntegralCycle: seq<nat>,
-        filteredIntegralCycle: seq<nat>,
-        v1: nat,
-        v2: nat,
-        listV2A: seq<nat>,
-        listV2B: seq<nat>
+        steps: seq<nat>,
+        initial: nat, 
+        nextInitial: nat,
+        shifted: seq<nat>,
+        primes: seq<nat>,
+        nextPrime: nat,
+        integral: seq<nat>, 
+        shiftedIntegral: seq<nat>,
+        filteredShiftedIntegral: seq<nat>,
+        nextSteps: seq<nat>,
+        integralNextSteps: seq<nat>
     )
-    // v1 and v2 are diff and bigger than zero
-    requires v1 > 0; // 3
-    requires v2 > 0; // 5
-    requires v1 != v2;
-    requires ModDiv.mod(initial, v1) != 0;
-    requires ModDiv.mod(initial, v2) != 0;
-    requires ModDiv.mod(v2, v1) != 0;
-    requires ModDiv.mod(v1, v2) != 0;
+    requires |steps| > 0;
+    requires |primes| > 0;
+    requires initial > 0;
+    requires |integral| == |steps|;
+    requires nextInitial == initial + steps[0];
+    requires nextPrime == initial;
+    requires List.nonZero(steps);
+    requires List.nonZero(primes);
+    requires Integral.isIntegral(steps, initial, integral);
+    requires forall p :: 0 <= p < |primes| ==> isNotMultiple(integral, primes[p]);
+    requires shifted == List.shift(steps);
+    requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(List.sum(steps), primes[p]) == 0;
+    requires |integral| == |shiftedIntegral|;
+    requires Integral.isIntegral(shifted, nextInitial, shiftedIntegral);
+    requires isFilterMultiples(shiftedIntegral, nextPrime, filteredShiftedIntegral);
+    requires |nextSteps| == |filteredShiftedIntegral|;
+    requires Derivative.isDerivative(filteredShiftedIntegral, nextInitial, nextSteps);
+    requires |integralNextSteps| == |nextSteps|;
+    requires Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
 
-    // list is non zero, non empty and the List.sum of the list is multiple of m
-    requires |list| > 0; // 2
-    requires List.nonZero(list); // [2,4]
-    requires ModDiv.mod(List.sum(list), v1) == 0; // 2 + 4 == 6; mod(6,3) == 0
-
-    // integral list def
-    requires |integralList| == |list|; // [7,11] // [2,4]
-    requires Integral.isIntegral(list, initial, integralList); // [7 == 5 + 2, 11 == 5 + 2 + 4]
-    
-    // mod of integral list def
-    requires |modIntegralList| == |integralList|; // [7, 11] // [7 % 3, 11 % 3 ] == [1, 2]
-    requires ModDiv.isModListFromList(integralList, v1, modIntegralList);
-
-    requires isNotMultiple(integralList, v1);
-    requires List.nonZero(modIntegralList);
-
-    // cylce list def
-    requires |cycleList| == |list| * v2 + 1; // [4,2,4,2,4,2,4,2,4,2,4,2]
-    requires |cycleList| >= |list|;
-    requires Cycle.isCycle(list, cycleList)
-
-    // integral cycle def
-    requires |integralCycle| == |cycleList|; // [7, 11, 13, 17, 19, 23, 25, 29, 31, 35, 37 ]
-    requires Integral.isIntegral(cycleList, initial, integralCycle); // [5+2,5+2+4,5+2+4+2,5+2+4+2+4 ... ]
-    
-    // mod of integral cycle def
-    requires |integralCycle| == |modIntegralCycle|; // [7 % 3, 11 %3, 13 % 3, 17 % 3 ...]
-    requires ModDiv.isModListFromList(integralCycle, v1, modIntegralCycle); // [1, 2, 1, 2 ... ]
-
-    // mod of integral should be cycle
-    ensures Cycle.isCycle(modIntegralList, modIntegralCycle); // [1,2,1,2] == cycle([1,2],|list| * m + 1 )
-    requires List.nonZero(modIntegralList);
-    ensures isNotMultiple(integralCycle, v1);
-
-    requires isFilterMultiples(integralCycle, v2, filteredIntegralCycle); // [7, 11, 13, 17, 19, 23, 29, 31, 37 ] - [25, 35]
-    ensures isNotMultiple(filteredIntegralCycle, v1);
-    ensures isNotMultiple(filteredIntegralCycle, v2);
+    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(shiftedIntegral, primes[p]);
+    ensures isNotMultiple(filteredShiftedIntegral, nextPrime);
+    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(filteredShiftedIntegral, primes[p]);
+    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(integralNextSteps, primes[p]);
+    ensures isNotMultiple(integralNextSteps, nextPrime);
+    ensures filteredShiftedIntegral == integralNextSteps;
     {
-         Integral.modOfIntegralIsCycleFull(
-            list, 
-            initial, 
-            integralList, 
-            modIntegralList, 
-            v1,
-            cycleList, 
-            integralCycle,
-            modIntegralCycle
-        );
-        
-        assert isNotMultiple(integralCycle, v1);
-        listContainsFiltered(integralCycle, v2, filteredIntegralCycle);
-        assert isNotMultiple(filteredIntegralCycle, v1);
+        shiftedSumEquals(steps, shifted);
+        forall p | 0 <= p < |primes|
+            ensures isNotMultiple(shiftedIntegral, primes[p])
+            ensures isNotMultiple(filteredShiftedIntegral, primes[p])
+        {
+            shiftedStillNonMultiple(steps, integral, primes[p], initial, shiftedIntegral);
+            assert isNotMultiple(shiftedIntegral, primes[p]);
+            filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
+            assert isNotMultiple(filteredShiftedIntegral, primes[p]);
+        }
+        filteredMultiplesIsNotMultiple(shiftedIntegral, nextPrime, filteredShiftedIntegral);
+        assert isNotMultiple(filteredShiftedIntegral, nextPrime);
 
-        filteredMultiplesIsNotMultiple(integralCycle, v2, filteredIntegralCycle);
-        
-        assert forall v: nat :: 0 <= v < |cycleList| ==> integralCycle[v] == List.sum(cycleList[0..v+1]) + initial;
-        assert integralCycle[|integralCycle|-1] == List.sum(cycleList[..|cycleList|]) + initial;
-        assert cycleList[..|cycleList|] == cycleList;
-        assert integralCycle[|integralCycle|-1] == List.sum(cycleList) + initial;
-        // assert forall k :: 0 <= k < |integralCycle| ==> exists v :: integralCycle[k] == filteredIntegralCycle[v];  
-   }
-
-    // lemma bigProoff(
-    //     initial: nat,  // 5
-    //     prev: seq<nat>, // [ 2 3 ]
-    //     list: seq<nat>, // [ 2 4 ]
-    //     integralList: seq<nat>, // [ 7 11 ]
-    //     modList: seq<nat>, // [2, 1]
-    //     modIntegralList: seq<nat>, // [1, 2]
-    //     m: nat, // 3
-    //     cycleList: seq<nat>, // [ 2 4 2 4 2 4 ]
-    //     integralCycle: seq<nat>, // [ 7 11 13 17 19 23 ]
-    //     modIntegralCycle: seq<nat> // [ 1 2 1 2 1 2 ]
-    // )
-    //     requires m > 0;
-    //     requires |list| > 0;
-    //     requires nonZero(list);
-    //     requires |cycleList| == |list| * m;
-    //     requires |list| == |integralList|;
-
-    //     requires |modList| == |list|;
-    //     requires isModList(list, m, modList);
-    //     requires nonZero(modList);
-
-    //     requires Integral.isIntegral(list, initial, integralList);
-    //     requires isCycle(list, cycleList);
-    //     requires |integralCycle| == |cycleList|;
-    //     requires Integral.isIntegral(cycleList, initial, integralCycle);
-
-    //     // // if the list integral is not multiple of m
-    //     requires isNotMultiple(integralList, m);
-    //     requires |modIntegralList| == |integralList|;
-    //     requires isModList(integralList, m, modIntegralList);
-    //     requires nonZero(modIntegralList);
-
-    //     requires |modIntegralCycle| == |integralCycle|;
-    //     requires isModList(integralCycle, m, modIntegralCycle);
-
-    //     requires ModDiv.mod(sum(list), m) == 0; // [2 4] ==> 2 + 4 == 6 ==> 6 % 3 == 0;
-        
-    //     // the next integral should also be not multiple of m
-    //     ensures isNotMultiple(integralCycle, m);
-    //     ensures nonZero(modIntegralCycle);
-    // {
-    // }
-   method Main() {
-       var l := [2,4,2,4,2,4,2,4,2,4];
-       var i := stepsAvoidMultipleLoop(List.shift(l),5,0,7);
-       print(i);
-   }    
+        assert Derivative.isDerivative(filteredShiftedIntegral, nextInitial, nextSteps);
+        assert Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
+        Derivative.integralOfDerivative(filteredShiftedIntegral, nextSteps, integralNextSteps, nextInitial);
+        assert filteredShiftedIntegral == integralNextSteps;
+    }
 }
