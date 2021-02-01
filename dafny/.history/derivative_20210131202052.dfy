@@ -1,14 +1,12 @@
-include "integral.dfy"
 include "list.dfy"
 include "cycle.dfy"
 
-module Derivetive {
+module Integral {
 
-    import Integral
-    import List
     import Cycle
+    import List
 
-    function isDerivetive(list: seq<nat>, initial: nat, listDerivetive: seq<nat>): bool
+    function isDerivetive1list: seq<nat>, initial: nat, listDerivetive: seq<nat>): bool
         requires |list| == |listDerivetive|;
     {
         ( forall v: nat :: 0 < v < |list| ==> ( list[v] >= list[v-1] && listDerivetive[v] == list[v] - list[v-1] ) )
@@ -20,7 +18,7 @@ module Derivetive {
 
     lemma isDerivetiveReverseIntegral(list: seq<nat>, listIntegral: seq<nat>, listDerivetive: seq<nat>, initial: nat)
         requires |list| == |listIntegral|;
-        requires Integral.isIntegral(list, initial, listIntegral);
+        requires isIntegral(list, initial, listIntegral);
         requires |listIntegral| == |listDerivetive|;
         requires isDerivetive(listIntegral, initial, listDerivetive);
         ensures list == listDerivetive;

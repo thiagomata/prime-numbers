@@ -755,17 +755,25 @@ module ModDiv {
         );
     }
 
-    function isModList(loop: nat, result: seq<nat>): bool
+    function isModListFromValue(loop: nat, result: seq<nat>): bool
         requires loop > 0;
     {
         forall v: nat :: 0 <= v < |result| ==> result[v] == mod(v, loop)
     }
 
-    method modList(size: nat, loop: nat) returns (resultModList: seq<nat>, resultDivList: seq<nat>)
+    function isModListFromList(list: seq<nat>, value: nat, modList: seq<nat>): bool
+        requires |list| == |modList|;
+        requires |list| > 0;
+        requires value > 0;
+    {
+        forall v: nat :: 0 <= v < |list| ==> modList[v] == mod(list[v], value)
+    }
+
+    method getModDivFromValue(size: nat, loop: nat) returns (resultModList: seq<nat>, resultDivList: seq<nat>)
         requires loop > 0;
         ensures |resultModList| == size;
         ensures |resultDivList| == size;
-        ensures isModList( loop, resultModList );
+        ensures isModListFromValue( loop, resultModList );
         ensures forall k : nat :: 0    <= k < |resultDivList| ==> isModDiv(k, loop, resultDivList[k], resultModList[k]);
         ensures forall k : nat :: 0    <= k < |resultModList| ==> resultModList[k] < loop;
         ensures forall k : nat :: loop <  k < |resultModList| ==> resultModList[k] == resultModList[k - loop];
@@ -807,12 +815,33 @@ module ModDiv {
         assert |resultDivList| == size;
     }
 
+    method modListfromList(list: seq<nat>, value: nat ) returns (modList: seq<nat>)
+        requires |list| > 0;
+        requires value > 0;
+        ensures |list| == |modList|;
+        ensures isModListFromList(list,value,modList);
+    {
+        var distance := |list|;
+        var arr := new nat[distance];
+        var k := 0;
+        while (k < |list|)
+            decreases |list| - k;
+            invariant 0 <= k <= |list|;
+            invariant forall v: nat :: 0 <= v < k ==> arr[v] == mod(list[v], value);
+        {
+            arr[k] := mod(list[k], value);
+            k := k + 1;
+        }
+        modList := arr[..];
+        assert |list| == |modList|;
+    }
+
     /**
      * Since is a modList modList[v] == modList[v + loopValue] == modList[v - loopValue]
      */
     lemma modListValuesRepeat(modList: seq<nat>, loopValue: nat)
         requires loopValue > 0;
-        requires isModList(loopValue, modList);
+        requires isModListFromValue(loopValue, modList);
         ensures forall v: nat :: loopValue < v < |modList| ==> modList[v - loopValue] == modList[v];
         ensures forall v: nat :: 0 < v < |modList| - loopValue ==> modList[v] == modList[v + loopValue];
     {

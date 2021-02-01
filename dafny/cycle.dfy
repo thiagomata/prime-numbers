@@ -67,7 +67,7 @@ module Cycle {
         requires loopValue > 0;
         requires |modList| > 0;
         requires loopValue <= |modList|;
-        requires ModDiv.isModList(loopValue, modList);
+        requires ModDiv.isModListFromValue(loopValue, modList);
         ensures isCycle(modList[..loopValue], modList);
     {
         ModDiv.modListValuesRepeat(modList, loopValue);
