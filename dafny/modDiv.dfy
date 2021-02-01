@@ -755,6 +755,42 @@ module ModDiv {
         );
     }
 
+    lemma modATimesNIsZero(
+        div: nat, v1: nat, v2: nat, m: nat
+    )
+       requires div > 0;
+       requires v1 > 0;
+       requires mod(v1, div) == 0;
+       requires m > 0;
+       requires v2 == v1 * m; 
+       ensures mod(v2, div) == 0;
+    {
+        assert mod(v1, div) == 0;
+        if ( m == 1 ) {
+            assert v2 == v1;
+            assert mod(v2, div) == mod(v1, div);
+            assert mod(v2, div) == 0;
+        } else {
+            var v := v2 - v1;
+            modAplusB(div,v,v1);
+            assert mod(v + v1, div) == mod(
+                mod(v,div) +
+                mod(v1,div),
+                div
+            );
+            assert mod(v + v1, div) == mod(
+                mod(v,div),
+                div
+            );
+            modMod(v,div);
+            assert mod(v + v1, div) == mod(v,div);
+            assert v2 == v1 * m;
+            assert v2 - v1 == v1 * m - v1;
+            assert v2 - v1 == v1 * ( m - 1 );
+            modATimesNIsZero(div,v1,v2 - v1, m-1);
+        }
+    }
+
     function isModListFromValue(loop: nat, result: seq<nat>): bool
         requires loop > 0;
     {
