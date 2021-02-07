@@ -182,12 +182,16 @@ module Cycle {
         requires |cycleList| >= |list|;
         requires isCycle(list, cycleList);
         requires |cycleList| == |list| * m;
-        requires ModDiv.mod(List.sum(cycleList), m) == 0;
+        ensures List.sum(cycleList) == m * List.sum(list);
+        ensures ModDiv.mod(List.sum(cycleList), m) == 0;
     {
         sumMultipleList(list,cycleList, m);
         var listSum := List.sum(list);
         var cycleListSum := List.sum(cycleList);
         assert listSum * m == cycleListSum;
+        
+        ModDiv.modATimesNIsZero(m, cycleListSum,  listSum);
+
     }
 
 //     method Main()
