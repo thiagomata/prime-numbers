@@ -755,31 +755,62 @@ module ModDiv {
         );
     }
 
-    lemma modATimesNIsZero(
-        div: nat, a: nat, m: nat
+    /**
+     * mod(b * m, b) == 0;
+     */
+    lemma modBOfMTimesB(
+        b: nat, m: nat
     )
-       requires div > 0;
-       requires a == div * m; 
-       ensures mod(a, div) == 0;
-       decreases a;
+       requires b > 0;
+       ensures mod(b * m, b) == 0;
+       decreases m;
     {
+        var a := b * m;
         if ( m == 0 ) {
             assert a == 0;
-            assert mod(a, div) == mod(0, div);
-            assert mod(a, div) == 0;
+            assert mod(a, b) == mod(0, b);
+            assert mod(a, b) == 0;
         } else {
             assert m > 0;
-            assert a == div * m;
+            assert a == b * m;
             assert a >= m;
-            var smallA := a - div;
+            var smallA := a - b;
             assert smallA >= 0;
-            modAOnBEqualsModAPlusBOnB(smallA, div);
-            assert mod(a, div) == mod(smallA, div);
-            assert a == div * m;
-            assert a - div == div * m - div;
-            assert div * m - div == div * ( m - 1 ); 
-            assert a - div == div * ( m - 1 );
-            modATimesNIsZero(div, a - div, m - 1);
+            modAOnBEqualsModAPlusBOnB(smallA, b);
+            assert mod(a, b) == mod(smallA, b);
+            assert a == b * m;
+            assert a - b == b * m - b;
+            assert b * m - b == b * ( m - 1 ); 
+            assert a - b == b * ( m - 1 );
+            modBOfMTimesB(b, m - 1);
+        }
+    }
+
+    /**
+     * mod(a, b) == 0 ==> mod(m * a, b) == 0;
+     */
+    lemma modATimesNIsZero(
+        b: nat, a: nat, m: nat
+    )
+       requires b > 0;
+       requires mod(a, b) == 0;
+       ensures mod(a * m, b) == 0;
+       decreases m;
+    {
+        if ( m == 0 ) {
+            assert a * m == 0;
+            assert mod(a * m, b) == mod(0 , b) == 0;
+        } else {
+            var smallA := a * m - a;
+            assert smallA >= 0;
+            modAplusB(b,smallA, a);
+            assert mod(a * m, b) == mod( mod(smallA, b) + mod(a,b), b);
+            assert mod(a,b) == 0;
+            assert mod(a * m, b) == mod( mod(smallA, b) + 0, b);
+            assert mod(a * m, b) == mod( mod(smallA, b), b);
+            modMod(smallA, b);
+            assert mod(a * m, b) == mod(smallA, b);
+            modATimesNIsZero(b, a, m - 1);
         }
     }
 
