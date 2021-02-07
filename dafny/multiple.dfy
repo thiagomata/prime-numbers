@@ -62,6 +62,23 @@ module Multiple {
         // thanks Dafny
     }
 
+    lemma keepFilteredFromList(list: seq<nat>, v: nat, filtered: seq<nat>)
+        requires v > 0;
+        requires isFilterMultiples(list, v,filtered);
+        ensures forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],v) != 0 ==> list[k] in filtered );
+    {
+        if ( list == [] ) {
+            assert filtered == [];
+        } else if ( |list| > 0 ) {
+            var head := list[0];
+            if ( ModDiv.mod(head, v) == 0 ) {
+                assert isFilterMultiples(list[1..], v, filtered);
+            } else {
+                assert head in filtered;
+            }
+        }
+    }
+
     lemma filteredStillNotMultiple(list: seq<nat>, v1: nat, v2: nat, filtered: seq<nat>)
         requires v1 > 0;
         requires v2 > 0;
@@ -384,8 +401,9 @@ module Multiple {
     requires |cycleSteps| == |steps| * nextPrime;
     requires |integral| == |cycleSteps|;
     requires Integral.isIntegral(cycleSteps, initial, integral);
-    requires forall p :: 0 <= p < |primes| ==> isNotMultiple(integral, primes[p]);
     requires shifted == List.shift(cycleSteps);
+    requires forall p :: 0 <= p < |primes| ==> isNotMultiple(integral, primes[p]);
+    requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(initial, primes[p]) == 0;
     requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(List.sum(steps), primes[p]) == 0;
     requires |integral| == |shiftedIntegral|;
     requires Integral.isIntegral(shifted, nextInitial, shiftedIntegral);
@@ -395,6 +413,7 @@ module Multiple {
     requires |integralNextSteps| == |nextSteps|;
     requires Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
 
+    ensures forall p :: 0 <= p < |primes| ==> ModDiv.mod(nextInitial, primes[p]) != 0;
     ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(shiftedIntegral, primes[p]);
     ensures isNotMultiple(filteredShiftedIntegral, nextPrime);
     ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(filteredShiftedIntegral, primes[p]);
@@ -403,6 +422,19 @@ module Multiple {
     ensures filteredShiftedIntegral == integralNextSteps;
     {
         shiftedSumEquals(cycleSteps, shifted);
+        
+        assert nextInitial == initial + steps[0];
+        assert integral[0] == initial + List.sum(cycleSteps[..1]);
+        assert cycleSteps[..1] ==  [cycleSteps[0]];
+        assert cycleSteps[0] == steps[0];
+        assert List.sum(cycleSteps[..1]) == List.sum([cycleSteps[0]]);
+        assert List.sum(cycleSteps[..1]) == List.sum([steps[0]]);
+        assert List.sum([steps[0]]) == steps[0];
+        assert integral[0] == initial + steps[0];
+        assert integral[0] == nextInitial;
+
+        assert integral[|integral|-1] == initial + List.sum(cycleSteps[..|integral|]);
+
         forall p | 0 <= p < |primes|
             ensures isNotMultiple(shiftedIntegral, primes[p])
             ensures isNotMultiple(filteredShiftedIntegral, primes[p])
