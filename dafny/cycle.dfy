@@ -190,7 +190,28 @@ module Cycle {
         var cycleListSum := List.sum(cycleList);
         assert listSum * m == cycleListSum;
         
-        ModDiv.modATimesNIsZero(m, cycleListSum,  listSum);
+        ModDiv.modBOfMTimesB(m, listSum);
+
+    }
+
+    lemma cycleMultipleMod(list: seq<nat>, cycleList: seq<nat>, m1: nat, m2: nat)
+        requires m1 > 0;
+        requires m2 > 0;
+        requires |list| > 0;
+        requires |cycleList| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        requires ModDiv.mod(List.sum(list), m1) == 0;
+        requires |cycleList| == |list| * m2;
+        ensures List.sum(cycleList) == m2 * List.sum(list);
+        ensures ModDiv.mod(List.sum(cycleList), m1) == 0;
+    {
+        sumMultipleList(list,cycleList, m2);
+        var listSum := List.sum(list);
+        var cycleListSum := List.sum(cycleList);
+        assert listSum * m2 == cycleListSum;
+        
+        ModDiv.modATimesNIsZero(m1, listSum, m2);
 
     }
 
