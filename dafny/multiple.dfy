@@ -1,6 +1,7 @@
 include "modDiv.dfy"
 include "list.dfy"
 include "cycle.dfy"
+include "multiple.dfy"
 include "integral.dfy"
 include "derivative.dfy"
 
@@ -11,7 +12,6 @@ module Multiple {
     import List
     import Integral
     import Derivative
-
     function isNotMultiple(list: seq<nat>, value: nat): bool
         requires value > 0;
         // requires |list| > 0;
@@ -177,9 +177,9 @@ module Multiple {
             assert ModDiv.mod( ModDiv.mod(b, value), value) == ModDiv.mod(b, value);
             assert ModDiv.mod(a + b, value) == ModDiv.mod(b, value);
             assert ModDiv.mod(b, value) != 0;
-            assert a + b == c;
-            assert ModDiv.mod(a + b, value) == ModDiv.mod(c, value);
-            assert ModDiv.mod(c, value) != 0;
+            // assert a + b == c;
+            // assert ModDiv.mod(a + b, value) == ModDiv.mod(c, value);
+            assert ModDiv.mod(a + b, value) != 0;
             assert ModDiv.mod(shiftedIntegral[0], value) != 0;
             assert isNotMultiple(shiftedIntegral, value);
         }
@@ -367,97 +367,5 @@ module Multiple {
             assert List.sum(shifted) == List.sum([list[0]]) + List.sum(list[1..]);
             assert List.sum(shifted) == List.sum(list);
         }
-    }
-
-    /**
-     * Considering that we can create a sorted list that is never multiple of some primes
-     * from an initial value and some steps that should be added in cycle sequence.
-     * Let's call nextPrime is the first element of that list.
-     * We are able to create a new list that is never multiple from all previous primes
-     * and also is not multiple of next prime.
-     */
-    lemma makingAListNotMultipleOfNextValue(
-        steps: seq<nat>,
-        cycleSteps: seq<nat>,
-        initial: nat, 
-        nextInitial: nat,
-        shifted: seq<nat>,
-        primes: seq<nat>,
-        nextPrime: nat,
-        integral: seq<nat>, 
-        shiftedIntegral: seq<nat>,
-        filteredShiftedIntegral: seq<nat>,
-        nextSteps: seq<nat>,
-        integralNextSteps: seq<nat>
-    )
-    requires |steps| > 0;
-    requires |primes| > 0;
-    requires initial > 0;
-    requires nextInitial == initial + steps[0];
-    requires nextPrime == initial;
-    requires List.nonZero(steps);
-    requires List.nonZero(primes);
-    requires Cycle.isCycle(steps, cycleSteps);
-    requires |cycleSteps| == |steps| * nextPrime;
-    requires |integral| == |cycleSteps|;
-    requires Integral.isIntegral(cycleSteps, initial, integral);
-    requires shifted == List.shift(cycleSteps);
-    requires forall p :: 0 <= p < |primes| ==> isNotMultiple(integral, primes[p]);
-    requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(initial, primes[p]) == 0;
-    requires forall p :: 0 <= p < |primes| ==> ModDiv.mod(List.sum(steps), primes[p]) == 0;
-    requires |integral| == |shiftedIntegral|;
-    requires Integral.isIntegral(shifted, nextInitial, shiftedIntegral);
-    requires isFilterMultiples(shiftedIntegral, nextPrime, filteredShiftedIntegral);
-    requires |nextSteps| == |filteredShiftedIntegral|;
-    requires Derivative.isDerivative(filteredShiftedIntegral, nextInitial, nextSteps);
-    requires |integralNextSteps| == |nextSteps|;
-    requires Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
-
-    ensures forall p :: 0 <= p < |primes| ==> ModDiv.mod(nextInitial, primes[p]) != 0;
-    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(shiftedIntegral, primes[p]);
-    ensures isNotMultiple(filteredShiftedIntegral, nextPrime);
-    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(filteredShiftedIntegral, primes[p]);
-    ensures forall p :: 0 <= p < |primes| ==> isNotMultiple(integralNextSteps, primes[p]);
-    ensures isNotMultiple(integralNextSteps, nextPrime);
-    ensures filteredShiftedIntegral == integralNextSteps;
-    {
-        shiftedSumEquals(cycleSteps, shifted);
-        
-        assert nextInitial == initial + steps[0];
-        assert integral[0] == initial + List.sum(cycleSteps[..1]);
-        assert cycleSteps[..1] ==  [cycleSteps[0]];
-        assert cycleSteps[0] == steps[0];
-        assert List.sum(cycleSteps[..1]) == List.sum([cycleSteps[0]]);
-        assert List.sum(cycleSteps[..1]) == List.sum([steps[0]]);
-        assert List.sum([steps[0]]) == steps[0];
-        assert integral[0] == initial + steps[0];
-        assert integral[0] == nextInitial;
-
-        assert integral[|integral|-1] == initial + List.sum(cycleSteps[..|integral|]);
-
-        forall p | 0 <= p < |primes|
-            ensures isNotMultiple(shiftedIntegral, primes[p])
-            ensures isNotMultiple(filteredShiftedIntegral, primes[p])
-        {
-            assert ModDiv.mod(List.sum(steps), primes[p]) == 0;
-            Cycle.sumMultipleList(steps, cycleSteps, nextPrime);
-            assert List.sum(cycleSteps) == List.sum(steps) * nextPrime;
-            Cycle.cycleMultipleMod(steps, cycleSteps, primes[p], nextPrime);
-            // ModDiv.modATimesNIsZero(primes[p],List.sum(steps),List.sum(cycleSteps),nextPrime);
-            shiftedStillNonMultiple(cycleSteps, integral, primes[p], initial, shiftedIntegral);
-            assert isNotMultiple(shiftedIntegral, primes[p]);
-            filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
-            assert isNotMultiple(filteredShiftedIntegral, primes[p]);
-        }
-        filteredMultiplesIsNotMultiple(shiftedIntegral, nextPrime, filteredShiftedIntegral);
-        assert isNotMultiple(filteredShiftedIntegral, nextPrime);
-
-        assert Derivative.isDerivative(filteredShiftedIntegral, nextInitial, nextSteps);
-        assert Integral.isIntegral(nextSteps, nextInitial, integralNextSteps);
-        Derivative.integralOfDerivative(filteredShiftedIntegral, nextSteps, integralNextSteps, nextInitial);
-        assert filteredShiftedIntegral == integralNextSteps;
-
-        // assert ModDiv.mod(List.sum(nextSteps), v) == 0;
-
     }
 }
