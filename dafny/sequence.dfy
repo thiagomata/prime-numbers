@@ -211,12 +211,31 @@ module Sequence {
             assert Multiple.isNotMultiple(shiftedIntegral, primes[p]);
             
             Derivative.sumOfDerivativeEqualsLastElement(shiftedIntegral, shifted, nextInitial);
-            assert List.last(shiftedIntegral) == List.sum(shifted) + nextInitial;
+            
+            var lastShifed := List.last(shiftedIntegral); 
+            var sumShifted := List.sum(shifted);
+
+            assert lastShifed == sumShifted + nextInitial;
             assert shifted == List.shift(cycleSteps);
             assert List.sum(shifted) == List.sum(cycleSteps);
+            assert sumShifted == List.sum(cycleSteps);
             Cycle.cycleMultipleMod(steps, cycleSteps, primes[p], nextPrime);
             assert ModDiv.mod(List.sum(cycleSteps),primes[p]) == 0;
-            
+            assert ModDiv.mod(sumShifted,primes[p]) == 0;
+            assert ModDiv.mod(lastShifed,primes[p]) == ModDiv.mod(sumShifted + nextInitial,primes[p]);
+            ModDiv.modAplusB(primes[p],sumShifted,nextInitial);
+            assert ModDiv.mod(lastShifed,primes[p]) == ModDiv.mod(nextInitial, primes[p]);
+            assert ModDiv.mod(lastShifed,primes[p]) != 0;
+
+            /**
+             * done:
+             *  - last is not prime
+             * missing:
+             *  - last will not be filtered out
+             *  - last will be the biggest value
+             *  - the sum of the derivative will be equal last
+             */
+
             Multiple.filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
             assert Multiple.isNotMultiple(filteredShiftedIntegral, primes[p]);
         }

@@ -731,6 +731,8 @@ module ModDiv {
     )
        requires div > 0;
        ensures mod(v1+v2,div) == mod( mod(v1, div) + mod(v2, div), div);
+       ensures mod(v1, div) == 0 ==> mod(v1+v2,div) == mod(v2, div);
+       ensures mod(v2, div) == 0 ==> mod(v1+v2,div) == mod(v1, div);
     {
        var vSum := v1 + v2;
        var v1ModDiv := getModDiv(v1, div);
@@ -753,6 +755,20 @@ module ModDiv {
             r1, r2, rSum, rModSum,
             div1, div2, divSum, divModSum
         );
+
+        assert mod(v1+v2,div) == mod( mod(v1, div) + mod(v2, div), div);
+        if ( mod(v1,div) == 0 ) {
+            assert mod(v1+v2,div) == mod( 0 + mod(v2, div), div);
+            assert mod(v1+v2,div) == mod( mod(v2, div), div);
+            modMod(v2, div);
+            assert mod(v1+v2,div) == mod(v2, div);
+        }
+        if ( mod(v2,div) == 0 ) {
+            assert mod(v1+v2,div) == mod( mod(v1, div) + 0, div);
+            assert mod(v1+v2,div) == mod( mod(v1, div), div);
+            modMod(v1, div);
+            assert mod(v1+v2,div) == mod(v1, div);
+        }
     }
 
     /**
