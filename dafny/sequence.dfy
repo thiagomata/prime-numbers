@@ -132,7 +132,7 @@ module Sequence {
         Cycle.cycleAlwaysRepeatTheSameValues(modIntegralList, modIntegralCycle);
     }
 
-        /**
+    /**
      * Considering that we can create a sorted list that is never multiple of some primes
      * from an initial value and some steps that should be added in cycle sequence.
      * Let's call nextPrime is the first element of that list.
@@ -259,18 +259,17 @@ module Sequence {
             assert ModDiv.mod(lastShifedIntegral,primes[p]) == ModDiv.mod(nextInitial, primes[p]);
             assert ModDiv.mod(lastShifedIntegral,primes[p]) != 0;
 
-            // Multiple.keepFilteredFromList(shiftedIntegral, primes[p], filtered: seq<nat>)
-            /**
-             * done:
-             *  - last is not prime
-             * missing:
-             *  - last will not be filtered out
-             *  - last will be the biggest value
-             *  - the sum of the derivative will be equal last
-             */
-
             Multiple.filteredStillNotMultiple(shiftedIntegral, primes[p], nextPrime, filteredShiftedIntegral);
             assert Multiple.isNotMultiple(filteredShiftedIntegral, primes[p]);
+
+            assert primes[p] > 0; // 3
+            // list is non zero, non empty and the List.sum of the list is multiple of m
+            assert |filteredShiftedIntegral| > 0; // 2
+            assert List.nonZero(filteredShiftedIntegral); // [2,4]
+            assert ModDiv.mod(sumShifted,primes[p]) == 0;
+            assert ModDiv.mod(List.last(filteredShiftedIntegral) - nextInitial, primes[p]) == 0;
+            // assert ModDiv.mod(List.sum(filteredShiftedIntegral), primes[p]) == 0; // 2 + 4 == 6; mod(6,3) == 0
+
         }
         Multiple.filteredMultiplesIsNotMultiple(shiftedIntegral, nextPrime, filteredShiftedIntegral);
         assert Multiple.isNotMultiple(filteredShiftedIntegral, nextPrime);
@@ -280,7 +279,13 @@ module Sequence {
         Derivative.integralOfDerivative(filteredShiftedIntegral, nextSteps, integralNextSteps, nextInitial);
         assert filteredShiftedIntegral == integralNextSteps;
 
-        // assert ModDiv.mod(List.sum(nextSteps), v) == 0;
+        // @TODO //
+        // WIP <=======================================
+        // assert that the sum of the derivative is the last element of the integral plus the next initial
+        // assert that the sum of the new steps % any prime is zero
+        // call the modOfIntegralIsCycle for every prime
+        // so the new list is not multiple of any previous prime, not multiple of the current new prime
+        // and will keep not being multiple when run in cycles
     }
 
 
@@ -315,7 +320,6 @@ module Sequence {
             initial, 
             integralList, 
             modIntegralList, 
-            // m,
             v, 
             cycleList, 
             integralCycle,
