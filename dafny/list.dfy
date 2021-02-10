@@ -1,7 +1,27 @@
 module List {
 
     function sorted(list: seq<nat>): bool {
-        forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1]
+        var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
+        prev
+    }
+
+    lemma propertySorted(list: seq<nat>)
+        requires sorted(list);
+        ensures |list| > 0 ==> sorted(list[1..]);
+        ensures |list| > 0 ==> sorted(list[..|list|-1]);
+        ensures forall k :: 0 < k < |list| ==> list[0] < list[k];
+        ensures forall k :: 0 <= k < |list| - 1 ==> last(list) > list[k];
+    {
+        if (|list| < 2 ) {
+            assert forall k :: 0 < k < |list| ==> list[0] < list[k];
+        } else {
+            var min := list[0];
+            assert min < list[1];
+            propertySorted(list[1..]);
+            var max := last(list);
+            assert max > list[|list|-2];
+            propertySorted(list[..|list|-1]);
+        }
     }
 
     function nonZero(list: seq<nat>): bool
