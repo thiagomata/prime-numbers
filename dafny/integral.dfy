@@ -78,6 +78,7 @@ module Integral {
         ensures forall v: nat    :: 0 <  v     < |listIntegral| ==> listIntegral[v] == listIntegral[v-1] + list[v];
         ensures forall k: nat    :: 0 <  k     < |listIntegral| ==> listIntegral[k] >  listIntegral[k-1];
         ensures forall v, p: nat :: 0 <= p < v < |listIntegral| ==> listIntegral[v] >  listIntegral[p];
+        ensures List.sorted(listIntegral)
     {
         integralValuesRelative(list, initial, listIntegral);
 

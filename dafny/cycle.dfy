@@ -90,7 +90,6 @@ module Cycle {
      */
     lemma cycleAlwaysRepeatTheSameValues(list: seq<nat>, listCycle: seq<nat>)
         requires |list| > 0;
-        // requires |listCycle| == |list| * m;        
         requires isCycle(list, listCycle);
         ensures forall k : nat :: 0 <= k < |listCycle| ==> listCycle[k] == list[ModDiv.mod(k,|list|)];
     {
@@ -213,6 +212,19 @@ module Cycle {
         
         ModDiv.modATimesNIsZero(m1, listSum, m2);
 
+    }
+
+    lemma cycleNonZero(list: seq<nat>, cycleList: seq<nat>, m: nat)
+        requires m > 0;
+        requires |list| > 0;
+        requires |cycleList| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        requires |cycleList| == |list| * m;
+        requires List.nonZero(list);
+        ensures List.nonZero(cycleList);
+    {
+        cycleAlwaysRepeatTheSameValues(list,cycleList);
     }
 
 //     method Main()
