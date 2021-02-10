@@ -1,7 +1,6 @@
 include "modDiv.dfy"
 include "list.dfy"
 include "cycle.dfy"
-include "multiple.dfy"
 include "integral.dfy"
 include "derivative.dfy"
 
@@ -66,15 +65,25 @@ module Multiple {
         requires v > 0;
         requires isFilterMultiples(list, v,filtered);
         ensures forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],v) != 0 ==> list[k] in filtered );
+        ensures forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],v) == 0 ==> list[k] !in filtered );
+        ensures forall k :: 0 <= k < |filtered| ==> filtered[k] in list;
+        ensures List.sorted(list) ==> List.sorted(filtered);
     {
         if ( list == [] ) {
             assert filtered == [];
         } else if ( |list| > 0 ) {
             var head := list[0];
+            if (List.sorted(list)) {
+                List.propertySorted(list);
+                assert head == list[0];
+                assert forall k :: 0 < k < |list| ==> head < list[k];
+            }
             if ( ModDiv.mod(head, v) == 0 ) {
                 assert isFilterMultiples(list[1..], v, filtered);
+                assert head !in filtered;
             } else {
                 assert head in filtered;
+                assert filtered[0] == head;
             }
         }
     }
