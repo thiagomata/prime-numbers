@@ -202,6 +202,9 @@ module Sequence {
         Cycle.cycleSameMod(steps, cycleSteps, nextPrime);
         assert ModDiv.mod(List.sum(cycleSteps), nextPrime) == 0;
 
+        Cycle.cycleNonZero(steps, cycleSteps, nextPrime);
+        Integral.integralValuesIncrease(shifted, nextInitial, shiftedIntegral);
+        assert List.sorted(shiftedIntegral);
         var lastShifedIntegral := List.last(shiftedIntegral); 
         var sumShifted := List.sum(shifted);
 
@@ -227,6 +230,10 @@ module Sequence {
         Multiple.keepFilteredFromList(shiftedIntegral, nextPrime, filteredShiftedIntegral);
         assert lastShifedIntegral in filteredShiftedIntegral;
         assert forall k :: 0 <= k < |filteredShiftedIntegral| ==> lastShifedIntegral >= filteredShiftedIntegral[k];
+
+        assert List.sorted(filteredShiftedIntegral);
+        List.propertySorted(filteredShiftedIntegral);
+        assert forall k :: 0 <= k < |filteredShiftedIntegral| ==> List.last(filteredShiftedIntegral) >= filteredShiftedIntegral[k];
 
         assert List.last(filteredShiftedIntegral) == lastShifedIntegral;
         
