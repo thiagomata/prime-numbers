@@ -68,6 +68,9 @@ module Multiple {
         ensures forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],v) == 0 ==> list[k] !in filtered );
         ensures forall k :: 0 <= k < |filtered| ==> filtered[k] in list;
         ensures List.sorted(list) ==> List.sorted(filtered);
+        // ensures |filtered| >= |list|;
+        ensures List.sorted(list) ==> |filtered| > 0 ==> filtered[0] >= list[0];
+        ensures List.sorted(list) ==> |filtered| > 0 ==> List.last(filtered) <= List.last(list);
     {
         if ( list == [] ) {
             assert filtered == [];

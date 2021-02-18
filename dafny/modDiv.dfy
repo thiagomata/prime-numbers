@@ -709,7 +709,7 @@ module ModDiv {
             {
                 assert div >= 1;
                 assert divFactor > 1;
-                assert div * divFactor >= div; // impossible
+                // assert div * divFactor >= div; // impossible
                 assert false;
             }
 
@@ -817,16 +817,28 @@ module ModDiv {
             assert a * m == 0;
             assert mod(a * m, b) == mod(0 , b) == 0;
         } else {
-            var smallA := a * m - a;
-            assert smallA >= 0;
-            modAplusB(b,smallA, a);
-            assert mod(a * m, b) == mod( mod(smallA, b) + mod(a,b), b);
-            assert mod(a,b) == 0;
-            assert mod(a * m, b) == mod( mod(smallA, b) + 0, b);
-            assert mod(a * m, b) == mod( mod(smallA, b), b);
-            modMod(smallA, b);
-            assert mod(a * m, b) == mod(smallA, b);
-            modATimesNIsZero(b, a, m - 1);
+            var n := m;
+            while ( n > 0 )
+                invariant n >= 0;
+                invariant n <= m;
+                invariant mod(a * m, b) == mod( a * n, b);
+                decreases n;
+            {
+                var smallA := a * n - a;
+                assert smallA >= 0;
+                modAplusB(b,smallA, a);
+                assert mod(a * n, b) == mod( mod(smallA, b) + mod(a,b), b);
+                assert mod(a,b) == 0;
+                assert mod(a * n, b) == mod( mod(smallA, b) + 0, b);
+                assert mod(a * n, b) == mod( mod(smallA, b), b);
+                modMod(smallA, b);
+                assert mod(a * n, b) == mod(smallA, b);
+                n := n - 1;
+            }
+            assert n == 0;
+            assert mod(a * 0, b) == mod(a * m, b); 
+            assert mod(0, b) == mod(a * m, b); 
+            assert 0 == mod(a * m, b); 
         }
     }
 
@@ -838,7 +850,7 @@ module ModDiv {
 
     function isModListFromList(list: seq<nat>, value: nat, modList: seq<nat>): bool
         requires |list| == |modList|;
-        requires |list| > 0;
+        // requires |list| > 0;
         requires value > 0;
     {
         forall v: nat :: 0 <= v < |list| ==> modList[v] == mod(list[v], value)
@@ -890,26 +902,44 @@ module ModDiv {
         assert |resultDivList| == size;
     }
 
-    method modListfromList(list: seq<nat>, value: nat ) returns (modList: seq<nat>)
-        requires |list| > 0;
+    function method modListFromList(list: seq<nat>, value: nat ): seq<nat>
         requires value > 0;
-        ensures |list| == |modList|;
-        ensures isModListFromList(list,value,modList);
+        ensures |list| == |modListFromList(list, value)|;
+        decreases list;
+        ensures isModListFromList(list,value,modListFromList(list,value));
     {
-        var distance := |list|;
-        var arr := new nat[distance];
-        var k := 0;
-        while (k < |list|)
-            decreases |list| - k;
-            invariant 0 <= k <= |list|;
-            invariant forall v: nat :: 0 <= v < k ==> arr[v] == mod(list[v], value);
-        {
-            arr[k] := mod(list[k], value);
-            k := k + 1;
-        }
-        modList := arr[..];
-        assert |list| == |modList|;
+        var modList := if (list == []) then [] 
+        else [mod(list[0], value)] + modListFromList(list[1..], value);
+
+        assert |modList| == |list|;
+        assert list == [] ==> modList == [];
+        assert |list| == 1 ==> modList == [mod(list[0],value)];
+        assert |list| > 1 ==> modList == [mod(list[0],value)] + modListFromList(list[1..], value);
+        assert isModListFromList(list,value, modList);
+
+        modList
     }
+
+    // method modListfromList(list: seq<nat>, value: nat ) returns (modList: seq<nat>)
+    //     requires |list| > 0;
+    //     requires value > 0;
+    //     ensures |list| == |modList|;
+    //     ensures isModListFromList(list,value,modList);
+    // {
+    //     var distance := |list|;
+    //     var arr := new nat[distance];
+    //     var k := 0;
+    //     while (k < |list|)
+    //         decreases |list| - k;
+    //         invariant 0 <= k <= |list|;
+    //         invariant forall v: nat :: 0 <= v < k ==> arr[v] == mod(list[v], value);
+    //     {
+    //         arr[k] := mod(list[k], value);
+    //         k := k + 1;
+    //     }
+    //     modList := arr[..];
+    //     assert |list| == |modList|;
+    // }
 
     /**
      * Since is a modList modList[v] == modList[v + loopValue] == modList[v - loopValue]
