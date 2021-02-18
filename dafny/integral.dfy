@@ -100,32 +100,76 @@ module Integral {
             k := k + 1;
         }
         assert forall v, p :: 0 <= p < v < |listIntegral| ==> listIntegral[v] > listIntegral[p];
-
     }
 
-    method integral(list: seq<nat>, initial: nat ) returns (result: seq<nat>)
-        ensures |list| == |result|;
-        ensures isIntegral(list,initial,result);
+    function method integral(list: seq<nat>, initial: nat ): seq<nat>
+        ensures |list| == |integral(list, initial)|;
+        ensures forall k :: 0 < k < |list| ==> (integral(list, initial))[k] == (integral(list, initial))[k-1] + list[k];
+        ensures isIntegral(list,initial,integral(list, initial));
+        decreases list;
     {
-        var distance := |list|;
-        var arr := new nat[distance];
-        var k := 0;
-        var acc := initial;
-        while (k < |list|)
-            decreases |list| - k;
-            invariant 0 <= k <= |list|;
-            invariant forall v: nat :: 0 <= v < k ==> arr[v] == List.sum(list[..v+1]) + initial;
-        {
-            /* 
-             * Could not make it work using acc, what would be fast.
-             * This is not the fast strategy, but for sure is correct
-             */
-            arr[k] := List.sum(list[..k+1]) + initial;
-            k := k + 1;
-        }
-        // array to seq
-        result := arr[..];
+        var head := if |list| == 0 then 0 else list[0] + initial;
+        var prev := if |list| == 0 then [] else integral(list[1..],head);
+        var result := if |list| == 0 then [] else [head] + prev;
+
+        assert |result| > 0 ==> result[0] == list[0] + initial;
+        assert forall k :: 0 < k < |list| ==> result[k] == result[k-1] + list[k];
+        assert |list| == 0 ==> result == [];
+        assert |list| == 1 ==> result == [list[0] + initial];
+        assert |list| == 1 ==> result == [List.sum(list[..1]) + initial];
+        assert |list| > 0 ==> (result)[1..] == integral(list[1..],list[0] + initial);
+        assert |list| > 0 ==> (result)[1..] == integral(list[1..],result[0]);
+
+        integralIsIntegral(result, list, initial);
+        result
     }
+
+    lemma integralIsIntegral(listIntegral:seq<nat>,list:seq<nat>,initial: nat) 
+        requires |listIntegral| == |list|;
+        requires |listIntegral| > 0 ==> listIntegral[0] == list[0] + initial;
+        requires forall k :: 0 <  k < |list| ==> listIntegral[k] == listIntegral[k-1] + list[k];
+        ensures  forall k :: 0 <= k < |list| ==> listIntegral[k] == List.sum(list[..k+1]) + initial;
+        ensures isIntegral(list,initial,listIntegral);
+        decreases |listIntegral|;
+    {
+        if ( |list| == 0 ) {
+            assert |listIntegral| == 0;
+            assert isIntegral(list, initial, listIntegral);
+        } else {
+            assert listIntegral[0] == list[0] + initial;
+            assert List.sum([list[0]]) == list[0];
+            assert [list[0]] == list[..1];
+            assert List.sum([list[0]]) == List.sum(list[..1]);
+            assert listIntegral[0] == List.sum(list[..1]) + initial;
+
+            var k := 0;
+            while ( k < |list| )
+                decreases |list| - k;
+                invariant k <= |list|;
+                invariant k > 0 ==> listIntegral[k-1] == List.sum(list[..k]) + initial;
+                invariant forall v :: 0 <= v < k ==> listIntegral[v] == List.sum(list[..v+1]) + initial;
+            {
+                if ( k == 0 )
+                {
+                    assert listIntegral[0] == List.sum(list[..1]) + initial;
+                } else {
+                    assert listIntegral[0] == List.sum(list[..1]) + initial;
+                    assert listIntegral[k-1] == List.sum(list[..k]) + initial; 
+                    assert listIntegral[k] == listIntegral[k-1] + list[k];
+                    assert listIntegral[k] == List.sum(list[..k]) + initial + list[k];
+                    assert listIntegral[k] == List.sum(list[..k]) + list[k] + initial;
+                    List.sumListPlusValue(list[..k],list[k]);
+                    assert List.sum(list[..k]+[list[k]]) == List.sum(list[..k]+[list[k]]);
+                    assert list[..k]+[list[k]] == list[..k+1];
+                    assert List.sum(list[..k]+[list[k]]) == List.sum(list[..k+1]);
+                }
+                assert listIntegral[k] == List.sum(list[..k+1]) + initial;
+                k := k + 1;
+            }
+        }
+        assert isIntegral(list, initial, listIntegral);
+    }
+
     method testIntegral(v:nat, list: seq<nat>, initial: nat)
     {
         var a := [1,2,3];
