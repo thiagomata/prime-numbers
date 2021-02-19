@@ -160,6 +160,52 @@ module Derivative {
         }
     }
 
+    lemma inverseOfIntegralIsDerivative(listDerivative: seq<nat>, initial: nat, listIntegral: seq<nat>)
+        requires |listDerivative| == |listIntegral|;
+        requires Integral.isIntegral(listDerivative, initial, listIntegral);
+        requires |listIntegral| > 0 ==> listIntegral[0] > initial;
+        ensures isDerivative(listIntegral, initial, listDerivative);
+    {
+        Integral.integralValuesRelative(listDerivative, initial, listIntegral);
+        assert forall v: nat :: 0 < v < |listIntegral| ==> ( listIntegral[v] >= listIntegral[v-1] && listDerivative[v] == listIntegral[v] - listIntegral[v-1] );
+        assert ( |listIntegral| > 0 ==> listIntegral[0] > initial );
+        assert ( |listIntegral| > 0 ==> listDerivative[0] == listIntegral[0] - initial );
+    }
+
+    lemma derivativeOfSortedList(listDerivative: seq<nat>, initial: nat, listIntegral: seq<nat>)
+        requires |listDerivative| == |listIntegral|;
+        requires Integral.isIntegral(listDerivative, initial, listIntegral);
+        requires |listIntegral| > 0 ==> listIntegral[0] > initial;
+        requires List.sorted(listIntegral)
+        ensures isDerivative(listIntegral, initial, listDerivative);
+        ensures List.nonZero(listDerivative);
+    {        
+        inverseOfIntegralIsDerivative(listDerivative, initial, listIntegral);
+        var k := 0;
+        while ( k < |listIntegral| )
+            decreases |listIntegral| - k;
+            invariant k <= |listIntegral|; 
+            invariant k < |listIntegral| ==> listDerivative[k] > 0;
+            invariant forall p :: 0 <= p < k ==> listDerivative[p] > 0;
+        {
+             if ( k > 0 ) {
+                assert listDerivative[k] == listIntegral[k] - listIntegral[k-1];
+                assert listIntegral[k] > listIntegral[k-1];
+                var currentValue := listIntegral[k] - listIntegral[k-1];
+                assert currentValue > 0;
+                assert listDerivative[k] == currentValue;
+                assert listDerivative[k] > 0;
+            } else {
+                assert listIntegral[k] > initial;
+                assert listDerivative[k] == listIntegral[k] - initial;
+                assert listDerivative[k] > 0;
+            }
+            assert listDerivative[k] > 0;
+            k := k + 1;
+        }
+        assert forall k :: 0 <= k < |listIntegral| ==> listDerivative[k] > 0;
+    }
+
     lemma sumOfDerivativeEqualsLastElement(listIntegral: seq<nat>, listDerivative: seq<nat>, initial: nat)
         requires |listIntegral| > 0;
         requires |listDerivative| == |listIntegral|;
