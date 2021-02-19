@@ -193,11 +193,13 @@ module Sequence {
         shiftedIntegral: seq<nat>,
         filteredShiftedIntegral: seq<nat>,
         nextSteps: seq<nat>,
-        integralNextSteps: seq<nat>
+        integralNextSteps: seq<nat>,
+        cycleMultipler: nat
     )
     requires |steps| > 0;
     requires |primes| > 0;
     requires initial > 0;
+    requires cycleMultipler > 0;
     requires nextInitial == initial + steps[0];
     requires nextPrime == initial;
     requires ModDiv.mod(nextInitial, nextPrime ) != 0; // <================= hard to prove
@@ -365,16 +367,14 @@ module Sequence {
             assert ModDiv.mod(nextInitial,primes[p]) != 0;
             assert ModDiv.mod(sumNextSteps + nextInitial,primes[p]) != 0;
 
-            var m := 2;
-
             var modIntegralList := ModDiv.modListFromList(filteredShiftedIntegral, primes[p]);
-            var cycleList := Cycle.cycle(nextSteps, |nextSteps| * m);
+            var cycleList := Cycle.cycle(nextSteps, |nextSteps| * cycleMultipler);
             var integralCycle := Integral.integral(cycleList, nextInitial);
             assert Integral.isIntegral(cycleList, nextInitial, integralCycle);
             var modIntegralCycle := ModDiv.modListFromList(integralCycle, primes[p]);
 
 
-            assert m > 0; // 2
+            assert cycleMultipler > 0; // 2
             assert primes[p] > 0; // 3
 
             // list is non zero, non empty and the List.sum of the list is multiple of m
@@ -384,7 +384,7 @@ module Sequence {
 
             modOfIntegralIsCycle(
                 nextSteps,
-                m,
+                cycleMultipler,
                 primes[p],
                 nextInitial
             );
