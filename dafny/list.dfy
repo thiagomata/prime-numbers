@@ -1,6 +1,6 @@
 module List {
 
-    function sorted(list: seq<nat>): bool {
+    function method sorted(list: seq<nat>): bool {
         var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
         prev
     }
@@ -24,25 +24,47 @@ module List {
         }
     }
 
-    function nonZero(list: seq<nat>): bool
+    function method nonZero(list: seq<nat>): bool
     {
         forall l: nat :: 0 <= l < |list| ==> list[l] > 0
     }
 
-    function unique(list: seq<nat>): bool {
+    function method unique(list: seq<nat>): bool {
         forall n,m : nat :: 0 <= n < m < |list| ==> list[n] != list[m]
     }
 
-    function first(list: seq<nat>): nat 
+    function method first(list: seq<nat>): nat 
         requires |list| > 0;
     {
         list[0]
     }
 
-    function last(list: seq<nat>): nat 
+    function method last(list: seq<nat>): nat 
         requires |list| > 0;
     {
         list[|list|-1]
+    }
+
+    function method max(list: seq<nat>): nat
+        requires |list| > 0;
+        ensures forall k :: 0 <= k < |list| ==> max(list) >= list[k]
+    {
+        var prev := if |list| == 1 then list[0] else max(list[1..]);
+
+        if |list| == 1 then list[0]
+        else if prev > list[0] then prev
+        else list[0] 
+    }
+
+    function method min(list: seq<nat>): nat
+        requires |list| > 0;
+        ensures forall k :: 0 <= k < |list| ==> min(list) <= list[k]
+    {
+        var prev := if |list| == 1 then list[0] else min(list[1..]);
+
+        if |list| == 1 then list[0]
+        else if prev < list[0] then prev
+        else list[0] 
     }
 
     function method sum(list: seq<nat>): nat
