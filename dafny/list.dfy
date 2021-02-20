@@ -5,6 +5,11 @@ module List {
         prev
     }
 
+    function method sortedDesc(list: seq<nat>): bool {
+        var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] < list[k-1];
+        prev
+    }
+
     lemma propertySorted(list: seq<nat>)
         requires sorted(list);
         ensures |list| > 0 ==> sorted(list[1..]);
