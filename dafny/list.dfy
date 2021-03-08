@@ -52,13 +52,34 @@ module List {
 
     function method max(list: seq<nat>): nat
         requires |list| > 0;
-        ensures forall k :: 0 <= k < |list| ==> max(list) >= list[k]
+        ensures forall k :: 0 <= k < |list| ==> max(list) >= list[k];
+        ensures max(list) in list;
     {
         var prev := if |list| == 1 then list[0] else max(list[1..]);
 
         if |list| == 1 then list[0]
         else if prev > list[0] then prev
         else list[0] 
+    }
+
+    lemma maxSumList(listA: seq<nat>, listB: seq<nat>)
+        requires |listA| > 0;
+        requires |listB| > 0; 
+        ensures max(listA + listB) >= max(listA);
+        ensures max(listA + listB) >= max(listB);
+        ensures max(listA) > max(listB) ==> max(listA + listB) == max(listA);
+        ensures max(listB) > max(listA) ==> max(listA + listB) == max(listB);
+        ensures max(listA + listB) >= max(listB + listA);
+    {
+        var maxA := max(listA);
+        var maxB := max(listB);
+        var listAB := listA + listB;
+        assert maxA in listA;
+        assert maxB in listB;
+        assert forall k :: 0 <= k < |listA| ==> listA[k] in listAB;
+        assert forall k :: 0 <= k < |listB| ==> listB[k] in listAB;
+        assert maxA > maxB ==> max(listAB) == maxA;
+        assert maxB > maxA ==> max(listAB) == maxB;
     }
 
     function method min(list: seq<nat>): nat
