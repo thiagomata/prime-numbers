@@ -15,6 +15,7 @@ module Prime {
     }
 
     function method isPrimeList(list: seq<nat>): bool
+        // all the values are unique and sorted
         requires List.sorted(list);
         // all the values are prime
         ensures isPrimeList(list) ==> forall k: nat :: 0 < k < |list| ==> isPrime(list[k])
@@ -35,21 +36,26 @@ module Prime {
         ensures forall k :: 0 <= k < |generatePrimeList(value)| ==> isPrime(generatePrimeList(value)[k]);
         ensures isPrime(value) ==> |generatePrimeList(value)| > 0 && List.last(generatePrimeList(value)) == value;
     {
-        var top := if (isPrime(value)) then [value] else [];
-        var tail := if value > 1 then generatePrimeList(value - 1) else [];
+        var current  := if (isPrime(value)) then [value] else [];
+        var previous := if value > 1 then generatePrimeList(value - 1) else [];
 
-        assert |top| > 0 ==> List.max(top) == value;
-        assert forall k :: 0 <= k < |top| ==> isPrime(top[k]);
-        assert forall k :: 0 <= k < |tail| ==> isPrime(tail[k]);
-        tail + top
+        assert |current| > 0 ==> List.max(current) == value;
+        assert forall k :: 0 <= k < |current|  ==> isPrime(current[k]);
+        assert forall k :: 0 <= k < |previous| ==> isPrime(previous[k]);
+        previous + current
     }
 
     lemma generatePrimeListIsPrimeList(value:nat, list: seq<nat>)
         requires list == generatePrimeList(value);
+        // inside of the bound values
         ensures |list| > 0 ==> List.max(list) <= value;
+        // sorted and unique
         ensures List.sorted(list);
+        // all the prime until value
         ensures forall v: nat :: 0 <= v < value ==> (isPrime(v)  ==> v  in list);
+        // only primes until the value
         ensures forall v: nat :: 0 <= v < value ==> (!isPrime(v) ==> v !in list);
+        // check the prime list def
         ensures isPrimeList(list);
         decreases value;
     {
@@ -69,25 +75,32 @@ module Prime {
             }
         }
 
-        var tail := if value > 1 then generatePrimeList(value - 1) else [];
-        var top := if isPrime(value) then [value] else [];
+        // load previous definition
+        var previous := if value > 1 then generatePrimeList(value - 1) else [];
+
+        // load current definition
+        var current := if isPrime(value) then [value] else [];
+
+        // recursive call if allowed
+        // assumes that the previous have the expected properties
         if ( value > 0 ) {
-            generatePrimeListIsPrimeList(value - 1, tail);
+            generatePrimeListIsPrimeList(value - 1, previous);
         }
 
+        // check if the new list will keep these properties
         if ( isPrime(value) ) {
             assert value in list;
             assert |list| > 0;
-            assert list == tail + top;
-            assert |top| > 0;
-            if (|tail| > 0 ) {
-                List.maxSumList(tail,top);
-                assert List.max(top) == value;
-                assert List.max(tail) <= value - 1;
+            assert list == previous + current;
+            assert |current| > 0;
+            if (|previous| > 0 ) {
+                List.maxSumList(previous,current);
+                assert List.max(current) == value;
+                assert List.max(previous) <= value - 1;
                 assert List.max(list) == value;
             } else {
-                assert list == top;
-                assert List.max(top) == value;
+                assert list == current;
+                assert List.max(current) == value;
                 assert List.max(list) == value;
             }
             assert List.max(list) == value;
@@ -100,17 +113,16 @@ module Prime {
             assert list == [];
         }
 
-        assert isPrime(value) ==> top == [value];
-        assert isPrime(value) ==> value in top;
-        assert list == tail + top;
+        assert isPrime(value) ==> current == [value];
+        assert isPrime(value) ==> value in current;
+        assert list == previous + current;
         assert  isPrime(value) ==> value  in list;
         assert !isPrime(value) ==> value !in list;
 
         assert forall k: nat :: 0 < k < |list| ==> isPrime(list[k]);
 
-        var maxValueLemma := if |list| > 0 then List.max(list) else 0;
         assert forall v: nat :: 0 <= v < 2 ==> isPrime(v) == false;
-        assert forall v: nat :: 0 <= v < value - 1 ==> (isPrime(v) ==> v in tail);
+        assert forall v: nat :: 0 <= v < value ==> (isPrime(v) ==> v in previous);
     }
 
     // lemma thereIsSomePrimeBetweenAPrimeAndItSquared(prime: nat)
