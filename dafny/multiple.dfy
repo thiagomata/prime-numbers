@@ -13,7 +13,6 @@ module Multiple {
     import Derivative
     function isNotMultiple(list: seq<nat>, value: nat): bool
         requires value > 0;
-        // requires |list| > 0;
     {
         forall v: nat :: 0 <= v < |list| ==> ModDiv.mod(list[v], value) != 0
     }
