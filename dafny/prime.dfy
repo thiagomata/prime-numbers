@@ -61,6 +61,8 @@ module Prime {
     {
         assert isPrime(1) == false;
         assert isPrime(0) == false;
+        // all values before 2 are not primes
+        assert forall v: nat :: 0 <= v < 2 ==> isPrime(v) == false;
 
         if ( |list| == 0 ) {
             assert List.sorted(list);
@@ -116,13 +118,20 @@ module Prime {
         assert isPrime(value) ==> current == [value];
         assert isPrime(value) ==> value in current;
         assert list == previous + current;
+
+        // all values in the previous are prime
+        assert forall k: nat :: 0 < k < |previous| ==> isPrime(previous[k]);
+        // since the current value will be only in the list if prime
         assert  isPrime(value) ==> value  in list;
         assert !isPrime(value) ==> value !in list;
-
+        // all values in the list are still prime
         assert forall k: nat :: 0 < k < |list| ==> isPrime(list[k]);
 
-        assert forall v: nat :: 0 <= v < 2 ==> isPrime(v) == false;
+        // all prime values before value are in the previous list
         assert forall v: nat :: 0 <= v < value ==> (isPrime(v) ==> v in previous);
+        // since the current value will be only in the list if prime
+        // all prime values until value are in the list
+        assert forall v: nat :: 0 <= v <= value ==> (isPrime(v) ==> v in list);
     }
 
     // lemma thereIsSomePrimeBetweenAPrimeAndItSquared(prime: nat)
