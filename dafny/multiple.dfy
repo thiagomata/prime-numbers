@@ -30,6 +30,36 @@ module Multiple {
                 isFilterMultiples(list[1..], v, filtered[1..])
     }
 
+    lemma isFilterSingleSolution(list: seq<nat>, a: seq<nat>, b:seq<nat>, v: nat)
+        requires v > 0;
+        requires isFilterMultiples(list, v, a);
+        requires isFilterMultiples(list, v, b);
+        ensures a == b;
+    {
+        if ( |list| == 0 ) {
+            assert a == [];
+            assert b == [];
+            assert a == b;
+        } else {
+            if ( ModDiv.mod(list[0],v) == 0 ) {
+                assert isFilterMultiples(list[1..], v, a);
+                assert isFilterMultiples(list[1..], v, b);
+                isFilterSingleSolution(list[1..],a,b,v);
+                assert a == b;
+            } else {
+                var top := list[0];
+                assert a[0] == top;
+                assert b[0] == top;           
+                assert isFilterMultiples(list[1..], v, a[1..]);
+                assert isFilterMultiples(list[1..], v, b[1..]);
+                isFilterSingleSolution(list[1..],a[1..],b[1..],v);
+                assert a[1..] == b[1..];
+                assert [top] + a[1..] == [top] + b[1..];
+                assert a == b;
+            }
+        }
+    }
+
     lemma filteredMultiplesIsNotMultiple(list: seq<nat>, v: nat, filtered: seq<nat>)
         requires v > 0;
         requires isFilterMultiples(list, v,filtered);
@@ -338,10 +368,10 @@ module Multiple {
             }
         }
  
-   }
+    }
 
     function method stepsAvoidMultiple(steps: seq<nat>, v: nat): seq<nat>
-    requires v > 0;
+        requires v > 0;
     {
         stepsAvoidMultipleLoop(steps, v, 0, 0)
     }
@@ -378,5 +408,145 @@ module Multiple {
             assert List.sum(shifted) == List.sum([list[0]]) + List.sum(list[1..]);
             assert List.sum(shifted) == List.sum(list);
         }
+    }
+
+    lemma distributiveFilter(listA: seq<nat>, listB: seq<nat>, filterA: seq<nat>, filterB: seq<nat>, filterAB: seq<nat>, value: nat)
+        requires value > 0;
+        requires isFilterMultiples(listA, value, filterA);
+        requires isFilterMultiples(listB, value, filterB);
+        requires isFilterMultiples(listA + listB, value, filterAB);
+        ensures filterA + filterB == filterAB;
+    {
+        var listAB := listA + listB;
+        if ( |listA| == 0 && |listB| == 0 ) {
+            assert listA == [];
+            assert listB == [];
+            assert listA + listB == [];
+            assert filterA == [];
+            assert filterB == [];
+            assert filterA + filterB == [];
+            assert filterAB == [] == filterA + filterB;
+        }
+        if( |listA|  > 0 && |listB| == 0 ) {
+            assert listA + listB == listA;
+            assert listA == listAB;
+            assert isFilterMultiples(listA, value, filterA);
+            assert isFilterMultiples(listAB, value, filterAB);
+            assert isFilterMultiples(listA + [], value, filterAB);
+            assert isFilterMultiples(listA, value, filterAB);
+            isFilterSingleSolution(listAB, filterAB, filterA, value);
+            assert filterA == filterAB;
+            assert [] + filterA == filterAB;
+            assert filterA + filterB == filterAB;
+        }    
+        if (|listA|  == 0 && |listB| > 0) {
+            assert listA + listB == listB;
+            assert filterA == [];
+            assert filterA + filterB == filterB;
+            assert listAB == listB;
+            assert isFilterMultiples(listB,  value, filterB);
+            assert isFilterMultiples(listAB, value, filterAB);
+            assert isFilterMultiples([] + listB, value, filterAB);
+            assert isFilterMultiples(listB,  value, filterAB);
+            isFilterSingleSolution(listB, filterAB, filterB, value);
+            assert filterB == filterAB;
+            assert [] + filterB == filterAB;
+            assert filterA + filterB == filterAB;
+        }
+        if ( |listA| > 0 && |listB| > 0 ) {
+            var topA := listA[0];
+            assert listAB[0] == topA;
+            if ( ModDiv.mod(topA,value) != 0 ) {
+
+                assert filterA[0] == topA;
+                assert filterAB[0] == topA;
+
+                assert |listA| > 0;
+                assert |listAB| > 0;
+                assert |filterA| > 0;
+                assert |filterAB| > 0;
+                keepFilteredFromList(listA, value, filterA);
+                keepFilteredFromList(listAB, value, filterAB);
+                assert topA in filterA;
+                assert topA in filterAB;
+                assert isFilterMultiples(listA[1..], value, filterA[1..]);
+                assert isFilterMultiples(listAB[1..], value, filterAB[1..]);
+                assert listA[1..] + listB == listAB[1..];
+                assert filterAB == [filterAB[0]] + filterAB[1..];
+                distributiveFilter(listA[1..], listB, filterA[1..], filterB, filterAB[1..], value);
+                assert filterA[1..] + filterB == filterAB[1..];
+                assert [topA] + filterA[1..] == filterA;
+                assert [topA] + filterAB[1..] == filterAB;
+                assert [topA] + filterA[1..] + filterB == [topA] + filterAB[1..];
+                assert filterA + filterB == filterAB;
+            } else {                
+                keepFilteredFromList(listA, value, filterA);
+                keepFilteredFromList(listAB, value, filterAB);
+                assert topA !in filterA;
+                assert topA !in filterAB;
+                assert isFilterMultiples(listA[1..], value, filterA);
+                assert isFilterMultiples(listAB[1..], value, filterAB);
+                assert listAB[1..] == listA[1..] + listB;
+                distributiveFilter(listA[1..], listB, filterA, filterB, filterAB, value);
+                assert filterA + filterB == filterAB;
+            }
+        }
+    }
+
+    lemma relatedFilteredAndCount(list: seq<nat>, value: nat, filtered: seq<nat>)
+        requires value > 0;
+        requires isFilterMultiples(list, value, filtered);
+        // ensures List.countWithValue(list, value) == List.countWithValue(list,0) + |filtered|;
+    {
+        keepFilteredFromList(list, value,filtered);
+        assert forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],value) == 0 ==> list[k] !in filtered );
+        assert forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],value) != 0 ==> list[k]  in filtered );
+        var countModZero := 0;
+        var countModNonZero := 0;
+        var partialFiltered := [];
+        var partialFilteredOut := [];
+        var k := 0;
+
+        assert isFilterMultiples(list[..k], value, partialFiltered);
+
+        while ( k < |list| )
+            decreases |list| - k;
+            invariant k == countModNonZero + countModZero;
+            invariant |partialFiltered| == countModNonZero;
+            invariant |partialFilteredOut| == countModZero;
+            invariant isNotMultiple(partialFiltered, value);
+            invariant k <= |list|;
+            invariant forall c :: 0 <= c < |partialFilteredOut| ==> ModDiv.mod(partialFilteredOut[c],value) == 0;
+            invariant forall c :: 0 <= c < |partialFiltered|    ==> ModDiv.mod(partialFiltered[c],value)    != 0;
+            invariant forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) != 0 ==> list[c]  in partialFiltered );
+            invariant forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) == 0 ==> list[c] !in partialFiltered );
+            invariant forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) != 0 ==> list[c] !in partialFilteredOut );
+            invariant forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) == 0 ==> list[c]  in partialFilteredOut );
+            invariant forall c :: 0 <= c < |partialFilteredOut| ==> partialFilteredOut[c]  in list;
+            invariant forall c :: 0 <= c < |partialFiltered|    ==> partialFiltered[c]     in list;
+            // invariant List.countWithValue(list[..k],0) == countModZero; 
+            // invariant isFilterMultiples(list[..k], value, partialFiltered);
+        {
+            if ( ModDiv.mod(list[k],value) == 0 ) {
+                countModZero := countModZero + 1;
+                assert list[k] !in filtered;
+                partialFilteredOut := partialFilteredOut + [list[k]];
+            } else {
+                countModNonZero := countModNonZero + 1;
+                assert list[k] in filtered;
+                partialFiltered := partialFiltered + [list[k]];
+            }
+            k := k + 1;
+            assert k == countModNonZero + countModZero;
+        }
+        assert k == |list|;
+        assert forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) != 0 ==> list[c]  in partialFiltered );
+        assert forall c :: 0 <= c < k ==> ( ModDiv.mod(list[c],value) == 0 ==> list[c] !in partialFiltered );
+        assert forall c :: 0 <= c < |partialFiltered|    ==> partialFiltered[c]     in list;
+        assert |partialFiltered| == countModNonZero;
+        assert |partialFilteredOut| == countModZero;
+        assert isFilterMultiples(list, value, filtered);
+        // assert |filtered| == countModNonZero;
+        // assert |filtered| + countModZero == |list|;
     }
 }

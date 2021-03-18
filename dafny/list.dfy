@@ -1,5 +1,78 @@
 module List {
 
+    function method countWithValue(list: seq<nat>, value: nat): nat 
+        decreases |list|;        
+    {
+        if |list| == 0 then 0 else
+        if list[0] == value then 1 + countWithValue(list[1..],value) else
+        countWithValue(list[1..],value)
+    }
+
+    lemma notFoundShouldReturnZero(list: seq<nat>, value: nat)
+        requires forall k : nat :: 0 <= k < |list| ==> list[k] != value;
+        ensures countWithValue(list, value) == 0;
+    {
+        if ( |list| == 0 ) {
+            assert countWithValue(list,value) == 0;
+        } else if |list| == 1 {
+            assert list[0] != value;
+            assert countWithValue(list, value) == 0;
+        } else {
+            var head := [list[0]];
+            var tail := list[1..];
+            assert forall k : nat :: 0 <= k < |tail| ==> tail[k] != value;
+            distributiveCount(head,tail, value);
+            assert list[0] != value;
+            assert countWithValue(head,value) == 0;
+            assert countWithValue(list,value) == countWithValue(head,value) + countWithValue(tail,value);
+            notFoundShouldReturnZero(tail,value);
+        }
+    }
+
+    lemma distributiveCount(listA: seq<nat>, listB: seq<nat>, value: nat)
+        ensures countWithValue(listA, value) + countWithValue(listB, value) == countWithValue(listA + listB, value);
+    {
+        var a := listA;
+        var b := listB;
+        if ( |a| == 0 && |b| == 0 ) {
+            assert a + b == [];
+            assert countWithValue(a, value) + countWithValue(b, value) == 0;
+            assert countWithValue(a + b, value) == 0;
+            assert countWithValue(a, value) + countWithValue(b, value) == countWithValue(a + b, value);
+        }
+        if (|a|  > 0 && |b| == 0) {
+            assert a + b == a;
+            assert  countWithValue(a, value) + countWithValue(b, value) == 
+                    countWithValue(a, value) + 0 == countWithValue(a, value) == 
+                    countWithValue(a + b, value);
+        }
+        if (|a|  == 0 && |b| > 0) {
+            assert a + b == b;
+            assert  countWithValue(a, value) + countWithValue(b, value) == 
+                    0 + countWithValue(b, value) == countWithValue(b, value) == 
+                    countWithValue(a + b, value);
+        }
+        if ( |a| > 0 && |b| > 0 ) {
+            var topA := 0;
+            if ( a[0] == value ) {
+                topA := 1;
+            }
+            assert 
+                countWithValue(a, value) + countWithValue(b, value) == 
+                topA + countWithValue(a[1..],value) + countWithValue(b,value);
+
+            assert a + b == [a[0]] + (a[1..] + b);
+            assert countWithValue(a + b, value) == countWithValue([a[0]], value) + countWithValue(a[1..] + b, value);
+            if ( a[0] == value ) {
+                assert countWithValue(a + b, value) == 1 + countWithValue(a[1..] + b, value);
+            } else {
+                assert countWithValue(a + b, value) == 0 + countWithValue(a[1..] + b, value);
+                assert countWithValue(a + b, value) == countWithValue(a[1..] + b, value);
+            }
+            distributiveSum(a[1..],b);
+        }
+    }
+
     function method sorted(list: seq<nat>): bool {
         var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
         prev

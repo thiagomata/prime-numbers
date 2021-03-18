@@ -7,6 +7,8 @@ module Prime {
 
     import ModDiv
     import List
+    import Multiple
+    import Cycle
 
     function method isPrime(value: nat): bool
     {
@@ -134,8 +136,86 @@ module Prime {
         assert forall v: nat :: 0 <= v <= value ==> (isPrime(v) ==> v in list);
     }
 
+    lemma evenNumbesBiggerThan2AreNotPrime()
+        ensures forall v :: 1 < v ==> isPrime(v*2) == false;
+    {
+        forall v | 1 < v
+            ensures ModDiv.mod(v*2,2) == 0;
+            ensures isPrime(v*2) == false;
+        {
+            assert v > 1;
+            assert v * 2 > 2;
+            ModDiv.modBOfMTimesB(v,2);
+            assert ModDiv.mod(v*2,2) == 0;
+            assert isPrime(v*2) == false;
+        }
+        // mod(b * m, b) == 0
+    }
+
+    // lemma filterPrimes()
+    // if we filter out all the multiples of any number of primes the number of multiples of other
+    // primes should keep stable ( - 1 max )
+
+
+    lemma numberOfMultiplesOfSomeValue( value: nat, start: nat, end: nat, list: seq<nat>, filtered: seq<nat>, modList: seq<nat>)
+        requires value > 0;
+        requires isPrime(value);
+        requires end > start;
+        requires end > 0;
+        requires ModDiv.isModListFromValue(value, modList);
+        requires |list| == end - start;
+        requires forall k :: 0 <= k < |list| ==> list[k] == start + k;
+        requires |modList| == end;
+        requires |modList| > 0;
+        requires |modList| > value;
+        requires Multiple.isFilterMultiples(list,value,filtered);
+//        // ensures |filtered| <= (|list| / value) - 1;
+        // ensures |filtered| >= (|list| / value) + 1;
+    {        
+        // /* we are removing all and only the multiples of the value */
+        Multiple.keepFilteredFromList(list,value,filtered);
+        assert forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],value) == 0 ==> list[k] !in filtered );
+        assert forall k :: 0 <= k < |list| ==> ( ModDiv.mod(list[k],value) != 0 ==> list[k]  in filtered );
+
+        /* check that matches with the def of modList */
+        assert forall k :: 0 <= k < |list| ==> list[k] == start + k;
+        assert forall k :: 0 <= k < |modList| ==> modList[k] == ModDiv.mod(k,value);
+        assert forall k :: 0 <= k < |modList| ==> ModDiv.mod(k,value) < value;
+        // // assert List.max(modList) < value;   
+    //    assert forall k :: 0 <= k < |list| ==> ModDiv.mod(list[k], value) == modList[start + k];
+        assert forall k :: 0 <= k < |list| ==> ( modList[k + start] == 0 ==> list[k] !in filtered );
+        assert forall k :: 0 <= k < |list| ==> ( modList[k + start] != 0 ==> list[k]  in filtered );
+        assert List.countWithValue(modList[start..],0) == |list| - |filtered|;
+
+        var smallModList := modList[..value]; 
+        ModDiv.modListValuesRepeat(modList, value);
+        Cycle.modIsCycle(modList, value);
+        Cycle.cycleAlwaysRepeatTheSameValues(smallModList, modList);
+
+
+        assert isPrime(value);
+        assert value > 1;
+        assert forall v: nat :: 1 < v < value ==> ModDiv.mod(value, v) != 0;
+        assert forall v: nat :: 1 < v < value ==> ModDiv.mod(v, value) == v;
+        assert ModDiv.mod(value,value) == 0;
+        assert ModDiv.mod(0,value) == 0;
+        assert smallModList[0] == 0;
+        
+        // all values in mod list are cycle around the first loop
+        // in the first loop only one mod is
+        assert forall k :: 0 <= k <  |modList| ==> modList[k] == modList[ModDiv.mod(k,value)];
+        assert forall k :: 0 <= k <  |smallModList| ==> ModDiv.mod(k,value) == k;
+        assert forall k :: 0 <= k <  |smallModList| ==> smallModList[k] == k;
+        assert forall k :: 0 <= k < |smallModList[1..]| ==> smallModList[1..][k] != 0;
+        List.notFoundShouldReturnZero(smallModList[1..], 0);
+        assert List.countWithValue(smallModList[1..], 0) == 0;
+        List.distributiveCount([smallModList[0]],smallModList[1..], 0);
+        assert List.countWithValue([smallModList[0]],0) == 1;
+        assert List.countWithValue(smallModList,0) == List.countWithValue([smallModList[0]],0) + List.countWithValue(smallModList[1..],0);
+        assert List.countWithValue(smallModList,0) == 1;
+   }
+
     // lemma thereIsSomePrimeBetweenAPrimeAndItSquared(prime: nat)
     // {
-
     // }
 }
