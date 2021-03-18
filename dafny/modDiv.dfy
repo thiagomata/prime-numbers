@@ -848,7 +848,7 @@ module ModDiv {
         forall v: nat :: 0 <= v < |result| ==> result[v] == mod(v, loop)
     }
 
-    function isModListFromList(list: seq<nat>, value: nat, modList: seq<nat>): bool
+    function method isModListFromList(list: seq<nat>, value: nat, modList: seq<nat>): bool
         requires |list| == |modList|;
         // requires |list| > 0;
         requires value > 0;
@@ -970,11 +970,33 @@ module ModDiv {
         assert v == |modList|;
     }
 
-    function isNotMultiple(list: seq<nat>, value: nat): bool
-        requires value > 0;
-        requires |list| > 0;
+    /**
+     * Since is a modList modList[v] == modList[v + loopValue] == modList[v - loopValue]
+     */
+    lemma modListFromListRepeat(modList: seq<nat>, loopValue: nat)
+        requires loopValue > 0;
+        requires isModListFromValue(loopValue, modList);
+        ensures forall v: nat :: loopValue < v < |modList| ==> modList[v - loopValue] == modList[v];
+        ensures forall v: nat :: 0 < v < |modList| - loopValue ==> modList[v] == modList[v + loopValue];
     {
-        forall v: nat :: 0 <= v < |list| ==> mod(list[v], value) != 0
+        assert forall v: nat :: 0 <= v < |modList| ==> modList[v] == mod(v, loopValue);
+        var v := 0;
+        while ( v < |modList| )
+            decreases |modList| - v;
+            invariant v <= |modList|;
+            invariant forall k: nat :: 0 <= k < v ==> modList[k] == mod(k, loopValue);
+            invariant forall k: nat :: 0 <= k < v ==> modList[k] == mod(k + loopValue, loopValue);
+            invariant forall k: nat :: loopValue <= k < v ==> modList[k - loopValue] == mod(k, loopValue);
+            invariant forall k: nat :: loopValue <= k < v ==> modList[k - loopValue] == modList[k];
+            invariant forall k: nat :: 0 <= k < v - loopValue ==> modList[k] == modList[ k + loopValue ];
+        {
+            modAOnBEqualsModAPlusBOnB(v, loopValue);
+            assert mod(v, loopValue) == mod(v + loopValue, loopValue);
+            assert modList[v] == mod(v, loopValue);
+            assert modList[v] == mod(v + loopValue, loopValue);
+            v := v + 1;
+        }
+        assert v == |modList|;
     }
 
     // method Main() {

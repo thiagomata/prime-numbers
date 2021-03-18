@@ -227,6 +227,32 @@ module Cycle {
         cycleAlwaysRepeatTheSameValues(list,cycleList);
     }
 
+
+    lemma cycleValueProportion(list: seq<nat>, cycleList: seq<nat>, m: nat, value: nat)
+        requires m > 0;
+        requires |list| > 0;
+        requires |cycleList| > 0;
+        requires |cycleList| >= |list|;
+        requires isCycle(list, cycleList);
+        requires |cycleList| == |list| * m;
+        ensures List.countWithValue(list,value) * m == List.countWithValue(cycleList,value);
+    {
+        cycleAlwaysRepeatTheSameValues(list,cycleList);
+        var countList := List.countWithValue(list,value);
+        var countCycle := List.countWithValue(cycleList,value);
+         if m == 1 {
+            assert cycleList == list;
+        } else {
+            var smallCycle := cycleList[|list|..];
+            assert cycleList == list + smallCycle;
+            assert isCycle(list, smallCycle);
+            List.distributiveCount(list,smallCycle,value);
+            assert List.countWithValue(list,value) + List.countWithValue(smallCycle,value) == List.countWithValue(cycleList,value);
+            var smallCount := List.countWithValue(smallCycle,value);
+            cycleValueProportion(list,smallCycle,m - 1,value);
+        }
+   }
+
 //     method Main()
 //     {
 //         print("\ntesting cycle\n");
