@@ -73,6 +73,27 @@ module List {
         }
     }
 
+    lemma appendCount(list: seq<nat>, value: nat, next: nat)
+        ensures value == next ==> countWithValue([next] + list, value) == 1 + countWithValue(list, value);
+        ensures value == next ==> countWithValue(list + [next], value) == countWithValue(list, value) + 1;
+        ensures value != next ==> countWithValue([next] + list, value) == countWithValue(list, value);
+        ensures value != next ==> countWithValue(list + [next], value) == countWithValue(list, value);
+    {
+        var resultNext: nat;
+        if ( value == next ) {
+            resultNext := 1;
+        } else {
+            resultNext := 0;
+        }
+        assert countWithValue([next],value) == resultNext;
+        distributiveCount(list, [next], value);
+        assert countWithValue(list + [next],value) == countWithValue(list,value) + countWithValue([next],value);
+        assert countWithValue(list + [next],value) == countWithValue(list,value) + resultNext;
+        distributiveCount([next], list, value);
+        assert countWithValue([next] + list,value) == countWithValue([next],value) + countWithValue(list,value);
+        assert countWithValue([next] + list,value) == resultNext + countWithValue(list,value);
+    }
+
     function method sorted(list: seq<nat>): bool {
         var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
         prev
