@@ -20,6 +20,8 @@ module ProportionOnMultiples {
         // ensures List.countWithValue(afterCycle[..start],searchValue) <=
         //         List.countWithValue(list,searchValue) * ( ModDi.div(start,|list|) - 1 );
 
+        ensures List.countWithValue( Cycle.cycle(list, end)[..start], searchValue ) <= 
+                List.countWithValue(list, searchValue) * ( ModDiv.div(start,|list|) +  1 );
     {
         var l := List.countWithValue(list,searchValue);
 
@@ -85,6 +87,9 @@ module ProportionOnMultiples {
         assert beforeStart == ( n - 1 ) * |list|;
         var rStart := start - beforeStart;
         assert ModDiv.isModDiv(start, |list|, n - 1, rStart);
+        ModDiv.isModDivDeterministic( start, |list|, n - 1, rStart);
+        assert ModDiv.div(start,|list|) == n - 1;
+        assert ModDiv.div(start,|list|) + 1 == n;
 
         assert start < end;
         assert (n - 1) * |list| <= start < end <= m * |list|;
@@ -125,6 +130,8 @@ module ProportionOnMultiples {
             assert |afterCycle| >= afterStart;
             var afterStartCycle  := Cycle.cycle(list, afterStart);
             var beforeStartCycle := Cycle.cycle(list, beforeStart);
+            assert Cycle.isCycle(list, afterStartCycle);
+            assert Cycle.isCycle(list, beforeStartCycle);
             Cycle.cycleAlwaysRepeatTheSameValues(list,afterStartCycle);
             Cycle.proportionOnPerfectCycle(list, n, searchValue);
             assert |beforeStartCycle| == 0;
@@ -152,67 +159,88 @@ module ProportionOnMultiples {
             assert List.countWithValue(afterCycle[start..afterStart], searchValue) >= 0;
             assert List.countWithValue(afterCycle[..start], searchValue) <= l; 
             assert List.countWithValue(afterCycle[..start], searchValue) <= l * n;
-        } 
-        // else {
-        //     assert n > 1;
-        //     assert (n - 1) > 0;
-        //     assert |list| > 0;
+        } else {
+            assert n > 1;
+            assert (n - 1) > 0;
+            assert |list| > 0;
+
+            assert afterStart  == (n) * |list|;
+            assert beforeStart == (n - 1) * |list|;
+            assert ( n - 1 ) * |list| > 0;
+            assert beforeStart > 0;
+            assert afterStart > beforeStart;
+            assert beforeStart <= start;
+            assert afterStart > start;
+
+            var afterStartCycle  := Cycle.cycle(list, afterStart);
+            var beforeStartCycle := Cycle.cycle(list, beforeStart);
+            assert |afterStartCycle|  == afterStart;
+            assert |beforeStartCycle| == beforeStart;
+            assert Cycle.isCycle(list, afterStartCycle);
+            assert Cycle.isCycle(list, beforeStartCycle);
+            Cycle.cycleAlwaysRepeatTheSameValues(list,afterStartCycle);
+            Cycle.cycleAlwaysRepeatTheSameValues(list,beforeStartCycle);
+            assert afterStartCycle[..afterStart] == afterStartCycle;
+            assert beforeStartCycle[..beforeStart] == beforeStartCycle;
+
+            assert |afterCycle| == afterEnd;
+            assert |afterCycle| >= afterStart;
+            assert afterCycle[..afterStart] == afterStartCycle[..afterStart] == afterStartCycle;
+            assert afterCycle[..beforeStart] == beforeStartCycle[..beforeStart] == beforeStartCycle;
+            assert afterStartCycle[..beforeStart] + afterStartCycle[beforeStart..] ==  afterStartCycle;
+            assert beforeStartCycle[..beforeStart] == afterStartCycle[..beforeStart] == beforeStartCycle;
+
+            /* we can define the proportion of the value in the perfect after cycle */
+            Cycle.proportionOnPerfectCycle(list, n, searchValue);
+            Cycle.proportionOnPerfectCycle(list, n - 1, searchValue);
+            assert List.countWithValue(afterStartCycle, searchValue)  == l * n;
+            assert List.countWithValue(beforeStartCycle, searchValue) == l * ( n - 1);
+
+            List.countWithValueSum(afterCycle[..afterStart],beforeStart,searchValue);
+            assert List.countWithValue(afterCycle[..afterStart], searchValue) == 
+                List.countWithValue(afterCycle[..beforeStart], searchValue) +
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert List.countWithValue(afterStartCycle, searchValue) == 
+                List.countWithValue(beforeStartCycle, searchValue) +
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert l * n == 
+                List.countWithValue(beforeStartCycle, searchValue) +
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert l * n == 
+                l * ( n - 1) +
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert l * n  - l * ( n - 1) == 
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert l * n  - l * n - l == 
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+            assert l == 
+                List.countWithValue(afterCycle[beforeStart..afterStart], searchValue);
+
+            /* count from before start until start */
+            assert List.countWithValue( afterStartCycle[beforeStart..], searchValue) == 
+                List.countWithValue(    afterStartCycle[beforeStart..start], searchValue) +
+                List.countWithValue(    afterStartCycle[start..], searchValue);
+            /* count in afterStartCycle[beforeStart..] is count on list times n */
+            assert l == 
+                List.countWithValue(afterStartCycle[beforeStart..start],searchValue) +
+                List.countWithValue(afterStartCycle[start..],searchValue);
+            assert List.countWithValue(afterStartCycle[beforeStart..start],searchValue) <= l;
+            /* count from before start until after start */
+            assert List.countWithValue(afterStartCycle[start..],searchValue) <= l;
+            /* since afterCycle contains afterStartCycle */
+            assert List.countWithValue(afterCycle[start..afterStart],searchValue) <= l;
+
+            List.countWithValueSum(afterCycle[..start],beforeStart,searchValue);
+            assert List.countWithValue(afterCycle[..start],searchValue) == 
+                List.countWithValue(afterCycle[..beforeStart],searchValue) +
+                List.countWithValue(afterCycle[beforeStart..start],searchValue);
+            assert List.countWithValue(afterCycle[..start],searchValue) == 
+                l * ( n - 1 ) +
+                List.countWithValue(afterCycle[beforeStart..start],searchValue);
             
-        //     assert afterStart  == (n) * |list|;
-        //     assert beforeStart == (n - 1) * |list|;
-        //     assert ( n - 1 ) > 0;
-        //     assert |list| > 0;
-        //     assert ( n - 1 ) * |list| > 0;
-        //     assert beforeStart > 0;
-
-        //     var afterStartCycle  := Cycle.cycle(list, afterStart);
-        //     var beforeStartCycle := Cycle.cycle(list, beforeStart);
-        //     assert Cycle.isCycle(list, afterStartCycle);
-        //     assert Cycle.isCycle(list, beforeStartCycle);
-        //     assert |afterStartCycle|  == afterStart;
-        //     assert |beforeStartCycle| == beforeStart;
-        //     assert |afterCycle| >= afterStart;
-        //     assert afterCycle[..afterStart] == afterStartCycle;
-        //     assert beforeStart < afterStart;
-        //     assert afterStartCycle[..beforeStart] + afterStartCycle[beforeStart..] ==  afterStartCycle;
-        //     assert beforeStartCycle == afterStartCycle[..beforeStart];
-
-        //     /* we can define the proportion of the value in the perfect after cycle */
-        //     Cycle.proportionOnPerfectCycle(list, n, searchValue);
-        //     Cycle.proportionOnPerfectCycle(list, n - 1, searchValue);
-        //     assert List.countWithValue(afterStartCycle,searchValue)  == l * n;
-        //     assert List.countWithValue(beforeStartCycle,searchValue) == l * ( n - 1);
-
-        //     /* count from before start until start */
-        //     List.countWithValueSum(afterStartCycle[beforeStart..],start,searchValue);
-        //     assert List.countWithValue( afterStartCycle[beforeStart..], searchValue) == 
-        //         List.countWithValue(    afterStartCycle[beforeStart..start], searchValue) +
-        //         List.countWithValue(    afterStartCycle[start..], searchValue);
-        //     /* count in afterStartCycle[beforeStart..] is count on list times n */
-        //     assert l == 
-        //         List.countWithValue(afterStartCycle[beforeStart..start],searchValue) +
-        //         List.countWithValue(afterStartCycle[start..],searchValue);
-        //     assert List.countWithValue(afterStartCycle[beforeStart..start],searchValue) <= l;
-        //     /* count from before start until after start */
-        //     assert List.countWithValue(afterStartCycle[start..],searchValue) <= l;
-        //     /* since afterCycle contains afterStartCycle */
-        //     assert List.countWithValue(afterCycle[start..afterStart],searchValue) <= l;
-
-        //     // IMPORTANT
-        //     assert List.countWithValue(beforeStartCycle,searchValue) == l * ( n - 1);
-
-        //     List.countWithValueSum(afterCycle[..start],beforeStart,searchValue);
-        //     assert List.countWithValue(afterCycle[..start],searchValue) == 
-        //         List.countWithValue(afterCycle[..beforeStart],searchValue) +
-        //         List.countWithValue(afterCycle[beforeStart..start],searchValue);
-        //     assert List.countWithValue(afterCycle[..start],searchValue) == 
-        //         l * ( n - 1 ) +
-        //         List.countWithValue(afterCycle[beforeStart..start],searchValue);
-        //     assert List.countWithValue(afterCycle[..start],searchValue) >=
-        //         l * ( n - 1 );
-        //     assert List.countWithValue(afterCycle[..start],searchValue) <=
-        //         l * n;
-        // }
+            assert List.countWithValue(afterCycle[..start],searchValue) >= l * ( n - 1 );
+            assert List.countWithValue(afterCycle[..start],searchValue) <= l * n;
+        }
         // List.countWithValueSum(afterCycle[..end],start,searchValue);
         // assert List.countWithValue(afterCycle[..end],searchValue) == 
         //     List.countWithValue(afterCycle[..end],searchValue) +
