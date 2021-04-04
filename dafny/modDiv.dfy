@@ -1003,6 +1003,44 @@ module ModDiv {
         assert v == |modList|;
     }
 
+
+    lemma isModDivDeterministic(a: nat, b: nat, div1: nat, r1: nat, div2: nat, r2: nat)
+        requires b > 0;
+        requires isModDiv(a,b,div1,r1);
+        requires isModDiv(a,b,div2,r2);
+        ensures div1 == div2;
+        ensures r1 == r2;
+        decreases a;
+    {
+        if (a < b) {
+            assert div1 == 0;
+            assert div2 == 0;
+            assert r1 == a;
+            assert r2 == a;
+            assert div1 == div2;
+            assert r1 == r2;
+        } else if ( a == b ) {
+            assert div1 == 1;
+            assert div2 == 1;
+            assert r1 == 0;
+            assert r2 == 0;
+            assert div1 == div2;
+            assert r1 == r2;
+        } else {
+            assert a > b;
+            isModDivMinus(a,b,div1,r1);
+            isModDivMinus(a,b,div2,r2);
+            isModDivPlus(a, b, div1, r1);
+            isModDivPlus(a, b, div2, r2);
+            assert isModDiv( a - b, b, div1 - 1, r1);
+            assert isModDiv( a - b, b, div2 - 1, r2);
+            isModDivDeterministic( a - b, b, div1 - 1, r1, div2 - 1, r2);
+            assert div1 - 1 == div2 - 1;
+            assert div1 == div2;
+            assert r1 == r2;
+        }
+    }
+
     // method Main() {
     //     print("hello from ModDiv \n");
     //     print("\n mod(5,2) \n");
