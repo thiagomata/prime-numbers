@@ -35,6 +35,10 @@ module ModDiv {
      */
     function method isModDiv(a: nat, b: nat, division: nat, remainder: nat): bool
         requires b > 0;
+        ensures isModDiv(a,b,division,remainder) ==> remainder + b * division == a;
+        ensures isModDiv(a,b,division,remainder) ==> remainder < b;
+        ensures isModDiv(a,b,division,remainder) ==> remainder <= a;
+        ensures isModDiv(a,b,division,remainder) ==> a - remainder == division * b;
     {
         var validIsModDiv := if ! ( division * b + remainder == a ) then false
         else if ! ( remainder < b ) then false

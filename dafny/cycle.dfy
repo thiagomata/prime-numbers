@@ -124,7 +124,7 @@ module Cycle {
     lemma cycleByConcat(list: seq<nat>, cycleList: seq<nat>, smallCycle: seq<nat>, m: nat)
         requires |list| > 0;
         requires |cycleList| > |list|;
-        requires |smallCycle| > |list|;
+        requires |smallCycle| >= |list|;
         requires isCycle(list, cycleList);
         requires isCycle(list, smallCycle);
         requires |cycleList| == |list| * m;
@@ -253,6 +253,38 @@ module Cycle {
         }
    }
 
+    lemma proportionOnPerfectCycle(list: seq<nat>, m: nat,searchValue: nat)
+        requires m  > 0;
+        requires |list| > 0;
+        ensures List.countWithValue(cycle(list, |list| * m),searchValue) == List.countWithValue(list,searchValue) * m;
+        decreases m;
+    {
+        var cycleList := cycle(list, ( m * |list| ) );
+        if ( m == 1 ) {
+            assert cycleList == list;
+            assert List.countWithValue(cycleList,searchValue) == List.countWithValue(list,searchValue) * m;
+        } else {
+            assert m > 1;
+            var smallCycle := cycle(list, (m - 1) * |list| );
+            assert |smallCycle| == (m - 1 ) * |list|;
+            assert |smallCycle| >= |list|;
+            cycleByConcat(list, cycleList, smallCycle, m);
+            assert cycleList == list + smallCycle;
+            proportionOnPerfectCycle(list, m - 1, searchValue);
+            
+            assert list + smallCycle == cycleList; 
+            List.distributiveCount(list,smallCycle,searchValue);
+            assert List.countWithValue(cycleList,searchValue) ==
+                List.countWithValue(list,searchValue) +
+                List.countWithValue(smallCycle,searchValue);
+            assert List.countWithValue(smallCycle, searchValue) == List.countWithValue(list,searchValue) * (m - 1);
+            assert List.countWithValue(cycleList,searchValue) ==
+                List.countWithValue(list,searchValue) +
+                List.countWithValue(list,searchValue) * (m - 1);
+            assert List.countWithValue(cycleList,searchValue) == List.countWithValue(list,searchValue) * m;
+        }
+        assert List.countWithValue(cycleList,searchValue) == List.countWithValue(list,searchValue) * m;
+    }
 //     method Main()
 //     {
 //         print("\ntesting cycle\n");

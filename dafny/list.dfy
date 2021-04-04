@@ -94,6 +94,28 @@ module List {
         assert countWithValue([next] + list,value) == resultNext + countWithValue(list,value);
     }
 
+    lemma countWithValueSum(list: seq<nat>, position: nat, searchValue: nat)
+        requires position <= |list|;
+        ensures list == list[..position] + list[position..];
+        ensures countWithValue(list,searchValue) == countWithValue(list[..position],searchValue) + countWithValue(list[position..], searchValue);
+        ensures countWithValue(list[..position],searchValue) == countWithValue(list,searchValue) - countWithValue(list[position..], searchValue);
+        ensures countWithValue(list[position..],searchValue) == countWithValue(list,searchValue) - countWithValue(list[..position], searchValue);
+    {
+        assert  list == list[..position] + list[position..];
+        distributiveCount(
+                list[..position], list[position..], searchValue
+            );
+        assert countWithValue(list,searchValue) == 
+            countWithValue(list[..position],searchValue) +
+            countWithValue(list[position..],searchValue);
+        assert countWithValue(list[..position],searchValue) == 
+            countWithValue(list,searchValue) -
+            countWithValue(list[position..],searchValue);
+        assert countWithValue(list[position..],searchValue) == 
+            countWithValue(list,searchValue) -
+            countWithValue(list[..position],searchValue);
+    }
+
     function method sorted(list: seq<nat>): bool {
         var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
         prev
