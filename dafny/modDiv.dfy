@@ -1041,6 +1041,22 @@ module ModDiv {
         }
     }
 
+    lemma isDivDeterministic(a: nat, b: nat, div1: nat, r1: nat)
+        requires b > 0;
+        requires isModDiv(a,b,div1,r1);
+        ensures div1 == div(a,b);
+        ensures r1 == mod(a,b);
+        decreases a;
+    {
+        var result := getModDiv(a, b);
+        var div2 := pairFirst(result);
+        var r2 := pairLast(result);
+        assert div2 == div(a,b);
+        assert r2 == mod(a,b);
+        assert isModDiv(a,b,div2,r2);
+        isModDivDeterministic(a,b,div1,r1,div2,r2);
+    }
+
     // method Main() {
     //     print("hello from ModDiv \n");
     //     print("\n mod(5,2) \n");
