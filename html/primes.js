@@ -145,7 +145,8 @@ window.loadSequences = function loadSequences() {
   
   let table = document.createElement("table");
   let sequence = null;
-  for (let i = 0; i < 5; i++) {
+  let loadSequences = 6;
+  for (let i = 0; i < loadSequences; i++) {
     if (sequence === null) {
       sequence = Sequence.createFirst();
     } else {
@@ -162,7 +163,7 @@ window.loadSequences = function loadSequences() {
     step_header.innerHTML = 'steps';
     step_header.title = sequence.step;
     steps.appendChild(step_header);
-    let preview = sequence.preview(30);
+    let preview = sequence.preview(42);
     preview.forEach((value, key) => {
       let isPrevious = sequence.previousNumbers.indexOf(value) > -1;
       let cel = document.createElement("td");
@@ -174,13 +175,13 @@ window.loadSequences = function loadSequences() {
       }
       row.appendChild(cel);
       let step = document.createElement("td");
-      step.innerHTML = sequence.step.circular(key);
+      step.innerHTML = sequence.step.circular(key - sequence.previousNumbers.length);
       if( isPrevious ) {
         step.className = " previous "      
       } else {
         step.className = " seqvalue "      
       }
-      step.className += " seq" + Math.ceil( (key + 1) / sequence.step.length );
+      step.className += " seq" + (Math.floor( (key + sequence.step.length - sequence.previousNumbers.length) / sequence.step.length ) % 5);
       steps.appendChild(step);
     });
     table.appendChild(steps);
@@ -193,14 +194,19 @@ window.loadSequences = function loadSequences() {
   let maxSafeNumber =  ( sequence.getNextNumber() * sequence.getNextNumber() - 1 );
   let divExplain = document.createElement("div");
   divExplain.className = "explain";
-  divExplain.innerHTML = "This last sequence is able to filter out all the multiples of " + sequence.previousNumbers + " ." +
+  divExplain.innerHTML = "This " + loadSequences + "# sequence is able to filter out all the multiples of " + sequence.previousNumbers + " ." +
     "Ensuring to have only prime numbers until " +  maxSafeNumber + ". It also reduce the number of elements to search for prime numbers in " + Math.round( 100 - 100 * sequence.step.length / sequence.step.sum() ) + "% after that.";
   document.body.appendChild(divExplain);
 
   let div = document.createElement("div");
   div.className = "manyNumbers"
-  div.innerHTML = "The first 200 elements of that sequence are: " + sequence.preview(200).map( x => " " + x);
+  div.innerHTML = "The first 200 elements of that sequence are: <code>" + sequence.preview(200).map( x => " " + x) + "</code>";
   document.body.appendChild(div);
+
+  let seq = document.createElement("div");
+  seq.className = "manyNumbers"
+  seq.innerHTML = "The steps of the " + loadSequences + "# sequence are: <code>" + sequence.step.map( x => " " + x) + "</code>";
+  document.body.appendChild(seq);
 }
 
 ////////////////// some performance tests //////////////////////////////
