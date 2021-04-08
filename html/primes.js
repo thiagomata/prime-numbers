@@ -172,14 +172,18 @@ window.loadSequences = function loadSequences() {
         cel.className = " previous "      
       } else {
         cel.className = " seqvalue "      
+        cel.title =
+        preview[key - 1] + " + " +
+        sequence.step.circular(key - sequence.previousNumbers.length);
       }
+
       row.appendChild(cel);
       let step = document.createElement("td");
       step.innerHTML = sequence.step.circular(key - sequence.previousNumbers.length);
       if( isPrevious ) {
         step.className = " previous "      
       } else {
-        step.className = " seqvalue "      
+        step.className = " seqvalue "
       }
       step.className += " seq" + (Math.floor( (key + sequence.step.length - sequence.previousNumbers.length) / sequence.step.length ) % 5);
       steps.appendChild(step);
