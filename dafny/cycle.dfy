@@ -378,6 +378,8 @@ module Cycle {
             assert forall k : nat :: |list| <= k < |cycleShifted|          ==> cycleShifted[k] == cycleShifted[k - |list|];
             assert forall k : nat :: 0      <= k < |cycleShifted| - |list| ==> cycleShifted[k] == cycleShifted[k + |list|];
 
+            assert |shiftedCycle| == |cycleShifted|;
+            assert forall k : nat :: 0 <= k < |cycleShifted| ==> cycleShifted[k] == shiftedCycle[k];
             assert shiftedCycle == cycleShifted;
         // }
     }
