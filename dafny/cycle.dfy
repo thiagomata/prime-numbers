@@ -374,9 +374,9 @@ module Cycle {
             assert ModDiv.mod(|cycleList| - 1,|cycleList|) == ModDiv.mod(|list| - 1,|list|) == |list| - 1;
             assert List.last(cycleList) == List.last(list) == shifted[0] == shiftedCycle[0] == cycleShifted[0];
             
-            // assert forall k : nat :: 0      <= k < |list|                  ==> cycleShifted[k] == list[k];
-            // assert forall k : nat :: |list| <= k < |cycleShifted|          ==> cycleShifted[k] == cycleShifted[k - |list|];
-            // assert forall k : nat :: 0      <= k < |cycleShifted| - |list| ==> cycleShifted[k] == cycleShifted[k + |list|];
+            assert forall k : nat :: 0      <= k < |list|                  ==> cycleShifted[k] == list[k];
+            assert forall k : nat :: |list| <= k < |cycleShifted|          ==> cycleShifted[k] == cycleShifted[k - |list|];
+            assert forall k : nat :: 0      <= k < |cycleShifted| - |list| ==> cycleShifted[k] == cycleShifted[k + |list|];
 
             assert shiftedCycle == cycleShifted;
         // }
