@@ -31,8 +31,8 @@ div.explain {
 div.manyNumbers {
   padding: 20px;
   width:90%;
-  height: 200px;
   overflow: auto;
+  font-size: 20px;
 }
 
 .values .previous {
@@ -44,14 +44,18 @@ div.manyNumbers {
 
 .steps .previous {
   color: #eeeeee;
+  background-color: rgb(200,200,200)!important;
 }
 
 .steps .seqvalue {
   color: green;
 }
 
-.seq1 {
+.seq0 {
   background-color: rgb(200,155,155); 
+}
+.seq1 {
+  background-color: rgb(200, 173, 155); 
 }
 .seq2 {
   background-color: rgb(200,200,155); 
