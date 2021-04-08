@@ -228,6 +228,39 @@ module ModDiv {
         assert remainder <= a - b;
     }
 
+    lemma isModDivMinusTimes(a: nat, b: nat, m: nat)
+        requires b > 0;
+        requires a > 0;
+        requires a <= b;
+        requires m > 0;
+        ensures mod(b * m - a, b) == b - a;
+        decreases m;
+    {
+        if ( m == 1 ) {
+            assert b - a <= b;
+            assert b - a >= 0;
+            if( a == b) {
+                assert mod(a - b,b) == mod(0,b) == 0;
+            } else {
+                assert b - a > 0;
+                assert b - a < b;
+                modSmallValues(b - a, b);
+                assert mod(b - a, b) == b - a;
+            }
+        } else {
+            assert m > 1;
+            var resultModDiv := getModDiv(b * m - a, b);
+            var division := pairFirst(resultModDiv);
+            var remainder := pairLast(resultModDiv);
+            assert b * m - a - b == b * ( m - 1) - a >= b - a >= 0;
+            isModDivMinus(b * m - a, b, division, remainder);
+            assert isModDiv( b * m - a - b, b, division - 1, remainder);
+            isModDivMinusTimes(a,b,m-1);
+            assert mod(b * m - a, b) == mod(b * (m - 1) - a, b);
+            assert mod(b * m - a, b) == b - a;
+        }
+    }
+
     /**
      * There is only one div value and remainder for each pair (a,b).
      * 
@@ -624,14 +657,14 @@ module ModDiv {
         r1: nat, r2: nat, rSum: nat, rModSum: nat,
         div1: nat, div2: nat, divSum: nat, divModSum: nat
     )
-       requires div > 0;
-       requires vSum == v1 + v2;
-       requires vModSum == r1 + r2;
-       requires isModDiv(v1, div, div1, r1);
-       requires isModDiv(v2, div, div2, r2);
-       requires isModDiv(vSum, div, divSum, rSum);
-       requires isModDiv(vModSum, div, divModSum, rModSum);
-       ensures rModSum == rSum;
+        requires div > 0;
+        requires vSum == v1 + v2;
+        requires vModSum == r1 + r2;
+        requires isModDiv(v1, div, div1, r1);
+        requires isModDiv(v2, div, div2, r2);
+        requires isModDiv(vSum, div, divSum, rSum);
+        requires isModDiv(vModSum, div, divModSum, rModSum);
+        ensures rModSum == rSum;
     {
         assert vSum == v1 + v2;
         assert isModDiv(v1, div, div1, r1);
@@ -713,7 +746,7 @@ module ModDiv {
             {
                 assert div >= 1;
                 assert divFactor > 1;
-                // assert div * divFactor >= div; // impossible
+                assert div * divFactor >= div; // impossible
                 assert false;
             }
 
