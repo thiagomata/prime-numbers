@@ -285,6 +285,102 @@ module Cycle {
         }
         assert List.countWithValue(cycleList,searchValue) == List.countWithValue(list,searchValue) * m;
     }
+
+    lemma shiftedCycleIsCycleShifted(list: seq<nat>, cycleList: seq<nat>, m: nat)
+        requires m > 1;
+        requires |list| > 1;
+        requires |cycleList| > 0;
+        requires |cycleList| == |list| * m;
+        requires isCycle(list,cycleList);
+        // ensures isCycle(List.shift(list),List.shift(cycleList));
+        ensures List.shift(cycleList) == cycle(List.shift(list),|cycleList|);
+    {
+        var shifted := List.shift(list);
+        assert |shifted| == |list|;
+        var shiftedCycle := cycle(shifted,|cycleList|);
+        var cycleShifted := List.shift(cycleList);
+        assert |shiftedCycle| == |cycleList|;
+        assert |cycleList| > |list|;
+        // if( |list| == 1 ) {
+        //     assert list == shifted;
+        //     cycleAlwaysRepeatTheSameValues(list,cycleList);
+        //     cycleAlwaysRepeatTheSameValues(shifted,shiftedCycle);
+        //     var c := |shiftedCycle|;
+        //     assert forall k : nat :: 0 <= k < c ==> shiftedCycle[k] == shifted[ModDiv.mod(k,1)];
+        //     assert forall k : nat :: 0 <= k < c ==> ModDiv.mod(k,1) == 0;
+        //     assert forall k : nat :: 0 <= k < c ==> shiftedCycle[k] == shifted[0];
+        //     assert forall k : nat :: 0 <= k < c ==> cycleList[k] == list[0];
+        //     assert shiftedCycle == cycleList;
+        // } else {
+            cycleAlwaysRepeatTheSameValues(list,cycleList);
+            cycleAlwaysRepeatTheSameValues(shifted,shiftedCycle);
+            assert forall k : nat :: 0 <= k < |cycleList| ==> cycleList[k] == list[ModDiv.mod(k,|list|)];
+            assert forall k : nat :: 1 <= k < |cycleList| - 1 ==> 
+                cycleShifted[k] == 
+                cycleList[k + 1] == 
+                list[ModDiv.mod(1 + k,|list|)];
+
+            assert forall k : nat :: 0 <= k < |shiftedCycle| ==> shiftedCycle[k] == shifted[ModDiv.mod(k,|shifted|)];
+            assert ModDiv.mod(1,|shifted|) == 1;
+            assert forall v :: 0 <= v < |list| - 1 ==> shifted[v] == list[v+1] == cycleList[v+1];
+            assert cycleList[|list|] == cycleList[|list| - |list|] == cycleList[0] == list[0];
+            assert shifted[|list|-1] == list[0];
+            assert shifted[|list|-1] == cycleList[|list|];
+            assert forall v :: 0 <= v < |shifted| ==> shifted[v] == cycleList[v+1];
+            forall k | 0 <= k < |shiftedCycle| - 1
+                ensures cycleShifted[k] == shiftedCycle[k];
+            {
+                assert |shifted| == |list|;
+                assert |shiftedCycle| == |cycleList|;
+                var n := ModDiv.mod(k,|shifted|);
+                assert n < |list|;
+                assert n < |shifted|;
+                assert shiftedCycle[k] == shifted[n];
+                assert cycleList[1 + n] == list[ModDiv.mod(1+n,|list|)] == 
+                    list[
+                        ModDiv.mod(
+                            1 + ModDiv.mod(k,|list|),
+                            |list|
+                        )
+                    ];
+                assert ModDiv.mod(
+                            1 + ModDiv.mod(k,|list|),
+                            |list|
+                        ) == 
+                        ModDiv.mod(
+                            ModDiv.mod(1,|list|) + ModDiv.mod(k,|list|),
+                            |list|
+                        );
+                ModDiv.modAplusB(|list|,1,k);
+                assert ModDiv.mod(
+                            ModDiv.mod(1,|list|) + ModDiv.mod(k,|list|),
+                            |list|
+                        ) == ModDiv.mod(1 + k,|list|);
+                assert cycleList[1 + k] == list[ModDiv.mod(1 + k,|list|)];
+                assert cycleList[1 + n] == cycleList[1 + k];
+                assert shifted[n] == cycleList[1 + n] == cycleList[1 + k];
+                assert shiftedCycle[k] == cycleList[1 + k] == cycleShifted[k];
+            }
+            assert forall k :: 0 <= k < |shiftedCycle| - 1 ==> cycleShifted[k] == shiftedCycle[k];
+            assert cycleShifted[0] == shiftedCycle[0];
+
+            assert List.last(shiftedCycle) == shifted[ModDiv.mod(|shiftedCycle| - 1,|shifted|)];
+            ModDiv.isModDivMinusTimes(1,|shifted|,m);
+            
+            assert ModDiv.mod(|shiftedCycle| - 1,|shifted|) == ModDiv.mod(|shifted| - 1,|shifted|) == |shifted| - 1;
+            assert List.last(shiftedCycle) == List.last(shifted) == list[0] == cycleList[0] == List.last(cycleShifted);
+            assert List.last(cycleList)    == List.last(list)    == list[ModDiv.mod(|list| - 1, |list|)];
+            
+            assert ModDiv.mod(|cycleList| - 1,|cycleList|) == ModDiv.mod(|list| - 1,|list|) == |list| - 1;
+            assert List.last(cycleList) == List.last(list) == shifted[0] == shiftedCycle[0] == cycleShifted[0];
+            
+            // assert forall k : nat :: 0      <= k < |list|                  ==> cycleShifted[k] == list[k];
+            // assert forall k : nat :: |list| <= k < |cycleShifted|          ==> cycleShifted[k] == cycleShifted[k - |list|];
+            // assert forall k : nat :: 0      <= k < |cycleShifted| - |list| ==> cycleShifted[k] == cycleShifted[k + |list|];
+
+            assert shiftedCycle == cycleShifted;
+        // }
+    }
 //     method Main()
 //     {
 //         print("\ntesting cycle\n");

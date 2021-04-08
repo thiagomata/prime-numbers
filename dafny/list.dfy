@@ -116,6 +116,29 @@ module List {
             countWithValue(list[..position],searchValue);
     }
 
+    lemma countShifted(list: seq<nat>, searchValue: nat)
+        ensures countWithValue(shift(list),searchValue) == countWithValue(list,searchValue)
+    {
+        var shifted := shift(list);
+        if ( |list| == 0 ) {
+            assert list == shifted;
+            assert countWithValue(list,searchValue) == countWithValue(shifted,searchValue);
+        } else {
+            assert shifted == list[1..] + [list[0]];
+            appendCount(list[1..], searchValue, list[0]);
+            assert countWithValue(list,searchValue) ==
+                countWithValue(list[1..],searchValue) +
+                countWithValue([list[0]],searchValue) ==
+                countWithValue([list[0]],searchValue) +
+                countWithValue(list[1..],searchValue);
+            distributiveCount(list[1..],[list[0]],searchValue);
+            assert countWithValue(shifted,searchValue) ==
+                countWithValue(list[1..],searchValue) +
+                countWithValue([list[0]],searchValue);
+            assert countWithValue(shifted,searchValue) == countWithValue(list, searchValue);
+        }
+    }
+
     function method sorted(list: seq<nat>): bool {
         var prev   := forall k : nat :: 1 <= k < |list| ==> list[k] > list[k-1];
         prev
