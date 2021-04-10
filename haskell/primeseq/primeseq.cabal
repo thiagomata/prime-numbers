@@ -81,8 +81,8 @@ executable primeseq
 
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.12 && <4.13, numbers >=3000.2 && <3000.3
-
+  build-depends:       base >=4.12 && <4.13, numbers >=3000.2
+  
   -- Directories containing source files.
   hs-source-dirs:      src
 

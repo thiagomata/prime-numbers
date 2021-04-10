@@ -22,6 +22,10 @@ getPrimeList command = case command of
         "seq-length2"   ->   [ show(v) | v <- PrimeListBetter.infiniteSequenceSum ]
         "seq-sum"       ->   [ show(Sequence.seqLength s) | s <- (Sequence.infiniteSequences )]
         "seq-sum2"      ->   [ show(v) | v <- PrimeListBetter.infiniteSequenceSum ]
+        "seq-steps"     ->   [ show(Sequence.steps s) | s <- (Sequence.infiniteSequences )]
+        "seq-steps-bounds"   ->   [ show([minimum(Sequence.steps s), maximum(Sequence.steps s)]) | s <- (Sequence.infiniteSequences )]
+        "matrix"        ->   [ show(take 10000 (cycle(Sequence.steps s))) | s <- (Sequence.infiniteSequences )]
+        "matrix-shift"  ->   [ show(take 10000 (replicate (length(Sequence.values s)) 0 ++ cycle(Sequence.steps s))) | s <- (Sequence.infiniteSequences )]
 --------------------------        
         "prop-classic"        -> [ show(v) | v <- PrimeListBetter.infiniteSequenceProportion ]
         "prop-unfoldr"        -> [ show(v) | v <- PrimeListBetter.sequenceProportionBetter PrimeList.infinitePrimeListUnfoldr 1 ]
@@ -29,7 +33,7 @@ getPrimeList command = case command of
         "prop-fuse-inverted"  -> [ show(v) | v <- PrimeListBetter.sequenceProportionBetter PrimeList.infiniteFusePrimeListInverted 1 ]
         "prop-better"         -> [ show(v) | v <- PrimeListBetter.sequenceProportionBetter PrimeListBetter.infiniteFusePrimeListBetter 1 ]
         "prop-sequence"       -> [ show(v) | v <- PrimeListBetter.sequenceProportionBetter Sequence.primesFromSeq 1 ]
---------------------------        
+--------------------------
 getPrimeList  _  =   [ show(-1) ]
 
 firstPrimes :: [Char] -> Int -> [String]
