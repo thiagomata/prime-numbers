@@ -5,21 +5,21 @@ Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division alg
 $$
 \forall \text{ } dividend, divisor \in \mathbb{N}, \text{ where } divisor\neq 0 
 $$
-$$
 
+$$
 \exists ! \
 \text{quotient} = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies  
 $$
-$$
 
+$$
 dividend = divisor \cdot quotient + \text{remainder}, \text { where } 0 \leq \text{remainder} < |b|, 
 $$
-$$
 
+$$
 dividend \text{ mod } divisor = remainder, 
 $$
-$$
 
+$$
 dividend \text{ div } divisor = quotient. 
 $$
 
