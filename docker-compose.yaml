@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  stainless:
+    build: 
+      context: .
+      dockerfile: ./infra/docker/stainless/Dockerfile
+    volumes:
+      - ./src/stainless:/app
+    working_dir: /app
+    command: ["stainless", "Modulo.scala"]

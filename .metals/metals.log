@@ -1,0 +1,686 @@
+SLF4J(W): Class path contains multiple SLF4J providers.
+SLF4J(W): Found provider [scribe.slf4j.ScribeServiceProvider@127e3a4f]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@664ea553]
+SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J(I): Actual provider is of type [scribe.slf4j.ScribeServiceProvider@127e3a4f]
+2024.09.25 23:22:08 WARN  Flyway upgrade recommended: H2 2.3.230 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.
+2024.09.25 23:22:09 WARN  scala-cli >= 0.1.3 not found in PATH, fetching and starting a JVM-based Scala CLI
+2024.09.25 23:22:38 INFO  Running List(C:\Program Files\Eclipse Adoptium\jdk-17.0.4.8-hotspot\bin\java.exe, -cp, C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\cli_3\1.4.1\cli_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app_3\2.1.0-M28\case-app_3-2.1.0-M28.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-launcher_2.13\2.1.10\coursier-launcher_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-proxy-setup\2.1.10\coursier-proxy-setup-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\publish\publish_2.13\0.1.6\publish_2.13-0.1.6.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\jimfs\jimfs\1.3.0\jimfs-1.3.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\jniutils\windows-jni-utils\0.3.3\windows-jni-utils-0.3.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\plokhotnyuk\jsoniter-scala\jsoniter-scala-core_3\2.13.5.2\jsoniter-scala-core_3-2.13.5.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\libsodiumjni\0.0.4\libsodiumjni-0.0.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-typesafe-config_3\0.12.0\metaconfig-typesafe-config_3-0.12.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ai\kien\python-native-libs_3\0.2.4\python-native-libs_3-0.2.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-packager_2.13\0.1.29\scala-packager_2.13-0.1.29.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli-signing\cli_3\0.2.3\cli_3-0.2.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\slf4j\slf4j-nop\2.0.13\slf4j-nop-2.0.13.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\client3\core_2.13\3.9.7\core_2.13-3.9.7.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-library_3\3.3.3\scala3-library_3-3.3.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\build-module_3\1.4.1\build-module_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\config_3\1.4.1\config_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\scala3-graal_3\1.4.1\scala3-graal_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\specification-level_3\1.4.1\specification-level_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\sourcecode_3\0.4.2\sourcecode_3-0.4.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app-annotations_3\2.1.0-M28\case-app-annotations_3-2.1.0-M28.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\case-app-util_3\2.1.0-M28\case-app-util_3-2.1.0-M28.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\scala-cli\tmp\zip-input-stream\0.1.1\zip-input-stream-0.1.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.14\scala-library-2.13.14.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-cache_2.13\2.1.10\coursier-cache_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-core_2.13\2.1.10\coursier-core_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\guava\33.2.1-jre\guava-33.2.1-jre.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\net\java\dev\jna\jna\5.14.0\jna-5.14.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\net\java\dev\jna\jna-platform\5.12.1\jna-platform-5.12.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-core_3\0.12.0\metaconfig-core_3-0.12.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\typesafe\config\1.4.1\config-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-collection-compat_3\2.12.0\scala-collection-compat_3-2.12.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-io\commons-io\2.15.0\commons-io-2.15.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\cloud\tools\jib-core\0.22.0\jib-core-0.22.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\bouncycastle\bcpg-jdk18on\1.76\bcpg-jdk18on-1.76.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli-signing\shared_3\0.2.3\shared_3-0.2.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\model\core_2.13\1.7.9\core_2.13-1.7.9.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\shared\core_2.13\1.3.16\core_2.13-1.3.16.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\softwaremill\sttp\shared\ws_2.13\1.3.16\ws_2.13-1.3.16.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\ow2\asm\asm\9.7\asm-9.7.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\java-class-name\java-class-name_3\0.1.3\java-class-name_3-0.1.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\semanticdb-shared_2.13.14\4.9.8\semanticdb-shared_2.13.14-4.9.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\test-runner_3\0.5.4\test-runner_3-0.5.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\os-lib_3\0.10.2\os-lib_3-0.10.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\pprint_3\0.9.0\pprint_3-0.9.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-env-nodejs_2.13\1.4.0\scalajs-env-nodejs_2.13-1.4.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-sbt-test-adapter_2.13\1.16.0\scalajs-sbt-test-adapter_2.13-1.16.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\swoval\file-tree-views\2.1.12\file-tree-views-2.1.12.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\zip-input-stream\zip-input-stream\0.1.2\zip-input-stream-0.1.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\options_3\1.4.1\options_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\directives_3\1.4.1\directives_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\scala-cli-bsp\1.4.1\scala-cli-bsp-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\test-runner_3\1.4.1\test-runner_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\tasty-lib_3\1.4.1\tasty-lib_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-archiver\4.9.0\plexus-archiver-4.9.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-container-default\2.1.1\plexus-container-default-2.1.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\windows-ansi\windows-ansi\0.0.5\windows-ansi-0.0.5.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-util_2.13\2.1.10\coursier-util_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\concurrent-reference-hash-map\1.1.0\concurrent-reference-hash-map-1.1.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-xml_2.13\2.3.0\scala-xml_2.13-2.3.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\failureaccess\1.0.2\failureaccess-1.0.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\errorprone\error_prone_annotations\2.26.1\error_prone_annotations-2.26.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\j2objc\j2objc-annotations\3.0.0\j2objc-annotations-3.0.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\geirsson\metaconfig-pprint_3\0.12.0\metaconfig-pprint_3-0.12.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\typelevel\paiges-core_3\0.4.3\paiges-core_3-0.4.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-reflect\2.13.14\scala-reflect-2.13.14.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\cloud\tools\jib-build-plan\0.4.0\jib-build-plan-0.4.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client\1.34.0\google-http-client-1.34.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client-apache-v2\1.34.0\google-http-client-apache-v2-1.34.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auth\google-auth-library-oauth2-http\0.18.0\google-auth-library-oauth2-http-0.18.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\commons\commons-compress\1.24.0\commons-compress-1.24.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-databind\2.13.3\jackson-databind-2.13.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.13.3\jackson-datatype-jsr310-2.13.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\bouncycastle\bcprov-jdk18on\1.76\bcprov-jdk18on-1.76.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-compiler_3\3.3.1\scala3-compiler_3-3.3.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\scalameta_2.13\4.9.8\scalameta_2.13-4.9.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\thesamet\scalapb\scalapb-runtime_2.13\0.11.17\scalapb-runtime_2.13-0.11.17.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\tools_3\0.5.4\tools_3-0.5.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\test-interface\1.0\test-interface-1.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\sbt\junit-interface\0.13.3\junit-interface-0.13.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\geny_3\1.1.0\geny_3-1.1.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\fansi_3\0.5.0\fansi_3-0.5.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-js-envs_2.13\1.4.0\scalajs-js-envs_2.13-1.4.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ch\epfl\scala\bloop-config_2.13\2.0.2\bloop-config_2.13-2.0.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\core_3\1.4.1\core_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\using_directives\1.1.1\using_directives-1.1.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\virtuslab\scala-cli\build-macros_3\1.4.1\build-macros_3-1.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\ch\epfl\scala\bsp4j\2.1.1\bsp4j-2.1.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\javax\inject\javax.inject\1\javax.inject-1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-utils\4.0.0\plexus-utils-4.0.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-io\3.4.1\plexus-io-3.4.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\iq80\snappy\snappy\0.4\snappy-0.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\tukaani\xz\1.9\xz-1.9.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\luben\zstd-jni\1.5.5-10\zstd-jni-1.5.5-10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\codehaus\plexus\plexus-classworlds\2.6.0\plexus-classworlds-2.6.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\xbean\xbean-reflect\3.7\xbean-reflect-3.7.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\fusesource\jansi\jansi\1.18\jansi-1.18.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\httpcomponents\httpclient\4.5.10\httpclient-4.5.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\apache\httpcomponents\httpcore\4.4.12\httpcore-4.4.12.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\opencensus\opencensus-api\0.24.0\opencensus-api-0.24.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\opencensus\opencensus-contrib-http-util\0.24.0\opencensus-contrib-http-util-0.24.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auto\value\auto-value-annotations\1.6.6\auto-value-annotations-1.6.6.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\auth\google-auth-library-credentials\0.18.0\google-auth-library-credentials-0.18.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\http-client\google-http-client-jackson2\1.32.1\google-http-client-jackson2-1.32.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-annotations\2.13.3\jackson-annotations-2.13.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\fasterxml\jackson\core\jackson-core\2.13.3\jackson-core-2.13.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala3-interfaces\3.3.1\scala3-interfaces-3.3.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\tasty-core_3\3.3.1\tasty-core_3-3.3.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-asm\9.5.0-scala-1\scala-asm-9.5.0-scala-1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\compiler-interface\1.3.5\compiler-interface-1.3.5.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-reader\3.19.0\jline-reader-3.19.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-terminal\3.19.0\jline-terminal-3.19.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\jline\jline-terminal-jna\3.19.0\jline-terminal-jna-3.19.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\parsers_2.13\4.9.8\parsers_2.13-4.9.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scalap\2.13.14\scalap-2.13.14.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\thesamet\scalapb\lenses_2.13\0.11.17\lenses_2.13-0.11.17.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\protobuf\protobuf-java\3.19.6\protobuf-java-3.19.6.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\modules\scala-collection-compat_2.13\2.12.0\scala-collection-compat_2.13-2.12.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\nir_3\0.5.4\nir_3-0.5.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-native\util_3\0.5.4\util_3-0.5.4.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-logging_2.13\1.1.1\scalajs-logging_2.13-1.1.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\unroll-annotation_2.13\0.1.12\unroll-annotation_2.13-0.1.12.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\bleep\bloop-rifle_2.13\1.5.17-sc-2\bloop-rifle_2.13-1.5.17-sc-2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-jvm_2.13\2.1.10\coursier-jvm_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\dependency_3\0.2.3\dependency_3-0.2.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\jgit\org.eclipse.jgit\6.8.0.202311291450-r\org.eclipse.jgit-6.8.0.202311291450-r.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-js\scalajs-env-jsdom-nodejs_2.13\1.1.0\scalajs-env-jsdom-nodejs_2.13-1.1.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\lsp4j\org.eclipse.lsp4j.generator\0.20.1\org.eclipse.lsp4j.generator-0.20.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\lsp4j\org.eclipse.lsp4j.jsonrpc\0.20.1\org.eclipse.lsp4j.jsonrpc-0.20.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\commons-codec\commons-codec\1.16.0\commons-codec-1.16.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\grpc\grpc-context\1.22.1\grpc-context-1.22.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-sbt\util-interface\1.3.0\util-interface-1.3.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\trees_2.13\4.9.8\trees_2.13-4.9.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-compiler\2.13.14\scala-compiler-2.13.14.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\libdaemon\libdaemon_2.13\0.0.11\libdaemon_2.13-0.0.11.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\alexarchambault\scala-cli\snailgun\snailgun-core_2.13\0.4.1-sc2\snailgun-core_2.13-0.4.1-sc2.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\github\alexarchambault\argonaut-shapeless_6.3_2.13\1.3.1\argonaut-shapeless_6.3_2.13-1.3.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier_2.13\2.1.10\coursier_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\get-coursier\coursier-env_2.13\2.1.10\coursier-env_2.13-2.1.10.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\googlecode\javaewah\JavaEWAH\1.2.3\JavaEWAH-1.2.3.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtend\org.eclipse.xtend.lib\2.28.0\org.eclipse.xtend.lib-2.28.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scalameta\common_2.13\4.9.8\common_2.13-4.9.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\github\java-diff-utils\java-diff-utils\4.12\java-diff-utils-4.12.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\io\argonaut\argonaut_2.13\6.3.8\argonaut_2.13-6.3.8.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\chuusai\shapeless_2.13\2.3.9\shapeless_2.13-2.3.9.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtext\org.eclipse.xtext.xbase.lib\2.28.0\org.eclipse.xtext.xbase.lib-2.28.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\eclipse\xtend\org.eclipse.xtend.lib.macro\2.28.0\org.eclipse.xtend.lib.macro-2.28.0.jar;C:\Users\thiag\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\com\lihaoyi\sourcecode_2.13\0.4.2\sourcecode_2.13-0.4.2.jar, scala.cli.ScalaCli, bsp, D:\Projects\github\prime-numbers)
+2024.09.25 23:22:38 INFO  tracing is disabled for protocol BSP, to enable tracing of incoming and outgoing JSON messages create an empty file at D:\Projects\github\prime-numbers\.metals\bsp.trace.json or C:\Users\thiag\AppData\Local\scalameta\metals\cache\bsp.trace.json
+2024.09.25 23:22:40 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-frontend_2.12/1.5.17-sc-2/bloop-frontend_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:40 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-frontend_2.12/1.5.17-sc-2/bloop-frontend_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.19/scala-library-2.12.19.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/libdaemon/libdaemon_2.12/0.0.11/libdaemon_2.12-0.0.11.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-backend_2.12/1.5.17-sc-2/bloop-backend_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/2.0.0/bloop-config_2.12-2.0.0.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/scala-debug-adapter_2.12/4.1.1/scala-debug-adapter_2.12-4.1.1.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.19/scala-library-2.12.19.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/libdaemon/libdaemon_2.12/0.0.11/libdaemon_2.12-0.0.11.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/2.0.0/bloop-config_2.12-2.0.0.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-backend_2.12/1.5.17-sc-2/bloop-backend_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/scala-debug-adapter_2.12/4.1.1/scala-debug-adapter_2.12-4.1.1.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/qos/logback/logback-parent/1.4.14/logback-parent-1.4.14.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/qos/logback/logback-parent/1.4.14/logback-parent-1.4.14.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/test-agent/1.10.0/test-agent-1.10.0.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/parsers_2.12/4.9.5/parsers_2.12-4.9.5.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.4.1/sourcecode_2.12-0.4.1.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-ivy_2.12/1.10.0/librarymanagement-ivy_2.12-1.10.0.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-shared_2.12/1.5.17-sc-2/bloop-shared_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:41 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/pprint_2.12/0.9.0/pprint_2.12-0.9.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.4.1/sourcecode_2.12-0.4.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/nailgun-server/1.0.7/nailgun-server-1.0.7.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-shared_2.12/1.5.17-sc-2/bloop-shared_2.12-1.5.17-sc-2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-compat_2.12/2.12.0/scala-collection-compat_2.12-2.12.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/pprint_2.12/0.9.0/pprint_2.12-0.9.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/test-agent/1.10.0/test-agent-1.10.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/zeroturnaround/zt-zip/1.17/zt-zip-1.17.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-ivy_2.12/1.10.0/librarymanagement-ivy_2.12-1.10.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.19/scala-reflect-2.12.19.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/nailgun-server/1.0.7/nailgun-server-1.0.7.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/com-microsoft-java-debug-core/0.34.0+30/com-microsoft-java-debug-core-0.34.0+30.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.19/scala-reflect-2.12.19.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-sender-urlconnection/2.17.2/zipkin-sender-urlconnection-2.17.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-compat_2.12/2.12.0/scala-collection-compat_2.12-2.12.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/brave/brave/5.18.1/brave-5.18.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/zeroturnaround/zt-zip/1.17/zt-zip-1.17.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/parsers_2.12/4.9.5/parsers_2.12-4.9.5.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/com-microsoft-java-debug-core/0.34.0+30/com-microsoft-java-debug-core-0.34.0+30.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-sender-urlconnection/2.17.2/zipkin-sender-urlconnection-2.17.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/brave/brave/5.18.1/brave-5.18.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/brave/brave-parent/5.18.1/brave-parent-5.18.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-parent/2.17.2/zipkin-reporter-parent-2.17.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-parent/2.17.2/zipkin-reporter-parent-2.17.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/brave/brave-parent/5.18.1/brave-parent-5.18.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.4.0/jna-platform-4.4.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/fansi_2.12/0.5.0/fansi_2.12-0.5.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.17.2/zipkin-reporter-2.17.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/jsonrpc4s_2.12/0.1.1/jsonrpc4s_2.12-0.1.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/trees_2.12/4.9.5/trees_2.12-4.9.5.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/get-coursier/interface/1.0.13/interface-1.0.13.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/trees_2.12/4.9.5/trees_2.12-4.9.5.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-core_2.12/1.10.0/librarymanagement-core_2.12-1.10.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.4.0/jna-platform-4.4.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/zipkin2/zipkin/2.27.0/zipkin-2.27.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/fansi_2.12/0.5.0/fansi_2.12-0.5.0.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/bsp4s_2.12/2.1.1/bsp4s_2.12-2.1.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/get-coursier/interface/1.0.13/interface-1.0.13.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.2/jna-4.5.2.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/jsonrpc4s_2.12/0.1.1/jsonrpc4s_2.12-0.1.1.pom
+2024.09.25 23:22:42 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-brave/2.17.2/zipkin-reporter-brave-2.17.2.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/bsp4s_2.12/2.1.1/bsp4s_2.12-2.1.1.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.0/log4j-core-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.2/jna-4.5.2.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc_2.12/1.10.0/zinc_2.12-1.10.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-core_2.12/1.10.0/librarymanagement-core_2.12-1.10.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-brave/2.17.2/zipkin-reporter-brave-2.17.2.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/zipkin2/zipkin/2.27.0/zipkin-2.27.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.17.2/zipkin-reporter-2.17.2.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc_2.12/1.10.0/zinc_2.12-1.10.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.0/log4j-core-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j/2.23.0/log4j-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/zipkin-parent/2.27.0/zipkin-parent-2.27.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j/2.23.0/log4j-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/zipkin-parent/2.27.0/zipkin-parent-2.27.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-bom/2.23.0/log4j-bom-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-bom/2.23.0/log4j-bom-2.23.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/logging-parent/10.6.0/logging-parent-10.6.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/logging-parent/10.6.0/logging-parent-10.6.0.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/fasterxml/jackson/jackson-bom/2.16.1/jackson-bom-2.16.1.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/codehaus/groovy/groovy-bom/3.0.20/groovy-bom-3.0.20.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-bom/9.4.54.v20240208/jetty-bom-9.4.54.v20240208.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/springframework/spring-framework-bom/5.3.32/spring-framework-bom-5.3.32.pom
+2024.09.25 23:22:43 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/netty/netty-bom/4.1.107.Final/netty-bom-4.1.107.Final.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/fasterxml/jackson/jackson-bom/2.16.1/jackson-bom-2.16.1.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/springframework/spring-framework-bom/5.3.32/spring-framework-bom-5.3.32.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/netty/netty-bom/4.1.107.Final/netty-bom-4.1.107.Final.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-bom/9.4.54.v20240208/jetty-bom-9.4.54.v20240208.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/codehaus/groovy/groovy-bom/3.0.20/groovy-bom-3.0.20.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/fasterxml/jackson/jackson-parent/2.16/jackson-parent-2.16.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/fasterxml/jackson/jackson-parent/2.16/jackson-parent-2.16.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/fasterxml/oss-parent/56/oss-parent-56.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/fasterxml/oss-parent/56/oss-parent-56.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-classfile_2.12/1.10.0/zinc-classfile_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/2.12.19/scala-compiler-2.12.19.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0/log4j-api-2.23.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/github/mwiede/jsch/0.2.17/jsch-0.2.17.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-logging_2.12/1.10.0/util-logging_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/common_2.12/4.9.5/common_2.12-4.9.5.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/github/mwiede/jsch/0.2.17/jsch-0.2.17.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-core_2.12/1.10.0/zinc-core_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-logging_2.12/1.10.0/util-logging_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-position_2.12/1.10.0/util-position_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/2.12.19/scala-compiler-2.12.19.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-compile-core_2.12/1.10.0/zinc-compile-core_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/common_2.12/4.9.5/common_2.12-4.9.5.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/launcher-interface/1.0.0/launcher-interface-1.0.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-classfile_2.12/1.10.0/zinc-classfile_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_2.12/2.13.5/jsoniter-scala-core_2.12-2.13.5.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/launcher-interface/1.0.0/launcher-interface-1.0.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.10.0/io_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-position_2.12/1.10.0/util-position_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-cache_2.12/1.10.0/util-cache_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_2.12/2.13.5/jsoniter-scala-core_2.12-2.13.5.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-compile-core_2.12/1.10.0/zinc-compile-core_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-core_2.12/1.10.0/zinc-core_2.12-1.10.0.pom
+2024.09.25 23:22:44 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist_2.12/1.10.0/zinc-persist_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0/log4j-api-2.23.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.10.0/io_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-cache_2.12/1.10.0/util-cache_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist_2.12/1.10.0/zinc-persist_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal/3.24.1/jline-terminal-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-relation_2.12/1.10.0/util-relation_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-apiinfo_2.12/1.10.0/zinc-apiinfo_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/2.3.0/scala-xml_2.12-2.3.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/collections_2.12/1.10.0/collections_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jansi/3.24.1/jline-terminal-jansi-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jansi/3.24.1/jline-terminal-jansi-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/jline/jline/2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79/jline-2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal/3.24.1/jline-terminal-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-classpath_2.12/1.10.0/zinc-classpath_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/2.3.0/scala-xml_2.12-2.3.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-control_2.12/1.10.0/util-control_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/collections_2.12/1.10.0/collections_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/thesamet/scalapb/scalapb-runtime_2.12/0.11.15/scalapb-runtime_2.12-0.11.15.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-apiinfo_2.12/1.10.0/zinc-apiinfo_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/openhft/zero-allocation-hashing/0.16/zero-allocation-hashing-0.16.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-classpath_2.12/1.10.0/zinc-classpath_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist-core-assembly/1.10.0/zinc-persist-core-assembly-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/jline/jline/2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79/jline-2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.24.1/jline-terminal-jna-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-control_2.12/1.10.0/util-control_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.10.0/util-interface-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/thesamet/scalapb/scalapb-runtime_2.12/0.11.15/scalapb-runtime_2.12-0.11.15.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.10.0/compiler-interface-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/openhft/zero-allocation-hashing/0.16/zero-allocation-hashing-0.16.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/core-macros_2.12/1.10.0/core-macros_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-relation_2.12/1.10.0/util-relation_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist-core-assembly/1.10.0/zinc-persist-core-assembly-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.24.1/jline-terminal-jna-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.10.0/util-interface-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.10.0/compiler-interface-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/core-macros_2.12/1.10.0/core-macros_2.12-1.10.0.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-parent/3.24.1/jline-parent-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/openhft/java-parent-pom/1.1.28/java-parent-pom-1.1.28.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/openhft/java-parent-pom/1.1.28/java-parent-pom-1.1.28.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-parent/3.24.1/jline-parent-3.24.1.pom
+2024.09.25 23:22:45 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/openhft/root-parent-pom/1.2.12/root-parent-pom-1.2.12.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/openhft/root-parent-pom/1.2.12/root-parent-pom-1.2.12.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/fusesource/jansi/jansi/2.4.1/jansi-2.4.1.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/thesamet/scalapb/lenses_2.12/0.11.15/lenses_2.12-0.11.15.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-bridge_2.12/1.10.0/compiler-bridge_2.12-1.10.0.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-native/3.24.1/jline-native-3.24.1.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-bridge_2.12/1.10.0/compiler-bridge_2.12-1.10.0.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-native/3.24.1/jline-native-3.24.1.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/thesamet/scalapb/lenses_2.12/0.11.15/lenses_2.12-0.11.15.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/fusesource/jansi/jansi/2.4.1/jansi-2.4.1.pom
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-brave/2.17.2/zipkin-reporter-brave-2.17.2.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/scala-debug-adapter_2.12/4.1.1/scala-debug-adapter_2.12-4.1.1.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.4.1/sourcecode_2.12-0.4.1.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/github/mwiede/jsch/0.2.17/jsch-0.2.17.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/jline/jline/2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79/jline-2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-backend_2.12/1.5.17-sc-2/bloop-backend_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter-brave/2.17.2/zipkin-reporter-brave-2.17.2.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.10.0/compiler-interface-1.10.0.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/jline/jline/2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79/jline-2.14.7-sbt-9c3b6aca11c57e339441442bbf58e550cdfecb79.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-cache_2.12/1.10.0/util-cache_2.12-1.10.0.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.4.1/sourcecode_2.12-0.4.1.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/zeroturnaround/zt-zip/1.17/zt-zip-1.17.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.10.0/compiler-interface-1.10.0.jar
+2024.09.25 23:22:46 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/2.0.0/bloop-config_2.12-2.0.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-cache_2.12/1.10.0/util-cache_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/zipkin2/zipkin/2.27.0/zipkin-2.27.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/zeroturnaround/zt-zip/1.17/zt-zip-1.17.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-position_2.12/1.10.0/util-position_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/bloop-config_2.12/2.0.0/bloop-config_2.12-2.0.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/thesamet/scalapb/lenses_2.12/0.11.15/lenses_2.12-0.11.15.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/zipkin2/zipkin/2.27.0/zipkin-2.27.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/com-microsoft-java-debug-core/0.34.0+30/com-microsoft-java-debug-core-0.34.0+30.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-backend_2.12/1.5.17-sc-2/bloop-backend_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/fansi_2.12/0.5.0/fansi_2.12-0.5.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-position_2.12/1.10.0/util-position_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc_2.12/1.10.0/zinc_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/thesamet/scalapb/lenses_2.12/0.11.15/lenses_2.12-0.11.15.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-relation_2.12/1.10.0/util-relation_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/github/mwiede/jsch/0.2.17/jsch-0.2.17.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-frontend_2.12/1.5.17-sc-2/bloop-frontend_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/scala-debug-adapter_2.12/4.1.1/scala-debug-adapter_2.12-4.1.1.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/test-agent/1.10.0/test-agent-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/fansi_2.12/0.5.0/fansi_2.12-0.5.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/thesamet/scalapb/scalapb-runtime_2.12/0.11.15/scalapb-runtime_2.12-0.11.15.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-relation_2.12/1.10.0/util-relation_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.10.0/io_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc_2.12/1.10.0/zinc_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/core-macros_2.12/1.10.0/core-macros_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/com-microsoft-java-debug-core/0.34.0+30/com-microsoft-java-debug-core-0.34.0+30.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.17.2/zipkin-reporter-2.17.2.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/test-agent/1.10.0/test-agent-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/jsonrpc4s_2.12/0.1.1/jsonrpc4s_2.12-0.1.1.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/core-macros_2.12/1.10.0/core-macros_2.12-1.10.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.0/log4j-core-2.23.0.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.17.2/zipkin-reporter-2.17.2.jar
+2024.09.25 23:22:48 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-bridge_2.12/1.10.0/compiler-bridge_2.12-1.10.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-bridge_2.12/1.10.0/compiler-bridge_2.12-1.10.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/epfl/scala/bsp4s_2.12/2.1.1/bsp4s_2.12-2.1.1.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/jsonrpc4s_2.12/0.1.1/jsonrpc4s_2.12-0.1.1.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/parsers_2.12/4.9.5/parsers_2.12-4.9.5.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.10.0/io_2.12-1.10.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0/log4j-api-2.23.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-frontend_2.12/1.5.17-sc-2/bloop-frontend_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.19/scala-reflect-2.12.19.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.23.0/log4j-api-2.23.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-core_2.12/1.10.0/librarymanagement-core_2.12-1.10.0.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/parsers_2.12/4.9.5/parsers_2.12-4.9.5.jar
+2024.09.25 23:22:49 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/collections_2.12/1.10.0/collections_2.12-1.10.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/collections_2.12/1.10.0/collections_2.12-1.10.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist_2.12/1.10.0/zinc-persist_2.12-1.10.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/epfl/scala/bsp4s_2.12/2.1.1/bsp4s_2.12-2.1.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_2.12/2.13.5/jsoniter-scala-core_2.12-2.13.5.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist_2.12/1.10.0/zinc-persist_2.12-1.10.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.24.1/jline-terminal-jna-3.24.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/thesamet/scalapb/scalapb-runtime_2.12/0.11.15/scalapb-runtime_2.12-0.11.15.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/brave/brave/5.18.1/brave-5.18.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.23.0/log4j-core-2.23.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-core_2.12/1.10.0/zinc-core_2.12-1.10.0.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_2.12/2.13.5/jsoniter-scala-core_2.12-2.13.5.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal/3.24.1/jline-terminal-3.24.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.24.1/jline-terminal-jna-3.24.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.19/scala-library-2.12.19.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal/3.24.1/jline-terminal-3.24.1.jar
+2024.09.25 23:22:51 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-logging_2.12/1.10.0/util-logging_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/brave/brave/5.18.1/brave-5.18.1.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-classfile_2.12/1.10.0/zinc-classfile_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-core_2.12/1.10.0/librarymanagement-core_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/net/openhft/zero-allocation-hashing/0.16/zero-allocation-hashing-0.16.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-core_2.12/1.10.0/zinc-core_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/2.12.19/scala-compiler-2.12.19.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-classfile_2.12/1.10.0/zinc-classfile_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-ivy_2.12/1.10.0/librarymanagement-ivy_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-logging_2.12/1.10.0/util-logging_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/nailgun-server/1.0.7/nailgun-server-1.0.7.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/nailgun-server/1.0.7/nailgun-server-1.0.7.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-shared_2.12/1.5.17-sc-2/bloop-shared_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/net/openhft/zero-allocation-hashing/0.16/zero-allocation-hashing-0.16.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-sender-urlconnection/2.17.2/zipkin-sender-urlconnection-2.17.2.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/bleep/bloop-shared_2.12/1.5.17-sc-2/bloop-shared_2.12-1.5.17-sc-2.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-apiinfo_2.12/1.10.0/zinc-apiinfo_2.12-1.10.0.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-sender-urlconnection/2.17.2/zipkin-sender-urlconnection-2.17.2.jar
+2024.09.25 23:22:52 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-classpath_2.12/1.10.0/zinc-classpath_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-classpath_2.12/1.10.0/zinc-classpath_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-compile-core_2.12/1.10.0/zinc-compile-core_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-apiinfo_2.12/1.10.0/zinc-apiinfo_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-native/3.24.1/jline-native-3.24.1.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/librarymanagement-ivy_2.12/1.10.0/librarymanagement-ivy_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/trees_2.12/4.9.5/trees_2.12-4.9.5.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-compile-core_2.12/1.10.0/zinc-compile-core_2.12-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/get-coursier/interface/1.0.13/interface-1.0.13.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.19/scala-reflect-2.12.19.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist-core-assembly/1.10.0/zinc-persist-core-assembly-1.10.0.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-native/3.24.1/jline-native-3.24.1.jar
+2024.09.25 23:22:53 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/com/lihaoyi/pprint_2.12/0.9.0/pprint_2.12-0.9.0.jar
+2024.09.25 23:22:54 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/com/lihaoyi/pprint_2.12/0.9.0/pprint_2.12-0.9.0.jar
+2024.09.25 23:22:54 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jansi/3.24.1/jline-terminal-jansi-3.24.1.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jansi/3.24.1/jline-terminal-jansi-3.24.1.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.10.0/util-interface-1.10.0.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.10.0/util-interface-1.10.0.jar
+2024.09.25 23:22:55 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-compat_2.12/2.12.0/scala-collection-compat_2.12-2.12.0.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/zinc-persist-core-assembly/1.10.0/zinc-persist-core-assembly-1.10.0.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/2.3.0/scala-xml_2.12-2.3.0.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-collection-compat_2.12/2.12.0/scala-collection-compat_2.12-2.12.0.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scalameta/common_2.12/4.9.5/common_2.12-4.9.5.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/2.3.0/scala-xml_2.12-2.3.0.jar
+2024.09.25 23:22:57 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/io/github/alexarchambault/libdaemon/libdaemon_2.12/0.0.11/libdaemon_2.12-0.0.11.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/github/alexarchambault/libdaemon/libdaemon_2.12/0.0.11/libdaemon_2.12-0.0.11.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/fusesource/jansi/jansi/2.4.1/jansi-2.4.1.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.19/scala-library-2.12.19.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-control_2.12/1.10.0/util-control_2.12-1.10.0.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/fusesource/jansi/jansi/2.4.1/jansi-2.4.1.jar
+2024.09.25 23:22:58 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-control_2.12/1.10.0/util-control_2.12-1.10.0.jar
+2024.09.25 23:23:01 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/common_2.12/4.9.5/common_2.12-4.9.5.jar
+2024.09.25 23:23:01 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/io/get-coursier/interface/1.0.13/interface-1.0.13.jar
+2024.09.25 23:23:04 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scalameta/trees_2.12/4.9.5/trees_2.12-4.9.5.jar
+2024.09.25 23:23:04 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-compiler/2.12.19/scala-compiler-2.12.19.jar
+2024.09.25 23:23:04 INFO  Scala CLI: Starting compilation server
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.4.2/scala3-compiler_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.4.2/scala3-compiler_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.4.2/scala3-interfaces-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.25.1/jline-terminal-jna-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.4.2/tasty-core_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal/3.25.1/jline-terminal-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.9.6/compiler-interface-1.9.6.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-reader/3.25.1/jline-reader-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-reader/3.25.1/jline-reader-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-asm/9.6.0-scala-1/scala-asm-9.6.0-scala-1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal/3.25.1/jline-terminal-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.9.6/compiler-interface-1.9.6.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.25.1/jline-terminal-jna-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.4.2/tasty-core_3-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.4.2/scala3-interfaces-3.4.2.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-asm/9.6.0-scala-1/scala-asm-9.6.0-scala-1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.9.8/util-interface-1.9.8.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-native/3.25.1/jline-native-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-native/3.25.1/jline-native-3.25.1.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.9.8/util-interface-1.9.8.pom
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.9.8/util-interface-1.9.8.jar
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-native/3.25.1/jline-native-3.25.1.jar
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.25.1/jline-terminal-jna-3.25.1.jar
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.9.6/compiler-interface-1.9.6.jar
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-reader/3.25.1/jline-reader-3.25.1.jar
+2024.09.25 23:23:09 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/util-interface/1.9.8/util-interface-1.9.8.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/jline/jline-terminal/3.25.1/jline-terminal-3.25.1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.25.1/jline-terminal-jna-3.25.1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.4.2/tasty-core_3-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-sbt/compiler-interface/1.9.6/compiler-interface-1.9.6.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.4.2/scala3-compiler_3-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-native/3.25.1/jline-native-3.25.1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.4.2/scala3-interfaces-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-reader/3.25.1/jline-reader-3.25.1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-asm/9.6.0-scala-1/scala-asm-9.6.0-scala-1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/tasty-core_3/3.4.2/tasty-core_3-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-interfaces/3.4.2/scala3-interfaces-3.4.2.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/jline/jline-terminal/3.25.1/jline-terminal-3.25.1.jar
+2024.09.25 23:23:10 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/modules/scala-asm/9.6.0-scala-1/scala-asm-9.6.0-scala-1.jar
+2024.09.25 23:23:12 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2.jar
+2024.09.25 23:23:16 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-compiler_3/3.4.2/scala3-compiler_3-3.4.2.jar
+2024.09.25 23:23:16 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.4.2/scala3-sbt-bridge-3.4.2.pom
+2024.09.25 23:23:16 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.4.2/scala3-sbt-bridge-3.4.2.pom
+2024.09.25 23:23:16 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.4.2/scala3-sbt-bridge-3.4.2.jar
+2024.09.25 23:23:16 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.4.2/scala3-sbt-bridge-3.4.2.jar
+2024.09.25 23:23:16 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.12/scala-library-2.13.12-sources.jar
+2024.09.25 23:23:16 INFO  Scala CLI: Downloading https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2-sources.jar
+2024.09.25 23:23:17 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.4.2/scala3-library_3-3.4.2-sources.jar
+2024.09.25 23:23:17 INFO  Scala CLI: Downloaded https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.12/scala-library-2.13.12-sources.jar
+2024.09.25 23:23:18 INFO  Connected to Scala CLI server v1.4.1
+2024.09.25 23:23:19 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.25 23:23:20 WARN  Flyway upgrade recommended: H2 2.3.230 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.
+2024.09.25 23:23:21 INFO  time: compiled prime-numbers_f4dd477a3a in 2.26s
+2024.09.25 23:23:32 INFO  time: indexed workspace in 13s
+2024.09.25 23:24:03 INFO  Scala CLI started for D:\Projects\github\prime-numbers
+2024.09.25 23:24:03 WARN  no build tool detected in workspace 'D:\Projects\github\prime-numbers'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2024.09.25 23:24:03 WARN  Build server is not auto-connectable.
+2024.09.25 23:25:35 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.25 23:25:35 INFO  time: compiled prime-numbers_f4dd477a3a in 0.62s
+2024.09.25 23:25:37 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.25 23:25:37 INFO  time: compiled prime-numbers_f4dd477a3a in 0.17s
+Sept 25, 2024 11:27:26 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Sept 25, 2024 11:27:31 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Sept 25, 2024 11:27:35 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Sept 25, 2024 11:27:43 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2024.09.26 00:00:22 WARN  No build server connected
+2024.09.26 00:00:22 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:00:22 WARN  Invalid text document uri received from build server: file:///D:/Projects/github/prime-numbers/stainless/Modulo.scala
+2024.09.26 00:00:22 INFO  time: compiled prime-numbers_f4dd477a3a in 0.18s
+2024.09.26 00:00:22 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:00:22 INFO  time: compiled prime-numbers_f4dd477a3a in 0.19s
+2024.09.26 00:01:51 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:01:51 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:01:53 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+Sept 26, 2024 12:02:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 99
+2024.09.26 00:02:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:03 INFO  time: code lens generation in 11s
+2024.09.26 00:02:03 INFO  time: code lens generation in 1.18s
+2024.09.26 00:02:03 INFO  time: code lens generation in 1.17s
+2024.09.26 00:02:10 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:10 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:10 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:10 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:10 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:12 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:12 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:12 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:12 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:12 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:14 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:14 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:14 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:16 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:17 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:17 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:18 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:17 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:17 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:19 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:19 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:19 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:19 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:19 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:20 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:21 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:21 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:22 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:23 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:22 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:22 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:24 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:25 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:25 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:25 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:25 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:25 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:26 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:26 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:26 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:26 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:26 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:27 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:27 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:28 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:27 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:28 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:29 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:29 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:29 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:30 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:33 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:33 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:36 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:36 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:36 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:43 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:51 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:51 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:54 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:54 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:55 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+Sept 26, 2024 12:02:56 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 263
+2024.09.26 00:02:56 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:56 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:56 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:57 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:58 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:58 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:58 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:58 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:02:59 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:01 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:00 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:01 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:02 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:03 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:03 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:03 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:03 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:04 INFO  no build target found for D:\Projects\github\prime-numbers\src\stainless\Modulo.scala. Using presentation compiler with project's scala-library version: 3.3.3
+2024.09.26 00:03:04 WARN  no build target for: D:\Projects\github\prime-numbers\src\stainless\Modulo.scala
+2024.09.26 00:03:17 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:03:17 INFO  time: compiled prime-numbers_f4dd477a3a in 0.21s
+2024.09.26 00:03:37 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:03:37 INFO  time: compiled prime-numbers_f4dd477a3a in 0.13s
+Sept 26, 2024 12:04:27 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 368
+2024.09.26 00:40:58 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:40:58 INFO  time: compiled prime-numbers_f4dd477a3a in 0.12s
+Sept 26, 2024 12:41:44 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 461
+Sept 26, 2024 12:42:14 AM scala.meta.internal.mtags.SymbolIndexBucket addMtagsSourceFile
+WARNING: Error indexing D:\Projects\github\prime-numbers\stainless\Modulo.scala
+java.nio.file.NoSuchFileException: D:\Projects\github\prime-numbers\stainless\Modulo.scala
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:236)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:432)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3288)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.mtags.ScalametaCommonEnrichments$XtensionAbsolutePath.toInput(ScalametaCommonEnrichments.scala:428)
+	at scala.meta.internal.mtags.Mtags.index(Mtags.scala:96)
+	at scala.meta.internal.mtags.Mtags.allSymbols(Mtags.scala:21)
+	at scala.meta.internal.mtags.SymbolIndexBucket.allSymbols(SymbolIndexBucket.scala:273)
+	at scala.meta.internal.mtags.SymbolIndexBucket.addMtagsSourceFile(SymbolIndexBucket.scala:284)
+	at scala.meta.internal.mtags.SymbolIndexBucket.$anonfun$query0$1(SymbolIndexBucket.scala:199)
+	at scala.meta.internal.mtags.SymbolIndexBucket.$anonfun$query0$1$adapted(SymbolIndexBucket.scala:199)
+	at scala.collection.immutable.Set$Set2.foreach(Set.scala:210)
+	at scala.meta.internal.mtags.SymbolIndexBucket.query0(SymbolIndexBucket.scala:199)
+	at scala.meta.internal.mtags.SymbolIndexBucket.query(SymbolIndexBucket.scala:172)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.$anonfun$findSymbolDefinition$1(OnDemandSymbolIndex.scala:142)
+	at scala.collection.immutable.List.flatMap(List.scala:294)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.findSymbolDefinition(OnDemandSymbolIndex.scala:142)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.definition(OnDemandSymbolIndex.scala:48)
+	at scala.meta.internal.metals.Docstrings.indexSymbol(Docstrings.scala:129)
+	at scala.meta.internal.metals.Docstrings.documentation(Docstrings.scala:49)
+	at scala.meta.internal.metals.MetalsSymbolSearch.documentation(MetalsSymbolSearch.scala:51)
+	at scala.meta.internal.metals.MetalsSymbolSearch.documentation(MetalsSymbolSearch.scala:44)
+	at dotty.tools.pc.utils.MtagsEnrichments$.symbolDocumentation(MtagsEnrichments.scala:283)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramsDocs$lzyINIT1$1(ShortenedTypePrinter.scala:312)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramsDocs$1(ShortenedTypePrinter.scala:316)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.$anonfun$6(ShortenedTypePrinter.scala:333)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramLabel(ShortenedTypePrinter.scala:482)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.$anonfun$5(ShortenedTypePrinter.scala:335)
+	at scala.collection.immutable.List.flatMap(List.scala:293)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.label$1$$anonfun$1(ShortenedTypePrinter.scala:337)
+	at scala.collection.immutable.List.flatMap(List.scala:293)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.label$1(ShortenedTypePrinter.scala:342)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.defaultMethodSignature(ShortenedTypePrinter.scala:345)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.hoverSymbol(ShortenedTypePrinter.scala:239)
+	at dotty.tools.pc.HoverProvider$.hover(HoverProvider.scala:124)
+	at dotty.tools.pc.ScalaPresentationCompiler.hover$$anonfun$1(ScalaPresentationCompiler.scala:363)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:157)
+	at scala.meta.internal.pc.CompilerAccess.withNonInterruptableCompiler$$anonfun$1(CompilerAccess.scala:143)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:246)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:153)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+
+Sept 26, 2024 12:42:14 AM scala.meta.internal.mtags.SymbolIndexBucket addMtagsSourceFile
+WARNING: Error indexing D:\Projects\github\prime-numbers\stainless\Modulo.scala
+java.nio.file.NoSuchFileException: D:\Projects\github\prime-numbers\stainless\Modulo.scala
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:236)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:432)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3288)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.mtags.ScalametaCommonEnrichments$XtensionAbsolutePath.toInput(ScalametaCommonEnrichments.scala:428)
+	at scala.meta.internal.mtags.Mtags.index(Mtags.scala:96)
+	at scala.meta.internal.mtags.Mtags.allSymbols(Mtags.scala:21)
+	at scala.meta.internal.mtags.SymbolIndexBucket.allSymbols(SymbolIndexBucket.scala:273)
+	at scala.meta.internal.mtags.SymbolIndexBucket.addMtagsSourceFile(SymbolIndexBucket.scala:284)
+	at scala.meta.internal.mtags.SymbolIndexBucket.addMtagsSourceFile(SymbolIndexBucket.scala:295)
+	at scala.meta.internal.mtags.SymbolIndexBucket.$anonfun$query0$1(SymbolIndexBucket.scala:199)
+	at scala.meta.internal.mtags.SymbolIndexBucket.$anonfun$query0$1$adapted(SymbolIndexBucket.scala:199)
+	at scala.collection.immutable.Set$Set2.foreach(Set.scala:210)
+	at scala.meta.internal.mtags.SymbolIndexBucket.query0(SymbolIndexBucket.scala:199)
+	at scala.meta.internal.mtags.SymbolIndexBucket.query(SymbolIndexBucket.scala:172)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.$anonfun$findSymbolDefinition$1(OnDemandSymbolIndex.scala:142)
+	at scala.collection.immutable.List.flatMap(List.scala:294)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.findSymbolDefinition(OnDemandSymbolIndex.scala:142)
+	at scala.meta.internal.mtags.OnDemandSymbolIndex.definition(OnDemandSymbolIndex.scala:48)
+	at scala.meta.internal.metals.Docstrings.indexSymbol(Docstrings.scala:129)
+	at scala.meta.internal.metals.Docstrings.documentation(Docstrings.scala:49)
+	at scala.meta.internal.metals.MetalsSymbolSearch.documentation(MetalsSymbolSearch.scala:51)
+	at scala.meta.internal.metals.MetalsSymbolSearch.documentation(MetalsSymbolSearch.scala:44)
+	at dotty.tools.pc.utils.MtagsEnrichments$.symbolDocumentation(MtagsEnrichments.scala:283)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramsDocs$lzyINIT1$1(ShortenedTypePrinter.scala:312)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramsDocs$1(ShortenedTypePrinter.scala:316)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.$anonfun$6(ShortenedTypePrinter.scala:333)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.paramLabel(ShortenedTypePrinter.scala:482)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.$anonfun$5(ShortenedTypePrinter.scala:335)
+	at scala.collection.immutable.List.flatMap(List.scala:293)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.label$1$$anonfun$1(ShortenedTypePrinter.scala:337)
+	at scala.collection.immutable.List.flatMap(List.scala:293)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.label$1(ShortenedTypePrinter.scala:342)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.defaultMethodSignature(ShortenedTypePrinter.scala:345)
+	at dotty.tools.pc.printer.ShortenedTypePrinter.hoverSymbol(ShortenedTypePrinter.scala:239)
+	at dotty.tools.pc.HoverProvider$.hover(HoverProvider.scala:124)
+	at dotty.tools.pc.ScalaPresentationCompiler.hover$$anonfun$1(ScalaPresentationCompiler.scala:363)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:157)
+	at scala.meta.internal.pc.CompilerAccess.withNonInterruptableCompiler$$anonfun$1(CompilerAccess.scala:143)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:246)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:153)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+
+2024.09.26 00:42:18 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:42:18 INFO  time: compiled prime-numbers_f4dd477a3a in 0.12s
+2024.09.26 00:44:51 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:44:51 INFO  time: compiled prime-numbers_f4dd477a3a in 0.11s
+2024.09.26 00:45:19 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:45:19 INFO  time: compiled prime-numbers_f4dd477a3a in 0.11s
+2024.09.26 00:45:53 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:45:53 INFO  time: compiled prime-numbers_f4dd477a3a in 0.11s
+2024.09.26 00:46:09 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:46:09 INFO  time: compiled prime-numbers_f4dd477a3a in 0.11s
+2024.09.26 00:47:14 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:47:14 INFO  time: compiled prime-numbers_f4dd477a3a in 0.1s
+2024.09.26 00:47:23 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:47:23 INFO  time: compiled prime-numbers_f4dd477a3a in 97ms
+2024.09.26 00:49:43 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:49:43 INFO  time: compiled prime-numbers_f4dd477a3a in 0.1s
+2024.09.26 00:49:50 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:49:50 INFO  time: compiled prime-numbers_f4dd477a3a in 91ms
+2024.09.26 00:49:50 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:49:50 INFO  time: compiled prime-numbers_f4dd477a3a in 0.1s
+2024.09.26 00:49:50 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:49:50 INFO  time: compiled prime-numbers_f4dd477a3a in 89ms
+Sept 26, 2024 12:51:05 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1289
+2024.09.26 00:51:10 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:51:10 INFO  time: compiled prime-numbers_f4dd477a3a in 84ms
+2024.09.26 00:51:18 WARN  Using indexes to guess the definition of BigInt
+2024.09.26 00:51:21 WARN  Using indexes to guess the definition of BigInt
+2024.09.26 00:51:25 WARN  Using indexes to guess the definition of BigInt
+2024.09.26 00:51:32 WARN  Using indexes to guess the definition of BigInt
+2024.09.26 00:51:32 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:51:32 INFO  time: compiled prime-numbers_f4dd477a3a in 75ms
+2024.09.26 00:51:35 WARN  Using indexes to guess the definition of BigInt
+2024.09.26 00:51:37 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 00:51:37 INFO  time: compiled prime-numbers_f4dd477a3a in 78ms
+Sept 26, 2024 12:53:28 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1516
+Sept 26, 2024 12:53:56 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1541
+Sept 26, 2024 12:55:08 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1612
+2024.09.26 01:08:05 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:08:05 INFO  time: compiled prime-numbers_f4dd477a3a in 89ms
+2024.09.26 01:08:46 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:08:46 INFO  time: compiled prime-numbers_f4dd477a3a in 87ms
+2024.09.26 01:09:50 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:09:50 INFO  time: compiled prime-numbers_f4dd477a3a in 0.1s
+2024.09.26 01:10:52 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:10:52 INFO  time: compiled prime-numbers_f4dd477a3a in 85ms
+2024.09.26 01:10:54 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:10:54 INFO  time: compiled prime-numbers_f4dd477a3a in 75ms
+2024.09.26 01:11:34 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:11:34 INFO  time: compiled prime-numbers_f4dd477a3a in 87ms
+2024.09.26 01:14:15 INFO  compiling prime-numbers_f4dd477a3a (1 scala source)
+2024.09.26 01:14:15 INFO  time: compiled prime-numbers_f4dd477a3a in 81ms
+2024.09.26 01:14:45 INFO  Shutting down server
+2024.09.26 01:14:45 INFO  shutting down Metals
+2024.09.26 01:14:45 INFO  Shut down connection with build server.
+2024.09.26 01:14:45 INFO  Exiting server
