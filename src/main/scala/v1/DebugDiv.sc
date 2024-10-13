@@ -3,9 +3,9 @@ import v1.Calc
 import v1.properties.DivModAdditionAndMultiplication
 
 
-DivModAdditionAndMultiplication.moreDivLessMod(
-  BigInt(0),
-  BigInt(0),
-  BigInt(1),
-  BigInt(0)
+DivModAdditionAndMultiplication.MoreDivLessMod(
+  BigInt(10),
+  BigInt(3),
+  BigInt(3),
+  BigInt(1)
 )
