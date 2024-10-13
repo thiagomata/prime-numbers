@@ -2,4 +2,8 @@
 *.exe
 *.mdb
 .history
-
+.metals
+project/target
+.idea
+target
+.stainless-cache
