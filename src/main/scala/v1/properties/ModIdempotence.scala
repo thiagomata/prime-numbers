@@ -160,7 +160,6 @@ object ModIdempotence {
     check( xy.solve.mod == Calc.mod(a+c,b))
     check( xy.solve.mod == solvedZ.mod)
 
-
 //    check(solvedW.isFinal)
 //    check(solvedW.isValid)
 //    check(modUniqueDiv(xy, w))
@@ -178,11 +177,12 @@ object ModIdempotence {
 
 
 
+
     /*
      mod(a + c, b) = mod( (mod(a, b) + mod(c, b)) , b)
     mod(a + c, b) = mod( a + c , b)
                 xy = mod( x + y, b)
      */
-    true
+    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
   }.holds
 }
