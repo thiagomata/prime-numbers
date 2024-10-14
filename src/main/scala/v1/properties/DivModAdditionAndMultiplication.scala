@@ -35,7 +35,7 @@ object DivModAdditionAndMultiplication {
 
   def APlusMultipleTimesBSameMod(a: BigInt, b: BigInt, m: BigInt): Boolean = {
     require(b > 0)
-    require(m >= 1)
+    require(m >= 0)
     require(a >= 0)
     decreases(m)
 

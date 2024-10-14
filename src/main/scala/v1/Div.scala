@@ -32,8 +32,10 @@ case class Div(
     }
     check(result.isFinal)
     check(result.isValid)
+    check(result.a == a)
+    check(result.b == b)
     result
-  }.ensuring(res => res.isFinal && res.isValid)
+  }.ensuring(res => res.isFinal && res.isValid && res.a == a && res.b == b)
 
   def reduceMod: Div = {
     require(mod > 0)
