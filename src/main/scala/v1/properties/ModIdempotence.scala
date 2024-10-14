@@ -136,16 +136,13 @@ object ModIdempotence {
 
     val bigDiv = solvedZ.div + solvedX.div + solvedY.div
     check(a + c == b * bigDiv + solvedZ.mod)
+
     val w = Div(a + c, b, bigDiv, solvedZ.mod)
     check(solvedZ.mod < b)
     check(w.mod == solvedZ.mod)
     check(w.isFinal)
     check(w.solve == w)
-//    DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(a + c, b, bigDiv)
-    // check(w.solve.mod == solvedZ.solve.mod)
 
-    check(b > 0)
-    check(a >= 0)
     check(bigDiv >= 0)
     DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(a + c, b, bigDiv)
     check( Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
@@ -160,29 +157,6 @@ object ModIdempotence {
     check( xy.solve.mod == Calc.mod(a+c,b))
     check( xy.solve.mod == solvedZ.mod)
 
-//    check(solvedW.isFinal)
-//    check(solvedW.isValid)
-//    check(modUniqueDiv(xy, w))
-//    check(solvedW.mod == Calc.mod(a + c, b))
-
-
-//    val solvedZ = z.solve
-//    check(solvedZ.isFinal)
-//    check(solvedZ.isValid)
-//    check(solvedZ.mod < solvedZ.b)
-//    check(solvedZ.mod < b)
-//    check(solvedZ.a == solvedZ.b * solvedZ.div + solvedZ.mod)
-
-
-
-
-
-
-    /*
-     mod(a + c, b) = mod( (mod(a, b) + mod(c, b)) , b)
-    mod(a + c, b) = mod( a + c , b)
-                xy = mod( x + y, b)
-     */
     Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
   }.holds
 }
