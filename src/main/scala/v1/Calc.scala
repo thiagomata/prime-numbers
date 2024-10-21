@@ -1,5 +1,7 @@
 package v1
 
+import stainless.lang.BooleanDecorations
+
 object Calc {
 
   def div(a: BigInt, b: BigInt): BigInt = {
@@ -14,6 +16,7 @@ object Calc {
     val result = Div(a, b, 0, a)
     val simplified = result.solve
     simplified.mod
-  }
-
+  }.ensuring(
+    mod => if ( b > 0 ) 0 <= mod && mod < b else true
+  )
 }

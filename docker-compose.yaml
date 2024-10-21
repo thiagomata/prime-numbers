@@ -6,6 +6,6 @@ services:
       context: .
       dockerfile: ./infra/docker/stainless/Dockerfile
     volumes:
-      - ./src/stainless:/app
+      - ./src:/app/src
     working_dir: /app
-    command: ["stainless", "Modulo.scala"]
+    command: ["stainless", "$(find src/main/scala -name '*.scala')"]
