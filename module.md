@@ -24,6 +24,10 @@ dividend \text{ div } divisor = quotient.
 $$
 
 
+[Formal Scala Definition](
+./src/main/scala/v1/div/Div.scala
+)
+
 ## Some Important Properties
 
 ### Unique Remainder Property in Integer Division
