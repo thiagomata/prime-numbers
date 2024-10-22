@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   stainless:
     build: 
@@ -8,4 +6,4 @@ services:
     volumes:
       - ./src:/app/src
     working_dir: /app
-    command: ["stainless", "$(find src/main/scala -name '*.scala')"]
+    command: ["bash", "-c", "stainless $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')"]

@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     build-essential \
     gnupg \
-    ca-certificates
+    ca-certificates \
+    z3
 
 # Install SBT (Scala Build Tool)
 RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list

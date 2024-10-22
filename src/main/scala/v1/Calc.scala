@@ -17,6 +17,10 @@ object Calc {
     val simplified = result.solve
     simplified.mod
   }.ensuring(
-    mod => if ( b > 0 ) 0 <= mod && mod < b else true
+    mod => {
+      val smallMod = if ( b > 0 ) 0 <= mod && mod < b else true
+      val validMod = mod == Div(a, b, 0, a).solve.mod
+      smallMod && validMod
+    }
   )
 }

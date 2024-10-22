@@ -28,6 +28,20 @@ object DivModAdditionAndMultiplication {
     check(next.mod == solved.mod)
     check(next.div == solved.div + 1)
     check(next.isFinal)
+    check(next.solve == next)
+
+    check(Calc.mod(a, b) == input.solve.mod)
+    check(Calc.div(a, b) == input.solve.div)
+    check(Calc.mod(a, b) == solved.mod)
+    check(Calc.div(a, b) == solved.div)
+
+    val nextZero = Div(solved.a + solved.b, solved.b, 0, solved.a + solved.b)
+    ModIdempotence.modUniqueDiv(next, nextZero)    
+    check(Calc.mod(solved.a + solved.b, solved.b) == next.mod)
+
+    check(input.solve.mod == next.mod)
+    check(Calc.mod(a, b) == next.mod)
+    check(input.solve.div + 1 == next.div)
 
     Calc.mod(a,b) == Calc.mod(a+b,b) &&
     Calc.div(a,b) + 1 == Calc.div(a+b,b)
