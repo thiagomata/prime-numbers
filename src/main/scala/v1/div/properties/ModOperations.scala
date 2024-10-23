@@ -14,12 +14,13 @@ object ModOperations {
     require(c >= 0)
     require(b != 0)
 
+    val absB = if (b < 0) -b else b
+
     val x = Div(a, b, 0, a)
     val solvedX = x.solve
     check(solvedX.isFinal)
     check(solvedX.isValid)
-    check(solvedX.mod < solvedX.b)
-    check(solvedX.mod < b)
+    check(solvedX.mod < absB)
     check(solvedX.a == a)
     check(solvedX.b == b)
     check(solvedX.a == solvedX.b * solvedX.div + solvedX.mod)
@@ -29,8 +30,7 @@ object ModOperations {
     val solvedY = y.solve
     check(solvedY.isFinal)
     check(solvedY.isValid)
-    check(solvedY.mod < solvedY.b)
-    check(solvedY.mod < b)
+    check(solvedY.mod < absB)
     check(solvedY.a == c)
     check(solvedY.b == b)
     check(solvedY.a == solvedY.b * solvedY.div + solvedY.mod)
@@ -40,8 +40,7 @@ object ModOperations {
     val solvedXY = xy.solve
     check(solvedXY.isFinal)
     check(solvedXY.isValid)
-    check(solvedXY.mod < solvedXY.b)
-    check(solvedXY.mod < b)
+    check(solvedXY.mod < absB)
     check(solvedXY.a == a + c)
     check(solvedXY.b == b)
     check(solvedXY.a == solvedXY.b * solvedXY.div + solvedXY.mod)
@@ -57,7 +56,7 @@ object ModOperations {
 
     val solvedZ = z.solve
     check(solvedZ.isValid && solvedZ.isFinal)
-    check(solvedZ.mod < z.b)
+    check(solvedZ.mod < absB)
     check(modUniqueDiv(z, solvedZ))
     check(z.solve.mod == solvedZ.mod)
 
@@ -70,19 +69,20 @@ object ModOperations {
     check(a + c == b * bigDiv + solvedZ.mod)
 
     val w = Div(a + c, b, bigDiv, solvedZ.mod)
-    check(solvedZ.mod < b)
+    check(solvedZ.mod < absB)
     check(w.mod == solvedZ.mod)
     check(w.isFinal)
     check(w.solve == w)
 
-    check(bigDiv >= 0)
-    DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(a + c, b, bigDiv)
+    check(b != 0)
+//    check(bigDiv >= 0)
+    DivModAdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
     check( Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
     check(w.isValid)
     check(xy.isValid)
     check(w.a == xy.a)
     check(w.b == xy.b)
-    check(w.b > 0) // @todo check that also works for b < 0
+//    check(w.b > 0) // @todo check that also works for b < 0
     check(modUniqueDiv(w, xy))
     check( w.solve == xy.solve)
     check( w.solve.mod == xy.solve.mod)

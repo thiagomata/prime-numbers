@@ -20,7 +20,7 @@ object CycleProperties {
     require(list.size > 0)
     require(m >= 0)
     val cycle = Cycle(list)
-    DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(key, list.size, m)
+    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m)
     cycle(key) == cycle(key + list.size * m)
   }.holds
 
@@ -30,8 +30,8 @@ object CycleProperties {
     require(m1 >= 0)
     require(m2 >= 0)
     val cycle = Cycle(list)
-    DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(key, list.size, m1)
-    DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(key, list.size, m2)
+    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m1)
+    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m2)
     check(cycle(key) == cycle(key + list.size * m1))
     check(cycle(key) == cycle(key + list.size * m2))
     cycle(key + list.size * m1) == cycle(key + list.size * m2)

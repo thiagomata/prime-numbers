@@ -23,7 +23,7 @@ object Summary {
     check(DivModAdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
     check(Calc.div(a,b) + 1 == Calc.div(a+b,b))
 
-    check(DivModAdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
+    check(DivModAdditionAndMultiplication.ATimesBSameMod(a, b, m))
     check(Calc.mod(a,b) == Calc.mod(a+b*m,b))
     check(Calc.div(a,b) + m == Calc.div(a+b*m,b))
 
