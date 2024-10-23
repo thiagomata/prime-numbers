@@ -7,24 +7,25 @@ import stainless.proof.check
 
 object ModIdempotence {
   def modIdempotence(a: BigInt, b: BigInt): Boolean = {
-    require(b > 0)  // @todo check that also works for b < 0
+    require(b != 0)
     require(a >= 0)
 
     val div = Div(a, b, 0, a)
+    val absB = if (b < 0) -b else b
 
     val simplified = div.solve
     check(simplified.isFinal)
     check(simplified.b == div.b)
     check(simplified.a == div.a)
-    check(simplified.b > 0)
-    check(simplified.mod < div.b)
+    check(absB > 0)
+    check(simplified.mod < absB)
     check(simplified.mod >= 0)
 
     val result = simplified.mod
     check(result <= a)
-    check(result < b)
+    check(result < absB)
     check(result == Calc.mod(a, b))
-    ModSmallDividend.modSmallDividend(result, b)
+//    ModSmallDividend.modSmallDividend(result, b)
 
     check(Calc.mod(result, b) == result)
     check(Calc.mod(a, b) == Calc.mod(result, b))

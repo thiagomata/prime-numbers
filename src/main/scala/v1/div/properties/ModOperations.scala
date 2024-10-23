@@ -12,7 +12,7 @@ object ModOperations {
   def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(a >= 0)
     require(c >= 0)
-    require(b > 0)
+    require(b != 0)
 
     val x = Div(a, b, 0, a)
     val solvedX = x.solve

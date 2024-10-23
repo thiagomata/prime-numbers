@@ -8,7 +8,7 @@ import stainless.proof.check
 object DivModAdditionAndMultiplication {
 
   def APlusBSameModPlusDiv(a: BigInt, b: BigInt): Boolean = {
-    require(b > 0)
+    require(b != 0)
     require(a >= 0)
 
     val input = Div(a, b, 0, a)
@@ -48,7 +48,7 @@ object DivModAdditionAndMultiplication {
   }.holds
 
   def APlusMultipleTimesBSameMod(a: BigInt, b: BigInt, m: BigInt): Boolean = {
-    require(b > 0)
+    require(b != 0)
     require(m >= 0)
     require(a >= 0)
     decreases(m)
@@ -148,7 +148,7 @@ object DivModAdditionAndMultiplication {
   }.holds
 
   def LessDivMoreModManyTimes(a: BigInt, b: BigInt, div: BigInt, mod: BigInt, m: BigInt): Boolean = {
-    require(b > 0)
+    require(b != 0)
     require(div * b + mod == a)
     require(m > 0)
     decreases(m)

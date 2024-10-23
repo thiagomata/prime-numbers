@@ -7,7 +7,7 @@ import v1.{Calc, Div}
 object Summary {
   def PropertySummary(a: BigInt, b: BigInt, m: BigInt): Boolean = {
     require(a >= 0)
-    require(b > 0)
+    require(b != 0)
     require(m >= 1)
 
     if (b > a ) {
@@ -31,7 +31,7 @@ object Summary {
   }.holds
 
   def DivSummary(a: BigInt, b: BigInt, div: BigInt, mod: BigInt) = {
-    require(b > 0)
+    require(b != 0)
     require(div * b + mod == a)
 
     DivModAdditionAndMultiplication.MoreDivLessMod(a, b, div, mod)
