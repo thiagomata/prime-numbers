@@ -31,13 +31,10 @@ recursive definition of the division and module operations.
 The recursive definition of the division and module operations are:
 
 We define $Div(a, b, div, mod)$ such that:
-
 $$
 a = \text{div} \cdot b + \text{mod}, \quad b \neq 0
 $$
-
 and the remainder $mod$ satisfies:
-
 $$
 \begin{cases}
 0 \leq \text{mod} < b & \text{if } b > 0, \\
@@ -47,10 +44,10 @@ $$
 
 ### Base Case:
 If $0 \leq \text{mod} < |b|$, then the solution is:
-
 $$
 \text{Div}(a, b, \text{div}, \text{mod}) = (a, b, \text{div}, \text{mod}).
 $$
+
 
 ### Recursive Formula:
 $$
@@ -189,12 +186,58 @@ Similary, in the next sections, we will prove other properties of the division a
 ### Modulo Addition
 
 $$
+\forall a,b,div,mod \in \mathbb{Z}, \\
+\text{ where } a = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
 Div(a,b, div + 1, mod - b) = Div(a,b, div, mod) \\
-Div(a,b, div - 1, mod + b) = Div(a,b, div, mod)
+Div(a,b, div - 1, mod + b) = Div(a,b, div, mod) \\
+\therefore \\
+a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
+1 + (a \text{ div } b) = (a + b) \text{ div } b \\
+1 - (a \text{ div } b) = (a - b) \text{ div } b \\
 $$
 
-As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod) and [LessDivMoreMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod), we can see that the division operation is the same for the same dividend and divisor, regardless of the div and mod values, as long $a = b \cdot div + mod$.
+As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod) and [LessDivMoreMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod) and shown in a simplified version in the code below, the division result is the same for the same dividend and divisor, regardless of the div and mod values, as long $a = b \cdot div + mod$.
 
+```scala
+  def MoreDivLessMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
+    require(b != 0)
+    require(div * b + mod == a)
+    val div1 = Div(a, b, div, mod)
+    val div2 = Div(a, b, div + 1, mod - b)
+
+    if (div1.isFinal) check(!div2.isFinal && div2.solve == div1.solve)
+    if (div2.isFinal) check(!div1.isFinal && div1.solve == div2.solve)
+
+    if (div1.mod < 0) {
+      check(div1.solve == div1.increaseMod)
+      if (b > 0) check(div2.solve == div2.increaseMod == div1.increaseMod == div1.solve)
+      else check(div1.solve == div1.increaseMod == div2.solve)
+    }
+    if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
+      if (b > 0 ) {
+        check(div2.mod < div1.mod)
+        check(div1.solve == div1.reduceMod == div2.solve)
+      } else {
+        check(div2.mod > div1.mod)
+        check(div2.solve == div2.reduceMod == div1.solve)
+      }
+    }
+    check(div1.solve == div2.solve)
+    Div(a,b, div + 1, mod - b).solve.mod == Div(a,b, div, mod).solve.mod
+  }.holds
+
+  def LessDivMoreMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
+    require(b != 0)
+    require(div * b + mod == a)
+
+    check(a == div * b + mod)
+    check(a == (div - 1) * b + (mod + b))
+    MoreDivLessMod(a, b, div - 1, mod + b)
+
+    Div(a, b, div, mod).solve == Div(a, b, div - 1, mod + b).solve
+  }.holds
+
+```
 ### Module Multiplication
 
 As a directly consequence of these properties, we can extend the Div with the following properties:
@@ -203,7 +246,7 @@ $$
 \forall \text{ } m \in \mathbb{N}, \text{ where }  \\
 a = b \cdot div + mod \therefore \\
 Div(a,b, div + m, mod - m * b) = Div(a,b, div, mod) \\
-Div(a,b, div - m, mod + m * b) = Div(a,b, div, mod)
+Div(a,b, div - m, mod + m * b) = Div(a,b, div, mod) \\
 $$
 
 ### Unique Remainder Property in Integer Division

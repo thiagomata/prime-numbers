@@ -9,7 +9,6 @@ object DivModAdditionAndMultiplication {
 
   def APlusBSameModPlusDiv(a: BigInt, b: BigInt): Boolean = {
     require(b != 0)
-//    require(a >= 0)
 
     val input = Div(a, b, 0, a)
     val solved = input.solve
@@ -155,8 +154,6 @@ object DivModAdditionAndMultiplication {
     val div1 = Div(a, b, div, mod)
     val div2 = Div(a, b, div + 1, mod - b)
 
-    if (div2.isFinal) then check(!div1.isFinal)
-
     if (div1.isFinal) {
       check(!div2.isFinal)
       check(div2.solve == div1.solve)
@@ -206,11 +203,10 @@ object DivModAdditionAndMultiplication {
     Div(a, b, div, mod).solve == Div(a, b, div - 1, mod + b).solve
   }.holds
 
-  def MoreDivLessModManyTimess(a: BigInt, b: BigInt, div: BigInt, mod: BigInt, m: BigInt): Boolean = {
+  def MoreDivLessModManyTimes(a: BigInt, b: BigInt, div: BigInt, mod: BigInt, m: BigInt): Boolean = {
     require(b > 0)
     require(div * b + mod == a)
     require(m >= 1)
-//    require(a >= 0)
     decreases(m)
 
     MoreDivLessMod(a, b, div, mod)
@@ -225,7 +221,7 @@ object DivModAdditionAndMultiplication {
       MoreDivLessMod(a, b, prevDiv, prevMod)
 
       check(Div(a, b, prevDiv, prevMod).solve == Div(a, b, finalDiv, finalMod).solve)
-      check(MoreDivLessModManyTimess(a, b, div, mod, m - 1))
+      check(MoreDivLessModManyTimes(a, b, div, mod, m - 1))
 
       check(Div(a, b, finalDiv, finalMod).solve == Div(a, b, div, mod).solve)
     }
