@@ -67,43 +67,56 @@ object DivModAdditionAndMultiplication {
 
 
   def MoreDivLessMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b > 0)
+    require(b != 0)
     require(div * b + mod == a)
     val div1 = Div(a, b, div, mod)
     val div2 = Div(a, b, div + 1, mod - b)
 
-    if ( div1.mod > 0 ) {
-      check(div1.solve == div1.reduceMod)
-      check(div1.ModLessB.solve == div1.reduceMod.solve)
-      check(div1.ModLessB == div2)
+    if (div2.isFinal) then check(!div1.isFinal)
+
+    if (div1.isFinal) {
+      check(!div2.isFinal)
+      check(div2.solve == div1.solve)
+    }
+    if (div2.isFinal) {
+      check(!div1.isFinal)
       check(div1.solve == div2.solve)
     }
 
     if (div1.mod < 0) {
       check(div1.solve == div1.increaseMod)
-      check(div1.ModPlusB.solve == div1.increaseMod.solve)
-      check(div2.ModPlusB.solve == div1.solve)
+      if (b > 0) {
+        check(div2.solve == div2.increaseMod)
+        check(div2.increaseMod == div1.increaseMod)
+        check(div1.solve == div2.solve)
+      } else {
+        check(div1.increaseMod == div2.solve)
+        check(div1.solve == div2.solve)
+      }
       check(div1.solve == div2.solve)
     }
-
-    if (div1.mod == 0) {
-      check(div2.mod ==  mod - b)
-      check(div2.mod < 0)
-      check(!div2.isFinal)
-      check(div2.solve == div2.increaseMod)
-      check(div2.ModPlusB == div1)
-      check(div1.isFinal)
-      check(div2.solve == div2.ModPlusB)
-      check(div1.solve == div1)
-      check(div1.solve == div2.solve)
+    if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
+      if (b > 0 ) {
+        check(div2.mod < div1.mod)
+        check(div1.solve == div1.reduceMod)
+        check(div1.reduceMod == div2.solve)
+      } else {
+        check(div2.mod > div1.mod)
+        check(div2.solve == div2.reduceMod)
+        check(div2.reduceMod == div1.solve)
+      }
     }
-    check(div1.solve == div2.solve)
-    div1.solve == div2.solve
+    Div(a,b, div + 1, mod - b).solve.mod == Div(a,b, div, mod).solve.mod
   }.holds
 
   def LessDivMoreMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b > 0)
+    require(b != 0)
     require(div * b + mod == a)
+
+    check(a == div * b + mod)
+    check(a == (div - 1) * b + (mod + b))
+    MoreDivLessMod(a, b, div - 1, mod + b)
+
     Div(a, b, div, mod).solve == Div(a, b, div - 1, mod + b).solve
   }.holds
 

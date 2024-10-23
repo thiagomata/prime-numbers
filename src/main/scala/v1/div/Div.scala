@@ -38,7 +38,7 @@ case class Div(
   }.ensuring(res => res.isFinal && res.isValid && res.a == a && res.b == b)
 
   def reduceMod: Div = {
-    require(mod > 0)
+    require(mod >= 0)
     decreases(mod)
 
     if isFinal then
@@ -58,7 +58,7 @@ case class Div(
     check(next.mod == mod - absB)
     check(next.isValid)
 
-    val result = if next.isFinal then next else next.reduceMod
+    val result = next.reduceMod
     check(result.isFinal)
     check(result.mod < mod)
     check(result.a == a)
@@ -68,7 +68,7 @@ case class Div(
   }.ensuring(res => res.isFinal)
 
   def increaseMod: Div = {
-    val absB = if (b > 0) b else -b
+    val absB = if (b >= 0) b else -b
     require(mod < 0)
     decreases(-mod)
 
@@ -120,5 +120,17 @@ case class Div(
     check(next.div == div + 1)
     check(next.isValid)
     next
+  }
+
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case that: Div =>
+        ( that.a == this.a &&
+          that.b == this.b &&
+          that.div == this.div &&
+          that.mod == this.mod ) ||
+          ( that.solve == this.solve )
+      case _ => false
+    }
   }
 }

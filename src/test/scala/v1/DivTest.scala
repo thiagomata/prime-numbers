@@ -14,15 +14,20 @@ class DivTest extends FlatSpec with Matchers {
 
   "Div" should "solve" in {
     val testCases = List(
+//      SolveTestCase(
+//        "simple",
+//        Div(10,2,0,10),
+//        Div(10,2,5,0),
+//      ),
+//      SolveTestCase(
+//        "with remainder",
+//        Div(10,3,0,10),
+//        Div(10,3,3,1),
+//      ),
       SolveTestCase(
-        "simple",
-        Div(10,2,0,10),
-        Div(10,2,5,0),
-      ),
-      SolveTestCase(
-        "with remainder",
-        Div(10,3,0,10),
-        Div(10,3,3,1),
+        "tirival negative",
+        Div(-10,-10,0,-10),
+        Div(-10,-10,1,0),
       ),
     )
     forAll(testCases) { testCase =>

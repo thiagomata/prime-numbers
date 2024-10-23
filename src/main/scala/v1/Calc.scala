@@ -7,15 +7,15 @@ object Calc {
   def div(a: BigInt, b: BigInt): BigInt = {
     require(b != 0)
     val result = Div(a, b, 0, a)
-    val simplified = result.solve
-    simplified.div
+    val solved = result.solve
+    solved.div
   }
 
   def mod(a: BigInt, b: BigInt): BigInt = {
     require(b != 0)
     val result = Div(a, b, 0, a)
-    val simplified = result.solve
-    simplified.mod
+    val solved = result.solve
+    solved.mod
   }.ensuring(
     mod => {
       val smallMod = if ( b > 0 ) 0 <= mod && mod < b else true

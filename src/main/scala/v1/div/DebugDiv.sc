@@ -3,9 +3,9 @@ import v1.Calc
 import v1.properties.DivModAdditionAndMultiplication
 
 
-DivModAdditionAndMultiplication.MoreDivLessMod(
-  BigInt(10),
-  BigInt(3),
-  BigInt(3),
-  BigInt(1)
-)
+Div(
+  a=BigInt(-3),
+  b=BigInt(-3),
+  div=BigInt(0),
+  mod=BigInt(-3)
+).solve
