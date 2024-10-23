@@ -31,10 +31,13 @@ recursive definition of the division and module operations.
 The recursive definition of the division and module operations are:
 
 We define $Div(a, b, div, mod)$ such that:
+
 $$
 a = \text{div} \cdot b + \text{mod}, \quad b \neq 0
 $$
+
 and the remainder $mod$ satisfies:
+
 $$
 \begin{cases}
 0 \leq \text{mod} < b & \text{if } b > 0, \\
@@ -44,10 +47,10 @@ $$
 
 ### Base Case:
 If $0 \leq \text{mod} < |b|$, then the solution is:
+
 $$
 \text{Div}(a, b, \text{div}, \text{mod}) = (a, b, \text{div}, \text{mod}).
 $$
-
 
 ### Recursive Formula:
 $$
