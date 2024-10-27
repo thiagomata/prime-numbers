@@ -11,13 +11,14 @@ object ModSmallDividend {
     require(b != 0)
     require(b > a)
     require(a >= 0)
-    val div = Div(a, b, 0, a)
-    check(div.isFinal)
-    val simplified = div.solve
-    check(div == simplified)
-    val result = simplified.mod
-    check(result == a)
-    check(Calc.mod(a, b) == result)
-    Calc.mod(a, b) == a
+    val x = Div(a, b, 0, a)
+    check(x.isFinal)
+    check(x == x.solve)
+    check(x.mod == a)
+    check(x.div == 0)
+    check(Calc.mod(a, b) == x.mod)
+    check(Calc.div(a, b) == 0)
+    Calc.mod(a, b) == a &&
+    Calc.div(a, b) == 0
   }.holds
 }

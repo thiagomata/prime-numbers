@@ -1,6 +1,7 @@
 # Division and Module
 
-Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ and $remainder$ such that:
+Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ 
+and $remainder$ such that:
 
 $$
 \forall \text{ } dividend, divisor \in \mathbb{N}, \text{ where } divisor\neq 0 
@@ -30,11 +31,16 @@ recursive definition of the division and module operations.
 
 The recursive definition of the division and module operations are:
 
+$$
+\forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
+\text{where } b \neq 0
+$$
 We define $Div(a, b, div, mod)$ such that:
 $$
-a = \text{div} \cdot b + \text{mod}, \quad b \neq 0
+a = \text{div} \cdot b + \text{mod}
 $$
-and the remainder $mod$ satisfies:
+
+The solved $Div$ are those where the remainder $mod$ satisfies:
 $$
 \begin{cases}
 0 \leq \text{mod} < b & \text{if } b > 0, \\
@@ -42,23 +48,15 @@ $$
 \end{cases}
 $$
 
-### Base Case:
-If $0 \leq \text{mod} < |b|$, then the solution is:
-$$
-\text{Div}(a, b, \text{div}, \text{mod}) = (a, b, \text{div}, \text{mod}).
-$$
-
-
 ### Recursive Formula:
 $$
-\text{Div}(a, b, \text{div}, \text{mod}) =
+\text{Div.solve}(a, b, \text{div}, \text{mod}) =
 \begin{cases}
 \text{Div}(a, b, \text{div}, \text{mod}) & \text{if } 0 \leq \text{mod} < |b|, \\
-\text{Div}(a, b, \text{div} + \text{sign}(b), \text{mod} - |b|) & \text{if } \text{mod} \geq |b|, \\
-\text{Div}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0.
+\text{Div.solve}(a, b, \text{div} + \text{sign}(b), \text{mod} - |b|) & \text{if } \text{mod} \geq |b|, \\
+\text{Div.solve}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0.
 \end{cases}
 $$
-
 
 We can see the described [recursive definition on Scala](
 ./src/main/scala/v1/div/Div.scala
@@ -107,7 +105,9 @@ case class Div(a: BigInt, b: BigInt, div: BigInt, mod: BigInt ) {
 
 ### Creating the Division and Module Operations
 
-As we can see in the class [Calc](./src/main/scala/v1/Calc.scala), we can define the division and module operations as follows:
+As we can see in the class [Calc](./src/main/scala/v1/Calc.scala),
+we can define the division and module operations by extracting
+these properties from the solved $Div$ as follows:
 
 ```scala
   def div(a: BigInt, b: BigInt): BigInt = {
@@ -128,6 +128,37 @@ As we can see in the class [Calc](./src/main/scala/v1/Calc.scala), we can define
 ```
 ## Some Important Properties
 
+### Modulo and Div Trivial Case
+
+If the dividend is smaller than the divisor, the result of the modulos operation should be the dividend value and the division result should be zero.
+
+$$
+\forall a,b \in \mathbb{N}, \text{ and } b \neq 0 \\
+a < b \implies \\
+a \text{ mod } b = a \text{ and } \\
+a \text{ div } b = 0 \\
+$$
+
+We can check that since $Div(a, b, 0, a)$ is the final solution for the division operation.
+That verification is available in [ModSmallDividend](./src/main/scala/v1/div/properties/ModSmallDividend.scala) and simplified below:
+
+```scala
+def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
+    require(b != 0)
+    require(b > a)
+    require(a >= 0)
+    val x = Div(a, b, 0, a)
+    check(x.isFinal)
+    check(x == x.solve)
+    check(x.mod == a)
+    check(x.div == 0)
+    check(Calc.mod(a, b) == x.mod)
+    check(Calc.div(a, b) == 0)
+    Calc.mod(a, b) == a &&
+    Calc.div(a, b) == 0
+  }.holds
+```
+
 ### Modulo and Div Identity
 
 The modulo of every number by itself is zero and the division of every number by itself is one.
@@ -140,7 +171,9 @@ n \text{ div } n = 1
 $$
 
 
-We can prove this property using the recursive definition of the division and module operations. As the following simplified version of the [long proof](./src/main/scala/v1/div/properties/ModIdentity.scala#longProof) code example:
+We can prove this property using the recursive definition of the division and module operations. 
+As the following simplified version of the 
+[long proof](./src/main/scala/v1/div/properties/ModIdentity.scala#longProof) code example:
 
 ```scala
   def longProof(n: BigInt): Boolean = {
@@ -172,7 +205,9 @@ We can prove this property using the recursive definition of the division and mo
 ```
 
 But we don't need to manually do all these transformations.
-Scala Stainless can verify that property holds in [ModIdentity](./src/main/scala/v1/div/properties/ModIdentity.scala) with no issues as follows:
+Scala Stainless can verify that property holds in 
+[ModIdentity](./src/main/scala/v1/div/properties/ModIdentity.scala) 
+with no issues as follows:
 
 ```scala
   def modIdentity(a: BigInt): Boolean = {
@@ -181,22 +216,28 @@ Scala Stainless can verify that property holds in [ModIdentity](./src/main/scala
   }.holds
 ```
 
-Similary, in the next sections, we will prove other properties of the division and module operations using only the amount of evidences required to Scala Stainless to verify that they hold.
+Similary, in the next sections, 
+we will prove other properties of the division and module operations 
+using only the amount of evidences required to Scala Stainless to verify 
+that they hold.
 
-### Modulo Addition
+### Modulo and Div Addition
 
 $$
 \forall a,b,div,mod \in \mathbb{Z}, \\
 \text{ where } a = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
-Div(a,b, div + 1, mod - b) = Div(a,b, div, mod) \\
-Div(a,b, div - 1, mod + b) = Div(a,b, div, mod) \\
+Div(a,b, div + 1, mod - b).solve = Div(a,b, div, mod).solve \\
+Div(a,b, div - 1, mod + b).solve = Div(a,b, div, mod).solve \\
 \therefore \\
 a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
 1 + (a \text{ div } b) = (a + b) \text{ div } b \\
 1 - (a \text{ div } b) = (a - b) \text{ div } b \\
 $$
 
-As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod) and [LessDivMoreMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod) and shown in a simplified version in the code below, the division result is the same for the same dividend and divisor, regardless of the div and mod values, as long $a = b \cdot div + mod$.
+As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod) 
+and [LessDivMoreMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod) 
+and shown in a simplified version in the code below, the division result is the same for the same dividend and divisor, 
+regardless of the div and mod values, as long $a = b \cdot div + mod$.
 
 ```scala
   def MoreDivLessMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
@@ -238,15 +279,19 @@ As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionA
   }.holds
 
 ```
-### Module Multiplication
+### Module and Div Multiplication
 
 As a directly consequence of these properties, we can extend the Div with the following properties:
 
 $$
 \forall \text{ } m \in \mathbb{N}, \text{ where }  \\
-a = b \cdot div + mod \therefore \\
-Div(a,b, div + m, mod - m * b) = Div(a,b, div, mod) \\
-Div(a,b, div - m, mod + m * b) = Div(a,b, div, mod) \\
+a = b \cdot div + mod \\
+\therefore \\
+Div(a,b, div + m, mod - m * b).solve = Div(a,b, div, mod).solve \\
+Div(a,b, div - m, mod + m * b).solve = Div(a,b, div, mod).solve \\
+\therefore \\
+mod(a + m \cdot b, b) = mod(a, b) \\
+div(a + m \cdot b, b) = div(a, b) + m
 $$
 
 ### Unique Remainder Property in Integer Division
@@ -254,7 +299,12 @@ $$
 There is only one single remainder value for every $a, b$ pair.
 
 $$
-\forall a, b \in \mathbb{N}, \exists ! \text{ remainder } r \text{ such that } 0 \leq r < |b| \text{ and } a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r 
+\forall a, b \in \mathbb{N}, 
+\exists ! \text{ remainder } r 
+\text{ such that } 
+0 \leq r < |b| 
+\text{ and } 
+a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r 
 $$
 
 in other words:
@@ -264,7 +314,7 @@ $$
 \text{where } b \neq 0 \text{, } \\
 a = b \cdot divX + modX \text{ and } \\
 a = b \cdot divX + modY \text{ then } \\
-Div(a, b, divX, modX) = Div(a, b, divY, modY)
+Div(a, b, divX, modX).solve = Div(a, b, divY, modY).solve
 $$
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation. That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as simplified below:
@@ -298,46 +348,6 @@ def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mo
    Div(a, b, divx, modx).solve == Div(a, b, divy, mody).solve
 }.holds
 ```
-
-### Modulo Addition
-
-Adding the divisor to the dividend do not change the mod result.
-
-$$
-\forall a,b \in \mathbb{N}, (a + b) \text{ mod } b = a \text{ mod } b
-$$
-
-### Modulo Multiplication
-
-Recursively applying the Modulo Addition Property, we can prove that:
-
-$$
-\forall a,b,m \in \mathbb{N}, (a + m \cdot b) \text{ mod } b = a \text{ mod } b
-$$
-
-### Div Addition Propert
-
-Adding the divisor to the dividend increase the div result by one.
-
-$$
-\forall a,b \in \mathbb{N}, (a + b) \text{ div } b = (a \text{ div } b ) + 1
-$$
-
-
-Therefore:
-
-$$
-\forall a,b,m \in \mathbb{N}, (a + m \cdot b) \text{ div } b = (a \text{ div } b ) \cdot m
-$$
-
-
-### Modulo Result for Small Dividend
-
-If the dividend is smaller than the divisor, the result of the modulos operation should be the dividend value.
-
-$$
-\forall a,b \in \mathbb{N}, \text{ where } a < b \implies a \text{ mod } b = a
-$$
 
 ### Modulo Idempotence
 

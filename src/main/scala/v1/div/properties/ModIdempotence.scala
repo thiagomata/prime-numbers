@@ -25,7 +25,6 @@ object ModIdempotence {
     check(result <= a)
     check(result < absB)
     check(result == Calc.mod(a, b))
-//    ModSmallDividend.modSmallDividend(result, b)
 
     check(Calc.mod(result, b) == result)
     check(Calc.mod(a, b) == Calc.mod(result, b))
@@ -38,7 +37,6 @@ object ModIdempotence {
     require(x.a == y.a)
     require(x.b == y.b)
     require(x.b != 0)
-//    require(x.b > 0) // @todo check that also works for b < 0
     check(modUnique(x.a, x.b, x.div, x.mod, y.div, y.mod))
     x.solve == y.solve
   }.holds
@@ -59,7 +57,6 @@ object ModIdempotence {
       check(x == y)
     }
     if (divx < divy) {
-//      check(modx > mody)
       DivModAdditionAndMultiplication.MoreDivLessMod(a, b, divx, modx)
       val next =  Div(a, b, divx + 1, modx - b)
       check(x.solve == next.solve)
@@ -67,7 +64,6 @@ object ModIdempotence {
       check(x.solve == y.solve)
     }
     if (divx > divy) {
-//      check(modx < mody)
       DivModAdditionAndMultiplication.LessDivMoreMod(a, b, divx, modx)
       val next =  Div(a, b, divx - 1, modx + b)
       check(x.solve == next.solve)
