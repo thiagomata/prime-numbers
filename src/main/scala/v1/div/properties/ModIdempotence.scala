@@ -13,15 +13,15 @@ object ModIdempotence {
     val div = Div(a, b, 0, a)
     val absB = if (b < 0) -b else b
 
-    val simplified = div.solve
-    check(simplified.isFinal)
-    check(simplified.b == div.b)
-    check(simplified.a == div.a)
+    val solved = div.solve
+    check(solved.isFinal)
+    check(solved.b == div.b)
+    check(solved.a == div.a)
     check(absB > 0)
-    check(simplified.mod < absB)
-    check(simplified.mod >= 0)
+    check(solved.mod < absB)
+    check(solved.mod >= 0)
 
-    val result = simplified.mod
+    val result = solved.mod
     check(result <= a)
     check(result < absB)
     check(result == Calc.mod(a, b))

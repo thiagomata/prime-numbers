@@ -75,14 +75,12 @@ object ModOperations {
     check(w.solve == w)
 
     check(b != 0)
-//    check(bigDiv >= 0)
     DivModAdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
     check( Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
     check(w.isValid)
     check(xy.isValid)
     check(w.a == xy.a)
     check(w.b == xy.b)
-//    check(w.b > 0) // @todo check that also works for b < 0
     check(modUniqueDiv(w, xy))
     check( w.solve == xy.solve)
     check( w.solve.mod == xy.solve.mod)
@@ -99,5 +97,16 @@ object ModOperations {
     require(Calc.mod(a, b) == 0)
     modAdd(a,b,c)
     Calc.mod(a + c, b) == Calc.mod(c, b)
+  }.holds
+
+  def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(c >= 0)
+    require(a >= c)
+    require(b != 0)
+    check(a - c >= 0)
+    check(c >= 0)
+    check(b != 0)
+    modAdd(a - c, b, c)
+    Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b)
   }.holds
 }

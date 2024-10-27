@@ -279,7 +279,7 @@ regardless of the div and mod values, as long $a = b \cdot div + mod$.
   }.holds
 
 ```
-### Module and Div Multiplication
+### Module and Div Plus or Less Multiples of Divisor
 
 As a directly consequence of these properties, we can extend the Div with the following properties:
 
@@ -354,4 +354,46 @@ def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mo
 $$
 \forall a,b \in \mathbb{N}, a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b
 $$
+
+The proof of the modulo idempotence property is available in the [ModIdempotence](./src/main/scala/v1/div/properties/ModIdempotence.scala) as follows:
+```scala
+  def modIdempotence(a: BigInt, b: BigInt): Boolean = {
+    require(b != 0)
+    require(a >= 0)
+
+    val div = Div(a, b, 0, a)
+    val absB = if (b < 0) -b else b
+
+    val solved = div.solve
+    check(solved.isFinal)
+    check(solved.b == div.b)
+    check(solved.a == div.a)
+    check(absB > 0)
+    check(solved.mod < absB)
+    check(solved.mod >= 0)
+
+    val result = solved.mod
+    check(result <= a)
+    check(result < absB)
+    check(result == Calc.mod(a, b))
+
+    check(Calc.mod(result, b) == result)
+    check(Calc.mod(a, b) == Calc.mod(result, b))
+    Calc.mod(a, b) == Calc.mod(Calc.mod(a, b), b)
+  }.holds
+```
+
+### Modular Distributivity over Addition and Subtraction
+
+$$
+\forall a,b,c \in \mathbb{N}, \\
+\text{ where } b \neq 0 \\
+( a + c ) \text{ mod } b = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ mod } b = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+$$
+
+```
+    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
+```
+
 
