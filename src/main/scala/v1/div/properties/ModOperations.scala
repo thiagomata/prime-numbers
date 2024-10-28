@@ -10,8 +10,6 @@ import v1.properties.ModIdempotence.modUniqueDiv
 object ModOperations {
 
   def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
-    require(a >= 0)
-    require(c >= 0)
     require(b != 0)
 
     val absB = if (b < 0) -b else b
@@ -87,26 +85,21 @@ object ModOperations {
     check( xy.solve.mod == Calc.mod(a+c,b))
     check( xy.solve.mod == solvedZ.mod)
 
-    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
+    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b) &&
+    Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b)
   }.holds
 
   def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
-    require(a >= 0)
-    require(c >= 0)
-    require(b > 0)
+    require(b != 0)
     require(Calc.mod(a, b) == 0)
     modAdd(a,b,c)
     Calc.mod(a + c, b) == Calc.mod(c, b)
   }.holds
 
   def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
-    require(c >= 0)
-    require(a >= c)
     require(b != 0)
-    check(a - c >= 0)
-    check(c >= 0)
-    check(b != 0)
     modAdd(a - c, b, c)
-    Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b)
+    Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b) &&
+    Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b)
   }.holds
 }

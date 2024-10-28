@@ -1,4 +1,12 @@
-# Division and Module
+# Proving Properties of Division and Modulo using Formal Verification
+
+## Abstract
+
+The division and modulo operations are fundamental in computer science and mathematics.
+In this article, we will show how to prove some properties of these operations using the recursive definition of the division and modulo operations.
+We will use the Scala Stainless tool to verify these properties.
+
+## Introduction
 
 Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ 
 and $remainder$ such that:
@@ -294,7 +302,7 @@ mod(a + m \cdot b, b) = mod(a, b) \\
 div(a + m \cdot b, b) = div(a, b) + m
 $$
 
-### Unique Remainder Property in Integer Division
+### Unique Remainder
 
 There is only one single remainder value for every $a, b$ pair.
 
@@ -383,17 +391,119 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
   }.holds
 ```
 
-### Modular Distributivity over Addition and Subtraction
+### Modular and Div Distributivity over Addition and Subtraction
 
 $$
 \forall a,b,c \in \mathbb{N}, \\
 \text{ where } b \neq 0 \\
 ( a + c ) \text{ mod } b = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ div } b = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
 ( a - c ) \text{ mod } b = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ div } b = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
 $$
 
-```
-    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
+These properties are proved in the [ModOperations](./src/main//scala/v1/div/properties/ModOperations.scala),
+as simplified as follows:
+
+```scala
+ def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+
+    val absB = if (b < 0) -b else b
+
+    val x = Div(a, b, 0, a)
+    val solvedX = x.solve
+    check(solvedX.mod < absB)
+    check(solvedX.a == a && solvedX.b == b)
+    check(solvedX.a == solvedX.b * solvedX.div + solvedX.mod) // by definition
+    check(solvedX.a - solvedX.b * solvedX.div == solvedX.mod) // transposing solvedX.b * solvedX.div to the left side
+
+    val y = Div(c, b, 0, c)
+    val solvedY = y.solve
+    check(solvedY.mod < absB)
+    check(solvedY.a == c && solvedY.b == b)
+    check(solvedY.a == solvedY.b * solvedY.div + solvedY.mod) // by definition
+    check(solvedY.a - solvedY.b * solvedY.div == solvedY.mod) // transposing solvedY.b * solvedY.div to the left side
+
+    val xy = Div(a + c, b, 0, a + c) // xy is the division of a + c by b
+    val solvedXY = xy.solve
+    check(solvedXY.mod < absB)
+    check(solvedXY.a == a + c)
+    check(solvedXY.b == b)
+    check(solvedXY.a == solvedXY.b * solvedXY.div + solvedXY.mod)
+    check(a + c == b * solvedXY.div + solvedXY.mod) // by definition
+
+    val z = Div(solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
+    check(z.a == z.b * z.div + z.mod) // by definition
+    check(z.mod == solvedX.mod + solvedY.mod)
+
+    val solvedZ = z.solve
+    check(solvedZ.mod < absB)
+    check(modUniqueDiv(z, solvedZ))
+    check(z.solve.mod == solvedZ.mod)
+
+    check(solvedX.mod + solvedY.mod == b * solvedZ.div + solvedZ.mod)
+    check(solvedX.a - solvedX.b * solvedX.div + solvedY.a - solvedY.b * solvedY.div == b * solvedZ.div + solvedZ.mod)
+    check(a - b * solvedX.div + c - b * solvedY.div == b * solvedZ.div + solvedZ.mod)
+    check(a + c == b * solvedZ.div + b * solvedX.div + b * solvedY.div + solvedZ.mod) // transposing b * solvedX.div + b * solvedY.div to the left side
+
+    val bigDiv = solvedZ.div + solvedX.div + solvedY.div
+    check(a + c == b * bigDiv + solvedZ.mod)
+
+    val w = Div(a + c, b, bigDiv, solvedZ.mod) // is valid since a + c = b * bigDiv + solvedZ.mod
+    check(solvedZ.mod < absB)
+    check(w.mod == solvedZ.mod)
+    check(w.isFinal && w.solve == w)
+
+    /* calling the proof of the property Module Plus Multiples of Divisor
+     * mod(a + m * b, b) = mod(a, b)
+     * described previously
+     */
+    DivModAdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
+    check(Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
+    check(w.a == xy.a && w.b == xy.b)
+    /* calling the proof of the property Unique Remainder
+     * mod(a, b) = mod(a, b)
+     * described previously
+     */
+    check(modUniqueDiv(w, xy))
+    check(w.solve == xy.solve)
+    check(w.solve.mod == xy.solve.mod == Calc.mod(a+c,b) == solvedZ.mod)
+
+    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b) &&
+    Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b)
+  }.holds
+
+  def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+    modAdd(a - c, b, c)
+    Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b) &&
+    Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b)
+  }.holds
 ```
 
+## Conclusion
 
+The division and module operations are fundamental in computer science and mathematics.
+In this article, we have shown how to prove some properties of these operations
+using the recursive definition of the division and modulo operations.
+We used the Scala Stainless tool to verify these properties.
+The properties proved in this article were:
+
+$$
+\forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
+\text{where } b \neq 0
+$$
+$$
+\begin{align*}
+a < b \implies a \text{ mod } b & = a \\
+a < b \implies a \text{ div } b &= 0 \\
+n \text{ mod } n & = 0 \\
+n \text{ div } n & = 1 \\
+a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
+( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+\end{align*}
+$$
