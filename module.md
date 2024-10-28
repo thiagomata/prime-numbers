@@ -23,7 +23,7 @@ and $remainder$ such that:
 dividend = divisor \cdot quotient + \text{remainder}, \text { where } 0 \leq \text{remainder} < |b|, \\
 dividend \text{ mod } divisor = remainder, \\
 dividend \text{ div } divisor = quotient. \\
-} \\
+}
 ```
 
 ## Recursive Definition
@@ -146,7 +146,7 @@ If the dividend is smaller than the divisor, the result of the modulos operation
 \displaylines{ \\
 \forall a,b \in \mathbb{N}, \text{ and } b \neq 0 \\
 a < b \implies \\
-a \text{ mod } b = a \text{ and } \\
+a \text{ mod } b = a \\
 a \text{ div } b = 0 \\
 }
 ```
@@ -179,7 +179,7 @@ The modulo of every number by itself is zero and the division of every number by
 \displaylines{ \\
 \forall n \in \mathbb{N}, \\
 \text{ where } n \neq 0 \\
-n \text{ mod } n = 0 \text{ and } \\
+n \text{ mod } n = 0 \\
 n \text{ div } n = 1 \\
 }
 ```
@@ -510,9 +510,10 @@ as simplified as follows:
 
 The division and module operations are fundamental in computer science and mathematics.
 In this article, we have shown how to prove some properties of these operations
-using the recursive definition of the division and modulo operations.
-We used the Scala Stainless tool to verify these properties.
-The properties proved in this article, with available proofs in the source code, are:
+using the recursive definition of the division and modulo operations and formal verification on Scala Stainless,
+with available proofs in the source code.
+
+These properties are:
 
 ```math
 \displaylines{ \\
@@ -522,8 +523,8 @@ The properties proved in this article, with available proofs in the source code,
 ```
 ```math
 \begin{align*}
-a < b \implies a \text{ mod } b & = a \\
-a < b \implies a \text{ div } b &= 0 \\
+0 <= a < b \implies a \text{ mod } b & = a \\
+0 <= a < b \implies a \text{ div } b &= 0 \\
 b \text{ mod } b & = 0 \\
 b \text{ div } b & = 1 \\
 a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
