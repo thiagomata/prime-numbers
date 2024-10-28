@@ -307,12 +307,12 @@ $$
 There is only one single remainder value for every $a, b$ pair.
 
 $$
-\forall a, b \in \mathbb{N}, 
-\exists ! \text{ remainder } r 
-\text{ such that } 
-0 \leq r < |b| 
-\text{ and } 
-a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r 
+\forall a, b \in \mathbb{N}, \\
+\exists ! \text{ remainder } r \\
+\text{ such that } \\
+0 \leq r < |b|  \\
+\text{ and }  \\
+a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r \\
 $$
 
 in other words:
@@ -322,10 +322,11 @@ $$
 \text{where } b \neq 0 \text{, } \\
 a = b \cdot divX + modX \text{ and } \\
 a = b \cdot divX + modY \text{ then } \\
-Div(a, b, divX, modX).solve = Div(a, b, divY, modY).solve
+Div(a, b, divX, modX).solve = Div(a, b, divY, modY).solve \\
 $$
 
-For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation. That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as simplified below:
+For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
+That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as simplified below:
 
 
 ```scala
