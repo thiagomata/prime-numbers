@@ -175,7 +175,7 @@ $$
 \forall n \in \mathbb{N}, \\
 \text{ where } n \neq 0 \\
 n \text{ mod } n = 0 \text{ and } \\
-n \text{ div } n = 1
+n \text{ div } n = 1 \\
 $$
 
 
