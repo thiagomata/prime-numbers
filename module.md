@@ -2,9 +2,13 @@
 
 ## Abstract
 
-The division and modulo operations are fundamental in computer science and mathematics.
-In this article, we will show how to prove some properties of these operations using the recursive definition of the division and modulo operations.
-We will use the Scala Stainless tool to verify these properties.
+The division and modulo operations are fundamental elements in the study of programming and mathematics.
+Prime numbers, modular arithmetic, and cryptography are some of the areas where these operations are used.
+In this article, we show how to prove some properties of these operations using the recursive definition
+of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity
+over addition and subtraction. We used Scala Stainless to verify these properties. Since these proofs are
+available in the source code, we can use them as a base to prove other properties related to the division
+and modulo operations.
 
 ## Introduction
 
@@ -19,7 +23,7 @@ and $remainder$ such that:
 dividend = divisor \cdot quotient + \text{remainder}, \text { where } 0 \leq \text{remainder} < |b|, \\
 dividend \text{ mod } divisor = remainder, \\
 dividend \text{ div } divisor = quotient. \\
-}
+} \\
 ```
 
 ## Recursive Definition
@@ -508,7 +512,7 @@ The division and module operations are fundamental in computer science and mathe
 In this article, we have shown how to prove some properties of these operations
 using the recursive definition of the division and modulo operations.
 We used the Scala Stainless tool to verify these properties.
-The properties proved in this article were:
+The properties proved in this article, with available proofs in the source code, are:
 
 ```math
 \displaylines{ \\
