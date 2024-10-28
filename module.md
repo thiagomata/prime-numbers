@@ -12,12 +12,14 @@ Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division alg
 and $remainder$ such that:
 
 ```math
+\displaylines{ \\
 \forall \text{ } dividend, divisor \in \mathbb{N}, \text{ where } divisor\neq 0  \\
 \exists ! \\
 \text{quotient} = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies   \\
 dividend = divisor \cdot quotient + \text{remainder}, \text { where } 0 \leq \text{remainder} < |b|, \\
 dividend \text{ mod } divisor = remainder, \\
 dividend \text{ div } divisor = quotient. \\
+}
 ```
 
 ## Recursive Definition
@@ -28,9 +30,12 @@ recursive definition of the division and modulo operations.
 The recursive definition of the division and modulo operations are:
 
 ```math
+\displaylines{ \\
 \forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
-\text{where } b \neq 0
+\text{where } b \neq 0 \\
+}
 ```
+
 We define $Div(a, b, div, mod)$ such that:
 
 ```math
@@ -49,12 +54,14 @@ The solved $Div$ are those where the remainder $mod$ satisfies:
 ### Recursive Formula
 
 ```math
+\displaylines{ \\
 \text{Div.solve}(a, b, \text{div}, \text{mod}) =
 \begin{cases}
 \text{Div}(a, b, \text{div}, \text{mod}) & \text{if } 0 \leq \text{mod} < |b|, \\
 \text{Div.solve}(a, b, \text{div} + \text{sign}(b), \text{mod} - |b|) & \text{if } \text{mod} \geq |b|, \\
-\text{Div.solve}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0.
-\end{cases}
+\text{Div.solve}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0. \\
+\end{cases} \\
+}
 ```
 
 We can see the described [recursive definition on Scala](
@@ -132,10 +139,12 @@ these properties from the solved $Div$ as follows:
 If the dividend is smaller than the divisor, the result of the modulos operation should be the dividend value and the division result should be zero.
 
 ```math
+\displaylines{ \\
 \forall a,b \in \mathbb{N}, \text{ and } b \neq 0 \\
 a < b \implies \\
 a \text{ mod } b = a \text{ and } \\
 a \text{ div } b = 0 \\
+}
 ```
 
 We can check that since $Div(a, b, 0, a)$ is the final solution for the division operation.
@@ -163,10 +172,12 @@ def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
 The modulo of every number by itself is zero and the division of every number by itself is one.
 
 ```math
+\displaylines{ \\
 \forall n \in \mathbb{N}, \\
 \text{ where } n \neq 0 \\
 n \text{ mod } n = 0 \text{ and } \\
 n \text{ div } n = 1 \\
+}
 ```
 
 
@@ -223,6 +234,7 @@ that they hold.
 ### Addition
 
 ```math
+\displaylines{ \\
 \forall a,b,div,mod \in \mathbb{Z}, \\
 \text{ where } a = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
 Div(a,b, div + 1, mod - b).solve = Div(a,b, div, mod).solve \\
@@ -231,6 +243,7 @@ Div(a,b, div - 1, mod + b).solve = Div(a,b, div, mod).solve \\
 a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
 1 + (a \text{ div } b) = (a + b) \text{ div } b \\
 1 - (a \text{ div } b) = (a - b) \text{ div } b \\
+}
 ```
 
 As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod) 
@@ -278,11 +291,13 @@ regardless of the div and mod values, as long $a = b \cdot div + mod$.
   }.holds
 
 ```
+
 ### Adding or Removing Multiples of Divisor
 
 As a directly consequence of these properties, we can extend the Div with the following properties:
 
 ```math
+\displaylines{ \\
 \forall \text{ } m \in \mathbb{N}, \text{ where }  \\
 a = b \cdot div + mod \\
 \therefore \\
@@ -293,6 +308,7 @@ mod(a + m \cdot b, b) = mod(a, b) \\
 div(a + m \cdot b, b) = div(a, b) + m \\
 mod(a - m \cdot b, b) = mod(a, b) \\
 div(a - m \cdot b, b) = div(a, b) - m \\
+}
 ```
 
 ### Unique Remainder
@@ -300,22 +316,26 @@ div(a - m \cdot b, b) = div(a, b) - m \\
 There is only one single remainder value for every $a, b$ pair.
 
 ```math
+\displaylines{ \\
 \forall a, b \in \mathbb{Z}, \\
 \exists ! \text{ remainder } r \\
 \text{ such that } \\
 0 \leq r < |b|  \\
 \text{ and }  \\
 a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r \\
+}
 ```
 
 in other words, two $Div$ instances with the same dividend $a$ and divisor $b$ will have the same solution.
 
 ```math
+\displaylines{ \\
 \forall a, b,divX, modX, divY, modY \in \mathbb{N}, \\ 
 \text{where } b \neq 0 \text{, } \\
 a = b \cdot divX + modX \text{ and } \\
 a = b \cdot divX + modY \text{ then } \\
 Div(a, b, divX, modX).solve = Div(a, b, divY, modY).solve \\
+}
 ```
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
@@ -354,9 +374,11 @@ def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mo
 ### Modulo Idempotence
 
 ```math
+\displaylines{ \\
 \forall a,b \in \mathbb{Z}, \\
 \text{ where } b \neq 0 \\
-a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b
+a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b \\
+}
 ```
 
 The proof of the modulo idempotence property is available in the [ModIdempotence](./src/main/scala/v1/div/properties/ModIdempotence.scala) as follows:
@@ -390,12 +412,14 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
 ### Distributivity over Addition and Subtraction
 
 ```math
+\displaylines{ \\
 \forall a,b,c \in \mathbb{Z}, \\
 \text{ where } b \neq 0 \\
 ( a + c ) \text{ mod } b = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
 ( a + c ) \text{ div } b = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
 ( a - c ) \text{ mod } b = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
 ( a - c ) \text{ div } b = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+}
 ```
 
 These properties are proved in the [ModOperations](./src/main//scala/v1/div/properties/ModOperations.scala),
@@ -487,8 +511,10 @@ We used the Scala Stainless tool to verify these properties.
 The properties proved in this article were:
 
 ```math
+\displaylines{ \\
 \forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
-\text{where } b \neq 0
+\text{where } b \neq 0 \\
+}
 ```
 ```math
 \begin{align*}
