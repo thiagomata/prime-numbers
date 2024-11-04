@@ -2,10 +2,11 @@
 
 ## Abstract
 
-The division and modulo operations are fundamental elements in the study of programming and mathematics. 
+The division and modulo operations are fundamental elements in the study of programming and mathematics.
 Prime numbers, modular arithmetic, and cryptography are some of the areas where these operations are used.
-In this article, we show how to prove some properties of these operations using the recursive definition of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity
-over addition and subtraction. We used Scala Stainless to verify these properties. Since these proofs are available in the source code, we can use them as a base to prove other properties related to the division and modulo operations.
+In this article, we show how to prove some properties of these operations using the recursive definition of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity over addition and subtraction.
+We used Scala Stainless to verify these properties.
+Since these proofs are available in the source code, we can use them as a base to prove other properties related to the division and modulo operations.
 
 ## Introduction
 
@@ -34,15 +35,12 @@ The implementation presented in this article is limited to the division and modu
 It goals is to make available a set of proofs that can be verified and used as a base to prove other properties related to the division and modulo operations.
 Therefore, the implementation is optimized to correctness and not to performance.
 
-The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or underflow issues.
-But, they are still constrained by the memory available in the system. 
-Similarly, some proofs are using the recursive definition of the division and modulo operations, which could trigger a stack overflow for large numbers. 
-Those issues do not invalidate the mathematical properties proved in this article, which are the main focus of this article.
+The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or underflow issues. But, they are still constrained by the memory available in the system.
+Similarly, some proofs are using the recursive definition of the division and modulo operations, which could trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this article, which are the main focus of this article.
 
 ## Traditional Definition
 
-Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$
-and $remainder$ such that:
+Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ and $remainder$ such that:
 
 ```math
 \displaylines{ \\
@@ -57,9 +55,7 @@ dividend \text{ div } divisor = quotient. \\
 
 ## Recursive Definition
 
-Some properties of the division and modulo can be proved using the
-recursive definition of the division and modulo operations.
-
+Some properties of the division and modulo can be proved using the recursive definition of the division and modulo operations.
 The recursive definition of the division and modulo operations are:
 
 ```math
@@ -186,9 +182,9 @@ case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt) {
 
 ### Creating the Division and Module Operations
 
-As we can see in the class [Calc](./src/main/scala/v1/Calc.scala),
-we can define the division and module operations by extracting
-these properties from the solved $DivMod$ as follows:
+As we can see in the class [Calc](
+./src/main/scala/v1/Calc.scala
+), we can define the division and module operations by extracting these properties from the solved $DivMod$ as follows:
 
 ```scala
   def div(a: BigInt, b: BigInt): BigInt = {
@@ -223,7 +219,7 @@ a \text{ div } b = 0 \\
 ```
 
 We can check that since $DivMod(a, b, 0, a)$ is the final solution for the division operation.
-That verification is available in [ModSmallDividend](./src/main/scala/v1/div/properties/ModSmallDividend.scala) and simplified below:
+That verification is available in [ModSmallDividend](./src/main/scala/v1/div/properties/ModSmallDividend.scala) and described below:
 
 ```scala
 def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
@@ -257,8 +253,9 @@ n \text{ div } n = 1 \\
 
 
 We can prove this property using the recursive definition of the division and module operations.
-As the following
-[long proof](./src/main/scala/v1/div/properties/ModIdentity.scala#longProof) code example:
+As the following [long proof](
+./src/main/scala/v1/div/properties/ModIdentity.scala#longProof
+) code example:
 
 ```scala
   def longProof(n: BigInt): Boolean = {
@@ -293,8 +290,9 @@ As the following
 
 But we don't need to manually do all these transformations.
 Scala Stainless can verify that property holds in
-[ModIdentity](./src/main/scala/v1/div/properties/ModIdentity.scala)
-with no issues as follows:
+[ModIdentity](
+./src/main/scala/v1/div/properties/ModIdentity.scala
+) with no issues as follows:
 
 ```scala
   def modIdentity(a: BigInt): Boolean = {
@@ -303,10 +301,7 @@ with no issues as follows:
   }.holds
 ```
 
-Similary, in the next sections,
-we will prove other properties of the division and module operations
-using only the amount of evidences required to Scala Stainless to verify
-that they hold.
+Similary, in the next sections, we will prove other properties of the division and module operations using only the amount of evidences required to Scala Stainless to verify that they hold.
 
 ### Addition
 
@@ -323,10 +318,11 @@ a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
 }
 ```
 
-As proved in [MoreDivLessMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod)
-and [LessDivMoreMod](./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod)
-and shown in a simplified version in the code below, the division result is the same for the same dividend and divisor,
-regardless of the div and mod values, as long $a = b \cdot div + mod$.
+As proved in [MoreDivLessMod](
+./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod
+) and [LessDivMoreMod](
+./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod
+) and shown the code below, the division result is the same for the same dividend and divisor, regardless of the div and mod values, as long $a = b \cdot div + mod$.
 
 ```scala
   def MoreDivLessMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
@@ -450,7 +446,9 @@ DivMod(a, b, divX, modX).solve = DivMod(a, b, divY, modY).solve \\
 ```
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
-That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as below:
+That is proved in the [unique remainder property](
+./src/main/scala/v1/div/properties/ModIdempotence.scala#44
+) as shown below:
 
 
 ```scala
@@ -502,6 +500,7 @@ a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b \\
 ```
 
 The proof of the modulo idempotence property is available in the [ModIdempotence](./src/main/scala/v1/div/properties/ModIdempotence.scala) as follows:
+
 ```scala
   def modIdempotence(a: BigInt, b: BigInt): Boolean = {
    require(b != 0)
@@ -541,8 +540,9 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
 }
 ```
 
-These properties are proved in the [ModOperations](./src/main//scala/v1/div/properties/ModOperations.scala),
-as simplified as follows:
+These properties are proved in the [ModOperations](
+./src/main//scala/v1/div/properties/ModOperations.scala
+), as shown as follows:
 
 ```scala
  def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
