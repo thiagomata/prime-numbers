@@ -1,5 +1,7 @@
 # Proving Properties of Division and Modulo using Formal Verification
 
+<div align="justify">
+
 ## Abstract
 
 The division and modulo operations are fundamental elements in the study of programming and mathematics.
@@ -313,3 +315,5 @@ Sanghavi, Alok (May 21, 2010). "What is formal verification?". EE Times Asia.
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 [Stainless - Program Verification, 2024](https://epfl-lara.github.io/stainless/intro.html)
+
+</div>
