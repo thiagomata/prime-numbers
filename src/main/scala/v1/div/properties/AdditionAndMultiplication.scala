@@ -66,8 +66,10 @@ object AdditionAndMultiplication {
     )
 
     val sameMod = Calc.mod(a, b) == Calc.mod(a + b, b)
+    check(Calc.mod(a, b) == Calc.mod(a + b, b))
 
     check(input.solve.div + 1 == next.div)
+    check(Calc.div(a, b) + 1 == Calc.div(a + b, b))
     val nextDiv = Calc.div(a, b) + 1 == Calc.div(a + b, b)
 
 

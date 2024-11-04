@@ -86,6 +86,9 @@ object ModOperations {
       Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
     ))
 
+    check(Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b))
+    check(Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b))
+
     Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b) &&
     Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b)
   }.holds
@@ -100,6 +103,10 @@ object ModOperations {
   def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
     modAdd(a - c, b, c)
+
+    check(Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b))
+    check(Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b))
+
     Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b) &&
     Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b)
   }.holds

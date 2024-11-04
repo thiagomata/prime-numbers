@@ -9,7 +9,7 @@ import verification.Helper.equality
 object ModIdentity {
   def modIdentity(a: BigInt): Boolean = {
     require(a != 0)
-    Calc.mod(a, a) == 0
+    Calc.mod(a, a) == 0 && Calc.div(a, a) == 1
   }.holds
 
   def longProof(n: BigInt): Boolean = {

@@ -4,8 +4,8 @@ import v1.properties.AdditionAndMultiplication
 
 
 DivMod(
-  a=BigInt(75),
-  b=BigInt(-60),
+  a=BigInt(-10),
+  b=BigInt(-10),
   div=BigInt(0),
-  mod=BigInt(75)
+  mod=BigInt(-10)
 ).solve
