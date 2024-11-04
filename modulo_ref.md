@@ -2,13 +2,10 @@
 
 ## Abstract
 
-The division and modulo operations are fundamental elements in the study of programming and mathematics.
+The division and modulo operations are fundamental elements in the study of programming and mathematics. 
 Prime numbers, modular arithmetic, and cryptography are some of the areas where these operations are used.
-In this article, we show how to prove some properties of these operations using the recursive definition
-of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity
-over addition and subtraction. We used Scala Stainless to verify these properties. Since these proofs are
-available in the source code, we can use them as a base to prove other properties related to the division
-and modulo operations.
+In this article, we show how to prove some properties of these operations using the recursive definition of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity
+over addition and subtraction. We used Scala Stainless to verify these properties. Since these proofs are available in the source code, we can use them as a base to prove other properties related to the division and modulo operations.
 
 ## Introduction
 
@@ -34,15 +31,13 @@ To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/
 ## Limitations
 
 The implementation presented in this article is limited to the division and modulo operations for integers.
-It goals is to make available a set of proofs that can be verified and used as a base to prove other properties
-related to the division and modulo operations.
+It goals is to make available a set of proofs that can be verified and used as a base to prove other properties related to the division and modulo operations.
 Therefore, the implementation is optimized to correctness and not to performance.
 
-The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or
-underflow issues. But, they are still constrained by the memory available in the system.
-Similarly, some proofs are using the recursive definition of the division and modulo operations,
-which could trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical
-properties proved in this article, which are the main focus of this article.
+The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or underflow issues.
+But, they are still constrained by the memory available in the system. 
+Similarly, some proofs are using the recursive definition of the division and modulo operations, which could trigger a stack overflow for large numbers. 
+Those issues do not invalidate the mathematical properties proved in this article, which are the main focus of this article.
 
 ## Traditional Definition
 
@@ -104,34 +99,76 @@ The solved $DivMod$ are those where the remainder $mod$ satisfies:
 
 We can see the described [recursive definition on Scala](
 ./src/main/scala/v1/div/DivMod.scala
-), simplified as follows:
+), as follows:
 
 ```scala
-case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt ) {
+case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt) {
   require(div * b + mod == a)
   require(b != 0)
 
+  def absB: BigInt = if (b > 0) b else -b
   def isValid: Boolean = div * b + mod == a
   def isFinal: Boolean = if (b > 0) mod < b && mod >= 0 else mod < -b && mod >= 0
-  def solve: DivMod = if (this.isFinal) this else ( if (mod > 0) reduceMod else increaseMod )
+
+  def solve: DivMod = {
+    if (this.isFinal) return this
+
+    val result = if (mod > 0) then reduceMod else increaseMod
+    check(result.isFinal && result.isValid)
+    check(result.a == a && result.b == b)
+    result
+  }.ensuring(res => res.isFinal && res.isValid && res.a == a && res.b == b)
 
   def reduceMod: DivMod = {
     require(mod >= 0)
     decreases(mod)
 
-    if isFinal then this else (if (b > 0) ModLessB else ModPlusB).reduceMod
+    if (isFinal) return this
+
+    val next = if (b > 0) then ModLessB else ModPlusB
+
+    val result = next.reduceMod
+    check(result.isFinal && result.isValid)
+    check(result.mod < mod)
+    check(result.a == a && result.b == b)
+    result
   }.ensuring(res => res.isFinal && res.isValid)
 
   def increaseMod: DivMod = {
-    val absB = if (b > 0) b else -b
-    require(mod < 0)
-    decreases(-mod)
+    require(mod < 0) //                                               since mod is negative, it is not final
+    decreases(-mod) //                                                mod should increase every iteration
 
-    if isFinal this else (if (b > 0) ModPlusB else ModLessB).increaseMod
+    val next = if (b < 0) then ModLessB else ModPlusB //              increase the mod by abs(b)
+    val result = if (next.isFinal) then next else next.increaseMod // repeat until mod is final
+    check(result.isFinal && result.isValid) //                        result is final and valid
+    check(result.a == a && result.b == b) //                          result has the same a and b as the original DivMod
+    check(result.mod >= 0) //                                         result has a non-negative mod
+    result
   }.ensuring(res => res.isFinal && res.isValid)
 
-  def ModPlusB: DivMod = DivMod(a, b, div - 1, mod + b)
-  def ModLessB: DivMod = DivMod(a, b, div + 1, mod - b)
+  def ModPlusB: DivMod = {
+    check(div * b + mod == a)
+    check(div * b - b + mod + b == a)  //         adding +b and -b does not change the value
+    check((div - 1) * b + (mod + b) == a) //      isolating div - 1 and mod + b
+    val next = DivMod(a, b, div - 1, mod + b) //  is valid because next.div * next.b + next.mod == next.a as proved above
+    check(next.a == a && next.b == b) //          next.a and next.b are the same as the original DivMod
+    check(next.mod == mod + b) //                 next.mod is the same as the original DivMod plus b
+    check(next.div == div - 1) //                 next.div is the same as the original DivMod minus 1
+    check(next.isValid) //                        next is valid
+    next
+  }
+
+  def ModLessB: DivMod = {
+    check(div * b + mod == a)
+    check(div * b + b + mod - b == a) //          adding -b and +b does not change the value
+    check((div + 1) * b + (mod - b) == a) //      isolating div + 1 and mod - b
+    val next = DivMod(a, b, div + 1, mod - b) //  is valid because next.div * next.b + next.mod == next.a as proved above
+    check(next.a == a && next.b == b) //          next.a and next.b are the same as the original DivMod
+    check(next.mod == mod - b) //                 next.mod is the same as the original DivMod minus b
+    check(next.div == div + 1) //                 next.div is the same as the original DivMod plus 1
+    check(next.isValid) //                        next is valid
+    next
+  }
 
   override def equals(obj: Any): Boolean = {
     obj match {
@@ -140,7 +177,7 @@ case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt ) {
           that.b == this.b &&
           that.div == this.div &&
           that.mod == this.mod ) ||
-          ( that.solve == this.solve )
+          ( that.solve == this.solve ) // we also consider two DivMod equal if they are the same after solving
       case _ => false
     }
   }
@@ -220,35 +257,37 @@ n \text{ div } n = 1 \\
 
 
 We can prove this property using the recursive definition of the division and module operations.
-As the following simplified version of the
+As the following
 [long proof](./src/main/scala/v1/div/properties/ModIdentity.scala#longProof) code example:
 
 ```scala
   def longProof(n: BigInt): Boolean = {
-    require(n != 0)
-    check(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
-
-    if (n > 0) {
-      check(
-        DivMod(a=n, b=n, div=0, mod=n).solve ==
-        DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve ==
-        DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod ==
-        DivMod(a=n, b=n, div=1, mod=0).reduceMod ==
-        DivMod(a=n, b=n, div=1, mod=0)
-      )
-      // since
-      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
-    } else {
-      check(
-        DivMod(a=n, b=n, div=0, mod=n).solve ==
-        DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve ==
-        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod ==
-        DivMod(a=n, b=n, div=1, mod=0)
-      )
-      // since
-      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
-    }
-    DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
+   require(n != 0)
+   check(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
+  
+   if (n > 0) {
+    check(
+     equality(
+      DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
+      DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
+      DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
+      DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
+      DivMod(a=n, b=n, div=1, mod=0)
+     )
+    )
+    // since
+    check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
+   } else {
+    check(equality(
+     DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
+     DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
+     DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
+     DivMod(a=n, b=n, div=1, mod=0)
+    ))
+    // since
+    check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
+   }
+   DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
   }.holds
 ```
 
@@ -301,16 +340,45 @@ regardless of the div and mod values, as long $a = b \cdot div + mod$.
 
     if (div1.mod < 0) {
       check(div1.solve == div1.increaseMod)
-      if (b > 0) check(div2.solve == div2.increaseMod == div1.increaseMod == div1.solve)
-      else check(div1.solve == div1.increaseMod == div2.solve)
+      if (b > 0) {
+        check(
+          equality(
+            div2.solve, //       is equals to
+            div2.increaseMod, // is equals to
+            div1.increaseMod, // is equals to
+            div1.solve
+          )
+        )
+      } else {
+        check(
+          equality(
+            div1.increaseMod, // is equals to
+            div2.solve, //       is equals to
+            div1.solve
+          )
+        )
+      }
+      check(div1.solve == div2.solve)
     }
     if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
       if (b > 0 ) {
         check(div2.mod < div1.mod)
-        check(div1.solve == div1.reduceMod == div2.solve)
+        check(
+          equality(
+            div1.solve, //       is equals to
+            div1.reduceMod, //   is equals to
+            div2.solve
+          )
+        )
       } else {
         check(div2.mod > div1.mod)
-        check(div2.solve == div2.reduceMod == div1.solve)
+        check(
+          equality(
+            div2.solve, //     is equals to
+            div2.reduceMod, // is equals to
+            div2.solve
+          )
+        )
       }
     }
     check(div1.solve == div2.solve)
@@ -321,8 +389,13 @@ regardless of the div and mod values, as long $a = b \cdot div + mod$.
     require(b != 0)
     require(div * b + mod == a)
 
-    check(a == div * b + mod)
-    check(a == (div - 1) * b + (mod + b))
+    check(
+      equality(
+        a,                         // is equals to
+        div * b + mod,             // is equals to
+        (div - 1) * b + (mod + b)
+      )
+    )
     MoreDivLessMod(a, b, div - 1, mod + b)
 
     DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve
@@ -377,11 +450,15 @@ DivMod(a, b, divX, modX).solve = DivMod(a, b, divY, modY).solve \\
 ```
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
-That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as simplified below:
+That is proved in the [unique remainder property](./src/main/scala/v1/div/properties/ModIdempotence.scala#44) as below:
 
 
 ```scala
-def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mody: BigInt): Boolean = {
+  def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mody: BigInt): Boolean = {
+    require(b != 0)
+    val divDiff = divx - divy
+    val absDivDiff = if (divDiff < 0) -divDiff else divDiff
+    decreases(absDivDiff)
     require(divx * b + modx == a)
     require(divy * b + mody == a)
 
@@ -393,20 +470,25 @@ def modUnique(a: BigInt, b: BigInt, divx: BigInt, modx: BigInt, divy: BigInt, mo
       check(x == y)
     }
     if (divx < divy) {
+      AdditionAndMultiplication.MoreDivLessMod(a, b, divx, modx) // calling the proof of the property MoreDivLessMod
       check(modx > mody)
       val next =  DivMod(a, b, divx + 1, modx - b)
       check(x.solve == next.solve)
       modUnique(a, b, divx + 1, modx - b, divy, mody)
+      check(x.solve == y.solve)
     }
     if (divx > divy) {
+      AdditionAndMultiplication.LessDivMoreMod(a, b, divx, modx) // calling the proof of the property LessDivMoreMod
       check(modx < mody)
       val next =  DivMod(a, b, divx - 1, modx + b)
       check(x.solve == next.solve)
       modUnique(a, b, divx - 1, modx + b, divy, mody)
+      check(x.solve == y.solve)
     }
-   check(x.solve == y.solve)
-   DivMod(a, b, divx, modx).solve == DivMod(a, b, divy, mody).solve
-}.holds
+    check(x.solve == y.solve)
+
+    DivMod(a, b, divx, modx).solve == DivMod(a, b, divy, mody).solve
+  }.holds
 ```
 
 ### Modulo Idempotence
@@ -422,28 +504,27 @@ a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b \\
 The proof of the modulo idempotence property is available in the [ModIdempotence](./src/main/scala/v1/div/properties/ModIdempotence.scala) as follows:
 ```scala
   def modIdempotence(a: BigInt, b: BigInt): Boolean = {
-    require(b != 0)
-    require(a >= 0)
-
-    val div = DivMod(a, b, 0, a)
-    val absB = if (b < 0) -b else b
-
-    val solved = div.solve
-    check(solved.isFinal)
-    check(solved.b == div.b)
-    check(solved.a == div.a)
-    check(absB > 0)
-    check(solved.mod < absB)
-    check(solved.mod >= 0)
-
-    val result = solved.mod
-    check(result <= a)
-    check(result < absB)
-    check(result == Calc.mod(a, b))
-
-    check(Calc.mod(result, b) == result)
-    check(Calc.mod(a, b) == Calc.mod(result, b))
-    Calc.mod(a, b) == Calc.mod(Calc.mod(a, b), b)
+   require(b != 0)
+   require(a >= 0)
+  
+   val div = DivMod(a, b, 0, a)
+  
+   val solved = div.solve
+   check(solved.isFinal)
+   check(solved.b == div.b)
+   check(solved.a == div.a)
+   check(div.absB > 0)
+   check(solved.mod < div.absB)
+   check(solved.mod >= 0)
+  
+   val result = solved.mod
+   check(result <= a)
+   check(result < div.absB)
+   check(result == Calc.mod(a, b))
+  
+   check(Calc.mod(result, b) == result)
+   check(Calc.mod(a, b) == Calc.mod(result, b))
+   Calc.mod(a, b) == Calc.mod(Calc.mod(a, b), b)
   }.holds
 ```
 

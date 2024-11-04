@@ -15,3 +15,6 @@ target
 # ignore macOS files
 .DS_Store
 **/.DS_Store
+
+# ignore temporary files
+stainless-stack-trace.txt
