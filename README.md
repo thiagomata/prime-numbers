@@ -15,7 +15,7 @@ and we are currently working on the properties of prime numbers.
 
 ### Division and Modulo Properties
 
-[Properties of Division and Modulo](./module.md)
+[Properties of Division and Modulo](./modulo.md)
 
 ## Running the Formal Verification
 
