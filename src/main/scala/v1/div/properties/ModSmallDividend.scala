@@ -1,6 +1,6 @@
 package v1.properties
 
-import v1.{Calc, Div}
+import v1.{Calc, DivMod}
 import stainless.lang.*
 import stainless.proof.check
 
@@ -11,7 +11,7 @@ object ModSmallDividend {
     require(b != 0)
     require(b > a)
     require(a >= 0)
-    val x = Div(a, b, 0, a)
+    val x = DivMod(a, b, 0, a)
     check(x.isFinal)
     check(x == x.solve)
     check(x.mod == a)

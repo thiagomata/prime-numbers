@@ -5,7 +5,7 @@ import v1.Calc
 import stainless.lang.*
 import stainless.proof.check
 import stainless.collection.*
-import v1.properties.DivModAdditionAndMultiplication
+import v1.properties.AdditionAndMultiplication
 
 object CycleProperties {
   def findValueInCycle(list: List[BigInt], key: BigInt): Boolean = {
@@ -15,12 +15,20 @@ object CycleProperties {
     cycle(key) == list(Calc.mod(key, list.size))
   }.holds
 
+  def smallValueInCycle(list: List[BigInt], key: BigInt): Boolean = {
+    require(key >= 0)
+    require(key < list.size)
+    require(list.size > 0)
+    val cycle = Cycle(list)
+    cycle(key) == list(key)
+  }.holds
+
   def findValueTimesSizeInCycle(list: List[BigInt], key: BigInt, m: BigInt): Boolean = {
     require(key >= 0)
     require(list.size > 0)
     require(m >= 0)
     val cycle = Cycle(list)
-    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m)
+    AdditionAndMultiplication.ATimesBSameMod(key, list.size, m)
     cycle(key) == cycle(key + list.size * m)
   }.holds
 
@@ -30,8 +38,8 @@ object CycleProperties {
     require(m1 >= 0)
     require(m2 >= 0)
     val cycle = Cycle(list)
-    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m1)
-    DivModAdditionAndMultiplication.ATimesBSameMod(key, list.size, m2)
+    AdditionAndMultiplication.ATimesBSameMod(key, list.size, m1)
+    AdditionAndMultiplication.ATimesBSameMod(key, list.size, m2)
     check(cycle(key) == cycle(key + list.size * m1))
     check(cycle(key) == cycle(key + list.size * m2))
     cycle(key + list.size * m1) == cycle(key + list.size * m2)

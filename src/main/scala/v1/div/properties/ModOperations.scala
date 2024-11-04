@@ -1,50 +1,46 @@
 package v1.div.properties
 
 import v1.Calc
-import v1.Div
+import v1.DivMod
 import stainless.lang.*
 import stainless.proof.check
-import v1.properties.DivModAdditionAndMultiplication
+import v1.properties.AdditionAndMultiplication
 import v1.properties.ModIdempotence.modUniqueDiv
+import verification.Helper
 
 object ModOperations {
 
   def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
 
-    val absB = if (b < 0) -b else b
-
-    val x = Div(a, b, 0, a)
+    val x = DivMod(a, b, 0, a)
     val solvedX = x.solve
-    check(solvedX.isFinal)
-    check(solvedX.isValid)
-    check(solvedX.mod < absB)
+    check(solvedX.isFinal && solvedX.isValid)
+    check(solvedX.mod < x.absB)
     check(solvedX.a == a)
     check(solvedX.b == b)
     check(solvedX.a == solvedX.b * solvedX.div + solvedX.mod)
     check(solvedX.a - solvedX.b * solvedX.div == solvedX.mod)
 
-    val y = Div(c, b, 0, c)
+    val y = DivMod(c, b, 0, c)
     val solvedY = y.solve
-    check(solvedY.isFinal)
-    check(solvedY.isValid)
-    check(solvedY.mod < absB)
+    check(solvedY.isFinal && solvedY.isValid)
+    check(solvedY.mod < x.absB)
     check(solvedY.a == c)
     check(solvedY.b == b)
     check(solvedY.a == solvedY.b * solvedY.div + solvedY.mod)
     check(solvedY.a - solvedY.b * solvedY.div == solvedY.mod)
 
-    val xy = Div(a + c, b, 0, a + c)
+    val xy = DivMod(a + c, b, 0, a + c)
     val solvedXY = xy.solve
-    check(solvedXY.isFinal)
-    check(solvedXY.isValid)
-    check(solvedXY.mod < absB)
+    check(solvedXY.isFinal && solvedXY.isValid)
+    check(solvedXY.mod < x.absB)
     check(solvedXY.a == a + c)
     check(solvedXY.b == b)
     check(solvedXY.a == solvedXY.b * solvedXY.div + solvedXY.mod)
     check(a + c == b * solvedXY.div + solvedXY.mod)
 
-    val z = Div( solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
+    val z = DivMod( solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
     check(z.a == z.b * z.div + z.mod)
     check(z.a == solvedX.mod + solvedY.mod)
     check(z.b == b)
@@ -54,7 +50,7 @@ object ModOperations {
 
     val solvedZ = z.solve
     check(solvedZ.isValid && solvedZ.isFinal)
-    check(solvedZ.mod < absB)
+    check(solvedZ.mod < x.absB)
     check(modUniqueDiv(z, solvedZ))
     check(z.solve.mod == solvedZ.mod)
 
@@ -66,14 +62,14 @@ object ModOperations {
     val bigDiv = solvedZ.div + solvedX.div + solvedY.div
     check(a + c == b * bigDiv + solvedZ.mod)
 
-    val w = Div(a + c, b, bigDiv, solvedZ.mod)
-    check(solvedZ.mod < absB)
+    val w = DivMod(a + c, b, bigDiv, solvedZ.mod)
+    check(solvedZ.mod < x.absB)
     check(w.mod == solvedZ.mod)
     check(w.isFinal)
     check(w.solve == w)
 
     check(b != 0)
-    DivModAdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
+    AdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
     check( Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
     check(w.isValid)
     check(xy.isValid)
@@ -81,9 +77,14 @@ object ModOperations {
     check(w.b == xy.b)
     check(modUniqueDiv(w, xy))
     check( w.solve == xy.solve)
-    check( w.solve.mod == xy.solve.mod)
-    check( xy.solve.mod == Calc.mod(a+c,b))
-    check( xy.solve.mod == solvedZ.mod)
+
+    check( Helper.equality(
+      w.solve.mod,               // is equals to
+      xy.solve.mod,              // is equals to
+      Calc.mod(a+c,b),           // is equals to
+      solvedZ.mod,               // is equals to
+      Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
+    ))
 
     Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b) &&
     Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b)

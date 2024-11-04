@@ -1,9 +1,10 @@
 package v1.properties
 
 import v1.Calc
-import v1.Div
-import stainless.lang._
+import v1.DivMod
+import stainless.lang.*
 import stainless.proof.check
+import verification.Helper.equality
 
 object ModIdentity {
   def modIdentity(a: BigInt): Boolean = {
@@ -13,43 +14,30 @@ object ModIdentity {
 
   def longProof(n: BigInt): Boolean = {
     require(n != 0)
-    check(!Div(a = n, b = n, div = 0, mod = n).isFinal)
+    check(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
 
     if (n > 0) {
       check(
-        Div(a=n, b=n, div=0, mod=n).solve ==
-        Div(a=n, b=n, div=0, mod=n).reduceMod.solve
-      )
-      check(
-        Div(a=n, b=n, div=0, mod=n).reduceMod.solve ==
-        Div(a=n, b=n, div=0, mod=n).ModLessB.reduceMod
-      )
-      check(
-        Div(a=n, b=n, div=0, mod=n).ModLessB.reduceMod ==
-        Div(a=n, b=n, div=1, mod=0).reduceMod
-      )
-      check(
-        Div(a=n, b=n, div=1, mod=0).reduceMod ==
-        Div(a=n, b=n, div=1, mod=0)
+        equality(
+          DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
+          DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
+          DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
+          DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
+          DivMod(a=n, b=n, div=1, mod=0)
+        )
       )
       // since
-      check(Div(a=n, b=n, div=1, mod=0).isFinal)
+      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     } else {
-      check(
-        Div(a=n, b=n, div=0, mod=n).solve ==
-          Div(a=n, b=n, div=0, mod=n).increaseMod.solve
-      )
-      check(
-        Div(a=n, b=n, div=0, mod=n).increaseMod.solve ==
-          Div(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod
-      )
-      check(
-        Div(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod ==
-          Div(a=n, b=n, div=1, mod=0)
-      )
+      check(equality(
+        DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
+        DivMod(a=n, b=n, div=1, mod=0)
+      ))
       // since
-      check(Div(a=n, b=n, div=1, mod=0).isFinal)
+      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     }
-    Div(a=n, b=n, div=0, mod=n).solve == Div(a=n, b=n, div=1, mod=0)
+    DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
   }.holds
 }

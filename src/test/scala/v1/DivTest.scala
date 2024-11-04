@@ -5,9 +5,9 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 
 case class SolveTestCase(
-  name: String,
-  input: Div,
-  expected: Div
+                          name: String,
+                          input: DivMod,
+                          expected: DivMod
 )
 
 class DivTest extends FlatSpec with Matchers {
@@ -26,8 +26,8 @@ class DivTest extends FlatSpec with Matchers {
 //      ),
       SolveTestCase(
         "tirival negative",
-        Div(-10,-10,0,-10),
-        Div(-10,-10,1,0),
+        DivMod(-10,-10,0,-10),
+        DivMod(-10,-10,1,0),
       ),
     )
     forAll(testCases) { testCase =>

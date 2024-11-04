@@ -2,7 +2,7 @@ package v1.properties
 
 import stainless.lang.*
 import stainless.proof.check
-import v1.{Calc, Div}
+import v1.{Calc, DivMod}
 
 object Summary {
   def PropertySummary(a: BigInt, b: BigInt, m: BigInt): Boolean = {
@@ -20,10 +20,10 @@ object Summary {
       Calc.mod(a, a) == 0
     }
 
-    check(DivModAdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
+    check(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
     check(Calc.div(a,b) + 1 == Calc.div(a+b,b))
 
-    check(DivModAdditionAndMultiplication.ATimesBSameMod(a, b, m))
+    check(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
     check(Calc.mod(a,b) == Calc.mod(a+b*m,b))
     check(Calc.div(a,b) + m == Calc.div(a+b*m,b))
 
@@ -34,11 +34,11 @@ object Summary {
     require(b != 0)
     require(div * b + mod == a)
 
-    DivModAdditionAndMultiplication.MoreDivLessMod(a, b, div, mod)
-    DivModAdditionAndMultiplication.LessDivMoreMod(a, b, div, mod)
+    AdditionAndMultiplication.MoreDivLessMod(a, b, div, mod)
+    AdditionAndMultiplication.LessDivMoreMod(a, b, div, mod)
 
-    check(Div(a, b, div, mod).solve == Div(a, b, div + 1, mod - b).solve)
-    check(Div(a, b, div, mod).solve == Div(a, b, div - 1, mod + b).solve)
+    check(DivMod(a, b, div, mod).solve == DivMod(a, b, div + 1, mod - b).solve)
+    check(DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve)
 
     true
   }
