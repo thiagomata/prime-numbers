@@ -97,88 +97,7 @@ We can see the described [recursive definition on Scala](
 ./src/main/scala/v1/div/DivMod.scala
 ), as follows:
 
-```scala
-case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt) {
-  require(div * b + mod == a)
-  require(b != 0)
-
-  def absB: BigInt = if (b > 0) b else -b
-  def isValid: Boolean = div * b + mod == a
-  def isFinal: Boolean = if (b > 0) mod < b && mod >= 0 else mod < -b && mod >= 0
-
-  def solve: DivMod = {
-    if (this.isFinal) return this
-
-    val result = if (mod > 0) then reduceMod else increaseMod
-    check(result.isFinal && result.isValid)
-    check(result.a == a && result.b == b)
-    result
-  }.ensuring(res => res.isFinal && res.isValid && res.a == a && res.b == b)
-
-  def reduceMod: DivMod = {
-    require(mod >= 0)
-    decreases(mod)
-
-    if (isFinal) return this
-
-    val next = if (b > 0) then ModLessB else ModPlusB
-
-    val result = next.reduceMod
-    check(result.isFinal && result.isValid)
-    check(result.mod < mod)
-    check(result.a == a && result.b == b)
-    result
-  }.ensuring(res => res.isFinal && res.isValid)
-
-  def increaseMod: DivMod = {
-    require(mod < 0) //                                               since mod is negative, it is not final
-    decreases(-mod) //                                                mod should increase every iteration
-
-    val next = if (b < 0) then ModLessB else ModPlusB //              increase the mod by abs(b)
-    val result = if (next.isFinal) then next else next.increaseMod // repeat until mod is final
-    check(result.isFinal && result.isValid) //                        result is final and valid
-    check(result.a == a && result.b == b) //                          result has the same a and b as the original DivMod
-    check(result.mod >= 0) //                                         result has a non-negative mod
-    result
-  }.ensuring(res => res.isFinal && res.isValid)
-
-  def ModPlusB: DivMod = {
-    check(div * b + mod == a)
-    check(div * b - b + mod + b == a)  //         adding +b and -b does not change the value
-    check((div - 1) * b + (mod + b) == a) //      isolating div - 1 and mod + b
-    val next = DivMod(a, b, div - 1, mod + b) //  is valid because next.div * next.b + next.mod == next.a as proved above
-    check(next.a == a && next.b == b) //          next.a and next.b are the same as the original DivMod
-    check(next.mod == mod + b) //                 next.mod is the same as the original DivMod plus b
-    check(next.div == div - 1) //                 next.div is the same as the original DivMod minus 1
-    check(next.isValid) //                        next is valid
-    next
-  }
-
-  def ModLessB: DivMod = {
-    check(div * b + mod == a)
-    check(div * b + b + mod - b == a) //          adding -b and +b does not change the value
-    check((div + 1) * b + (mod - b) == a) //      isolating div + 1 and mod - b
-    val next = DivMod(a, b, div + 1, mod - b) //  is valid because next.div * next.b + next.mod == next.a as proved above
-    check(next.a == a && next.b == b) //          next.a and next.b are the same as the original DivMod
-    check(next.mod == mod - b) //                 next.mod is the same as the original DivMod minus b
-    check(next.div == div + 1) //                 next.div is the same as the original DivMod plus 1
-    check(next.isValid) //                        next is valid
-    next
-  }
-
-  override def equals(obj: Any): Boolean = {
-    obj match {
-      case that: DivMod =>
-        ( that.a == this.a &&
-          that.b == this.b &&
-          that.div == this.div &&
-          that.mod == this.mod ) ||
-          ( that.solve == this.solve ) // we also consider two DivMod equal if they are the same after solving
-      case _ => false
-    }
-  }
-}
-```
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/DivMod.scala?plain=1#L7-L85
 
 ### Creating the Division and Module Operations
 
@@ -186,23 +105,8 @@ As we can see in the class [Calc](
 ./src/main/scala/v1/Calc.scala
 ), we can define the division and module operations by extracting these properties from the solved $DivMod$ as follows:
 
-```scala
-  def div(a: BigInt, b: BigInt): BigInt = {
-    require(b != 0)
-    check(a == 0 * b + a)
-    val result = DivMod(a, b, 0, a)
-    val solved = result.solve
-    solved.div
-  }
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/Calc.scala#L5-L23
 
-  def mod(a: BigInt, b: BigInt): BigInt = {
-    require(b != 0)
-    check(a == 0 * b + a)
-    val result = DivMod(a, b, 0, a)
-    val solved = result.solve
-    solved.mod
-  }
-```
 ## Some Important Properties of Modulo and Division
 
 ### Trivial Case
@@ -221,22 +125,7 @@ a \text{ div } b = 0 \\
 We can check that since $DivMod(a, b, 0, a)$ is the final solution for the division operation.
 That verification is available in [ModSmallDividend](./src/main/scala/v1/div/properties/ModSmallDividend.scala) and described below:
 
-```scala
-def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
-    require(b != 0)
-    require(b > a)
-    require(a >= 0)
-    val x = DivMod(a, b, 0, a)
-    check(x.isFinal)
-    check(x == x.solve)
-    check(x.mod == a)
-    check(x.div == 0)
-    check(Calc.mod(a, b) == x.mod)
-    check(Calc.div(a, b) == 0)
-    Calc.mod(a, b) == a &&
-    Calc.div(a, b) == 0
-  }.holds
-```
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/properties/ModSmallDividend.scala#L9-L24
 
 ### Identity
 
@@ -257,36 +146,7 @@ As the following [long proof](
 ./src/main/scala/v1/div/properties/ModIdentity.scala#longProof
 ) code example:
 
-```scala
-  def longProof(n: BigInt): Boolean = {
-   require(n != 0)
-   check(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
-  
-   if (n > 0) {
-    check(
-     equality(
-      DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
-      DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
-      DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
-      DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
-      DivMod(a=n, b=n, div=1, mod=0)
-     )
-    )
-    // since
-    check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
-   } else {
-    check(equality(
-     DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
-     DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
-     DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
-     DivMod(a=n, b=n, div=1, mod=0)
-    ))
-    // since
-    check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
-   }
-   DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
-  }.holds
-```
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/properties/ModIdentity.scala#L15-L42
 
 But we don't need to manually do all these transformations.
 Scala Stainless can verify that property holds in
@@ -294,12 +154,7 @@ Scala Stainless can verify that property holds in
 ./src/main/scala/v1/div/properties/ModIdentity.scala
 ) with no issues as follows:
 
-```scala
-  def modIdentity(a: BigInt): Boolean = {
-    require(a != 0)
-    Calc.mod(a, a) == 0
-  }.holds
-```
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/properties/ModIdentity.scala#L10-L13
 
 Similary, in the next sections, we will prove other properties of the division and module operations using only the amount of evidences required to Scala Stainless to verify that they hold.
 
@@ -319,85 +174,14 @@ a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
 ```
 
 As proved in [MoreDivLessMod](
-./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#MoreDivLessMod
+./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#MoreDivLessMod
 ) and [LessDivMoreMod](
-./src/main/scala/v1/div/properties/DivModAdditionAndMultiplication.scala#LessDivMoreMod
+./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#LessDivMoreMod
 ) and shown the code below, the division result is the same for the same dividend and divisor, regardless of the div and mod values, as long $a = b \cdot div + mod$.
 
-```scala
-  def MoreDivLessMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b != 0)
-    require(div * b + mod == a)
-    val div1 = DivMod(a, b, div, mod)
-    val div2 = DivMod(a, b, div + 1, mod - b)
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#L184-L238
 
-    if (div1.isFinal) check(!div2.isFinal && div2.solve == div1.solve)
-    if (div2.isFinal) check(!div1.isFinal && div1.solve == div2.solve)
-
-    if (div1.mod < 0) {
-      check(div1.solve == div1.increaseMod)
-      if (b > 0) {
-        check(
-          equality(
-            div2.solve, //       is equals to
-            div2.increaseMod, // is equals to
-            div1.increaseMod, // is equals to
-            div1.solve
-          )
-        )
-      } else {
-        check(
-          equality(
-            div1.increaseMod, // is equals to
-            div2.solve, //       is equals to
-            div1.solve
-          )
-        )
-      }
-      check(div1.solve == div2.solve)
-    }
-    if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
-      if (b > 0 ) {
-        check(div2.mod < div1.mod)
-        check(
-          equality(
-            div1.solve, //       is equals to
-            div1.reduceMod, //   is equals to
-            div2.solve
-          )
-        )
-      } else {
-        check(div2.mod > div1.mod)
-        check(
-          equality(
-            div2.solve, //     is equals to
-            div2.reduceMod, // is equals to
-            div2.solve
-          )
-        )
-      }
-    }
-    check(div1.solve == div2.solve)
-    DivMod(a,b, div + 1, mod - b).solve.mod == DivMod(a,b, div, mod).solve.mod
-  }.holds
-
-  def LessDivMoreMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b != 0)
-    require(div * b + mod == a)
-
-    check(
-      equality(
-        a,                         // is equals to
-        div * b + mod,             // is equals to
-        (div - 1) * b + (mod + b)
-      )
-    )
-    MoreDivLessMod(a, b, div - 1, mod + b)
-
-    DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve
-  }.holds
-
-```
+https://github.com/thiagomata/prime-numbers/blob/064187f9c3ac3ff226c14518b823bfe47ad473d1/src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#L240-L251
 
 ### Adding or Removing Multiples of Divisor
 
