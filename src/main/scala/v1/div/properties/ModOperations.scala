@@ -4,9 +4,11 @@ import v1.Calc
 import v1.DivMod
 import stainless.lang.*
 import stainless.proof.check
+import v1.Calc.{div, mod}
 import v1.properties.AdditionAndMultiplication
 import v1.properties.ModIdempotence.modUniqueDiv
 import verification.Helper
+import verification.Helper.equality
 
 object ModOperations {
 
@@ -70,7 +72,7 @@ object ModOperations {
 
     check(b != 0)
     AdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
-    check( Calc.mod(a + c,b) == Calc.mod( a + c + b * bigDiv, b ))
+    check( mod(a + c,b) == mod( a + c + b * bigDiv, b ))
     check(w.isValid)
     check(xy.isValid)
     check(w.a == xy.a)
@@ -81,33 +83,70 @@ object ModOperations {
     check( Helper.equality(
       w.solve.mod,               // is equals to
       xy.solve.mod,              // is equals to
-      Calc.mod(a+c,b),           // is equals to
+      mod(a+c,b),           // is equals to
       solvedZ.mod,               // is equals to
-      Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)
+      mod(mod(a, b) + mod(c, b), b)
     ))
 
-    check(Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b))
-    check(Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b))
+    check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+    check(div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
 
-    Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b) &&
-    Calc.div(a + c, b) == Calc.div(a, b) + Calc.div(c, b) + Calc.div(Calc.mod(a, b) + Calc.mod(c, b), b)
+    mod(a + c, b) == mod(mod(a, b) + mod(c, b), b) &&
+    div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
   }.holds
 
   def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
-    require(Calc.mod(a, b) == 0)
+    require(mod(a, b) == 0)
     modAdd(a,b,c)
-    Calc.mod(a + c, b) == Calc.mod(c, b)
+    mod(a + c, b) == mod(c, b)
   }.holds
 
   def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
-    modAdd(a - c, b, c)
 
-    check(Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b))
-    check(Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b))
+    val x = a - c
+    modAdd(x, b, c)
 
-    Calc.mod(a - c, b) == Calc.mod(Calc.mod(a, b) - Calc.mod(c, b), b) &&
-    Calc.div(a - c, b) == Calc.div(a, b) - Calc.div(c, b) + Calc.div(Calc.mod(a, b) - Calc.mod(c, b), b)
+    check( x == b * div(x,b) + mod(x,b) )
+    check( a == b * div(a,b) + mod(a,b) )
+    check( c == b * div(c,b) + mod(c,b) )
+
+    check(
+      equality(
+        x,
+        a - c,
+        (a) - (c),
+        (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),
+        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),
+        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),
+        b * ( div(a, b) - div(c, b) ) + mod(a, b) - mod(c, b),
+        b * div(x, b) + mod(x, b),
+        b * div(a - c, b) + mod(a - c, b)
+      )
+    )
+
+    val m = div(a, b) - div(c, b)
+    AdditionAndMultiplication.ATimesBSameMod( a - c, b, m)
+
+    check(
+      equality(
+        mod(a - c, b),
+        mod(b * ( div(a, b) - div(c, b) ) + ( mod(a, b) - mod( c, b ) ), b ),
+        mod(mod(a, b) - mod(c, b), b)
+      )
+    )
+
+    check(
+      equality(
+        div(x + c, b) == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b),
+        div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b),
+        div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b),
+        div(a, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b)
+      )
+    )
+
+    mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
+    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
   }.holds
 }
