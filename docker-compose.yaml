@@ -9,4 +9,4 @@ services:
     volumes:
       - ./src:/app/src
     working_dir: /app
-    command: ["bash", "-c", "stainless --solvers=princess --timeout=8640000 -J-Xmx4G $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')"]
+    command: ["bash", "-c", "stainless --vc-cache=false --timeout=8640000 -J-Xmx4G $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')"]

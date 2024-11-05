@@ -141,11 +141,13 @@ object AdditionAndMultiplication {
     require(b != 0)
     if (m >= 0) {
       check(m >= 0)
-      APlusMultipleTimesBSameMod(a, b, m)
+      check(APlusMultipleTimesBSameMod(a, b, m))
     } else {
       check(-m >= 0)
-      ALessMultipleTimesBSameMod(a, b, -m)
+      check(ALessMultipleTimesBSameMod(a, b, -m))
     }
+    Calc.mod(a, b) == Calc.mod(a + b * m, b) &&
+      Calc.div(a, b) + m == Calc.div(a + b * m, b)
   }.holds
 
   def APlusMultipleTimesBSameMod(a: BigInt, b: BigInt, m: BigInt): Boolean = {
