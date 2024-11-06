@@ -38,10 +38,10 @@ object Summary {
     div(a - b, b)     == div(a, b) - 1                 &&
     div(a + b * m, b) == div(a, b) + m                 &&
     div(a - b * m, b) == div(a, b) - m                 &&
-//    mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b) &&
-//    mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b) &&
-//    div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b) &&
-//    div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+    mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b) &&
+    mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b) &&
+    div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b) &&
+    div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
     true
   }.holds
 }
