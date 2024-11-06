@@ -170,24 +170,18 @@ object ModOperations {
       mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) + b ||
       mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) - b
     )
+    check(
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) + mod(c, b) ||
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) + b + mod(c, b) ||
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) - b + mod(c, b)
+    )
+    check(
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) ||
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) + b ||
+      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - b
+    )
 
-
-
-//    check(mod(a,b) < absB)
-//    check(mod(a,b) >= 0)
-//    check(mod(c,b) < absB)
-//    check(mod(c,b) >= 0)
-//    check(mod(a,b) - mod(c,b) < absB)
-//    check(mod(a,b) - mod(c,b) > -absB)
-//    if (mod(a,b) - mod(c,b) < 0) {
-//      check(mod(mod(a,b) - mod(c,b), b) == -(mod(a,b) - mod(c,b)))
-//    }
-    // 0 <= mod(a,b) < b
-    // 0 <= mod(c,b) < b
-    // b < mod(a,b) - mod(c,b) < b
-
-
-    mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) // &&
-//    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+    mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
+    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
   }.holds
 }
