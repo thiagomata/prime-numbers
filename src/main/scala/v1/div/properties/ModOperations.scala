@@ -153,14 +153,39 @@ object ModOperations {
     check( mod( b * m + others, b ) == mod( others, b ) )
     check( mod( a - c, b) == mod( mod(a,b) - mod(c,b), b ) )
 
-//    check(
-//      equality(
-//        div(x + c, b) == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b),
-//        div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b),
-//        div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b),
-//        div(a, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b)
-//      )
-//    )
+    check(div(x + c, b)     == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b))
+    check(div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
+    check(div(a, b)         == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
+    check(div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b))
+    check(div(a - c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b) - div(c, b))
+    check(div(a - c, b)     == div(a, b) - div(c, b) - div(mod(a - c, b)  + mod(c, b), b))
+    check(div(a - c, b)     == div(a, b) - div(c, b) - div(mod(mod(a,b) - mod(c,b), b) + mod(c, b), b))
+
+    val absB = if (b < 0) -b else b
+    val sign = if (b < 0) BigInt(-1) else BigInt(1)
+
+    ModIdempotence.modModLess(a, b, c)
+    check(
+      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) ||
+      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) + b ||
+      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) - b
+    )
+
+
+
+//    check(mod(a,b) < absB)
+//    check(mod(a,b) >= 0)
+//    check(mod(c,b) < absB)
+//    check(mod(c,b) >= 0)
+//    check(mod(a,b) - mod(c,b) < absB)
+//    check(mod(a,b) - mod(c,b) > -absB)
+//    if (mod(a,b) - mod(c,b) < 0) {
+//      check(mod(mod(a,b) - mod(c,b), b) == -(mod(a,b) - mod(c,b)))
+//    }
+    // 0 <= mod(a,b) < b
+    // 0 <= mod(c,b) < b
+    // b < mod(a,b) - mod(c,b) < b
+
 
     mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) // &&
 //    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)

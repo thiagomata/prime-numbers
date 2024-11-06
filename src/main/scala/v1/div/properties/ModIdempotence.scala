@@ -1,33 +1,52 @@
 package v1.properties
 
-import v1.Calc
 import v1.DivMod
-import stainless.lang._
+import stainless.lang.*
 import stainless.proof.check
+import v1.Calc.mod
+import v1.Calc.div
 
 object ModIdempotence {
   def modIdempotence(a: BigInt, b: BigInt): Boolean = {
     require(b != 0)
+    val div = DivMod(a, b, 0, a)
+    if (a >= 0) {
+      check(modIdempotencePositiveA(a, b))
+      check(mod(a, b) == mod(mod(a, b), b))
+    } else {
+      check(modIdempotencePositiveA(-a, b))
+      val divModNegative = DivMod(a, b, 0, a)
+      val solvedNegative = divModNegative.solve
+      check(a == solvedNegative.div * b + solvedNegative.mod)
+      check(solvedNegative.mod >= 0)
+      check(solvedNegative.mod <= solvedNegative.absB)
+      check(mod(a, b) == mod(mod(a, b), b))
+    }
+    mod(a, b) == mod(mod(a, b), b)
+  }
+
+  def modIdempotencePositiveA(a: BigInt, b: BigInt): Boolean = {
+    require(b != 0)
     require(a >= 0)
 
-    val div = DivMod(a, b, 0, a)
+    val divMod = DivMod(a, b, 0, a)
 
-    val solved = div.solve
+    val solved = divMod.solve
     check(solved.isFinal)
-    check(solved.b == div.b)
-    check(solved.a == div.a)
-    check(div.absB > 0)
-    check(solved.mod < div.absB)
+    check(solved.b == divMod.b)
+    check(solved.a == divMod.a)
+    check(divMod.absB > 0)
+    check(solved.mod < divMod.absB)
     check(solved.mod >= 0)
 
     val result = solved.mod
     check(result <= a)
-    check(result < div.absB)
-    check(result == Calc.mod(a, b))
+    check(result < divMod.absB)
+    check(result == mod(a, b))
 
-    check(Calc.mod(result, b) == result)
-    check(Calc.mod(a, b) == Calc.mod(result, b))
-    Calc.mod(a, b) == Calc.mod(Calc.mod(a, b), b)
+    check(mod(result, b) == result)
+    check(mod(a, b) == mod(result, b))
+    mod(a, b) == mod(mod(a, b), b)
   }.holds
 
   def modUniqueDiv(x: DivMod, y: DivMod): Boolean = {
@@ -73,4 +92,114 @@ object ModIdempotence {
 
     DivMod(a, b, divx, modx).solve == DivMod(a, b, divy, mody).solve
   }.holds
+
+  def modModPlus(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+
+    val divModA = DivMod(a, b, 0, a)
+    val solvedA = divModA.solve
+    val divModC = DivMod(c, b, 0, c)
+    val solvedC = divModC.solve
+    val addModAC = solvedA.mod + solvedC.mod
+    val divModAC = DivMod(addModAC, b, 0, addModAC)
+    val solvedAC = divModAC.solve
+    check(solvedAC.isFinal)
+    check(solvedAC.isValid)
+    check(solvedAC.a == addModAC)
+    check(solvedAC.a >= 0)
+    check(solvedAC.b == b)
+    check(solvedA.mod >= 0)
+    check(solvedC.mod >= 0)
+    check(solvedAC.mod >= 0)
+    check(solvedA.mod < solvedA.absB)
+    check(solvedC.mod < solvedA.absB)
+    check(solvedAC.mod < 2 * solvedA.absB)
+    check(solvedAC.div < 2)
+    check(solvedAC.div > -2)
+    check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
+    if (solvedAC.div == 0) {
+      check(solvedAC.mod == addModAC)
+      check(solvedAC.mod == solvedA.mod + solvedC.mod)
+      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b))
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+    }
+    if (solvedAC.div == 1) {
+      check(solvedAC.mod == addModAC - b)
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(solvedAC.b > 0)
+      check(addModAC == b + solvedAC.mod)
+      check(solvedA.mod + solvedC.mod == solvedAC.mod + b)
+      check(solvedAC.mod == solvedA.mod + solvedC.mod - b)
+      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b)
+    }
+    if (solvedAC.div == -1) {
+      check(solvedAC.mod == addModAC + b)
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(solvedAC.b < 0)
+      check(addModAC == b * -1 + solvedAC.mod)
+      check(addModAC == -b + solvedAC.mod)
+      check(addModAC == solvedAC.mod - b)
+      check(solvedA.mod + solvedC.mod == solvedAC.mod - b)
+      check(solvedAC.mod == solvedA.mod + solvedC.mod + b)
+      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b)
+    }
+
+    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b ||
+    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b ||
+    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b)
+  }
+
+  def modModLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+
+    val divModA = DivMod(a, b, 0, a)
+    val solvedA = divModA.solve
+    val divModC = DivMod(c, b, 0, c)
+    val solvedC = divModC.solve
+    val subModAC = solvedA.mod - solvedC.mod
+    val divModAC = DivMod(subModAC, b, 0, subModAC)
+    val solvedAC = divModAC.solve
+    check(solvedAC.isFinal)
+    check(solvedAC.isValid)
+    check(solvedAC.a == subModAC)
+    check(solvedAC.b == b)
+    check(solvedA.mod >= 0)
+    check(solvedC.mod >= 0)
+    check(solvedAC.mod >= 0)
+    check(solvedA.mod < solvedA.absB)
+    check(solvedC.mod < solvedA.absB)
+    check(solvedAC.mod < 2 * solvedA.absB)
+    check(solvedAC.div < 2)
+    check(solvedAC.div > -2)
+    check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
+    if (solvedAC.div == 0) {
+      check(solvedAC.mod == subModAC)
+      check(solvedAC.mod == solvedA.mod - solvedC.mod)
+      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b))
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(solvedAC.a == solvedAC.mod)
+    }
+    if (solvedAC.div == 1) {
+      check(solvedAC.mod == subModAC - b)
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(subModAC == b + solvedAC.mod)
+      check(solvedA.mod - solvedC.mod == solvedAC.mod + b)
+      check(solvedAC.mod == solvedA.mod - solvedC.mod - b)
+      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b)
+    }
+    if (solvedAC.div == -1) {
+      check(solvedAC.mod == subModAC + b)
+      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(subModAC == b * -1 + solvedAC.mod)
+      check(subModAC == -b + solvedAC.mod)
+      check(subModAC == solvedAC.mod - b)
+      check(solvedA.mod - solvedC.mod == solvedAC.mod - b)
+      check(solvedAC.mod == solvedA.mod - solvedC.mod + b)
+      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b)
+    }
+
+    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
+    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b ||
+    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b)
+  }
 }
