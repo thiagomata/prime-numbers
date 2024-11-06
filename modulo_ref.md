@@ -305,6 +305,13 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 }
 ```
 
+Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](
+./src/main/scala/v1/div/properties/Summary.scala
+) file.
+
+https://github.com/thiagomata/prime-numbers/blob/6207ca8c867bc9ddc939939bb157cbe068f00f7a/src/main/scala/v1/div/properties/Summary.scala#L10-L70
+
+
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
