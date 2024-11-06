@@ -103,26 +103,42 @@ object ModIdempotence {
     val addModAC = solvedA.mod + solvedC.mod
     val divModAC = DivMod(addModAC, b, 0, addModAC)
     val solvedAC = divModAC.solve
-    check(solvedAC.isFinal)
-    check(solvedAC.isValid)
+    val absB = if (b < 0) -b else b
+
+    check(solvedA.isFinal && solvedA.isValid)
+    check(solvedC.isFinal && solvedC.isValid)
+    check(solvedAC.isFinal && solvedAC.isValid)
+
+    check(solvedA.mod >= 0)
+    check(solvedC.mod < absB)
+
+    check(solvedC.mod >= 0)
+    check(solvedC.mod < absB)
+
+    check(addModAC == solvedA.mod + solvedC.mod)
+    check(addModAC < 2 * absB)
+    check(addModAC >= 0)
+
     check(solvedAC.a == addModAC)
     check(solvedAC.a >= 0)
     check(solvedAC.b == b)
-    check(solvedA.mod >= 0)
-    check(solvedC.mod >= 0)
-    check(solvedAC.mod >= 0)
-    check(solvedA.mod < solvedA.absB)
-    check(solvedC.mod < solvedA.absB)
-    check(solvedAC.mod < 2 * solvedA.absB)
+
+    check(solvedA.mod < absB)
+    check(solvedC.mod < absB)
+    check(solvedAC.mod < 2 * absB)
+
     check(solvedAC.div < 2)
     check(solvedAC.div > -2)
     check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
+
     if (solvedAC.div == 0) {
       check(solvedAC.mod == addModAC)
       check(solvedAC.mod == solvedA.mod + solvedC.mod)
       check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b))
       check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      check(div(mod(a, b) + mod(c, b), b) == 0)
     }
+
     if (solvedAC.div == 1) {
       check(solvedAC.mod == addModAC - b)
       check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
@@ -131,7 +147,9 @@ object ModIdempotence {
       check(solvedA.mod + solvedC.mod == solvedAC.mod + b)
       check(solvedAC.mod == solvedA.mod + solvedC.mod - b)
       check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b)
+      check(div(mod(a, b) + mod(c, b), b) == 1)
     }
+
     if (solvedAC.div == -1) {
       check(solvedAC.mod == addModAC + b)
       check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
@@ -142,14 +160,13 @@ object ModIdempotence {
       check(solvedA.mod + solvedC.mod == solvedAC.mod - b)
       check(solvedAC.mod == solvedA.mod + solvedC.mod + b)
       check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b)
+      check(div(mod(a, b) + mod(c, b), b) == -1)
     }
 
-    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b ||
-    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b ||
-    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b)
-  }
+    mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b)
+  }.holds
 
-  def modModLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+  def modModMinus(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
 
     val divModA = DivMod(a, b, 0, a)
@@ -159,16 +176,30 @@ object ModIdempotence {
     val subModAC = solvedA.mod - solvedC.mod
     val divModAC = DivMod(subModAC, b, 0, subModAC)
     val solvedAC = divModAC.solve
-    check(solvedAC.isFinal)
-    check(solvedAC.isValid)
-    check(solvedAC.a == subModAC)
-    check(solvedAC.b == b)
+    val absB = if (b < 0) -b else b
+
+    check(solvedA.isFinal && solvedA.isValid )
+    check(solvedC.isFinal && solvedC.isValid)
+    check(solvedAC.isFinal && solvedAC.isValid)
+
     check(solvedA.mod >= 0)
+    check(solvedA.mod < absB)
+
     check(solvedC.mod >= 0)
+    check(solvedC.mod < absB)
+
+    check(subModAC == solvedA.mod - solvedC.mod)
+    check(subModAC <= solvedA.mod)
+    check(subModAC > -absB)
+
+    check(solvedAC.a == subModAC)
+    check(solvedAC.a > -absB)
+    check(solvedAC.a <= solvedA.mod)
+    check(solvedAC.b == b)
     check(solvedAC.mod >= 0)
-    check(solvedA.mod < solvedA.absB)
-    check(solvedC.mod < solvedA.absB)
-    check(solvedAC.mod < 2 * solvedA.absB)
+    check(solvedAC.mod < absB)
+
+    check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
     check(solvedAC.div < 2)
     check(solvedAC.div > -2)
     check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
@@ -178,6 +209,7 @@ object ModIdempotence {
       check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b))
       check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
       check(solvedAC.a == solvedAC.mod)
+      check(div(mod(a, b) - mod(c, b), b) == 0)
     }
     if (solvedAC.div == 1) {
       check(solvedAC.mod == subModAC - b)
@@ -186,6 +218,7 @@ object ModIdempotence {
       check(solvedA.mod - solvedC.mod == solvedAC.mod + b)
       check(solvedAC.mod == solvedA.mod - solvedC.mod - b)
       check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b)
+      check(div(mod(a, b) - mod(c, b), b) == 1)
     }
     if (solvedAC.div == -1) {
       check(solvedAC.mod == subModAC + b)
@@ -196,10 +229,9 @@ object ModIdempotence {
       check(solvedA.mod - solvedC.mod == solvedAC.mod - b)
       check(solvedAC.mod == solvedA.mod - solvedC.mod + b)
       check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b)
+      check(div(mod(a, b) - mod(c, b), b) == -1)
     }
 
-    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
-    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b ||
-    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b)
-  }
+    mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
+  }.holds
 }

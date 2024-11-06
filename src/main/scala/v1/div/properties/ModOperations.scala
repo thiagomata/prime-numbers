@@ -164,7 +164,7 @@ object ModOperations {
     val absB = if (b < 0) -b else b
     val sign = if (b < 0) BigInt(-1) else BigInt(1)
 
-    ModIdempotence.modModLess(a, b, c)
+    ModIdempotence.modModMinus(a, b, c)
     check(
       mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) ||
       mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) + b ||

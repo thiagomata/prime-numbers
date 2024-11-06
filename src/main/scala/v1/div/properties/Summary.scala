@@ -13,9 +13,9 @@ object Summary {
 
     if (a >= 0 && b > a) {
       check(ModSmallDividend.modSmallDividend(a, b))
-      check(ModIdempotence.modIdempotence(a, b))
     }
 
+    check(ModIdempotence.modIdempotence(a, b))
     check(ModIdentity.modIdentity(b))
     check(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
     check(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
@@ -26,6 +26,29 @@ object Summary {
 
     check(ModOperations.modAdd(a, b, c))
     check(ModOperations.modLess(a, b, c))
+
+    check(ModIdempotence.modModPlus(a, b, c))
+    check(ModIdempotence.modModMinus(a, b, c))
+
+    check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+    check(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
+    check(if a >= 0 && b > a then div(a,b) == 0 else true)
+    check(if a >= 0 && b > a then mod(a,b) == a else true)
+    check(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
+    check(mod(b, b)         == 0)
+    check(div(b, b)         == 1)
+    check(mod(a + b * m, b) == mod(a, b))
+    check(mod(a - b * m, b) == mod(a, b))
+    check(div(a + b, b)     == div(a, b) + 1)
+    check(div(a - b, b)     == div(a, b) - 1)
+    check(div(a + b * m, b) == div(a, b) + m)
+    check(div(a - b * m, b) == div(a, b) - m)
+    check(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
+    check(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
+    check(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
+    check(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
+    check(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
+    check(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
 
     (if a >= 0 && b > a then div(a,b) == 0 else true)  &&
     (if a >= 0 && b > a then mod(a,b) == a else true)  &&
@@ -38,10 +61,11 @@ object Summary {
     div(a - b, b)     == div(a, b) - 1                 &&
     div(a + b * m, b) == div(a, b) + m                 &&
     div(a - b * m, b) == div(a, b) - m                 &&
-    mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b) &&
-    mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b) &&
-    div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b) &&
-    div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
-    true
+    div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)     &&
+    div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)     &&
+    mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b)                             &&
+    mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b)                             &&
+    mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b) &&
+    mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
   }.holds
 }
