@@ -288,6 +288,7 @@ These properties are:
 ```
 
 ```math
+\displaylines{ \\
 \begin{align*} \\
 a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
 a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
@@ -307,6 +308,7 @@ b \text{ div } b               & = 1 \\
 (a + c) \text{ mod } b         & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
 (a - c) \text{ mod } b         & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
 \end{align*} \\
+}
 ```
 
 Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](
