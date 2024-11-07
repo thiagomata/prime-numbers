@@ -283,26 +283,30 @@ with available proofs in the source code.
 These properties are:
 
 ```math
-\displaylines{ \\
 \forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
 \text{where } b \neq 0 \\
-}
 ```
 
 ```math
-\displaylines{ \\
 \begin{align*} \\
-0 <= a < b \implies a \text{ mod } b & = a \\
-0 <= a < b \implies a \text{ div } b &= 0 \\
-b \text{ mod } b & = 0 \\
-b \text{ div } b & = 1 \\
-a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
-( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
-( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
+a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
+b \text{ mod } b               & = 0 \\
+b \text{ div } b               & = 1 \\
+( a + b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
+( a - b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
+(a \text{ mod } b) \text{ mod } b       & = a \text{ mod } b \\
+(a + b) \text{ div } b         & = (a \text{ div } b) + 1 \\
+(a - b) \text{ div } b         & = (a \text{ div } b) - 1 \\
+(a + b \cdot m ) \text{ div } b    & = (a \text{ div } b) + m \\
+(a - b \cdot m ) \text{ div } b    & = (a \text{ div } b) - m \\
+(a + c) \text{ div } b         & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ div } b         & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
+(a + c) \text{ mod } b         & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
+(a - c) \text{ mod } b         & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
+(a + c) \text{ mod } b         & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
+(a - c) \text{ mod } b         & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
 \end{align*} \\
-}
 ```
 
 Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](

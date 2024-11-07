@@ -637,18 +637,27 @@ These properties are:
 }
 ```
 
+
 ```math
 \displaylines{ \\
 \begin{align*} \\
-0 <= a < b \implies a \text{ mod } b & = a \\
-0 <= a < b \implies a \text{ div } b &= 0 \\
-b \text{ mod } b & = 0 \\
-b \text{ div } b & = 1 \\
-a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
-( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
-( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
+a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
+b \text{ mod } b               & = 0 \\
+b \text{ div } b               & = 1 \\
+( a + b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
+( a - b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
+(a \text{ mod } b) \text{ mod } b       & = a \text{ mod } b \\
+(a + b) \text{ div } b         & = (a \text{ div } b) + 1 \\
+(a - b) \text{ div } b         & = (a \text{ div } b) - 1 \\
+(a + b \cdot m ) \text{ div } b    & = (a \text{ div } b) + m \\
+(a - b \cdot m ) \text{ div } b    & = (a \text{ div } b) - m \\
+(a + c) \text{ div } b         & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ div } b         & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
+(a + c) \text{ mod } b         & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
+(a - c) \text{ mod } b         & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
+(a + c) \text{ mod } b         & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
+(a - c) \text{ mod } b         & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
 \end{align*} \\
 }
 ```
@@ -748,12 +757,20 @@ stainless $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')
 [Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
 [  Info  ] Verified: 540 / 540
 [  Info  ] Done in 12.14s
+[  Info  ] Verified: 1016 / 1016
+[  Info  ] Done in 23.49s
 [  Info  ]   ┌───────────────────┐
 [  Info  ] ╔═╡ stainless summary ╞═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-[  Info  ] ║ └───────────────────┘                                                                                                           valid from cache     0.0 ║
+[  Info  ] ║ └───────────────────┘                                                                                                                                                                                     ║
 [  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:82:17:    ALessBSameModDecreaseDiv    class invariant                                                         valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:85:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:86:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:87:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:88:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:89:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:90:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:91:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:92:5:     ALessBSameModDecreaseDiv    body assertion: Inlined precondition of check                           valid from cache     0.0 ║
 ...
 [  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:7:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:13:                      PropertySummary             precond. (call modSmallDividend(a, b) (require 1/3))                    trivial              0.0 ║
@@ -821,6 +838,165 @@ stainless $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')
 [  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:44:54:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:44:66:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
 ...
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:7:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:13:                      PropertySummary             precond. (call modSmallDividend(a, b) (require 1/3))                    trivial              0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:13:                      PropertySummary             precond. (call modSmallDividend(a, b) (require 2/3))                    valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:15:13:                      PropertySummary             precond. (call modSmallDividend(a, b) (require 3/3))                    valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:18:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:18:11:                      PropertySummary             precond. (call modIdempotence(a, b))                                    valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:19:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:19:11:                      PropertySummary             precond. (call modIdentity(b))                                          valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:20:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:20:11:                      PropertySummary             precond. (call APlusBSameModPlusDiv(a, b))                              valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:21:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:21:11:                      PropertySummary             precond. (call ALessBSameModDecreaseDiv(a, b))                          valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:22:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:22:11:                      PropertySummary             precond. (call ATimesBSameMod(a, b, m))                                 valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:24:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:24:11:                      PropertySummary             precond. (call ALessMultipleTimesBSameMod(a, b, m) (require 1/2))       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:24:11:                      PropertySummary             precond. (call ALessMultipleTimesBSameMod(a, b, m) (require 2/2))       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:25:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:25:11:                      PropertySummary             precond. (call APlusMultipleTimesBSameMod(a, b, m) (require 1/2))       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:25:11:                      PropertySummary             precond. (call APlusMultipleTimesBSameMod(a, b, m) (require 2/2))       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:27:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:27:11:                      PropertySummary             precond. (call modAdd(a, b, c))                                         valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:28:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:28:11:                      PropertySummary             precond. (call modLess(a, b, c))                                        valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:30:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:30:11:                      PropertySummary             precond. (call modModPlus(a, b, c))                                     valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:31:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:31:11:                      PropertySummary             precond. (call modModMinus(a, b, c))                                    valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:33:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:33:11:                      PropertySummary             precond. (call mod(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:33:28:                      PropertySummary             precond. (call mod(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:33:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:33:44:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:34:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:34:11:                      PropertySummary             precond. (call mod(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:34:28:                      PropertySummary             precond. (call mod(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:34:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:34:44:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:35:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:35:35:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:36:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:36:35:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:37:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:37:25:                      PropertySummary             precond. (call mod(mod(a, b), b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:37:29:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:37:46:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:38:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:38:11:                      PropertySummary             precond. (call mod(b, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:39:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:39:11:                      PropertySummary             precond. (call div(b, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:40:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:40:11:                      PropertySummary             precond. (call mod(a + b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:40:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:41:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:41:11:                      PropertySummary             precond. (call mod(a - b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:41:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:42:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:42:11:                      PropertySummary             precond. (call div(a + b, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:42:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:43:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:43:11:                      PropertySummary             precond. (call div(a - b, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:43:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:44:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:44:11:                      PropertySummary             precond. (call div(a + b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:44:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:45:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:45:11:                      PropertySummary             precond. (call div(a - b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:45:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:11:                      PropertySummary             precond. (call div(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:44:                      PropertySummary             precond. (call div(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:56:                      PropertySummary             precond. (call div(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:60:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:46:72:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:11:                      PropertySummary             precond. (call div(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:32:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:44:                      PropertySummary             precond. (call div(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:56:                      PropertySummary             precond. (call div(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:60:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:47:72:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:48:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:48:11:                      PropertySummary             precond. (call mod(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:48:32:                      PropertySummary             precond. (call mod(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:48:36:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:48:48:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:49:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:49:11:                      PropertySummary             precond. (call mod(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:49:32:                      PropertySummary             precond. (call mod(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:49:36:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:49:48:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:11:                      PropertySummary             precond. (call mod(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:44:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:60:                      PropertySummary             precond. (call div(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:64:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:50:76:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:5:                       PropertySummary             body assertion: Inlined precondition of check                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:11:                      PropertySummary             precond. (call mod(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:32:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:44:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:60:                      PropertySummary             precond. (call div(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:64:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:51:76:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:53:5:                       PropertySummary             postcondition                                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:53:30:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:54:30:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:55:5:                       PropertySummary             precond. (call mod(b, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:56:5:                       PropertySummary             precond. (call div(b, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:57:5:                       PropertySummary             precond. (call mod(a + b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:57:26:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:58:5:                       PropertySummary             precond. (call mod(a - b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:58:26:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:59:5:                       PropertySummary             precond. (call mod(mod(a, b), b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:59:9:                       PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:59:26:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:60:5:                       PropertySummary             precond. (call div(a + b, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:60:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:61:5:                       PropertySummary             precond. (call div(a - b, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:61:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:62:5:                       PropertySummary             precond. (call div(a + b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:62:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:63:5:                       PropertySummary             precond. (call div(a - b * m, b))                                       valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:63:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:5:                       PropertySummary             precond. (call div(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:38:                      PropertySummary             precond. (call div(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:50:                      PropertySummary             precond. (call div(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:54:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:64:66:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:5:                       PropertySummary             precond. (call div(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:26:                      PropertySummary             precond. (call div(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:38:                      PropertySummary             precond. (call div(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:50:                      PropertySummary             precond. (call div(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:54:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:65:66:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:66:5:                       PropertySummary             precond. (call mod(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:66:26:                      PropertySummary             precond. (call mod(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:66:30:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:66:42:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:67:5:                       PropertySummary             precond. (call mod(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:67:26:                      PropertySummary             precond. (call mod(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:67:30:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:67:42:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:5:                       PropertySummary             precond. (call mod(a + c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:26:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:38:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:54:                      PropertySummary             precond. (call div(mod(a, b) + mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:58:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:68:70:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:5:                       PropertySummary             precond. (call mod(a - c, b))                                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:26:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:38:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:54:                      PropertySummary             precond. (call div(mod(a, b) - mod(c, b), b))                           valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:58:                      PropertySummary             precond. (call mod(a, b))                                               valid from cache     0.0 ║
+[  Info  ] ║ ./src/main/scala/v1/div/properties/Summary.scala:69:70:                      PropertySummary             precond. (call mod(c, b))                                               valid from cache     0.0 ║
+...
 [  Info  ] ║                                                                              solve                       postcondition                                                           valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/DivMod.scala:18:22:                                  solve                       body assertion: match exhaustiveness                                    valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/DivMod.scala:18:22:                                  solve                       postcondition                                                           valid from cache     0.0 ║
@@ -830,7 +1006,7 @@ stainless $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')
 [  Info  ] ║ ./src/main/scala/v1/div/DivMod.scala:20:5:                                   solve                       body assertion: Inlined precondition of check                           valid from cache     0.0 ║
 [  Info  ] ║ ./src/main/scala/v1/div/DivMod.scala:21:5:                                   solve                       postcondition                                                           valid from cache     0.0 ║
 [  Info  ] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[  Info  ] ║ total: 540  valid: 540  (533 from cache, 7 trivial) invalid: 0    unknown: 0    time:    0.98                                                                                                             ║
+[  Info  ] ║ total: 1016 valid: 1016 (1007 from cache, 9 trivial) invalid: 0    unknown: 0    time:    1.80                                                                                                            ║
 [  Info  ] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 [  Info  ] Verification pipeline summary:
 [  Info  ]   @extern, cache, anti-aliasing, return transformation, 
