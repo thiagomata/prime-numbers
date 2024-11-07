@@ -283,8 +283,10 @@ with available proofs in the source code.
 These properties are:
 
 ```math
+\displaylines{ \\
 \forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
 \text{where } b \neq 0 \\
+}
 ```
 
 ```math
