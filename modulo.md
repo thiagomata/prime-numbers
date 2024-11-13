@@ -44,7 +44,7 @@ Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division alg
 
 ```math
 \begin{aligned}
-\forall \text{ } dividend, divisor & \in \mathbb{N}, \text{ where } divisor\neq 0  \\
+\forall \text{ } dividend, divisor & \in \mathbb{N} : divisor\neq 0  \\
 & \exists ! \\
 \text{quotient} & = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies   \\
 dividend & = divisor \cdot quotient + \text{remainder} \\
@@ -59,17 +59,13 @@ dividend \text{ div } divisor & = quotient \\
 Some properties of the division and modulo can be proved using the recursive definition of the division and modulo operations.
 The recursive definition of the division and modulo operations are:
 
-```math
-\begin{aligned}
-\forall a, b, div & \text{ and } mod \in \mathbb{Z}, \\
-\text{where } & b \neq 0
-\end{aligned}
-```
 
 We define $DivMod(a, b, div, mod)$ such that:
 
 ```math
-a = \text{div} \cdot b + \text{mod}
+\begin{aligned}
+\forall \text{ } a, b, div, mod \in \mathbb{Z} : b \neq 0 \text{ | } a = \text{div} \cdot b + \text{mod}
+\end{aligned}
 ```
 
 The solved $DivMod$ are those where the remainder $mod$ satisfies:
@@ -212,10 +208,9 @@ If the dividend is smaller than the divisor, the result of the modulos operation
 
 ```math
 \begin{aligned}
-\forall a,b \in \mathbb{N}, & \text{ and } b \neq 0 \\
-a < b & \implies \\
-a \text{ mod } b & = a \\
-a \text{ div } b & = 0 \\
+& \forall \text{ } a,b \in \mathbb{N} : \text{ and } b \neq 0 \\
+& a < b \implies a \text{ mod } b & = a \\
+& a < b \implies a \text{ div } b & = 0 \\
 \end{aligned}
 ```
 
@@ -245,10 +240,9 @@ The modulo of every number by itself is zero and the division of every number by
 
 ```math
 \begin{aligned}
-\forall n \in \mathbb{N}, \\
-\text{ where } n \neq 0 \\
-n \text{ mod } n = 0 \\
-n \text{ div } n = 1 \\
+\forall \text{ } n \in \mathbb{N} : n & \neq 0 \\
+n \text{ mod } n & = 0 \\
+n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
@@ -308,8 +302,7 @@ Similary, in the next sections, we will prove other properties of the division a
 
 ```math
 \begin{aligned}
-\forall a,b,div,mod & \in \mathbb{Z}, \\
-\text{ where } a & = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
+\forall a,b,div,mod \in \mathbb{Z} & : a = \text{div} \cdot b + \text{mod} \mid b \neq 0 \\ 
 DivMod(a,b, div + 1, mod - b).solve & = DivMod(a,b, div, mod).solve \\
 DivMod(a,b, div - 1, mod + b).solve & = DivMod(a,b, div, mod).solve \\
 & \therefore \\
@@ -388,8 +381,8 @@ As proved in [MoreDivLessMod](
 
     check(
       equality(
-        a,                         // is equals to
-        div * b + mod,             // is equals to
+        a, //                     is equals to
+        div * b + mod, //         is equals to
         (div - 1) * b + (mod + b)
       )
     )
@@ -406,8 +399,7 @@ As a directly consequence of these properties, we can extend the $DivMod$ with t
 
 ```math
 \begin{aligned}
-\forall \text{ } m & \in \mathbb{N}, \text{ where }  \\
-a & = b \cdot div + mod \\
+\forall \text{ } a, b, div, mod, m \in \mathbb{Z} & : b \neq 0 \text{ | } a = b \cdot div + mod \\
 & \therefore \\
 DivMod(a,b, div + m, mod - m * b).solve & = DivMod(a,b, div, mod).solve \\
 DivMod(a,b, div - m, mod + m * b).solve & = DivMod(a,b, div, mod).solve \\
@@ -425,7 +417,8 @@ There is only one single remainder value for every $a, b$ pair.
 
 ```math
 \begin{aligned}
-  \forall a, b \in \mathbb{Z}, \quad &\exists ! \, r \mid 0 \leq r < |b|, \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+  \forall \text{ } a, b, r & \in \mathbb{Z} \\
+  \quad \exists ! \, r \mid 0 \leq r < |b| & \implies \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
 \end{aligned}
 ```
 
@@ -490,8 +483,7 @@ That is proved in the [unique remainder property](
 
 ```math
 \begin{aligned}
-\forall a,b & \in \mathbb{Z}, \\
-\text{ where } b & \neq 0 \\
+\forall \text{ } a,b & \in \mathbb{Z} : b \neq 0 \\
 a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 \end{aligned}
 ```
@@ -528,11 +520,10 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
 
 ```math
 \begin{aligned}
-\forall \text{ } a,b,c & \in \mathbb{Z}, \\
-\text{ where } b & \neq 0 \\
+\forall \text{ } a,b,c & \in \mathbb{Z} : b \neq 0 \\
 ( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
 ( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
 ( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
 \end{aligned}
 ```
@@ -629,10 +620,9 @@ These properties are:
 
 ```math
 \begin{aligned}
-\forall a, b, div \text{ and } mod & \in \mathbb{Z}, \\
-\text{where } b & \neq 0 \\
-a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
-a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
+\forall \text{ } a, b, c, m & \in \mathbb{Z} : b \neq 0 \\
+b > a \geq 0 \implies a \text{ div } b & = 0 \\
+b > a \geq 0 \implies a \text{ mod } b & = a \\
 b \text{ mod } b                   & = 0 \\
 b \text{ div } b                   & = 1 \\
 ( a + b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
