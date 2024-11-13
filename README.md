@@ -17,9 +17,10 @@ This rewriting process is still ongoing,
 The article [Properties of Division and Modulo](./modulo.md) describes how the current code proves the following theorems:
 
 ```math
-\begin{align*} \\
-a >= 0 \text{ and } b > a \implies a \text{ div } b  & = 0 \\
-a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
+\begin{aligned}
+\forall \text{ } a, b, c, m & \in \mathbb{Z} : b \neq 0 \\
+b > a \geq 0 \implies a \text{ div } b & = 0 \\
+b > a \geq 0 \implies a \text{ mod } b & = a \\
 b \text{ mod } b                   & = 0 \\
 b \text{ div } b                   & = 1 \\
 ( a + b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
@@ -35,7 +36,7 @@ b \text{ div } b                   & = 1 \\
 (a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
 (a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
 (a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
-\end{align*}
+\end{aligned}
 ```
 
 ## Running the Formal Verification
