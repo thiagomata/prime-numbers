@@ -15,10 +15,7 @@ and we are currently working on the properties of prime numbers.
 
 ### Division and Modulo Properties
 
-[Properties of Division and Modulo](./modulo.md)
-
-In this paper, we proof the following properties of division and modulo:
-
+The article [Properties of Division and Modulo](./modulo.md) proves the following theorems:
 
 ```math
 \begin{align*} \\
