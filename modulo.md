@@ -43,14 +43,15 @@ Similarly, some proofs are using the recursive definition of the division and mo
 Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ and $remainder$ such that:
 
 ```math
-\displaylines{ \\
-\forall \text{ } dividend, divisor \in \mathbb{N}, \text{ where } divisor\neq 0  \\
-\exists ! \\
-\text{quotient} = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies   \\
-dividend = divisor \cdot quotient + \text{remainder}, \text { where } 0 \leq \text{remainder} < |b|, \\
-dividend \text{ mod } divisor = remainder, \\
-dividend \text{ div } divisor = quotient. \\
-}
+\begin{aligned}
+\forall \text{ } dividend, divisor & \in \mathbb{N}, \text{ where } divisor\neq 0  \\
+& \exists ! \\
+\text{quotient} & = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies   \\
+dividend & = divisor \cdot quotient + \text{remainder} \\
+dividend \text{ mod } divisor & = remainder \\
+dividend \text{ div } divisor & = quotient \\
+\text { where } 0 & \leq \text{remainder} < |b|
+\end{aligned}
 ```
 
 ## Recursive Definition
@@ -59,10 +60,10 @@ Some properties of the division and modulo can be proved using the recursive def
 The recursive definition of the division and modulo operations are:
 
 ```math
-\displaylines{ \\
-\forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
-\text{where } b \neq 0 \\
-}
+\begin{aligned}
+\forall a, b, div & \text{ and } mod \in \mathbb{Z}, \\
+\text{where } & b \neq 0
+\end{aligned}
 ```
 
 We define $DivMod(a, b, div, mod)$ such that:
@@ -83,14 +84,14 @@ The solved $DivMod$ are those where the remainder $mod$ satisfies:
 ### Recursive Formula
 
 ```math
-\displaylines{ \\
+\begin{aligned}
 \text{DivMod.solve}(a, b, \text{div}, \text{mod}) =
 \begin{cases}
 \text{DivMod}(a, b, \text{div}, \text{mod}) & \text{if } 0 \leq \text{mod} < |b|, \\
 \text{DivMod.solve}(a, b, \text{div} + \text{sign}(b), \text{mod} - |b|) & \text{if } \text{mod} \geq |b|, \\
 \text{DivMod.solve}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0. \\
 \end{cases} \\
-}
+\end{aligned}
 ```
 
 We can see the described [recursive definition on Scala](
@@ -210,12 +211,12 @@ As we can see in the class [Calc](
 If the dividend is smaller than the divisor, the result of the modulos operation should be the dividend value and the division result should be zero.
 
 ```math
-\displaylines{ \\
-\forall a,b \in \mathbb{N}, \text{ and } b \neq 0 \\
-a < b \implies \\
-a \text{ mod } b = a \\
-a \text{ div } b = 0 \\
-}
+\begin{aligned}
+\forall a,b \in \mathbb{N}, & \text{ and } b \neq 0 \\
+a < b & \implies \\
+a \text{ mod } b & = a \\
+a \text{ div } b & = 0 \\
+\end{aligned}
 ```
 
 We can check that since $DivMod(a, b, 0, a)$ is the final solution for the division operation.
@@ -243,12 +244,12 @@ def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
 The modulo of every number by itself is zero and the division of every number by itself is one.
 
 ```math
-\displaylines{ \\
+\begin{aligned}
 \forall n \in \mathbb{N}, \\
 \text{ where } n \neq 0 \\
 n \text{ mod } n = 0 \\
 n \text{ div } n = 1 \\
-}
+\end{aligned}
 ```
 
 
@@ -306,16 +307,16 @@ Similary, in the next sections, we will prove other properties of the division a
 ### Addition
 
 ```math
-\displaylines{ \\
-\forall a,b,div,mod \in \mathbb{Z}, \\
-\text{ where } a = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
-DivMod(a,b, div + 1, mod - b).solve = DivMod(a,b, div, mod).solve \\
-DivMod(a,b, div - 1, mod + b).solve = DivMod(a,b, div, mod).solve \\
-\therefore \\
-a \text{ mod } b = (a + b) \text{ mod } b = (a - b) \text{ mod } b \\
-1 + (a \text{ div } b) = (a + b) \text{ div } b \\
-1 - (a \text{ div } b) = (a - b) \text{ div } b \\
-}
+\begin{aligned}
+\forall a,b,div,mod & \in \mathbb{Z}, \\
+\text{ where } a & = \text{div} \cdot b + \text{mod}, \quad b \neq 0 \\ 
+DivMod(a,b, div + 1, mod - b).solve & = DivMod(a,b, div, mod).solve \\
+DivMod(a,b, div - 1, mod + b).solve & = DivMod(a,b, div, mod).solve \\
+& \therefore \\
+a \text{ mod } b = (a + b) \text{ mod } b & = (a - b) \text{ mod } b \\
+1 + (a \text{ div } b) & = (a + b) \text{ div } b \\
+1 - (a \text{ div } b) & = (a - b) \text{ div } b \\
+\end{aligned}
 ```
 
 As proved in [MoreDivLessMod](
@@ -404,18 +405,18 @@ As proved in [MoreDivLessMod](
 As a directly consequence of these properties, we can extend the $DivMod$ with the following properties:
 
 ```math
-\displaylines{ \\
-\forall \text{ } m \in \mathbb{N}, \text{ where }  \\
-a = b \cdot div + mod \\
-\therefore \\
-DivMod(a,b, div + m, mod - m * b).solve = DivMod(a,b, div, mod).solve \\
-DivMod(a,b, div - m, mod + m * b).solve = DivMod(a,b, div, mod).solve \\
-\therefore \\
-mod(a + m \cdot b, b) = mod(a, b) \\
-div(a + m \cdot b, b) = div(a, b) + m \\
-mod(a - m \cdot b, b) = mod(a, b) \\
-div(a - m \cdot b, b) = div(a, b) - m \\
-}
+\begin{aligned}
+\forall \text{ } m & \in \mathbb{N}, \text{ where }  \\
+a & = b \cdot div + mod \\
+& \therefore \\
+DivMod(a,b, div + m, mod - m * b).solve & = DivMod(a,b, div, mod).solve \\
+DivMod(a,b, div - m, mod + m * b).solve & = DivMod(a,b, div, mod).solve \\
+& \therefore \\
+mod(a + m \cdot b, b) & = mod(a, b) \\
+div(a + m \cdot b, b) & = div(a, b) + m \\
+mod(a - m \cdot b, b) & = mod(a, b) \\
+div(a - m \cdot b, b) & = div(a, b) - m \\
+\end{aligned}
 ```
 
 ### Unique Remainder
@@ -423,26 +424,22 @@ div(a - m \cdot b, b) = div(a, b) - m \\
 There is only one single remainder value for every $a, b$ pair.
 
 ```math
-\displaylines{ \\
-\forall a, b \in \mathbb{Z}, \\
-\exists ! \text{ remainder } r \\
-\text{ such that } \\
-0 \leq r < |b|  \\
-\text{ and }  \\
-a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r \\
-}
+\begin{aligned}
+  \forall a, b \in \mathbb{Z}, \quad &\exists ! \, r \mid 0 \leq r < |b|, \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+\end{aligned}
 ```
+
 
 in other words, two $DivMod$ instances with the same dividend $a$ and divisor $b$ will have the same solution.
 
 ```math
-\displaylines{ \\
-\forall a, b,divX, modX, divY, modY \in \mathbb{N}, \\ 
-\text{where } b \neq 0 \text{, } \\
-a = b \cdot divX + modX \text{ and } \\
-a = b \cdot divX + modY \text{ then } \\
-DivMod(a, b, divX, modX).solve = DivMod(a, b, divY, modY).solve \\
-}
+\begin{aligned}
+\forall a, b,divX, modX, divY, modY & \in \mathbb{N}, \\ 
+\text{where } b & \neq 0 \text{, } \\
+a & = b \cdot divX + modX \text{ and } \\
+a & = b \cdot divX + modY \text{ then } \\
+DivMod(a, b, divX, modX).solve & = DivMod(a, b, divY, modY).solve \\
+\end{aligned}
 ```
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
@@ -492,11 +489,11 @@ That is proved in the [unique remainder property](
 ### Modulo Idempotence
 
 ```math
-\displaylines{ \\
-\forall a,b \in \mathbb{Z}, \\
-\text{ where } b \neq 0 \\
-a \text{ mod } b = ( a \text{ mod } b ) \text{ mod } b \\
-}
+\begin{aligned}
+\forall a,b & \in \mathbb{Z}, \\
+\text{ where } b & \neq 0 \\
+a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
+\end{aligned}
 ```
 
 The proof of the modulo idempotence property is available in the [ModIdempotence](./src/main/scala/v1/div/properties/ModIdempotence.scala) as follows:
@@ -530,14 +527,14 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
 ### Distributivity over Addition and Subtraction
 
 ```math
-\displaylines{ \\
-\forall a,b,c \in \mathbb{Z}, \\
-\text{ where } b \neq 0 \\
-( a + c ) \text{ mod } b = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
-( a + c ) \text{ div } b = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
-( a - c ) \text{ mod } b = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
-( a - c ) \text{ div } b = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
-}
+\begin{aligned}
+\forall \text{ } a,b,c & \in \mathbb{Z}, \\
+\text{ where } b & \neq 0 \\
+( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
+( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+\end{aligned}
 ```
 
 These properties are proved in the [ModOperations](
@@ -631,35 +628,27 @@ with available proofs in the source code.
 These properties are:
 
 ```math
-\displaylines{ \\
-\forall a, b, div \text{ and } mod \in \mathbb{Z}, \\
-\text{where } b \neq 0 \\
-}
-```
-
-
-```math
-\displaylines{ \\
-\begin{align*} \\
+\begin{aligned}
+\forall a, b, div \text{ and } mod & \in \mathbb{Z}, \\
+\text{where } b & \neq 0 \\
 a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
 a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
-b \text{ mod } b               & = 0 \\
-b \text{ div } b               & = 1 \\
-( a + b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
-( a - b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
-(a \text{ mod } b) \text{ mod } b       & = a \text{ mod } b \\
-(a + b) \text{ div } b         & = (a \text{ div } b) + 1 \\
-(a - b) \text{ div } b         & = (a \text{ div } b) - 1 \\
+b \text{ mod } b                   & = 0 \\
+b \text{ div } b                   & = 1 \\
+( a + b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
+( a - b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
+(a \text{ mod } b) \text{ mod } b  & = a \text{ mod } b \\
+(a + b) \text{ div } b             & = (a \text{ div } b) + 1 \\
+(a - b) \text{ div } b             & = (a \text{ div } b) - 1 \\
 (a + b \cdot m ) \text{ div } b    & = (a \text{ div } b) + m \\
 (a - b \cdot m ) \text{ div } b    & = (a \text{ div } b) - m \\
-(a + c) \text{ div } b         & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
-(a - c) \text{ div } b         & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
-(a + c) \text{ mod } b         & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
-(a - c) \text{ mod } b         & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b         & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
-(a - c) \text{ mod } b         & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
-\end{align*} \\
-}
+(a + c) \text{ div } b             & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
+(a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
+(a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
+(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
+(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+\end{aligned}
 ```
 
 Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](

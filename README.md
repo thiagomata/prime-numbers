@@ -17,29 +17,29 @@ and we are currently working on the properties of prime numbers.
 
 [Properties of Division and Modulo](./modulo.md)
 
+In this paper, we proof the following properties of division and modulo:
+
 
 ```math
-\displaylines{ \\
 \begin{align*} \\
-a >= 0 \text{ and } b > a \implies a \text{ div } b & = 0 \\
+a >= 0 \text{ and } b > a \implies a \text{ div } b  & = 0 \\
 a >= 0 \text{ and } b > a \implies a \text{ mod }  b & = a \\
-b \text{ mod } b               & = 0 \\
-b \text{ div } b               & = 1 \\
-( a + b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
-( a - b \cdot m ) \text{ mod } b       & = a \text{ mod } b \\
-(a \text{ mod } b) \text{ mod } b       & = a \text{ mod } b \\
-(a + b) \text{ div } b         & = (a \text{ div } b) + 1 \\
-(a - b) \text{ div } b         & = (a \text{ div } b) - 1 \\
+b \text{ mod } b                   & = 0 \\
+b \text{ div } b                   & = 1 \\
+( a + b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
+( a - b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
+(a \text{ mod } b) \text{ mod } b  & = a \text{ mod } b \\
+(a + b) \text{ div } b             & = (a \text{ div } b) + 1 \\
+(a - b) \text{ div } b             & = (a \text{ div } b) - 1 \\
 (a + b \cdot m ) \text{ div } b    & = (a \text{ div } b) + m \\
 (a - b \cdot m ) \text{ div } b    & = (a \text{ div } b) - m \\
-(a + c) \text{ div } b         & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
-(a - c) \text{ div } b         & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
-(a + c) \text{ mod } b         & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
-(a - c) \text{ mod } b         & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b         & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
-(a - c) \text{ mod } b         & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
-\end{align*} \\
-}
+(a + c) \text{ div } b             & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
+(a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
+(a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
+(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
+(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+\end{align*}
 ```
 
 ## Running the Formal Verification
