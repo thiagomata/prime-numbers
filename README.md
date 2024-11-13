@@ -9,13 +9,12 @@ This project was initially created using Dafny,
 but we decided to switch to Stainless because of the better support for Scala.
 
 This rewriting process is still ongoing, 
-and we are currently working on the properties of prime numbers.
 
-## Prime Properties
+## Proved Properties
 
 ### Division and Modulo Properties
 
-The article [Properties of Division and Modulo](./modulo.md) proves the following theorems:
+The article [Properties of Division and Modulo](./modulo.md) describes how the current code proves the following theorems:
 
 ```math
 \begin{align*} \\
