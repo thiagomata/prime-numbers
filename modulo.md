@@ -64,7 +64,7 @@ We define $DivMod(a, b, div, mod)$ such that:
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, div, mod \in \mathbb{Z} : b \neq 0 \text{ | } a = \text{div} \cdot b + \text{mod}
+\forall \text{ } a, b, div, mod \in \mathbb{Z} : b \neq 0, a = \text{div} \cdot b + \text{mod}
 \end{aligned}
 ```
 
@@ -208,7 +208,7 @@ If the dividend is smaller than the divisor, the result of the modulos operation
 
 ```math
 \begin{aligned}
-& \forall \text{ } a,b \in \mathbb{N} : \text{ and } b \neq 0 \\
+& \forall \text{ } a,b \in \mathbb{N} : b \neq 0 \\
 & a < b \implies a \text{ mod } b & = a \\
 & a < b \implies a \text{ div } b & = 0 \\
 \end{aligned}
@@ -302,7 +302,7 @@ Similary, in the next sections, we will prove other properties of the division a
 
 ```math
 \begin{aligned}
-\forall a,b,div,mod \in \mathbb{Z} & : a = \text{div} \cdot b + \text{mod} \mid b \neq 0 \\ 
+\forall a,b,div,mod \in \mathbb{Z} & : a = \text{div} \cdot b + \text{mod}, b \neq 0 \\ 
 DivMod(a,b, div + 1, mod - b).solve & = DivMod(a,b, div, mod).solve \\
 DivMod(a,b, div - 1, mod + b).solve & = DivMod(a,b, div, mod).solve \\
 & \therefore \\
@@ -399,7 +399,7 @@ As a directly consequence of these properties, we can extend the $DivMod$ with t
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, div, mod, m \in \mathbb{Z} & : b \neq 0 \text{ | } a = b \cdot div + mod \\
+\forall \text{ } a, b, div, mod, m \in \mathbb{Z} & : b \neq 0, a = b \cdot div + mod \\
 & \therefore \\
 DivMod(a,b, div + m, mod - m * b).solve & = DivMod(a,b, div, mod).solve \\
 DivMod(a,b, div - m, mod + m * b).solve & = DivMod(a,b, div, mod).solve \\
