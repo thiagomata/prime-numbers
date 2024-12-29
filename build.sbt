@@ -1,8 +1,9 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / scalaVersion := "3.5.0"
 
 lazy val root = (project in file("."))
+  .enablePlugins(StainlessPlugin)
   .settings(
     name := "prime-numbers"
   )

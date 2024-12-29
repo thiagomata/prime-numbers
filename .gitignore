@@ -10,7 +10,8 @@ target
 .scala-build
 .idea
 .vscode
-
+.bsp
+.bsp/**
 
 # ignore macOS files
 .DS_Store
@@ -18,3 +19,6 @@ target
 
 # ignore temporary files
 stainless-stack-trace.txt
+stainless
+sbt-stainless.zip
+project
