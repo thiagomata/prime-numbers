@@ -1,6 +1,6 @@
 package v1
 
-import stainless.lang.BooleanDecorations
+//import stainless.lang.BooleanDecorations
 
 object Calc {
 
