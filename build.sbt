@@ -1,10 +1,9 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / scalaVersion := "3.5.2"
 
 lazy val root = (project in file("."))
-  .in(file("algorithm"))
-  .enablePlugins(StainlessPlugin) // <-- Enabling Stainless verification on this module!
+  .enablePlugins(StainlessPlugin)
   .settings(
     name := "prime-numbers"
   )
