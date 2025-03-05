@@ -1,7 +1,7 @@
 package v1.div.properties
 
 import v1.Calc
-import v1.DivMod
+import v1.div.DivMod
 import stainless.lang.*
 import stainless.proof.check
 import v1.Calc.{div, mod}

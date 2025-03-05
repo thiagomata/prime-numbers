@@ -1,5 +1,7 @@
 package v1
 
+import v1.div.DivMod
+
 //import stainless.lang.BooleanDecorations
 
 object Calc {

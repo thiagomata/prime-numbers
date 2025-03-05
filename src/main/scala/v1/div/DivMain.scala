@@ -2,6 +2,7 @@ package v1
 
 import stainless.annotation.extern
 import stainless.io.StdOut
+import v1.div.DivMod
 
 object DivMain {
 
