@@ -6,12 +6,12 @@ import org.scalatest.matchers.should.*
 import v1.seq.Seq
 import v1.utils.createList
 
-case class  SeqTestCase(
-  name: String,
-  input: Seq,
-  key: BigInt,
-  expected: BigInt
-)
+case class SeqTestCase(
+                        name: String,
+                        input: Seq,
+                        key: BigInt,
+                        expected: BigInt
+                      )
 
 class SeqTest extends FlatSpec with Matchers {
 
@@ -52,7 +52,7 @@ class SeqTest extends FlatSpec with Matchers {
     )
     forAll(testCases) { testCase =>
       val result = testCase.input(testCase.key)
-      result should be (testCase.expected)
+      result should be(testCase.expected)
     }
   }
 }

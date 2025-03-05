@@ -6,12 +6,12 @@ import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
 import v1.utils.createList
 
-case class  CycleTestCase(
-  name: String,
-  input: Cycle,
-  key: BigInt,
-  expected: BigInt
-)
+case class CycleTestCase(
+                          name: String,
+                          input: Cycle,
+                          key: BigInt,
+                          expected: BigInt
+                        )
 
 class CycleTest extends FlatSpec with Matchers {
 
@@ -51,7 +51,7 @@ class CycleTest extends FlatSpec with Matchers {
     )
     forAll(testCases) { testCase =>
       val result = testCase.input(testCase.key)
-      result should be (testCase.expected)
+      result should be(testCase.expected)
     }
   }
 }
