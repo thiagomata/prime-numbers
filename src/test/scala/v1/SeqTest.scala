@@ -1,9 +1,10 @@
-package scala.v1
+package v1
 
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import v1.seq.Seq
+import v1.utils.createList
 
 case class  SeqTestCase(
   name: String,
@@ -11,11 +12,6 @@ case class  SeqTestCase(
   key: BigInt,
   expected: BigInt
 )
-
-def createList(values: Array[BigInt]): stainless.collection.List[BigInt] = {
-  require(values.length > 0)
-  stainless.collection.List.fromScala(values.toList)
-}
 
 class SeqTest extends FlatSpec with Matchers {
 

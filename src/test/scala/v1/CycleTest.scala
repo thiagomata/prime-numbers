@@ -4,6 +4,7 @@ import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
+import v1.utils.createList
 
 case class  CycleTestCase(
   name: String,
@@ -11,11 +12,6 @@ case class  CycleTestCase(
   key: BigInt,
   expected: BigInt
 )
-
-def createList(values: Array[BigInt]): stainless.collection.List[BigInt] = {
-  require(values.length > 0)
-  stainless.collection.List.fromScala(values.toList)
-}
 
 class CycleTest extends FlatSpec with Matchers {
 
