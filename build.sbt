@@ -27,4 +27,9 @@ lazy val root = (project in file("."))
 
 
 mainClass in Compile := Some("v1.div.DivMain")
-  
+
+//import sbtassembly.AssemblyPlugin.autoImport._
+
+artifactName in (Compile, packageBin) := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
+  s"${module.name}-${module.revision}.jar"
+}
