@@ -5,7 +5,7 @@ import v1.Calc
 import stainless.lang.*
 import stainless.proof.check
 import stainless.collection.*
-import v1.properties.AdditionAndMultiplication
+import v1.div.properties.AdditionAndMultiplication
 
 object CycleProperties {
   def findValueInCycle(list: List[BigInt], key: BigInt): Boolean = {

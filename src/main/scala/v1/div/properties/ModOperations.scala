@@ -5,8 +5,8 @@ import v1.div.DivMod
 import stainless.lang.*
 import stainless.proof.check
 import v1.Calc.{div, mod}
-import v1.properties.{AdditionAndMultiplication, ModIdempotence}
-import v1.properties.ModIdempotence.modUniqueDiv
+import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
+import v1.div.properties.ModIdempotence.modUniqueDiv
 import verification.Helper
 import verification.Helper.equality
 

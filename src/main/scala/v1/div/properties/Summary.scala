@@ -1,4 +1,4 @@
-package v1.properties
+package v1.div.properties
 
 import stainless.lang.*
 import stainless.proof.check

@@ -1,4 +1,4 @@
-package v1
+package v1.div
 
 import stainless.annotation.extern
 import stainless.io.StdOut
