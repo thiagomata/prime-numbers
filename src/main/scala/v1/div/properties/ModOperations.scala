@@ -42,7 +42,7 @@ object ModOperations {
     check(solvedXY.a == solvedXY.b * solvedXY.div + solvedXY.mod)
     check(a + c == b * solvedXY.div + solvedXY.mod)
 
-    val z = DivMod( solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
+    val z = DivMod(solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
     check(z.a == z.b * z.div + z.mod)
     check(z.a == solvedX.mod + solvedY.mod)
     check(z.b == b)
@@ -72,19 +72,19 @@ object ModOperations {
 
     check(b != 0)
     AdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv)
-    check( mod(a + c,b) == mod( a + c + b * bigDiv, b ))
+    check(mod(a + c, b) == mod(a + c + b * bigDiv, b))
     check(w.isValid)
     check(xy.isValid)
     check(w.a == xy.a)
     check(w.b == xy.b)
     check(modUniqueDiv(w, xy))
-    check( w.solve == xy.solve)
+    check(w.solve == xy.solve)
 
-    check( Helper.equality(
-      w.solve.mod,               // is equals to
-      xy.solve.mod,              // is equals to
-      mod(a+c,b),           // is equals to
-      solvedZ.mod,               // is equals to
+    check(Helper.equality(
+      w.solve.mod,        // is equals to
+      xy.solve.mod,       // is equals to
+      mod(a + c, b),      // is equals to
+      solvedZ.mod,        // is equals to
       mod(mod(a, b) + mod(c, b), b)
     ))
 
@@ -92,13 +92,13 @@ object ModOperations {
     check(div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
 
     mod(a + c, b) == mod(mod(a, b) + mod(c, b), b) &&
-    div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
+      div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
   }.holds
 
   def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
     require(mod(a, b) == 0)
-    modAdd(a,b,c)
+    modAdd(a, b, c)
     check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     check(mod(a + c, b) == mod(0 + mod(c, b), b))
     check(mod(a + c, b) == mod(mod(c, b), b))
@@ -110,8 +110,8 @@ object ModOperations {
       check(mod(a + c, b) == mod(c, b))
     }
 
-    ( if c >= 0 then mod(a + c, b) == mod(c, b) else true ) &&
-    mod(a + c, b) == mod(mod(c, b), b)
+    (if c >= 0 then mod(a + c, b) == mod(c, b) else true) &&
+      mod(a + c, b) == mod(mod(c, b), b)
   }.holds
 
   def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
@@ -120,68 +120,68 @@ object ModOperations {
     val x = a - c
     modAdd(x, b, c)
 
-    check( x == b * div(x,b) + mod(x,b) )
-    check( a == b * div(a,b) + mod(a,b) )
-    check( c == b * div(c,b) + mod(c,b) )
+    check(x == b * div(x, b) + mod(x, b))
+    check(a == b * div(a, b) + mod(a, b))
+    check(c == b * div(c, b) + mod(c, b))
 
     check(
       equality(
-        x,
-        a - c,
-        (a) - (c),
-        (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),
-        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),
-        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),
-        b * ( div(a, b) - div(c, b) ) + mod(a, b) - mod(c, b),
-        b * div(x, b) + mod(x, b),
+        x,                                                            // is equal to
+        a - c,                                                        // is equal to
+        (a) - (c),                                                    // is equal to
+        (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),    // is equal to
+        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
+        b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b),          // is equal to
+        b * div(x, b) + mod(x, b),                                    // is equal to
         b * div(a - c, b) + mod(a - c, b)
       )
     )
 
 
-    check( a == b * div(a,b) + mod(a,b) )
-    check( c == b * div(c,b) + mod(c,b) )
-    check( a - c == b * div(a,b) + mod(a,b) - ( b * div(c,b) + mod(c,b) ) )
-    check( a - c == b * div(a,b) + mod(a,b) - b * div(c,b) - mod(c,b) )
-    check( a - c == b * div(a,b) - b * div(c,b) + mod(a,b) - mod(c,b) )
-    check( a - c == b * ( div(a,b) - div(c,b) ) + mod(a,b) - mod(c,b) )
-    check( mod( a - c, b) == mod( b * ( div(a,b) - div(c,b) ) + mod(a,b) - mod(c,b), b ) )
+    check(a == b * div(a, b) + mod(a, b))
+    check(c == b * div(c, b) + mod(c, b))
+    check(a - c == b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)))
+    check(a - c == b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b))
+    check(a - c == b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b))
+    check(a - c == b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b))
+    check(mod(a - c, b) == mod(b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b), b))
     val m = div(a, b) - div(c, b)
-    val others = mod(a,b) - mod(c,b)
-    check( mod( a - c, b) == mod( b * m + others, b ) )
+    val others = mod(a, b) - mod(c, b)
+    check(mod(a - c, b) == mod(b * m + others, b))
     AdditionAndMultiplication.ATimesBSameMod(others, b, m)
-    check( mod( b * m + others, b ) == mod( others, b ) )
-    check( mod( a - c, b) == mod( mod(a,b) - mod(c,b), b ) )
+    check(mod(b * m + others, b) == mod(others, b))
+    check(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
 
-    check(div(x + c, b)     == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b))
+    check(div(x + c, b) == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b))
     check(div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
-    check(div(a, b)         == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
+    check(div(a, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
     check(div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b))
     check(div(a - c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b) - div(c, b))
-    check(div(a - c, b)     == div(a, b) - div(c, b) - div(mod(a - c, b)  + mod(c, b), b))
-    check(div(a - c, b)     == div(a, b) - div(c, b) - div(mod(mod(a,b) - mod(c,b), b) + mod(c, b), b))
+    check(div(a - c, b) == div(a, b) - div(c, b) - div(mod(a - c, b) + mod(c, b), b))
+    check(div(a - c, b) == div(a, b) - div(c, b) - div(mod(mod(a, b) - mod(c, b), b) + mod(c, b), b))
 
     val absB = if (b < 0) -b else b
     val sign = if (b < 0) BigInt(-1) else BigInt(1)
 
     ModIdempotence.modModMinus(a, b, c)
     check(
-      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) ||
-      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) + b ||
-      mod(mod(a,b) - mod(c,b), b) == mod(a,b) - mod(c,b) - b
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) ||
+        mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
+        mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b
     )
     check(
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) + mod(c, b) ||
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) + b + mod(c, b) ||
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - mod(c,b) - b + mod(c, b)
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + mod(c, b) ||
+        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + b + mod(c, b) ||
+        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) - b + mod(c, b)
     )
     check(
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) ||
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) + b ||
-      mod(mod(a,b) - mod(c,b), b) + mod(c, b) == mod(a,b) - b
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) ||
+        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) + b ||
+        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - b
     )
 
     mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
-    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+      div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
   }.holds
 }
