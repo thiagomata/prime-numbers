@@ -1,6 +1,5 @@
 package v1.seq
 
-import stainless.proof.check
 import stainless.lang.*
 import v1.Calc
 

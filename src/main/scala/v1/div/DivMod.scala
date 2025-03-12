@@ -2,6 +2,7 @@ package v1.div
 
 import stainless.lang.*
 import stainless.proof.check
+
 import scala.language.postfixOps
 
 case class DivMod(a: BigInt, b: BigInt, div: BigInt, mod: BigInt) {

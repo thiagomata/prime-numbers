@@ -15,10 +15,12 @@ object DivMain {
   def main(args: Array[String]): Unit = {
     val argLenght = args.length
     if (argLenght == 2) {
-      return with2Args(args)
+      with2Args(args)
+      return
     }
     if (argLenght == 4) {
-      return with4Args(args)
+      with4Args(args)
+      return
     }
     println("Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'")
   }

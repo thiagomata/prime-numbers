@@ -2,10 +2,8 @@ package v1.div.properties
 
 import stainless.lang.*
 import stainless.proof.check
-import v1.Calc.{div, mod}
-import v1.div.properties.ModOperations
 import v1.Calc
-import v1.div.DivMod
+import v1.Calc.{div, mod}
 
 object Summary {
   def PropertySummary(a: BigInt, b: BigInt, c: BigInt, m: BigInt): Boolean = {

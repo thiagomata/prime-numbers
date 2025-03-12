@@ -1,10 +1,10 @@
 package v1.cycle.properties
 
-import v1.cycle.Cycle
-import v1.Calc
+import stainless.collection.*
 import stainless.lang.*
 import stainless.proof.check
-import stainless.collection.*
+import v1.Calc
+import v1.cycle.Cycle
 import v1.div.properties.AdditionAndMultiplication
 
 object CycleProperties {

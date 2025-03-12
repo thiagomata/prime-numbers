@@ -1,10 +1,9 @@
 package v1.div.properties
 
-import v1.div.DivMod
 import stainless.lang.*
 import stainless.proof.check
-import v1.Calc.mod
-import v1.Calc.div
+import v1.Calc.{div, mod}
+import v1.div.DivMod
 
 object ModIdempotence {
   def modIdempotence(a: BigInt, b: BigInt): Boolean = {

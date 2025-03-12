@@ -1,9 +1,9 @@
 package v1.div.properties
 
-import v1.Calc
-import v1.div.DivMod
 import stainless.lang.*
 import stainless.proof.check
+import v1.Calc
+import v1.div.DivMod
 import verification.Helper.equality
 
 object AdditionAndMultiplication {
