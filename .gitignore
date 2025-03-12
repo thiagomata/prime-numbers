@@ -2,4 +2,23 @@
 *.exe
 *.mdb
 .history
+.metals
+project/target
+.idea
+target
+.stainless-cache
+.scala-build
+.idea
+.vscode
+.bsp
+.bsp/**
 
+# ignore macOS files
+.DS_Store
+**/.DS_Store
+
+# ignore temporary files
+stainless-stack-trace.txt
+stainless
+sbt-stainless.zip
+project

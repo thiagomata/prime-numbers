@@ -1,0 +1,12 @@
+services:
+  stainless:
+    mem_limit: 4g
+    build:
+      context: .
+      dockerfile: ./infra/docker/stainless/Dockerfile
+    environment:
+      - JAVA_OPTS=-Xmx4G
+    volumes:
+      - ./src:/app/src
+    working_dir: /app
+    command: ["bash", "-c", "stainless --vc-cache=false --timeout=8640000 -J-Xmx4G $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')"]
