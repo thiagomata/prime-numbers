@@ -20,7 +20,6 @@ case class Seq (
       val mod = Calc.mod(value, loop.size)
       val loopValue = loop.apply(mod)
       if index > 0 then loopValue + this.apply(index - 1) else loopValue
-//      loopValue + this.apply(index - 1)
     }
   }
 }

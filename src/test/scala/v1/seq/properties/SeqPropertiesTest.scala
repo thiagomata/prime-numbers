@@ -50,7 +50,6 @@ class SeqPropertiesTest extends FlatSpec with Matchers {
   "first Values Match First Pos In Loop" should "match" in {
     assert(testSequences.forall(
       testSeq => {
-        println(testSeq)
         val prevSize = testSeq.previous.size
         SeqProperties.firstValuesMatchFirstPosInLoop(testSeq, prevSize)
       })
@@ -60,7 +59,6 @@ class SeqPropertiesTest extends FlatSpec with Matchers {
   "prev value in the loop" should "match" in {
     assert(testSequences.forall(
       testSeq => {
-        println(testSeq)
         val prevSize = testSeq.previous.size
         val bottomTest = if (prevSize == 0) then BigInt(1) else prevSize
         val upperTest = testSeq.loop.size * 2
@@ -77,7 +75,6 @@ class SeqPropertiesTest extends FlatSpec with Matchers {
   "next value in the loop" should "match" in {
     assert(testSequences.forall(
       testSeq => {
-        println(testSeq)
         val prevSize = testSeq.previous.size
         val bottomTest = if (prevSize == 0) then BigInt(1) else prevSize
         val upperTest = testSeq.loop.size * 2

@@ -26,6 +26,7 @@ object SeqProperties {
 
   def prevValuesMatchLoop(seq: v1.seq.Seq, pos: BigInt): Boolean = {
     require(pos >= seq.previous.size)
+    require(pos > 0)
     val loopPosition = pos - seq.previous.size
     seq(pos - 1) == seq(pos) - seq.loop(Calc.mod(loopPosition, seq.loop.size))
   }
