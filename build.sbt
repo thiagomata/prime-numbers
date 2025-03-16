@@ -1,6 +1,9 @@
 import sbtassembly.AssemblyPlugin.autoImport.assembly
 
-ThisBuild / version := "0.1.0-SNAPSHOT"
+scalaVersion := "3.5.0"
+crossScalaVersions := Seq("3.5.0")
+
+//ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "com.thiagomata"
 ThisBuild / scalaVersion := "3.5.0"
 
@@ -9,6 +12,11 @@ version := "0.0.0"
 
 enablePlugins(AssemblyPlugin)
 enablePlugins(StainlessPlugin);
+enablePlugins(JacocoPlugin)
+
+jacocoExcludes := Seq(
+  "stainless.*",
+)
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
 
