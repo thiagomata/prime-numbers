@@ -26,21 +26,8 @@ lazy val root = (project in file("."))
     assembly / mainClass := Some("v1.div.DivMain"),
   )
 
-//lazy val app = (project in file("app"))
-//  .settings(
-//    assembly / mainClass := Some("com.example.Main"),
-//    // more settings here ...
-//  )
-
-//unmanagedResources in Compile := (unmanagedResources in Compile).value.filterNot {
-//  _.getPath.contains("stainless-library_3-0.9.8.9-SNAPSHOT-sources/META-INF/MANIFEST.MF")
-//}
-
-
 mainClass in Compile   := Some("v1.div.DivMain")
 mainClass in assembly  := Some("v1.div.DivMain")
-
-//import sbtassembly.AssemblyPlugin.autoImport
 
 artifactName in (Compile, packageBin) := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
   s"${module.name}-${module.revision}.jar"
