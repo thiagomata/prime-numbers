@@ -8,7 +8,7 @@ verify-docker:
     docker-compose -f docker-compose.yaml run stainless
 
 build:
-    sbt clean reload assembly
+    sbt clean reload assembly jacoco
 
 run a b:
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}}

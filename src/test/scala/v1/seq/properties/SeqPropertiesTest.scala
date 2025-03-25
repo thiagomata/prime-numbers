@@ -87,4 +87,16 @@ class SeqPropertiesTest extends FlatSpec with Matchers {
       })
     )
   }
+
+  "seqPosMatchSeqLoop" should "hold" in {
+    assert(testSequences.forall(
+      testSeq => {
+        SeqProperties.seqPosMatchSeqLoop(
+          testSeq.previous.size,
+          testSeq.previous.size + testSeq.loop.size,
+          testSeq
+        )
+      })
+    )
+  }
 }

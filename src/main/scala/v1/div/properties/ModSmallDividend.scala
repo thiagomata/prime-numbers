@@ -9,7 +9,7 @@ import scala.language.postfixOps
 
 object ModSmallDividend {
   def modSmallDividend(a: BigInt, b: BigInt): Boolean = {
-    require(b != 0)
+    require(b > 0)
     require(b > a)
     require(a >= 0)
     val x = DivMod(a, b, 0, a)
