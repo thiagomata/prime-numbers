@@ -9,7 +9,7 @@ object SeqProperties {
     require(pos >= 0)
     require(seq.previous.size > pos)
     seq.previous(pos) == seq(pos)
-  }
+  }.holds
 
   def firstValuesMatchFirstPosInLoop(seq: v1.seq.Seq, pos: BigInt): Boolean = {
     require(pos == seq.previous.size)
@@ -18,7 +18,7 @@ object SeqProperties {
     } else {
       seq(pos) == seq.previous(seq.previous.size - 1) + seq.loop(0)
     }
-  }
+  }.holds
 
   def nextValuesMatchLoop(seq: v1.seq.Seq, pos: BigInt): Boolean = {
     require(pos >= seq.previous.size)
