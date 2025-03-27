@@ -7,9 +7,12 @@ case class Cycle(values: stainless.collection.List[BigInt]) {
   require(values.size > 0)
 
   def apply(value: BigInt): BigInt = {
+    require(value >= 0)
     val index = Calc.mod(value, values.size)
     check(index >= 0)
     check(index < values.size)
-    values.apply(index)
+    values(index)
   }
+  
+  def size: BigInt = values.size
 }
