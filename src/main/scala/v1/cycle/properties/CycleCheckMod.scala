@@ -15,42 +15,44 @@ object CycleCheckMod {
     val newCycle = cycle.checkMod(dividend)
     newCycle.values == cycle.values
   }.holds
-//
-//  def checkModIsZero(cycle: Cycle, dividend: BigInt): Boolean = {
-//    require(dividend > 0)
-//    require(!cycle.evaluated(dividend))
-//
-////    @tailrec
-////    def loopCheckModIsZero(loopValueKey: BigInt =  cycle.values.size - 1): Boolean = {
-////      require(loopValueKey >= 0)
-////      require(loopValueKey < cycle.values.size)
-////
-////      val currentValue = cycle.values(loopValueKey)
-////      val currentModIsZero = Calc.mod(currentValue, dividend) == 0
-////      if (loopValueKey == 0) {
-////        currentModIsZero
-////      } else {
-////        currentModIsZero && loopCheckModIsZero(loopValueKey - 1)
-////      }
-////    }
-//
-//    def loopCheckModIsZero(): Boolean = {
-//      cycle.values.forall(
-//        value => {
-//          Calc.mod(value, dividend) == 0
-//        }
-//      )
-//    }
-//
-//    val newCycle = cycle.checkMod(dividend)
-//    if (loopCheckModIsZero()) {
-//      check(Cycle.countModZero(cycle.values, dividend) == cycle.values.size)
-//      true
-////      (newCycle.modIsZeroForSomeValues == cycle.modIsZeroForSomeValues) &&
-////        (newCycle.modIsNotZeroForAllValues == cycle.modIsNotZeroForAllValues) &&
-////        (newCycle.modIsZeroForAllValues == cycle.modIsZeroForAllValues :+ dividend )
-//    } else {
-//      true
-//    }
-//  }.holds
+
+  def notEvaluatedNotInTheList(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    !cycle.modIsZeroForSomeValues.contains(dividend) &&
+    !cycle.modIsZeroForAllValues.contains(dividend) &&
+    !cycle.modIsZeroForNoneValues.contains(dividend)
+  }.holds
+
+  def evaluatedInSomeList(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    val evalCycle = cycle.checkMod(dividend)
+
+    evalCycle.modIsZeroForSomeValues.contains(dividend) ||
+      evalCycle.modIsZeroForAllValues.contains(dividend) ||
+      evalCycle.modIsZeroForNoneValues.contains(dividend)
+  }.holds
+
+
+  def oneListNotInOther(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    val evalCycle = cycle.checkMod(dividend)
+
+    if (evalCycle.modIsZeroForSomeValues.contains(dividend)) {
+      !evalCycle.modIsZeroForAllValues.contains(dividend) && !evalCycle.modIsZeroForNoneValues.contains(dividend)
+    }
+    else if (evalCycle.modIsZeroForAllValues.contains(dividend)) {
+      !evalCycle.modIsZeroForSomeValues.contains(dividend) && !evalCycle.modIsZeroForNoneValues.contains(dividend)
+    }
+    else if (evalCycle.modIsZeroForNoneValues.contains(dividend)) {
+      !evalCycle.modIsZeroForAllValues.contains(dividend) && !evalCycle.modIsZeroForSomeValues.contains(dividend)
+    } else {
+      false
+    }
+  }.holds
 }
