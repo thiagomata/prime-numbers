@@ -4,7 +4,7 @@ import stainless.proof.check
 import stainless.collection.List
 import stainless.lang.decreases
 import v1.Calc
-import v1.cycle.Cycle.{appendForAll, appendForNone, appendForSome, checkZeroForAll, checkZeroForNone, checkZeroForSome, countModZero}
+import v1.cycle.Cycle.{appendForAll, appendForNone, appendForSome, checkPositive, checkZeroForAll, checkZeroForNone, checkZeroForSome, countModZero}
 
 import scala.annotation.tailrec
 
@@ -30,6 +30,13 @@ case class Cycle private(
     )
   }
 
+  def countModZero(dividend: BigInt): BigInt = {
+    require(dividend > 0)
+    require(this.values.nonEmpty)
+    require(Cycle.checkPositive(values))
+    Cycle.countModZero(this.values, dividend)
+  }
+
   def apply(value: BigInt): BigInt = {
     require(value >= 0)
     val index = Calc.mod(value, values.size)
@@ -50,16 +57,16 @@ case class Cycle private(
       val totalModZero = Cycle.countModZero(this.values, dividend)
 
       if (totalModZero == this.values.size) {
-        check(countModZero(values, dividend) == this.values.size)
+        check(this.countModZero(dividend) == this.values.size)
         appendForAll(this, dividend)
       }
       else if (totalModZero == 0) {
-        check(countModZero(values, dividend) == 0)
+        check(this.countModZero(dividend) == 0)
         appendForNone(this, dividend)
       }
       else {
-        check(countModZero(values, dividend) != 0)
-        check(countModZero(values, dividend) != values.size)
+        check(this.countModZero(dividend) != 0)
+        check(this.countModZero(dividend) != values.size)
         appendForSome(this, dividend)
       }
     }

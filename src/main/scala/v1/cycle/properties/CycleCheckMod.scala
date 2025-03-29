@@ -55,4 +55,43 @@ object CycleCheckMod {
       false
     }
   }.holds
+
+  def ifInAllModAll(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    val evalCycle = cycle.checkMod(dividend)
+    if (evalCycle.modIsZeroForAllValues.contains(dividend)) {
+      evalCycle.countModZero(dividend) == evalCycle.values.size
+    } else {
+      evalCycle.countModZero(dividend) != evalCycle.values.size
+    }
+  }.holds
+
+  def ifInSomeModSome(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    val evalCycle = cycle.checkMod(dividend)
+    if (evalCycle.modIsZeroForSomeValues.contains(dividend)) {
+      evalCycle.countModZero(dividend) != evalCycle.values.size &&
+      evalCycle.countModZero(dividend) != 0
+    } else {
+      evalCycle.countModZero(dividend) == evalCycle.values.size ||
+        evalCycle.countModZero(dividend) == 0
+    }
+  }.holds
+
+
+  def ifInNoneModNone(cycle: Cycle, dividend: BigInt): Boolean = {
+    require(dividend > 0)
+    require(!cycle.evaluated(dividend))
+
+    val evalCycle = cycle.checkMod(dividend)
+    if (evalCycle.modIsZeroForNoneValues.contains(dividend)) {
+      evalCycle.countModZero(dividend) == 0
+    } else {
+      evalCycle.countModZero(dividend) != 0
+    }
+  }.holds
 }
