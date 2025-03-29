@@ -7,15 +7,23 @@ import v1.cycle.Cycle
 import v1.utils.createList
 
 case class CycleTestCase(
-                          name: String,
-                          input: Cycle,
-                          key: BigInt,
-                          expected: BigInt
-                        )
+      name: String,
+      input: Cycle,
+      key: BigInt,
+      expected: BigInt
+)
 
 class CycleTest extends FlatSpec with Matchers {
 
-  "Cycle" should "return value" in {
+  "Cycle" should "aaaaa" in {
+    val list = createList(Array(BigInt(3)))
+    val c: Cycle = Cycle.apply(list)
+    val c2 = c.checkMod(BigInt(4))
+    val c3 = c2.checkMod(BigInt(4))
+    assert(true)
+  }
+
+    "Cycle" should "return value" in {
     val list = createList(Array(BigInt(0), BigInt(1), BigInt(2)))
     val testCases = List(
       CycleTestCase(
