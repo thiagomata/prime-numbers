@@ -14,14 +14,21 @@ case class Cycle private(
   modIsZeroForNoneValues: List[BigInt] = stainless.collection.List.empty,
   modIsZeroForSomeValues: List[BigInt] = stainless.collection.List.empty,
 ) {
-  require(values.nonEmpty)
-  require(Cycle.checkPositive(values))
-  require(Cycle.checkPositive(modIsZeroForAllValues))
-  require(Cycle.checkZeroForAll(modIsZeroForAllValues, values))
-  require(Cycle.checkPositive(modIsZeroForSomeValues))
-  require(Cycle.checkZeroForSome(modIsZeroForSomeValues, values))
-  require(Cycle.checkPositive(modIsZeroForNoneValues))
-  require(Cycle.checkZeroForNone(modIsZeroForNoneValues, values))
+  require(Cycle.isValid(
+    values,
+    modIsZeroForAllValues,
+    modIsZeroForSomeValues,
+    modIsZeroForNoneValues
+  ))
+
+  private def isValid: Boolean = {
+    Cycle.isValid(
+      values,
+      modIsZeroForAllValues,
+      modIsZeroForSomeValues,
+      modIsZeroForNoneValues
+    )
+  }
 
   def apply(value: BigInt): BigInt = {
     require(value >= 0)
@@ -35,9 +42,7 @@ case class Cycle private(
 
   def checkMod(dividend: BigInt): Cycle = {
     require(dividend > 0)
-    check(Cycle.checkZeroForAll(modIsZeroForAllValues, values))
-    check(Cycle.checkZeroForSome(modIsZeroForSomeValues, values))
-    check(Cycle.checkZeroForNone(modIsZeroForNoneValues, values))
+    check(this.isValid)
 
     if (this.evaluated(dividend)) {
       this
@@ -46,12 +51,6 @@ case class Cycle private(
 
       if (totalModZero == this.values.size) {
         check(countModZero(values,dividend) == this.values.size)
-        check(checkZeroForAll(this.modIsZeroForAllValues, values))
-        check(values.nonEmpty)
-        check(dividend > 0)
-        check(Cycle.checkPositive(this.modIsZeroForAllValues))
-        check(Cycle.checkZeroForAll(this.modIsZeroForAllValues, values))
-        check(Cycle.countModZero(values, dividend) == values.size)
 
         val newModIsZeroForAll = appendForAll(this.modIsZeroForAllValues,dividend, values)
         Cycle(
@@ -62,14 +61,7 @@ case class Cycle private(
         )
       }
       else if (totalModZero == 0) {
-
         check(countModZero(values,dividend) == 0)
-        check(checkZeroForNone(this.modIsZeroForNoneValues, values))
-        check(values.nonEmpty)
-        check(dividend > 0)
-        check(Cycle.checkPositive(this.modIsZeroForNoneValues))
-        check(Cycle.checkZeroForNone(this.modIsZeroForNoneValues, values))
-        check(Cycle.countModZero(values, dividend) == 0)
 
         val newModIsZeroForNone = appendForNone(this.modIsZeroForNoneValues,dividend, values)
         Cycle(
@@ -82,7 +74,6 @@ case class Cycle private(
       else {
         check(countModZero(values,dividend) != 0)
         check(countModZero(values,dividend) != values.size)
-        check(checkZeroForSome(this.modIsZeroForSomeValues, values))
         val newModIsZeroForSome = appendForSome(this.modIsZeroForSomeValues,dividend, values)
         Cycle(
           values = this.values,
@@ -108,6 +99,22 @@ object Cycle {
     new Cycle(values)
   }
 
+  def isValid(
+     values: List[BigInt],
+     modIsZeroForAllValues: List[BigInt],
+     modIsZeroForSomeValues: List[BigInt],
+     modIsZeroForNoneValues: List[BigInt],
+  ): Boolean = {
+    values.nonEmpty &&
+    Cycle.checkPositive(values) &&
+    Cycle.checkPositive(modIsZeroForAllValues) &&
+    Cycle.checkPositive(modIsZeroForSomeValues) &&
+    Cycle.checkPositive(modIsZeroForNoneValues) &&
+    Cycle.checkZeroForAll(modIsZeroForAllValues, values) &&
+    Cycle.checkZeroForSome(modIsZeroForSomeValues, values) &&
+    Cycle.checkZeroForNone(modIsZeroForNoneValues, values)
+  }
+
   def countModZero(values: List[BigInt], dividend: BigInt): BigInt = {
     require(dividend > 0)
     require(values.nonEmpty)
@@ -126,17 +133,6 @@ object Cycle {
     }
     loopModCheck(values)
   }
-
-//  private def checkZeroForSome(modIsZeroForSomeValues: List[BigInt], values: List[BigInt]): Boolean = {
-//    require(values.nonEmpty)
-//    modIsZeroForSomeValues.forall(
-//      dividend => {
-//        val totalModZero = countModZero(values, dividend)
-//        totalModZero > 0 &&
-//          totalModZero < values.size
-//      }
-//    )
-//  }
 
   private def checkZeroForSome(modIsZeroForSomeValues: List[BigInt], values: List[BigInt]): Boolean = {
     require(values.nonEmpty)
