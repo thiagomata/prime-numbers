@@ -1,22 +1,39 @@
 package v1.cycle.properties
 
-import stainless.collection.*
 import stainless.lang.*
 import stainless.proof.check
 import v1.Calc
 import v1.cycle.Cycle
-import v1.div.properties.{AdditionAndMultiplication, ModSmallDividend}
-
-import scala.annotation.tailrec
+import v1.div.properties.AdditionAndMultiplication
 
 object CycleProperties {
 
+  /**
+   * Getting a cycle key value is the same
+   * of getting the cycle values  of the mod of the key by the cycle size.
+   *
+   * cycle(key) == cycle.values(mod(key, cycle.size)).
+   *
+   * @param cycle Cycle
+   * @param key BigInt
+   * @return true if the property holds
+   */
   def findValueInCycle(cycle: Cycle, key: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     cycle(key) == cycle.values(Calc.mod(key, cycle.size))
   }.holds
 
+  /**
+   * For small values, querying the key in the cycle
+   *   is the same of querying the key in the values.
+   *
+   * cycle(key) == cycle.values(key)
+   *
+   * @param cycle cycle
+   * @param key BigInt
+   * @return true if the property holds
+   */
   def smallValueInCycle(cycle: Cycle, key: BigInt): Boolean = {
     require(key >= 0)
     require(key < cycle.size)
@@ -24,7 +41,17 @@ object CycleProperties {
     cycle(key) == cycle.values(key)
   }.holds
 
-  def findValueTimesSizeInCycle(cycle: Cycle, key: BigInt, m: BigInt): Boolean = {
+  /**
+   * Adding zero, one or many times the size loop in the key do not change its value.
+   *
+   * cycle(key) == cycle(key + cycle.size * m )
+   *
+   * @param cycle Cycle
+   * @param key BigInt element key
+   * @param m BigInt multiplier
+   * @return
+   */
+  def valueMatchAfterManyLoops(cycle: Cycle, key: BigInt, m: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     require(m >= 0)
@@ -32,7 +59,19 @@ object CycleProperties {
     cycle(key) == cycle(key + cycle.size * m)
   }.holds
 
-  def moveOneCycle(cycle: Cycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
+  /**
+   * If two values are loops around the cycle.size,
+   * they should have the same value.
+   *
+   * cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2)
+   *
+   * @param cycle Cycle
+   * @param key BigInt
+   * @param m1 BigInt multiplier
+   * @param m2 BigInt multiplier
+   * @return
+   */
+  def valueMatchAfterManyLoopsInBoth(cycle: Cycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     require(m1 >= 0)
@@ -44,65 +83,20 @@ object CycleProperties {
     cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2)
   }.holds
 
-  def keyMatchesWithModKey(cycle: Cycle, value: BigInt, key: BigInt): Boolean = {
-    require(cycle.size > 0)
+  /**
+   * For every cycle, dividend and key
+   * Calc.mod(Cycle(key), dividend) == Calc.mod(Cycle.values(Calc.mod(key, cycle.size)), dividend)
+   *
+   * @param cycle Cycle
+   * @param dividend BigInt
+   * @param key BigInt
+   * @return true if property holds
+   */
+  def propagateModFromValueToCycle(cycle: Cycle, dividend: BigInt, key: BigInt): Boolean = {
     require(key >= 0)
-    require(value > 0)
-    decreases(key)
-
-    val divKeySize = Calc.div(key, cycle.size)
-    val modKeySize = Calc.mod(key, cycle.size)
-    check(modKeySize < cycle.size)
-    moveOneCycle(cycle, key, divKeySize, 0)
-    check(cycle(key) == cycle(modKeySize))
-    smallValueInCycle(cycle, modKeySize)
-    check(cycle(modKeySize) == cycle.values(modKeySize))
-    cycle(key) == cycle.values(modKeySize)
-  }.holds
-
-  def propMatchOnValues(cycle: Cycle, value: BigInt): Boolean = {
-    require(value > 0)
-
-    @tailrec
-    def loop(cycle: Cycle, value: BigInt, key: BigInt): Boolean = {
-      require(key >= 0)
-      require(key < cycle.values.size)
-      require(value > 0)
-      decreases(key)
-
-      val matchKey = modIsNotZero(cycle.values(key), value)
-      if (key == 0) {
-        matchKey
-      } else {
-        matchKey && loop(cycle = cycle, value = value, key = (key - 1))
-      }
-    }
-
-    loop(cycle = cycle, value = value, key = ( cycle.values.size - 1 ))
-  }
-
-  def modIsNotZero(cycleValue: BigInt, value: BigInt): Boolean = {
-    require(value > 0)
-    Calc.mod(cycleValue, value) != 0
-  }
-
-  def modIsZero(cycleValue: BigInt, value: BigInt): Boolean = {
-    require(value != 0)
-    Calc.mod(cycleValue, value) == 0
-  }
-
-  def propAllCycle(cycle: Cycle, value: BigInt, key: BigInt): Boolean = {
-    require(key >= 0)
-    require(value > 0)
+    require(dividend > 0)
     require(cycle.size > 0)
     val modKeySize = Calc.mod(key, cycle.size)
-
-    keyMatchesWithModKey(cycle, value, key)
-    check(cycle(key) == cycle.values(modKeySize))
-    if(modIsNotZero(cycle.values(modKeySize), value)) {
-      modIsNotZero(cycle(key), value)
-    } else {
-      true
-    }
+    Calc.mod(cycle(key),dividend) == Calc.mod(cycle.values(modKeySize),dividend)
   }.holds
 }

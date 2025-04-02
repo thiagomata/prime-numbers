@@ -17,7 +17,7 @@ class CycleTest extends FlatSpec with Matchers {
 
   "Cycle" should "aaaaa" in {
     val list = createList(Array(BigInt(3)))
-    val c: Cycle = Cycle.apply(list)
+    val c: Cycle = Cycle(list)
     val c2 = c.checkMod(BigInt(4))
     val c3 = c2.checkMod(BigInt(4))
     assert(true)

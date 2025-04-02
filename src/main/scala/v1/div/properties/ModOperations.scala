@@ -96,21 +96,20 @@ object ModOperations {
 
   def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
+    require(c >= 0)
     require(mod(a, b) == 0)
     modAdd(a, b, c)
     check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     check(mod(a + c, b) == mod(0 + mod(c, b), b))
     check(mod(a + c, b) == mod(mod(c, b), b))
-    if (c >= 0) {
-      check(c >= 0)
-      check(b != 0)
-      check(ModIdempotence.modIdempotence(c, b))
-      check(mod(mod(c, b), b) == mod(c, b))
-      check(mod(a + c, b) == mod(c, b))
-    }
+    check(c >= 0)
+    check(b != 0)
+    check(ModIdempotence.modIdempotence(c, b))
+    check(mod(mod(c, b), b) == mod(c, b))
+    check(mod(a + c, b) == mod(c, b))
 
-    (if c >= 0 then mod(a + c, b) == mod(c, b) else true) &&
-      mod(a + c, b) == mod(mod(c, b), b)
+    mod(a + c, b) == mod(c, b) &&
+    mod(a + c, b) == mod(mod(c, b), b)
   }.holds
 
   def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
