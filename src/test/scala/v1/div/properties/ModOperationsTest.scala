@@ -47,7 +47,7 @@ class ModOperationsTest extends FlatSpec with Matchers {
       a => { nonZeroValues.forall(
         b => { nonZeroValues.forall(
           c => {
-            ModOperations.modZeroPlusC(a * b,b,c)
+            ModOperations.modZeroPlusC(a * b,b,c.abs)
           })
         })
       })

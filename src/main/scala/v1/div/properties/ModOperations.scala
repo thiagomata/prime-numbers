@@ -98,12 +98,12 @@ object ModOperations {
     require(b != 0)
     require(c >= 0)
     require(mod(a, b) == 0)
+
     modAdd(a, b, c)
     check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     check(mod(a + c, b) == mod(0 + mod(c, b), b))
     check(mod(a + c, b) == mod(mod(c, b), b))
-    check(c >= 0)
-    check(b != 0)
+
     check(ModIdempotence.modIdempotence(c, b))
     check(mod(mod(c, b), b) == mod(c, b))
     check(mod(a + c, b) == mod(c, b))
