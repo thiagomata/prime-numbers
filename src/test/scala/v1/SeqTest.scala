@@ -5,7 +5,7 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
 import v1.seq.Seq
-import v1.utils.createList
+import v1.tests.ArrayUtils.createList
 
 case class SeqTestCase(
                         name: String,

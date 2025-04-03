@@ -1,10 +1,11 @@
 package v1.cycle
 
-import stainless.proof.check
 import stainless.collection.List
 import stainless.lang.decreases
+import stainless.proof.check
 import v1.Calc
-import v1.cycle.Cycle.{appendForAll, appendForNone, appendForSome, checkPositive, checkZeroForAll, checkZeroForNone, checkZeroForSome, countModZero}
+import v1.cycle.Cycle.{appendForAll, appendForNone, appendForSome}
+import v1.list.ListUtils
 
 import scala.annotation.tailrec
 
@@ -46,6 +47,8 @@ case class Cycle private(
   }
 
   def size: BigInt = values.size
+
+  def sum(): BigInt = ListUtils.sum(values)
 
   def checkMod(dividend: BigInt): Cycle = {
     require(dividend > 0)

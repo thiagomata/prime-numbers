@@ -1,10 +1,10 @@
 package v1.seq.properties
 
-import v1.seq.Seq
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
 import v1.cycle.Cycle
-import v1.utils.createList
+import v1.seq.Seq
+import v1.tests.ArrayUtils.createList
 
 class SeqPropertiesTest extends FlatSpec with Matchers {
 

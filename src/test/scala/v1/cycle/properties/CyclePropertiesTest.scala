@@ -3,7 +3,7 @@ package v1.cycle.properties
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
-import v1.utils.createList
+import v1.tests.ArrayUtils.createList
 
 import scala.BigInt
 
