@@ -12,16 +12,13 @@ case class CycleIntegral(
 
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
+    decreases(position)
 
-    @tailrec
-    def loop(accValue: BigInt, currentPos: BigInt): BigInt = {
-      require(currentPos >= 0)
-      decreases(currentPos)
-
-      val currentValue = cycle(currentPos) + accValue
-      if (currentPos == 0) then currentValue else loop(currentValue, currentPos - 1)
+    if (position == 0 ) {
+      cycle(0) + initialValue
+    } else {
+      cycle(position) + apply(position - 1)
     }
-    loop(initialValue, position)
   }
 
   def size: BigInt = cycle.size

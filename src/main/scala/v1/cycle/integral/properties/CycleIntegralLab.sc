@@ -1,5 +1,6 @@
 import v1.cycle.Cycle
 import v1.cycle.integral.CycleIntegral
+import v1.cycle.integral.properties.CycleIntegralProperties
 import v1.cycle.properties.CycleCheckMod
 import v1.list.ListBuilder.createList
 
@@ -16,3 +17,5 @@ cycle(BigInt(4))
 cycle(BigInt(5))
 
 cycle(3) - cycle(0) == cycle.sum()
+
+CycleIntegralProperties.assertFullCycleEqualsSumCycle(cycle)
