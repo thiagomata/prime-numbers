@@ -4,10 +4,13 @@ import stainless.collection.List
 import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
 import stainless.proof.check
+import v1.Calc
 import v1.cycle.properties.CycleProperties
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.equality
+
+import scala.annotation.tailrec
 
 object CycleIntegralProperties {
 
@@ -60,8 +63,8 @@ object CycleIntegralProperties {
   }.holds
 
   /**
-   * For every value from zero until size less one, the cycle integral value is
-   * the sum of the values from zero until that position, plus the initial value
+   * For every position from zero until size less one, the cycle integral value is
+   * the sum of the values from zero until that position, plus the initial cycle value
    *
    * cycleIntegral(position) == ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position))
    *
@@ -118,11 +121,94 @@ object CycleIntegralProperties {
     iCycle(b) - iCycle(a) == iCycle(d) - iCycle(c)
   }.holds
 
+  def assertLastElementBeforeLoop(iCycle: CycleIntegral): Boolean = {
+    assertCycleIntegralEqualsSum(iCycle, iCycle.size - 1)
+    iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
+  }.holds
+
+  def assertNextLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
+    require(position >= 0)
+    decreases(position)
+
+    //    if (position < iCycle.size) {
+    //      assertCycleIntegralEqualsSum(iCycle, iCycle.size - 1)
+    //      iCycle(position) == ListUtils.sum(getFirstValuesAsSlice(iCycle, position))
+    if (position == 0) {
+      check(iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position)))
+      iCycle(position) == iCycle.cycle(0) + iCycle.initialValue
+    } else {
+      // 1000, [1,10,100]
+      // 1001, 1011, 1111,   1112, 1122, 1222, 1223, 1233, 1333, ...
+
+      if (position > iCycle.size ) {
+        assertSameDiffAfterCycle(iCycle, position - iCycle.size)
+        check(iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position) - iCycle(position - 1))
+        check(iCycle(position - 1) + iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position))
+        check(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
+        check(CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
+      }
+      iCycle(position) == iCycle.cycle(position) + iCycle(position - 1)
+      assertNextLoop(iCycle, position - 1)
+    }
+  }.holds
+
+
+  def assertNextMatchSum(iCycle: CycleIntegral, position: BigInt): Boolean = {
+    require(position >= 0)
+    check(assertNextLoop(iCycle, position))
+    val listModValues = getModValuesAsList(iCycle, position)
+    ListUtilsProperties.assertSumIsSum(listModValues)
+//    iCycle(position) == ListUtils.sum(listModValues)
+    true
+  }.holds
+  /*
+  iCycle: CycleIntegral -> CycleIntegral(BigInt("3"), Cycle(Cons[BigInt](BigInt("2437"), Nil[BigInt]()), Nil[BigInt](), Nil[BigInt](), Nil[BigInt]()))
+   */
+
+  def assertDivModCalcForCycleIntegral(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
+    require(position >= 0)
+    require(position < cycleIntegral.size)
+
+    if (position < cycleIntegral.size) {
+      check(Calc.div(position, cycleIntegral.size) == 0)
+      check(Calc.mod(position, cycleIntegral.size) == position)
+      check(assertCycleIntegralEqualsSum(cycleIntegral, position))
+    }
+    // else {... prove for position >
+
+    cycleIntegral(position) ==
+      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
+        ListUtils.sum(
+          getFirstValuesAsSlice(
+            cycleIntegral = cycleIntegral,
+            position = Calc.mod(position, cycleIntegral.size)
+          )
+        )
+  }.holds
+
   def getFirstValuesAsSlice(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
     require(position < cycleIntegral.size)
     ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
     List(cycleIntegral.initialValue) ++
       ListUtils.slice(cycleIntegral.cycle.values, 0, position)
+  }
+
+  def getModValuesAsList(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
+    require(position >= 0)
+
+    if (position == 0 ) {
+      check(ListUtilsProperties.listAddValueTail(List(cycleIntegral.cycle(0)), cycleIntegral.initialValue))
+      List(cycleIntegral.initialValue) ++ List(cycleIntegral.cycle(0))
+    } else {
+      val prev = getModValuesAsList(cycleIntegral, position - 1)
+      check(ListUtilsProperties.listAddValueTail(prev, cycleIntegral.cycle(position)))
+      List(cycleIntegral.cycle(position)) ++ prev
+    }
+
+
+//    ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
+//    List(cycleIntegral.initialValue) ++
+//      ListUtils.slice(cycleIntegral.cycle.values, 0, position)
   }
 }

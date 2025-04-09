@@ -5,7 +5,38 @@ import stainless.lang.*
 import stainless.proof.check
 import v1.list.ListUtils
 
+import scala.annotation.tailrec
+
 object ListUtilsProperties {
+
+  /**
+   * Sum is the continuous acc of all the values of the list until the list is empty
+   *
+   * sum(list) == list(0) + list(1) + ... + list(size - 1)
+   * @param list List[BigInt]
+   * @return true if holds
+   */
+  def assertSumIsSum(list: List[BigInt]): Boolean = {
+    @tailrec
+    def loop(loopList: List[BigInt], acc: BigInt = BigInt(0)): Boolean = {
+      require(ListUtils.sum(loopList) + acc == ListUtils.sum(list))
+      if (loopList.isEmpty) {
+        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
+        ListUtils.sum(list) == acc
+      } else {
+        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
+        check(ListUtilsProperties.listAddValueTail(loopList.tail, loopList.head))
+        check(ListUtils.sum(loopList) == loopList.head + ListUtils.sum(loopList.tail))
+        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
+        check(ListUtils.sum(list) - ( ListUtils.sum(loopList.tail) + loopList.head ) == acc)
+        check(ListUtils.sum(list) - ListUtils.sum(loopList.tail) - loopList.head == acc)
+        check(ListUtils.sum(list) - ListUtils.sum(loopList.tail) == acc + loopList.head)
+        loop(loopList.tail, acc + loopList.head)
+      }
+    }
+    loop(list)
+  }
+
   def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
   }.holds
