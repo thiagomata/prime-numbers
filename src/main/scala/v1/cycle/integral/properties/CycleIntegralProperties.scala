@@ -135,7 +135,8 @@ object CycleIntegralProperties {
     //      iCycle(position) == ListUtils.sum(getFirstValuesAsSlice(iCycle, position))
     if (position == 0) {
       check(iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position)))
-      iCycle(position) == iCycle.cycle(0) + iCycle.initialValue
+      iCycle(position) == iCycle.cycle(0) + iCycle.initialValue &&
+        iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position))
     } else {
       // 1000, [1,10,100]
       // 1001, 1011, 1111,   1112, 1122, 1222, 1223, 1233, 1333, ...
@@ -147,8 +148,11 @@ object CycleIntegralProperties {
         check(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
         check(CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
       }
-      iCycle(position) == iCycle.cycle(position) + iCycle(position - 1)
       assertNextLoop(iCycle, position - 1)
+      check(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
+      check(ListUtilsProperties.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
+      iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
+        iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position))
     }
   }.holds
 
@@ -158,12 +162,8 @@ object CycleIntegralProperties {
     check(assertNextLoop(iCycle, position))
     val listModValues = getModValuesAsList(iCycle, position)
     ListUtilsProperties.assertSumIsSum(listModValues)
-//    iCycle(position) == ListUtils.sum(listModValues)
-    true
+    iCycle(position) == ListUtils.sum(listModValues)
   }.holds
-  /*
-  iCycle: CycleIntegral -> CycleIntegral(BigInt("3"), Cycle(Cons[BigInt](BigInt("2437"), Nil[BigInt]()), Nil[BigInt](), Nil[BigInt](), Nil[BigInt]()))
-   */
 
   def assertDivModCalcForCycleIntegral(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
