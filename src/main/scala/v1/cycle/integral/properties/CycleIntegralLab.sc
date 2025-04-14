@@ -16,6 +16,6 @@ cycle(BigInt(3))
 cycle(BigInt(4))
 cycle(BigInt(5))
 
-cycle(3) - cycle(0) == cycle.sum()
+cycle(3) - cycle(0) == cycle.sum
 
-CycleIntegralProperties.assertFullCycleEqualsSumCycle(cycle)
+CycleIntegralProperties.assertCycleIntegralEqualsSumFirstPosition(cycle)

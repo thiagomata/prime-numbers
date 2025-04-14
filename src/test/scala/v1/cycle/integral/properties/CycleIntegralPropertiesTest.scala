@@ -29,9 +29,9 @@ class CycleIntegralPropertiesTest extends FlatSpec with Matchers {
     val list = createListFromInt(Array(1, 10, 100))
     val cycle = Cycle(list)
     val intCycle = CycleIntegral(1000, cycle)
-    assert(CycleIntegralProperties.assertCycleIntegralEqualsSum(intCycle, 0))
-    assert(CycleIntegralProperties.assertCycleIntegralEqualsSum(intCycle, 1))
-    assert(CycleIntegralProperties.assertCycleIntegralEqualsSum(intCycle, 2))
+    assert(CycleIntegralProperties.assertCycleIntegralEqualsSliceSum(intCycle, 0))
+    assert(CycleIntegralProperties.assertCycleIntegralEqualsSliceSum(intCycle, 1))
+    assert(CycleIntegralProperties.assertCycleIntegralEqualsSliceSum(intCycle, 2))
   }
 
   "assertNextPosition" should "holds for any positions bigger than zero" in {

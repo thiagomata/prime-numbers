@@ -23,5 +23,5 @@ case class CycleIntegral(
 
   def size: BigInt = cycle.size
 
-  def sum(): BigInt = cycle.sum()
+  def sum: BigInt = cycle.sum()
 }

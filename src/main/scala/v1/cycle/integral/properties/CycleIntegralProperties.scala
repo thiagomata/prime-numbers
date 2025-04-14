@@ -10,8 +10,6 @@ import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.equality
 
-import scala.annotation.tailrec
-
 object CycleIntegralProperties {
 
   def assertCycleIntegralEqualsSumFirstPosition(cycleIntegral: CycleIntegral): Boolean = {
@@ -72,7 +70,7 @@ object CycleIntegralProperties {
    * @param position BigInt any position from zero to size less one
    * @return true if holds
    */
-  def assertCycleIntegralEqualsSum(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
+  def assertCycleIntegralEqualsSliceSum(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position < cycleIntegral.size)
     require(position >= 0)
     decreases(position)
@@ -80,7 +78,7 @@ object CycleIntegralProperties {
     if (position == 0 ) {
       check(assertCycleIntegralEqualsSumFirstPosition(cycleIntegral))
     } else {
-      check(assertCycleIntegralEqualsSum(cycleIntegral = cycleIntegral, position = position - 1))
+      check(assertCycleIntegralEqualsSliceSum(cycleIntegral = cycleIntegral, position = position - 1))
       check(assertCycleIntegralEqualsSumSmallPositions(cycleIntegral = cycleIntegral, position = position))
     }
     ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position)) ==
@@ -122,7 +120,7 @@ object CycleIntegralProperties {
   }.holds
 
   def assertLastElementBeforeLoop(iCycle: CycleIntegral): Boolean = {
-    assertCycleIntegralEqualsSum(iCycle, iCycle.size - 1)
+    assertCycleIntegralEqualsSliceSum(iCycle, iCycle.size - 1)
     iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
   }.holds
 
@@ -157,26 +155,6 @@ object CycleIntegralProperties {
     val listModValues = getModValuesAsList(iCycle, position)
     ListUtilsProperties.assertSumIsSum(listModValues)
     iCycle(position) == ListUtils.sum(listModValues)
-  }.holds
-
-  def assertDivModCalcForCycleIntegral(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
-    require(position >= 0)
-    require(position < cycleIntegral.size)
-
-    if (position < cycleIntegral.size) {
-      check(Calc.div(position, cycleIntegral.size) == 0)
-      check(Calc.mod(position, cycleIntegral.size) == position)
-      check(assertCycleIntegralEqualsSum(cycleIntegral, position))
-    }
-
-    cycleIntegral(position) ==
-      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
-        ListUtils.sum(
-          getFirstValuesAsSlice(
-            cycleIntegral = cycleIntegral,
-            position = Calc.mod(position, cycleIntegral.size)
-          )
-        )
   }.holds
 
   def getFirstValuesAsSlice(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
@@ -274,15 +252,56 @@ object CycleIntegralProperties {
     valuesAsList == firstValues
   }.holds
 
-    // since assertDivModCalcForCycleIntegral we can calc iCycle from getModValuesAsList
-    // now we want to detect some properties from this list since many values are always the same
-    // we should finish with something like
-    // iCycle(n) = div(n, size) * sumFirstSlice + cycle.getFirstValuesAsSlice(cycle, mod(n,size))
-    // maybe we should save the incremental version of the values in a new list
-    // iCycle(n) = initialValue + div(n, size) * inc.last + inc(mod(n,size))
+  /**
+   * iCycle(pos) ==
+   *  div(pos,iCycle.size) * sum(iCycle.values)
+   *  + sum(firstValuesAsSlice(iCycle,pos)) ==
+   *  div(pos,iCycle.size) * sum(iCycle.values)
+   *  + sum(getModValuesAsList(iCycle,pos)) ==
+   *  div(pos,iCycle.size) * sum(iCycle.values)
+   *  + iCycle(mod(pos,iCycle.size)) ==
+   *  div(pos,iCycle.size) * iCycle.sum
+   *  + iCycle(mod(pos,iCycle.size))
+   *
+   * @param cycleIntegral CycleIntegral
+   * @param position BigInt Position
+   * @return true if holds
+   */
+  def assertDivModCalcForCycleIntegral(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
+    require(position >= 0)
+    require(position < cycleIntegral.size)
 
-//    ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
-//    List(cycleIntegral.initialValue) ++
-//      ListUtils.slice(cycleIntegral.cycle.values, 0, position)
-//  }
+    if (position < cycleIntegral.size) {
+      check(Calc.div(position, cycleIntegral.size) == 0)
+      check(Calc.mod(position, cycleIntegral.size) == position)
+      check(assertCycleIntegralEqualsSliceSum(cycleIntegral, position))
+      check(assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral, position))
+    } else {
+      // @TODO proof for > size
+    }
+
+
+    equality(
+      cycleIntegral(position),
+      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
+        ListUtils.sum(
+          getFirstValuesAsSlice(
+            cycleIntegral = cycleIntegral,
+            position = Calc.mod(position, cycleIntegral.size)
+          )
+        ),
+      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
+        ListUtils.sum(
+          getModValuesAsList(
+            cycleIntegral = cycleIntegral,
+            position = Calc.mod(position, cycleIntegral.size)
+          )
+        ),
+      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
+        cycleIntegral(Calc.mod(position, cycleIntegral.size)),
+      Calc.div(position, cycleIntegral.size) * cycleIntegral.sum +
+        cycleIntegral(Calc.mod(position, cycleIntegral.size)),
+
+    )
+  }.holds
 }
