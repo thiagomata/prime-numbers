@@ -126,7 +126,7 @@ object CycleIntegralProperties {
     iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
   }.holds
 
-  def assertNextLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertSumModValueAsListEqualsIntegralCycleLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     decreases(position)
 
@@ -142,7 +142,7 @@ object CycleIntegralProperties {
         check(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
         check(CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
       }
-      assertNextLoop(iCycle, position - 1)
+      assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position - 1)
       check(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
       check(ListUtilsProperties.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
       iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
@@ -151,9 +151,9 @@ object CycleIntegralProperties {
   }.holds
 
 
-  def assertNextMatchSum(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertIntegralCycleEqualsSumOfModlValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
-    check(assertNextLoop(iCycle, position))
+    check(assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position))
     val listModValues = getModValuesAsList(iCycle, position)
     ListUtilsProperties.assertSumIsSum(listModValues)
     iCycle(position) == ListUtils.sum(listModValues)
@@ -168,19 +168,6 @@ object CycleIntegralProperties {
       check(Calc.mod(position, cycleIntegral.size) == position)
       check(assertCycleIntegralEqualsSum(cycleIntegral, position))
     }
-
-//    check(
-//      ListUtils.sum(
-//        getModValuesAsList(cycleIntegral, Calc.mod(position, cycleIntegral.size))
-//      )
-//      ==
-//      ListUtils.sum(
-//        getFirstValuesAsSlice(
-//          cycleIntegral = cycleIntegral,
-//          position = Calc.mod(position, cycleIntegral.size)
-//        )
-//      )
-//    )
 
     cycleIntegral(position) ==
       Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
@@ -224,7 +211,8 @@ object CycleIntegralProperties {
   }
 
   /**
-   * We can define a list that the sum of its values match the integral Cycle
+   * We can define a list that the sum of its values match the integral Cycle value.
+   *
    * @param cycleIntegral CycleIntegral
    * @param position BigInt valid position
    * @return List of values of the cycle position after the initial value
@@ -248,6 +236,7 @@ object CycleIntegralProperties {
 
   /**
    * For small positions, valuesAsList is equals to firstValues.
+   * Therefore the sum is also matching.
    *
    * @param cycleIntegral CycleIntegral
    * @param position BigInt zero or positive smaller than size value
@@ -285,7 +274,7 @@ object CycleIntegralProperties {
     valuesAsList == firstValues
   }.holds
 
-    // since assertNextMatchSum we can calc iCycle from getModValuesAsList
+    // since assertDivModCalcForCycleIntegral we can calc iCycle from getModValuesAsList
     // now we want to detect some properties from this list since many values are always the same
     // we should finish with something like
     // iCycle(n) = div(n, size) * sumFirstSlice + cycle.getFirstValuesAsSlice(cycle, mod(n,size))
