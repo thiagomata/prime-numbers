@@ -261,19 +261,25 @@ object CycleIntegralProperties {
     val valuesAsList = getModValuesAsList(cycleIntegral,position)
     val firstValues = getFirstValuesAsSlice(cycleIntegral,position)
     if (position == 0) {
-      check(firstValues == List(cycleIntegral.initialValue, cycleIntegral.cycle(0)))
+
+      check(firstValues  == List(cycleIntegral.initialValue, cycleIntegral.cycle(0)))
       check(valuesAsList == List(cycleIntegral.initialValue, cycleIntegral.cycle(0)))
+
     } else {
       CycleProperties.smallValueInCycle(cycleIntegral.cycle, position)
       check(cycleIntegral.cycle.values(position) == cycleIntegral.cycle(position))
 
       assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral, position - 1)
       ListUtilsProperties.assertAppendToSlice(cycleIntegral.cycle.values, 0, position)
+
       val prevValuesAsList = getModValuesAsList(cycleIntegral,    position - 1)
       val prevFirstValues  = getFirstValuesAsSlice(cycleIntegral, position - 1)
+
       check(firstValues  == prevFirstValues  ++ List(cycleIntegral.cycle(position)))
       check(valuesAsList == prevValuesAsList ++ List(cycleIntegral.cycle.values(position)))
+
       check(ListUtils.sum(prevValuesAsList) == ListUtils.sum(prevFirstValues))
+      check(prevValuesAsList == prevFirstValues)
     }
     ListUtils.sum(valuesAsList) == ListUtils.sum(firstValues) &&
     valuesAsList == firstValues
