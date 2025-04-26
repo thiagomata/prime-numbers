@@ -1,12 +1,5 @@
 package verification
 
-implicit class EqualityChecker[A](val a: A) extends AnyVal {
-  def === (b: A): Boolean = {
-    require(Helper.equals(a, b))
-    Helper.equality(a, b)
-  }
-}
-
 object Helper {
 
 //  def fact(condition: Boolean): Boolean = {
@@ -22,7 +15,7 @@ object Helper {
     require(equals(t1,t2))
     assert(equals(t1,t2))
     equals(t1,t2)
-  }
+  }.ensuring(_ => equals(t1,t2))
 
   def equals[T](t1: T, t2: T, t3: T): Boolean = {
     t1 == t2 && t2 == t3

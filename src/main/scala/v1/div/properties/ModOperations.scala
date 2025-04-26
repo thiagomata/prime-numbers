@@ -1,7 +1,6 @@
 package v1.div.properties
 
 import stainless.lang.*
-//import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
 import v1.Calc.{div, mod}
@@ -140,10 +139,14 @@ object ModOperations {
 
     check(a == b * div(a, b) + mod(a, b))
     check(c == b * div(c, b) + mod(c, b))
-    check(a - c == b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)))
-    check(a - c == b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b))
-    check(a - c == b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b))
-    check(a - c == b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b))
+    check(
+      equality(
+        a - c,                                                        // is equal to
+        b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)),      // is equal to
+        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
+      )
+    )
     check(mod(a - c, b) == mod(b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b), b))
     val m = div(a, b) - div(c, b)
     val others = mod(a, b) - mod(c, b)
@@ -166,21 +169,21 @@ object ModOperations {
     ModIdempotence.modModMinus(a, b, c)
     check(
       mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) ||
-        mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
-        mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b
     )
     check(
       mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + mod(c, b) ||
-        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + b + mod(c, b) ||
-        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) - b + mod(c, b)
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + b + mod(c, b) ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) - b + mod(c, b)
     )
     check(
       mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) ||
-        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) + b ||
-        mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - b
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) + b ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - b
     )
 
     mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
-      div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
   }.holds
 }
