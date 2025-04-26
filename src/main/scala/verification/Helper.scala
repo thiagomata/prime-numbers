@@ -1,6 +1,13 @@
 package verification
 
 object Helper {
+
+  def check(condition: Boolean): Unit = {
+    require(condition)
+    assert(condition)
+    stainless.proof.check(condition)
+  }
+
   def equality[T](t1: T, t2: T): Boolean = {
     t1 == t2
   }

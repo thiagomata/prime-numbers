@@ -3,6 +3,7 @@ package v1.cycle.integral.properties
 import stainless.collection.List
 import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
+//import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
 import v1.cycle.properties.CycleProperties
@@ -153,7 +154,7 @@ object CycleIntegralProperties {
     require(position >= 0)
     check(assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position))
     val listModValues = getModValuesAsList(iCycle, position)
-    ListUtilsProperties.assertSumIsSum(listModValues)
+//    check(ListUtilsProperties.assertSumIsSum(listModValues))
     iCycle(position) == ListUtils.sum(listModValues)
   }.holds
 
@@ -166,7 +167,7 @@ object CycleIntegralProperties {
 
     if (position > 0 ) {
       val list = cycleIntegral.cycle.values
-      ListUtilsProperties.assertAppendToSlice(list, 0, position)
+      check(ListUtilsProperties.assertAppendToSlice(list, 0, position))
 
       check(
         ListUtils.slice(list, 0, position) ==
@@ -237,7 +238,7 @@ object CycleIntegralProperties {
       check(cycleIntegral.cycle.values(position) == cycleIntegral.cycle(position))
 
       assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral, position - 1)
-      ListUtilsProperties.assertAppendToSlice(cycleIntegral.cycle.values, 0, position)
+      check(ListUtilsProperties.assertAppendToSlice(cycleIntegral.cycle.values, 0, position))
 
       val prevValuesAsList = getModValuesAsList(cycleIntegral,    position - 1)
       val prevFirstValues  = getFirstValuesAsSlice(cycleIntegral, position - 1)

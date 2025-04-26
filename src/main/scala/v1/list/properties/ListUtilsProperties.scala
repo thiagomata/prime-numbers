@@ -2,40 +2,11 @@ package v1.list.properties
 
 import stainless.collection.List
 import stainless.lang.*
+//import verification.Helper.check
 import stainless.proof.check
 import v1.list.ListUtils
 
-import scala.annotation.tailrec
-
 object ListUtilsProperties {
-
-  /**
-   * Sum is the continuous acc of all the values of the list until the list is empty
-   *
-   * sum(list) == list(0) + list(1) + ... + list(size - 1)
-   * @param list List[BigInt]
-   * @return true if holds
-   */
-  def assertSumIsSum(list: List[BigInt]): Boolean = {
-    @tailrec
-    def loop(loopList: List[BigInt], acc: BigInt = BigInt(0)): Boolean = {
-      require(ListUtils.sum(loopList) + acc == ListUtils.sum(list))
-      if (loopList.isEmpty) {
-        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
-        ListUtils.sum(list) == acc
-      } else {
-        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
-        check(ListUtilsProperties.listAddValueTail(loopList.tail, loopList.head))
-        check(ListUtils.sum(loopList) == loopList.head + ListUtils.sum(loopList.tail))
-        check(ListUtils.sum(list) - ListUtils.sum(loopList) == acc)
-        check(ListUtils.sum(list) - ( ListUtils.sum(loopList.tail) + loopList.head ) == acc)
-        check(ListUtils.sum(list) - ListUtils.sum(loopList.tail) - loopList.head == acc)
-        check(ListUtils.sum(list) - ListUtils.sum(loopList.tail) == acc + loopList.head)
-        loop(loopList.tail, acc + loopList.head)
-      }
-    }
-    loop(list)
-  }
 
   def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
@@ -86,4 +57,30 @@ object ListUtilsProperties {
       ListUtils.slice(list, from, to - 1) ++ List(list(to))
   }.holds
 
+  /**
+   * For every position in the list different from 0,
+   * the value of the list in that position
+   * is equal to the value of the tail in that position - 1.
+   *
+   * list(position) == list.tail(position - 1)
+   *
+   * @param list List[BigInt] any list of BigInt non empty
+   * @param position BigInt the position of the element to check
+   * @return true if the property holds
+   */
+  def assertTailShiftPosition(list: List[BigInt], position: BigInt): Boolean = {
+    require(list.nonEmpty)
+    require(position >= 0 && position < list.size)
+    decreases(position)
+
+    if (position == 0 ) {
+      list(position) == list.head
+    } else {
+      check( list == List(list.head) ++ list.tail )
+      check( list(position) == list.apply(position) )
+      check(assertTailShiftPosition(list.tail, position - 1))
+      check(list.apply(position) == list.tail.apply(position - 1))
+      list(position) == list.tail(position - 1)
+    }
+  }.holds
 }

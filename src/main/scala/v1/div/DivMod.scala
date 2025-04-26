@@ -1,6 +1,7 @@
 package v1.div
 
 import stainless.lang.*
+//import verification.Helper.check
 import stainless.proof.check
 
 import scala.language.postfixOps
