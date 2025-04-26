@@ -3,8 +3,8 @@ package v1.acc
 import stainless.collection.List
 import stainless.lang.decreases
 import stainless.lang.*
-//import verification.Helper.check
 import stainless.proof.check
+import verification.EqualityChecker
 
 case class Acc(list: List[BigInt], init: BigInt = 0) {
 
@@ -51,20 +51,20 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
   def accDifferenceEqualsTailHead: Boolean = {
     require(list.size > 1)
-    check(tail.head == Acc(list.tail, this.head).head)
-    check(tail.head == list.tail.head + this.head)
+    check(tail.head === Acc(list.tail, this.head).head)
+    check(tail.head === list.tail.head + this.head)
     check(this.tail.head - this.head ==  list.tail.head + this.head - this.head)
     check(acc(1) == this.tail.head)
-    check(apply(1) == this.tail.head)
-    check(acc(0) == this.head)
-    check(apply(1) == this.tail.head)
-    check(list(1) == list.tail.head)
+    check(apply(1) === this.tail.head)
+    check(acc(0) === this.head)
+    check(apply(1) === this.tail.head)
+    check(list(1) === list.tail.head)
 
-    check(apply(0)  == acc(0))
-    check(apply(1)  == acc(1))
+    check(apply(0)  === acc(0))
+    check(apply(1)  === acc(1))
 
-    apply(1) - apply(0) == list(1) &&
-      acc(1) - acc(0)   == list(1)
+    apply(1) - apply(0) === list(1) &&
+      acc(1) - acc(0)   === list(1)
   }.holds
 
   /**
@@ -84,11 +84,11 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
     if (position == 0) {
       // Base case
       check(accDifferenceEqualsTailHead)
-      check(apply(0) == acc(0))
-      check(apply(1) == acc(1))
+      check(apply(0) === acc(0))
+      check(apply(1) === acc(1))
       check(
-        acc(position + 1) - acc(position) == list(position + 1) &&
-        acc(position) == apply(position)
+        acc(position + 1) - acc(position) === list(position + 1) &&
+        acc(position) === apply(position)
       )
     } else {
       check(position > 0 )
@@ -97,20 +97,20 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
       // Inductive step
       val next = Acc(list.tail, this.head)
-      check(next.size == this.size - 1)
-      check(this.tail == next.acc)
+      check(next.size === this.size - 1)
+      check(this.tail === next.acc)
       check(next.accDiffMatchesList(position - 1))
 
       // link this values and next values
-      check(apply(position)     == next.apply(position - 1))
-      check(apply(position + 1) == next.apply(position))
+      check(apply(position)     === next.apply(position - 1))
+      check(apply(position + 1) === next.apply(position))
 
-      check(apply(position) == acc(position))
-      check(apply(position + 1) == acc(position + 1))
+      check(apply(position) === acc(position))
+      check(apply(position + 1) === acc(position + 1))
     }
-    acc(position + 1) - acc(position) == list(position + 1) &&
-      acc(position + 1) == apply(position + 1) &&
-      acc(position) == apply(position)
+    acc(position + 1) - acc(position) === list(position + 1) &&
+      acc(position + 1) === apply(position + 1) &&
+      acc(position) === apply(position)
   }.holds
 
   /**
@@ -129,21 +129,21 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
     if (position == 0) {
       // Base case: directly compare head
-      check(apply(0) == head)
-      check(acc(0) == head)
-//      check(list.size == acc.size)
-      acc(position) == apply(position)
+      check(apply(0) === head)
+      check(acc(0) === head)
+//      check(list.size === acc.size)
+      acc(position) === apply(position)
     } else {
       check(position > 0 )
       check(position < list.size)
       check(position - 1 < list.size - 1)
 
       val next = Acc(list.tail, this.head)
-      check(next.size == this.size - 1)
-      check(this.tail == next.acc)
+      check(next.size === this.size - 1)
+      check(this.tail === next.acc)
 
-      check(apply(position) == next.apply(position - 1))
-        check(acc == List(this.head) ++ next.acc)
+      check(apply(position) === next.apply(position - 1))
+        check(acc === List(this.head) ++ next.acc)
 //      val accList = List(this.head) ++ next.acc
 //      val accTail = accList.tail
 //      check(acc == accList)
