@@ -143,7 +143,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
       check(apply(position) == next.apply(position - 1))
         check(acc == List(this.head) ++ next.acc)
-//      val accList = List(this.head) ++ next.acc
+      val accList = List(this.head) ++ next.acc
 //      val accTail = accList.tail
 //      check(acc == accList)
 //      check(accTail == next.acc)
