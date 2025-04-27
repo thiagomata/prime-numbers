@@ -3,7 +3,6 @@ package v1.cycle.integral.properties
 import stainless.collection.List
 import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
-//import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
 import v1.cycle.properties.CycleProperties

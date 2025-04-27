@@ -2,7 +2,6 @@ package v1.list.properties
 
 import stainless.collection.List
 import stainless.lang.*
-//import verification.Helper.check
 import stainless.proof.check
 import v1.list.ListUtils
 

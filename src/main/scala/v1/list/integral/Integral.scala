@@ -1,13 +1,12 @@
-package v1.acc
+package v1.list.integral
 
 import stainless.collection.List
-import stainless.lang.decreases
 import stainless.lang.*
 import stainless.proof.check
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 
-case class Acc(list: List[BigInt], init: BigInt = 0) {
+case class Integral(list: List[BigInt], init: BigInt = 0) {
 
   def apply(position: BigInt): BigInt = {
     require(list.nonEmpty)
@@ -16,7 +15,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
     if ( position == 0 ) {
       this.head
     } else {
-      Acc(list.tail, this.head).apply(position - 1)
+      Integral(list.tail, this.head).apply(position - 1)
     }
   }
 
@@ -25,7 +24,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
     if (list.isEmpty) {
       list
     } else {
-      List(this.head) ++ Acc(list.tail, this.head).acc
+      List(this.head) ++ Integral(list.tail, this.head).acc
     }
   }
 
@@ -41,7 +40,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
   def tail: List[BigInt] = {
     require(list.nonEmpty)
-    Acc(list.tail, this.head).acc
+    Integral(list.tail, this.head).acc
   }
 
   def isEmpty: Boolean = list.isEmpty
@@ -50,9 +49,18 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
   def size: BigInt = list.size
 
-  def accDifferenceEqualsTailHead: Boolean = {
+  /**
+   * Lemma: The difference between the first two accumulated values in Acc
+   * equals the second element of the original list.
+   *
+   * That is:
+   * acc(1) - acc(0) == list(1)
+   *
+   * Holds for all valid `position` where 0 <= position < list.size - 1.
+   */
+  def assertAccDifferenceEqualsTailHead: Boolean = {
     require(list.size > 1)
-    check(tail.head == Acc(list.tail, this.head).head)
+    check(tail.head == Integral(list.tail, this.head).head)
     check(tail.head == list.tail.head + this.head)
     check(this.tail.head - this.head ==  list.tail.head + this.head - this.head)
     check(acc(1) == this.tail.head)
@@ -77,14 +85,14 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
    *
    * Holds for all valid `position` where 0 <= position < list.size - 1.
    */
-  def accDiffMatchesList(position: BigInt): Boolean = {
+  def assertAccDiffMatchesList(position: BigInt): Boolean = {
     require(list.size > 1)
     require(position >= 0 && position < list.size - 1)
     decreases(position)
 
     if (position == 0) {
       // Base case
-      check(accDifferenceEqualsTailHead)
+      check(assertAccDifferenceEqualsTailHead)
       check(apply(0) == acc(0))
       check(apply(1) == acc(1))
       check(
@@ -97,10 +105,10 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(position - 1 < list.size )
 
       // Inductive step
-      val next = Acc(list.tail, this.head)
+      val next = Integral(list.tail, this.head)
       check(next.size == this.size - 1)
       check(this.tail == next.acc)
-      check(next.accDiffMatchesList(position - 1))
+      check(next.assertAccDiffMatchesList(position - 1))
 
       // link this values and next values
       check(apply(position)     == next.apply(position - 1))
@@ -140,7 +148,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(position < list.size)
       check(position - 1 < list.size - 1)
 
-      val next = Acc(list.tail, this.head)
+      val next = Integral(list.tail, this.head)
       check(this.tail == next.acc)
 
       check(apply(position) == next.apply(position - 1))
@@ -179,16 +187,20 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
    */
   def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
     decreases(list)
-    require(list.nonEmpty)
+//    require(list.nonEmpty)
 
-    val current = Acc(list, init)
+    val current = Integral(list, init)
 
-    if (list.size == 1) {
+    if (list.isEmpty) {
+      check(current.list.size == 0)
+      check(current.acc.size == 0)
+    }
+    else if (list.size == 1) {
       check(current.list.size == 1)
       check(current.acc.size == 1)
       check(current.acc.size == current.list.size)
     } else {
-      val next = Acc(list.tail, current.head)
+      val next = Integral(list.tail, current.head)
 
       assertSizeAccEqualsSizeList(next.list, next.init)
       check(next.acc.size == next.list.size)
@@ -208,7 +220,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
    *
    * @return true if the property holds
    */
-  def lastEqualsSum: Boolean = {
+  def assertLastEqualsSum: Boolean = {
     require(list.nonEmpty)
     decreases(list.size)
 
@@ -216,8 +228,8 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(last == list.head + init)
       check(last == init + ListUtils.sum(list))
     } else {
-      val next = Acc(list.tail, list.head + init)
-      check(next.lastEqualsSum)
+      val next = Integral(list.tail, list.head + init)
+      check(next.assertLastEqualsSum)
       check(this.tail == next.acc)
       check(this.tail.last == next.acc.last)
       check(next.last == next.acc.last)
