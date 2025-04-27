@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.decreases
 import stainless.lang.*
 import stainless.proof.check
+import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 
 case class Acc(list: List[BigInt], init: BigInt = 0) {
@@ -122,12 +123,12 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
    *
    * Holds for all valid `position` in the bounds of the list.
    */
-  def accApplyConsistent(position: BigInt): Boolean = {
+  def assertAccMatchesApply(position: BigInt): Boolean = {
     require(list.nonEmpty)
     require(position >= 0 && position < list.size)
     decreases(position)
 
-    accSizeMatchesList(list, init)
+    assertSizeAccEqualsSizeList(list, init)
     check(list.size == acc.size)
 
     if (position == 0) {
@@ -157,7 +158,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(acc(position) == next.acc(position - 1))
       check(apply(position) == next.apply(position - 1))
 
-      check(next.accApplyConsistent(position - 1))
+      check(next.assertAccMatchesApply(position - 1))
       check(next.acc(position - 1) == next.apply(position - 1))
       check(acc(position) == apply(position))
     }
@@ -165,7 +166,18 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
   }.holds
 
 
-  def accSizeMatchesList(list: List[BigInt], init: BigInt = 0): Boolean = {
+  /**
+   * Lemma: The size of the accumulated list `acc` is equal to the size of the
+   * original list `list`.
+   *
+   * That is:
+   * acc.size == list.size
+   *
+   * @param list List[BigInt] the original list
+   * @param init BigInt the initial value for the accumulation
+   * @return true if the property holds
+   */
+  def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
     decreases(list)
     require(list.nonEmpty)
 
@@ -178,12 +190,38 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
     } else {
       val next = Acc(list.tail, current.head)
 
-      accSizeMatchesList(next.list, next.init)
+      assertSizeAccEqualsSizeList(next.list, next.init)
       check(next.acc.size == next.list.size)
       check(current.acc == List(current.head) ++ next.acc)
       check(current.acc.size == 1 + next.acc.size)
       check(1 + list.tail.size == list.size)
     }
     current.acc.size == current.list.size
+  }.holds
+
+  /**
+   * Lemma: The last element of the accumulated list `acc` is equal to the sum
+   * of all elements in the original list `list`.
+   *
+   * That is:
+   * acc.last == ListUtils.sum(list)
+   *
+   * @return true if the property holds
+   */
+  def lastEqualsSum: Boolean = {
+    require(list.nonEmpty)
+    decreases(list.size)
+
+    if (list.size == 1) {
+      check(last == list.head + init)
+      check(last == ListUtils.sum(list))
+    } else {
+      val next = Acc(list.tail, this.head)
+      check(next.lastEqualsSum)
+      check(next.last == ListUtils.sum(list.tail))
+      check(last == list.head + next.last)
+      check(last == list.head + ListUtils.sum(list.tail))
+    }
+    last == ListUtils.sum(list)
   }.holds
 }
