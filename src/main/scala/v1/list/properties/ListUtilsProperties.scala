@@ -83,4 +83,9 @@ object ListUtilsProperties {
       list(position) == list.tail(position - 1)
     }
   }.holds
+
+  def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
+    require(list.nonEmpty && position >= 0 && position < list.tail.size)
+    list.tail(position) == list(position + 1)
+  }.holds
 }

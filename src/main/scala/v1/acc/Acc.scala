@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.decreases
 import stainless.lang.*
 import stainless.proof.check
+import v1.list.properties.ListUtilsProperties
 
 case class Acc(list: List[BigInt], init: BigInt = 0) {
 
@@ -126,11 +127,12 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
     require(position >= 0 && position < list.size)
     decreases(position)
 
+    accSizeMatchesList(list, init)
+    check(list.size == acc.size)
+
     if (position == 0) {
-      // Base case: directly compare head
       check(apply(0) == head)
       check(acc(0) == head)
-//      check(list.size == acc.size)
       acc(position) == apply(position)
     } else {
       check(position > 0 )
@@ -138,24 +140,50 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(position - 1 < list.size - 1)
 
       val next = Acc(list.tail, this.head)
-      check(next.size == this.size - 1)
       check(this.tail == next.acc)
 
       check(apply(position) == next.apply(position - 1))
-        check(acc == List(this.head) ++ next.acc)
-      val accList = List(this.head) ++ next.acc
-//      val accTail = accList.tail
-//      check(acc == accList)
-//      check(accTail == next.acc)
-//      check(accList(position) == accTail(position - 1))
-//      check(acc(position)   == acc.tail(position - 1))
-//      check(acc(position)   == next.acc(position - 1))
-//      check(next.accApplyConsistent(position - 1))
-//      check(next.acc(position - 1) == next.apply(position - 1))
-//      check(acc(position) == apply(position))
+      check(acc == List(this.head) ++ next.acc)
+      check(acc.tail == next.acc)
+
+      check(acc.nonEmpty)
+      check(list.size == acc.size)
+      check(position < acc.size)
+      check(ListUtilsProperties.assertTailShiftPosition(acc, position))
+      check(acc.tail(position - 1) == acc(position))
+      check(acc(position) == acc.tail(position - 1))
+      check(acc.tail(position - 1) == next.acc(position - 1))
+
+      check(acc(position) == next.acc(position - 1))
+      check(apply(position) == next.apply(position - 1))
+
+      check(next.accApplyConsistent(position - 1))
+      check(next.acc(position - 1) == next.apply(position - 1))
+      check(acc(position) == apply(position))
     }
-    true
-//    acc(position) == apply(position)
+    acc(position) == apply(position)
   }.holds
 
+
+  def accSizeMatchesList(list: List[BigInt], init: BigInt = 0): Boolean = {
+    decreases(list)
+    require(list.nonEmpty)
+
+    val current = Acc(list, init)
+
+    if (list.size == 1) {
+      check(current.list.size == 1)
+      check(current.acc.size == 1)
+      check(current.acc.size == current.list.size)
+    } else {
+      val next = Acc(list.tail, current.head)
+
+      accSizeMatchesList(next.list, next.init)
+      check(next.acc.size == next.list.size)
+      check(current.acc == List(current.head) ++ next.acc)
+      check(current.acc.size == 1 + next.acc.size)
+      check(1 + list.tail.size == list.size)
+    }
+    current.acc.size == current.list.size
+  }.holds
 }
