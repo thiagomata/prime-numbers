@@ -214,14 +214,22 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
 
     if (list.size == 1) {
       check(last == list.head + init)
-      check(last == ListUtils.sum(list))
+      check(last == init + ListUtils.sum(list))
     } else {
-      val next = Acc(list.tail, this.head)
+      val next = Acc(list.tail, this.list.head + init)
       check(next.lastEqualsSum)
-      check(next.last == ListUtils.sum(list.tail))
-      check(last == list.head + next.last)
-      check(last == list.head + ListUtils.sum(list.tail))
+      check(this.tail == next.acc)
+      check(this.tail.last == next.acc.last)
+      check(next.last == next.acc.last)
+      check(next.last == this.last)
+      check(next.last == next.init + ListUtils.sum(next.list))
+      check(next.last == this.init + list.head + ListUtils.sum(next.list))
+      check(this.last == this.init + list.head + ListUtils.sum(next.list))
+      check(ListUtilsProperties.listSumAddValue(next.list,list.head))
+      check(list.head + ListUtils.sum(next.list) == ListUtils.sum(List(list.head) ++ list.tail))
+      check(list.head + ListUtils.sum(next.list) == ListUtils.sum(list))
+      check(this.last == this.init + ListUtils.sum(list))
     }
-    last == ListUtils.sum(list)
+    last == init + ListUtils.sum(list)
   }.holds
 }
