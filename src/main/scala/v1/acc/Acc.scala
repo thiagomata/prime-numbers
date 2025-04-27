@@ -204,7 +204,7 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
    * of all elements in the original list `list`.
    *
    * That is:
-   * acc.last == ListUtils.sum(list)
+   * acc.last == init + ListUtils.sum(list)
    *
    * @return true if the property holds
    */
@@ -216,19 +216,19 @@ case class Acc(list: List[BigInt], init: BigInt = 0) {
       check(last == list.head + init)
       check(last == init + ListUtils.sum(list))
     } else {
-      val next = Acc(list.tail, this.list.head + init)
+      val next = Acc(list.tail, list.head + init)
       check(next.lastEqualsSum)
       check(this.tail == next.acc)
       check(this.tail.last == next.acc.last)
       check(next.last == next.acc.last)
       check(next.last == this.last)
       check(next.last == next.init + ListUtils.sum(next.list))
-      check(next.last == this.init + list.head + ListUtils.sum(next.list))
-      check(this.last == this.init + list.head + ListUtils.sum(next.list))
+      check(next.last == init + list.head + ListUtils.sum(next.list))
+      check(this.last == init + list.head + ListUtils.sum(next.list))
       check(ListUtilsProperties.listSumAddValue(next.list,list.head))
       check(list.head + ListUtils.sum(next.list) == ListUtils.sum(List(list.head) ++ list.tail))
       check(list.head + ListUtils.sum(next.list) == ListUtils.sum(list))
-      check(this.last == this.init + ListUtils.sum(list))
+      check(this.last == init + ListUtils.sum(list))
     }
     last == init + ListUtils.sum(list)
   }.holds
