@@ -44,16 +44,14 @@ object CycleIntegralProperties {
     assert(ListUtilsProperties.listAddValueTail(prev, currentValue))
     assert(ListUtils.sum(prev) + currentValue == ListUtils.sum(currentList))
     assert(assertNextPosition(cycleIntegral = cycleIntegral, position = position))
-    assert(
-      equality(
-        cycleIntegral(position), //                                     is equals to
-        cycleIntegral.cycle(position) + cycleIntegral(position - 1), // is equals to
-        cycleIntegral.cycle(position) + prevSum, //                     is equals to
-        cycleIntegral.cycle.values(position) + prevSum, //              is equals to
-        currentSum, //                                                  is equals to
-        ListUtils.sum(currentList), //                                  is equals to
-        ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position))
-      )
+    equality(
+      cycleIntegral(position), //                                     is equals to
+      cycleIntegral.cycle(position) + cycleIntegral(position - 1), // is equals to
+      cycleIntegral.cycle(position) + prevSum, //                     is equals to
+      cycleIntegral.cycle.values(position) + prevSum, //              is equals to
+      currentSum, //                                                  is equals to
+      ListUtils.sum(currentList), //                                  is equals to
+      ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position))
     )
 
     ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position)) ==
@@ -172,15 +170,13 @@ object CycleIntegralProperties {
           ListUtils.slice(list, 0, position - 1) ++ List(list(position))
       )
 
-      assert(
-        equality(
-          result,
-          List(cycleIntegral.initialValue) ++
-            ListUtils.slice(list, 0, position),
-          List(cycleIntegral.initialValue) ++
-            ListUtils.slice(list, 0, position - 1) ++ List(list(position)),
-          getFirstValuesAsSlice(cycleIntegral, position - 1) ++ List(list(position)),
-        )
+      equality(
+        result,
+        List(cycleIntegral.initialValue) ++
+          ListUtils.slice(list, 0, position),
+        List(cycleIntegral.initialValue) ++
+          ListUtils.slice(list, 0, position - 1) ++ List(list(position)),
+        getFirstValuesAsSlice(cycleIntegral, position - 1) ++ List(list(position)),
       )
     }
 

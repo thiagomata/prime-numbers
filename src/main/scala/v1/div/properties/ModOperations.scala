@@ -79,13 +79,13 @@ object ModOperations {
     assert(modUniqueDiv(w, xy))
     assert(w.solve == xy.solve)
 
-    assert(Helper.equality(
+    equality(
       w.solve.mod,        // is equals to
       xy.solve.mod,       // is equals to
       mod(a + c, b),      // is equals to
       solvedZ.mod,        // is equals to
       mod(mod(a, b) + mod(c, b), b)
-    ))
+    )
 
     assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     assert(div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
@@ -122,30 +122,26 @@ object ModOperations {
     assert(a == b * div(a, b) + mod(a, b))
     assert(c == b * div(c, b) + mod(c, b))
 
-    assert(
-      equality(
-        x,                                                            // is equal to
-        a - c,                                                        // is equal to
-        (a) - (c),                                                    // is equal to
-        (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),    // is equal to
-        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
-        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
-        b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b),          // is equal to
-        b * div(x, b) + mod(x, b),                                    // is equal to
-        b * div(a - c, b) + mod(a - c, b)
-      )
+    equality(
+      x,                                                            // is equal to
+      a - c,                                                        // is equal to
+      (a) - (c),                                                    // is equal to
+      (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),    // is equal to
+      b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+      b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
+      b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b),          // is equal to
+      b * div(x, b) + mod(x, b),                                    // is equal to
+      b * div(a - c, b) + mod(a - c, b)
     )
 
 
     assert(a == b * div(a, b) + mod(a, b))
     assert(c == b * div(c, b) + mod(c, b))
-    assert(
-      equality(
-        a - c,                                                        // is equal to
-        b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)),      // is equal to
-        b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
-        b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
-      )
+    equality(
+      a - c,                                                        // is equal to
+      b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)),      // is equal to
+      b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+      b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
     )
     assert(mod(a - c, b) == mod(b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b), b))
     val m = div(a, b) - div(c, b)

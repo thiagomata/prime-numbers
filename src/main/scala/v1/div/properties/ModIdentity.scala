@@ -19,24 +19,22 @@ object ModIdentity {
     assert(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
 
     if (n > 0) {
-      assert(
-        equality(
-          DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
-          DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
-          DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
-          DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
-          DivMod(a=n, b=n, div=1, mod=0)
-        )
+      equality(
+        DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
+        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
+        DivMod(a=n, b=n, div=1, mod=0)
       )
       // since
       assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     } else {
-      assert(equality(
+      equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
         DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
         DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
         DivMod(a=n, b=n, div=1, mod=0)
-      ))
+      )
       // since
       assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     }

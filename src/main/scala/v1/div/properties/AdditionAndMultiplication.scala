@@ -30,20 +30,16 @@ object AdditionAndMultiplication {
     assert(next.isFinal)
     assert(next.solve == next)
 
-    assert(
-      equality(
-        Calc.mod(a, b), //  is equals to
-        input.solve.mod, // is equals to
-        solved.mod
-      )
+    equality(
+      Calc.mod(a, b), //  is equals to
+      input.solve.mod, // is equals to
+      solved.mod
     )
 
-    assert(
-      equality(
-        Calc.div(a, b), //  is equals to
-        input.solve.div, // is equals to
-        solved.div
-      )
+    equality(
+      Calc.div(a, b), //  is equals to
+      input.solve.div, // is equals to
+      solved.div
     )
 
     val nextZero = DivMod(solved.a + solved.b, solved.b, 0, solved.a + solved.b)
@@ -53,16 +49,14 @@ object AdditionAndMultiplication {
     assert(solved.b == b)
     assert(Calc.mod(a + b, b) == next.mod)
 
-    assert(
-      equality(
-        input.solve.mod, //                      is equals to
-        next.mod, //                             is equals to
-        next.solve.mod, //                       is equals to
-        nextZero.solve.mod, //                   is equals to
-        DivMod(a + b, b, 0, a + b).solve.mod, // is equals to
-        Calc.mod(a + b, b), //                   is equals to
-        Calc.mod(a, b)
-      )
+    equality(
+      input.solve.mod, //                      is equals to
+      next.mod, //                             is equals to
+      next.solve.mod, //                       is equals to
+      nextZero.solve.mod, //                   is equals to
+      DivMod(a + b, b, 0, a + b).solve.mod, // is equals to
+      Calc.mod(a + b, b), //                   is equals to
+      Calc.mod(a, b)
     )
 
     val sameMod = Calc.mod(a, b) == Calc.mod(a + b, b)
@@ -98,33 +92,27 @@ object AdditionAndMultiplication {
     assert(next.isFinal)
     assert(next.solve == next)
 
-    assert(
-      equality(
-        Calc.mod(a, b), //  is equals to
-        input.solve.mod, // is equals to
-        solved.mod
-      )
+    equality(
+      Calc.mod(a, b), //  is equals to
+      input.solve.mod, // is equals to
+      solved.mod
     )
-    assert(
-      equality(
-        Calc.div(a, b), //  is equals to
-        input.solve.div, // is equals to
-        solved.div
-      )
+    equality(
+      Calc.div(a, b), //  is equals to
+      input.solve.div, // is equals to
+      solved.div
     )
 
     val nextZero = DivMod(solved.a - solved.b, solved.b, 0, solved.a - solved.b)
     ModIdempotence.modUniqueDiv(next, nextZero)
 
-    assert(
-      equality(
-        input.solve.mod, //                      is equals to
-        next.solve.mod, //                       is equals to
-        DivMod(a - b, b, 0, a - b).solve.mod, // is equals to
-        nextZero.solve.mod, //                   is equals to
-        Calc.mod(a,b), //                        is equals to
-        Calc.mod(a - b, b)
-      )
+    equality(
+      input.solve.mod, //                      is equals to
+      next.solve.mod, //                       is equals to
+      DivMod(a - b, b, 0, a - b).solve.mod, // is equals to
+      nextZero.solve.mod, //                   is equals to
+      Calc.mod(a,b), //                        is equals to
+      Calc.mod(a - b, b)
     )
 
     assert(Calc.mod(a, b) == Calc.mod(a - b, b))
@@ -197,21 +185,17 @@ object AdditionAndMultiplication {
     if (div1.mod < 0) {
       assert(div1.solve == div1.increaseMod)
       if (b > 0) {
-        assert(
-          equality(
-            div2.solve, //       is equals to
-            div2.increaseMod, // is equals to
-            div1.increaseMod, // is equals to
-            div1.solve
-          )
+        equality(
+          div2.solve, //       is equals to
+          div2.increaseMod, // is equals to
+          div1.increaseMod, // is equals to
+          div1.solve
         )
       } else {
-        assert(
-          equality(
-            div1.increaseMod, // is equals to
-            div2.solve, //       is equals to
-            div1.solve
-          )
+        equality(
+          div1.increaseMod, // is equals to
+          div2.solve, //       is equals to
+          div1.solve
         )
       }
       assert(div1.solve == div2.solve)
@@ -219,21 +203,17 @@ object AdditionAndMultiplication {
     if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
       if (b > 0 ) {
         assert(div2.mod < div1.mod)
-        assert(
-          equality(
-            div1.solve, //       is equals to
-            div1.reduceMod, //   is equals to
-            div2.solve
-          )
+        equality(
+          div1.solve, //       is equals to
+          div1.reduceMod, //   is equals to
+          div2.solve
         )
       } else {
         assert(div2.mod > div1.mod)
-        assert(
-          equality(
-            div2.solve, //     is equals to
-            div2.reduceMod, // is equals to
-            div2.solve
-          )
+        equality(
+          div2.solve, //     is equals to
+          div2.reduceMod, // is equals to
+          div2.solve
         )
       }
     }
@@ -245,12 +225,10 @@ object AdditionAndMultiplication {
     require(b != 0)
     require(div * b + mod == a)
 
-    assert(
-      equality(
-        a,                         // is equals to
-        div * b + mod,             // is equals to
-        (div - 1) * b + (mod + b)
-      )
+    equality(
+      a,                         // is equals to
+      div * b + mod,             // is equals to
+      (div - 1) * b + (mod + b)
     )
     MoreDivLessMod(a, b, div - 1, mod + b)
 

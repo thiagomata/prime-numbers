@@ -76,14 +76,12 @@ object ModSum {
       mod(a,b) == a
     } else {
       ModOperations.modLess(a,b,b)
-      assert(
-        equality(
-          mod(a - b, b),
-          mod(mod(a, b) - mod(b, b), b),
-          mod(mod(a, b) - 0, b),
-          mod(mod(a, b), b),
-          mod(a, b),
-        )
+      equality(
+        mod(a - b, b),
+        mod(mod(a, b) - mod(b, b), b),
+        mod(mod(a, b) - 0, b),
+        mod(mod(a, b), b),
+        mod(a, b),
       )
       assert(mod(a,b) == mod(a - b, b))
       checkValueShift(a - b, b)

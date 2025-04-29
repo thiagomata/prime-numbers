@@ -26,4 +26,12 @@ class ModSumTest extends FlatSpec with Matchers {
       })
     )
   }
+
+  "checkValueShift" should "hold" in {
+    assert(pairs.forall(
+      pair => {
+        ModSum.checkValueShift(pair._1, pair._2)
+      })
+    )
+  }
 }
