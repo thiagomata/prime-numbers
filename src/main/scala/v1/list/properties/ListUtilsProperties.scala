@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.*
 import stainless.proof.check
 import v1.list.ListUtils
+import verification.Helper.assert
 
 object ListUtilsProperties {
 
@@ -15,14 +16,14 @@ object ListUtilsProperties {
     decreases(listA.size)
 
     if (listA.isEmpty) {
-      check(ListUtils.sum(listA) == BigInt(0))
-      check(ListUtils.sum(listB) == BigInt(0) + ListUtils.sum(listB))
-      check(ListUtils.sum(listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
-      check(listA ++ listB == listB)
+      assert(ListUtils.sum(listA) == BigInt(0))
+      assert(ListUtils.sum(listB) == BigInt(0) + ListUtils.sum(listB))
+      assert(ListUtils.sum(listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+      assert(listA ++ listB == listB)
     } else {
       listCombine(listA.tail, listB)
       val bigList = listA ++ listB
-      check(bigList == List(listA.head) ++ listA.tail ++ listB)
+      assert(bigList == List(listA.head) ++ listA.tail ++ listB)
       listSumAddValue(listA.tail ++ listB, listA.head)
     }
     ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB)
@@ -31,16 +32,16 @@ object ListUtilsProperties {
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     listCombine(listA, listB)
     listCombine(listB, listA)
-    check(ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
-    check(ListUtils.sum(listB ++ listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
-    check(ListUtils.sum(listA) + ListUtils.sum(listB) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    assert(ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+    assert(ListUtils.sum(listB ++ listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    assert(ListUtils.sum(listA) + ListUtils.sum(listB) == ListUtils.sum(listB) + ListUtils.sum(listA))
     ListUtils.sum(listA ++ listB) == ListUtils.sum(listB ++ listA)
   }.holds
 
   def listAddValueTail(list: List[BigInt], value: BigInt): Boolean = {
     listSwap(list, List(value))
     listSumAddValue(list, value)
-    check(ListUtils.sum(List(value) ++ list) == ListUtils.sum(list ++ List(value)))
+    assert(ListUtils.sum(List(value) ++ list) == ListUtils.sum(list ++ List(value)))
     ListUtils.sum(list ++ List(value)) == value + ListUtils.sum(list) &&
       ListUtils.sum(List(value) ++ list) ==  ListUtils.sum(list) + value
   }.holds
@@ -75,10 +76,10 @@ object ListUtilsProperties {
     if (position == 0 ) {
       list(position) == list.head
     } else {
-      check( list == List(list.head) ++ list.tail )
-      check( list(position) == list.apply(position) )
-      check(assertTailShiftPosition(list.tail, position - 1))
-      check(list.apply(position) == list.tail.apply(position - 1))
+      assert( list == List(list.head) ++ list.tail )
+      assert( list(position) == list.apply(position) )
+      assert(assertTailShiftPosition(list.tail, position - 1))
+      assert(list.apply(position) == list.tail.apply(position - 1))
       list(position) == list.tail(position - 1)
     }
   }.holds

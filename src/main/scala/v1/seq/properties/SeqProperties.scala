@@ -1,6 +1,7 @@
 package v1.seq.properties
 
 import stainless.lang.{BigInt, *}
+import verification.Helper.assert
 //import verification.Helper.check
 import stainless.proof.check
 import v1.cycle.Cycle
@@ -66,17 +67,17 @@ object SeqProperties {
 
     if (from == to) {
       assert(compareTwoSeqPos(from, to, seq) == compareTwoSeqLoop(from, to, seq))
-      check(compareTwoSeqPos(from,  to, seq) == compareTwoSeqLoop(from, to, seq))
-      check(seq(to) - seq(from) == BigInt(0))
+      assert(compareTwoSeqPos(from,  to, seq) == compareTwoSeqLoop(from, to, seq))
+      assert(seq(to) - seq(from) == BigInt(0))
     } else {
       val loopPosition = to - seq.previous.size
       val diff = seq.loop(loopPosition)
-      check(seqPosMatchSeqLoop(from, to - 1, seq))
-      check(compareTwoSeqPos(from,   to - 1, seq) == compareTwoSeqLoop(from, to - 1, seq))
-      check(compareTwoSeqPos(from,   to, seq) == diff + compareTwoSeqPos(from,  to - 1, seq))
-      check(compareTwoSeqLoop(from,  to, seq) == diff + compareTwoSeqLoop(from, to - 1, seq))
+      assert(seqPosMatchSeqLoop(from, to - 1, seq))
+      assert(compareTwoSeqPos(from,   to - 1, seq) == compareTwoSeqLoop(from, to - 1, seq))
+      assert(compareTwoSeqPos(from,   to, seq) == diff + compareTwoSeqPos(from,  to - 1, seq))
+      assert(compareTwoSeqLoop(from,  to, seq) == diff + compareTwoSeqLoop(from, to - 1, seq))
     }
-    check(compareTwoSeqPos(from, to, seq) == compareTwoSeqLoop(from, to, seq))
+    assert(compareTwoSeqPos(from, to, seq) == compareTwoSeqLoop(from, to, seq))
 
     equality(
       compareTwoSeqPos(from, to, seq),
@@ -94,13 +95,13 @@ object SeqProperties {
     if (from == to) {
       BigInt(0)
     } else {
-      check(prevValuesMatchLoop(seq, to))
+      assert(prevValuesMatchLoop(seq, to))
       val loopPosition = to - seq.previous.size
-      check(seq(to - 1) == seq(to) - seq.loop(loopPosition))
+      assert(seq(to - 1) == seq(to) - seq.loop(loopPosition))
       val diff = seq.loop(loopPosition)
-      check(seq(to - 1) == seq(to) - diff)
-      check(seq(to - 1) + diff == seq(to))
-      check(diff == seq(to) - seq(to - 1))
+      assert(seq(to - 1) == seq(to) - diff)
+      assert(seq(to - 1) + diff == seq(to))
+      assert(diff == seq(to) - seq(to - 1))
       seq(to) - seq(to - 1) + compareTwoSeqPos(from, to - 1, seq)
     }
   }

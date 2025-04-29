@@ -5,6 +5,7 @@ import stainless.lang.*
 import stainless.proof.check
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
+import verification.Helper.assert
 
 case class Integral(list: List[BigInt], init: BigInt = 0) {
 
@@ -60,17 +61,17 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
    */
   def assertAccDifferenceEqualsTailHead: Boolean = {
     require(list.size > 1)
-    check(tail.head == Integral(list.tail, this.head).head)
-    check(tail.head == list.tail.head + this.head)
-    check(this.tail.head - this.head ==  list.tail.head + this.head - this.head)
-    check(acc(1) == this.tail.head)
-    check(apply(1) == this.tail.head)
-    check(acc(0) == this.head)
-    check(apply(1) == this.tail.head)
-    check(list(1) == list.tail.head)
+    assert(tail.head == Integral(list.tail, this.head).head)
+    assert(tail.head == list.tail.head + this.head)
+    assert(this.tail.head - this.head ==  list.tail.head + this.head - this.head)
+    assert(acc(1) == this.tail.head)
+    assert(apply(1) == this.tail.head)
+    assert(acc(0) == this.head)
+    assert(apply(1) == this.tail.head)
+    assert(list(1) == list.tail.head)
 
-    check(apply(0)  == acc(0))
-    check(apply(1)  == acc(1))
+    assert(apply(0)  == acc(0))
+    assert(apply(1)  == acc(1))
 
     apply(1) - apply(0) == list(1) &&
       acc(1) - acc(0)   == list(1)
@@ -92,30 +93,30 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
     if (position == 0) {
       // Base case
-      check(assertAccDifferenceEqualsTailHead)
-      check(apply(0) == acc(0))
-      check(apply(1) == acc(1))
-      check(
+      assert(assertAccDifferenceEqualsTailHead)
+      assert(apply(0) == acc(0))
+      assert(apply(1) == acc(1))
+      assert(
         acc(position + 1) - acc(position) == list(position + 1) &&
         acc(position) == apply(position)
       )
     } else {
-      check(position > 0 )
-      check(position < list.size - 1)
-      check(position - 1 < list.size )
+      assert(position > 0 )
+      assert(position < list.size - 1)
+      assert(position - 1 < list.size )
 
       // Inductive step
       val next = Integral(list.tail, this.head)
-      check(next.size == this.size - 1)
-      check(this.tail == next.acc)
-      check(next.assertAccDiffMatchesList(position - 1))
+      assert(next.size == this.size - 1)
+      assert(this.tail == next.acc)
+      assert(next.assertAccDiffMatchesList(position - 1))
 
       // link this values and next values
-      check(apply(position)     == next.apply(position - 1))
-      check(apply(position + 1) == next.apply(position))
+      assert(apply(position)     == next.apply(position - 1))
+      assert(apply(position + 1) == next.apply(position))
 
-      check(apply(position) == acc(position))
-      check(apply(position + 1) == acc(position + 1))
+      assert(apply(position) == acc(position))
+      assert(apply(position + 1) == acc(position + 1))
     }
     acc(position + 1) - acc(position) == list(position + 1) &&
       acc(position + 1) == apply(position + 1) &&
@@ -137,38 +138,38 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
     decreases(position)
 
     assertSizeAccEqualsSizeList(list, init)
-    check(list.size == acc.size)
+    assert(list.size == acc.size)
 
     if (position == 0) {
-      check(apply(0) == head)
-      check(acc(0) == head)
+      assert(apply(0) == head)
+      assert(acc(0) == head)
       acc(position) == apply(position)
     } else {
-      check(position > 0 )
-      check(position < list.size)
-      check(position - 1 < list.size - 1)
+      assert(position > 0 )
+      assert(position < list.size)
+      assert(position - 1 < list.size - 1)
 
       val next = Integral(list.tail, this.head)
-      check(this.tail == next.acc)
+      assert(this.tail == next.acc)
 
-      check(apply(position) == next.apply(position - 1))
-      check(acc == List(this.head) ++ next.acc)
-      check(acc.tail == next.acc)
+      assert(apply(position) == next.apply(position - 1))
+      assert(acc == List(this.head) ++ next.acc)
+      assert(acc.tail == next.acc)
 
-      check(acc.nonEmpty)
-      check(list.size == acc.size)
-      check(position < acc.size)
-      check(ListUtilsProperties.assertTailShiftPosition(acc, position))
-      check(acc.tail(position - 1) == acc(position))
-      check(acc(position) == acc.tail(position - 1))
-      check(acc.tail(position - 1) == next.acc(position - 1))
+      assert(acc.nonEmpty)
+      assert(list.size == acc.size)
+      assert(position < acc.size)
+      assert(ListUtilsProperties.assertTailShiftPosition(acc, position))
+      assert(acc.tail(position - 1) == acc(position))
+      assert(acc(position) == acc.tail(position - 1))
+      assert(acc.tail(position - 1) == next.acc(position - 1))
 
-      check(acc(position) == next.acc(position - 1))
-      check(apply(position) == next.apply(position - 1))
+      assert(acc(position) == next.acc(position - 1))
+      assert(apply(position) == next.apply(position - 1))
 
-      check(next.assertAccMatchesApply(position - 1))
-      check(next.acc(position - 1) == next.apply(position - 1))
-      check(acc(position) == apply(position))
+      assert(next.assertAccMatchesApply(position - 1))
+      assert(next.acc(position - 1) == next.apply(position - 1))
+      assert(acc(position) == apply(position))
     }
     acc(position) == apply(position)
   }.holds
@@ -192,21 +193,21 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
     val current = Integral(list, init)
 
     if (list.isEmpty) {
-      check(current.list.size == 0)
-      check(current.acc.size == 0)
+      assert(current.list.size == 0)
+      assert(current.acc.size == 0)
     }
     else if (list.size == 1) {
-      check(current.list.size == 1)
-      check(current.acc.size == 1)
-      check(current.acc.size == current.list.size)
+      assert(current.list.size == 1)
+      assert(current.acc.size == 1)
+      assert(current.acc.size == current.list.size)
     } else {
       val next = Integral(list.tail, current.head)
 
       assertSizeAccEqualsSizeList(next.list, next.init)
-      check(next.acc.size == next.list.size)
-      check(current.acc == List(current.head) ++ next.acc)
-      check(current.acc.size == 1 + next.acc.size)
-      check(1 + list.tail.size == list.size)
+      assert(next.acc.size == next.list.size)
+      assert(current.acc == List(current.head) ++ next.acc)
+      assert(current.acc.size == 1 + next.acc.size)
+      assert(1 + list.tail.size == list.size)
     }
     current.acc.size == current.list.size
   }.holds
@@ -225,22 +226,22 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
     decreases(list.size)
 
     if (list.size == 1) {
-      check(last == list.head + init)
-      check(last == init + ListUtils.sum(list))
+      assert(last == list.head + init)
+      assert(last == init + ListUtils.sum(list))
     } else {
       val next = Integral(list.tail, list.head + init)
-      check(next.assertLastEqualsSum)
-      check(this.tail == next.acc)
-      check(this.tail.last == next.acc.last)
-      check(next.last == next.acc.last)
-      check(next.last == this.last)
-      check(next.last == next.init + ListUtils.sum(next.list))
-      check(next.last == init + list.head + ListUtils.sum(next.list))
-      check(this.last == init + list.head + ListUtils.sum(next.list))
-      check(ListUtilsProperties.listSumAddValue(next.list,list.head))
-      check(list.head + ListUtils.sum(next.list) == ListUtils.sum(List(list.head) ++ list.tail))
-      check(list.head + ListUtils.sum(next.list) == ListUtils.sum(list))
-      check(this.last == init + ListUtils.sum(list))
+      assert(next.assertLastEqualsSum)
+      assert(this.tail == next.acc)
+      assert(this.tail.last == next.acc.last)
+      assert(next.last == next.acc.last)
+      assert(next.last == this.last)
+      assert(next.last == next.init + ListUtils.sum(next.list))
+      assert(next.last == init + list.head + ListUtils.sum(next.list))
+      assert(this.last == init + list.head + ListUtils.sum(next.list))
+      assert(ListUtilsProperties.listSumAddValue(next.list,list.head))
+      assert(list.head + ListUtils.sum(next.list) == ListUtils.sum(List(list.head) ++ list.tail))
+      assert(list.head + ListUtils.sum(next.list) == ListUtils.sum(list))
+      assert(this.last == init + ListUtils.sum(list))
     }
     last == init + ListUtils.sum(list)
   }.holds

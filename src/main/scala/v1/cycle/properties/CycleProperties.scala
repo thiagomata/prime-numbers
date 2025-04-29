@@ -1,11 +1,11 @@
 package v1.cycle.properties
 
 import stainless.lang.*
-//import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
 import v1.cycle.Cycle
 import v1.div.properties.AdditionAndMultiplication
+import verification.Helper.assert
 
 object CycleProperties {
 
@@ -79,9 +79,9 @@ object CycleProperties {
     require(m2 >= 0)
     AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m1)
     AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m2)
-    check(cycle(key) == cycle(key + cycle.size * m1))
-    check(cycle(key) == cycle(key + cycle.size * m2))
-    cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2)
+    assert(cycle(key) == cycle(key + cycle.size * m1))
+    assert(cycle(key) == cycle(key + cycle.size * m2))
+    assert(cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2))
   }.holds
 
   /**

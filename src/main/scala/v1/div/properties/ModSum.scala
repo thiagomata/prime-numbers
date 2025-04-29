@@ -1,6 +1,7 @@
   package v1.div.properties
 
 import stainless.lang.*
+import verification.Helper.assert
 //import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
@@ -14,9 +15,9 @@ object ModSum {
     require(b > 0)
     require(step > 0)
     require(step < b)
-    check(Calc.mod(step, b) == step)
-    check(Calc.mod(b - step, b) == b - step)
-    check(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
+    assert(Calc.mod(step, b) == step)
+    assert(Calc.mod(b - step, b) == b - step)
+    assert(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
     Calc.mod(step, b) + Calc.mod(b - step, b) == b
   }.holds
 
@@ -75,7 +76,7 @@ object ModSum {
       mod(a,b) == a
     } else {
       ModOperations.modLess(a,b,b)
-      check(
+      assert(
         equality(
           mod(a - b, b),
           mod(mod(a, b) - mod(b, b), b),
@@ -84,7 +85,7 @@ object ModSum {
           mod(a, b),
         )
       )
-      check(mod(a,b) == mod(a - b, b))
+      assert(mod(a,b) == mod(a - b, b))
       checkValueShift(a - b, b)
     }
   }.holds

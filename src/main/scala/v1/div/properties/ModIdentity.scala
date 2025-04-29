@@ -1,6 +1,7 @@
 package v1.div.properties
 
 import stainless.lang.*
+import verification.Helper.assert
 //import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
@@ -15,10 +16,10 @@ object ModIdentity {
 
   def longProof(n: BigInt): Boolean = {
     require(n != 0)
-    check(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
+    assert(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
 
     if (n > 0) {
-      check(
+      assert(
         equality(
           DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
           DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
@@ -28,16 +29,16 @@ object ModIdentity {
         )
       )
       // since
-      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
+      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     } else {
-      check(equality(
+      assert(equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
         DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
         DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
         DivMod(a=n, b=n, div=1, mod=0)
       ))
       // since
-      check(DivMod(a=n, b=n, div=1, mod=0).isFinal)
+      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     }
     DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
   }.holds

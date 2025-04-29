@@ -1,6 +1,7 @@
 package v1.div.properties
 
 import stainless.lang.*
+import verification.Helper.assert
 //import verification.Helper.check
 import stainless.proof.check
 import v1.Calc
@@ -12,43 +13,43 @@ object Summary {
     require(m >= 0)
 
     if (a >= 0 && b > a) {
-      check(ModSmallDividend.modSmallDividend(a, b))
+      assert(ModSmallDividend.modSmallDividend(a, b))
     }
 
-    check(ModIdempotence.modIdempotence(a, b))
-    check(ModIdentity.modIdentity(b))
-    check(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
-    check(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
-    check(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
+    assert(ModIdempotence.modIdempotence(a, b))
+    assert(ModIdentity.modIdentity(b))
+    assert(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
+    assert(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
+    assert(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
 
-    check(AdditionAndMultiplication.ALessMultipleTimesBSameMod(a, b, m))
-    check(AdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
+    assert(AdditionAndMultiplication.ALessMultipleTimesBSameMod(a, b, m))
+    assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
 
-    check(ModOperations.modAdd(a, b, c))
-    check(ModOperations.modLess(a, b, c))
+    assert(ModOperations.modAdd(a, b, c))
+    assert(ModOperations.modLess(a, b, c))
 
-    check(ModIdempotence.modModPlus(a, b, c))
-    check(ModIdempotence.modModMinus(a, b, c))
+    assert(ModIdempotence.modModPlus(a, b, c))
+    assert(ModIdempotence.modModMinus(a, b, c))
 
-    check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
-    check(if a >= 0 && b > a then div(a,b) == 0 else true)
-    check(if a >= 0 && b > a then mod(a,b) == a else true)
-    check(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
-    check(mod(b, b)         == 0)
-    check(div(b, b)         == 1)
-    check(mod(a + b * m, b) == mod(a, b))
-    check(mod(a - b * m, b) == mod(a, b))
-    check(div(a + b, b)     == div(a, b) + 1)
-    check(div(a - b, b)     == div(a, b) - 1)
-    check(div(a + b * m, b) == div(a, b) + m)
-    check(div(a - b * m, b) == div(a, b) - m)
-    check(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
-    check(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
-    check(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
-    check(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
+    assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+    assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
+    assert(if a >= 0 && b > a then div(a,b) == 0 else true)
+    assert(if a >= 0 && b > a then mod(a,b) == a else true)
+    assert(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
+    assert(mod(b, b)         == 0)
+    assert(div(b, b)         == 1)
+    assert(mod(a + b * m, b) == mod(a, b))
+    assert(mod(a - b * m, b) == mod(a, b))
+    assert(div(a + b, b)     == div(a, b) + 1)
+    assert(div(a - b, b)     == div(a, b) - 1)
+    assert(div(a + b * m, b) == div(a, b) + m)
+    assert(div(a - b * m, b) == div(a, b) - m)
+    assert(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
+    assert(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
+    assert(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
+    assert(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
+    assert(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
+    assert(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
 
     (if a >= 0 && b > a then div(a,b) == 0 else true)  &&
     (if a >= 0 && b > a then mod(a,b) == a else true)  &&

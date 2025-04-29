@@ -3,6 +3,7 @@ package v1.list
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection.List
+import verification.Helper.assert
 //import verification.Helper.check
 import stainless.proof.check
 import v1.list.properties.ListUtilsProperties
@@ -37,7 +38,7 @@ class ListUtilsTest extends FlatSpec with Matchers {
     val received = ListUtils.sum(
       list :+ 100,
     )
-    check(ListUtilsProperties.listSumAddValue(list,BigInt(100)))
+    assert(ListUtilsProperties.listSumAddValue(list,BigInt(100)))
     assert(received == BigInt(106))
   }
 }
