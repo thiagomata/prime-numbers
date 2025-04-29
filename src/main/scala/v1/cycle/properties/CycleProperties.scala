@@ -1,7 +1,6 @@
 package v1.cycle.properties
 
 import stainless.lang.*
-import stainless.proof.check
 import v1.Calc
 import v1.cycle.Cycle
 import v1.div.properties.AdditionAndMultiplication

@@ -2,13 +2,9 @@
 
 import stainless.lang.*
 import verification.Helper.assert
-//import verification.Helper.check
-import stainless.proof.check
 import v1.Calc
 import v1.Calc.mod
 import verification.Helper.equality
-
-import scala.annotation.tailrec
 
 object ModSum {
   def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {

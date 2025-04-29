@@ -2,7 +2,6 @@ package v1.list.integral
 
 import stainless.collection.List
 import stainless.lang.*
-import stainless.proof.check
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.assert

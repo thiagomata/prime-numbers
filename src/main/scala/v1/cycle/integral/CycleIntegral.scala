@@ -3,8 +3,6 @@ package v1.cycle.integral
 import stainless.lang.decreases
 import v1.cycle.Cycle
 
-import scala.annotation.tailrec
-
 case class CycleIntegral(
   initialValue: BigInt,
   cycle: Cycle

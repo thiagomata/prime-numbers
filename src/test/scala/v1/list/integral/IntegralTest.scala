@@ -3,9 +3,9 @@ package v1.list.integral
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection
-import v1.tests.ArrayUtils.{createList, createListFromInt}
 import stainless.collection.List
 import v1.list.integral
+import v1.tests.ArrayUtils.{createList, createListFromInt}
 
 import scala.BigInt
 

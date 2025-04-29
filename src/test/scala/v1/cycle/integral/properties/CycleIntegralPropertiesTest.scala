@@ -6,8 +6,6 @@ import v1.cycle.Cycle
 import v1.cycle.integral.CycleIntegral
 import v1.tests.ArrayUtils.createListFromInt
 
-import scala.BigInt
-
 class CycleIntegralPropertiesTest extends FlatSpec with Matchers {
 
   "assertCycleIntegralEqualsSumFirstPosition" should "holds for any cycle" in {

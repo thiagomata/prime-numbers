@@ -2,8 +2,8 @@ package v1.list.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.list.ListUtils
 import stainless.collection.List
+import v1.list.ListUtils
 
 import scala.BigInt
 

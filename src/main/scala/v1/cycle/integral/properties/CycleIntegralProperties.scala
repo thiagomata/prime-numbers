@@ -1,14 +1,13 @@
 package v1.cycle.integral.properties
 
 import stainless.collection.List
-import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
-import stainless.proof.check
 import v1.Calc
+import v1.cycle.integral.CycleIntegral
 import v1.cycle.properties.CycleProperties
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
-import verification.Helper.{equality, assert}
+import verification.Helper.{assert, equality}
 
 object CycleIntegralProperties {
 

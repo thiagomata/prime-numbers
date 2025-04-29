@@ -1,7 +1,6 @@
 package v1.div.properties
 
 import org.scalatest.flatspec.FlatSpec
-import org.scalatest.funsuite.AnyFunSuiteLike
 import org.scalatest.matchers.should.Matchers
 
 class ModSumTest extends FlatSpec with Matchers {

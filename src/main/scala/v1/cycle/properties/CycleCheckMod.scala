@@ -2,8 +2,6 @@ package v1.cycle.properties
 
 import stainless.lang.*
 import verification.Helper.assert
-//import verification.Helper.check
-import stainless.proof.check
 import v1.cycle.Cycle
 
 object CycleCheckMod {
