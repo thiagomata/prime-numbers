@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class ModOperationsTest extends FlatSpec with Matchers {
 
-  val nonZeroValues: List[BigInt] = List.apply(
+  val nonZeroValues: List[BigInt] = List(
     BigInt(-1),
     BigInt(1),
     BigInt(2),
@@ -47,7 +47,7 @@ class ModOperationsTest extends FlatSpec with Matchers {
       a => { nonZeroValues.forall(
         b => { nonZeroValues.forall(
           c => {
-            ModOperations.modZeroPlusC(a * b,b,c)
+            ModOperations.modZeroPlusC(a * b,b,c.abs)
           })
         })
       })

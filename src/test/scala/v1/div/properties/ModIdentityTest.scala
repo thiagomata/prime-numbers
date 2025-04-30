@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class ModIdentityTest extends FlatSpec with Matchers {
 
-  val nonZeroValues: List[BigInt] = List.apply(
+  val nonZeroValues: List[BigInt] = List(
     BigInt(-1),
     BigInt(1),
     BigInt(2),

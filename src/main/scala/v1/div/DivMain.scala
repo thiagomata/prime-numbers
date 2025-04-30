@@ -1,8 +1,6 @@
 package v1.div
 
 import stainless.annotation.extern
-import stainless.io.StdOut
-import v1.div.DivMod
 
 object DivMain {
 
@@ -14,15 +12,25 @@ object DivMain {
   @extern
   def main(args: Array[String]): Unit = {
     val argLenght = args.length
-    if (argLenght == 2) {
-      with2Args(args)
-      return
+
+    try {
+      if (argLenght == 2) {
+        with2Args(args)
+        return
+      }
+      if (argLenght == 4) {
+        with4Args(args)
+        return
+      }
+      println("Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'")
+    } catch {
+      case e: NumberFormatException => {
+        println("Invalid integer numbers " + args.toList.mkString(", "))
+      }
+      case e: IllegalArgumentException => {
+        println("Invalid div mod numbers " + args.toList.mkString(", "))
+      }
     }
-    if (argLenght == 4) {
-      with4Args(args)
-      return
-    }
-    println("Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'")
   }
 
   @extern

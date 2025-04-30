@@ -4,16 +4,31 @@ import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
-import v1.utils.createList
+import v1.tests.ArrayUtils.createList
 
 case class CycleTestCase(
-                          name: String,
-                          input: Cycle,
-                          key: BigInt,
-                          expected: BigInt
-                        )
+      name: String,
+      input: Cycle,
+      key: BigInt,
+      expected: BigInt
+)
 
 class CycleTest extends FlatSpec with Matchers {
+
+  "Cycle checkMod" should "propagate" in {
+    val list = createList(Array(BigInt(3)))
+    val c: Cycle = Cycle(list)
+    val c2 = c.checkMod(BigInt(4))
+    val c3 = c2.checkMod(BigInt(5))
+    assert(c3.evaluated(4))
+    assert(c3.evaluated(5))
+  }
+
+  "sum" should "sum values" in {
+    val list = createList(Array(BigInt(3),BigInt(4),BigInt(5)))
+    val c: Cycle = Cycle(list)
+    assert(c.sum() == BigInt(12))
+  }
 
   "Cycle" should "return value" in {
     val list = createList(Array(BigInt(0), BigInt(1), BigInt(2)))

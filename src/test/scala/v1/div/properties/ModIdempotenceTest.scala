@@ -6,7 +6,7 @@ import v1.div.DivMod
 
 class ModIdempotenceTest extends FlatSpec with Matchers {
 
-  final var pairs: List[(BigInt, BigInt)] = List.apply(
+  final var pairs: List[(BigInt, BigInt)] = List(
     (BigInt(1),BigInt(2)),
     (BigInt(1),BigInt(-2)),
     (BigInt(-1),BigInt(-2)),
