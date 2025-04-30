@@ -1,7 +1,7 @@
 package v1.div.properties
 
 import stainless.lang.*
-import stainless.proof.check
+import verification.Helper.assert
 import v1.Calc.{div, mod}
 import v1.div.DivMod
 
@@ -10,16 +10,16 @@ object ModIdempotence {
     require(b != 0)
     val div = DivMod(a, b, 0, a)
     if (a >= 0) {
-      check(modIdempotencePositiveA(a, b))
-      check(mod(a, b) == mod(mod(a, b), b))
+      assert(modIdempotencePositiveA(a, b))
+      assert(mod(a, b) == mod(mod(a, b), b))
     } else {
-      check(modIdempotencePositiveA(-a, b))
+      assert(modIdempotencePositiveA(-a, b))
       val divModNegative = DivMod(a, b, 0, a)
       val solvedNegative = divModNegative.solve
-      check(a == solvedNegative.div * b + solvedNegative.mod)
-      check(solvedNegative.mod >= 0)
-      check(solvedNegative.mod <= solvedNegative.absB)
-      check(mod(a, b) == mod(mod(a, b), b))
+      assert(a == solvedNegative.div * b + solvedNegative.mod)
+      assert(solvedNegative.mod >= 0)
+      assert(solvedNegative.mod <= solvedNegative.absB)
+      assert(mod(a, b) == mod(mod(a, b), b))
     }
     mod(a, b) == mod(mod(a, b), b)
   }
@@ -31,20 +31,20 @@ object ModIdempotence {
     val divMod = DivMod(a, b, 0, a)
 
     val solved = divMod.solve
-    check(solved.isFinal)
-    check(solved.b == divMod.b)
-    check(solved.a == divMod.a)
-    check(divMod.absB > 0)
-    check(solved.mod < divMod.absB)
-    check(solved.mod >= 0)
+    assert(solved.isFinal)
+    assert(solved.b == divMod.b)
+    assert(solved.a == divMod.a)
+    assert(divMod.absB > 0)
+    assert(solved.mod < divMod.absB)
+    assert(solved.mod >= 0)
 
     val result = solved.mod
-    check(result <= a)
-    check(result < divMod.absB)
-    check(result == mod(a, b))
+    assert(result <= a)
+    assert(result < divMod.absB)
+    assert(result == mod(a, b))
 
-    check(mod(result, b) == result)
-    check(mod(a, b) == mod(result, b))
+    assert(mod(result, b) == result)
+    assert(mod(a, b) == mod(result, b))
     mod(a, b) == mod(mod(a, b), b)
   }.holds
 
@@ -54,7 +54,7 @@ object ModIdempotence {
     require(x.a == y.a)
     require(x.b == y.b)
     require(x.b != 0)
-    check(modUnique(x.a, x.b, x.div, x.mod, y.div, y.mod))
+    assert(modUnique(x.a, x.b, x.div, x.mod, y.div, y.mod))
     x.solve == y.solve
   }.holds
 
@@ -70,24 +70,24 @@ object ModIdempotence {
     val y = DivMod(a, b, divy, mody)
 
     if (divx == divy) {
-      check(modx == mody)
-      check(x == y)
+      assert(modx == mody)
+      assert(x == y)
     }
     if (divx < divy) {
       AdditionAndMultiplication.MoreDivLessMod(a, b, divx, modx)
       val next =  DivMod(a, b, divx + 1, modx - b)
-      check(x.solve == next.solve)
+      assert(x.solve == next.solve)
       modUnique(a, b, divx + 1, modx - b, divy, mody)
-      check(x.solve == y.solve)
+      assert(x.solve == y.solve)
     }
     if (divx > divy) {
       AdditionAndMultiplication.LessDivMoreMod(a, b, divx, modx)
       val next =  DivMod(a, b, divx - 1, modx + b)
-      check(x.solve == next.solve)
+      assert(x.solve == next.solve)
       modUnique(a, b, divx - 1, modx + b, divy, mody)
-      check(x.solve == y.solve)
+      assert(x.solve == y.solve)
     }
-    check(x.solve == y.solve)
+    assert(x.solve == y.solve)
 
     DivMod(a, b, divx, modx).solve == DivMod(a, b, divy, mody).solve
   }.holds
@@ -104,62 +104,62 @@ object ModIdempotence {
     val solvedAC = divModAC.solve
     val absB = if (b < 0) -b else b
 
-    check(solvedA.isFinal && solvedA.isValid)
-    check(solvedC.isFinal && solvedC.isValid)
-    check(solvedAC.isFinal && solvedAC.isValid)
+    assert(solvedA.isFinal && solvedA.isValid)
+    assert(solvedC.isFinal && solvedC.isValid)
+    assert(solvedAC.isFinal && solvedAC.isValid)
 
-    check(solvedA.mod >= 0)
-    check(solvedC.mod < absB)
+    assert(solvedA.mod >= 0)
+    assert(solvedC.mod < absB)
 
-    check(solvedC.mod >= 0)
-    check(solvedC.mod < absB)
+    assert(solvedC.mod >= 0)
+    assert(solvedC.mod < absB)
 
-    check(addModAC == solvedA.mod + solvedC.mod)
-    check(addModAC < 2 * absB)
-    check(addModAC >= 0)
+    assert(addModAC == solvedA.mod + solvedC.mod)
+    assert(addModAC < 2 * absB)
+    assert(addModAC >= 0)
 
-    check(solvedAC.a == addModAC)
-    check(solvedAC.a >= 0)
-    check(solvedAC.b == b)
+    assert(solvedAC.a == addModAC)
+    assert(solvedAC.a >= 0)
+    assert(solvedAC.b == b)
 
-    check(solvedA.mod < absB)
-    check(solvedC.mod < absB)
-    check(solvedAC.mod < 2 * absB)
+    assert(solvedA.mod < absB)
+    assert(solvedC.mod < absB)
+    assert(solvedAC.mod < 2 * absB)
 
-    check(solvedAC.div < 2)
-    check(solvedAC.div > -2)
-    check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
+    assert(solvedAC.div < 2)
+    assert(solvedAC.div > -2)
+    assert(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
 
     if (solvedAC.div == 0) {
-      check(solvedAC.mod == addModAC)
-      check(solvedAC.mod == solvedA.mod + solvedC.mod)
-      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b))
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(div(mod(a, b) + mod(c, b), b) == 0)
+      assert(solvedAC.mod == addModAC)
+      assert(solvedAC.mod == solvedA.mod + solvedC.mod)
+      assert(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b))
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(div(mod(a, b) + mod(c, b), b) == 0)
     }
 
     if (solvedAC.div == 1) {
-      check(solvedAC.mod == addModAC - b)
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(solvedAC.b > 0)
-      check(addModAC == b + solvedAC.mod)
-      check(solvedA.mod + solvedC.mod == solvedAC.mod + b)
-      check(solvedAC.mod == solvedA.mod + solvedC.mod - b)
-      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b)
-      check(div(mod(a, b) + mod(c, b), b) == 1)
+      assert(solvedAC.mod == addModAC - b)
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(solvedAC.b > 0)
+      assert(addModAC == b + solvedAC.mod)
+      assert(solvedA.mod + solvedC.mod == solvedAC.mod + b)
+      assert(solvedAC.mod == solvedA.mod + solvedC.mod - b)
+      assert(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b)
+      assert(div(mod(a, b) + mod(c, b), b) == 1)
     }
 
     if (solvedAC.div == -1) {
-      check(solvedAC.mod == addModAC + b)
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(solvedAC.b < 0)
-      check(addModAC == b * -1 + solvedAC.mod)
-      check(addModAC == -b + solvedAC.mod)
-      check(addModAC == solvedAC.mod - b)
-      check(solvedA.mod + solvedC.mod == solvedAC.mod - b)
-      check(solvedAC.mod == solvedA.mod + solvedC.mod + b)
-      check(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b)
-      check(div(mod(a, b) + mod(c, b), b) == -1)
+      assert(solvedAC.mod == addModAC + b)
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(solvedAC.b < 0)
+      assert(addModAC == b * -1 + solvedAC.mod)
+      assert(addModAC == -b + solvedAC.mod)
+      assert(addModAC == solvedAC.mod - b)
+      assert(solvedA.mod + solvedC.mod == solvedAC.mod - b)
+      assert(solvedAC.mod == solvedA.mod + solvedC.mod + b)
+      assert(mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) + b)
+      assert(div(mod(a, b) + mod(c, b), b) == -1)
     }
 
     mod(mod(a, b) + mod(c, b), b) == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b)
@@ -177,58 +177,58 @@ object ModIdempotence {
     val solvedAC = divModAC.solve
     val absB = if (b < 0) -b else b
 
-    check(solvedA.isFinal && solvedA.isValid )
-    check(solvedC.isFinal && solvedC.isValid)
-    check(solvedAC.isFinal && solvedAC.isValid)
+    assert(solvedA.isFinal && solvedA.isValid )
+    assert(solvedC.isFinal && solvedC.isValid)
+    assert(solvedAC.isFinal && solvedAC.isValid)
 
-    check(solvedA.mod >= 0)
-    check(solvedA.mod < absB)
+    assert(solvedA.mod >= 0)
+    assert(solvedA.mod < absB)
 
-    check(solvedC.mod >= 0)
-    check(solvedC.mod < absB)
+    assert(solvedC.mod >= 0)
+    assert(solvedC.mod < absB)
 
-    check(subModAC == solvedA.mod - solvedC.mod)
-    check(subModAC <= solvedA.mod)
-    check(subModAC > -absB)
+    assert(subModAC == solvedA.mod - solvedC.mod)
+    assert(subModAC <= solvedA.mod)
+    assert(subModAC > -absB)
 
-    check(solvedAC.a == subModAC)
-    check(solvedAC.a > -absB)
-    check(solvedAC.a <= solvedA.mod)
-    check(solvedAC.b == b)
-    check(solvedAC.mod >= 0)
-    check(solvedAC.mod < absB)
+    assert(solvedAC.a == subModAC)
+    assert(solvedAC.a > -absB)
+    assert(solvedAC.a <= solvedA.mod)
+    assert(solvedAC.b == b)
+    assert(solvedAC.mod >= 0)
+    assert(solvedAC.mod < absB)
 
-    check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-    check(solvedAC.div < 2)
-    check(solvedAC.div > -2)
-    check(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
+    assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+    assert(solvedAC.div < 2)
+    assert(solvedAC.div > -2)
+    assert(solvedAC.div == 0 || solvedAC.div == 1 || solvedAC.div == -1)
     if (solvedAC.div == 0) {
-      check(solvedAC.mod == subModAC)
-      check(solvedAC.mod == solvedA.mod - solvedC.mod)
-      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b))
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(solvedAC.a == solvedAC.mod)
-      check(div(mod(a, b) - mod(c, b), b) == 0)
+      assert(solvedAC.mod == subModAC)
+      assert(solvedAC.mod == solvedA.mod - solvedC.mod)
+      assert(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b))
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(solvedAC.a == solvedAC.mod)
+      assert(div(mod(a, b) - mod(c, b), b) == 0)
     }
     if (solvedAC.div == 1) {
-      check(solvedAC.mod == subModAC - b)
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(subModAC == b + solvedAC.mod)
-      check(solvedA.mod - solvedC.mod == solvedAC.mod + b)
-      check(solvedAC.mod == solvedA.mod - solvedC.mod - b)
-      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b)
-      check(div(mod(a, b) - mod(c, b), b) == 1)
+      assert(solvedAC.mod == subModAC - b)
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(subModAC == b + solvedAC.mod)
+      assert(solvedA.mod - solvedC.mod == solvedAC.mod + b)
+      assert(solvedAC.mod == solvedA.mod - solvedC.mod - b)
+      assert(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b)
+      assert(div(mod(a, b) - mod(c, b), b) == 1)
     }
     if (solvedAC.div == -1) {
-      check(solvedAC.mod == subModAC + b)
-      check(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
-      check(subModAC == b * -1 + solvedAC.mod)
-      check(subModAC == -b + solvedAC.mod)
-      check(subModAC == solvedAC.mod - b)
-      check(solvedA.mod - solvedC.mod == solvedAC.mod - b)
-      check(solvedAC.mod == solvedA.mod - solvedC.mod + b)
-      check(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b)
-      check(div(mod(a, b) - mod(c, b), b) == -1)
+      assert(solvedAC.mod == subModAC + b)
+      assert(solvedAC.a == solvedAC.b * solvedAC.div + solvedAC.mod)
+      assert(subModAC == b * -1 + solvedAC.mod)
+      assert(subModAC == -b + solvedAC.mod)
+      assert(subModAC == solvedAC.mod - b)
+      assert(solvedA.mod - solvedC.mod == solvedAC.mod - b)
+      assert(solvedAC.mod == solvedA.mod - solvedC.mod + b)
+      assert(mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b)
+      assert(div(mod(a, b) - mod(c, b), b) == -1)
     }
 
     mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
