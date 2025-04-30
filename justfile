@@ -9,3 +9,7 @@ verify:
 
 verify-docker:
     docker-compose -f docker-compose.yaml run stainless
+
+build:
+    sbt package
+    scala ./target/scala-3.5.0/prime-numbers-0.0.0.jar 10 3
