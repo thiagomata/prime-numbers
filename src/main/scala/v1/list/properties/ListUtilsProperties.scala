@@ -67,7 +67,7 @@ object ListUtilsProperties {
    * @param position BigInt the position of the element to check
    * @return true if the property holds
    */
-  def assertTailShiftPosition(list: List[BigInt], position: BigInt): Boolean = {
+  def assertTailShiftPosition[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty)
     require(position >= 0 && position < list.size)
     decreases(position)
@@ -86,5 +86,19 @@ object ListUtilsProperties {
   def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty && position >= 0 && position < list.tail.size)
     list.tail(position) == list(position + 1)
+  }.holds
+
+  def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
+    require(list.nonEmpty)
+    decreases(list.size)
+
+    if (list.size == 1) {
+      assert(list.head == list.last)
+    } else {
+      assert(assertLastEqualsLastPosition(list.tail))
+      assertTailShiftPosition(list, list.size - 1)
+      assert(list.last == list(list.size - 1))
+    }
+    list.last == list(list.size - 1)
   }.holds
 }

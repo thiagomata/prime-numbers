@@ -187,7 +187,6 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
    */
   def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
     decreases(list)
-//    require(list.nonEmpty)
 
     val current = Integral(list, init)
 
@@ -243,5 +242,25 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
       assert(this.last == init + ListUtils.sum(list))
     }
     last == init + ListUtils.sum(list)
+  }.holds
+
+  def assertLast: Boolean = {
+    require(list.nonEmpty)
+    assert(
+        this.last ==
+        acc.last
+      )
+    assert(ListUtilsProperties.assertLastEqualsLastPosition(acc))
+    assert(assertSizeAccEqualsSizeList(list, init))
+    assert(
+      acc.last ==
+      acc(acc.size - 1)
+    )
+    this.assertAccMatchesApply(size - 1)
+    assert(
+      acc(size - 1) ==
+      apply(size - 1)
+    )
+    apply(size - 1) == last
   }.holds
 }
