@@ -11,6 +11,7 @@ version := "0.0.0"
 // forcing the jar load as alternative
 //unmanagedJars in Compile += baseDirectory.value / "lib" / "stainless-dotty-plugin-0.9.8.9.jar"
 unmanagedJars in Compile += baseDirectory.value / "project" / "lib" / "sbt-stainless.jar"
+unmanagedJars in Compile += baseDirectory.value / "project" / "lib" / "stainless-library.jar"
 
 lazy val root = (project in file("."))
   .enablePlugins(StainlessPlugin)
