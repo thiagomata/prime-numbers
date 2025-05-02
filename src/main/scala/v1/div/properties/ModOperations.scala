@@ -188,7 +188,7 @@ object ModOperations {
    *
    * if a + 1 < b                        then mod(a + 1, b) == a + 1         and div(a + 1, b) == 0
    * if a + 1 == b                       then mod(a + 1, b) == 0             and div(a + 1, b) == 1
-   * if a + 1 > b and mod(a, b) == 0     then mod(a + 1, b) == 1             and div(a + 1, b) == div(a, b) + 1
+   * if a + 1 > b and mod(a, b) == 0     then mod(a + 1, b) == 1             and div(a + 1, b) == div(a, b)
    * if a + 1 > b and mod(a, b) == b - 1 then mod(a + 1, b) == 0             and div(a + 1, b) == div(a, b) + 1
    * otherwise                           then mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
    *
