@@ -181,4 +181,64 @@ object ModOperations {
     mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
     div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
   }.holds
+
+  /**
+   * Lemma to prove that the addition of one to a number a, with a >= 0 and b > 0 is
+   * correctly calculated by the mod and div functions.
+   *
+   * if a + 1 < b                        then mod(a + 1, b) == a + 1         and div(a + 1, b) == 0
+   * if a + 1 == b                       then mod(a + 1, b) == 0             and div(a + 1, b) == 1
+   * if a + 1 > b and mod(a, b) == 0     then mod(a + 1, b) == 1             and div(a + 1, b) == div(a, b) + 1
+   * if a + 1 > b and mod(a, b) == b - 1 then mod(a + 1, b) == 0             and div(a + 1, b) == div(a, b) + 1
+   * otherwise                           then mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
+   * @param a
+   * @param b
+   * @return
+   */
+  def addOne(a: BigInt, b: BigInt): Boolean = {
+    require(b > 0)
+    require(a >= 0)
+
+    if (a + 1 < b) {
+      assert(mod(a, b) == a)
+      assert(mod(a + 1, b) == a + 1)
+      assert(div(a + 1, b) == 0)
+      assert(div(a, b) == 0)
+      return mod(a + 1, b) == a + 1 && div(a + 1, b) == 0
+    }
+    if (a + 1 == b) {
+      assert(mod(a, b) == a)
+      assert(mod(a + 1, b) == 0)
+      assert(div(a + 1, b) == 1)
+      assert(div(a, b) == 0)
+      return mod(a + 1, b) == 0 && div(a + 1, b) == 1
+    }
+
+    assert(a >= 1)
+
+    if (b == 1) {
+      assert(mod(a, b) == 0)
+      assert(mod(a + 1, b) == 0)
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return mod(a + 1, b) == 0 && div(a + 1, b) == div(a, b) + 1
+    }
+
+    if (mod(a, b) == 0) {
+      assert(mod(a + 1, b) == 1)
+      assert(div(a + 1, b) == div(a, b))
+      return  mod(a + 1, b) == 1 &&
+        div(a + 1, b) == div(a, b)
+    }
+    if (mod(a, b) == b - 1) {
+      assert(mod(a + 1, b) == 0)
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return mod(a + 1, b) == 0 &&
+      div(a + 1, b) == div(a, b) + 1
+    }
+    assert(mod(a + 1, b) == mod(a, b) + 1)
+    assert(div(a + 1, b) == div(a, b))
+    mod(a + 1, b) == mod(a, b) + 1 &&
+    div(a + 1, b) == div(a, b)
+  }.holds
 }

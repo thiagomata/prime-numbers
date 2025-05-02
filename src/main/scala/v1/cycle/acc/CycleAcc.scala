@@ -183,6 +183,9 @@ case class CycleAcc(
         assert(
           Calc.div(position, integralValues.size) == Calc.div(position - 1, integralValues.size) + 1
         )
+        
+        
+        
       } else {
         // mod(pos,size) == mod(pos-1,size) + 1
         // div(pos,size) == div(pos-1,size)

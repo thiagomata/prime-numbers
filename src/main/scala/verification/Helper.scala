@@ -7,6 +7,9 @@ object Helper {
   @library @inline
   def assert(condition: Boolean): Boolean = {
     require(condition)
+    if (!condition) {
+      scala.Predef.assert(condition)
+    }
     scala.Predef.assert(condition)
     condition
   }.ensuring(
