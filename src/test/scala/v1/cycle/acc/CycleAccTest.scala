@@ -32,13 +32,13 @@ class CycleAccTest extends FlatSpec with Matchers {
 
   val allCycles: List[Cycle] = primeCycles ++ oddCycles ++ evenCycles
 
-  "forAnyCheckModValuesRemains" should "hold for any cycle" in {
+  "assertSimplifiedDiffValuesMatchCycle" should "hold for any cycle" in {
 
     assert(allCycles.forall(
       cycle => {
         val cycleAcc = CycleAcc(1000, cycle)
         (BigInt(1) until cycleAcc.cycle.values.size).forall { position =>
-          cycleAcc.assertDiffValuesMatchCycle(position)
+          cycleAcc.assertSimplifiedDiffValuesMatchCycle(position)
         }
       }
     ))
