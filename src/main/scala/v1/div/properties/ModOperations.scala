@@ -215,6 +215,11 @@ object ModOperations {
    * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
    * otherwise             then mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
    *
+   * alternatively
+   *
+   * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
+   * else                       mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
    * @param a BigInt dividend
    * @param b BigInt divisor
    * @return Boolean if the properties hold
@@ -226,6 +231,7 @@ object ModOperations {
     if (b == 1) {
       assert(mod(a, b) == 0)
       assert(mod(a + 1, b) == 0)
+      assert(mod(a + 1, b) == mod(a,b))
       assert(div(a + 1, b) == div(a, b) + 1)
       return
         mod(a + 1, b) == mod(a,b) &&
