@@ -19,6 +19,11 @@ case class CycleAcc(
     list = cycle.values,
   )
 
+  /**
+   * AccCycle(pos) = div(pos, integralValues.size) * integralValues.last + integralValues(mod(pos, integralValues.size)) + initialValue
+   * @param position
+   * @return
+   */
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
     val divMod = DivMod(position, integralValues.size, 0, position).solve
@@ -49,6 +54,10 @@ case class CycleAcc(
    * is equal to the cycle.values at the mod of higher position.
    *
    * apply(position + 1) - apply(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
+   *
+   * in other words
+   *
+   * AccCycle(position + 1) - AccCycle(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
    *
    * @param position BigInt position in the cycle
    * @return Boolean if the properties hold
@@ -248,5 +257,5 @@ case class CycleAcc(
 
     apply(position + 1) - apply(position) ==
       cycle.values(Calc.mod(position + 1, integralValues.size))
-  }
+  }.holds
 }
