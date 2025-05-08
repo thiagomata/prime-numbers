@@ -229,6 +229,8 @@ object CycleIntegralProperties {
   def getFirstValuesAsSlice(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
     require(position < cycleIntegral.size)
+    decreases(position)
+
     ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
     val result = List(cycleIntegral.initialValue) ++
       ListUtils.slice(cycleIntegral.cycle.values, 0, position)
@@ -264,6 +266,7 @@ object CycleIntegralProperties {
    */
   def getModValuesAsList(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
+    decreases(position)
 
     if (position < cycleIntegral.size) {
       CycleProperties.smallValueInCycle(cycle = cycleIntegral.cycle, key = position)

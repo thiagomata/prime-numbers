@@ -53,4 +53,15 @@ class CyclePropertiesTest extends FlatSpec with Matchers {
     assert(CycleProperties.propagateModFromValueToCycle(cycle, 17, 3))
     assert(CycleProperties.propagateModFromValueToCycle(cycle, 17, 300))
   }
+
+  "assertCycleOfPosEqualsCycleOfModPos" should "hold" in {
+    val list = createList(Array(BigInt(3), BigInt(15), BigInt(20)))
+    val cycle = Cycle(list)
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 5))
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 4))
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 400))
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 17))
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 3))
+    assert(CycleProperties.assertCycleOfPosEqualsCycleOfModPos(cycle, 300))
+  }
 }
