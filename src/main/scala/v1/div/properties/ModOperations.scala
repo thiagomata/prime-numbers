@@ -161,7 +161,6 @@ object ModOperations {
       b * div(a - c, b) + mod(a - c, b)
     )
 
-
     assert(a == b * div(a, b) + mod(a, b))
     assert(c == b * div(c, b) + mod(c, b))
     equality(

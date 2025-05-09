@@ -2,12 +2,13 @@ package v1
 
 import v1.div.DivMod
 
-//import stainless.lang.BooleanDecorations
+import verification.Helper.assert
 
 object Calc {
 
   def div(a: BigInt, b: BigInt): BigInt = {
     require(b != 0)
+    assert(a == 0 * b + a)
     val result = DivMod(a, b, 0, a)
     val solved = result.solve
     solved.div
@@ -15,6 +16,7 @@ object Calc {
 
   def mod(a: BigInt, b: BigInt): BigInt = {
     require(b != 0)
+    assert(a == 0 * b + a)
     val result = DivMod(a, b, 0, a)
     val solved = result.solve
     solved.mod
