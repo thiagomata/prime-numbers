@@ -614,21 +614,24 @@ The proof of the modulo idempotence property is available in the [ModIdempotence
 
 ### Distributivity over Addition and Subtraction
 
+
+The distributive properties are proved in the [ModOperations](
+./src/main//scala/v1/div/properties/ModOperations.scala
+), as shown as follows:
+
+#### Modulo Rule for Addition
+
 ```math
 \begin{aligned}
 \forall \text{ } a,b,c & \in \mathbb{Z} : b \neq 0 \\
 ( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
-( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
 ( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
-( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
 \end{aligned}
 ```
 
-These properties are proved in the [ModOperations](
-./src/main//scala/v1/div/properties/ModOperations.scala
-), as shown as follows:
-
-#### ModOperations - Mod Add
+Proved at [ModOperations#modAdd](
+./src/main//scala/v1/div/properties/ModOperations.scala#modAdd
+) as follows:
 
 <details>
 <summary>
@@ -732,7 +735,19 @@ These properties are proved in the [ModOperations](
 
 </details>
 
-#### ModOperations - Mod Less
+#### Modulo Rule for Subtraction
+
+```math
+\begin{aligned}
+\forall \text{ } a,b,c & \in \mathbb{Z} : b \neq 0 \\
+( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+\end{aligned}
+```
+
+Proved at [ModOperations#modAdd](
+./src/main//scala/v1/div/properties/ModOperations.scala#modLess
+) as follows:
 
 <details>
 <summary>
@@ -823,7 +838,20 @@ These properties are proved in the [ModOperations](
 </details>
 
 
-#### Mod Zero Plus C
+#### Modular Shift Invariance under Divisible Base
+
+
+```math
+\begin{aligned}
+\forall \text{ } a,b,c & \in \mathbb{Z} : b \neq 0 \\
+a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
+a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = c \text{ mod } b \\
+\end{aligned}
+```
+
+Proved at [ModOperations#modAdd](
+./src/main//scala/v1/div/properties/ModOperations.scala#modZeroPlusC
+) as follows:
 
 <details>
 <summary>
@@ -862,6 +890,72 @@ These properties are proved in the [ModOperations](
 
 </details>
 
+### Unit-Step Modulo-Division Increment Law
+
+```math
+\begin{aligned}
+\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+```
+
+Proved at [ModOperations#modAdd](
+./src/main//scala/v1/div/properties/ModOperations.scala#addOne
+) as follows:
+
+<details>
+<summary>
+./src/main/scala/v1/div/properties/ModOperations.scala#addOne
+ </summary>
+
+```scala
+  /**
+   * if b == 1             then mod(a + 1, b) == mod(a,b) and div(a + 1, b) == div(a, b) + 1
+   * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
+   * otherwise             then mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
+   * alternatively
+   *
+   * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
+   * else                       mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
+   * @param a BigInt dividend
+   * @param b BigInt divisor
+   * @return Boolean if the properties hold
+   */
+  def addOne(a: BigInt, b: BigInt): Boolean = {
+    require(b > 0)
+    require(a >= 0)
+
+    if (b == 1) {
+      assert(mod(a, b) == 0)
+      assert(mod(a + 1, b) == 0)
+      assert(mod(a + 1, b) == mod(a,b))
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return
+        mod(a + 1, b) == mod(a,b) &&
+        div(a + 1, b) == div(a, b) + 1
+    }
+
+    if (mod(a, b) == b - 1) {
+      assert(mod(a + 1, b) == 0)
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return
+        mod(a + 1, b) == 0 &&
+        div(a + 1, b) == div(a, b) + 1
+    }
+
+    assert(mod(a + 1, b) == mod(a, b) + 1)
+    assert(div(a + 1, b) == div(a, b))
+    mod(a + 1, b) == mod(a, b) + 1 &&
+    div(a + 1, b) == div(a, b)
+  }.holds
+ ````
+</details>
+
 ## Conclusion
 
 The division and module operations are fundamental in computer science and mathematics.
@@ -892,75 +986,108 @@ b \text{ div } b                   & = 1 \\
 (a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
 (a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
 \end{aligned}
-```
-
+\begin{aligned}
+\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+````
 Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](
  ./src/main/scala/v1/div/properties/Summary.scala
 ) file.   
 
+#### Summary
+
+<details>
+<summary>
+./src/main/scala/v1/div/properties/Summary.scala
+</summary>
+
 ```scala
-  def PropertySummary(a: BigInt, b: BigInt, c: BigInt, m: BigInt): Boolean = {
-    require(b != 0)
-    require(m >= 0)
+package v1.div.properties
 
-    if (a >= 0 && b > a) {
-      check(ModSmallDividend.modSmallDividend(a, b))
-    }
+import stainless.lang.*
+import verification.Helper.assert
+import v1.Calc
+import v1.Calc.{div, mod}
 
-    check(ModIdempotence.modIdempotence(a, b))
-    check(ModIdentity.modIdentity(b))
-    check(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
-    check(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
-    check(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
+object Summary {
+ def PropertySummary(a: BigInt, b: BigInt, c: BigInt, m: BigInt): Boolean = {
+  require(b != 0)
+  require(m >= 0)
 
-    check(AdditionAndMultiplication.ALessMultipleTimesBSameMod(a, b, m))
-    check(AdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
+  if (a >= 0 && b > a) {
+   assert(ModSmallDividend.modSmallDividend(a, b))
+  }
 
-    check(ModOperations.modAdd(a, b, c))
-    check(ModOperations.modLess(a, b, c))
+  assert(ModIdempotence.modIdempotence(a, b))
+  assert(ModIdentity.modIdentity(b))
+  assert(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
+  assert(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
+  assert(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
 
-    check(ModIdempotence.modModPlus(a, b, c))
-    check(ModIdempotence.modModMinus(a, b, c))
+  assert(AdditionAndMultiplication.ALessMultipleTimesBSameMod(a, b, m))
+  assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
 
-    check(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
-    check(if a >= 0 && b > a then div(a,b) == 0 else true)
-    check(if a >= 0 && b > a then mod(a,b) == a else true)
-    check(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
-    check(mod(b, b)         == 0)
-    check(div(b, b)         == 1)
-    check(mod(a + b * m, b) == mod(a, b))
-    check(mod(a - b * m, b) == mod(a, b))
-    check(div(a + b, b)     == div(a, b) + 1)
-    check(div(a - b, b)     == div(a, b) - 1)
-    check(div(a + b * m, b) == div(a, b) + m)
-    check(div(a - b * m, b) == div(a, b) - m)
-    check(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
-    check(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
-    check(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
-    check(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
-    check(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
+  assert(ModOperations.modAdd(a, b, c))
+  assert(ModOperations.modLess(a, b, c))
 
-    (if a >= 0 && b > a then div(a,b) == 0 else true)  &&
-    (if a >= 0 && b > a then mod(a,b) == a else true)  &&
-    mod(b, b)         == 0                             &&
-    div(b, b)         == 1                             &&
-    mod(a + b * m, b) == mod(a, b)                     &&
-    mod(a - b * m, b) == mod(a, b)                     &&
-    mod(mod(a, b), b) == mod(a, b)                     &&
-    div(a + b, b)     == div(a, b) + 1                 &&
-    div(a - b, b)     == div(a, b) - 1                 &&
-    div(a + b * m, b) == div(a, b) + m                 &&
-    div(a - b * m, b) == div(a, b) - m                 &&
-    div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)     &&
-    div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)     &&
-    mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b)                             &&
-    mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b)                             &&
-    mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b) &&
-    mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
-  }.holds
+  assert(ModIdempotence.modModPlus(a, b, c))
+  assert(ModIdempotence.modModMinus(a, b, c))
+
+  assert(if  a >= 0 && b > 0 then ModOperations.addOne(a, b) else true)
+
+  assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+  assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
+  assert(if a >= 0 && b > a then div(a,b) == 0 else true)
+  assert(if a >= 0 && b > a then mod(a,b) == a else true)
+  assert(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
+  assert(mod(b, b)         == 0)
+  assert(div(b, b)         == 1)
+  assert(mod(a + b * m, b) == mod(a, b))
+  assert(mod(a - b * m, b) == mod(a, b))
+  assert(div(a + b, b)     == div(a, b) + 1)
+  assert(div(a - b, b)     == div(a, b) - 1)
+  assert(div(a + b * m, b) == div(a, b) + m)
+  assert(div(a - b * m, b) == div(a, b) - m)
+  assert(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
+  assert(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
+  assert(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
+  assert(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
+  assert(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
+  assert(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
+  assert(if a >= 0 && b > 0 && mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true)
+  assert(if a >= 0 && b > 0 && mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true)
+  assert(if a >= 0 && b > 0 && mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true)
+  assert(if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
+
+  (if a >= 0 && b > a then div(a,b) == 0 else true)  &&
+          (if a >= 0 && b > a then mod(a,b) == a else true)  &&
+          mod(b, b)         == 0                             &&
+          div(b, b)         == 1                             &&
+          mod(a + b * m, b) == mod(a, b)                     &&
+          mod(a - b * m, b) == mod(a, b)                     &&
+          mod(mod(a, b), b) == mod(a, b)                     &&
+          div(a + b, b)     == div(a, b) + 1                 &&
+          div(a - b, b)     == div(a, b) - 1                 &&
+          div(a + b * m, b) == div(a, b) + m                 &&
+          div(a - b * m, b) == div(a, b) - m                 &&
+          div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)     &&
+          div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)     &&
+          mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b)                             &&
+          mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b)                             &&
+          mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b) &&
+          mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b) &&
+          (if a >= 0 && b > 0 && mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true) &&
+          (if a >= 0 && b > 0 && mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true) &&
+          (if a >= 0 && b > 0 && mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true) &&
+          (if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
+ }.holds
+}
 ```
+</details>
 
 ## References
 
