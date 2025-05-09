@@ -745,7 +745,7 @@ Proved at [ModOperations#modAdd](
 \end{aligned}
 ```
 
-Proved at [ModOperations#modAdd](
+Proved at [ModOperations#modLess](
 ./src/main//scala/v1/div/properties/ModOperations.scala#modLess
 ) as follows:
 
@@ -849,7 +849,7 @@ a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = c \text{ mod } b \\
 \end{aligned}
 ```
 
-Proved at [ModOperations#modAdd](
+Proved at [ModOperations#modZeroPlusC](
 ./src/main//scala/v1/div/properties/ModOperations.scala#modZeroPlusC
 ) as follows:
 
@@ -902,7 +902,7 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
-Proved at [ModOperations#modAdd](
+Proved at [ModOperations#addOne](
 ./src/main//scala/v1/div/properties/ModOperations.scala#addOne
 ) as follows:
 
