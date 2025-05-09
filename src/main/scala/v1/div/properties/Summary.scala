@@ -29,6 +29,8 @@ object Summary {
     assert(ModIdempotence.modModPlus(a, b, c))
     assert(ModIdempotence.modModMinus(a, b, c))
 
+    assert(ModOperations.addOne(a, b))
+
     assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
     assert(if a >= 0 && b > a then div(a,b) == 0 else true)
@@ -48,6 +50,10 @@ object Summary {
     assert(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
     assert(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
     assert(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
+    assert(if mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true)
+    assert(if mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true)
+    assert(if mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true)
+    assert(if mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
 
     (if a >= 0 && b > a then div(a,b) == 0 else true)  &&
     (if a >= 0 && b > a then mod(a,b) == a else true)  &&
@@ -65,6 +71,10 @@ object Summary {
     mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b)                             &&
     mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b)                             &&
     mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b) &&
-    mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
+    mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b) &&
+    (if mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true) &&
+    (if mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true) &&
+    (if mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true) &&
+    (if mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
   }.holds
 }

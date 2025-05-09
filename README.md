@@ -8,7 +8,7 @@ The project is written in Scala and uses the Stainless library to prove theorems
 This project was initially created using Dafny,
 but we decided to switch to Stainless because of the better support for Scala.
 
-This rewriting process is still ongoing, 
+This rewriting process is still ongoing.
 
 ## Proved Properties
 

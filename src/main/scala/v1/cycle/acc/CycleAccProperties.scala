@@ -89,4 +89,34 @@ object CycleAccProperties {
     cycleAcc(position) == cycleIntegral(position)
   }.holds
 
+  def assertCycleIntegralMatchCycleAccDef(
+    cycleAcc: CycleAcc,
+    cycleIntegral: CycleIntegral,
+    position: BigInt,
+  ): Boolean = {
+    require(position >= 0)
+    require(cycleAcc.cycle.values.nonEmpty)
+    require(cycleIntegral.cycle.values.nonEmpty)
+    require(cycleAcc.cycle.values == cycleIntegral.cycle.values)
+    require(cycleAcc.cycle.size   == cycleIntegral.cycle.size)
+    require(cycleAcc.initialValue == cycleIntegral.initialValue)
+    decreases(position)
+
+    assertCycleAccEqualsCycleIntegral(
+      cycleAcc,
+      cycleIntegral,
+      position
+    )
+    val size = cycleAcc.cycle.size
+    
+    assert(cycleAcc(position) == cycleIntegral(position))
+    assert(
+      cycleAcc(position) == div(position, size) * cycleAcc.integralValues.last + 
+      cycleAcc.integralValues(mod(position, size)) + cycleAcc.initialValue
+    )
+    
+    cycleIntegral(position) == 
+      div(position, size) * cycleAcc.integralValues.last +
+        cycleAcc.integralValues(mod(position, size)) + cycleIntegral.initialValue
+  }.holds
 }
