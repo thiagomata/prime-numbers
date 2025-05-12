@@ -14,6 +14,15 @@ class ModOperationsTest extends FlatSpec with Matchers {
     BigInt(-10),
   )
 
+  val positiveValues: List[BigInt] = List(
+    BigInt(1),
+    BigInt(2),
+    BigInt(10),
+    BigInt(17),
+    BigInt(20),
+    BigInt(21),
+  )
+
   "modAdd" should "hold for any non b zero pair" in {
     assert( nonZeroValues.forall(
       a => { nonZeroValues.forall(
@@ -51,6 +60,21 @@ class ModOperationsTest extends FlatSpec with Matchers {
           })
         })
       })
+    )
+  }
+
+  "addOne" should "hold for any non b zero pair" in {
+    assert(
+      positiveValues.forall(
+        a => {
+          positiveValues.forall(
+            b => {
+              assert(ModOperations.addOne(a, b))
+              ModOperations.addOne(a, b)
+            }
+          )
+        }
+      )
     )
   }
 }

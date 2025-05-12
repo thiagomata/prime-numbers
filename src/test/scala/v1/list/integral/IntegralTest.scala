@@ -118,4 +118,15 @@ class IntegralTest extends FlatSpec with Matchers {
       )
     )
   }
+
+  "assertLast" should "hold for all lists" in {
+    assert(
+      manyLists.forall(
+        list => {
+          val acc = integral.Integral(list)
+          if (list.isEmpty) true else acc.assertLast
+        }
+      )
+    )
+  }
 }

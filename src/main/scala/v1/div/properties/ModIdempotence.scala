@@ -74,14 +74,14 @@ object ModIdempotence {
       assert(x == y)
     }
     if (divx < divy) {
-      AdditionAndMultiplication.MoreDivLessMod(a, b, divx, modx)
+      AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(a, b, divx, modx)
       val next =  DivMod(a, b, divx + 1, modx - b)
       assert(x.solve == next.solve)
       modUnique(a, b, divx + 1, modx - b, divy, mody)
       assert(x.solve == y.solve)
     }
     if (divx > divy) {
-      AdditionAndMultiplication.LessDivMoreMod(a, b, divx, modx)
+      AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(a, b, divx, modx)
       val next =  DivMod(a, b, divx - 1, modx + b)
       assert(x.solve == next.solve)
       modUnique(a, b, divx - 1, modx + b, divy, mody)

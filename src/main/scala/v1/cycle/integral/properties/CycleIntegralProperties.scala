@@ -11,6 +11,16 @@ import verification.Helper.{assert, equality}
 
 object CycleIntegralProperties {
 
+  /**
+   * The sum of the values of the cycle integral until that position is equal to
+   * the current value of the cycle integral.
+   *
+   * In other words:
+   * IntegralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   *
+   * @param cycleIntegral CycleIntegral any cycle integral
+   * @return Boolean true if the property holds
+   */
   def assertCycleIntegralEqualsSumFirstPosition(cycleIntegral: CycleIntegral): Boolean = {
     val smallList = List(cycleIntegral.initialValue) ++ List(cycleIntegral.cycle(0))
     assert(ListUtils.sum(List()) == BigInt(0))
@@ -22,6 +32,16 @@ object CycleIntegralProperties {
     ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, 0)) == cycleIntegral(0)
   }.holds
 
+  /**
+   * For every position from one until size less one, the cycle integral value is
+   * the sum of the values from zero until that position, plus the initial cycle value
+   *
+   * cycleIntegral(position) == ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position))
+   *
+   * @param cycleIntegral CycleIntegral any cycle integral
+   * @param position BigInt any position from zero to size less one
+   * @return true if holds
+   */
   def assertCycleIntegralEqualsSumSmallPositions(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position < cycleIntegral.size)
     require(position > 0)
@@ -87,12 +107,36 @@ object CycleIntegralProperties {
     cycleIntegral(position) == cycleIntegral(position - 1) + cycleIntegral.cycle(position)
   }.holds
 
+  /**
+   * Lemmas: The difference between two consecutive values in the cycle
+   * pos and pos + 1 is equal to cycle.values at pos + 1.
+   *
+   * in other words
+   * cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral.cycle(pos + 1)
+   *
+   * @param cycleIntegral CycleIntegral any cycle integral
+   * @param position BigInt any position bigger than or equals to zero
+   * @return true if the property holds
+   */
   def assertDiffEqualsCycleValue(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     assert(cycleIntegral(position + 1) == cycleIntegral(position) + cycleIntegral.cycle(position + 1))
     cycleIntegral(position + 1) - cycleIntegral(position) == cycleIntegral.cycle(position + 1)
   }.holds
 
+  /**
+   * Lemmas: The difference between two consecutive values in the cycle
+   * pos and pos + 1 is equal to the difference of the cycle values at the
+   * pos + size and pos + size + 1.
+   *
+   * in other words
+   * size == cycleIntegral.size
+   * integralCycle(pos + 1) - integralCycle(pos) == integralCycle(pos + size + 1) - integralCycle(pos + size)
+   *
+   * @param iCycle CycleIntegral any cycle integral
+   * @param position BigInt any position bigger than or equals to zero
+   * @return Boolean true if the property holds
+   */
   def assertSameDiffAfterCycle(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
 
@@ -121,6 +165,22 @@ object CycleIntegralProperties {
     iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
   }.holds
 
+  /**
+   * Lemma: the current value of the cycle integral is equal to the sum of the
+   * values of the cycle integral until that position. The current value of the
+   * cycle integral is also equal to the previous value of the cycle integral
+   * plus the value of the cycle at that position.
+   *
+   * In other words
+   *
+   * for any cycle integral, if cycle = cycleIntegral.cycle and position >= 0,
+   * cycleIntegral(position) == cycleIntegral(position - 1) + Cycle(position) and
+   * cycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   *
+   * @param iCycle CycleIntegral
+   * @param position BigInt position
+   * @return true if the property holds
+   */
   def assertSumModValueAsListEqualsIntegralCycleLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     decreases(position)
@@ -146,6 +206,19 @@ object CycleIntegralProperties {
   }.holds
 
 
+  /**
+   * The sum of the values of the cycle integral until that position is equal to
+   * the current value of the cycle integral.
+   *
+   * In other words
+   *
+   * for any cycle integral, if cycle = cycleIntegral.cycle and position >= 0,
+   * integralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   *
+   * @param iCycle CycleIntegral
+   * @param position BigInt position
+   * @return true if the property holds
+   */
   def assertIntegralCycleEqualsSumOfModlValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     assert(assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position))
@@ -156,6 +229,8 @@ object CycleIntegralProperties {
   def getFirstValuesAsSlice(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
     require(position < cycleIntegral.size)
+    decreases(position)
+
     ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
     val result = List(cycleIntegral.initialValue) ++
       ListUtils.slice(cycleIntegral.cycle.values, 0, position)
@@ -191,6 +266,7 @@ object CycleIntegralProperties {
    */
   def getModValuesAsList(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
+    decreases(position)
 
     if (position < cycleIntegral.size) {
       CycleProperties.smallValueInCycle(cycle = cycleIntegral.cycle, key = position)
@@ -244,58 +320,5 @@ object CycleIntegralProperties {
     }
     ListUtils.sum(valuesAsList) == ListUtils.sum(firstValues) &&
     valuesAsList == firstValues
-  }.holds
-
-  /**
-   * iCycle(pos) ==
-   *  div(pos,iCycle.size) * sum(iCycle.values)
-   *  + sum(firstValuesAsSlice(iCycle,pos)) ==
-   *  div(pos,iCycle.size) * sum(iCycle.values)
-   *  + sum(getModValuesAsList(iCycle,pos)) ==
-   *  div(pos,iCycle.size) * sum(iCycle.values)
-   *  + iCycle(mod(pos,iCycle.size)) ==
-   *  div(pos,iCycle.size) * iCycle.sum
-   *  + iCycle(mod(pos,iCycle.size))
-   *
-   * @param cycleIntegral CycleIntegral
-   * @param position BigInt Position
-   * @return true if holds
-   */
-  def assertDivModCalcForCycleIntegral(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
-    require(position >= 0)
-    require(position < cycleIntegral.size)
-
-    if (position < cycleIntegral.size) {
-      assert(Calc.div(position, cycleIntegral.size) == 0)
-      assert(Calc.mod(position, cycleIntegral.size) == position)
-      assert(assertCycleIntegralEqualsSliceSum(cycleIntegral, position))
-      assert(assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral, position))
-    } else {
-      // @TODO proof for > size
-    }
-
-
-    equality(
-      cycleIntegral(position),
-      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
-        ListUtils.sum(
-          getFirstValuesAsSlice(
-            cycleIntegral = cycleIntegral,
-            position = Calc.mod(position, cycleIntegral.size)
-          )
-        ),
-      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
-        ListUtils.sum(
-          getModValuesAsList(
-            cycleIntegral = cycleIntegral,
-            position = Calc.mod(position, cycleIntegral.size)
-          )
-        ),
-      Calc.div(position, cycleIntegral.size) * ListUtils.sum(cycleIntegral.cycle.values) +
-        cycleIntegral(Calc.mod(position, cycleIntegral.size)),
-      Calc.div(position, cycleIntegral.size) * cycleIntegral.sum +
-        cycleIntegral(Calc.mod(position, cycleIntegral.size)),
-
-    )
   }.holds
 }

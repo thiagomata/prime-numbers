@@ -8,7 +8,7 @@ The project is written in Scala and uses the Stainless library to prove theorems
 This project was initially created using Dafny,
 but we decided to switch to Stainless because of the better support for Scala.
 
-This rewriting process is still ongoing, 
+This rewriting process is still ongoing.
 
 ## Proved Properties
 
@@ -37,7 +37,14 @@ b \text{ div } b                   & = 1 \\
 (a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
 (a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
 \end{aligned}
-```
+\begin{aligned}
+\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+````
 
 ## Running the Formal Verification
 

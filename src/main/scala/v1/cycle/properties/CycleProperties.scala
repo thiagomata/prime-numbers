@@ -3,7 +3,7 @@ package v1.cycle.properties
 import stainless.lang.*
 import v1.Calc
 import v1.cycle.Cycle
-import v1.div.properties.AdditionAndMultiplication
+import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
 import verification.Helper.assert
 
 object CycleProperties {
@@ -80,6 +80,13 @@ object CycleProperties {
     AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m2)
     assert(cycle(key) == cycle(key + cycle.size * m1))
     assert(cycle(key) == cycle(key + cycle.size * m2))
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.size, m1)
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.size, m2)
+    assert(Calc.mod(key, cycle.size) == Calc.mod(key + cycle.size * m1, cycle.size))
+    assert(Calc.mod(key, cycle.size) == Calc.mod(key + cycle.size * m2, cycle.size))
+    assert(cycle(key + cycle.size * m1) == cycle(key))
+    assert(cycle(key + cycle.size * m2) == cycle(key))
+    assert(cycle(key + cycle.size * m2) == cycle(Calc.mod(key,cycle.size)))
     assert(cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2))
   }.holds
 
@@ -98,5 +105,19 @@ object CycleProperties {
     require(cycle.size > 0)
     val modKeySize = Calc.mod(key, cycle.size)
     Calc.mod(cycle(key),dividend) == Calc.mod(cycle.values(modKeySize),dividend)
+  }.holds
+
+  def assertCycleOfPosEqualsCycleOfModPos(cycle: Cycle, position: BigInt): Boolean = {
+    require(position >= 0)
+    require(cycle.size > 0)
+
+    val size = cycle.size
+
+    assert(cycle(position) == cycle.apply(position))
+    assert(cycle(position) == cycle.values(Calc.mod(position, size)))
+
+    assert(ModIdempotence.modIdempotence(position, size))
+    assert(Calc.mod(Calc.mod(position, size),size) == Calc.mod(position, size))
+    assert(cycle(position) == cycle(Calc.mod(position, size)))
   }.holds
 }
