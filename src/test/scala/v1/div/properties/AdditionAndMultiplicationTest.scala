@@ -42,21 +42,21 @@ class AdditionAndMultiplicationTest extends FlatSpec with Matchers {
   }
 
   "MoreDivLessMod" should "hold for any values" in {
-    assert(AdditionAndMultiplication.MoreDivLessMod(10, 2, 5, 0))
-    assert(AdditionAndMultiplication.MoreDivLessMod(11, 2, 5, 1))
-    assert(AdditionAndMultiplication.MoreDivLessMod(0, 2, 0, 0))
-    assert(AdditionAndMultiplication.MoreDivLessMod(10, 1, 10, 0))
-    assert(AdditionAndMultiplication.MoreDivLessMod(11, -2, -5, 1))
-    assert(AdditionAndMultiplication.MoreDivLessMod(11, -3, 5, 26))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(10, 2, 5, 0))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, 2, 5, 1))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(0, 2, 0, 0))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(10, 1, 10, 0))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, -2, -5, 1))
+    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, -3, 5, 26))
   }
 
   "LessDivMoreMod" should "hold for any values" in {
-    assert(AdditionAndMultiplication.LessDivMoreMod(10, 2, 5, 0))
-    assert(AdditionAndMultiplication.LessDivMoreMod(11, 2, 5, 1))
-    assert(AdditionAndMultiplication.LessDivMoreMod(0, 2, 0, 0))
-    assert(AdditionAndMultiplication.LessDivMoreMod(10, 1, 10, 0))
-    assert(AdditionAndMultiplication.LessDivMoreMod(11, -2, -5, 1))
-    assert(AdditionAndMultiplication.LessDivMoreMod(11, -3, 5, 26))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(10, 2, 5, 0))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, 2, 5, 1))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(0, 2, 0, 0))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(10, 1, 10, 0))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, -2, -5, 1))
+    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, -3, 5, 26))
   }
 
   "MoreDivLessModManyTimes" should "hold for any values" in {
