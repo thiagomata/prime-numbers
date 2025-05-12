@@ -299,7 +299,7 @@ As the scala [distribution over subtraction proof](
 ./src/main//scala/v1/div/properties/ModOperations.scala#modAdd
 ) can be verified.
 
-#### Modular Shift Invariance under Divisible Base
+### Modular Shift Invariance under Divisible Base
 
 ```math
 \begin{aligned}
@@ -328,8 +328,6 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 As the scala [proof for the unit-step increment law](
 ./src/main//scala/v1/div/properties/ModOperations.scala#addOne
 ) can be verified.
-
-### Missing 1
 
 ## Conclusion
 
@@ -369,100 +367,9 @@ a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } 
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
 \end{aligned}
 ````
-Those properties could be verified by the Scala Stainless as we can see in the code bellow from the [Summary.scala](
+Those properties could be verified by the Scala Stainless as available in the [Summary.scala](
  ./src/main/scala/v1/div/properties/Summary.scala
 ) file.   
-
-#### Summary
-
-<details>
-<summary>
-./src/main/scala/v1/div/properties/Summary.scala
-</summary>
-
-```scala
-package v1.div.properties
-
-import stainless.lang.*
-import verification.Helper.assert
-import v1.Calc
-import v1.Calc.{div, mod}
-
-object Summary {
- def PropertySummary(a: BigInt, b: BigInt, c: BigInt, m: BigInt): Boolean = {
-  require(b != 0)
-  require(m >= 0)
-
-  if (a >= 0 && b > a) {
-   assert(ModSmallDividend.modSmallDividend(a, b))
-  }
-
-  assert(ModIdempotence.modIdempotence(a, b))
-  assert(ModIdentity.modIdentity(b))
-  assert(AdditionAndMultiplication.APlusBSameModPlusDiv(a, b))
-  assert(AdditionAndMultiplication.ALessBSameModDecreaseDiv(a, b))
-  assert(AdditionAndMultiplication.ATimesBSameMod(a, b, m))
-
-  assert(AdditionAndMultiplication.ALessMultipleTimesBSameMod(a, b, m))
-  assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(a, b, m))
-
-  assert(ModOperations.modAdd(a, b, c))
-  assert(ModOperations.modLess(a, b, c))
-
-  assert(ModIdempotence.modModPlus(a, b, c))
-  assert(ModIdempotence.modModMinus(a, b, c))
-
-  assert(if  a >= 0 && b > 0 then ModOperations.addOne(a, b) else true)
-
-  assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
-  assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
-  assert(if a >= 0 && b > a then div(a, b) == 0 else true)
-  assert(if a >= 0 && b > a then mod(a, b) == a else true)
-  assert(if b > 0 then mod(mod(a, b), b) == mod(a, b) else true)
-  assert(mod(b, b)         == 0)
-  assert(div(b, b)         == 1)
-  assert(mod(a + b * m, b) == mod(a, b))
-  assert(mod(a - b * m, b) == mod(a, b))
-  assert(div(a + b, b)     == div(a, b) + 1)
-  assert(div(a - b, b)     == div(a, b) - 1)
-  assert(div(a + b * m, b) == div(a, b) + m)
-  assert(div(a - b * m, b) == div(a, b) - m)
-  assert(div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
-  assert(div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b))
-  assert(mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b))
-  assert(mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b))
-  assert(mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b))
-  assert(mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b))
-  assert(if a >= 0 && b > 0 && mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true)
-  assert(if a >= 0 && b > 0 && mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true)
-  assert(if a >= 0 && b > 0 && mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true)
-  assert(if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
-
-  (if a >= 0 && b > a then div(a, b) == 0 else true)  &&
-          (if a >= 0 && b > a then mod(a, b) == a else true)  &&
-          mod(b, b)         == 0                             &&
-          div(b, b)         == 1                             &&
-          mod(a + b * m, b) == mod(a, b)                     &&
-          mod(a - b * m, b) == mod(a, b)                     &&
-          mod(mod(a, b), b) == mod(a, b)                     &&
-          div(a + b, b)     == div(a, b) + 1                 &&
-          div(a - b, b)     == div(a, b) - 1                 &&
-          div(a + b * m, b) == div(a, b) + m                 &&
-          div(a - b * m, b) == div(a, b) - m                 &&
-          div(a + c, b)     == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)     &&
-          div(a - c, b)     == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)     &&
-          mod(a + c, b)     == mod(mod(a, b) + mod(c, b), b)                             &&
-          mod(a - c, b)     == mod(mod(a, b) - mod(c, b), b)                             &&
-          mod(a + c, b)     == mod(a, b) + mod(c, b) - b * div(mod(a, b) + mod(c, b), b) &&
-          mod(a - c, b)     == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b) &&
-          (if a >= 0 && b > 0 && mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true) &&
-          (if a >= 0 && b > 0 && mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true) &&
-          (if a >= 0 && b > 0 && mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true) &&
-          (if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
- }.holds
-}
-```
-</details>
 
 ## References
 
@@ -485,11 +392,9 @@ java 21.0.7-zulu is already installed.
 Using java version 21.0.7-zulu in this shell.
 
 [ Info  ] Compiling with standard Scala 3.3.3 compiler front end...
-[ Info  ] Finished compiling                                       
-
+[ Info  ] Finished compiling
 [ Info  ] Preprocessing the symbols...                             
-[ Info  ] Preprocessing finished                                   
-
+[ Info  ] Preprocessing finished
 [ Info  ] Running phase ConstructsUsage                            
 [ Info  ] Running phase PartialFunctions                           
 [ Info  ] Running phase XlangLowering                              
@@ -524,20 +429,16 @@ Using java version 21.0.7-zulu in this shell.
 [ Info  ] Running phase SizedADTExtraction                         
 [ Info  ] Running phase InductElimination                          
 [ Info  ] Running phase MeasureInference                           
-[ Info  ] Inferring measure for sum...                  
-
+[ Info  ] Inferring measure for sum...
 Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
-
 [ Info  ] Inferring measure for ++...
 [ Info  ] Inferring measure for last...
 [ Info  ] Inferring measure for apply...
 [ Info  ] Running phase PartialEvaluation
-[ Info  ] Finished lowering the symbols  
-
+[ Info  ] Finished lowering the symbols
 [ Info  ] Generating VCs for 170 functions...
 [ Info  ] Finished generating VCs            
 [ Info  ] Starting verification...
-
 [ Info  ] Verified: 2723 / 2723
 [ Info  ] Done in 60.53s
 [ Info  ]   ┌───────────────────┐
@@ -546,7 +447,6 @@ Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
 [ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:75:17:              ALessBSameModDecreaseDiv                        class invariant                                                         valid from cache            0.0 ║
 [ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:78:5:               ALessBSameModDecreaseDiv                        body assertion: Inlined precondition of assert                          valid from cache            0.0 ║
 [ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:79:5:               ALessBSameModDecreaseDiv                        body assertion: Inlined precondition of assert                          valid from cache            0.0 ║
-...
 [ Info  ] ║ ./src/main/scala/v1/cycle/properties/CycleProperties.scala:90:12:                      valueMatchAfterManyLoopsInBoth                  precond. (call apply(cycle, key + size(cycle) * m1))                    valid from cache            0.0 ║
 [ Info  ] ║ ./src/main/scala/v1/cycle/properties/CycleProperties.scala:90:44:                      valueMatchAfterManyLoopsInBoth                  precond. (call apply(cycle, key + size(cycle) * m2))                    valid from cache            0.0 ║
 [ Info  ] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
@@ -557,5 +457,4 @@ Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
 [ Info  ]   imperative elimination, type encoding, choose injection, nativez3, 
 [ Info  ]   non-batched
 [ Info  ] Shutting down executor service.
-
 ```
