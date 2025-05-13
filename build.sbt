@@ -25,8 +25,8 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
 
 // forcing the jar load as alternative
 //unmanagedJars in Compile += baseDirectory.value / "lib" / "stainless-dotty-plugin-0.9.8.9.jar"
-unmanagedJars in Compile += baseDirectory.value / "project" / "lib" / "sbt-stainless.jar"
-unmanagedJars in Compile += baseDirectory.value / "project" / "lib" / "stainless-library.jar"
+Compile / unmanagedJars += baseDirectory.value / "project" / "lib" / "sbt-stainless.jar"
+Compile / unmanagedJars += baseDirectory.value / "project" / "lib" / "stainless-library.jar"
 
 lazy val root = (project in file("."))
   .enablePlugins(StainlessPlugin)
