@@ -4,13 +4,21 @@
 
 The division and modulo operations are fundamental elements in the study of programming and mathematics.
 Prime numbers, modular arithmetic, and cryptography are some of the areas where these operations are used.
-In this article, we show how to prove some properties of these operations using the recursive definition of the division and modulo operations, such as the unique remainder, modulo idempotence, and distributivity over addition and subtraction. 
+In this article, we show how to prove some properties of these operations using the recursive definition of the division 
+and modulo operations, such as the unique remainder, modulo idempotence, and distributivity over addition and subtraction. 
 We used Scala Stainless to verify these properties. 
-Since these proofs are available in the source code, we can use them as a base to prove other properties related to the division and modulo operations.
+Since these proofs are available in the source code, we can use them as a base to prove other properties related to the 
+division and modulo operations.
 
 ## Introduction
 
-Formal verification is a technique used to prove that a program or a system satisfies a specification.
+Integer division and modulo operations are central tools in discrete mathematics, number theory, and algorithms. 
+While their properties are well known, rigorous formalization and verification—particularly via recursive definitions—
+offer an interesting alternative to the traditional axiomatic model.
+
+This work formalizes these operations recursively, demonstrates fundamental properties, and uses the Scala Stainless 
+tool to ensure that these properties are formally verifiable.
+
 > In the context of hardware and software systems, formal verification is the act of proving or disproving 
 > the correctness of a system with respect to a certain formal specification or property, 
 > using formal methods of mathematics. 
@@ -32,11 +40,16 @@ To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/
 ## Limitations
 
 The implementation presented in this article is limited to the division and modulo operations for integers. 
-It goals is to make available a set of proofs that can be verified and used as a base to prove other properties related to the division and modulo operations.
+It goals is to make available a set of lemmas and proofs that can be verified and used as a base to prove other 
+properties related to the division and modulo operations.>
 Therefore, the implementation is optimized to correctness and not to performance.
 
-The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or underflow issues. But, they are still constrained by the memory available in the system. 
-Similarly, some proofs are using the recursive definition of the division and modulo operations, which could trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this article, which are the main focus of this article.
+The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or 
+underflow issues. 
+But, they are still constrained by the memory available in the system. 
+Similarly, some lemmas and proofs are using the recursive definition of the division and modulo operations, which could 
+trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this 
+article, which are the main focus of this article.
 
 ## Traditional Definition
 
@@ -53,6 +66,8 @@ dividend \text{ div } divisor & = quotient \\
 \text { where } 0 & \leq \text{remainder} < |b|
 \end{aligned}
 ```
+
+
 
 ## Recursive Definition
 
