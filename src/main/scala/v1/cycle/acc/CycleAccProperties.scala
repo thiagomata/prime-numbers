@@ -89,6 +89,22 @@ object CycleAccProperties {
     cycleAcc(position) == cycleIntegral(position)
   }.holds
 
+  /**
+   * Since the cycle accumulator and cycle integral are equal at any position,
+   * we can use this lemma to prove that cycle integral is equal to the cycle accumulator
+   * definition.
+   *
+   * In other words:
+   *
+   * cycleIntegral(position) ==
+   *   div(position, size) * cycleAcc.integralValues.last +
+   *   cycleAcc.integralValues(mod(position, size)) + cycleIntegral.initialValue
+   *
+   * @param cycleAcc CycleAcc any CycleAcc
+   * @param cycleIntegral CycleIntegral any CycleIntegral with same cycle and initialValue
+   * @param position BigInt any position bigger than or equal to 0
+   * @return Boolean true if the properties hold
+   */
   def assertCycleIntegralMatchCycleAccDef(
     cycleAcc: CycleAcc,
     cycleIntegral: CycleIntegral,

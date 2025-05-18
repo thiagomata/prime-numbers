@@ -6,6 +6,7 @@ import v1.list.integral.Integral
 import stainless.lang.*
 import v1.Calc
 import v1.div.properties.{ModOperations, ModSmallDividend, Summary}
+import v1.list.integral.properties.IntegralProperties
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.{assert, equality}
 
@@ -21,8 +22,8 @@ case class CycleAcc(
 
   /**
    * AccCycle(pos) = div(pos, integralValues.size) * integralValues.last + integralValues(mod(pos, integralValues.size)) + initialValue
-   * @param position
-   * @return
+   * @param position BigInt position in the cycle
+   * @return BigInt value at the position in the cycle
    */
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
@@ -73,9 +74,9 @@ case class CycleAcc(
       /* load some properties about the last integral value */
 
       assert(ListUtilsProperties.assertLastEqualsLastPosition(integralValues.acc))
-      assert(integralValues.assertAccMatchesApply(integralValues.size - 1))
-      assert(integralValues.assertLastEqualsSum)
-      assert(integralValues.assertSizeAccEqualsSizeList(integralValues.list, integralValues.init))
+      assert(IntegralProperties.assertAccMatchesApply(integralValues, integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(integralValues.list, integralValues.init))
       assert(integralValues.acc.last == integralValues.last)
       assert(integralValues.last == integralValues.acc(integralValues.acc.size - 1))
       assert(integralValues.last == integralValues(integralValues.size - 1))
@@ -97,9 +98,9 @@ case class CycleAcc(
           initialValue
       )
 
-      assert(integralValues.assertAccMatchesApply(integralValues.size - 1))
-      assert(integralValues.assertLastEqualsSum)
-      assert(integralValues.assertSizeAccEqualsSizeList(integralValues.list, integralValues.init))
+      assert(IntegralProperties.assertAccMatchesApply(integralValues, integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(integralValues.list, integralValues.init))
 
       assert(integralValues.apply(integralValues.size - 1) == integralValues.acc(integralValues.size - 1))
       assert(integralValues.acc(integralValues.acc.size - 1) == integralValues.acc.last)
@@ -243,7 +244,7 @@ case class CycleAcc(
           - integralValues(a)
       )
 
-      integralValues.assertAccDiffMatchesList(a)
+      assert(IntegralProperties.assertAccDiffMatchesList(integralValues, a))
       assert(
         integralValues(b) - integralValues(a) == cycle.values(b)
       )
