@@ -1,10 +1,16 @@
 package v1.cycle.acc
 
 import org.scalatest.funsuite.AnyFunSuiteLike
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
+import v1.cycle.integral.CycleIntegral
 import v1.tests.ArrayUtils.createListFromInt
 
-class CycleAccPropertiesTest extends AnyFunSuiteLike {
+import scala.BigInt
+
+class CycleAccPropertiesTest extends FlatSpec with Matchers {
+
   val primeCycles: List[Cycle] = List(
     Cycle(createListFromInt(Array(3))),
     Cycle(createListFromInt(Array(19))),
@@ -26,14 +32,65 @@ class CycleAccPropertiesTest extends AnyFunSuiteLike {
 
   val allCycles: List[Cycle] = primeCycles ++ oddCycles ++ evenCycles
 
-  test("assertSimplifiedDiffValuesMatchCycle should hold for any cycle") {
-    assert(allCycles.forall(
-      cycle => {
+  "assertFirstValuesMatchIntegral" should "hold for any cycle" in {
+    assert(
+      allCycles.forall { cycle =>
         val cycleAcc = CycleAcc(1000, cycle)
-        (BigInt(1) until cycleAcc.cycle.values.size).forall { position =>
-          cycleAcc.assertSimplifiedDiffValuesMatchCycle(position)
+        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+          position => {
+            val verified = CycleAccProperties.assertFirstValuesMatchIntegral(cycleAcc, position)
+            assert(verified)
+            verified
+          }
         }
       }
-    ))
+    )
+  }
+
+  "assertSimplifiedDiffValuesMatchCycle" should "hold for any cycle" in {
+    assert(
+      allCycles.forall { cycle =>
+        val cycleAcc = CycleAcc(1000, cycle)
+        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+          position => {
+            val verified = CycleAccProperties.assertSimplifiedDiffValuesMatchCycle(cycleAcc, position)
+            assert(verified)
+            verified
+          }
+        }
+      }
+    )
+  }
+
+  "assertCycleAccEqualsCycleIntegral" should "hold for any cycle" in {
+    assert(
+      allCycles.forall { cycle =>
+        val cycleAcc = CycleAcc(1000, cycle)
+        val cycleIntegral = CycleIntegral(1000, cycle)
+        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+          position => {
+            val verified = CycleAccProperties.assertCycleAccEqualsCycleIntegral(cycleAcc, cycleIntegral, position)
+            assert(verified)
+            verified
+          }
+        }
+      }
+    )
+  }
+
+  "assertCycleIntegralMatchCycleAccDef" should "hold for any cycle" in {
+    assert(
+      allCycles.forall { cycle =>
+        val cycleAcc = CycleAcc(1000, cycle)
+        val cycleIntegral = CycleIntegral(1000, cycle)
+        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+          position => {
+            val verified = CycleAccProperties.assertCycleIntegralMatchCycleAccDef(cycleAcc, cycleIntegral, position)
+            assert(verified)
+            verified
+          }
+        }
+      }
+    )
   }
 }

@@ -2,10 +2,245 @@ package v1.cycle.acc
 
 import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
+import v1.Calc
 import v1.Calc.{div, mod}
 import v1.cycle.integral.properties.CycleIntegralProperties
+import v1.div.properties.{ModOperations, ModSmallDividend}
+import v1.list.integral.properties.IntegralProperties
+import v1.list.properties.ListUtilsProperties
+import verification.Helper.{assert, equality}
 
 object CycleAccProperties {
+
+  /**
+   * Lemmas: apply(position) == integralValues(position) + initialValue
+   *
+   * @param cycleAcc CycleAcc any CycleAcc
+   * @param position BigInt position in the cycle
+   * @return Boolean if the properties hold
+   */
+  def assertFirstValuesMatchIntegral(cycleAcc: CycleAcc, position: BigInt): Boolean = {
+    require(position >= 0)
+    require(position < cycleAcc.integralValues.size)
+    assert(ModSmallDividend.modSmallDividend(position, cycleAcc.integralValues.size))
+    assert(Calc.mod(position, cycleAcc.integralValues.size) == position)
+    assert(Calc.div(position, cycleAcc.integralValues.size) == 0)
+
+    cycleAcc.apply(position) == cycleAcc.integralValues(position) + cycleAcc.initialValue
+  }.holds
+
+  /**
+   * Lemmas: The difference between two consecutive values in the cycle
+   * is equal to the cycle.values at the mod of higher position.
+   *
+   * apply(position + 1) - apply(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
+   *
+   * in other words
+   *
+   * AccCycle(position + 1) - AccCycle(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
+   *
+   * @param cycleAcc CycleAcc any CycleAcc
+   * @param position BigInt position in the cycle
+   * @return Boolean if the properties hold
+   */
+  def assertSimplifiedDiffValuesMatchCycle(cycleAcc: CycleAcc, position: BigInt): Boolean = {
+    require( position >= 0)
+
+    assert(cycleAcc.integralValues.size == cycleAcc.cycle.values.size)
+    ModOperations.addOne(position, cycleAcc.integralValues.size)
+
+    if (Calc.mod(position, cycleAcc.integralValues.size) == cycleAcc.integralValues.size - 1) {
+
+      /* load some properties about the last integral value */
+
+      assert(ListUtilsProperties.assertLastEqualsLastPosition(cycleAcc.integralValues.acc))
+      assert(IntegralProperties.assertAccMatchesApply(cycleAcc.integralValues, cycleAcc.integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(cycleAcc.integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(cycleAcc.integralValues.list, cycleAcc.integralValues.init))
+      assert(cycleAcc.integralValues.acc.last == cycleAcc.integralValues.last)
+      assert(cycleAcc.integralValues.last     == cycleAcc.integralValues.acc(cycleAcc.integralValues.acc.size - 1))
+      assert(cycleAcc.integralValues.last     == cycleAcc.integralValues(cycleAcc.integralValues.size - 1))
+
+      /* check the addOne properties */
+
+      assert(Calc.mod(position + 1, cycleAcc.integralValues.size) == 0)
+      assert(Calc.div(position + 1, cycleAcc.integralValues.size) == Calc.div(position, cycleAcc.integralValues.size) + 1)
+
+      /* calc apply(position)  */
+
+      equality(
+        cycleAcc.apply(position),
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size)) +
+          cycleAcc.initialValue,
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(cycleAcc.integralValues.size - 1) +
+          cycleAcc.initialValue
+      )
+
+      assert(IntegralProperties.assertAccMatchesApply(cycleAcc.integralValues, cycleAcc.integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(cycleAcc.integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(cycleAcc.integralValues.list, cycleAcc.integralValues.init))
+
+      assert(cycleAcc.integralValues.apply(cycleAcc.integralValues.size - 1)   ==
+        cycleAcc.integralValues.acc(cycleAcc.integralValues.size - 1))
+      assert(cycleAcc.integralValues.acc(cycleAcc.integralValues.acc.size - 1) ==
+          cycleAcc.integralValues.acc.last)
+
+      /* calc apply(position + 1) */
+
+      assert(cycleAcc.apply(position + 1) ==
+        Calc.div(position + 1, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size)) +
+          cycleAcc.initialValue
+      )
+
+      /* calc apply(position) */
+
+      equality(
+        cycleAcc.apply(position),
+        // is equal to
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(cycleAcc.integralValues.size - 1) +
+          cycleAcc.initialValue,
+        // since integralValues(size - 1) == integralValues.last
+        // is equal to
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues.last +
+          cycleAcc.initialValue
+      )
+
+      /* calc apply(position + 1) - apply(position) */
+
+      equality(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position),
+        // is equal to
+        0 + (                                                                                                           // replacing  apply by the definition
+          Calc.div(position + 1, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+            + cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size))
+            + cycleAcc.initialValue
+          )
+          - (
+          Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+            + cycleAcc.integralValues(cycleAcc.integralValues.size - 1)
+            + cycleAcc.initialValue
+          ),
+        // is equal to
+        0 + (Calc.div(position, cycleAcc.integralValues.size) + 1) * cycleAcc.integralValues.last                       // using the addOne properties
+          + cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size))
+          + cycleAcc.initialValue
+          - Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+          - cycleAcc.integralValues(cycleAcc.integralValues.size - 1)
+          - cycleAcc.initialValue,
+        // is equal to
+        0 + Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+          + cycleAcc.integralValues.last                                                                                // distributive property
+          - Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last                             // grouping similar terms
+          + cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size))
+          - cycleAcc.integralValues(cycleAcc.integralValues.size - 1)
+          + cycleAcc.initialValue
+          - cycleAcc.initialValue,
+        // is equal to
+        // simplifying
+        0 + cycleAcc.integralValues.last
+          + cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size))
+          - cycleAcc.integralValues(cycleAcc.integralValues.size - 1),
+        0 + cycleAcc.integralValues(0)                                                                                  // since mod(pos + 1, size) == 0
+          + cycleAcc.integralValues.last
+          - cycleAcc.integralValues.last,                                                                               // since integralValues(size - 1) == integralValues.last
+        // is equal to
+        cycleAcc.integralValues(0),
+        // is equal to
+        cycleAcc.cycle.values.head,
+      )
+
+      assert(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position) == cycleAcc.cycle.values.head
+      )
+
+    } else {
+
+      /* check addOne properties
+       * mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+       */
+      assert(Calc.mod(position + 1, cycleAcc.integralValues.size) == Calc.mod(position, cycleAcc.integralValues.size) + 1)
+      assert(Calc.div(position + 1, cycleAcc.integralValues.size) == Calc.div(position, cycleAcc.integralValues.size))
+
+      /* calc apply(position) */
+
+      assert(cycleAcc.apply(position) ==
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size)) +
+          cycleAcc.initialValue
+      )
+
+      /* calc apply(position + 1) */
+
+      assert(cycleAcc.apply(position + 1) ==
+        Calc.div(position + 1, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(Calc.mod(position + 1, cycleAcc.integralValues.size)) +
+          cycleAcc.initialValue
+      )
+      assert(cycleAcc.apply(position + 1) ==
+        Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last +
+          cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size) + 1) +
+          cycleAcc.initialValue
+      )
+
+      /* calc apply(position + 1) - apply(position) */
+
+      equality(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position),
+        // is equal to
+        0 + ( // replacing by the apply definition
+          Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+            + cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size) + 1)
+            + cycleAcc.initialValue
+          )
+          - ( // replacing by the apply definition
+          Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+            + cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size))
+            + cycleAcc.initialValue
+          ),
+        // is equal to
+        0 + Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last // using addOne properties
+          + cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size) + 1)   // using addOne properties
+          + cycleAcc.initialValue
+          - Calc.div(position, cycleAcc.integralValues.size) * cycleAcc.integralValues.last
+          - cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size))
+          - cycleAcc.initialValue,
+        // is equal to
+        0 + cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size) + 1)
+          - cycleAcc.integralValues(Calc.mod(position, cycleAcc.integralValues.size))
+      )
+
+      /* integral values diff equals cycle.values(mod(pos + 1),size) */
+
+      val a = Calc.mod(position, cycleAcc.integralValues.size)
+      val b = Calc.mod(position, cycleAcc.integralValues.size) + 1
+      assert(b - a == 1)
+
+      assert(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position) == 0
+          + cycleAcc.integralValues(b)
+          - cycleAcc.integralValues(a)
+      )
+
+      assert(IntegralProperties.assertAccDiffMatchesList(cycleAcc.integralValues, a))
+      assert(
+        cycleAcc.integralValues(b) - cycleAcc.integralValues(a) == cycleAcc.cycle.values(b)
+      )
+      assert(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position) == cycleAcc.cycle.values(b)
+      )
+      assert(
+        cycleAcc.apply(position + 1) - cycleAcc.apply(position) == cycleAcc.cycle.values(Calc.mod(position + 1, cycleAcc.integralValues.size))
+      )
+    }
+
+    cycleAcc.apply(position + 1) - cycleAcc.apply(position) ==
+      cycleAcc.cycle.values(Calc.mod(position + 1, cycleAcc.integralValues.size))
+  }.holds
 
   /**
    * This function checks that the cycle accumulator and cycle integral are equal at a given position.
@@ -43,7 +278,10 @@ object CycleAccProperties {
       assert(div(position, size) == 0)
       assert(mod(position, size) == 0)
       assert(cycleAcc.integralValues(0) == cycleAcc.cycle.values.head)
-      assert(cycleAcc(0) == div(position, size) * cycleAcc.integralValues.last + cycleAcc.integralValues(mod(position,size)) + cycleAcc.initialValue)
+      assert(cycleAcc(0) == (
+        div(position, size) * cycleAcc.integralValues.last
+        + cycleAcc.integralValues(mod(position,size)) + cycleAcc.initialValue)
+      )
       assert(cycleAcc(0) == 0 + cycleAcc.integralValues(0) + cycleAcc.initialValue)
       assert(cycleAcc(0) == cycleAcc.cycle.values.head + cycleAcc.initialValue)
 
@@ -60,7 +298,7 @@ object CycleAccProperties {
         position - 1
       )
 
-      cycleAcc.assertSimplifiedDiffValuesMatchCycle(position - 1)
+      assertSimplifiedDiffValuesMatchCycle(cycleAcc, position - 1)
       assert(
         cycleAcc(position) - cycleAcc(position - 1) ==
           cycleAcc.cycle.values(mod(position, cycleAcc.integralValues.size))
