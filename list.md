@@ -1,16 +1,14 @@
-# Proving Properties of Lists and Accumulated Sum using Formal Verification
+# Proving Properties of Lists
 
 ## Abstract
 
-Lists and summation are fundamental concepts in both mathematics and computer science. 
-Whether reasoning about sequences, algorithms, or numerical methods, lists and their 
-associated operations—such as summation, slicing, and indexing—play a central role.
-
-This article formalizes and verifies properties of list concatenation and cumulative 
-summation using a recursive model. A discrete integral, defined as the accumulated sum 
-of a list, is introduced to model cumulative behavior. We use the Scala Stainless 
-verification tool to prove lemmas about these structures, demonstrating correctness 
-through mathematical reasoning and recursive definitions.
+We formalize and verify core properties of finite integer lists using recursive definitions 
+aligned with functional programming. Lists are modeled as either empty or recursively 
+constructed from a head and a tail. Operations such as indexing, concatenation, slicing, 
+and summation are also recursively defined, mathematically described and implemented in pure Scala. 
+All properties are formally verified using the Stainless verification system, ensuring 
+correctness through static guarantees. This work bridges mathematical rigor and executable 
+code, providing a foundation for verified reasoning over recursive data structures.
 
 ## Introduction
 
@@ -19,26 +17,14 @@ functional and declarative programming. When combined with summation, they provi
 backbone for definitions of sequences, recurrence, accumulation, and integration in the 
 discrete domain.
 
-We define and verify mathematical properties over two central concepts:
-
-* The **sum** of a list, implemented recursively
-* The **discrete integral** (accumulated sum) over a list
-
 Our approach mirrors traditional recursive definitions but is formally verified 
 using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), 
 ensuring that the properties hold under all inputs within the specified constraints.
-These properties use previously proven lemmas and theorems to establish correctness.
-In particular, some lemmas defined in the related article
-[Proving Properties of Division and Modulo using Formal Verification](
-    modulo.md
-) are used as building blocks to establish the correctness of the properties 
-in this article.
 
 > Formal verification is the act of proving or disproving the correctness of 
 > intended algorithms underlying a system with respect to a certain formal 
 > specification or property, using formal methods of mathematics.
 > [— Wikipedia on Formal Verification](https://en.wikipedia.org/wiki/Formal_verification)
-
 
 ## Limitations
 
@@ -50,8 +36,8 @@ use over very large lists.
 
 In particular:
 
-- **Overflow and memory limits are not modeled**: Since we use `BigInt` and immutable lists, t
-he model assumes unbounded integer arithmetic and infinite list capacity. 
+- **Overflow and memory limits are not modeled**: Since we use `BigInt` and immutable lists, 
+the model assumes unbounded integer arithmetic and infinite list capacity. 
 This avoids issues like overflow or out-of-memory errors, but it does not reflect the constraints 
 imposed by bounded integer types or limited memory in real-world systems.
 
@@ -66,7 +52,7 @@ this article. However, they may limit the direct applicability of this model in
 performance-critical or side-effectful environments.
 
 Furthermore, the model treats lists and integers as conceptually unbounded, not imposing any 
-restrictions on list length or memory space. 
+restrictions on list size or memory space. 
 While this allows us to reason about lists of arbitrary size and precision using `BigInt`, 
 it abstracts away practical concerns such as stack overflows, memory limitations, or time 
 complexity in execution.
@@ -74,199 +60,327 @@ complexity in execution.
 These limitations do not invalidate the learnings from this study. 
 The focus is on **mathematical properties** and **semantic validity**, not execution efficiency.
 
-
 ## Definitions
 
-### Lists
+### List construction
 
-We define a list as a finite ordered sequence:
+Let $ \mathcal{L} $ be the set of all lists over a set $ S $.
+A list is either the empty $ L_{e} $ or a non-empty list $ L_{node} $, as follows:
+
+### Empty List
+
+Let's define an empty list $ L_{e} $:
 
 ```math
 \begin{aligned}
-L & = [a_0, a_1, \dots, a_{n-1}] \\
-\text{ with } n & = |L| \text{ and } \text{ each }  a_i \in \mathbb{Z} \\
+L_{e} & \in \mathcal{L} \\
+L_{e} & = [] \\
+isEmpty(L_{e}) & = True \\
+isNonEmpty(L_{e}) & = False \\
+\end{aligned}
+```
+
+### Recursive Definition of List
+
+```math
+\begin{aligned}
+\forall \text{ head } & \in S, \text{ tail } \in \mathcal{L}  \\
+ L_{node}(head, tail) & \in \mathcal{L}_{\text{node}} \\
+\mathcal{L} = \{ L_e \}  \cup \{ L_{node}(head, tail) & \mid head \in S,\ tail \in \mathcal{L} \} \\
+isEmpty(L_{node}) & = False \\
+isNonEmpty(L_{node}) & = True \\
+\end{aligned}
+```
+
+### Elements Access and Indexing
+
+```math
+\begin{aligned}
+\text{ if } L_{node} = [v_0, v_1, \dots, v_{n-1} ] & \implies L_{node} = (head: v_0, tail: [v_1, \dots, v_{n-1}]) \\
+head(L_{node}) & = v_0 \\
+tail(L_{node}) & = [v_1, \dots, v_{n-1}] \\
+last(L_{node}) & = L_{node(|L| - 1)} \\
+L_{node(0)} & = L_{(0)} = head(L_{node}) \\
+L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 0 \\
 \end{aligned} 
 ```
 
-Key operations:
-- $ \text{head}(L) = a_0 $
-- $ \text{tail}(L) = [a_1, \dots, a_{n-1}] $
-- $ L(i) = a_i $
-- $ L \mathbin{+\!\!+} M $: concatenation
+### List Size
 
-These are implemented using the `stainless.collection.List`, a verifiable functional data structure.
-
-### List Summation
-
-The sum of a list is defined recursively:
+With the structure of lists defined, we now introduce a recursive definition 
+for their size (or length).
+We define the size of a list $ L $, $ |L| $ as follows:
 
 ```math
-\text{sum}(L) = 
+|L| = 
 \begin{cases} \\
-0 & 	\text{if } L = [] \\
-a_0 + 	\text{sum}(	\text{tail}(L)) & \text{otherwise} \\
+0 & \text{ if } L = L_{e} \\\
+1 + |tail(L)| & \text{otherwise} \\
 \end{cases}
 ```
 
-In Scala, this is represented by `ListUtils.sum`.
+Proved in the native stainless library in `stainless.collection.List`.
 
-### Discrete Integral
+### List Append
 
-We define the **discrete integral** or **accumulated sum** of a list $ L $ with initial value $ I \in \mathbb{Z} $ as a new list $ A $, where:
+Let $ A, B \in \mathcal{L} $ over some set $ S $. The append operation $ A \mathbin{+\!\!+} B $ is defined recursively as:
 
 ```math
-A_k = I + \sum_{i=0}^{k} a_i, \quad 	\text{for } 0 \leq k < n
+\begin{aligned}
+A \mathbin{+\!\!+} B =
+\begin{cases}
+B & \text{if } A = L_e \\
+L_{node}(head(A), tail(A) \mathbin{+\!\!+} B) & \text{otherwise}
+\end{cases}
+\end{aligned}
 ```
 
-This is implemented using the `Integral` class:
+Proved in the native stainless library in `stainless.collection.List`.
+
+### List Slice
+
+Given a list $ L = [v_0, v_1, \dots, v_{n-1}] $, and integers 
+$ 0 \leq i \leq j < |L| $, the slice function $ slice(L, i, j) $ 
+returns a sublist of $ L $ from index $ i $ to $ j $, inclusive.
+
+```math
+\begin{aligned}
+slice(L, i, j) = 
+\begin{cases}
+[ L_{(j)} ] & \text{if } i = j \\
+slice(L, i, j - 1) \mathbin{+\!\!+} [ L_{(j)} ] & \text{if } i < j
+\end{cases}
+\end{aligned}
+```
+
+Defined at [List Utils](
+	./src/main/scala/v1/list/ListUtils.scala#slice
+) as follows:
 
 ```scala
-case class Integral(list: List[BigInt], init: BigInt = 0)
+  def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
+    require(from >= 0)
+    require(to >= from)
+    require(to < list.size)
+    decreases(to)
 
-case class Integral(list: List[BigInt], init: BigInt = 0) {
-
-  def apply(position: BigInt): BigInt = {
-    require(list.nonEmpty)
-    require(position >= 0)
-    require(position < list.size)
-    if (position == 0) {
-      this.head
+    val current: BigInt = list(to)
+    if (from == to) {
+      List(current)
     } else {
-      Integral(list.tail, this.head).apply(position - 1)
+      val prev = slice(list, from, to - 1)
+      ListUtilsProperties.listAddValueTail(prev, current)
+      prev ++ List(current)
     }
   }
+```
 
-  def acc: List[BigInt] = {
+### List Sum
+
+```math
+sum(L) = 
+\begin{cases} \\
+0 & \text{if } |L| = 0 \\
+head(L) + sum(tail(L)) & \text{otherwise} \\
+\end{cases}
+```
+
+Defined at [List Utils](
+	./src/main/scala/v1/list/ListUtils.scala#sum
+) as follows:
+
+```scala
+  def sum(loopList: List[BigInt]): BigInt = {
+    if (loopList.isEmpty) {
+      BigInt(0)
+    } else {
+      loopList.head + sum(loopList.tail)
+    }
+  }
+```
+## Properties
+
+Using the definitions above, we state and verify the following key properties of lists:
+
+### Tail Access Shift
+```math
+	tail(L)_{(i)} = L_{(i + 1)}
+```
+Proved in [List Utils Properties - Access Tail Shift](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShift
+) as follows:
+
+```scala
+  def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
+    require(list.nonEmpty && position >= 0 && position < list.tail.size)
+    list.tail(position) == list(position + 1)
+  }.holds
+```
+
+### Last Element Identity
+
+```math
+|L| > 0 \implies last(L) = L_{(|L| - 1)}
+```
+Proved in [List Util Properties - Assert Last Equals Last Position](
+	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
+).
+
+```scala
+  def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
+    require(list.nonEmpty)
     decreases(list.size)
-    if (list.isEmpty) {
-      list
+
+    if (list.size == 1) {
+      assert(list.head == list.last)
     } else {
-      List(this.head) ++ Integral(list.tail, this.head).acc
+      assert(assertLastEqualsLastPosition(list.tail))
+      assertTailShiftPosition(list, list.size - 1)
+      assert(list.last == list(list.size - 1))
     }
-  }
+    list.last == list(list.size - 1)
+  }.holds
+```
 
-  def last: BigInt = {
+### Positional Shift in Tail
+```math
+i > 0 \implies L_{(i)} = 	tail(L)_{(i - 1)}
+```
+
+Proved in [List Util Properties - Assert Tail Shift Position](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertTailShiftPosition
+)
+
+```scala
+  def assertTailShiftPosition[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty)
-    acc.last
-  }
+    require(position >= 0 && position < list.size)
+    decreases(position)
 
-  def head: BigInt = {
-    require(list.nonEmpty)
-    list.head + init
-  }
-
-  def tail: List[BigInt] = {
-    require(list.nonEmpty)
-    Integral(list.tail, this.head).acc
-  }
-
-  def isEmpty: Boolean = list.isEmpty
-
-  def nonEmpty: Boolean = list.nonEmpty
-
-  def size: BigInt = list.size
-}
+    if (position == 0 ) {
+      list(position) == list.head
+    } else {
+      assert(list == List(list.head) ++ list.tail )
+      assert(list(position) == list.apply(position) )
+      assert(assertTailShiftPosition(list.tail, position - 1))
+      assert(list.apply(position) == list.tail.apply(position - 1))
+      list(position) == list.tail(position - 1)
+    }
+  }.holds
 ```
 
-With methods:
-- `acc`: returns the accumulated list $ A $
-- `apply(k)`: returns the $ k $-th accumulated value
-- `last`: returns $ A_{n-1} $, i.e. the total sum
-- Verified lemmas that establish consistency and correctness
-
-## Verified Properties
-
-### Concatenation and Summation
-
-#### Left Append Preserves Sum
+### Left Append Preserves Sum
 ```math
-	\text{sum}([v] \mathbin{+\!\!+} L) = v + 	\text{sum}(L)
+	sum([v] \mathbin{+\!\!+} L) = v + 	sum(L)
 ```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue)
 
-#### Sum over Concatenation
+Proved in [List Utils Properties - List Sum Add Value](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue
+) as follows:
+
+```scala
+def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
+    ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
+  }.holds
+```
+
+
+### Sum over Concatenation
 ```math
-	\text{sum}(A \mathbin{+\!\!+} B) = 	\text{sum}(A) + 	\text{sum}(B)
+	sum(A \mathbin{+\!\!+} B) = 	sum(A) + 	sum(B)
 ```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine)
 
-#### Commutativity of Sum over Concatenation
+Proved in [List Utils Properties - List Combine ](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine
+) as follows:
+```scala
+  def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    decreases(listA.size)
+
+    if (listA.isEmpty) {
+      assert(ListUtils.sum(listA) == BigInt(0))
+      assert(ListUtils.sum(listB) == BigInt(0) + ListUtils.sum(listB))
+      assert(ListUtils.sum(listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+      assert(listA ++ listB == listB)
+    } else {
+      listCombine(listA.tail, listB)
+      val bigList = listA ++ listB
+      assert(bigList == List(listA.head) ++ listA.tail ++ listB)
+      listSumAddValue(listA.tail ++ listB, listA.head)
+    }
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB)
+  }.holds
+```
+
+### Commutativity of Sum over Concatenation
 ```math
-	\text{sum}(A \mathbin{+\!\!+} B) = 	\text{sum}(B \mathbin{+\!\!+} A)
+	sum(A \mathbin{+\!\!+} B) = 	sum(B \mathbin{+\!\!+} A)
 ```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap)
 
-### Slicing and Access
+Proved in [List Utils Properties - List Swap ](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap
+) as follows:
 
-#### Slice Append Consistency
+```scala
+  def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    listCombine(listA, listB)
+    listCombine(listB, listA)
+    assert(ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+    assert(ListUtils.sum(listB ++ listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    assert(ListUtils.sum(listA) + ListUtils.sum(listB) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listB ++ listA)
+  }.holds
+```
+
+### Slice Append Consistency
 ```math
-	\text{slice}(L, f, t) = 	\text{slice}(L, f, t-1) \mathbin{+\!\!+} [L(t)]
+	slice(L, f, t) = 	slice(L, f, t-1) \mathbin{+\!\!+} [L(t)]
 ```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice)
 
-#### Positional Shift in Tail
-```math
-L(i) = 	\text{tail}(L)(i - 1), \quad i > 0
+Proved in [List Utils Properties - Assert Append to Slice ](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
+) as follows:
+
+```scala
+  def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
+    require(from >= 0)
+    require(from < to)
+    require(to < list.size)
+    
+    listSumAddValue(list, list(to))
+    
+    ListUtils.slice(list, from, to) ==
+      ListUtils.slice(list, from, to - 1) ++ List(list(to))
+  }.holds
 ```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertTailShiftPosition)
-
-#### Tail Access Shift
-```math
-	\text{tail}(L)(i) = L(i + 1)
-```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShift)
-
-#### Last Element Identity
-```math
-L.last = L(L.size - 1)
-```
-[Proof](./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition)
-
-### Properties of the Discrete Integral
-
-#### Base Difference Lemma
-```math
-A(1) - A(0) = L(1)
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertAccDifferenceEqualsTailHead)
-
-#### General Difference Lemma
-```math
-A(k + 1) - A(k) = L(k + 1)
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertAccDiffMatchesList)
-
-#### Access Matches Accumulated Value
-```math
-	\text{apply}(k) = A(k)
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertAccMatchesApply)
-
-#### Accumulated List Length
-```math
-|A| = |L|
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertSizeAccEqualsSizeList)
-
-#### Final Value is Total Sum
-```math
-A(n - 1) = I + \sum_{i=0}^{n-1} L(i)
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertLastEqualsSum)
-
-#### Final Value Equals Last Access
-```math
-	\text{apply}(n - 1) = A(n - 1) = 	\text{last}
-```
-[Proof](./src/main/scala/v1/list/integral/Integral.scala#assertLast)
 
 ## Conclusion
 
-In this article, we defined and verified properties of list concatenation, summation, and cumulative behavior using recursive definitions and the Scala Stainless verification tool.
+This article presents a formal framework for defining and reasoning about finite lists using a 
+recursive mathematical structure aligned with functional programming principles.
 
-These results confirm foundational properties such as:
-- Associativity and commutativity of sum
-- Structural properties of slicing and tailing
-- Correctness of discrete accumulation (integral)
+These properties are:
 
-By grounding list operations in recursive definitions and verifying them formally, we provide a rigorous mathematical basis for reasoning about sequence-based computations in both theory and practice.
+```math
+\begin{aligned}
+|L| > 0 & \implies last(L)   = L_{(|L| - 1)} \\
+i > 0 	& \implies L_{(i)} 	 = tail(L)_{(i - 1)} \\
+tail(L)_{(i)}                & = L_{(i + 1)} \\
+sum([v] \mathbin{+\!\!+} L)  & = v + sum(L) \\
+sum(A \mathbin{+\!\!+} B)    & = sum(A) + sum(B) \\
+sum(A \mathbin{+\!\!+} B)    & = sum(B \mathbin{+\!\!+} A) \\
+slice(L, f, t)               & = slice(L, f, t-1) \mathbin{+\!\!+} [L(t)] \\
+
+\end{aligned}
+```
+
+These properties are implemented in Scala using the Stainless verification system,
+ensuring correctness of properties and recursive functions through static guarantees.
+This foundation supports further extensions in formally verified functional data structures
+and serves as a practical bridge between mathematical definitions and executable code.
+
+The properties and definitions presented here can be extended to more complex data structures
+and algorithms, providing a solid foundation for future work in formal verification and
+mathematical reasoning in functional programming.
+
+

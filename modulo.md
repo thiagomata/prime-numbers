@@ -67,8 +67,6 @@ dividend \text{ div } divisor & = quotient \\
 \end{aligned}
 ```
 
-
-
 ## Recursive Definition
 
 Some properties of the division and modulo can be proved using the recursive definition of the division and modulo operations.
