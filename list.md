@@ -1,4 +1,4 @@
-# Proving Properties of Lists
+# Using Formal Verification to Prove Properties of Lists Recursively Defined
 
 ## Abstract
 

@@ -14,8 +14,9 @@ object ListUtilsProperties {
     * 
     * sum(list ++ List(value)) == sum(list) + value
     *
-    * @param list
-    * @param value
+    * @param list List[BigInt] any list of BigInt
+    * @param value BigInt the value to add to the list
+    * @return Boolean true if the property holds
     */
   def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
@@ -28,8 +29,9 @@ object ListUtilsProperties {
     * 
     * sum(listA ++ listB) == sum(listA) + sum(listB)
     *
-    * @param list
-    * @param value
+    * @param listA List[BigInt] any list of BigInt
+    * @param listB List[BigInt] any list of BigInt
+    * @return Boolean true if the property holds
     */
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     decreases(listA.size)
@@ -55,8 +57,9 @@ object ListUtilsProperties {
     * 
     * sum(listA ++ listB) == sum(listB) + sum(listA)
     *
-    * @param list
-    * @param value
+    * @param listA List[BigInt] any list of BigInt
+    * @param listB List[BigInt] any list of BigInt
+    * @return Boolean true if the property holds
     */
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     listCombine(listA, listB)
@@ -73,8 +76,9 @@ object ListUtilsProperties {
     * 
     * sum(list ++ List(value)) == sum(list) + value
     *
-    * @param list
-    * @param value
+    * @param list List[BigInt] any list of BigInt
+    * @param value BigInt the value to add to the list
+    * @return Boolean true if the property holds
     */
   def listAddValueTail(list: List[BigInt], value: BigInt): Boolean = {
     listSwap(list, List(value))
@@ -92,9 +96,10 @@ object ListUtilsProperties {
     * 
     * list(i, j) == list(i, j - 1) ++ list(j)
     *
-    * @param list
-    * @param from
-    * @param to
+    * @param list List[BigInt] any list of BigInt
+    * @param from BigInt the position of the first element to check
+    * @param to BigInt the position of the last element to check
+    * @return Boolean true if the property holds
     */
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
     require(from >= 0)
@@ -141,8 +146,9 @@ object ListUtilsProperties {
     * 
     * list(position) == list.tail(position + 1)
     *
-    * @param list
-    * @param position
+    * @param list List[T] any list of T non empty
+    * @param position BigInt the position of the element to check
+    * @return Boolean true if the property holds
     */
   def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty && position >= 0 && position < list.tail.size)
