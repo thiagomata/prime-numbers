@@ -2,13 +2,16 @@
 
 ## Abstract
 
-The division and modulo operations are fundamental elements in the study of programming and mathematics.
-Prime numbers, modular arithmetic, and cryptography are some of the areas where these operations are used.
-In this article, we show how to prove some properties of these operations using the recursive definition of the division 
-and modulo operations, such as the unique remainder, modulo idempotence, and distributivity over addition and subtraction. 
-We used Scala Stainless to verify these properties. 
-Since these proofs are available in the source code, we can use them as a base to prove other properties related to the 
-division and modulo operations.
+The division and modulo operations are fundamental in mathematics and computer science,
+ especially in areas such as number theory, cryptography, and algorithm design. 
+In this article, we define these operations from scratch using a recursive formulation,
+ without relying on built-in semantics or standard library behavior — a zero-prior-knowledge approach. 
+We formally verify key properties such as unique remainder, modulo idempotence, and distributivity
+ using the Stainless verification system. 
+All properties are expressed and proved within a minimal framework using only elementary arithmetic,
+ recursion, and pure Scala code.
+This work bridges mathematical foundations and executable verification, offering a self-contained, verifiable
+ treatment of modular arithmetic.
 
 ## Introduction
 
@@ -344,12 +347,11 @@ As the scala [proof for the unit-step increment law](
 
 ## Conclusion
 
-The division and module operations are fundamental in computer science and mathematics.
-In this article, we have shown how to prove some properties of these operations
-using the recursive definition of the division and modulo operations and formal verification on Scala Stainless,
-with available proofs in the source code.
-
-These properties are:
+In this article, we constructed the division and modulo operations from first principles,
+ using a recursive definition that avoids reliance on any built-in semantics or library
+ implementations — a zero-prior-knowledge approach.
+Within this minimal foundation, we proved the following set of fundamental properties and
+ identities using formal verification with Scala Stainless:
 
 ```math
 \begin{aligned}
@@ -380,9 +382,14 @@ a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } 
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
 \end{aligned}
 ````
-Those properties could be verified by the Scala Stainless as available in the [Summary.scala](
+Those properties can be verified using Scala Stainless, as available in the [Summary.scala](
  ./src/main/scala/v1/div/properties/Summary.scala
-) file.   
+) file. The recursive formulation, combined with machine-checked proofs, ensures both correctness and
+ transparency.
+ 
+This work demonstrates how modular arithmetic can be derived, reasoned about, 
+ and verified from the ground up, providing a reusable and trustworthy basis for further
+ mathematical or computational development.
 
 ## References
 

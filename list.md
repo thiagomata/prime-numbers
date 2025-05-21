@@ -2,13 +2,15 @@
 
 ## Abstract
 
-We formalize and verify core properties of finite integer lists using recursive definitions 
-aligned with functional programming. Lists are modeled as either empty or recursively 
+In thids article, we define and construct lists from scratch, relying only on core type 
+constructs and recursion, with no prior knowledge of Scala’s collections required. Core 
+properties of finite integer lists are formalized and verified using recursive definitions 
+aligned with functional programming principles. Lists are modeled as either empty or recursively 
 constructed from a head and a tail. Operations such as indexing, concatenation, slicing, 
-and summation are also recursively defined, mathematically described and implemented in pure Scala. 
-All properties are formally verified using the Stainless verification system, ensuring 
-correctness through static guarantees. This work bridges mathematical rigor and executable 
-code, providing a foundation for verified reasoning over recursive data structures.
+and summation are also recursively defined, mathematically described, and implemented in 
+pure Scala. All properties are formally verified using the Stainless verification system, 
+ensuring correctness through static guarantees. This work bridges mathematical rigor and 
+executable code, providing a foundation for verified reasoning over recursive data structures.
 
 ## Introduction
 
@@ -217,31 +219,6 @@ Proved in [List Utils Properties - Access Tail Shift](
   }.holds
 ```
 
-### Last Element Identity
-
-```math
-|L| > 0 \implies last(L) = L_{(|L| - 1)}
-```
-Proved in [List Util Properties - Assert Last Equals Last Position](
-	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
-).
-
-```scala
-  def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
-    require(list.nonEmpty)
-    decreases(list.size)
-
-    if (list.size == 1) {
-      assert(list.head == list.last)
-    } else {
-      assert(assertLastEqualsLastPosition(list.tail))
-      assertTailShiftPosition(list, list.size - 1)
-      assert(list.last == list(list.size - 1))
-    }
-    list.last == list(list.size - 1)
-  }.holds
-```
-
 ### Positional Shift in Tail
 ```math
 i > 0 \implies L_{(i)} = 	tail(L)_{(i - 1)}
@@ -266,6 +243,31 @@ Proved in [List Util Properties - Assert Tail Shift Position](
       assert(list.apply(position) == list.tail.apply(position - 1))
       list(position) == list.tail(position - 1)
     }
+  }.holds
+```
+
+### Last Element Identity
+
+```math
+|L| > 0 \implies last(L) = L_{(|L| - 1)}
+```
+Proved in [List Util Properties - Assert Last Equals Last Position](
+	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
+).
+
+```scala
+  def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
+    require(list.nonEmpty)
+    decreases(list.size)
+
+    if (list.size == 1) {
+      assert(list.head == list.last)
+    } else {
+      assert(assertLastEqualsLastPosition(list.tail))
+      assertTailShiftPosition(list, list.size - 1)
+      assert(list.last == list(list.size - 1))
+    }
+    list.last == list(list.size - 1)
   }.holds
 ```
 

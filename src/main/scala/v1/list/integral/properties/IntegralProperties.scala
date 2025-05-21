@@ -10,6 +10,25 @@ import v1.list.properties.ListUtilsProperties
 object IntegralProperties {
 
   /**
+   * Lemma: The first element of the accumulated list `acc` is equal to the
+   * first element of the original list `list` plus the initial value.
+   *
+   * That is:
+   * acc(0) == list(0) + init
+   *
+   * @param integral Integral the integral of the lemma
+   * @return Boolean true if the property holds
+   */
+  def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
+    require(integral.list.nonEmpty)
+    assert(integral.head == integral.list.head + integral.init)
+    assert(integral.apply(0) == integral.head)
+    assert(integral.acc(0) == integral.head)
+    assert(integral.acc(0) == integral.apply(0))
+    integral.head == integral.list.head + integral.init
+  }.holds
+
+  /**
    * Lemma: The difference between the first two accumulated values in Acc
    * equals the second element of the original list.
    *
@@ -60,7 +79,7 @@ object IntegralProperties {
     decreases(position)
 
     if (position == 0) {
-      // Base case
+      // base case
       assert(IntegralProperties.assertAccDifferenceEqualsTailHead(integral))
       assert(integral.apply(0) == integral.acc(0))
       assert(integral.apply(1) == integral.acc(1))
@@ -108,7 +127,7 @@ object IntegralProperties {
     require(position >= 0 && position < integral.list.size)
     decreases(position)
 
-    assertSizeAccEqualsSizeList(integral.list, integral.init)
+    assert(assertSizeAccEqualsSizeList(integral.list, integral.init))
     assert(integral.list.size == integral.acc.size)
 
     if (position == 0) {
@@ -216,6 +235,53 @@ object IntegralProperties {
     }
     integral.last == integral.init + ListUtils.sum(integral.list)
   }.holds
+
+  /**
+   * The integral of a list is defined as the sum of all elements in the list
+   * plus the initial value.
+   *
+   * That is:
+   * integral.apply(position) == init + ListUtils.sum(list[0..position])
+   *
+   * @param integral Integral the integral of the lemma
+   * @param position BigInt the position in the list
+   * @return Boolean true if the property holds
+   */
+  def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
+    require(integral.list.nonEmpty)
+    require(position >= 0 && position < integral.list.size)
+    require(integral.list.size > 1)
+    decreases(position)
+
+    assert(assertSizeAccEqualsSizeList(integral.list, integral.init))
+
+    if (position == 0) {
+      assert(assertHeadValueMatchDefinition(integral))
+      assert(ListUtils.slice(integral.list, 0, position) == List(integral.list.head))
+      assert(integral.apply(0) == integral.init + ListUtils.sum(List(integral.list.head)))
+      assert(integral.apply(0) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
+    } else {
+      assert(assertIntegralEqualsSum(integral, position - 1))
+      assert(position > 0 )
+      assert(position < integral.list.size)
+      assert(position - 1 < integral.list.size - 1)
+      assert(integral.list.size == integral.acc.size)
+      assert(integral.list.size > 1)
+      assert(assertAccDiffMatchesList(integral, position - 1))
+
+      val prevList = ListUtils.slice(integral.list, 0, position - 1)
+      val prevSum = ListUtils.sum(prevList)
+      assert(integral.apply(position - 1) == integral.init + prevSum)
+      assert(integral.apply(position) == integral.apply(position - 1) + integral.list(position))
+      assert(integral.apply(position) == integral.init + prevSum + integral.list(position))
+      assert(ListUtilsProperties.listSumAddValue(integral.list, integral.list(position)))
+      assert(ListUtilsProperties.assertAppendToSlice(integral.list, 0, position))
+      assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) ++ List(integral.list(position)))
+      assert(integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
+    }
+    integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
+  }.holds
+
 
   /**
    * Lemma: The last element of the accumulated list `acc` is equal
