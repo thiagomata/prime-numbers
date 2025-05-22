@@ -27,7 +27,7 @@ These include the following functions:
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
 - $\text{head}(L)$: returns the first element of a non-empty list.
 - $\text{tail}(L)$: returns the list without its first element.
-- $ A $ &#x29FA; $ B $: concatenates two lists $A$ and $B$.
+- $A$ &#x29FA; $B$: concatenates two lists $A$ and $B$.
 
 These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](lists.md), and are treated here as foundational primitives.
 
@@ -36,7 +36,7 @@ Proofs in this article are written in Scala and verified using the Stainless sys
 
 ## 3. Definition of Discrete Integral
 
-We define the **discrete integral** $ I = Integral(L, \text{init}) $ as a list of partial sums such that:
+We define the **discrete integral** $I = Integral(L, \text{init})$ as a list of partial sums such that:
 
 $$
 \begin{aligned}
@@ -57,7 +57,7 @@ k &\in [0, n - 1]
 \end{aligned}
 $$
 
-The value of the $ k $-th element in the integral $ I $ is defined recursively as:
+The value of the $k\text{-th}$ element in the integral $I$ is defined recursively as:
 
 $$
 I_k =
@@ -159,7 +159,7 @@ Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/sca
 
 ### 4.3 Integral Equals Sum Until Position
 
-Lemma: The integral at position $ k $ is equal to the sum of all
+Lemma: The integral at position $k$ is equal to the sum of all
 elements in the list up to that position, plus the initial value.
 
 $$
@@ -282,7 +282,7 @@ Defined at [Integral.scala](./src//main/scala/v1/list/integral/Integral.scala#L6
 
 ### 5.2 Element Consistency
 
-Lemma: The $ k $-th element of the integral is equal to the $ k $-th element of the accumulated list.
+Lemma: The $k\text{-th}$ element of the integral is equal to the $k\text{-th}$ element of the accumulated list.
 
 $$
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
@@ -355,7 +355,7 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
 #### Last Element Agreement
 
 Lemma: The last element of the accumulated list is equal to the last element of the integral.
-It also check if the last element of the integral is the element at the last position,  $ n - 1 $.
+It also check if the last element of the integral is the element at the last position,  $n - 1$.
 
 $$
 \begin{aligned}
@@ -421,7 +421,7 @@ Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properti
 
 * The current implementation focuses exclusively on lists of unbounded integers (`BigInt`). It does not yet support generalized numeric types via abstraction or type classes.
 * While the recursive definitions are mathematically correct, they may lead to stack overflows for very large lists. This work prioritizes correctness and verifiability over performance or scalability.
-* The $ sum $, $ head $, $ tail $ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](list.md) and are not redefined in this article.
+* The $sum$, $head$, $tail$ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](list.md) and are not redefined in this article.
 
 ## 6. Conclusion
 
@@ -442,24 +442,24 @@ This direction is left for future work.
 ### Stainless Execution Output
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
-<span style="color:blue">[  Info  ] </span> Finished compiling
-<span style="color:blue">[  Info  ] </span> Preprocessing finished
-<span style="color:blue">[  Info  ] </span> Inferring measure for sum...
-<span style="color:orange">[Warning ] </span> The Z3 native interface is not available. Falling back onto smt-z3.
-<span style="color:blue">[  Info  ] </span> Finished lowering the symbols
-<span style="color:blue">[  Info  ] </span> Finished generating VCs
-<span style="color:blue">[  Info  ] </span> Starting verification...
-<span style="color:blue">[  Info  ] </span> Verified: 2781 / 2781
-<span style="color:blue">[  Info  ] </span> Done in 61.79s
-<span style="color:blue">[  Info  ] </span><span style="color:green">   ┌───────────────────┐</span>
-<span style="color:blue">[  Info  ] </span><span style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</span>
-<span style="color:blue">[  Info  ] </span><span style="color:green"> ║ └───────────────────┘                                                                           ║</span>
-<span style="color:blue">[  Info  ] </span><span style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</span>
-<span style="color:blue">[  Info  ] </span><span style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</span>
-<span style="color:blue">[  Info  ] </span><span style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</span>
-<span style="color:blue">[  Info  ] </span> Verification pipeline summary:
-<span style="color:blue">[  Info  ] </span>  @extern, cache, anti-aliasing, return transformation, 
-<span style="color:blue">[  Info  ] </span>  imperative elimination, type encoding, choose injection, nativez3, 
-<span style="color:blue">[  Info  ] </span>   non-batched
-<span style="color:blue">[  Info  ] </span> Shutting down executor service.
+<code style="color:blue">[  Info  ] </code> Finished compiling
+<code style="color:blue">[  Info  ] </code> Preprocessing finished
+<code style="color:blue">[  Info  ] </code> Inferring measure for sum...
+<code style="color:orange">[Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
+<code style="color:blue">[  Info  ] </code> Finished lowering the symbols
+<code style="color:blue">[  Info  ] </code> Finished generating VCs
+<code style="color:blue">[  Info  ] </code> Starting verification...
+<code style="color:blue">[  Info  ] </code> Verified: 2781 / 2781
+<code style="color:blue">[  Info  ] </code> Done in 61.79s
+<code style="color:blue">[  Info  ] </code><code style="color:green">   ┌───────────────────┐</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
+<code style="color:blue">[  Info  ] </code> Verification pipeline summary:
+<code style="color:blue">[  Info  ] </code>  @extern, cache, anti-aliasing, return transformation, 
+<code style="color:blue">[  Info  ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
+<code style="color:blue">[  Info  ] </code>   non-batched
+<code style="color:blue">[  Info  ] </code> Shutting down executor service.
 </pre>
