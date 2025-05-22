@@ -2,19 +2,25 @@
 
 ## Abstract
 
-We formalize and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch construction grounded in a zero-prior-knowledge methodology.
+<p style="text-align: justify">
+We formalize and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
+construction grounded in a zero-prior-knowledge methodology.
 This operation is implemented in pure Scala and verified using the Stainless formal verification system.
-The work builds on a previously verified model of lists and summation &mdash; themselves constructed without domain-specific assumptions &mdash; extending that foundation to list-based accumulation.
+The work builds on a previously verified model of lists and summation &mdash; themselves constructed without domain-specific 
+assumptions &mdash; extending that foundation to list-based accumulation.
 The result is a verified and mathematically rigorous definition of discrete integration with static correctness guarantees.
+</p>
 
 ## 1. Introduction
 
-Accumulation is a central operation in mathematics and computing &mdash; from prefix sums in algorithms to integral transforms in signal processing.
-In functional programming, accumulation often appears as a fold or scan, but such constructs are rarely defined from first principles in a formally verified setting.
+Accumulation is a central operation in mathematics and computing &mdash; from prefix sums in algorithms to integral 
+transforms in signal processing. In functional programming, accumulation often appears as a fold or scan, but such 
+constructs are rarely defined from first principles in a formally verified setting.
 
-In this article, we present a discrete integral operation over finite integer lists, defined recursively and verified some of its properties using the Stainless system.
-Our approach follows a zero-prior-knowledge philosophy, building on a previously verified foundation for recursive list structures and summation.
-The result is a verified, from-scratch implementation of discrete integration, suitable as a foundation for higher-level numeric reasoning over lists.
+In this article, we present a discrete integral operation over finite integer lists, defined recursively and verified 
+some of its properties using the Stainless system. Our approach follows a zero-prior-knowledge philosophy, building on 
+a previously verified foundation for recursive list structures and summation. The result is a verified, from-scratch 
+implementation of discrete integration, suitable as a foundation for higher-level numeric reasoning over lists.
 
 ## 2. Preliminaries and Notation
 

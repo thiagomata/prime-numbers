@@ -2,6 +2,7 @@
 
 ## Abstract
 
+<p style="text-align: justify">
 The division and modulo operations are fundamental in mathematics and computer science,
  especially in areas such as number theory, cryptography, and algorithm design. 
 In this article, we define these operations from scratch using a recursive formulation,
@@ -12,6 +13,7 @@ All properties are expressed and proved within a minimal framework using only el
  recursion, and pure Scala code.
 This work bridges mathematical foundations and executable verification, offering a self-contained, verifiable
  treatment of modular arithmetic.
+ </p>
 
 ## Introduction
 

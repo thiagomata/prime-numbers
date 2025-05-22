@@ -2,6 +2,7 @@
 
 ## Abstract
 
+<p style="text-align: justify">
 In thids article, we define and construct lists from scratch, relying only on core type 
 constructs and recursion, with no prior knowledge of Scala’s collections required. Core 
 properties of finite integer lists are formalized and verified using recursive definitions 
@@ -11,6 +12,7 @@ and summation are also recursively defined, mathematically described, and implem
 pure Scala. All properties are formally verified using the Stainless verification system, 
 ensuring correctness through static guarantees. This work bridges mathematical rigor and 
 executable code, providing a foundation for verified reasoning over recursive data structures.
+</p>
 
 ## Introduction
 
