@@ -27,7 +27,7 @@ These include the following functions:
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
 - $\text{head}(L)$: returns the first element of a non-empty list.
 - $\text{tail}(L)$: returns the list without its first element.
-- $A \mathbin{+\!\!+} B$: concatenates two lists $A$ and $B$.
+- $ A $ &#x29FA; $ B $: concatenates two lists $A$ and $B$.
 
 These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](lists.md), and are treated here as foundational primitives.
 
@@ -101,7 +101,7 @@ $$
 Proved in [IntegralProperties.scala at assertHeadValueMatchDefinition](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertHeadValueMatchDefinition).
 
 ```scala
-  /**
+/**
  * Lemma: The first element of the accumulated list `acc` is equal to the
  * first element of the original list `list` plus the initial value.
  *
@@ -119,8 +119,6 @@ def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
   integral.head == integral.list.head + integral.init
 }.holds
 ```
-
-Proved in [IntegralProperties.scala at assertHeadValueMatchDefinition](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertHeadValueMatchDefinition).
 
 ### 4.2 Step Increment Matches List Value
 
@@ -159,7 +157,42 @@ Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/sca
   }
 ```
 
-### 4.3 Final Element Equals Full Sum
+### 4.3 Integral Equals Sum Until Position
+
+Lemma: The integral at position $ k $ is equal to the sum of all
+elements in the list up to that position, plus the initial value.
+
+$$
+\forall \text{ } k \in [0, n-1]:\ I_k = \text{init} + \sum_{i=0}^{k} x_i
+$$
+
+Proved in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
+
+```scala
+/**
+ * The integral of a list is defined as the sum of all elements in the list
+ * plus the initial value.
+ *
+ * That is:
+ * integral.apply(position) == init + ListUtils.sum(list[0..position])
+ *
+ * @param integral Integral the integral of the lemma
+ * @param position BigInt the position in the list
+ * @return Boolean true if the property holds
+ */
+  def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
+    require(integral.list.nonEmpty)
+    require(position >= 0 && position < integral.list.size)
+    require(integral.list.size > 1)
+    decreases(position)
+
+    // ...
+
+    integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
+  }.holds
+````
+
+### 4.4 Final Element Equals Full Sum
 
 Lemma: The last element of the integral is 
 equal to the sum of all elements in the list plus the initial value.
@@ -190,44 +223,10 @@ Proved in [IntegralProperties.scala at assertLastEqualsSum](./src//main/scala/v1
     integral.last == integral.init + ListUtils.sum(integral.list)
   }
 ```
-### 4.4 Integral Equals Sum Until Position
-
-Lemma: The integral at position $ k $ is equal to the sum of all
-elements in the list up to that position, plus the initial value.
-
-$$
-\forall \text{ } k \in [0, n-1]:\ I_k = \text{init} + \sum_{i=0}^{k} x_i
-$$
-
-```scala
-/**
- * The integral of a list is defined as the sum of all elements in the list
- * plus the initial value.
- *
- * That is:
- * integral.apply(position) == init + ListUtils.sum(list[0..position])
- *
- * @param integral Integral the integral of the lemma
- * @param position BigInt the position in the list
- * @return Boolean true if the property holds
- */
-  def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
-    require(integral.list.nonEmpty)
-    require(position >= 0 && position < integral.list.size)
-    require(integral.list.size > 1)
-    decreases(position)
-
-    // ...
-
-    integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
-  }.holds
-````
-
-Proved in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
 
 ### 5 Implementation Consistency Lemmas
 
-Although the above define the mathematical behavior of the discrete integral, we also prove the internal consistency of different Scala representations.
+Although the above define the mathematical behavior of the discrete integral, we also prove the internal consistency of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for formal consistency within verified software.
 
 ### 5.1 Define Accumulated List
 
@@ -289,6 +288,9 @@ $$
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
 $$
 
+Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply):
+
+
 ```scala
   /**
  * Lemma: The `apply(position)` method returns the same value as the value at
@@ -312,7 +314,6 @@ def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
   integral.acc(position) == integral.apply(position)
 }.holds
 ```
-Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply).
 
 #### Delta Consistency
 
@@ -322,6 +323,8 @@ equals the corresponding value from the original list.
 $$
 \forall \text{ } k \in [0, n-2]:\ acc_{(k+1)} - acc_k = x_{(k+1)} = L_{(k+1)}
 $$
+
+Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList):
 
 ```scala
   /**
@@ -348,7 +351,6 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
     integral.acc(position) == integral.apply(position)
 }.holds
 ```
-Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList).
 
 #### Last Element Agreement
 
@@ -361,6 +363,8 @@ acc_{(n - 1)} & = last_{(I)} \\
 acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 $$
+
+Proved in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast):
 
 ```scala
   /**
@@ -381,7 +385,6 @@ def assertLast(integral: Integral): Boolean = {
   integral.apply(integral.size - 1) == integral.last
 }.holds
 ```
-Proved in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast).
 
 #### List Size Agreement
 
@@ -390,6 +393,8 @@ Lemma: The size of the accumulated list is equal to the size of the original lis
 $$
 |acc| = |L|
 $$
+
+Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList):
 
 ```scala
   /**
@@ -412,14 +417,11 @@ $$
   }.holds
 ```
 
-These lemmas do not introduce new mathematical insights but are essential for formal consistency within verified software.
-Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList).
-
 ## 5. Limitations
 
 * The current implementation focuses exclusively on lists of unbounded integers (`BigInt`). It does not yet support generalized numeric types via abstraction or type classes.
 * While the recursive definitions are mathematically correct, they may lead to stack overflows for very large lists. This work prioritizes correctness and verifiability over performance or scalability.
-* The $ sum $, $ head $, $ tail $ and concatenation $ \mathbin{+\!\!+} $ functions used here are reused from prior verified work [[1]](list.md) and are not redefined in this article.
+* The $ sum $, $ head $, $ tail $ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](list.md) and are not redefined in this article.
 
 ## 6. Conclusion
 
@@ -440,15 +442,15 @@ This direction is left for future work.
 ### Stainless Execution Output
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
-<span style="color:blue">[  Info  ] </span> Finished compiling</span>
-<span style="color:blue">[  Info  ] </span> Preprocessing finished</span>
-<span style="color:blue">[  Info  ] </span> Inferring measure for sum...</span>
-<span style="color:orange">[Warning ] </span> The Z3 native interface is not available. Falling back onto smt-z3.</span>
-<span style="color:blue">[  Info  ] </span> Finished lowering the symbols</span>
-<span style="color:blue">[  Info  ] </span> Finished generating VCs</span>
-<span style="color:blue">[  Info  ] </span> Starting verification...</span>
-<span style="color:blue">[  Info  ] </span> Verified: 2781 / 2781</span>
-<span style="color:blue">[  Info  ] </span> Done in 61.79s</span>
+<span style="color:blue">[  Info  ] </span> Finished compiling
+<span style="color:blue">[  Info  ] </span> Preprocessing finished
+<span style="color:blue">[  Info  ] </span> Inferring measure for sum...
+<span style="color:orange">[Warning ] </span> The Z3 native interface is not available. Falling back onto smt-z3.
+<span style="color:blue">[  Info  ] </span> Finished lowering the symbols
+<span style="color:blue">[  Info  ] </span> Finished generating VCs
+<span style="color:blue">[  Info  ] </span> Starting verification...
+<span style="color:blue">[  Info  ] </span> Verified: 2781 / 2781
+<span style="color:blue">[  Info  ] </span> Done in 61.79s
 <span style="color:blue">[  Info  ] </span><span style="color:green">   ┌───────────────────┐</span>
 <span style="color:blue">[  Info  ] </span><span style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</span>
 <span style="color:blue">[  Info  ] </span><span style="color:green"> ║ └───────────────────┘                                                                           ║</span>
