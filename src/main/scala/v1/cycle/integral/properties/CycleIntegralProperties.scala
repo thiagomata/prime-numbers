@@ -2,7 +2,6 @@ package v1.cycle.integral.properties
 
 import stainless.collection.List
 import stainless.lang.*
-import v1.Calc
 import v1.cycle.integral.CycleIntegral
 import v1.cycle.properties.CycleProperties
 import v1.list.ListUtils
