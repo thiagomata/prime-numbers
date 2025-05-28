@@ -69,12 +69,12 @@ The focus is on **mathematical properties** and **semantic validity**, not execu
 
 ### List construction
 
-Let $ \mathcal{L} $ be the set of all lists over a set $ S $.
-A list is either the empty $ L_{e} $ or a non-empty list $ L_{node} $, as follows:
+Let $\mathcal{L}$ be the set of all lists over a set $S$.
+A list is either the empty $L_{e}$ or a non-empty list $L_{node}$, as follows:
 
 ### Empty List
 
-Let's define an empty list $ L_{e} $:
+Let's define an empty list $L_{e}$:
 
 ```math
 \begin{aligned}
@@ -118,7 +118,7 @@ L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 
 
 With the structure of lists defined, we now introduce a recursive definition 
 for their size (or length).
-We define the size of a list $ L $, $ |L| $ as follows:
+We define the size of a list $L$, $|L|$ as follows:
 
 ```math
 |L| = 
@@ -133,7 +133,7 @@ Proved in the native stainless library in `stainless.collection.List`.
 
 ### List Append
 
-Let $ A, B \in \mathcal{L} $ over some set $ S $. The append operation $ A ⧺ B $ is defined recursively as:
+Let $A, B \in \mathcal{L}$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
 
 ```math
 \begin{aligned}
@@ -149,9 +149,9 @@ Proved in the native stainless library in `stainless.collection.List`.
 
 ### List Slice
 
-Given a list $ L = [v_0, v_1, \dots, v_{n-1}] $, and integers 
-$ 0 \leq i \leq j < |L| $, the slice function $ slice(L, i, j) $ 
-returns a sublist of $ L $ from index $ i $ to $ j $, inclusive.
+Given a list $L = [v_0, v_1, \dots, v_{n-1}]$, and integers 
+$0 \leq i \leq j < |L|$, the slice function $slice(L, i, j)$ 
+returns a sublist of $L$ from index $i$ to $j$, inclusive.
 
 ```math
 \begin{aligned}
