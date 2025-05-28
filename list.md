@@ -5,7 +5,7 @@
 <p style="text-align: justify">
 In this article, we define and construct lists from scratch, relying only on core type 
 constructs and recursion, with no prior knowledge of Scala's collections required. Core 
-properties of finite integer lists are formalized and verified using recursive definitions 
+properties of finite integer lists are formalised and verified using recursive definitions 
 aligned with functional programming principles. Lists are modelled either as empty or as 
 recursively constructed pairs of head and tail. We recursively define operations such as 
 indexing, concatenation, slicing, and summation both mathematically and in pure Scala.
@@ -85,14 +85,14 @@ L_{e} & = [] \\
 
 ### Recursive Definition of List
 
-$$
+```math
 \begin{aligned}
 \text{ head } & \in \mathbb{S} \\
 \text{ tail } & \in \mathcal{L} \\
- L_{node}(\text{head}, \text{tail}) & \in \mathcal{L}_{node} \\
+L_{node}(\text{head}, \text{tail}) & \in \mathcal{L}_{node} \\
 \mathcal{L} = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in S,\ \text{tail} \in \mathcal{L} \} \\
 \end{aligned}
-$$
+```
 
 #### Termination and Cyclic References
 
@@ -217,53 +217,53 @@ Using the definitions above, we state and verify the following key properties of
 
 ### Sum matches Summation
 
-We can proof that the recursive `sum` function over a list $L$ matches the mathematical definition 
+We can prove that the recursive `sum` function over a list $L$ matches the mathematical definition 
 of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
 
 #### Base Case: $|L| = 0$
 
-$$
+```math
 \begin{aligned}
-\text{sum}(L) &= 0 & \text{[by definition of \text{sum}]} \\
+\text{sum}(L) &= 0 & \text{[by definition of sum]} \\
 \sum L &= 0 & \text{[summation over empty list]} \\
 \Rightarrow \text{sum}(L) &= \sum L \in S
 \end{aligned}
-$$
+```
 
-$$
+```math
 \therefore \\
 \forall \text{ } L \in \mathcal{L} \\
 |L| = 0 \implies \text{sum}(L) = \sum L  \\
-$$
+```
 
 #### Inductive Step: $|L| > 0$
 
 Let $P \in \mathcal{L}$, with $P = [x_1, x_2, \dots, x_{n-1}] \in \mathcal{L}$, and assume:
 
-$$
+```math
 \begin{aligned}
 \text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
 L = [x_0] ⧺ P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definiton of Concatenation]} \\
 \end{aligned}
-$$
+```
 
 We can ensure termination, since:
-$$
+```math
 \begin{aligned}
 |L| & = |P| + 1  & \qquad \text{[by Size Definition]} \\
 |P| & < |L|  & \qquad \text{[Size Decreases Ensures Termination]} \\
 \end{aligned}
-$$
+```
 
 Let's calculate the sum of $L$:
-$$
+```math
 \begin{aligned}
 \text{sum}(L) &= \text{head}(L) + \text{sum}(\text{tail}(L))  & \qquad \text{[by definition of the recursive function sum]} \\
               &= x_0 + \text{sum}(P)                          & \qquad \text{[by definition of head and P]} \\
               &= x_0 + \sum_{i=1}^{n-1} x_i                   & \qquad \text{[by Inductive Hypothesis]} \\
               &= \sum_{i=0}^{n-1} x_i = \sum L                
 \end{aligned}
-$$
+```
 
 $$
 \therefore \\
