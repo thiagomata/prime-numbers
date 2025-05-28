@@ -3,23 +3,22 @@
 ## Abstract
 
 <p style="text-align: justify">
-In thids article, we define and construct lists from scratch, relying only on core type 
-constructs and recursion, with no prior knowledge of Scala’s collections required. Core 
+In this article, we define and construct lists from scratch, relying only on core type 
+constructs and recursion, with no prior knowledge of Scala's collections required. Core 
 properties of finite integer lists are formalized and verified using recursive definitions 
-aligned with functional programming principles. Lists are modeled as either empty or recursively 
-constructed from a head and a tail. Operations such as indexing, concatenation, slicing, 
-and summation are also recursively defined, mathematically described, and implemented in 
-pure Scala. All properties are formally verified using the Stainless verification system, 
-ensuring correctness through static guarantees. This work bridges mathematical rigor and 
-executable code, providing a foundation for verified reasoning over recursive data structures.
+aligned with functional programming principles. Lists are modelled either as empty or as 
+recursively constructed pairs of head and tail. We recursively define operations such as 
+indexing, concatenation, slicing, and summation both mathematically and in pure Scala.
+All properties are formally verified using the Stainless verification system, ensuring 
+correctness via static guarantees. This work bridges mathematical rigour and executable 
+code, laying a foundation for verified reasoning over recursive data structures.
 </p>
 
 ## Introduction
 
-Lists are finite sequences of values that support a wide range of operations in 
-functional and declarative programming. When combined with summation, they provide the 
-backbone for definitions of sequences, recurrence, accumulation, and integration in the 
-discrete domain.
+Lists are finite sequences of values that support a wide range of operations in functional 
+and declarative programming. When combined with summation, they form the backbone for 
+definitions of sequences, recurrence, accumulation, and integration in the discrete domain.
 
 Our approach mirrors traditional recursive definitions but is formally verified 
 using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), 
@@ -32,17 +31,19 @@ ensuring that the properties hold under all inputs within the specified constrai
 
 ## Limitations
 
-The implementation and verification presented in this article are restricted to immutable, 
+This article restricts the implementation and verification to immutable, 
 finite lists of integers represented using the `stainless.collection.List` data type. 
-The focus is on **correctness**, not on performance or scalability. Our summation and accumulation models follow a **recursive definition**, which is faithful 
-to mathematical formalism. However, this can introduce performance limitations in practical 
-use over very large lists.
+The focus is on **correctness**, not on performance or scalability. Our summation and 
+accumulation models follow a **recursive definition**, which is faithful to mathematical 
+formalism.
+However, this can introduce performance limitations in practical use when dealing 
+with extensive lists.
 
 In particular:
 
-- **Overflow and memory limits are not modeled**: Since we use `BigInt` and immutable lists, 
-the model assumes unbounded integer arithmetic and infinite list capacity. 
-This avoids issues like overflow or out-of-memory errors, but it does not reflect the constraints 
+- **Overflow and memory limits are out of scope**: Since we use `BigInt` and immutable lists, 
+the model assumes unbounded integer arithmetic and infinite list capacity. This approach avoids 
+issues like overflow or out-of-memory errors, but it does not reflect the constraints 
 imposed by bounded integer types or limited memory in real-world systems.
 
 - **Side-effects are excluded**: All list operations are pure and referentially transparent. 
@@ -79,22 +80,26 @@ Let's define an empty list $ L_{e} $:
 \begin{aligned}
 L_{e} & \in \mathcal{L} \\
 L_{e} & = [] \\
-isEmpty(L_{e}) & = True \\
-isNonEmpty(L_{e}) & = False \\
 \end{aligned}
 ```
 
 ### Recursive Definition of List
 
-```math
+$$
 \begin{aligned}
-\forall \text{ head } & \in S, \text{ tail } \in \mathcal{L}  \\
- L_{node}(head, tail) & \in \mathcal{L}_{\text{node}} \\
-\mathcal{L} = \{ L_e \}  \cup \{ L_{node}(head, tail) & \mid head \in S,\ tail \in \mathcal{L} \} \\
-isEmpty(L_{node}) & = False \\
-isNonEmpty(L_{node}) & = True \\
+\text{ head } & \in \mathbb{S} \\
+\text{ tail } & \in \mathcal{L} \\
+ L_{node}(\text{head}, \text{tail}) & \in \mathcal{L}_{node} \\
+\mathcal{L} = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in S,\ \text{tail} \in \mathcal{L} \} \\
 \end{aligned}
-```
+$$
+
+#### Termination and Cyclic References
+
+Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$ 
+produces a distinct structural value without the possibility of cyclic references. 
+Recursive functions over $\mathcal{L}$ terminate naturally, as size is defined by a strictly decreasing structure.
+
 
 ### Elements Access and Indexing
 
@@ -125,16 +130,17 @@ We define the size of a list $ L $, $ |L| $ as follows:
 
 Proved in the native stainless library in `stainless.collection.List`.
 
+
 ### List Append
 
-Let $ A, B \in \mathcal{L} $ over some set $ S $. The append operation $ A \mathbin{+\!\!+} B $ is defined recursively as:
+Let $ A, B \in \mathcal{L} $ over some set $ S $. The append operation $ A ⧺ B $ is defined recursively as:
 
 ```math
 \begin{aligned}
-A \mathbin{+\!\!+} B =
+A ⧺ B =
 \begin{cases}
 B & \text{if } A = L_e \\
-L_{node}(head(A), tail(A) \mathbin{+\!\!+} B) & \text{otherwise}
+L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise}
 \end{cases}
 \end{aligned}
 ```
@@ -149,10 +155,10 @@ returns a sublist of $ L $ from index $ i $ to $ j $, inclusive.
 
 ```math
 \begin{aligned}
-slice(L, i, j) = 
+L[i \dots j] = slice(L, i, j) = 
 \begin{cases}
 [ L_{(j)} ] & \text{if } i = j \\
-slice(L, i, j - 1) \mathbin{+\!\!+} [ L_{(j)} ] & \text{if } i < j
+slice(L, i, j - 1) ⧺ [ L_{(j)} ] & \text{if } i < j
 \end{cases}
 \end{aligned}
 ```
@@ -181,10 +187,12 @@ Defined at [List Utils](
 
 ### List Sum
 
+Let $\text{sum} : \mathcal{L} \rightarrow \mathbb{S}$ be a recursively defined function:
+
 ```math
 sum(L) = 
 \begin{cases} \\
-0 & \text{if } |L| = 0 \\
+0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
@@ -202,14 +210,91 @@ Defined at [List Utils](
     }
   }
 ```
+
 ## Properties
 
 Using the definitions above, we state and verify the following key properties of lists:
 
+### Sum matches Summation
+
+We can proof that the recursive `sum` function over a list $L$ matches the mathematical definition 
+of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
+
+#### Base Case: $|L| = 0$
+
+$$
+\begin{aligned}
+\text{sum}(L) &= 0 & \text{[by definition of \text{sum}]} \\
+\sum L &= 0 & \text{[summation over empty list]} \\
+\Rightarrow \text{sum}(L) &= \sum L \in S
+\end{aligned}
+$$
+
+$$
+\therefore \\
+\forall \text{ } L \in \mathcal{L} \\
+|L| = 0 \implies \text{sum}(L) = \sum L  \\
+$$
+
+#### Inductive Step: $|L| > 0$
+
+Let $P \in \mathcal{L}$, with $P = [x_1, x_2, \dots, x_{n-1}] \in \mathcal{L}$, and assume:
+
+$$
+\begin{aligned}
+\text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
+L = [x_0] ⧺ P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definiton of Concatenation]} \\
+\end{aligned}
+$$
+
+We can ensure termination, since:
+$$
+\begin{aligned}
+|L| & = |P| + 1  & \qquad \text{[by Size Definition]} \\
+|P| & < |L|  & \qquad \text{[Size Decreases Ensures Termination]} \\
+\end{aligned}
+$$
+
+Let's calculate the sum of $L$:
+$$
+\begin{aligned}
+\text{sum}(L) &= \text{head}(L) + \text{sum}(\text{tail}(L))  & \qquad \text{[by definition of the recursive function sum]} \\
+              &= x_0 + \text{sum}(P)                          & \qquad \text{[by definition of head and P]} \\
+              &= x_0 + \sum_{i=1}^{n-1} x_i                   & \qquad \text{[by Inductive Hypothesis]} \\
+              &= \sum_{i=0}^{n-1} x_i = \sum L                
+\end{aligned}
+$$
+
+$$
+\therefore \\
+\forall\text{ }  L \in \mathcal{L} \\
+|L| > 0 \implies \text{sum}(L) = \sum L  \\
+$$
+
+Hence, by induction on the size of $L$:
+
+$$
+\forall \text{ } L \in \mathcal{L} \\
+\text{sum}(L) = \sum L = \sum_{i=0}^{n-1} x_i  \in S 
+\quad \text{[Q.E.D.]}
+$$
+
+
 ### Tail Access Shift
-```math
-	tail(L)_{(i)} = L_{(i + 1)}
-```
+
+$$
+\forall \text{ } L,\ i,\quad |L| > 1 \land 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
+$$
+
+Since:
+
+$$
+\begin{aligned}
+L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 0
+\end{aligned}
+$$
+
+
 Proved in [List Utils Properties - Access Tail Shift](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShift
 ) as follows:
@@ -221,10 +306,10 @@ Proved in [List Utils Properties - Access Tail Shift](
   }.holds
 ```
 
-### Positional Shift in Tail
-```math
-i > 0 \implies L_{(i)} = 	tail(L)_{(i - 1)}
-```
+$$
+\forall L,\ i,\quad |L| > 1 \land i > 0 \implies L_{(i)} = 	tail(L)_{(i - 1)}
+$$
+
 
 Proved in [List Util Properties - Assert Tail Shift Position](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertTailShiftPosition
@@ -274,11 +359,34 @@ Proved in [List Util Properties - Assert Last Equals Last Position](
 ```
 
 ### Left Append Preserves Sum
-```math
-	sum([v] \mathbin{+\!\!+} L) = v + 	sum(L)
-```
 
-Proved in [List Utils Properties - List Sum Add Value](
+$$
+ \forall \text{ } x \in \mathbb{S} \\
+\text{sum}([x] ⧺ L ) = x + \text{sum}(L) \\
+$$
+
+Proof:
+
+$$
+\begin{aligned}
+A & = [x] ⧺ L  & \qquad \text{[Concatenation]} \\
+\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A)) & \qquad \text{[By recursive definition of sum]} \\
+              & = x + \text{sum}(L) & \qquad \text{[By recursive definition of head and tail]} \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\begin{aligned}
+\text{sum}([x] ⧺ L) & = x + \text{sum}(L) &  \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+
+Verified in [List Utils Properties - List Sum Add Value](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue
 ) as follows:
 
@@ -288,13 +396,49 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
   }.holds
 ```
 
-
 ### Sum over Concatenation
 ```math
-	sum(A \mathbin{+\!\!+} B) = 	sum(A) + 	sum(B)
+	sum(A ⧺ B) = 	sum(A) + 	sum(B)
 ```
 
-Proved in [List Utils Properties - List Combine ](
+#### If List A is Empty
+
+$$
+\begin{aligned}
+  A ⧺ B & = L_e ⧺ B & \text{[A is empty list]} \\
+        & = B & \text{[By definition of concatenation]} \\
+  \text{sum}(A) & = 0 & \text{[By definition of sum]} \\
+  \text{sum}(A ⧺ B) & = \text{sum}(B) & \text{[Since A ⧺ B equals B]} \\
+                    & = 0 + \text{sum}(B) \\
+                    & = \text{sum}(A) + \text{sum}(B) & \text{[Since sum(A) is zero]} \\
+\end{aligned}
+$$
+
+#### If list A is Non-Empty
+
+$$
+\begin{aligned}
+C & = \text{tail}(A) ⧺ B \\
+\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A))                & \text{[By definition of sum]} \\
+C & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Inductive Step]} \\
+A ⧺ B & = [\text{head}(A)] ⧺ (\text{tail}(A) ⧺ B)                          & \text{[By definition of head and tail]} \\
+\text{sum}(A ⧺ B) & = \text{head}(A) + \text{sum}(\text{tail}(A) ⧺ B)      & \text{[By definition of sum]} \\
+                  & = head(A) + \text{sum}(\text{tail}(A)) + \text{sum}(B) & \text{[By definition of C]} \\
+                  & = \text{sum}(A) + \text{sum}(B)                        & \text{[Substituting]} \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\begin{aligned}
+	sum(A ⧺ B) = 	sum(A) + 	sum(B) &  \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+Verified in [List Utils Properties - List Combine ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine
 ) as follows:
 ```scala
@@ -318,7 +462,7 @@ Proved in [List Utils Properties - List Combine ](
 
 ### Commutativity of Sum over Concatenation
 ```math
-	sum(A \mathbin{+\!\!+} B) = 	sum(B \mathbin{+\!\!+} A)
+	sum(A ⧺ B) = 	sum(B ⧺ A)
 ```
 
 Proved in [List Utils Properties - List Swap ](
@@ -337,9 +481,11 @@ Proved in [List Utils Properties - List Swap ](
 ```
 
 ### Slice Append Consistency
+
 ```math
-	slice(L, f, t) = 	slice(L, f, t-1) \mathbin{+\!\!+} [L(t)]
+	L[f, \dots, t] = slice(L, f, t) = 	slice(L, f, t-1) ⧺ [L(t)]
 ```
+
 
 Proved in [List Utils Properties - Assert Append to Slice ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
@@ -369,22 +515,57 @@ These properties are:
 \begin{aligned}
 |L| > 0 & \implies last(L)   = L_{(|L| - 1)} \\
 i > 0 	& \implies L_{(i)} 	 = tail(L)_{(i - 1)} \\
-tail(L)_{(i)}                & = L_{(i + 1)} \\
-sum([v] \mathbin{+\!\!+} L)  & = v + sum(L) \\
-sum(A \mathbin{+\!\!+} B)    & = sum(A) + sum(B) \\
-sum(A \mathbin{+\!\!+} B)    & = sum(B \mathbin{+\!\!+} A) \\
-slice(L, f, t)               & = slice(L, f, t-1) \mathbin{+\!\!+} [L(t)] \\
+tail(L)_{(i)}                 & = L_{(i + 1)} \\
+sum([v] ⧺ L)                  & = v + sum(L) \\
+sum(A ⧺ B)                    & = sum(A) + sum(B) \\
+sum(A ⧺ B)                    & = sum(B ⧺ A) \\
+L[f, \dots, t ] = slice(L, f, t) & = slice(L, f, t-1) ⧺ [L(t)] \\
 
 \end{aligned}
 ```
 
-These properties are implemented in Scala using the Stainless verification system,
-ensuring correctness of properties and recursive functions through static guarantees.
-This foundation supports further extensions in formally verified functional data structures
-and serves as a practical bridge between mathematical definitions and executable code.
+These properties are implemented in Scala using the Stainless verification system, ensuring 
+the correctness of properties and recursive functions through static guarantees. 
+This foundation supports further extensions in formally verified functional data structures, 
+serving as a practical bridge between mathematical definitions and executable code.
 
 The properties and definitions presented here can be extended to more complex data structures
 and algorithms, providing a solid foundation for future work in formal verification and
 mathematical reasoning in functional programming.
+
+## Appendix
+
+### On Generalization to Arbitrary Numeric Types
+
+In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning.
+Although the discrete integral could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
+
+Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
+This direction is left for future work.
+
+### Stainless Execution Output
+
+<pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
+<code style="color:blue">[  Info  ] </code> Finished compiling
+<code style="color:blue">[  Info  ] </code> Preprocessing finished
+<code style="color:blue">[  Info  ] </code> Inferring measure for sum...
+<code style="color:orange">[Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
+<code style="color:blue">[  Info  ] </code> Finished lowering the symbols
+<code style="color:blue">[  Info  ] </code> Finished generating VCs
+<code style="color:blue">[  Info  ] </code> Starting verification...
+<code style="color:blue">[  Info  ] </code> Verified: 2781 / 2781
+<code style="color:blue">[  Info  ] </code> Done in 61.79s
+<code style="color:blue">[  Info  ] </code><code style="color:green">   ┌───────────────────┐</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
+<code style="color:blue">[  Info  ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
+<code style="color:blue">[  Info  ] </code> Verification pipeline summary:
+<code style="color:blue">[  Info  ] </code>  @extern, cache, anti-aliasing, return transformation, 
+<code style="color:blue">[  Info  ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
+<code style="color:blue">[  Info  ] </code>   non-batched
+<code style="color:blue">[  Info  ] </code> Shutting down executor service.
+</pre>
 
 

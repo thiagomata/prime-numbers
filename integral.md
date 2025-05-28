@@ -25,7 +25,7 @@ implementation of discrete integration, suitable as a foundation for higher-leve
 ## 2. Preliminaries and Notation
 
 Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite, non-empty list of $n$ integers, where $n = |L|$,
-and let $\text{init} \in \mathbb{Z}$ be an initial value.
+and let $init \in \mathbb{Z}$ be an initial value.
 
 We reuse several basic list operations and their verified properties from a companion article on recursive list construction [[1]](lists.md).  
 These include the following functions:
@@ -42,12 +42,12 @@ Proofs in this article are written in Scala and verified using the Stainless sys
 
 ## 3. Definition of Discrete Integral
 
-We define the **discrete integral** $I = Integral(L, \text{init})$ as a list of partial sums such that:
+We define the **discrete integral** $I = Integral(L, init)$ as a list of partial sums such that:
 
 $$
 \begin{aligned}
 \text{for } k \in [0, n - 1] \\
-I_{k} = \text{init} + \sum_{i=0}^{k} L_i \\
+I_{k} = init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
 $$
 ## 4. Recursive Definition
@@ -57,7 +57,7 @@ We also rely on the following notation:
 
 $$
 \begin{aligned}
-I &= \text{Integral}(L, \text{init}) \\
+I &= \text{Integral}(L, init) \\
 n &= |L| \\
 k &\in [0, n - 1]
 \end{aligned}
@@ -68,8 +68,8 @@ The value of the $k\text{-th}$ element in the integral $I$ is defined recursivel
 $$
 I_k =
 \begin{cases}
-L_0 + \text{init} & \text{if } k = 0 \\
-\text{Integral}(\text{tail}(L),\ \text{head}(L) + \text{init})_{(k - 1)} & \text{if } k > 0
+L_0 + init & \text{if } k = 0 \\
+\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
 \end{cases}
 $$
 
@@ -101,10 +101,26 @@ Lemma: The first element of the integral is equal to the first element of the or
 list plus the initial value.
 
 $$
-I_0 = x_0 + \text{init}
+I_0 = x_0 + init
 $$
 
-Proved in [IntegralProperties.scala at assertHeadValueMatchDefinition](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertHeadValueMatchDefinition).
+Since:
+$$
+\begin{aligned}
+I & \ne L_e                               & \qquad \text{[By definition: Integral is not an empty list]} \\
+I_0 & = \text{head}(I)                    & \qquad \text{[List element access and indexing]} \\
+\text{head}(I) & = \text{head}(L) + init  & \qquad \text{[By definition of Integral]} \\
+L_0 & = \text{head}(L)                    & \qquad \text{[List element access and indexing]} \\
+L_0 & = x_0                               & \qquad \text{[By definition of List]} \\
+\text{head}(I) & = L_0 + init             & \qquad \text{[Substitute head}(L) \text{ by } L_0] \\
+I_0 & = L_0 + init                        & \qquad \text{[Substitute head}(I) \text{ by } I_0] \\
+I_0 & = x_0 + init                        & \qquad \text{[Substitute } L_0 \text{ by } x_0] \\
+I_0 & = x_0 + init                        & \qquad \text{[qed]}
+\end{aligned}
+$$
+
+
+Also verified in Scala Stainless in [IntegralProperties.scala on assertHeadValueMatchDefinition](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertHeadValueMatchDefinition).
 
 ```scala
 /**
@@ -120,22 +136,71 @@ Proved in [IntegralProperties.scala at assertHeadValueMatchDefinition](./src//ma
 def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
   require(integral.list.nonEmpty)
   
-  // ...
+  assert(integral.head == integral.list.head + integral.init)
+  assert(integral.apply(0) == integral.head)
+  assert(integral.acc(0) == integral.head)
+  assert(integral.acc(0) == integral.apply(0))
   
   integral.head == integral.list.head + integral.init
 }.holds
 ```
 
-### 4.2 Step Increment Matches List Value
+### 4.2 Incremental Change Matches List Value
 
-Lemma: The difference between two consecutive accumulated values in Acc
-equals the corresponding value from the original list.
+**Lemma:** The difference between two consecutive values in the Integral list equals the corresponding value in the original list $L$.
+
+That is, considering the previous defined List $L$ and Integral $I$:
 
 $$
-\forall \text{ } k \in [1, n-1]:\ I_k = I_{k-1} + x_k
+\begin{aligned}
+\forall \text{ } p & \in [0,\ n-2]: \\
+I_{p+1} - I_p & = L_{p+1} \\
+& \text{where}  \\
+n & = |L| & \text{[} n  \text{ is the size of the list } L \text{] } \\
+I & = [v_0, v_1, v_2, \dots, v_{n-1} ] & \text{[Integral values can be described as a list of values }  v_{k} \text{]} \\
+L & = [x_0, x_1, x_2, \dots, x_{n-1} ] & \text{[List values can be seen as a list of values } x_{k} \text{]} \\
+I_{k} & = v_k & \text{[The } k \text{-th element of the integral} I \text{] } \\
+L_{k} & = x_k & \text{[The } k \text{-th element of the list} L \text{] } \\
+\end{aligned}
 $$
 
-Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList).
+
+#### Proof of the Base Case $I_1 - I_0 = x_1$
+
+$$
+\begin{aligned}
+I_1    &= \text{Integral}(\text{tail}(L),\ I_0)_0           & \qquad \text{[By recursive definition for a non-first element]} \\
+       &= \text{Integral}([x_1, \dots, x_n],\ I_0)_0        & \qquad \text{[By tail definition]} \\
+       &= \text{head}([x_1, \dots, x_n]) + I_0              & \qquad \text{[By recursive Integral definition for the first element ]} \\
+       &= x_1 + I_0                                         & \qquad \text{[By head definition]} \\
+I_1 - I_0 &= (x_1 + I_0) - I_0                              & \qquad \text{[Substituting for } I_1, I_0] \\
+         &= x_1 + I_0 - I_0                                 & \qquad \text{[Distributivity]} \\
+         &= x_1                                             & \qquad \text{[Cancellation of terms]} \\
+         & \therefore \\
+I_1 - I_0 &= x_1                                            & \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+
+#### Proof of the Inductive Step $I_{p+1} - I_p = L_{p+1}$
+
+$$
+\begin{aligned}
+L &= x_0 :: L_{\text{tail}}                                                                & \qquad \text{[List decomposition]} \\
+I &= v_0 :: I_{\text{tail}}                                                                & \qquad \text{[Integral decomposition]} \\
+I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
+I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
+I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
+I_{p+2} - I_{p+1} &= I_{\text{tail},\ p+1} - I_{\text{tail},\ p}                           & \qquad \text{[Substituting for } I_{p+2}, I_{p+1}] \\
+                  &= (L_{\text{tail},\ p+1} + I_{\text{tail},\ p}) - I_{\text{tail},\ p}   & \qquad \text{[Substituting for } I_{\text{tail},\ p+1}] \\
+                  &= L_{\text{tail},\ p+1}                                                 & \qquad \text{[Cancellation of terms]} \\
+L_{p+2} &= L_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } L \text{ at position } p + 1] \\
+& \therefore \\
+I_{p+2} - I_{p+1} &= L_{p+2}                                                               & \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList).
 
 ```scala
   /**
@@ -165,14 +230,138 @@ Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/sca
 
 ### 4.3 Integral Equals Sum Until Position
 
+**Lemma:** The integral at position $k$ is equal to the sum of all
+elements in the list up to that position, plus the initial value:
+
+$$
+\forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
+$$
+
+---
+
+#### Proof by Induction on $k$
+
+**Base case** $k = 0$:
+
+$$
+\begin{aligned}
+\sum_{i=0}^{0} x_i &= x_0 \qquad & \text{[By definition of sum]} \\
+I_0 & = \mathit{init} + x_0 \qquad & \text{[By definition of integral]} \\
+    & = \mathit{init} + \sum_{i=0}^{0} x_i & \qquad \text{[Substituting } x_0] \\
+\end{aligned}
+$$
+$$ \therefore $$
+$$
+I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
+$$
+
+---
+
+**Inductive step:** Assume the property holds for $k-1$:
+
+$$
+I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \sum_{i=0}^{k} x_i
+$$
+$$
+\begin{aligned}
+I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                    \qquad & \text{[By induction]} \\ 
+I_k & = I_{k-1} + L_k                                                \qquad & \text{[By definition of integral]} \\
+    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k      \qquad & \text{[By induction and } L_k = x_k]  \\
+    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)                 & \qquad \text{[Distributivity]} \\
+    &= \mathit{init} + \sum_{i=0}^{k} x_i                           \qquad & \text{[By definition of sum]} \\
+\end{aligned}
+$$
+$$ \therefore $$
+$$
+\begin{aligned}
+I_k = \mathit{init} + \sum_{i=0}^{k} x_i \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+---
+
+This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqualsSum`](./src/main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum):
+
+```scala
+/**
+ * The integral of a list is defined as the sum of all elements in the list
+ * plus the initial value.
+ *
+ * That is:
+ * integral.apply(position) == init + ListUtils.sum(list[0..position])
+ *
+ * @param integral the integral instance
+ * @param position the list index to check
+ * @return true if the property holds at this position
+ */
+def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
+  require(integral.list.nonEmpty)
+  require(position >= 0 && position < integral.list.size)
+  require(integral.list.size > 1)
+  decreases(position)
+
+  integral.apply(position) == integral.init + ListUtils.sum(
+    ListUtils.slice(integral.list, 0, position)
+  )
+}.holds
+```
+
+### 4.3 Integral Equals Sum Until Position
+
 Lemma: The integral at position $k$ is equal to the sum of all
 elements in the list up to that position, plus the initial value.
 
 $$
-\forall \text{ } k \in [0, n-1]:\ I_k = \text{init} + \sum_{i=0}^{k} x_i
+\forall \text{ } k \in [0, n-1]:\ I_k = init + \sum_{i=0}^{k} x_i
 $$
 
-Proved in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
+#### Proof of the Base Case $I_0 = init + \sum_{i=0}^{k} x_0$
+
+$$
+\begin{aligned}
+x_0 & = \sum_{i=0}^{0} x_i                                  & \qquad \text{[By sum definition]} \\
+I_0 &= init + x_0                                           & \qquad \text{[By recursive Integral definition for the first element ]} \\
+I_0 &= init + \sum_{i=0}^{0} x_i                            & \qquad \text{[Substituting for } x_9] \\
+\end{aligned}
+$$
+$$ \therefore $$
+$$
+\begin{aligned}
+I_0 &= init + \sum_{i=0}^{0} x_i                            & \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+
+#### Proof of the Inductive Step $I_{k} = init + \sum_{i=0}^{k} x_i, \forall \text{ } k > 1$
+
+$$
+I_{k-1} = init + \sum_{i=0}^{k-1} x_i \implies I_k = init + \sum_{i=0}^{k} x_i \\
+$$
+
+$$
+\begin{aligned}
+I_{k-1} & = init + \sum_{i=0}^{k-1} x_i                    & \qquad \text{[By induction]} \\
+L_k & = x_k                                                & \qquad \text{[By definition of} L] \\
+I_k & = I_{k-1} + L_{k}                                    & \qquad \text{[As proved in the proof 4.2]} \\
+    & = I_{k-1} + x_{k}                                    & \qquad \text{[Substituting for } L_{k}] \\
+\sum_{i=0}^{k} x_i & = \sum_{i=0}^{k-1} x_i + x_{k}        & \qquad \text{[Definition of sum]} \\
+I_k & = (init + \sum_{i=0}^{k-1} x_i) + x_{k}              & \qquad \text{[Substituting for } I_{k-1}] \\
+    & = init + \sum_{i=0}^{k-1} x_i + x_{k}                & \qquad \text{[Distributivity]} \\
+    & = init + \sum_{i=0}^{k} x_i                          & \qquad \text{[Substituting for } \sum_{i=0}^{k-1} x_i + x_{k} ] \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\begin{aligned}
+I_k & = init + \sum_{i=0}^{k} x_i                          & \qquad \text{[Q.E.D.]} \\
+\end{aligned}
+$$
+
+This lemma is also verified in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
 
 ```scala
 /**
@@ -196,7 +385,7 @@ Proved in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scal
 
     integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
   }.holds
-````
+```
 
 ### 4.4 Final Element Equals Full Sum
 
@@ -204,10 +393,19 @@ Lemma: The last element of the integral is
 equal to the sum of all elements in the list plus the initial value.
 
 $$
-I_{n-1} = \text{init} + \sum_{i=0}^{n-1} x_i
+I_{n-1} = init + \sum_{i=0}^{n-1} x_i
 $$
 
-Proved in [IntegralProperties.scala at assertLastEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLastEqualsSum).
+This proof is trivial, since [4.3 Integral Equals Sum Until Position](#43-integral-equals-sum-until-position) $I_k = init + \sum_{i=0}^{k} x_i$.
+
+$$
+k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
+\therefore \\
+I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
+$$
+
+
+Verified in [IntegralProperties.scala at assertLastEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLastEqualsSum).
 
 ```scala
 /**
@@ -242,7 +440,7 @@ Let:
 
 $$
 \begin{aligned}
-& acc(L, \text{init}) \in \mathbb{Z}^{|L|} \\
+& acc(L, init) \in \mathbb{Z}^{|L|} \\
 & L = [x_0, x_1, \dots, x_{n-1}]
 \end{aligned}
 $$
@@ -250,10 +448,10 @@ $$
 Then, the accumulated list is defined recursively as:
 
 $$
-acc(L, \text{init}) =
+acc(L, init) =
 \begin{cases}
-[] & \text{if } L = [] \\
-\text{head}(L) + \text{init} :: acc(\text{tail}(L),\ \text{head}(L) + \text{init}) & \text{otherwise}
+L_e & \text{if } L = L_e \\
+\text{head}(L) + init :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
 \end{cases}
 $$
 
