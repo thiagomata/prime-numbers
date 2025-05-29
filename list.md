@@ -2,6 +2,7 @@
 
 ## Abstract
 
+<div align="justify">
 <p style="text-align: justify">
 In this article, we define and construct lists from scratch, relying only on core type 
 constructs and recursion, with no prior knowledge of Scala's collections required. Core 
@@ -13,6 +14,7 @@ All properties are formally verified using the Stainless verification system, en
 correctness via static guarantees. This work bridges mathematical rigour and executable 
 code, laying a foundation for verified reasoning over recursive data structures.
 </p>
+</div>
 
 ## Introduction
 
@@ -69,7 +71,7 @@ The focus is on **mathematical properties** and **semantic validity**, not execu
 
 ### List construction
 
-Let $\mathcal{L}$ be the set of all lists over a set $S$.
+Let $𝕃$ be the set of all lists over a set $S$.
 A list is either the empty $L_{e}$ or a non-empty list $L_{node}$, as follows:
 
 ### Empty List
@@ -78,7 +80,7 @@ Let's define an empty list $L_{e}$:
 
 ```math
 \begin{aligned}
-L_{e} & \in \mathcal{L} \\
+L_{e} & \in 𝕃 \\
 L_{e} & = [] \\
 \end{aligned}
 ```
@@ -87,10 +89,10 @@ L_{e} & = [] \\
 
 ```math
 \begin{aligned}
-\text{ head } & \in \mathbb{S} \\
-\text{ tail } & \in \mathcal{L} \\
-L_{node}(\text{head}, \text{tail}) & \in \mathcal{L}_{node} \\
-\mathcal{L} = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in S,\ \text{tail} \in \mathcal{L} \} \\
+\text{ head } & \in 𝕊 \\
+\text{ tail } & \in 𝕃 \\
+L_{node}(\text{head}, \text{tail}) & \in 𝕃_{node} \\
+𝕃 = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in 𝕊,\ \text{tail} \in 𝕃 \} \\
 \end{aligned}
 ```
 
@@ -98,7 +100,7 @@ L_{node}(\text{head}, \text{tail}) & \in \mathcal{L}_{node} \\
 
 Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$ 
 produces a distinct structural value without the possibility of cyclic references. 
-Recursive functions over $\mathcal{L}$ terminate naturally, as size is defined by a strictly decreasing structure.
+Recursive functions over $𝕃$ terminate naturally, as size is defined by a strictly decreasing structure.
 
 
 ### Elements Access and Indexing
@@ -121,8 +123,7 @@ for their size (or length).
 We define the size of a list $L$, $|L|$ as follows:
 
 ```math
-|L| = 
-\begin{cases} \\
+|L| = \begin{cases} \\
 0 & \text{ if } L = L_{e} \\\
 1 + |tail(L)| & \text{otherwise} \\
 \end{cases}
@@ -133,7 +134,7 @@ Proved in the native stainless library in `stainless.collection.List`.
 
 ### List Append
 
-Let $A, B \in \mathcal{L}$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
+Let $A, B \in 𝕃$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
 
 ```math
 \begin{aligned}
@@ -187,7 +188,7 @@ Defined at [List Utils](
 
 ### List Sum
 
-Let $\text{sum} : \mathcal{L} \rightarrow \mathbb{S}$ be a recursively defined function:
+Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
 
 ```math
 sum(L) = 
@@ -226,19 +227,21 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 \begin{aligned}
 \text{sum}(L) &= 0 & \text{[by definition of sum]} \\
 \sum L &= 0 & \text{[summation over empty list]} \\
-\Rightarrow \text{sum}(L) &= \sum L \in S
+\Rightarrow \text{sum}(L) &= \sum L \in 𝕃
 \end{aligned}
 ```
 
 ```math
+\begin{aligned}
 \therefore \\
-\forall \text{ } L \in \mathcal{L} \\
-|L| = 0 \implies \text{sum}(L) = \sum L  \\
+\forall \text{ } L \in 𝕃 \\
+|L| = 0 \implies \text{sum}(L) = \sum L \\
+\end{aligned}
 ```
 
 #### Inductive Step: $|L| > 0$
 
-Let $P \in \mathcal{L}$, with $P = [x_1, x_2, \dots, x_{n-1}] \in \mathcal{L}$, and assume:
+Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
 
 ```math
 \begin{aligned}
@@ -250,8 +253,8 @@ L = [x_0] ⧺ P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definiton of Con
 We can ensure termination, since:
 ```math
 \begin{aligned}
-|L| & = |P| + 1  & \qquad \text{[by Size Definition]} \\
-|P| & < |L|  & \qquad \text{[Size Decreases Ensures Termination]} \\
+&|L| &= |P| + 1  & \qquad \text{[by Size Definition]} \\
+&|P| &< |L|      & \qquad \text{[Size Decreases Ensures Termination]} \\
 \end{aligned}
 ```
 
@@ -267,24 +270,25 @@ Let's calculate the sum of $L$:
 
 $$
 \therefore \\
-\forall\text{ }  L \in \mathcal{L} \\
-|L| > 0 \implies \text{sum}(L) = \sum L  \\
+\forall\text{ }  L \in 𝕃 \\
+|L| > 0 \text{ } \implies \text{ sum}(L) = \sum L  \\
 $$
 
 Hence, by induction on the size of $L$:
 
-$$
-\forall \text{ } L \in \mathcal{L} \\
-\text{sum}(L) = \sum L = \sum_{i=0}^{n-1} x_i  \in S 
-\quad \text{[Q.E.D.]}
-$$
+```math
+\begin{aligned}
+\forall \text{ } L \text{ } \in 𝕃 \\
+\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊 \quad \text{[Q.E.D.]} \\
+\end{aligned}
+```
 
 
 ### Tail Access Shift
 
-$$
+```math
 \forall \text{ } L,\ i,\quad |L| > 1 \land 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
-$$
+```
 
 Since:
 
@@ -360,10 +364,12 @@ Proved in [List Util Properties - Assert Last Equals Last Position](
 
 ### Left Append Preserves Sum
 
-$$
- \forall \text{ } x \in \mathbb{S} \\
+```math
+\begin{aligned}
+\forall \text{ } x \in 𝕊 \\
 \text{sum}([x] ⧺ L ) = x + \text{sum}(L) \\
-$$
+\end{aligned}
+```
 
 Proof:
 
@@ -537,7 +543,8 @@ mathematical reasoning in functional programming.
 
 ### On Generalization to Arbitrary Numeric Types
 
-In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning.
+In this article, the mathematical proofs and properties were not restricted, working for any universe $𝕊$ with numberic operations.
+When we verified these properties, we focused on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning.
 Although the discrete integral could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
 
 Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
