@@ -519,14 +519,29 @@ These properties are:
 
 ```math
 \begin{aligned}
-|L| > 0 & \implies last(L)   = L_{(|L| - 1)} \\
-i > 0 	& \implies L_{(i)} 	 = tail(L)_{(i - 1)} \\
-tail(L)_{(i)}                 & = L_{(i + 1)} \\
-sum([v] ⧺ L)                  & = v + sum(L) \\
-sum(A ⧺ B)                    & = sum(A) + sum(B) \\
-sum(A ⧺ B)                    & = sum(B ⧺ A) \\
-L[f, \dots, t ] = slice(L, f, t) & = slice(L, f, t-1) ⧺ [L(t)] \\
-
+&\forall\, L, A, B \in  𝕃,\quad &\forall\, v \in 𝕊,\quad &\forall\, i, f, t \in ℕ \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+f > t, \quad 0 \leq i < |L|\\
+\\
+\end{aligned}
+```
+```math
+\begin{aligned}
+|L| > 0 &\implies L_{|L|-1} &= \text{last}(L) \\
+i > 0 &\implies L_i &= \text{tail}(L)_{i-1} \\
+i < |L| - 1, |L| > 1 &\implies \text{tail}(L)_i &= L_{i+1} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+&\sum L &= &\text{sum}(L) \\
+&\sum ([v] ⧺ L) &= &v + \sum L \\
+&\sum (A ⧺ B) &= &\sum A + \sum B \\
+&\sum (A ⧺ B) &= &\sum (B ⧺ A) \\
+&L[f, \dots, t] &= &L[f, \dots, {t - 1}] ⧺ [L_t]
 \end{aligned}
 ```
 
@@ -543,12 +558,12 @@ mathematical reasoning in functional programming.
 
 ### On Generalization to Arbitrary Numeric Types
 
-In this article, the mathematical proofs and properties were not restricted, working for any universe $𝕊$ with numberic operations.
-When we verified these properties, we focused on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning.
-Although the discrete integral could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
+In this article, the mathematical proofs and properties were not restricted to a specific domain; they apply to any universe $𝕊$ equipped with suitable numeric operations.
+For the purposes of formal verification, we focused on lists of `BigInt` to avoid issues such as overflow or rounding errors, and to simplify reasoning.
 
-Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
-This direction is left for future work.
+Although they could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
+Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) 
+and encoding them using Scala type classes like `Numeric[T]`. This direction is left for future work.
 
 ### Stainless Execution Output
 
