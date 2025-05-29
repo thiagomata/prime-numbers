@@ -468,10 +468,19 @@ Verified in [List Utils Properties - List Combine ](
 
 ### Commutativity of Sum over Concatenation
 ```math
-	sum(A ⧺ B) = 	sum(B ⧺ A)
+	sum(A ⧺ B) = sum(B ⧺ A)
+```
+Since:
+```math
+\begin{aligned}
+	sum(A ⧺ B) & = sum(A) + sum(B)      & \text{[Sum over Concatenation]} \\
+	sum(B ⧺ A) & = sum(B) + sum(A)      & \text{[Sum over Concatenation]} \\
+	sum(B) + sum(A) & = sum(A) + sum(B) & \text{[Distributive]} \\
+	sum(B ⧺ A) & = sum(A ⧺ B)          & \text{[Q.E.D]} \\
+\end{aligned}
 ```
 
-Proved in [List Utils Properties - List Swap ](
+Verified in [List Utils Properties - List Swap ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap
 ) as follows:
 
