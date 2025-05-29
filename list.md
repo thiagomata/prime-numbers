@@ -489,11 +489,11 @@ Proved in [List Utils Properties - List Swap ](
 ### Slice Append Consistency
 
 ```math
-	L[f, \dots, t] = slice(L, f, t) = 	slice(L, f, t-1) ⧺ [L(t)]
+	L[f \dots t] = slice(L, f, t) = slice(L, f, {(t-1)}) ⧺ [L(t)]  = L[f \dots {(t-1)}] ⧺ [L(t)]
 ```
 
 
-Proved in [List Utils Properties - Assert Append to Slice ](
+Verified in [List Utils Properties - Assert Append to Slice ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
 ) as follows:
 
@@ -541,7 +541,7 @@ i < |L| - 1, |L| > 1 &\implies \text{tail}(L)_i &= L_{i+1} \\
 &\sum ([v] ⧺ L) &= &v + \sum L \\
 &\sum (A ⧺ B) &= &\sum A + \sum B \\
 &\sum (A ⧺ B) &= &\sum (B ⧺ A) \\
-&L[f, \dots, t] &= &L[f, \dots, {t - 1}] ⧺ [L_t]
+&L[f \dots t] &= &L[f \dots {(t - 1)}] ⧺ [L_t]
 \end{aligned}
 ```
 
