@@ -149,7 +149,7 @@ object IntegralProperties {
       assert(integral.acc.nonEmpty)
       assert(integral.list.size == integral.acc.size)
       assert(position < integral.acc.size)
-      assert(ListUtilsProperties.assertTailShiftPosition(integral.acc, position))
+      assert(ListUtilsProperties.assertTailShiftLeft(integral.acc, position))
       assert(integral.acc.tail(position - 1) == integral.acc(position))
       assert(integral.acc(position) == integral.acc.tail(position - 1))
       assert(integral.acc.tail(position - 1) == next.acc(position - 1))

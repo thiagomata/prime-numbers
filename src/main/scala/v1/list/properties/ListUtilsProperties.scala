@@ -8,9 +8,9 @@ import verification.Helper.assert
 object ListUtilsProperties {
 
   /**
-    * for every list l and every value v,
-    * the sum of the list l ++ List(v)
-    * is equal to the sum of the list l plus the value v.
+    * for every list `list`` and every value `value``,
+    * the sum of the list `list` ++ `List(value)`
+    * is equal to the sum of the `list` plus the `value`.
     * 
     * sum(list ++ List(value)) == sum(list) + value
     *
@@ -123,7 +123,7 @@ object ListUtilsProperties {
    * @param position BigInt the position of the element to check
    * @return true if the property holds
    */
-  def assertTailShiftPosition[T](list: List[T], position: BigInt): Boolean = {
+  def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty)
     require(position >= 0 && position < list.size)
     decreases(position)
@@ -133,7 +133,7 @@ object ListUtilsProperties {
     } else {
       assert( list == List(list.head) ++ list.tail )
       assert( list(position) == list.apply(position) )
-      assert(assertTailShiftPosition(list.tail, position - 1))
+      assert(assertTailShiftLeft(list.tail, position - 1))
       assert(list.apply(position) == list.tail.apply(position - 1))
       list(position) == list.tail(position - 1)
     }
@@ -144,13 +144,13 @@ object ListUtilsProperties {
     * the value of the list in that position
     * is equal to the value of the tail in that position + 1.
     * 
-    * list(position) == list.tail(position + 1)
+    *  list.tail(position) == list(position + 1)
     *
     * @param list List[T] any list of T non empty
     * @param position BigInt the position of the element to check
     * @return Boolean true if the property holds
     */
-  def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
+  def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty && position >= 0 && position < list.tail.size)
     list.tail(position) == list(position + 1)
   }.holds
@@ -172,7 +172,7 @@ object ListUtilsProperties {
       assert(list.head == list.last)
     } else {
       assert(assertLastEqualsLastPosition(list.tail))
-      assertTailShiftPosition(list, list.size - 1)
+      assertTailShiftLeft(list, list.size - 1)
       assert(list.last == list(list.size - 1))
     }
     list.last == list(list.size - 1)

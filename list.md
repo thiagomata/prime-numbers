@@ -4,7 +4,8 @@
 
 <div align="justify">
 <p style="text-align: justify">
-In this article, we define and construct lists from scratch, relying only on core type 
+In this article, we define and construct immutable finite lists of `BigInt` values
+from scratch, relying only on core type 
 constructs and recursion, with no prior knowledge of Scala's collections required. Core 
 properties of finite integer lists are formalised and verified using recursive definitions 
 aligned with functional programming principles. Lists are modelled either as empty or as 
@@ -22,50 +23,15 @@ Lists are finite sequences of values that support a wide range of operations in 
 and declarative programming. When combined with summation, they form the backbone for 
 definitions of sequences, recurrence, accumulation, and integration in the discrete domain.
 
-Our approach mirrors traditional recursive definitions but is formally verified 
-using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), 
-ensuring that the properties hold under all inputs within the specified constraints.
+Our approach mirrors traditional recursive definitions but is formally verified
+using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html),  a verification framework for pure Scala programs
+that uses formal verification to ensure user-defined functions satisfy 
+given preconditions, postconditions, and invariants through automated proofs under all valid inputs.
 
 > Formal verification is the act of proving or disproving the correctness of 
 > intended algorithms underlying a system with respect to a certain formal 
 > specification or property, using formal methods of mathematics.
 > [— Wikipedia on Formal Verification](https://en.wikipedia.org/wiki/Formal_verification)
-
-## Limitations
-
-This article restricts the implementation and verification to immutable, 
-finite lists of integers represented using the `stainless.collection.List` data type. 
-The focus is on **correctness**, not on performance or scalability. Our summation and 
-accumulation models follow a **recursive definition**, which is faithful to mathematical 
-formalism.
-However, this can introduce performance limitations in practical use when dealing 
-with extensive lists.
-
-In particular:
-
-- **Overflow and memory limits are out of scope**: Since we use `BigInt` and immutable lists, 
-the model assumes unbounded integer arithmetic and infinite list capacity. This approach avoids 
-issues like overflow or out-of-memory errors, but it does not reflect the constraints 
-imposed by bounded integer types or limited memory in real-world systems.
-
-- **Side-effects are excluded**: All list operations are pure and referentially transparent. 
-We do not model mutation, I/O, or performance overhead.
-
-- **No parallelism or laziness**: Unlike streaming libraries or lazy sequences, 
-this model is strictly eager and sequential.
-
-These constraints do not affect the **correctness** of the mathematical properties proved in 
-this article. However, they may limit the direct applicability of this model in 
-performance-critical or side-effectful environments.
-
-Furthermore, the model treats lists and integers as conceptually unbounded, not imposing any 
-restrictions on list size or memory space. 
-While this allows us to reason about lists of arbitrary size and precision using `BigInt`, 
-it abstracts away practical concerns such as stack overflows, memory limitations, or time 
-complexity in execution.
-
-These limitations do not invalidate the learnings from this study. 
-The focus is on **mathematical properties** and **semantic validity**, not execution efficiency.
 
 ## Definitions
 
@@ -150,23 +116,106 @@ Proved in the native stainless library in `stainless.collection.List`.
 
 ### List Slice
 
-Given a list $L = [v_0, v_1, \dots, v_{n-1}]$, and integers 
-$0 \leq i \leq j < |L|$, the slice function $slice(L, i, j)$ 
-returns a sublist of $L$ from index $i$ to $j$, inclusive.
+Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
+
+$$
+L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$=
+
+### List Sum
+
+Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
 
 ```math
-\begin{aligned}
-L[i \dots j] = slice(L, i, j) = 
-\begin{cases}
-[ L_{(j)} ] & \text{if } i = j \\
-slice(L, i, j - 1) ⧺ [ L_{(j)} ] & \text{if } i < j
+sum(L) = 
+\begin{cases} \\
+0 & \text{if } L = L_e \\
+head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
-\end{aligned}
 ```
+
+Defined at [List Utils](
+	./src/main/scala/v1/list/ListUtils.scala#sum
+) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+   * Sums all elements in a list of BigInt.
+   * Create the sum using tail recursion.
+   * 
+   * Assumes that the sum of an empty list is 0.
+   * 
+   * @param loopList List[BigInt] the list to sum
+   * @return BigInt the sum of all elements in the list
+   */
+```
+
+</details>
+
+```scala
+  def sum(loopList: List[BigInt]): BigInt = {
+    if (loopList.isEmpty) {
+      BigInt(0)
+    } else {
+      loopList.head + sum(loopList.tail)
+    }
+  }
+```
+
+## Properties
+
+Using the definitions above, we state and verify the following key properties of lists:
+
+### Slice Implementations are Equivalent
+
+Let's prove and verify that the definitions of slice tail-recursive,
+head-recursive and index-rage recursive are interchangeable and equivalent 
+to the mathematical slice notation $L[i \dots j]$ previously defined as:
+
+Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
+
+$$
+L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$=
+
+
+##### Tail Recursive - Specification:
+
+$$
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
+$$
+
+$$
+\text{slice}(L, i, j) \coloneqq 
+\begin{cases}
+[ L_j ] & \text{if } i = j \\
+\text{slice}(L, i, j - 1) ⧺ [ L_j ] & \text{if } i < j
+\end{cases}
+$$
 
 Defined at [List Utils](
 	./src/main/scala/v1/list/ListUtils.scala#slice
 ) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+   * Slices a list from index `from` to index `to`, inclusive.
+   * Create the slice using tail recursion.
+   * 
+   * @param list List[BigInt] the list to slice
+   * @param from BigInt the starting index (inclusive)
+   * @param to BigInt the ending index (inclusive)
+   * @return List[BigInt] the sliced list
+   */
+```
+
+</details>
 
 ```scala
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
@@ -186,35 +235,307 @@ Defined at [List Utils](
   }
 ```
 
-### List Sum
+$$
+L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$=
 
-Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
+Therefore, let's verify if this recursive implementation matches the specification of the the list definition:
 
-```math
-sum(L) = 
-\begin{cases} \\
-0 & \text{if } L = L_e \\
-head(L) + sum(tail(L)) & \text{otherwise} \\
+**Goal**:
+
+$$
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{slice}(L, i, j) = L[i \dots j]
+$$
+
+##### Tail Recursive - Proof by induction on $j$, with fixed $i$
+
+**Base case**: $j = i$
+
+$$
+\text{slice}(L, i, i) = [ L_i ] = L[i \dots i]
+$$
+
+**Inductive step**: Assume
+
+$$
+\text{slice}(L, i, j - 1) = [ L_k \mid i \leq k \leq j - 1 ]
+$$
+
+Show:
+
+$$
+\begin{aligned}
+\text{slice}(L, i, j)  &= \text{slice}(L, i, j - 1) ⧺ [L_j] & \qquad \text{[by definition of slice]} \\
+&= L[i \dots (j - 1)] ⧺ [L_j] & \qquad \text{[by Inductive Hypothesis]} \\
+&= [ L_k \mid i \leq k \leq j - 1 ] ⧺ [L_j] & \qquad \text{[by Specification]} \\
+&= [ L_k \mid i \leq k \leq j ] & \qquad \text{[by definition of Concatenation]} \\
+&= L[i \dots j] & \qquad \text{[Q.E.D]} \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\forall \text{ } 0 \leq i \leq j < |L|,\ \text{slice}(L, i, j) = L[i \dots j]
+\quad \blacksquare
+$$
+
+##### Tail Recursive - Specification:
+
+#### Head-Recursive Slice
+
+Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
+
+$$
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
+$$
+
+$$
+\text{headRecursiveSlice}(L, i, j) \coloneqq
+\begin{cases}
+[ L_i ] & \text{if } i = j \\
+L_i ⧺ \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
-```
+$$
 
-Defined at [List Utils](
-	./src/main/scala/v1/list/ListUtils.scala#sum
-) as follows:
+Defined at [Slice Equivalence Lemmas](./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L14) as follows:
+
+<details>
+    <summary>Scala Docs</summary>
 
 ```scala
-  def sum(loopList: List[BigInt]): BigInt = {
-    if (loopList.isEmpty) {
-      BigInt(0)
-    } else {
-      loopList.head + sum(loopList.tail)
-    }
-  }
+/**
+ * Creates a sublist of the list `list` from index `from` to index `to`, inclusive
+ * using forward slice: builds from `from` to `to` using Cons.
+ *
+ * The precondition for this function is that:
+ * 0 <= from && from <= to && to < list.length
+ *
+ * This function is a recursive implementation that constructs the sublist
+ * by taking elements from the list `list` starting at index `from` and ending at index `to`.
+ *
+ * @param list the List from which to extract the sublist
+ * @param from the starting index of the sublist (inclusive)
+ * @param to the ending index of the sublist (inclusive)
+ * @tparam A the type of elements in the list
+ * @return a List[A] containing the elements from index `from` to index `to`
+ */
 ```
 
-## Properties
+</details>
 
-Using the definitions above, we state and verify the following key properties of lists:
+
+```scala
+def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
+  require(0 <= from && from <= to && to < list.length)
+  decreases(to - from)
+  if (from == to) List(list(from))
+  else Cons(list(from), headRecursiveSlice(list, from + 1, to))
+}
+```
+
+##### Head Recursive - Specification:
+
+$$
+L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$
+
+**Goal**:
+
+$$
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{headRecursiveSlice}(L, i, j) = L[i \dots j]
+$$
+
+##### Head Recursive - Proof by induction on $j - i$
+
+**Base case**: $i = j$
+
+$$
+\text{headRecursiveSlice}(L, i, i) = [ L_i ] = L[i \dots i]
+$$
+
+**Inductive step**: Assume
+
+$$
+\text{headRecursiveSlice}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
+$$
+
+Show:
+
+$$
+\begin{aligned}
+\text{headRecursiveSlice}(L, i, j) &= L_i ⧺ \text{headRecursiveSlice}(L, i + 1, j) & \qquad \text{[by definition]} \\
+&= L_i ⧺ L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\forall \text{ } 0 \leq i \leq j < |L|,\ \text{headRecursiveSlice}(L, i, j) = L[i \dots j]
+\quad \blacksquare
+$$
+
+#### Index-Range Slice
+
+Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
+
+This version builds the slice directly by recursively iterating over an index range.
+
+Defined at [Slice Equivalence Lemmas](./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L39) as follows:
+
+<details>
+    <summary>Scala Docs</summary>
+
+```scala
+/**
+ * Creates a sublist of the list `list` from index `from` to index `to`, inclusive
+ * using index-based access: builds from i to j using index access.
+ *
+ * The precondition for this function is that:
+ * 0 <= from && from <= to && to < list.length
+ *
+ * This function is a recursive implementation that constructs the sublist
+ * by taking elements from the list `list` starting at index `from` and ending at index `to`.
+ *
+ * @param list the List from which to extract the sublist
+ * @param from the starting index of the sublist (inclusive)
+ * @param to the ending index of the sublist (inclusive)
+ * @tparam A the type of elements in the list
+ * @return a List[A] containing the elements from index `from` to index `to`
+ */
+```
+</details>
+
+```scala
+def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
+  require(0 <= from && from <= to && to < list.length)
+  decreases(to - from)
+  if (from == to) List(list(from))
+  else Cons(list(from), indexRangeValues(list, from + 1, to))
+}
+```
+
+##### Index-Range Slice - Specification:
+
+$$
+L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$
+
+**Goal**:
+
+$$
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{indexRangeValues}(L, i, j) = L[i \dots j]
+$$
+
+##### Index-Range Slice - Proof by induction on $j - i$
+
+**Base case**: $i = j$
+
+$$
+\text{indexRangeValues}(L, i, i) = [ L_i ] = L[i \dots i]
+$$
+
+**Inductive step**: Assume
+
+$$
+\text{indexRangeValues}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
+$$
+
+Show:
+
+$$
+\begin{aligned}
+\text{indexRangeValues}(L, i, j) &= L_i ⧺ \text{indexRangeValues}(L, i + 1, j) & \qquad \text{[by definition]} \\
+&= L_i ⧺ L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
+\end{aligned}
+$$
+
+$$
+\therefore
+$$
+
+$$
+\forall \text{ } 0 \leq i \leq j < |L|,\ \text{indexRangeValues}(L, i, j) = L[i \dots j]
+\quad \blacksquare
+$$
+
+#### Slice Equivalence Lemmas
+
+We have now established that all the following slice implementations are equivalent to the
+mathematical slice notation $L[i \dots j]$, and thus interchangeable for both reasoning
+and implementation:
+
+- Tail-recursive slice
+- Head-recursive slice
+- Index-range slice
+
+These properties are verified at [Slice Equivalence Lemmas](
+	./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
+) as follows:
+
+<details>
+    <summary>Scala Docs</summary>
+
+```scala
+  /**
+   * Lemma: For all `list: List[BigInt]` and indices `from`, `to` such that
+   * 0 <= from <= to < list.length, the following three slicing strategies produce
+   * the same result:
+   *
+   * - Tail-recursive slice: ListUtils.slice
+   * - Head-recursive slice: headRecursiveSlice
+   * - Index-based slice: indexRangeValues
+   *
+   * Formally:
+   *
+   * ListUtils.slice(list, from, to) == headRecursiveSlice(list, from, to)
+   * ListUtils.slice(list, from, to) == indexRangeValues(list, from, to)
+   * headRecursiveSlice(list, from, to) == indexRangeValues(list, from, to)
+   *
+   * @param list the input list of BigInt
+   * @param from inclusive start index
+   * @param to   inclusive end index
+   * @return true if all three slices are equal
+   */
+```
+</details>
+
+```scala
+  def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
+    require(0 <= from && from <= to && to < list.length)
+    decreases(to - from)
+
+    val indexSlice = indexRangeValues(list, from, to)
+    val tailSlice = ListUtils.slice(list, from, to)
+    val headSlice = headRecursiveSlice(list, from, to)
+
+    if (from == to) {
+      assert(indexSlice == List(list(from)))
+      assert(tailSlice == List(list(from)))
+      assert(headSlice == List(list(from)))
+    } else {
+      assert(tailHeadAndIndexRangeSlicesAreEqual(list, from, to - 1))
+      assert(tailHeadAndIndexRangeSlicesAreEqual(list, from + 1, to))
+      val reconstructedTail = ListUtils.slice(list, from, to - 1) ++ List(list(to))
+      assert(tailSlice == reconstructedTail)
+      assert(tailSlice == indexSlice)
+      assert(headSlice == indexSlice)
+      assert(tailSlice == headSlice)
+    }
+    (
+      tailSlice == headSlice &&
+      tailSlice == indexSlice &&
+      headSlice == indexSlice
+    )
+  }.holds
+```
 
 ### Sum matches Summation
 
@@ -231,13 +552,14 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 \end{aligned}
 ```
 
-```math
-\begin{aligned}
-\therefore \\
+$$
+\therefore
+$$
+
+$$
 \forall \text{ } L \in 𝕃 \\
 |L| = 0 \implies \text{sum}(L) = \sum L \\
-\end{aligned}
-```
+$$
 
 #### Inductive Step: $|L| > 0$
 
@@ -270,18 +592,19 @@ Let's calculate the sum of $L$:
 
 $$
 \therefore \\
+$$
+
+$$
 \forall\text{ }  L \in 𝕃 \\
 |L| > 0 \text{ } \implies \text{ sum}(L) = \sum L  \\
 $$
 
 Hence, by induction on the size of $L$:
 
-```math
-\begin{aligned}
+$$
 \forall \text{ } L \text{ } \in 𝕃 \\
 \text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊 \quad \text{[Q.E.D.]} \\
-\end{aligned}
-```
+$$
 
 
 ### Tail Access Shift
@@ -294,33 +617,70 @@ Since:
 
 $$
 \begin{aligned}
-L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 0
+ L_{(k)} &= &L_{node(k)} &= \text{tail}(L_{node})({k - 1}) \text{ } &\forall \text{ } 0 < k < |L| \\
+ L_{(k + 1)} &= &\text{tail}(L_{node})_{(k)} &=  L_{node(k + 1)} \text{ } &\forall \text{ } 0 \le k < |L| \\
 \end{aligned}
 $$
 
 
-Proved in [List Utils Properties - Access Tail Shift](
+Verified in 
+[List Utils Properties - Access Tail Shift Left](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShift
-) as follows:
+) and
+[List Utils Properties - Assert Tail Shift Right](
+)
+as follows:
+
+#### Access Tail Shift Right
+
+<details>
+  <summary>Scala Docs</summary>
 
 ```scala
-  def accessTailShift[T](list: List[T], position: BigInt): Boolean = {
+  /**
+    * For every position in the list different from 0,
+    * the value of the list in that position
+    * is equal to the value of the tail in that position + 1.
+    * 
+    * list.tail(position) == list(position + 1)
+    *
+    * @param list List[T] any list of T non empty
+    * @param position BigInt the position of the element to check
+    * @return Boolean true if the property holds
+    */
+```
+
+</details>
+
+```scala
+  def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty && position >= 0 && position < list.tail.size)
     list.tail(position) == list(position + 1)
   }.holds
 ```
 
-$$
-\forall L,\ i,\quad |L| > 1 \land i > 0 \implies L_{(i)} = 	tail(L)_{(i - 1)}
-$$
+#### Assert Tail Shift Left
 
-
-Proved in [List Util Properties - Assert Tail Shift Position](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertTailShiftPosition
-)
+<details>
+  <summary>Scala Docs</summary>
 
 ```scala
-  def assertTailShiftPosition[T](list: List[T], position: BigInt): Boolean = {
+  /**
+   * For every position in the list different from 0,
+   * the value of the list in that position
+   * is equal to the value of the tail in that position - 1.
+   *
+   * list(position) == list.tail(position - 1)
+   *
+   * @param list List[BigInt] any list of BigInt non empty
+   * @param position BigInt the position of the element to check
+   * @return true if the property holds
+   */
+```
+</details>
+
+```scala
+  def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty)
     require(position >= 0 && position < list.size)
     decreases(position)
@@ -328,9 +688,9 @@ Proved in [List Util Properties - Assert Tail Shift Position](
     if (position == 0 ) {
       list(position) == list.head
     } else {
-      assert(list == List(list.head) ++ list.tail )
-      assert(list(position) == list.apply(position) )
-      assert(assertTailShiftPosition(list.tail, position - 1))
+      assert( list == List(list.head) ++ list.tail )
+      assert( list(position) == list.apply(position) )
+      assert(assertTailShiftLeft(list.tail, position - 1))
       assert(list.apply(position) == list.tail.apply(position - 1))
       list(position) == list.tail(position - 1)
     }
@@ -345,6 +705,22 @@ Proved in [List Util Properties - Assert Tail Shift Position](
 Proved in [List Util Properties - Assert Last Equals Last Position](
 	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
 ).
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+   * The last element of the list is equal to the last position of the list.
+   * This property is true for every list of size > 0.
+   *
+   * list.last == list(list.size - 1)
+   *
+   * @param list List[BigInt] any list of BigInt non empty
+   * @return true if the property holds
+   */
+```
+</details>
 
 ```scala
   def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
@@ -395,6 +771,25 @@ $$
 Verified in [List Utils Properties - List Sum Add Value](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue
 ) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+    * for every list `list`` and every value `value``,
+    * the sum of the list `list` ++ `List(value)`
+    * is equal to the sum of the `list` plus the `value`.
+    * 
+    * sum(list ++ List(value)) == sum(list) + value
+    *
+    * @param list List[BigInt] any list of BigInt
+    * @param value BigInt the value to add to the list
+    * @return Boolean true if the property holds
+    */
+```
+
+</details>
 
 ```scala
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
@@ -447,6 +842,26 @@ $$
 Verified in [List Utils Properties - List Combine ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine
 ) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+    * for every list A and B,
+    * the sum of the list A ++ B
+    * is equal to the sum of the list A plus the sum of the list B.
+    * 
+    * sum(listA ++ listB) == sum(listA) + sum(listB)
+    *
+    * @param listA List[BigInt] any list of BigInt
+    * @param listB List[BigInt] any list of BigInt
+    * @return Boolean true if the property holds
+    */
+```
+
+</details>
+
 ```scala
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     decreases(listA.size)
@@ -484,6 +899,25 @@ Verified in [List Utils Properties - List Swap ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap
 ) as follows:
 
+<details>
+<summary> Scala Docs </summary>
+
+```scala
+  /**
+    * for every list A and B,
+    * the sum of the list A ++ B
+    * is equal to the sum of the list B plus the sum of the list A.
+    * 
+    * sum(listA ++ listB) == sum(listB) + sum(listA)
+    *
+    * @param listA List[BigInt] any list of BigInt
+    * @param listB List[BigInt] any list of BigInt
+    * @return Boolean true if the property holds
+    */
+```
+</details>
+
+
 ```scala
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     listCombine(listA, listB)
@@ -505,6 +939,27 @@ Verified in [List Utils Properties - List Swap ](
 Verified in [List Utils Properties - Assert Append to Slice ](
 ./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
 ) as follows:
+
+<details>
+<summary> Scala Docs </summary>
+
+```scala
+  /**
+    * For every position in the list,
+    * A slice of the list from position from i position j
+    * is equal to the slice of the list from position i to j - 1
+    * appending the element in position j.
+    * 
+    * list(i, j) == list(i, j - 1) ++ list(j)
+    *
+    * @param list List[BigInt] any list of BigInt
+    * @param from BigInt the position of the first element to check
+    * @param to BigInt the position of the last element to check
+    * @return Boolean true if the property holds
+    */
+```
+
+</details>
 
 ```scala
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -539,9 +994,9 @@ f > t, \quad 0 \leq i < |L|\\
 ```
 ```math
 \begin{aligned}
-|L| > 0 &\implies L_{|L|-1} &= \text{last}(L) \\
-i > 0 &\implies L_i &= \text{tail}(L)_{i-1} \\
-i < |L| - 1, |L| > 1 &\implies \text{tail}(L)_i &= L_{i+1} \\
+|L| > 0 &\implies L_{|L|-1} &= &\text{last}(L) \\
+i > 0 &\implies L_i &= &\text{tail}(L)_{i-1} \\
+i < |L| - 1, |L| > 1 &\implies \text{tail}(L)_i &= &L_{i+1} \\
 \end{aligned}
 ```
 ```math
@@ -559,22 +1014,67 @@ the correctness of properties and recursive functions through static guarantees.
 This foundation supports further extensions in formally verified functional data structures, 
 serving as a practical bridge between mathematical definitions and executable code.
 
+We also defined the list slice using different strategies and prove them as equivalent.
+
 The properties and definitions presented here can be extended to more complex data structures
 and algorithms, providing a solid foundation for future work in formal verification and
 mathematical reasoning in functional programming.
+
+## Limitations
+
+This article restricts the implementation and verification to immutable, 
+finite lists of integers represented using the `stainless.collection.List` data type. 
+The focus is on **correctness**, not on performance or scalability. Our summation and 
+accumulation models follow a **recursive definition**, which is faithful to mathematical 
+formalism.
+However, this can introduce performance limitations in practical use when dealing 
+with extensive lists.
+
+In particular:
+
+- **Overflow and memory limits are out of scope**: Since we use `BigInt` and immutable lists, 
+the model assumes unbounded integer arithmetic and infinite list capacity. This approach avoids 
+issues like overflow or out-of-memory errors, but it does not reflect the constraints 
+imposed by bounded integer types or limited memory in real-world systems.
+
+- **Side-effects are excluded**: All list operations are pure and referentially transparent. 
+We do not model mutation, I/O, or performance overhead.
+
+- **No parallelism or laziness**: Unlike streaming libraries or lazy sequences, 
+this model is strictly eager and sequential.
+
+These constraints do not affect the **correctness** of the mathematical properties proved in 
+this article. However, they may limit the direct applicability of this model in 
+performance-critical or side-effectful environments.
+
+Furthermore, the model treats lists and integers as conceptually unbounded, not imposing any 
+restrictions on list size or memory space. 
+While this allows us to reason about lists of arbitrary size and precision using `BigInt`, 
+it abstracts away practical concerns such as stack overflows, memory limitations, or time 
+complexity in execution.
+
+These limitations do not invalidate the learnings from this study. 
+The focus is on mathematical properties and
+correctness of functional behavior as defined by recursive mathematical specifications, 
+not execution efficiency.
 
 ## Appendix
 
 ### On Generalization to Arbitrary Numeric Types
 
-In this article, the mathematical proofs and properties were not restricted to a specific domain; they apply to any universe $𝕊$ equipped with suitable numeric operations.
-For the purposes of formal verification, we focused on lists of `BigInt` to avoid issues such as overflow or rounding errors, and to simplify reasoning.
+In this article, the mathematical proofs and properties were not restricted to a specific domain; 
+they apply to any universe $𝕊$ equipped with suitable numeric operations.
+For the purposes of formal verification, we focused on lists of `BigInt` to avoid issues 
+such as overflow or rounding errors, and to simplify reasoning.
 
-Although they could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
-Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) 
-and encoding them using Scala type classes like `Numeric[T]`. This direction is left for future work.
+Therefore, these proofs can be generalized to any numeric type that satisfies these laws.
+In Scala, this could be achieved by abstracting the implementations over a `type T` with a `Numeric[T]`
+which is a promising direction for future work.
 
 ### Stainless Execution Output
+
+Stainless verified 2781 conditions, including all inductive proofs and equivalence lemmas for slicing and summation.
+Most results were cached due to incremental recompilation.
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
 <code style="color:blue">[  Info  ] </code> Finished compiling
