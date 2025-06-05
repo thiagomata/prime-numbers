@@ -4,7 +4,7 @@
 
 <div align="justify">
 <p style="text-align: justify">
-In this article, we define and construct immutable finite lists of `BigInt` values
+In this article, we define and construct immutable finite lists of <code>BigInt</code> values
 from scratch, relying only on core type 
 constructs and recursion, with no prior knowledge of Scala's collections required. Core 
 properties of finite integer lists are formalised and verified using recursive definitions 
@@ -119,8 +119,8 @@ Proved in the native stainless library in `stainless.collection.List`.
 Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
 
 $$
-L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
-$$=
+L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$
 
 ### List Sum
 
@@ -178,8 +178,8 @@ to the mathematical slice notation $L[i \dots j]$ previously defined as:
 Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
 
 $$
-L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
-$$=
+L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$
 
 
 ##### Tail Recursive - Specification:
@@ -189,7 +189,7 @@ $$
 $$
 
 $$
-\text{slice}(L, i, j) \coloneqq 
+\text{slice}(L, i, j) := 
 \begin{cases}
 [ L_j ] & \text{if } i = j \\
 \text{slice}(L, i, j - 1) ⧺ [ L_j ] & \text{if } i < j
@@ -236,8 +236,8 @@ Defined at [List Utils](
 ```
 
 $$
-L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
-$$=
+L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+$$
 
 Therefore, let's verify if this recursive implementation matches the specification of the the list definition:
 
@@ -293,7 +293,7 @@ $$
 $$
 
 $$
-\text{headRecursiveSlice}(L, i, j) \coloneqq
+\text{headRecursiveSlice}(L, i, j) :=
 \begin{cases}
 [ L_i ] & \text{if } i = j \\
 L_i ⧺ \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
@@ -339,7 +339,7 @@ def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 ##### Head Recursive - Specification:
 
 $$
-L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
 **Goal**:
@@ -424,7 +424,7 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 ##### Index-Range Slice - Specification:
 
 $$
-L[i \dots j] \coloneqq [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
+L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
 **Goal**:
