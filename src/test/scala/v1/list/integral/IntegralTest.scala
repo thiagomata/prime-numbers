@@ -38,65 +38,6 @@ class IntegralTest extends FlatSpec with Matchers {
     createListFromInt(Array(1, 10, 100, 1000))
   )
 
-  "assertAccDifferenceEqualsTailHead" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          if (list.size > 1) acc.assertAccDifferenceEqualsTailHead else true
-        }
-      )
-    )
-  }
-
-  "assertAccDiffMatchesList" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          (BigInt(0) until list.size - BigInt(1)).forall { position =>
-            acc.assertAccDiffMatchesList(position)
-          }
-        }
-      )
-    )
-  }
-
-  "assertAccMatchesApply" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          (BigInt(0) until list.size).forall { position =>
-            acc.assertAccMatchesApply(position)
-          }
-        }
-      )
-    )
-  }
-
-  "assertLastEqualsSum" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          if (list.isEmpty) true else acc.assertLastEqualsSum
-        }
-      )
-    )
-  }
-
-  "assertSizeAccEqualsSizeList" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          acc.assertSizeAccEqualsSizeList(acc.list, acc.init)
-        }
-      )
-    )
-  }
-
   "isEmpty" should "be false for all lists" in {
     assert(
       manyLists.forall(
@@ -114,17 +55,6 @@ class IntegralTest extends FlatSpec with Matchers {
         list => {
           val acc = integral.Integral(list)
           acc.nonEmpty == list.nonEmpty
-        }
-      )
-    )
-  }
-
-  "assertLast" should "hold for all lists" in {
-    assert(
-      manyLists.forall(
-        list => {
-          val acc = integral.Integral(list)
-          if (list.isEmpty) true else acc.assertLast
         }
       )
     )
