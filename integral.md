@@ -27,7 +27,7 @@ implementation of discrete integration, suitable as a foundation for higher-leve
 Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite, non-empty list of $n$ integers, where $n = |L|$,
 and let $init \in \mathbb{Z}$ be an initial value.
 
-We reuse several basic list operations and their verified properties from a companion article on recursive list construction [[1]](lists.md).  
+We reuse several basic list operations and their verified properties from a companion article on recursive list construction [[1]](list.md).  
 These include the following functions:
 
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
@@ -35,7 +35,7 @@ These include the following functions:
 - $\text{tail}(L)$: returns the list without its first element.
 - $A$ &#x29FA; $B$: concatenates two lists $A$ and $B$.
 
-These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](lists.md), and are treated here as foundational primitives.
+These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](list.md), and are treated here as foundational primitives.
 
 Proofs in this article are written in Scala and verified using the Stainless system, with 
 `BigInt` used to represent unbounded integers.
@@ -122,6 +122,9 @@ $$
 
 Also verified in Scala Stainless in [IntegralProperties.scala on assertHeadValueMatchDefinition](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertHeadValueMatchDefinition).
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
 /**
  * Lemma: The first element of the accumulated list `acc` is equal to the
@@ -133,6 +136,10 @@ Also verified in Scala Stainless in [IntegralProperties.scala on assertHeadValue
  * @param integral Integral the integral of the lemma
  * @return Boolean true if the property holds
  */
+```
+</details>
+
+```scala
 def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
   require(integral.list.nonEmpty)
   
@@ -202,6 +209,9 @@ $$
 
 This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList).
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
   /**
    * Lemma: The difference between two consecutive accumulated values in Acc
@@ -215,12 +225,42 @@ This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList]
    * @param position BigInt the position in the acc list
    * @return Boolean true if the property holds
    */
+```
+</details>
+
+```scala
   def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
     require(integral.list.size > 1)
     require(position >= 0 && position < integral.list.size - 1)
     decreases(position)
     
-    // ...
+    if (position == 0) {
+      // base case
+      assert(IntegralProperties.assertAccDifferenceEqualsTailHead(integral))
+      assert(integral.apply(0) == integral.acc(0))
+      assert(integral.apply(1) == integral.acc(1))
+      assert(
+        integral.acc(position + 1) - integral.acc(position) == integral.list(position + 1) &&
+          integral.acc(position) == integral.apply(position)
+      )
+    } else {
+      assert(position > 0 )
+      assert(position < integral.list.size - 1)
+      assert(position - 1 < integral.list.size )
+
+      // Inductive step
+      val next = Integral(integral.list.tail, integral.head)
+      assert(next.size == integral.size - 1)
+      assert(integral.tail == next.acc)
+      assert(assertAccDiffMatchesList(next, position - 1))
+
+      // link this values and next values
+      assert(integral.apply(position)     == next.apply(position - 1))
+      assert(integral.apply(position + 1) == next.apply(position))
+
+      assert(integral.apply(position) == integral.acc(position))
+      assert(integral.apply(position + 1) == integral.acc(position + 1))
+    }
     
     integral.acc(position + 1) - integral.acc(position) == integral.list(position + 1) &&
       integral.acc(position + 1) == integral.apply(position + 1) &&
@@ -282,6 +322,9 @@ $$
 
 This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqualsSum`](./src/main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum):
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
 /**
  * The integral of a list is defined as the sum of all elements in the list
@@ -294,6 +337,10 @@ This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqual
  * @param position the list index to check
  * @return true if the property holds at this position
  */
+```
+</details>
+
+```scala
 def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
   require(integral.list.nonEmpty)
   require(position >= 0 && position < integral.list.size)
@@ -363,6 +410,10 @@ $$
 
 This lemma is also verified in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
 
+<details>
+
+<summary>Scala Doc</summary>
+
 ```scala
 /**
  * The integral of a list is defined as the sum of all elements in the list
@@ -375,16 +426,46 @@ This lemma is also verified in [IntegralProperties.scala at assertIntegralEquals
  * @param position BigInt the position in the list
  * @return Boolean true if the property holds
  */
-  def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
-    require(integral.list.nonEmpty)
-    require(position >= 0 && position < integral.list.size)
-    require(integral.list.size > 1)
-    decreases(position)
+```
+</details>
 
-    // ...
+```scala
+def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
+  require(integral.list.nonEmpty)
+  require(position >= 0 && position < integral.list.size)
+  require(integral.list.size > 1)
+  decreases(position)
 
-    integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
-  }.holds
+  assert(assertSizeAccEqualsSizeList(integral.list, integral.init))
+
+  if (position == 0) {
+    // base case
+    assert(assertHeadValueMatchDefinition(integral))
+    assert(ListUtils.slice(integral.list, 0, position) == List(integral.list.head))
+    assert(integral.apply(0) == integral.init + ListUtils.sum(List(integral.list.head)))
+    assert(integral.apply(0) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
+  } else {
+    // Inductive step
+    assert(assertIntegralEqualsSum(integral, position - 1))
+    assert(position > 0 )
+    assert(position < integral.list.size)
+    assert(position - 1 < integral.list.size - 1)
+    assert(integral.list.size == integral.acc.size)
+    assert(integral.list.size > 1)
+    assert(assertAccDiffMatchesList(integral, position - 1))
+
+    val prevList = ListUtils.slice(integral.list, 0, position - 1)
+    val prevSum = ListUtils.sum(prevList)
+    assert(integral.apply(position - 1) == integral.init + prevSum)
+    assert(integral.apply(position) == integral.apply(position - 1) + integral.list(position))
+    assert(integral.apply(position) == integral.init + prevSum + integral.list(position))
+    assert(ListUtilsProperties.listSumAddValue(integral.list, integral.list(position)))
+    assert(ListUtilsProperties.assertAppendToSlice(integral.list, 0, position))
+    assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) ++ List(integral.list(position)))
+    assert(integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
+  }
+  integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
+}.holds
 ```
 
 ### 4.4 Final Element Equals Full Sum
@@ -407,8 +488,11 @@ $$
 
 Verified in [IntegralProperties.scala at assertLastEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLastEqualsSum).
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
-/**
+ /**
    * Lemma: The last element of the accumulated list `acc` is equal to the sum
    * of all elements in the original list `list`.
    *
@@ -418,14 +502,36 @@ Verified in [IntegralProperties.scala at assertLastEqualsSum](./src//main/scala/
    * @param integral Integral the integral of the lemma
    * @return Boolean true if the property holds
    */
-  def assertLastEqualsSum(integral: Integral): Boolean = {
-    require(integral.list.nonEmpty)
-    decreases(integral.list.size)
-    
-    // ...
-    
-    integral.last == integral.init + ListUtils.sum(integral.list)
+```
+</details>
+
+```scala
+def assertLastEqualsSum(integral: Integral): Boolean = {
+  require(integral.list.nonEmpty)
+  decreases(integral.list.size)
+
+  if (integral.list.size == 1) {
+    // base case
+    assert(integral.last == integral.list.head + integral.init)
+    assert(integral.last == integral.init + ListUtils.sum(integral.list))
+  } else {
+    // inductive step
+    val next = Integral(integral.list.tail, integral.list.head + integral.init)
+    assert(assertLastEqualsSum(next))
+    assert(integral.tail == next.acc)
+    assert(integral.tail.last == next.acc.last)
+    assert(next.last == next.acc.last)
+    assert(next.last == integral.last)
+    assert(next.last == next.init + ListUtils.sum(next.list))
+    assert(next.last == integral.init + integral.list.head + ListUtils.sum(next.list))
+    assert(integral.last == integral.init + integral.list.head + ListUtils.sum(next.list))
+    assert(ListUtilsProperties.listSumAddValue(next.list,integral.list.head))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) ++ integral.list.tail))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(integral.list))
+    assert(integral.last == integral.init + ListUtils.sum(integral.list))
   }
+  integral.last == integral.init + ListUtils.sum(integral.list)
+}.holds
 ```
 
 ### 5 Implementation Consistency Lemmas
@@ -494,27 +600,67 @@ $$
 
 Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply):
 
+<details>
+<summary> Scala Doc </summary>
 
 ```scala
   /**
- * Lemma: The `apply(position)` method returns the same value as the value at
- * index `position` in the accumulated list `acc`.
- *
- * That is:
- * apply(position) == acc(position)
- *
- * Holds for all valid `position` in the bounds of the list.
- * @param integral Integral the integral of the lemma
- * @param position BigInt the position in the acc list
- * @return Boolean true if the property holds
- */
-def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
+   * Lemma: The `apply(position)` method returns the same value as the value at
+   * index `position` in the accumulated list `acc`.
+   *
+   * That is:
+   * apply(position) == acc(position)
+   *
+   * Holds for all valid `position` in the bounds of the list.
+   * @param integral Integral the integral of the lemma
+   * @param position BigInt the position in the acc list
+   * @return Boolean true if the property holds
+   */
+```
+</details>
+
+```scala
+  def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
   require(integral.list.nonEmpty)
   require(position >= 0 && position < integral.list.size)
   decreases(position)
-  
-  // ...
-  
+
+  assert(assertSizeAccEqualsSizeList(integral.list, integral.init))
+  assert(integral.list.size == integral.acc.size)
+
+  if (position == 0) {
+    // base case
+    assert(integral.apply(0) == integral.head)
+    assert(integral.acc(0) == integral.head)
+    integral.acc(position) == integral.apply(position)
+  } else {
+    // Inductive step
+    assert(position > 0 )
+    assert(position < integral.list.size)
+    assert(position - 1 < integral.list.size - 1)
+
+    val next = Integral(integral.list.tail, integral.head)
+    assert(integral.tail == next.acc)
+
+    assert(integral.apply(position) == next.apply(position - 1))
+    assert(integral.acc == List(integral.head) ++ next.acc)
+    assert(integral.acc.tail == next.acc)
+
+    assert(integral.acc.nonEmpty)
+    assert(integral.list.size == integral.acc.size)
+    assert(position < integral.acc.size)
+    assert(ListUtilsProperties.assertTailShiftLeft(integral.acc, position))
+    assert(integral.acc.tail(position - 1) == integral.acc(position))
+    assert(integral.acc(position) == integral.acc.tail(position - 1))
+    assert(integral.acc.tail(position - 1) == next.acc(position - 1))
+
+    assert(integral.acc(position) == next.acc(position - 1))
+    assert(integral.apply(position) == next.apply(position - 1))
+
+    assert(assertAccMatchesApply(next, position - 1))
+    assert(next.acc(position - 1) == next.apply(position - 1))
+    assert(integral.acc(position) == integral.apply(position))
+  }
   integral.acc(position) == integral.apply(position)
 }.holds
 ```
@@ -530,8 +676,11 @@ $$
 
 Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList):
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
-  /**
+/**
  * Lemma: The difference between two consecutive accumulated values in Acc
  * equals the corresponding value from the original list.
  *
@@ -543,13 +692,42 @@ Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/sca
  * @param position BigInt the position in the acc list
  * @return Boolean true if the property holds
  */
+```
+</details>
+
+```scala
 def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
   require(integral.list.size > 1)
   require(position >= 0 && position < integral.list.size - 1)
   decreases(position)
 
-  // ...
-  
+  if (position == 0) {
+    // base case
+    assert(IntegralProperties.assertAccDifferenceEqualsTailHead(integral))
+    assert(integral.apply(0) == integral.acc(0))
+    assert(integral.apply(1) == integral.acc(1))
+    assert(
+      integral.acc(position + 1) - integral.acc(position) == integral.list(position + 1) &&
+        integral.acc(position) == integral.apply(position)
+    )
+  } else {
+    assert(position > 0 )
+    assert(position < integral.list.size - 1)
+    assert(position - 1 < integral.list.size )
+
+    // Inductive step
+    val next = Integral(integral.list.tail, integral.head)
+    assert(next.size == integral.size - 1)
+    assert(integral.tail == next.acc)
+    assert(assertAccDiffMatchesList(next, position - 1))
+
+    // link this values and next values
+    assert(integral.apply(position)     == next.apply(position - 1))
+    assert(integral.apply(position + 1) == next.apply(position))
+
+    assert(integral.apply(position) == integral.acc(position))
+    assert(integral.apply(position + 1) == integral.acc(position + 1))
+  }
   integral.acc(position + 1) - integral.acc(position) == integral.list(position + 1) &&
     integral.acc(position + 1) == integral.apply(position + 1) &&
     integral.acc(position) == integral.apply(position)
@@ -570,8 +748,11 @@ $$
 
 Proved in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast):
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
-  /**
+/**
  * Lemma: The last element of the accumulated list `acc` is equal
  * to apply in the last position (size - 1).
  *
@@ -581,12 +762,36 @@ Proved in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/int
  * @param integral Integral the integral of the lemma
  * @return Boolean true if the property holds
  */
-def assertLast(integral: Integral): Boolean = {
-  require(integral.list.nonEmpty)
+```
+</details>
 
-  // ...
+```scala
+def assertLastEqualsSum(integral: Integral): Boolean = {
+  require(integral.list.nonEmpty)
+  decreases(integral.list.size)
+
+  if (integral.list.size == 1) {
+    // base case
+    assert(integral.last == integral.list.head + integral.init)
+    assert(integral.last == integral.init + ListUtils.sum(integral.list))
+  } else {
+    // inductive step
+    val next = Integral(integral.list.tail, integral.list.head + integral.init)
+    assert(assertLastEqualsSum(next))
+    assert(integral.tail == next.acc)
+    assert(integral.tail.last == next.acc.last)
+    assert(next.last == next.acc.last)
+    assert(next.last == integral.last)
+    assert(next.last == next.init + ListUtils.sum(next.list))
+    assert(next.last == integral.init + integral.list.head + ListUtils.sum(next.list))
+    assert(integral.last == integral.init + integral.list.head + ListUtils.sum(next.list))
+    assert(ListUtilsProperties.listSumAddValue(next.list,integral.list.head))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) ++ integral.list.tail))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(integral.list))
+    assert(integral.last == integral.init + ListUtils.sum(integral.list))
+  }
   
-  integral.apply(integral.size - 1) == integral.last
+  integral.last == integral.init + ListUtils.sum(integral.list)
 }.holds
 ```
 
@@ -600,6 +805,9 @@ $$
 
 Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList):
 
+<details>
+<summary>Scala Doc</summary>
+
 ```scala
   /**
    * Lemma: The size of the accumulated list `acc` is equal to the size of the
@@ -612,13 +820,37 @@ Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properti
    * @param init BigInt the initial value for the accumulation
    * @return Boolean true if the property holds
    */
-  def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
-    decreases(list)
-    
-    // ...
+```
+</details>
 
-    current.acc.size == current.list.size
-  }.holds
+```scala
+def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
+  decreases(list)
+
+  val current = Integral(list, init)
+
+  if (list.isEmpty) {
+    // base case for empty list
+    assert(current.list.size == 0)
+    assert(current.acc.size == 0)
+  }
+  else if (list.size == 1) {
+    // base case for single element list
+    assert(current.list.size == 1)
+    assert(current.acc.size == 1)
+    assert(current.acc.size == current.list.size)
+  } else {
+    // inductive step for lists with more than one element
+    val next = Integral(list.tail, current.head)
+
+    assertSizeAccEqualsSizeList(next.list, next.init)
+    assert(next.acc.size == next.list.size)
+    assert(current.acc == List(current.head) ++ next.acc)
+    assert(current.acc.size == 1 + next.acc.size)
+    assert(1 + list.tail.size == list.size)
+  }
+  current.acc.size == current.list.size
+}.holds
 ```
 
 ## 5. Limitations
@@ -646,24 +878,24 @@ This direction is left for future work.
 ### Stainless Execution Output
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
-<code style="color:blue">[  Info  ] </code> Finished compiling
-<code style="color:blue">[  Info  ] </code> Preprocessing finished
-<code style="color:blue">[  Info  ] </code> Inferring measure for sum...
-<code style="color:orange">[Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
-<code style="color:blue">[  Info  ] </code> Finished lowering the symbols
-<code style="color:blue">[  Info  ] </code> Finished generating VCs
-<code style="color:blue">[  Info  ] </code> Starting verification...
-<code style="color:blue">[  Info  ] </code> Verified: 2781 / 2781
-<code style="color:blue">[  Info  ] </code> Done in 61.79s
-<code style="color:blue">[  Info  ] </code><code style="color:green">   ┌───────────────────┐</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
-<code style="color:blue">[  Info  ] </code> Verification pipeline summary:
-<code style="color:blue">[  Info  ] </code>  @extern, cache, anti-aliasing, return transformation, 
-<code style="color:blue">[  Info  ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
-<code style="color:blue">[  Info  ] </code>   non-batched
-<code style="color:blue">[  Info  ] </code> Shutting down executor service.
+<code style="color:blue">[  Info   ] </code> Finished compiling
+<code style="color:blue">[  Info   ] </code> Preprocessing finished
+<code style="color:blue">[  Info   ] </code> Inferring measure for sum...
+<code style="color:orange">[ Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
+<code style="color:blue">[  Info   ] </code> Finished lowering the symbols
+<code style="color:blue">[  Info   ] </code> Finished generating VCs
+<code style="color:blue">[  Info   ] </code> Starting verification...
+<code style="color:blue">[  Info   ] </code> Verified: 2781 / 2781
+<code style="color:blue">[  Info   ] </code> Done in 61.79s
+<code style="color:blue">[  Info   ] </code><code style="color:green">   ┌───────────────────┐</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
+<code style="color:blue">[  Info   ] </code> Verification pipeline summary:
+<code style="color:blue">[  Info   ] </code>  @extern, cache, anti-aliasing, return transformation, 
+<code style="color:blue">[  Info   ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
+<code style="color:blue">[  Info   ] </code>   non-batched
+<code style="color:blue">[  Info   ] </code> Shutting down executor service.
 </pre>

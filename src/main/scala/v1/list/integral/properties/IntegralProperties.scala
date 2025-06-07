@@ -131,10 +131,12 @@ object IntegralProperties {
     assert(integral.list.size == integral.acc.size)
 
     if (position == 0) {
+      // base case
       assert(integral.apply(0) == integral.head)
       assert(integral.acc(0) == integral.head)
       integral.acc(position) == integral.apply(position)
     } else {
+      // inductive step
       assert(position > 0 )
       assert(position < integral.list.size)
       assert(position - 1 < integral.list.size - 1)
@@ -182,14 +184,17 @@ object IntegralProperties {
     val current = Integral(list, init)
 
     if (list.isEmpty) {
+      // base case for empty list
       assert(current.list.size == 0)
       assert(current.acc.size == 0)
     }
     else if (list.size == 1) {
+      // base case for single element list
       assert(current.list.size == 1)
       assert(current.acc.size == 1)
       assert(current.acc.size == current.list.size)
     } else {
+      // inductive step for lists with more than one element
       val next = Integral(list.tail, current.head)
 
       assertSizeAccEqualsSizeList(next.list, next.init)
@@ -216,9 +221,11 @@ object IntegralProperties {
     decreases(integral.list.size)
 
     if (integral.list.size == 1) {
+      // base case
       assert(integral.last == integral.list.head + integral.init)
       assert(integral.last == integral.init + ListUtils.sum(integral.list))
     } else {
+      // inductive step
       val next = Integral(integral.list.tail, integral.list.head + integral.init)
       assert(assertLastEqualsSum(next))
       assert(integral.tail == next.acc)
