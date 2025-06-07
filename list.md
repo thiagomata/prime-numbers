@@ -1084,26 +1084,26 @@ Stainless verified 2781 conditions, including all inductive proofs and equivalen
 Most results were cached due to incremental recompilation.
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
-<code style="color:blue">[  Info  ] </code> Finished compiling
-<code style="color:blue">[  Info  ] </code> Preprocessing finished
-<code style="color:blue">[  Info  ] </code> Inferring measure for sum...
-<code style="color:orange">[Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
-<code style="color:blue">[  Info  ] </code> Finished lowering the symbols
-<code style="color:blue">[  Info  ] </code> Finished generating VCs
-<code style="color:blue">[  Info  ] </code> Starting verification...
-<code style="color:blue">[  Info  ] </code> Verified: 2781 / 2781
-<code style="color:blue">[  Info  ] </code> Done in 61.79s
-<code style="color:blue">[  Info  ] </code><code style="color:green">   ┌───────────────────┐</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
-<code style="color:blue">[  Info  ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
-<code style="color:blue">[  Info  ] </code> Verification pipeline summary:
-<code style="color:blue">[  Info  ] </code>  @extern, cache, anti-aliasing, return transformation, 
-<code style="color:blue">[  Info  ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
-<code style="color:blue">[  Info  ] </code>   non-batched
-<code style="color:blue">[  Info  ] </code> Shutting down executor service.
+<code style="color:blue">[  Info   ] </code> Finished compiling
+<code style="color:blue">[  Info   ] </code> Preprocessing finished
+<code style="color:blue">[  Info   ] </code> Inferring measure for sum...
+<code style="color:orange">[ Warning ] </code> The Z3 native interface is not available. Falling back onto smt-z3.
+<code style="color:blue">[  Info   ] </code> Finished lowering the symbols
+<code style="color:blue">[  Info   ] </code> Finished generating VCs
+<code style="color:blue">[  Info   ] </code> Starting verification...
+<code style="color:blue">[  Info   ] </code> Verified: 2781 / 2781
+<code style="color:blue">[  Info   ] </code> Done in 61.79s
+<code style="color:blue">[  Info   ] </code><code style="color:green">   ┌───────────────────┐</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╔═╡ stainless summary ╞═══════════════════════════════════════════════════════════════════════════╗</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ║ └───────────────────┘                                                                           ║</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╟─────────────────────────────────────────────────────────────────────────────────────────────────╢</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ║ total: 2781 valid: 2781 (2768 from cache, 13 trivial) invalid: 0    unknown: 0    time:    9.11 ║</code>
+<code style="color:blue">[  Info   ] </code><code style="color:green"> ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝</code>
+<code style="color:blue">[  Info   ] </code> Verification pipeline summary:
+<code style="color:blue">[  Info   ] </code>  @extern, cache, anti-aliasing, return transformation, 
+<code style="color:blue">[  Info   ] </code>  imperative elimination, type encoding, choose injection, nativez3, 
+<code style="color:blue">[  Info   ] </code>   non-batched
+<code style="color:blue">[  Info   ] </code> Shutting down executor service.
 </pre>
 
 

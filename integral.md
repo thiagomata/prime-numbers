@@ -3,7 +3,7 @@
 ## Abstract
 
 <p style="text-align: justify">
-We formalize and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
+We formalise and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
 construction grounded in a zero-prior-knowledge methodology.
 This operation is implemented in pure Scala and verified using the Stainless formal verification system.
 The work builds on a previously verified model of lists and summation &mdash; themselves constructed without domain-specific 
@@ -86,7 +86,7 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 	require(list.nonEmpty)
 	list.head + init
   }
-  // ... unrelated methods ommited
+  // ... unrelated methods omitted
 }
 ```
 Defined at [Integral.scala](./src//main/scala/v1/list/integral/Integral.scala#L6).
@@ -105,6 +105,7 @@ I_0 = x_0 + init
 $$
 
 Since:
+
 $$
 \begin{aligned}
 I & \ne L_e                               & \qquad \text{[By definition: Integral is not an empty list]} \\
@@ -477,7 +478,7 @@ $$
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
 $$
 
-This proof is trivial, since [4.3 Integral Equals Sum Until Position](#43-integral-equals-sum-until-position) $I_k = init + \sum_{i=0}^{k} x_i$.
+This proof is trivial, since at [4.3 Integral Equals Sum Until Position](#43-integral-equals-sum-until-position), we proved that $I_k = init + \sum_{i=0}^{k} x_i$.
 
 $$
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
@@ -869,8 +870,9 @@ This continues a growing library of formally verified recursive structures in Sc
 
 ### On Generalization to Arbitrary Numeric Types
 
-In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning.
-Although the discrete integral could theoretically be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
+In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning, considering the
+current limitations of Scala Stainless &mdash; at version 0.9.8.8 &mdash; to deal with more generic numeric types.
+Although the discrete integral could be generalised to other numeric types (e.g., modular integers, rationals, or floats), such generalisations are not verified in this work.
 
 Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
 This direction is left for future work.
