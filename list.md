@@ -1053,6 +1053,13 @@ While this allows us to reason about lists of arbitrary size and precision using
 it abstracts away practical concerns such as stack overflows, memory limitations, or time 
 complexity in execution.
 
+The current Scala code can be easily adapted to use more generic numeric types. 
+However, due to current limitations in Stainless, proofs must often rely on concrete 
+types (e.g., BigInt) rather than generic numeric abstractions. 
+This restricts the ability to generalize over algebraic structures. 
+As a result, the more generic version of the code is not directly verifiable in 
+the current release of Stainless (v0.9.8.8).
+
 These limitations do not invalidate the learnings from this study. 
 The focus is on mathematical properties and
 correctness of functional behavior as defined by recursive mathematical specifications, 
