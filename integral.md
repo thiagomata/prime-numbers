@@ -1,9 +1,14 @@
 # Formal Verification of Discrete Integration Properties from First Principles
 
+**Author:** Mata, T. H.
+Independent Researcher  
+**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
+
 ## Abstract
 
 <p style="text-align: justify">
-We formalise and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
+We formalize and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
 construction grounded in a zero-prior-knowledge methodology.
 This operation is implemented in pure Scala and verified using the Stainless formal verification system.
 The work builds on a previously verified model of lists and summation &mdash; themselves constructed without domain-specific 
@@ -27,7 +32,7 @@ implementation of discrete integration, suitable as a foundation for higher-leve
 Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite, non-empty list of $n$ integers, where $n = |L|$,
 and let $init \in \mathbb{Z}$ be an initial value.
 
-We reuse several basic list operations and their verified properties from a companion article on recursive list construction [[1]](list.md).  
+We reuse several basic list operations and their verified properties from a companion article on recursive list construction &mdash;  [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/list.md) [[1]](#ref1).  
 These include the following functions:
 
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
@@ -35,10 +40,9 @@ These include the following functions:
 - $\text{tail}(L)$: returns the list without its first element.
 - $A$ &#x29FA; $B$: concatenates two lists $A$ and $B$.
 
-These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](list.md), and are treated here as foundational primitives.
+These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), and are treated here as foundational primitives.
 
-Proofs in this article are written in Scala and verified using the Stainless system, with 
-`BigInt` used to represent unbounded integers.
+Proofs in this article are written in Scala and verified using the Stainless system with `BigInt` used to represent unbounded integers.
 
 ## 3. Definition of Discrete Integral
 
@@ -50,6 +54,7 @@ $$
 I_{k} = init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
 $$
+
 ## 4. Recursive Definition
 
 
@@ -91,13 +96,13 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 ```
 Defined at [Integral.scala](./src//main/scala/v1/list/integral/Integral.scala#L6).
 
-## 4. Verified Properties
+## 5. Verified Properties
 
 We formally verify the following mathematical and implementation-specific properties:
 
-### 4.1 Head Value Matches Definition
+### 5.1 Head Value Matches Definition
 
-Lemma: The first element of the integral is equal to the first element of the original
+**Lemma:** The first element of the Integral is equal to the first element of the original
 list plus the initial value.
 
 $$
@@ -116,7 +121,7 @@ L_0 & = x_0                               & \qquad \text{[By definition of List]
 \text{head}(I) & = L_0 + init             & \qquad \text{[Substitute head}(L) \text{ by } L_0] \\
 I_0 & = L_0 + init                        & \qquad \text{[Substitute head}(I) \text{ by } I_0] \\
 I_0 & = x_0 + init                        & \qquad \text{[Substitute } L_0 \text{ by } x_0] \\
-I_0 & = x_0 + init                        & \qquad \text{[qed]}
+I_0 & = x_0 + init \quad \blacksquare     & \qquad \text{[Q.E.D.]}
 \end{aligned}
 $$
 
@@ -153,11 +158,11 @@ def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
 }.holds
 ```
 
-### 4.2 Incremental Change Matches List Value
+### 5.2 Incremental Change Matches List Value
 
-**Lemma:** The difference between two consecutive values in the Integral list equals the corresponding value in the original list $L$.
+**Lemma:** The difference between two consecutive values in the Integral List equals the corresponding value in the original List $L$.
 
-That is, considering the previous defined List $L$ and Integral $I$:
+That is, considering the previously defined List $L$ and Integral $I$:
 
 $$
 \begin{aligned}
@@ -194,8 +199,8 @@ $$
 
 $$
 \begin{aligned}
-L &= x_0 :: L_{\text{tail}}                                                                & \qquad \text{[List decomposition]} \\
-I &= v_0 :: I_{\text{tail}}                                                                & \qquad \text{[Integral decomposition]} \\
+L &= x_0 ⧺ \text{tail}(L)                                                                & \qquad \text{[List decomposition]} \\
+I &= v_0 ⧺ \text{tail}(L)                                                                & \qquad \text{[Integral decomposition]} \\
 I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
 I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
 I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
@@ -204,7 +209,7 @@ I_{p+2} - I_{p+1} &= I_{\text{tail},\ p+1} - I_{\text{tail},\ p}                
                   &= L_{\text{tail},\ p+1}                                                 & \qquad \text{[Cancellation of terms]} \\
 L_{p+2} &= L_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } L \text{ at position } p + 1] \\
 & \therefore \\
-I_{p+2} - I_{p+1} &= L_{p+2}                                                               & \qquad \text{[Q.E.D.]} \\
+I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                            & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
 
@@ -255,7 +260,7 @@ This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList]
       assert(integral.tail == next.acc)
       assert(assertAccDiffMatchesList(next, position - 1))
 
-      // link this values and next values
+      //Link these values and the next values
       assert(integral.apply(position)     == next.apply(position - 1))
       assert(integral.apply(position + 1) == next.apply(position))
 
@@ -269,7 +274,7 @@ This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList]
   }
 ```
 
-### 4.3 Integral Equals Sum Until Position
+### 5.3 Integral Equals Sum Until Position
 
 **Lemma:** The integral at position $k$ is equal to the sum of all
 elements in the list up to that position, plus the initial value:
@@ -315,7 +320,7 @@ $$
 $$ \therefore $$
 $$
 \begin{aligned}
-I_k = \mathit{init} + \sum_{i=0}^{k} x_i \qquad \text{[Q.E.D.]} \\
+I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
 
@@ -337,95 +342,6 @@ This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqual
  * @param integral the integral instance
  * @param position the list index to check
  * @return true if the property holds at this position
- */
-```
-</details>
-
-```scala
-def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
-  require(integral.list.nonEmpty)
-  require(position >= 0 && position < integral.list.size)
-  require(integral.list.size > 1)
-  decreases(position)
-
-  integral.apply(position) == integral.init + ListUtils.sum(
-    ListUtils.slice(integral.list, 0, position)
-  )
-}.holds
-```
-
-### 4.3 Integral Equals Sum Until Position
-
-Lemma: The integral at position $k$ is equal to the sum of all
-elements in the list up to that position, plus the initial value.
-
-$$
-\forall \text{ } k \in [0, n-1]:\ I_k = init + \sum_{i=0}^{k} x_i
-$$
-
-#### Proof of the Base Case $I_0 = init + \sum_{i=0}^{k} x_0$
-
-$$
-\begin{aligned}
-x_0 & = \sum_{i=0}^{0} x_i                                  & \qquad \text{[By sum definition]} \\
-I_0 &= init + x_0                                           & \qquad \text{[By recursive Integral definition for the first element ]} \\
-I_0 &= init + \sum_{i=0}^{0} x_i                            & \qquad \text{[Substituting for } x_9] \\
-\end{aligned}
-$$
-$$ \therefore $$
-$$
-\begin{aligned}
-I_0 &= init + \sum_{i=0}^{0} x_i                            & \qquad \text{[Q.E.D.]} \\
-\end{aligned}
-$$
-
-
-#### Proof of the Inductive Step $I_{k} = init + \sum_{i=0}^{k} x_i, \forall \text{ } k > 1$
-
-$$
-I_{k-1} = init + \sum_{i=0}^{k-1} x_i \implies I_k = init + \sum_{i=0}^{k} x_i \\
-$$
-
-$$
-\begin{aligned}
-I_{k-1} & = init + \sum_{i=0}^{k-1} x_i                    & \qquad \text{[By induction]} \\
-L_k & = x_k                                                & \qquad \text{[By definition of} L] \\
-I_k & = I_{k-1} + L_{k}                                    & \qquad \text{[As proved in the proof 4.2]} \\
-    & = I_{k-1} + x_{k}                                    & \qquad \text{[Substituting for } L_{k}] \\
-\sum_{i=0}^{k} x_i & = \sum_{i=0}^{k-1} x_i + x_{k}        & \qquad \text{[Definition of sum]} \\
-I_k & = (init + \sum_{i=0}^{k-1} x_i) + x_{k}              & \qquad \text{[Substituting for } I_{k-1}] \\
-    & = init + \sum_{i=0}^{k-1} x_i + x_{k}                & \qquad \text{[Distributivity]} \\
-    & = init + \sum_{i=0}^{k} x_i                          & \qquad \text{[Substituting for } \sum_{i=0}^{k-1} x_i + x_{k} ] \\
-\end{aligned}
-$$
-
-$$
-\therefore
-$$
-
-$$
-\begin{aligned}
-I_k & = init + \sum_{i=0}^{k} x_i                          & \qquad \text{[Q.E.D.]} \\
-\end{aligned}
-$$
-
-This lemma is also verified in [IntegralProperties.scala at assertIntegralEqualsSum](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum).
-
-<details>
-
-<summary>Scala Doc</summary>
-
-```scala
-/**
- * The integral of a list is defined as the sum of all elements in the list
- * plus the initial value.
- *
- * That is:
- * integral.apply(position) == init + ListUtils.sum(list[0..position])
- *
- * @param integral Integral the integral of the lemma
- * @param position BigInt the position in the list
- * @return Boolean true if the property holds
  */
 ```
 </details>
@@ -469,10 +385,10 @@ def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
 }.holds
 ```
 
-### 4.4 Final Element Equals Full Sum
+### 5.4 Final Element Equals Full Sum
 
-Lemma: The last element of the integral is 
-equal to the sum of all elements in the list plus the initial value.
+**Lemma:** The last element of the Integral is 
+equal to the sum of all elements in the List plus the initial value.
 
 $$
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
@@ -483,7 +399,7 @@ This proof is trivial, since at [4.3 Integral Equals Sum Until Position](#43-int
 $$
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
 \therefore \\
-I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
+I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare \\
 $$
 
 
@@ -535,11 +451,11 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 }.holds
 ```
 
-### 5 Implementation Consistency Lemmas
+## 6 Implementation Consistency Lemmas
 
-Although the above define the mathematical behavior of the discrete integral, we also prove the internal consistency of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for formal consistency within verified software.
+Although the above defines the mathematical behaviour of the discrete Integral, we also prove the internal consistency of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for formal consistency within verified software.
 
-### 5.1 Define Accumulated List
+### 6.1 Define Accumulated List
 
 We now define the accumulated list, which represents the discrete integral as a full list of partial sums rather than element-by-element access.
 
@@ -558,7 +474,7 @@ $$
 acc(L, init) =
 \begin{cases}
 L_e & \text{if } L = L_e \\
-\text{head}(L) + init :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
+\text{head}(L) + init ⧺ acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
 \end{cases}
 $$
 
@@ -591,15 +507,48 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 ```
 Defined at [Integral.scala](./src//main/scala/v1/list/integral/Integral.scala#L6).
 
-### 5.2 Element Consistency
+### 6.2 Element Consistency
 
-Lemma: The $k\text{-th}$ element of the integral is equal to the $k\text{-th}$ element of the accumulated list.
+**Lemma:** The $k\text{-th}$ element of the Integral is equal to the $k\text{-th}$ element of the accumulated List.
 
 $$
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
 $$
 
-Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply):
+Thank you for the clarification. Based on your provided formal style, here is the revised and consistent proof that
+
+$$
+\forall p \in [0, n - 1]:\ I_p = \text{acc}_p
+$$
+
+where $I_p$ is defined via the `apply` logic and $\text{acc}_p$ is the accumulated value at position $p$.
+
+---
+
+### 6.3 Integral-Accumulation Equivalence
+
+**Lemma:** The $p\text{-th}$ element of the Integral equals the $p\text{-th}$ element of the accumulated list.
+
+$$
+\forall \text{ } p \in [0, n-1]:\ I_p = \text{acc}_p
+$$
+
+$$
+\begin{aligned}
+L &= x_0 :: \text{tail}(L)                                                             & \qquad \text{[List decomposition]} \\
+I &= (x_0 + i) :: \text{tail}(I)                                                      & \qquad \text{[Integral decomposition]} \\
+\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                  & \qquad \text{[Definition of } \text{acc}] \\
+I_0 &= x_0 + i = \text{acc}_0                                                           & \qquad \text{[Base case]} \\
+I_{(p+1)} &= \text{tail}(I)_p                                                            & \qquad \text{[Tail Access Shift Left]} \\
+\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                             & \qquad \text{[Recursive accumulation]} \\
+\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
+\Rightarrow \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
+& \therefore \\
+\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                   & \qquad \text{[Q.E.D.]}
+\end{aligned}
+$$
+
+Verified in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply):
 
 <details>
 <summary> Scala Doc </summary>
@@ -612,7 +561,7 @@ Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/
    * That is:
    * apply(position) == acc(position)
    *
-   * Holds for all valid `position` in the bounds of the list.
+   * Holds for all valid `positions` in the bounds of the list.
    * @param integral Integral the integral of the lemma
    * @param position BigInt the position in the acc list
    * @return Boolean true if the property holds
@@ -668,14 +617,29 @@ Proved in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/
 
 #### Delta Consistency
 
-Lemma: The difference between two consecutive accumulated values in Acc
+**Lemma:** The difference between two consecutive accumulated values in Acc
 equals the corresponding value from the original list.
 
 $$
-\forall \text{ } k \in [0, n-2]:\ acc_{(k+1)} - acc_k = x_{(k+1)} = L_{(k+1)}
+\forall\ p \in [0, n-2]:\ \text{acc}_{p+1} - \text{acc}_p = L_{p+1}
 $$
 
-Proved in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList):
+$$
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1} ]                                                            & \qquad \text{[List definition]} \\
+L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
+\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definition of acc]} \\
+\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Base case]} \\
+\text{acc}_1 &= x_1 + \text{acc}_0                                                         & \qquad \text{[Recursive accumulation]} \\
+\Rightarrow \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                  & \qquad \text{[Cancellation]} \\
+\text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
+\Rightarrow \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                      & \qquad \text{[By subtraction]} \\
+& \therefore \\
+\forall p \in [0..n-2],\quad \text{acc}_{p+1} - \text{acc}_p &= L_{p+1} \quad \blacksquare & \qquad \text{[Q.E.D.]}
+\end{aligned}
+$$
+
+Verified in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList):
 
 <details>
 <summary>Scala Doc</summary>
@@ -722,7 +686,7 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
     assert(integral.tail == next.acc)
     assert(assertAccDiffMatchesList(next, position - 1))
 
-    // link this values and next values
+    // link these values and next values
     assert(integral.apply(position)     == next.apply(position - 1))
     assert(integral.apply(position + 1) == next.apply(position))
 
@@ -737,7 +701,7 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
 
 #### Last Element Agreement
 
-Lemma: The last element of the accumulated list is equal to the last element of the integral.
+**Lemma:** The last element of the accumulated list is equal to the last element of the integral.
 It also check if the last element of the integral is the element at the last position,  $n - 1$.
 
 $$
@@ -798,7 +762,7 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 
 #### List Size Agreement
 
-Lemma: The size of the accumulated list is equal to the size of the original list.
+**Lemma:** The size of the accumulated List is equal to the size of the original List.
 
 $$
 |acc| = |L|
@@ -854,30 +818,48 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 }.holds
 ```
 
-## 5. Limitations
+## 7. Limitations
 
 * The current implementation focuses exclusively on lists of unbounded integers (`BigInt`). It does not yet support generalized numeric types via abstraction or type classes.
-* While the recursive definitions are mathematically correct, they may lead to stack overflows for very large lists. This work prioritizes correctness and verifiability over performance or scalability.
-* The $sum$, $head$, $tail$ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](list.md) and are not redefined in this article.
+* While the recursive definitions are mathematically correct, they may lead to stack overflows for extensive lists. This work prioritizes correctness and verifiability over performance or scalability.
+* The $sum$, $head$, $tail$ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](#ref1) and are not redefined in this article.
 
-## 6. Conclusion
+## 7. Limitations
+
+This article shares many foundational assumptions and restrictions with the earlier work 
+ [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/list.md) [[1]](#ref1).
+For a detailed discussion of these limitations, please refer to that article.
+
+Specifically:
+
+* The focus remains on lists of unbounded integers (`BigInt`), without support for generalized numeric types via abstraction or type classes.
+* Recursive functions such as $sum$, $head$, $tail$, and concatenation are reused from the prior work [[1]](#ref1) and are not redefined here.
+* Due to the recursive nature of these definitions, stack overflows may occur with extensive lists, but correctness and verifiability take priority over performance.
+
+## 8. Conclusion
 
 This article defines and verifies a discrete integral operation over finite integer lists using a zero-prior-knowledge approach.
 By building on a previously verified list representation, we demonstrate how recursive accumulations can be reasoned about and implemented with full static guarantees.
-This continues a growing library of formally verified recursive structures in Scala using Stainless, bridging executable specifications and mathematical clarity.
+This library of formally verified recursive structures in Scala using Stainless brings executable specifications and mathematical clarity.
 
-## 7. Appendix
+## 9. References
 
-### On Generalization to Arbitrary Numeric Types
+<a name="ref1" id="ref1" href="#ref1">[1]</a>  
+Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/list.md](https://github.com/thiagomata/prime-numbers/blob/master/list.md)
+
+## 10. Appendix
+
+### 10.1 Numeric Type Generalization and Limitations
 
 In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning, considering the
 current limitations of Scala Stainless &mdash; at version 0.9.8.8 &mdash; to deal with more generic numeric types.
-Although the discrete integral could be generalised to other numeric types (e.g., modular integers, rationals, or floats), such generalisations are not verified in this work.
+Although the discrete Integral could be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
 
 Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
 This direction is left for future work.
 
-### Stainless Execution Output
+### 10.2 Stainless Execution Output
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
 <code style="color:blue">[  Info   ] </code> Finished compiling
