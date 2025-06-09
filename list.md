@@ -1,5 +1,10 @@
 # Using Formal Verification to Prove Properties of Lists Recursively Defined
 
+**Author:** Mata, T. H.
+Independent Researcher  
+**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
+
 ## Abstract
 
 <div align="justify">
@@ -17,30 +22,30 @@ code, laying a foundation for verified reasoning over recursive data structures.
 </p>
 </div>
 
-## Introduction
+## 1. Introduction
 
 Lists are finite sequences of values that support a wide range of operations in functional 
 and declarative programming. When combined with summation, they form the backbone for 
 definitions of sequences, recurrence, accumulation, and integration in the discrete domain.
 
 Our approach mirrors traditional recursive definitions but is formally verified
-using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html),  a verification framework for pure Scala programs
+using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1),  a verification framework for pure Scala programs
 that uses formal verification to ensure user-defined functions satisfy 
 given preconditions, postconditions, and invariants through automated proofs under all valid inputs.
 
 > Formal verification is the act of proving or disproving the correctness of 
 > intended algorithms underlying a system with respect to a certain formal 
 > specification or property, using formal methods of mathematics.
-> [— Wikipedia on Formal Verification](https://en.wikipedia.org/wiki/Formal_verification)
+> [— Wikipedia on Formal Verification](https://en.wikipedia.org/wiki/Formal_verification) [[2]](#ref2)
 
-## Definitions
+## 2. Definitions
 
-### List construction
+### 2.1 List construction
 
 Let $𝕃$ be the set of all lists over a set $S$.
 A list is either the empty $L_{e}$ or a non-empty list $L_{node}$, as follows:
 
-### Empty List
+### 2.2 Empty List
 
 Let's define an empty list $L_{e}$:
 
@@ -51,7 +56,7 @@ L_{e} & = [] \\
 \end{aligned}
 ```
 
-### Recursive Definition of List
+### 2.3 Recursive Definition of List
 
 ```math
 \begin{aligned}
@@ -69,7 +74,7 @@ produces a distinct structural value without the possibility of cyclic reference
 Recursive functions over $𝕃$ terminate naturally, as size is defined by a strictly decreasing structure.
 
 
-### Elements Access and Indexing
+### 2.4 Elements Access and Indexing
 
 ```math
 \begin{aligned}
@@ -82,7 +87,7 @@ L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 
 \end{aligned} 
 ```
 
-### List Size
+### 2.5 List Size
 
 With the structure of lists defined, we now introduce a recursive definition 
 for their size (or length).
@@ -98,7 +103,7 @@ We define the size of a list $L$, $|L|$ as follows:
 Proved in the native stainless library in `stainless.collection.List`.
 
 
-### List Append
+### 2.6 List Append
 
 Let $A, B \in 𝕃$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
 
@@ -114,7 +119,7 @@ L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise}
 
 Proved in the native stainless library in `stainless.collection.List`.
 
-### List Slice
+### 2.7 List Slice
 
 Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
 
@@ -122,7 +127,7 @@ $$
 L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
-### List Sum
+### 2.8 List Sum
 
 Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
 
@@ -165,11 +170,11 @@ Defined at [List Utils](
   }
 ```
 
-## Properties
+## 3. Properties
 
 Using the definitions above, we state and verify the following key properties of lists:
 
-### Slice Implementations are Equivalent
+### 3.1 Slice Implementations are Equivalent
 
 Let's prove and verify that the definitions of slice tail-recursive,
 head-recursive and index-rage recursive are interchangeable and equivalent 
@@ -182,7 +187,7 @@ L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
 
-##### Tail Recursive - Specification:
+#### Tail Recursive - Specification:
 
 $$
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
@@ -537,7 +542,7 @@ These properties are verified at [Slice Equivalence Lemmas](
   }.holds
 ```
 
-### Sum matches Summation
+### 3.2 Sum matches Summation
 
 We can prove that the recursive `sum` function over a list $L$ matches the mathematical definition 
 of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
@@ -607,7 +612,7 @@ $$
 $$
 
 
-### Tail Access Shift
+### 3.3 Tail Access Shift
 
 ```math
 \forall \text{ } L,\ i,\quad |L| > 1 \land 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
@@ -697,7 +702,7 @@ as follows:
   }.holds
 ```
 
-### Last Element Identity
+### 3.4 Last Element Identity
 
 ```math
 |L| > 0 \implies last(L) = L_{(|L| - 1)}
@@ -738,7 +743,7 @@ Proved in [List Util Properties - Assert Last Equals Last Position](
   }.holds
 ```
 
-### Left Append Preserves Sum
+### 3.5 Left Append Preserves Sum
 
 ```math
 \begin{aligned}
@@ -797,7 +802,7 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
   }.holds
 ```
 
-### Sum over Concatenation
+### 3.6 Sum over Concatenation
 ```math
 	sum(A ⧺ B) = 	sum(A) + 	sum(B)
 ```
@@ -881,7 +886,8 @@ Verified in [List Utils Properties - List Combine ](
   }.holds
 ```
 
-### Commutativity of Sum over Concatenation
+### 3.7 Commutativity of Sum over Concatenation
+
 ```math
 	sum(A ⧺ B) = sum(B ⧺ A)
 ```
@@ -929,7 +935,7 @@ Verified in [List Utils Properties - List Swap ](
   }.holds
 ```
 
-### Slice Append Consistency
+### 3.8 Slice Append Consistency
 
 ```math
 	L[f \dots t] = slice(L, f, t) = slice(L, f, {(t-1)}) ⧺ [L(t)]  = L[f \dots {(t-1)}] ⧺ [L(t)]
@@ -974,7 +980,7 @@ Verified in [List Utils Properties - Assert Append to Slice ](
   }.holds
 ```
 
-## Conclusion
+## 4. Conclusion
 
 This article presents a formal framework for defining and reasoning about finite lists using a 
 recursive mathematical structure aligned with functional programming principles.
@@ -1020,68 +1026,69 @@ The properties and definitions presented here can be extended to more complex da
 and algorithms, providing a solid foundation for future work in formal verification and
 mathematical reasoning in functional programming.
 
-## Limitations
+## 5. Limitations
 
-This article restricts the implementation and verification to immutable, 
-finite lists of integers represented using the `stainless.collection.List` data type. 
-The focus is on **correctness**, not on performance or scalability. Our summation and 
-accumulation models follow a **recursive definition**, which is faithful to mathematical 
-formalism.
-However, this can introduce performance limitations in practical use when dealing 
-with extensive lists.
+This article restricts the implementation and verification to immutable,
+ finite lists of integers represented using the `stainless.collection.List` data type. 
+The focus is on **correctness**, not on performance or scalability. Our summation and
+ accumulation models follow a **recursive definition**, aligned with mathematical formalism.
+However, this approach may introduce performance limitations in practical applications involving large lists.
 
-In particular:
+### 5.1 Overflow and Memory Limits Are Out of Scope
 
-- **Overflow and memory limits are out of scope**: Since we use `BigInt` and immutable lists, 
-the model assumes unbounded integer arithmetic and infinite list capacity. This approach avoids 
-issues like overflow or out-of-memory errors, but it does not reflect the constraints 
-imposed by bounded integer types or limited memory in real-world systems.
+By using `BigInt` and immutable lists, the model assumes unbounded integer arithmetic and infinite list capacity. 
+This choice avoids overflow and out-of-memory errors, but it does not reflect the constraints of fixed-size integer
+ types or limited system memory in real-world environments.
 
-- **Side-effects are excluded**: All list operations are pure and referentially transparent. 
-We do not model mutation, I/O, or performance overhead.
+### 5.2 Side Effects Are Excluded
 
-- **No parallelism or laziness**: Unlike streaming libraries or lazy sequences, 
-this model is strictly eager and sequential.
+All list operations are pure and referentially transparent. Mutation, I/O, and performance overhead are outside the 
+ scope of this model.
 
-These constraints do not affect the **correctness** of the mathematical properties proved in 
-this article. However, they may limit the direct applicability of this model in 
-performance-critical or side-effectful environments.
+### 5.3 No Parallelism or Laziness
 
-Furthermore, the model treats lists and integers as conceptually unbounded, not imposing any 
-restrictions on list size or memory space. 
-While this allows us to reason about lists of arbitrary size and precision using `BigInt`, 
-it abstracts away practical concerns such as stack overflows, memory limitations, or time 
-complexity in execution.
+Unlike streaming libraries or lazy sequences, this model is strictly eager and sequential, without support for parallel 
+ computation or lazy evaluation.
 
-The current Scala code can be easily adapted to use more generic numeric types. 
-However, due to current limitations in Stainless, proofs must often rely on concrete 
-types (e.g., BigInt) rather than generic numeric abstractions. 
-This restricts the ability to generalize over algebraic structures. 
-As a result, the more generic version of the code is not directly verifiable in 
-the current release of Stainless (v0.9.8.8).
+### 5.4 Limitations Imposed by Stainless Verification Tool
 
-These limitations do not invalidate the learnings from this study. 
-The focus is on mathematical properties and
-correctness of functional behavior as defined by recursive mathematical specifications, 
-not execution efficiency.
+Due to current limitations in the Scala Stainless verifier (version 0.9.8.8), formal proofs must often rely on concrete
+ numeric types such as `BigInt`.
+Stainless does not yet fully support generic numeric abstractions or type classes like `Numeric[T]`,
+which hinders verification of implementations parameterized over arbitrary numeric types.
 
-## Appendix
+As a result, while the mathematical properties in this work conceptually apply to any numeric domain satisfying the required algebraic laws, practical verification is constrained to `BigInt`.
+Overcoming these tool limitations is an important direction for future enhancements, enabling broader generality and more flexible formal verification.
 
-### On Generalization to Arbitrary Numeric Types
+### 5.5 Scope of Correctness
 
-In this article, the mathematical proofs and properties were not restricted to a specific domain; 
-they apply to any universe $𝕊$ equipped with suitable numeric operations.
-For the purposes of formal verification, we focused on lists of `BigInt` to avoid issues 
-such as overflow or rounding errors, and to simplify reasoning.
+This article emphasizes the **mathematical correctness** of recursive definitions and verified properties,
+ rather than runtime behavior or system-level efficiency.
 
-Therefore, these proofs can be generalized to any numeric type that satisfies these laws.
-In Scala, this could be achieved by abstracting the implementations over a `type T` with a `Numeric[T]`
-which is a promising direction for future work.
+The use of `BigInt` and conceptually unbounded lists abstracts away concerns like stack overflows, memory usage,
+ and execution time.
+It also circumvents limitations of the current version of Scala Stainless with respect to generic numeric reasoning.
 
-### Stainless Execution Output
+While limiting practical use in some contexts, these assumptions maintain the focus on proving functional correctness
+as defined by recursive specifications.
 
-Stainless verified 2781 conditions, including all inductive proofs and equivalence lemmas for slicing and summation.
-Most results were cached due to incremental recompilation.
+Future work may include developing alternative implementations of these data structures that explicitly address 
+real-world constraints, such as bounded memory and side effects, alongside formal proofs establishing their equivalence
+with the current, mathematically rigorous model.
+
+## 6. References
+
+<a name="ref0" id="ref0" href="#ref0">[1]</a>  
+Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.  
+Proceedings of the ACM on Programming Languages, OOPSLA Issue.  
+
+<a name="ref1" id="ref1" href="#ref1">[2]</a>  
+Wikipedia contributors. (2024). *Formal verification*. Wikipedia.  
+Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
+
+## 7. Appendix
+
+### 7.1 Stainless Execution Output
 
 <pre style="background-color: black; color: white; padding: 10px; font-family: monospace;">
 <code style="color:blue">[  Info   ] </code> Finished compiling
@@ -1105,5 +1112,4 @@ Most results were cached due to incremental recompilation.
 <code style="color:blue">[  Info   ] </code>   non-batched
 <code style="color:blue">[  Info   ] </code> Shutting down executor service.
 </pre>
-
 
