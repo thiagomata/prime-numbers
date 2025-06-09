@@ -274,7 +274,7 @@ $$
 &= L[i \dots (j - 1)] ⧺ [L_j] & \qquad \text{[by Inductive Hypothesis]} \\
 &= [ L_k \mid i \leq k \leq j - 1 ] ⧺ [L_j] & \qquad \text{[by Specification]} \\
 &= [ L_k \mid i \leq k \leq j ] & \qquad \text{[by definition of Concatenation]} \\
-&= L[i \dots j] & \qquad \text{[Q.E.D]} \\
+&= L[i \dots j] & \qquad  \text{[Q.E.D]} \\
 \end{aligned}
 $$
 
@@ -608,25 +608,29 @@ Hence, by induction on the size of $L$:
 
 $$
 \forall \text{ } L \text{ } \in 𝕃 \\
-\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊 \quad \text{[Q.E.D.]} \\
+\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[Q.E.D.]} \\
 $$
 
 
 ### 3.3 Tail Access Shift
 
+**Lemma:** For any list $L$ with at least two elements, accessing the $i$-th element of its tail is equivalent to accessing the $(i + 1)$-th element of the list.
+
 ```math
-\forall \text{ } L,\ i,\quad |L| > 1 \land 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
+\forall \text{ } L,\ i,\quad 1 < |L|, 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
 ```
 
 Since:
 
 $$
 \begin{aligned}
- L_{(k)} &= &L_{node(k)} &= \text{tail}(L_{node})({k - 1}) \text{ } &\forall \text{ } 0 < k < |L| \\
- L_{(k + 1)} &= &\text{tail}(L_{node})_{(k)} &=  L_{node(k + 1)} \text{ } &\forall \text{ } 0 \le k < |L| \\
+L &= [x_0, x_1, x_2, \dots, x_{n - 1}]                                & \qquad \text{[List definition]} \\
+L &= [x_0] ⧺ [x_1, x_2, \dots, x_{n - 1}]                             & \qquad \text{[Concatenation definition]} \\
+L &= \text{head}(L) ⧺ \text{tail}(L)                                  & \qquad \text{[Head and Tail definition]} \\
+\text{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}]                        & \qquad \text{[Tail definition]} \\
+L{i} &= x_i = \text{tail}(L){(i + 1)} \text{ } \forall \text{ }  0 < i < |L|  \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
-
 
 Verified in 
 [List Utils Properties - Access Tail Shift Left](
@@ -704,10 +708,32 @@ as follows:
 
 ### 3.4 Last Element Identity
 
-```math
-|L| > 0 \implies last(L) = L_{(|L| - 1)}
-```
-Proved in [List Util Properties - Assert Last Equals Last Position](
+**Lemma:** The last element of a non-empty list is equal to the element at position $n - 1$, where $n = |L|$.
+
+$$
+\forall \text{ } L,\ |L| > 0 \Rightarrow \text{last}(L) = L_{(n - 1)}
+$$
+
+$$
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1}]                                   & \qquad \text{[List definition]} \\
+\\
+\text{Base case: } |L| = 1 \\
+L &= [x_0]                                                        & \qquad \text{[Singleton list]} \\
+\text{last}(L) &= x_0 = L_0 = L_{(n - 1)}                         & \qquad \text{[Definition of last]} \\
+\\
+\text{Inductive step: } |L| > 1 \\
+L &= x_0 :: \text{tail}(L)                                        & \qquad \text{[Decomposition]} \\
+\text{last}(L) &= \text{last}(\text{tail}(L))                     & \qquad \text{[Definition of last]} \\
+\text{last}(\text{tail}(L)) &= \text{tail}(L)_{(|\text{tail}(L)| - 1)} & \qquad \text{[Inductive hypothesis]} \\
+\text{tail}(L)_{(|\text{tail}(L)| - 1)} &= L_{(|L| - 1)}          & \qquad \text{[Tail Shift Position]} \\
+\Rightarrow\ \text{last}(L) &= L_{(|L| - 1)}                      & \qquad \text{[By substitution]} \\
+& \therefore \\
+\forall L,\ |L| > 0 \Rightarrow \text{last}(L) &= L_{(|L| - 1)} \quad \blacksquare
+\end{aligned}
+$$
+
+Verified in [List Util Properties - Assert Last Equals Last Position](
 	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
 ).
 
@@ -768,7 +794,7 @@ $$
 
 $$
 \begin{aligned}
-\text{sum}([x] ⧺ L) & = x + \text{sum}(L) &  \qquad \text{[Q.E.D.]} \\
+\text{sum}([x] ⧺ L) & = x + \text{sum}(L)  \quad \blacksquare &  \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
 
@@ -840,7 +866,7 @@ $$
 
 $$
 \begin{aligned}
-	sum(A ⧺ B) = 	sum(A) + 	sum(B) &  \qquad \text{[Q.E.D.]} \\
+	sum(A ⧺ B) = 	sum(A) + 	sum(B) & \quad \blacksquare \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
 
@@ -894,10 +920,10 @@ Verified in [List Utils Properties - List Combine ](
 Since:
 ```math
 \begin{aligned}
-	sum(A ⧺ B) & = sum(A) + sum(B)      & \text{[Sum over Concatenation]} \\
-	sum(B ⧺ A) & = sum(B) + sum(A)      & \text{[Sum over Concatenation]} \\
-	sum(B) + sum(A) & = sum(A) + sum(B) & \text{[Distributive]} \\
-	sum(B ⧺ A) & = sum(A ⧺ B)          & \text{[Q.E.D]} \\
+	sum(A ⧺ B) & = sum(A) + sum(B)                        & \text{[Sum over Concatenation]} \\
+	sum(B ⧺ A) & = sum(B) + sum(A)                        & \text{[Sum over Concatenation]} \\
+	sum(B) + sum(A) & = sum(A) + sum(B)                   & \text{[Distributive]} \\
+	sum(B ⧺ A) & = sum(A ⧺ B)  \quad \blacksquare         & \text{[Q.E.D]} \\
 \end{aligned}
 ```
 
@@ -937,9 +963,15 @@ Verified in [List Utils Properties - List Swap ](
 
 ### 3.8 Slice Append Consistency
 
-```math
-	L[f \dots t] = slice(L, f, t) = slice(L, f, {(t-1)}) ⧺ [L(t)]  = L[f \dots {(t-1)}] ⧺ [L(t)]
-```
+**Lemma:** A slice of a list from index $f$ to $t$ can be expressed as the slice from $f$ to $t - 1$ concatenated with the element at index $t$, for $f \le t < |L|$.
+
+$$
+\begin{aligned}
+L[f \dots t] &= \text{slice}(L, f, t) \\
+             &= \text{slice}(L, f, t - 1) ⧺ [L_t] \\
+             &= L[f \dots t - 1] ⧺ [L_t]  \quad \blacksquare
+\end{aligned}
+$$
 
 
 Verified in [List Utils Properties - Assert Append to Slice ](
@@ -1000,9 +1032,9 @@ f > t, \quad 0 \leq i < |L|\\
 ```
 ```math
 \begin{aligned}
-|L| > 0 &\implies L_{|L|-1} &= &\text{last}(L) \\
-i > 0 &\implies L_i &= &\text{tail}(L)_{i-1} \\
-i < |L| - 1, |L| > 1 &\implies \text{tail}(L)_i &= &L_{i+1} \\
+|L| > 0 &\implies L_{|L|-1} &= &\text{ }\text{last}(L) \\
+i > 0 &\implies L_i &= &\text{ }\text{tail}(L)_{i-1} \\
+i < |L| - 1, |L| > 1 &\text{ }\implies \text{tail}(L)_i &= &L_{i+1} \\
 \end{aligned}
 ```
 ```math

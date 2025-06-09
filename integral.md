@@ -711,7 +711,36 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 $$
 
-Proved in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast):
+$$
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[List definition]} \\
+\text{last}(L) &= \begin{cases}
+x_0 & \text{if } |L| = 1 \\
+\text{last}(\text{tail}(L)) & \text{if } |L| > 1
+\end{cases}                                                                 & \qquad \text{[Definition of last]} \\
+\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)         & \qquad \text{[Definition of accumulation]} \\
+I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
+\\
+\text{Base case: } |L| = 1 \\
+L &= [x_0]                                                                   & \qquad \text{[Singleton list]} \\
+\text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[By definition]} \\
+I &= [x_0 + i]                                                               & \qquad \text{[Integral is acc]} \\
+\text{last}(I) &= x_0 + i = acc_0 = I_0                                      & \qquad \text{[last on singleton]} \\
+\\
+\text{Inductive step: } |L| > 1 \\
+L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[List decomposition]} \\
+I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Recursive definition]} \\
+\text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Tail of integral]} \\
+\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Recursive last]} \\
+\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
+&= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
+\Rightarrow\ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                   & \qquad \text{[By substitution]} \\
+& \therefore \\
+\text{last}_I &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[Q.E.D.]}
+\end{aligned}
+$$
+
+Verified in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast):
 
 <details>
 <summary>Scala Doc</summary>
@@ -768,7 +797,32 @@ $$
 |acc| = |L|
 $$
 
-Proved in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList):
+$$
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
+\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive accumulation]} \\
+\\
+\text{Base case: } |L| = 0 \\
+L &= []                                                                  & \qquad \text{[Empty list]} \\
+\text{acc}(L, i) &= []                                                   & \qquad \text{[By definition]} \\
+|\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Equal size]} \\
+\\
+\text{Base case: } |L| = 1 \\
+L &= [x_0]                                                               & \qquad \text{[Singleton list]} \\
+\text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[By definition]} \\
+|\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Equal size]} \\
+\\
+\text{Inductive step: } |L| > 1 \\
+L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposition]} \\
+\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive call]} \\
+|\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Inductive hypothesis]} \\
+|\text{acc}(L, i)| &= 1 + |\text{tail}(L)| = |L|                         & \qquad \text{[Cons adds 1]} \\
+& \therefore \\
+|\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[Q.E.D.]}
+\end{aligned}
+$$
+
+Verified in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList):
 
 <details>
 <summary>Scala Doc</summary>
