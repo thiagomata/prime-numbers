@@ -283,8 +283,6 @@ $$
 \forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
 $$
 
----
-
 #### Proof by Induction on $k$
 
 **Base case** $k = 0$:
@@ -300,8 +298,6 @@ $$ \therefore $$
 $$
 I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
 $$
-
----
 
 **Inductive step:** Assume the property holds for $k-1$:
 
@@ -323,8 +319,6 @@ $$
 I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
-
----
 
 This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqualsSum`](./src/main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum):
 
@@ -522,8 +516,6 @@ $$
 $$
 
 where $I_p$ is defined via the `apply` logic and $\text{acc}_p$ is the accumulated value at position $p$.
-
----
 
 ### 6.3 Integral-Accumulation Equivalence
 
@@ -880,9 +872,9 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 
 ## 7. Limitations
 
-This article shares many foundational assumptions and restrictions with the earlier work 
+This article builds upon the foundational assumptions and constraints established in the earlier work
  [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/list.md) [[1]](#ref1).
-For a detailed discussion of these limitations, please refer to that article.
+ For a comprehensive discussion of those limitations, readers are encouraged to consult that article.
 
 Specifically:
 
