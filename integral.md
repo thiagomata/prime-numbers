@@ -525,7 +525,7 @@ $$
 \forall \text{ } p \in [0, n-1]:\ I_p = \text{acc}_p
 $$
 
-$$
+```math
 \begin{aligned}
 L &= x_0 :: \text{tail}(L)                                                             & \qquad \text{[List decomposition]} \\
 I &= (x_0 + i) :: \text{tail}(I)                                                      & \qquad \text{[Integral decomposition]} \\
@@ -538,7 +538,7 @@ I_{(p+1)} &= \text{tail}(I)_p                                                   
 & \therefore \\
 \forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                   & \qquad \text{[Q.E.D.]}
 \end{aligned}
-$$
+```
 
 Verified in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccMatchesApply):
 
@@ -612,11 +612,11 @@ Verified in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scal
 **Lemma:** The difference between two consecutive accumulated values in Acc
 equals the corresponding value from the original list.
 
-$$
+```math
 \forall\ p \in [0, n-2]:\ \text{acc}_{p+1} - \text{acc}_p = L_{p+1}
-$$
+```
 
-$$
+```math
 \begin{aligned}
 L &= [x_0, x_1, \dots, x_{n-1} ]                                                            & \qquad \text{[List definition]} \\
 L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
@@ -626,10 +626,16 @@ L &= x_0 :: \text{tail}(L)                                                      
 \Rightarrow \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                  & \qquad \text{[Cancellation]} \\
 \text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
 \Rightarrow \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                      & \qquad \text{[By subtraction]} \\
-& \therefore \\
+\end{aligned}
+```
+```math
+\therefore
+```
+```math
+\begin{aligned}
 \forall p \in [0..n-2],\quad \text{acc}_{p+1} - \text{acc}_p &= L_{p+1} \quad \blacksquare & \qquad \text{[Q.E.D.]}
 \end{aligned}
-$$
+```
 
 Verified in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList):
 
@@ -703,7 +709,7 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 $$
 
-$$
+```math
 \begin{aligned}
 L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[List definition]} \\
 \text{last}(L) &= \begin{cases}
@@ -712,14 +718,24 @@ x_0 & \text{if } |L| = 1 \\
 \end{cases}                                                                 & \qquad \text{[Definition of last]} \\
 \text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)         & \qquad \text{[Definition of accumulation]} \\
 I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
-\\
-\text{Base case: } |L| = 1 \\
+\end{aligned}
+```
+
+**Base case**: $|L| = 1$
+
+```math
+\begin{aligned}
 L &= [x_0]                                                                   & \qquad \text{[Singleton list]} \\
 \text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[By definition]} \\
 I &= [x_0 + i]                                                               & \qquad \text{[Integral is acc]} \\
 \text{last}(I) &= x_0 + i = acc_0 = I_0                                      & \qquad \text{[last on singleton]} \\
-\\
-\text{Inductive step: } |L| > 1 \\
+\end{aligned}
+```
+
+**Inductive step**: $|L| > 1$
+
+```math
+\begin{aligned}
 L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[List decomposition]} \\
 I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Recursive definition]} \\
 \text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Tail of integral]} \\
@@ -727,10 +743,16 @@ I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \
 \text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
 &= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
 \Rightarrow\ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                   & \qquad \text{[By substitution]} \\
-& \therefore \\
+\end{aligned}
+```
+```math
+\therefore
+```
+```math
+\begin{aligned}
 \text{last}_I &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[Q.E.D.]}
 \end{aligned}
-$$
+```
 
 Verified in [IntegralProperties.scala at assertLast](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertLast):
 
