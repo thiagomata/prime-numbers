@@ -276,16 +276,15 @@ This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList]
 
 ### 5.3 Integral Equals Sum Until Position
 
-**Lemma:** The integral at position $k$ is equal to the sum of all
-elements in the list up to that position, plus the initial value:
+**Lemma**: The integral at position $k$ is equal to the sum of all elements in the list up to that position, plus the initial value:
 
 $$
 \forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
 $$
 
-#### Proof by Induction on $k$
+**Proof by Induction on $k$**
 
-**Base case** $k = 0$:
+#### Base case: $k = 0$
 
 $$
 \begin{aligned}
@@ -299,7 +298,7 @@ $$
 I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
 $$
 
-**Inductive step:** Assume the property holds for $k-1$:
+#### Inductive step: Assume the property holds for $k-1$
 
 $$
 I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \sum_{i=0}^{k} x_i
@@ -517,7 +516,7 @@ $$
 
 where $I_p$ is defined via the `apply` logic and $\text{acc}_p$ is the accumulated value at position $p$.
 
-### 6.3 Integral-Accumulation Equivalence
+### 6.3 Integral-Accumulation Index Equivalence
 
 **Lemma:** The $p\text{-th}$ element of the Integral equals the $p\text{-th}$ element of the accumulated list.
 
@@ -607,7 +606,7 @@ Verified in [IntegralProperties.scala at assertAccMatchesApply](./src//main/scal
 }.holds
 ```
 
-#### Delta Consistency
+### 6.4 Integral-Accumulation Delta Consistency
 
 **Lemma:** The difference between two consecutive accumulated values in Acc
 equals the corresponding value from the original list.
@@ -697,7 +696,7 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
 }.holds
 ```
 
-#### Last Element Agreement
+### 6.5 Integral-Accumulation Last Element Agreement
 
 **Lemma:** The last element of the accumulated list is equal to the last element of the integral.
 It also check if the last element of the integral is the element at the last position,  $n - 1$.
@@ -721,7 +720,7 @@ I &= \text{acc}(L, i)                                                       & \q
 \end{aligned}
 ```
 
-**Base case**: $|L| = 1$
+#### Base case: $|L| = 1$
 
 ```math
 \begin{aligned}
@@ -732,7 +731,7 @@ I &= [x_0 + i]                                                               & \
 \end{aligned}
 ```
 
-**Inductive step**: $|L| > 1$
+#### Inductive step: $|L| > 1$
 
 ```math
 \begin{aligned}
@@ -803,7 +802,7 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 }.holds
 ```
 
-#### List Size Agreement
+### 6.6 Integral-Accumulation List Size Agreement
 
 **Lemma:** The size of the accumulated List is equal to the size of the original List.
 
@@ -811,22 +810,37 @@ $$
 |acc| = |L|
 $$
 
-$$
+```math
 \begin{aligned}
 L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
 \text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive accumulation]} \\
-\\
-\text{Base case: } |L| = 0 \\
+\end{aligned}
+```
+
+#### Empty List: $|L| = 0$
+
+```math
+\begin{aligned}
 L &= []                                                                  & \qquad \text{[Empty list]} \\
 \text{acc}(L, i) &= []                                                   & \qquad \text{[By definition]} \\
 |\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Equal size]} \\
-\\
-\text{Base case: } |L| = 1 \\
+\end{aligned}
+```
+
+#### Singleton List: $|L| = 1$
+
+```math
+\begin{aligned}
 L &= [x_0]                                                               & \qquad \text{[Singleton list]} \\
 \text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[By definition]} \\
 |\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Equal size]} \\
-\\
-\text{Inductive step: } |L| > 1 \\
+\end{aligned}
+```
+
+#### Inductive step: $|L| > 1$
+
+```math
+\begin{aligned}
 L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposition]} \\
 \text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive call]} \\
 |\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Inductive hypothesis]} \\
@@ -834,7 +848,7 @@ L &= x_0 :: \text{tail}(L)                                               & \qqua
 & \therefore \\
 |\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[Q.E.D.]}
 \end{aligned}
-$$
+```
 
 Verified in [IntegralProperties.scala](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertSizeAccEqualsSizeList):
 
@@ -885,12 +899,6 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
   current.acc.size == current.list.size
 }.holds
 ```
-
-## 7. Limitations
-
-* The current implementation focuses exclusively on lists of unbounded integers (`BigInt`). It does not yet support generalized numeric types via abstraction or type classes.
-* While the recursive definitions are mathematically correct, they may lead to stack overflows for extensive lists. This work prioritizes correctness and verifiability over performance or scalability.
-* The $sum$, $head$, $tail$ and concatenation &#x29FA; functions used here are reused from prior verified work [[1]](#ref1) and are not redefined in this article.
 
 ## 7. Limitations
 
