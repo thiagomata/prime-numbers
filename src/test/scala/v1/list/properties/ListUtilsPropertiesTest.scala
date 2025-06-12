@@ -113,13 +113,13 @@ class ListUtilsPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertTailShiftPosition" should "hold" in {
+  "assertTailShiftLeft" should "hold" in {
     assert(
       manyLists.forall(
         list => {
           (BigInt(0) until list.size).forall(
             position => {
-              ListUtilsProperties.assertTailShiftPosition(list, position)
+              ListUtilsProperties.assertTailShiftLeft(list, position)
             }
           )
         }
