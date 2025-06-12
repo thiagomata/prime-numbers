@@ -526,16 +526,16 @@ $$
 
 ```math
 \begin{aligned}
-L &= x_0 :: \text{tail}(L)                                                             & \qquad \text{[List decomposition]} \\
-I &= (x_0 + i) :: \text{tail}(I)                                                      & \qquad \text{[Integral decomposition]} \\
-\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                  & \qquad \text{[Definition of } \text{acc}] \\
-I_0 &= x_0 + i = \text{acc}_0                                                           & \qquad \text{[Base case]} \\
-I_{(p+1)} &= \text{tail}(I)_p                                                            & \qquad \text{[Tail Access Shift Left]} \\
-\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                             & \qquad \text{[Recursive accumulation]} \\
-\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
-\Rightarrow \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
-& \therefore \\
-\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                   & \qquad \text{[Q.E.D.]}
+&L &= x_0 :: \text{tail}(L)                                                             & \qquad \text{[List decomposition]} \\
+&I &= (x_0 + i) :: \text{tail}(I)                                                      & \qquad \text{[Integral decomposition]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                  & \qquad \text{[Definition of } \text{acc}] \\
+&I_0 &= x_0 + i = \text{acc}_0                                                           & \qquad \text{[Base case]} \\
+&I_{(p+1)} &= \text{tail}(I)_p                                                            & \qquad \text{[Tail Access Shift Left]} \\
+&\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                             & \qquad \text{[Recursive accumulation]} \\
+&\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
+&\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
+&& \therefore \\
+&\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                   & \qquad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -617,14 +617,14 @@ equals the corresponding value from the original list.
 
 ```math
 \begin{aligned}
-L &= [x_0, x_1, \dots, x_{n-1} ]                                                            & \qquad \text{[List definition]} \\
-L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
-\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definition of acc]} \\
-\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Base case]} \\
-\text{acc}_1 &= x_1 + \text{acc}_0                                                         & \qquad \text{[Recursive accumulation]} \\
-\Rightarrow \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                  & \qquad \text{[Cancellation]} \\
-\text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
-\Rightarrow \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                      & \qquad \text{[By subtraction]} \\
+&L &= [x_0, x_1, \dots, x_{n-1} ]                                                            & \qquad \text{[List definition]} \\
+&L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definition of acc]} \\
+&\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Base case]} \\
+&\text{acc}_1 &= x_1 + \text{acc}_0                                                         & \qquad \text{[Recursive accumulation]} \\
+&\implies \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                  & \qquad \text{[Cancellation]} \\
+&\text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
+&\implies \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                      & \qquad \text{[By subtraction]} \\
 \end{aligned}
 ```
 ```math
@@ -703,20 +703,20 @@ It also check if the last element of the integral is the element at the last pos
 
 $$
 \begin{aligned}
-acc_{(n - 1)} & = last_{(I)} \\
+acc_{(n - 1)} & = \text{last}(I) \\
 acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 $$
 
 ```math
 \begin{aligned}
-L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[List definition]} \\
-\text{last}(L) &= \begin{cases}
-x_0 & \text{if } |L| = 1 \\
-\text{last}(\text{tail}(L)) & \text{if } |L| > 1
-\end{cases}                                                                 & \qquad \text{[Definition of last]} \\
-\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)         & \qquad \text{[Definition of accumulation]} \\
-I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
+&L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[List definition]} \\
+&\text{last}(L) &= \begin{cases}
+&x_0 & \text{if } |L| = 1 \\
+&\text{last}(\text{tail}(L)) & \text{if } |L| > 1
+&\end{cases}                                                                 & \qquad \text{[Definition of last]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)         & \qquad \text{[Definition of accumulation]} \\
+&I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
 \end{aligned}
 ```
 
@@ -724,10 +724,10 @@ I &= \text{acc}(L, i)                                                       & \q
 
 ```math
 \begin{aligned}
-L &= [x_0]                                                                   & \qquad \text{[Singleton list]} \\
-\text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[By definition]} \\
-I &= [x_0 + i]                                                               & \qquad \text{[Integral is acc]} \\
-\text{last}(I) &= x_0 + i = acc_0 = I_0                                      & \qquad \text{[last on singleton]} \\
+&L &= [x_0]                                                                   & \qquad \text{[Singleton list]} \\
+&\text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[By definition]} \\
+&I &= [x_0 + i]                                                               & \qquad \text{[Integral is acc]} \\
+&\text{last}(I) &= x_0 + i = acc_0 = I_0                                      & \qquad \text{[last on singleton]} \\
 \end{aligned}
 ```
 
@@ -735,13 +735,13 @@ I &= [x_0 + i]                                                               & \
 
 ```math
 \begin{aligned}
-L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[List decomposition]} \\
-I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Recursive definition]} \\
-\text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Tail of integral]} \\
-\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Recursive last]} \\
-\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
-&= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
-\Rightarrow\ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                   & \qquad \text{[By substitution]} \\
+&L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[List decomposition]} \\
+&I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Recursive definition]} \\
+&\text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Tail of integral]} \\
+&\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Recursive last]} \\
+&\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
+& &= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
+&\implies \ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                   & \qquad \text{[By substitution]} \\
 \end{aligned}
 ```
 ```math
@@ -749,7 +749,7 @@ I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \
 ```
 ```math
 \begin{aligned}
-\text{last}_I &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[Q.E.D.]}
+\text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -812,8 +812,8 @@ $$
 
 ```math
 \begin{aligned}
-L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
-\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive accumulation]} \\
+&L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive accumulation]} \\
 \end{aligned}
 ```
 
@@ -821,9 +821,9 @@ L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qqu
 
 ```math
 \begin{aligned}
-L &= []                                                                  & \qquad \text{[Empty list]} \\
-\text{acc}(L, i) &= []                                                   & \qquad \text{[By definition]} \\
-|\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Equal size]} \\
+&L &= []                                                                  & \qquad \text{[Empty list]} \\
+&\text{acc}(L, i) &= []                                                   & \qquad \text{[By definition]} \\
+&|\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Equal size]} \\
 \end{aligned}
 ```
 
@@ -831,9 +831,9 @@ L &= []                                                                  & \qqua
 
 ```math
 \begin{aligned}
-L &= [x_0]                                                               & \qquad \text{[Singleton list]} \\
-\text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[By definition]} \\
-|\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Equal size]} \\
+&L &= [x_0]                                                               & \qquad \text{[Singleton list]} \\
+&\text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[By definition]} \\
+&|\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Equal size]} \\
 \end{aligned}
 ```
 
@@ -841,12 +841,12 @@ L &= [x_0]                                                               & \qqua
 
 ```math
 \begin{aligned}
-L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposition]} \\
-\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive call]} \\
-|\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Inductive hypothesis]} \\
-|\text{acc}(L, i)| &= 1 + |\text{tail}(L)| = |L|                         & \qquad \text{[Cons adds 1]} \\
-& \therefore \\
-|\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[Q.E.D.]}
+&L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposition]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive call]} \\
+&|\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Inductive hypothesis]} \\
+&|\text{acc}(L, i)| &= 1 + |\text{tail}(L)| = |L|                         & \qquad \text{[Cons adds 1]} \\
+& & \therefore \\
+&|\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
