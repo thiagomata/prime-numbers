@@ -32,7 +32,10 @@ implementation of discrete integration, suitable as a foundation for higher-leve
 Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite, non-empty list of $n$ integers, where $n = |L|$,
 and let $init \in \mathbb{Z}$ be an initial value.
 
-We reuse several basic list operations and their verified properties from a companion article on recursive list construction &mdash;  [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/list.md) [[1]](#ref1).  
+We reuse several basic list operations and their verified properties from a companion article on recursive list 
+construction &mdash;  [Using Formal Verification to Prove Properties of Lists Recursively Defined](
+https://github.com/thiagomata/prime-numbers/blob/master/list.md
+) [[1]](#ref1).  
 These include the following functions:
 
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
@@ -40,9 +43,11 @@ These include the following functions:
 - $\text{tail}(L)$: returns the list without its first element.
 - $A$ &#x29FA; $B$: concatenates two lists $A$ and $B$.
 
-These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), and are treated here as foundational primitives.
+These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), 
+and are treated here as foundational primitives.
 
-Proofs in this article are written in Scala and verified using the Stainless system with `BigInt` used to represent unbounded integers.
+Proofs in this article are written in Scala and verified using the Stainless system with `BigInt` used to represent 
+unbounded integers.
 
 ## 3. Definition of Discrete Integral
 
@@ -199,8 +204,8 @@ $$
 
 $$
 \begin{aligned}
-L &= x_0 ⧺ \text{tail}(L)                                                                & \qquad \text{[List decomposition]} \\
-I &= v_0 ⧺ \text{tail}(L)                                                                & \qquad \text{[Integral decomposition]} \\
+L &= x_0 ⧺ \text{tail}(L)                                                                  & \qquad \text{[List decomposition]} \\
+I &= v_0 ⧺ \text{tail}(L)                                                                  & \qquad \text{[Integral decomposition]} \\
 I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
 I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
 I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
@@ -213,7 +218,9 @@ I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                 
 \end{aligned}
 $$
 
-This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList](./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList).
+This lemma is verified in [IntegralProperties.scala at assertAccDiffMatchesList](
+./src//main/scala/v1/list/integral/properties/IntegralProperties.scala#assertAccDiffMatchesList
+).
 
 <details>
 <summary>Scala Doc</summary>
@@ -305,11 +312,11 @@ I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \s
 $$
 $$
 \begin{aligned}
-I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                    \qquad & \text{[By induction]} \\ 
+I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                     \qquad & \text{[By induction]} \\ 
 I_k & = I_{k-1} + L_k                                                \qquad & \text{[By definition of integral]} \\
-    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k      \qquad & \text{[By induction and } L_k = x_k]  \\
-    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)                 & \qquad \text{[Distributivity]} \\
-    &= \mathit{init} + \sum_{i=0}^{k} x_i                           \qquad & \text{[By definition of sum]} \\
+    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k       \qquad & \text{[By induction and } L_k = x_k]  \\
+    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)       \qquad & \text{[Distributivity]} \\
+    &= \mathit{init} + \sum_{i=0}^{k} x_i                            \qquad & \text{[By definition of sum]} \\
 \end{aligned}
 $$
 $$ \therefore $$
@@ -446,11 +453,14 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 
 ## 6 Implementation Consistency Lemmas
 
-Although the above defines the mathematical behaviour of the discrete Integral, we also prove the internal consistency of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for formal consistency within verified software.
+Although the above defines the mathematical behaviour of the discrete Integral, we also prove the internal consistency 
+of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for 
+formal consistency within verified software.
 
 ### 6.1 Define Accumulated List
 
-We now define the accumulated list, which represents the discrete integral as a full list of partial sums rather than element-by-element access.
+We now define the accumulated list, which represents the discrete integral as a full list of partial sums rather 
+than element-by-element access.
 
 Let:
 
@@ -526,16 +536,16 @@ $$
 
 ```math
 \begin{aligned}
-&L &= x_0 :: \text{tail}(L)                                                             & \qquad \text{[List decomposition]} \\
-&I &= (x_0 + i) :: \text{tail}(I)                                                      & \qquad \text{[Integral decomposition]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                  & \qquad \text{[Definition of } \text{acc}] \\
-&I_0 &= x_0 + i = \text{acc}_0                                                           & \qquad \text{[Base case]} \\
-&I_{(p+1)} &= \text{tail}(I)_p                                                            & \qquad \text{[Tail Access Shift Left]} \\
-&\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                             & \qquad \text{[Recursive accumulation]} \\
+&L &= x_0 :: \text{tail}(L)                                                           & \qquad \text{[List decomposition]} \\
+&I &= (x_0 + i) :: \text{tail}(I)                                                     & \qquad \text{[Integral decomposition]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                & \qquad \text{[Definition of } \text{acc}] \\
+&I_0 &= x_0 + i = \text{acc}_0                                                        & \qquad \text{[Base case]} \\
+&I_{(p+1)} &= \text{tail}(I)_p                                                        & \qquad \text{[Tail Access Shift Left]} \\
+&\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                         & \qquad \text{[Recursive accumulation]} \\
 &\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
 &\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
 && \therefore \\
-&\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                   & \qquad \text{[Q.E.D.]}
+&\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                 & \qquad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -617,14 +627,14 @@ equals the corresponding value from the original list.
 
 ```math
 \begin{aligned}
-&L &= [x_0, x_1, \dots, x_{n-1} ]                                                            & \qquad \text{[List definition]} \\
+&L &= [x_0, x_1, \dots, x_{n-1} ]                                                           & \qquad \text{[List definition]} \\
 &L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
 &\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definition of acc]} \\
 &\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Base case]} \\
 &\text{acc}_1 &= x_1 + \text{acc}_0                                                         & \qquad \text{[Recursive accumulation]} \\
-&\implies \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                  & \qquad \text{[Cancellation]} \\
+&\implies \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                    & \qquad \text{[Cancellation]} \\
 &\text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
-&\implies \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                      & \qquad \text{[By subtraction]} \\
+&\implies \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                        & \qquad \text{[By subtraction]} \\
 \end{aligned}
 ```
 ```math
@@ -715,7 +725,7 @@ $$
 &x_0 & \text{if } |L| = 1 \\
 &\text{last}(\text{tail}(L)) & \text{if } |L| > 1
 &\end{cases}                                                                 & \qquad \text{[Definition of last]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)         & \qquad \text{[Definition of accumulation]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)        & \qquad \text{[Definition of accumulation]} \\
 &I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
 \end{aligned}
 ```
@@ -741,7 +751,7 @@ $$
 &\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Recursive last]} \\
 &\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
 & &= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
-&\implies \ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                   & \qquad \text{[By substitution]} \\
+&\implies \ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                     & \qquad \text{[By substitution]} \\
 \end{aligned}
 ```
 ```math
@@ -813,7 +823,7 @@ $$
 ```math
 \begin{aligned}
 &L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive accumulation]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)      & \qquad \text{[Recursive accumulation]} \\
 \end{aligned}
 ```
 
@@ -914,9 +924,12 @@ Specifically:
 
 ## 8. Conclusion
 
-This article defines and verifies a discrete integral operation over finite integer lists using a zero-prior-knowledge approach.
-By building on a previously verified list representation, we demonstrate how recursive accumulations can be reasoned about and implemented with full static guarantees.
-This library of formally verified recursive structures in Scala using Stainless brings executable specifications and mathematical clarity.
+This article defines and verifies a discrete integral operation over finite integer lists using a zero-prior-knowledge 
+approach.
+By building on a previously verified list representation, we demonstrate how recursive accumulations can be reasoned 
+about and implemented with full static guarantees.
+This library of formally verified recursive structures in Scala using Stainless brings executable specifications 
+and mathematical clarity.
 
 ## 9. References
 
@@ -928,11 +941,14 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/list.md](
 
 ### 10.1 Numeric Type Generalization and Limitations
 
-In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning, considering the
-current limitations of Scala Stainless &mdash; at version 0.9.8.8 &mdash; to deal with more generic numeric types.
-Although the discrete Integral could be generalized to other numeric types (e.g., modular integers, rationals, or floats), such generalizations are not verified in this work.
+In this article, we focus on lists of `BigInt` to avoid issues of overflow and rounding and to simplify formal reasoning, 
+considering the current limitations of Scala Stainless &mdash; at version 0.9.8.8 &mdash; 
+to deal with more generic numeric types.
+Although the discrete Integral could be generalized to other numeric types (e.g., modular integers, rationals, or floats), 
+such generalizations are not verified in this work.
 
-Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties (e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
+Extending the integral definition to arbitrary numeric types would require defining and proving type-specific properties 
+(e.g., associativity, identity) and encoding them using Scala type classes like `Numeric[T]`.
 This direction is left for future work.
 
 ### 10.2 Stainless Execution Output

@@ -29,7 +29,8 @@ and declarative programming. When combined with summation, they form the backbon
 definitions of sequences, recurrence, accumulation, and integration in the discrete domain.
 
 Our approach mirrors traditional recursive definitions but is formally verified
-using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1),  a verification framework for pure Scala programs
+using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1),  
+a verification framework for pure Scala programs
 that uses formal verification to ensure user-defined functions satisfy 
 given preconditions, postconditions, and invariants through automated proofs under all valid inputs.
 
@@ -634,9 +635,10 @@ $$
 
 Verified in 
 [List Utils Properties - Access Tail Shift Left](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShift
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftLeft
 ) and
 [List Utils Properties - Assert Tail Shift Right](
+./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftRight
 )
 as follows:
 
@@ -1107,8 +1109,10 @@ Due to current limitations in the Scala Stainless verifier (version 0.9.8.8), fo
 Stainless does not yet fully support generic numeric abstractions or type classes like `Numeric[T]`,
 which hinders verification of implementations parameterized over arbitrary numeric types.
 
-As a result, while the mathematical properties in this work conceptually apply to any numeric domain satisfying the required algebraic laws, practical verification is constrained to `BigInt`.
-Overcoming these tool limitations is an important direction for future enhancements, enabling broader generality and more flexible formal verification.
+As a result, while the mathematical properties in this work conceptually apply to any numeric domain satisfying the 
+required algebraic laws, practical verification is constrained to `BigInt`.
+Overcoming these tool limitations is an important direction for future enhancements, enabling broader generality 
+and more flexible formal verification.
 
 ### 5.5 Scope of Correctness
 
