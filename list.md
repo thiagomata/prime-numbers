@@ -60,10 +60,10 @@ L_{e} & = [] \\
 
 ```math
 \begin{aligned}
-\text{ head } & \in 𝕊 \\
-\text{ tail } & \in 𝕃 \\
-L_{node}(\text{head}, \text{tail}) & \in 𝕃_{node} \\
-𝕃 = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in 𝕊,\ \text{tail} \in 𝕃 \} \\
+&\text{ head } & \in 𝕊 \\
+&\text{ tail } & \in 𝕃 \\
+&L_{node}(\text{head}, \text{tail}) & \in 𝕃_{node} \\
+&𝕃 = \{ L_e \}  \cup \{ L_{node}(\text{head}, \text{tail}) & \mid \text{head} \in 𝕊,\ \text{tail} \in 𝕃 \} \\
 \end{aligned}
 ```
 
@@ -71,7 +71,7 @@ L_{node}(\text{head}, \text{tail}) & \in 𝕃_{node} \\
 
 Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$ 
 produces a distinct structural value without the possibility of cyclic references. 
-Recursive functions over $𝕃$ terminate naturally, as size is defined by a strictly decreasing structure.
+Recursive functions over $𝕃$ terminate naturally, as a strictly decreasing structure defines size.
 
 
 ### 2.4 Elements Access and Indexing
@@ -249,7 +249,7 @@ Therefore, let's verify if this recursive implementation matches the specificati
 **Goal**:
 
 $$
-\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{slice}(L, i, j) = L[i \dots j]
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{slice}(L, i, j) = L[i \dots j]
 $$
 
 ##### Tail Recursive - Proof by induction on $j$, with fixed $i$
@@ -350,7 +350,7 @@ $$
 **Goal**:
 
 $$
-\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{headRecursiveSlice}(L, i, j) = L[i \dots j]
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{headRecursiveSlice}(L, i, j) = L[i \dots j]
 $$
 
 ##### Head Recursive - Proof by induction on $j - i$
@@ -435,7 +435,7 @@ $$
 **Goal**:
 
 $$
-\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \Rightarrow \text{indexRangeValues}(L, i, j) = L[i \dots j]
+\forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{indexRangeValues}(L, i, j) = L[i \dots j]
 $$
 
 ##### Index-Range Slice - Proof by induction on $j - i$
@@ -553,7 +553,7 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 \begin{aligned}
 \text{sum}(L) &= 0 & \text{[by definition of sum]} \\
 \sum L &= 0 & \text{[summation over empty list]} \\
-\Rightarrow \text{sum}(L) &= \sum L \in 𝕃
+\implies \text{sum}(L) &= \sum L \in 𝕃
 \end{aligned}
 ```
 
@@ -710,28 +710,46 @@ as follows:
 
 **Lemma:** The last element of a non-empty list is equal to the element at position $n - 1$, where $n = |L|$.
 
-$$
-\forall \text{ } L,\ |L| > 0 \Rightarrow \text{last}(L) = L_{(n - 1)}
-$$
+```math
+\forall \text{ } L,\ |L| > 0 \implies \text{last}(L) = L_{(n - 1)}
+```
 
-$$
+```math
 \begin{aligned}
-L &= [x_0, x_1, \dots, x_{n-1}]                                   & \qquad \text{[List definition]} \\
-\\
-\text{Base case: } |L| = 1 \\
-L &= [x_0]                                                        & \qquad \text{[Singleton list]} \\
-\text{last}(L) &= x_0 = L_0 = L_{(n - 1)}                         & \qquad \text{[Definition of last]} \\
-\\
-\text{Inductive step: } |L| > 1 \\
-L &= x_0 :: \text{tail}(L)                                        & \qquad \text{[Decomposition]} \\
-\text{last}(L) &= \text{last}(\text{tail}(L))                     & \qquad \text{[Definition of last]} \\
-\text{last}(\text{tail}(L)) &= \text{tail}(L)_{(|\text{tail}(L)| - 1)} & \qquad \text{[Inductive hypothesis]} \\
-\text{tail}(L)_{(|\text{tail}(L)| - 1)} &= L_{(|L| - 1)}          & \qquad \text{[Tail Shift Position]} \\
-\Rightarrow\ \text{last}(L) &= L_{(|L| - 1)}                      & \qquad \text{[By substitution]} \\
-& \therefore \\
-\forall L,\ |L| > 0 \Rightarrow \text{last}(L) &= L_{(|L| - 1)} \quad \blacksquare
+&L &= [x_0, x_1, \dots, x_{n-1}]                                   & \qquad \text{[List definition]} \\
 \end{aligned}
-$$
+```
+
+#### Base case: $|L| = 1$
+
+```math
+\begin{aligned}
+&L &= [x_0]                                                        & \qquad \text{[Singleton list]} \\
+&\text{last}(L) &= x_0 = L_0 = L_{(n - 1)}                         & \qquad \text{[Definition of last]} \\
+\end{aligned}
+```
+
+#### Inductive step: $|L| > 1$
+
+```math
+\begin{aligned}
+&L &= x_0 :: \text{tail}(L)                                        & \qquad \text{[Decomposition]} \\
+&\text{last}(L) &= \text{last}(\text{tail}(L))                     & \qquad \text{[Definition of last]} \\
+&\text{last}(\text{tail}(L)) &= \text{tail}(L)_{(|\text{tail}(L)| - 1)} & \qquad \text{[Inductive hypothesis]} \\
+&\text{tail}(L)_{(|\text{tail}(L)| - 1)} &= L_{(|L| - 1)}          & \qquad \text{[Tail Shift Position]} \\
+&\implies \ \text{last}(L) &= L_{(|L| - 1)}                      & \qquad \text{[By substitution]} \\
+\end{aligned}
+```
+
+```math
+\therefore
+```
+
+```math
+\begin{aligned}
+&\forall L,\ |L| > 0 \implies  \text{last}(L) &= L_{(|L| - 1)} \quad \blacksquare
+\end{aligned}
+```
 
 Verified in [List Util Properties - Assert Last Equals Last Position](
 	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
