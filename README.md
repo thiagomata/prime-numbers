@@ -82,21 +82,12 @@ L = [x_0, x_1, \dots, x_{n-1}] \\
 \end{aligned}
 ```
 
-### List functions
-
-#### Size
-Let $\text{size} : 𝕃 \to ℕ$ be a recursively defined function:
-
-
 ```math
 \text{size}(L) = \begin{cases} \\
 0 & \text{ if } L = L_{e} \\\
 1 + \text{size}(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
-
-#### Sum
-Let $\text{sum} : 𝕃 \to 𝕊$ be a recursively defined function:
 
 ```math
 sum(L) = 
@@ -106,14 +97,6 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-$$
-\forall \text{ } L \in 𝕃
-$$
-
-#### Last
-
-Let $\text{last} : 𝕃 \to 𝕊$ be a recursively defined function:
-
 ```math
 |L| > 0 \implies \text{last}(L) = 
 \begin{cases} \\
@@ -122,37 +105,27 @@ Let $\text{last} : 𝕃 \to 𝕊$ be a recursively defined function:
 \end{cases}
 ```
 
-$$
-\forall \text{ } L \in 𝕃, |L| > 0
-$$
-
-#### Slice
-
-Let $\text{slice} : 𝕃, ℕ, ℕ \to 𝕃$ be a recursively defined function:
-
-$$
-\text{slice}(L, i, j) := 
+```math
+\begin{aligned}
+\text{slice}(L, f, t) := 
 \begin{cases}
-[ L_j ] & \text{if } i = j \\
-\text{slice}(L, i, j - 1) ⧺ [ L_j ] & \text{if } i < j
+[ L_j ] & \text{if } f = t \\
+\text{slice}(L, f, t - 1) ⧺ [ L_t ] & \text{if } f < t \\
 \end{cases}
-$$
-
-#### Append
-
-Let $A, B \in 𝕃$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
+\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
+\end{aligned}
+```
 
 ```math
 \begin{aligned}
 A ⧺ B =
 \begin{cases}
 B & \text{if } A = L_e \\
-L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise}
+L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise} \\
 \end{cases}
+\forall \ L, A, B \in  𝕃 \\
 \end{aligned}
 ```
-
-### Properties
 
 From these definitions, it mathematically proves and formally verifies the following properties of lists:
 
