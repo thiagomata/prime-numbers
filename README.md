@@ -156,21 +156,18 @@ k &\in [0, n - 1]
 \end{aligned}
 $$
 
-$$
-I_k =
-\begin{cases}
+```math
+\begin{aligned}
+&I_k &:= &\begin{cases} \\
 L_0 + init & \text{if } k = 0 \\
-\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
-\end{cases}
-$$
-
-$$
-acc =
-\begin{cases}
+\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0 \\
+\end{cases} \\
+&acc &:= &\begin{cases} \\
 L_e & \text{if } L = L_e \\
-\text{acc}(\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)) & \text{otherwise}
-\end{cases}
-$$
+\text{acc}(\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)) & \text{otherwise} \\
+\end{cases} \\
+\end{aligned}
+```
 
 From these definitions, it mathematically proves and formally verifies the following properties related to discrete integrals:
 
