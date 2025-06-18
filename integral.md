@@ -922,14 +922,74 @@ Specifically:
 * Recursive functions such as $sum$, $head$, $tail$, and concatenation are reused from the prior work [[1]](#ref1) and are not redefined here.
 * Due to the recursive nature of these definitions, stack overflows may occur with extensive lists, but correctness and verifiability take priority over performance.
 
-## 8. Conclusion
+## 8 Conclusion
 
-This article defines and verifies a discrete integral operation over finite integer lists using a zero-prior-knowledge 
-approach.
-By building on a previously verified list representation, we demonstrate how recursive accumulations can be reasoned 
-about and implemented with full static guarantees.
-This library of formally verified recursive structures in Scala using Stainless brings executable specifications 
-and mathematical clarity.
+This article formally defines and verifies a group of properties of a recursive discrete integral operation over finite lists of integers, 
+employing a zero-prior-knowledge methodology. 
+
+#### Previously Defined and Verified Concepts
+
+The construction builds upon a previously defined and verified list structure:
+
+```math
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n, \quad &n = |L| \\
+L_k &= x_k, \quad &0 \leq k < n \\
+\end{aligned}
+```
+
+We also use the predefined structures $\text{tail}(L)$ as the list $L$ without its first element and $\text{head}(L)$ as the first element of the list.
+
+```math
+\begin{aligned}
+n > 0 &\implies \text{head}(L) = x_0 \\
+n > 1 &\implies \text{tail}(L) = [x_1, x_2, \dots, x_{n-1}] \\
+\end{aligned}
+```
+
+#### Recursive Definition of Integral
+
+From that, we define the recursive discrete integral list from a list $L$ and an initial value $init$ as:
+
+```math
+\begin{aligned}
+&init \in \mathbb{Z} \\
+&I = [v_0, v_1, v_2, \dots, v_{n-1}] = \text{Integral}(L, init) \in \mathbb{Z}^n, |L| > 0 \\
+\end{aligned}
+```
+
+```math
+% n > 0 \implies 
+I_k = v_k =
+\begin{cases}
+x_0 + init & \text{if } k = 0, \\
+\text{Integral}(\text{tail}(L),\ x_0 + init)_{k - 1} & \text{if } 0 < k < n \\
+\end{cases}
+```
+
+
+#### Proved and Verified Integral Properties
+
+From these definitions, we proved and formally verified that the discrete integral function satisfies the following properties:
+
+```math
+\begin{aligned}
+ I_0 &= x_0 + init & \text{[Head Value Matches Definition]} \\
+ I_k &= init + \sum_{i=0}^k x_i & \text{[Integral Equals Sum Until Position]} \\
+ I_{n-1} &= init + \sum_{i=0}^{n-1} x_i & \text{[Final Element Equals Full Sum]} \\
+ I_{p+1} - I_p &= x_{p+1} & \text{[Incremental Change Matches List]} \\
+ I_k &= acc_k & \text{[Element Consistency]} \\
+  \text{last}(I) &= acc_{n-1} = I_{n-1} & \text{[Integral-Accumulation Last Agreement]} \\
+ acc_{p+1} - acc_p &= x_{p+1} & \text{[Integral-Accumulation Delta Consistency]} \\
+ |acc| &= |L| & \text{[Integral-Accumulation Size Agreement]} \\
+\end{aligned}
+```
+
+These results establish that the recursive discrete integral exactly corresponds to the cumulative sum of list elements plus the given initial value. The construction preserves list length, and the differences between consecutive integral elements recover the original list entries, confirming the correctness of the accumulation process.
+
+All properties were described and formally verified in Scala using the Stainless verification system. The resulting implementation is minimal, mathematically rigorous, executable, and suitable for formal numerical reasoning.
+
+These formally verified properties provide a robust foundation for future developments and proofs involving discrete integrals over lists, supporting soundness and correctness in more complex numerical and functional verification contexts.
 
 ## 9. References
 

@@ -1059,11 +1059,11 @@ i < |L| - 1, |L| > 1 &\text{ }\implies \text{tail}(L)_i &= &L_{i+1} \\
 ```
 ```math
 \begin{aligned}
-&\sum L &= &\text{sum}(L) \\
-&\sum ([v] ⧺ L) &= &v + \sum L \\
-&\sum (A ⧺ B) &= &\sum A + \sum B \\
-&\sum (A ⧺ B) &= &\sum (B ⧺ A) \\
-&L[f \dots t] &= &L[f \dots {(t - 1)}] ⧺ [L_t]
+&\sum L &= &\text{sum}(L)                      \quad &\text{[Sum matches Summation]} \\
+&\sum ([v] ⧺ L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
+&\sum (A ⧺ B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
+&\sum (A ⧺ B) &= &\sum (B ⧺ A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
+&L[f \dots t] &= &L[f \dots {(t - 1)}] ⧺ [L_t] \quad &\text{[Slice Append Consistency]} \\
 \end{aligned}
 ```
 
