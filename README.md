@@ -89,9 +89,9 @@ Let $\text{size} : 𝕃 \to ℕ$ be a recursively defined function:
 
 
 ```math
-|L| = \begin{cases} \\
+\text{size}(L) = \begin{cases} \\
 0 & \text{ if } L = L_{e} \\\
-1 + |tail(L)| & \text{otherwise} \\
+1 + \text{size}(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
@@ -189,7 +189,7 @@ f > t, \quad 0 \leq i < |L|\\
 
 ### Integral Properties
 
-Similary, the article [Formal Verification of Discrete Integration Properties from First Principles](./integral.md) 
+Similarly, the article [Formal Verification of Discrete Integration Properties from First Principles](./integral.md) 
 defines and construct bounded discrete integrals of <code>BigInt</code> values
 from scratch, relying only on recursion and core type constructs. 
 
@@ -206,6 +206,14 @@ I_k =
 \begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
+\end{cases}
+$$
+
+$$
+acc =
+\begin{cases}
+L_e & \text{if } L = L_e \\
+\text{acc}(\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)) & \text{otherwise}
 \end{cases}
 $$
 
