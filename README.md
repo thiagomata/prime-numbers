@@ -42,7 +42,7 @@ b \text{ div } b                   & = 1 \\
 ```
 ```math
 \begin{aligned}
-\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
+\forall \text{ } a, b & \in ℕ : b \neq 0 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
@@ -82,6 +82,78 @@ L = [x_0, x_1, \dots, x_{n-1}] \\
 \end{aligned}
 ```
 
+### List functions
+
+#### Size
+Let $\text{size} : 𝕃 \to ℕ$ be a recursively defined function:
+
+
+```math
+|L| = \begin{cases} \\
+0 & \text{ if } L = L_{e} \\\
+1 + |tail(L)| & \text{otherwise} \\
+\end{cases}
+```
+
+#### Sum
+Let $\text{sum} : 𝕃 \to 𝕊$ be a recursively defined function:
+
+```math
+sum(L) = 
+\begin{cases} \\
+0 & \text{if } L = L_e \\
+head(L) + sum(tail(L)) & \text{otherwise} \\
+\end{cases}
+```
+
+$$
+\forall \text{ } L \in 𝕃
+$$
+
+#### Last
+
+Let $\text{last} : 𝕃 \to 𝕊$ be a recursively defined function:
+
+```math
+|L| > 0 \implies \text{last}(L) = 
+\begin{cases} \\
+\text{head}(L) & \text{if } |L| = 1 \\
+\text{last}(\text{tail}(L)) & \text{otherwise} \\
+\end{cases}
+```
+
+$$
+\forall \text{ } L \in 𝕃, |L| > 0
+$$
+
+#### Slice
+
+Let $\text{slice} : 𝕃, ℕ, ℕ \to 𝕃$ be a recursively defined function:
+
+$$
+\text{slice}(L, i, j) := 
+\begin{cases}
+[ L_j ] & \text{if } i = j \\
+\text{slice}(L, i, j - 1) ⧺ [ L_j ] & \text{if } i < j
+\end{cases}
+$$
+
+#### Append
+
+Let $A, B \in 𝕃$ over some set $S$. The append operation $A ⧺ B$ is defined recursively as:
+
+```math
+\begin{aligned}
+A ⧺ B =
+\begin{cases}
+B & \text{if } A = L_e \\
+L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise}
+\end{cases}
+\end{aligned}
+```
+
+### Properties
+
 From these definitions, it mathematically proves and formally verifies the following properties of lists:
 
 ```math
@@ -97,15 +169,16 @@ f > t, \quad 0 \leq i < |L|\\
 ```
 ```math
 \begin{aligned}
-|L| > 0 &\implies \text{tail}(L) &= &L[x_1, x_2, \dots, x_{n-1}] \quad &\text{[Tail Identity]} \\
-|L| > 0 &\implies L_{0} &= &\text{ }\text{head}(L) \quad &\text{[Head Identity]} \\
-|L| > 0 &\implies L_{|L|-1} &= &\text{ }\text{last}(L) \quad &\text{[Last Element Identity]} \\
-|L| - 1 > i > 0 &\implies L_i &= &\text{ }\text{tail}(L)_{i-1} \quad &\text{[Access Tail Shift Left]} \\
-|L| - 2 > i > 1 \text{ } &\implies \text{tail}(L)_i &= &L_{i+1} \quad &\text{[Access Tail Shift Right]} \\
+&|L| &> 0 &\implies \text{tail}(L) &= &L[x_1, x_2, \dots, x_{n-1}] \quad &\text{[Tail Identity]} \\
+&|L| &> 0 &\implies L_{0} &= &\text{ }\text{head}(L) \quad &\text{[Head Identity]} \\
+&|L| &> 0 &\implies L_{|L|-1} &= &\text{ }\text{last}(L) \quad &\text{[Last Element Identity]} \\
+&|L| - 1 &> i > 0 &\implies L_i &= &\text{ }\text{tail}(L)_{i-1} \quad &\text{[Access Tail Shift Left]} \\
+&|L| - 2 &> i > 1 \text{ } &\implies \text{tail}(L)_i &= &L_{i+1} \quad &\text{[Access Tail Shift Right]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
+&|L| &= &\text{size}(L)                        \quad &\text{[Size Identity]} \\
 &\sum L &= &\text{sum}(L)                      \quad &\text{[Sum matches Summation]} \\
 &\sum ([v] ⧺ L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
 &\sum (A ⧺ B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
