@@ -20,7 +20,7 @@ The article [Proving Properties of Division and Modulo using Formal Verification
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, c, m & \in \mathbb{Z} : b \neq 0 \\
+\forall \text{ } a, b, c, m & \in ℤ : b \neq 0 \\
 b > a \geq 0 \implies a \text{ div } b & = 0 \\
 b > a \geq 0 \implies a \text{ mod } b & = a \\
 b \text{ mod } b                   & = 0 \\
