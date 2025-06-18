@@ -78,48 +78,30 @@ L_{e} & = [] \\
 
 ```math
 \begin{aligned}
-L = [x_0, x_1, \dots, x_{n-1}] \\
+L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 \end{aligned}
 ```
 
 ```math
-\text{size}(L) = \begin{cases} \\
+\begin{aligned}
+& &\text{size}(L) &:= \begin{cases} \\
 0 & \text{ if } L = L_{e} \\\
 1 + \text{size}(tail(L)) & \text{otherwise} \\
-\end{cases}
-```
-
-```math
-sum(L) = 
-\begin{cases} \\
+\end{cases} \\
+& &sum(L) &:= \begin{cases} \\
 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
-\end{cases}
-```
-
-```math
-|L| > 0 \implies \text{last}(L) = 
-\begin{cases} \\
+\end{cases} \\
+|L| > 0 &\implies &\text{last}(L) &:= \begin{cases} \\
 \text{head}(L) & \text{if } |L| = 1 \\
 \text{last}(\text{tail}(L)) & \text{otherwise} \\
-\end{cases}
-```
-
-```math
-\begin{aligned}
-\text{slice}(L, f, t) := 
-\begin{cases}
+\end{cases} \\
+|L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases} \\
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) ⧺ [ L_t ] & \text{if } f < t \\
 \end{cases}
 \forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
-\end{aligned}
-```
-
-```math
-\begin{aligned}
-A ⧺ B =
-\begin{cases}
+& &A ⧺ B &:= \begin{cases} \\
 B & \text{if } A = L_e \\
 L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise} \\
 \end{cases}
