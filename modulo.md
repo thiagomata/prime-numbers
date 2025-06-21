@@ -46,13 +46,13 @@ To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/
 
 The implementation presented in this article is limited to the division and modulo operations for integers. 
 It goals is to make available a set of lemmas and proofs that can be verified and used as a base to prove other 
-properties related to the division and modulo operations.>
+properties related to the division and modulo operations.
 Therefore, the implementation is optimized to correctness and not to performance.
 
 The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or 
 underflow issues. 
 But, they are still constrained by the memory available in the system. 
-Similarly, some lemmas and proofs are using the recursive definition of the division and modulo operations, which could 
+Similarly, some lemmas and proofs use the recursive definition of the division and modulo operations, which could 
 trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this 
 article, which are the main focus of this article.
 
