@@ -1,7 +1,13 @@
 # Proving Properties of Division and Modulo using Formal Verification
 
+**Author:** Mata, T. H.
+Independent Researcher  
+**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
+
 ## Abstract
 
+<div align="justify">
 <p style="text-align: justify">
 The division and modulo operations are fundamental in mathematics and computer science,
  especially in areas such as number theory, cryptography, and algorithm design. 
@@ -14,6 +20,7 @@ All properties are expressed and proved within a minimal framework using only el
 This work bridges mathematical foundations and executable verification, offering a self-contained, verifiable
  treatment of modular arithmetic.
  </p>
+</div>
 
 ## Introduction
 
