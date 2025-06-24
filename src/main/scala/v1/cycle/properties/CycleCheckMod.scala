@@ -1,8 +1,8 @@
 package v1.cycle.properties
 
 import stainless.lang.*
+import v1.cycle.{Cycle, CycleUtils}
 import verification.Helper.assert
-import v1.cycle.Cycle
 
 object CycleCheckMod {
 
@@ -93,8 +93,8 @@ object CycleCheckMod {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
-    require(Cycle.countModZero(cycle.values, dividendA) == cycle.values.size)
-    require(Cycle.countModZero(cycle.values, dividendB) == cycle.values.size)
+    require(CycleUtils.countModZero(cycle.values, dividendA) == cycle.values.size)
+    require(CycleUtils.countModZero(cycle.values, dividendB) == cycle.values.size)
     require(!cycle.evaluated(dividendA))
     require(!cycle.evaluated(dividendB))
 
@@ -136,8 +136,8 @@ object CycleCheckMod {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
-    require(Cycle.countModZero(cycle.values, dividendA) == 0)
-    require(Cycle.countModZero(cycle.values, dividendB) == 0)
+    require(CycleUtils.countModZero(cycle.values, dividendA) == 0)
+    require(CycleUtils.countModZero(cycle.values, dividendB) == 0)
     require(!cycle.evaluated(dividendA))
     require(!cycle.evaluated(dividendB))
 
@@ -181,10 +181,10 @@ object CycleCheckMod {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
-    require(Cycle.countModZero(cycle.values, dividendA) != 0)
-    require(Cycle.countModZero(cycle.values, dividendB) != 0)
-    require(Cycle.countModZero(cycle.values, dividendA) != cycle.values.size)
-    require(Cycle.countModZero(cycle.values, dividendB) != cycle.values.size)
+    require(CycleUtils.countModZero(cycle.values, dividendA) != 0)
+    require(CycleUtils.countModZero(cycle.values, dividendB) != 0)
+    require(CycleUtils.countModZero(cycle.values, dividendA) != cycle.values.size)
+    require(CycleUtils.countModZero(cycle.values, dividendB) != cycle.values.size)
     require(!cycle.evaluated(dividendA))
     require(!cycle.evaluated(dividendB))
 

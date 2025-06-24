@@ -1,9 +1,9 @@
 package v1.cycle.acc
 
-import v1.cycle.integral.CycleIntegral
 import stainless.lang.*
 import v1.Calc
 import v1.Calc.{div, mod}
+import v1.cycle.integral.CycleIntegral
 import v1.cycle.integral.properties.CycleIntegralProperties
 import v1.div.properties.{ModOperations, ModSmallDividend}
 import v1.list.integral.properties.IntegralProperties

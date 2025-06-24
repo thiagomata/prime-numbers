@@ -1,7 +1,7 @@
 package v1.cycle.acc
 
-import org.scalatest.funsuite.AnyFunSuiteLike
 import org.scalatest.flatspec.*
+import org.scalatest.funsuite.AnyFunSuiteLike
 import org.scalatest.matchers.should.*
 import v1.cycle.Cycle
 import v1.cycle.integral.CycleIntegral

@@ -1,10 +1,9 @@
 package v1.seq.properties
 
 import stainless.lang.{BigInt, *}
-import verification.Helper.assert
 import v1.cycle.Cycle
 import verification.Helper
-import verification.Helper.equality
+import verification.Helper.{assert, equality}
 
 object SeqProperties {
   def firstValuesMatchPrev(seq: v1.seq.Seq, pos: BigInt): Boolean = {

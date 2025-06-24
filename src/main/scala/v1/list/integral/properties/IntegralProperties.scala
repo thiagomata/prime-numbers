@@ -1,11 +1,11 @@
 package v1.list.integral.properties
 
 import stainless.collection.List
-import v1.list.integral.Integral
-import verification.Helper.assert
 import stainless.lang.*
 import v1.list.ListUtils
+import v1.list.integral.Integral
 import v1.list.properties.ListUtilsProperties
+import verification.Helper.assert
 
 object IntegralProperties {
 
