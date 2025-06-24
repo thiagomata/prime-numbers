@@ -42,19 +42,19 @@ verified foundation for recursive list and integral structures and summation.
 The result is a verified, from-scratch implementation of cycle and cycle integral 
 suitable as a foundation for higher-level numeric reasoning over unbounded lists.
 
-## 2. Preliminaries and Notation
+## 2. Preliminaries
 
 We reuse several basic list and integral operations and their verified properties from the companion articles [Using Formal Verification to Prove Properties of Lists Recursively Defined](
 https://github.com/thiagomata/prime-numbers/blob/master/list.md
-) [[1]](#ref1) and [Formal Verification of Discrete Integration Properties from First Principles](integral.md)[[2]](#ef2).
+) [[1]](#ref1) and [Formal Verification of Discrete Integration Properties from First Principles](integral.md) [[2]](#ef2).
 
-These operations were defined and verified using the same zero-prior-knowledge methodology,
+These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
 
 
 ### List Definitions and Properties
 
-For any list $L$ of numeric values $x_i \in 𝕊$ where $𝕊$ is the set of all numeric values,
+For any list $L$ of numeric values $x_i \in 𝕊$ where $𝕊$ is a set of all numeric values,
 $𝕃$ is the the set of all lists, 
 and $n$ is the size of the list, we define:
 
@@ -86,15 +86,15 @@ L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 
 ```math
 \begin{aligned}
-& &\text{size}(L) &:= \begin{cases} \\
+& &\text{size}(L) &:= \begin{cases}
 0 & \text{ if } L = L_{e} \\\
 1 + \text{size}(tail(L)) & \text{otherwise} \\
 \end{cases} \\
-& &sum(L) &:= \begin{cases} \\
+& &sum(L) &:= \begin{cases}
 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
-|L| > 0 &\implies &\text{last}(L) &:= \begin{cases} \\
+|L| > 0 &\implies &\text{last}(L) &:= \begin{cases}
 \text{head}(L) & \text{if } |L| = 1 \\
 \text{last}(\text{tail}(L)) & \text{otherwise} \\
 \end{cases} \\
@@ -103,7 +103,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \text{slice}(L, f, t - 1) ⧺ [ L_t ] & \text{if } f < t \\
 \end{cases}
 \forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
-& &A ⧺ B &:= \begin{cases} \\
+& &A ⧺ B &:= \begin{cases}
 B & \text{if } A = L_e \\
 L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise} \\
 \end{cases}
@@ -161,18 +161,18 @@ $$
 
 ```math
 \begin{aligned}
-&I_k &:= &\begin{cases} \\
+&I_k &:= &\begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0 \\
 \end{cases} \\
-&acc &:= &\begin{cases} \\
+&acc &:= &\begin{cases}
 L_e & \text{if } L = L_e \\
 \text{acc}(\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)) & \text{otherwise} \\
 \end{cases} \\
 \end{aligned}
 ```
 
-From these definitions, it [[2]](#ref2) mathematically proves and formally verifies the following properties related to discrete integrals:
+From these definitions, the authors [[2]](#ref2) mathematically proves and formally verifies the following properties related to discrete integrals:
 
 ```math
 \begin{aligned}
@@ -187,6 +187,63 @@ From these definitions, it [[2]](#ref2) mathematically proves and formally verif
 \end{aligned}
 ```
 
-Proofs in this article are written in Scala and verified using the Stainless system with `BigInt` used to represent
-unbounded integers.
+## 3. Cycle Definition and Properties
 
+Building on the definitions and properties of lists and integrals, we now define Cycles and Cycle Integrals.
+
+### Cycle Definition
+
+A Cycle is an unbounded list that repeats a finite sequence of elements from a bounded list.
+
+In this stydy, we restrict our universe of values $𝕊$ to be the set of non-negative integers, i.e., $𝕊 = ℕ_0$.
+
+### Recursive Cycle Definition
+
+```math
+\begin{aligned}
+\forall \ L \in  𝕃, \quad \forall \ v &\in ℕ_0,\quad \forall \ i \in ℕ_0 \\
+L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n \\
+n &= |L| \\
+\text{Cycle}_i &= \begin{cases}
+L_i & \text{if } i < n \\
+\text{Cycle}_{i - n} & \text{if } i \geq n \\
+\end{cases} \ , |L| > 0
+\end{aligned}
+```
+
+Defined at [RecursiveCycle](
+    ./src/main/scala/v1/cycle/recursiveCycle/RecursiveCycle.scala
+) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+/**
+ * Represents a recursive cycle of values.
+ *
+ * @param values List A non-empty list of BigInt 
+ * non-negative values that form the cycle.
+ */
+```
+</details>
+
+```scala
+case class RecursiveCycle(values: List[BigInt]) {
+  require(values.nonEmpty)
+  require(CycleUtils.checkPositiveOrZero(values))
+
+  def size: BigInt = values.size
+
+  def apply(key: BigInt): BigInt = {
+    decreases(key)
+    require(key >= 0)
+
+    if (key < size) {
+      values(key)
+    } else {
+      apply(key - values.size)
+    }
+  }
+}
+```
