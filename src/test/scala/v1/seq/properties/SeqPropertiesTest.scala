@@ -2,7 +2,7 @@ package v1.seq.properties
 
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 import v1.seq.Seq
 import v1.tests.ArrayUtils.createList
 
@@ -11,31 +11,31 @@ class SeqPropertiesTest extends FlatSpec with Matchers {
   val testSequences: List[Seq] = List.apply(
     Seq(
       previous=createList(Array(BigInt(0),BigInt(1),BigInt(2))),
-      loop=Cycle(createList(Array(BigInt(1)))),
+      loop=MemCycle(createList(Array(BigInt(1)))),
     ),
     Seq(
       previous=createList(Array(BigInt(10),BigInt(20))),
-      loop=Cycle(createList(Array(BigInt(100),BigInt(1000)))),
+      loop=MemCycle(createList(Array(BigInt(100),BigInt(1000)))),
       ),
     Seq(
       previous=createList(Array(BigInt(1))),
-      loop=Cycle(createList(Array(BigInt(2)))),
+      loop=MemCycle(createList(Array(BigInt(2)))),
     ),
     Seq(
       previous=createList(Array(BigInt(1))),
-      loop=Cycle(createList(Array(BigInt(0)))),
+      loop=MemCycle(createList(Array(BigInt(0)))),
     ),
     Seq(
       previous=createList(Array(BigInt(0))),
-      loop=Cycle(createList(Array(BigInt(0)))),
+      loop=MemCycle(createList(Array(BigInt(0)))),
     ),
     Seq(
       previous=createList(Array(BigInt(1))),
-      loop=Cycle(createList(Array(BigInt(1)))),
+      loop=MemCycle(createList(Array(BigInt(1)))),
     ),
     Seq(
       stainless.collection.List.apply[BigInt](),
-      loop=Cycle(createList(Array(BigInt(1)))),
+      loop=MemCycle(createList(Array(BigInt(1)))),
     ),
   )
 

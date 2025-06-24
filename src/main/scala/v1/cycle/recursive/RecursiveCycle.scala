@@ -1,4 +1,4 @@
-package v1.cycle.recursiveCycle
+package v1.cycle.recursive
 
 import stainless.collection.List
 import stainless.lang.decreases

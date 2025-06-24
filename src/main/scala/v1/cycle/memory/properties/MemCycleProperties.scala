@@ -1,12 +1,12 @@
-package v1.cycle.properties
+package v1.cycle.memory.properties
 
 import stainless.lang.*
 import v1.Calc
-import v1.cycle.mod.ModCycle
+import v1.cycle.memory.MemCycle
 import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
 import verification.Helper.assert
 
-object CycleProperties {
+object MemCycleProperties {
 
   /**
    * Getting a cycle key value is the same
@@ -18,7 +18,7 @@ object CycleProperties {
    * @param key BigInt
    * @return true if the property holds
    */
-  def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
+  def findValueInCycle(cycle: MemCycle, key: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     cycle(key) == cycle.values(Calc.mod(key, cycle.size))
@@ -34,7 +34,7 @@ object CycleProperties {
    * @param key BigInt
    * @return true if the property holds
    */
-  def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
+  def smallValueInCycle(cycle: MemCycle, key: BigInt): Boolean = {
     require(key >= 0)
     require(key < cycle.size)
     require(cycle.size > 0)
@@ -51,7 +51,7 @@ object CycleProperties {
    * @param m BigInt multiplier
    * @return
    */
-  def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
+  def valueMatchAfterManyLoops(cycle: MemCycle, key: BigInt, m: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     require(m >= 0)
@@ -71,7 +71,7 @@ object CycleProperties {
    * @param m2 BigInt multiplier
    * @return
    */
-  def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
+  def valueMatchAfterManyLoopsInBoth(cycle: MemCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
     require(key >= 0)
     require(cycle.size > 0)
     require(m1 >= 0)
@@ -99,7 +99,7 @@ object CycleProperties {
    * @param key BigInt
    * @return true if property holds
    */
-  def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
+  def propagateModFromValueToCycle(cycle: MemCycle, dividend: BigInt, key: BigInt): Boolean = {
     require(key >= 0)
     require(dividend > 0)
     require(cycle.size > 0)
@@ -107,7 +107,7 @@ object CycleProperties {
     Calc.mod(cycle(key),dividend) == Calc.mod(cycle.values(modKeySize),dividend)
   }.holds
 
-  def assertCycleOfPosEqualsCycleOfModPos(cycle: ModCycle, position: BigInt): Boolean = {
+  def assertCycleOfPosEqualsCycleOfModPos(cycle: MemCycle, position: BigInt): Boolean = {
     require(position >= 0)
     require(cycle.size > 0)
 

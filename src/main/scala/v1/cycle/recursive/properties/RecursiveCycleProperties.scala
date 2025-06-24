@@ -1,9 +1,9 @@
-package v1.cycle.recursiveCycle.properties
+package v1.cycle.recursive.properties
 
 import stainless.lang.*
 import v1.Calc
-import v1.cycle.Cycle
-import v1.cycle.recursiveCycle.RecursiveCycle
+import v1.cycle.memory.MemCycle
+import v1.cycle.recursive.RecursiveCycle
 import v1.div.properties.{ModSmallDividend, ModSum}
 import verification.Helper.assert
 
@@ -22,7 +22,7 @@ object RecursiveCycleProperties {
    * @return Boolean true if the property holds
    */
   def assertCycleAndRecursiveCycleMathForSmallValues(
-    cycle: Cycle,
+    cycle: MemCycle,
     position: BigInt
   ): Boolean = {
     val list = cycle.values
@@ -56,7 +56,7 @@ object RecursiveCycleProperties {
    * @return Boolean true if the property holds
    */
   def assertCycleAndRecursiveCycleMathForAnyValues(
-    cycle: Cycle,
+    cycle: MemCycle,
     position: BigInt
   ): Boolean = {
     decreases(position)

@@ -1,12 +1,13 @@
-package v1.cycle
+package v1.cycle.memory
 
 import stainless.collection.List
 import v1.Calc
+import v1.cycle.CycleUtils
 import v1.cycle.CycleUtils.{appendForNone, appendForSome}
 import v1.list.ListUtils
 import verification.Helper.assert
 
-case class Cycle (
+case class MemCycle(
   values: List[BigInt],
   modIsZeroForAllValues: List[BigInt] = stainless.collection.List.empty,
   modIsZeroForNoneValues: List[BigInt] = stainless.collection.List.empty,
@@ -47,7 +48,7 @@ case class Cycle (
 
   def sum(): BigInt = ListUtils.sum(values)
 
-  def checkMod(dividend: BigInt): Cycle = {
+  def checkMod(dividend: BigInt): MemCycle = {
     require(dividend > 0)
     assert(this.isValid)
 

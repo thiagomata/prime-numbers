@@ -1,12 +1,12 @@
-import v1.cycle.Cycle
-import v1.cycle.integral.CycleIntegral
-import v1.cycle.integral.properties.CycleIntegralProperties
-import v1.cycle.properties.CycleCheckMod
+import v1.cycle.integral.recursive.CycleIntegral
+import v1.cycle.integral.recursive.properties.CycleIntegralProperties
+import v1.cycle.memory.MemCycle
+import v1.cycle.memory.properties.CycleCheckMod
 import v1.list.ListBuilder.createList
 
 val cycle = CycleIntegral(
   BigInt(1000),
-  Cycle(createList(Array(BigInt(1),BigInt(10),BigInt(100))))
+  MemCycle(createList(Array(BigInt(1),BigInt(10),BigInt(100))))
 )
 
 cycle(BigInt(0))

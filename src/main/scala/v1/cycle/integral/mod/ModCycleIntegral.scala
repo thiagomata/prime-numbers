@@ -1,8 +1,8 @@
-package v1.cycle.acc
+package v1.cycle.integral.mod
 
 import stainless.lang.*
 import v1.Calc
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 import v1.div.DivMod
 import v1.div.properties.{ModOperations, ModSmallDividend, Summary}
 import v1.list.integral.Integral
@@ -10,9 +10,9 @@ import v1.list.integral.properties.IntegralProperties
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.{assert, equality}
 
-case class CycleAcc(
-  initialValue:          BigInt,
-  cycle:                 Cycle,
+case class ModCycleIntegral(
+                     initialValue:          BigInt,
+                     cycle:                 MemCycle,
 ) {
   require(cycle.values.nonEmpty)
 

@@ -1,18 +1,19 @@
-package v1.cycle.properties
+package v1.cycle.memory.properties
 
 import stainless.lang.*
-import v1.cycle.{Cycle, CycleUtils}
+import v1.cycle.CycleUtils
+import v1.cycle.memory.MemCycle
 import verification.Helper.assert
 
 object CycleCheckMod {
 
-  def forAnyCheckModValuesRemains(cycle: Cycle, dividend: BigInt): Boolean = {
+  def forAnyCheckModValuesRemains(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     val newCycle = cycle.checkMod(dividend)
     newCycle.values == cycle.values
   }.holds
 
-  def notEvaluatedNotInTheList(cycle: Cycle, dividend: BigInt): Boolean = {
+  def notEvaluatedNotInTheList(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -21,7 +22,7 @@ object CycleCheckMod {
       !cycle.modIsZeroForNoneValues.contains(dividend)
   }.holds
 
-  def evaluatedInSomeList(cycle: Cycle, dividend: BigInt): Boolean = {
+  def evaluatedInSomeList(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -32,7 +33,7 @@ object CycleCheckMod {
       evalCycle.modIsZeroForNoneValues.contains(dividend)
   }.holds
 
-  def oneListNotInOther(cycle: Cycle, dividend: BigInt): Boolean = {
+  def oneListNotInOther(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -51,7 +52,7 @@ object CycleCheckMod {
     }
   }.holds
 
-  def ifInAllModAll(cycle: Cycle, dividend: BigInt): Boolean = {
+  def ifInAllModAll(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -63,7 +64,7 @@ object CycleCheckMod {
     }
   }.holds
 
-  def ifInSomeModSome(cycle: Cycle, dividend: BigInt): Boolean = {
+  def ifInSomeModSome(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -77,7 +78,7 @@ object CycleCheckMod {
     }
   }.holds
 
-  def ifInNoneModNone(cycle: Cycle, dividend: BigInt): Boolean = {
+  def ifInNoneModNone(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     require(!cycle.evaluated(dividend))
 
@@ -89,7 +90,7 @@ object CycleCheckMod {
     }
   }.holds
 
-  def allModZeroPropagate(cycle: Cycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
+  def allModZeroPropagate(cycle: MemCycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
@@ -132,7 +133,7 @@ object CycleCheckMod {
       cycleB.allModValuesAreZero(dividendB)
   }.holds
 
-  def noModZeroPropagate(cycle: Cycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
+  def noModZeroPropagate(cycle: MemCycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
@@ -177,7 +178,7 @@ object CycleCheckMod {
       cycleB.noModValuesAreZero(dividendB)
   }.holds
 
-  def someModZeroPropagate(cycle: Cycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
+  def someModZeroPropagate(cycle: MemCycle, dividendA: BigInt, dividendB: BigInt): Boolean = {
     require(dividendA > 0)
     require(dividendB > 0)
     require(dividendA != dividendB)
@@ -226,7 +227,7 @@ object CycleCheckMod {
       cycleB.someModValuesAreZero(dividendB)
   }.holds
 
-  def afterMethodListAndZeroModCountAreOnSync(cycle: Cycle, dividend: BigInt): Boolean = {
+  def afterMethodListAndZeroModCountAreOnSync(cycle: MemCycle, dividend: BigInt): Boolean = {
     require(dividend > 0)
     val cycleAfterCheck = cycle.checkMod(dividend)
 

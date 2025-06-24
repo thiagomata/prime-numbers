@@ -212,7 +212,7 @@ L_i & \text{if } i < n \\
 ```
 
 Defined at [RecursiveCycle](
-    ./src/main/scala/v1/cycle/recursiveCycle/RecursiveCycle.scala
+    ./src/main/scala/v1/cycle/recursive/RecursiveCycle.scala
 ) as follows:
 
 <details>

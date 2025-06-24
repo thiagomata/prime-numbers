@@ -1,11 +1,11 @@
-package v1.cycle.integral
+package v1.cycle.integral.recursive
 
 import stainless.lang.decreases
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 
 case class CycleIntegral(
   initialValue: BigInt,
-  cycle: Cycle
+  cycle: MemCycle
 ) {
 
   /**

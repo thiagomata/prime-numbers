@@ -4,15 +4,16 @@ package v1.cycle
 import stainless.collection.List
 import stainless.lang.decreases
 import v1.Calc
+import v1.cycle.memory.MemCycle
 import verification.Helper.assert
 
 import scala.annotation.tailrec
 
 object CycleUtils {
-  def apply(values: List[BigInt]): Cycle = {
+  def apply(values: List[BigInt]): MemCycle = {
     require(values.nonEmpty)
     require(checkPositiveOrZero(values))
-    new Cycle(values)
+    new MemCycle(values)
   }
 
   def isValid(
@@ -94,7 +95,7 @@ object CycleUtils {
     loop(modIsZeroForAllValues)
   }
 
-  def appendForAll(cycle: Cycle, dividend: BigInt): Cycle = {
+  def appendForAll(cycle: MemCycle, dividend: BigInt): MemCycle = {
     require(dividend > 0)
     require(cycle.isValid)
     require(countModZero(cycle.values, dividend) == cycle.values.size)
@@ -104,7 +105,7 @@ object CycleUtils {
     assert(newList.head == dividend)
     assert(checkZeroForAll(newList, cycle.values))
 
-    Cycle(
+    MemCycle(
       values = cycle.values,
       modIsZeroForAllValues = newList,
       modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,
@@ -112,7 +113,7 @@ object CycleUtils {
     )
   }
 
-  def appendForNone(cycle: Cycle, dividend: BigInt): Cycle = {
+  def appendForNone(cycle: MemCycle, dividend: BigInt): MemCycle = {
     require(dividend > 0)
     require(cycle.isValid)
     require(countModZero(cycle.values, dividend) == 0)
@@ -122,7 +123,7 @@ object CycleUtils {
     assert(newList.head == dividend)
     assert(checkZeroForNone(newList, cycle.values))
 
-    Cycle(
+    MemCycle(
       values = cycle.values,
       modIsZeroForAllValues = cycle.modIsZeroForAllValues,
       modIsZeroForNoneValues = newList,
@@ -130,7 +131,7 @@ object CycleUtils {
     )
   }
 
-  def appendForSome(cycle: Cycle, dividend: BigInt): Cycle = {
+  def appendForSome(cycle: MemCycle, dividend: BigInt): MemCycle = {
     require(dividend > 0)
     require(cycle.isValid)
     require(countModZero(cycle.values, dividend) != 0)
@@ -141,7 +142,7 @@ object CycleUtils {
     assert(newList.head == dividend)
     assert(checkZeroForSome(newList, cycle.values))
 
-    Cycle(
+    MemCycle(
       values = cycle.values,
       modIsZeroForAllValues = cycle.modIsZeroForAllValues,
       modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,

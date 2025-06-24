@@ -1,7 +1,7 @@
 package v1.seq.properties
 
 import stainless.lang.{BigInt, *}
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 import verification.Helper
 import verification.Helper.{assert, equality}
 
@@ -116,7 +116,7 @@ object SeqProperties {
     }
   }
 
-  def sumAllCycleValues(from: BigInt, to: BigInt, cycle: Cycle): BigInt = {
+  def sumAllCycleValues(from: BigInt, to: BigInt, cycle: MemCycle): BigInt = {
     require(from >= 0)
     require(to >= 0)
     require(to >= from)
