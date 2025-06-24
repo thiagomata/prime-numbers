@@ -4,6 +4,12 @@ import stainless.collection.List
 import stainless.lang.decreases
 import v1.cycle.CycleUtils
 
+/**
+ * Represents a recursive cycle of values.
+ *
+ * @param values List A non-empty list of BigInt 
+ * non-negative values that form the cycle.
+ */
 case class RecursiveCycle(values: List[BigInt]) {
   require(values.nonEmpty, "Values list cannot be empty")
   require(CycleUtils.checkPositiveOrZero(values))
