@@ -1,29 +1,26 @@
 package v1.cycle
 
 import stainless.collection.List
-import stainless.lang.decreases
 import v1.Calc
-import v1.cycle.Cycle.{appendForAll, appendForNone, appendForSome}
+import v1.cycle.CycleUtils.{appendForNone, appendForSome}
 import v1.list.ListUtils
 import verification.Helper.assert
 
-import scala.annotation.tailrec
-
-case class Cycle private(
+case class Cycle (
   values: List[BigInt],
   modIsZeroForAllValues: List[BigInt] = stainless.collection.List.empty,
   modIsZeroForNoneValues: List[BigInt] = stainless.collection.List.empty,
   modIsZeroForSomeValues: List[BigInt] = stainless.collection.List.empty,
 ) {
-  require(Cycle.isValid(
+  require(CycleUtils.isValid(
     values,
     modIsZeroForAllValues,
     modIsZeroForSomeValues,
     modIsZeroForNoneValues
   ))
 
-  private def isValid: Boolean = {
-    Cycle.isValid(
+  def isValid: Boolean = {
+    CycleUtils.isValid(
       values,
       modIsZeroForAllValues,
       modIsZeroForSomeValues,
@@ -34,8 +31,8 @@ case class Cycle private(
   def countModZero(dividend: BigInt): BigInt = {
     require(dividend > 0)
     require(this.values.nonEmpty)
-    require(Cycle.checkPositiveOrZero(values))
-    Cycle.countModZero(this.values, dividend)
+    require(CycleUtils.checkPositiveOrZero(values))
+    CycleUtils.countModZero(this.values, dividend)
   }
 
   def apply(value: BigInt): BigInt = {
@@ -57,11 +54,11 @@ case class Cycle private(
     if (this.evaluated(dividend)) {
       this
     } else {
-      val totalModZero = Cycle.countModZero(this.values, dividend)
+      val totalModZero = CycleUtils.countModZero(this.values, dividend)
 
       if (totalModZero == this.values.size) {
         assert(this.countModZero(dividend) == this.values.size)
-        appendForAll(this, dividend)
+        CycleUtils.appendForAll(this, dividend)
       }
       else if (totalModZero == 0) {
         assert(this.countModZero(dividend) == 0)
@@ -95,193 +92,5 @@ case class Cycle private(
     this.modIsZeroForSomeValues.contains(dividend) ||
       this.modIsZeroForAllValues.contains(dividend) ||
       this.modIsZeroForNoneValues.contains(dividend)
-  }
-}
-
-object Cycle {
-  def apply(values: List[BigInt]): Cycle = {
-    require(values.nonEmpty)
-    require(checkPositiveOrZero(values))
-    new Cycle(values)
-  }
-
-  def isValid(
-               values: List[BigInt],
-               modIsZeroForAllValues: List[BigInt],
-               modIsZeroForSomeValues: List[BigInt],
-               modIsZeroForNoneValues: List[BigInt],
-             ): Boolean = {
-    values.nonEmpty &&
-      Cycle.checkPositiveOrZero(values) &&
-      Cycle.checkPositive(modIsZeroForAllValues) &&
-      Cycle.checkPositive(modIsZeroForSomeValues) &&
-      Cycle.checkPositive(modIsZeroForNoneValues) &&
-      Cycle.checkZeroForAll(modIsZeroForAllValues, values) &&
-      Cycle.checkZeroForSome(modIsZeroForSomeValues, values) &&
-      Cycle.checkZeroForNone(modIsZeroForNoneValues, values)
-  }
-
-  def countModZero(values: List[BigInt], dividend: BigInt): BigInt = {
-    require(dividend > 0)
-    require(values.nonEmpty)
-    require(checkPositiveOrZero(values))
-
-    @tailrec
-    def loopModfact(loopList: List[BigInt], totalAcc: BigInt = BigInt(0)): BigInt = {
-      decreases(loopList.size)
-
-      if (loopList.isEmpty) {
-        return totalAcc
-      }
-      val current = loopList.head
-      val thisValueModsZero = if (Calc.mod(current, dividend) == 0) then BigInt(1) else BigInt(0)
-      loopModfact(loopList.tail, totalAcc + thisValueModsZero)
-    }
-
-    loopModfact(values)
-  }
-
-  private def checkZeroForSome(modIsZeroForSomeValues: List[BigInt], values: List[BigInt]): Boolean = {
-    require(values.nonEmpty)
-    require(checkPositive(modIsZeroForSomeValues))
-    require(checkPositiveOrZero(values))
-
-    @tailrec
-    def loop(list: List[BigInt]): Boolean = {
-      require(checkPositive(list))
-      decreases(list.size)
-      if (list.isEmpty) return true
-
-      val dividend = list.head
-      assert(dividend > 0)
-      val result = countModZero(values, dividend)
-      val valid = (result != values.size && result != 0)
-      if (!valid) then false else loop(list.tail)
-    }
-
-    loop(modIsZeroForSomeValues)
-  }
-
-  private def checkZeroForAll(modIsZeroForAllValues: List[BigInt], values: List[BigInt]): Boolean = {
-    require(values.nonEmpty)
-    require(checkPositive(modIsZeroForAllValues))
-    require(checkPositiveOrZero(values))
-
-    @tailrec
-    def loop(list: List[BigInt]): Boolean = {
-      decreases(list.size)
-      require(checkPositive(list))
-
-      if (list.isEmpty) return true
-
-      val dividend = list.head
-      assert(dividend > 0)
-      val result = countModZero(values, dividend)
-      val valid = result == values.size
-      if (!valid) then false else loop(list.tail)
-    }
-
-    loop(modIsZeroForAllValues)
-  }
-
-  private def appendForAll(cycle: Cycle, dividend: BigInt): Cycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) == cycle.values.size)
-
-    val newList = dividend :: cycle.modIsZeroForAllValues
-    assert(newList.tail == cycle.modIsZeroForAllValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForAll(newList, cycle.values))
-
-    Cycle(
-      values = cycle.values,
-      modIsZeroForAllValues = newList,
-      modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,
-      modIsZeroForSomeValues = cycle.modIsZeroForSomeValues,
-    )
-  }
-
-  private def appendForNone(cycle: Cycle, dividend: BigInt): Cycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) == 0)
-
-    val newList = dividend :: cycle.modIsZeroForNoneValues
-    assert(newList.tail == cycle.modIsZeroForNoneValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForNone(newList, cycle.values))
-
-    Cycle(
-      values = cycle.values,
-      modIsZeroForAllValues = cycle.modIsZeroForAllValues,
-      modIsZeroForNoneValues = newList,
-      modIsZeroForSomeValues = cycle.modIsZeroForSomeValues,
-    )
-  }
-
-  private def appendForSome(cycle: Cycle, dividend: BigInt): Cycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) != 0)
-    require(countModZero(cycle.values, dividend) != cycle.values.size)
-
-    val newList = dividend :: cycle.modIsZeroForSomeValues
-    assert(newList.tail == cycle.modIsZeroForSomeValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForSome(newList, cycle.values))
-
-    Cycle(
-      values = cycle.values,
-      modIsZeroForAllValues = cycle.modIsZeroForAllValues,
-      modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,
-      modIsZeroForSomeValues = newList,
-    )
-  }
-
-  private def checkZeroForNone(modIsZeroForNoneValues: List[BigInt], values: List[BigInt]): Boolean = {
-    require(values.nonEmpty)
-    require(checkPositiveOrZero(values))
-    require(checkPositive(modIsZeroForNoneValues))
-
-    @tailrec
-    def loop(list: List[BigInt]): Boolean = {
-      decreases(list.size)
-      require(checkPositive(list))
-      if (list.isEmpty) return true
-
-      val dividend = list.head
-      val result = countModZero(values, dividend)
-      val valid = result == 0
-      if (!valid) then false else loop(list.tail)
-    }
-
-    loop(modIsZeroForNoneValues)
-  }
-
-  private def checkPositive(list: List[BigInt]): Boolean = {
-
-    @tailrec
-    def loop(listLoop: List[BigInt]): Boolean = {
-      decreases(listLoop.size)
-      if (listLoop.isEmpty) return true
-      val valid = listLoop.head > 0
-      if (!valid) false else loop(listLoop.tail)
-    }
-
-    loop(list)
-  }
-
-  private def checkPositiveOrZero(list: List[BigInt]): Boolean = {
-
-    @tailrec
-    def loop(listLoop: List[BigInt]): Boolean = {
-      decreases(listLoop.size)
-      if (listLoop.isEmpty) return true
-      val valid = listLoop.head >= 0
-      if (!valid) false else loop(listLoop.tail)
-    }
-
-    loop(list)
   }
 }
