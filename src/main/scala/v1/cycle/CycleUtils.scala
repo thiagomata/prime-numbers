@@ -13,7 +13,7 @@ object CycleUtils {
   def apply(values: List[BigInt]): MemCycle = {
     require(values.nonEmpty)
     require(checkPositiveOrZero(values))
-    new MemCycle(values)
+    MemCycle(values)
   }
 
   def isValid(
@@ -52,7 +52,7 @@ object CycleUtils {
     loop(values)
   }
 
-  private def checkZeroForSome(modIsZeroForSomeValues: List[BigInt], values: List[BigInt]): Boolean = {
+  def checkZeroForSome(modIsZeroForSomeValues: List[BigInt], values: List[BigInt]): Boolean = {
     require(values.nonEmpty)
     require(checkPositive(modIsZeroForSomeValues))
     require(checkPositiveOrZero(values))
@@ -73,7 +73,7 @@ object CycleUtils {
     loop(modIsZeroForSomeValues)
   }
 
-  private def checkZeroForAll(modIsZeroForAllValues: List[BigInt], values: List[BigInt]): Boolean = {
+  def checkZeroForAll(modIsZeroForAllValues: List[BigInt], values: List[BigInt]): Boolean = {
     require(values.nonEmpty)
     require(checkPositive(modIsZeroForAllValues))
     require(checkPositiveOrZero(values))
@@ -95,60 +95,43 @@ object CycleUtils {
     loop(modIsZeroForAllValues)
   }
 
-  def appendForAll(cycle: MemCycle, dividend: BigInt): MemCycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) == cycle.values.size)
 
-    val newList = dividend :: cycle.modIsZeroForAllValues
-    assert(newList.tail == cycle.modIsZeroForAllValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForAll(newList, cycle.values))
+//  def appendForNone(mCycle: MemCycle, dividend: BigInt): MemCycle = {
+//    require(dividend > 0)
+//    require(mCycle.isValid)
+//    require(countModZero(mCycle.values, dividend) == 0)
+//
+//    val newList = dividend :: mCycle.modIsZeroForNoneValues
+//    assert(newList.tail == mCycle.modIsZeroForNoneValues)
+//    assert(newList.head == dividend)
+//    assert(checkZeroForNone(newList, mCycle.values))
+//
+//    MemCycle(
+//      cycle = mCycle.cycle,
+//      modIsZeroForAllValues = mCycle.modIsZeroForAllValues,
+//      modIsZeroForNoneValues = newList,
+//      modIsZeroForSomeValues = mCycle.modIsZeroForSomeValues,
+//    )
+//  }
 
-    MemCycle(
-      values = cycle.values,
-      modIsZeroForAllValues = newList,
-      modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,
-      modIsZeroForSomeValues = cycle.modIsZeroForSomeValues,
-    )
-  }
-
-  def appendForNone(cycle: MemCycle, dividend: BigInt): MemCycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) == 0)
-
-    val newList = dividend :: cycle.modIsZeroForNoneValues
-    assert(newList.tail == cycle.modIsZeroForNoneValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForNone(newList, cycle.values))
-
-    MemCycle(
-      values = cycle.values,
-      modIsZeroForAllValues = cycle.modIsZeroForAllValues,
-      modIsZeroForNoneValues = newList,
-      modIsZeroForSomeValues = cycle.modIsZeroForSomeValues,
-    )
-  }
-
-  def appendForSome(cycle: MemCycle, dividend: BigInt): MemCycle = {
-    require(dividend > 0)
-    require(cycle.isValid)
-    require(countModZero(cycle.values, dividend) != 0)
-    require(countModZero(cycle.values, dividend) != cycle.values.size)
-
-    val newList = dividend :: cycle.modIsZeroForSomeValues
-    assert(newList.tail == cycle.modIsZeroForSomeValues)
-    assert(newList.head == dividend)
-    assert(checkZeroForSome(newList, cycle.values))
-
-    MemCycle(
-      values = cycle.values,
-      modIsZeroForAllValues = cycle.modIsZeroForAllValues,
-      modIsZeroForNoneValues = cycle.modIsZeroForNoneValues,
-      modIsZeroForSomeValues = newList,
-    )
-  }
+//  def appendForSome(mCycle: MemCycle, dividend: BigInt): MemCycle = {
+//    require(dividend > 0)
+//    require(mCycle.isValid)
+//    require(countModZero(mCycle.values, dividend) != 0)
+//    require(countModZero(mCycle.values, dividend) != mCycle.values.size)
+//
+//    val newList = dividend :: mCycle.modIsZeroForSomeValues
+//    assert(newList.tail == mCycle.modIsZeroForSomeValues)
+//    assert(newList.head == dividend)
+//    assert(checkZeroForSome(newList, mCycle.values))
+//
+//    MemCycle(
+//      cycle = mCycle.cycle,
+//      modIsZeroForAllValues = mCycle.modIsZeroForAllValues,
+//      modIsZeroForNoneValues = mCycle.modIsZeroForNoneValues,
+//      modIsZeroForSomeValues = newList,
+//    )
+//  }
 
   def checkZeroForNone(modIsZeroForNoneValues: List[BigInt], values: List[BigInt]): Boolean = {
     require(values.nonEmpty)

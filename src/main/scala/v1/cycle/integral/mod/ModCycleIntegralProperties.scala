@@ -19,14 +19,14 @@ object ModCycleIntegralProperties {
    * @param position BigInt position in the cycle
    * @return Boolean if the properties hold
    */
-  def assertFirstValuesMatchIntegral(modCycle: ModCycleIntegral, position: BigInt): Boolean = {
+  def assertFirstValuesMatchIntegral(modCycleIntegral: ModCycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
-    require(position < modCycle.integralValues.size)
-    assert(ModSmallDividend.modSmallDividend(position, modCycle.integralValues.size))
-    assert(Calc.mod(position, modCycle.integralValues.size) == position)
-    assert(Calc.div(position, modCycle.integralValues.size) == 0)
+    require(position < modCycleIntegral.integralValues.size)
+    assert(ModSmallDividend.modSmallDividend(position, modCycleIntegral.integralValues.size))
+    assert(Calc.mod(position, modCycleIntegral.integralValues.size) == position)
+    assert(Calc.div(position, modCycleIntegral.integralValues.size) == 0)
 
-    modCycle.apply(position) == modCycle.integralValues(position) + modCycle.initialValue
+    modCycleIntegral.apply(position) == modCycleIntegral.integralValues(position) + modCycleIntegral.initialValue
   }.holds
 
   /**
@@ -43,119 +43,119 @@ object ModCycleIntegralProperties {
    * @param position BigInt position in the cycle
    * @return Boolean if the properties hold
    */
-  def assertSimplifiedDiffValuesMatchCycle(modCycle: ModCycleIntegral, position: BigInt): Boolean = {
+  def assertSimplifiedDiffValuesMatchCycle(modCycleIntegral: ModCycleIntegral, position: BigInt): Boolean = {
     require( position >= 0)
 
-    assert(modCycle.integralValues.size == modCycle.cycle.values.size)
-    ModOperations.addOne(position, modCycle.integralValues.size)
+    assert(modCycleIntegral.integralValues.size == modCycleIntegral.mCycle.size)
+    ModOperations.addOne(position, modCycleIntegral.integralValues.size)
 
-    if (Calc.mod(position, modCycle.integralValues.size) == modCycle.integralValues.size - 1) {
+    if (Calc.mod(position, modCycleIntegral.integralValues.size) == modCycleIntegral.integralValues.size - 1) {
 
       /* load some properties about the last integral value */
 
-      assert(ListUtilsProperties.assertLastEqualsLastPosition(modCycle.integralValues.acc))
-      assert(IntegralProperties.assertAccMatchesApply(modCycle.integralValues, modCycle.integralValues.size - 1))
-      assert(IntegralProperties.assertLastEqualsSum(modCycle.integralValues))
-      assert(IntegralProperties.assertSizeAccEqualsSizeList(modCycle.integralValues.list, modCycle.integralValues.init))
-      assert(modCycle.integralValues.acc.last == modCycle.integralValues.last)
-      assert(modCycle.integralValues.last     == modCycle.integralValues.acc(modCycle.integralValues.acc.size - 1))
-      assert(modCycle.integralValues.last     == modCycle.integralValues(modCycle.integralValues.size - 1))
+      assert(ListUtilsProperties.assertLastEqualsLastPosition(modCycleIntegral.integralValues.acc))
+      assert(IntegralProperties.assertAccMatchesApply(modCycleIntegral.integralValues, modCycleIntegral.integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(modCycleIntegral.integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(modCycleIntegral.integralValues.list, modCycleIntegral.integralValues.init))
+      assert(modCycleIntegral.integralValues.acc.last == modCycleIntegral.integralValues.last)
+      assert(modCycleIntegral.integralValues.last     == modCycleIntegral.integralValues.acc(modCycleIntegral.integralValues.acc.size - 1))
+      assert(modCycleIntegral.integralValues.last     == modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1))
 
       /* check the addOne properties */
 
-      assert(Calc.mod(position + 1, modCycle.integralValues.size) == 0)
-      assert(Calc.div(position + 1, modCycle.integralValues.size) == Calc.div(position, modCycle.integralValues.size) + 1)
+      assert(Calc.mod(position + 1, modCycleIntegral.integralValues.size) == 0)
+      assert(Calc.div(position + 1, modCycleIntegral.integralValues.size) == Calc.div(position, modCycleIntegral.integralValues.size) + 1)
 
       /* calc apply(position)  */
 
       equality(
-        modCycle.apply(position),
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size)) +
-          modCycle.initialValue,
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(modCycle.integralValues.size - 1) +
-          modCycle.initialValue
+        modCycleIntegral.apply(position),
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size)) +
+          modCycleIntegral.initialValue,
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1) +
+          modCycleIntegral.initialValue
       )
 
-      assert(IntegralProperties.assertAccMatchesApply(modCycle.integralValues, modCycle.integralValues.size - 1))
-      assert(IntegralProperties.assertLastEqualsSum(modCycle.integralValues))
-      assert(IntegralProperties.assertSizeAccEqualsSizeList(modCycle.integralValues.list, modCycle.integralValues.init))
+      assert(IntegralProperties.assertAccMatchesApply(modCycleIntegral.integralValues, modCycleIntegral.integralValues.size - 1))
+      assert(IntegralProperties.assertLastEqualsSum(modCycleIntegral.integralValues))
+      assert(IntegralProperties.assertSizeAccEqualsSizeList(modCycleIntegral.integralValues.list, modCycleIntegral.integralValues.init))
 
-      assert(modCycle.integralValues.apply(modCycle.integralValues.size - 1)   ==
-        modCycle.integralValues.acc(modCycle.integralValues.size - 1))
-      assert(modCycle.integralValues.acc(modCycle.integralValues.acc.size - 1) ==
-          modCycle.integralValues.acc.last)
+      assert(modCycleIntegral.integralValues.apply(modCycleIntegral.integralValues.size - 1)   ==
+        modCycleIntegral.integralValues.acc(modCycleIntegral.integralValues.size - 1))
+      assert(modCycleIntegral.integralValues.acc(modCycleIntegral.integralValues.acc.size - 1) ==
+        modCycleIntegral.integralValues.acc.last)
 
       /* calc apply(position + 1) */
 
-      assert(modCycle.apply(position + 1) ==
-        Calc.div(position + 1, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size)) +
-          modCycle.initialValue
+      assert(modCycleIntegral.apply(position + 1) ==
+        Calc.div(position + 1, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size)) +
+          modCycleIntegral.initialValue
       )
 
       /* calc apply(position) */
 
       equality(
-        modCycle.apply(position),
+        modCycleIntegral.apply(position),
         // is equal to
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(modCycle.integralValues.size - 1) +
-          modCycle.initialValue,
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1) +
+          modCycleIntegral.initialValue,
         // since integralValues(size - 1) == integralValues.last
         // is equal to
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues.last +
-          modCycle.initialValue
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues.last +
+          modCycleIntegral.initialValue
       )
 
       /* calc apply(position + 1) - apply(position) */
 
       equality(
-        modCycle.apply(position + 1) - modCycle.apply(position),
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position),
         // is equal to
         0 + (                                                                                                           // replacing  apply by the definition
-          Calc.div(position + 1, modCycle.integralValues.size) * modCycle.integralValues.last
-            + modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size))
-            + modCycle.initialValue
+          Calc.div(position + 1, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+            + modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
+            + modCycleIntegral.initialValue
           )
           - (
-          Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-            + modCycle.integralValues(modCycle.integralValues.size - 1)
-            + modCycle.initialValue
+          Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+            + modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1)
+            + modCycleIntegral.initialValue
           ),
         // is equal to
-        0 + (Calc.div(position, modCycle.integralValues.size) + 1) * modCycle.integralValues.last                       // using the addOne properties
-          + modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size))
-          + modCycle.initialValue
-          - Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-          - modCycle.integralValues(modCycle.integralValues.size - 1)
-          - modCycle.initialValue,
+        0 + (Calc.div(position, modCycleIntegral.integralValues.size) + 1) * modCycleIntegral.integralValues.last                       // using the addOne properties
+          + modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
+          + modCycleIntegral.initialValue
+          - Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+          - modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1)
+          - modCycleIntegral.initialValue,
         // is equal to
-        0 + Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-          + modCycle.integralValues.last                                                                                // distributive property
-          - Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last                             // grouping similar terms
-          + modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size))
-          - modCycle.integralValues(modCycle.integralValues.size - 1)
-          + modCycle.initialValue
-          - modCycle.initialValue,
+        0 + Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+          + modCycleIntegral.integralValues.last                                                                                // distributive property
+          - Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last                             // grouping similar terms
+          + modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
+          - modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1)
+          + modCycleIntegral.initialValue
+          - modCycleIntegral.initialValue,
         // is equal to
         // simplifying
-        0 + modCycle.integralValues.last
-          + modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size))
-          - modCycle.integralValues(modCycle.integralValues.size - 1),
-        0 + modCycle.integralValues(0)                                                                                  // since mod(pos + 1, size) == 0
-          + modCycle.integralValues.last
-          - modCycle.integralValues.last,                                                                               // since integralValues(size - 1) == integralValues.last
+        0 + modCycleIntegral.integralValues.last
+          + modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
+          - modCycleIntegral.integralValues(modCycleIntegral.integralValues.size - 1),
+        0 + modCycleIntegral.integralValues(0)                                                                                  // since mod(pos + 1, size) == 0
+          + modCycleIntegral.integralValues.last
+          - modCycleIntegral.integralValues.last,                                                                               // since integralValues(size - 1) == integralValues.last
         // is equal to
-        modCycle.integralValues(0),
+        modCycleIntegral.integralValues(0),
         // is equal to
-        modCycle.cycle.values.head,
+        modCycleIntegral.mCycle.values.head,
       )
 
       assert(
-        modCycle.apply(position + 1) - modCycle.apply(position) == modCycle.cycle.values.head
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position) == modCycleIntegral.mCycle.values.head
       )
 
     } else {
@@ -163,83 +163,83 @@ object ModCycleIntegralProperties {
       /* check addOne properties
        * mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
        */
-      assert(Calc.mod(position + 1, modCycle.integralValues.size) == Calc.mod(position, modCycle.integralValues.size) + 1)
-      assert(Calc.div(position + 1, modCycle.integralValues.size) == Calc.div(position, modCycle.integralValues.size))
+      assert(Calc.mod(position + 1, modCycleIntegral.integralValues.size) == Calc.mod(position, modCycleIntegral.integralValues.size) + 1)
+      assert(Calc.div(position + 1, modCycleIntegral.integralValues.size) == Calc.div(position, modCycleIntegral.integralValues.size))
 
       /* calc apply(position) */
 
-      assert(modCycle.apply(position) ==
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size)) +
-          modCycle.initialValue
+      assert(modCycleIntegral.apply(position) ==
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size)) +
+          modCycleIntegral.initialValue
       )
 
       /* calc apply(position + 1) */
 
-      assert(modCycle.apply(position + 1) ==
-        Calc.div(position + 1, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(Calc.mod(position + 1, modCycle.integralValues.size)) +
-          modCycle.initialValue
+      assert(modCycleIntegral.apply(position + 1) ==
+        Calc.div(position + 1, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(Calc.mod(position + 1, modCycleIntegral.integralValues.size)) +
+          modCycleIntegral.initialValue
       )
-      assert(modCycle.apply(position + 1) ==
-        Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last +
-          modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size) + 1) +
-          modCycle.initialValue
+      assert(modCycleIntegral.apply(position + 1) ==
+        Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last +
+          modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size) + 1) +
+          modCycleIntegral.initialValue
       )
 
       /* calc apply(position + 1) - apply(position) */
 
       equality(
-        modCycle.apply(position + 1) - modCycle.apply(position),
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position),
         // is equal to
         0 + ( // replacing by the apply definition
-          Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-            + modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size) + 1)
-            + modCycle.initialValue
+          Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+            + modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size) + 1)
+            + modCycleIntegral.initialValue
           )
           - ( // replacing by the apply definition
-          Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-            + modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size))
-            + modCycle.initialValue
+          Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+            + modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size))
+            + modCycleIntegral.initialValue
           ),
         // is equal to
-        0 + Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last // using addOne properties
-          + modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size) + 1)   // using addOne properties
-          + modCycle.initialValue
-          - Calc.div(position, modCycle.integralValues.size) * modCycle.integralValues.last
-          - modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size))
-          - modCycle.initialValue,
+        0 + Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last // using addOne properties
+          + modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size) + 1)   // using addOne properties
+          + modCycleIntegral.initialValue
+          - Calc.div(position, modCycleIntegral.integralValues.size) * modCycleIntegral.integralValues.last
+          - modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size))
+          - modCycleIntegral.initialValue,
         // is equal to
-        0 + modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size) + 1)
-          - modCycle.integralValues(Calc.mod(position, modCycle.integralValues.size))
+        0 + modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size) + 1)
+          - modCycleIntegral.integralValues(Calc.mod(position, modCycleIntegral.integralValues.size))
       )
 
       /* integral values diff equals cycle.values(mod(pos + 1),size) */
 
-      val a = Calc.mod(position, modCycle.integralValues.size)
-      val b = Calc.mod(position, modCycle.integralValues.size) + 1
+      val a = Calc.mod(position, modCycleIntegral.integralValues.size)
+      val b = Calc.mod(position, modCycleIntegral.integralValues.size) + 1
       assert(b - a == 1)
 
       assert(
-        modCycle.apply(position + 1) - modCycle.apply(position) == 0
-          + modCycle.integralValues(b)
-          - modCycle.integralValues(a)
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position) == 0
+          + modCycleIntegral.integralValues(b)
+          - modCycleIntegral.integralValues(a)
       )
 
-      assert(IntegralProperties.assertAccDiffMatchesList(modCycle.integralValues, a))
+      assert(IntegralProperties.assertAccDiffMatchesList(modCycleIntegral.integralValues, a))
       assert(
-        modCycle.integralValues(b) - modCycle.integralValues(a) == modCycle.cycle.values(b)
+        modCycleIntegral.integralValues(b) - modCycleIntegral.integralValues(a) == modCycleIntegral.mCycle.values(b)
       )
       assert(
-        modCycle.apply(position + 1) - modCycle.apply(position) == modCycle.cycle.values(b)
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position) == modCycleIntegral.mCycle.values(b)
       )
       assert(
-        modCycle.apply(position + 1) - modCycle.apply(position) == modCycle.cycle.values(Calc.mod(position + 1, modCycle.integralValues.size))
+        modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position) == modCycleIntegral.mCycle.values(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
       )
     }
 
-    modCycle.apply(position + 1) - modCycle.apply(position) ==
-      modCycle.cycle.values(Calc.mod(position + 1, modCycle.integralValues.size))
+    modCycleIntegral.apply(position + 1) - modCycleIntegral.apply(position) ==
+      modCycleIntegral.mCycle.values(Calc.mod(position + 1, modCycleIntegral.integralValues.size))
   }.holds
 
   /**
@@ -258,73 +258,73 @@ object ModCycleIntegralProperties {
    * @return Boolean if the properties hold
    */
   def assertModCycleEqualsCycleIntegral(
-                                         modCycle: ModCycleIntegral,
+                                         modCycleIntegral: ModCycleIntegral,
                                          cycleIntegral: CycleIntegral,
                                          position: BigInt,
   ): Boolean = {
     require(position >= 0)
-    require(modCycle.cycle.values.nonEmpty)
+    require(modCycleIntegral.mCycle.values.nonEmpty)
     require(cycleIntegral.cycle.values.nonEmpty)
-    require(modCycle.cycle.values == cycleIntegral.cycle.values)
-    require(modCycle.cycle.size   == cycleIntegral.cycle.size)
-    require(modCycle.initialValue == cycleIntegral.initialValue)
+    require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
+    require(modCycleIntegral.mCycle.size   == cycleIntegral.cycle.size)
+    require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
     decreases(position)
 
-    assert(modCycle.cycle.size == cycleIntegral.cycle.size)
-    val size = modCycle.cycle.size
+    assert(modCycleIntegral.mCycle.size == cycleIntegral.cycle.size)
+    val size = modCycleIntegral.mCycle.size
 
     if (position == 0) {
 
       assert(div(position, size) == 0)
       assert(mod(position, size) == 0)
-      assert(modCycle.integralValues(0) == modCycle.cycle.values.head)
-      assert(modCycle(0) == (
-        div(position, size) * modCycle.integralValues.last
-        + modCycle.integralValues(mod(position,size)) + modCycle.initialValue)
+      assert(modCycleIntegral.integralValues(0) == modCycleIntegral.mCycle.values.head)
+      assert(modCycleIntegral(0) == (
+        div(position, size) * modCycleIntegral.integralValues.last
+        + modCycleIntegral.integralValues(mod(position,size)) + modCycleIntegral.initialValue)
       )
-      assert(modCycle(0) == 0 + modCycle.integralValues(0) + modCycle.initialValue)
-      assert(modCycle(0) == modCycle.cycle.values.head + modCycle.initialValue)
+      assert(modCycleIntegral(0) == 0 + modCycleIntegral.integralValues(0) + modCycleIntegral.initialValue)
+      assert(modCycleIntegral(0) == modCycleIntegral.mCycle.values.head + modCycleIntegral.initialValue)
 
       assert(cycleIntegral(0) == cycleIntegral.cycle(0) + cycleIntegral.initialValue)
       assert(cycleIntegral(0) == cycleIntegral.cycle.values(mod(0, size)) + cycleIntegral.initialValue)
       assert(cycleIntegral(0) == cycleIntegral.cycle.values(0)            + cycleIntegral.initialValue)
       assert(cycleIntegral(0) == cycleIntegral.cycle.values.head          + cycleIntegral.initialValue)
 
-      assert(modCycle(position) == cycleIntegral(position))
+      assert(modCycleIntegral(position) == cycleIntegral(position))
     } else {
       assertModCycleEqualsCycleIntegral(
-        modCycle,
+        modCycleIntegral,
         cycleIntegral,
         position - 1
       )
 
-      assertSimplifiedDiffValuesMatchCycle(modCycle, position - 1)
+      assertSimplifiedDiffValuesMatchCycle(modCycleIntegral, position - 1)
       assert(
-        modCycle(position) - modCycle(position - 1) ==
-          modCycle.cycle.values(mod(position, modCycle.integralValues.size))
+        modCycleIntegral(position) - modCycleIntegral(position - 1) ==
+          modCycleIntegral.mCycle.values(mod(position, modCycleIntegral.integralValues.size))
       )
-      assert(modCycle.integralValues.size == size)
+      assert(modCycleIntegral.integralValues.size == size)
 
-      assert(modCycle(position) == modCycle(position - 1) + modCycle.cycle(position))
+      assert(modCycleIntegral(position) == modCycleIntegral(position - 1) + modCycleIntegral.mCycle(position))
 
-      assert(modCycle(position - 1) == cycleIntegral(position - 1))
+      assert(modCycleIntegral(position - 1) == cycleIntegral(position - 1))
 
       CycleIntegralProperties.assertDiffEqualsCycleValue(cycleIntegral, position - 1)
       assert(cycleIntegral(position) == cycleIntegral(position - 1) + cycleIntegral.cycle(position))
 
       assert(cycleIntegral.cycle(position) == cycleIntegral.cycle.values(mod(position, size)))
-      assert(modCycle.cycle(position) == modCycle.cycle.values(mod(position, size)))
-      assert(cycleIntegral.cycle.values == modCycle.cycle.values)
-      assert(modCycle.cycle.values(mod(position, size)) == cycleIntegral.cycle.values(mod(position, size)))
-      assert(modCycle.cycle(position) == modCycle.cycle(position))
+      assert(modCycleIntegral.mCycle(position) == modCycleIntegral.mCycle.values(mod(position, size)))
+      assert(cycleIntegral.cycle.values == modCycleIntegral.mCycle.values)
+      assert(modCycleIntegral.mCycle.values(mod(position, size)) == cycleIntegral.cycle.values(mod(position, size)))
+      assert(modCycleIntegral.mCycle(position) == modCycleIntegral.mCycle(position))
 
       assert(cycleIntegral(position) == cycleIntegral(position - 1) + cycleIntegral.cycle(position))
-      assert(cycleIntegral(position) == modCycle(position - 1)      + cycleIntegral.cycle(position))
-      assert(cycleIntegral(position) == modCycle(position - 1)      + modCycle.cycle(position))
+      assert(cycleIntegral(position) == modCycleIntegral(position - 1)      + cycleIntegral.cycle(position))
+      assert(cycleIntegral(position) == modCycleIntegral(position - 1)      + modCycleIntegral.mCycle(position))
 
-      assert(modCycle(position) == cycleIntegral(position))
+      assert(modCycleIntegral(position) == cycleIntegral(position))
     }
-    modCycle(position) == cycleIntegral(position)
+    modCycleIntegral(position) == cycleIntegral(position)
   }.holds
 
   /**
@@ -335,8 +335,8 @@ object ModCycleIntegralProperties {
    * In other words:
    *
    * cycleIntegral(position) ==
-   *   div(position, size) * modCycle.integralValues.last +
-   *   modCycle.integralValues(mod(position, size)) + cycleIntegral.initialValue
+   *   div(position, size) * modCycleIntegral.integralValues.last +
+   *   modCycleIntegral.integralValues(mod(position, size)) + cycleIntegral.initialValue
    *
    * @param modCycle ModCycle any ModCycle
    * @param cycleIntegral CycleIntegral any CycleIntegral with same cycle and initialValue
@@ -344,33 +344,33 @@ object ModCycleIntegralProperties {
    * @return Boolean true if the properties hold
    */
   def assertCycleIntegralMatchModCycleDef(
-                                           modCycle: ModCycleIntegral,
+                                           modCycleIntegral: ModCycleIntegral,
                                            cycleIntegral: CycleIntegral,
                                            position: BigInt,
   ): Boolean = {
     require(position >= 0)
-    require(modCycle.cycle.values.nonEmpty)
+    require(modCycleIntegral.mCycle.values.nonEmpty)
     require(cycleIntegral.cycle.values.nonEmpty)
-    require(modCycle.cycle.values == cycleIntegral.cycle.values)
-    require(modCycle.cycle.size   == cycleIntegral.cycle.size)
-    require(modCycle.initialValue == cycleIntegral.initialValue)
+    require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
+    require(modCycleIntegral.mCycle.size   == cycleIntegral.cycle.size)
+    require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
     decreases(position)
 
     assertModCycleEqualsCycleIntegral(
-      modCycle,
+      modCycleIntegral,
       cycleIntegral,
       position
     )
-    val size = modCycle.cycle.size
+    val size = modCycleIntegral.mCycle.size
     
-    assert(modCycle(position) == cycleIntegral(position))
+    assert(modCycleIntegral(position) == cycleIntegral(position))
     assert(
-      modCycle(position) == div(position, size) * modCycle.integralValues.last + 
-      modCycle.integralValues(mod(position, size)) + modCycle.initialValue
+      modCycleIntegral(position) == div(position, size) * modCycleIntegral.integralValues.last + 
+      modCycleIntegral.integralValues(mod(position, size)) + modCycleIntegral.initialValue
     )
     
     cycleIntegral(position) == 
-      div(position, size) * modCycle.integralValues.last +
-        modCycle.integralValues(mod(position, size)) + cycleIntegral.initialValue
+      div(position, size) * modCycleIntegral.integralValues.last +
+        modCycleIntegral.integralValues(mod(position, size)) + cycleIntegral.initialValue
   }.holds
 }

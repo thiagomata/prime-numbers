@@ -11,13 +11,13 @@ import v1.list.properties.ListUtilsProperties
 import verification.Helper.{assert, equality}
 
 case class ModCycleIntegral(
-                     initialValue:          BigInt,
-                     cycle:                 MemCycle,
+  initialValue: BigInt,
+  mCycle:         MemCycle,
 ) {
-  require(cycle.values.nonEmpty)
+//  require(cycle.nonEmpty)
 
   val integralValues: Integral = Integral(
-    list = cycle.values,
+    list = mCycle.cycle.values,
   )
 
   /**

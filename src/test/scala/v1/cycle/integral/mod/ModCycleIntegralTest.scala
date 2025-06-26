@@ -36,7 +36,7 @@ class ModCycleIntegralTest extends FlatSpec with Matchers {
     assert(
       allCycles.forall { cycle =>
         val modCycle = ModCycleIntegral(1000, cycle)
-        (BigInt(1) until modCycle.cycle.values.size).forall {
+        (BigInt(1) until modCycle.mCycle.values.size).forall {
           position => {
             val expectedValue = (BigInt(0) to position).map(
               i => cycle(i)

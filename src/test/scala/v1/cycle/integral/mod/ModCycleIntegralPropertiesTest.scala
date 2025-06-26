@@ -37,7 +37,7 @@ class ModCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc = ModCycleIntegral(1000, cycle)
-        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+        (BigInt(0) until cycleAcc.mCycle.values.size).forall {
           position => {
             val verified = ModCycleIntegralProperties.assertFirstValuesMatchIntegral(cycleAcc, position)
             assert(verified)
@@ -52,7 +52,7 @@ class ModCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc = ModCycleIntegral(1000, cycle)
-        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+        (BigInt(0) until cycleAcc.mCycle.values.size).forall {
           position => {
             val verified = ModCycleIntegralProperties.assertSimplifiedDiffValuesMatchCycle(cycleAcc, position)
             assert(verified)
@@ -68,7 +68,7 @@ class ModCycleIntegralPropertiesTest extends FlatSpec with Matchers {
       allCycles.forall { cycle =>
         val cycleAcc = ModCycleIntegral(1000, cycle)
         val cycleIntegral = CycleIntegral(1000, cycle)
-        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+        (BigInt(0) until cycleAcc.mCycle.values.size).forall {
           position => {
             val verified = ModCycleIntegralProperties.assertModCycleEqualsCycleIntegral(cycleAcc, cycleIntegral, position)
             assert(verified)
@@ -84,7 +84,7 @@ class ModCycleIntegralPropertiesTest extends FlatSpec with Matchers {
       allCycles.forall { cycle =>
         val cycleAcc = ModCycleIntegral(1000, cycle)
         val cycleIntegral = CycleIntegral(1000, cycle)
-        (BigInt(0) until cycleAcc.cycle.values.size).forall {
+        (BigInt(0) until cycleAcc.mCycle.values.size).forall {
           position => {
             val verified = ModCycleIntegralProperties.assertCycleIntegralMatchModCycleDef(cycleAcc, cycleIntegral, position)
             assert(verified)
