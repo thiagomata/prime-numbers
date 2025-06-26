@@ -195,7 +195,7 @@ Building on the definitions and properties of lists and integrals, we now define
 
 A Cycle is an unbounded list that repeats a finite sequence of elements from a bounded list.
 
-In this stydy, we restrict our universe of values $𝕊$ to be the set of non-negative integers, i.e., $𝕊 = ℕ_0$.
+In this study, we restrict our universe of values $𝕊$ to be the set of non-negative integers, i.e., $𝕊 = ℕ_0$.
 
 ### Recursive Cycle Definition
 
@@ -204,10 +204,12 @@ In this stydy, we restrict our universe of values $𝕊$ to be the set of non-ne
 \forall \ L \in  𝕃, \quad \forall \ v &\in ℕ_0,\quad \forall \ i \in ℕ_0 \\
 L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n \\
 n &= |L| \\
-\text{Cycle}_i &= \begin{cases}
+\text{RecCycle}_i &= \begin{cases}
 L_i & \text{if } i < n \\
-\text{Cycle}_{i - n} & \text{if } i \geq n \\
-\end{cases} \ , |L| > 0
+\text{RecCycle}_{i - n} & \text{if } i \geq n \\
+\end{cases} \ , |L| > 0 \\
+\therefore \\
+RecCycle &= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 \end{aligned}
 ```
 
@@ -220,10 +222,10 @@ Defined at [RecursiveCycle](
 
 ```scala
 /**
- * Represents a recursive cycle of values.
+ * RecursiveCycle is a recursive cycle of list values.
  *
  * @param values List A non-empty list of BigInt 
- * non-negative values that form the cycle.
+ *  non-negative values that form the cycle.
  */
 ```
 </details>
@@ -234,16 +236,289 @@ case class RecursiveCycle(values: List[BigInt]) {
   require(CycleUtils.checkPositiveOrZero(values))
 
   def size: BigInt = values.size
+```
 
-  def apply(key: BigInt): BigInt = {
-    decreases(key)
-    require(key >= 0)
+<details>
+<summary> Scala Doc </summary>
 
-    if (key < size) {
-      values(key)
+```scala
+  /**
+    * Applies the recursive cycle to the given position
+    *  by returning the value at the list position or
+    *  calling the previous equivalent value from a 
+    *  smaller position in the cycle.
+    * 
+    * In other words,
+    * 
+    * RecursiveCycle(position) = if position < RecursiveCycle.size 
+    *   then RecursiveCycle.values(position) 
+    *   else RecursiveCycle(position - values.size)
+    *
+    * @param position BigInt The non-negative position in the cycle.
+    * @return BigInt The value at the given position in the cycle.
+    */
+  ````
+  </details>
+
+  ```scala
+  def apply(position: BigInt): BigInt = {
+    decreases(position)
+    require(position >= 0)
+
+    if (position < size) {
+      values(position)
     } else {
-      apply(key - values.size)
+      apply(position - values.size)
     }
+  }
+} 
+```
+### Modulo Cycle Definition
+
+A Cycle can also be defined using modulo arithmetic, which is a common approach in computer science to handle cyclic structures.
+
+```math
+\begin{aligned}
+\forall \ L \in  𝕃, \quad \forall \ v
+&\in ℕ_0,\quad \forall \ i \in ℕ_0 \\
+L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n \\
+n &= |L| \\
+\text{ModCycle}_i &= L[i \text{ mod } n] \ , |L| > 0 \\
+\therefore \\
+\text{ModCycle} &= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
+\end{aligned}
+```
+
+Defined at [ModCycle](
+    ./src/main/scala/v1/cycle/mod/ModCycle.scala
+) as follows:
+
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+/**
+  * ModCycle represents a cycle of values that can be accessed using a modulo operation.
+  *  This cycle is defined by a list of non-negative BigInt values.
+  *
+  * @param values A non-empty list of BigInt values that form the cycle.
+  */
+```
+</details>
+
+```scala
+case class ModCycle(values: List[BigInt]) {
+  require(CycleUtils.checkPositiveOrZero(values))
+  require(values.nonEmpty)
+```
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+    * Applies the modulo operation to the given value and 
+    * returns the corresponding value from the cycle.
+    *
+    * In other words,
+    * ModCycle(position) = ModCycle.values[position % ModCycle.size]
+    * 
+    * @param position The BigInt value to be used for accessing the cycle.
+    * @return The value from the cycle corresponding to the modulo of the input value.
+    */
+```
+</details>
+
+```scala
+  def apply(position: BigInt): BigInt = {
+    require(position >= 0)
+    val index = Calc.mod(position, values.size)
+    assert(index >= 0)
+    assert(index < values.size)
+    values(index)
+  }
+
+  def size: BigInt = values.size
+
+  def sum(): BigInt = ListUtils.sum(values)
+}
+```
+
+### Proving Cycle Equivalence
+
+Let's prove that both definitions of Cycle are equivalent, i.e., they produce the same sequence of values.
+
+```math
+\begin{aligned}
+\forall \ L \in  𝕃, \quad \forall \ v
+&\in ℕ_0,\quad \forall \ i \in ℕ_0 \\
+L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n \\
+n &= |L| \\
+\text{ModCycle}_i &= L[i \text{ mod } n] \ , |L| > 0 \\
+\text{RecCycle}_i &= \begin{cases}
+L_i & \text{if } i < n \\
+\text{RecCycle}_{i - n} & \text{if } i \geq n \\
+\end{cases} \ , |L| > 0 \\
+\end{aligned}
+```
+
+
+#### Base Case
+
+```math
+\forall \ L \in  𝕃, \quad \forall \ i \in  \mathbb{N}_0 \, \ i < n \\
+```
+```math
+\begin{aligned}
+i < n \implies i \text{ mod } n &= i                  \quad &\text{[Trivial Mod For Small Dividend]} \\
+\text{ModCycle}_i &= L_{(i \text{ mod } n)}           \quad &\text{[ModCycle Definition]} \\
+                  &= L_i                              \quad &\text{[Since } i < n \text{, } i \text{ mod } n = i \text{]} \\
+\text{RecCycle}_i &= L_i                              \quad &\text{[Since } i < n \text{, by RecCycle Definition]} \\
+\therefore \\
+i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad &\text{[Q.E.D.]} \\
+\end{aligned}
+``` 
+
+[Trivial Mod for Small Dividend](./modulo.md#trivial-case) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](./modulo.md)[[3]](#ref3).
+
+#### Inductive Step
+
+```math
+\forall \ L \in  𝕃, \quad \forall \ i \
+\in  \mathbb{N}_0 \, \ i \geq n \\
+```
+```math
+\begin{aligned}
+\text{ModCycle}_{(i - n)}           &= \text{RecCycle}(i - n)   \quad &\text{[By Induction Step]} \\
+i \geq n \implies i \text{ mod } n  &= i \text{ mod }  (i - n)  \quad &\text{[Quotient Invariance Under Linear Shift]} \\
+\text{ModCycle}_i   &= L_{(i \text{ mod } n)}        \quad &\text{[ModCycle Definition]} \\
+                    &= L_{((i - n) \text{ mod } n)}  \quad &\text{[Since } i \geq n \text{, } i \text{ mod } n = i - n \text{]} \\
+                    &= \text{ModCycle}_{(i - n)}     \quad &\text{[By Definition]} \\
+                    &= \text{RecCycle}_{(i - n)}     \quad &\text{[By Substitution]} \\
+\text{RecCycle}_{i} &= \text{RecCycle}_{(i - n)}     \quad &\text{[By RecCycle Definition]} \\
+                    &= \text{ModCycle}_{i}           \quad &\text{[By Substitution]} \\
+\therefore \\
+i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad &\text{[Q.E.D.]} \\
+\end{aligned}
+``` 
+
+[Quotient Invariance Under Linear Shift](./modulo.md#quotient-invariance-under-linear-shift) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](./modulo.md)[[3]](#ref3).
+
+This property is also proved and scala code at [](
+  ./src/main/scala/v1/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala
+)
+
+<details>
+
+<summary> Scala Doc </summary>
+
+```scala
+/**
+ * Proves that modulo cycle and recursive cycle match for all positions.
+ *
+ * The recursive cycle is defined as follows:
+ * RecursiveCycle(position) = if position < size then values(position) else RecursiveCycle(position - size)
+ *
+ * The cycle is defined as follows:
+ * Cycle(position) = values(position % size)
+ */
+
+```
+</details>
+
+
+```scala
+object RecursiveCycleMatchesModCycle {
+````
+
+<details>
+<summary> Scala Doc </summary>
+
+
+```scala
+  /**
+   * lemma: For values between zero and the list size,
+   * recursive cycle and cycle from the same list match.
+   *
+   * in other words:
+   *
+   * for all position in [0, size),
+   * recursiveCycle(position) == cycle(position)
+   *
+   * @param cycle Cycle
+   * @param position BigInt
+   * @return Boolean true if the property holds
+   */
+```
+</details>
+
+```scala
+  def assertCycleAndRecursiveCycleMathForSmallValues(
+    cycle: ModCycle,
+    position: BigInt
+  ): Boolean = {
+    val list = cycle.values
+
+    require(position >= 0)
+    require(position < list.size)
+
+    val recursiveCycle = RecursiveCycle(list)
+    assert(position >= 0)
+    assert(position < list.size)
+    assert(list.size == cycle.size)
+    assert(list.size == recursiveCycle.size)
+    assert(ModSmallDividend.modSmallDividend(position, list.size))
+    assert(Calc.mod(position, list.size) == position)
+    cycle(position) == recursiveCycle(position)
+  }.holds
+```
+<details>
+<summary> Scala Doc </summary>
+
+```scala
+  /**
+   * lemma: For any position greater than or equal to zero,
+   * recursive cycle and cycle from the same list match
+   *
+   * in other words:
+   *
+   * for all position >= 0,
+   * recursiveCycle(position) == cycle(position)
+   *
+   * Therefore, the recursive cycle is a valid cycle
+   *
+   * @param cycle Cycle
+   * @param position BigInt
+   * @return Boolean true if the property holds
+   */
+```
+</details>
+
+```scala
+  def assertCycleAndRecursiveCycleMathForAnyValues(
+    cycle: ModCycle,
+    position: BigInt
+  ): Boolean = {
+    decreases(position)
+    val list = cycle.values
+
+    require(position >= 0)
+    require(list.size > 0)
+
+    val recCycle = RecursiveCycle(list)
+
+    if (position < list.size) {
+      // base case
+      assertCycleAndRecursiveCycleMathForSmallValues(cycle, position)
+    } else {
+      // inductive step
+      assertCycleAndRecursiveCycleMathForAnyValues(cycle, position - list.size)
+      assert(cycle(position - list.size) == recCycle(position - list.size))
+      assert(ModSum.checkValueShift(position, list.size))
+      assert(Calc.mod(position, list.size) == Calc.mod(position - list.size, list.size))
+      assert(cycle(position) == cycle(position - list.size))
+      assert(recCycle(position) == recCycle(position - list.size))
+    }
+    assert(cycle(position) == recCycle(position))
   }
 }
 ```

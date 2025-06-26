@@ -2,12 +2,21 @@ package v1.cycle.recursive.properties
 
 import stainless.lang.*
 import v1.Calc
-import v1.cycle.memory.MemCycle
+import v1.cycle.mod.ModCycle
 import v1.cycle.recursive.RecursiveCycle
 import v1.div.properties.{ModSmallDividend, ModSum}
 import verification.Helper.assert
 
-object RecursiveCycleProperties {
+/**
+ * Proves that modulo cycle and recursive cycle match for all positions.
+ *
+ * The recursive cycle is defined as follows:
+ * RecursiveCycle(position) = if position < size then values(position) else RecursiveCycle(position - size)
+ *
+ * The cycle is defined as follows:
+ * Cycle(position) = values(position % size)
+ */
+object RecursiveCycleMatchesModCycle {
   /**
    * lemma: For values between zero and the list size,
    * recursive cycle and cycle from the same list match.
@@ -22,7 +31,7 @@ object RecursiveCycleProperties {
    * @return Boolean true if the property holds
    */
   def assertCycleAndRecursiveCycleMathForSmallValues(
-    cycle: MemCycle,
+    cycle: ModCycle,
     position: BigInt
   ): Boolean = {
     val list = cycle.values
@@ -56,7 +65,7 @@ object RecursiveCycleProperties {
    * @return Boolean true if the property holds
    */
   def assertCycleAndRecursiveCycleMathForAnyValues(
-    cycle: MemCycle,
+    cycle: ModCycle,
     position: BigInt
   ): Boolean = {
     decreases(position)
@@ -68,8 +77,10 @@ object RecursiveCycleProperties {
     val recCycle = RecursiveCycle(list)
 
     if (position < list.size) {
+      // base case
       assertCycleAndRecursiveCycleMathForSmallValues(cycle, position)
     } else {
+      // inductive step
       assertCycleAndRecursiveCycleMathForAnyValues(cycle, position - list.size)
       assert(cycle(position - list.size) == recCycle(position - list.size))
       assert(ModSum.checkValueShift(position, list.size))
