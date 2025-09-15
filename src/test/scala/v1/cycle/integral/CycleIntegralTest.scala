@@ -10,7 +10,7 @@ import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt
 
-class IntegralCycleTest extends FlatSpec with Matchers {
+class CycleIntegralTest extends FlatSpec with Matchers {
 
   val primeCycles: List[MemCycle] = List(
     MemCycle(createListFromInt(Array(3))),

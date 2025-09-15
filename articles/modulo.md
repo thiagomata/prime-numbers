@@ -114,7 +114,7 @@ The solved $DivMod$ are those where the remainder $mod$ satisfies:
 ```
 
 The Recursive definition on Scala is available in the [DivMod.scala](
-./src/main/scala/v1/div/DivMod.scala
+../src/main/scala/v1/div/DivMod.scala
 ).
 
 
@@ -130,14 +130,14 @@ DivMod(a, b, div - 1, mod + b).solve & = DivMod(a, b, div, mod).solve \\
 ```
 
 As proved in the [proof for positive shift](
-  ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#assertDivModWithMoreDivAndLessModeSameSolution
-) and [proof for negative shift](./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#assertDivModWithLessDivAndMoreModSameSolution).
+  ../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#assertDivModWithMoreDivAndLessModeSameSolution
+) and [proof for negative shift](../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
 ### Creating the Division and Module Operations
 
 Using the DivMod class we defined, in the class [Calc](
-./src/main/scala/v1/Calc.scala
+../src/main/scala/v1/Calc.scala
 ), the division and module operations by extracting these properties from the solved $DivMod$.
 
 ## Some Important Properties of Modulo and Division
@@ -155,7 +155,7 @@ If the dividend is smaller than the divisor, the result of the modulos operation
 ```
 
 We can check that since $DivMod(a, b, 0, a)$ is the final solution for the division operation.
-That verification is available in [mod small dvidend proof](./src/main/scala/v1/div/properties/ModSmallDividend.scala).
+That verification is available in [mod small dvidend proof](../src/main/scala/v1/div/properties/ModSmallDividend.scala).
 
 ### Identity
 
@@ -171,7 +171,7 @@ n \text{ div } n & = 1 \\
 
 We can prove this property using the recursive definition of the division and module operations. 
 As the following [long proof](
-./src/main/scala/v1/div/properties/ModIdentity.scala#longProof
+../src/main/scala/v1/div/properties/ModIdentity.scala#longProof
 ) code example:
 
 ```scala
@@ -205,7 +205,7 @@ As the following [long proof](
 
 But we don't need to manually do all these transformations.
 Scala Stainless is capable of verifying that property holds in 
-[ModIdentity](./src/main/scala/v1/div/properties/ModIdentity.scala) 
+[ModIdentity](../src/main/scala/v1/div/properties/ModIdentity.scala) 
 with no issues as follows:
 
 ```scala
@@ -230,9 +230,9 @@ div(a - b, b) & = div(a, b) - 1 \\
 ```
 
 Quotient Invariance Under Linear Shift proof is available for the [positive case](
-./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv
+../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv
 ) and [negative case](
-./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv
+../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv
 ).
 
 ### Quotient Invariance Under Linear Shift by Multipler
@@ -250,9 +250,9 @@ div(a - m \cdot b, b) & = div(a, b) - m \\
 ```
 
 Quotient Invariance Under Linear Shift by Multiplier proof is available for the [positive case](
-./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod
+../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod
 ) and [negative case](
-./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod
+../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod
 ).
 
 ### Unique Remainder
@@ -280,7 +280,7 @@ DivMod(a, b, divX, modX).solve & = DivMod(a, b, divY, modY).solve \\
 
 For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
 That is proved in the [proof of unique remainder property](
-./src/main/scala/v1/div/properties/ModIdempotence.scala#modUnique
+../src/main/scala/v1/div/properties/ModIdempotence.scala#modUnique
 ).
 
 ### Modulo Idempotence
@@ -292,7 +292,7 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 \end{aligned}
 ```
 
-The proof of the modulo idempotence property is available in the [mod idempotence proof](./src/main/scala/v1/div/properties/ModIdempotence.scala#modIdempotence).
+The proof of the modulo idempotence property is available in the [mod idempotence proof](../src/main/scala/v1/div/properties/ModIdempotence.scala#modIdempotence).
 
 ### Distributivity over Addition
 
@@ -392,7 +392,7 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ````
 Those properties can be verified using Scala Stainless, as available in the [Summary.scala](
- ./src/main/scala/v1/div/properties/Summary.scala
+ ../src/main/scala/v1/div/properties/Summary.scala
 ) file. The recursive formulation, combined with machine-checked proofs, ensures both correctness and
  transparency.
  

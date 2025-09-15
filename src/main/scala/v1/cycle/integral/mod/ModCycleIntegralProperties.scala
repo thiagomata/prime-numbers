@@ -13,7 +13,7 @@ import verification.Helper.{assert, equality}
 object ModCycleIntegralProperties {
 
   /**
-   * Lemmas: apply(position) == integralValues(position) + initialValue
+   * Lemmas: ModCycleIntegral(position) == integralValues(position) + initialValue
    *
    * @param modCycle ModCycle any ModCycle
    * @param position BigInt position in the cycle
@@ -30,14 +30,14 @@ object ModCycleIntegralProperties {
   }.holds
 
   /**
-   * Lemmas: The difference between two consecutive values in the cycle
+   * Lemmas: The difference between two consecutive values in the integral cycle
    * is equal to the cycle.values at the mod of higher position.
    *
    * apply(position + 1) - apply(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
    *
    * in other words
    *
-   * AccCycle(position + 1) - AccCycle(position) == cycle.values(Calc.mod(position + 1, integralValues.size))
+   * ModCycleIntegral(position + 1) - ModCycleIntegral(position) == Cycle.values(Calc.mod(position + 1, integralValues.size))
    *
    * @param modCycle ModCycle any ModCycle
    * @param position BigInt position in the cycle

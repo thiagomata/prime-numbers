@@ -15,7 +15,7 @@ object CycleIntegralProperties {
    * the current value of the cycle integral.
    *
    * In other words:
-   * IntegralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   * CycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
    *
    * @param cycleIntegral CycleIntegral any cycle integral
    * @return Boolean true if the property holds
@@ -130,7 +130,7 @@ object CycleIntegralProperties {
    *
    * in other words
    * size == cycleIntegral.size
-   * integralCycle(pos + 1) - integralCycle(pos) == integralCycle(pos + size + 1) - integralCycle(pos + size)
+   * cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral(pos + size + 1) - cycleIntegral(pos + size)
    *
    * @param iCycle CycleIntegral any cycle integral
    * @param position BigInt any position bigger than or equals to zero
@@ -180,7 +180,7 @@ object CycleIntegralProperties {
    * @param position BigInt position
    * @return true if the property holds
    */
-  def assertSumModValueAsListEqualsIntegralCycleLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertSumModValueAsListEqualsCycleIntegralLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     decreases(position)
 
@@ -196,7 +196,7 @@ object CycleIntegralProperties {
         assert(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
         assert(MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
       }
-      assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position - 1)
+      assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position - 1)
       assert(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
       assert(ListUtilsProperties.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
       iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
@@ -212,15 +212,15 @@ object CycleIntegralProperties {
    * In other words
    *
    * for any cycle integral, if cycle = cycleIntegral.cycle and position >= 0,
-   * integralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   * cycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
    *
    * @param iCycle CycleIntegral
    * @param position BigInt position
    * @return true if the property holds
    */
-  def assertIntegralCycleEqualsSumOfModlValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertCycleIntegralEqualsSumOfModlValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
-    assert(assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position))
+    assert(assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position))
     val listModValues = getModValuesAsList(iCycle, position)
     iCycle(position) == ListUtils.sum(listModValues)
   }.holds
