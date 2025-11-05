@@ -115,9 +115,9 @@ w_i  &= L_{(i \text{ mod } n)} + w_{i-1}
 \end{aligned}
 ```
 
-$$
+```math
 \therefore
-$$
+```
 ```math
 \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃 \mid \text{CycleIntegral}(L, init) = [w_0, w_1, w_2, \ldots] \\
 ```
@@ -169,19 +169,19 @@ case class ClassicCycleIntegral(
 
 #### Base Case
 
-$$
+```math
 \begin{aligned}
 i < n \implies Cycle(L)_i &= L_i \\
 i < n \implies ClassicCycleIntegral(L, init)_i &= \sum_{j=0}^i Cycle(L)_i + init \quad &\text{[By Definition]}\\
  &= \sum_{j=0}^i L_j + init \quad &\text{[Substitution]}\\
 \end{aligned}
-$$
+```
 
-$$
+```math
 \begin{aligned}
 \therefore \forall \ i < n, \quad ClassicCycleIntegral(L, init)_i &= \sum_{j=0}^i L_j + init  \quad &\text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 This property is verified in the [
   ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
@@ -192,11 +192,11 @@ This property is verified in the [
 
 #### Step Property
 
-$$
+```math
 \forall \ i \in ℕ_0,\ init \in ℕ_0, L \in 𝕃
-$$
+```
 
-$$
+```math
 \begin{aligned}
 w_i &= ClassicCycleIntegral(L, init)_i \quad &\text{[By Definition]} \\
 ≈w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
@@ -206,10 +206,10 @@ w_i - w_{i-1} &= \left(\sum_{j=0}^i L_j + init\right) - \left(\sum_{j=0}^{i-1} L
 &= L_i \quad &\text{[Simplification]} \\
 &= L_{(i \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
 \end{aligned}
-$$
-$$
+```
+```math
 \therefore \ w_i - w_{i-1} = \text{Cycle}(L)_i = L_{(i \text{ mod } n)} \quad \text{[Q.E.D.]}
-$$
+```
 
 
 This property is verified in the [
@@ -253,16 +253,15 @@ RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
 **Sum Property**:
 
 
-$$
+```math
 \begin{aligned}
 v_0  &= L_0  \quad &\text{[Base Case]} \\
 &= L_{(0 \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
 &= \sum_{j=0}^0 L_j \quad &\text{[Summation Re-indexing]} \\
 \end{aligned}
-$$
+```
 
-
-$$
+```math
 \begin{aligned}
 i < n \implies \\
 w_0 &= init + v_0 \quad &\text{[Base Case]} \\
@@ -273,7 +272,7 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 &= init + \sum_{j=0}^i v_j \quad &\text{[Summation Re-indexing]} \\
 \therefore w_i &= init + \sum_{j=0}^i L_j \quad &\text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 These properties are also verified at
 [
@@ -285,13 +284,13 @@ These properties are also verified at
 
 **Step Property**:
 
-$$
+```math
 \begin{aligned}
 w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 &= v_i \quad &\text{[Simplification]} \\
 &= L_{(i \text{ mod } n)} \quad &\text{[Substitution]} \\
 \end{aligned}
-$$
+```
 
 This property is also verified at
 [
@@ -330,10 +329,10 @@ w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
 \end{aligned}
 ```
 
-$$
+```math
 \therefore \
 \forall \ i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[Q.E.D.]}
-$$
+```
 
 This property is also verified at
 [
@@ -352,7 +351,7 @@ w_i - w_{i-1} ≟ L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 
 **$i \text{ mod } n > 0 \implies$**
 
-$$
+```math
 \begin{aligned}
 i \text{ mod } n &= ((i-1) \text{ mod } n) + 1
 &&\text{[By Modulo Properties]} \\
@@ -375,11 +374,11 @@ w_i-w_{i-1}
     &= L_{\,i \text{ mod } n}
 &&\text{[Modulo property]}.
 \end{aligned}
-$$
+```
 
 **$i \text{ mod } n = 0 \implies$**
 
-$$
+```math
 \begin{aligned}
 w_i &= (i \text{ div } n)\,S + L_0 + init
 &&\text{[Definition]} \\
@@ -396,12 +395,12 @@ w_i-w_{i-1}
     &= L_{\,i \text{ mod } n}
 &&\text{[Modulo property]}.
 \end{aligned}
-$$
+```
 
-$$
+```math
 \therefore \
 w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.D.]}
-$$
+```
 
 This property is also verified at
 [
