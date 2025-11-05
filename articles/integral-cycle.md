@@ -447,15 +447,19 @@ L &= [v_0, v_1, \dots, v_{n-1}] \in \mathbb{N}_0^n, \quad |L| > 0 \\
 n &:= |L| \\
 S &:= \sum_{j=0}^{n-1} v_j \\
 I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
-\text{CycleIntegral}(L, init)_i &:= (i \,\text{div}\, n)\cdot S + I_{(i \text{ mod } n)} + init
 \end{aligned}
 ````
 
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_i := (i \,\text{div}\, n)\cdot S + I_{(i \text{ mod } n)} + init
+\end{aligned}
+```
 we have:
 
 ```math
 \begin{aligned}
-&\Big( S \text{ mod } v = 0 \ \wedge \ \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 \Big)\\
+ &\Big( S \text{ mod } v = 0 \ \wedge \ \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 \Big)\\
 &\implies \forall \ i \in \mathbb{N}_0, \ \text{CycleIntegral}(L, init)_i \text{ mod } v \neq 0 \\
 \end{aligned}
 ```
@@ -475,9 +479,9 @@ we have:
   &&\text{[Simplification of Modulo of Modulo]} \\
   &\therefore \\
   \forall \ i &\in ℕ_0 \\
-  \ (I_{(i \text{ mod } n)} + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0 \quad &&\text{[Modulo matches Integral $\neq 0$]} \\
+  \ (I_{(i \text{ mod } n)} + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0 \quad &&\text{[Modulo matches Integral} \neq 0 \text{]} \\
 \ \ (I_{(i \text{ mod } n)} + init) \text{ mod } v = 0 &\implies CycleIntegral(L, init)_i \text{ mod } v = 0 \quad &&\text{[Modulo matches Integral $= 0$]} \\
-\forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0  \quad &&\text{[Case: all partial sums $\neq 0$]} \\  
+\forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0  \quad &&\text{[Case: all partial sums} \neq 0  \text{]} \\  
 \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v = 0 &\implies CycleIntegral(L, init)_i \text{ mod } v = 0 \quad &&\text{[Case: all partial sums $= 0$]}
 \end{aligned}
 ```
@@ -511,19 +515,26 @@ S' &:= \sum_{j=0}^{m-1} L'_j = 2 \cdot S &&\text{[Sum of concatenated cycle]} \\
 I'_{i \text{ mod } 2n} &= I_{i \text{ mod } n} &&\text{[By definition of } I'_k] \\
 \end{aligned}
 ```
+
 ```math
 \begin{aligned}
 \text{CycleIntegral}(L', init)_i &= (i \,\text{div}\, m)\cdot S' + I'_{i \text{ mod } m} + init &&\text{[By Definition]} \\
 &= (i \,\text{div}\, 2n)\cdot (2 \cdot S) + I'_{i \text{ mod } 2n} + init &&\text{[Substitution]} \\
   &= (i \,\text{div}\, n)\cdot S + I_{i \text{ mod } n} + init &&\text{[Simplifies exactly to original values]} \\
   &= \text{CycleIntegral}(L, init)_i &&\text{[Exact value reproduction]} \\
-&\therefore \\
-\forall \ i &\in \mathbb{N}_0 , \\
+\end{aligned}
+```
+```math
+\therefore
+```
+```math
+\begin{aligned}
+\forall \ i \in \mathbb{N}_0 , \\
 \quad \text{CycleIntegral}(L', init)_i &= \text{CycleIntegral}(L, init)_i \quad &&\text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
-Therefore, concatenating a cycle with itself does not change the values of its CycleIntegral.
+Therefore, concatenating a cycle with itself does not change its CycleIntegral.
 
 ### 4.3 Right Shift Invariance
 
@@ -577,6 +588,10 @@ r < n - 1 &\implies \quad (i + 1) \text{ mod } n = ((i \text{ mod } n) + (1 \tex
 r = n - 1 &\implies \quad (i + 1) \text{ mod } n = 0 \quad &\text{[By Modulo Property]} \\
           &\implies \quad L'_r = L_0  \quad &\text{[Right Shift Definition]} \\
           &\implies \quad L'_(i \text{ mod } n) = L_{((i + 1) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
 \therefore \\
 \forall \ i &\in \mathbb{N}_0 , \\
 L'_{(i \text{ mod } n)} &= L_{((i + 1) \text{ mod } n)} \quad \blacksquare \quad &\text{[Q.E.D.]} \\
@@ -642,8 +657,12 @@ B_i &= B_{i-1} + L'_{(i \text{ mod } n)} &\text{[By Definition]} \\
 ```math
 \begin{aligned}
 \forall \ i &\in \mathbb{N}_0 , \\
-A_{i+1} &= B_{i} \\
-\quad \text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \blacksquare &&\text{[Q.E.D.]} \\
+A_{i+1} &= B_{i}
+\end{aligned}
+```
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \blacksquare &&\text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
