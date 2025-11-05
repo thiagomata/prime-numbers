@@ -69,7 +69,7 @@ $$
 $$
 \begin{aligned}
 0 \leq i < n \implies w_i ≟ \sum_{j=0}^i L_j + init \quad &\text{[Sum Property]} \\
-0 < i < n \implies  \ w_i - w_{i-1} ≟ L_{(i \bmod n)}
+0 < i < n \implies  \ w_i - w_{i-1} ≟ L_{(i \text{ mod } n)}
 \quad &\text{[Step Property]} \\
 \end{aligned}
 $$
@@ -83,29 +83,29 @@ $$
 $$
 $$
 \begin{aligned}
-i &= i \bmod n \quad &\text{[By Modulo Property]}\\
+i &= i \text{ mod } n \quad &\text{[By Modulo Property]}\\
 w_i &= \sum_{j=0}^i L_j + init 
 \quad &\text{[Base Case]} \\
-&= \sum_{j=0}^i L_{(j \bmod n)} + init 
+&= \sum_{j=0}^i L_{(j \text{ mod } n)} + init 
 \quad &\text{[Substitution]} \\
 \\
 \end{aligned}
 $$
 
 $$
-\forall \ i \in ℕ \mid \ w_i - w_{i-1} = L_{(i \bmod n)} \implies \\
+\forall \ i \in ℕ \mid \ w_i - w_{i-1} = L_{(i \text{ mod } n)} \implies \\
 $$
 
 $$
 \begin{aligned}
-w_{i-1} &= \sum_{j=0}^{i-1} L_{(j \bmod n)} + init \quad &\text{[Induction Step]} \\
-w_i - w_{i-1} &= L_{(i \bmod n)}
+w_{i-1} &= \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init \quad &\text{[Induction Step]} \\
+w_i - w_{i-1} &= L_{(i \text{ mod } n)}
 \quad &\text{[By definition]} \\
-w_i  &= L_{(i \bmod n)} + w_{i-1} 
+w_i  &= L_{(i \text{ mod } n)} + w_{i-1} 
 \quad &\text{[Transposition]} \\
-&=  L_{(i \bmod n)} + \sum_{j=0}^{i-1} L_{(j \bmod n)} + init
+&=  L_{(i \text{ mod } n)} + \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init
 \quad &\text{[By Step Property]} \\
-&= \sum_{j=0}^{i} L_{(j \bmod n)} + init \quad &\text{[Summation Re-indexing]} \\
+&= \sum_{j=0}^{i} L_{(j \text{ mod } n)} + init \quad &\text{[Summation Re-indexing]} \\
 \end{aligned}
 $$
 
@@ -118,17 +118,47 @@ $$
 
 $$
 \begin{aligned}
-\quad w_i &= \sum_{j=0}^i L_{(j \bmod n)} + init \ \blacksquare  \quad &\text{[Q.E.D.]} \\
+\quad w_i &= \sum_{j=0}^i L_{(j \text{ mod } n)} + init \ \blacksquare  \quad &\text{[Q.E.D.]} \\
 \end{aligned}
 $$
+
 
 ### 3.1 Classic Cycle Integral
 
 ```math
 \begin{aligned}
-\text{Cycle}(L)_i &= L_{(i \bmod n)} \\
+\text{Cycle}(L)_i &= L_{(i \text{ mod } n)} \\
 \text{ClassicCycleIntegral}(L, init)_k &= \sum_{i=0}^k \text{Cycle}(L)_i + init
 \end{aligned}
+```
+
+As defined in the code at [
+  ClassicCycleIntegral.scala
+](
+  ../src/main/scala/v1/cycle/integral/classic/ClassicCycleIntegral.scala
+)
+
+```scala
+case class ClassicCycleIntegral(
+  initialValue: BigInt,
+  cycle: MemCycle
+) {
+
+  def apply(position: BigInt): BigInt = {
+    require(position >= 0)
+    decreases(position)
+
+    if (position == 0 ) {
+      cycle(0) + initialValue
+    } else {
+      cycle(position) + apply(position - 1)
+    }
+  }
+
+  def size: BigInt = cycle.size
+
+  def sum: BigInt = cycle.sum()
+}
 ```
 
 #### Base Case
@@ -147,6 +177,11 @@ $$
 \end{aligned}
 $$
 
+This property is verified in the [
+  ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
+](
+  ../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
+)
 
 
 #### Step Property
@@ -158,21 +193,26 @@ $$
 $$
 \begin{aligned}
 w_i &= ClassicCycleIntegral(L, init)_i \quad &\text{[By Definition]} \\
-w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
+≈w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
 w_i - w_{i-1} &= \left(\sum_{j=0}^i L_j + init\right) - \left(\sum_{j=0}^{i-1} L_j + init\right)  \quad &\text{[By Definition]} \\
 &= \sum_{j=0}^i L_j + init - \sum_{j=0}^{i-1} L_j - init \quad &\text{[Association]} \\
 &= \sum_{j=0}^i L_j - \sum_{j=0}^{i-1} L_j \quad &\text{[Canceling init]} \\
 &= L_i \quad &\text{[Simplification]} \\
-&= L_{(i \bmod n)} \quad &\text{[By Modulo Property]} \\
+&= L_{(i \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
 \end{aligned}
 $$
 $$
-\therefore \ w_i - w_{i-1} = \text{Cycle}(L)_i = L_{(i \bmod n)} \quad \text{[Q.E.D.]}
+\therefore \ w_i - w_{i-1} = \text{Cycle}(L)_i = L_{(i \text{ mod } n)} \quad \text{[Q.E.D.]}
 $$
 
 
-### 3.2 Recursive Cycle Integral
+This property is verified in the [
+  ClassicCycleIntegralProperties::assertDiffEqualsCycleValue
+](
+  ../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
+)
 
+### 3.2 Recursive Cycle Integral
 
 ```math
 \begin{aligned}
@@ -200,7 +240,7 @@ https://github.com/thiagomata/prime-numbers/blob/master/articles/cyc;e.md
 ```math
 \begin{aligned}
 RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
-  &= L_{(i \bmod n)} \quad &\text{[Mod Cycle Definition]} \\
+  &= L_{(i \text{ mod } n)} \quad &\text{[Mod Cycle Definition]} \\
 \end{aligned}
 ```
 
@@ -210,9 +250,14 @@ RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
 $$
 \begin{aligned}
 v_0  &= L_0  \quad &\text{[Base Case]} \\
-&= L_{(0 \bmod n)} \quad &\text{[By Modulo Property]} \\
+&= L_{(0 \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
 &= \sum_{j=0}^0 L_j \quad &\text{[Summation Re-indexing]} \\
-\\
+\end{aligned}
+$$
+
+
+$$
+\begin{aligned}
 i < n \implies \\
 w_0 &= init + v_0 \quad &\text{[Base Case]} \\
 &= init + \sum_{j=0}^i L_j  \quad &\text{[Summation Re-indexing]} \\
@@ -224,24 +269,39 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 \end{aligned}
 $$
 
+These properties are also verified at
+[
+  CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
+](
+  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala#assertCycleIntegralEqualsSumSmallPositions
+).
+
+
 **Step Property**:
 
 $$
 \begin{aligned}
 w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 &= v_i \quad &\text{[Simplification]} \\
-&= L_{(i \bmod n)} \quad &\text{[Substitution]} \\
+&= L_{(i \text{ mod } n)} \quad &\text{[Substitution]} \\
 \end{aligned}
 $$
+
+This property is also verified at
+[
+  CycleIntegralProperties::assertDiffEqualsCycleValue
+](
+  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala#assertDiffEqualsCycleValue
+).
 
 ### 3.3 Modulo Cycle Integral
 
 ```math
 \begin{aligned}
-\text{ModCycle}(L)_i &:= L_{(i \bmod n)} = [w_0, w_1, \dots ] \\
+\text{ModCycle}(L)_i &:= L_{(i \text{ mod } n)} = [w_0, w_1, \dots ] \\
 I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral of L]} \\
 S &:= I_{n-1} \quad &\text{[One full cycle sum]} \\
-\text{ModCycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \bmod n)} + init
+\text{ModCycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init
 \end{aligned}
 ```
 
@@ -257,7 +317,7 @@ i < n \implies  \\
 i \text{ div } n 
       \quad &= 0 \quad 
       &\text{[By Div of Small Values Property]} \\
-w_i &= (i \text{ div } n)\cdot S + I_{(i \bmod n)} + init \quad 
+w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad 
       &\text{[Definition]} \\
 &= 0 \cdot S + I_i + init \quad &\text{[Substitution}] \\
 &= \sum_{j=0}^i L_j + init \quad &\text{[By definition of } I_i]
@@ -269,42 +329,49 @@ $$
 \forall \ i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[Q.E.D.]}
 $$
 
+This property is also verified at
+[
+  ModCycleIntegralProperties::assertFirstValuesMatchIntegral
+](
+../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala#assertFirstValuesMatchIntegral
+).
+
 #### Step Property
 
-
+    
 ```math
-w_i - w_{i-1} ≟ L_{\, i \bmod n}, \quad i>0,\, n>0
+w_i - w_{i-1} ≟ L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 \quad \text{[Claim to Prove]}
 ```
 
-**$i \bmod n > 0 \implies$**
+**$i \text{ mod } n > 0 \implies$**
 
 $$
 \begin{aligned}
-i \bmod n &= ((i-1) \bmod n) + 1
+i \text{ mod } n &= ((i-1) \text{ mod } n) + 1
 &&\text{[By Modulo Properties]} \\
 i \text{ div } n &= (i-1) \text{ div } n
 &&\text{[By Division Properties]} \\
-w_i &= (i \text{ div } n)\,S + I_{\,i\bmod n} + init
+w_i &= (i \text{ div } n)\,S + I_{\,i\text{ mod } n} + init
 &&\text{[Definition]} \\
-&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\bmod n)+1} + init
+&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\text{ mod } n)+1} + init
 &&\text{[Div/Mod property]} \\
-w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\bmod n} + init
+w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\text{ mod } n} + init
 &&\text{[Definition]} \\
 w_i-w_{i-1}
-    &= I_{\,((i-1)\bmod n)+1} - I_{\, (i-1)\bmod n}
+    &= I_{\,((i-1)\text{ mod } n)+1} - I_{\, (i-1)\text{ mod } n}
 &&\text{[Cancellation]} \\
-    &= \Big(\sum_{j=0}^{(i-1)\bmod n} L_j + L_{((i-1)\bmod n)+1}\Big)
-       - \sum_{j=0}^{(i-1)\bmod n} L_j
+    &= \Big(\sum_{j=0}^{(i-1)\text{ mod } n} L_j + L_{((i-1)\text{ mod } n)+1}\Big)
+       - \sum_{j=0}^{(i-1)\text{ mod } n} L_j
 &&\text{[Expand sum]} \\
-    &= L_{((i-1)\bmod n)+1}
+    &= L_{((i-1)\text{ mod } n)+1}
 &&\text{[Cancellation]} \\
-    &= L_{\,i \bmod n}
+    &= L_{\,i \text{ mod } n}
 &&\text{[Modulo property]}.
 \end{aligned}
 $$
 
-**$i \bmod n = 0 \implies$**
+**$i \text{ mod } n = 0 \implies$**
 
 $$
 \begin{aligned}
@@ -320,15 +387,22 @@ w_i-w_{i-1}
 &&\text{[Simplification]} \\
     &= L_0
 &&\text{[Since } S = I_{\,n-1}] \\
-    &= L_{\,i \bmod n}
+    &= L_{\,i \text{ mod } n}
 &&\text{[Modulo property]}.
 \end{aligned}
 $$
 
 $$
 \therefore \
-w_i - w_{i-1} = L_{\, i \bmod n}, \quad \forall \ i > 0 \quad \text{[Q.E.D.]}
+w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.D.]}
 $$
+
+This property is also verified at
+[
+  ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle
+](
+  ../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala#assertSimplifiedDiffValuesMatchCycle
+).
 
 ### 3.4 Equivalence of Definitions
 
@@ -339,185 +413,230 @@ Since all definitions of Cycle Integral satisfy the same properties, we can conc
 \text{CycleIntegral}(L, init) &= \text{ClassicCycleIntegral}(L, init) \\
 &= \text{RecCycleIntegral}(L, init) \\
 &= \text{ModCycleIntegral}(L, init) \\
-&= [w_0, w_1, w_2, \ldots] \mid w_i =& \sum_{j=0}^i L_{(j \bmod n)} + init \ \blacksquare \quad \\
+&= [w_0, w_1, w_2, \ldots] \mid w_i =& \sum_{j=0}^i L_{(j \text{ mod } n)} + init \ \blacksquare \quad \\
 
 \end{aligned}
 ```
+
+This property is also verified at
+[
+  ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
+](
+../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala#assertCycleIntegralMatchModCycleDef
+).
+
 
 ## 4. Properties
 
-### 
+### 4.1 Modulo Invariance Property
 
-cycleIntegral(x) == sum(cycle(0), cycle(1), ..., Cycle(position))
+Let $v \in \mathbb{N}$ with $v > 0$, such that the total cycle sum is a multiple of $v$.  
+Then the remainder of any Cycle Integral value depends only on the corresponding partial sum within the first cycle.
+Therefore, if none of the Cycle Integral values within the first cycle are congruent to $0 \pmod v$, then no value in the Cycle Integral will ever be congruent to $0 \pmod v$.
 
-```scala
-  /**
-   * The sum of the values of the cycle integral until that position is equal to
-   * the current value of the cycle integral.
-   *
-   * In other words:
-   * CycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
-   *
-   * @param cycleIntegral CycleIntegral any cycle integral
-   * @return Boolean true if the property holds
-   */
-  def assertCycleIntegralEqualsSumFirstPosition(cycleIntegral: CycleIntegral): Boolean = {
-    val smallList = List(cycleIntegral.initialValue) ++ List(cycleIntegral.cycle(0))
-    assert(ListUtils.sum(List()) == BigInt(0))
-    ListUtilsProperties.listAddValueTail(List(), cycleIntegral.initialValue)
-    ListUtilsProperties.listAddValueTail(List(cycleIntegral.initialValue), cycleIntegral.cycle(0))
-    assert(ListUtils.sum(smallList) == cycleIntegral.initialValue + cycleIntegral.cycle(0))
-    assert(cycleIntegral(0) == cycleIntegral.initialValue + cycleIntegral.cycle(0))
-    assert(smallList == getFirstValuesAsSlice(cycleIntegral, 0))
-    ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, 0)) == cycleIntegral(0)
-  }.holds
-  ```
-
-### 
-
-cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral.cycle(pos + 1)
-
-```scala
-  /**
-   * Lemmas: The difference between two consecutive values in the cycle
-   * pos and pos + 1 is equal to cycle.values at pos + 1.
-   *
-   * in other words
-   * cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral.cycle(pos + 1)
-   *
-   * @param cycleIntegral CycleIntegral any cycle integral
-   * @param position BigInt any position bigger than or equals to zero
-   * @return true if the property holds
-   */
-  def assertDiffEqualsCycleValue(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
-    require(position >= 0)
-    assert(cycleIntegral(position + 1) == cycleIntegral(position) + cycleIntegral.cycle(position + 1))
-    cycleIntegral(position + 1) - cycleIntegral(position) == cycleIntegral.cycle(position + 1)
-  }.holds
-```
-
-#### 
-
-cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral(pos + size + 1) - cycleIntegral(pos + size)
-
-```scala
-  /**
-   * Lemmas: The difference between two consecutive values in the cycle
-   * pos and pos + 1 is equal to the difference of the cycle values at the
-   * pos + size and pos + size + 1.
-   *
-   * in other words
-   * size == cycleIntegral.size
-   * cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral(pos + size + 1) - cycleIntegral(pos + size)
-   *
-   * @param iCycle CycleIntegral any cycle integral
-   * @param position BigInt any position bigger than or equals to zero
-   * @return Boolean true if the property holds
-   */
-  def assertSameDiffAfterCycle(iCycle: CycleIntegral, position: BigInt): Boolean = {
-    require(position >= 0)
-
-    val a = position
-    val b = position + 1
-    val c = a + iCycle.size
-    val d = b + iCycle.size
-
-    assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = a)
-    assert(iCycle(b) - iCycle(a) == iCycle.cycle(b))
-
-    assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = c)
-    assert(iCycle(d) - iCycle(c) == iCycle.cycle(d))
-
-    MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, a, 0, 1)
-    MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, b, 0, 1)
-
-    assert(iCycle.cycle(d) == iCycle.cycle(b))
-    assert(iCycle.cycle(c) == iCycle.cycle(a))
-
-    iCycle(b) - iCycle(a) == iCycle(d) - iCycle(c)
-  }.holds
-
-  def assertLastElementBeforeLoop(iCycle: CycleIntegral): Boolean = {
-    assertCycleIntegralEqualsSliceSum(iCycle, iCycle.size - 1)
-    iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
-  }.holds
-```
-
-### 
-
-cycleIntegral(position) ==  div(position, size) * modCycleIntegral.integralValues.last + modCycleIntegral.integralValues(mod(position, size)) + cycleIntegral.initialValue
-
-
-```scala
-  /**
-   * Since the cycle accumulator and cycle integral are equal at any position,
-   * we can use this lemma to prove that cycle integral is equal to the cycle accumulator
-   * definition.
-   *
-   * In other words:
-   *
-   * cycleIntegral(position) ==
-   *   div(position, size) * modCycleIntegral.integralValues.last +
-   *   modCycleIntegral.integralValues(mod(position, size)) + cycleIntegral.initialValue
-   *
-   * @param modCycle ModCycle any ModCycle
-   * @param cycleIntegral CycleIntegral any CycleIntegral with same cycle and initialValue
-   * @param position BigInt any position bigger than or equal to 0
-   * @return Boolean true if the properties hold
-   */
-  def assertCycleIntegralMatchModCycleDef(
-                                           modCycleIntegral: ModCycleIntegral,
-                                           cycleIntegral: CycleIntegral,
-                                           position: BigInt,
-  ): Boolean = {
-    require(position >= 0)
-    require(modCycleIntegral.mCycle.values.nonEmpty)
-    require(cycleIntegral.cycle.values.nonEmpty)
-    require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
-    require(modCycleIntegral.mCycle.size   == cycleIntegral.cycle.size)
-    require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
-    decreases(position)
-
-    assertModCycleEqualsCycleIntegral(
-      modCycleIntegral,
-      cycleIntegral,
-      position
-    )
-    val size = modCycleIntegral.mCycle.size
-    
-    assert(modCycleIntegral(position) == cycleIntegral(position))
-    assert(
-      modCycleIntegral(position) == div(position, size) * modCycleIntegral.integralValues.last + 
-      modCycleIntegral.integralValues(mod(position, size)) + modCycleIntegral.initialValue
-    )
-    
-    cycleIntegral(position) == 
-      div(position, size) * modCycleIntegral.integralValues.last +
-        modCycleIntegral.integralValues(mod(position, size)) + cycleIntegral.initialValue
-  }.holds
-```
-
-## 100. Conclusion
-
-This article presented the definitions and properties of Cycles, a fundamental concept in computer science that allows for the representation of repeating sequences of values.
-We defined Cycles using two approaches: a recursive definition and a modulo-based definition. We proved that both definitions are equivalent, producing the same sequence of values.
-We also explored several properties of Cycles, including element access, value consistency after multiple loops, and the propagation of modulo operations from values to cycles.
+In other words, if we define:
 
 ```math
 \begin{aligned}
-&\forall \ L \in  𝕃, \quad \forall \ v \in ℕ_0,\quad \forall \ i, m_1, m_2 \in ℕ_0 \\
-L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n, |L| > 0 \\
-Cycle &:= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
-n &= |L| \\
-\text{ModCycle}_i &= \text{RecCycle}_i = \text{Cycle}_i \quad &\text{[Cycle Equivalence]} \\
-\text{ModCycle}_{(i + n \cdot m_1)} &= L  [i \text{ mod } n] \quad &\text{[Value Match After Many Loops]} \\
-\text{ModCycle}_{(i + n \cdot m_2)} &= L  [i \text{ mod } n] \quad &\text{[Value Match After Many Loops]} \\
-\text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} = L  [i \text{ mod } n] \quad &\text{[Propagate Modulo from Value to Cycle
-]} \\
+L &= [v_0, v_1, \dots, v_{n-1}] \in \mathbb{N}_0^n, \quad |L| > 0 \\
+n &:= |L| \\
+S &:= \sum_{j=0}^{n-1} v_j \\
+I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
+\text{CycleIntegral}(L, init)_i &:= (i \,\text{div}\, n)\cdot S + I_{(i \text{ mod } n)} + init
+\end{aligned}
+````
+
+we have:
+
+```math
+\begin{aligned}
+&\Big( S \text{ mod } v = 0 \ \wedge \ \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 \Big)\\
+&\implies \forall \ i \in \mathbb{N}_0, \ \text{CycleIntegral}(L, init)_i \text{ mod } v \neq 0 \\
+\end{aligned}
+```
+
+#### Proof
+
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad &&\text{[By Definition]} \\
+(\text{CycleIntegral}(L, init)_i) \text{ mod } v 
+  &= \big((i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init\big) \text{ mod } v  \quad &&\text{[Substitution]} \\
+  &= \big((i \text{ div } n)\cdot S \text{ mod } v + (I_{(i \text{ mod } n)} + init) \text{ mod } v\big) \text{ mod } v 
+  &&\text{[By Modulo Properties]} \\
+  &= \big(0 + (I_{(i \text{ mod } n)} + init) \text{ mod } v\big) \text{ mod } v 
+  &&\text{[Since } S \text{ mod } v = 0] \\
+  &= (I_{(i \text{ mod } n)} + init) \text{ mod } v 
+  &&\text{[Simplification of Modulo of Modulo]} \\
+  &\therefore \\
+  \forall \ i &\in ℕ_0 \\
+  \ (I_{(i \text{ mod } n)} + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0 \quad &&\text{[Modulo matches Integral $\neq 0$]} \\
+\ \ (I_{(i \text{ mod } n)} + init) \text{ mod } v = 0 &\implies CycleIntegral(L, init)_i \text{ mod } v = 0 \quad &&\text{[Modulo matches Integral $= 0$]} \\
+\forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0  \quad &&\text{[Case: all partial sums $\neq 0$]} \\  
+\forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v = 0 &\implies CycleIntegral(L, init)_i \text{ mod } v = 0 \quad &&\text{[Case: all partial sums $= 0$]}
+\end{aligned}
+```
+
+### 4.2 Invariance by Concatenation
+
+Let $L' \in 𝕃$ be the concatenation of $L \in 𝕃$ with itself, and let $init \in \mathbb{N}_0$ be initial value. Then the CycleIntegral of $L'$ with initial value $init$ reproduces exactly the CycleIntegral of $L$ with initial value $init$.
+
+```math
+\begin{aligned}
+L' &:= L :: L, \quad init \in \mathbb{N}_0 \quad &\text{[Definition by Concatenation]} \\
+\text{CycleIntegral}(L', init)_i &= \text{CycleIntegral}(L, init)_i  \quad \forall i \in \mathbb{N}_0 \quad &\text{[Exact Value Reproduction]} \\
 \end{aligned}
 ``` 
 
-These properties were formally verified using Scala Stainless, ensuring their correctness and reliability.
+#### Proof
+
+```math
+\begin{aligned}
+n &:= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+L' &:= L :: L = [v_0, \dots, v_{n-1}, v_0, \dots, v_{n-1}]  &&\text{[Concatenate cycle with itself]} \\
+m &:= |L'| = 2 n &&\text{[Length of new cycle]} \\
+S &:= \sum_{j=0}^{n-1} v_j &&\text{[Original cycle sum]} \\
+I'_k &:= \sum_{j=0}^{k} L'_j = 
+  \begin{cases} 
+    I_k & 0 \le k < n \\ 
+    S + I_{k-n} & n \le k < 2n 
+  \end{cases} 
+  &&\text{[Partial sums of concatenated cycle]} \\
+S' &:= \sum_{j=0}^{m-1} L'_j = 2 \cdot S &&\text{[Sum of concatenated cycle]} \\
+I'_{i \text{ mod } 2n} &= I_{i \text{ mod } n} &&\text{[By definition of } I'_k] \\
+\text{CycleIntegral}(L', init)_i &= (i \,\text{div}\, m)\cdot S' + I'_{i \text{ mod } m} + init &&\text{[By Definition]} \\
+&= (i \,\text{div}\, 2n)\cdot (2 \cdot S) + I'_{i \text{ mod } 2n} + init &&\text{[Substitution]} \\
+  &= (i \,\text{div}\, n)\cdot S + I_{i \text{ mod } n} + init &&\text{[Simplifies exactly to original values]} \\
+  &= \text{CycleIntegral}(L, init)_i &&\text{[Exact value reproduction]} \\
+&\therefore \\
+\forall \ i &\in \mathbb{N}_0 , \\
+\quad \text{CycleIntegral}(L', init)_i &= \text{CycleIntegral}(L, init)_i \quad &&\text{[Q.E.D.]} \\
+\end{aligned}
+```
+
+Therefore, concatenating a cycle with itself does not change the values of its CycleIntegral.
+
+### 4.3 Right Shift Invariance
+
+Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, in other words:
+
+```math
+\begin{aligned}
+n &:= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+L' &:= [v_1, v_2, \dots, v_{n-1}, v_0]  &&\text{[Right shift by k positions]} \\
+L'_k &:= case \begin{cases}
+  L_{(k + 1)} & k < n - 1 \\
+  L_0 & k = n - 1 \\
+\end{cases} &&\text{[Element definition after right shift]} \\
+|L'| &:= n &&\text{[Length of shifted cycle]} \\
+S &:= \sum_{j=0}^{n-1} L_j &&\text{[Original cycle sum]} \\
+&= v_0 + v_1 + \dots + v_{n-1} &&\text{[Original elements]} \\
+S' &:= \sum_{j=0}^{n-1} L'_j \\
+&= v_1 + v_2 + \dots + v_{n-1} + v_0 &&\text{[Shifted elements]} \\
+&= v_0 + v_1 + \dots + v_{n-1}  &&\text{[Rearrangement of sum]} \\
+&= S &&\text{[Sum remains unchanged]} \\
+\end{aligned}
+```
+
+We also note that the elements of $L$ and $L'$ are related by by modulo as follows:
+
+```math
+\begin{aligned}
+\forall \ i \in \mathbb{N}_0 , \\
+L'{(i \text{ mod } n)} &= L_{((i + 1) \text{ mod } n)} \quad &\text{[Right Shift Definition]} \\
+L{(i \text{ mod } n)} &= L'_{((i - 1 + n) \text{ mod } n)} \quad &\text{[Inverse Right Shift Definition]} \\
+\end{aligned}
+```
+Since:
+
+```math
+\begin{aligned}
+S' &= S \quad &\text{[Cycle Sum Invariance]} \\
+r &:= i \text{ mod } n \\
+L'_r &= \begin{cases}
+  L_{(r + 1)} & r < n - 1 \\
+  L_0 & r = n - 1 \\
+\end{cases} \quad &\text{[Right Shift Definition]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+r < n - 1 &\implies \quad (i + 1) \text{ mod } n = ((i \text{ mod } n) + (1 \text{ mod } n)) \text{ mod } n \quad &\text{[By Modulo Property]} \\
+          &\implies \quad (i + 1) \text{ mod } n = r + 1 \quad &\text{[Since } 1 < n \text{]} \\
+          &\implies \quad L'_r = L_{(r + 1)} \quad &\text{[Right Shift Definition]} \\
+          &\implies \quad L'_(i \text{ mod } n) = L_{((i + 1) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+r = n - 1 &\implies \quad (i + 1) \text{ mod } n = 0 \quad &\text{[By Modulo Property]} \\
+          &\implies \quad L'_r = L_0  \quad &\text{[Right Shift Definition]} \\
+          &\implies \quad L'_(i \text{ mod } n) = L_{((i + 1) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+\therefore \\
+\forall \ i &\in \mathbb{N}_0 , \\
+L'_{(i \text{ mod } n)} &= L_{((i + 1) \text{ mod } n)} \quad \blacksquare \quad &\text{[Q.E.D.]} \\
+\end{aligned}
+```
+
+Let the shifted initial value be defined as:
+
+```math
+\begin{aligned} 
+init' &:= init + L_0 \\
+\end{aligned}
+```
+
+Then the CycleIntegral of $L'$ with initial value $init'$ reproduces exactly the CycleIntegral of $L$ with initial value $init$.
+
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_i &= \text{CycleIntegral}(L', init')_{i-1}  \quad \forall i \in \mathbb{N}_0 \quad &\text{[Shifted Value Reproduction]} \\
+\end{aligned}
+```
+
+#### Proof
+
+#####  Base Case
+```math
+\begin{aligned}
+A &:= \text{CycleIntegral}(L, init)_i &\text{[By Definition]} \\
+B &:= \text{CycleIntegral}(L', init')_{i}  &\text{[By Definition]} \\
+A_0 &= init + L_0 &\text{[By Definition]} \\
+A_1 &= init + L_0 + L_1 &\text{[By Definition]} \\ 
+B_0 &= init' + L'_0 &\text{[By Definition]} \\
+    &= (init + L_0) + L'_0 &\text{[Since } init' = init + L_0 \text{]} \\
+    &= init + L_0 + L_1 &\text{[By Right Shift Definition]} \\
+    &= A_1 &\text{[Base Case Equality]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\therefore \\
+A_1 &= B_0 \quad &\text{[Q.E.D.]} \\
+\end{aligned}
+```
+
+##### Induction Step
+
+```math
+\begin{aligned}
+B_{i-1} &= A_i &\text{[Induction Hypothesis]} \\
+\implies \\
+A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Definition]} \\
+B_i &= B_{i-1} + L'_{(i \text{ mod } n)} &\text{[By Definition]} \\
+&= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Induction Hypothesis]} \\
+&= A_{i+1} &\text{[By Definition of } A_{i+1} \text{]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\therefore \\
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+\forall \ i &\in \mathbb{N}_0 , \\
+A_{i+1} &= B_{i} \\
+\quad \text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \square &&\text{[Q.E.D.]} \\
+\end{aligned}
+```
 
 ## 5. Future Work
 
