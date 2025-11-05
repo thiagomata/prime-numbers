@@ -29,9 +29,15 @@ Cycles are a powerful concept in computer science and mathematics, representing 
 ```math
 \begin{aligned}
 L &= [l_0, l_1, l_2, \ldots, l_{n-1}]  \mid &l_n &\in 𝕊, L \in 𝕃\\
-\text{Cycle}(L) &= [l_0, l_1, l_2, \ldots, l_{n-1}, l_0, l_1, \ldots] = [v_0, v_1, v_2, \dots] = \mid &v_i &= L[i \text{ mod } n] \\
-\text{Integral}(L, init) &= [y_0, y_1, y_2, \ldots, y_{n-1}] \mid &y_k &= \sum_{i=0}^{k} x_i + init \\
-\text{CycleIntegral}(L, init) &= [w_0, w_1, w_2, \ldots] \mid &w_k &= \sum_{i=0}^{k} \text{Cycle}(L)_i + init
+\end{aligned}
+
+```
+```math
+\begin{aligned}
+\text{Cycle}(L)               &= [l_0, l_1, l_2, \ldots, l_{n-1}, l_0, l_1, \ldots] \\
+                              &= [v_0, v_1, v_2, \dots] \mid &v_i &= L[i \text{ mod } n] \\
+\text{Integral}(L, init)      &= [y_0, y_1, y_2, \ldots, y_{n-1}] \mid &y_k &= \sum_{i=0}^{k} x_i + init \\
+\text{CycleIntegral}(L, init) &= [w_0, w_1, w_2, \ldots] \mid          &w_k &= \sum_{i=0}^{k} \text{Cycle}(L)_i + init
 \end{aligned}
 ```
 
@@ -62,41 +68,41 @@ and are treated here as foundational primitives.
 
 ## 3. Integral Cycle Definition
 
-$$
+```math
 \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃, n = |L| \\
 \text{CycleIntegral}(L, init) := [w_0, w_1, w_2, \ldots]
-$$
-$$
+```
+```math
 \begin{aligned}
 0 \leq i < n \implies w_i ≟ \sum_{j=0}^i L_j + init \quad &\text{[Sum Property]} \\
 0 < i < n \implies  \ w_i - w_{i-1} ≟ L_{(i \text{ mod } n)}
 \quad &\text{[Step Property]} \\
 \end{aligned}
-$$
+```
 
 Once both properties hold, equivalence follows from induction.
 
 #### Induction
 
-$$
-\forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃 \mid 0 \leq i < n  \implies \\
-$$
-$$
+```math
+\forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃 \mid 0 \leq i < n  \implies
+```
+
+```math
 \begin{aligned}
 i &= i \text{ mod } n \quad &\text{[By Modulo Property]}\\
 w_i &= \sum_{j=0}^i L_j + init 
 \quad &\text{[Base Case]} \\
 &= \sum_{j=0}^i L_{(j \text{ mod } n)} + init 
 \quad &\text{[Substitution]} \\
-\\
 \end{aligned}
-$$
+```
 
-$$
+```math
 \forall \ i \in ℕ \mid \ w_i - w_{i-1} = L_{(i \text{ mod } n)} \implies \\
-$$
+```
 
-$$
+```math
 \begin{aligned}
 w_{i-1} &= \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init \quad &\text{[Induction Step]} \\
 w_i - w_{i-1} &= L_{(i \text{ mod } n)}
@@ -107,20 +113,20 @@ w_i  &= L_{(i \text{ mod } n)} + w_{i-1}
 \quad &\text{[By Step Property]} \\
 &= \sum_{j=0}^{i} L_{(j \text{ mod } n)} + init \quad &\text{[Summation Re-indexing]} \\
 \end{aligned}
-$$
+```
 
 $$
 \therefore
 $$
-$$
-% \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃 \mid \text{CycleIntegral}(L, init) = [w_0, w_1, w_2, \ldots] \\
-$$
+```math
+\forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃 \mid \text{CycleIntegral}(L, init) = [w_0, w_1, w_2, \ldots] \\
+```
 
-$$
+```math
 \begin{aligned}
 \quad w_i &= \sum_{j=0}^i L_{(j \text{ mod } n)} + init \ \blacksquare  \quad &\text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 
 ### 3.1 Classic Cycle Integral
@@ -492,10 +498,10 @@ L' &:= L :: L, \quad init \in \mathbb{N}_0 \quad &\text{[Definition by Concatena
 
 ```math
 \begin{aligned}
-n &:= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+ n &= |L|, \quad L = [v_0, \dots, v_{n-1}]                 &&\text{[Length of original cycle]} \\
 L' &:= L :: L = [v_0, \dots, v_{n-1}, v_0, \dots, v_{n-1}]  &&\text{[Concatenate cycle with itself]} \\
-m &:= |L'| = 2 n &&\text{[Length of new cycle]} \\
-S &:= \sum_{j=0}^{n-1} v_j &&\text{[Original cycle sum]} \\
+m  &:= |L'| = 2 n                                           &&\text{[Length of new cycle]} \\
+S  &:= \sum_{j=0}^{n-1} v_j                                 &&\text{[Original cycle sum]} \\
 I'_k &:= \sum_{j=0}^{k} L'_j = 
   \begin{cases} 
     I_k & 0 \le k < n \\ 
@@ -504,6 +510,10 @@ I'_k &:= \sum_{j=0}^{k} L'_j =
   &&\text{[Partial sums of concatenated cycle]} \\
 S' &:= \sum_{j=0}^{m-1} L'_j = 2 \cdot S &&\text{[Sum of concatenated cycle]} \\
 I'_{i \text{ mod } 2n} &= I_{i \text{ mod } n} &&\text{[By definition of } I'_k] \\
+\end{aligned}
+```
+```math
+\begin{aligned}
 \text{CycleIntegral}(L', init)_i &= (i \,\text{div}\, m)\cdot S' + I'_{i \text{ mod } m} + init &&\text{[By Definition]} \\
 &= (i \,\text{div}\, 2n)\cdot (2 \cdot S) + I'_{i \text{ mod } 2n} + init &&\text{[Substitution]} \\
   &= (i \,\text{div}\, n)\cdot S + I_{i \text{ mod } n} + init &&\text{[Simplifies exactly to original values]} \\
@@ -522,13 +532,13 @@ Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, in other 
 
 ```math
 \begin{aligned}
-n &:= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+n &= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
 L' &:= [v_1, v_2, \dots, v_{n-1}, v_0]  &&\text{[Right shift by k positions]} \\
 L'_k &:= case \begin{cases}
   L_{(k + 1)} & k < n - 1 \\
   L_0 & k = n - 1 \\
 \end{cases} &&\text{[Element definition after right shift]} \\
-|L'| &:= n &&\text{[Length of shifted cycle]} \\
+|L'| &= n &&\text{[Length of shifted cycle]} \\
 S &:= \sum_{j=0}^{n-1} L_j &&\text{[Original cycle sum]} \\
 &= v_0 + v_1 + \dots + v_{n-1} &&\text{[Original elements]} \\
 S' &:= \sum_{j=0}^{n-1} L'_j \\
@@ -634,7 +644,7 @@ B_i &= B_{i-1} + L'_{(i \text{ mod } n)} &\text{[By Definition]} \\
 \begin{aligned}
 \forall \ i &\in \mathbb{N}_0 , \\
 A_{i+1} &= B_{i} \\
-\quad \text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \square &&\text{[Q.E.D.]} \\
+\quad \text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \blacksquare &&\text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
