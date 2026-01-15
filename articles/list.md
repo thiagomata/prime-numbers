@@ -141,7 +141,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 ```
 
 Defined at [List Utils](
-	./src/main/scala/v1/list/ListUtils.scala#sum
+	../src/main/scala/v1/list/ListUtils.scala#sum
 ) as follows:
 
 <details>
@@ -203,7 +203,7 @@ $$
 $$
 
 Defined at [List Utils](
-	./src/main/scala/v1/list/ListUtils.scala#slice
+	../src/main/scala/v1/list/ListUtils.scala#slice
 ) as follows:
 
 <details>
@@ -306,7 +306,7 @@ L_i ⧺ \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 $$
 
-Defined at [Slice Equivalence Lemmas](./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L14) as follows:
+Defined at [Slice Equivalence Lemmas](../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L14) as follows:
 
 <details>
     <summary>Scala Docs</summary>
@@ -393,7 +393,7 @@ Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$
 
 This version builds the slice directly by recursively iterating over an index range.
 
-Defined at [Slice Equivalence Lemmas](./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L39) as follows:
+Defined at [Slice Equivalence Lemmas](../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala#L39) as follows:
 
 <details>
     <summary>Scala Docs</summary>
@@ -483,7 +483,7 @@ and implementation:
 - Index-range slice
 
 These properties are verified at [Slice Equivalence Lemmas](
-	./src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
+	../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
 ) as follows:
 
 <details>
@@ -635,10 +635,10 @@ $$
 
 Verified in 
 [List Utils Properties - Access Tail Shift Left](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftLeft
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftLeft
 ) and
 [List Utils Properties - Assert Tail Shift Right](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftRight
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#accessTailShiftRight
 )
 as follows:
 
@@ -754,7 +754,7 @@ as follows:
 ```
 
 Verified in [List Util Properties - Assert Last Equals Last Position](
-	./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
+	../src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertLastEqualsLastPosition
 ).
 
 <details>
@@ -820,7 +820,7 @@ $$
 
 
 Verified in [List Utils Properties - List Sum Add Value](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSumAddValue
 ) as follows:
 
 <details>
@@ -891,7 +891,7 @@ $$
 $$
 
 Verified in [List Utils Properties - List Combine ](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#listCombine
 ) as follows:
 
 <details>
@@ -948,7 +948,7 @@ Since:
 ```
 
 Verified in [List Utils Properties - List Swap ](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#listSwap
 ) as follows:
 
 <details>
@@ -995,7 +995,7 @@ $$
 
 
 Verified in [List Utils Properties - Assert Append to Slice ](
-./src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
+../src/main/scala/v1/list/properties/ListUtilsProperties.scala#assertAppendToSlice
 ) as follows:
 
 <details>

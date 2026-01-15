@@ -42,7 +42,7 @@ b \text{ div } b                   & = 1 \\
 ```
 ```math
 \begin{aligned}
-\forall \text{ } a, b & \in ℕ : b \neq 0 \\
+\forall \text{ } a \in ℕ_0,\ b & \in ℕ \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
@@ -84,24 +84,24 @@ L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 
 ```math
 \begin{aligned}
-& &\text{size}(L) &:= \begin{cases} \\
+& &\text{size}(L) &:= \begin{cases}
 0 & \text{ if } L = L_{e} \\\
 1 + \text{size}(tail(L)) & \text{otherwise} \\
 \end{cases} \\
-& &sum(L) &:= \begin{cases} \\
+& &sum(L) &:= \begin{cases}
 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
-|L| > 0 &\implies &\text{last}(L) &:= \begin{cases} \\
+|L| > 0 &\implies &\text{last}(L) &:= \begin{cases}
 \text{head}(L) & \text{if } |L| = 1 \\
 \text{last}(\text{tail}(L)) & \text{otherwise} \\
 \end{cases} \\
-|L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases} \\
+|L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases}
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) ⧺ [ L_t ] & \text{if } f < t \\
 \end{cases}
-\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
-& &A ⧺ B &:= \begin{cases} \\
+\forall \ f, t \in ℕ_0 \text{ where } 0 \leq f \leq t \\
+& &A ⧺ B &:= \begin{cases}
 B & \text{if } A = L_e \\
 L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise} \\
 \end{cases}
@@ -113,12 +113,12 @@ From these definitions, it mathematically proves and formally verifies the follo
 
 ```math
 \begin{aligned}
-&\forall\, L, A, B \in  𝕃,\quad &\forall\, v \in 𝕊,\quad &\forall\, i, f, t \in ℕ \\
+&\forall\, L, A, B \in  𝕃,\quad &\forall\, v \in 𝕊,\quad &\forall\, i, f, t \in ℕ_0 \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-f > t, \quad 0 \leq i < |L|\\
+f \leq t, \quad 0 \leq i < |L|\\
 \\
 \end{aligned}
 ```
@@ -158,11 +158,11 @@ $$
 
 ```math
 \begin{aligned}
-&I_k &:= &\begin{cases} \\
+&I_k &:= &\begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0 \\
 \end{cases} \\
-&acc &:= &\begin{cases} \\
+&acc &:= &\begin{cases}
 L_e & \text{if } L = L_e \\
 \text{acc}(\text{Integral}(\text{tail}(L),\ \text{head}(L) + init)) & \text{otherwise} \\
 \end{cases} \\

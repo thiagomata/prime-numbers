@@ -1,10 +1,9 @@
   package v1.div.properties
 
 import stainless.lang.*
-import verification.Helper.assert
 import v1.Calc
 import v1.Calc.mod
-import verification.Helper.equality
+import verification.Helper.{assert, equality}
 
 object ModSum {
   def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {

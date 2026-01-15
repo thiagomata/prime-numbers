@@ -1,9 +1,9 @@
 package v1.div.properties
 
 import stainless.lang.*
-import verification.Helper.assert
 import v1.Calc
 import v1.Calc.{div, mod}
+import verification.Helper.assert
 
 object Summary {
   def PropertySummary(a: BigInt, b: BigInt, c: BigInt, m: BigInt): Boolean = {

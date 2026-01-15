@@ -1,16 +1,15 @@
-package v1.cycle.integral
+package v1.cycle.integral.mod
 
 import org.scalatest.flatspec.*
 import org.scalatest.funsuite.AnyFunSuiteLike
 import org.scalatest.matchers.should.*
 import v1.cycle.integral.mod.ModCycleIntegral
-import v1.cycle.integral.recursive.CycleIntegral
 import v1.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt
 
-class CycleIntegralTest extends FlatSpec with Matchers {
+class ModCycleIntegralTest extends FlatSpec with Matchers {
 
   val primeCycles: List[MemCycle] = List(
     MemCycle(createListFromInt(Array(3))),
@@ -35,15 +34,15 @@ class CycleIntegralTest extends FlatSpec with Matchers {
 
   "apply" should "return the correct value for any cycle" in {
     assert(
-      allCycles.forall { loopCycle =>
-        val cycleIntegral = CycleIntegral(1000, loopCycle)
-        (BigInt(1) until cycleIntegral.cycle.values.size).forall {
+      allCycles.forall { cycle =>
+        val modCycle = ModCycleIntegral(1000, cycle)
+        (BigInt(1) until modCycle.mCycle.values.size).forall {
           position => {
             val expectedValue = (BigInt(0) to position).map(
-              i => loopCycle(i)
-            ).sum + cycleIntegral.initialValue
-            assert(cycleIntegral(position) == expectedValue)
-            cycleIntegral(position) == expectedValue
+              i => cycle(i)
+            ).sum + modCycle.initialValue
+            assert(modCycle(position) == expectedValue)
+            modCycle(position) == expectedValue
           }
         }
       }

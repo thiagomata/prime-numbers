@@ -1,16 +1,11 @@
-package v1.cycle.integral
+package v1.cycle.integral.classic
 
-import org.scalatest.flatspec.*
-import org.scalatest.funsuite.AnyFunSuiteLike
-import org.scalatest.matchers.should.*
-import v1.cycle.integral.mod.ModCycleIntegral
-import v1.cycle.integral.recursive.CycleIntegral
+import org.scalatest.flatspec.FlatSpec
+import org.scalatest.matchers.should.Matchers
 import v1.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
-import scala.BigInt
-
-class CycleIntegralTest extends FlatSpec with Matchers {
+class ClassicCycleIntegralTest extends FlatSpec with Matchers {
 
   val primeCycles: List[MemCycle] = List(
     MemCycle(createListFromInt(Array(3))),
@@ -33,19 +28,27 @@ class CycleIntegralTest extends FlatSpec with Matchers {
 
   val allCycles: List[MemCycle] = primeCycles ++ oddCycles ++ evenCycles
 
-  "apply" should "return the correct value for any cycle" in {
+  "apply" should "return the correct value for any cycle from 0 to size time 2" in {
     assert(
-      allCycles.forall { loopCycle =>
-        val cycleIntegral = CycleIntegral(1000, loopCycle)
-        (BigInt(1) until cycleIntegral.cycle.values.size).forall {
+      allCycles.forall { cycle =>
+        val classicCycleIntegral = ClassicCycleIntegral(1000, cycle)
+        (BigInt(0) until classicCycleIntegral.cycle.values.size * 2).forall {
           position => {
             val expectedValue = (BigInt(0) to position).map(
-              i => loopCycle(i)
-            ).sum + cycleIntegral.initialValue
-            assert(cycleIntegral(position) == expectedValue)
-            cycleIntegral(position) == expectedValue
+              i => cycle(i)
+            ).sum + classicCycleIntegral.initialValue
+            assert(classicCycleIntegral(position) == expectedValue)
+            classicCycleIntegral(position) == expectedValue
           }
         }
+      }
+    )
+  }
+
+  "sum" should "match sum values" in {
+    assert(
+      allCycles.forall { cycle =>
+        cycle.sum() == cycle.values.toScala.sum
       }
     )
   }

@@ -34,7 +34,7 @@ and let $init \in \mathbb{Z}$ be an initial value.
 
 We reuse several basic list operations and their verified properties from a companion article on recursive list 
 construction &mdash;  [Using Formal Verification to Prove Properties of Lists Recursively Defined](
-https://github.com/thiagomata/prime-numbers/blob/master/list.md
+https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md
 ) [[1]](#ref1).  
 These include the following functions:
 
@@ -326,7 +326,7 @@ I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.
 \end{aligned}
 $$
 
-This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqualsSum`](./src/main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum):
+This lemma is also verified in [IntegralProperties.scala at `assertIntegralEqualsSum`](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala#assertIntegralEqualsSum):
 
 <details>
 <summary>Scala Doc</summary>
@@ -913,7 +913,7 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 ## 7. Limitations
 
 This article builds upon the foundational assumptions and constraints established in the earlier work
- [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/list.md) [[1]](#ref1).
+ [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1).
  For a comprehensive discussion of those limitations, readers are encouraged to consult that article.
 
 Specifically:
@@ -995,7 +995,7 @@ These formally verified properties provide a robust foundation for future develo
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/list.md](https://github.com/thiagomata/prime-numbers/blob/master/list.md)
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 ## 10. Appendix
 

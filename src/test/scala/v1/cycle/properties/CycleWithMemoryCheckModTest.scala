@@ -2,33 +2,34 @@ package v1.cycle.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
+import v1.cycle.memory.properties.CycleCheckMod
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt
 
-class CycleCheckModTest extends FlatSpec with Matchers {
+class CycleWithMemoryCheckModTest extends FlatSpec with Matchers {
 
-  val primeCycles: List[Cycle] = List(
-    Cycle(createListFromInt(Array(3))),
-    Cycle(createListFromInt(Array(19))),
-    Cycle(createListFromInt(Array(3,5,7))),
-    Cycle(createListFromInt(Array(3,5,7,11,13,17))),
+  val primeCycles: List[MemCycle] = List(
+    MemCycle(createListFromInt(Array(3))),
+    MemCycle(createListFromInt(Array(19))),
+    MemCycle(createListFromInt(Array(3,5,7))),
+    MemCycle(createListFromInt(Array(3,5,7,11,13,17))),
   )
 
-  val oddCycles: List[Cycle] = List(
-    Cycle(createListFromInt(Array(3))),
-    Cycle(createListFromInt(Array(3,5,7))),
-    Cycle(createListFromInt(Array(3,15,17))),
+  val oddCycles: List[MemCycle] = List(
+    MemCycle(createListFromInt(Array(3))),
+    MemCycle(createListFromInt(Array(3,5,7))),
+    MemCycle(createListFromInt(Array(3,15,17))),
   )
 
-  val evenCycles: List[Cycle] = List(
-    Cycle(createListFromInt(Array(2))),
-    Cycle(createListFromInt(Array(2,4,8))),
-    Cycle(createListFromInt(Array(10,20,30))),
+  val evenCycles: List[MemCycle] = List(
+    MemCycle(createListFromInt(Array(2))),
+    MemCycle(createListFromInt(Array(2,4,8))),
+    MemCycle(createListFromInt(Array(10,20,30))),
   )
 
-  val allCycles: List[Cycle] = primeCycles ++ oddCycles ++ evenCycles
+  val allCycles: List[MemCycle] = primeCycles ++ oddCycles ++ evenCycles
 
   "forAnyCheckModValuesRemains" should "hold for any cycle" in {
     val dividends = List(
@@ -185,10 +186,10 @@ class CycleCheckModTest extends FlatSpec with Matchers {
       BigInt(2), BigInt(5),
     )
 
-    val cycles: List[Cycle] = List(
-      Cycle(createListFromInt(Array(20))),
-      Cycle(createListFromInt(Array(20, 40, 80))),
-      Cycle(createListFromInt(Array(10, 20, 30))),
+    val cycles: List[MemCycle] = List(
+      MemCycle(createListFromInt(Array(20))),
+      MemCycle(createListFromInt(Array(20, 40, 80))),
+      MemCycle(createListFromInt(Array(10, 20, 30))),
     )
 
     assert(
@@ -207,10 +208,10 @@ class CycleCheckModTest extends FlatSpec with Matchers {
       BigInt(2), BigInt(5),
     )
 
-    val cycles: List[Cycle] = List(
-      Cycle(createListFromInt(Array(20, 21))),
-      Cycle(createListFromInt(Array(20, 40, 80, 21))),
-      Cycle(createListFromInt(Array(10, 20, 30, 21))),
+    val cycles: List[MemCycle] = List(
+      MemCycle(createListFromInt(Array(20, 21))),
+      MemCycle(createListFromInt(Array(20, 40, 80, 21))),
+      MemCycle(createListFromInt(Array(10, 20, 30, 21))),
     )
 
     assert(
@@ -229,10 +230,10 @@ class CycleCheckModTest extends FlatSpec with Matchers {
       BigInt(2), BigInt(3),
     )
 
-    val cycles: List[Cycle] = List(
-      Cycle(createListFromInt(Array(5, 7, 11))),
-      Cycle(createListFromInt(Array(11, 13, 17))),
-      Cycle(createListFromInt(Array(23, 49, 41))),
+    val cycles: List[MemCycle] = List(
+      MemCycle(createListFromInt(Array(5, 7, 11))),
+      MemCycle(createListFromInt(Array(11, 13, 17))),
+      MemCycle(createListFromInt(Array(23, 49, 41))),
     )
 
     assert(

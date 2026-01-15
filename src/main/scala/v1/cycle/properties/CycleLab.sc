@@ -1,8 +1,8 @@
-import v1.cycle.Cycle
-import v1.cycle.properties.CycleCheckMod
+import v1.cycle.memory.MemCycle
+import v1.cycle.memory.properties.CycleCheckMod
 import v1.list.ListBuilder.createList
 
-val cycle = Cycle(
+val cycle = MemCycle(
   values = createList(Array(BigInt(7),BigInt(14),BigInt(21)))
 )
 

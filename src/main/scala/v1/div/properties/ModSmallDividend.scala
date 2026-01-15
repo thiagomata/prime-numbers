@@ -1,9 +1,9 @@
 package v1.div.properties
 
 import stainless.lang.*
-import verification.Helper.assert
 import v1.Calc
 import v1.div.DivMod
+import verification.Helper.assert
 
 import scala.language.postfixOps
 

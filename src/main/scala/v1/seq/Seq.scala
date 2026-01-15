@@ -2,11 +2,11 @@ package v1.seq
 
 import stainless.lang.*
 import v1.Calc
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 
 case class Seq (
   previous: stainless.collection.List[BigInt],
-  loop: Cycle
+  loop: MemCycle
 ) {
   require(loop.size > 0)
   

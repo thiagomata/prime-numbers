@@ -1,9 +1,9 @@
-package v1.cycle.integral.properties
+package v1.cycle.integral.recursive.properties
 
 import stainless.collection.List
 import stainless.lang.*
-import v1.cycle.integral.CycleIntegral
-import v1.cycle.properties.CycleProperties
+import v1.cycle.integral.recursive.CycleIntegral
+import v1.cycle.memory.properties.MemCycleProperties
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.{assert, equality}
@@ -15,7 +15,7 @@ object CycleIntegralProperties {
    * the current value of the cycle integral.
    *
    * In other words:
-   * IntegralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   * CycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
    *
    * @param cycleIntegral CycleIntegral any cycle integral
    * @return Boolean true if the property holds
@@ -48,7 +48,7 @@ object CycleIntegralProperties {
 
     assert(assertNextPosition(cycleIntegral, position))
     assert(cycleIntegral(position) == cycleIntegral.cycle(position) + cycleIntegral(position - 1))
-    assert(CycleProperties.smallValueInCycle(cycleIntegral.cycle, position))
+    assert(MemCycleProperties.smallValueInCycle(cycleIntegral.cycle, position))
     assert(cycleIntegral.cycle(position) == cycleIntegral.cycle.values(position))
     assert(ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position - 1)) == cycleIntegral(position - 1))
 
@@ -130,7 +130,7 @@ object CycleIntegralProperties {
    *
    * in other words
    * size == cycleIntegral.size
-   * integralCycle(pos + 1) - integralCycle(pos) == integralCycle(pos + size + 1) - integralCycle(pos + size)
+   * cycleIntegral(pos + 1) - cycleIntegral(pos) == cycleIntegral(pos + size + 1) - cycleIntegral(pos + size)
    *
    * @param iCycle CycleIntegral any cycle integral
    * @param position BigInt any position bigger than or equals to zero
@@ -150,8 +150,8 @@ object CycleIntegralProperties {
     assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = c)
     assert(iCycle(d) - iCycle(c) == iCycle.cycle(d))
 
-    CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, a, 0, 1)
-    CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, b, 0, 1)
+    MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, a, 0, 1)
+    MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, b, 0, 1)
 
     assert(iCycle.cycle(d) == iCycle.cycle(b))
     assert(iCycle.cycle(c) == iCycle.cycle(a))
@@ -180,7 +180,7 @@ object CycleIntegralProperties {
    * @param position BigInt position
    * @return true if the property holds
    */
-  def assertSumModValueAsListEqualsIntegralCycleLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertSumModValueAsListEqualsCycleIntegralLoop(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     decreases(position)
 
@@ -194,9 +194,9 @@ object CycleIntegralProperties {
         assert(iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position) - iCycle(position - 1))
         assert(iCycle(position - 1) + iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position))
         assert(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
-        assert(CycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
+        assert(MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
       }
-      assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position - 1)
+      assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position - 1)
       assert(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
       assert(ListUtilsProperties.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
       iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
@@ -212,15 +212,15 @@ object CycleIntegralProperties {
    * In other words
    *
    * for any cycle integral, if cycle = cycleIntegral.cycle and position >= 0,
-   * integralCycle(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
+   * cycleIntegral(position) == sum(cycle(0), cycle(1), ..., Cycle(position))
    *
    * @param iCycle CycleIntegral
    * @param position BigInt position
    * @return true if the property holds
    */
-  def assertIntegralCycleEqualsSumOfModlValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
+  def assertCycleIntegralEqualsSumOfModValuesAsList(iCycle: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
-    assert(assertSumModValueAsListEqualsIntegralCycleLoop(iCycle, position))
+    assert(assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position))
     val listModValues = getModValuesAsList(iCycle, position)
     iCycle(position) == ListUtils.sum(listModValues)
   }.holds
@@ -268,7 +268,7 @@ object CycleIntegralProperties {
     decreases(position)
 
     if (position < cycleIntegral.size) {
-      CycleProperties.smallValueInCycle(cycle = cycleIntegral.cycle, key = position)
+      MemCycleProperties.smallValueInCycle(cycle = cycleIntegral.cycle, key = position)
     }
 
     if (position == 0) {
@@ -289,7 +289,7 @@ object CycleIntegralProperties {
    * @param position BigInt zero or positive smaller than size value
    * @return true if holds
    */
-  def assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
+  def assertFirstValuesAsSliceEqualsModValuesAsList(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
     require(position < cycleIntegral.size)
     decreases(position)
@@ -302,10 +302,10 @@ object CycleIntegralProperties {
       assert(valuesAsList == List(cycleIntegral.initialValue, cycleIntegral.cycle(0)))
 
     } else {
-      CycleProperties.smallValueInCycle(cycleIntegral.cycle, position)
+      MemCycleProperties.smallValueInCycle(cycleIntegral.cycle, position)
       assert(cycleIntegral.cycle.values(position) == cycleIntegral.cycle(position))
 
-      assertFirstValuesAsSliceEqualsModValuesAsListt(cycleIntegral, position - 1)
+      assertFirstValuesAsSliceEqualsModValuesAsList(cycleIntegral, position - 1)
       assert(ListUtilsProperties.assertAppendToSlice(cycleIntegral.cycle.values, 0, position))
 
       val prevValuesAsList = getModValuesAsList(cycleIntegral,    position - 1)

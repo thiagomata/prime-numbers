@@ -1,10 +1,9 @@
 package v1.seq.properties
 
 import stainless.lang.{BigInt, *}
-import verification.Helper.assert
-import v1.cycle.Cycle
+import v1.cycle.memory.MemCycle
 import verification.Helper
-import verification.Helper.equality
+import verification.Helper.{assert, equality}
 
 object SeqProperties {
   def firstValuesMatchPrev(seq: v1.seq.Seq, pos: BigInt): Boolean = {
@@ -117,7 +116,7 @@ object SeqProperties {
     }
   }
 
-  def sumAllCycleValues(from: BigInt, to: BigInt, cycle: Cycle): BigInt = {
+  def sumAllCycleValues(from: BigInt, to: BigInt, cycle: MemCycle): BigInt = {
     require(from >= 0)
     require(to >= 0)
     require(to >= from)
