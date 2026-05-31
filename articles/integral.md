@@ -913,7 +913,7 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 ## 7. Limitations
 
 This article builds upon the foundational assumptions and constraints established in the earlier work
- [Using Formal Verification to Prove Properties of Lists Recursively Defined]([https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1).
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1).
  For a comprehensive discussion of those limitations, readers are encouraged to consult that article.
 
 Specifically:
