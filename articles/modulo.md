@@ -134,7 +134,7 @@ As proved in the [proof for positive shift](
 ) and [proof for negative shift](../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
-### Creating the Division and Module Operations
+### Creating the Division and Modulo Operations
 
 Using the DivMod class we defined, in the class [Calc](
 ../src/main/scala/v1/Calc.scala
@@ -215,7 +215,7 @@ with no issues as follows:
   }.holds
 ```
 
-Similary, in the next sections, we will prove other properties of the division and module operations using only the amount of evidences required to Scala Stainless to verify that they hold.
+Similarly, in the next sections, we will prove other properties of the division and modulo operations using only the amount of evidences required to Scala Stainless to verify that they hold.
 
 ### Quotient Invariance Under Linear Shift
 
@@ -235,7 +235,7 @@ Quotient Invariance Under Linear Shift proof is available for the [positive case
 ../src/main/scala/v1/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv
 ).
 
-### Quotient Invariance Under Linear Shift by Multipler
+### Quotient Invariance Under Linear Shift by Multiplier
 
 As a directly consequence of these properties, we can also prove that:
 

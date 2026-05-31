@@ -46,12 +46,9 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 
 ## 2. Preliminaries
 
-We reuse several basic list operations and their verified properties from the companion articles 
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md
-) [[1]](#ref1) and [Formal Verification of Discrete Integration Properties from First Principles](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md
-) [[2]](#ef2).
+We reuse several basic list operations and their verified properties from the companion articles
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1)
+and [Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md) [[2]](#ref2).
 
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
@@ -607,7 +604,7 @@ Cycle values remain consistent after adding multiples of the cycle size to the k
 L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n, |L| > 0 \\
 Cycle &:= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 n &= |L| \\
-(i + n \cdot m ) \text{ mod } n &\geq i \text{ mod } n  \quad  &\text{[Quotient Invariance Under Linear Shift by Multipler]} \\
+(i + n \cdot m ) \text{ mod } n &\geq i \text{ mod } n  \quad  &\text{[Quotient Invariance Under Linear Shift by Multiplier]} \\
 \text{ModCycle}_i &= \text{RecCycle}_i = \text{Cycle
 }_i \quad &\text{[Cycle Equivalence]} \\
 \text{ModCycle}_{(i + n \cdot m)} &= L[(i + n \cdot m) \text{ mod } n] \quad &\text{[ModCycle Definition]} \\
@@ -793,26 +790,18 @@ These properties were formally verified using Scala Stainless, ensuring their co
 
 ## 5. Future Work
 
-Future work may include exploring more complex properties of Cycles, such as their behavior under various operations like concatenation and filtering, and their applications in algorithms and data structures. Additionally, we can investigate discret integration of Cycles, similar to the work done for lists [[1]](#ref1) and integrals [[2]](#ref2).
+Future work may include exploring more complex properties of Cycles, such as their behavior under various operations like concatenation and filtering, and their applications in algorithms and data structures. Additionally, we can investigate discrete integration of Cycles, similar to the work done for lists [[1]](#ref1) and integrals [[2]](#ref2).
 
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a> 
 Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2025). *Formal Verification of Discrete xtion Properties from First Principles*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
+Mata, T. H. (2025). *Formal Verification of Discrete Integration Properties from First Principles*. Unpublished manuscript.  
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2025). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md
-)(https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
-
-
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)

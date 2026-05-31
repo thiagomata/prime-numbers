@@ -1,4 +1,4 @@
-# WIP
+# Formal Verification of Cycle Integral Properties from First Principles
 
 **Author:** Mata, T. H.
 Independent Researcher  
@@ -51,15 +51,11 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 ## 2. Preliminaries
 
 We reuse several basic list, cycle and integral operations and their verified properties from the companion articles 
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md
-) [[1]](#ref1), [Formal Verification of Discrete Integration Properties from First Principles](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md
-) [[2]](#ef2), and [Using Formal Verification to Prove Properties of Unbound Lists] (
-https://github.com/thiagomata/prime-numbers/blob/master/articles/cyc;e.md
-) [[3]](#ref3). We also reuse some modulo properties previously defined and verified in the article [Proving Properties of Division and Modulo using Formal Verification](
-httos://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md
-) [[4]](#ref4).
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1),
+[Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md) [[2]](#ref2),
+and [Using Formal Verification to Prove Properties of Unbound Lists](https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md) [[3]](#ref3).
+We also reuse some modulo properties previously defined and verified in the article
+[Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md) [[4]](#ref4).
 
 
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
@@ -236,7 +232,7 @@ This property is verified in the [
 
 Recursive Cycle is equivalent to the Mod Cycle, 
 as proven in the article [Using Formal Verification to Prove Properties of Unbound Lists](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/cyc;e.md
+https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md
 ) [[3]](#ref3).
 
 
@@ -473,79 +469,100 @@ we have:
 \end{aligned}
 ```
 
-### 4.2 Invariance by Concatenation
+### 4.2 Invariance by \(x\)-Fold Concatenation
 
-Let $L' \in 𝕃$ be the concatenation of $L \in 𝕃$ with itself, and let $init \in \mathbb{N}_0$ be initial value. Then the CycleIntegral of $L'$ with initial value $init$ reproduces exactly the CycleIntegral of $L$ with initial value $init$.
+Let's define $L^{(x)}$ as the $x$-fold concatenation of a list $L \in 𝕃$ as the list formed by concatenating $x$ copies of $L$ together, as follows:
+
+```math
+x \in \mathbb{N}, \quad init \in \mathbb{N}_0
+```
 
 ```math
 \begin{aligned}
-L' &:= L :: L, \quad init \in \mathbb{N}_0 \quad &\text{[Definition by Concatenation]} \\
-\text{CycleIntegral}(L', init)_i &= \text{CycleIntegral}(L, init)_i  \quad \forall i \in \mathbb{N}_0 \quad &\text{[Exact Value Reproduction]} \\
+L^{(x)} := \underbrace{L :: L :: \dots :: L}_{x \text{ copies}} \in 𝕃 \quad &\text{[Definition by $x$-fold Concatenation]} \\
 \end{aligned}
-``` 
+```
+
+Then the CycleIntegral of $L^{(x)}$ with initial value $init$ reproduces exactly the CycleIntegral of $L$ with initial value $init$. In other words:
+
+```math
+\text{CycleIntegral}(L^{(x)}, init)_i = \text{CycleIntegral}(L, init)_i \quad \forall \ i \in \mathbb{N}_0
+```
 
 #### Proof
 
 ```math
 \begin{aligned}
- n &= |L|, \quad L = [v_0, \dots, v_{n-1}]                 &&\text{[Length of original cycle]} \\
-L' &:= L :: L = [v_0, \dots, v_{n-1}, v_0, \dots, v_{n-1}]  &&\text{[Concatenate cycle with itself]} \\
-m  &:= |L'| = 2 n                                           &&\text{[Length of new cycle]} \\
-S  &:= \sum_{j=0}^{n-1} v_j                                 &&\text{[Original cycle sum]} \\
-I'_k &:= \sum_{j=0}^{k} L'_j = 
-  \begin{cases} 
-    I_k & 0 \le k < n \\ 
-    S + I_{k-n} & n \le k < 2n 
-  \end{cases} 
-  &&\text{[Partial sums of concatenated cycle]} \\
-S' &:= \sum_{j=0}^{m-1} L'_j = 2 \cdot S &&\text{[Sum of concatenated cycle]} \\
-I'_{i \text{ mod } 2n} &= I_{i \text{ mod } n} &&\text{[By definition of } I'_k] \\
+n &= |L|, \quad L = [v_0, \dots, v_{n-1}] 
+  &&\text{[Length of original cycle]} \\
+L^{(x)} 
+&:= \underbrace{L :: \dots :: L}_{x \text{ copies}} 
+  &&\text{[Concatenate $x$ copies]} \\
+m &:= |L^{(x)}| = x \cdot n 
+  &&\text{[Length of new cycle]} \\
+T &:= \sum_{j=0}^{n-1} v_j 
+  &&\text{[Original cycle sum]} \\
+I^{(x)}_k 
+&:= \sum_{j=0}^{k} L^{(x)}_j 
+ = q \cdot T + I_{\, k - q \cdot n}, 
+ \quad q = \lfloor k/n \rfloor
+  &&\text{[Partial sums across repeated blocks]} \\
+T^{(x)} 
+&:= \sum_{j=0}^{m-1} L^{(x)}_j = x \cdot T 
+  &&\text{[Sum of $x$-concatenated cycle]} \\
+I^{(x)}_{i \bmod m} &= I_{i \bmod n} 
+  &&\text{[Modulo reduction across blocks]} \\
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-\text{CycleIntegral}(L', init)_i &= (i \,\text{div}\, m)\cdot S' + I'_{i \text{ mod } m} + init &&\text{[By Definition]} \\
-&= (i \,\text{div}\, 2n)\cdot (2 \cdot S) + I'_{i \text{ mod } 2n} + init &&\text{[Substitution]} \\
-  &= (i \,\text{div}\, n)\cdot S + I_{i \text{ mod } n} + init &&\text{[Simplifies exactly to original values]} \\
-  &= \text{CycleIntegral}(L, init)_i &&\text{[Exact value reproduction]} \\
-\end{aligned}
-```
-```math
-\therefore
-```
-```math
-\begin{aligned}
-\forall \ i \in \mathbb{N}_0 , \\
-\quad \text{CycleIntegral}(L', init)_i &= \text{CycleIntegral}(L, init)_i \quad &&\text{[Q.E.D.]} \\
+\text{CycleIntegral}(L^{(x)}, init)_i 
+&= (i \,\text{div}\, m)\cdot T^{(x)} + I^{(x)}_{i \bmod m} + init 
+  &&\text{[By Definition]} \\
+&= (i \,\text{div}\, (x \cdot n))\cdot (x \cdot T) + I^{(x)}_{i \bmod (x \cdot n)} + init 
+  &&\text{[Substitution]} \\
+&= (i \,\text{div}\, n)\cdot T + I_{i \bmod n} + init 
+  &&\text{[Exact simplification]} \\
+&= \text{CycleIntegral}(L, init)_i 
+  &&\text{[Exact value reproduction]} \\
 \end{aligned}
 ```
 
-Therefore, concatenating a cycle with itself does not change its CycleIntegral.
+```math
+\begin{aligned}
+&\therefore \\
+\forall \ i &\in \mathbb{N}_0, \\
+\text{CycleIntegral}(L^{(x)}, init)_i 
+&= \text{CycleIntegral}(L, init)_i 
+  &&\text{[Q.E.D.]} \\
+\end{aligned}
+```
 
-### 4.3 Right Shift Invariance
+### 4.3 Right Index Shift
 
-Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, in other words:
+Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, assuming $|L| \in \mathbb{N}$.
+In other words:
 
 ```math
 \begin{aligned}
-&n &= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
-&L' &:= [v_1, v_2, \dots, v_{n-1}, v_0]  &&\text{[Right shift by k positions]} \\
-&L'_k &:= case \begin{cases}
+n &= |L| \in \mathbb{N}, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+L' &:= [v_1, v_2, \dots, v_{n-1}, v_0]  &&\text{[Right shift by k positions]} \\
+L'_k &:= \begin{cases}
   L_{(k + 1)} & k < n - 1 \\
   L_0 & k = n - 1 \\
 \end{cases} &&\text{[Element definition after right shift]} \\
-&|L'| &= n &&\text{[Length of shifted cycle]} \\
-&S &:= \sum_{j=0}^{n-1} L_j &&\text{[Original cycle sum]} \\
-&&= v_0 + v_1 + \dots + v_{n-1} &&\text{[Original elements]} \\
-&S' &:= \sum_{j=0}^{n-1} L'_j \\
-&&= v_1 + v_2 + \dots + v_{n-1} + v_0 &&\text{[Shifted elements]} \\
-&&= v_0 + v_1 + \dots + v_{n-1}  &&\text{[Rearrangement of sum]} \\
-&&= S &&\text{[Sum remains unchanged]} \\
+|L'| &= n &&\text{[Length of shifted cycle]} \\
+S &:= \sum_{j=0}^{n-1} L_j &&\text{[Original cycle sum]} \\
+&= v_0 + v_1 + \dots + v_{n-1} &&\text{[Original elements]} \\
+S' &:= \sum_{j=0}^{n-1} L'_j \\
+&= v_1 + v_2 + \dots + v_{n-1} + v_0 &&\text{[Shifted elements]} \\
+&= v_0 + v_1 + \dots + v_{n-1}  &&\text{[Rearrangement of sum]} \\
+&= S &&\text{[Sum remains unchanged]} \\
 \end{aligned}
 ```
 
-We also note that the elements of $L$ and $L'$ are related by by modulo as follows:
+We also note that the elements of $L$ and $L'$ are related by modulo as follows:
 
 ```math
 \begin{aligned}
@@ -623,6 +640,13 @@ A_1 &= B_0 \quad &\text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
+```math
+\begin{aligned}
+\quad \text{CycleIntegral}(L, init)_{1} &= \text{
+CycleIntegral}(L'', init')_{0} \quad \blacksquare &&\text{[Q.E.D.]} \\
+\end{aligned}
+```
+
 ##### Induction Step
 
 ```math
@@ -644,37 +668,212 @@ A_1 &= B_0 \quad &\text{[Q.E.D.]} \\
 ```math
 \begin{aligned}
 \forall \ i &\in \mathbb{N}_0 , \\
-A_{i+1} &= B_{i}
+L'_i =& L_{((i + 1) \text{ mod } n)} \quad &\text{[Right Shift Definition]} \\
+init' &= init + L_0 \\
+A_{i+1} &= B_{i} \\
+\quad \text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \blacksquare &&\text{[Q.E.D.]} \\
+\end{aligned}
+```
+
+### 4.4 Left Index Shift
+
+Let $L'' \in 𝕃$ be the left shift of $L \in 𝕃$ by $k$ positions, assuming $|L| > 1$.
+In other words:
+
+```math
+\begin{aligned}
+n &= |L|, \quad L = [v_0, \dots, v
+_{n-1}], \quad n > 1 &&\text{[Length of original cycle]} \\
+L'' &:= [v_{n-1}, v_0, v_1,
+  \dots, v_{n-2}]  &&\text{[Left shift by k positions]} \\
+L''_k &:= case \begin{cases}
+  L_{(k - 1)} & k > 0 \\
+  L_{n-1} & k = 0 \\
+\end{cases} &&\text{[Element definition after left shift]} \\
+|L''| &= n &&\text{[Length of shifted cycle]} \\
+S &:= \sum_{j=0}^{n-1} L_j &&\text{[Original cycle sum]} \\
+&= v_0 + v_1 + \dots + v_{n-1} &&\text{[Original elements]} \\
+S'' &:= \sum_{j=0}^{n-1} L''_j \\
+&= v_{n-1} + v_0 + v_1 + \dots + v_{n-2} &&\text{[Shifted elements]} \\
+&= v_0 + v_1 + \dots + v_{n-1}  &&\text{[Rearrangement of sum]} \\
+&= S &&\text{[Sum remains unchanged]} \\
+\end{aligned}
+```
+
+We also note that the elements of $L$ and $L''$ are related by modulo as follows:
+
+```math
+\begin{aligned}
+\forall \ i &\in \mathbb{N}_0 , \\
+Cycle(L)_{(i+1)} &= Cycle(L'')_{(i)} \\
+\end{aligned}
+```
+
+Since:
+
+```math
+\begin{aligned}
+S'' &= S \quad &\text{[Cycle Sum Invariance]} \\
+r &:= i \text{ mod } n \\
+L''_r &= \begin{cases}
+  L_{(r - 1)} & r > 0 \\
+  L_{n-1} & r = 0 \\
+\end{cases} \quad &\text{[Left Shift Definition]} \\
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+r > 0 &\implies \quad (i - 1 + n) \text{ mod } n = ((i \text{ mod } n) - 1 + n) \text{ mod } n \quad &\text{[By Modulo Property]} \\
+          &\implies \quad (i - 1 + n) \text{ mod } n = r - 1 \quad &\text{[Since } 1 \le r < n \text{]} \\
+          &\implies \quad L''_r = L_{(r - 1)} \quad &\text{[Left Shift Definition]} \\
+          &\implies \quad L''_{(i \text{ mod } n)} = L_{((i - 1 + n) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+r = 0 &\implies \quad (i - 1 + n) \text{ mod } n = n - 1 \quad &\text{[By Modulo Property]} \\
+          &\implies \quad L''_r = L_{n-1}  \quad &\text{[Left Shift Definition]} \\
+          &\implies \quad L''_{ (i \text{ mod } n)} = L_{((i - 1 + n) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+\therefore \\
+\forall \ i &\in \mathbb{N}_0 , \\
+Cycle(L)_{(i+1)} &= L_{((i + 1) \text{ mod } n)} \quad &\text{[Cycle Definition]} \\
+Cycle(L'')_{(i)} &= L''_{(i \text{ mod } n)} \quad &\text{[Cycle Definition]} \\
+L_{((i - 1 + n) \text{ mod } n)} &= L''_{(i \text{ mod } n)} \quad &\text{[For every case]} \\
+Cycle(L)_{(i+1)} &= Cycle(L'')_{(i)}  \quad \blacksquare \quad &\text{[Q.E.D.]} \
+\end{aligned}
+``` 
+
+Let the shifted initial value be defined as:
+
+```math
+\begin{aligned} 
+init'' &:= init + L_0 - L_{n-1} \\
+\end{aligned}
+```
+
+Then the CycleIntegral of $L''$ with initial value $init''$ reproduces exactly the CycleIntegral of $L$ with initial value $init$.
+
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_i &= \text{CycleIntegral}(L'', init'')_{i+1}  \quad \forall i \in \mathbb{N}_0 \quad &\text{[Shifted Value Reproduction]} \\
+\end{aligned}
+```
+
+#### Proof
+
+#####  Base Case
+```math
+\begin{aligned}
+A &:= \text{CycleIntegral}(L, init)_i &\text{[By Definition]} \\
+C &:= \text{CycleIntegral}(L'', init'')_{i}  &\text{[By Definition]} \\
+C_1 &= init'' + L''_0 &\text{[By Definition]} \\
+    &= (init + L_0 - L_{n-1}) + L''_0 &\text{[Since } init'' = init + L_0 - L_{n-1} \text{]} \\
+    &= init + L_0 - L_{n-1} + L_{n-1} &\text{[By Left Shift Definition]} \\
+    &= init + L_0 &\text{[Base Case Equality]} \\
+    &= A_0 &\text{[By Definition]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-\text{CycleIntegral}(L, init)_{i+1} &= \text{CycleIntegral}(L', init')_{i} \quad \blacksquare &&\text{[Q.E.D.]} \\
+\therefore \\
 \end{aligned}
 ```
 
-## 5. Future Work
+```math
+\begin{aligned}
+C_{1} &= A_{0} \\
+\quad \text{CycleIntegral}(L'', init'')_{1} &= \text{CycleIntegral}(L, init)_{0} \quad \blacksquare &&\text{[Q.E.D.]} \\
+\end{aligned}
+```  
 
-Future work may include exploring more complex properties of Cycles, such as their behavior under various operations like concatenation and filtering, and their applications in algorithms and data structures. Additionally, we can investigate discret integration of Cycles, similar to the work done for lists [[1]](#ref1) and integrals [[2]](#ref2).
+##### Induction Step
+
+```math
+\begin{aligned}
+C_{i+1} &= A_i &\text{[Induction Hypothesis]} \\
+\implies \\
+A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Definition]} \\
+C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} &\text{[By Definition]} \\
+&= A_i + L_{((i - 1 + n) \text{ mod } n)} &\text{[By Induction Hypothesis]} \\
+&= A_{i+1} &\text{[By Definition of } A_{i+1} \text{]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\therefore \\
+\end{aligned}
+``` 
+
+```math
+\begin{aligned}
+\forall \ i &\in \mathbb{N}_0 , \\
+L &= [v_0, v_1, \dots, v_{n-1}] \quad &\text{[Original list]} \\
+L'' &= [v_{n-1}, v_0, v_1,
+  \dots, v_{n-2}]  \quad &\text{[Left Shift Definition]} \\
+init'' &= init + L_0 - L_{n-1} \quad &\text{[Shifted Initial Value]} \\
+Cycle(L, init)_{(i+1)} &= Cycle(L'', init'')_{i} \quad &\text{[Cycle index shifted]} \\
+\quad \text{CycleIntegral}(L, init)_{(i+1)} &= \text{CycleIntegral}(L'', init'')_{i} \quad \blacksquare & \text{[Q.E.D.]} \\
+\end{aligned}
+```
+
+## 5. Conclusion
+
+This article extends the previously verified foundations for recursive lists,
+discrete integrals, modulo arithmetic, and cycles to define and reason about
+Cycle Integrals. Starting from a finite non-empty list, the construction treats
+the list as a repeating cycle and describes the accumulated value at any
+non-negative index using the cycle sum, modular position, and initial value.
+
+The main properties established in this article are:
+
+```math
+\begin{aligned}
+&\forall \ L \in 𝕃,\quad \forall \ init \in \mathbb{N}_0,\quad \forall \ i \in \mathbb{N}_0 \\
+L &= [v_0, v_1, \dots, v_{n-1}], \quad n = |L|,\quad n > 0 \\
+T &= \sum_{j=0}^{n-1} v_j \\
+\text{CycleIntegral}(L, init)_i
+&= (i \ \text{div}\ n) \cdot T + I_{i \text{ mod } n} + init
+\quad &\text{[Modulo Cycle Integral]} \\
+\text{CycleIntegral}(L^{(x)}, init)_i
+&= \text{CycleIntegral}(L, init)_i
+\quad &\text{[Invariance by Concatenation]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&= \text{CycleIntegral}(L', init')_{i}
+\quad &\text{[Right Index Shift]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&= \text{CycleIntegral}(L'', init'')_{i}
+\quad &\text{[Left Index Shift]} \\
+\end{aligned}
+```
+
+Together, these properties show that the recursive and modulo-based descriptions
+of Cycle Integrals preserve the expected accumulated values across repeated
+cycles, concatenated cycle bases, and shifted cycle representations. The verified
+definitions provide a reusable foundation for reasoning about infinite periodic
+accumulations using finite list structures and machine-checked Scala code.
+
+## 6. Future Work
+
+Future work may include exploring more complex properties of Cycle Integrals, such as:
+- Applications to prime number detection and distribution analysis
+- Extensions to multi-dimensional cycles and integrals
+- Optimization strategies for computational efficiency
+- Integration with other mathematical structures like polynomials or matrices
+- Applications in signal processing and time series analysis
+
+
 
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a> 
 Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2025). *Formal Verification of Discrete Integration Properties from First Principles*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
+Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Unbound Lists*. Unpublished manuscript.  
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md)
+
+<a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2025). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.  
-Available at: [
-  https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md
-)(https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
-
-
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
