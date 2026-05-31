@@ -41,12 +41,11 @@ L &= [l_0, l_1, l_2, \ldots, l_{n-1}]  \mid &l_n &\in 𝕊, L \in 𝕃\\
 \end{aligned}
 ```
 
-In this article, we present discrete definition of Cycle Integral
-over finite integer lists, defined recursively and verified some of 
-its properties using the Stainless system.
+In this article, we present a discrete definition of Cycle Integral
+over finite integer lists, defined recursively and verified some of its properties using the Stainless system.
 Our approach follows a zero-prior-knowledge philosophy, building on a previously 
 verified foundation for recursive list and integral structures and summation.
-The result is a verified, from-scratch implementation of cycle integral 
+The result is a verified, from-scratch implementation of the cycle integral 
 suitable as a foundation for higher-level numeric reasoning over unbounded lists.
 
 ## 2. Preliminaries
@@ -86,28 +85,26 @@ Once both properties hold, equivalence follows from induction.
 
 ```math
 \begin{aligned}
-i &= i \text{ mod } n \quad &\text{[By Modulo Property]}\\
-w_i &= \sum_{j=0}^i L_j + init 
-\quad &\text{[Base Case]} \\
-&= \sum_{j=0}^i L_{(j \text{ mod } n)} + init 
-\quad &\text{[Substitution]} \\
+&i &= i \text{ mod } n \quad &\text{[By Modulo Property]}\\
+&w_i &= \sum_{j=0}^i L_j + init  \quad &\text{[Base Case]} \\
+&&= \sum_{j=0}^i L_{(j \text{ mod } n)} + init  \quad &\text{[Substitution]} \\
 \end{aligned}
 ```
 
 ```math
-\forall \ i \in ℕ \mid \ w_i - w_{i-1} = L_{(i \text{ mod } n)} \implies \\
+\forall \ i \in ℕ \mid \ w_i - w_{i-1} = L_{(i \text{ mod } n)} \implies
 ```
 
 ```math
 \begin{aligned}
-w_{i-1} &= \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init \quad &\text{[Induction Step]} \\
-w_i - w_{i-1} &= L_{(i \text{ mod } n)}
+&w_{i-1} &= \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init \quad &\text{[Induction Step]} \\
+&w_i - w_{i-1} &= L_{(i \text{ mod } n)}
 \quad &\text{[By definition]} \\
-w_i  &= L_{(i \text{ mod } n)} + w_{i-1} 
+&w_i  &= L_{(i \text{ mod } n)} + w_{i-1} 
 \quad &\text{[Transposition]} \\
-&=  L_{(i \text{ mod } n)} + \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init
+&&=  L_{(i \text{ mod } n)} + \sum_{j=0}^{i-1} L_{(j \text{ mod } n)} + init
 \quad &\text{[By Step Property]} \\
-&= \sum_{j=0}^{i} L_{(j \text{ mod } n)} + init \quad &\text{[Summation Re-indexing]} \\
+&&= \sum_{j=0}^{i} L_{(j \text{ mod } n)} + init \quad &\text{[Summation Re-indexing]} \\
 \end{aligned}
 ```
 
@@ -194,13 +191,13 @@ This property is verified in the [
 
 ```math
 \begin{aligned}
-w_i &= ClassicCycleIntegral(L, init)_i \quad &\text{[By Definition]} \\
-≈w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
-w_i - w_{i-1} &= \left(\sum_{j=0}^i L_j + init\right) - \left(\sum_{j=0}^{i-1} L_j + init\right)  \quad &\text{[By Definition]} \\
-&= \sum_{j=0}^i L_j + init - \sum_{j=0}^{i-1} L_j - init \quad &\text{[Association]} \\
-&= \sum_{j=0}^i L_j - \sum_{j=0}^{i-1} L_j \quad &\text{[Canceling init]} \\
-&= L_i \quad &\text{[Simplification]} \\
-&= L_{(i \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
+&w_i &= ClassicCycleIntegral(L, init)_i \quad &\text{[By Definition]} \\
+&w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
+&w_i - w_{i-1} &= \left(\sum_{j=0}^i L_j + init\right) - \left(\sum_{j=0}^{i-1} L_j + init\right)  \quad &\text{[By Definition]} \\
+&&= \sum_{j=0}^i L_j + init - \sum_{j=0}^{i-1} L_j - init \quad &\text{[Association]} \\
+&&= \sum_{j=0}^i L_j - \sum_{j=0}^{i-1} L_j \quad &\text{[Canceling init]} \\
+&&= L_i \quad &\text{[Simplification]} \\
+&&= L_{(i \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
 \end{aligned}
 ```
 ```math
@@ -299,10 +296,10 @@ This property is also verified at
 
 ```math
 \begin{aligned}
-\text{ModCycle}(L)_i &:= L_{(i \text{ mod } n)} = [w_0, w_1, \dots ] \\
-I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral of L]} \\
-S &:= I_{n-1} \quad &\text{[One full cycle sum]} \\
-\text{ModCycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init
+&\text{ModCycle}(L)_i &:= L_{(i \text{ mod } n)} = [w_0, w_1, \dots ] \\
+&I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral of L]} \\
+&S &:= I_{n-1} \quad &\text{[One full cycle sum]} \\
+&\text{ModCycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init
 \end{aligned}
 ```
 
@@ -349,26 +346,16 @@ w_i - w_{i-1} ≟ L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 
 ```math
 \begin{aligned}
-i \text{ mod } n &= ((i-1) \text{ mod } n) + 1
-&&\text{[By Modulo Properties]} \\
-i \text{ div } n &= (i-1) \text{ div } n
-&&\text{[By Division Properties]} \\
-w_i &= (i \text{ div } n)\,S + I_{\,i\text{ mod } n} + init
-&&\text{[Definition]} \\
-&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\text{ mod } n)+1} + init
-&&\text{[Div/Mod property]} \\
-w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\text{ mod } n} + init
-&&\text{[Definition]} \\
-w_i-w_{i-1}
-    &= I_{\,((i-1)\text{ mod } n)+1} - I_{\, (i-1)\text{ mod } n}
-&&\text{[Cancellation]} \\
-    &= \Big(\sum_{j=0}^{(i-1)\text{ mod } n} L_j + L_{((i-1)\text{ mod } n)+1}\Big)
-       - \sum_{j=0}^{(i-1)\text{ mod } n} L_j
-&&\text{[Expand sum]} \\
-    &= L_{((i-1)\text{ mod } n)+1}
-&&\text{[Cancellation]} \\
-    &= L_{\,i \text{ mod } n}
-&&\text{[Modulo property]}.
+&i \text{ mod } n &= ((i-1) \text{ mod } n) + 1 &&\text{[By Modulo Properties]} \\
+&i \text{ div } n &= (i-1) \text{ div } n &&\text{[By Division Properties]} \\
+&w_i &= (i \text{ div } n)\,S + I_{\,i\text{ mod } n} + init &&\text{[Definition]} \\
+     &&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\text{ mod } n)+1} + init &&\text{[Div/Mod property]} \\
+&w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\text{ mod } n} + init &&\text{[Definition]} \\
+&w_i-w_{i-1} &= I_{\,((i-1)\text{ mod } n)+1} - I_{\, (i-1)\text{ mod } n} &&\text{[Cancellation]} \\
+    &&= \Big(\sum_{j=0}^{(i-1)\text{ mod } n} L_j + L_{((i-1)\text{ mod } n)+1}\Big)
+       - \sum_{j=0}^{(i-1)\text{ mod } n} L_j &&\text{[Expand sum]} \\
+    &&= L_{((i-1)\text{ mod } n)+1} &&\text{[Cancellation]} \\
+    &&= L_{\,i \text{ mod } n} &&\text{[Modulo property]}.
 \end{aligned}
 ```
 
@@ -443,15 +430,19 @@ L &= [v_0, v_1, \dots, v_{n-1}] \in \mathbb{N}_0^n, \quad |L| > 0 \\
 n &:= |L| \\
 S &:= \sum_{j=0}^{n-1} v_j \\
 I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
-\text{CycleIntegral}(L, init)_i &:= (i \,\text{div}\, n)\cdot S + I_{(i \text{ mod } n)} + init
 \end{aligned}
 ````
 
+```math
+\begin{aligned}
+\text{CycleIntegral}(L, init)_i := (i \,\text{div}\, n)\cdot S + I_{(i \text{ mod } n)} + init
+\end{aligned}
+```
 we have:
 
 ```math
 \begin{aligned}
-&\Big( S \text{ mod } v = 0 \ \wedge \ \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 \Big)\\
+ &\Big( S \text{ mod } v = 0 \ \wedge \ \forall \ k \in [0,n-1],\ (I_k + init) \text{ mod } v \neq 0 \Big)\\
 &\implies \forall \ i \in \mathbb{N}_0, \ \text{CycleIntegral}(L, init)_i \text{ mod } v \neq 0 \\
 \end{aligned}
 ```
@@ -537,6 +528,7 @@ I^{(x)}_{i \bmod m} &= I_{i \bmod n}
   &&\text{[Exact value reproduction]} \\
 \end{aligned}
 ```
+
 ```math
 \begin{aligned}
 &\therefore \\
@@ -549,11 +541,12 @@ I^{(x)}_{i \bmod m} &= I_{i \bmod n}
 
 ### 4.3 Right Index Shift
 
-Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, in other words:
+Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by $k$ positions, assuming $|L| \in \mathbb{N}$.
+In other words:
 
 ```math
 \begin{aligned}
-n &= |L|, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
+n &= |L| \in \mathbb{N}, \quad L = [v_0, \dots, v_{n-1}] &&\text{[Length of original cycle]} \\
 L' &:= [v_1, v_2, \dots, v_{n-1}, v_0]  &&\text{[Right shift by k positions]} \\
 L'_k &:= \begin{cases}
   L_{(k + 1)} & k < n - 1 \\
@@ -582,9 +575,9 @@ Since:
 
 ```math
 \begin{aligned}
-S' &= S \quad &\text{[Cycle Sum Invariance]} \\
-r &:= i \text{ mod } n \\
-L'_r &= \begin{cases}
+&S' &= S \quad &\text{[Cycle Sum Invariance]} \\
+&r  &:= i \text{ mod } n \\
+&L'_r &= \begin{cases}
   L_{(r + 1)} & r < n - 1 \\
   L_0 & r = n - 1 \\
 \end{cases} \quad &\text{[Right Shift Definition]} \\
@@ -599,6 +592,10 @@ r < n - 1 &\implies \quad (i + 1) \text{ mod } n = ((i \text{ mod } n) + (1 \tex
 r = n - 1 &\implies \quad (i + 1) \text{ mod } n = 0 \quad &\text{[By Modulo Property]} \\
           &\implies \quad L'_r = L_0  \quad &\text{[Right Shift Definition]} \\
           &\implies \quad L'_(i \text{ mod } n) = L_{((i + 1) \text{ mod } n)}  \quad &\text{[By Modulo Property]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
 \therefore \\
 \forall \ i &\in \mathbb{N}_0 , \\
 L'_{(i \text{ mod } n)} &= L_{((i + 1) \text{ mod } n)} \quad \blacksquare \quad &\text{[Q.E.D.]} \\
@@ -626,14 +623,14 @@ Then the CycleIntegral of $L'$ with initial value $init'$ reproduces exactly the
 #####  Base Case
 ```math
 \begin{aligned}
-A &:= \text{CycleIntegral}(L, init)_i &\text{[By Definition]} \\
-B &:= \text{CycleIntegral}(L', init')_{i}  &\text{[By Definition]} \\
-A_0 &= init + L_0 &\text{[By Definition]} \\
-A_1 &= init + L_0 + L_1 &\text{[By Definition]} \\ 
-B_0 &= init' + L'_0 &\text{[By Definition]} \\
-    &= (init + L_0) + L'_0 &\text{[Since } init' = init + L_0 \text{]} \\
-    &= init + L_0 + L_1 &\text{[By Right Shift Definition]} \\
-    &= A_1 &\text{[Base Case Equality]} \\
+&A &:= \text{CycleIntegral}(L, init)_i &\text{[By Definition]} \\
+&B &:= \text{CycleIntegral}(L', init')_{i}  &\text{[By Definition]} \\
+&A_0 &= init + L_0 &\text{[By Definition]} \\
+&A_1 &= init + L_0 + L_1 &\text{[By Definition]} \\ 
+&B_0 &= init' + L'_0 &\text{[By Definition]} \\
+    &&= (init + L_0) + L'_0 &\text{[Since } init' = init + L_0 \text{]} \\
+    &&= init + L_0 + L_1 &\text{[By Right Shift Definition]} \\
+    &&= A_1 &\text{[Base Case Equality]} \\
 \end{aligned}
 ```
 ```math
@@ -654,12 +651,12 @@ CycleIntegral}(L'', init')_{0} \quad \blacksquare &&\text{[Q.E.D.]} \\
 
 ```math
 \begin{aligned}
-B_{i-1} &= A_i &\text{[Induction Hypothesis]} \\
-\implies \\
-A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Definition]} \\
-B_i &= B_{i-1} + L'_{(i \text{ mod } n)} &\text{[By Definition]} \\
-&= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Induction Hypothesis]} \\
-&= A_{i+1} &\text{[By Definition of } A_{i+1} \text{]} \\
+&B_{i-1} &= A_i &\text{[Induction Hypothesis]} \\
+&\implies \\
+&A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Definition]} \\
+&B_i &= B_{i-1} + L'_{(i \text{ mod } n)} &\text{[By Definition]} \\
+&&= A_i + L_{((i + 1) \text{ mod } n)} &\text{[By Induction Hypothesis]} \\
+&&= A_{i+1} &\text{[By Definition of } A_{i+1} \text{]} \\
 \end{aligned}
 ```
 ```math
@@ -680,12 +677,13 @@ A_{i+1} &= B_{i} \\
 
 ### 4.4 Left Index Shift
 
-Let $L'' \in 𝕃$ be the left shift of $L \in 𝕃$ by $k$ positions, in other words:
+Let $L'' \in 𝕃$ be the left shift of $L \in 𝕃$ by $k$ positions, assuming $|L| > 1$.
+In other words:
 
 ```math
 \begin{aligned}
 n &= |L|, \quad L = [v_0, \dots, v
-_{n-1}] &&\text{[Length of original cycle]} \\
+_{n-1}], \quad n > 1 &&\text{[Length of original cycle]} \\
 L'' &:= [v_{n-1}, v_0, v_1,
   \dots, v_{n-2}]  &&\text{[Left shift by k positions]} \\
 L''_k &:= case \begin{cases}
@@ -815,7 +813,43 @@ Cycle(L, init)_{(i+1)} &= Cycle(L'', init'')_{i} \quad &\text{[Cycle index shift
 \end{aligned}
 ```
 
-## 5. Future Work
+## 5. Conclusion
+
+This article extends the previously verified foundations for recursive lists,
+discrete integrals, modulo arithmetic, and cycles to define and reason about
+Cycle Integrals. Starting from a finite non-empty list, the construction treats
+the list as a repeating cycle and describes the accumulated value at any
+non-negative index using the cycle sum, modular position, and initial value.
+
+The main properties established in this article are:
+
+```math
+\begin{aligned}
+&\forall \ L \in 𝕃,\quad \forall \ init \in \mathbb{N}_0,\quad \forall \ i \in \mathbb{N}_0 \\
+L &= [v_0, v_1, \dots, v_{n-1}], \quad n = |L|,\quad n > 0 \\
+T &= \sum_{j=0}^{n-1} v_j \\
+\text{CycleIntegral}(L, init)_i
+&= (i \ \text{div}\ n) \cdot T + I_{i \text{ mod } n} + init
+\quad &\text{[Modulo Cycle Integral]} \\
+\text{CycleIntegral}(L^{(x)}, init)_i
+&= \text{CycleIntegral}(L, init)_i
+\quad &\text{[Invariance by Concatenation]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&= \text{CycleIntegral}(L', init')_{i}
+\quad &\text{[Right Index Shift]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&= \text{CycleIntegral}(L'', init'')_{i}
+\quad &\text{[Left Index Shift]} \\
+\end{aligned}
+```
+
+Together, these properties show that the recursive and modulo-based descriptions
+of Cycle Integrals preserve the expected accumulated values across repeated
+cycles, concatenated cycle bases, and shifted cycle representations. The verified
+definitions provide a reusable foundation for reasoning about infinite periodic
+accumulations using finite list structures and machine-checked Scala code.
+
+## 6. Future Work
 
 Future work may include exploring more complex properties of Cycle Integrals, such as:
 - Applications to prime number detection and distribution analysis
