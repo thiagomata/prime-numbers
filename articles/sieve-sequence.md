@@ -113,33 +113,46 @@ The heads $p_0, p_1, p_2, \dots$ are exactly the prime numbers.
 
 ### 3.2 Wheel Factorization Representation
 
-Each $S_k$ can be represented using a **wheel** defined by the product of known primes:
+Each $S_k$ can be represented simply by:
+- **head** ($p_k$): The first element in the sequence (a prime number)
+- **cycle** ($C_k$): The cycle of gaps that generate the sequence
+
+Where:
+- **head** ($h$): The starting element - always the smallest element not filtered yet, which is always prime
+- **cycle** ($C$): A MemCycle containing the gaps (differences) between consecutive elements
+
+For example:
 
 ```math
 \begin{aligned}
-M_k &= \prod_{j=0}^{k-1} p_j \\
-R_k &= \{r \in [0, M_k - 1] \mid \forall j \leq k,\ r \bmod p_j \neq 0\}
+S_0 &: \text{head} = 2,\ C_0 = [1] \quad &\Rightarrow [2, 3, 4, 5, 6, \dots] \\
+S_1 &: \text{head} = 3,\ C_1 = [2] \quad &\Rightarrow [3, 5, 7, 9, 11, \dots] \\
+S_2 &: \text{head} = 5,\ C_2 = [4, 2] \quad &\Rightarrow [5, 7, 11, 13, 17, 19, \dots] \\
+S_3 &: \text{head} = 7,\ C_3 = [6, 4, 2, 4, 2, 4, 6, 2] \quad &\Rightarrow [7, 11, 13, 17, 19, \dots]
 \end{aligned}
 ```
 
-The gaps between consecutive residues form a finite cycle:
+The **gaps** are the differences between consecutive elements in the sequence. For $S_2 = [5, 7, 11, 13, \dots]$, the gaps are:
+- 7 - 5 = 2
+- 11 - 7 = 4
+- 13 - 11 = 2
+- ...
+
+So the gaps cycle is [2, 4, 2, ...] (or written as [4, 2] when cycled).
+
+And the sequence is generated as:
 
 ```math
-G_k = \text{gaps}(R_k)
-```
-And the sequence is:
-
-```math
-S_k = \text{SieveSequence}(\text{head}_k, M_k, R_k, G_k)
+S_k = \text{SieveSequence}(\text{head}_k, C_k)
 ```
 
-For the examples:
+For the examples (showing head and cycle):
 
 ```math
 \begin{aligned}
-S_1 &: M_1 = 2,\ R_1 = [1],\ G_1 = [2],\ \text{head} = 3 \\
-S_2 &: M_2 = 6,\ R_2 = [1, 5],\ G_2 = [4, 2],\ \text{head} = 5 \\
-S_3 &: M_3 = 30,\ R_3 = [1, 7, 11, 13, 17, 19, 23, 29],\ G_3 = [6, 4, 2, 4, 2, 4, 6, 2],\ \text{head} = 7
+S_1 &: \text{head} = 3,\ C_1 = [2] \\
+S_2 &: \text{head} = 5,\ C_2 = [4, 2] \\
+S_3 &: \text{head} = 7,\ C_3 = [6, 4, 2, 4, 2, 4, 6, 2]
 \end{aligned}
 ```
 
@@ -147,16 +160,16 @@ S_3 &: M_3 = 30,\ R_3 = [1, 7, 11, 13, 17, 19, 23, 29],\ G_3 = [6, 4, 2, 4, 2, 4
 
 ```math
 \begin{aligned}
-\text{SieveSequence}(h, M, R, G) &= [w_0, w_1, w_2, \dots] \\
-w_i &= h + \left\lfloor \frac{i}{|G|} \right\rfloor \cdot \text{cycleSum}(G) + \sum_{j=0}^{(i \text{ mod } |G|) - 1} G_j
+\text{SieveSequence}(h, C) &= [w_0, w_1, w_2, \dots] \\
+w_i &= h + \sum_{j=0}^{i-1} C_{(j \bmod |C|)} \\
 \end{aligned}
 ```
 
 where:
+- $h$ is the head (first element)
+- $C$ is the cycle of gaps that generate the sequence
 
-```math
-\text{cycleSum}(G) = \sum_{j=0}^{|G|-1} G_j
-```
+This is equivalent to the cumulative sum approach used in the `Seq` class properties.
 
 Defined at [SieveSequence.scala](../src/main/scala/v1/seq/sieve/SieveSequence.scala) as follows:
 
@@ -169,9 +182,7 @@ Defined at [SieveSequence.scala](../src/main/scala/v1/seq/sieve/SieveSequence.sc
  * that are coprime to a given modulus, generated via wheel factorization.
  *
  * @param head The first (smallest) element in the sequence
- * @param modulus The product of primes filtered so far
- * @param residues The valid residues modulo `modulus`
- * @param gaps The cyclic differences between consecutive residues
+ * @param cycle MemCycle containing the gaps that generate the sequence
  */
 ```
 </details>
@@ -179,29 +190,26 @@ Defined at [SieveSequence.scala](../src/main/scala/v1/seq/sieve/SieveSequence.sc
 ```scala
 case class SieveSequence(
   head: BigInt,
-  modulus: BigInt,
-  residues: List[BigInt],
-  gaps: List[BigInt]
+  cycle: MemCycle
 ) {
-  require(modulus >= 2)
-  require(residues.nonEmpty)
-  require(gaps.nonEmpty)
-  require(gaps.size == residues.size)
   require(head > 0)
-  require(head < modulus)
+  require(cycle.size > 0)
+  require(cycle.values.forall(_ > 0))
 
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
-    val gapSize = gaps.size
+    val gapSize = cycle.size
     val q = Calc.div(position, gapSize)
     val r = Calc.mod(position, gapSize)
-    val cycleSum = ListUtils.sum(gaps)
-    val partialSum = sumGapsUpTo(r)
+    val cycleSum = cycle.sum()
+    val partialSum = cycle.sumUpTo(r)
     head + q * cycleSum + partialSum
   }
   // ... additional methods omitted
 }
 ```
+
+The `residues` and `modulus` fields were shown previously for completeness but are not needed in the actual implementation since they can be derived from the `cycle` values and `head`.
 
 ## 4. Properties
 
@@ -456,18 +464,18 @@ def assertCoprimality(sieve: SieveSequence, position: BigInt): Boolean = {
 **Lemma:** The next SieveSequence correctly filters out multiples of the current head.
 
 Given:
-- Current sequence with modulus $M$, residues $R$, gaps $G$, head $p$
-- New modulus $M' = M \cdot p$
-- New residues $R' = \{r \in R \mid r \bmod p \neq 0\}$
+- Current sequence: head $p_k$, cycle $C_k$
+- Next head: $p_{k+1} = p_k + C_k(0)$ (the first gap)
+- Next cycle: $C_{k+1}$ derived by filtering $C_k$
 
 Then:
-- The new head is the smallest element coprime to $M'$
-- The new sequence generates exactly the integers coprime to $M'$
+- The new head is the first element greater than $p_k$ that is not a multiple of $p_k$
+- The new sequence generates exactly the integers coprime to $p_k$
 
 #### Proof (Cycle Refinement Approach)
 
 The mathematical approach to generating the next sieve sequence is through cycle refinement:
-1. Compute the next head as: $p_{k+1} = p_k + G_k(0)$, where $G_k(0)$ is the first gap
+1. Compute the next head as: $p_{k+1} = p_k + C_k(0)$, where $C_k(0)$ is the first gap value
 2. Filter the current cycle values to derive the new cycle:
    $S_{k+1} = \{x \in S_k \mid x > p_k \land x \bmod p_k \neq 0\}$
 
