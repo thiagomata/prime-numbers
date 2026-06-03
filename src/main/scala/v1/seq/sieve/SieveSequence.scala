@@ -18,6 +18,8 @@ case class SieveSequence(
   require(SieveUtils.checkAllPositive(primes))
   require(SieveUtils.isCoprime(head, primes))
   require(integral.cycle.sum() == SieveUtils.product(primes))
+  require(integral.cycle(BigInt(0)) < head)
+  require(SieveUtils.isCoprime(head + SieveUtils.product(primes), primes))
 
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
@@ -29,6 +31,8 @@ case class SieveSequence(
   def knownPrimeLimit: BigInt = head * head
   def cycle: MemCycle = integral.cycle
   def modulus: BigInt = SieveUtils.product(primes)
+  def nextPrime: BigInt = head
+  def nextHead: BigInt = apply(BigInt(1))
 }
 
 object SieveSequence {
