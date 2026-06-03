@@ -30,6 +30,7 @@ object Summary {
     assert(ModIdempotence.modModMinus(a, b, c))
 
     assert(if  a >= 0 && b > 0 then ModOperations.addOne(a, b) else true)
+    assert(if  a >= 0 then ModOne.modOneIsZero(a) else true)
 
     assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
     assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
@@ -75,6 +76,7 @@ object Summary {
     (if a >= 0 && b > 0 && mod(a, b) != b - 1 then mod(a + 1, b) == mod(a, b) + 1 else true) &&
     (if a >= 0 && b > 0 && mod(a, b) == b - 1 then mod(a + 1, b) == 0 else true) &&
     (if a >= 0 && b > 0 && mod(a, b) != b - 1 then div(a + 1, b) == div(a, b) else true) &&
-    (if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true)
+    (if a >= 0 && b > 0 && mod(a, b) == b - 1 then div(a + 1, b) == div(a, b) + 1 else true) &&
+    (if a >= 0 then Calc.mod(a, BigInt(1)) == BigInt(0) else true)
   }.holds
 }

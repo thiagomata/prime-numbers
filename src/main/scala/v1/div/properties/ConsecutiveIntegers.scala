@@ -217,6 +217,39 @@ object ConsecutiveIntegers {
   }.holds
 
   /**
+   * Lemma: After removing multiples of p1, the density of p2
+   * among survivors is still 1/p2.
+   *
+   * In interval [a, a + m*p1*p2 - 1]:
+   * - Survivors (not divisible by p1): m*p2*(p1-1)
+   * - Survivors divisible by p2: m*(p1-1)
+   * - Density = survivors_p2 / total_survivors = 1/p2
+   *
+   * Invariant: survivors_p2 * p2 == total_survivors
+   */
+  def densityPreservedAfterFiltering(
+    a: BigInt, p1: BigInt, p2: BigInt, m: BigInt
+  ): Boolean = {
+    require(p1 > 1)
+    require(p2 > 1)
+    require(p1 != p2)
+    require(a >= 0)
+    require(m >= 1)
+
+    twoPrimesDensity(a, p1, p2, m)
+
+    val total = m * p1 * p2
+    val p1Mults = m * p2
+    val p2Mults = m * p1
+    val both = m
+
+    val survivors = total - p1Mults
+    val p2AmongSurvivors = p2Mults - both
+
+    p2AmongSurvivors * p2 == survivors
+  }.holds
+
+  /**
    * Lemma: For a list of primes with modulus M = product(primes),
    * in interval [a, a + m*M - 1], each prime p divides
    * exactly m * M / p values.
@@ -241,10 +274,6 @@ object ConsecutiveIntegers {
     }
   }.holds
 
-  /**
-   * Lemma: No element in the list is a multiple of another.
-   * For primes this is always true (distinct primes are coprime).
-   */
   def noMultiplesInList(primes: List[BigInt]): Boolean = {
     decreases(primes.size)
     if (primes.isEmpty || primes.tail.isEmpty) true
