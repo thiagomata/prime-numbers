@@ -6,7 +6,9 @@ verify:
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
     pkill -f sbt 2>/dev/null; pkill -f java;
-    ./stainless-dotty-standalone-*/stainless --fail-early=true $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')
+    rm -f verify-error.log
+    rm -f verify.log
+    ./stainless-dotty-standalone-*/stainless --fail-early=true $(find ./src/main/scala -name '*.scala' | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
 
 verify-docker:
     docker-compose -f docker-compose.yaml run stainless
