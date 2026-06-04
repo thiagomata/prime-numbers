@@ -5,6 +5,7 @@ verify:
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
+    pkill -f sbt 2>/dev/null; pkill -f java;
     ./stainless-dotty-standalone-*/stainless --fail-early=true $(find ./src/main/scala -name '*.scala' | tr '\n' ' ')
 
 verify-docker:

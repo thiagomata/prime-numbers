@@ -1,7 +1,9 @@
 package v1.seq.sieve
 
 import stainless.collection.List
-import stainless.lang.decreases
+import stainless.lang.*
+
+import scala.annotation.tailrec
 
 object SieveUtils {
   def product(list: List[BigInt]): BigInt = {
@@ -10,12 +12,22 @@ object SieveUtils {
     else list.head * product(list.tail)
   }
 
-  def checkAllPositive(list: List[BigInt]): Boolean = {
+  @tailrec
+  def checkAllBiggerThanValue(list: List[BigInt], value: BigInt): Boolean = {
     decreases(list.size)
     if (list.isEmpty) true
-    else list.head > 0 && checkAllPositive(list.tail)
+    else list.head > value && checkAllBiggerThanValue(list.tail, value)
   }
 
+  def checkAllPositive(list: List[BigInt]): Boolean = {
+    checkAllBiggerThanValue(list, BigInt(0))
+  }
+
+  def checkAllBiggerThanOne(list: List[BigInt]): Boolean = {
+    checkAllBiggerThanValue(list, BigInt(1))
+  }
+
+  @tailrec
   def isCoprime(value: BigInt, primes: List[BigInt]): Boolean = {
     require(checkAllPositive(primes))
     decreases(primes.size)
@@ -126,6 +138,7 @@ object SieveUtils {
     else findResidueIndex(sorted, currentIndex, value)
   }
 
+  @tailrec
   def findResidueIndex(list: List[BigInt], idx: BigInt, value: BigInt): BigInt = {
     require(list.nonEmpty)
     decreases(list.size)
@@ -152,4 +165,26 @@ object SieveUtils {
       back ++ front
     }
   }
+
+  def assertValueNeverDecreases(a: BigInt, b: BigInt): Boolean = {
+    require(a >= 1 && b >= 1)
+    a * b >= a && a * b >= b && a * b >= BigInt(1)
+  }.holds
+
+  def assertProductEqualOrBiggerThanElements(list: List[BigInt]): Boolean = {
+    require(checkAllBiggerThanOne(list))
+    decreases(list.size)
+    if (list.isEmpty) {
+      product(list) == BigInt(1)
+    }
+    else {
+      assertProductEqualOrBiggerThanElements(list.tail)
+      assert(product(list.tail) >= BigInt(1))
+      assert(list.head > BigInt(1))
+      assert(assertValueNeverDecreases(list.head, product(list.tail)))
+      assert(product(list) == list.head * product(list.tail))
+      product(list) >= BigInt(1) &&
+        product(list) >= list.head
+    }
+  }.holds
 }

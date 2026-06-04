@@ -16,6 +16,8 @@ case class SieveSequence(
   require(integral.initialValue == head)
   require(CycleUtils.checkPositiveOrZero(integral.cycle.values))
   require(SieveUtils.checkAllPositive(primes))
+  require(SieveUtils.assertProductEqualOrBiggerThanElements(primes))
+  require(v1.seq.sieve.CycleUtils.allLessThan(primes, head))
   require(SieveUtils.isCoprime(head, primes))
   require(integral.cycle.sum() == SieveUtils.product(primes))
   require(integral.cycle(BigInt(0)) < head)
