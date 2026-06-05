@@ -142,7 +142,7 @@ object SieveUtils {
   def findResidueIndex(list: List[BigInt], idx: BigInt, value: BigInt): BigInt = {
     require(list.nonEmpty)
     decreases(list.size)
-    if (list.head > value) idx
+    if (list.head >= value) idx
     else if (list.tail.isEmpty) BigInt(0)
     else findResidueIndex(list.tail, idx + 1, value)
   }
