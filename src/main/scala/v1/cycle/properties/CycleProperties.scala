@@ -2,6 +2,7 @@ package v1.cycle.properties
 
 import stainless.lang.*
 import v1.Calc
+import v1.cycle.CycleUtils
 import v1.cycle.mod.ModCycle
 import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
 import verification.Helper.assert
@@ -119,5 +120,16 @@ object CycleProperties {
     assert(ModIdempotence.modIdempotence(position, size))
     assert(Calc.mod(Calc.mod(position, size),size) == Calc.mod(position, size))
     assert(cycle(position) == cycle(Calc.mod(position, size)))
+  }.holds
+
+  def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
+    require(pos >= 0)
+    require(cycle.size > 0)
+    findValueInCycle(cycle, pos)
+    val idx = Calc.mod(pos, cycle.size)
+    assert(idx >= 0)
+    assert(idx < cycle.size)
+    CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, idx)
+    cycle(pos) >= 0
   }.holds
 }

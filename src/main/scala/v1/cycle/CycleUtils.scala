@@ -2,9 +2,11 @@ package v1.cycle
 
 
 import stainless.collection.List
+import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.Calc
 import v1.cycle.memory.MemCycle
+import v1.list.properties.ListUtilsProperties
 import verification.Helper.assert
 
 import scala.annotation.tailrec
@@ -179,4 +181,22 @@ object CycleUtils {
     loopTail(list)
   }
 
+  def checkPositiveOrZeroAtIndex(values: List[BigInt], idx: BigInt): Boolean = {
+    require(checkPositiveOrZero(values))
+    require(idx >= 0 && idx < values.size)
+    decreases(idx)
+    if (idx == BigInt(0)) {
+      values.head >= BigInt(0)
+    } else {
+      assert(checkPositiveOrZeroAtIndex(values.tail, idx - 1))
+      assert(ListUtilsProperties.assertTailShiftLeft(values, idx))
+      values(idx) >= BigInt(0)
+    }
+  }.holds
+
+  def checkPositiveOrZeroCons(head: BigInt, tail: List[BigInt]): Boolean = {
+    require(head >= 0)
+    require(checkPositiveOrZero(tail))
+    checkPositiveOrZero(head :: tail)
+  }.holds
 }
