@@ -4,7 +4,7 @@ import stainless.lang.*
 import v1.Calc
 import v1.cycle.CycleUtils
 import v1.cycle.mod.ModCycle
-import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
+import v1.div.properties.{AdditionAndMultiplication, ModIdempotence, ModOperations}
 import verification.Helper.assert
 
 object CycleProperties {
@@ -131,5 +131,31 @@ object CycleProperties {
     assert(idx < cycle.size)
     CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, idx)
     cycle(pos) >= 0
+  }.holds
+
+  def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
+    require(k >= 0)
+    require(i >= 0)
+    require(cycle.size > 0)
+
+    val size = cycle.size
+    val rotatedCycle = cycle.rotateAt(k)
+
+    findValueInCycle(rotatedCycle, i)
+    val modI = Calc.mod(i, size)
+    assert(rotatedCycle(i) == rotatedCycle.values(modI))
+
+    CycleUtils.collectRotatedValueAt(cycle.values, k, size, modI)
+    assert(rotatedCycle.values(modI) == cycle.values(Calc.mod(k + modI, size)))
+
+    ModIdempotence.modIdempotence(i, size)
+    ModOperations.modAdd(k, size, Calc.mod(i, size))
+    ModOperations.modAdd(k, size, i)
+    assert(Calc.mod(k + modI, size) == Calc.mod(k + i, size))
+
+    findValueInCycle(cycle, k + i)
+    assert(cycle(k + i) == cycle.values(Calc.mod(k + i, size)))
+
+    rotatedCycle(i) == cycle(k + i)
   }.holds
 }

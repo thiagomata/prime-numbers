@@ -50,36 +50,10 @@ case class ModCycle(values: List[BigInt]) {
     require(index >= 0)
     if (index == BigInt(0)) this
     else {
-      val rotated = collectRotated(index, size)
-      assert(CycleUtils.checkPositiveOrZero(rotated))
-      assert(rotated.nonEmpty)
+      val rotated = CycleUtils.collectRotated(values, index, size)
       ModCycle(rotated)
     }
   }
-
-  private def collectRotated(start: BigInt, count: BigInt): List[BigInt] = {
-    require(start >= 0)
-    require(count >= 1 && count <= size)
-    decreases(count)
-
-    val idx = Calc.mod(start, values.size)
-    val current = values(idx)
-    CycleUtils.checkPositiveOrZeroAtIndex(values, idx)
-    assert(current >= 0)
-
-    if (count == 1) {
-      val res = List(current)
-      assert(CycleUtils.checkPositiveOrZeroCons(current, List.empty[BigInt]))
-      res
-    }
-    else {
-      val nextList = collectRotated(start + 1, count - 1)
-      assert(CycleUtils.checkPositiveOrZeroCons(current, nextList))
-      current :: nextList
-    }
-  }.ensuring(
-    res => res.size == count && CycleUtils.checkPositiveOrZero(res)
-  )
 
   @tailrec
   private def allValuesExistInList(listA: List[BigInt], listB: List[BigInt]): Boolean = {

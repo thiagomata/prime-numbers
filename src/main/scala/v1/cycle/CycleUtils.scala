@@ -199,4 +199,47 @@ object CycleUtils {
     require(checkPositiveOrZero(tail))
     checkPositiveOrZero(head :: tail)
   }.holds
+
+  def collectRotated(values: List[BigInt], start: BigInt, count: BigInt): List[BigInt] = {
+    require(start >= 0)
+    require(count >= 1 && count <= values.size)
+    require(checkPositiveOrZero(values))
+    decreases(count)
+
+    val idx = Calc.mod(start, values.size)
+    val current = values(idx)
+    checkPositiveOrZeroAtIndex(values, idx)
+    assert(current >= 0)
+
+    if (count == 1) {
+      val res = List(current)
+      assert(checkPositiveOrZeroCons(current, List.empty[BigInt]))
+      res
+    }
+    else {
+      val nextList = collectRotated(values, start + 1, count - 1)
+      assert(checkPositiveOrZeroCons(current, nextList))
+      current :: nextList
+    }
+  }.ensuring(
+    res => res.size == count && checkPositiveOrZero(res)
+  )
+
+  def collectRotatedValueAt(values: List[BigInt], start: BigInt, count: BigInt, pos: BigInt): Boolean = {
+    require(start >= 0)
+    require(count >= 1 && count <= values.size)
+    require(pos >= 0 && pos < count)
+    require(checkPositiveOrZero(values))
+    decreases(pos)
+
+    val rotated = collectRotated(values, start, count)
+
+    if (pos == BigInt(0)) {
+      rotated.head == values(Calc.mod(start, values.size))
+    } else {
+      assert(ListUtilsProperties.assertTailShiftLeft(rotated, pos))
+      assert(collectRotatedValueAt(values, start + 1, count - 1, pos - 1))
+      rotated(pos) == values(Calc.mod(start + pos, values.size))
+    }
+  }.holds
 }
