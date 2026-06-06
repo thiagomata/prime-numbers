@@ -16,6 +16,9 @@ verify-docker:
 build:
     sbt clean reload assembly jacoco
 
+test:
+    sbt 'set stainlessEnabled := false' test
+
 run a b:
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}}
 

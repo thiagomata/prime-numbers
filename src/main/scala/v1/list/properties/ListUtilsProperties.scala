@@ -177,4 +177,44 @@ object ListUtilsProperties {
     }
     list.last == list(list.size - 1)
   }.holds
+
+  /**
+    * For every list where all elements are bigger than a value,
+    * any element at a valid position is also bigger than that value.
+    *
+    * checkAllBiggerThanValue(list, value) => list(pos) > value
+    *
+    * @param list List[BigInt] — list of values
+    * @param value BigInt — the lower bound value
+    * @param pos BigInt — valid position in the list
+    * @return Boolean true if the property holds
+    */
+  def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
+    require(ListUtils.checkAllBiggerThanValue(list, value))
+    require(pos >= 0 && pos < list.size)
+    decreases(pos)
+    if (pos == BigInt(0)) {
+      list.head > value
+    } else {
+      assert(checkAllBiggerThanValueAtIndex(list.tail, value, pos - 1))
+      assert(assertTailShiftLeft(list, pos))
+      list(pos) > value
+    }
+  }.holds
+
+  /**
+    * For every non-empty list where all elements are bigger than a value,
+    * the head is bigger than that value and the tail also satisfies the property.
+    *
+    * checkAllBiggerThanValue(list, value) => list.head > value && checkAllBiggerThanValue(list.tail, value)
+    *
+    * @param list List[BigInt] — non-empty list of values
+    * @param value BigInt — the lower bound value
+    * @return Boolean true if the property holds
+    */
+  def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
+    require(ListUtils.checkAllBiggerThanValue(list, value))
+    require(list.nonEmpty)
+    list.head > value && ListUtils.checkAllBiggerThanValue(list.tail, value)
+  }.holds
 }

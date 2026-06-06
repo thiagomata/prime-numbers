@@ -3,6 +3,7 @@ package v1.list
 import stainless.collection.List
 import stainless.lang.decreases
 import v1.list.properties.ListUtilsProperties
+import scala.annotation.tailrec
 
 object ListUtils {
 
@@ -32,6 +33,16 @@ object ListUtils {
    * @param to BigInt the ending index (inclusive)
    * @return List[BigInt] the sliced list
    */
+  def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
+    require(index >= 0 && index <= list.size)
+    decreases(index)
+    if (index == BigInt(0)) (List.empty, list)
+    else {
+      val (front, back) = splitAt(list.tail, index - 1)
+      (list.head :: front, back)
+    }
+  }
+
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
     require(from >= 0)
     require(to >= from)
@@ -46,5 +57,20 @@ object ListUtils {
       ListUtilsProperties.listAddValueTail(prev, current)
       prev ++ List(current)
     }
+  }
+
+  @tailrec
+  def checkAllBiggerThanValue(list: List[BigInt], value: BigInt): Boolean = {
+    decreases(list.size)
+    if (list.isEmpty) true
+    else list.head > value && checkAllBiggerThanValue(list.tail, value)
+  }
+
+  def checkAllPositive(list: List[BigInt]): Boolean = {
+    checkAllBiggerThanValue(list, BigInt(0))
+  }
+
+  def checkAllBiggerThanOne(list: List[BigInt]): Boolean = {
+    checkAllBiggerThanValue(list, BigInt(1))
   }
 }

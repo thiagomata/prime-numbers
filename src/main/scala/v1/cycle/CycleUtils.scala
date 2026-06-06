@@ -169,13 +169,14 @@ object CycleUtils {
   def checkPositiveOrZero(list: List[BigInt]): Boolean = {
 
     @tailrec
-    def loop(listLoop: List[BigInt]): Boolean = {
+    def loopTail(listLoop: List[BigInt]): Boolean = {
       decreases(listLoop.size)
       if (listLoop.isEmpty) return true
       val valid = listLoop.head >= 0
-      if (!valid) false else loop(listLoop.tail)
+      if (!valid) false else loopTail(listLoop.tail)
     }
 
-    loop(list)
+    loopTail(list)
   }
+
 }

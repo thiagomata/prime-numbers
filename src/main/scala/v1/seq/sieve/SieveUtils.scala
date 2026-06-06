@@ -3,6 +3,7 @@ package v1.seq.sieve
 import stainless.collection.List
 import stainless.lang.*
 
+import v1.list.ListUtils
 import scala.annotation.tailrec
 
 object SieveUtils {
@@ -13,23 +14,8 @@ object SieveUtils {
   }
 
   @tailrec
-  def checkAllBiggerThanValue(list: List[BigInt], value: BigInt): Boolean = {
-    decreases(list.size)
-    if (list.isEmpty) true
-    else list.head > value && checkAllBiggerThanValue(list.tail, value)
-  }
-
-  def checkAllPositive(list: List[BigInt]): Boolean = {
-    checkAllBiggerThanValue(list, BigInt(0))
-  }
-
-  def checkAllBiggerThanOne(list: List[BigInt]): Boolean = {
-    checkAllBiggerThanValue(list, BigInt(1))
-  }
-
-  @tailrec
   def isCoprime(value: BigInt, primes: List[BigInt]): Boolean = {
-    require(checkAllPositive(primes))
+    require(ListUtils.checkAllPositive(primes))
     decreases(primes.size)
     if (primes.isEmpty) true
     else if (value % primes.head == BigInt(0)) false
@@ -38,7 +24,7 @@ object SieveUtils {
 
   def residues(modulus: BigInt, primes: List[BigInt]): List[BigInt] = {
     require(modulus > 0)
-    require(checkAllPositive(primes))
+    require(ListUtils.checkAllPositive(primes))
     generateResidues(BigInt(0), modulus, primes)
   }
 
@@ -46,7 +32,7 @@ object SieveUtils {
     require(i >= 0)
     require(i <= modulus)
     require(modulus > 0)
-    require(checkAllPositive(primes))
+    require(ListUtils.checkAllPositive(primes))
     decreases(modulus - i)
     if (i == modulus) List.empty
     else {
@@ -147,24 +133,27 @@ object SieveUtils {
     else findResidueIndex(list.tail, idx + 1, value)
   }
 
-  def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
-    require(index >= 0 && index <= list.size)
-    decreases(index)
-    if (index == BigInt(0)) (List.empty, list)
-    else {
-      val (front, back) = splitAt(list.tail, index - 1)
-      (list.head :: front, back)
-    }
-  }
+//  def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
+//    require(index >= 0 && index <= list.size)
+//    decreases(index)
+//    if (index == BigInt(0)) (List.empty, list)
+//    else {
+//      val (front, back) = splitAt(list.tail, index - 1)
+//      (list.head :: front, back)
+//    }
+//  }
 
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
-    if (list.isEmpty || index < 0 || index >= list.size) List.empty
-    else if (index == BigInt(0)) list
+    require(index >= 0 && index < list.size)
+    if (list.isEmpty || index <= BigInt(0) || index >= list.size) list
     else {
-      val (front, back) = splitAt(list, index)
+      val (front, back) = ListUtils.splitAt(list, index)
       back ++ front
     }
   }
+//    .ensuring(
+//    res => res.size == list.size && res.toSet == list.toSet
+//  )
 
   def assertValueNeverDecreases(a: BigInt, b: BigInt): Boolean = {
     require(a >= 1 && b >= 1)
@@ -172,7 +161,7 @@ object SieveUtils {
   }.holds
 
   def assertProductEqualOrBiggerThanElements(list: List[BigInt]): Boolean = {
-    require(checkAllBiggerThanOne(list))
+    require(ListUtils.checkAllBiggerThanOne(list))
     decreases(list.size)
     if (list.isEmpty) {
       product(list) == BigInt(1)

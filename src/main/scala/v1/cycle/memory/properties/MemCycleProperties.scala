@@ -1,7 +1,9 @@
 package v1.cycle.memory.properties
 
 import stainless.lang.*
+import stainless.collection.List
 import v1.Calc
+import v1.cycle.CycleUtils
 import v1.cycle.memory.MemCycle
 import v1.div.properties.{AdditionAndMultiplication, ModIdempotence}
 import verification.Helper.assert

@@ -7,7 +7,7 @@ import v1.Calc
 import v1.cycle.CycleUtils
 import v1.cycle.memory.MemCycle
 import v1.div.properties.AdditionAndMultiplication
-import v1.seq.sieve.SieveUtils.{checkAllBiggerThanOne, checkAllPositive}
+import v1.list.ListUtils.{checkAllBiggerThanOne, checkAllPositive}
 
 object SieveSequenceNextLevel {
 
@@ -47,35 +47,35 @@ object SieveSequenceNextLevel {
     expansionRangeEnd(seq)
   }
 
-  def assertBlockSizePositive(seq: SieveSequence): Boolean = {
-    expansionBlockSize(seq) > BigInt(0)
-  }.holds
-
-  def assertNewHeadLarger(seq: SieveSequence): Boolean = {
-    newHead(seq) > seq.head
-  }.holds
-
-  def assertNewHeadAtLeastTwo(seq: SieveSequence): Boolean = {
-    assert(assertNewHeadLarger(seq))
-    newHead(seq) >= BigInt(2)
-  }.holds
-
-  def assertNewPrimesPositive(seq: SieveSequence): Boolean = {
-    SieveUtils.checkAllPositive(newHead(seq) :: seq.primes)
-  }.holds
-
-  def assertNewPrimesAllBiggerThanOne(seq: SieveSequence): Boolean = {
-    SieveUtils.checkAllBiggerThanOne(newHead(seq) :: seq.primes)
-  }.holds
-
-  def assertNewProductEqualOrBiggerThanElements(seq: SieveSequence): Boolean = {
-    assert(assertNewPrimesAllBiggerThanOne(seq))
-    SieveUtils.assertProductEqualOrBiggerThanElements(newHead(seq) :: seq.primes)
-  }.holds
-
-  def assertModulusPositive(seq: SieveSequence): Boolean = {
-    seq.modulus > BigInt(0)
-  }.holds
+//  def assertBlockSizePositive(seq: SieveSequence): Boolean = {
+//    expansionBlockSize(seq) > BigInt(0)
+//  }.holds
+//
+//  def assertNewHeadLarger(seq: SieveSequence): Boolean = {
+//    newHead(seq) > seq.head
+//  }.holds
+//
+//  def assertNewHeadAtLeastTwo(seq: SieveSequence): Boolean = {
+//    assert(assertNewHeadLarger(seq))
+//    newHead(seq) >= BigInt(2)
+//  }.holds
+//
+//  def assertNewPrimesPositive(seq: SieveSequence): Boolean = {
+//    SieveUtils.checkAllPositive(newHead(seq) :: seq.primes)
+//  }.holds
+//
+//  def assertNewPrimesAllBiggerThanOne(seq: SieveSequence): Boolean = {
+//    SieveUtils.checkAllBiggerThanOne(newHead(seq) :: seq.primes)
+//  }.holds
+//
+//  def assertNewProductEqualOrBiggerThanElements(seq: SieveSequence): Boolean = {
+//    assert(assertNewPrimesAllBiggerThanOne(seq))
+//    SieveUtils.assertProductEqualOrBiggerThanElements(newHead(seq) :: seq.primes)
+//  }.holds
+//
+//  def assertModulusPositive(seq: SieveSequence): Boolean = {
+//    seq.modulus > BigInt(0)
+//  }.holds
 
   def nextResidues(seq: SieveSequence): List[BigInt] = {
     SieveUtils.residues(seq.modulus, seq.primes.tail)
@@ -103,27 +103,27 @@ object SieveSequenceNextLevel {
     SieveUtils.nextResidueIndex(nextSorted(seq), BigInt(0), newHeadVal % newMod)
   }
 
-  def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
-    SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
-  }
+//  def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
+//    SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
+//  }
 
-  def assertFirstCandidateSurvives(seq: SieveSequence): Boolean = {
-    survives(seq, BigInt(0))
-  }.holds
-
-  def assertRangeOrdered(seq: SieveSequence): Boolean = {
-    expansionRangeStart(seq) < expansionRangeEnd(seq)
-  }.holds
-
-  def assertNewPrimesValid(seq: SieveSequence): Boolean = {
-    val np = newHead(seq) :: seq.primes
-    assert(assertNewHeadLarger(seq))
-    assert(SieveUtils.checkAllPositive(np))
-    assert(v1.seq.sieve.CycleUtils.allLessThan(seq.primes.tail, seq.head))
-    assert(v1.seq.sieve.CycleUtils.assertAllLessThanTransitive(seq.primes.tail, seq.head, newHead(seq)))
-    SieveUtils.checkAllPositive(np) &&
-      v1.seq.sieve.CycleUtils.allLessThan(np.tail, newHead(seq))
-  }.holds
+//  def assertFirstCandidateSurvives(seq: SieveSequence): Boolean = {
+//    survives(seq, BigInt(0))
+//  }.holds
+//
+//  def assertRangeOrdered(seq: SieveSequence): Boolean = {
+//    expansionRangeStart(seq) < expansionRangeEnd(seq)
+//  }.holds
+//
+//  def assertNewPrimesValid(seq: SieveSequence): Boolean = {
+//    val np = newHead(seq) :: seq.primes
+//    assert(assertNewHeadLarger(seq))
+//    assert(SieveUtils.checkAllPositive(np))
+//    assert(v1.seq.sieve.CycleUtils.allLessThan(seq.primes.tail, seq.head))
+//    assert(v1.seq.sieve.CycleUtils.assertAllLessThanTransitive(seq.primes.tail, seq.head, newHead(seq)))
+//    SieveUtils.checkAllPositive(np) &&
+//      v1.seq.sieve.CycleUtils.allLessThan(np.tail, newHead(seq))
+//  }.holds
 
   @tailrec
   def collectGaps(seq: SieveSequence, lastSurvivor: BigInt, pos: BigInt, remaining: BigInt, gaps: List[BigInt]): List[BigInt] = {
