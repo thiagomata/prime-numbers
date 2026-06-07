@@ -1,0 +1,66 @@
+package v1.list
+
+import stainless.collection.List
+import stainless.lang.decreases
+import stainless.lang.BooleanDecorations
+
+import scala.annotation.tailrec
+
+object ListBoundUtils {
+
+  @tailrec
+  def checkNonNegative(list: List[BigInt]): Boolean = {
+    decreases(list)
+    if (list.isEmpty) true
+    else list.head >= 0 && checkNonNegative(list.tail)
+  }
+
+  @tailrec
+  def allLessThan(list: List[BigInt], bound: BigInt): Boolean = {
+    decreases(list)
+    if (list.isEmpty) true
+    else list.head < bound && allLessThan(list.tail, bound)
+  }
+
+  def assertCheckNonNegativeAppend(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    require(checkNonNegative(listA))
+    require(checkNonNegative(listB))
+    decreases(listA.size)
+    if (listA.isEmpty) {
+      checkNonNegative(listA ++ listB)
+    } else {
+      assert(assertCheckNonNegativeAppend(listA.tail, listB))
+      assert(checkNonNegative(listA.tail ++ listB))
+      assert(listA.head >= 0)
+      checkNonNegative(listA ++ listB)
+    }
+  }.holds
+
+  def assertAllLessThanAppend(listA: List[BigInt], listB: List[BigInt], bound: BigInt): Boolean = {
+    require(allLessThan(listA, bound))
+    require(allLessThan(listB, bound))
+    decreases(listA.size)
+    if (listA.isEmpty) {
+      allLessThan(listA ++ listB, bound)
+    } else {
+      assert(assertAllLessThanAppend(listA.tail, listB, bound))
+      assert(allLessThan(listA.tail ++ listB, bound))
+      assert(listA.head < bound)
+      allLessThan(listA ++ listB, bound)
+    }
+  }.holds
+
+  def assertAllLessThanTransitive(list: List[BigInt], bound: BigInt, bound2: BigInt): Boolean = {
+    require(allLessThan(list, bound))
+    require(bound <= bound2)
+    decreases(list)
+    if (list.isEmpty) true
+    else {
+      assert(list.head < bound)
+      assert(list.head < bound2)
+      assert(allLessThan(list.tail, bound))
+      assert(assertAllLessThanTransitive(list.tail, bound, bound2))
+      allLessThan(list, bound2)
+    }
+  }.holds
+}
