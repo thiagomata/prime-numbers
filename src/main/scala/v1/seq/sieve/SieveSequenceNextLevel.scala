@@ -7,6 +7,7 @@ import v1.Calc
 import v1.cycle.CycleUtils
 import v1.cycle.memory.MemCycle
 import v1.div.properties.AdditionAndMultiplication
+import v1.list.SortedList
 import v1.list.ListUtils.{checkAllBiggerThanOne, checkAllPositive}
 
 object SieveSequenceNextLevel {
@@ -89,18 +90,18 @@ object SieveSequenceNextLevel {
     SieveUtils.filterList(nextExpanded(seq), seq.head)
   }
 
-  def nextSorted(seq: SieveSequence): List[BigInt] = {
-    SieveUtils.sortFiltered(nextFiltered(seq))
+  def nextSorted(seq: SieveSequence): SortedList = {
+    SortedList.fromUnsorted(nextFiltered(seq))
   }
 
   def nextGaps(seq: SieveSequence): List[BigInt] = {
-    SieveUtils.calculateGaps(nextSorted(seq), seq.modulus * seq.head)
+    SieveUtils.calculateGaps(nextSorted(seq).list, seq.modulus * seq.head)
   }
 
   def nextHeadResidueIndex(seq: SieveSequence): BigInt = {
     val newHeadVal = seq.apply(BigInt(1))
     val newMod = seq.modulus * seq.head
-    SieveUtils.nextResidueIndex(nextSorted(seq), BigInt(0), newHeadVal % newMod)
+    SieveUtils.nextResidueIndex(nextSorted(seq).list, BigInt(0), newHeadVal % newMod)
   }
 
   def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
@@ -177,7 +178,7 @@ object SieveSequenceNextLevel {
   def assertNewCycleSumEqualsProduct(seq: SieveSequence): Boolean = {
     val newMod = seq.modulus * seq.head
     val sorted = nextSorted(seq)
-    SieveUtils.assertCalculateGapsSum(sorted, newMod)
+    SieveUtils.assertCalculateGapsSum(sorted.list, newMod)
     newMod == SieveUtils.product(seq.primes)
   }.holds
 

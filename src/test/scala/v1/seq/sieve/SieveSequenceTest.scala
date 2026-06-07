@@ -61,9 +61,9 @@ class SieveSequenceTest extends FlatSpec with Matchers {
     val newHeadVal = s1.apply(BigInt(1))
     val newMod = s1.modulus * s1.head
     val target = newHeadVal % newMod
-    val idx = SieveUtils.nextResidueIndex(sorted, BigInt(0), target)
+    val idx = SieveUtils.nextResidueIndex(sorted.list, BigInt(0), target)
     val nrg = SieveSequenceNextLevel.nextRotatedGaps(s1)
-    sorted should be(List(BigInt(1), BigInt(5)))
+    sorted.list should be(List(BigInt(1), BigInt(5)))
     target should be(BigInt(5))
     idx should be(BigInt(1))
     nrg should be(List(BigInt(2), BigInt(4)))
@@ -82,7 +82,7 @@ class SieveSequenceTest extends FlatSpec with Matchers {
     residues should be(List(BigInt(0)))
     expanded should be(List(BigInt(0), BigInt(1)))
     filtered should be(List(BigInt(1)))
-    sorted should be(List(BigInt(1)))
+    sorted.list should be(List(BigInt(1)))
     gaps should be(List(BigInt(2)))
     headResIdx should be(BigInt(0))
     nrg should be(List(BigInt(2)))
