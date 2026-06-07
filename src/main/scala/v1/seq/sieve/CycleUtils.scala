@@ -54,4 +54,32 @@ object CycleUtils {
     if (list.isEmpty) true
     else list.head >= 0 && checkNonNegative(list.tail)
   }
+
+  def assertAllLessThanAppend(listA: List[BigInt], listB: List[BigInt], bound: BigInt): Boolean = {
+    require(allLessThan(listA, bound))
+    require(allLessThan(listB, bound))
+    decreases(listA.size)
+    if (listA.isEmpty) {
+      allLessThan(listA ++ listB, bound)
+    } else {
+      assert(assertAllLessThanAppend(listA.tail, listB, bound))
+      assert(allLessThan(listA.tail ++ listB, bound))
+      assert(listA.head < bound)
+      allLessThan(listA ++ listB, bound)
+    }
+  }.holds
+
+  def assertCheckNonNegativeAppend(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    require(checkNonNegative(listA))
+    require(checkNonNegative(listB))
+    decreases(listA.size)
+    if (listA.isEmpty) {
+      checkNonNegative(listA ++ listB)
+    } else {
+      assert(assertCheckNonNegativeAppend(listA.tail, listB))
+      assert(checkNonNegative(listA.tail ++ listB))
+      assert(listA.head >= 0)
+      checkNonNegative(listA ++ listB)
+    }
+  }.holds
 }

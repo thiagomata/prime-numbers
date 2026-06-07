@@ -104,9 +104,7 @@ object SieveSequenceNextLevel {
   }
 
   def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
-    val gaps = nextGaps(seq)
-    val idx = nextHeadResidueIndex(seq)
-    if (idx >= BigInt(0)) SieveUtils.rotateAt(gaps, idx) else gaps
+    SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
   }
 
   def nextCycle(seq: SieveSequence): MemCycle = {
@@ -175,5 +173,31 @@ object SieveSequenceNextLevel {
   def assertNewPrimesProductValid(seq: SieveSequence): Boolean = {
     SieveUtils.assertProductEqualOrBiggerThanElements(seq.primes)
   }.holds
+
+  def assertNewCycleSumEqualsProduct(seq: SieveSequence): Boolean = {
+    val newMod = seq.modulus * seq.head
+    val sorted = nextSorted(seq)
+    SieveUtils.assertCalculateGapsSum(sorted, newMod)
+    newMod == SieveUtils.product(seq.primes)
+  }.holds
+
+  def assertNextGapsNonEmpty(seq: SieveSequence): Boolean = {
+    nextGaps(seq).nonEmpty
+  }.holds
+
+//  def assertNextGapsPositiveOrZero(seq: SieveSequence): Boolean = {
+//    val newMod = seq.modulus * seq.head
+//    val residues = SieveUtils.residues(seq.modulus, seq.primes.tail)
+//    val expanded = SieveUtils.expandResidues(residues, seq.modulus, seq.head)
+//    val filtered = SieveUtils.filterList(expanded, seq.head)
+//    val sorted = SieveUtils.sortFiltered(filtered)
+//    SieveUtils.assertExpandResiduesRange(residues, seq.modulus, seq.head)
+//    SieveUtils.assertFilterListNonNegative(expanded, seq.head)
+//    SieveUtils.assertFilterListAllLessThan(expanded, newMod, seq.head)
+//    SieveUtils.assertSortFilteredNonNegative(filtered)
+//    SieveUtils.assertSortFilteredAllLessThan(filtered, newMod)
+//    SieveUtils.assertSortFilteredAscending(filtered)
+//    CycleUtils.checkPositiveOrZero(SieveUtils.calculateGaps(sorted, newMod))
+//  }.holds
 
 }
