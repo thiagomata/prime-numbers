@@ -265,71 +265,71 @@ object SieveUtils {
     }
   }.holds
 
-//  def assertFilterListAllLessThan(list: List[BigInt], bound: BigInt, divisor: BigInt): Boolean = {
-//    require(CycleUtils.allLessThan(list, bound))
-//    require(divisor > 0)
-//    decreases(list.size)
-//    if (list.isEmpty) {
-//      CycleUtils.allLessThan(filterList(list, divisor), bound)
-//    } else {
-//      assert(assertFilterListAllLessThan(list.tail, bound, divisor))
-//      CycleUtils.allLessThan(filterList(list, divisor), bound)
-//    }
-//  }.holds
-//
-//  def assertInsertSortedNonNegative(x: BigInt, list: List[BigInt]): Boolean = {
-//    require(x >= 0)
-//    require(CycleUtils.checkNonNegative(list))
-//    decreases(list.size)
-//    if (list.isEmpty) {
-//      CycleUtils.checkNonNegative(insertSorted(x, list))
-//    } else if (x <= list.head) {
-//      CycleUtils.checkNonNegative(insertSorted(x, list))
-//    } else {
-//      assert(assertInsertSortedNonNegative(x, list.tail))
-//      CycleUtils.checkNonNegative(insertSorted(x, list))
-//    }
-//  }.holds
-//
-//  def assertSortFilteredNonNegative(list: List[BigInt]): Boolean = {
-//    require(CycleUtils.checkNonNegative(list))
-//    decreases(list.size)
-//    if (list.isEmpty) {
-//      CycleUtils.checkNonNegative(sortFiltered(list))
-//    } else {
-//      assert(CycleUtils.checkNonNegative(list.tail))
-//      assert(assertSortFilteredNonNegative(list.tail))
-//      assert(assertInsertSortedNonNegative(list.head, sortFiltered(list.tail)))
-//      CycleUtils.checkNonNegative(sortFiltered(list))
-//    }
-//  }.holds
-//
-//  def assertInsertSortedAllLessThan(x: BigInt, list: List[BigInt], bound: BigInt): Boolean = {
-//    require(x < bound)
-//    require(CycleUtils.allLessThan(list, bound))
-//    decreases(list.size)
-//    if (list.isEmpty) {
-//      CycleUtils.allLessThan(insertSorted(x, list), bound)
-//    } else if (x <= list.head) {
-//      CycleUtils.allLessThan(insertSorted(x, list), bound)
-//    } else {
-//      assert(assertInsertSortedAllLessThan(x, list.tail, bound))
-//      CycleUtils.allLessThan(insertSorted(x, list), bound)
-//    }
-//  }.holds
-//
-//  def assertSortFilteredAllLessThan(list: List[BigInt], bound: BigInt): Boolean = {
-//    require(CycleUtils.allLessThan(list, bound))
-//    decreases(list.size)
-//    if (list.isEmpty) {
-//      CycleUtils.allLessThan(sortFiltered(list), bound)
-//    } else {
-//      assert(CycleUtils.allLessThan(list.tail, bound))
-//      assert(assertSortFilteredAllLessThan(list.tail, bound))
-//      assert(assertInsertSortedAllLessThan(list.head, sortFiltered(list.tail), bound))
-//      CycleUtils.allLessThan(sortFiltered(list), bound)
-//    }
-//  }.holds
+  def assertFilterListAllLessThan(list: List[BigInt], bound: BigInt, divisor: BigInt): Boolean = {
+    require(CycleUtils.allLessThan(list, bound))
+    require(divisor > 0)
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.allLessThan(filterList(list, divisor), bound)
+    } else {
+      assert(assertFilterListAllLessThan(list.tail, bound, divisor))
+      CycleUtils.allLessThan(filterList(list, divisor), bound)
+    }
+  }.holds
+
+  def assertInsertSortedNonNegative(x: BigInt, list: List[BigInt]): Boolean = {
+    require(x >= 0)
+    require(CycleUtils.checkNonNegative(list))
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.checkNonNegative(insertSorted(x, list))
+    } else if (x <= list.head) {
+      CycleUtils.checkNonNegative(insertSorted(x, list))
+    } else {
+      assert(assertInsertSortedNonNegative(x, list.tail))
+      CycleUtils.checkNonNegative(insertSorted(x, list))
+    }
+  }.holds
+
+  def assertSortFilteredNonNegative(list: List[BigInt]): Boolean = {
+    require(CycleUtils.checkNonNegative(list))
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.checkNonNegative(sortFiltered(list))
+    } else {
+      assert(CycleUtils.checkNonNegative(list.tail))
+      assert(assertSortFilteredNonNegative(list.tail))
+      assert(assertInsertSortedNonNegative(list.head, sortFiltered(list.tail)))
+      CycleUtils.checkNonNegative(sortFiltered(list))
+    }
+  }.holds
+
+  def assertInsertSortedAllLessThan(x: BigInt, list: List[BigInt], bound: BigInt): Boolean = {
+    require(x < bound)
+    require(CycleUtils.allLessThan(list, bound))
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.allLessThan(insertSorted(x, list), bound)
+    } else if (x <= list.head) {
+      CycleUtils.allLessThan(insertSorted(x, list), bound)
+    } else {
+      assert(assertInsertSortedAllLessThan(x, list.tail, bound))
+      CycleUtils.allLessThan(insertSorted(x, list), bound)
+    }
+  }.holds
+
+  def assertSortFilteredAllLessThan(list: List[BigInt], bound: BigInt): Boolean = {
+    require(CycleUtils.allLessThan(list, bound))
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.allLessThan(sortFiltered(list), bound)
+    } else {
+      assert(CycleUtils.allLessThan(list.tail, bound))
+      assert(assertSortFilteredAllLessThan(list.tail, bound))
+      assert(assertInsertSortedAllLessThan(list.head, sortFiltered(list.tail), bound))
+      CycleUtils.allLessThan(sortFiltered(list), bound)
+    }
+  }.holds
 
   def assertValueNeverDecreases(a: BigInt, b: BigInt): Boolean = {
     require(a >= 1 && b >= 1)
