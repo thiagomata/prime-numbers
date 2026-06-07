@@ -20,8 +20,8 @@ case class SieveSequence(
   require(integral.cycle.size > 0)
   require(ListUtils.checkAllPositive(integral.cycle.values))
   require(CycleUtils.checkPositiveOrZero(integral.cycle.values))
+  require(integral.initialValue == primes.head)
 //  require(primes.head >= BigInt(2))
-//  require(integral.initialValue == primes.head)
 //  require(v1.seq.sieve.CycleUtils.allLessThan(primes.tail, primes.head))
 //  require(SieveUtils.isCoprime(primes.head, primes.tail))
 //  require(integral.cycle.sum() == SieveUtils.product(primes.tail))
@@ -44,17 +44,15 @@ case class SieveSequence(
   def nextPrime: BigInt = head
   def nextHead: BigInt = apply(BigInt(1))
 
-//  @extern
-//  def next(): SieveSequence = {
-//    val gaps = SieveSequenceNextLevel.nextRotatedGaps(this)
-//    assert(SieveUtils.checkAllPositive(gaps))
-//    val head = apply(BigInt(1))
-//    assert(head > 1);
-//    SieveSequence(
-//      primes = head :: primes,
-//      integral = CycleIntegral(head, MemCycle(gaps))
-//    )
-//  }
+  @extern
+  def next(): SieveSequence = {
+    val newHead = apply(BigInt(1))
+    val newCycle = SieveSequenceNextLevel.nextCycle(this)
+    SieveSequence(
+      primes = newHead :: primes,
+      integral = CycleIntegral(newHead, newCycle)
+    )
+  }
 }
 
 object SieveSequence {

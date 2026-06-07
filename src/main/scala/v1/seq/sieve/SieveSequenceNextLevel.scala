@@ -103,9 +103,18 @@ object SieveSequenceNextLevel {
     SieveUtils.nextResidueIndex(nextSorted(seq), BigInt(0), newHeadVal % newMod)
   }
 
-//  def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
-//    SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
-//  }
+  def nextRotatedGaps(seq: SieveSequence): List[BigInt] = {
+    val gaps = nextGaps(seq)
+    val idx = nextHeadResidueIndex(seq)
+    if (idx >= BigInt(0)) SieveUtils.rotateAt(gaps, idx) else gaps
+  }
+
+  def nextCycle(seq: SieveSequence): MemCycle = {
+    val gaps = nextRotatedGaps(seq)
+    require(gaps.nonEmpty)
+    require(CycleUtils.checkPositiveOrZero(gaps))
+    MemCycle(gaps)
+  }
 
 //  def assertFirstCandidateSurvives(seq: SieveSequence): Boolean = {
 //    survives(seq, BigInt(0))
@@ -150,5 +159,21 @@ object SieveSequenceNextLevel {
     val newHeadVal = seq.apply(BigInt(1))
     collectGaps(seq, newHeadVal, BigInt(1), steps - BigInt(1), List.empty[BigInt])
   }
+
+  def assertNewPrimesNonEmpty(seq: SieveSequence): Boolean = {
+    (newHead(seq) :: seq.primes).nonEmpty
+  }.holds
+
+  def assertNewPrimesPositive(seq: SieveSequence): Boolean = {
+    checkAllPositive(newHead(seq) :: seq.primes)
+  }.holds
+
+  def assertNewPrimesAllBiggerThanOne(seq: SieveSequence): Boolean = {
+    checkAllBiggerThanOne(newHead(seq) :: seq.primes)
+  }.holds
+
+  def assertNewPrimesProductValid(seq: SieveSequence): Boolean = {
+    SieveUtils.assertProductEqualOrBiggerThanElements(seq.primes)
+  }.holds
 
 }

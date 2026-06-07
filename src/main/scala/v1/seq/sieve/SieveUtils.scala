@@ -105,6 +105,7 @@ object SieveUtils {
     else (list(1) - list(0)) :: pairwiseGaps(list.tail)
   }
 
+  @tailrec
   def getAt(list: List[BigInt], index: BigInt): BigInt = {
     require(index >= 0)
     require(index < list.size)
@@ -143,9 +144,12 @@ object SieveUtils {
 //    }
 //  }
 
+  @tailrec
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
-    require(index >= 0 && index < list.size)
-    if (list.isEmpty || index <= BigInt(0) || index >= list.size) list
+    require(index >= 0)
+    decreases(index)
+    if (list.isEmpty || index == BigInt(0)) list
+    else if (index >= list.size) rotateAt(list, index - list.size)
     else {
       val (front, back) = ListUtils.splitAt(list, index)
       back ++ front

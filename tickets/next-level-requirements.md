@@ -64,13 +64,14 @@ For any valid `seq: SieveSequence`, prove that the candidate next sequence:
 
 ```scala
 nextSeq = SieveSequence(
-  head      = seq.apply(BigInt(1)),      // = seq.head + seq.cycle(0)
-  primes    = seq.head :: seq.primes,
+  primes    = seq.apply(BigInt(1)) :: seq.primes,  // newHead :: old primes
   integral  = CycleIntegral(newHead, newCycle)
 )
 ```
 
-satisfies **all 13 `require` clauses** of the `SieveSequence` constructor.
+satisfies **all 7 active `require` clauses** of the `SieveSequence` constructor.
+
+**NOTE (2026-06-07):** SieveSequence was refactored. `head = primes.head`, `modulus = product(primes.tail)`. Only 7 requires remain (lines 16-22). The old 13-require version is in comments. The ticket was written for the old version — adapt accordingly.
 
 Each requirement gets its own lemma. The `next()` method then calls each lemma via `assert(...)` and returns the new sequence.
 
@@ -565,19 +566,33 @@ Depends on pipeline: R3, R5, R9, R10, R11, R12, R13
 
 ## Execution Order (Recommended)
 
-### Step 0: Pre-existing (already done)
-- [x] `assertNewHeadLarger` — newHead > head
-- [x] `assertFirstCandidateSurvives` — first candidate not multiple of head
-- [x] `assertRangeOrdered` — expansion range valid
-- [x] `assertBlockSizePositive` — block size > 0
-- [x] `assertNewPrimesValid` — includes R8 (allLessThan)
-- [x] `assertAllLessThanTransitive` lemma in CycleUtils
+### Step 0: SieveSequence refactoring and R4 restoration
+- [x] SieveSequence refactored to `primes: List[BigInt]` + `integral: CycleIntegral` (head = primes.head)
+- [x] `require(integral.initialValue == primes.head)` restored (R4, was commented out)
+- [x] Unit tests for pipeline intermediate values (S_0, S_1) pass
+- [x] Full S_0→S_1→S_2→S_3 chain works at runtime (12 tests pass)
 
-### Step 1: Trivial requirements (no pipeline needed)
-- [x] `assertNewHeadAtLeastTwo` — R1 + R2 (newHead >= 2, hence > 0)
-- [x] `assertNewPrimesPositive` — R6
-- [x] `assertNewPrimesAllBiggerThanOne` — helper for R7 (proves newPrimes all > 1)
-- [x] `assertNewProductEqualOrBiggerThanElements` — R7
+### Step 1: Trivial requirements (no pipeline needed) — Verified 
+- [x] `assertNewPrimesNonEmpty` (R1) — 3745 ✓
+- [x] `assertNewPrimesPositive` (R2) — 3747 ✓
+- [x] `assertNewPrimesAllBiggerThanOne` (R3) — 3748 ✓
+- [x] `assertNewPrimesProductValid` (R4: primes.tail product) — 3750 ✓
+
+### Step 2: Pipeline construction (define the new cycle) — DONE
+- [x] `nextRotatedGaps(seq)` — pipeline steps with bounds-safe rotateAt
+- [x] `nextCycle(seq): MemCycle` — wraps gaps into MemCycle with requires
+- [x] `next()` uncommented with `@extern` — works for S_0→S_1→S_2→S_3
+- [x] Unit tests: S_0.next() == S_1(), S_1.next() == S_2, S_2.next() == S_3
+
+### Step 3: Pipeline-dependent requirements (NEXT — HARD)
+- [ ] `assertNewCycleNonEmpty` — nextCycle gaps nonEmpty proof
+- [ ] `assertNewGapsPositive` — checkAllPositive for cycle values
+- [ ] `assertNewCycleSumEqualsProduct` — telescoping sum proof
+
+### Step 4: Remove @extern and compose into verified next()
+- [ ] Use assert() chain with all lemmas
+- [ ] Remove @extern
+- [ ] Verify next() passes Stainless
 
 ### Step 2: Pipeline construction (define the new cycle)
 - [ ] Define `nextCycle(seq): MemCycle` — the expand → filter → reconstitute pipeline
