@@ -2,10 +2,10 @@ package v1.list
 
 import stainless.collection.List
 import stainless.lang.*
-import v1.list.ListUtils
+import v1.list.ListBoundUtils
 
 case class MinBoundList(list: List[BigInt], lowerBound: BigInt) {
-  require(ListUtils.checkAllBiggerThanValue(list, lowerBound))
+  require(ListBoundUtils.allGreaterThan(list, lowerBound))
 
   def isEmpty: Boolean = list.isEmpty
   def size: BigInt = list.size
@@ -15,20 +15,20 @@ case class MinBoundList(list: List[BigInt], lowerBound: BigInt) {
 
   def tail: MinBoundList = {
     require(list.nonEmpty)
-    MinBoundList.assertTailMinBound(list, lowerBound)
+    MinBoundList.assertTailGreaterThan(list, lowerBound)
     MinBoundList(list.tail, lowerBound)
   }
 }
 
 object MinBoundList {
-  def assertTailMinBound(list: List[BigInt], lowerBound: BigInt): Boolean = {
-    require(ListUtils.checkAllBiggerThanValue(list, lowerBound))
+  def assertTailGreaterThan(list: List[BigInt], lowerBound: BigInt): Boolean = {
+    require(ListBoundUtils.allGreaterThan(list, lowerBound))
     require(list.nonEmpty)
     decreases(list)
     if (list.tail.isEmpty) true
     else {
-      assert(assertTailMinBound(list.tail, lowerBound))
-      ListUtils.checkAllBiggerThanValue(list.tail, lowerBound)
+      assert(assertTailGreaterThan(list.tail, lowerBound))
+      ListBoundUtils.allGreaterThan(list.tail, lowerBound)
     }
   }.holds
 }

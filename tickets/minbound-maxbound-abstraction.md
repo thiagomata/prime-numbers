@@ -56,25 +56,30 @@ One lemma per verify cycle.
 
 ## Result (2026-06-08)
 
-All phases completed successfully. Final verify: **4115 valid, 0 invalid**.
+All phases completed. **Final verify: 4121 valid, 0 invalid**. All tests pass.
 
 ### Files created
-- `src/main/scala/v1/list/ListBoundUtils.scala` — `checkNonNegative`, `allLessThan`,
-  `assertAllLessThanTransitive`, `assertAllLessThanAppend`, `assertCheckNonNegativeAppend`
+- `src/main/scala/v1/list/ListBoundUtils.scala` — core predicates + lemmas:
+  - `allGreaterThan(list, value)` — core predicate
+  - `allNonNegative`, `allPositive`, `allGreaterThanOne` — aliases
+  - `assertAppendGreaterThan`, `assertAppendLessThan`, `assertTransitiveLessThan` — lemmas
+  - `assertGreaterThanAtIndex`, `assertGreaterThanHeadTail` — lemmas (copied from ListUtilsProperties)
+  - Removed: `assertCheckNonNegativeAppend` (hardcoded-0 version)
 - `src/main/scala/v1/list/MinBoundList.scala` — `MinBoundList(list, lowerBound)` with
-  `require(checkAllBiggerThanValue)`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
-  Companion: `assertTailMinBound`.
+  `require(ListBoundUtils.allGreaterThan(list, lowerBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
+  Companion: `assertTailGreaterThan`.
 - `src/main/scala/v1/list/MaxBoundList.scala` — `MaxBoundList(list, upperBound)` with
-  `require(allLessThan)`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
-  Companion: `assertTailMaxBound`.
+  `require(ListBoundUtils.allLessThan(list, upperBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
+  Companion: `assertTailLessThan`.
+
+### Files modified
+- `src/main/scala/v1/list/ListUtils.scala` — delegates to `ListBoundUtils.allGreaterThan`
+- `src/main/scala/v1/list/properties/ListUtilsProperties.scala` — delegates lemmas to `ListBoundUtils`
 
 ### Changes from original plan
-- `filter` method skipped (not needed immediately; predicate filter not cleanly supported in Stainless)
-- Identical structure to `SortedList` — accessors + tail + companion lemma
-
-### Predicates copied from `v1.seq.sieve.CycleUtils` (originals remain)
-- `checkNonNegative`, `allLessThan` — now also in `ListBoundUtils`
-- `assertAllLessThanTransitive`, `assertAllLessThanAppend`, `assertCheckNonNegativeAppend` — ditto
+- `filter` method skipped (not needed immediately)
+- Implemented naming convention (Option A): `allGreaterThan`, `assertAppendLessThan`, etc.
+- Added aliases: `allNonNegative`, `allPositive`, `allGreaterThanOne`
 
 ### No existing files modified
 - `SieveUtils`, `CycleUtils`, `SortedList` all untouched

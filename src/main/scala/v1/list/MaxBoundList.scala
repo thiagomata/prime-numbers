@@ -15,19 +15,19 @@ case class MaxBoundList(list: List[BigInt], upperBound: BigInt) {
 
   def tail: MaxBoundList = {
     require(list.nonEmpty)
-    MaxBoundList.assertTailMaxBound(list, upperBound)
+    MaxBoundList.assertTailLessThan(list, upperBound)
     MaxBoundList(list.tail, upperBound)
   }
 }
 
 object MaxBoundList {
-  def assertTailMaxBound(list: List[BigInt], upperBound: BigInt): Boolean = {
+  def assertTailLessThan(list: List[BigInt], upperBound: BigInt): Boolean = {
     require(ListBoundUtils.allLessThan(list, upperBound))
     require(list.nonEmpty)
     decreases(list)
     if (list.tail.isEmpty) true
     else {
-      assert(assertTailMaxBound(list.tail, upperBound))
+      assert(assertTailLessThan(list.tail, upperBound))
       ListBoundUtils.allLessThan(list.tail, upperBound)
     }
   }.holds

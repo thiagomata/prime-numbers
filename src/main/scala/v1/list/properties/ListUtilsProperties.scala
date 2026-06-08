@@ -2,6 +2,7 @@ package v1.list.properties
 
 import stainless.collection.List
 import stainless.lang.*
+import v1.list.ListBoundUtils
 import v1.list.ListUtils
 import verification.Helper.assert
 
@@ -192,14 +193,7 @@ object ListUtilsProperties {
   def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
     require(ListUtils.checkAllBiggerThanValue(list, value))
     require(pos >= 0 && pos < list.size)
-    decreases(pos)
-    if (pos == BigInt(0)) {
-      list.head > value
-    } else {
-      assert(checkAllBiggerThanValueAtIndex(list.tail, value, pos - 1))
-      assert(assertTailShiftLeft(list, pos))
-      list(pos) > value
-    }
+    ListBoundUtils.assertGreaterThanAtIndex(list, value, pos)
   }.holds
 
   /**
@@ -215,6 +209,6 @@ object ListUtilsProperties {
   def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
     require(ListUtils.checkAllBiggerThanValue(list, value))
     require(list.nonEmpty)
-    list.head > value && ListUtils.checkAllBiggerThanValue(list.tail, value)
+    ListBoundUtils.assertGreaterThanHeadTail(list, value)
   }.holds
 }

@@ -2,6 +2,7 @@ package v1.list
 
 import stainless.collection.List
 import stainless.lang.decreases
+import v1.list.ListBoundUtils
 import v1.list.properties.ListUtilsProperties
 import scala.annotation.tailrec
 
@@ -59,11 +60,8 @@ object ListUtils {
     }
   }
 
-  @tailrec
   def checkAllBiggerThanValue(list: List[BigInt], value: BigInt): Boolean = {
-    decreases(list.size)
-    if (list.isEmpty) true
-    else list.head > value && checkAllBiggerThanValue(list.tail, value)
+    ListBoundUtils.allGreaterThan(list, value)
   }
 
   def checkAllPositive(list: List[BigInt]): Boolean = {
