@@ -32,7 +32,7 @@ New `GapCycle` class with:
 - Accessors: `gap(index)`, `cumulativeSum(index)`, `size`, `sum`
 - Lemmas: cumulative sum non-negative, cumulative sum strictly increasing
 
-**SieveSequence integration deferred to follow-up ticket.**
+**SieveSequence integration:** See `gap-cycle-integration.md` (Phase 1-2 planned).
 
 ## Build Phases
 

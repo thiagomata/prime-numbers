@@ -14,6 +14,7 @@ case class GapCycle private (values: MinBoundList) {
   require(values.lowerBound == BigInt(0))
   require(values.list.nonEmpty)
   require(CycleUtils.checkPositiveOrZero(values.list))
+  require(ListBoundUtils.allGreaterThan(values.list, BigInt(0)))
 
   val memCycle: MemCycle = MemCycle(values.list)
   val integral: CycleIntegral = CycleIntegral(BigInt(0), memCycle)

@@ -1,6 +1,8 @@
 # SieveSequence Implementation Ticket
 
-## Status: IN PROGRESS
+> **SUPERSEDED** by `gap-cycle.md` + `gap-cycle-integration.md`. This was an early draft with a different architecture (head + cycle, no integral). The current architecture uses `primes: List[BigInt]` + `integral: CycleIntegral`. Gap invariants are now handled by `GapCycle`.
+
+## Status: SUPERSEDED
 
 ## Summary
 Implement `SieveSequence` - a mathematical structure representing infinite sequences of integers generated via wheel factorization for the Sieve of Eratosthenes. Must use existing verified objects (`Seq`, `MemCycle`) to enable property reuse.

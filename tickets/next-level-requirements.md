@@ -1,7 +1,9 @@
 # Ticket: Prove Every Requirement of Next SieveSequence in Isolation
 
+> **SUPERSEDED** by `gap-cycle-integration.md`. The 13-require approach is partially obsolete (many requires no longer exist after refactoring). Gap-related requirements are now addressed via `GapCycle` type-level invariants instead of per-require lemmas. Remaining non-gap requirements are handled directly in the pipeline.
+
 **Created:** 2026-06-04
-**Status:** Planning
+**Status:** SUPERSEDED
 **Depends on:** Phase 1-2 of `sieve-sequence-ticket.md` (SieveSequence class exists, S_0 verified, SieveSequenceNextLevel helpers exist)
 
 ---

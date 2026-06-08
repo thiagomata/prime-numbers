@@ -1,7 +1,9 @@
 # Ticket: R3 (gaps.nonEmpty) and R5/R12 (gaps positive or zero)
 
+> **SUPERSEDED** by `gap-cycle-integration.md`. The approach of proving gap positivity from the pipeline via `assertCalculateGapsNonNegative`/`assertCalculateGapsPositiveOrZero`/`assertNextGapsPositiveOrZero` timed out. GapCycle takes a different approach: encode `allGreaterThan(list, 0)` as a structural invariant at the type level. The pipeline proof remains unsolved, but the invariant is now enforced by the wrapper type.
+
 **Created:** 2026-06-07
-**Status:** In progress
+**Status:** SUPERSEDED
 **Depends on:** `cycle-sum-lemma.md` (assertCalculateGapsSum verified)
 
 ---

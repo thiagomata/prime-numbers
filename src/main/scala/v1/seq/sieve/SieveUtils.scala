@@ -157,9 +157,19 @@ object SieveUtils {
       back ++ front
     }
   }
-//    .ensuring(
-//    res => res.size == list.size && res.toSet == list.toSet
-//  )
+  def assertRotateAtPreservesNonEmpty(list: List[BigInt], index: BigInt): Boolean = {
+    require(list.nonEmpty)
+    require(index >= 0)
+    decreases(index)
+    if (list.isEmpty || index == BigInt(0)) {
+      rotateAt(list, index).nonEmpty
+    } else if (index >= list.size) {
+      assert(assertRotateAtPreservesNonEmpty(list, index - list.size))
+      rotateAt(list, index).nonEmpty
+    } else {
+      rotateAt(list, index).nonEmpty
+    }
+  }.holds
 
   def isAscending(list: List[BigInt]): Boolean = {
     decreases(list.size)
