@@ -2,8 +2,11 @@ package v1.cycle.integral.recursive.properties
 
 import stainless.collection.List
 import stainless.lang.*
+import v1.Calc
+import v1.cycle.CycleUtils
 import v1.cycle.integral.recursive.CycleIntegral
 import v1.cycle.memory.properties.MemCycleProperties
+import v1.list.ListBoundUtils
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
 import verification.Helper.{assert, equality}
@@ -319,5 +322,37 @@ object CycleIntegralProperties {
     }
     ListUtils.sum(valuesAsList) == ListUtils.sum(firstValues) &&
     valuesAsList == firstValues
+  }.holds
+
+  def assertCycleValuePositive(ci: CycleIntegral, pos: BigInt): Boolean = {
+    require(pos >= 0)
+    require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
+    require(ci.cycle.values.nonEmpty)
+    require(ci.cycle.size > 0)
+    val size = ci.cycle.size
+    val idx = Calc.mod(pos, size)
+    assert(idx >= 0)
+    assert(idx < size)
+    assert(MemCycleProperties.findValueInCycle(ci.cycle, pos))
+    assert(ListBoundUtils.assertGreaterThanAtIndex(ci.cycle.values, BigInt(0), idx))
+    ci.cycle(pos) > BigInt(0)
+  }.holds
+
+  def assertCycleIntegralPositive(ci: CycleIntegral, pos: BigInt): Boolean = {
+    require(pos >= 0)
+    require(ci.initialValue >= BigInt(0))
+    require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
+    require(ci.cycle.values.nonEmpty)
+    require(ci.cycle.size > 0)
+    decreases(pos)
+    if (pos == 0) {
+      assert(assertCycleValuePositive(ci, pos))
+      ci(0) > BigInt(0)
+    } else {
+      assert(assertCycleIntegralPositive(ci, pos - 1))
+      assert(assertCycleValuePositive(ci, pos))
+      assert(assertNextPosition(ci, pos))
+      ci(pos) > BigInt(0)
+    }
   }.holds
 }

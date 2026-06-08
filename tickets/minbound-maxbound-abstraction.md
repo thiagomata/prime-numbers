@@ -56,7 +56,7 @@ One lemma per verify cycle.
 
 ## Result (2026-06-08)
 
-All phases completed. **Final verify: 4121 valid, 0 invalid**. All tests pass.
+All phases completed. **Final verify: 4178 valid, 0 invalid**. All tests pass (14/14).
 
 ### Files created
 - `src/main/scala/v1/list/ListBoundUtils.scala` — core predicates + lemmas:
@@ -66,20 +66,23 @@ All phases completed. **Final verify: 4121 valid, 0 invalid**. All tests pass.
   - `assertGreaterThanAtIndex`, `assertGreaterThanHeadTail` — lemmas (copied from ListUtilsProperties)
   - Removed: `assertCheckNonNegativeAppend` (hardcoded-0 version)
 - `src/main/scala/v1/list/MinBoundList.scala` — `MinBoundList(list, lowerBound)` with
-  `require(ListBoundUtils.allGreaterThan(list, lowerBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
-  Companion: `assertTailGreaterThan`.
+  `require(ListBoundUtils.allGreaterThan(list, lowerBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`, `filter`.
+  Companion: `assertTailGreaterThan`, `assertFilterPreservesGreaterThan`.
 - `src/main/scala/v1/list/MaxBoundList.scala` — `MaxBoundList(list, upperBound)` with
-  `require(ListBoundUtils.allLessThan(list, upperBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`.
-  Companion: `assertTailLessThan`.
+  `require(ListBoundUtils.allLessThan(list, upperBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`, `filter`.
+  Companion: `assertTailLessThan`, `assertFilterPreservesLessThan`.
 
 ### Files modified
 - `src/main/scala/v1/list/ListUtils.scala` — delegates to `ListBoundUtils.allGreaterThan`
 - `src/main/scala/v1/list/properties/ListUtilsProperties.scala` — delegates lemmas to `ListBoundUtils`
+- `src/main/scala/v1/list/SortedList.scala` — added `remove(index)` with `removeAt` helper in companion
+  and `assertRemoveKeepsAscending` lemma
 
 ### Changes from original plan
-- `filter` method skipped (not needed immediately)
+- Added `filter(divisor)` to both `MinBoundList` and `MaxBoundList` (preserves bounds via sublist)
+- Added `SortedList.remove(index)` + `computeAt` — removing preserves sorted order
 - Implemented naming convention (Option A): `allGreaterThan`, `assertAppendLessThan`, etc.
 - Added aliases: `allNonNegative`, `allPositive`, `allGreaterThanOne`
 
 ### No existing files modified
-- `SieveUtils`, `CycleUtils`, `SortedList` all untouched
+- `SieveUtils`, `CycleUtils` untouched

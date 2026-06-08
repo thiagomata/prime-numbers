@@ -17,6 +17,12 @@ case class SortedList(list: List[BigInt]) {
     SortedList(SortedList.insertSorted(x, list))
   }
 
+  def remove(index: BigInt): SortedList = {
+    require(index >= 0 && index < list.size)
+    SortedList.assertRemoveKeepsAscending(list, index)
+    SortedList(SortedList.removeAt(list, index))
+  }
+
   def tail: SortedList = {
     require(list.nonEmpty)
     SortedList.assertTailAscending(list)
@@ -52,6 +58,13 @@ object SortedList {
     else insertSorted(list.head, sortFiltered(list.tail))
   }
 
+  def removeAt(l: List[BigInt], i: BigInt): List[BigInt] = {
+    require(i >= 0 && i < l.size)
+    decreases(l.size)
+    if (i == BigInt(0)) l.tail
+    else l.head :: removeAt(l.tail, i - 1)
+  }
+
   def assertSortFilteredAscending(list: List[BigInt]): Boolean = {
     decreases(list.size)
     if (list.isEmpty) isAscending(sortFiltered(list))
@@ -84,6 +97,23 @@ object SortedList {
     else {
       assert(assertTailAscending(list.tail))
       isAscending(list.tail)
+    }
+  }.holds
+
+  def assertRemoveKeepsAscending(list: List[BigInt], index: BigInt): Boolean = {
+    require(isAscending(list))
+    require(index >= 0 && index < list.size)
+    decreases(list.size)
+    if (list.size == 1 || list.tail.isEmpty) {
+      isAscending(removeAt(list, index))
+    } else if (index == BigInt(0)) {
+      assertTailAscending(list)
+      isAscending(removeAt(list, index))
+    } else {
+      assert(isAscending(list.tail))
+      assert(assertRemoveKeepsAscending(list.tail, index - 1))
+      assert(list.head <= list.tail.head)
+      isAscending(removeAt(list, index))
     }
   }.holds
 }
