@@ -48,6 +48,12 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
     If execution diverges from the original plan → 
     STOP and ASK FOR HELP. Do NOT improvise a new plan.
   </rule>
+  <rule id="no-mod-operator" priority="critical">
+    NEVER use the `%` (modulo) operator. Always use `Calc.div(a, b)` for division
+    and `Calc.mod(a, b)` for modulo. These wrappers use DivMod internally and are
+    Stainless-verified. The `%` operator is not natively supported by Stainless and
+    will cause failures.
+  </rule>
 </rules>
 
 <antipatterns>
@@ -58,6 +64,7 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
   - Using `@extern` without explicit instruction
   - `git checkout` (blocked by opencode.json)
   - Starting a long task without a ticket
+  - Using `%` operator instead of DivMod
 </antipatterns>
 
 <checklist-before>

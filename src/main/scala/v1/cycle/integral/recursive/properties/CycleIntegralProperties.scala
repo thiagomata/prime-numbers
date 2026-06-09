@@ -13,6 +13,26 @@ import verification.Helper.{assert, equality}
 
 object CycleIntegralProperties {
 
+  def assertCycleIntegralIncreasing(ci: CycleIntegral, a: BigInt, b: BigInt): Boolean = {
+    require(a >= 0)
+    require(b > a)
+    require(ci.initialValue >= BigInt(0))
+    require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
+    require(ci.cycle.values.nonEmpty)
+    require(ci.cycle.size > 0)
+    decreases(b - a)
+    if (a + 1 == b) {
+      assert(assertDiffEqualsCycleValue(ci, a))
+      assert(assertCycleValuePositive(ci, a + 1))
+      ci(b) > ci(a)
+    } else {
+      assert(assertCycleIntegralIncreasing(ci, a, b - 1))
+      assert(assertDiffEqualsCycleValue(ci, b - 1))
+      assert(assertCycleValuePositive(ci, b))
+      ci(b) > ci(a)
+    }
+  }.holds
+
   /**
    * The sum of the values of the cycle integral until that position is equal to
    * the current value of the cycle integral.

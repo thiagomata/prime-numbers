@@ -5,6 +5,8 @@ import stainless.lang.*
 
 import v1.list.ListUtils
 import v1.list.properties.ListUtilsProperties
+import v1.Calc
+import v1.div.properties.AdditionAndMultiplication
 import scala.annotation.tailrec
 
 object SieveUtils {
@@ -19,9 +21,54 @@ object SieveUtils {
     require(ListUtils.checkAllPositive(primes))
     decreases(primes.size)
     if (primes.isEmpty) true
-    else if (value % primes.head == BigInt(0)) false
+    else if (Calc.mod(value, primes.head) == BigInt(0)) false
     else isCoprime(value, primes.tail)
   }
+
+  def assertIsCoprimeSound(value: BigInt, primes: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(value, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else {
+      Calc.mod(value, primes.head) != BigInt(0) &&
+      assertIsCoprimeSound(value, primes.tail)
+    }
+  }.holds
+
+  def assertModZeroImpliesDivTimesBEqualsA(a: BigInt, b: BigInt): Boolean = {
+    require(b != 0)
+    require(Calc.mod(a, b) == BigInt(0))
+    Calc.div(a, b) * b == a
+  }.holds
+
+  def assertModZero(n: BigInt): Boolean = {
+    require(n != BigInt(0))
+    Calc.mod(BigInt(0), n) == BigInt(0)
+  }.holds
+
+  def assertMultipleModZero(k: BigInt, n: BigInt): Boolean = {
+    require(n != BigInt(0))
+    require(k >= BigInt(0))
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(BigInt(0), n, k)
+    assert(assertModZero(n))
+    Calc.mod(k * n, n) == BigInt(0)
+  }.holds
+
+  def assertDivTransitive(c: BigInt, b: BigInt, a: BigInt): Boolean = {
+    require(a > BigInt(0) && b > BigInt(0) && c >= BigInt(0))
+    require(Calc.mod(c, b) == BigInt(0))
+    require(Calc.mod(b, a) == BigInt(0))
+    assert(assertModZeroImpliesDivTimesBEqualsA(c, b))
+    assert(assertModZeroImpliesDivTimesBEqualsA(b, a))
+    val cb = Calc.div(c, b)
+    val ba = Calc.div(b, a)
+    assert(cb * b == c)
+    assert(ba * a == b)
+    assert(cb * ba * a == c)
+    assert(assertMultipleModZero(cb * ba, a))
+    Calc.mod(c, a) == BigInt(0)
+  }.holds
 
   def residues(modulus: BigInt, primes: List[BigInt]): List[BigInt] = {
     require(modulus > 0)
@@ -48,10 +95,114 @@ object SieveUtils {
     if (list.isEmpty) List.empty
     else {
       val rest = filterList(list.tail, divisor)
-      if (list.head % divisor != 0) list.head :: rest
+      if (Calc.mod(list.head, divisor) != BigInt(0)) list.head :: rest
       else rest
     }
   }
+
+  def assertIsCoprimeForAll(n: BigInt, primes: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(n, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else {
+      assert(assertIsCoprimeForAll(n, primes.tail))
+      Calc.mod(n, primes.head) != BigInt(0)
+    }
+  }.holds
+
+  def findPrimeFactorInList(n: BigInt, primes: List[BigInt]): BigInt = {
+    require(ListUtils.checkAllPositive(primes))
+    require(!isCoprime(n, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) BigInt(0)
+    else if (Calc.mod(n, primes.head) == BigInt(0)) primes.head
+    else findPrimeFactorInList(n, primes.tail)
+  }
+
+  def assertPrimeFactorDivides(n: BigInt, primes: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(primes))
+    require(!isCoprime(n, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else if (Calc.mod(n, primes.head) == BigInt(0))
+      Calc.mod(n, findPrimeFactorInList(n, primes)) == BigInt(0)
+    else {
+      assert(assertPrimeFactorDivides(n, primes.tail))
+      Calc.mod(n, findPrimeFactorInList(n, primes)) == BigInt(0)
+    }
+  }.holds
+
+  def assertNoDivisorByFactorList(n: BigInt, d: BigInt, primes: List[BigInt]): Boolean = {
+    require(n > 1)
+    require(d >= 2)
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(n, primes))
+    require(!isCoprime(d, primes))
+    decreases(primes.size)
+
+    if (primes.isEmpty) true
+    else {
+      val p = primes.head
+      if (Calc.mod(d, p) == BigInt(0)) {
+        assert(assertIsCoprimeForAll(n, primes))
+        if (Calc.mod(n, d) == BigInt(0)) {
+          assert(assertModZeroImpliesDivTimesBEqualsA(n, d))
+          assert(assertModZeroImpliesDivTimesBEqualsA(d, p))
+          val nd = Calc.div(n, d)
+          val dp = Calc.div(d, p)
+          assert(nd * d == n)
+          assert(dp * p == d)
+          assert(nd * dp * p == n)
+          assert(nd * dp >= 0)
+          assert(assertMultipleModZero(nd * dp, p))
+          false
+        } else {
+          true
+        }
+      } else {
+        assert(assertNoDivisorByFactorList(n, d, primes.tail))
+        Calc.mod(n, d) != BigInt(0)
+      }
+    }
+  }.holds
+
+  def assertAllNotCoprimeInRange(limit: BigInt, d: BigInt, primes: List[BigInt]): Boolean = {
+    require(d >= 2)
+    require(limit >= d)
+    require(ListUtils.checkAllPositive(primes))
+    decreases(limit - d)
+    if (d == limit) true
+    else !isCoprime(d, primes) && assertAllNotCoprimeInRange(limit, d + 1, primes)
+  }
+
+  def assertNoDivisorInRangeHelper(
+    n: BigInt, primes: List[BigInt], d: BigInt, limit: BigInt
+  ): Boolean = {
+    require(n > 1)
+    require(d >= 2)
+    require(limit >= d)
+    require(limit <= n)
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(n, primes))
+    require(assertAllNotCoprimeInRange(limit, d, primes))
+    decreases(limit - d)
+
+    if (d == limit) true
+    else {
+      assert(assertNoDivisorByFactorList(n, d, primes))
+      assertNoDivisorInRangeHelper(n, primes, d + 1, limit)
+    }
+  }.holds
+
+  def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
+    require(head > 1)
+    require(ListUtils.checkAllPositive(primesTail))
+    require(isCoprime(head, primesTail))
+    require(assertAllNotCoprimeInRange(head, BigInt(2), primesTail))
+
+    assertNoDivisorInRangeHelper(head, primesTail, BigInt(2), head)
+  }.holds
 
   def sortFiltered(list: List[BigInt]): List[BigInt] = {
     decreases(list.size)

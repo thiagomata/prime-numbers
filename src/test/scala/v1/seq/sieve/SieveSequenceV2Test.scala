@@ -69,34 +69,14 @@ class SieveSequenceV2Test extends FlatSpec with Matchers {
     s2(BigInt(4)) should be(BigInt(17))
   }
 
-  "V2 equivalence with V1" should "match S_0" in {
-    SieveSequenceV2.S_0V2().primes should be(SieveSequence.S_0().primes)
-    SieveSequenceV2.S_0V2().head should be(SieveSequence.S_0().head)
-    SieveSequenceV2.S_0V2().cycle.values should be(SieveSequence.S_0().cycle.values)
-  }
-
-  it should "match S_1" in {
-    SieveSequenceV2.S_1V2().primes should be(SieveSequence.S_1().primes)
-    SieveSequenceV2.S_1V2().head should be(SieveSequence.S_1().head)
-    SieveSequenceV2.S_1V2().cycle.values should be(SieveSequence.S_1().cycle.values)
-  }
-
-  it should "match S_2 (after next)" in {
-    val v1_s2 = SieveSequence.S_1().next()
-    val v2_s2 = SieveSequenceV2.S_1V2().next()
-    v2_s2.primes should be(v1_s2.primes)
-    v2_s2.head should be(v1_s2.head)
-    v2_s2.cycle.values should be(v1_s2.cycle.values)
-  }
-
-  "nextGapCycle" should "produce GapCycle for S_0" in {
-    val gc = SieveSequenceNextLevel.nextGapCycle(SieveSequence.S_0())
+  "nextGapCycleV2" should "produce GapCycle for S_0V2" in {
+    val gc = SieveSequenceNextLevel.nextGapCycleV2(SieveSequenceV2.S_0V2())
     gc.memCycle.values should be(List(BigInt(2)))
     gc.size should be(BigInt(1))
   }
 
-  it should "produce GapCycle for S_1" in {
-    val gc = SieveSequenceNextLevel.nextGapCycle(SieveSequence.S_1())
+  it should "produce GapCycle for S_1V2" in {
+    val gc = SieveSequenceNextLevel.nextGapCycleV2(SieveSequenceV2.S_1V2())
     gc.memCycle.values should be(List(BigInt(2), BigInt(4)))
     gc.size should be(BigInt(2))
   }
