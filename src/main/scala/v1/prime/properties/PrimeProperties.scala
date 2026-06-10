@@ -9,6 +9,7 @@ import v1.div.properties.AdditionAndMultiplication.ATimesBSameMod
 import v1.div.properties.{AdditionAndMultiplication, ModIdentity, ModSmallDividend}
 import v1.list.ListBoundUtils
 import v1.list.properties.ListProduct
+import v1.prime.PrimeUtils.{primorial, primorialConcatLemma}
 
 object PrimeProperties {
 
@@ -72,5 +73,40 @@ object PrimeProperties {
 
   def checkPrimorialModZero(primes: List[Prime]): Boolean = {
     checkProductModZero(PrimeUtils.primeValues(primes))
+  }.holds
+
+  def checkPrimorialModZeroHead(primes: List[Prime]): Boolean = {
+    require(primes.nonEmpty)
+    assert(allPrimesDividePrimorial(primes))
+    assert(checkPrimorialModZero(primes))
+    Calc.mod(PrimeUtils.primorial(primes), primes.head.value) == BigInt(0)
+  }.holds
+
+  def checkPrimorialModZeroTailLoop(previous: List[Prime], current: List[Prime]): Boolean = {
+    decreases(current.size)
+    if (current.isEmpty) true
+    else {
+      val p = current.head.value
+      val tailPrimorial = PrimeUtils.primorial(current.tail)
+      val previousPrimorial = PrimeUtils.primorial(previous)
+      val combinedPrimorial = previousPrimorial * p * tailPrimorial
+
+      primorialConcatLemma(previous, current)
+      assert(primorial(current) == p * primorial(current.tail))
+      assert(primorial(previous ++ current) == previousPrimorial * p * primorial(current.tail))
+      assert(primorial(previous ++ current) == combinedPrimorial)
+
+      assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
+      AdditionAndMultiplication.ATimesBSameMod(
+        BigInt(0), p, previousPrimorial * tailPrimorial
+      )
+      Calc.mod(combinedPrimorial, p) == BigInt(0) &&
+        checkPrimorialModZeroTailLoop(previous :+ current.head, current.tail)
+    }
+  }.holds
+
+  def checkPrimorialModZeroAll(primes: List[Prime]): Boolean = {
+    decreases(primes.size)
+    checkPrimorialModZeroTailLoop(List.empty, primes)
   }.holds
 }

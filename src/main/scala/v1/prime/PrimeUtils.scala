@@ -5,6 +5,7 @@ import stainless.lang.{BigInt, decreases}
 import v1.Calc
 import stainless.lang.BooleanDecorations
 import v1.list.ListBoundUtils
+import v1.list.properties.ListProduct
 
 import scala.annotation.tailrec
 
@@ -58,6 +59,16 @@ object PrimeUtils {
     else primes.head.value * primorial(primes.tail)
   }
 
+  def primorialConcatLemma(prefix: List[Prime], suffix: List[Prime]): Boolean = {
+    decreases(prefix.size)
+    if (prefix.isEmpty) {
+      primorial(prefix ++ suffix) == primorial(prefix) * primorial(suffix)
+    } else {
+      primorialConcatLemma(prefix.tail, suffix)
+      primorial(prefix ++ suffix) == primorial(prefix) * primorial(suffix)
+    }
+  }.holds
+  
   /**
    * Lemma connecting primorial to its recursive structure.
    *
@@ -105,6 +116,7 @@ object PrimeUtils {
       (primes.isEmpty || result.head == primes.head.value) &&
       (primes.isEmpty || result.tail == primeValues(primes.tail)) &&
       ListBoundUtils.allGreaterThan(result, BigInt(0)) &&
-      ListBoundUtils.allGreaterThan(result, BigInt(1))
+      ListBoundUtils.allGreaterThan(result, BigInt(1)) &&
+      primorial(primes) == ListProduct.product(result)
   )
 }
