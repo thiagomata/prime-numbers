@@ -2,120 +2,138 @@
 
 ## Quick Reference Table
 
-| Property                                         | File                                 | Domain     | Line      |
-|--------------------------------------------------|--------------------------------------|------------|-----------|
-| **Division & Modulo**                            |                                      |            |           |
-| `modSmallDividend`                               | ModSmallDividend.scala               | Div/Mod    | #11       |
-| `modIdentity`                                    | ModIdentity.scala                    | Div/Mod    | #9        |
-| `longProof`                                      | ModIdentity.scala                    | Div/Mod    | #14       |
-| `modIdempotence`                                 | ModIdempotence.scala                 | Div/Mod    | #9        |
-| `modIdempotencePositiveA`                        | ModIdempotence.scala                 | Div/Mod    | #27       |
-| `modUniqueDiv`                                   | ModIdempotence.scala                 | Div/Mod    | #51       |
-| `modUnique`                                      | ModIdempotence.scala                 | Div/Mod    | #61       |
-| `modModPlus`                                     | ModIdempotence.scala                 | Div/Mod    | #95       |
-| `modModMinus`                                    | ModIdempotence.scala                 | Div/Mod    | #168      |
-| `APlusBSameModPlusDiv`                           | AdditionAndMultiplication.scala      | Div/Mod    | #25       |
-| `ALessBSameModDecreaseDiv`                       | AdditionAndMultiplication.scala      | Div/Mod    | #102      |
-| `ATimesBSameMod`                                 | AdditionAndMultiplication.scala      | Div/Mod    | #174      |
-| `APlusMultipleTimesBSameMod`                     | AdditionAndMultiplication.scala      | Div/Mod    | #203      |
-| `ALessMultipleTimesBSameMod`                     | AdditionAndMultiplication.scala      | Div/Mod    | #235      |
-| `assertDivModWithMoreDivAndLessModSameSolution`  | AdditionAndMultiplication.scala      | Div/Mod    | #268      |
-| `assertDivModWithLessDivAndMoreModSameSolution`  | AdditionAndMultiplication.scala      | Div/Mod    | #333      |
-| `MoreDivLessModManyTimes`                        | AdditionAndMultiplication.scala      | Div/Mod    | #361      |
-| `LessDivMoreModManyTimes`                        | AdditionAndMultiplication.scala      | Div/Mod    | #402      |
-| `modAdd`                                         | ModOperations.scala                  | Div/Mod    | #22       |
-| `modZeroPlusC`                                   | ModOperations.scala                  | Div/Mod    | #115      |
-| `modLess`                                        | ModOperations.scala                  | Div/Mod    | #142      |
-| `addOne`                                         | ModOperations.scala                  | Div/Mod    | #226      |
-| `sumSymmetricalMods`                             | ModSum.scala                         | Div/Mod    | #9        |
-| `checkAllPreviousValues`                         | ModSum.scala                         | Div/Mod    | #19       |
-| `sumAllValues`                                   | ModSum.scala                         | Div/Mod    | #33       |
-| `sumAllMods`                                     | ModSum.scala                         | Div/Mod    | #45       |
-| `sumAllModsEqualSumOfAllSmallValues`             | ModSum.scala                         | Div/Mod    | #58       |
-| `checkValueShift`                                | ModSum.scala                         | Div/Mod    | #64       |
-| **Lists**                                        |                                      |            |           |
-| `listSumAddValue`                                | ListUtilsProperties.scala            | Lists      | #22       |
-| `listCombine`                                    | ListUtilsProperties.scala            | Lists      | #37       |
-| `listSwap`                                       | ListUtilsProperties.scala            | Lists      | #65       |
-| `listAddValueTail`                               | ListUtilsProperties.scala            | Lists      | #84       |
-| `assertAppendToSlice`                            | ListUtilsProperties.scala            | Lists      | #105      |
-| `assertTailShiftLeft`                            | ListUtilsProperties.scala            | Lists      | #127      |
-| `accessTailShiftRight`                           | ListUtilsProperties.scala            | Lists      | #154      |
-| `assertLastEqualsLastPosition`                   | ListUtilsProperties.scala            | Lists      | #168      |
-| `checkAllBiggerThanValueAtIndex`                 | ListUtilsProperties.scala            | Lists      | #193      |
-| `checkAllBiggerThanValueHeadTail`                | ListUtilsProperties.scala            | Lists      | #209      |
-| `headRecursiveSlice`                             | SliceEquivalenceLemmas.scala         | Lists      | #26       |
-| `indexRangeValues`                               | SliceEquivalenceLemmas.scala         | Lists      | #49       |
-| `sliceEqualsSpec`                                | SliceEquivalenceLemmas.scala         | Lists      | #78       |
-| `appendOne`                                      | SliceEquivalenceLemmas.scala         | Lists      | #103      |
-| `appendCons`                                     | SliceEquivalenceLemmas.scala         | Lists      | #118      |
-| `tailHeadAndIndexRangeSlicesAreEqual`            | SliceEquivalenceLemmas.scala         | Lists      | #142      |
-| `assertHeadValueMatchDefinition`                 | IntegralProperties.scala             | Lists      | #22       |
-| `assertAccDifferenceEqualsTailHead`              | IntegralProperties.scala             | Lists      | #42       |
-| `assertAccDiffMatchesList`                       | IntegralProperties.scala             | Lists      | #76       |
-| `assertAccMatchesApply`                          | IntegralProperties.scala             | Lists      | #125      |
-| `assertSizeAccEqualsSizeList`                    | IntegralProperties.scala             | Lists      | #181      |
-| `assertLastEqualsSum`                            | IntegralProperties.scala             | Lists      | #219      |
-| `assertIntegralEqualsSum`                        | IntegralProperties.scala             | Lists      | #257      |
-| `assertLast`                                     | IntegralProperties.scala             | Lists      | #303      |
-| **Cycles**                                       |                                      |            |           |
-| `findValueInCycle`                               | CycleProperties.scala                | Cycles     | #22       |
-| `smallValueInCycle`                              | CycleProperties.scala                | Cycles     | #38       |
-| `valueMatchAfterManyLoops`                       | CycleProperties.scala                | Cycles     | #55       |
-| `valueMatchAfterManyLoopsInBoth`                 | CycleProperties.scala                | Cycles     | #75       |
-| `propagateModFromValueToCycle`                   | CycleProperties.scala                | Cycles     | #103      |
-| `assertCycleOfPosEqualsCycleOfModPos`            | CycleProperties.scala                | Cycles     | #111      |
-| `cycleValuePositiveOrZero`                       | CycleProperties.scala                | Cycles     | #125      |
-| `rotateAtValue`                                  | CycleProperties.scala                | Cycles     | #136      |
-| `findValueInCycle`                               | MemCycleProperties.scala             | Cycles     | #23       |
-| `smallValueInCycle`                              | MemCycleProperties.scala             | Cycles     | #39       |
-| `valueMatchAfterManyLoops`                       | MemCycleProperties.scala             | Cycles     | #56       |
-| `valueMatchAfterManyLoopsInBoth`                 | MemCycleProperties.scala             | Cycles     | #76       |
-| `propagateModFromValueToCycle`                   | MemCycleProperties.scala             | Cycles     | #104      |
-| `assertCycleOfPosEqualsCycleOfModPos`            | MemCycleProperties.scala             | Cycles     | #112      |
-| **Cycle Integrals**                              |                                      |            |           |
-| `assertCycleIntegralEqualsSumFirstPosition`      | CycleIntegralProperties.scala        | CycleInteg | #26       |
-| `assertCycleIntegralEqualsSumSmallPositions`     | CycleIntegralProperties.scala        | CycleInteg | #47       |
-| `assertCycleIntegralEqualsSliceSum`              | CycleIntegralProperties.scala        | CycleInteg | #92       |
-| `assertNextPosition`                             | CycleIntegralProperties.scala        | CycleInteg | #107      |
-| `assertDiffEqualsCycleValue`                     | CycleIntegralProperties.scala        | CycleInteg | #123      |
-| `assertSameDiffAfterCycle`                       | CycleIntegralProperties.scala        | CycleInteg | #142      |
-| `assertLastElementBeforeLoop`                    | CycleIntegralProperties.scala        | CycleInteg | #165      |
-| `assertSumModValueAsListEqualsCycleIntegralLoop` | CycleIntegralProperties.scala        | CycleInteg | #186      |
-| `assertCycleIntegralEqualsSumOfModValuesAsList`  | CycleIntegralProperties.scala        | CycleInteg | #224      |
-| `getFirstValuesAsSlice`                          | CycleIntegralProperties.scala        | CycleInteg | #231      |
-| `getModValuesAsList`                             | CycleIntegralProperties.scala        | CycleInteg | #269      |
-| `assertFirstValuesAsSliceEqualsModValuesAsList`  | CycleIntegralProperties.scala        | CycleInteg | #295      |
-| `assertCycleValuePositive`                       | CycleIntegralProperties.scala        | CycleInteg | #327      |
-| `assertCycleIntegralPositive`                    | CycleIntegralProperties.scala        | CycleInteg | #341      |
-| `assertCycleIntegralEqualsSumFirstPosition`      | ClassicCycleIntegralProperties.scala | CycleInteg | #23       |
-| `assertCycleIntegralEqualsSumSmallPositions`     | ClassicCycleIntegralProperties.scala | CycleInteg | #44       |
-| `assertCycleIntegralEqualsSliceSum`              | ClassicCycleIntegralProperties.scala | CycleInteg | #89       |
-| `assertNextPosition`                             | ClassicCycleIntegralProperties.scala | CycleInteg | #104      |
-| `assertDiffEqualsCycleValue`                     | ClassicCycleIntegralProperties.scala | CycleInteg | #120      |
-| `assertSameDiffAfterCycle`                       | ClassicCycleIntegralProperties.scala | CycleInteg | #139      |
-| `assertLastElementBeforeLoop`                    | ClassicCycleIntegralProperties.scala | CycleInteg | #162      |
-| `assertSumModValueAsListEqualsCycleIntegralLoop` | ClassicCycleIntegralProperties.scala | CycleInteg | #183      |
-| `assertCycleIntegralEqualsSumOfModlValuesAsList` | ClassicCycleIntegralProperties.scala | CycleInteg | #221      |
-| `getFirstValuesAsSlice`                          | ClassicCycleIntegralProperties.scala | CycleInteg | #228      |
-| `getModValuesAsList`                             | ClassicCycleIntegralProperties.scala | CycleInteg | #266      |
-| `assertFirstValuesAsSliceEqualsModValuesAsList`  | ClassicCycleIntegralProperties.scala | CycleInteg | #292      |
-| `assertFirstValuesMatchIntegral`                 | ModCycleIntegralProperties.scala     | CycleInteg | #22       |
-| `assertSimplifiedDiffValuesMatchCycle`           | ModCycleIntegralProperties.scala     | CycleInteg | #46       |
-| `assertModCycleEqualsCycleIntegral`              | ModCycleIntegralProperties.scala     | CycleInteg | #260      |
-| `assertCycleIntegralMatchModCycleDef`            | ModCycleIntegralProperties.scala     | CycleInteg | #346      |
-| **Sieve**                                        |                                      |            |           |
-| `product`                                        | SieveUtils.scala                     | Sieve      | (utility) |
-| `isCoprime`                                      | SieveUtils.scala                     | Sieve      | (utility) |
-| `residues`                                       | SieveUtils.scala                     | Sieve      | (utility) |
-| `filterList`                                     | SieveUtils.scala                     | Sieve      | (utility) |
-| `calculateGaps`                                  | SieveUtils.scala                     | Sieve      | (utility) |
-| `rotateAt`                                       | SieveUtils.scala                     | Sieve      | (utility) |
-| `assertRotateAtPreservesNonEmpty`                | SieveUtils.scala                     | Sieve      | (utility) |
-| `allGreaterThan`                                 | ListBoundUtils.scala                 | Sieve      | (utility) |
-| `allPositive`                                    | ListBoundUtils.scala                 | Sieve      | (utility) |
-| `assertGreaterThanAtIndex`                       | ListBoundUtils.scala                 | Sieve      | (utility) |
-| `assertAppendGreaterThan`                        | ListBoundUtils.scala                 | Sieve      | (utility) |
+| Property                                         | File                                 | Domain     |
+|--------------------------------------------------|--------------------------------------|------------|
+| **Division & Modulo**                            |                                      |
+| `modSmallDividend`                               | ModSmallDividend.scala               | Div/Mod|
+| `modIdentity`                                    | ModIdentity.scala                    | Div/Mod|
+| `longProof`                                      | ModIdentity.scala                    | Div/Mod|
+| `modIdempotence`                                 | ModIdempotence.scala                 | Div/Mod|
+| `modIdempotencePositiveA`                        | ModIdempotence.scala                 | Div/Mod|
+| `modUniqueDiv`                                   | ModIdempotence.scala                 | Div/Mod|
+| `modUnique`                                      | ModIdempotence.scala                 | Div/Mod|
+| `modModPlus`                                     | ModIdempotence.scala                 | Div/Mod|
+| `modModMinus`                                    | ModIdempotence.scala                 | Div/Mod|
+| `APlusBSameModPlusDiv`                           | AdditionAndMultiplication.scala      | Div/Mod|
+| `ALessBSameModDecreaseDiv`                       | AdditionAndMultiplication.scala      | Div/Mod|
+| `ATimesBSameMod`                                 | AdditionAndMultiplication.scala      | Div/Mod|
+| `APlusMultipleTimesBSameMod`                     | AdditionAndMultiplication.scala      | Div/Mod|
+| `ALessMultipleTimesBSameMod`                     | AdditionAndMultiplication.scala      | Div/Mod|
+| `assertDivModWithMoreDivAndLessModSameSolution`  | AdditionAndMultiplication.scala      | Div/Mod|
+| `assertDivModWithLessDivAndMoreModSameSolution`  | AdditionAndMultiplication.scala      | Div/Mod|
+| `MoreDivLessModManyTimes`                        | AdditionAndMultiplication.scala      | Div/Mod|
+| `LessDivMoreModManyTimes`                        | AdditionAndMultiplication.scala      | Div/Mod|
+| `modAdd`                                         | ModOperations.scala                  | Div/Mod|
+| `modZeroPlusC`                                   | ModOperations.scala                  | Div/Mod|
+| `modLess`                                        | ModOperations.scala                  | Div/Mod|
+| `addOne`                                         | ModOperations.scala                  | Div/Mod|
+| `sumSymmetricalMods`                             | ModSum.scala                         | Div/Mod|
+| `checkAllPreviousValues`                         | ModSum.scala                         | Div/Mod|
+| `sumAllValues`                                   | ModSum.scala                         | Div/Mod|
+| `sumAllMods`                                     | ModSum.scala                         | Div/Mod|
+| `sumAllModsEqualSumOfAllSmallValues`             | ModSum.scala                         | Div/Mod|
+| `checkValueShift`                                | ModSum.scala                         | Div/Mod|
+| **Lists**                                        |                                      |
+| `listSumAddValue`                                | ListUtilsProperties.scala            | Lists|
+| `listCombine`                                    | ListUtilsProperties.scala            | Lists|
+| `listSwap`                                       | ListUtilsProperties.scala            | Lists|
+| `listAddValueTail`                               | ListUtilsProperties.scala            | Lists|
+| `assertAppendToSlice`                            | ListUtilsProperties.scala            | Lists|
+| `assertTailShiftLeft`                            | ListUtilsProperties.scala            | Lists|
+| `accessTailShiftRight`                           | ListUtilsProperties.scala            | Lists|
+| `assertLastEqualsLastPosition`                   | ListUtilsProperties.scala            | Lists|
+| `checkAllBiggerThanValueAtIndex`                 | ListUtilsProperties.scala            | Lists|
+| `checkAllBiggerThanValueHeadTail`                | ListUtilsProperties.scala            | Lists|
+| `headRecursiveSlice`                             | SliceEquivalenceLemmas.scala         | Lists|
+| `indexRangeValues`                               | SliceEquivalenceLemmas.scala         | Lists|
+| `sliceEqualsSpec`                                | SliceEquivalenceLemmas.scala         | Lists|
+| `appendOne`                                      | SliceEquivalenceLemmas.scala         | Lists|
+| `appendCons`                                     | SliceEquivalenceLemmas.scala         | Lists|
+| `tailHeadAndIndexRangeSlicesAreEqual`            | SliceEquivalenceLemmas.scala         | Lists|
+| `assertHeadValueMatchDefinition`                 | IntegralProperties.scala             | Lists|
+| `assertAccDifferenceEqualsTailHead`              | IntegralProperties.scala             | Lists|
+| `assertAccDiffMatchesList`                       | IntegralProperties.scala             | Lists|
+| `assertAccMatchesApply`                          | IntegralProperties.scala             | Lists|
+| `assertSizeAccEqualsSizeList`                    | IntegralProperties.scala             | Lists|
+| `assertLastEqualsSum`                            | IntegralProperties.scala             | Lists|
+| `assertIntegralEqualsSum`                        | IntegralProperties.scala             | Lists|
+| `assertLast`                                     | IntegralProperties.scala             | Lists|
+| `singletonProduct`                             | ListProduct.scala                    | Lists|
+| `productPullOutElement`                        | ListProduct.scala                    | Lists|
+| `productConcatLemma`                           | ListProduct.scala                    | Lists|
+| `productConcatCommutative`                     | ListProduct.scala                    | Lists|
+| `positiveProduct`                              | ListProduct.scala                    | Lists|
+| `ListProductDiv`                               | ListProductDiv.scala                 | Lists|
+| `allElementsDivideProduct`                     | ListProductDiv.scala                 | Lists|
+| `insertedElementDividesProduct`                | ListProductDiv.scala                 | Lists|
+| **Cycles**                                       |                                      |
+| `findValueInCycle`                               | CycleProperties.scala                | Cycles|
+| `smallValueInCycle`                              | CycleProperties.scala                | Cycles|
+| `valueMatchAfterManyLoops`                       | CycleProperties.scala                | Cycles|
+| `valueMatchAfterManyLoopsInBoth`                 | CycleProperties.scala                | Cycles|
+| `propagateModFromValueToCycle`                   | CycleProperties.scala                | Cycles|
+| `assertCycleOfPosEqualsCycleOfModPos`            | CycleProperties.scala                | Cycles|
+| `cycleValuePositiveOrZero`                       | CycleProperties.scala                | Cycles|
+| `rotateAtValue`                                  | CycleProperties.scala                | Cycles|
+| `findValueInCycle`                               | MemCycleProperties.scala             | Cycles|
+| `smallValueInCycle`                              | MemCycleProperties.scala             | Cycles|
+| `valueMatchAfterManyLoops`                       | MemCycleProperties.scala             | Cycles|
+| `valueMatchAfterManyLoopsInBoth`                 | MemCycleProperties.scala             | Cycles|
+| `propagateModFromValueToCycle`                   | MemCycleProperties.scala             | Cycles|
+| `assertCycleOfPosEqualsCycleOfModPos`            | MemCycleProperties.scala             | Cycles|
+| **Cycle Integrals**                              |                                      |
+| `assertCycleIntegralEqualsSumFirstPosition`      | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleIntegralEqualsSumSmallPositions`     | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleIntegralEqualsSliceSum`              | CycleIntegralProperties.scala        | CycleInteg|
+| `assertNextPosition`                             | CycleIntegralProperties.scala        | CycleInteg|
+| `assertDiffEqualsCycleValue`                     | CycleIntegralProperties.scala        | CycleInteg|
+| `assertSameDiffAfterCycle`                       | CycleIntegralProperties.scala        | CycleInteg|
+| `assertLastElementBeforeLoop`                    | CycleIntegralProperties.scala        | CycleInteg|
+| `assertSumModValueAsListEqualsCycleIntegralLoop` | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleIntegralEqualsSumOfModValuesAsList`  | CycleIntegralProperties.scala        | CycleInteg|
+| `getFirstValuesAsSlice`                          | CycleIntegralProperties.scala        | CycleInteg|
+| `getModValuesAsList`                             | CycleIntegralProperties.scala        | CycleInteg|
+| `assertFirstValuesAsSliceEqualsModValuesAsList`  | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleValuePositive`                       | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleIntegralPositive`                    | CycleIntegralProperties.scala        | CycleInteg|
+| `assertCycleIntegralEqualsSumFirstPosition`      | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertCycleIntegralEqualsSumSmallPositions`     | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertCycleIntegralEqualsSliceSum`              | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertNextPosition`                             | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertDiffEqualsCycleValue`                     | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertSameDiffAfterCycle`                       | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertLastElementBeforeLoop`                    | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertSumModValueAsListEqualsCycleIntegralLoop` | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertCycleIntegralEqualsSumOfModlValuesAsList` | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `getFirstValuesAsSlice`                          | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `getModValuesAsList`                             | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertFirstValuesAsSliceEqualsModValuesAsList`  | ClassicCycleIntegralProperties.scala | CycleInteg|
+| `assertFirstValuesMatchIntegral`                 | ModCycleIntegralProperties.scala     | CycleInteg|
+| `assertSimplifiedDiffValuesMatchCycle`           | ModCycleIntegralProperties.scala     | CycleInteg|
+| `assertModCycleEqualsCycleIntegral`              | ModCycleIntegralProperties.scala     | CycleInteg|
+| `assertCycleIntegralMatchModCycleDef`            | ModCycleIntegralProperties.scala     | CycleInteg|
+| **Sieve**                                        |                                      |
+| `product`                                        | SieveUtils.scala                     | Sieve      |
+| `isCoprime`                                      | SieveUtils.scala                     | Sieve      |
+| `residues`                                       | SieveUtils.scala                     | Sieve      |
+| `filterList`                                     | SieveUtils.scala                     | Sieve      |
+| `calculateGaps`                                  | SieveUtils.scala                     | Sieve      |
+| `rotateAt`                                       | SieveUtils.scala                     | Sieve      |
+| `assertRotateAtPreservesNonEmpty`                | SieveUtils.scala                     | Sieve      |
+| `allGreaterThan`                                 | ListBoundUtils.scala                 | Sieve      |
+| `allPositive`                                    | ListBoundUtils.scala                 | Sieve      |
+| `assertGreaterThanAtIndex`                       | ListBoundUtils.scala                 | Sieve      |
+| `assertAppendGreaterThan`                        | ListBoundUtils.scala                 | Sieve      |
+| **Prime**                                       |                                      |
+| `isPrime`                                       | Prime.scala                          | Prime|
+| `noDivisorInRange`                              | Prime.scala                          | Prime|
+| `primorial`                                     | PrimeUtils.scala                     | Prime|
+| `primorialUnfold`                               | PrimeUtils.scala                     | Prime|
+| `primorialPositive`                             | PrimeUtils.scala                     | Prime|
+| `biggerPrime`                                   | PrimeUtils.scala                     | Prime|
+| `isMultiple`                                    | PrimeUtils.scala                     | Prime|
+| `allPrimesDividePrimorial`                      | PrimeProperties.scala                | Prime|
+| `checkProductModZero`                           | PrimeProperties.scala                | Prime|
 
 ---
 
@@ -356,7 +374,7 @@ Bounds checking for lists.
 
 | Function                                   | Statement                   | Notes                            |
 |--------------------------------------------|-----------------------------|----------------------------------|
-| **allGreaterThan(list, v)**                | All elements > v            |                                  |
+| **allGreaterThan(list, v)**                | All elements > v
 | **allPositive(list)**                      | All elements > 0            | Alias for `allGreaterThan(_, 0)` |
 | **assertGreaterThanAtIndex(list, v, pos)** | `list(pos) > v`             | Requires allGreaterThan          |
 | **assertAppendGreaterThan(a, b, v)**       | `allGreaterThan(a ++ b, v)` | If both > v                      |
@@ -380,9 +398,9 @@ apply(k) = list(k) + apply(k-1)
 | **init**     | Initial value          | `BigInt`                |
 | **acc**      | Accumulated list       | Same size as list       |
 | **head**     | `list.head + init`     | First accumulated value |
-| **apply(k)** | Cumulative sum up to k |                         |
+| **apply(k)** | Cumulative sum up to k
 | **last**     | `init + sum(list)`     | Final accumulated value |
-| **size**     | `list.size`            |                         |
+| **size**     | `list.size`
 
 **Mathematical Definition** (from [articles/integral.md](./articles/integral.md)):
 
@@ -485,6 +503,40 @@ i > 0 &\implies L_i = \text{tail}(L)_{i-1}
 
 ---
 
+## 2.7 ListProduct (`v1.list.properties.ListProduct`)
+
+Product of all elements in a list. Provides lemmas about product factorization.
+
+### `product(list: List[BigInt]): BigInt`
+
+Recursive product: empty list → `1`, otherwise `head * product(tail)`.
+
+| Lemma                              | Statement                                                       | Preconditions |
+|------------------------------------|-----------------------------------------------------------------|---------------|
+| **singletonProduct**               | `product(List(x)) == x`                                         | —             |
+| **productPullOutElement**          | `product(listA ++ List(e) ++ listB) == e * product(listA ++ listB)` | —          |
+| **productConcatLemma**             | `product(listA ++ listB) == product(listA) * product(listB)`    | —             |
+| **productConcatCommutative**       | `product(listA ++ listB) == product(listB ++ listA)`            | —             |
+| **positiveProduct**                | `product(elements) > 0`                                         | `allGreaterThan(elements, 0)` |
+
+**Source**: `src/main/scala/v1/list/properties/ListProduct.scala`
+
+---
+
+## 2.8 ListProductDiv (`v1.list.properties.ListProductDiv`)
+
+Divisibility lemmas: every element of a list divides the product of the list.
+
+| Lemma                              | Statement                                                       | Preconditions |
+|------------------------------------|-----------------------------------------------------------------|---------------|
+| **ListProductDiv**                 | `mod(product(elements), elements.head) == 0`                    | `elements.nonEmpty`, `allGreaterThan(elements, 0)` |
+| **allElementsDivideProduct**       | `mod(product(elements), x) == 0` for every `x in elements`      | `allGreaterThan(elements, 0)` |
+| **insertedElementDividesProduct**  | `mod(product(prefix ++ List(e) ++ suffix), e) == 0`             | `e > 0`, `allGreaterThan(prefix ++ suffix, 0)` |
+
+**Source**: `src/main/scala/v1/list/properties/ListProductDiv.scala`
+
+---
+
 # Domain 3: Cycles
 
 ## 3.1 ModCycle (`v1.cycle.mod.ModCycle`)
@@ -498,9 +550,9 @@ apply(k) = values(k % size)
 | Field/Method | Definition         | Notes                 |
 |--------------|--------------------|-----------------------|
 | **values**   | `List[BigInt]`     | Non-empty, stored raw |
-| **size**     | `values.size`      |                       |
+| **size**     | `values.size`
 | **apply(k)** | `values(k % size)` | Unbounded access      |
-| **sum**      | Sum of all values  |                       |
+| **sum**      | Sum of all values
 
 **Invariant**: `values.nonEmpty && checkPositiveOrZero(values)` (constructor require)
 
@@ -525,7 +577,7 @@ Memory cycle wrapping ModCycle with caching.
 |--------------|----------------|---------------|
 | **cycle**    | `ModCycle`     | Delegation    |
 | **values**   | `cycle.values` | Direct access |
-| **size**     | `cycle.size`   |               |
+| **size**     | `cycle.size`
 | **apply(k)** | `cycle(k)`     | Delegates     |
 
 **Invariant**: `isValid(values, modIsZeroForAllValues, ...)`
@@ -615,7 +667,7 @@ apply(k) = cycle(k) + apply(k-1)
 | **initialValue** | Starting value | `BigInt`       |
 | **cycle**        | `MemCycle`     | Backing cycle  |
 | **apply(k)**     | Cumulative sum | Unbounded      |
-| **size**         | `cycle.size`   |                |
+| **size**         | `cycle.size`
 | **sum**          | `cycle.sum()`  | Full cycle sum |
 
 **Mathematical Definition** (from [articles/integral-cycle.md](./articles/integral-cycle.md)):
@@ -690,18 +742,18 @@ Same properties as CycleIntegralProperties but for ClassicCycleIntegral.
 
 | Property                                           | Statement                              | Preconditions |
 |----------------------------------------------------|----------------------------------------|---------------|
-| **assertCycleIntegralEqualsSumFirstPosition**      |                                        |               |
-| **assertCycleIntegralEqualsSumSmallPositions**     |                                        |               |
-| **assertCycleIntegralEqualsSliceSum**              |                                        |               |
+| **assertCycleIntegralEqualsSumFirstPosition**      |
+| **assertCycleIntegralEqualsSumSmallPositions**     |
+| **assertCycleIntegralEqualsSliceSum**              |
 | **assertNextPosition**                             | `ci(pos) == ci(pos-1) + ci.cycle(pos)` | `pos > 0`     |
-| **assertDiffEqualsCycleValue**                     |                                        |               |
-| **assertSameDiffAfterCycle**                       |                                        |               |
-| **assertLastElementBeforeLoop**                    |                                        |               |
-| **assertSumModValueAsListEqualsCycleIntegralLoop** |                                        |               |
-| **assertCycleIntegralEqualsSumOfModlValuesAsList** |                                        |               |
-| **getFirstValuesAsSlice**                          | Helper function                        |               |
-| **getModValuesAsList**                             | Helper function                        |               |
-| **assertFirstValuesAsSliceEqualsModValuesAsList**  |                                        |               |
+| **assertDiffEqualsCycleValue**                     |
+| **assertSameDiffAfterCycle**                       |
+| **assertLastElementBeforeLoop**                    |
+| **assertSumModValueAsListEqualsCycleIntegralLoop** |
+| **assertCycleIntegralEqualsSumOfModlValuesAsList** |
+| **getFirstValuesAsSlice**                          | Helper function
+| **getModValuesAsList**                             | Helper function
+| **assertFirstValuesAsSliceEqualsModValuesAsList**  |
 
 **Source**: `src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala`
 
@@ -736,12 +788,12 @@ Utility functions for sieve sequence construction.
 
 | Function                            | Purpose                          | Notes          |
 |-------------------------------------|----------------------------------|----------------|
-| **product(list)**                   | Multiply all elements            |                |
-| **isCoprime(value, primes)**        | Check not divisible by any prime |                |
-| **residues(modulus, primes)**       | Generate coprime residues        |                |
-| **filterList(list, divisor)**       | Remove multiples of divisor      |                |
-| **calculateGaps(sorted, modulus)**  | Compute gaps + wrap gap          |                |
-| **rotateAt(list, index)**           | Rotate list at index             |                |
+| **product(list)**                   | Multiply all elements
+| **isCoprime(value, primes)**        | Check not divisible by any prime
+| **residues(modulus, primes)**       | Generate coprime residues
+| **filterList(list, divisor)**       | Remove multiples of divisor
+| **calculateGaps(sorted, modulus)**  | Compute gaps + wrap gap
+| **rotateAt(list, index)**           | Rotate list at index
 | **assertRotateAtPreservesNonEmpty** | rotateAt preserves non-emptiness | `.holds` lemma |
 
 **Source**: `src/main/scala/v1/seq/sieve/SieveUtils.scala`
@@ -756,11 +808,11 @@ Wrapper around MinBoundList with **strict positivity** invariant.
 |----------------------------------------|------------------------------|-------------------|
 | **values**                             | `MinBoundList`               | `lowerBound == 0` |
 | **memCycle**                           | `MemCycle(values.list)`      | All gaps > 0      |
-| **integral**                           | `CycleIntegral(0, memCycle)` |                   |
-| **gap(index)**                         | `memCycle(index)`            |                   |
-| **cumulativeSum(index)**               | `integral(index)`            |                   |
-| **size**                               | `values.size`                |                   |
-| **sum**                                | `memCycle.sum()`             |                   |
+| **integral**                           | `CycleIntegral(0, memCycle)`
+| **gap(index)**                         | `memCycle(index)`
+| **cumulativeSum(index)**               | `integral(index)`
+| **size**                               | `values.size`
+| **sum**                                | `memCycle.sum()`
 | **assertCumulativeSumPositive**        | `cumulativeSum(pos) > 0`     | `.holds` lemma    |
 | **allGreaterThan→checkPositiveOrZero** | Implication lemma            | `.holds` lemma    |
 
@@ -786,9 +838,9 @@ apply(k) = integral(k-1) for k >= 1
 | **primes**   | `List[BigInt]`                                  | All > 0                     |
 | **gapCycle** | `GapCycle`                                      | Carries allGreaterThan      |
 | **integral** | `CycleIntegral(primes.head, gapCycle.memCycle)` | Key: uses gapCycle.memCycle |
-| **apply(k)** | `head` if k=0, else `integral(k-1)`             |                             |
+| **apply(k)** | `head` if k=0, else `integral(k-1)`
 | **head**     | `primes.head`                                   | Prime > 0                   |
-| **modulus**  | `product(primes.tail)`                          |                             |
+| **modulus**  | `product(primes.tail)`
 | **next**     | `@extern`                                       | Computes next sequence      |
 
 **Critical Chain**:
@@ -804,12 +856,14 @@ apply(k) = integral(k-1) for k >= 1
 
 ## 5.4 SieveSequenceProperties (`v1.seq.sieve.properties.SieveSequenceProperties`)
 
+> **NOTE**: This file does not yet exist. Properties listed below are aspirational.
+
 | Property                 | Statement              | Notes |
 |--------------------------|------------------------|-------|
-| **assertS1HeadIsThree**  | S_1().head == 3        |       |
-| **assertS1PrimesLength** | S_1().primes.size == 2 |       |
+| **assertS1HeadIsThree**  | S_1().head == 3
+| **assertS1PrimesLength** | S_1().primes.size == 2
 
-**Source**: `src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala`
+**Source**: `src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala` (not yet implemented)
 
 ---
 
@@ -835,9 +889,57 @@ So `allGreaterThan(seq.integral.cycle.values, 0)` is provable from `GapCycle`'s 
 
 ---
 
-# Domain 6: Additional Utilities
+# Domain 6: Prime
 
-## ConsecutiveIntegers (`v1.div.properties.ConsecutiveIntegers`)
+## 6.1 Prime (`v1.prime.Prime`)
+
+Prime number type with primality verification at construction.
+
+| Field/Method      | Definition                            | Notes                     |
+|-------------------|---------------------------------------|---------------------------|
+| **value**         | `inputValue`                          | `BigInt`, guaranteed prime |
+| **apply()**       | `value`                               | Accessor                  |
+| **isPrime(n)**    | `n > 1 && noDivisorInRange(n, 2, n)`  | Companion object method   |
+| **noDivisorInRange** | Checks `[from, to)` for divisors   | `@tailrec`, requires `n >= 0` |
+
+**Invariant**: `Prime.isPrime(inputValue)` holds at construction.
+
+**Source**: `src/main/scala/v1/prime/Prime.scala`
+
+## 6.2 PrimeUtils (`v1.prime.PrimeUtils`)
+
+Utility functions over lists of primes.
+
+| Function                        | Signature                                         | Notes                         |
+|---------------------------------|---------------------------------------------------|-------------------------------|
+| **primorial(primes)**           | Product of all prime values                       | Empty → `1`                   |
+| **biggerPrime(primes)**         | Largest prime in non-empty list                   | Structural recursion          |
+| **isMultiple(value, primes)**   | Check divisibility by any prime in list           | `@tailrec`, requires `value > 1` |
+| **primeValues(primes)**         | Extract `List[BigInt]` from `List[Prime]`         | —                             |
+
+### Lemmas
+
+| Lemma                    | Statement                                          | Preconditions |
+|--------------------------|----------------------------------------------------|---------------|
+| **primorialUnfold**      | `primorial(p :: ps) == p.value * primorial(ps)`     | —             |
+| **primorialPositive**    | `primorial(primes) > 0`                            | —             |
+
+**Source**: `src/main/scala/v1/prime/PrimeUtils.scala`
+
+## 6.3 PrimeProperties (`v1.prime.properties.PrimeProperties`)
+
+| Lemma                              | Statement                                               | Preconditions |
+|------------------------------------|---------------------------------------------------------|---------------|
+| **allPrimesDividePrimorial**       | `mod(primorial(primes), p.value) == 0` for every prime in list | —       |
+| **checkProductModZero**            | `mod(product(elements), e) == 0` for every element      | `allGreaterThan(elements, 0)` |
+
+**Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala`
+
+---
+
+# Domain 7: Additional Utilities
+
+## 7.1 ConsecutiveIntegers (`v1.div.properties.ConsecutiveIntegers`)
 
 Properties about consecutive integer sequences.
 
@@ -845,7 +947,7 @@ Properties about consecutive integer sequences.
 
 ---
 
-## Summary (`v1.div.properties.Summary`)
+## 7.2 Summary (`v1.div.properties.Summary`)
 
 Aggregated properties for easy verification.
 

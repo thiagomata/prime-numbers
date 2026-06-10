@@ -36,19 +36,6 @@ object PrimeProperties {
     }
   }.holds
 
-//  def checkPrimorialModZero(primes: List[Prime]): Boolean = {
-//    def loop(primes: List[Prime]): Boolean = {
-//      decreases(primes.size)
-//      if (primes.isEmpty) true
-//      else {
-//        assert(allPrimesDividePrimorial(primes))
-//        val p = PrimeUtils.primorial(primes)
-//        Calc.mod(p, primes.head.value) == 0 && loop(primes.tail)
-//      }
-//    }
-//    loop(primes)
-//  }.holds
-
   private def productAppendLemma(list1: List[BigInt], list2: List[BigInt]): Boolean = {
     decreases(list1.size)
     require(ListBoundUtils.allGreaterThan(list1, 0))
@@ -81,5 +68,9 @@ object PrimeProperties {
   def checkProductModZero(elements: List[BigInt]): Boolean = {
     require(ListBoundUtils.allGreaterThan(elements, 0))
     loop(elements, BigInt(1))
+  }.holds
+
+  def checkPrimorialModZero(primes: List[Prime]): Boolean = {
+    checkProductModZero(PrimeUtils.primeValues(primes))
   }.holds
 }

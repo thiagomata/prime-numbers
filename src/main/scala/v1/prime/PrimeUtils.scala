@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.{BigInt, decreases}
 import v1.Calc
 import stainless.lang.BooleanDecorations
+import v1.list.ListBoundUtils
 
 import scala.annotation.tailrec
 
@@ -95,5 +96,15 @@ object PrimeUtils {
   def primeValues(primes: List[Prime]): List[BigInt] = {
     if (primes.isEmpty) List()
     else primes.head.value :: primeValues(primes.tail)
-  }
+  }.ensuring(
+    result =>
+
+      assert(primes.isEmpty || primes.head.value > 1)
+
+      result.size == primes.size &&
+      (primes.isEmpty || result.head == primes.head.value) &&
+      (primes.isEmpty || result.tail == primeValues(primes.tail)) &&
+      ListBoundUtils.allGreaterThan(result, BigInt(0)) &&
+      ListBoundUtils.allGreaterThan(result, BigInt(1))
+  )
 }
