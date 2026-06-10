@@ -6,7 +6,7 @@ import v1.Calc
 import v1.prime.{Prime, PrimeUtils}
 import stainless.lang.BooleanDecorations
 import v1.div.properties.AdditionAndMultiplication.ATimesBSameMod
-import v1.div.properties.{AdditionAndMultiplication, ModIdentity, ModSmallDividend}
+import v1.div.properties.{AdditionAndMultiplication, ModIdentity, ModOperations, ModSmallDividend}
 import v1.list.ListBoundUtils
 import v1.list.properties.ListProduct
 import v1.prime.PrimeUtils.{primorial, primorialConcatLemma}
@@ -109,4 +109,31 @@ object PrimeProperties {
     decreases(primes.size)
     checkPrimorialModZeroTailLoop(List.empty, primes)
   }.holds
+
+  def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
+    decreases(primes.size)
+    primorialPlusOneTailLoop(List.empty, primes)
+  }.holds
+
+  private def primorialPlusOneTailLoop(previous: List[Prime], current: List[Prime]): Boolean = {
+    decreases(current.size)
+    if (current.isEmpty) true
+    else {
+      val p = current.head.value
+      val tailPrimorial = PrimeUtils.primorial(current.tail)
+      val previousPrimorial = PrimeUtils.primorial(previous)
+      val primorialAll = previousPrimorial * p * tailPrimorial
+      // Prove: mod(primorialAll, p) == 0 (same proof as checkPrimorialModZeroTailLoop)
+      assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
+      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, previousPrimorial * tailPrimorial)
+      assert(Calc.mod(primorialAll, p) == BigInt(0))
+      // Prove: mod(primorialAll + 1, p) == mod(1, p)
+      ModOperations.modZeroPlusC(primorialAll, p, BigInt(1))
+      // Prove: mod(1, p) == 1 (since p > 1)
+      assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+      Calc.mod(primorialAll + 1, p) != BigInt(0) &&
+        primorialPlusOneTailLoop(previous :+ current.head, current.tail)
+    }
+  }.holds
+
 }
