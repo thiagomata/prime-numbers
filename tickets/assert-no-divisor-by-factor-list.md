@@ -1,7 +1,8 @@
 # assertNoDivisorByFactorList — Solver Blockers
 
 **Created:** 2026-06-09
-**Status:** Blocked
+**Updated:** 2026-06-09
+**Status:** Verified ✅ (4415 valid, 0 invalid)
 **Depends on:** `prime-foundations-and-gap-proof.md`
 
 ---
@@ -52,9 +53,54 @@ Calc.mod(n, d) != BigInt(0)
 
 **Result:** `UNKNOWN`. Solver can't infer `Calc.mod(n, d) != 0` from the two lemmas. The connection `p|d ∧ p∤n ⇒ d∤n` is not made automatically.
 
----
+### Attempt 4: Direct Recursive Proof (SUCCESS)
 
-## Hypotheses: Why Solver Fails
+**Code:**
+```scala
+def assertNoDivisorByFactorList(n, d, primes): Boolean = {
+  require(n > 1, d >= 2, checkAllPositive(primes))
+  require(isCoprime(n, primes), !isCoprime(d, primes))
+  decreases(primes.size)
+  if (primes.isEmpty) true
+  else {
+    val p = primes.head
+    if (Calc.mod(d, p) == BigInt(0)) {
+      assert(assertIsCoprimeForAll(n, primes)) // Calc.mod(n, p) != 0
+      if (Calc.mod(n, d) == BigInt(0)) {
+        // Inline transitivity: n/d=0 and d/p=0 → n/p=0
+        assert(assertModZeroImpliesDivTimesBEqualsA(n, d))
+        assert(assertModZeroImpliesDivTimesBEqualsA(d, p))
+        val nd = Calc.div(n, d); val dp = Calc.div(d, p)
+        assert(nd * d == n); assert(dp * p == d)
+        assert(nd * dp * p == n); assert(nd * dp >= 0)
+        assert(assertMultipleModZero(nd * dp, p)) // Calc.mod(n, p) == 0
+        false // contradiction with Calc.mod(n, p) != 0
+      } else { true }
+    } else {
+      assert(assertNoDivisorByFactorList(n, d, primes.tail))
+      Calc.mod(n, d) != BigInt(0)
+    }
+  }
+}.holds
+```
+
+**Result:** VERIFIED (4415 valid, 0 invalid). New VCs: +37 (all valid).
+1. Iterates through `primes.head` directly instead of `findPrimeFactorInList` — solver sees the concrete element, not an opaque function result
+2. Inlines transitivity proof with explicit `assert(nd * dp >= 0)` — avoids calling `assertDivTransitive` which has complex internal structure
+3. Uses `assertIsCoprimeForAll(n, primes)` (not `assertPrimeFactorDivides`) — the "for all p" lemma we already had
+
+**Root cause confirmed:** The solver can't connect `findPrimeFactorInList` return value back to list membership. Direct structural recursion over lists avoids this.
+
+--- 
+
+## Updated Next Steps
+
+`assertNoDivisorByFactorList` is verified. The ticket that was BLOCKED is now DONE.
+
+Remaining work tracked in `prime-foundations-and-gap-proof.md`:
+- Add `assertAllNotCoprimeInRange` (completeness check, no .holds)
+- Add `assertNoDivisorInRangeHelper` (iterates d from 2 to head, uses completeness + assertNoDivisorByFactorList)
+- Add `assertHeadIsPrime` (wrapper combining everything)
 
 ### H1: `findPrimeFactorInList` abstraction barrier
 

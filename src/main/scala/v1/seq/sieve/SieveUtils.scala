@@ -167,43 +167,6 @@ object SieveUtils {
     }
   }.holds
 
-  def assertAllNotCoprimeInRange(limit: BigInt, d: BigInt, primes: List[BigInt]): Boolean = {
-    require(d >= 2)
-    require(limit >= d)
-    require(ListUtils.checkAllPositive(primes))
-    decreases(limit - d)
-    if (d == limit) true
-    else !isCoprime(d, primes) && assertAllNotCoprimeInRange(limit, d + 1, primes)
-  }
-
-  def assertNoDivisorInRangeHelper(
-    n: BigInt, primes: List[BigInt], d: BigInt, limit: BigInt
-  ): Boolean = {
-    require(n > 1)
-    require(d >= 2)
-    require(limit >= d)
-    require(limit <= n)
-    require(ListUtils.checkAllPositive(primes))
-    require(isCoprime(n, primes))
-    require(assertAllNotCoprimeInRange(limit, d, primes))
-    decreases(limit - d)
-
-    if (d == limit) true
-    else {
-      assert(assertNoDivisorByFactorList(n, d, primes))
-      assertNoDivisorInRangeHelper(n, primes, d + 1, limit)
-    }
-  }.holds
-
-  def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
-    require(head > 1)
-    require(ListUtils.checkAllPositive(primesTail))
-    require(isCoprime(head, primesTail))
-    require(assertAllNotCoprimeInRange(head, BigInt(2), primesTail))
-
-    assertNoDivisorInRangeHelper(head, primesTail, BigInt(2), head)
-  }.holds
-
   def sortFiltered(list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
     if (list.isEmpty) List.empty

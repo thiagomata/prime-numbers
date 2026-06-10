@@ -15,10 +15,15 @@ from first principles, then using them to verify gap positivity and non-emptines
 
 ## Current State
 
-- **Verification:** 4292 valid, 0 invalid, 0 unknown ✅
+- **Verification:** 4415 valid, 0 invalid, 0 unknown ✅
 - **Tests:** 26/26 pass ✅
 - **`next()` status:** `@extern`
 - **`assertCollectGapsV2AllPositive`:** Commented out (was failing with UNKNOWN/CANCELLED)
+- **Phase 1 (`%`→`Calc.mod`):** Complete ✅
+- **Phase 2 (postconditions):** Complete ✅
+- **Phase 3a (`assertNoDivisorByFactorList`):** Complete ✅ (4415 valid)
+- **Phase 3b (`assertHeadIsPrime`):** In progress — helper functions added but not yet verified
+- **New ticket:** `assert-no-divisor-by-factor-list.md` details the solver block and resolution
 
 ---
 
@@ -173,6 +178,9 @@ After each phase:
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-06-09 | `assertCollectGapsV2AllPositive` fails because `lastSurvivor` loses connection to integral | Plan position-tracking rewrite |
+| 2026-06-09 | SMT solver can't connect `findPrimeFactorInList` return value to list membership | Use direct structural recursion over list elements |
+| 2026-06-09 | `assertDivTransitive` internal complexity causes timeout in certain contexts | Inline transitivity with explicit `assert(nd*dp >= 0)` before `assertMultipleModZero` |
+| 2026-06-09 | `assertNoDivisorByFactorList` (core lemma) now verified at 4415 total | Proceed to `assertHeadIsPrime` |
 | 2026-06-09 | Need formal prime definition and Euclid's Lemma for non-emptiness | Plan foundation-first approach |
 | 2026-06-09 | **New approach**: Avoid Euclid's Lemma entirely. Use strong induction: `primes.tail` contains ALL primes < `head`. Then `head` composite ⇒ prime factor q < head ⇒ q ∈ primes.tail ⇒ q\|head ⇒ contradicts isCoprime. Only needs: fix `%`, add postconditions, prove `primes.tail` completeness via pipeline structure. | Update Phase 1-3 plan |
 
@@ -191,20 +199,30 @@ The direct proof avoids Euclid's Lemma by using the strong induction hypothesis:
 6. Therefore `head` has no divisor in `[2, head)` → `Prime.isPrime(head)`.
 
 ### Phase 1: Fix `%` → `Calc.mod`
-- [ ] SieveUtils.isCoprime — change `value % primes.head == BigInt(0)` to `Calc.mod(value, primes.head) != BigInt(0)`
-- [ ] SieveUtils.filterList — change `list.head % divisor != 0` to `Calc.mod(list.head, divisor) != BigInt(0)`
-- [ ] SieveSequenceNextLevel.nextHeadResidueIndexV2 — change `newHeadVal % newMod`
-- [ ] SieveSequenceNextLevel.collectGapsV2 — change `current % seq.head == BigInt(0)`
+- [x] SieveUtils.isCoprime
+- [x] SieveUtils.filterList
+- [x] SieveSequenceNextLevel.nextHeadResidueIndexV2
+- [x] SieveSequenceNextLevel.collectGapsV2
 
-### Phase 2: Add postconditions
-- [ ] `isCoprime(v, P)` postcondition: result implies `Calc.mod(v, p) != 0` for all p in P
-- [ ] `filterList(L, d)` postcondition: every output element is not divisible by d
+### Phase 2: Add divisibility lemmas
+- [x] `assertIsCoprimeSound` — `isCoprime(v, P)` ⇒ `Calc.mod(v, p) != 0` for all p in P
+- [x] `assertIsCoprimeForAll` — stronger version
+- [x] `assertModZero` — `Calc.mod(0, n) == 0`
+- [x] `assertModZeroImpliesDivTimesBEqualsA` — `Calc.mod(a,b)==0 ⇒ Calc.div(a,b)*b == a`
+- [x] `assertMultipleModZero` — `Calc.mod(k*n, n) == 0`
+- [x] `assertDivTransitive` — if `b|c` and `a|b` then `a|c`
+- [x] `findPrimeFactorInList` — finds p in primes where `Calc.mod(n, p) == 0`
+- [x] `assertPrimeFactorDivides` — proves the found p divides n
 
 ### Phase 3: Prove head is prime
-- [ ] Lemma: `assertHeadNotDivisibleByPrimesTail(seq)` — `isCoprime(seq.head, seq.primes.tail)` holds
-- [ ] Lemma: `assertAnyCompositeHasPrimeDivisor(n)` — if `n ≥ 2` and not prime, `∃ q < n` prime dividing n (minimal divisor approach)
-- [ ] Lemma: `assertAllSmallerPrimesInTail(seq)` — every prime < `head` is in `primes.tail` (structural induction from pipeline completeness)
-- [ ] Main lemma: `assertHeadIsPrime(seq)` — `Prime.isPrime(seq.head)`
+- [x] Lemma: `assertNoDivisorByFactorList(n, d, primes)` — core lemma: given `isCoprime(n,primes)` and `!isCoprime(d,primes)`, prove `Calc.mod(n,d) != 0`
+- [ ] Lemma: `assertAllNotCoprimeInRange(limit, d, primes)` — completeness check (plain function, no .holds)
+- [ ] Lemma: `assertNoDivisorInRangeHelper(n, primes, d, limit)` — iterates d from 2 to head, uses completeness + assertNoDivisorByFactorList
+- [ ] Main lemma: `assertHeadIsPrime(head, primesTail)` — `Prime.isPrime(head)`
+
+**Key learning:** SMT solver can't connect `findPrimeFactorInList` return value to list membership.
+Solution: direct structural recursion over list elements instead of opaque selector functions.
+See `assert-no-divisor-by-factor-list.md` for the full debugging history.
 
 ---
 

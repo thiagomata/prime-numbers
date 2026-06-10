@@ -1,16 +1,21 @@
 package v1.prime
 
 import stainless.lang.*
-import stainless.collection.List
-import stainless.annotation.extern
 import v1.Calc
 
 import scala.annotation.tailrec
 
-object Prime {
+class Prime(inputValue: BigInt) {
+  require(Prime.isPrime(inputValue))
 
+  val value: BigInt = inputValue;
+
+  def apply(): BigInt = value
+}
+
+object Prime {
   @tailrec
-  def noDivisorInRange(n: BigInt, from: BigInt, to: BigInt): Boolean = {
+  final def noDivisorInRange(n: BigInt, from: BigInt, to: BigInt): Boolean = {
     require(n >= 0)
     require(from >= 1)
     require(to >= from)
@@ -22,12 +27,12 @@ object Prime {
     }
   }
 
-  def isPrime(p: BigInt): Boolean = {
-    require(p >= 0)
-    if (p <= 1) {
+  def isPrime(value: BigInt): Boolean = {
+    require(value >= 0)
+    if (value <= 1) {
       false
     } else {
-      noDivisorInRange(p, 2, p)
+      noDivisorInRange(value, 2, value)
     }
   }
 }
