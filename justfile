@@ -8,7 +8,7 @@ verify:
     pkill -f sbt 2>/dev/null; pkill -f java;
     rm -f verify-error.log
     rm -f verify.log
-    ./stainless-dotty-standalone-*/stainless --fail-early=true $(find ./src/main/scala -name '*.scala' | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
+    ./stainless-dotty-standalone-*/stainless --timeout=120 --fail-early=true $(find ./src/main/scala -name '*.scala' | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
 
 verify-docker:
     docker-compose -f docker-compose.yaml run stainless

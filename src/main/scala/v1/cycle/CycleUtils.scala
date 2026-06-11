@@ -98,6 +98,7 @@ object CycleUtils {
   }
 
 
+// COMPILATION ERROR (2026-06-11): MemCycle constructor is private, cannot be called from outside MemCycle.scala
 //  def appendForNone(mCycle: MemCycle, dividend: BigInt): MemCycle = {
 //    require(dividend > 0)
 //    require(mCycle.isValid)
@@ -116,6 +117,7 @@ object CycleUtils {
 //    )
 //  }
 
+// COMPILATION ERROR (2026-06-11): MemCycle constructor is private, cannot be called from outside MemCycle.scala
 //  def appendForSome(mCycle: MemCycle, dividend: BigInt): MemCycle = {
 //    require(dividend > 0)
 //    require(mCycle.isValid)

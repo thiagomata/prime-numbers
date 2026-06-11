@@ -250,15 +250,15 @@ object SieveUtils {
     else findResidueIndex(list.tail, idx + 1, value)
   }.ensuring(_ >= BigInt(0))
 
-//  def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
-//    require(index >= 0 && index <= list.size)
-//    decreases(index)
-//    if (index == BigInt(0)) (List.empty, list)
-//    else {
-//      val (front, back) = splitAt(list.tail, index - 1)
-//      (list.head :: front, back)
-//    }
-//  }
+  def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
+    require(index >= 0 && index <= list.size)
+    decreases(index)
+    if (index == BigInt(0)) (List.empty, list)
+    else {
+      val (front, back) = splitAt(list.tail, index - 1)
+      (list.head :: front, back)
+    }
+  }
 
   @tailrec
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {

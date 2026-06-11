@@ -17,6 +17,7 @@ case class SieveSequenceV0(primes: List[Prime]) {
 
   val primorial: BigInt = PrimeUtils.primorial(primes)
 
+// DEPENDENCY FAILED (2026-06-11): depends on search (internal error), kept commented as dependency
 //  def apply(pos: BigInt): BigInt = {
 //    require(pos >= 0)
 //    decreases(pos)
@@ -28,8 +29,7 @@ case class SieveSequenceV0(primes: List[Prime]) {
 //      )
 //    }
 //  }
-//
-//
+// VERIFICATION FAILED (2026-06-11): 4605 UNKNOWN - solver timeout on almost all VCs, heavy assertion chain causes solver breakdown
 //  private def thereAreNonMultiples(amount: BigInt): Boolean = {
 //    require(amount >= 1)
 //    assert(ModIdentity.modIdentity(primorial))
@@ -43,6 +43,7 @@ case class SieveSequenceV0(primes: List[Prime]) {
 //    }
 //  }.holds
 
+// INTERNAL ERROR (2026-06-11): Stainless crashes with choose type inference error on @extern with recursive postcondition
 //  @extern
 //  private def search(pos: BigInt, biggerOrEqualThan: BigInt): BigInt = {
 //    require(pos >= 0)
@@ -68,14 +69,15 @@ object SieveSequenceV0 {
 
 
 
-//  def notDivisibleByAny(n: BigInt, primes: List[BigInt]): Boolean = {
-//    require(n > 1)
-//    require(ListUtils.checkAllPositive(primes))
-//    decreases(primes.size)
-//    if (primes.isEmpty) true
-//    else if (Calc.mod(n, primes.head) == BigInt(0)) false
-//    else notDivisibleByAny(n, primes.tail)
-//  }
+  def notDivisibleByAny(n: BigInt, primes: List[BigInt]): Boolean = {
+    require(n > 1)
+    require(ListUtils.checkAllPositive(primes))
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else if (Calc.mod(n, primes.head) == BigInt(0)) false
+    else notDivisibleByAny(n, primes.tail)
+  }
 
+// COMPILATION ERROR (2026-06-11): List(BigInt(2)) is List[BigInt], need List[Prime]
 //  def S_0(): SieveSequenceV0 = SieveSequenceV0(List(BigInt(2)))
 }

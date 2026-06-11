@@ -65,6 +65,7 @@ object SieveSequenceNextLevel {
     }
   }
 
+// VERIFICATION FAILED (2026-06-11): 4716 UNKNOWN - uses % operator (project rule violation), solver timeout on most VCs
 //  def assertCollectGapsV2AllPositive(
 //    seq: SieveSequenceV2, lastSurvivor: BigInt, lastPos: BigInt,
 //    pos: BigInt, remaining: BigInt, gaps: List[BigInt]
