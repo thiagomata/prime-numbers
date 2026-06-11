@@ -179,13 +179,27 @@ object PrimeProperties {
     * @param d BigInt the smallest divisor found (d >= 2, d < n)
     * @return Boolean true if the property holds
     */
-// VERIFICATION FAILED (2026-06-11): 1990 UNKNOWN - solver can't prove mod(n,d)==0 from findSmallestDivisor(n,2)==d even with findSmallestDivisorEquiv
-//  private def findSmallestDivisorResultModZero(n: BigInt, d: BigInt): Boolean = {
-//    require(n > 1 && d >= 2 && d < n)
-//    require(findSmallestDivisor(n, 2) == d)
-//    findSmallestDivisorEquiv(n, 2)
-//    Calc.mod(n, d) == BigInt(0)
-//  }.holds
+  private def findSmallestDivisorResultModZeroFrom(n: BigInt, from: BigInt, d: BigInt): Boolean = {
+    require(n > 1 && from >= 2 && from <= n)
+    require(findSmallestDivisor(n, from) == d)
+    require(d < n)
+    decreases(n - from)
+    if (from >= n) {
+      true
+    } else if (Calc.mod(n, from) == BigInt(0)) {
+      Calc.mod(n, d) == BigInt(0)
+    } else {
+      findSmallestDivisorResultModZeroFrom(n, from + 1, d)
+      Calc.mod(n, d) == BigInt(0)
+    }
+  }.holds
+
+  private def findSmallestDivisorResultModZero(n: BigInt, d: BigInt): Boolean = {
+    require(n > 1 && d >= 2 && d < n)
+    require(findSmallestDivisor(n, 2) == d)
+    findSmallestDivisorResultModZeroFrom(n, 2, d)
+    Calc.mod(n, d) == BigInt(0)
+  }.holds
 
   /**
    * Helper lemma: the smallest divisor d of n has no divisor in [from, d).
@@ -201,28 +215,34 @@ object PrimeProperties {
    * @param from BigInt the lower bound of the search range in d
    * @return Boolean true if the property holds
    */
-// VERIFICATION FAILED (2026-06-11): 3051 UNKNOWN - assertTransitiveDivisible in contradiction branch causes solver timeout
-//  private def assertSmallestDivisorIsPrimeHelper(n: BigInt, d: BigInt, from: BigInt): Boolean = {
-//    require(n > 1 && d >= 2 && from >= 2 && from <= d && d < n)
-//    require(findSmallestDivisor(n, 2) == d)
-//    require(Calc.mod(n, d) == BigInt(0))
-//    decreases(d - from)
-//    if (from >= d) {
-//      Prime.noDivisorInRange(d, from, d)
-//    } else if (Calc.mod(d, from) == BigInt(0)) {
-//      assertTransitiveDivisible(n, d, from)
-//      findSmallestDivisorReturnsFromIfZero(n, from)
-//      val sd = findSmallestDivisor(n, from)
-//      assert(sd == from)
-//      assert(sd < d)
-//      // sd == from < d, but findSmallestDivisor(n, 2) == d
-//      // Contradiction: findSmallestDivisor would return from (or smaller), not d
-//      false
-//    } else {
-//      assertSmallestDivisorIsPrimeHelper(n, d, from + 1)
-//      Prime.noDivisorInRange(d, from, d)
-//    }
-//  }.holds
+  private def assertSmallestDivisorIsPrimeDirect(n: BigInt, d: BigInt, from: BigInt): Boolean = {
+    require(n > 1 && d >= 2 && from >= 2 && from <= d && d < n)
+    require(findSmallestDivisor(n, from) == d)
+    require(Calc.mod(n, d) == BigInt(0))
+    decreases(d - from)
+    if (from >= d) {
+      true
+    } else if (Calc.mod(d, from) == BigInt(0)) {
+      assertModZeroImpliesDivTimesBEqualsA(n, d)
+      assertModZeroImpliesDivTimesBEqualsA(d, from)
+      val nd = Calc.div(n, d)
+      val df = Calc.div(d, from)
+      assert(nd * d == n)
+      assert(df * from == d)
+      assert(nd * df * from == n)
+      assert(ModSmallDividend.modSmallDividend(BigInt(0), from))
+      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), from, nd * df)
+      findSmallestDivisorReturnsFromIfZero(n, from)
+      false
+    } else if (Calc.mod(n, from) == BigInt(0)) {
+      findSmallestDivisorReturnsFromIfZero(n, from)
+      false
+    } else {
+      Prime.noDivisorInRange(d, from, from)
+      assertSmallestDivisorIsPrimeDirect(n, d, from + 1)
+      Prime.noDivisorInRange(d, from, d)
+    }
+  }.holds
 
   /**
    * Lemma: the smallest divisor of n (greater than 1) is prime.
@@ -238,14 +258,13 @@ object PrimeProperties {
    * @param d BigInt the smallest divisor found (d >= 2, d < n)
    * @return Boolean true if d is prime
    */
-// DEPENDENCY FAILED (2026-06-11): depends on findSmallestDivisorResultModZero and assertSmallestDivisorIsPrimeHelper (both failed)
-//  private def assertSmallestDivisorIsPrime(n: BigInt, d: BigInt): Boolean = {
-//    require(n > 1 && d >= 2 && d < n)
-//    require(findSmallestDivisor(n, 2) == d)
-//    findSmallestDivisorEquiv(n, 2)
-//    assert(Calc.mod(n, d) == BigInt(0))
-//    d > 1 && assertSmallestDivisorIsPrimeHelper(n, d, 2)
-//  }.holds
+  private def assertSmallestDivisorIsPrime(n: BigInt, d: BigInt): Boolean = {
+    require(n > 1 && d >= 2 && d < n)
+    require(findSmallestDivisor(n, 2) == d)
+    findSmallestDivisorResultModZero(n, d)
+    assertSmallestDivisorIsPrimeDirect(n, d, 2)
+    d > 1 && Prime.noDivisorInRange(d, 2, d)
+  }.holds
 
   /**
    * Lemma: every prime in the list divides the primorial of the list.
