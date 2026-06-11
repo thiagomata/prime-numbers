@@ -38,7 +38,7 @@ object PrimeProperties {
     if (from >= n) n
     else if (Calc.mod(n, from) == BigInt(0)) from
     else findSmallestDivisor(n, from + 1)
-  }
+  }.ensuring(res => res >= from && res <= n)
 
   /**
    * Lemma: what findSmallestDivisor returns matches the conditions.
@@ -225,13 +225,13 @@ object PrimeProperties {
     } else if (Calc.mod(d, from) == BigInt(0)) {
       assertModZeroImpliesDivTimesBEqualsA(n, d)
       assertModZeroImpliesDivTimesBEqualsA(d, from)
-      val nd = Calc.div(n, d)
-      val df = Calc.div(d, from)
-      assert(nd * d == n)
-      assert(df * from == d)
-      assert(nd * df * from == n)
+      val quotientN = Calc.div(n, d)
+      val quotientD = Calc.div(d, from)
+      assert(quotientN * d == n)
+      assert(quotientD * from == d)
+      assert(quotientN * quotientD * from == n)
       assert(ModSmallDividend.modSmallDividend(BigInt(0), from))
-      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), from, nd * df)
+      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), from, quotientN * quotientD)
       findSmallestDivisorReturnsFromIfZero(n, from)
       false
     } else if (Calc.mod(n, from) == BigInt(0)) {
@@ -519,5 +519,226 @@ object PrimeProperties {
         primorialPlusOneTailLoop(previous :+ current.head, current.tail)
     }
   }.holds
+  /**
+   * Construct a new Prime from Euclid's construction.
+   *
+   * Given a non-empty list of primes, compute n = primorial(primes) + 1,
+   * then find its smallest divisor d. If no divisor exists (d == n), then
+   * n itself is prime. Otherwise d is a prime divisor of n. Either way,
+   * the result is a prime that is NOT in the original list.
+   *
+   * primorial(primes) + 1 has a prime divisor not in primes
+   *
+   * @param primes List[Prime] a non-empty list of primes
+   * @return Prime a new prime not in the original list
+   */
+  def newPrimeFromEuclid(primes: List[Prime]): Prime = {
+    require(primes.nonEmpty)
+    require(primorialPlusOneModAny(primes))
 
+    PrimeUtils.primorialPositive(primes)
+    val n = PrimeUtils.primorial(primes) + 1
+    val d = findSmallestDivisor(n, 2)
+
+    if (d == n) {
+      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+      Prime(n)
+    } else {
+      assertSmallestDivisorIsPrime(n, d)
+      findSmallestDivisorResultModZero(n, d)
+      Prime(d)
+    }
+  }
+
+  /**
+   * Helper predicate to express that a value does not match any prime value in the list.
+   */
+  private def valueNotMatchesAny(primes: List[Prime], v: BigInt): Boolean = {
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else primes.head.value != v && valueNotMatchesAny(primes.tail, v)
+  }
+
+  /**
+   * Confirms that the given number m is a multiple of every prime in the list.
+   *
+   * This is a pure structural check — it does NOT prove anything about m.
+   * It just defines what it means for m to be divisible by all primes in primes:
+   *   (m % p1 == 0) && (m % p2 == 0) && ...
+   *
+   * At the call site (euclidTheorem), m = primorial(primes), so the solver
+   * can inline primorial and verify each conjunct.
+   */
+  private def numberIsMultipleOfAll(primes: List[Prime], m: BigInt): Boolean = {
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else Calc.mod(m, primes.head.value) == BigInt(0) && numberIsMultipleOfAll(primes.tail, m)
+  }
+
+  /**
+   * Given a number m that is a multiple of all primes in the list,
+   * and a divisor v of n = m + 1, proves that v does NOT match any
+   * prime value in the list.
+   *
+   * For each prime p in primes:
+   *   1. Calc.mod(m, p) == 0  (from numberIsMultipleOfAll require)
+   *   2. Calc.mod(m + 1, p) == Calc.mod(1, p)  (by modZeroPlusC)
+   *   3. Calc.mod(1, p) == 1 != 0  (by modSmallDividend, since p > 1)
+   *   4. Therefore Calc.mod(n, p) == 1, so p != v (since Calc.mod(n, v) == 0)
+   */
+  private def checkAllNotV(
+    primes: List[Prime],
+    v: BigInt,
+    n: BigInt,
+    m: BigInt
+  ): Boolean = {
+    require(v > 1)
+    require(n == m + BigInt(1))
+    require(Calc.mod(n, v) == BigInt(0))
+    require(numberIsMultipleOfAll(primes, m))
+    decreases(primes.size)
+
+    if (primes.isEmpty) true
+    else {
+      val p = primes.head.value
+
+      ModOperations.modZeroPlusC(m, p, BigInt(1))
+      assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+      assert(Calc.mod(n, p) != BigInt(0))
+      assert(p != v)
+
+      p != v && checkAllNotV(primes.tail, v, n, m)
+    }
+  }.ensuring(res => !res || valueNotMatchesAny(primes, v))
+
+//  def euclidTheorem(primes: List[Prime]): Boolean = {
+//    require(primes.nonEmpty)
+//    require(primorialPlusOneModAny(primes))
+//
+//    PrimeUtils.primorialPositive(primes)
+//    val n = PrimeUtils.primorial(primes) + 1
+//    val d = findSmallestDivisor(n, 2)
+//    val m = PrimeUtils.primorial(primes)
+//
+//    if (d == n) {
+//      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+//      assert(Calc.mod(n, n) == BigInt(0))
+//      assert(checkAllNotV(primes, n, n, m))
+//      valueNotMatchesAny(primes, n)
+//    } else {
+//      assertSmallestDivisorIsPrime(n, d)
+//      findSmallestDivisorResultModZero(n, d)
+//      assert(checkAllNotV(primes, d, n, m))
+//      valueNotMatchesAny(primes, d)
+//    }
+//  }.holds
+//
+//  private def checkAllNotV(previous: List[Prime], remaining: List[Prime], v: BigInt, n: BigInt): Boolean = {
+//    require(v > 1)
+//    require(n == PrimeUtils.primorial(previous ++ remaining) + BigInt(1))
+//    require(Calc.mod(n, v) == BigInt(0))
+//    decreases(remaining.size)
+//    if (remaining.isEmpty) true
+//    else {
+//      val p = remaining.head.value
+//      val tailPrimorial = PrimeUtils.primorial(remaining.tail)
+//      val previousPrimorial = PrimeUtils.primorial(previous)
+//      val primorialAll = previousPrimorial * p * tailPrimorial
+//
+//      primorialConcatLemma(previous, remaining)
+//      assert(PrimeUtils.primorial(remaining) == p * tailPrimorial)
+//      assert(PrimeUtils.primorial(previous ++ remaining) == primorialAll)
+//      assert(n == primorialAll + BigInt(1))
+//
+//      assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
+//      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, previousPrimorial * tailPrimorial)
+//      assert(Calc.mod(primorialAll, p) == BigInt(0))
+//      ModOperations.modZeroPlusC(primorialAll, p, BigInt(1))
+//      assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+//      assert(Calc.mod(primorialAll + 1, p) != BigInt(0))
+//      assert(Calc.mod(n, p) != BigInt(0))
+//
+//      // ---- BRIDGING THE ACCUMULATOR STEP USING PRIMEUTILS ----
+//      val nextPrevious = previous :+ remaining.head
+//      val nextRemaining = remaining.tail
+//
+//      // Lemma Call 1: Establish the primorial value of the next accumulator state
+//      // primorial(previous ++ List(remaining.head)) == primorial(previous) * p
+//      primorialConcatLemma(previous, List(remaining.head))
+//      assert(PrimeUtils.primorial(nextPrevious) == previousPrimorial * p)
+//
+//      // Lemma Call 2: Establish the primorial value of the next combined state
+//      // primorial(nextPrevious ++ nextRemaining) == primorial(nextPrevious) * primorial(nextRemaining)
+//      primorialConcatLemma(nextPrevious, nextRemaining)
+//
+//      // Linear substitution check for Stainless:
+//      // primorial(nextPrevious ++ nextRemaining) == (previousPrimorial * p) * tailPrimorial == primorialAll
+//      assert(PrimeUtils.primorial(nextPrevious ++ nextRemaining) == primorialAll)
+//      assert(n == PrimeUtils.primorial(nextPrevious ++ nextRemaining) + BigInt(1))
+//      // --------------------------------------------------------
+//
+//      p != v && checkAllNotV(nextPrevious, nextRemaining, v, n)
+//    }
+//      }.holds
+
+//  /**
+//   * Euclid's theorem: there exists a prime not in the given non-empty list.
+//   *
+//   * We construct it explicitly via newPrimeFromEuclid and then prove it is NOT
+//   * in the original list using primorialPlusOneModAny.
+//   *
+//   * primes.nonEmpty ⇒ ∃ p. isPrime(p) ∧ !primes.contains(p)
+//   *
+//   * @param primes List[Prime] a non-empty list of primes
+//   * @return Boolean true (the theorem holds)
+//   */
+//  private def checkAllNotV(previous: List[Prime], remaining: List[Prime], v: BigInt, n: BigInt): Boolean = {
+//    require(v > 1)
+//    require(n == PrimeUtils.primorial(previous ++ remaining) + BigInt(1))
+//    require(Calc.mod(n, v) == BigInt(0))
+//    decreases(remaining.size)
+//    if (remaining.isEmpty) true
+//    else {
+//      val p = remaining.head.value
+//      val tailPrimorial = PrimeUtils.primorial(remaining.tail)
+//      val previousPrimorial = PrimeUtils.primorial(previous)
+//      val primorialAll = previousPrimorial * p * tailPrimorial
+//
+//      primorialConcatLemma(previous, remaining)
+//      assert(PrimeUtils.primorial(remaining) == p * tailPrimorial)
+//      assert(PrimeUtils.primorial(previous ++ remaining) == primorialAll)
+//      assert(n == primorialAll + BigInt(1))
+//
+//      assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
+//      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, previousPrimorial * tailPrimorial)
+//      assert(Calc.mod(primorialAll, p) == BigInt(0))
+//      ModOperations.modZeroPlusC(primorialAll, p, BigInt(1))
+//      assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+//      assert(Calc.mod(primorialAll + 1, p) != BigInt(0))
+//      assert(Calc.mod(n, p) != BigInt(0))
+//
+//      primorialConcatLemma(previous :+ remaining.head, remaining.tail)
+//      p != v && checkAllNotV(previous :+ remaining.head, remaining.tail, v, n)
+//    }
+//  }.holds
+
+//  def euclidTheorem(primes: List[Prime]): Boolean = {
+//    require(primes.nonEmpty)
+//    require(primorialPlusOneModAny(primes))
+//
+//    PrimeUtils.primorialPositive(primes)
+//    val n = PrimeUtils.primorial(primes) + 1
+//    val d = findSmallestDivisor(n, 2)
+//
+//    if (d == n) {
+//      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+//      assert(Calc.mod(n, n) == BigInt(0))
+//      checkAllNotV(List.empty[Prime], primes, n, n)
+//    } else {
+//      assertSmallestDivisorIsPrime(n, d)
+//      findSmallestDivisorResultModZero(n, d)
+//      checkAllNotV(List.empty[Prime], primes, d, n)
+//    }
+//  }.holds
 }
+
