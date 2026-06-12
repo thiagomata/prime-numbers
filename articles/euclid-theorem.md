@@ -39,7 +39,7 @@ zero-prior-knowledge methodology established in earlier articles:
 modular arithmetic [[2]](#ref2), lists [[3]](#ref3), and prime utilities
 are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of Euclid's theorem — 5038 verification conditions
+The result is a machine-checked proof of Euclid's theorem — 4749 verification conditions
 all valid — that serves as a foundation for further formal reasoning about prime numbers.
 
 ## 2. Preliminaries
@@ -76,14 +76,7 @@ Euclid's theorem is formalized as the following lemma:
 \exists\ p \notin \text{primes} : \text{isPrime}(p)
 ```
 
-In the code, this is expressed as:
-
-```scala
-def euclidTheorem(primes: List[Prime]): Boolean = {
-  require(primes.nonEmpty)
-  // ... proof steps ...
-}.holds
-```
+In the code, this is expressed as the function `euclidTheorem` (shown in full in §3.4).
 
 The proof proceeds in three stages:
 
@@ -263,10 +256,10 @@ caching system does the work for us.
 
 The complete verification of the prime properties module achieves:
 
-- **5038 verification conditions**, all valid
+- **4749 verification conditions**, all valid
 - **0 invalid**, **0 unknown**
-- **Verification time**: approximately 21 seconds
-- **`euclidTheorem` alone**: 24 new verification conditions, all valid
+- **Verification time**: approximately 17 seconds
+- **425 functions** verified
 
 The `euclidTailLoop` contributes the bulk of the conditions due to its iterative nature
 and the modular arithmetic lemmas it invokes.
@@ -297,7 +290,7 @@ verification system. The proof:
 1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
 2. Follows Euclid's classic primorial-plus-one construction
 3. Proves that the resulting number has a prime divisor not in the original list
-4. Achieves 5038/5038 verification conditions valid
+4. Achieves 4749/4749 verification conditions valid
 
 The key methodological insight — the `.holds` caching mechanism — simplifies the proof
 by making internal assertions available to callers without explicit postcondition
@@ -366,60 +359,56 @@ Using java version 21.0.7-zulu in this shell.
 
 [ Info  ] Compiling with standard Scala 3.3.3 compiler front end...
 [ Info  ] Finished compiling
-[ Info  ] Preprocessing the symbols...                             
+[ Info  ] Preprocessing the symbols...
 [ Info  ] Preprocessing finished
-[ Info  ] Running phase ConstructsUsage                            
-[ Info  ] Running phase PartialFunctions                           
-[ Info  ] Running phase XlangLowering                              
-[ Info  ] Running phase InnerClasses                               
-[ Info  ] Running phase Laws                                       
-[ Info  ] Running phase SuperInvariants                            
-[ Info  ] Running phase SuperCalls                                 
-[ Info  ] Running phase Sealing                                    
-[ Info  ] Running phase MethodLifting                              
-[ Info  ] Running phase MergeInvariants                            
-[ Info  ] Running phase FieldAccessors                             
-[ Info  ] Running phase ValueClasses                               
-[ Info  ] Running phase MethodsLowering                            
-[ Info  ] Running phase ExceptionLifting                           
-[ Info  ] Running phase EffectElaboration                          
-[ Info  ] Running phase AntiAliasing                               
-[ Info  ] Running phase ReturnElimination                          
-[ Info  ] Running phase ImperativeCodeElimination                  
-[ Info  ] Running phase ImperativeCleanup                          
-[ Info  ] Running phase AdtSpecialization                          
-[ Info  ] Running phase RefinementLifting                          
-[ Info  ] Running phase TypeEncoding                               
-[ Info  ] Running phase InvariantInitialization                    
-[ Info  ] Running phase FunctionClosure                            
-[ Info  ] Running phase FunctionSpecialization                     
-[ Info  ] Running phase UnfoldOpaque                               
-[ Info  ] Running phase CallSiteInline                             
-[ Info  ] Running phase ChooseInjector                             
-[ Info  ] Running phase ChooseEncoder                              
-[ Info  ] Running phase FunctionInlining                           
-[ Info  ] Running phase TraceInductElimination                     
-[ Info  ] Running phase SizedADTExtraction                         
-[ Info  ] Running phase InductElimination                          
-[ Info  ] Running phase MeasureInference                           
-[ Info  ] Inferring measure for sum...
+[ Info  ] Running phase ConstructsUsage
+[ Info  ] Running phase PartialFunctions
+[ Info  ] Running phase XlangLowering
+[ Info  ] Running phase InnerClasses
+[ Info  ] Running phase Laws
+[ Info  ] Running phase SuperInvariants
+[ Info  ] Running phase SuperCalls
+[ Info  ] Running phase Sealing
+[ Info  ] Running phase MethodLifting
+[ Info  ] Running phase MergeInvariants
+[ Info  ] Running phase FieldAccessors
+[ Info  ] Running phase ValueClasses
+[ Info  ] Running phase MethodsLowering
+[ Info  ] Running phase ExceptionLifting
+[ Info  ] Running phase EffectElaboration
+[ Info  ] Running phase AntiAliasing
+[ Info  ] Running phase ReturnElimination
+[ Info  ] Running phase ImperativeCodeElimination
+[ Info  ] Running phase ImperativeCleanup
+[ Info  ] Running phase AdtSpecialization
+[ Info  ] Running phase RefinementLifting
+[ Info  ] Running phase TypeEncoding
+[ Info  ] Running phase InvariantInitialization
+[ Info  ] Running phase FunctionClosure
+[ Info  ] Running phase FunctionSpecialization
+[ Info  ] Running phase UnfoldOpaque
+[ Info  ] Running phase CallSiteInline
+[ Info  ] Running phase ChooseInjector
+[ Info  ] Running phase ChooseEncoder
+[ Info  ] Running phase FunctionInlining
+[ Info  ] Running phase TraceInductElimination
+[ Info  ] Running phase SizedADTExtraction
+[ Info  ] Running phase InductElimination
+[ Info  ] Running phase MeasureInference
 [ Warning] The Z3 native interface is not available. Falling back onto smt-z3.
-[ Info  ] Inferring measure for ++...
-[ Info  ] Inferring measure for last...
-[ Info  ] Inferring measure for apply...
 [ Info  ] Running phase PartialEvaluation
 [ Info  ] Finished lowering the symbols
-[ Info  ] Generating VCs for 170 functions...
-[ Info  ] Finished generating VCs            
+[ Info  ] Generating VCs for 425 functions...
+[ Info  ] Finished generating VCs
 [ Info  ] Starting verification...
-[ Info  ] Verified: 5038 / 5038
-[ Info  ] Done in 21.36s
+[ Info  ] Verified: 4749 / 4749
+[ Info  ] Done in 82.74s
 [ Info  ]   ┌───────────────────┐
 [ Info  ] ╔═╡ stainless summary ╞═══════════════╗
 [ Info  ] ║ └───────────────────┘               ║
-[ Info  ] ║ total: 5038 valid: 5038             ║
+[ Info  ] ║ total: 4749 valid: 4749             ║
 [ Info  ] ║ invalid: 0    unknown: 0            ║
-[ Info  ] ║ time: 21.36                         ║
+[ Info  ] ║ time: 16.99                         ║
 [ Info  ] ╚═════════════════════════════════════╝
 [ Info  ] Verification pipeline summary:
 [ Info  ]   @extern, cache, anti-aliasing, return transformation,
