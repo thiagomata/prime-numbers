@@ -135,6 +135,12 @@
 | `primorialPlusOneModAny`                       | PrimeProperties.scala                | Prime|
 | `newPrimeFromEuclid`                           | PrimeProperties.scala                | Prime|
 | `euclidTheorem`                                | PrimeProperties.scala                | Prime|
+| `assertPrimeNotDivisibleByDistinctPrime`       | FilterPreservesPrimesProperties.scala| Prime|
+| `assertFilterPreservesAllPrimes`               | FilterPreservesPrimesProperties.scala| Prime|
+| `assertFilteredContainsAllPrimes`              | FilterPreservesPrimesProperties.scala| Prime|
+| **CycleIntegralOnes**                          |                                      |
+| `assertCycleIntegralOfOnes`                    | CycleIntegralOnesProperties.scala    | CycleIntegral |
+| `assertCycleIntegralOfOnesStrictlyIncreasing`  | CycleIntegralOnesProperties.scala    | CycleIntegral |
 
 ---
 
@@ -965,7 +971,60 @@ explicit postcondition enrichment. See §4 of [articles/euclid-theorem.md](./art
 
 ---
 
-# Domain 7: Additional Utilities
+## 6.4 FilterPreservesPrimesProperties (`v1.prime.properties.FilterPreservesPrimesProperties`)
+
+Proves that filtering out multiples of a prime preserves all primes in a list.
+This is the inductive step of the sieve's correctness proof.
+
+### Public API
+
+| Lemma                                      | Statement                                          | Preconditions |
+|--------------------------------------------|----------------------------------------------------|---------------|
+| **assertPrimeNotDivisibleByDistinctPrime** | `isPrime(q) ∧ isPrime(p) ∧ q ≠ p ⟹ mod(q, p) ≠ 0` | `q >= 2`, `p >= 2` |
+| **assertFilterPreservesAllPrimes**         | `isPrime(q) ∧ q ≠ filterPrime ⟹ mod(q, filterPrime) ≠ 0` | `q >= 2`, `filterPrime >= 2`, `isPrime(q)`, `isPrime(filterPrime)`, `q ≠ filterPrime` |
+| **assertFilteredContainsAllPrimes**        | `q ∈ originalPrimes ∧ isPrime(q) ∧ q ≠ filterPrime ⟹ q ∈ filteredPrimes` | `filterPrime >= 2`, `isPrime(filterPrime)`, `q >= 2`, `isPrime(q)`, `q ≠ filterPrime`, `originalPrimes.contains(q)` |
+
+### Internal Lemmas
+
+| Lemma                                      | Statement                                          | Preconditions |
+|--------------------------------------------|----------------------------------------------------|---------------|
+| **noDivisorInRangeImpliesModNonZero**      | `noDivisorInRange(n, from, to) ∧ d ∈ [from, to) ⟹ mod(n, d) ≠ 0` | `n >= 0`, `from >= 1`, `to >= from`, `d >= from`, `d < to` |
+
+### Key Insight
+
+The helper lemma `noDivisorInRangeImpliesModNonZero` bridges the gap between the recursive
+`noDivisorInRange` predicate and a specific modulo check. The SMT solver can't automatically
+connect a value `p` to the range `[2, q)` in `noDivisorInRange(q, 2, q)`, so we prove it
+explicitly by induction on `to - from`.
+
+**Source**: `src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala`
+
+---
+
+# Domain 7: CycleIntegralOnes
+
+## 7.1 CycleIntegralOnesProperties (`v1.cycle.integral.recursive.properties.CycleIntegralOnesProperties`)
+
+Proves that a CycleIntegral with a constant cycle of [1] produces natural numbers.
+This is the base case of the sieve's correctness proof.
+
+### Public API
+
+| Lemma                                      | Statement                                          | Preconditions |
+|--------------------------------------------|----------------------------------------------------|---------------|
+| **assertCycleIntegralOfOnes**              | `CI(init, [1]).apply(n) == init + n + 1`           | `pos >= 0`, `init >= 0` |
+| **assertCycleIntegralOfOnesStrictlyIncreasing** | `b > a ⟹ CI(init, [1]).apply(b) > CI(init, [1]).apply(a)` | `a >= 0`, `b > a`, `init >= 0` |
+
+### Key Insight
+
+A constant cycle of 1s produces an arithmetic progression with step 1.
+For S_0: `init = 2`, so `S_0(n) = n + 2`, giving us 2, 3, 4, 5, ...
+
+**Source**: `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala`
+
+---
+
+# Domain 8: Additional Utilities
 
 ## 7.1 ConsecutiveIntegers (`v1.div.properties.ConsecutiveIntegers`)
 
