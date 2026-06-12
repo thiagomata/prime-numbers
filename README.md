@@ -249,6 +249,61 @@ From these definitions, it mathematically proves and formally verifies the follo
 \end{aligned}
 ```
 
+### Euclid's Theorem (Infinitude of Primes)
+
+The article [Formal Verification of Euclid's Theorem on the Infinitude of Primes](./articles/draft-euclid-theorem.md)
+proves that there are infinitely many primes using Euclid's classic construction:
+given any finite list of primes, compute their primorial plus one, and show that
+this number has a prime divisor not in the original list.
+
+```math
+\begin{aligned}
+\text{primorial}(L) &= \prod_{i=1}^{k} p_i \\
+n &= \text{primorial}(L) + 1
+\end{aligned}
+```
+
+From these definitions, it mathematically proves and formally verifies the following theorem:
+
+```math
+\begin{aligned}
+\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} &\implies
+\exists\ p \notin \text{primes} : \text{isPrime}(p)
+\quad &\text{[Euclid's Theorem]} \\
+\end{aligned}
+```
+
+### Sieve Foundation Properties
+
+The article [Formal Verification of Sieve Foundation Properties from First Principles](./articles/draft-sieve-foundation.md)
+establishes the foundational lemmas for the sieve sequence algorithm, proving that
+CycleIntegral with unit cycle produces natural numbers and that filtering out
+multiples of a prime preserves all primes.
+
+```math
+\begin{aligned}
+L &= [1],\quad \text{MemCycle}(L) \text{ is the unit cycle} \\
+\text{CycleIntegral}(L, init)_i &= \sum_{j=0}^{i} L_{(j \text{ mod } 1)} + init
+\end{aligned}
+```
+
+From these definitions, it mathematically proves and formally verifies the following properties:
+
+```math
+\begin{aligned}
+\text{CycleIntegral}(\text{MemCycle}([1]), init)_i &= init + i + 1
+\quad &\text{[Unit Cycle Generates Natural Numbers]} \\
+b > a &\implies \text{CycleIntegral}(\text{MemCycle}([1]), init)_b > \text{CycleIntegral}(\text{MemCycle}([1]), init)_a
+\quad &\text{[Strict Monotonicity]} \\
+\text{isPrime}(q) \land \text{isPrime}(p) \land q \neq p &\implies q \bmod p \neq 0
+\quad &\text{[Distinct Primes Coprime]} \\
+\text{isPrime}(q) \land q \neq \text{filterPrime} &\implies q \bmod \text{filterPrime} \neq 0
+\quad &\text{[Filter Preserves Primes]} \\
+q \in \text{originalPrimes} \land \text{isPrime}(q) \land q \neq \text{filterPrime} &\implies q \in \text{filteredPrimes}
+\quad &\text{[Filtered Contains All Primes]} \\
+\end{aligned}
+```
+
 ## Running the Formal Verification
 
 ### Running Locally

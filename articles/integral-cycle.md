@@ -858,13 +858,6 @@ Future work may include exploring more complex properties of Cycle Integrals, su
 - Integration with other mathematical structures like polynomials or matrices
 - Applications in signal processing and time series analysis
 
-### 6.1 Sieve Foundation
-
-The properties established in this article provide the foundation for the sieve sequence algorithm. The key insight is that a cycle with unit `[1]` produces consecutive natural numbers, which is essential for generating candidate primes.
-
-For detailed proofs of how Cycle Integral properties enable prime sieving, see:
-- [Sieve Foundation: CycleIntegral and Filter Properties](sieve-foundation.md)
-
 
 
 ## References
@@ -884,7 +877,3 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2025). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
-
-<a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2025). *Sieve Foundation: CycleIntegral and Filter Properties*. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-foundation.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-foundation.md)
