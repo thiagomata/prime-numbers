@@ -510,6 +510,7 @@ object PrimeProperties {
       ModOperations.modZeroPlusC(primorialAll, p, BigInt(1))
       // Prove: mod(1, p) == 1 (since p > 1)
       assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+      assert(Calc.mod(primorialAll + 1, p) != BigInt(0))
       Calc.mod(primorialAll + 1, p) != BigInt(0) &&
         primorialPlusOneTailLoop(previous :+ current.head, current.tail)
     }
@@ -642,28 +643,28 @@ object PrimeProperties {
     }
   }.ensuring(res => res && valueNotMatchesAny(primes, v))
 
-//  def euclidTheorem(primes: List[Prime]): Boolean = {
-//    require(primes.nonEmpty)
-//    require(primorialPlusOneModAny(primes))
-//
-//    PrimeUtils.primorialPositive(primes)
-//    val n = PrimeUtils.primorial(primes) + 1
-//    val d = findSmallestDivisor(n, 2)
-//
-//    if (d == n) {
-//      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
-//      assert(ModSmallDividend.modSmallDividend(BigInt(0), n))
-//      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), n, BigInt(1))
-//      assert(Calc.mod(n, n) == BigInt(0))
-//      assert(euclidTailLoop(primes, n, n, BigInt(1)))
-//      valueNotMatchesAny(primes, n)
-//    } else {
-//      assertSmallestDivisorIsPrime(n, d)
-//      findSmallestDivisorResultModZero(n, d)
-//      assert(euclidTailLoop(primes, d, n, BigInt(1)))
-//      valueNotMatchesAny(primes, d)
-//    }
-//  }.holds
+  def euclidTheorem(primes: List[Prime]): Boolean = {
+    require(primes.nonEmpty)
+
+    primorialPlusOneModAny(primes)
+    PrimeUtils.primorialPositive(primes)
+    val n = PrimeUtils.primorial(primes) + 1
+    val d = findSmallestDivisor(n, 2)
+
+    if (d == n) {
+      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+      assert(ModSmallDividend.modSmallDividend(BigInt(0), n))
+      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), n, BigInt(1))
+      assert(Calc.mod(n, n) == BigInt(0))
+      assert(euclidTailLoop(primes, n, n, BigInt(1)))
+      valueNotMatchesAny(primes, n)
+    } else {
+      assertSmallestDivisorIsPrime(n, d)
+      findSmallestDivisorResultModZero(n, d)
+      assert(euclidTailLoop(primes, d, n, BigInt(1)))
+      valueNotMatchesAny(primes, d)
+    }
+  }.holds
 
 //  private def checkAllNotV(previous: List[Prime], remaining: List[Prime], v: BigInt, n: BigInt): Boolean = {
 //    require(v > 1)
