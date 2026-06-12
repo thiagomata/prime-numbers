@@ -95,7 +95,7 @@ The theoretical framework established here provides both a mathematical foundati
 
 ## References
 
-1. Mata, T. H. (2024). Using Formal Verification to Prove Properties of Lists Recursively Defined
-2. Mata, T. H. (2024). Formal Verification of Discrete Integration Properties from First Principles
-3. Mata, T. H. (2024). Using Formal Verification to Prove Properties of Unbound Lists
-4. Mata, T. H. (2024). Formal Verification of Cycle Integral Properties from First Principles
+1. Mata, T. H. (2026). Using Formal Verification to Prove Properties of Lists Recursively Defined
+2. Mata, T. H. (2026). Formal Verification of Discrete Integration Properties from First Principles
+3. Mata, T. H. (2026). Using Formal Verification to Prove Properties of Unbound Lists
+4. Mata, T. H. (2026). Formal Verification of Cycle Integral Properties from First Principles

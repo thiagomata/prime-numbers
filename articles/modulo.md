@@ -417,13 +417,13 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
 ## 8. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-[Formal Verification - Wikipedia, 2024](https://en.wikipedia.org/wiki/Formal_verification)
+[Formal Verification - Wikipedia, 2026](https://en.wikipedia.org/wiki/Formal_verification)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
  Sanghavi, Alok (May 21, 2010). "What is formal verification?". EE Times Asia.
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-[Stainless - Program Verification, 2024](https://epfl-lara.github.io/stainless/intro.html)
+[Stainless - Program Verification, 2026](https://epfl-lara.github.io/stainless/intro.html)
 
 ## 9. Appendices
 
@@ -473,7 +473,7 @@ Using java version 21.0.7-zulu in this shell.
 [ Info  ] Running phase InductElimination                          
 [ Info  ] Running phase MeasureInference                           
 [ Info  ] Inferring measure for sum...
-Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
+[ Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
 [ Info  ] Inferring measure for ++...
 [ Info  ] Inferring measure for last...
 [ Info  ] Inferring measure for apply...

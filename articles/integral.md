@@ -986,7 +986,7 @@ These formally verified properties provide a robust foundation for future develo
 ## 9. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
-Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 ## 10. Appendix

@@ -1,3 +1,7 @@
+> **Note:** This is an outdated draft from an earlier iteration of the sieve sequence implementation.
+> The code references in this article may not match the current source. It is kept as guidance
+> for the ongoing sieve proof effort.
+
 # Formal Verification of Sieve Sequence Properties from First Principles
 
 **Author:** Mata, T. H.
@@ -616,21 +620,21 @@ Future work may include:
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2025). *Formal Verification of Discrete Integration Properties from First Principles*. Unpublished manuscript.
+Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Unpublished manuscript.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Unbound Lists*. Unpublished manuscript.
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Lists*. Unpublished manuscript.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2025). *Formal Verification of Cycle Integral Properties from First Principles*. Unpublished manuscript.
+Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Unpublished manuscript.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2025). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.
+Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)

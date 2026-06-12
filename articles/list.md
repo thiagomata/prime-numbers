@@ -1144,7 +1144,7 @@ Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations f
 Proceedings of the ACM on Programming Languages, OOPSLA Issue.  
 
 <a name="ref1" id="ref1" href="#ref1">[2]</a>  
-Wikipedia contributors. (2024). *Formal verification*. Wikipedia.  
+Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
 Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
 
 ## 7. Appendix

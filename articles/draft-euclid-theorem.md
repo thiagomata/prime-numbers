@@ -39,7 +39,7 @@ zero-prior-knowledge methodology established in earlier articles:
 modular arithmetic [[2]](#ref2), lists [[3]](#ref3), and prime utilities
 are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of Euclid's theorem — 4749 verification conditions
+The result is a machine-checked proof of Euclid's theorem — 4837 verification conditions
 all valid — that serves as a foundation for further formal reasoning about prime numbers.
 
 ## 2. Preliminaries
@@ -256,7 +256,7 @@ caching system does the work for us.
 
 The complete verification of the prime properties module achieves:
 
-- **4749 verification conditions**, all valid
+- **4837 verification conditions**, all valid
 - **0 invalid**, **0 unknown**
 - **Verification time**: approximately 17 seconds
 - **425 functions** verified
@@ -290,7 +290,7 @@ verification system. The proof:
 1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
 2. Follows Euclid's classic primorial-plus-one construction
 3. Proves that the resulting number has a prime divisor not in the original list
-4. Achieves 4749/4749 verification conditions valid
+4. Achieves 4837/4837 verification conditions valid
 
 The key methodological insight — the `.holds` caching mechanism — simplifies the proof
 by making internal assertions available to callers without explicit postcondition
@@ -317,35 +317,35 @@ Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations f
 Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2025). *Proving Properties of Division and Modulo using Formal Verification*.
+Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2025). *Formal Verification of Discrete Integration Properties from First Principles*.
+Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2025). *Using Formal Verification to Prove Properties of Unbound Lists*.
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Lists*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md)
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
-Mata, T. H. (2025). *Formal Verification of Cycle Integral Properties from First Principles*.
+Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md)
 
 <a name="ref7" id="ref7" href="#ref7">[7]</a>
-Mata, T. H. (2025). *Formal Verification of Sieve Sequence Properties from First Principles*.
+Mata, T. H. (2026). *Formal Verification of Sieve Sequence Properties from First Principles*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-sequence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-sequence.md)
 
 <a name="ref8" id="ref8" href="#ref8">[8]</a>
-Mata, T. H. (2025). *Gap Persistence in Sieve Sequences: Analysis of "2" Gaps*.
+Mata, T. H. (2026). *Gap Persistence in Sieve Sequences: Analysis of "2" Gaps*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/gap-persistence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/gap-persistence.md)
 
 <a name="ref9" id="ref9" href="#ref9">[9]</a>
-Mata, T. H. (2025). *Twin Prime Candidate Persistence in Sieve Sequences*.
+Mata, T. H. (2026). *Twin Prime Candidate Persistence in Sieve Sequences*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/twin-prime-persistence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/twin-prime-persistence.md)
 
 ## Appendix
