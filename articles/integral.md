@@ -518,14 +518,6 @@ $$
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
 $$
 
-Thank you for the clarification. Based on your provided formal style, here is the revised and consistent proof that
-
-$$
-\forall p \in [0, n - 1]:\ I_p = \text{acc}_p
-$$
-
-where $I_p$ is defined via the `apply` logic and $\text{acc}_p$ is the accumulated value at position $p$.
-
 ### 6.3 Integral-Accumulation Index Equivalence
 
 **Lemma:** The $p\text{-th}$ element of the Integral equals the $p\text{-th}$ element of the accumulated list.

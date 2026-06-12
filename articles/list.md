@@ -178,7 +178,7 @@ Using the definitions above, we state and verify the following key properties of
 ### 3.1 Slice Implementations are Equivalent
 
 Let's prove and verify that the definitions of slice tail-recursive,
-head-recursive and index-rage recursive are interchangeable and equivalent 
+head-recursive and index-range recursive are interchangeable and equivalent 
 to the mathematical slice notation $L[i \dots j]$ previously defined as:
 
 Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
@@ -245,7 +245,7 @@ $$
 L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
-Therefore, let's verify if this recursive implementation matches the specification of the the list definition:
+Therefore, let's verify if this recursive implementation matches the specification of the list definition:
 
 **Goal**:
 
@@ -574,7 +574,7 @@ Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
 ```math
 \begin{aligned}
 \text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
-L = [x_0] ⧺ P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definiton of Concatenation]} \\
+L = [x_0] ⧺ P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definition of Concatenation]} \\
 \end{aligned}
 ```
 
@@ -791,6 +791,8 @@ Verified in [List Util Properties - Assert Last Equals Last Position](
 
 ### 3.5 Left Append Preserves Sum
 
+The sum of a list with an element prepended equals the element plus the sum of the original list.
+
 ```math
 \begin{aligned}
 \forall \text{ } x \in 𝕊 \\
@@ -828,7 +830,7 @@ Verified in [List Utils Properties - List Sum Add Value](
 
 ```scala
   /**
-    * for every list `list`` and every value `value``,
+    * for every list `list and every value `value``,
     * the sum of the list `list` ++ `List(value)`
     * is equal to the sum of the `list` plus the `value`.
     * 
@@ -849,6 +851,9 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### 3.6 Sum over Concatenation
+
+The sum of two concatenated lists equals the sum of each list added together.
+
 ```math
 	sum(A ⧺ B) = 	sum(A) + 	sum(B)
 ```
@@ -933,6 +938,8 @@ Verified in [List Utils Properties - List Combine ](
 ```
 
 ### 3.7 Commutativity of Sum over Concatenation
+
+The order of concatenation does not affect the total sum.
 
 ```math
 	sum(A ⧺ B) = sum(B ⧺ A)

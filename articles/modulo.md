@@ -22,7 +22,7 @@ This work bridges mathematical foundations and executable verification, offering
  </p>
 </div>
 
-## Introduction
+## 1. Introduction
 
 Integer division and modulo operations are central tools in discrete mathematics, number theory, and algorithms. 
 While their properties are well known, rigorous formalization and verification—particularly via recursive definitions—
@@ -49,7 +49,7 @@ To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/
 > [[3]](#ref3)
 
 
-## Limitations
+## 2. Limitations
 
 The implementation presented in this article is limited to the division and modulo operations for integers. 
 It goals is to make available a set of lemmas and proofs that can be verified and used as a base to prove other 
@@ -63,7 +63,7 @@ Similarly, some lemmas and proofs use the recursive definition of the division a
 trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this 
 article, which are the main focus of this article.
 
-## Traditional Definition
+## 3. Traditional Definition
 
 Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ and $remainder$ such that:
 
@@ -79,7 +79,7 @@ dividend \text{ div } divisor & = quotient \\
 \end{aligned}
 ```
 
-## Recursive Definition
+## 4. Recursive Definition
 
 Some properties of the division and modulo can be proved using the recursive definition of the division and modulo operations.
 The recursive definition of the division and modulo operations are:
@@ -118,7 +118,7 @@ The Recursive definition on Scala is available in the [DivMod.scala](
 ).
 
 
-## DivMod Solution Invariance Under Linear Shift
+## 5. DivMod Solution Invariance Under Linear Shift
 
 ```math
 \begin{aligned}
@@ -140,7 +140,7 @@ Using the DivMod class we defined, in the class [Calc](
 ../src/main/scala/v1/Calc.scala
 ), the division and module operations by extracting these properties from the solved $DivMod$.
 
-## Some Important Properties of Modulo and Division
+## 6. Some Important Properties of Modulo and Division
 
 ### Trivial Case
 
@@ -219,6 +219,8 @@ Similarly, in the next sections, we will prove other properties of the division 
 
 ### Quotient Invariance Under Linear Shift
 
+Adding or subtracting the divisor from the dividend changes the quotient by one but leaves the remainder unchanged.
+
 ```math
 \begin{aligned}
 \forall \text{ } a, b, div, mod \in \mathbb{Z} & : b \neq 0, a = b \cdot div + mod \\
@@ -236,6 +238,8 @@ Quotient Invariance Under Linear Shift proof is available for the [positive case
 ).
 
 ### Quotient Invariance Under Linear Shift by Multiplier
+
+Multiplying the dividend by the divisor changes the quotient but leaves the remainder unchanged.
 
 As a directly consequence of these properties, we can also prove that:
 
@@ -285,6 +289,8 @@ That is proved in the [proof of unique remainder property](
 
 ### Modulo Idempotence
 
+Taking the modulo of a number twice gives the same result as taking it once.
+
 ```math
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{Z} : b \neq 0 \\
@@ -295,6 +301,8 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 The proof of the modulo idempotence property is available in the [mod idempotence proof](../src/main/scala/v1/div/properties/ModIdempotence.scala#modIdempotence).
 
 ### Distributivity over Addition
+
+The modulo operation distributes over addition, meaning that the remainder of a sum equals the remainder of the sum of remainders. This allows us to break down complex modulo operations into simpler components.
 
 ```math
 \begin{aligned}
@@ -311,6 +319,8 @@ As the scala [distribution over addition proof](
 
 ### Distribution over Subtraction
 
+Similar to addition, the modulo operation distributes over subtraction. The remainder of a difference equals the remainder of the difference of remainders, with appropriate handling of negative values.
+
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
@@ -326,6 +336,8 @@ As the scala [distribution over subtraction proof](
 
 ### Modular Shift Invariance under Divisible Base
 
+When a number is a multiple of the divisor (modulo equals zero), adding or subtracting any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base.
+
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
@@ -339,6 +351,8 @@ As scala [proof of invariance](
 ) can be verified.
 
 ### Unit-Step Modulo-Division Increment Law
+
+When incrementing a number by one, the modulo cycles from 0 to b-1 and resets, while the division increments only when the modulo reaches its maximum value. This captures the "carry" behavior of division when counting.
 
 ```math
 \begin{aligned}
@@ -354,7 +368,7 @@ As the scala [proof for the unit-step increment law](
 ./src/main//scala/v1/div/properties/ModOperations.scala#addOne
 ) can be verified.
 
-## Conclusion
+## 7. Conclusion
 
 In this article, we constructed the division and modulo operations from first principles,
  using a recursive definition that avoids reliance on any built-in semantics or library
@@ -400,7 +414,7 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
  and verified from the ground up, providing a reusable and trustworthy basis for further
  mathematical or computational development.
 
-## References
+## 8. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 [Formal Verification - Wikipedia, 2024](https://en.wikipedia.org/wiki/Formal_verification)
@@ -411,7 +425,7 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 [Stainless - Program Verification, 2024](https://epfl-lara.github.io/stainless/intro.html)
 
-## Appendices
+## 9. Appendices
 
 ### Scala Stainless Verification Log Output
 

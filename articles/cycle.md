@@ -27,7 +27,7 @@ offering a self-contained, verifiable approach of modular arithmetic.
  </p>
 </div>
 
-## Introduction
+## 1. Introduction
 
 Unbounded lists in cycles, are a fundamental concept in computer science and mathematics, often used to model
 repetitive structures or processes. They can be thought of as infinite lists that repeat a finite sequence of elements.
@@ -160,7 +160,7 @@ In this study, we restrict our universe of values $𝕊$ to be the set of non-ne
 
 ```math
 \begin{aligned}
-\forall \ L \in  𝕃, \quad \forall \ v &\in ℕ_0 \in ℕ_0,\quad \forall \ i \in ℕ_0 \\
+\forall \ L \in  𝕃, \quad \forall \ v &\in ℕ_0,\quad \forall \ i \in ℕ_0 \\
 L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n \\
 n &= |L| \\
 \text{RecCycle}_i &= \begin{cases}
@@ -216,7 +216,7 @@ case class RecursiveCycle(values: List[BigInt]) {
     * @param position BigInt The non-negative position in the cycle.
     * @return BigInt The value at the given position in the cycle.
     */
-  ````
+  ```
   </details>
 
   ```scala
@@ -717,7 +717,7 @@ i \text{ mod } n &= (i \text{ mod } n) \text{ mod } n \quad &\text{[Mod Idempote
 \text{ModCycle}_i &= L[i \text{ mod } n] \quad &\text{[ModCycle Definition]} \\
 \text{ModCycle}_{(i \text{ mod } n)} &= L[i \text{ mod } n] \quad &\text{[By Definition]} \\
                                      &= L[(i \text{ mod } n) \text{ mod } n] \quad &\text{[Substitution]} \\
-                                     &= \text{ModCycle}_{((i \text{ mod } n) \text{ mod } n)} \quad &\text{[By Definiton]} \\
+                                     &= \text{ModCycle}_{((i \text{ mod } n) \text{ mod } n)} \quad &\text{[By Definition]} \\
 L[(i \text{ mod } n) \text{ mod } n] &= L[i \text{ mod } n] \quad &\text{[By Mod Idempotence]} \\
 \therefore \\
 \text{Cycle}_{((i \text{ mod } n) \text{ mod } n)} &= Cycle_{(i \text{ mod } n)} = Cycle_i \quad \blacksquare \quad &\text{[Q.E.D]} \\

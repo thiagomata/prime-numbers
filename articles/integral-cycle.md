@@ -22,7 +22,7 @@ offering a self-contained, verifiable approach of modular arithmetic.
  </p>
 </div>
 
-## Introduction
+## 1. Introduction
 
 Cycles are a powerful concept in computer science and mathematics, representing unbounded lists that repeat a finite sequence of elements. When we integrate cycles, we obtain a list of cumulative sums with some unique properties that we will explore in this article.
 

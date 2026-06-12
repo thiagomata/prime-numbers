@@ -9,7 +9,7 @@ import verification.Helper.assert
 object ListUtilsProperties {
 
   /**
-    * for every list `list`` and every value `value``,
+     * for every list `list` and every value `value`,
     * the sum of the list `list` ++ `List(value)`
     * is equal to the sum of the `list` plus the `value`.
     * 
