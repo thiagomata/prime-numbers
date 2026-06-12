@@ -433,11 +433,6 @@ object PrimeProperties {
       val previousPrimorial = PrimeUtils.primorial(previous)
       val combinedPrimorial = previousPrimorial * p * tailPrimorial
 
-      primorialConcatLemma(previous, current)
-      assert(primorial(current) == p * primorial(current.tail))
-      assert(primorial(previous ++ current) == previousPrimorial * p * primorial(current.tail))
-      assert(primorial(previous ++ current) == combinedPrimorial)
-
       assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
       AdditionAndMultiplication.ATimesBSameMod(
         BigInt(0), p, previousPrimorial * tailPrimorial
@@ -609,7 +604,43 @@ object PrimeProperties {
 
       p != v && checkAllNotV(primes.tail, v, n, m)
     }
-  }.ensuring(res => !res || valueNotMatchesAny(primes, v))
+  }.ensuring(res => {
+    assert(res)
+    assert(valueNotMatchesAny(primes, v))
+    res && valueNotMatchesAny(primes, v)
+  })
+
+  private def euclidTailLoop(
+    primes: List[Prime],
+    v: BigInt,
+    n: BigInt,
+    primorialSoFar: BigInt
+  ): Boolean = {
+    require(v > 1)
+    require(n == primorialSoFar * PrimeUtils.primorial(primes) + BigInt(1))
+    require(Calc.mod(n, v) == BigInt(0))
+    decreases(primes.size)
+
+    if (primes.isEmpty) true
+    else {
+      val p = primes.head.value
+
+      PrimeUtils.primorialUnfold(primes)
+      val k = primorialSoFar * PrimeUtils.primorial(primes.tail)
+      assert(n == p * k + BigInt(1))
+
+      assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
+      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, k)
+      assert(Calc.mod(p * k, p) == BigInt(0))
+      ModOperations.modZeroPlusC(p * k, p, BigInt(1))
+      assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
+      assert(Calc.mod(n, p) != BigInt(0))
+
+      assert(p != v)
+
+      p != v && euclidTailLoop(primes.tail, v, n, primorialSoFar * p)
+    }
+  }.ensuring(res => res && valueNotMatchesAny(primes, v))
 
 //  def euclidTheorem(primes: List[Prime]): Boolean = {
 //    require(primes.nonEmpty)
@@ -618,21 +649,22 @@ object PrimeProperties {
 //    PrimeUtils.primorialPositive(primes)
 //    val n = PrimeUtils.primorial(primes) + 1
 //    val d = findSmallestDivisor(n, 2)
-//    val m = PrimeUtils.primorial(primes)
 //
 //    if (d == n) {
 //      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+//      assert(ModSmallDividend.modSmallDividend(BigInt(0), n))
+//      AdditionAndMultiplication.ATimesBSameMod(BigInt(0), n, BigInt(1))
 //      assert(Calc.mod(n, n) == BigInt(0))
-//      assert(checkAllNotV(primes, n, n, m))
+//      assert(euclidTailLoop(primes, n, n, BigInt(1)))
 //      valueNotMatchesAny(primes, n)
 //    } else {
 //      assertSmallestDivisorIsPrime(n, d)
 //      findSmallestDivisorResultModZero(n, d)
-//      assert(checkAllNotV(primes, d, n, m))
+//      assert(euclidTailLoop(primes, d, n, BigInt(1)))
 //      valueNotMatchesAny(primes, d)
 //    }
 //  }.holds
-//
+
 //  private def checkAllNotV(previous: List[Prime], remaining: List[Prime], v: BigInt, n: BigInt): Boolean = {
 //    require(v > 1)
 //    require(n == PrimeUtils.primorial(previous ++ remaining) + BigInt(1))

@@ -1,94 +1,81 @@
 # Euclid H4 — `euclidTheorem` Strategy
 
 **Created:** 2026-06-11
-**Status:** Pending
+**Updated:** 2026-06-12
+**Status:** In Progress
 **Depends on:** `euclid-full-formalization.md` (H1-H3 done)
 
 ---
 
 ## Goal
 
-Uncomment and verify `euclidTheorem(primes): Boolean` — prove there exists a prime not in `primes`.
+Verify `euclidTheorem(primes): Boolean` — prove that `newPrimeFromEuclid(primes)` produces a prime NOT in `primes`.
 
-Current state: H1-H3 verified (4781 valid). H4 is commented out.
+Current state: H1-H3 verified (~4984 valid). H4 is the only remaining blocker.
 
 ---
 
 ## The Problem
 
-`euclidTheorem` constructs `result = newPrimeFromEuclid(primes)` (or inlines it), then needs to prove `!primes.contains(result)`.
-
-Available facts:
-- `primorialPlusOneModAny(primes)` — a `.holds` lemma (postcondition: `true`)
-- `findSmallestDivisorResultModZero(n, d)` — proves `mod(n, d) == 0` where `n = primorial(primes)+1`
-- `findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)` — proves `Prime.noDivisorInRange(n, 2, n)`
-
-The gap: `primorialPlusOneModAny`'s `.holds` postcondition (`result == true`) doesn't expose element-level facts. The solver can't use it to prove `mod(n, p.value) != 0` for any specific `p` in `primes`.
+`primorialPlusOneModAny(primes)` is a `.holds` lemma — its postcondition is `res => res` (returns true), so the solver can't extract individual `Calc.mod(n, p) != 0` facts for each `p` in `primes`. The solver sees `true`, not the conjunction of modular facts.
 
 ---
 
-## Constraints
+## What We Tried
 
-- Can't delete/modify `primorialPlusOneModAny` (verified, in use)
-- Can't modify MemCycle, ModCycle, CycleIntegral
-- All existing lemmas use `.holds` — same opacity issue
+### Attempt 1: `checkAllNotV` with `numberIsMultipleOfAll`
+- `numberIsMultipleOfAll(primes, m)` = structural check that `m` is divisible by every prime in `primes`
+- `checkAllNotV` requires this, plus `n == m + 1` and `Calc.mod(n, v) == 0`
+- **Timed out**: solver can't prove `numberIsMultipleOfAll(primes, primorial(primes))` — can't inline `primorial` deeply enough
 
----
+### Attempt 2: `assert(checkPrimorialModZeroTailLoop(...))` before calling `checkAllNotV`
+- Pre-prove the divisibility facts
+- **Still timed out**: solver treats the assert and the require as separate VCs
 
-## Options Considered
-
-### Option A: Just try it — uncomment and see the error
-
-**Pro:** Concrete error tells us exactly what VC fails.
-**Con:** User expects it to fail; might waste a verify cycle.
-
-### Option B: Write `lemmaPrimorialPlusOneHead(primes)`
-
-Proves `mod(primorial(primes)+1, primes.head.value) != 0` directly (no `.holds` dependency). Uses same modular arithmetic as `primorialPlusOneTailLoop`'s head case.
-
-**Problem:** Only works for the head of the full list. For tail elements, `primorial(tail) != primorial(full)`, so this lemma doesn't help.
-
-### Option C: Accumulator-based `lemmaNotContains`
-
-Write a lemma that iterates through `primes` AND tracks the prefix product (like `primorialPlusOneTailLoop`). At each step, proves the current head's value != `result.value` using the modular arithmetic.
-
-**Structure:**
-```scala
-private def lemmaNotContainsLoop(prefix: List[Prime], remaining: List[Prime], result: Prime, n: BigInt): Boolean = {
-  // n = primorial(prefix ++ remaining) + 1 (invariant maintained by caller)
-  require(Calc.mod(n, result.value) == BigInt(0))
-  decreases(remaining.size)
-  if (remaining.isEmpty) true
-  else {
-    // Prove: remaining.head != result
-    // Use: mod(primorial(prefix ++ remaining), head.value) == 0  and modZeroPlusC  and modSmallDividend
-    // Then: if head == result, result.value == head.value, so mod(n, head.value) == 0 (from require)
-    // But mod(n, head.value) != 0 from the arithmetic — contradiction
-    // So remaining.head != result 
-    remaining.head != result && lemmaNotContainsLoop(prefix :+ remaining.head, remaining.tail, result, n)
-  }
-}.holds
-```
-
-**Pro:** Works for all elements, no dependency on `.holds` opacity.
-**Con:** Complex accumulator logic; duplicates `primorialPlusOneTailLoop` structure.
-
-### Option D: Inline `primorialPlusOneModAny`'s proof in `euclidTheorem`
-
-Restructure `euclidTheorem` to do the full accumulator-based proof inline, proving `!primes.contains(result)` as part of the same structural induction that proves `mod(n, p.value) != 0`.
+### Attempt 3: Remove `.holds` from `checkPrimorialModZeroTailLoop`
+- Changed it to return the raw conjunction
+- **Wrong direction** — the inequality `primorialAll == primorial(primes)` is not explicit enough
 
 ---
 
-## Recommended Approach
+## Current Approach (Option C variant): `euclidTailLoop`
 
-**Start with Option A** (just try it). The error is diagnostic — it tells us which specific VC fails and hints at the solver's inlining behavior. Then implement Option C or D based on the error.
+Write a self-contained recursive function that:
+1. Takes `primes`, `v` (divisor), `n` (primorial+1), `primorialSoFar` (accumulator)
+2. Requires: `n == primorialSoFar * primorial(primes) + 1`, `Calc.mod(n, v) == 0`, `v > 1`
+3. At each step: proves `Calc.mod(n, p) != 0` (same modular arithmetic as `primorialPlusOneTailLoop`)
+4. Then deduces `p != v` from `Calc.mod(n, v) == 0` contradiction
+5. Returns `p != v && recurse`
+6. `.ensuring(res => !res || valueNotMatchesAny(primes, v))`
 
-Alternatively, **go straight to Option C** since the accumulator pattern is already working in `primorialPlusOneTailLoop` and `checkPrimorialModZeroTailLoop`.
+The function is NOT `.holds` — it returns the raw conjunction, so the solver inlines it and gets all the `p != v` facts. The `.ensuring` bridges from the conjunction to `valueNotMatchesAny`.
+
+Call from `euclidTheorem`:
+- `d != n` branch: `findSmallestDivisorResultModZero(n, d)` gives `Calc.mod(n, d) == 0` → call `euclidTailLoop(primes, d, n, 1)`
+- `d == n` branch: `modSmallDividend(0, n) + ATimesBSameMod(0, n, 1)` gives `Calc.mod(n, n) == 0` → call `euclidTailLoop(primes, n, n, 1)`
 
 ---
 
-## Validation
+## Key Observations
 
-1. `just verify` after uncommenting (expect failure — note the exact VC)
-2. Implement the chosen fix
-3. `just verify` — target: 4782+ valid, 0 unknown
+- `findSmallestDivisor(n, 2)` ensures `res >= 2` (from postcondition), so `v > 1` is guaranteed
+- `Calc.mod` postcondition gives `0 <= mod < b` when `b > 0` and `mod == DivMod(a,b,0,a).solve.mod`
+- `Prime.value > 1` (from `Prime.isPrime` require), so `p > 1` for `modSmallDividend(1, p)`
+- `primorial` is NOT `.holds` — solver inlines it and can reason about its value
+
+---
+
+## Validation Plan
+
+1. Comment out failing `euclidTheorem` → `just verify` should pass (~4984 valid)
+2. Add `euclidTailLoop` → `just verify` (expect pass)
+3. Uncomment new `euclidTheorem` → `just verify` (target: +1 valid)
+4. Update ticket with results
+
+---
+
+## Risks
+
+- `primorialUnfold` is `.holds` — need to verify the equality is usable by the solver
+- Recursive requires for `primorialSoFar * p` may need explicit equality assertions
+- Modular arithmetic proof duplicates `primorialPlusOneTailLoop` — but this is intentional to bypass `.holds` opacity
