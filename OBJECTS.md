@@ -132,8 +132,9 @@
 | `primorialPositive`                             | PrimeUtils.scala                     | Prime|
 | `biggerPrime`                                   | PrimeUtils.scala                     | Prime|
 | `isMultiple`                                    | PrimeUtils.scala                     | Prime|
-| `allPrimesDividePrimorial`                      | PrimeProperties.scala                | Prime|
-| `checkProductModZero`                           | PrimeProperties.scala                | Prime|
+| `primorialPlusOneModAny`                       | PrimeProperties.scala                | Prime|
+| `newPrimeFromEuclid`                           | PrimeProperties.scala                | Prime|
+| `euclidTheorem`                                | PrimeProperties.scala                | Prime|
 
 ---
 
@@ -928,10 +929,37 @@ Utility functions over lists of primes.
 
 ## 6.3 PrimeProperties (`v1.prime.properties.PrimeProperties`)
 
-| Lemma                              | Statement                                               | Preconditions |
-|------------------------------------|---------------------------------------------------------|---------------|
-| **allPrimesDividePrimorial**       | `mod(primorial(primes), p.value) == 0` for every prime in list | —       |
-| **checkProductModZero**            | `mod(product(elements), e) == 0` for every element      | `allGreaterThan(elements, 0)` |
+Euclid's theorem formalization: proving that given any non-empty list of primes,
+there exists a prime not in that list.
+
+### Public API
+
+| Function                     | Statement                                  | Preconditions    |
+|------------------------------|--------------------------------------------|------------------|
+| **primorialPlusOneModAny**   | `mod(primorial(primes) + 1, p) != 0` for every p in primes | —       |
+| **newPrimeFromEuclid**      | Constructs a new `Prime` not in `primes`   | `primes.nonEmpty` |
+| **euclidTheorem**           | Returns `true` (there exists a new prime)  | `primes.nonEmpty` |
+
+### Internal Lemmas
+
+| Lemma                                    | Statement                                           | Preconditions |
+|-------------------------------------------|-----------------------------------------------------|---------------|
+| **findSmallestDivisor**                   | Smallest d in `[from, n)` with `mod(n, d) == 0`, or n | `n > 1`, `from >= 2`, `from <= n` |
+| **findSmallestDivisorEquiv**              | `res == n ∨ mod(n, res) == 0`                       | Same |
+| **findSmallestDivisorIsNImpliesNoDivisorInRange** | `res == n ⇒ noDivisorInRange(n, from, n)`  | Same + `res == n` |
+| **assertModZeroImpliesDivTimesBEqualsA** | `mod(a, b) == 0 ⇒ div(a, b) * b == a`              | `b != 0` |
+| **findSmallestDivisorReturnsFromIfZero** | `mod(n, from) == 0 ⇒ findSmallestDivisor(n, from) == from` | `from < n` |
+| **findSmallestDivisorResultModZero**     | `findSmallestDivisor(n, 2) == d ∧ d < n ⇒ mod(n, d) == 0` | `d >= 2`, `d < n` |
+| **assertSmallestDivisorIsPrime**          | `findSmallestDivisor(n, 2) == d` with `d < n` ⇒ `isPrime(d)` | Same |
+| **primorialPlusOneTailLoop**             | Core engine behind `primorialPlusOneModAny`         | — |
+| **valueNotMatchesAny**                   | `primes.head.value != v ∧ ...` for all primes       | — |
+| **euclidTailLoop**                       | Core engine behind `euclidTheorem`                  | `v > 1`, `n == primorialSoFar * primorial(primes) + 1`, `mod(n, v) == 0` |
+
+### Key Insight
+
+Assertions inside `.holds` lemmas are cached by Stainless and become available to callers.
+This is how `primorialPlusOneModAny` feeds modular facts into `euclidTheorem` without
+explicit postcondition enrichment. See §4 of [articles/euclid-theorem.md](./articles/euclid-theorem.md).
 
 **Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala`
 
@@ -967,6 +995,7 @@ Each article in the `articles/` directory formalizes and proves properties of th
 | [cycle.md](./articles/cycle.md)                   | Unbounded Lists (Cycles)     | ModCycle, RecursiveCycle |
 | [integral-cycle.md](./articles/integral-cycle.md) | Cycle Integral Properties    | CycleIntegral            |
 | [sieve-sequence.md](./articles/sieve-sequence.md) | Sieve Sequence Properties    | SieveSequenceV2          |
+| [euclid-theorem.md](./articles/euclid-theorem.md) | Euclid's Theorem             | PrimeProperties           |
 
 ---
 
