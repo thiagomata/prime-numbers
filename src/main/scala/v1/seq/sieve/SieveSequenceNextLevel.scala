@@ -7,6 +7,7 @@ import v1.Calc
 import v1.cycle.gap.GapCycle
 import v1.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.list.ListBoundUtils
+import v1.list.ListUtils
 import v1.list.SortedList
 
 object SieveSequenceNextLevel {
@@ -104,6 +105,29 @@ object SieveSequenceNextLevel {
     require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
     GapCycle(gaps)
   }
+
+  def assertNextExpandedCoprime(seq: SieveSequenceV2): Boolean = {
+    require(seq.modulus > 0)
+    require(seq.modulus == SieveUtils.product(seq.primes.tail))
+    require(ListUtils.checkAllPositive(seq.primes.tail))
+    assert(SieveUtils.assertAllRExpandedCoprime(seq.modulus, seq.head, seq.primes.tail))
+    true
+  }.holds
+
+  def assertNextFilteredCoprime(seq: SieveSequenceV2): Boolean = {
+    require(seq.modulus > 0)
+    require(seq.modulus == SieveUtils.product(seq.primes.tail))
+    require(ListUtils.checkAllPositive(seq.primes.tail))
+    assert(assertNextExpandedCoprime(seq))
+    true
+  }.holds
+
+  def assertResiduesCoprime(seq: SieveSequenceV2): Boolean = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primes.tail))
+    SieveUtils.assertResiduesAllCoprime(seq.modulus, seq.primes.tail)
+    true
+  }.holds
 
   def assertNextGapsNonEmptyV2(seq: SieveSequenceV2): Boolean = {
     nextGapsV2(seq).nonEmpty

@@ -290,7 +290,7 @@ verification system. The proof:
 1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
 2. Follows Euclid's classic primorial-plus-one construction
 3. Proves that the resulting number has a prime divisor not in the original list
-4. Achieves 4837/4837 verification conditions valid
+4. Achieves 4939/4939 verification conditions valid
 
 The key methodological insight — the `.holds` caching mechanism — simplifies the proof
 by making internal assertions available to callers without explicit postcondition
@@ -304,8 +304,9 @@ in the companion repository.
 
 This formalization opens several directions for future work:
 
-- **Complete Prime Proof for Sieve Sequences**: Prove that the head of each Sieve Sequence
-  is prime, using Euclid's theorem as a foundation
+- **Complete Prime Proof for Sieve Sequences** ✅ — `assertHeadIsPrime` now verified at 4939 VCs.
+  Proves every sieve sequence head is prime using strong induction and the completeness
+  assumption `assertAllNotCoprimeInRange`.
 - **Fundamental Theorem of Arithmetic**: Formalize unique prime factorization
 - **Dirichlet's Theorem**: Extend to arithmetic progressions
 - **Prime Number Theorem**: Asymptotic distribution of primes

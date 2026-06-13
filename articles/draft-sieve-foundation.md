@@ -41,7 +41,7 @@ zero-prior-knowledge methodology established in earlier articles:
 modular arithmetic [[2]](#ref2), lists [[3]](#ref3), cycles [[4]](#ref4),
 and cycle integrals [[5]](#ref5) are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of the sieve's foundational properties — 4837 verification conditions
+The result is a machine-checked proof of the sieve's foundational properties — 4939 verification conditions
 all valid — that serves as a foundation for the complete sieve correctness proof.
 
 ## 2. Preliminaries
@@ -411,8 +411,8 @@ Together, these properties show that the sieve's candidate generation and filter
 
 Future work may include:
 - Connecting these abstract proofs to the complete `SieveSequenceV2` verification
+- Using `assertHeadIsPrime` to prove every sieve sequence head is semantically prime
 - Extending to handle edge cases (e.g., empty lists, single elements)
-- Proving the full sieve algorithm correctness by composing these lemmas
 - Applications to prime number distribution analysis
 
 ## References

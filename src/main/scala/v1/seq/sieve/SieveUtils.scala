@@ -55,6 +55,169 @@ object SieveUtils {
     Calc.mod(k * n, n) == BigInt(0)
   }.holds
 
+  def assertAddPreservesNotZeroMod(v: BigInt, p: BigInt, add: BigInt): Boolean = {
+    require(p > 0)
+    require(add >= 0)
+    require(Calc.mod(v, p) != BigInt(0))
+    require(Calc.mod(add, p) == BigInt(0))
+    assert(assertModZeroImpliesDivTimesBEqualsA(add, p))
+    val k = Calc.div(add, p)
+    assert(k >= 0)
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(v, p, k)
+    Calc.mod(v + add, p) != BigInt(0)
+  }.holds
+
+  def assertProductNonNegative(list: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(list))
+    decreases(list.size)
+    if (list.isEmpty) {
+      product(list) >= BigInt(0)
+    } else {
+      assert(assertProductNonNegative(list.tail))
+      assert(product(list.tail) >= BigInt(0))
+      assert(list.head >= BigInt(0))
+      product(list) >= BigInt(0)
+    }
+  }.holds
+
+  def assertHeadDividesProduct(list: List[BigInt]): Boolean = {
+    require(list.nonEmpty)
+    require(ListUtils.checkAllPositive(list))
+    assert(assertProductNonNegative(list))
+    assert(assertProductNonNegative(list.tail))
+    assert(assertMultipleModZero(product(list.tail), list.head))
+    Calc.mod(product(list), list.head) == BigInt(0)
+  }.holds
+
+  def assertAllElementsDivideProduct(list: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(list))
+    assert(assertAllFromPrefix(BigInt(1), list))
+    true
+  }.holds
+
+  def assertAllFromPrefix(prefixProd: BigInt, list: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(list))
+    require(prefixProd > BigInt(0))
+    decreases(list.size)
+    if (list.isEmpty) true
+    else {
+      assert(assertProductNonNegative(list.tail))
+      assert(product(list.tail) >= BigInt(0))
+      val factor = prefixProd * product(list.tail)
+      assert(factor >= BigInt(0))
+      assert(assertMultipleModZero(factor, list.head))
+      val totalProd = prefixProd * product(list)
+      assert(totalProd == prefixProd * list.head * product(list.tail))
+      assert(Calc.mod(totalProd, list.head) == BigInt(0))
+      assert(assertAllFromPrefix(prefixProd * list.head, list.tail))
+      true
+    }
+  }.holds
+
+  def assertMultiplePreservesDivisible(a: BigInt, b: BigInt, p: BigInt): Boolean = {
+    require(a >= 0)
+    require(b >= 0)
+    require(p > 0)
+    require(Calc.mod(b, p) == BigInt(0))
+    assert(assertModZeroImpliesDivTimesBEqualsA(b, p))
+    val k = Calc.div(b, p)
+    assert(k >= 0)
+    assert(a * k >= 0)
+    assert(assertMultipleModZero(a * k, p))
+    Calc.mod(a * b, p) == BigInt(0)
+  }.holds
+
+  def assertExpandedCoprime(r: BigInt, i: BigInt, modulus: BigInt, primes: List[BigInt]): Boolean = {
+    require(i >= 0)
+    require(modulus > 0)
+    require(modulus == product(primes))
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(r, primes))
+    if (primes.isEmpty) true
+    else assertExpandedCoprimeViaPrefix(r, i, modulus, primes, BigInt(1))
+  }.holds
+
+  def assertExpandedCoprimeViaPrefix(r: BigInt, i: BigInt, modulus: BigInt, primes: List[BigInt], prefixProd: BigInt): Boolean = {
+    require(i >= 0)
+    require(modulus > 0)
+    require(prefixProd > BigInt(0))
+    require(ListUtils.checkAllPositive(primes))
+    require(modulus == prefixProd * product(primes))
+    require(isCoprime(r, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) true
+    else {
+      val p = primes.head
+      val factor = prefixProd * product(primes.tail)
+      assert(assertProductNonNegative(primes.tail))
+      assert(product(primes.tail) >= BigInt(0))
+      assert(factor >= BigInt(0))
+      assert(assertMultipleModZero(factor, p))
+      assert(Calc.mod(modulus, p) == BigInt(0))
+      assert(assertIsCoprimeForAll(r, primes))
+      assert(Calc.mod(r, p) != BigInt(0))
+      assert(assertMultiplePreservesDivisible(i, modulus, p))
+      assert(Calc.mod(i * modulus, p) == BigInt(0))
+      assert(assertAddPreservesNotZeroMod(r, p, i * modulus))
+      assert(Calc.mod(r + i * modulus, p) != BigInt(0))
+      assert(assertExpandedCoprimeViaPrefix(r, i, modulus, primes.tail, prefixProd * p))
+      true
+    }
+  }.holds
+
+  def assertExpandedForAllJHelper(r: BigInt, modulus: BigInt, p: BigInt, j: BigInt, primes: List[BigInt]): Boolean = {
+    require(j >= 0 && j < p)
+    require(p > 0)
+    require(modulus > 0)
+    require(modulus == product(primes))
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(r, primes))
+    decreases(p - j)
+    assert(assertExpandedCoprime(r, j, modulus, primes))
+    if (j + 1 >= p) true
+    else {
+      assert(assertExpandedForAllJHelper(r, modulus, p, j + 1, primes))
+      true
+    }
+  }.holds
+
+  def assertExpandedForAllJ(r: BigInt, modulus: BigInt, p: BigInt, primes: List[BigInt]): Boolean = {
+    require(p > 0)
+    require(modulus > 0)
+    require(modulus == product(primes))
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(r, primes))
+    assert(assertExpandedForAllJHelper(r, modulus, p, BigInt(0), primes))
+    true
+  }.holds
+
+  def assertAllRExpandedCoprime(modulus: BigInt, p: BigInt, primes: List[BigInt]): Boolean = {
+    require(p > 0)
+    require(modulus > 0)
+    require(modulus == product(primes))
+    require(ListUtils.checkAllPositive(primes))
+    assert(assertAllRExpandedCoprimeRec(BigInt(0), modulus, p, primes))
+    true
+  }.holds
+
+  def assertAllRExpandedCoprimeRec(r: BigInt, modulus: BigInt, p: BigInt, primes: List[BigInt]): Boolean = {
+    require(r >= 0)
+    require(r <= modulus)
+    require(p > 0)
+    require(modulus > 0)
+    require(modulus == product(primes))
+    require(ListUtils.checkAllPositive(primes))
+    decreases(modulus - r)
+    if (r >= modulus) true
+    else {
+      assert(assertAllRExpandedCoprimeRec(r + 1, modulus, p, primes))
+      if (isCoprime(r, primes)) {
+        assert(assertExpandedForAllJ(r, modulus, p, primes))
+      }
+      true
+    }
+  }.holds
+
   def assertDivTransitive(c: BigInt, b: BigInt, a: BigInt): Boolean = {
     require(a > BigInt(0) && b > BigInt(0) && c >= BigInt(0))
     require(Calc.mod(c, b) == BigInt(0))
@@ -510,4 +673,85 @@ object SieveUtils {
         product(list) >= list.head
     }
   }.holds
+
+  def hasPrimeFactorInList(d: BigInt, primes: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(primes))
+    decreases(primes.size)
+    if (primes.isEmpty) false
+    else if (Calc.mod(d, primes.head) == BigInt(0)) true
+    else hasPrimeFactorInList(d, primes.tail)
+  }
+
+  def assertHasPrimeFactorImpliesNotCoprime(d: BigInt, primes: List[BigInt]): Boolean = {
+    require(ListUtils.checkAllPositive(primes))
+    require(hasPrimeFactorInList(d, primes))
+    decreases(primes.size)
+    if (primes.isEmpty) {
+      false
+    } else if (Calc.mod(d, primes.head) == BigInt(0)) {
+      Calc.mod(d, primes.head) == BigInt(0) && !isCoprime(d, primes)
+    } else {
+      assert(assertHasPrimeFactorImpliesNotCoprime(d, primes.tail))
+      !isCoprime(d, primes)
+    }
+  }.holds
+
+  def assertGenerateResiduesAllCoprime(i: BigInt, modulus: BigInt, primes: List[BigInt]): Boolean = {
+    require(i >= 0)
+    require(i <= modulus)
+    require(modulus > 0)
+    require(ListUtils.checkAllPositive(primes))
+    decreases(modulus - i)
+    if (i == modulus) true
+    else {
+      val rest = generateResidues(i + 1, modulus, primes)
+      assert(assertGenerateResiduesAllCoprime(i + 1, modulus, primes))
+      if (isCoprime(i, primes)) {
+        assert(assertIsCoprimeForAll(i, primes))
+      }
+      true
+    }
+  }.holds
+
+  def assertResiduesAllCoprime(modulus: BigInt, primes: List[BigInt]): Boolean = {
+    require(modulus > 0)
+    require(ListUtils.checkAllPositive(primes))
+    assert(assertGenerateResiduesAllCoprime(BigInt(0), modulus, primes))
+    true
+  }.holds
+
+  def assertNoDivisorInRangeHelper(
+    n: BigInt,
+    primes: List[BigInt],
+    from: BigInt,
+    to: BigInt
+  ): Boolean = {
+    require(n > 1)
+    require(from >= 2)
+    require(to >= from)
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(n, primes))
+    require(assertAllNotCoprimeInRange(to, from, primes))
+    decreases(to - from)
+    if (from >= to) true
+    else {
+      assert(hasPrimeFactorInList(from, primes))
+      assert(assertHasPrimeFactorImpliesNotCoprime(from, primes))
+      assert(assertNoDivisorByFactorList(n, from, primes))
+      Calc.mod(n, from) != BigInt(0) &&
+        assertNoDivisorInRangeHelper(n, primes, from + 1, to)
+    }
+  }.holds
+
+  def assertAllNotCoprimeInRange(limit: BigInt, d: BigInt, primes: List[BigInt]): Boolean = {
+    require(limit >= 2)
+    require(d >= 2)
+    require(d <= limit)
+    require(ListUtils.checkAllPositive(primes))
+    decreases(limit - d)
+    if (d >= limit) true
+    else {
+      hasPrimeFactorInList(d, primes) && assertAllNotCoprimeInRange(limit, d + 1, primes)
+    }
+  }
 }

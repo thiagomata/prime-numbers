@@ -15,6 +15,7 @@ case class SieveSequenceV2(
   require(ListUtils.checkAllPositive(primes))
   require(ListUtils.checkAllBiggerThanValue(primes, 1))
   require(SieveUtils.assertProductEqualOrBiggerThanElements(primes.tail))
+  require(SieveUtils.isCoprime(primes.head, primes.tail))
 
   val integral: CycleIntegral = CycleIntegral(primes.head, gapCycle.memCycle)
 

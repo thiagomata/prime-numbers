@@ -3,7 +3,9 @@ package v1.prime.properties
 import stainless.collection.List
 import stainless.lang.{BigInt, decreases}
 import v1.Calc
+import v1.list.ListUtils
 import v1.prime.{Prime, PrimeUtils}
+import v1.seq.sieve.SieveUtils
 import stainless.lang.BooleanDecorations
 import v1.div.properties.AdditionAndMultiplication.ATimesBSameMod
 import v1.div.properties.{AdditionAndMultiplication, ModOperations, ModSmallDividend}
@@ -377,6 +379,39 @@ object PrimeProperties {
       assert(euclidTailLoop(primes, d, n, BigInt(1)))
       valueNotMatchesAny(primes, d)
     }
+  }.holds
+
+  def assertNoDivisorInRangeFromHelper(
+    n: BigInt,
+    primes: List[BigInt],
+    from: BigInt,
+    to: BigInt
+  ): Boolean = {
+    require(n > 1)
+    require(from >= 2)
+    require(to >= from)
+    require(ListUtils.checkAllPositive(primes))
+    require(SieveUtils.isCoprime(n, primes))
+    require(SieveUtils.assertAllNotCoprimeInRange(to, from, primes))
+    decreases(to - from)
+    if (from >= to) {
+      Prime.noDivisorInRange(n, from, to)
+    } else {
+      assert(SieveUtils.hasPrimeFactorInList(from, primes))
+      assert(SieveUtils.assertHasPrimeFactorImpliesNotCoprime(from, primes))
+      assert(SieveUtils.assertNoDivisorByFactorList(n, from, primes))
+      assert(assertNoDivisorInRangeFromHelper(n, primes, from + 1, to))
+      Prime.noDivisorInRange(n, from, to)
+    }
+  }.holds
+
+  def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
+    require(head > 1)
+    require(ListUtils.checkAllPositive(primesTail))
+    require(SieveUtils.isCoprime(head, primesTail))
+    require(SieveUtils.assertAllNotCoprimeInRange(head, 2, primesTail))
+    assertNoDivisorInRangeFromHelper(head, primesTail, 2, head)
+    Prime.isPrime(head)
   }.holds
 }
 

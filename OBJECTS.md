@@ -124,6 +124,9 @@
 | `allPositive`                                    | ListBoundUtils.scala                 | Sieve      |
 | `assertGreaterThanAtIndex`                       | ListBoundUtils.scala                 | Sieve      |
 | `assertAppendGreaterThan`                        | ListBoundUtils.scala                 | Sieve      |
+| `hasPrimeFactorInList`                           | SieveUtils.scala                     | Sieve      |
+| `assertHasPrimeFactorImpliesNotCoprime`          | SieveUtils.scala                     | Sieve      |
+| `assertNoDivisorInRangeHelper`                   | SieveUtils.scala                     | Sieve      |
 | **Prime**                                       |                                      |
 | `isPrime`                                       | Prime.scala                          | Prime|
 | `noDivisorInRange`                              | Prime.scala                          | Prime|
@@ -138,6 +141,8 @@
 | `assertPrimeNotDivisibleByDistinctPrime`       | FilterPreservesPrimesProperties.scala| Prime|
 | `assertFilterPreservesAllPrimes`               | FilterPreservesPrimesProperties.scala| Prime|
 | `assertFilteredContainsAllPrimes`              | FilterPreservesPrimesProperties.scala| Prime|
+| `assertNoDivisorInRangeFromHelper`             | PrimeProperties.scala                | Prime|
+| `assertHeadIsPrime`                            | PrimeProperties.scala                | Prime|
 | **CycleIntegralOnes**                          |                                      |
 | `assertCycleIntegralOfOnes`                    | CycleIntegralOnesProperties.scala    | CycleIntegral |
 | `assertCycleIntegralOfOnesStrictlyIncreasing`  | CycleIntegralOnesProperties.scala    | CycleIntegral |
@@ -793,15 +798,19 @@ Same properties as CycleIntegralProperties but for ClassicCycleIntegral.
 
 Utility functions for sieve sequence construction.
 
-| Function                            | Purpose                          | Notes          |
-|-------------------------------------|----------------------------------|----------------|
-| **product(list)**                   | Multiply all elements
-| **isCoprime(value, primes)**        | Check not divisible by any prime
-| **residues(modulus, primes)**       | Generate coprime residues
-| **filterList(list, divisor)**       | Remove multiples of divisor
-| **calculateGaps(sorted, modulus)**  | Compute gaps + wrap gap
-| **rotateAt(list, index)**           | Rotate list at index
-| **assertRotateAtPreservesNonEmpty** | rotateAt preserves non-emptiness | `.holds` lemma |
+| Function                                      | Purpose                                      | Notes |
+|-----------------------------------------------|----------------------------------------------|-------|
+| **product(list)**                             | Multiply all elements                        | |
+| **isCoprime(value, primes)**                  | Check not divisible by any prime              | |
+| **residues(modulus, primes)**                 | Generate coprime residues                     | |
+| **filterList(list, divisor)**                 | Remove multiples of divisor                   | |
+| **calculateGaps(sorted, modulus)**            | Compute gaps + wrap gap                       | |
+| **rotateAt(list, index)**                     | Rotate list at index                          | |
+| **hasPrimeFactorInList(d, primes)**           | `∃ p ∈ primes: mod(d, p) == 0`               | |
+| **assertAllNotCoprimeInRange(limit, d, primes)** | `∀ d ∈ [d, limit): hasPrimeFactorInList(d, primes)` | |
+| **assertRotateAtPreservesNonEmpty**           | rotateAt preserves non-emptiness              | `.holds` lemma |
+| **assertHasPrimeFactorImpliesNotCoprime**     | `hasPrimeFactorInList(d) ⇒ !isCoprime(d)`     | `.holds` lemma |
+| **assertNoDivisorInRangeHelper**              | `Calc.mod(n, d) != 0` for all d in `[from, to)` | `.holds` lemma |
 
 **Source**: `src/main/scala/v1/seq/sieve/SieveUtils.scala`
 
@@ -945,6 +954,7 @@ there exists a prime not in that list.
 | **primorialPlusOneModAny**   | `mod(primorial(primes) + 1, p) != 0` for every p in primes | —       |
 | **newPrimeFromEuclid**      | Constructs a new `Prime` not in `primes`   | `primes.nonEmpty` |
 | **euclidTheorem**           | Returns `true` (there exists a new prime)  | `primes.nonEmpty` |
+| **assertHeadIsPrime**       | Every `head` of a sieve sequence is prime  | `head > 1`, `isCoprime`, `checkAllPositive`, `assertAllNotCoprimeInRange` |
 
 ### Internal Lemmas
 
@@ -960,6 +970,8 @@ there exists a prime not in that list.
 | **primorialPlusOneTailLoop**             | Core engine behind `primorialPlusOneModAny`         | — |
 | **valueNotMatchesAny**                   | `primes.head.value != v ∧ ...` for all primes       | — |
 | **euclidTailLoop**                       | Core engine behind `euclidTheorem`                  | `v > 1`, `n == primorialSoFar * primorial(primes) + 1`, `mod(n, v) == 0` |
+| **assertNoDivisorInRangeFromHelper**     | `Prime.noDivisorInRange(n, from, to)` using sieve completeness | `checkAllPositive`, `isCoprime`, `assertAllNotCoprimeInRange` |
+| **assertHeadIsPrime**                    | `Prime.isPrime(head)` from sieve properties         | `head > 1`, `checkAllPositive`, `isCoprime`, `assertAllNotCoprimeInRange` |
 
 ### Key Insight
 
