@@ -128,6 +128,52 @@ object SieveSequenceNextLevel {
     GapCycle(gaps)
   }
 
+    def assertNextPrimesNonEmpty(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    val newPrimes = newHead :: seq.primes
+    assert(newPrimes.nonEmpty)
+    true
+  }.holds
+
+  def assertNextHeadPositive(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    assert(CycleIntegralProperties.assertCycleIntegralPositive(seq.integral, BigInt(0)))
+    newHead > BigInt(0)
+  }.holds
+
+  def assertNextPrimesPositive(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    val newPrimes = newHead :: seq.primes
+    assert(assertNextHeadPositive(seq))
+    ListUtils.checkAllPositive(newPrimes)
+  }.holds
+
+  def assertNextHeadBiggerThanOne(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    assert(v1.seq.sieve.properties.SieveSequenceProperties.assertStrictlyIncreasing(seq, BigInt(0)))
+    newHead > BigInt(1)
+  }.holds
+
+  def assertNextPrimesBiggerThanOne(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    val newPrimes = newHead :: seq.primes
+    assert(assertNextHeadBiggerThanOne(seq))
+    ListUtils.checkAllBiggerThanValue(newPrimes, BigInt(1))
+  }.holds
+
+  def assertNextTailProductEqualOrBiggerThanElements(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    val newPrimes = newHead :: seq.primes
+    assert(SieveUtils.assertProductEqualOrBiggerThanElements(seq.primes))
+    SieveUtils.assertProductEqualOrBiggerThanElements(newPrimes.tail)
+  }.holds
+
+  def assertNextHeadCoprimeToPrimes(seq: SieveSequenceV2): Boolean = {
+    val newHead = seq.apply(BigInt(1))
+    assert(newHead == seq.primes.head + seq.gapCycle.memCycle(0))
+    SieveUtils.isCoprime(newHead, seq.primes)
+  }.holds
+
   def assertNextExpandedCoprime(seq: SieveSequenceV2): Boolean = {
     require(seq.modulus > 0)
     require(seq.modulus == SieveUtils.product(seq.primes.tail))
