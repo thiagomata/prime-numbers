@@ -271,4 +271,4 @@ Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations f
 Mata, T. H. (2026). *Learnings: Capacity Argument for Twin Prime Persistence*. Available at: [articles/learnings-capacity-argument.md](learnings/learnings-capacity-argument.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). *Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences*. Available at: [articles/draft-empirical-g-local-analysis.md](deprecated/draft-empirical-g-local-analysis.md)
+Mata, T. H. (2026). *Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences*. Available at: [articles/draft-empirical-g-local-analysis.md](draft/draft-empirical-g-local-analysis.md)
