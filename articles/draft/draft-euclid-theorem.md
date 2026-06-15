@@ -39,7 +39,7 @@ zero-prior-knowledge methodology established in earlier articles:
 modular arithmetic [[2]](#ref2), lists [[3]](#ref3), and prime utilities
 are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of Euclid's theorem — 4837 verification conditions
+The result is a machine-checked proof of Euclid's theorem — 5303 verification conditions
 all valid — that serves as a foundation for further formal reasoning about prime numbers.
 
 ## 2. Preliminaries
@@ -256,10 +256,10 @@ caching system does the work for us.
 
 The complete verification of the prime properties module achieves:
 
-- **4837 verification conditions**, all valid
+- **5303 verification conditions**, all valid
 - **0 invalid**, **0 unknown**
-- **Verification time**: approximately 17 seconds
-- **425 functions** verified
+- **Verification time**: approximately 16 seconds
+- **468 functions** verified
 
 The `euclidTailLoop` contributes the bulk of the conditions due to its iterative nature
 and the modular arithmetic lemmas it invokes.
@@ -275,9 +275,6 @@ This formalization builds on a verified hierarchy of mathematical structures:
 | Integral | Discrete integration | [[4]](#ref4) |
 | Cycles | Unbounded periodic lists | [[5]](#ref5) |
 | Cycle Integral | Integration over cycles | [[6]](#ref6) |
-| Sieve Sequence | Wheel factorization | [[7]](#ref7) |
-| Gap Persistence | Gap analysis in sieves | [[8]](#ref8) |
-| Twin Prime Persistence | Twin prime candidates | [[9]](#ref9) |
 
 The present article adds Euclid's theorem as a formal capstone — a classical result of
 number theory, verified from first principles, with all arithmetic lemmas machine-checked.
@@ -290,23 +287,20 @@ verification system. The proof:
 1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
 2. Follows Euclid's classic primorial-plus-one construction
 3. Proves that the resulting number has a prime divisor not in the original list
-4. Achieves 4939/4939 verification conditions valid
+4. Achieves 5303/5303 verification conditions valid
 
 The key methodological insight — the `.holds` caching mechanism — simplifies the proof
 by making internal assertions available to callers without explicit postcondition
 enrichment.
 
 All source code is available in the
-[PrimeProperties.scala](../src/main/scala/v1/prime/properties/PrimeProperties.scala) file
+[PrimeProperties.scala](../../src/main/scala/v1/prime/properties/PrimeProperties.scala) file
 in the companion repository.
 
 ## 8. Future Work
 
 This formalization opens several directions for future work:
 
-- **Complete Prime Proof for Sieve Sequences** ✅ — `assertHeadIsPrime` now verified at 4939 VCs.
-  Proves every sieve sequence head is prime using strong induction and the completeness
-  assumption `assertAllNotCoprimeInRange`.
 - **Fundamental Theorem of Arithmetic**: Formalize unique prime factorization
 - **Dirichlet's Theorem**: Extend to arithmetic progressions
 - **Prime Number Theorem**: Asymptotic distribution of primes
@@ -336,18 +330,6 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md)
-
-<a name="ref7" id="ref7" href="#ref7">[7]</a>
-Mata, T. H. (2026). *Formal Verification of Sieve Sequence Properties from First Principles*.
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-sequence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/sieve-sequence.md)
-
-<a name="ref8" id="ref8" href="#ref8">[8]</a>
-Mata, T. H. (2026). *Gap Persistence in Sieve Sequences: Analysis of "2" Gaps*.
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/gap-persistence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/gap-persistence.md)
-
-<a name="ref9" id="ref9" href="#ref9">[9]</a>
-Mata, T. H. (2026). *Twin Prime Candidate Persistence in Sieve Sequences*.
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/twin-prime-persistence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/twin-prime-persistence.md)
 
 ## Appendix
 
@@ -399,17 +381,17 @@ Using java version 21.0.7-zulu in this shell.
 [ Warning] The Z3 native interface is not available. Falling back onto smt-z3.
 [ Info  ] Running phase PartialEvaluation
 [ Info  ] Finished lowering the symbols
-[ Info  ] Generating VCs for 425 functions...
+[ Info  ] Generating VCs for 468 functions...
 [ Info  ] Finished generating VCs
 [ Info  ] Starting verification...
-[ Info  ] Verified: 4749 / 4749
-[ Info  ] Done in 82.74s
+[ Info  ] Verified: 5303 / 5303
+[ Info  ] Done in 15.92s
 [ Info  ]   ┌───────────────────┐
 [ Info  ] ╔═╡ stainless summary ╞═══════════════╗
 [ Info  ] ║ └───────────────────┘               ║
-[ Info  ] ║ total: 4749 valid: 4749             ║
+[ Info  ] ║ total: 5303 valid: 5303             ║
 [ Info  ] ║ invalid: 0    unknown: 0            ║
-[ Info  ] ║ time: 16.99                         ║
+[ Info  ] ║ time: 15.92                         ║
 [ Info  ] ╚═════════════════════════════════════╝
 [ Info  ] Verification pipeline summary:
 [ Info  ]   @extern, cache, anti-aliasing, return transformation,
