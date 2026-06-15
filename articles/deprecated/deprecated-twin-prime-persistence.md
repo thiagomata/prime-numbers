@@ -1,5 +1,9 @@
 # Twin Prime Candidate Persistence in Sieve Sequences
 
+> **DEPRECATED — Contained in [gap-dynamics.md](../gap-dynamics.md)**  
+> The content of this article has been merged into the finished article `gap-dynamics.md`.  
+> Please reference that article for the current, verified version of these properties.
+
 **Author:** Mata, T. H.  
 Independent Researcher  
 **Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  

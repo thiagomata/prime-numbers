@@ -1,10 +1,16 @@
-> **Note:** This draft was written during an earlier iteration of the sieve sequence implementation.
-> The code references in this article may not match the current source. It is kept as guidance
-> for understanding the sieve proof architecture. The formal proof chain now includes
-> `assertHeadIsPrime` (verified at 4939 total VCs) which completes the proof that every
-> sieve sequence head is prime.
+> **DEPRECATED — Code references may not match current source.**  
+> This draft was written during an earlier iteration (v1) of the sieve sequence implementation.
+> It is kept for historical guidance on the sieve proof architecture.
+> The formal proof chain has since evolved: `assertHeadIsPrime` is verified at 5303 total VCs
+> across 468 functions. The foundation-level properties are now documented in
+> `draft-sieve-foundation.md`, which supersedes the generation/filtering lemmas in this article.
+> See the ticket `article-consolidation.md` for the plan to merge both articles.
 
 # Formal Verification of Sieve Sequence Properties from First Principles
+
+> **DEPRECATED — Contained in [sieve-sequence.md](../sieve-sequence.md)**  
+> The content of this article has been merged into the finished article `sieve-sequence.md`.  
+> Please reference that article for the current, verified version of these properties.
 
 **Author:** Mata, T. H.
 Independent Researcher  
@@ -259,7 +265,7 @@ def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
 }.holds
 ```
 
-This property completes the proof that every element of the `primes` list in a `SieveSequenceV2` is semantically prime. The full proof chain — from sieve construction through completeness assumption to primality — is verified at **4939 VCs, 0 invalid, 0 unknown**.
+This property completes the proof that every element of the `primes` list in a `SieveSequenceV2` is semantically prime. The full proof chain — from sieve construction through completeness assumption to primality — is verified at **5303 VCs, 0 invalid, 0 unknown**.
 
 ## 5. Implementation Consistency
 
@@ -273,7 +279,7 @@ This property completes the proof that every element of the `primes` list in a `
 
 This is a direct consequence of the Division Algorithm [[5]](#ref5).
 
-Verified in [SieveSequenceProperties.scala at assertPositionDecomposition](../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
+Verified in [SieveSequenceProperties.scala at assertPositionDecomposition](../../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
 
 ```scala
 def assertPositionDecomposition(sieve: SieveSequence, position: BigInt): Boolean = {
@@ -295,7 +301,7 @@ def assertPositionDecomposition(sieve: SieveSequence, position: BigInt): Boolean
 
 This is maintained as an invariant of the SieveSequence construction.
 
-Verified in [SieveSequenceProperties.scala at assertResidueCountEqualsGapCount](../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
+Verified in [SieveSequenceProperties.scala at assertResidueCountEqualsGapCount](../../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
 
 ```scala
 def assertResidueCountEqualsGapCount(sieve: SieveSequence): Boolean = {
@@ -338,9 +344,6 @@ finite list structures and machine-checked Scala code.
 
 Future work may include:
 
-- **Complete Prime Proof** ✅ — Now verified at 4939 VCs via `assertHeadIsPrime`.
-  Proves every sieve sequence head is prime using strong induction and the sieve's
-  completeness assumption.
 - **Sieve of Eratosthenes**: Define the complete sieve as a recursive sequence
   of SieveSequence refinements
 - **Prime Counting Function**: Use Sieve Sequences to derive bounds on $\pi(x)$

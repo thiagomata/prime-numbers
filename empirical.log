@@ -1,0 +1,37 @@
+[info] welcome to sbt 1.10.3 (Eclipse Adoptium Java 21.0.6)
+[info] loading settings for project prime-numbers-build-build-build from metals.sbt ...
+[info] loading project definition from /Users/thiagomata/github/thiagomata/prime-numbers/project/project/project
+[info] loading settings for project prime-numbers-build-build from metals.sbt ...
+[info] loading project definition from /Users/thiagomata/github/thiagomata/prime-numbers/project/project
+[success] Generated .bloop/prime-numbers-build-build.json
+[success] Total time: 1 s, completed 15 June 2026, 1:00:09 pm
+[info] loading settings for project prime-numbers-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /Users/thiagomata/github/thiagomata/prime-numbers/project
+[success] Generated .bloop/prime-numbers-build.json
+[success] Total time: 0 s, completed 15 June 2026, 1:00:10 pm
+[info] loading settings for project root from build.sbt ...
+[info] set current project to prime-numbers (in build file:/Users/thiagomata/github/thiagomata/prime-numbers/)
+[info] Defining stainlessEnabled
+[info] The new value will be used by Compile / compile / compileInputs
+[info] Reapplying settings...
+[info] set current project to prime-numbers (in build file:/Users/thiagomata/github/thiagomata/prime-numbers/)
+[info] compiling 102 Scala sources to /Users/thiagomata/github/thiagomata/prime-numbers/target/scala-3.5.0/classes ...
+[info] done compiling
+[info] running v1.seq.sieve.empirical.EmpiricalRunner 
+Max prime: 1000
+Generated 168 primes up to 1000
+p=   3  G_local=   3  delta=   0  extinct=true
+p=   5  G_local=   4  delta=  -1  extinct=true
+p=   7  G_local=   5  delta=  -2  extinct=true
+p=  11  G_local=   8  delta=  -3  extinct=true
+p=  13  G_local=  10  delta=  -3  extinct=true
+p=  17  G_local=  16  delta=  -1  extinct=true
+p=  19  G_local=  18  delta=  -1  extinct=true
+p=  23  G_local=  21  delta=  -2  extinct=true
+p=  29  G_local=  30  delta=   1  extinct=false
+p= 233  G_local= 733  delta= 500  extinct=false
+p= 547  G_local=2962  delta=2415  extinct=false
+p= 877  G_local=6500  delta=5623  extinct=false
+
+Done. Results written to data/empirical/results.csv
+[success] Total time: 687 s (11:27), completed 15 June 2026, 1:11:37 pm

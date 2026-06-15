@@ -54,6 +54,104 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
     Stainless-verified. The `%` operator is not natively supported by Stainless and
     will cause failures.
   </rule>
+  <rule id="three-representations" priority="high">
+    Every property in an article MUST be presented in ALL THREE forms:
+    1. **English text** — Explain what the property means, with **Intuition:**
+       (why it's true) and **Why This Matters:** (why it's important). Place
+       ABOVE the math as an overview.
+    2. **Mathematical symbols** — LaTeX `` ```math \begin{aligned} ``` blocks
+       with step-by-step derivations and bracketed labels:
+       `[Q.E.D.]`, `[By Definition]`, `[By Lemma X]`, `[By Induction Hypothesis]`,
+       `[By Modulo Property]`, `[Substitution]`, `[Simplification]`.
+       Mathematical proof WITHIN the property section, after English, before code.
+    3. **Scala verification code** — The `.holds` function block followed by a
+       **source reference** linking to the exact file and function:
+       ```
+       This property is verified in the [
+         ObjectName::functionName
+       ](
+         ../src/main/scala/path/to/file.scala
+       ).
+       ```
+    See `PROOF_GUIDE.md` for full details. See finished articles (`integral-cycle.md`,
+    `integral.md`, `cycle.md`, `modulo.md`, `list.md`) for real examples.
+    Draft articles that skip any of the three forms are NOT ready for publication.
+  </rule>
+  <rule id="property-completeness" priority="high">
+    Before publishing an article, verify that the article covers ALL important
+    properties related to its subject. Do NOT rely solely on what is already in the
+    draft. Instead:
+    1. Search the codebase (src/main/scala/) for ALL verified `.holds` functions
+       in the relevant packages — the code may have properties no article documents yet.
+    2. Cross-reference with OBJECTS.md to confirm every listed property for that
+       module has a corresponding section in the article.
+    3. Cross-reference with `articles/learnings-capacity-argument.md` — it contains
+       the most comprehensive catalog of proven properties (Section 16 lists 10
+       properties, 9 proven, 1 open), documents failed approaches (Section 9),
+       and maps the boundary between what is and isn't provable (Section 15).
+       Any property listed there that belongs to the article's subject must appear
+       in the article.
+    4. Identify logical gaps: given the subject, what properties would a reader
+       expect to see? (e.g. an article about "cycle integrals" should cover
+       equivalence of definitions, invariance by concatenation, index shifts;
+       an article about "sieve foundation" should cover unit cycle generation,
+       strict monotonicity, filter preservation.)
+    5. If a verified property exists but is NOT in the article → add it.
+    6. If a property a reader would expect is NEITHER verified NOR in the article
+       → flag it as a gap (document in the ticket, do NOT silently skip).
+    7. If a property was attempted but verification failed → note it in the
+       article as an open problem or limitation.
+    8. If a property has a valid mathematical proof but NO corresponding
+       Stainless `.holds` verification code → mark it explicitly as
+       **"Draft — mathematically proven, Stainless verification pending"**
+       in the article. This applies to:
+       - The mathematical proof is included (English + LaTeX)
+       - The Scala code block is marked as `// TODO: verify with Stainless`
+         or omitted with an explicit note
+       - The property is clearly distinct from fully verified properties
+       - A ticket exists tracking what needs to be verified
+       Do NOT silently include unverified math as if it were verified.
+       The `three-representations` rule requires all three forms; if form 3
+       is missing, the article must say so.
+     9. If you CAN draft the missing Scala `.holds` verification for a
+        mathematically proven property, do so — but keep it clearly marked
+        as a draft:
+        - Include the full Scala code block in the article
+        - Annotate it with `// DRAFT — not yet verified through Stainless`
+          or a similar clear comment
+        - The surrounding text must state that this code is a draft and
+          has NOT been run through `just verify`
+        - Create or update a ticket tracking what needs to be verified
+          and what obstacles are expected
+        This lets the article serve as a reference for what verification
+        work remains, rather than silently skipping form 3.
+  </rule>
+  <rule id="framing-integrity" priority="high">
+    The abstract, introduction, and conclusion MUST accurately reflect what
+    the article actually contains. Do NOT overpromise or claim results that
+    are not proven within the article. Specifically:
+    - **Abstract** — State only what is achieved. If some properties are
+      mathematically proven but lack Stainless verification, say so.
+      Do NOT claim "verified" for unverified code.
+    - **Introduction** — Scope the article honestly. If the article covers
+      only a subset of a topic (e.g., foundational lemmas, not the full
+      sieve correctness proof), state this clearly.
+    - **Conclusion** — Summarize what was proven, nothing more. If there
+      are known limitations or open problems adjacent to the topic, note
+      them rather than claiming completeness.
+    - **Title** — Must not imply a broader result than what is proven.
+      (e.g., "Proof of the Twin Prime Conjecture" is never acceptable;
+      "Structural Properties of 2-Gaps in Sieve Sequences" is.)
+    Cross-check each section against the others: if the conclusion claims
+    something the introduction didn't scope, or the abstract promises what
+    the body doesn't deliver, fix the mismatch.
+  </rule>
+  <rule id="no-emojis" priority="medium">
+    Do NOT use emojis in articles. Use text markers instead:
+    `[Verified]`, `[Open]`, `[Proven]`, `[Failed]`, etc.
+    Emojis are inconsistent across renderers, cannot be searched, and
+    break the academic tone of the articles.
+  </rule>
 </rules>
 
 <antipatterns>

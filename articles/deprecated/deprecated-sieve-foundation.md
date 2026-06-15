@@ -1,5 +1,9 @@
 # Formal Verification of Sieve Foundation Properties from First Principles
 
+> **DEPRECATED — Contained in [sieve-sequence.md](../sieve-sequence.md)**  
+> The content of this article has been merged into the finished article `sieve-sequence.md`.  
+> Please reference that article for the current, verified version of these properties.
+
 **Author:** Mata, T. H.
 Independent Researcher  
 **Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
@@ -41,7 +45,7 @@ zero-prior-knowledge methodology established in earlier articles:
 modular arithmetic [[2]](#ref2), lists [[3]](#ref3), cycles [[4]](#ref4),
 and cycle integrals [[5]](#ref5) are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of the sieve's foundational properties — 4939 verification conditions
+The result is a machine-checked proof of the sieve's foundational properties — 5303 verification conditions
 all valid — that serves as a foundation for the complete sieve correctness proof.
 
 ## 2. Preliminaries
@@ -141,7 +145,7 @@ def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnes
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ### 3.2 Property 2: Strict Monotonicity
@@ -185,7 +189,7 @@ def assertCycleIntegralOfOnesStrictlyIncreasing(init: BigInt, a: BigInt, b: BigI
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ### 3.3 Property 3: Distinct Primes Are Coprime
@@ -261,7 +265,7 @@ def assertPrimeNotDivisibleByDistinctPrime(q: BigInt, p: BigInt): Boolean = {
 This property is verified in the [
   FilterPreservesPrimesProperties::assertPrimeNotDivisibleByDistinctPrime
 ](
-  ../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ### 3.4 Property 4: Filtering Preserves Other Primes
@@ -303,7 +307,7 @@ def assertFilterPreservesAllPrimes(q: BigInt, filterPrime: BigInt): Boolean = {
 This property is verified in the [
   FilterPreservesPrimesProperties::assertFilterPreservesAllPrimes
 ](
-  ../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ### 3.5 Property 5: Filtered List Contains All Primes
@@ -388,7 +392,7 @@ def assertFilteredContainsAllPrimes(
 This property is verified in the [
   FilterPreservesPrimesProperties::assertFilteredContainsAllPrimes
 ](
-  ../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ## 4. Conclusion
@@ -418,8 +422,8 @@ Future work may include:
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
+Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the
+Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.

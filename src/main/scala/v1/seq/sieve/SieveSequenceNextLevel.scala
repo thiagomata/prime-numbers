@@ -48,54 +48,76 @@ object SieveSequenceNextLevel {
     require(lastSurvivor > 0)
     require(lastPos >= 0)
     require(lastPos < pos)
+    require(seq.integral(lastPos) == lastSurvivor)
+    require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
     decreases(remaining)
     if (remaining == BigInt(0)) {
+      assert(assertAllGreaterThanReverse(gaps, BigInt(0)))
       gaps.reverse
     } else {
       val current = seq.apply(pos + 1)
       if (Calc.mod(current, seq.head) == BigInt(0)) {
         collectGapsV2(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
       } else {
-        assert(CycleIntegralProperties.assertCycleIntegralPositive(seq.integral, pos))
-        assert(CycleIntegralProperties.assertCycleValuePositive(seq.integral, pos + 1))
-        assert(CycleIntegralProperties.assertDiffEqualsCycleValue(seq.integral, pos))
+        assert(seq.integral(pos) == current)
         assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, lastPos, pos))
+        assert(current > lastSurvivor)
         val gap = current - lastSurvivor
+        assert(gap > BigInt(0))
         collectGapsV2(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
       }
     }
   }
 
-// VERIFICATION FAILED (2026-06-11): 4716 UNKNOWN - uses % operator (project rule violation), solver timeout on most VCs
-//  def assertCollectGapsV2AllPositive(
-//    seq: SieveSequenceV2, lastSurvivor: BigInt, lastPos: BigInt,
-//    pos: BigInt, remaining: BigInt, gaps: List[BigInt]
-//  ): Boolean = {
-//    require(remaining >= 0)
-//    require(pos >= 1)
-//    require(lastSurvivor > 0)
-//    require(lastPos >= 0)
-//    require(lastPos < pos)
-//    require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
-//    decreases(remaining)
-//    if (remaining == BigInt(0)) {
-//      ListBoundUtils.allGreaterThan(gaps.reverse, BigInt(0))
-//    } else {
-//      val current = seq.apply(pos + 1)
-//      if (current % seq.head == BigInt(0)) {
-//        assertCollectGapsV2AllPositive(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
-//      } else {
-//        assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, lastPos, pos))
-////        assert(current > lastSurvivor)
-////        assert(current - lastSurvivor > BigInt(0))
-//        assertCollectGapsV2AllPositive(seq, current, pos, pos + 1, remaining - 1, (current - lastSurvivor) :: gaps)
-//      }
-//    }
-//  }.holds
+  def assertAllGreaterThanReverse(list: List[BigInt], value: BigInt): Boolean = {
+    require(ListBoundUtils.allGreaterThan(list, value))
+    decreases(list.size)
+    if (list.isEmpty) {
+      ListBoundUtils.allGreaterThan(list.reverse, value)
+    } else {
+      assert(ListBoundUtils.allGreaterThan(list.tail, value))
+      assert(assertAllGreaterThanReverse(list.tail, value))
+      assert(ListBoundUtils.allGreaterThan(list.tail.reverse, value))
+      assert(list.head > value)
+      assert(ListBoundUtils.assertAppendGreaterThan(list.tail.reverse, List(list.head), value))
+      ListBoundUtils.allGreaterThan(list.reverse, value)
+    }
+  }.holds
+
+  def assertCollectGapsV2AllPositive(
+    seq: SieveSequenceV2, lastSurvivor: BigInt, lastPos: BigInt,
+    pos: BigInt, remaining: BigInt, gaps: List[BigInt]
+  ): Boolean = {
+    require(remaining >= 0)
+    require(pos >= 1)
+    require(lastSurvivor > 0)
+    require(lastPos >= 0)
+    require(lastPos < pos)
+    require(seq.integral(lastPos) == lastSurvivor)
+    require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
+    decreases(remaining)
+    if (remaining == BigInt(0)) {
+      assert(assertAllGreaterThanReverse(gaps, BigInt(0)))
+      ListBoundUtils.allGreaterThan(gaps.reverse, BigInt(0))
+    } else {
+      val current = seq.apply(pos + 1)
+      if (Calc.mod(current, seq.head) == BigInt(0)) {
+        assertCollectGapsV2AllPositive(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
+      } else {
+        assert(seq.integral(pos) == current)
+        assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, lastPos, pos))
+        assert(current > lastSurvivor)
+        val gap = current - lastSurvivor
+        assert(gap > BigInt(0))
+        assertCollectGapsV2AllPositive(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
+      }
+    }
+  }.holds
 
   def nextGapsWalkV2(seq: SieveSequenceV2): List[BigInt] = {
     val steps = seq.head * seq.gapCycle.size
     val newHead = seq.apply(BigInt(1))
+    assert(assertCollectGapsV2AllPositive(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt]))
     collectGapsV2(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt])
   }
 

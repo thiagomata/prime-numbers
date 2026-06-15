@@ -251,7 +251,7 @@ From these definitions, it mathematically proves and formally verifies the follo
 
 ### Euclid's Theorem (Infinitude of Primes)
 
-The article [Formal Verification of Euclid's Theorem on the Infinitude of Primes](./articles/draft-euclid-theorem.md)
+The article [Formal Verification of Euclid's Theorem on the Infinitude of Primes](articles/draft/draft-euclid-theorem.md)
 proves that there are infinitely many primes using Euclid's classic construction:
 given any finite list of primes, compute their primorial plus one, and show that
 this number has a prime divisor not in the original list.

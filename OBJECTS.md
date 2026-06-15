@@ -977,7 +977,7 @@ there exists a prime not in that list.
 
 Assertions inside `.holds` lemmas are cached by Stainless and become available to callers.
 This is how `primorialPlusOneModAny` feeds modular facts into `euclidTheorem` without
-explicit postcondition enrichment. See §4 of [articles/euclid-theorem.md](./articles/draft-euclid-theorem).
+explicit postcondition enrichment. See §4 of [articles/euclid-theorem.md](articles/draft/draft-euclid-theorem.md).
 
 **Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala`
 
@@ -1066,7 +1066,7 @@ Each article in the `articles/` directory formalizes and proves properties of th
 | [cycle.md](./articles/cycle.md)                   | Unbounded Lists (Cycles)     | ModCycle, RecursiveCycle |
 | [integral-cycle.md](./articles/integral-cycle.md) | Cycle Integral Properties    | CycleIntegral            |
 | [sieve-sequence.md](./articles/draft-sieve-sequence) | Sieve Sequence Properties    | SieveSequenceV2          |
-| [euclid-theorem.md](./articles/draft-euclid-theorem) | Euclid's Theorem             | PrimeProperties           |
+| [euclid-theorem.md](articles/draft/draft-euclid-theorem.md) | Euclid's Theorem             | PrimeProperties           |
 
 ---
 

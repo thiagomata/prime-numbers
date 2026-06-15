@@ -2,6 +2,7 @@ package v1.seq.sieve
 
 import stainless.annotation.extern
 import stainless.collection.List
+import v1.Calc
 import v1.cycle.gap.GapCycle
 import v1.cycle.integral.recursive.CycleIntegral
 import v1.cycle.memory.MemCycle
@@ -16,6 +17,9 @@ case class SieveSequenceV2(
   require(ListUtils.checkAllBiggerThanValue(primes, 1))
   require(SieveUtils.assertProductEqualOrBiggerThanElements(primes.tail))
   require(SieveUtils.isCoprime(primes.head, primes.tail))
+  require(SieveUtils.isCoprime(primes.head + gapCycle.memCycle(0), primes.tail))
+  require(Calc.mod(primes.head + gapCycle.memCycle(0), primes.head) != BigInt(0))
+  require(Calc.mod(SieveUtils.product(primes.tail), primes.head) != BigInt(0))
 
   val integral: CycleIntegral = CycleIntegral(primes.head, gapCycle.memCycle)
 
