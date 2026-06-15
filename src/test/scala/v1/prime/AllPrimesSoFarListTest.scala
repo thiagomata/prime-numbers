@@ -22,35 +22,35 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
 
   "all primes so far" should "return true for list of primes with all primes up to the last one" in {
     AllPrimesSoFarList.allPrimesSoFar(SortedPrimeList(
-      List(Prime(2), Prime(3), Prime(5))
+      List(Prime(5), Prime(3), Prime(2))
     )) should be(true)
   }
 
   "all primes so far" should "return false for list with missing primes in the middle" in {
     AllPrimesSoFarList.allPrimesSoFar(SortedPrimeList(
-      List(Prime(2), Prime(5))
+      List(Prime(5), Prime(2))
     )) should be(false)
   }
 
   "all primes so far" should "return false for list with missing primes in the tail" in {
     AllPrimesSoFarList.allPrimesSoFar(SortedPrimeList(
-      List(Prime(3), Prime(5))
+      List(Prime(5), Prime(3))
     )) should be(false)
   }
 
   "all primes so far" should "return true for list with range primes" in {
     AllPrimesSoFarList.allPrimesSoFar(SortedPrimeList(
-      List(Prime(2), Prime(3), Prime(5), Prime(7)),
+      List(Prime(7), Prime(5), Prime(3), Prime(2)),
     )) should be(true)
   }
 
   "add" should "add the next prime if valid" in {
     val newList = AllPrimesSoFarList(
-      SortedPrimeList(List(Prime(2), Prime(3), Prime(5)))
+      SortedPrimeList(List(Prime(5), Prime(3), Prime(2)))
     ).insert(Prime(7))
 
     val expectedList = AllPrimesSoFarList(
-       SortedPrimeList(List(Prime(2), Prime(3), Prime(5), Prime(7)))
+       SortedPrimeList(List(Prime(7), Prime(5), Prime(3), Prime(2)))
     )
 
     newList.equals(expectedList) should be(true)

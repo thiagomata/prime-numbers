@@ -42,7 +42,7 @@ object SortedPrimeList {
   def isDescending(list: List[Prime]): Boolean = {
     decreases(list.size)
     if (list.isEmpty || list.tail.isEmpty) true
-    else if (list.head.value < list.tail.head.value) false
+    else if (list.head.value <= list.tail.head.value) false
     else isDescending(list.tail)
   }
 
@@ -56,7 +56,8 @@ object SortedPrimeList {
   def insertSorted(x: Prime, list: List[Prime]): List[Prime] = {
     decreases(list.size)
     if (list.isEmpty) List(x)
-    else if (x.value >= list.head.value) x :: list
+    else if (x.value > list.head.value) x :: list
+    else if (x.value == list.head.value) list
     else list.head :: insertSorted(x, list.tail)
   }
 
@@ -90,7 +91,7 @@ object SortedPrimeList {
 
     if (list.isEmpty) {
       isDescending(insertSorted(x, list))
-    } else if (x.value >= list.head.value) {
+    } else if (x.value > list.head.value) {
       isDescending(insertSorted(x, list))
     } else {
       assert(isDescending(list.tail))
@@ -125,7 +126,7 @@ object SortedPrimeList {
     } else {
       assert(isDescending(list.tail))
       assert(assertRemoveKeepsDescending(list.tail, index - 1))
-      assert(list.head.value >= list.tail.head.value)
+      assert(list.head.value > list.tail.head.value)
       isDescending(removeAt(list, index))
     }
   }.holds

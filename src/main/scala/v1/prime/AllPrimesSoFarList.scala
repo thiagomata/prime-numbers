@@ -2,6 +2,7 @@ package v1.prime
 
 import stainless.lang.decreases
 import v1.prime.AllPrimesSoFarList.allPrimesSoFar
+import stainless.collection.List
 
 import scala.annotation.tailrec
 
@@ -18,7 +19,7 @@ case class AllPrimesSoFarList(list: SortedPrimeList) {
     require(allPrimesSoFar(list.insert(prime)))
     AllPrimesSoFarList(list.insert(prime))
   }
-  
+
   def tail: AllPrimesSoFarList = {
     require(list.nonEmpty)
     assert(SortedPrimeList.isDescending(list.list))
@@ -40,26 +41,59 @@ object AllPrimesSoFarList {
     if list.isEmpty then
       true
     else
-      loopCheckAllPrimesSoFar(list.last.value, list)
+      loopCheckAllPrimesSoFar(list)
+  }
+
+  def loopCheckAllPrimesSoFar(list: SortedPrimeList): Boolean = {
+    decreases(list.size)
+    if list.isEmpty then true else
+    if list.size == 1 then {
+      list.head.value == BigInt(2)
+    } else {
+      val current = list.head.value
+      if (!Prime.isPrime(current)) {
+        false
+      } else {
+        assert(list.head.value > list.tail.head.value)
+        noPrimesBetween(list.tail.head.value + 1, current) && loopCheckAllPrimesSoFar(list.tail)
+      }
+    }
   }
 
   @tailrec
-  def loopCheckAllPrimesSoFar(current: BigInt, list: SortedPrimeList): Boolean = {
-    if (current < 2) {
+  def noPrimesBetween(from: BigInt, to: BigInt): Boolean = {
+    decreases(to - from)
+    require(from >= 0)
+    require(to >= from)
+    if (from == to) {
       true
     } else {
-      checkCurrent(current, list) &&
-        loopCheckAllPrimesSoFar(current - 1, list)
+      if (Prime.isPrime(from)) {
+        false
+      } else {
+        noPrimesBetween(from + 1, to)
+      }
     }
   }
 
-  def checkCurrent(current: BigInt, list: SortedPrimeList): Boolean = {
-    if (Prime.isPrime(current)) {
-      contains(current, list)
-    } else {
-      true
-    }
-  }
+
+//  @tailrec
+//  def loopCheckAllPrimesSoFar(current: BigInt, list: SortedPrimeList): Boolean = {
+//    if (current < 2) {
+//      true
+//    } else {
+//      checkCurrent(current, list) &&
+//        loopCheckAllPrimesSoFar(current - 1, list)
+//    }
+//  }
+//
+//  def checkCurrent(current: BigInt, list: SortedPrimeList): Boolean = {
+//    if (Prime.isPrime(current)) {
+//      contains(current, list)
+//    } else {
+//      true
+//    }
+//  }
 
   @tailrec
   def contains(current: BigInt, list: SortedPrimeList): Boolean = {
