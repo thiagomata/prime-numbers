@@ -22,3 +22,7 @@ stainless
 sbt-stainless.zip
 project
 stainless-dotty-standalone-*
+
+# ignore bloop
+.bloop
+.bloop/**
