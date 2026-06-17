@@ -217,6 +217,33 @@ with no issues as follows:
 
 Similarly, in the next sections, we will prove other properties of the division and modulo operations using only the amount of evidences required to Scala Stainless to verify that they hold.
 
+### Modulo and Division by One
+
+Modulo by one always returns zero and division by one always returns the dividend.
+
+```math
+\begin{aligned}
+\forall \text{ } n \in \mathbb{N} & : \\
+n \text{ mod } 1 & = 0 \\
+n \text{ div } 1 & = n \\
+\end{aligned}
+```
+
+The proof of these properties is available in the [mod one proof](
+../src/main/scala/v1/div/properties/ModOne.scala#modOneIsZero
+) and [division by one proof](
+../src/main/scala/v1/div/properties/ModOne.scala#divOneIsN
+).
+
+```scala
+  def modOneIsZero(n: BigInt): Boolean = {
+    require(n >= 0)
+    assert(ModSmallDividend.modSmallDividend(BigInt(0), BigInt(1)))
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), BigInt(1), n))
+    Calc.mod(n, BigInt(1)) == BigInt(0)
+  }.holds
+```
+
 ### Quotient Invariance Under Linear Shift
 
 Adding or subtracting the divisor from the dividend changes the quotient by one but leaves the remainder unchanged.
@@ -314,7 +341,7 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 ```
 
 As the scala [distribution over addition proof](
-./src/main//scala/v1/div/properties/ModOperations.scala#modAdd
+../src/main/scala/v1/div/properties/ModOperations.scala#modAdd
 ) can be verified.
 
 ### Distribution over Subtraction
@@ -331,7 +358,7 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 ```
 
 As the scala [distribution over subtraction proof](
-./src/main//scala/v1/div/properties/ModOperations.scala#modAdd
+../src/main/scala/v1/div/properties/ModOperations.scala#modAdd
 ) can be verified.
 
 ### Modular Shift Invariance under Divisible Base
@@ -347,8 +374,35 @@ a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = c \text{ mod } b \\
 ```
 
 As scala [proof of invariance](
-./src/main//scala/v1/div/properties/ModOperations.scala#modZeroPlusC
+../src/main/scala/v1/div/properties/ModOperations.scala#modZeroPlusC
 ) can be verified.
+
+### Symmetrical Modulo Pairs
+
+The modulo of a value and the modulo of its complement relative to the base sum to the base.
+
+```math
+\begin{aligned}
+\forall \text{ } b, k \in \mathbb{N} & : b > 0,\ 0 < k < b \\
+k \text{ mod } b + (b - k) \text{ mod } b & = b
+\end{aligned}
+```
+
+The proof of this property is available in the [symmetrical mods proof](
+../src/main/scala/v1/div/properties/ModSum.scala#sumSymmetricalMods
+).
+
+```scala
+  def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
+    require(b > 0)
+    require(step > 0)
+    require(step < b)
+    assert(Calc.mod(step, b) == step)
+    assert(Calc.mod(b - step, b) == b - step)
+    assert(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
+    Calc.mod(step, b) + Calc.mod(b - step, b) == b
+  }.holds
+```
 
 ### Unit-Step Modulo-Division Increment Law
 
@@ -365,7 +419,7 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 ```
 
 As the scala [proof for the unit-step increment law](
-./src/main//scala/v1/div/properties/ModOperations.scala#addOne
+../src/main/scala/v1/div/properties/ModOperations.scala#addOne
 ) can be verified.
 
 ## 7. Conclusion
@@ -427,77 +481,6 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
 
 ## 9. Appendices
 
-### Scala Stainless Verification Log Output
+### Scala Stainless Verification Status
 
-```bash
-java 21.0.7-zulu is already installed.
-
-Using java version 21.0.7-zulu in this shell.
-
-[ Info  ] Compiling with standard Scala 3.3.3 compiler front end...
-[ Info  ] Finished compiling
-[ Info  ] Preprocessing the symbols...                             
-[ Info  ] Preprocessing finished
-[ Info  ] Running phase ConstructsUsage                            
-[ Info  ] Running phase PartialFunctions                           
-[ Info  ] Running phase XlangLowering                              
-[ Info  ] Running phase InnerClasses                               
-[ Info  ] Running phase Laws                                       
-[ Info  ] Running phase SuperInvariants                            
-[ Info  ] Running phase SuperCalls                                 
-[ Info  ] Running phase Sealing                                    
-[ Info  ] Running phase MethodLifting                              
-[ Info  ] Running phase MergeInvariants                            
-[ Info  ] Running phase FieldAccessors                             
-[ Info  ] Running phase ValueClasses                               
-[ Info  ] Running phase MethodsLowering                            
-[ Info  ] Running phase ExceptionLifting                           
-[ Info  ] Running phase EffectElaboration                          
-[ Info  ] Running phase AntiAliasing                               
-[ Info  ] Running phase ReturnElimination                          
-[ Info  ] Running phase ImperativeCodeElimination                  
-[ Info  ] Running phase ImperativeCleanup                          
-[ Info  ] Running phase AdtSpecialization                          
-[ Info  ] Running phase RefinementLifting                          
-[ Info  ] Running phase TypeEncoding                               
-[ Info  ] Running phase InvariantInitialization                    
-[ Info  ] Running phase FunctionClosure                            
-[ Info  ] Running phase FunctionSpecialization                     
-[ Info  ] Running phase UnfoldOpaque                               
-[ Info  ] Running phase CallSiteInline                             
-[ Info  ] Running phase ChooseInjector                             
-[ Info  ] Running phase ChooseEncoder                              
-[ Info  ] Running phase FunctionInlining                           
-[ Info  ] Running phase TraceInductElimination                     
-[ Info  ] Running phase SizedADTExtraction                         
-[ Info  ] Running phase InductElimination                          
-[ Info  ] Running phase MeasureInference                           
-[ Info  ] Inferring measure for sum...
-[ Warning ] The Z3 native interface is not available. Falling back onto smt-z3.
-[ Info  ] Inferring measure for ++...
-[ Info  ] Inferring measure for last...
-[ Info  ] Inferring measure for apply...
-[ Info  ] Running phase PartialEvaluation
-[ Info  ] Finished lowering the symbols
-[ Info  ] Generating VCs for 170 functions...
-[ Info  ] Finished generating VCs            
-[ Info  ] Starting verification...
-[ Info  ] Verified: 2723 / 2723
-[ Info  ] Done in 60.53s
-[ Info  ]   ┌───────────────────┐
-[ Info  ] ╔═╡ stainless summary ╞══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-[ Info  ] ║ └───────────────────┘                                                                                                                                                                                                                          ║
-[ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:75:17:              ALessBSameModDecreaseDiv                        class invariant                                                         valid from cache            0.0 ║
-[ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:78:5:               ALessBSameModDecreaseDiv                        body assertion: Inlined precondition of assert                          valid from cache            0.0 ║
-[ Info  ] ║ ./src/main/scala/v1/div/properties/AdditionAndMultiplication.scala:79:5:               ALessBSameModDecreaseDiv                        body assertion: Inlined precondition of assert                          valid from cache            0.0 ║
-[ Info  ] ║ ./src/main/scala/v1/cycle/properties/CycleProperties.scala:90:12:                      valueMatchAfterManyLoopsInBoth                  precond. (call apply(cycle, key + size(cycle) * m1))                    valid from cache            0.0 ║
-[ Info  ] ║ ./src/main/scala/v1/cycle/properties/CycleProperties.scala:90:44:                      valueMatchAfterManyLoopsInBoth                  precond. (call apply(cycle, key + size(cycle) * m2))                    valid from cache            0.0 ║
-[ Info  ] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-[ Info  ] ║ total: 2723 valid: 2723 (2690 from cache, 11 trivial) invalid: 0    unknown: 0    time:   10.71                                                                                                                                                ║
-[ Info  ] ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-[ Info  ] Verification pipeline summary:
-[ Info  ]   @extern, cache, anti-aliasing, return transformation, 
-[ Info  ]   imperative elimination, type encoding, choose injection, nativez3, 
-[ Info  ]   non-batched
-[ Info  ] Shutting down executor service.
-```
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [verify.log](../verify.log)

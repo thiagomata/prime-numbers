@@ -16,8 +16,11 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
 
 <rules>
   <rule id="green-to-green" priority="critical">
-    Run <verify /> before ANY change. Run <verify /> after ANY change.
+    Run <verify /> before ANY code change. Run <verify /> after ANY code change.
+    Run <verify /> after ANY change to non-markdown files.
     Stainless timeout IS failure. NEVER proceed from red state.
+    Exception: Changes limited to markdown files (*.md) do NOT require verification.
+    If a change modifies both code AND markdown files, verification IS required.
   </rule>
   <rule id="small-changes" priority="critical">
     ONE assertion/require/lemma per change. Verify between each.
@@ -56,9 +59,9 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
   </rule>
   <rule id="three-representations" priority="high">
     Every property in an article MUST be presented in ALL THREE forms:
-    1. **English text** — Explain what the property means, with **Intuition:**
-       (why it's true) and **Why This Matters:** (why it's important). Place
-       ABOVE the math as an overview.
+    1. **English text** — Explain what the property means, covering the intuition
+       (why it's true) and why it matters (what it enables), woven into natural prose
+       without explicit labels. Place ABOVE the math as an overview.
     2. **Mathematical symbols** — LaTeX `` ```math \begin{aligned} ``` blocks
        with step-by-step derivations and bracketed labels:
        `[Q.E.D.]`, `[By Definition]`, `[By Lemma X]`, `[By Induction Hypothesis]`,

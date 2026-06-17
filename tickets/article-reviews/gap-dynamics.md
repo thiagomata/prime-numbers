@@ -48,3 +48,37 @@ The current "All properties are verified in the Stainless system" abstract langu
 - Run `just verify` or confirm the latest `verify.log`.
 - Create tickets for any missing Stainless proofs before publishing.
 - Re-check `articles/learnings/learnings-capacity-argument.md` Section 16 before finalizing the status table.
+
+## Review Execution Log
+
+### 2026-06-17: Review completed
+
+**Changes applied to `articles/gap-dynamics.md`:**
+
+### Must Fix — All addressed
+
+- [x] **Abstract overclaim** — Rewritten: explicitly states "None of these four properties currently have Stainless-verified `.holds` code"
+- [x] **Missing functions** — Confirmed absent from source. All 4 cited functions (`verifyGeneralizedGrowth`, `assertNoAdjacentTwoGaps`, `countDeletionsAtIndex`, `assertSafeZoneStability`) do not exist. No `GapProperties.scala` exists
+- [x] **Unverified claims marked Draft** — All 4 properties marked `[Draft]` in section headers and property index table
+- [x] **Safe zone stability proof** — Error documented: `newPosition >= nextPrime` does not follow from preconditions. Concrete counterexample given (`p=5, r=5, nextPrime=7`). Section marked `[Draft — Proof Has Gap]` with a "Flaw" subsection explaining the issue
+- [x] **Empirical reference path** — Already correct (`articles/draft/draft-empirical-g-local-analysis.md` exists). Updated ref to use relative path `../articles/draft/...`
+
+### Should Fix — All addressed
+
+- [x] **Open-question section** — Kept as Section 6, framed as the organizing boundary
+- [x] **Status table** — Property index at top (5 rows) + Summary table in Section 7 (7 rows). Uses `[Draft]`, `[Open]`, `[Corollary]`, `[Trivial]` labels
+- [x] **Cross-reference learnings Section 16** — Added in Introduction (Section 1) and Open Local Density Question (Section 6)
+- [x] **"Cannot focus fire" language** — Replaced with precise phrasing: "the filter cannot concentrate its destructive capacity on 2-gaps"
+
+### Structure changes
+
+- Added **Property Index** table at top (following pattern from cycle.md, integral.md, integral-cycle.md)
+- Moved all 4 `.holds` code blocks to **Appendix A** (A.1–A.4), each marked `[DRAFT]` with explicit note
+- Added **Appendix B** with verification log (5499 valid, 0 invalid, 0 unknown)
+- Safe zone stability: added "Flaw" subsection explaining the gap
+- Cross-referenced with learnings capacity argument Section 16 catalog
+
+### Post-change verification
+
+- `just verify` confirms: **5499 valid, 0 invalid, 0 unknown** ✅
+- No Scala code was modified — only `.md` changes

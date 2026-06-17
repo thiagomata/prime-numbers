@@ -11,7 +11,7 @@ Independent Researcher
 
 <div align="justify">
 <p style="text-align: justify">
-This article presents a formal verification of Sieve Sequences — the core data structure used by the Sieve of Eratosthenes to generate candidate primes. We build on a zero-prior-knowledge foundation established in earlier articles (modulo, lists, cycles, cycle integrals) and verify five key properties: (1) the unit cycle generates consecutive natural numbers, (2) strict monotonicity holds, (3) distinct primes are coprime, (4) filtering by a prime preserves all other primes, and (5) every sieve sequence head is prime. All properties are expressed as `.holds` functions in the Stainless verification system, with 5303 verification conditions all passing.
+This article presents a formal verification of Sieve Sequences — the core data structure used by the Sieve of Eratosthenes to generate candidate primes. We build on a zero-prior-knowledge foundation established in earlier articles (modulo, lists, cycles, cycle integrals) and verify five key properties: (1) the unit cycle generates consecutive natural numbers, (2) strict monotonicity holds, (3) distinct primes are coprime, (4) filtering by a prime preserves all other primes, and (5) every sieve sequence head is prime. Each described property is expressed as a `.holds` function in the Stainless verification system and linked to its verification source.
 </p>
 </div>
 
@@ -27,7 +27,7 @@ The Sieve of Eratosthenes generates prime numbers by iteratively filtering a seq
 
 In this article, we formalize all three properties using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), a verification framework for pure Scala programs. Our approach follows the zero-prior-knowledge methodology established in earlier articles: modular arithmetic, lists, cycles, and cycle integrals are all defined from scratch and verified independently.
 
-The result is a machine-checked proof of the sieve's key properties — 5303 verification conditions all valid — that serves as a foundation for the complete sieve correctness proof.
+The result is a machine-checked proof of the sieve's key properties. The repository-wide verification-condition count is intentionally omitted because it changes as unrelated verified modules are added; the important claim here is that the properties described in this article are verified and source-linked.
 
 ---
 
@@ -79,7 +79,7 @@ These articles defined and verified their properties using the same zero-prior-k
 \begin{aligned}
 \text{CycleIntegral}(\text{MemCycle}([1]), init)_0 &= \text{cycle}(0) + init \\
 &= 1 + init \\
-&= init + 0 + 1 \quad \text{[Q.E.D.]}
+&= init + 0 + 1 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -88,7 +88,7 @@ These articles defined and verified their properties using the same zero-prior-k
 \begin{aligned}
 \text{CycleIntegral}(\text{MemCycle}([1]), init)_{i+1} &= \text{CycleIntegral}(\text{MemCycle}([1]), init)_i + \text{cycle}(i+1) \\
 &= (init + i + 1) + 1 \quad \text{[By Induction Hypothesis]} \\
-&= init + (i+1) + 1 \quad \text{[Q.E.D.]}
+&= init + (i+1) + 1 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -303,7 +303,7 @@ We have presented a formal verification of Sieve Sequence properties using the S
 4. **Filter preserves primes** — filtering by one prime doesn't remove other primes
 5. **Head is prime** — every SieveSequence head is guaranteed prime
 
-These properties establish the mathematical foundation for the Sieve of Eratosthenes. The complete verification runs at 5303 VCs across 468 functions, all valid.
+These properties establish the mathematical foundation for the Sieve of Eratosthenes. The verification status is carried by the exact `.holds` functions referenced above, not by a repository-wide counter.
 
 ---
 
@@ -323,3 +323,7 @@ Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Li
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [articles/integral-cycle.md](integral-cycle.md)
+
+## Appendix A: Stainless Verification Log Output
+
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [verify.log](../verify.log)

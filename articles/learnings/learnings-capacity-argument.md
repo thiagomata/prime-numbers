@@ -283,7 +283,7 @@ After exhaustive analysis of all approaches, the Parallax engine's formal bounda
 |----------|-------------|
 | **Filter bound (p-1 strikes max)** | The giant is capacity-limited within the safe zone |
 | **2-gap isolation** | No multi-kill per stride — at most one 2-gap destroyed per filter strike |
-| **Safe zone outruns backward drift** | Once a 2-gap enters [p, p²], it stays in all future safe zones (unless destroyed) |
+  | **Safe zone outruns backward drift** | Once a 2-gap enters [p, p²], it stays in all future safe zones (unless destroyed) |
 | **Global growth T_{k+1} ≥ (p-2)·T_k** | Total 2-gap count in the full cycle explodes superlinearly |
 | **1-value rotation cycles residues** | Uniform distribution of residues *across copies* at fixed index |
 
@@ -443,3 +443,16 @@ Arguments of this form include:
 These are not "hard to prove" — they are structurally impossible, and this proof closes that class of approaches definitively.
 
 A valid approach must place the 2-gap at coordinate \(r \ge p_{n+1}\) and then prove it survives the filter conditions while staying within the safe zone \([p_{n+1}, p_{n+1}^2]\). This is precisely the original density problem (Property 10 in Section 16), which remains open.
+
+## 18. Draft Gap-Dynamics Claims Removed from the Article
+
+The `gap-dynamics.md` article now treats the local-density inequality as the main boundary and no longer publishes draft or failed gap claims as article properties. These claims are preserved here because they may still guide future work, but they are not article-grade under the three-representation rule until they have natural-language explanation, symbolic derivation, and source-linked Stainless verification code.
+
+| Claim | Current status | Why it stays in learnings |
+|-------|----------------|---------------------------|
+| Worst-case 2-gap growth inequality | Draft mathematical argument | The text argument is plausible, but it still needs a symbolic derivation and a Stainless `.holds` proof before publication. |
+| 2-gap isolation | Draft mathematical argument | The idea needs source-linked verification code and a complete symbolic proof before it can return to the article. |
+| Structural dispersion invariant | Draft permutation idea | The permutation intuition is useful, but it is not yet formalized in mathematical and Scala verification form. |
+| Safe-zone stability | Failed attempted proof | The lower-bound step from `r < p^2` to safe-zone persistence does not follow; this remains a failed approach, not a property. |
+
+These claims can return to a publication article only after they satisfy the article standard directly, or after they are explicitly framed as draft work with a tracking ticket and all required caveats.

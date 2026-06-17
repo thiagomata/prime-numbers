@@ -40,3 +40,27 @@ Recommended fix: add a source-map table with article property, current source fu
 - Compare against the Sieve and Prime sections of `OBJECTS.md`.
 - Confirm latest `verify.log` reports `5303 valid`, `0 invalid`, `0 unknown`.
 - Check that the article does not imply the entire `next()` pipeline is fully verified if remaining gap-cycle or `@extern` boundaries still exist.
+
+## Additional Suggestions: ConsecutiveIntegers.scala
+
+The file `src/main/scala/v1/div/properties/ConsecutiveIntegers.scala` contains 14 lemmas that are fundamental to sieve theory but are currently NOT in the sieve-sequence article. These lemmas prove:
+
+- At most one value divisible by p in any p consecutive integers
+- Exactly one zero per p-sized block  
+- Density preservation after filtering (critical for sieve correctness)
+- Count formulas for multiples
+
+**Recommendation**: Consider integrating these lemmas as foundational sieve lemmas:
+
+| Lemma | Property | Suggested Section |
+|-------|----------|------------------|
+| `atMostOneZero` | At most one multiple in p consecutive integers | Candidate Generation |
+| `exactlyOneZeroInConsecutive` | Exactly one per p block | Candidate Generation |
+| `densityPreservedAfterFiltering` | Density after filtering is preserved | Filter Preservation |
+| `countModZeroEqualsM` | Count formula for multiples | Candidate Generation |
+| `twoPrimesDensity` | Density with two primes | Filter Preservation |
+| `densityForPrimeList` | Extended density for prime list | Filter Preservation |
+
+These are the mathematical backbone lemmas for the sieve algorithm and should either be:
+1. Integrated into sieve-sequence.md with proper source references, or
+2. Documented as a dedicated "Foundational Sieve Lemmas" section in OBJECTS.md

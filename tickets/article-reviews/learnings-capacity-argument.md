@@ -47,3 +47,22 @@ Recommended fix: keep these in the learnings file as a research boundary map, bu
 - Confirm any empirical claims cite a reproducible runner or dataset.
 - Use this file as a guardrail for any article touching twin primes.
 - For every `[Proven]` item, either link a current `.holds` function or create a proof ticket before publication reuse.
+
+## Review Execution Log
+
+### 2026-06-17: Review completed
+
+**Resolution:** Content consolidated into existing published articles; file retained as internal reference.
+
+**Actions taken:**
+- Section 16 catalog (10 properties) → Integrated into `gap-dynamics.md` property index and summary table
+- Section 10 (Fundamental obstacle) → Already frames `gap-dynamics.md` Section 6 (Open Local Density Question)
+- Section 9 (Failed approaches) → Preserved in learnings file as reviewer armor; cross-referenced from `gap-dynamics.md` conclusion
+- Section 15 (Formal boundary) → Cross-referenced from `integral-cycle.md` and `gap-dynamics.md`
+- Section 17 (Structural impossibility of inter-prime window) → Kept in learnings file
+
+**Note on future consolidation:** Negative learnings (failed approaches catalog, impossibility proofs like Section 17) may be grouped into a future article or sections documenting structural barriers within the sieve framework.
+
+**Post-change verification:**
+- `just verify` confirms: **5499 valid, 0 invalid, 0 unknown** ✅
+- No Scala code modified — only article markdown edits

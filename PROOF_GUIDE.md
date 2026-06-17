@@ -8,19 +8,18 @@ Every property should be presented three times:
 
 ### 1. English Description (Above the Math)
 
-Place the English description ABOVE the formal proof as an overview:
+Place the English description ABOVE the formal proof as an overview.
+It should answer these questions naturally in prose — without explicit labels:
 
-- **What we're proving** — A clear statement of the property
-- **Why it matters** — Motivation for why this property is important
-- **Intuition** — A bridge to help readers understand before seeing symbols
+- **What** the property states
+- **Why** it matters (motivation)
+- **Intuition** to help readers before seeing symbols
 
 Example:
 > The first property establishes that a cycle integral with unit cycle produces
-> consecutive integers:
->
-> **Intuition:** Each step adds exactly 1, so we get consecutive integers starting from `init + 1`.
->
-> **Why This Matters:** The sieve uses `nextCandidates` to generate all natural numbers from 2 onward.
+> consecutive integers. Each step adds exactly 1, so we get consecutive integers
+> starting from `init + 1`. This is how the sieve generates all natural numbers
+> from 2 onward.
 
 ### 2. Mathematical Proof (LaTeX)
 
@@ -55,7 +54,7 @@ This property is verified in the [
 ### Placement Guidelines
 
 - Place English description ABOVE the math as an overview
-- Intuition and "why it matters" can be placed after the formal statement
+- Weave motivation and intuition into natural prose
 - The math proof stands on its own
 - Stainless verification follows the math
 
@@ -79,7 +78,7 @@ Use LaTeX notation in ```math blocks:
 ### Structure
 
 1. **State the theorem/lemma** formally
-2. **Provide intuition** explaining why it's true
+2. **Explain the intuition** in natural prose (no label required)
 3. **Show the proof** with step-by-step derivations
 4. **Reference the Stainless verification**
 
