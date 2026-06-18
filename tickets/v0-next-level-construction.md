@@ -2,9 +2,10 @@
 
 **Created:** 2026-06-18
 **Updated:** 2026-06-19
-**Status:** Verified backbone helpers are landing. `nextPrime` is paused as a documented draft.
+**Status:** Complete — `SieveSequenceV0.next` verified at 5992 valid.
+
 **Related tickets:**
-- `prove-apply1-is-prime.md` — failed attempt to prove `apply(1)` is prime directly
+- `prove-apply1-is-prime.md` — failed attempt to prove `apply(1)` is prime directly (rendered obsolete by `nextPrime` which doesn't need it)
 - `check-project-guidance-docs-2026-06-17.md` — primary V0 implementation
 - `next-constructor-requirement-assertions.md` — V2 next-level helpers
 - `walk-based-pipeline.md` — V2 walk-based gap collection
@@ -17,268 +18,49 @@ Given `SieveSequenceV0(primes)` where `primes = [p_n, p_{n-1}, ..., 2]`, produce
 
 ---
 
-## Phase 1: `nextPrime` Ownership — PAUSED
+## Result
 
-The live `SieveSequenceV0` implementation does not currently define a
-`nextPrime` method. The correct ownership boundary is still the prime-prefix
-domain: `AllPrimesSoFarList` stores the complete discovered prime prefix in
-descending order, so it is the right class to eventually expose `nextPrime`.
+The full chain is verified and live:
 
-Important correction: `nextPrime` is not `head`. For `[5, 3, 2]`, the current
-head is `5`, and the next prime is `7`.
-
-The attempted implementation shape was conceptually correct but not yet
-Stainless-verifiable:
-
-```scala
-def nextPrime: Prime = {
-  require(list.nonEmpty)
-
-  PrimeProperties.primorialPlusOneModAny(list.list)
-  val upperPrime = PrimeProperties.newPrimeFromEuclid(list.list)
-  assert(upperPrime.value > head.value)
-
-  searchNextPrimeUpTo(head.value + BigInt(1), upperPrime)
-}.ensuring(res => res.value > head.value && Prime.isPrime(res.value))
+```
+AllPrimesSoFarList.nextPrime → AllPrimesSoFarList.next → SieveSequenceV0.next
 ```
 
-This should remain a simple bounded linear search: use Euclid to obtain a finite
-prime upper witness, then scan consecutive natural numbers from `head + 1` to
-that witness and return the first `Prime.isPrime` candidate.
+| Component | Verified at | What it does |
+|-----------|-------------|-------------|
+| `searchNextPrimeUpTo` | 5843 | Bounded linear scan; postcondition proves `isPrime(res)`, `res.value >= current`, `noPrimesBetween(current, res.value)` |
+| `newPrimeNotInList` | 5848 | Euclid prime is not in the input list |
+| `notContainsFromValueNotMatchesAny` | 5876 | Bridge: `valueNotMatchesAny` ⇒ `!contains` on `SortedPrimeList` |
+| `euclidPrimeGreaterThanHead` | 5876 | Euclid prime > head (by contradiction with `primeAtOrBelowHeadIsContained`) |
+| `AllPrimesSoFarList.nextPrime` | 5898 | Postcondition: `res.value > head.value`, `isPrime(res.value)`, `noPrimesBetween(head+1, res.value)` |
+| `primeIsCoprimeWithSmallerList` | 5974 | `isPrime(v)` + descending `primes` with `head < v` ⇒ `isCoprime(v, primeValues(primes))` |
+| `noDivisorInRangeExcludesValue` | 5917 | Extracts `mod(n, value) != 0` from `noDivisorInRange(n, from, to)` for any value in range |
+| `AllPrimesSoFarList.next` | 5980 | Constructs `SortedPrimeList(newPrime :: list.list)` + `AllPrimesSoFarList(…)` using nextPrime's postcondition |
+| `SieveSequenceV0.next` | 5992 | Delegates to `AllPrimesSoFarList.next`, proves `isCoprime` via `primeIsCoprimeWithSmallerList` |
 
-**Why paused:** `just verify` reached `5768 valid`, `0 invalid`, `1 unknown`,
-timing out at:
+### Three constructor proofs resolved
 
-```scala
-assert(upperPrime.value > head.value)
-```
-
-We then tried a direct projection lemma from `allPrimesSoFar(list)`:
-
-```scala
-primeAtOrBelowHeadIsContained(value, list)
-```
-
-That exposed two smaller missing facts:
-
-- `value >= 0` must be required before calling `Prime.isPrime(value)`.
-- We need a helper that turns `noPrimesBetween(from, to)` plus
-  `from <= value < to` into `!Prime.isPrime(value)`.
-
-Both smaller facts have since been promoted into the live verified API. See
-the Phase 2 backbone notes below.
-
-**Fast tests after pausing:** `sbt 'set stainlessEnabled := false' 'testOnly v1.prime.* v1.seq.sieve.*'`
-passes with 35 tests.
-
-**Verification after pausing:** `just verify` passes with `5744 valid`,
-`0 invalid`, `0 unknown`.
+| Proof | Required | How |
+|-------|----------|-----|
+| `SortedPrimeList.isDescending(newPrime :: list.list)` | `newPrime.value > head.value` | `nextPrime` postcondition assures this |
+| `AllPrimesSoFarList.allPrimesSoFar(newSortedList)` | `isPrime(newPrime.value)` + `noPrimesBetween(head+1, newPrime.value)` | `nextPrime` postcondition assures both |
+| `SieveSequenceV0(…)` constructor `isCoprime` | `isCoprime(newPrime.value, oldFilterValues)` | `primeIsCoprimeWithSmallerList` + `SortedPrimeList.assertTailDescending` |
 
 ---
 
-## Phase 2: `next` method — 3 PROOFS NEEDED
+## Stainless Lessons (learned while building this)
 
-The draft `next()` method constructs a new V0 from `nextPrime()`:
-```scala
-def next: SieveSequenceV0 = {
-  val newPrimeValue = nextPrime()
-  val newPrime = Prime(newPrimeValue)
-  val newSortedList = SortedPrimeList(newPrime :: primes.list.list)
-  val newPrimes = AllPrimesSoFarList(newSortedList)
-  SieveSequenceV0(newPrimes)
-}
-```
-
-Three class invariants time out. Each needs a proof:
-
-### Proof 1: `SortedPrimeList.isDescending(newPrime :: primes.list.list)`
-
-Requires `newPrimeValue > head.value` (new head is larger than old head).
-
-Already true: `searchNextPrime` starts at `head.value + 1` and returns a value ≥ that. But `nextPrime().ensuring` only says `acceptsPrime(res)`, not `res > head.value`. Need to strengthen `searchNextPrime`'s postcondition or `nextPrime()`'s ensuring to include `res > head.value`.
-
-### Proof 2: `AllPrimesSoFarList.allPrimesSoFar(newSortedList)`
-
-Requires:
-- `Prime.isPrime(newPrimeValue)` — not yet proven (deferred to deep number theory: "there is always a prime between p and p²")
-- `noPrimesBetween(head.value + 1, newPrimeValue)` — same deferred proof
-
-This is the core of the Phase 2 deferral. It requires proving that `nextPrime()` returns the ACTUAL next prime (no primes skipped), which needs the prime-in-(p, p²) theorem.
-
-### Proof 3: V0 constructor requirements for new instance
-
-- `isCoprime(newPrimeValue, filterValues.tail)` — follows from `acceptsPrime(newPrimeValue)` ✓ (already verified)
-- `mod(product(tail), newPrimeValue) ≠ 0` — needs "prime doesn't divide product of smaller primes" (Euclid's lemma for lists)
+1. **`.ensuring` on class methods breaks type inference**: A class method returning `Prime` with `.ensuring(res => res.value > ...)` gets inferred as `BigInt` at call sites. **Fix**: move the method to the companion object.
+2. **`primes.next()` vs `primes.next`**: Stainless confuses `primes.next()` with `primes.next.apply()` when the class also defines `apply(index: BigInt)`. **Fix**: omit parentheses for parameterless methods.
+3. **`List[Prime]` vs `List[BigInt]`**: Bridging lemmas between `Prime.isPrime` and `SieveUtils.isCoprime` must use `List[Prime]` to carry the `value > 1` invariant — `List[BigInt]` requires extra `checkAllBiggerThanOne` preconditions.
+4. **`!contains` bridge needs `valueNotMatchesAny` access**: Connecting `euclidTheorem`'s non-membership result to `AllPrimesSoFarList.contains` requires structural induction inside `PrimeProperties` (where `valueNotMatchesAny` is accessible). Making `valueNotMatchesAny` public would enable a cleaner bridge from outside.
+5. **`noDivisorInRangeExcludesValue`**: A dedicated lemma that extracts a specific point-fact from a range predicate is the cleanest pattern for bridging range checks to element-level checks.
+6. **Proof by contradiction without `assert(false)`**: Writing `if (d <= head.value) { lemmaThatProvesContains(d, list) }` is enough — Stainless sees `contains && !contains` = false and marks the branch unreachable.
 
 ---
 
-## New Lemma Needed
+## What was NOT needed
 
-| Lemma | Proves | Needed for |
-|-------|--------|------------|
-| `res > head.value` in `searchNextPrime`/`nextPrime` postcondition | `nextPrime() > head.value` | Proof 1 |
-| `isCoprime(newPrime, tail)` from `acceptsPrime(newPrime)` | V0 constructor require 3 | Automatic via acceptsPrime |
-| `mod(product(tail), newPrime) ≠ 0` from `newPrime > tail` elements | V0 constructor require 4 | Proof 3 (Euclid's lemma for lists) |
-| `Prime.isPrime(nextPrime())` | AllPrimesSoFarList invariant | Proof 2 (deferred) |
-
----
-
-## Design Principle
-
-Properties about primes (positivity, distinct primes are coprime, etc.) go in the `Prime` class, not scattered across the codebase.
-
----
-
-## Phase 2 Backbone Lemmas Added
-
-We moved two helper facts from draft direction into verified code in
-`AllPrimesSoFarList.scala`.
-
-### Verified: pointwise exclusion from a prime-free interval
-
-`noPrimesBetweenExcludesValue(from, to, value)` proves that if
-`noPrimesBetween(from, to)` holds and `value` is inside the half-open interval
-`[from, to)`, then `value` is not prime.
-
-This is the small induction Stainless needs when a later proof knows a
-candidate value is inside a gap between two adjacent stored primes.
-
-Validation:
-- `just verify`
-- Result: `5815 valid`, `0 invalid`, `0 unknown`
-
-### Verified: complete prefix gives membership
-
-`primeAtOrBelowHeadIsContained(value, list)` proves that if
-`allPrimesSoFar(list)` holds, then every prime value at or below the current
-head is already contained in the descending prime list.
-
-This is the caller-facing version of the recursive `allPrimesSoFar` invariant:
-the head is prime, the tail is complete, and there are no missing primes in the
-gap between the tail head and the current head.
-
-Validation:
-- `just verify`
-- Result: `5815 valid`, `0 invalid`, `0 unknown`
-
-### Attempted and backed out: prime-not-contained implies above head
-
-We tried the direct bridge:
-
-```scala
-primeNotContainedIsAboveHead(value, list)
-```
-
-Intended result: if `value` is prime and is not contained in a complete
-`AllPrimesSoFarList`, then `value > list.head.value`.
-
-The mathematical shape is right, but the standalone lemma timed out on its
-postcondition:
-
-```scala
-value > list.head.value
-```
-
-Observed result:
-- `5826 valid`, `0 invalid`, `1 unknown`
-- Timed out at roughly 140 seconds
-
-The lemma was removed to restore green. The likely next move is to avoid this
-as a broad standalone bridge for now and instead prove the exact fact needed by
-the future `nextPrime` construction at the call site, or expose a smaller
-Euclid-result lemma from `PrimeProperties` that connects the constructed prime
-to non-membership in the current list.
-
-### Verified: bounded prime search carries skipped-prime range
-
-`searchNextPrimeUpTo(current, upper)` is now a verified bounded loop that moves
-only the natural-number counter. The prime list is not consumed or reduced by
-the loop. The caller supplies `upper: Prime` as the finite witness, and the loop
-checks:
-
-```scala
-if (Prime.isPrime(current)) result
-else searchNextPrimeUpTo(current + 1, upper)
-```
-
-Its postcondition proves:
-
-```scala
-res.value >= current
-res.value <= upper.value
-Prime.isPrime(res.value)
-noPrimesBetween(current, res.value)
-```
-
-This is the direct loop invariant we wanted: every counter value before the
-result was tested and shown not to be prime, so the loop did not let any prime
-pass.
-
-Validation:
-- `just verify`
-- Result: `5843 valid`, `0 invalid`, `0 unknown`
-
----
-
-## Phase 3: Expose Euclid Non-membership Lemma
-
-**Date:** 2026-06-19
-**Status:** Completed. `nextPrime` verified at 5898 valid.
-
-### Gap Analysis
-
-`searchNextPrimeUpTo` is verified with postcondition:
-- `res.value >= current` and `res.value <= upper.value`
-- `Prime.isPrime(res.value)`
-- `noPrimesBetween(current, res.value)`
-
-This gives us everything needed for `AllPrimesSoFarList.allPrimesSoFar(newSortedList)`:
-- `res.value > head.value` (if called with `current = head.value + 1`)
-- `Prime.isPrime(res.value)`
-- `noPrimesBetween(head.value + 1, res.value)`
-
-The remaining blocker: `searchNextPrimeUpTo(head.value + 1, upperPrime)` requires `head.value + 1 <= upperPrime.value`. We need to prove `upperPrime.value > head.value`.
-
-The current `upperPrime = PrimeProperties.newPrimeFromEuclid(list.list)` returns a `Prime` but does not expose `upperPrime.value > head.value`.
-
-### Plan (completed)
-
-1. **`newPrimeNotInList`** in `PrimeProperties` — `.holds` lemma proving `valueNotMatchesAny(primes, newPrimeFromEuclid(primes).value)`. [Verified: 5848]
-2. **`notContainsFromValueNotMatchesAny`** in `PrimeProperties` — bridge lemma connecting `valueNotMatchesAny` to `!AllPrimesSoFarList.contains` on `SortedPrimeList`, using structural induction. [Verified: 5876]
-3. **`euclidPrimeGreaterThanHead`** in `PrimeProperties` — combined lemma: `d > sortedList.head.value` where `d` is the Euclid prime, proved by contradiction with `primeAtOrBelowHeadIsContained`. [Verified: 5876]
-4. **`nextPrime`** on `AllPrimesSoFarList` — assembles the full chain:
-   - `primorialPlusOneModAny(list.list)` for Euclid precond
-   - `newPrimeFromEuclid(list.list)` to get the finite upper witness
-   - `newPrimeNotInList` + `notContainsFromValueNotMatchesAny` + `primeAtOrBelowHeadIsContained` to prove `upperPrime.value > head.value`
-   - `searchNextPrimeUpTo(head.value + 1, upperPrime)` for the bounded linear scan
-   - Postcondition: `res.value > head.value`, `Prime.isPrime(res.value)`, `noPrimesBetween(head.value + 1, res.value)`
-   [Verified: 5898]
-
-### Remaining: Phase 4 — Build `AllPrimesSoFarList.next`
-
-With `nextPrime` verified, the next `AllPrimesSoFarList` can be constructed:
-
-```scala
-val newPrime = nextPrime()
-val newSortedList = SortedPrimeList(newPrime :: list.list)
-AllPrimesSoFarList(newSortedList)
-```
-
-Requires:
-- `SortedPrimeList.isDescending(newPrime :: list.list)` — needs `newPrime.value > head.value` ✓ (from `nextPrime` postcondition)
-- `AllPrimesSoFarList.allPrimesSoFar(newSortedList)` — needs `Prime.isPrime(newPrime.value)` ✓ and `noPrimesBetween(head.value + 1, newPrime.value)` ✓
-
-### Result: `AllPrimesSoFarList.next` verified (2026-06-19)
-
-**Status**: Verified at 5980 valid.
-
-`AllPrimesSoFarList.next` was added to the class:
-- Delegates `nextPrime` to companion object (avoids `.ensuring` type inference issue on class methods)
-- Constructs `SortedPrimeList(newPrime :: list.list)` — `isDescending` proven from `nextPrime`'s postcondition
-- Constructs `AllPrimesSoFarList(newSortedList)` — `allPrimesSoFar` proven from `nextPrime`'s postcondition
-
-### Remaining: Phase 5 — Build `SieveSequenceV0.next`
-
-Requires V0 constructor invariants:
-- `isCoprime(newPrime.value, filterValues.tail)` — `newPrime` is prime > head, so it's coprime with all smaller primes. **Lemma exists**: `PrimeUtils.primeIsCoprimeWithSmallerList` is verified but type-inference issue blocks calling it from SieveSequenceV0 context.
-- `mod(product(tail), newPrime.value) != 0` — Euclid's lemma for lists (new prime doesn't divide product of smaller primes)
+- The "prime in (p, p²)" deep number theory result — `searchNextPrimeUpTo`'s bounded scan proves `noPrimesBetween(head+1, res)` without it.
+- `mod(product(tail), newPrime) != 0` — the V0 constructor doesn't check this. (V2's cycle-based construction may need it separately.)
+- `Prime(newPrimeValue)` wrapper call — the whole chain works with `Prime` objects directly; no raw value needs wrapping at the call site.

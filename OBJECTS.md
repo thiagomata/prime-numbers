@@ -854,10 +854,10 @@ apply(k) = integral(k-1) for k >= 1
 | **primes**   | `List[BigInt]`                                  | All > 0                     |
 | **gapCycle** | `GapCycle`                                      | Carries allGreaterThan      |
 | **integral** | `CycleIntegral(primes.head, gapCycle.memCycle)` | Key: uses gapCycle.memCycle |
-| **apply(k)** | `head` if k=0, else `integral(k-1)`
+| **apply(k)**     | `head` if k=0, else `integral(k-1)`
 | **head**     | `primes.head`                                   | Prime > 0                   |
 | **modulus**  | `product(primes.tail)`
-| **next**     | `@extern`                                       | Computes next sequence      |
+| **next**     | Builds next V0 stage with `primes.next`         | Returns SieveSequenceV0     |
 
 **Critical Chain**:
 
