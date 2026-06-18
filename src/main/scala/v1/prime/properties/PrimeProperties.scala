@@ -4,7 +4,7 @@ import stainless.collection.List
 import stainless.lang.{BigInt, decreases}
 import v1.Calc
 import v1.list.ListUtils
-import v1.prime.{Prime, PrimeUtils}
+import v1.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 import v1.seq.sieve.SieveUtils
 import stainless.lang.BooleanDecorations
 import v1.div.properties.AdditionAndMultiplication.ATimesBSameMod
@@ -316,6 +316,97 @@ object PrimeProperties {
       Prime(d)
     }
   }
+
+  /**
+   * Lemma: the Euclid-constructed prime value is not present in the input list.
+   *
+   * `newPrimeFromEuclid(primes)` returns a prime that is NOT in `primes`.
+   * This lemma makes that non-membership fact available as a cached `.holds`
+   * result, so callers can use it as the missing link in the `nextPrime`
+   * construction: they know the upper bound candidate does not collide with
+   * any already-stored prime.
+   *
+   * For the full proof chain, combine with `primeAtOrBelowHeadIsContained`
+   * from `AllPrimesSoFarList` to derive `upperPrime.value > head.value`.
+   */
+  def newPrimeNotInList(primes: List[Prime]): Boolean = {
+    require(primes.nonEmpty)
+    require(primorialPlusOneModAny(primes))
+
+    PrimeUtils.primorialPositive(primes)
+    val p = newPrimeFromEuclid(primes)
+    euclidTheorem(primes)
+
+    // Re-derive d to link euclidTheorem's internal d with p.value.
+    // Both newPrimeFromEuclid and euclidTheorem compute d via
+    // findSmallestDivisor(n, 2) where n = primorial + 1, so
+    // p.value == d and euclidTheorem proves valueNotMatchesAny(primes, d)
+    // which is the same as valueNotMatchesAny(primes, p.value).
+    val n = PrimeUtils.primorial(primes) + 1
+    val d = findSmallestDivisor(n, 2)
+
+    valueNotMatchesAny(primes, p.value)
+  }.holds
+
+  /**
+   * Bridge: `valueNotMatchesAny` (on `List[Prime]`) implies `!contains` (on `SortedPrimeList`).
+   *
+   * Since both predicates recurse through the same sequence of prime values in the
+   * same order, this lemma proves the equivalence by structural induction.
+   * The base case (empty list) is straightforward. In the recursive case,
+   * `valueNotMatchesAny` gives `head.value != d`, so `contains` cannot stop at the
+   * head and must recurse to the tail, where the induction hypothesis applies.
+   */
+  def notContainsFromValueNotMatchesAny(
+    primes: List[Prime],
+    sortedList: SortedPrimeList,
+    d: BigInt
+  ): Boolean = {
+    require(sortedList.list == primes)
+    require(valueNotMatchesAny(primes, d))
+    decreases(primes.size)
+
+    if (primes.isEmpty) {
+      !AllPrimesSoFarList.contains(d, sortedList)
+    } else {
+      assert(primes.head.value != d)
+      assert(notContainsFromValueNotMatchesAny(primes.tail, sortedList.tail, d))
+      assert(!AllPrimesSoFarList.contains(d, sortedList.tail))
+      !AllPrimesSoFarList.contains(d, sortedList)
+    }
+  }.holds
+
+  /**
+   * Lemma: the Euclid-constructed prime is strictly greater than the list head.
+   *
+   * `newPrimeFromEuclid(primes)` returns a prime value `d` that is NOT contained
+   * in `primes` (proved by `newPrimeNotInList` and the bridge lemma). Meanwhile,
+   * `primeAtOrBelowHeadIsContained` says that any prime at or below `head.value`
+   * IS contained in a complete `allPrimesSoFar` list. By contradiction, `d` must
+   * be above `head.value`.
+   *
+   * This is the critical inequality that makes `searchNextPrimeUpTo` callable
+   * with `current = head.value + 1` and `upper = newPrimeFromEuclid(...)`.
+   */
+  def euclidPrimeGreaterThanHead(sortedList: SortedPrimeList): Boolean = {
+    require(sortedList.nonEmpty)
+    require(AllPrimesSoFarList.allPrimesSoFar(sortedList))
+
+    val primes = sortedList.list
+    val upperPrime = newPrimeFromEuclid(primes)
+    val d = upperPrime.value
+
+    newPrimeNotInList(primes)
+    assert(notContainsFromValueNotMatchesAny(primes, sortedList, d))
+
+    if (d <= sortedList.head.value) {
+      // By the complete-prefix invariant, any prime at or below head
+      // must already be contained — contradicting the Euclid non-membership.
+      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(d, sortedList)
+    }
+
+    d > sortedList.head.value
+  }.holds
 
   /**
    * Helper predicate to express that a value does not match any prime value in the list.
