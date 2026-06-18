@@ -67,4 +67,8 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
 
     newList.equals(expectedList) should be(true)
   }
+
+  // Draft expectation for the paused nextPrime work:
+  // [5, 3, 2].nextPrime should return 7, not 5. The method is commented out
+  // while we add the projection lemmas needed for Stainless verification.
 }
