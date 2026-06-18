@@ -68,7 +68,33 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
     newList.equals(expectedList) should be(true)
   }
 
-  // Draft expectation for the paused nextPrime work:
-  // [5, 3, 2].nextPrime should return 7, not 5. The method is commented out
-  // while we add the projection lemmas needed for Stainless verification.
+  "nextPrime" should "return the next prime after head for [5, 3, 2]" in {
+    val list = AllPrimesSoFarList(
+      SortedPrimeList(List(Prime(5), Prime(3), Prime(2)))
+    )
+    list.nextPrime.value should be(7)
+  }
+
+  "nextPrime" should "return the next prime after head for [7, 5, 3, 2]" in {
+    val list = AllPrimesSoFarList(
+      SortedPrimeList(List(Prime(7), Prime(5), Prime(3), Prime(2)))
+    )
+    list.nextPrime.value should be(11)
+  }
+
+  "nextPrime" should "return a prime greater than head for [3, 2]" in {
+    val list = AllPrimesSoFarList(
+      SortedPrimeList(List(Prime(3), Prime(2)))
+    )
+    val p = list.nextPrime
+    (p.value > 3) should be(true)
+    Prime.isPrime(p.value) should be(true)
+  }
+
+  "nextPrime" should "return 3 for [2]" in {
+    val list = AllPrimesSoFarList(
+      SortedPrimeList(List(Prime(2)))
+    )
+    list.nextPrime.value should be(3)
+  }
 }
