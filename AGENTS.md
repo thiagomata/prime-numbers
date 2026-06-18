@@ -10,9 +10,15 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
 
 <commands>
   <verify>just verify</verify>
+  <verify-log>grep "total:" verify.log</verify-log>
   <fast-compile>sbt 'set stainlessEnabled := false' compile</fast-compile>
-  <tests>sbt 'set stainlessEnabled := false' 'testOnly v1.seq.sieve.*'</tests>
+  <tests>just test</tests>
 </commands>
+
+`just verify` writes its output to `verify.log` in the project root (and `verify-error.log` for errors).
+To check the latest result WITHOUT re-running, use `<verify-log />` to read the log.
+Do NOT run `just verify` twice in a row — check `verify.log` first.
+Only re-run `just verify` after making a code change.
 
 <rules>
   <rule id="green-to-green" priority="critical">
@@ -171,7 +177,7 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
 <checklist-before>
   Before EVERY tool call, answer silently:
   <item>Is this exactly ONE small change? (If no → split it)</item>
-  <item>Did `just verify` pass on the current state? (If not → fix first)</item>
+  <item>Did `just verify` pass on the current state? (Check verify.log via <verify-log />, do NOT re-run)</item>
   <item>Am I about to run a denied command (git checkout, rm, --force)?</item>
   <item>Have I tried this same assertion 3+ times? (If yes → STOP and ASK)</item>
   <item>Am I plan mode or build mode? (Plan = no edits allowed)</item>
@@ -182,10 +188,13 @@ next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
 <checklist-after>
   After EVERY tool call, answer silently:
   <item>Did it succeed? (If error → read the error, do NOT retry blindly)</item>
-  <item>Did `just verify` pass? (If timeout → that IS a failure)</item>
+  <item>Did `just verify` pass? (Check verify.log via <verify-log />, do NOT re-run)</item>
   <item>Is the total valid count the same or higher than before?</item>
   <item>If the verify timed out → STOP. Do NOT try a different approach.</item>
   <item>If stuck for 3+ attempts → STOP and ASK FOR HELP.</item>
   <item>Is execution still on track with the original plan? (If not → STOP and ASK)</item>
   <item>If this was part of a ticket → update the ticket (progress, lessons, assumptions)</item>
+  <item>Did I update OBJECTS.md with new lemmas, methods, or objects?</item>
+  <item>Did I update the ticket with the conclusion (outcome, lessons, what's next)?</item>
+  <item>Are there articles in `articles/` that should be updated? If so, list them and ask the user.</item>
 </checklist-after>

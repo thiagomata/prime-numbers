@@ -918,6 +918,12 @@ Prime number type with primality verification at construction.
 | **isPrime(n)**    | `n > 1 && noDivisorInRange(n, 2, n)`  | Companion object method   |
 | **noDivisorInRange** | Checks `[from, to)` for divisors   | `@tailrec`, requires `n >= 0` |
 
+### Lemmas
+
+| Lemma | Statement | Preconditions |
+|-------|-----------|---------------|
+| **noDivisorInRangeExcludesValue** | From `noDivisorInRange(n, from, to)` and `value ∈ [from, to)` derives `mod(n, value) != 0` | `n >= 0`, `from >= 1`, `to >= from`, `value >= from`, `value < to` |
+
 **Invariant**: `Prime.isPrime(inputValue)` holds at construction.
 
 **Source**: `src/main/scala/v1/prime/Prime.scala`
@@ -939,6 +945,7 @@ Utility functions over lists of primes.
 |--------------------------|----------------------------------------------------|---------------|
 | **primorialUnfold**      | `primorial(p :: ps) == p.value * primorial(ps)`     | —             |
 | **primorialPositive**    | `primorial(primes) > 0`                            | —             |
+| **primeIsCoprimeWithSmallerList** | `isPrime(v) ∧ descending(primes) ∧ head.value < v` ⇒ `isCoprime(v, primeValues(primes))` | `v > 1`, `primes.nonEmpty`, `isDescending(primes)`, `head.value < v` |
 
 **Source**: `src/main/scala/v1/prime/PrimeUtils.scala`
 
@@ -954,6 +961,9 @@ there exists a prime not in that list.
 | **primorialPlusOneModAny**   | `mod(primorial(primes) + 1, p) != 0` for every p in primes | —       |
 | **newPrimeFromEuclid**      | Constructs a new `Prime` not in `primes`   | `primes.nonEmpty` |
 | **euclidTheorem**           | Returns `true` (there exists a new prime)  | `primes.nonEmpty` |
+| **newPrimeNotInList**       | `valueNotMatchesAny(primes, p.value)` for the Euclid result `p` | `primes.nonEmpty` |
+| **notContainsFromValueNotMatchesAny** | `valueNotMatchesAny(primes, d)` ⇒ `!contains(d, sortedList)` | `sortedList.list == primes` |
+| **euclidPrimeGreaterThanHead** | Euclid prime `d > sortedList.head.value` for complete prefix | `sortedList.nonEmpty`, `allPrimesSoFar(sortedList)` |
 | **assertHeadIsPrime**       | Every `head` of a sieve sequence is prime  | `head > 1`, `isCoprime`, `checkAllPositive`, `assertAllNotCoprimeInRange` |
 
 ### Internal Lemmas
@@ -1010,6 +1020,76 @@ connect a value `p` to the range `[2, q)` in `noDivisorInRange(q, 2, q)`, so we 
 explicitly by induction on `to - from`.
 
 **Source**: `src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala`
+
+---
+
+## 6.5 SortedPrimeList (`v1.prime.SortedPrimeList`)
+
+Descending sorted list of `Prime` values (strictly descending: each element > next).
+
+### Public API
+
+| Field/Method      | Definition                            | Notes                     |
+|-------------------|---------------------------------------|---------------------------|
+| **list**          | `List[Prime]`                         | Underlying list           |
+| **isEmpty**       | `list.isEmpty`                        |                           |
+| **nonEmpty**      | `list.nonEmpty`                       |                           |
+| **size**          | `list.size`                           |                           |
+| **head**          | `list.head`                           | Requires non-empty        |
+| **last**          | `list.last`                           | Requires non-empty        |
+| **apply(i)**      | `list(i)`                             | Valid index               |
+| **insert(x)**     | Insert preserving descending order    | Returns new SortedPrimeList |
+| **remove(i)**     | Remove at index preserving order      | Valid index               |
+| **tail**          | `SortedPrimeList(list.tail)`          | Requires non-empty        |
+
+### Companion Object Lemmas
+
+| Lemma                              | Statement                                      | Preconditions |
+|------------------------------------|------------------------------------------------|---------------|
+| **isDescending(list)**             | Strictly descending check                      | —             |
+| **assertSortFilteredDescending**   | `isDescending(sortFiltered(list))`             | —             |
+| **assertInsertSortedDescending**   | `isDescending(list)` ⇒ `isDescending(insertSorted(x, list))` | — |
+| **assertTailDescending**           | `isDescending(list)` ∧ `nonEmpty` ⇒ `isDescending(list.tail)` | — |
+| **assertRemoveKeepsDescending**    | `isDescending(list)` ⇒ `isDescending(removeAt(list, i))` | Valid index |
+
+**Invariant**: `SortedPrimeList.isDescending(list)` holds at construction.
+
+**Source**: `src/main/scala/v1/prime/SortedPrimeList.scala`
+
+---
+
+## 6.6 AllPrimesSoFarList (`v1.prime.AllPrimesSoFarList`)
+
+Stores a complete prefix of discovered primes in descending order. The `allPrimesSoFar` invariant guarantees that every prime value at or below the head is contained in the list.
+
+### Class API
+
+| Field/Method      | Definition                            | Notes                     |
+|-------------------|---------------------------------------|---------------------------|
+| **list**          | `SortedPrimeList`                     | Underlying descending list |
+| **isEmpty**       | `list.isEmpty`                        |                           |
+| **size**          | `list.size`                           |                           |
+| **head**          | `list.head`                           | Requires non-empty        |
+| **last**          | `list.last`                           | Requires non-empty        |
+| **apply(i)**      | `list(i)`                             | Valid index               |
+| **insert(p)**     | Insert if `allPrimesSoFar(list.insert(p))` | Returns new AllPrimesSoFarList |
+| **tail**          | `AllPrimesSoFarList(list.tail)`       | Requires non-empty        |
+| **nextPrime**     | Bounded linear search for next prime  | Requires non-empty        |
+| **next**          | Returns new `AllPrimesSoFarList` with next prime prepended | Requires non-empty |
+
+### Companion Object API
+
+| Function                                | Statement                                   | Preconditions |
+|-----------------------------------------|---------------------------------------------|---------------|
+| **allPrimesSoFar(list)**                | Complete-prefix invariant check             | —             |
+| **noPrimesBetween(from, to)**           | `∀ n ∈ [from, to): ¬isPrime(n)`             | `from >= 0`, `to >= from` |
+| **noPrimesBetweenExcludesValue**        | `noPrimesBetween(from, to) ∧ value ∈ [from, to)` ⇒ `¬isPrime(value)` | Same + `value >= from`, `value < to` |
+| **primeAtOrBelowHeadIsContained**       | `allPrimesSoFar(list) ∧ isPrime(v) ∧ v ≤ head.value` ⇒ `contains(v, list)` | `nonEmpty`, `v >= 0` |
+| **searchNextPrimeUpTo(current, upper)** | First prime in `[current, upper.value]`, carries `noPrimesBetween(current, result.value)` | `current >= 0`, `current ≤ upper.value` |
+
+**Invariant**: `AllPrimesSoFarList.allPrimesSoFar(list)` holds at construction.
+
+**Source**: `src/main/scala/v1/prime/AllPrimesSoFarList.scala`
 
 ---
 

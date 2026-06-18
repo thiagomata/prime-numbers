@@ -16,24 +16,18 @@ case class AllPrimesSoFarList(list: SortedPrimeList) {
 
   def nextPrime: Prime = {
     require(list.nonEmpty)
+    AllPrimesSoFarList.nextPrime(list)
+  }
 
-    PrimeProperties.primorialPlusOneModAny(list.list)
-    val upperPrime = PrimeProperties.newPrimeFromEuclid(list.list)
+  def next: AllPrimesSoFarList = {
+    require(list.nonEmpty)
 
-    // Prove: upperPrime.value > head.value
-    PrimeProperties.newPrimeNotInList(list.list)
-    assert(PrimeProperties.notContainsFromValueNotMatchesAny(list.list, list, upperPrime.value))
+    val newPrime = AllPrimesSoFarList.nextPrime(list)
 
-    if (upperPrime.value <= head.value) {
-      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(upperPrime.value, list)
-    }
+    val newSortedList = SortedPrimeList(newPrime :: list.list)
 
-    AllPrimesSoFarList.searchNextPrimeUpTo(head.value + BigInt(1), upperPrime)
-  }.ensuring(res =>
-    res.value > head.value &&
-      Prime.isPrime(res.value) &&
-      AllPrimesSoFarList.noPrimesBetween(head.value + BigInt(1), res.value)
-  )
+    AllPrimesSoFarList(newSortedList)
+  }
 
   def last: Prime = { require(list.nonEmpty); list.last }
   def apply(index: BigInt): Prime = { require(index >= 0 && index < list.size); list(index) }
@@ -137,6 +131,28 @@ object AllPrimesSoFarList {
    * facts into the range fact needed by the future `nextPrime` constructor:
    * no prime exists in the half-open interval `[current, result)`.
    */
+  def nextPrime(list: SortedPrimeList): Prime = {
+    require(list.nonEmpty)
+    require(allPrimesSoFar(list))
+
+    PrimeProperties.primorialPlusOneModAny(list.list)
+    val upperPrime = PrimeProperties.newPrimeFromEuclid(list.list)
+
+    // Prove: upperPrime.value > list.head.value
+    PrimeProperties.newPrimeNotInList(list.list)
+    assert(PrimeProperties.notContainsFromValueNotMatchesAny(list.list, list, upperPrime.value))
+
+    if (upperPrime.value <= list.head.value) {
+      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(upperPrime.value, list)
+    }
+
+    AllPrimesSoFarList.searchNextPrimeUpTo(list.head.value + BigInt(1), upperPrime)
+  }.ensuring(res =>
+    res.value > list.head.value &&
+      Prime.isPrime(res.value) &&
+      AllPrimesSoFarList.noPrimesBetween(list.head.value + BigInt(1), res.value)
+  )
+
   def searchNextPrimeUpTo(current: BigInt, upper: Prime): Prime = {
     require(current >= 0)
     require(current <= upper.value)

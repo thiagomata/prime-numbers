@@ -268,8 +268,17 @@ Requires:
 - `SortedPrimeList.isDescending(newPrime :: list.list)` — needs `newPrime.value > head.value` ✓ (from `nextPrime` postcondition)
 - `AllPrimesSoFarList.allPrimesSoFar(newSortedList)` — needs `Prime.isPrime(newPrime.value)` ✓ and `noPrimesBetween(head.value + 1, newPrime.value)` ✓
 
+### Result: `AllPrimesSoFarList.next` verified (2026-06-19)
+
+**Status**: Verified at 5980 valid.
+
+`AllPrimesSoFarList.next` was added to the class:
+- Delegates `nextPrime` to companion object (avoids `.ensuring` type inference issue on class methods)
+- Constructs `SortedPrimeList(newPrime :: list.list)` — `isDescending` proven from `nextPrime`'s postcondition
+- Constructs `AllPrimesSoFarList(newSortedList)` — `allPrimesSoFar` proven from `nextPrime`'s postcondition
+
 ### Remaining: Phase 5 — Build `SieveSequenceV0.next`
 
 Requires V0 constructor invariants:
-- `isCoprime(newPrime.value, filterValues.tail)` — `newPrime` is prime > head, so it's coprime with all smaller primes
+- `isCoprime(newPrime.value, filterValues.tail)` — `newPrime` is prime > head, so it's coprime with all smaller primes. **Lemma exists**: `PrimeUtils.primeIsCoprimeWithSmallerList` is verified but type-inference issue blocks calling it from SieveSequenceV0 context.
 - `mod(product(tail), newPrime.value) != 0` — Euclid's lemma for lists (new prime doesn't divide product of smaller primes)
