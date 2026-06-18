@@ -516,6 +516,22 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     assert(apply(BigInt(0)) <= value)
     findIndexForAcceptedFrom(value, BigInt(0))
   }.ensuring(res => res >= BigInt(0) && apply(res) == value)
+
+//  def next: SieveSequenceV0 = {
+//    val newPrime: Prime = primes.nextPrime()
+//
+//    val newSortedList = SortedPrimeList(newPrime :: primes.list.list)
+//
+//    val newPrimesList = AllPrimesSoFarList(newSortedList)
+//
+//    val oldTail = primes.list.tail.list
+//    assert(primes.head.value > oldTail.head.value)
+//    assert(newPrime.value > oldTail.head.value)
+//    SortedPrimeList.assertTailDescending(primes.list.list)
+//    assert(PrimeUtils.primeIsCoprimeWithSmallerList(newPrime.value, oldTail))
+//
+//    SieveSequenceV0(newPrimesList)
+//  }
 //
 //  val head: Prime = PrimeUtils.biggerPrime(primes)
 //

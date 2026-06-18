@@ -27,6 +27,24 @@ object Prime {
     }
   }
 
+  def noDivisorInRangeExcludesValue(n: BigInt, from: BigInt, to: BigInt, value: BigInt): Boolean = {
+    require(n >= 0)
+    require(from >= 1)
+    require(to >= from)
+    require(noDivisorInRange(n, from, to))
+    require(value >= from)
+    require(value < to)
+    decreases(value - from)
+
+    if (value == from) {
+      Calc.mod(n, from) != BigInt(0)
+    } else {
+      assert(noDivisorInRange(n, from + 1, to))
+      noDivisorInRangeExcludesValue(n, from + 1, to, value)
+      Calc.mod(n, value) != BigInt(0)
+    }
+  }.holds
+
   def isPrime(value: BigInt): Boolean = {
     require(value >= 0)
     if (value <= 1) {

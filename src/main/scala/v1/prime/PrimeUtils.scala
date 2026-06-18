@@ -5,7 +5,10 @@ import stainless.lang.{BigInt, decreases}
 import v1.Calc
 import stainless.lang.BooleanDecorations
 import v1.list.ListBoundUtils
+import v1.list.ListUtils
 import v1.list.properties.ListProduct
+import v1.seq.sieve.SieveUtils
+import v1.prime.SortedPrimeList
 
 import scala.annotation.tailrec
 
@@ -172,6 +175,35 @@ object PrimeUtils {
    * @param primes List[Prime] any list of primes
    * @return List[BigInt] the values, in the same order
    */
+  def primeIsCoprimeWithSmallerList(v: BigInt, primes: List[Prime]): Boolean = {
+    require(v > 1)
+    require(Prime.isPrime(v))
+    require(primes.nonEmpty)
+    require(SortedPrimeList.isDescending(primes))
+    require(primes.head.value < v)
+    decreases(primes.size)
+
+    if (primes.tail.isEmpty) {
+      assert(primes.head.value >= 2)
+      assert(primes.head.value < v)
+      assert(Prime.noDivisorInRangeExcludesValue(v, 2, v, primes.head.value))
+      assert(Calc.mod(v, primes.head.value) != BigInt(0))
+      assert(ListUtils.checkAllPositive(primeValues(primes)))
+      SieveUtils.isCoprime(v, primeValues(primes))
+    } else {
+      assert(primes.head.value >= 2)
+      assert(primes.head.value < v)
+      assert(Prime.noDivisorInRangeExcludesValue(v, 2, v, primes.head.value))
+      assert(Calc.mod(v, primes.head.value) != BigInt(0))
+      assert(SortedPrimeList.isDescending(primes.tail))
+      assert(primes.head.value > primes.tail.head.value)
+      assert(primes.tail.head.value < v)
+      assert(primeIsCoprimeWithSmallerList(v, primes.tail))
+      assert(ListUtils.checkAllPositive(primeValues(primes)))
+      SieveUtils.isCoprime(v, primeValues(primes))
+    }
+  }.holds
+
   def primeValues(primes: List[Prime]): List[BigInt] = {
     decreases(primes.size)
     if (primes.isEmpty) List()
