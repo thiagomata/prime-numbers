@@ -4,6 +4,9 @@ import stainless.annotation.extern
 import stainless.collection.List
 import stainless.lang.*
 import v1.Calc
+import v1.div.properties.ModIdempotence
+import v1.div.properties.ModOperations
+import v1.list.ListBoundUtils
 import v1.list.ListUtils
 import v1.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
@@ -515,6 +518,98 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     assert(apply(BigInt(0)) <= value)
     findIndexForAcceptedFrom(value, BigInt(0))
   }.ensuring(res => res >= BigInt(0) && apply(res) == value)
+
+  /**
+   * Proves that the residue of apply(k) modulo filterModulus is coprime
+   * with all filter primes. This establishes the fundamental connection
+   * between V0's linear-scan generator and the residue cycle: every
+   * generated value, when reduced modulo the filter modulus, lands on
+   * a residue that survives all filter primes.
+   *
+   * For each filter prime p:
+   *   1. accepts(apply(k)) gives Calc.mod(apply(k), p) != 0
+   *   2. Since filterModulus = product(filterValues), each p divides it.
+   *      Uses the prefix-product decomposition from expandedCoprimePreservesFilter
+   *      to prove Calc.mod(filterModulus, p) == 0 at each step.
+   *   3. assertMultiplePreservesDivisible gives Calc.mod(q * filterModulus, p) == 0
+   *   4. modZeroPlusC gives Calc.mod(q*filterModulus + r, p) == Calc.mod(r, p)
+   *      (when mod(q*filterModulus, p) == 0, which follows from step 2)
+   *   5. From (1) and (4): Calc.mod(r, p) != 0
+   * Therefore isCoprime(r, filterValues).
+   */
+  def assertApplyModIsCoprime(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val value = apply(k)
+    val r = Calc.mod(value, filterModulus)
+    val q = Calc.div(value, filterModulus)
+
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+
+    assertModIsCoprimeForAll(value, r, q, filterModulus, filterValues, BigInt(1))
+  }.holds
+
+  /**
+   * Recursive helper for assertApplyModIsCoprime.
+   *
+   * Proves isCoprime(r, values) given isCoprime(value, values)
+   * and modulus = prefixProd * product(values).
+   *
+   * The prefix-product decomposition (modelled after expandedCoprimePreservesFilter)
+   * lets us prove Calc.mod(modulus, p) == 0 at each step without requiring
+   * the full product to be passed: modulus = prefixProd * p * product(values.tail),
+   * so modulus is divisible by p.
+   */
+  private def assertModIsCoprimeForAll(
+    value: BigInt,
+    r: BigInt,
+    q: BigInt,
+    modulus: BigInt,
+    values: List[BigInt],
+    prefixProd: BigInt
+  ): Boolean = {
+    require(ListUtils.checkAllPositive(values))
+    require(SieveUtils.isCoprime(value, values))
+    require(q >= BigInt(0))
+    require(modulus > BigInt(0))
+    require(prefixProd > BigInt(0))
+    require(modulus == prefixProd * SieveUtils.product(values))
+    require(Calc.mod(value, modulus) == r)
+    require(Calc.div(value, modulus) == q)
+    decreases(values.size)
+
+    if (values.isEmpty) {
+      SieveUtils.isCoprime(r, values)
+    } else {
+      val p = values.head
+      val tailProd = SieveUtils.product(values.tail)
+
+      assert(SieveUtils.assertProductNonNegative(values.tail))
+      assert(tailProd >= BigInt(0))
+      assert(prefixProd * tailProd >= BigInt(0))
+      assert(SieveUtils.assertMultipleModZero(prefixProd * tailProd, p))
+      assert(Calc.mod(modulus, p) == BigInt(0))
+
+      assert(SieveUtils.assertIsCoprimeSound(value, values))
+      assert(Calc.mod(value, p) != BigInt(0))
+
+      assert(SieveUtils.assertMultiplePreservesDivisible(q, modulus, p))
+      assert(Calc.mod(q * modulus, p) == BigInt(0))
+
+      assert(value == q * modulus + r)
+      ModOperations.modZeroPlusC(q * modulus, p, r)
+      assert(Calc.mod(value, p) == Calc.mod(r, p))
+
+      assert(Calc.mod(r, p) != BigInt(0))
+
+      val newPrefix = prefixProd * p
+      assert(SieveUtils.product(values) == p * tailProd)
+      assert(modulus == newPrefix * tailProd)
+      assert(assertModIsCoprimeForAll(value, r, q, modulus, values.tail, newPrefix))
+      SieveUtils.isCoprime(r, values)
+    }
+  }.holds
 
   def next: SieveSequenceV0 = {
     val newPrimes = primes.next

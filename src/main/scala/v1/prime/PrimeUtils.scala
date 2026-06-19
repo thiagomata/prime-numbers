@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.{BigInt, decreases}
 import v1.Calc
 import stainless.lang.BooleanDecorations
+import v1.div.properties.{AdditionAndMultiplication, ModSmallDividend}
 import v1.list.ListBoundUtils
 import v1.list.ListUtils
 import v1.list.properties.ListProduct
