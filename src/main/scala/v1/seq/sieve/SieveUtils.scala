@@ -720,6 +720,69 @@ object SieveUtils {
     true
   }.holds
 
+  /**
+   * Proves that generateResidues(i, modulus, primes) contains v
+   * when i <= v < modulus and isCoprime(v, primes).
+   *
+   * This establishes the completeness of the residues list:
+   * every coprime value in [0, modulus) appears in the list.
+   */
+  def assertGenerateResiduesContainsCoprime(
+    v: BigInt,
+    i: BigInt,
+    modulus: BigInt,
+    primes: List[BigInt]
+  ): Boolean = {
+    require(i >= 0)
+    require(i <= modulus)
+    require(v >= i)
+    require(v < modulus)
+    require(modulus > 0)
+    require(ListUtils.checkAllPositive(primes))
+    require(isCoprime(v, primes))
+    decreases(modulus - i)
+
+    if (i == modulus) {
+      false
+    } else if (i == v) {
+      generateResidues(i, modulus, primes).contains(i)
+    } else {
+      assert(assertGenerateResiduesContainsCoprime(v, i + 1, modulus, primes))
+      generateResidues(i, modulus, primes).contains(v)
+    }
+  }.holds
+
+  /**
+   * Top-level residues completeness lemma.
+   * Proves that residues(modulus, primes) contains every coprime value
+   * in [0, modulus).
+   */
+  def assertResiduesComplete(modulus: BigInt, primes: List[BigInt]): Boolean = {
+    require(modulus > 0)
+    require(ListUtils.checkAllPositive(primes))
+    assertResiduesCompleteRec(BigInt(0), modulus, primes)
+  }.holds
+
+  def assertResiduesCompleteRec(
+    i: BigInt,
+    modulus: BigInt,
+    primes: List[BigInt]
+  ): Boolean = {
+    require(i >= 0)
+    require(i <= modulus)
+    require(modulus > 0)
+    require(ListUtils.checkAllPositive(primes))
+    decreases(modulus - i)
+
+    if (i == modulus) true
+    else {
+      if (isCoprime(i, primes)) {
+        assert(assertGenerateResiduesContainsCoprime(i, BigInt(0), modulus, primes))
+      }
+      assertResiduesCompleteRec(i + 1, modulus, primes)
+    }
+  }.holds
+
   def assertNoDivisorInRangeHelper(
     n: BigInt,
     primes: List[BigInt],
