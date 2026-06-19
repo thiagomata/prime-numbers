@@ -6,6 +6,10 @@ Pipeline: nextResidues → nextExpanded → nextFiltered → nextSorted →
            nextGaps → nextHeadResidueIndex → nextRotatedGaps
 Each step calls ONE SieveUtils helper + ONE pre-verified function.
 next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
+
+Lessons learned across all tickets are consolidated in `LEARNINGS.md`.
+Check it when starting new work — it contains verified techniques,
+pitfall avoidance, and timeout resolution strategies.
 </context>
 
 <commands>

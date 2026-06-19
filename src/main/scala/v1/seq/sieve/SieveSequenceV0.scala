@@ -4,6 +4,7 @@ import stainless.annotation.extern
 import stainless.collection.List
 import stainless.lang.*
 import v1.Calc
+import v1.div.properties.AdditionAndMultiplication
 import v1.div.properties.ModIdempotence
 import v1.div.properties.ModOperations
 import v1.list.ListBoundUtils
@@ -610,6 +611,151 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       SieveUtils.isCoprime(r, values)
     }
   }.holds
+
+  /**
+   * Reverse periodic preservation.
+   *
+   * Proves: if isCoprime(v + modulus, values) and modulus == product(values),
+   * then isCoprime(v, values).
+   *
+   * This is the reverse of expandedCoprimePreservesFilter. It is the key
+   * lemma for the inductive step in assertBlockShift: there cannot be an
+   * accepted value between apply(k) + M and apply(k+1) + M, because if there
+   * were, subtracting M would give an accepted value between apply(k) and
+   * apply(k+1), contradicting strict monotonicity.
+   *
+   * For each p in values:
+   *   1. isCoprime(v + M, values) gives Calc.mod(v + M, p) != 0
+   *   2. Calc.mod(M, p) == 0 (from the product equality)
+   *   3. modAdd(v, p, M) + modIdempotence gives:
+   *      Calc.mod(v + M, p) == Calc.mod(v, p)
+   *   4. Therefore Calc.mod(v, p) != 0
+   */
+  private def assertReverseCoprimePreservation(
+    v: BigInt,
+    modulus: BigInt,
+    values: List[BigInt],
+    prefixProd: BigInt
+  ): Boolean = {
+    require(v >= BigInt(0))
+    require(ListUtils.checkAllPositive(values))
+    require(SieveUtils.isCoprime(v + modulus, values))
+    require(modulus > BigInt(0))
+    require(prefixProd > BigInt(0))
+    require(modulus == prefixProd * SieveUtils.product(values))
+    decreases(values.size)
+
+    if (values.isEmpty) {
+      SieveUtils.isCoprime(v, values)
+    } else {
+      val p = values.head
+      val tailProd = SieveUtils.product(values.tail)
+
+      assert(SieveUtils.assertProductNonNegative(values.tail))
+      assert(tailProd >= BigInt(0))
+      assert(prefixProd * tailProd >= BigInt(0))
+      assert(SieveUtils.assertMultipleModZero(prefixProd * tailProd, p))
+      assert(Calc.mod(modulus, p) == BigInt(0))
+
+      assert(SieveUtils.assertIsCoprimeSound(v + modulus, values))
+      assert(Calc.mod(v + modulus, p) != BigInt(0))
+
+      ModOperations.modAdd(v, p, modulus)
+      ModIdempotence.modIdempotence(v, p)
+      assert(Calc.mod(v + modulus, p) == Calc.mod(v, p))
+
+      assert(Calc.mod(v, p) != BigInt(0))
+
+      val newPrefix = prefixProd * p
+      assert(SieveUtils.product(values) == p * tailProd)
+      assert(modulus == newPrefix * tailProd)
+      assert(assertReverseCoprimePreservation(v, modulus, values.tail, newPrefix))
+      SieveUtils.isCoprime(v, values)
+    }
+  }.holds
+
+  /**
+   * Proves that apply(k + p) == apply(k) + filterModulus for all k >= 0,
+   * where p = indexOfAccepted(head + filterModulus).
+   *
+   * This is the core "loop around M" property: each block of length
+   * filterModulus contains exactly p generated values, so shifting by
+   * the period p adds exactly filterModulus.
+   *
+   * The inductive step uses two inequalities:
+   *   1. apply(k+p) <= apply(k) + M (by nextDoesNotPassAcceptedValue
+   *      from position k-1+p toward the accepted value apply(k) + M)
+   *   2. apply(k) + M <= apply(k+p) (by reverse periodic preservation:
+   *      any accepted value between apply(k)+M and apply(k+1)+M would
+   *      give a contradiction with nextDoesNotPassAcceptedValue)
+   */
+  private def assertBlockShift(k: BigInt, p: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(p >= BigInt(0))
+    require(apply(p) == head.value + filterModulus)
+    decreases(k)
+
+    if (k == BigInt(0)) {
+      true
+    } else {
+      primorialMatchesSieveProduct(filterPrimes)
+      assert(filterModulus == SieveUtils.product(filterValues))
+      assert(assertBlockShift(k - 1, p))
+      true
+    }
+  }.ensuring(res => {
+    if (k == BigInt(0)) {
+      res && apply(p) == apply(k) + filterModulus
+    } else {
+      primorialMatchesSieveProduct(filterPrimes)
+      assert(filterModulus == SieveUtils.product(filterValues))
+
+      val target = apply(k) + filterModulus
+      assert(target >= head.value)
+      primorialMatchesSieveProduct(filterPrimes)
+      assert(filterModulus == SieveUtils.product(filterValues))
+      assert(SieveUtils.isCoprime(apply(k), filterValues))
+      assert(expandedCoprimePreservesFilter(
+        apply(k), BigInt(1), filterModulus, filterValues, BigInt(1)
+      ))
+      assert(accepts(target))
+      assert(apply(k - 1 + p) < target)
+      assert(nextDoesNotPassAcceptedValue(k - 1 + p, target))
+      assert(apply(k + p) <= target)
+
+      val shifted = apply(k + p) - filterModulus
+      assert(shifted >= BigInt(0))
+      assert(assertReverseCoprimePreservation(shifted, filterModulus, filterValues, BigInt(1)))
+      assert(accepts(shifted))
+      assert(apply(k - 1) < shifted)
+      assert(nextDoesNotPassAcceptedValue(k - 1, shifted))
+      assert(apply(k) <= shifted)
+      assert(apply(k) + filterModulus <= apply(k + p))
+
+      res && apply(k + p) == apply(k) + filterModulus
+    }
+  })
+
+  /**
+   * Proves that the residues of apply(k) modulo filterModulus cycle
+   * with period p = indexOfAccepted(head + filterModulus).
+   *
+   * From assertBlockShift: apply(k + p) == apply(k) + filterModulus.
+   * Then mod(apply(k+p), M) == mod(apply(k) + M, M) == mod(apply(k), M).
+   */
+  def assertApplyResidueCycles(k: BigInt, p: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(p >= BigInt(0))
+    require(apply(p) == head.value + filterModulus)
+    true
+  }.ensuring(res => {
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(assertBlockShift(k, p))
+    assert(apply(k + p) == apply(k) + filterModulus)
+    assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(apply(k), filterModulus, BigInt(1)))
+    res && Calc.mod(apply(k + p), filterModulus) == Calc.mod(apply(k), filterModulus)
+  })
 
   def next: SieveSequenceV0 = {
     val newPrimes = primes.next
