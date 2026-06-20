@@ -1299,6 +1299,147 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  /**
+   * Bounds the old-stream index of the next-sequence successor.
+   *
+   * The reverse half of the skip proof needs to call
+   * `assertFirstNonMultipleIsAtOrBefore(k, zIdx, p, bound)`, so the old-stream
+   * index `zIdx` for the next-sequence successor must be inside the same finite
+   * search window. This lemma proves that bound without involving the
+   * first-non-multiple minimality argument.
+   *
+   * The proof first reuses the upper inequality helper:
+   * `z = nextSeq(vIdx + 1) <= apply(m)`. The search helper already guarantees
+   * `m <= bound`, and old-stream monotonicity turns that into
+   * `apply(m) <= apply(bound)`. Therefore `z <= apply(bound)`. Since
+   * `indexOfAccepted(z)` is the old-stream index that emits `z`,
+   * `valueBoundImpliesIndexBound` converts the value bound back into
+   * `zIdx <= bound`.
+   */
+  private def assertNextSuccessorOldIndexWithinBound(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val z = nextSeq(vIdx + BigInt(1))
+    val zIdx = indexOfAccepted(z)
+    val m = findFirstNonMultipleAfter(k, p, bound)
+
+    assert(assertNextValueAtOrBeforeFirstSurvivor(nextSeq, k, p, bound))
+    assert(z <= apply(m))
+    assert(m <= bound)
+    assert(m >= BigInt(0))
+    assert(applyIndexOrderPreservesValues(m, bound))
+    assert(apply(m) <= apply(bound))
+    assert(z <= apply(bound))
+    assert(apply(zIdx) == z)
+    assert(valueBoundImpliesIndexBound(zIdx, bound))
+    zIdx <= bound
+  }.holds
+
+  /**
+   * Proves the reverse ordering between the first old survivor and the next value.
+   *
+   * The forward helper already proves that the next sequence cannot pass the
+   * first old-stream value after `k` that is not a multiple of `p`. This lemma
+   * proves the opposite inequality.
+   *
+   * Let `z` be the value emitted by `nextSeq` immediately after `apply(k)`.
+   * Because `z` is accepted by `nextSeq`, it is also accepted by this old
+   * sequence and is not a multiple of the new filter `p`. The previous two
+   * connector lemmas place the old-stream index of `z` strictly after `k` and
+   * at or before `bound`. Therefore the first non-multiple found by
+   * `findFirstNonMultipleAfter` must occur at or before that old index, and
+   * old-stream monotonicity gives `apply(m) <= z`.
+   */
+  private def assertFirstSurvivorAtOrBeforeNextValue(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val z = nextSeq(vIdx + BigInt(1))
+    val zIdx = indexOfAccepted(z)
+    val m = findFirstNonMultipleAfter(k, p, bound)
+
+    assert(assertNextSuccessorOldIndexAfterAnchor(nextSeq, k))
+    assert(zIdx > k)
+    assert(assertNextSuccessorOldIndexWithinBound(nextSeq, k, p, bound))
+    assert(zIdx <= bound)
+    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, z))
+    assert(accepts(z))
+    assert(Calc.mod(z, p) != BigInt(0))
+    assert(apply(zIdx) == z)
+    assert(Calc.mod(apply(zIdx), p) != BigInt(0))
+    assert(assertFirstNonMultipleIsAtOrBefore(k, zIdx, p, bound))
+    assert(m <= zIdx)
+    assert(applyIndexOrderPreservesValues(m, zIdx))
+    assert(apply(m) <= apply(zIdx))
+    apply(m) <= z
+  }.holds
+
+  /**
+   * Connects both ordering directions into the skip-to-first-survivor equality.
+   *
+   * Starting from an old value `apply(k)` that also exists in `nextSeq`, the
+   * next value in `nextSeq` is exactly the first later old-stream value that is
+   * not a multiple of the new filter `p`. Earlier old values may still satisfy
+   * this sequence's tail filter, but they are skipped precisely because `p`
+   * divides them.
+   *
+   * This lemma is intentionally only the bounded equality. It does not choose
+   * the bound; callers remain responsible for proving a finite search window
+   * whose endpoint is itself not a multiple of `p`.
+   */
+  private def assertNextSuccessorIsFirstSurvivor(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+
+    assert(assertNextValueAtOrBeforeFirstSurvivor(nextSeq, k, p, bound))
+    assert(nextSeq(vIdx + BigInt(1)) <= apply(m))
+    assert(assertFirstSurvivorAtOrBeforeNextValue(nextSeq, k, p, bound))
+    assert(apply(m) <= nextSeq(vIdx + BigInt(1)))
+    nextSeq(vIdx + BigInt(1)) == apply(m)
+  }.holds
+
 //  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
 //    require(k >= BigInt(0))
 //    require(period > BigInt(0))
