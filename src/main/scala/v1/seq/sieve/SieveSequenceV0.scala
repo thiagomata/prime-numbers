@@ -338,6 +338,102 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
   }
 
   /**
+   * Lifts acceptance from this sequence to a sequence with one extra front filter.
+   *
+   * `assertSkipUntilNonMultiple` needs to reason about a value found in the old
+   * stream after skipping one or more values that are multiples of the newly
+   * introduced filter. The old stream already proves that the value survives
+   * `filterValues`. The extra assumption here proves the missing piece: the
+   * same value is not a multiple of `nextSeq.filterValues.head`.
+   *
+   * When `nextSeq.filterValues.tail == filterValues`, those two facts are
+   * exactly the definition of `nextSeq.accepts(value)`. Naming the bridge keeps
+   * the main gap-merge proof focused on index ordering instead of repeatedly
+   * unfolding the list-shaped coprimality predicate.
+   */
+  private def assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(
+    nextSeq: SieveSequenceV0,
+    value: BigInt
+  ): Boolean = {
+    require(value >= head.value)
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(accepts(value))
+    require(Calc.mod(value, nextSeq.filterValues.head) != BigInt(0))
+
+    assert(value >= nextSeq.head.value)
+    assert(SieveUtils.isCoprime(value, filterValues))
+    assert(SieveUtils.isCoprime(value, nextSeq.filterValues.tail))
+    assert(SieveUtils.isCoprime(value, nextSeq.filterValues))
+    nextSeq.accepts(value)
+  }.holds
+
+  /**
+   * Projects acceptance by an extended next filter back to this sequence.
+   *
+   * The skip proof also needs the reverse direction for the candidate produced
+   * by `nextSeq`: if the extended filter accepts `value`, then `value` must
+   * survive both parts of that extended filter. The head of
+   * `nextSeq.filterValues` gives the new non-multiple fact, and the tail is
+   * exactly this sequence's `filterValues`, so the same value is accepted by
+   * this sequence as well.
+   *
+   * This lemma is deliberately paired with
+   * `assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple`. Together they
+   * make the filter relationship explicit in both directions, leaving the main
+   * gap-merge proof to focus on finding and ordering the first survivor.
+   */
+  private def assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(
+    nextSeq: SieveSequenceV0,
+    value: BigInt
+  ): Boolean = {
+    require(value >= nextSeq.head.value)
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(value))
+
+    assert(value >= head.value)
+    assert(SieveUtils.isCoprime(value, nextSeq.filterValues))
+    assert(SieveUtils.assertIsCoprimeSound(value, nextSeq.filterValues))
+    assert(Calc.mod(value, nextSeq.filterValues.head) != BigInt(0))
+    assert(SieveUtils.isCoprime(value, nextSeq.filterValues.tail))
+    assert(SieveUtils.isCoprime(value, filterValues))
+    accepts(value) && Calc.mod(value, nextSeq.filterValues.head) != BigInt(0)
+  }.holds
+
+  /**
+   * Proves rejection by the extended next filter when the new front filter divides.
+   *
+   * This is the negative companion to the two acceptance bridge lemmas above.
+   * During gap merging, the old stream may contain values that still satisfy this
+   * sequence's tail filter, but are multiples of the newly inserted front filter
+   * in `nextSeq`. Such values must not appear in `nextSeq`.
+   *
+   * The proof is intentionally direct. `nextSeq.accepts(value)` is just
+   * `nextSeq.passesFilter(value)` once the value is above the shared head, and
+   * `passesFilter` is `SieveUtils.isCoprime` over `nextSeq.filterValues`. If the
+   * head of that filter list is `p` and `value` has zero remainder modulo `p`,
+   * the first branch of `isCoprime` rejects the value immediately.
+   */
+  private def assertRejectedByNextWhenNewHeadMultiple(
+    nextSeq: SieveSequenceV0,
+    value: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(value >= nextSeq.head.value)
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(Calc.mod(value, p) == BigInt(0))
+
+    assert(Calc.mod(value, nextSeq.filterValues.head) == BigInt(0))
+    assert(!SieveUtils.isCoprime(value, nextSeq.filterValues))
+    assert(!nextSeq.passesFilter(value))
+    !nextSeq.accepts(value)
+  }.holds
+
+  /**
    * Returns the `k`-th value in the tail-filtered stream.
    *
    * The stream starts at `head`, then repeatedly walks through consecutive
@@ -459,6 +555,92 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     assert(next == searchNext(previous + BigInt(1), upper))
     assert(next >= previous + BigInt(1))
     next > previous
+  }.holds
+
+  /**
+   * Lifts local strict growth into an ordered-index comparison.
+   *
+   * `applyStrictlyIncreases` proves the immediate step
+   * `apply(i + 1) > apply(i)`. The skip-multiple proof also needs the
+   * cumulative form: when one index is before another, its generated value is
+   * no larger. This helper packages that induction so later proofs can convert
+   * an index ordering into a value ordering without replaying the whole chain
+   * of strict-growth facts.
+   */
+  private def applyIndexOrderPreservesValues(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until >= from)
+    decreases(until - from)
+
+    if (from == until) {
+      apply(from) <= apply(until)
+    } else {
+      assert(from < until)
+      assert(until - BigInt(1) >= from)
+      assert(applyIndexOrderPreservesValues(from, until - BigInt(1)))
+      assert(applyStrictlyIncreases(until - BigInt(1)))
+      assert(apply(until - BigInt(1)) < apply(until))
+      apply(from) <= apply(until)
+    }
+  }.holds
+
+  /**
+   * Lifts local strict growth into a strict ordered-index comparison.
+   *
+   * This is the strict companion to `applyIndexOrderPreservesValues`. The skip
+   * proof needs to show that the first non-multiple found after index `k`
+   * really has a larger generated value than `apply(k)`. The function
+   * `findFirstNonMultipleAfter` already proves the index is at least `k + 1`;
+   * this lemma turns that index fact into the corresponding value fact without
+   * involving filters, modulo arithmetic, or `nextSeq`.
+   */
+  private def applyIndexStrictlyPreservesValues(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until > from)
+    decreases(until - from)
+
+    if (until == from + BigInt(1)) {
+      assert(applyStrictlyIncreases(from))
+      apply(from) < apply(until)
+    } else {
+      assert(until - BigInt(1) > from)
+      assert(applyIndexStrictlyPreservesValues(from, until - BigInt(1)))
+      assert(applyStrictlyIncreases(until - BigInt(1)))
+      assert(apply(until - BigInt(1)) < apply(until))
+      apply(from) < apply(until)
+    }
+  }.holds
+
+  /**
+   * Converts a generated-value bound back into an index bound.
+   *
+   * The merge proof eventually knows that the next surviving value from
+   * `nextSeq` is at most `apply(bound)`, and completeness gives an old-sequence
+   * index `index` for that same value. To call
+   * `assertFirstNonMultipleIsAtOrBefore`, we need `index <= bound`.
+   *
+   * This helper proves that contrapositive-style fact using strict monotonicity:
+   * if `index` were after `bound`, then `apply(bound + 1)` would be after
+   * `apply(bound)` and still before or equal to `apply(index)`, contradicting
+   * the input `apply(index) <= apply(bound)`.
+   */
+  private def valueBoundImpliesIndexBound(index: BigInt, bound: BigInt): Boolean = {
+    require(index >= BigInt(0))
+    require(bound >= BigInt(0))
+    require(apply(index) <= apply(bound))
+
+    if (index <= bound) {
+      true
+    } else {
+      assert(bound < index)
+      assert(bound + BigInt(1) <= index)
+      assert(applyStrictlyIncreases(bound))
+      assert(apply(bound) < apply(bound + BigInt(1)))
+      assert(applyIndexOrderPreservesValues(bound + BigInt(1), index))
+      assert(apply(bound + BigInt(1)) <= apply(index))
+      assert(apply(bound) < apply(index))
+      index <= bound
+    }
   }.holds
 
   /**
@@ -756,6 +938,334 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(apply(k), filterModulus, BigInt(1)))
     res && Calc.mod(apply(k + p), filterModulus) == Calc.mod(apply(k), filterModulus)
   })
+
+  def assertGapPositive(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    assert(applyStrictlyIncreases(k))
+    apply(k + BigInt(1)) - apply(k) > BigInt(0)
+  }.holds
+
+  def assertGapPeriodic(k: BigInt, p: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(p >= BigInt(0))
+    require(apply(p) == head.value + filterModulus)
+    true
+  }.ensuring(res => {
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(assertBlockShift(k, p))
+    assert(apply(k + p) == apply(k) + filterModulus)
+    assert(assertBlockShift(k + BigInt(1), p))
+    assert(apply(k + BigInt(1) + p) == apply(k + BigInt(1)) + filterModulus)
+    val g1 = apply(k + BigInt(1)) - apply(k)
+    val g2 = apply(k + BigInt(1) + p) - apply(k + p)
+    res && g1 == g2
+  })
+
+  private def sumGap(from: BigInt, until: BigInt): BigInt = {
+    require(from >= BigInt(0))
+    require(until >= from)
+    decreases(until - from)
+    if (from == until) BigInt(0)
+    else (apply(from + BigInt(1)) - apply(from)) + sumGap(from + BigInt(1), until)
+  }
+
+  private def assertSumGapTelescopes(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until >= from)
+    decreases(until - from)
+    if (from == until) {
+      sumGap(from, until) == apply(until) - apply(from)
+    } else {
+      assert(assertSumGapTelescopes(from + BigInt(1), until))
+      sumGap(from, until) == apply(until) - apply(from)
+    }
+  }.holds
+
+  def assertGapSum(p: BigInt): Boolean = {
+    require(p >= BigInt(0))
+    require(apply(p) == head.value + filterModulus)
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(assertSumGapTelescopes(BigInt(0), p))
+    sumGap(BigInt(0), p) == filterModulus
+  }.holds
+
+  def assertFilterPreservesNextPosition(
+    nextSeq: SieveSequenceV0,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) != BigInt(0))
+    true
+  }.ensuring(res => {
+    val V = apply(k)
+    val W = apply(k + BigInt(1))
+    val vIdx = nextSeq.indexOfAccepted(V)
+
+    assert(accepts(W))
+    assert(nextSeq.accepts(W))
+
+    assert(applySkipsNoAcceptedBetween(k + BigInt(1)))
+    assert(noAcceptedBetween(V + BigInt(1), W))
+
+    assert(nextSeq.applyStrictlyIncreases(vIdx))
+    assert(nextSeq(vIdx + BigInt(1)) > V)
+    val z = nextSeq(vIdx + BigInt(1))
+    assert(SieveUtils.isCoprime(z, filterValues))
+    assert(accepts(z))
+    assert(nextDoesNotPassAcceptedValue(k, z))
+    assert(W <= z)
+
+    assert(nextSeq.accepts(W))
+    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, W))
+    assert(z <= W)
+
+    res && nextSeq(vIdx + BigInt(1)) == W
+  })
+
+  private def findFirstNonMultipleAfter(k: BigInt, p: BigInt, bound: BigInt): BigInt = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    decreases(bound - k)
+    if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) k + BigInt(1)
+    else {
+      assert(bound > k + BigInt(1))
+      findFirstNonMultipleAfter(k + BigInt(1), p, bound)
+    }
+  }.ensuring(res => res >= k + BigInt(1) && res <= bound && Calc.mod(apply(res), p) != BigInt(0))
+
+  private def assertBlockShiftMultiple(k: BigInt, n: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(n >= BigInt(0))
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    decreases(n)
+    if (n == BigInt(0)) {
+      apply(k + n * period) == apply(k) + n * filterModulus
+    } else {
+      val prev = n - BigInt(1)
+      assert(assertBlockShiftMultiple(k, prev, period))
+      assert(assertBlockShift(k + prev * period, period))
+      apply(k + n * period) == apply(k) + n * filterModulus
+    }
+  }.holds
+
+  private def assertFirstNonMultipleIsAtOrBefore(k: BigInt, zIdx: BigInt, p: BigInt, bound: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(zIdx > k)
+    require(zIdx <= bound)
+    require(p > BigInt(0))
+    require(Calc.mod(apply(zIdx), p) != BigInt(0))
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    decreases(bound - k)
+    val m = findFirstNonMultipleAfter(k, p, bound)
+    if (k + BigInt(1) == m) {
+      m <= zIdx
+    } else {
+      assert(k + BigInt(1) < m)
+      assert(Calc.mod(apply(k + BigInt(1)), p) == BigInt(0))
+      assert(zIdx > k + BigInt(1))
+      assert(assertFirstNonMultipleIsAtOrBefore(k + BigInt(1), zIdx, p, bound))
+      m <= zIdx
+    }
+  }.holds
+
+  /**
+   * Proves the recursive skip invariant for the old stream.
+   *
+   * Let `m` be the first old-stream index after `k` whose value is not a
+   * multiple of the new filter `p`. Every old-stream index strictly between
+   * `k` and `m` must therefore be a multiple of `p`.
+   *
+   * This is the recursive gap-merging backbone: when the next sequence cannot
+   * copy `apply(k + 1)`, it is not because the value disappeared mysteriously;
+   * it is because the new filter consumes that old gap. Repeating this fact
+   * index by index accounts for exactly the run of old gaps merged before the
+   * first surviving value.
+   */
+  private def assertSkippedIndexBeforeFirstIsMultiple(
+    k: BigInt,
+    idx: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(idx > k)
+    require(idx < findFirstNonMultipleAfter(k, p, bound))
+    decreases(idx - k)
+
+    val m = findFirstNonMultipleAfter(k, p, bound)
+    assert(k + BigInt(1) <= idx)
+    assert(k + BigInt(1) < m)
+
+    if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) {
+      assert(m == k + BigInt(1))
+      assert(false)
+      Calc.mod(apply(idx), p) == BigInt(0)
+    } else if (idx == k + BigInt(1)) {
+      Calc.mod(apply(idx), p) == BigInt(0)
+    } else {
+      assert(idx > k + BigInt(1))
+      assert(bound > k + BigInt(1))
+      val nextM = findFirstNonMultipleAfter(k + BigInt(1), p, bound)
+      assert(m == nextM)
+      assert(idx < nextM)
+      assert(assertSkippedIndexBeforeFirstIsMultiple(k + BigInt(1), idx, p, bound))
+      Calc.mod(apply(idx), p) == BigInt(0)
+    }
+  }.holds
+
+  /**
+   * Anchors the next-sequence index before the first old-stream survivor.
+   *
+   * The full gap-merge proof starts from an alignment point:
+   * `nextSeq(vIdx) == apply(k)`, where `vIdx` is the next-sequence index for
+   * the old value `apply(k)`. The first old value that survives the new filter
+   * is `apply(m)`, with `m = findFirstNonMultipleAfter(k, p, bound)`.
+   *
+   * This lemma proves the ordering fact needed by
+   * `nextSeq.nextDoesNotPassAcceptedValue`: the aligned next value is strictly
+   * before the first old survivor. Keeping this fact separate avoids asking
+   * Stainless to rediscover strict old-stream monotonicity inside the larger
+   * filter/gap proof.
+   */
+  private def assertNextAnchorBeforeFirstSurvivor(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+
+    assert(m >= k + BigInt(1))
+    assert(m > k)
+    assert(applyIndexStrictlyPreservesValues(k, m))
+    assert(apply(k) < apply(m))
+    assert(nextSeq(vIdx) == apply(k))
+    nextSeq(vIdx) < apply(m)
+  }.holds
+
+  /**
+   * Connects the recursive old-stream skip invariant to next-sequence rejection.
+   *
+   * `assertSkippedIndexBeforeFirstIsMultiple` proves that every old index between
+   * the aligned point `k` and the first old survivor `m` is a multiple of the new
+   * filter `p`. This lemma translates that arithmetic fact into the sequence
+   * language used by gap merging: those skipped old values are not accepted by
+   * `nextSeq`, because `p` is the newly added front filter in `nextSeq`.
+   *
+   * Separating this bridge keeps the eventual `assertSkipUntilNonMultiple` proof
+   * from needing to unfold both the recursive search and the next-sequence filter
+   * definition in the same verification condition.
+   */
+  private def assertSkippedOldValueRejectedByNext(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    idx: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(nextSeq.head.value == head.value)
+    require(idx > k)
+    require(idx < findFirstNonMultipleAfter(k, p, bound))
+
+    assert(assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound))
+    assert(Calc.mod(apply(idx), p) == BigInt(0))
+    assert(apply(idx) >= head.value)
+    assert(apply(idx) >= nextSeq.head.value)
+    assert(assertRejectedByNextWhenNewHeadMultiple(nextSeq, apply(idx), p))
+    !nextSeq.accepts(apply(idx))
+  }.holds
+
+//  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
+//    require(k >= BigInt(0))
+//    require(period > BigInt(0))
+//    require(nextSeq.filterValues.nonEmpty)
+//    require(nextSeq.filterValues.tail == filterValues)
+//    require(nextSeq.head.value == head.value)
+//    require(nextSeq.accepts(apply(k)))
+//    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+//    val p = nextSeq.filterValues.head
+//    val V = apply(k)
+//    val vIdx = nextSeq.indexOfAccepted(V)
+//    val bound = k + p * period
+//    primorialMatchesSieveProduct(filterPrimes)
+//    assert(filterModulus == SieveUtils.product(filterValues))
+//    assert(p > BigInt(0))
+//    assert(bound > k)
+//    assert(assertBlockShiftMultiple(k, p, period))
+//    assert(apply(bound) == V + p * filterModulus)
+//    assert(Calc.mod(V, p) != BigInt(0))
+//    assert(AdditionAndMultiplication.ATimesBSameMod(V, p, filterModulus))
+//    assert(Calc.mod(V + p * filterModulus, p) == Calc.mod(V, p))
+//    assert(Calc.mod(apply(bound), p) != BigInt(0))
+//
+//    val m = findFirstNonMultipleAfter(k, p, bound)
+//
+//    assert(nextSeq(vIdx) == V)
+//    assert(nextSeq(vIdx) < apply(m))
+//    assert(accepts(apply(m)))
+//    assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
+//    assert(nextSeq.accepts(apply(m)))
+//    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, apply(m)))
+//    assert(nextSeq(vIdx + BigInt(1)) <= apply(m))
+//
+//    assert(accepts(apply(bound)))
+//    assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(bound)))
+//    assert(nextSeq.accepts(apply(bound)))
+//    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, apply(bound)))
+//    assert(nextSeq(vIdx + BigInt(1)) <= apply(bound))
+//
+//    val z = nextSeq(vIdx + BigInt(1))
+//    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, z))
+//    assert(accepts(z))
+//    val zIdx = indexOfAccepted(z)
+//    assert(apply(zIdx) == z)
+//    assert(Calc.mod(apply(zIdx), p) != BigInt(0))
+//    assert(zIdx > k)
+//    assert(valueBoundImpliesIndexBound(zIdx, bound))
+//    assert(zIdx <= bound)
+//    assert(assertFirstNonMultipleIsAtOrBefore(k, zIdx, p, bound))
+//    assert(m <= zIdx)
+//    assert(applyIndexOrderPreservesValues(m, zIdx))
+//    assert(apply(m) <= apply(zIdx))
+//    assert(apply(m) <= z)
+//
+//    nextSeq(vIdx + BigInt(1)) == apply(m)
+//  }.holds
+
+  // P4 (assertPeriodEqualsResidueCount) SKIPPED
+  // The property p == residues(M, filterValues).size is true by interval periodicity:
+  // isCoprime(x, F) == isCoprime(Calc.mod(x, M), F), so any interval of length M
+  // contains exactly R coprime values. But proving this in Stainless requires a
+  // counting/interval lemma that times out on the inductive step.
+  // Ticket: v0-gap-properties.md
 
   def next: SieveSequenceV0 = {
     val newPrimes = primes.next

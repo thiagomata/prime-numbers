@@ -870,7 +870,45 @@ apply(k) = integral(k-1) for k >= 1
 
 ---
 
-## 5.4 SieveSequenceProperties (`v1.seq.sieve.properties.SieveSequenceProperties`)
+## 5.4 SieveSequenceV0 (`v1.seq.sieve.SieveSequenceV0`)
+
+Linear-scan baseline model of sieve sequences. Generates values by scanning consecutive integers forward, accepting those coprime to the tail primes.
+
+### Public API
+
+| Field/Method | Definition | Notes |
+|---|---|---|
+| **primes** | `AllPrimesSoFarList` | Descending, head is the newest/starting prime |
+| **head** | `primes.head` | Starting value, coprime to all tail primes |
+| **filterPrimes** | `primes.list.tail.list` | Active divisibility filters (tail only, not head) |
+| **filterValues** | `PrimeUtils.primeValues(filterPrimes)` | Numeric divisor values |
+| **filterModulus** | Product of filterPrimes | Period of the tail-filter pattern |
+| **apply(k)** | `k`-th generated value | Linear scan, bounded by `searchBound(k)` |
+| **passesFilter(v)** | `isCoprime(v, filterValues)` | Survives all tail primes |
+| **accepts(v)** | `passesFilter(v)` | Requires `v >= head.value` |
+| **indexOfAccepted(v)** | Index where `apply(k) == v` | Completeness witness |
+| **next** | Builds next stage with `primes.next` | Returns SieveSequenceV0 |
+
+### Gap Lemmas (proved)
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **assertGapPositive(k)** | `apply(k+1) - apply(k) > 0` | Uses `applyStrictlyIncreases(k)`. Public `.holds`. |
+| **assertGapPeriodic(k, p)** | `apply(k+1+p) - apply(k+p) == apply(k+1) - apply(k)` where `p = indexOfAccepted(head+M)` | Uses `assertBlockShift` at `k` and `k+1`. Public `.ensuring`. |
+| **assertGapSum(p)** | `sum_{i=0}^{p-1} (apply(i+1)-apply(i)) == M` | Via `sumGap` (private) + `assertSumGapTelescopes` (private). Public `.holds`. |
+| **assertFilterPreservesNextPosition(nextSeq, k)** | `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(indexOfAccepted(V)+1) == apply(k+1)` | Proves that adding a filter prime preserves the next-position relationship between two V0 sequences. Uses `nextDoesNotPassAcceptedValue` bidirectionally. 6379 valid. |
+
+### P4 (Period equals residue count) — SKIPPED
+
+The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is mathematically true (by interval periodicity) but the Stainless proof requires a counting lemma that timed out. Left as open problem.
+
+### Source
+
+`src/main/scala/v1/seq/sieve/SieveSequenceV0.scala`
+
+---
+
+## 5.5 SieveSequenceProperties (`v1.seq.sieve.properties.SieveSequenceProperties`)
 
 > **NOTE**: This file does not yet exist. Properties listed below are aspirational.
 
