@@ -928,6 +928,8 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound)** | `k < idx < findFirstNonMultipleAfter(k, p, bound)` ⇒ `Calc.mod(apply(idx), p) == 0` | Every old index between k and the first survivor is a multiple of p. Private `.holds`. |
 | **assertNextAnchorBeforeFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq.accepts(apply(k))` ⇒ `nextSeq(indexOfAccepted(apply(k))) < apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Anchors the next-sequence index before the first old survivor. Private `.holds`. |
 | **assertSkippedOldValueRejectedByNext(nextSeq, k, idx, p, bound)** | `k < idx < m` ⇒ `¬nextSeq.accepts(apply(idx))` where `m = findFirstNonMultipleAfter(k, p, bound)` | Composes the skip invariant with the negative filter bridge. Private `.holds`. |
+| **assertNextValueAtOrBeforeFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq(indexOfAccepted(apply(k)) + 1) ≤ apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Upper inequality for the skip-to-first-survivor equality. Uses next-sequence completeness through `nextDoesNotPassAcceptedValue`. Private `.holds`. |
+| **assertNextSuccessorOldIndexAfterAnchor(nextSeq, k)** | For `z = nextSeq(indexOfAccepted(apply(k)) + 1)`, `indexOfAccepted(z) > k` in the old sequence | Reverse-index helper for gap merging. Uses next-sequence strict growth, the reverse filter bridge, and old-stream monotonicity. Private `.holds`. |
 | **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Main lemma. **DRAFT — code commented out.** Full assembly times out; requires further decomposition. |
 
 ### P4 (Period equals residue count) — SKIPPED

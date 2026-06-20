@@ -1245,6 +1245,60 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     nextSeq(vIdx + BigInt(1)) <= apply(m)
   }.holds
 
+  /**
+   * Maps the next-sequence successor back to an old-stream index after `k`.
+   *
+   * In the reverse half of the skip-to-first-survivor equality, we start with
+   * the value emitted by `nextSeq` immediately after the aligned old value
+   * `apply(k)`. Call that value `z`. Because `nextSeq` strictly increases,
+   * `z` is strictly greater than `apply(k)`.
+   *
+   * The reverse filter bridge then tells us that `z` is also accepted by this
+   * old sequence, so `indexOfAccepted(z)` is a valid old-stream index. This
+   * lemma proves that the old index cannot be at or before `k`: if it were, old
+   * stream monotonicity would give `z = apply(zIdx) <= apply(k)`, contradicting
+   * the strict next-sequence step.
+   *
+   * The lemma intentionally proves only the index-order fact `zIdx > k`. The
+   * later reverse inequality proof will separately use this index together with
+   * `assertFirstNonMultipleIsAtOrBefore` and `applyIndexOrderPreservesValues`.
+   */
+  private def assertNextSuccessorOldIndexAfterAnchor(
+    nextSeq: SieveSequenceV0,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    assert(vIdx >= BigInt(0))
+    assert(nextSeq(vIdx) == apply(k))
+    assert(nextSeq.applyStrictlyIncreases(vIdx))
+
+    val z = nextSeq(vIdx + BigInt(1))
+    assert(z > apply(k))
+    assert(nextSeq.accepts(z))
+    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, z))
+    assert(accepts(z))
+
+    val zIdx = indexOfAccepted(z)
+    assert(zIdx >= BigInt(0))
+    assert(apply(zIdx) == z)
+
+    if (zIdx > k) {
+      true
+    } else {
+      assert(zIdx <= k)
+      assert(applyIndexOrderPreservesValues(zIdx, k))
+      assert(apply(zIdx) <= apply(k))
+      assert(z <= apply(k))
+      zIdx > k
+    }
+  }.holds
+
 //  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
 //    require(k >= BigInt(0))
 //    require(period > BigInt(0))
