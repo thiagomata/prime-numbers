@@ -933,7 +933,7 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **assertNextSuccessorOldIndexWithinBound(nextSeq, k, p, bound)** | For `z = nextSeq(indexOfAccepted(apply(k)) + 1)`, `indexOfAccepted(z) ≤ bound` in the old sequence | Bounded reverse-index helper. Uses the upper inequality, old-stream monotonicity, and `valueBoundImpliesIndexBound`. Private `.holds`. |
 | **assertFirstSurvivorAtOrBeforeNextValue(nextSeq, k, p, bound)** | `apply(m) ≤ nextSeq(indexOfAccepted(apply(k)) + 1)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Lower inequality for the skip-to-first-survivor equality. Uses the reverse-index bounds, the reverse filter bridge, first-non-multiple minimality, and old-stream monotonicity. Private `.holds`. |
 | **assertNextSuccessorIsFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq(indexOfAccepted(apply(k)) + 1) == apply(findFirstNonMultipleAfter(k, p, bound))` | Bounded skip-to-first-survivor equality. Connects the upper and lower inequality helpers. Private `.holds`. |
-| **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Main lemma. **DRAFT — code commented out.** Full assembly times out; requires further decomposition. |
+| **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` and `bound = k + p*period` | Period-based public gap-merge wrapper. Uses block shifting to build a finite non-multiple endpoint, then delegates to the bounded skip-to-first-survivor equality. Public `.holds`. |
 
 ### P4 (Period equals residue count) — SKIPPED
 

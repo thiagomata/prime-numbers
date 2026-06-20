@@ -1440,64 +1440,51 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     nextSeq(vIdx + BigInt(1)) == apply(m)
   }.holds
 
-//  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
-//    require(k >= BigInt(0))
-//    require(period > BigInt(0))
-//    require(nextSeq.filterValues.nonEmpty)
-//    require(nextSeq.filterValues.tail == filterValues)
-//    require(nextSeq.head.value == head.value)
-//    require(nextSeq.accepts(apply(k)))
-//    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
-//    require(apply(period) == head.value + filterModulus)
-//    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
-//    val p = nextSeq.filterValues.head
-//    val V = apply(k)
-//    val vIdx = nextSeq.indexOfAccepted(V)
-//    val bound = k + p * period
-//    primorialMatchesSieveProduct(filterPrimes)
-//    assert(filterModulus == SieveUtils.product(filterValues))
-//    assert(p > BigInt(0))
-//    assert(bound > k)
-//    assert(assertBlockShiftMultiple(k, p, period))
-//    assert(apply(bound) == V + p * filterModulus)
-//    assert(Calc.mod(V, p) != BigInt(0))
-//    assert(AdditionAndMultiplication.ATimesBSameMod(V, p, filterModulus))
-//    assert(Calc.mod(V + p * filterModulus, p) == Calc.mod(V, p))
-//    assert(Calc.mod(apply(bound), p) != BigInt(0))
-//
-//    val m = findFirstNonMultipleAfter(k, p, bound)
-//
-//    assert(nextSeq(vIdx) == V)
-//    assert(nextSeq(vIdx) < apply(m))
-//    assert(accepts(apply(m)))
-//    assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
-//    assert(nextSeq.accepts(apply(m)))
-//    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, apply(m)))
-//    assert(nextSeq(vIdx + BigInt(1)) <= apply(m))
-//
-//    assert(accepts(apply(bound)))
-//    assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(bound)))
-//    assert(nextSeq.accepts(apply(bound)))
-//    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, apply(bound)))
-//    assert(nextSeq(vIdx + BigInt(1)) <= apply(bound))
-//
-//    val z = nextSeq(vIdx + BigInt(1))
-//    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, z))
-//    assert(accepts(z))
-//    val zIdx = indexOfAccepted(z)
-//    assert(apply(zIdx) == z)
-//    assert(Calc.mod(apply(zIdx), p) != BigInt(0))
-//    assert(zIdx > k)
-//    assert(valueBoundImpliesIndexBound(zIdx, bound))
-//    assert(zIdx <= bound)
-//    assert(assertFirstNonMultipleIsAtOrBefore(k, zIdx, p, bound))
-//    assert(m <= zIdx)
-//    assert(applyIndexOrderPreservesValues(m, zIdx))
-//    assert(apply(m) <= apply(zIdx))
-//    assert(apply(m) <= z)
-//
-//    nextSeq(vIdx + BigInt(1)) == apply(m)
-//  }.holds
+  /**
+   * Period-based gap merge for a skipped immediate old successor.
+   *
+   * This is the public wrapper around the bounded merge lemma. The bounded
+   * lemma needs a finite endpoint whose old-stream value is not a multiple of
+   * the new front filter `p`. The period witness supplies exactly that endpoint:
+   * shifting `k` by `p` whole old periods moves the value from `apply(k)` to
+   * `apply(k) + p * filterModulus`, which has the same remainder modulo `p`.
+   *
+   * The precondition `Calc.mod(apply(k + 1), p) == 0` describes the interesting
+   * merge case: the next old value is rejected by the new filter, so the next
+   * sequence must skip forward. The result says it skips no more and no less
+   * than the first old value after `k` that is not a multiple of `p`.
+   */
+  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val p = nextSeq.filterValues.head
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val bound = k + p * period
+
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(p > BigInt(0))
+    assert(bound > k)
+    assert(assertBlockShiftMultiple(k, p, period))
+    assert(apply(bound) == apply(k) + p * filterModulus)
+    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k)))
+    assert(Calc.mod(apply(k), p) != BigInt(0))
+    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, filterModulus))
+    assert(Calc.mod(apply(k) + p * filterModulus, p) == Calc.mod(apply(k), p))
+    assert(Calc.mod(apply(bound), p) != BigInt(0))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+    assert(assertNextSuccessorIsFirstSurvivor(nextSeq, k, p, bound))
+
+    nextSeq(vIdx + BigInt(1)) == apply(m)
+  }.holds
 
   // P4 (assertPeriodEqualsResidueCount) SKIPPED
   // The property p == residues(M, filterValues).size is true by interval periodicity:
