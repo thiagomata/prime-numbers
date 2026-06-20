@@ -532,6 +532,28 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
+   * Public first-step completeness wrapper.
+   *
+   * Several cross-object proofs need only the first generated value after the
+   * head, not the fully general private lemma above. This wrapper exposes that
+   * focused fact without leaking the recursive skipped-interval machinery:
+   * every accepted candidate strictly after the head bounds `apply(1)` from
+   * above. In particular, once we prove that `AllPrimesSoFarList.nextPrime`
+   * passes the tail filter, this lemma gives the easy half of the conditional
+   * bridge `apply(1) <= nextPrime`.
+   */
+  def assertApplyOneAtOrBeforeAccepted(value: BigInt): Boolean = {
+    require(value > head.value)
+    require(accepts(value))
+
+    assert(apply(BigInt(0)) == head.value)
+    assert(apply(BigInt(0)) < value)
+    assert(nextDoesNotPassAcceptedValue(BigInt(0), value))
+
+    apply(BigInt(1)) <= value
+  }.holds
+
+  /**
    * Proves the generator makes progress at every step.
    *
    * The completeness witness searches forward through indices until it reaches

@@ -887,6 +887,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **passesFilter(v)** | `isCoprime(v, filterValues)` | Survives all tail primes |
 | **accepts(v)** | `passesFilter(v)` | Requires `v >= head.value` |
 | **indexOfAccepted(v)** | Index where `apply(k) == v` | Completeness witness |
+| **assertApplyOneAtOrBeforeAccepted(v)** | `accepts(v)` ∧ `v > head.value` ⇒ `apply(1) <= v` | Public first-step completeness wrapper over the private skipped-interval proof. |
 | **next** | Builds next stage with `primes.next` | Returns SieveSequenceV0 |
 
 ### Gap Lemmas (proved)
