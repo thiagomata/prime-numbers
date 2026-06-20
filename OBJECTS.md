@@ -898,6 +898,38 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **assertGapSum(p)** | `sum_{i=0}^{p-1} (apply(i+1)-apply(i)) == M` | Via `sumGap` (private) + `assertSumGapTelescopes` (private). Public `.holds`. |
 | **assertFilterPreservesNextPosition(nextSeq, k)** | `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(indexOfAccepted(V)+1) == apply(k+1)` | Proves that adding a filter prime preserves the next-position relationship between two V0 sequences. Uses `nextDoesNotPassAcceptedValue` bidirectionally. 6379 valid. |
 
+### Filter Bridge Lemmas
+
+Bridges between old-filter acceptance and next-filter acceptance for `SieveSequenceV0.next()`.
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, value)** | `accepts(value)` ∧ `Calc.mod(value, nextSeq.filterValues.head) ≠ 0` ∧ `nextSeq.filterValues.tail == filterValues` ⇒ `nextSeq.accepts(value)` | Bridges old-filter acceptance plus non-multiple-of-new-head to next-filter acceptance. Private `.holds`. |
+| **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, value)** | `nextSeq.accepts(value)` ∧ `nextSeq.filterValues.tail == filterValues` ⇒ `accepts(value)` ∧ `Calc.mod(value, nextSeq.filterValues.head) ≠ 0` | Reverse bridge: projects next-filter acceptance back to old-filter acceptance and non-multiple fact. Private `.holds`. |
+| **assertRejectedByNextWhenNewHeadMultiple(nextSeq, value, p)** | `Calc.mod(value, p) == 0` ∧ `nextSeq.filterValues.head == p` ⇒ `¬nextSeq.accepts(value)` | Negative bridge: a multiple of the new head filter is rejected by nextSeq. Private `.holds`. |
+
+### Index-Order Lemmas
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **applyIndexOrderPreservesValues(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Cumulative ordering: earlier indices produce no-larger values. Private `.holds`. |
+| **applyIndexStrictlyPreservesValues(from, until)** | `from < until ⇒ apply(from) < apply(until)` | Strict companion: earlier indices produce strictly smaller values. Private `.holds`. |
+| **valueBoundImpliesIndexBound(index, bound)** | `apply(index) ≤ apply(bound) ⇒ index ≤ bound` | Contrapositive: a value bound constrains the index. Private `.holds`. |
+
+### Skip/Merge Lemmas (proof of gap merging)
+
+The core lemmas for proving that when a new filter prime removes the immediate next value, the next-sequence skips ahead to the first surviving old-stream value and merges the intervening gaps.
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **findFirstNonMultipleAfter(k, p, bound)** | Returns the first index `≥ k+1` where `Calc.mod(apply(res), p) ≠ 0`, with `res ≤ bound` | Recursive helper with `decreases(bound - k)`. Private `.ensuring`. |
+| **assertFirstNonMultipleIsAtOrBefore(k, zIdx, p, bound)** | `Calc.mod(apply(zIdx), p) ≠ 0` ∧ `zIdx > k` ⇒ `findFirstNonMultipleAfter(k, p, bound) ≤ zIdx` | Proves the helper returns the *first* non-multiple, not just any. Private `.holds`. |
+| **assertBlockShiftMultiple(k, n, period)** | `apply(period) == head + M` ⇒ `apply(k + n*period) == apply(k) + n*M` | Repeated block shift: shifting by n periods multiplies the shift. Private `.holds`. |
+| **assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound)** | `k < idx < findFirstNonMultipleAfter(k, p, bound)` ⇒ `Calc.mod(apply(idx), p) == 0` | Every old index between k and the first survivor is a multiple of p. Private `.holds`. |
+| **assertNextAnchorBeforeFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq.accepts(apply(k))` ⇒ `nextSeq(indexOfAccepted(apply(k))) < apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Anchors the next-sequence index before the first old survivor. Private `.holds`. |
+| **assertSkippedOldValueRejectedByNext(nextSeq, k, idx, p, bound)** | `k < idx < m` ⇒ `¬nextSeq.accepts(apply(idx))` where `m = findFirstNonMultipleAfter(k, p, bound)` | Composes the skip invariant with the negative filter bridge. Private `.holds`. |
+| **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Main lemma. **DRAFT — code commented out.** Full assembly times out; requires further decomposition. |
+
 ### P4 (Period equals residue count) — SKIPPED
 
 The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is mathematically true (by interval periodicity) but the Stainless proof requires a counting lemma that timed out. Left as open problem.

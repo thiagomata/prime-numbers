@@ -1201,6 +1201,50 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     !nextSeq.accepts(apply(idx))
   }.holds
 
+  /**
+   * Proves the upper inequality for the skip-to-first-survivor equality.
+   *
+   * Let `m` be the first old-stream index after `k` whose value is not a
+   * multiple of the new front filter `p`. This lemma proves that the next value
+   * emitted by `nextSeq` after the aligned old value cannot pass `apply(m)`.
+   *
+   * The proof deliberately avoids the reverse-index/minimality argument. It only
+   * packages the local completeness fact for `nextSeq`: once `apply(m)` is known
+   * to be accepted by `nextSeq`, and the aligned next-sequence value is strictly
+   * before `apply(m)`, `nextSeq.nextDoesNotPassAcceptedValue` gives
+   * `nextSeq(vIdx + 1) <= apply(m)`.
+   */
+  private def assertNextValueAtOrBeforeFirstSurvivor(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    p: BigInt,
+    bound: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(p > BigInt(0))
+    require(bound > k)
+    require(Calc.mod(apply(bound), p) != BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.head == p)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+
+    assert(m >= k + BigInt(1))
+    assert(m >= BigInt(0))
+    assert(Calc.mod(apply(m), p) != BigInt(0))
+    assert(Calc.mod(apply(m), nextSeq.filterValues.head) != BigInt(0))
+    assert(accepts(apply(m)))
+    assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
+    assert(nextSeq.accepts(apply(m)))
+    assert(assertNextAnchorBeforeFirstSurvivor(nextSeq, k, p, bound))
+    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, apply(m)))
+    nextSeq(vIdx + BigInt(1)) <= apply(m)
+  }.holds
+
 //  def assertSkipUntilNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
 //    require(k >= BigInt(0))
 //    require(period > BigInt(0))
