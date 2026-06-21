@@ -1700,6 +1700,99 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == sumGap(k, m)
   }.holds
 
+  /**
+   * Advances one output position in the merged old-index view.
+   *
+   * The future gap-prefix transformer should not scan natural numbers again;
+   * it should walk this sequence's already-filtered indices and decide whether
+   * each adjacent old gap is copied or whether several old gaps are merged.
+   *
+   * This helper performs exactly one such step from an old index `k` whose value
+   * is already known to appear in `nextSeq`. If the immediate old successor
+   * `apply(k + 1)` survives the new front filter, the next old index is simply
+   * `k + 1`. Otherwise the step uses the bounded period witness to find the
+   * first later old value that is not a multiple of the new front filter. In
+   * both cases the returned index is strictly after `k`, and its value is
+   * accepted by `nextSeq`, which is the induction invariant needed by the
+   * recursive prefix builder.
+   */
+  def nextMergedGapOldIndex(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): BigInt = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val p = nextSeq.filterValues.head
+
+    if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) {
+      assert(accepts(apply(k + BigInt(1))))
+      assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k + BigInt(1))))
+      k + BigInt(1)
+    } else {
+      val bound = k + p * period
+
+      assert(assertPeriodBoundIsNonMultiple(nextSeq, k, period))
+      val m = findFirstNonMultipleAfter(k, p, bound)
+      assert(m > k)
+      assert(accepts(apply(m)))
+      assert(Calc.mod(apply(m), p) != BigInt(0))
+      assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
+      m
+    }
+  }.ensuring(res => res > k && nextSeq.accepts(apply(res)))
+
+  /**
+   * Builds a bounded prefix of the copied-or-merged gap list.
+   *
+   * This is the executable shape of the gap-merge process. The parameter
+   * `remaining` says how many next-sequence gaps to emit, so termination is
+   * independent of how many old indices are skipped in each merge. The parameter
+   * `k` is the current old index whose value is already aligned with the current
+   * next-sequence value; that alignment is represented by
+   * `nextSeq.accepts(apply(k))`.
+   *
+   * Each recursive step asks `nextMergedGapOldIndex` for the next old index
+   * whose value survives the new front filter. The emitted gap is the telescoped
+   * old distance from `k` to that returned index. A one-index move is a copied
+   * gap. A longer move is a merged gap. The returned list is therefore not
+   * produced by scanning natural numbers again; it is produced by walking the
+   * old sequence's accepted values and merging exactly the runs removed by the
+   * new filter.
+   */
+  def mergedGapPrefix(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    remaining: BigInt,
+    period: BigInt
+  ): List[BigInt] = {
+    require(k >= BigInt(0))
+    require(remaining >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    decreases(remaining)
+
+    if (remaining == BigInt(0)) {
+      List.empty[BigInt]
+    } else {
+      val nextK = nextMergedGapOldIndex(nextSeq, k, period)
+
+      assert(nextK > k)
+      assert(nextK >= k)
+      assert(nextK >= BigInt(0))
+      assert(nextSeq.accepts(apply(nextK)))
+      sumGap(k, nextK) :: mergedGapPrefix(nextSeq, nextK, remaining - BigInt(1), period)
+    }
+  }
+
   // P4 (assertPeriodEqualsResidueCount) SKIPPED
   // The property p == residues(M, filterValues).size is true by interval periodicity:
   // isCoprime(x, F) == isCoprime(Calc.mod(x, M), F), so any interval of length M

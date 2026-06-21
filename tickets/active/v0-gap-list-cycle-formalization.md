@@ -51,10 +51,15 @@ is:
      survivor.
    - Estimated complexity: medium to high. This should compose the landing
      equality with `sumGap` telescoping.
+   - Status: verified as
+     `SieveSequenceV0.assertMergeGapEqualsOldGapSum(nextSeq, k, period)`.
 7. Prefix lift:
    - repeat copy/merge across a bounded prefix of old generated values.
    - Estimated complexity: high. This introduces a recursive list-building
      proof and accounting for consumed old indices.
+   - Status: prefix transformer verified as
+     `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)`;
+     prefix positivity/equality proofs remain open.
 8. Gap-list cyclicity:
    - prove the finite gap list repeats as a cycle, so later gaps are found by
      cycling through the same bounded list.
@@ -121,6 +126,15 @@ The ordering above follows the project lessons:
   the merged-gap corollary: when the new front filter removes the immediate old
   successor, the next sequence gap equals `sumGap(k, m)` for the first later
   old-stream survivor `m`.
+- `SieveSequenceV0.nextMergedGapOldIndex(nextSeq, k, period)` is the verified
+  one-step old-index transformer. It returns an index strictly after `k` whose
+  old-stream value is accepted by `nextSeq`, choosing either the copied
+  successor or the first bounded merge survivor.
+- `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)` builds a
+  bounded prefix of copied-or-merged gaps by repeatedly using
+  `nextMergedGapOldIndex` and emitting `sumGap(k, nextK)`. Its recursion
+  decreases on the requested output count `remaining`, not on the number of old
+  indices consumed.
 - `SieveSequenceV0.next` now has an explicit `List.head`-style precondition:
   `primes.nextPrime.value < head.value * head.value`.
 
@@ -164,14 +178,21 @@ The ordering above follows the project lessons:
   establishes `nextSeq(vIdx) == apply(k)`, telescopes `sumGap(k, m)`, and proves
   the next sequence's merged gap is exactly the sum of the old skipped gaps.
   Verification passed: `total: 7391 valid: 7391 invalid: 0 unknown: 0`.
+- 2026-06-22: Added `nextMergedGapOldIndex(nextSeq, k, period)`, a public
+  one-step transformer for the prefix proof. It preserves the key recursion
+  invariant by proving the returned old index is strictly after `k` and its
+  value is accepted by `nextSeq`. Verification passed:
+  `total: 7445 valid: 7445 invalid: 0 unknown: 0`.
+- 2026-06-22: Added `mergedGapPrefix(nextSeq, k, remaining, period)`, the first
+  bounded prefix transformer. It emits `sumGap(k, nextK)` for each copied or
+  merged step and terminates by decreasing `remaining`. Verification passed:
+  `total: 7478 valid: 7478 invalid: 0 unknown: 0`.
 
 ## Open Work
 
-1. Add a bounded prefix transformer that walks old indices and emits copied or
-   merged gaps.
-2. Prove the generated prefix is positive and non-empty.
-3. Prove prefix equality against the next sequence's first generated values.
-4. Only after the prefix theorem is green, lift it to a gap-cycle statement.
+1. Prove the generated prefix is positive and non-empty.
+2. Prove prefix equality against the next sequence's first generated values.
+3. Only after the prefix theorem is green, lift it to a gap-cycle statement.
 
 ## Related Historical Tickets
 
