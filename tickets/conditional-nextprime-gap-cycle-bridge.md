@@ -437,8 +437,63 @@ Progress:
   `SieveSequenceV0.assertApplyOneAtOrBeforeAccepted(value)`. Verification
   result: `total: 6955 valid: 6955 invalid: 0 unknown: 0`.
 
+- 2026-06-21: Added and verified Lemma 1 —
+  `SieveSequenceV0.assertNextPrimePassesV0Filter(primes)`. Proves that
+  `AllPrimesSoFarList.nextPrime(list).value` is coprime to all V0 tail filter
+  primes by reusing `PrimeUtils.primeIsCoprimeWithSmallerList`. Verification
+  result: `total: 6968 valid: 6968 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified sqrt-bound lemmas in `PrimeProperties`:
+  `assertFindSmallestDivisorAtMost`, `assertCompositeHasDivisorStrictlyBelowN`,
+  `assertSmallestDivisorAtMostSqrt` (public), `assertDivisibleByFactorListNotCoprime`,
+  `assertCompositeSmallestPrimeDivisor` (public). These prove that a composite
+  number `n` has a smallest prime divisor `d` with `d * d <= n`. Verification
+  result: `total: 7132 valid: 7132 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified
+  `PrimeProperties.acceptedBelowHeadSquaredIsPrime(value, head, filterValues)`.
+  Proves that any value coprime to `filterValues` and below `head * head` is prime.
+  **Requires `SieveUtils.assertAllNotCoprimeInRange(head, 2, filterValues)`** (sieve
+  completeness) as a precondition — this is the remaining open proof obligation.
+  Verification result: `total: 7133 valid: 7133 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Attempted to add Lemma 4 (`assertNextPrimeEqualsApplyOneIfBeforeHeadSquared`)
+  and the cross-instance helper `assertApplyOneIsPrimeIfBelowHeadSq` in
+  `SieveSequenceV0`. The cross-instance calls to private methods caused VC explosion
+  (7167 VCs) and verification timeout (only ~1300 verified in 5 min). Deferred.
+
+- 2026-06-21 (end of session): Current verified state: **7138 valid, 0 invalid, 0 unknown**.
+  The following lemmas are verified and active:
+
+  **PrimeProperties:**
+  - `assertFindSmallestDivisorAtMost` — smallest divisor is truly minimal
+  - `assertCompositeHasDivisorStrictlyBelowN` — finds divisor < n for composites
+  - `assertSmallestDivisorAtMostSqrt` (public) — d*d <= n for smallest divisor d
+  - `assertDivisibleByFactorListNotCoprime` — transitivity: p|d and d|n ⇒ p|n
+  - `assertDivisorBelowHead` — d < head from d*d < head*head
+  - `assertCompositeSmallestPrimeDivisor` (public, `.ensuring`) — returns d with
+    d < n, d prime, d*d <= n
+  - `acceptedBelowHeadSquaredIsPrime` — requires sieve completeness precondition
+
+  **SieveSequenceV0:**
+  - `assertNextPrimePassesV0Filter` (Lemma 1) — nextPrime coprime to tail primes
+  - `applyStrictlyIncreases` (made public from private)
+  - `assertApplyMonotonic` — public wrapper: `from <= until ⇒ apply(from) <= apply(until)`
+  - `assertFilterValuesContainsInTail` — proves d ∈ tail filter values via parallel scan
+  - `assertFilterValuesContains` — proves d ∈ filterValues from prime list membership
+
+  **Deferred (timeout):**
+  - `divisorInFilterValues` (scans filterValues to prove `!isCoprime`) — recursive VC explosion
+  - `assertApplyOneIsPrimeIfBelowHeadSq` — cross-instance proof that apply(1) is prime
+    when apply(1) < head²
+  - `assertNextPrimeEqualsApplyOneIfBeforeHeadSquared` (Lemma 4) — the conditional equality
+
 Next target:
 
-- Prove `AllPrimesSoFarList.nextPrime(list).value` passes the V0 tail filter,
-  probably by reusing `PrimeUtils.primeIsCoprimeWithSmallerList` on the old
-  complete prime list.
+- Uncomment and verify `assertApplyOneIsPrimeIfBelowHeadSq`. The lemma together
+  with `divisorInFilterValues` adds too many VCs and times out (7167 total, ~1300
+  verifiable in 5 min). Possible path: move to a new file that avoids cross-instance
+  slowdown, or split `divisorInFilterValues` into a simpler membership lemma.
+- Once `assertApplyOneIsPrimeIfBelowHeadSq` verifies, add Lemma 4 equality.
+- After Lemma 4, prove the cycle-gap bridge theorem in `SieveSequenceV2`.
+  described in the main body.

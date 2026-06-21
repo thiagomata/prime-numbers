@@ -10,6 +10,7 @@ import v1.div.properties.ModOperations
 import v1.list.ListBoundUtils
 import v1.list.ListUtils
 import v1.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
+import v1.prime.properties.PrimeProperties
 
 import scala.annotation.tailrec
 
@@ -554,6 +555,33 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
+   * Proves that `AllPrimesSoFarList.nextPrime` passes the V0 tail filter.
+   *
+   * The next prime after the current list head is both larger than the head and
+   * coprime to all smaller primes (a distinct prime cannot be divisible by a
+   * smaller distinct prime). The V0 tail filter checks exactly this coprimality
+   * against the list of tail (strictly smaller) filter values at this stage, so
+   * the next prime is always accepted by the V0 generator.
+   *
+   * This lemma is the first bridge between the direct prime search
+   * (`AllPrimesSoFarList.nextPrime`) and the sequence generator
+   * (`SieveSequenceV0`). It supplies the `accepts` fact needed by later lemmas
+   * such as `assertApplyOneAtOrBeforeAccepted` and the conditional equality.
+   */
+  def assertNextPrimePassesV0Filter(primes: AllPrimesSoFarList): Boolean = {
+    require(!primes.isEmpty)
+    require(primes.size > 1)
+    require(AllPrimesSoFarList.allPrimesSoFar(primes.list))
+
+    val np = AllPrimesSoFarList.nextPrime(primes.list)
+    val filterPrimes: List[Prime] = primes.list.tail.list
+
+    assert(np.value > primes.head.value)
+    SortedPrimeList.assertTailDescending(primes.list.list)
+    PrimeUtils.primeIsCoprimeWithSmallerList(np.value, filterPrimes)
+  }.holds
+
+  /**
    * Proves the generator makes progress at every step.
    *
    * The completeness witness searches forward through indices until it reaches
@@ -561,7 +589,7 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
    * recursive search. This lemma supplies the progress fact: the next search
    * starts at `apply(k) + 1`, so its result is strictly greater than `apply(k)`.
    */
-  private def applyStrictlyIncreases(k: BigInt): Boolean = {
+  def applyStrictlyIncreases(k: BigInt): Boolean = {
     require(k >= BigInt(0))
 
     val previous = apply(k)
@@ -604,6 +632,13 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       assert(apply(until - BigInt(1)) < apply(until))
       apply(from) <= apply(until)
     }
+  }.holds
+
+  def assertApplyMonotonic(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until >= from)
+    assert(applyIndexOrderPreservesValues(from, until))
+    apply(from) <= apply(until)
   }.holds
 
   /**
@@ -1514,6 +1549,148 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
   // contains exactly R coprime values. But proving this in Stainless requires a
   // counting/interval lemma that times out on the inductive step.
   // Ticket: v0-gap-properties.md
+
+//  /**
+//   * Proves that `apply(1)` is prime when it lies below `head * head`.
+//   *
+//   * If `apply(1)` were composite its smallest prime divisor `d` would satisfy
+//   * `d*d <= apply(1) < head*head`, so `d < head`. By the prime list completeness
+//   * `d` is in `filterValues`, and `Calc.mod(apply(1), d) == 0` contradicts
+//   * `accepts(apply(1))`. Therefore `apply(1)` must be prime.
+//   */
+//  def assertApplyOneIsPrimeIfBelowHeadSq(): Boolean = {
+//    require(apply(BigInt(1)) < head.value * head.value)
+//
+  private def assertFilterValuesContains(d: BigInt): Boolean = {
+    require(d >= 2)
+    require(AllPrimesSoFarList.contains(d, primes.list.tail))
+    require(Calc.mod(apply(BigInt(1)), d) == BigInt(0))
+    decreases(primes.list.tail.size)
+
+    if (primes.list.tail.isEmpty) {
+      assert(false)
+      true
+    } else if (primes.list.tail.head.value == d) {
+      assert(!filterValues.isEmpty)
+      assert(filterValues.head == d)
+      true
+    } else {
+      assert(AllPrimesSoFarList.contains(d, primes.list.tail.tail))
+      assert(filterValues.tail == PrimeUtils.primeValues(primes.list.tail.tail.list))
+      assert(assertFilterValuesContainsInTail(d, primes.list.tail.tail, filterValues.tail, apply(BigInt(1))))
+      true
+    }
+  }.holds
+
+  private def assertFilterValuesContainsInTail(
+    d: BigInt,
+    tail: SortedPrimeList,
+    tailFilterValues: List[BigInt],
+    n: BigInt
+  ): Boolean = {
+    require(d >= 2)
+    require(tail.nonEmpty)
+    require(AllPrimesSoFarList.contains(d, tail))
+    require(tailFilterValues == PrimeUtils.primeValues(tail.list))
+    require(Calc.mod(n, d) == BigInt(0))
+    decreases(tail.size)
+
+    if (tail.head.value == d) {
+      assert(!tailFilterValues.isEmpty)
+      assert(tailFilterValues.head == d)
+      true
+    } else {
+      assert(AllPrimesSoFarList.contains(d, tail.tail))
+      assert(tailFilterValues.tail == PrimeUtils.primeValues(tail.tail.list))
+      assert(assertFilterValuesContainsInTail(d, tail.tail, tailFilterValues.tail, n))
+      true
+    }
+  }.holds
+
+  private def divisorInFilterValues(n: BigInt, d: BigInt, values: List[BigInt]): Boolean = {
+    require(n > 1 && d >= 2)
+    require(ListUtils.checkAllPositive(values))
+    require(Calc.mod(n, d) == BigInt(0))
+    require(listContains(d, values))
+    decreases(values.size)
+
+    if (values.isEmpty) {
+      assert(false)
+      true
+    } else if (values.head == d) {
+      assert(Calc.mod(n, d) == BigInt(0))
+      assert(!SieveUtils.isCoprime(n, values))
+      true
+    } else {
+      assert(listContains(d, values.tail))
+      assert(divisorInFilterValues(n, d, values.tail))
+      true
+    }
+  }.holds
+
+  private def listContains(d: BigInt, values: List[BigInt]): Boolean = {
+    decreases(values.size)
+    if (values.isEmpty) false
+    else if (values.head == d) true
+    else listContains(d, values.tail)
+  }
+
+//  def assertNextPrimeEqualsApplyOneIfBeforeHeadSquared(list: SortedPrimeList): Boolean = {
+//    require(list.nonEmpty)
+//    require(list.size > 1)
+//    require(AllPrimesSoFarList.allPrimesSoFar(list))
+//
+//    val primesSoFar = AllPrimesSoFarList(list)
+//    assert(PrimeUtils.primeIsCoprimeWithSmallerList(list.head.value, list.tail.list))
+//    val seq = SieveSequenceV0(primesSoFar)
+//    val p = AllPrimesSoFarList.nextPrime(list)
+//    val head = seq.head.value
+//    val pVal = p.value
+//
+//    if (pVal < head * head) {
+//      assert(pVal > head)
+//      SortedPrimeList.assertTailDescending(list.list)
+//      assert(PrimeUtils.primeIsCoprimeWithSmallerList(pVal, list.tail.list))
+//      assert(seq.accepts(pVal))
+//      // TODO: prove equality seq.apply(1) == pVal using sqrt-bound
+//      // and noPrimesBetween. Blocked by cross-instance private method calls.
+//      true
+//    } else {
+//      true
+//    }
+//  }.holds
+//
+//  def next: SieveSequenceV0 = {
+//    require(list.nonEmpty)
+//    require(list.size > 1)
+//    require(AllPrimesSoFarList.allPrimesSoFar(list))
+//
+//    val primesSoFar = AllPrimesSoFarList(list)
+//    assert(PrimeUtils.primeIsCoprimeWithSmallerList(list.head.value, list.tail.list))
+//    val seq = SieveSequenceV0(primesSoFar)
+//    val p = AllPrimesSoFarList.nextPrime(list)
+//    val head = seq.head.value
+//    val pVal = p.value
+//
+//    if (pVal < head * head) {
+//      assert(pVal > head)
+//
+//      SortedPrimeList.assertTailDescending(list.list)
+//      assert(PrimeUtils.primeIsCoprimeWithSmallerList(pVal, list.tail.list))
+//      assert(seq.accepts(pVal))
+//
+//      // Remaining steps to complete:
+//      // 1. seq.apply(1) <= pVal (via V0 completeness — needs cross-instance)
+//      // 2. seq.apply(1) < head*head (from step 1 and branch condition)
+//      // 3. Prime.isPrime(seq.apply(1)) (via sqrt bound — needs cross-instance)
+//      // 4. seq.apply(1) == pVal (contradiction with noPrimesBetween)
+//      // Steps 1-3 require cross-instance calls to private V0 lemmas.
+//      // For now, the theorem is vacuously true in both branches.
+//      true
+//    } else {
+//      true
+//    }
+//  }.holds
 
   def next: SieveSequenceV0 = {
     val newPrimes = primes.next

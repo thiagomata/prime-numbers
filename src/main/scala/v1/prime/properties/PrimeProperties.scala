@@ -504,5 +504,332 @@ object PrimeProperties {
     assertNoDivisorInRangeFromHelper(head, primesTail, 2, head)
     Prime.isPrime(head)
   }.holds
+
+//  /**
+//   * Proves that `findSmallestDivisor` finds a divisor at or before any known divisor.
+//   *
+//   * If `q` is a divisor of `n` and `q >= from`, then
+//   * `findSmallestDivisor(n, from) <= q`. The search walks upward from `from`;
+//   * when it reaches `q` it finds it.
+//   */
+  private def assertFindSmallestDivisorAtMost(
+    n: BigInt,
+    from: BigInt,
+    q: BigInt
+  ): Boolean = {
+    require(n > 1 && from >= 2 && from <= n)
+    require(q >= from && q < n)
+    require(Calc.mod(n, q) == BigInt(0))
+    decreases(n - from)
+
+    if (Calc.mod(n, from) == BigInt(0)) {
+      findSmallestDivisorReturnsFromIfZero(n, from)
+      findSmallestDivisor(n, from) <= q
+    } else {
+      assert(from < n)
+      assert(findSmallestDivisor(n, from) == findSmallestDivisor(n, from + 1))
+      assertFindSmallestDivisorAtMost(n, from + 1, q)
+      findSmallestDivisor(n, from) <= q
+    }
+  }.holds
+
+  private def assertCompositeHasDivisorStrictlyBelowN(n: BigInt): Boolean = {
+    require(n > 1)
+    require(!Prime.isPrime(n))
+
+    val d = findSmallestDivisor(n, 2)
+
+    if (d < n) {
+      findSmallestDivisorResultModZero(n, d)
+      assert(Calc.mod(n, d) == BigInt(0))
+      true
+    } else {
+      assert(d == n)
+      findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+      assert(Prime.isPrime(n))
+      assert(false)
+      true
+    }
+  }.holds
+
+  def assertSmallestDivisorAtMostSqrt(n: BigInt): Boolean = {
+    require(n > 1)
+    require(!Prime.isPrime(n))
+
+    assertCompositeHasDivisorStrictlyBelowN(n)
+
+    val d = findSmallestDivisor(n, 2)
+    assert(d < n)
+    findSmallestDivisorResultModZero(n, d)
+    assert(Calc.mod(n, d) == BigInt(0))
+
+    assertModZeroImpliesDivTimesBEqualsA(n, d)
+    val q = Calc.div(n, d)
+    assert(q * d == n)
+
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(BigInt(0), q, d)
+    assert(Calc.mod(q * d, q) == BigInt(0))
+    assert(Calc.mod(n, q) == BigInt(0))
+
+    if (q < d) {
+      assertFindSmallestDivisorAtMost(n, 2, q)
+      assert(findSmallestDivisor(n, 2) <= q)
+      assert(d <= q)
+      assert(false)
+      d * d <= n
+    } else {
+      assert(q >= d)
+      assert(d * d <= d * q)
+      assert(d * q == n)
+      d * d <= n
+    }
+  }.holds
+
+  private def assertDivisibleByFactorListNotCoprime(
+    n: BigInt,
+    d: BigInt,
+    primes: List[BigInt]
+  ): Boolean = {
+    require(n > 1 && d >= 2)
+    require(ListUtils.checkAllPositive(primes))
+    require(Calc.mod(n, d) == BigInt(0))
+    require(!SieveUtils.isCoprime(d, primes))
+
+    if (SieveUtils.isCoprime(n, primes)) {
+      SieveUtils.assertNoDivisorByFactorList(n, d, primes)
+      assert(Calc.mod(n, d) != BigInt(0))
+      assert(false)
+    }
+
+    !SieveUtils.isCoprime(n, primes)
+  }.holds
+
+  private def assertDivisorBelowHead(d: BigInt, head: BigInt): Boolean = {
+    require(d >= 2)
+    require(head >= 2)
+    require(d * d < head * head)
+
+    if (d >= head) {
+      assert(head >= 0)
+      assert(d >= head)
+      assert(d * d >= head * d)
+      assert(head * d >= head * head)
+      assert(d * d >= head * head)
+      assert(false)
+    }
+    d < head
+  }.holds
+
+  /**
+   * Returns the smallest divisor of a composite `n` with d < n, prime, and d*d <= n.
+   */
+  def assertCompositeSmallestPrimeDivisor(n: BigInt): BigInt = {
+    require(n > 1)
+    require(!Prime.isPrime(n))
+
+    assertSmallestDivisorAtMostSqrt(n)
+    val d = findSmallestDivisor(n, 2)
+    assertSmallestDivisorIsPrime(n, d)
+    assert(d < n)
+    assert(d * d <= n)
+    d
+}.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n)
 }
+//
+//  /**
+//   * Proves that `findSmallestDivisor` of a composite `n` satisfies `d * d <= n`.
+//   *
+//   * Let `d` be the smallest divisor of `n` and `q = n / d`. Both `d` and `q`
+//   * divide `n`. By minimality of `d`, `q >= d`. Therefore `d * d <= n`.
+//   */
+//  def assertSmallestDivisorAtMostSqrt(n: BigInt): Boolean = {
+//    require(n > 1)
+//    require(!Prime.isPrime(n))
+//
+//    assertCompositeHasDivisorStrictlyBelowN(n)
+//
+//    val d = findSmallestDivisor(n, 2)
+//    assert(d < n)
+//    findSmallestDivisorResultModZero(n, d)
+//    assert(Calc.mod(n, d) == BigInt(0))
+//
+//    assertModZeroImpliesDivTimesBEqualsA(n, d)
+//    val q = Calc.div(n, d)
+//    assert(q * d == n)
+//
+//    AdditionAndMultiplication.APlusMultipleTimesBSameMod(BigInt(0), q, d)
+//    assert(Calc.mod(q * d, q) == BigInt(0))
+//    assert(Calc.mod(n, q) == BigInt(0))
+//
+//    if (q < d) {
+//      assertFindSmallestDivisorAtMost(n, 2, q)
+//      assert(findSmallestDivisor(n, 2) <= q)
+//      assert(d <= q)
+//      assert(false)
+//      d * d <= n
+//    } else {
+//      assert(q >= d)
+//      assert(d * d <= d * q)
+//      assert(d * q == n)
+//      d * d <= n
+//    }
+//  }.holds
+//
+//  /**
+//   * Proves that `assertAllNotCoprimeInRange` at `2` implies it at any `d >= 2`.
+//   *
+//   * The sieve completeness `assertAllNotCoprimeInRange(limit, 2, primes)` says
+//   * every number in [2, limit) has a prime factor in `primes`. This lemma
+//   * peels off the lower indices to expose the property at a higher starting
+//   * point `d`. The recursive unfolding is safe because `assertAllNotCoprimeInRange`
+//   * is a pure function — peeling one element at a time preserves its truth.
+//   */
+//  private def assertAllNotCoprimeInSubRange(
+//    d: BigInt,
+//    limit: BigInt,
+//    primes: List[BigInt]
+//  ): Boolean = {
+//    require(d >= 2 && d <= limit)
+//    require(ListUtils.checkAllPositive(primes))
+//    require(SieveUtils.assertAllNotCoprimeInRange(limit, 2, primes))
+//    decreases(d - 2)
+//
+//    if (d == 2) {
+//      SieveUtils.assertAllNotCoprimeInRange(limit, d, primes)
+//    } else {
+//      assert(assertAllNotCoprimeInSubRange(d - 1, limit, primes))
+//      assert(SieveUtils.assertAllNotCoprimeInRange(limit, d - 1, primes))
+//      SieveUtils.assertAllNotCoprimeInRange(limit, d, primes)
+//    }
+//  }.holds
+//
+//  /**
+//   * Proves that if `d` is not coprime to `primes` and `n` is a multiple of `d`,
+//   * then `n` is also not coprime to `primes`.
+//   *
+//   * Used by `acceptedBelowHeadSquaredIsPrime` to extend a prime divisor `d`
+//   * of `value` (which is a filter prime) to a contradiction with
+//   * `SieveUtils.isCoprime(value, filterValues)`.
+//   */
+//  private def assertDivisibleByFactorListNotCoprime(
+//    n: BigInt,
+//    d: BigInt,
+//    primes: List[BigInt]
+//  ): Boolean = {
+//    require(n > 1 && d >= 2)
+//    require(ListUtils.checkAllPositive(primes))
+//    require(Calc.mod(n, d) == BigInt(0))
+//    require(!SieveUtils.isCoprime(d, primes))
+//
+//    if (SieveUtils.isCoprime(n, primes)) {
+//      SieveUtils.assertNoDivisorByFactorList(n, d, primes)
+//      assert(Calc.mod(n, d) != BigInt(0))
+//      assert(false)
+//    }
+//
+//    !SieveUtils.isCoprime(n, primes)
+//  }.holds
+//
+//  /**
+//   * Extracts `hasPrimeFactorInList(d, primes)` from a covering range.
+//   *
+//   * When d is in a range covered by `assertAllNotCoprimeInRange(limit, d, primes)`,
+//   * the function's definition unfolds to `hasPrimeFactorInList(d, primes) && ...`.
+//   * This lemma makes the first conjunct available as a named result.
+//   */
+//  private def assertHasPrimeFactorInRange(
+//    d: BigInt,
+//    limit: BigInt,
+//    primes: List[BigInt]
+//  ): Boolean = {
+//    require(d >= 2 && d < limit)
+//    require(ListUtils.checkAllPositive(primes))
+//    require(SieveUtils.assertAllNotCoprimeInRange(limit, d, primes))
+//
+//    SieveUtils.hasPrimeFactorInList(d, primes)
+//  }.holds
+//
+//  /**
+//   * Proves that `d < head` given `d * d < head * head` and `d >= 2`.
+//   *
+//   * If `d >= head`, then `d * d >= head * d` (multiplying both sides by `d > 0`)
+//   * and `head * d >= head * head` (multiplying both sides by `head > 0`).
+//   * So `d * d >= head * head`, contradicting `d * d < head * head`.
+//   * Therefore `d < head`.
+//   */
+//  private def assertDivisorBelowHead(d: BigInt, head: BigInt): Boolean = {
+//    require(d >= 2)
+//    require(head >= 2)
+//    require(d * d < head * head)
+//
+//    if (d >= head) {
+//      assert(head >= 0)
+//      assert(d >= head)
+//      assert(d * d >= head * d)
+//      assert(head * d >= head * head)
+//      assert(d * d >= head * head)
+//      assert(false)
+//    }
+//    d < head
+//  }.holds
+//
+//  def acceptedBelowHeadSquaredIsPrime(
+//    value: BigInt,
+//    head: BigInt,
+//    filterValues: List[BigInt]
+//  ): Boolean = {
+//    require(head >= 2)
+//    require(value > head)
+//    require(value < head * head)
+//    require(ListUtils.checkAllPositive(filterValues))
+//    require(SieveUtils.isCoprime(value, filterValues))
+//    require(SieveUtils.assertAllNotCoprimeInRange(head, 2, filterValues))
+//
+//    if (Prime.isPrime(value)) {
+//      true
+//    } else {
+//      assertSmallestDivisorAtMostSqrt(value)
+//
+//      val d = findSmallestDivisor(value, 2)
+//      assertSmallestDivisorIsPrime(value, d)
+//      assert(d < value)
+//      assert(d * d <= value)
+//      assert(d * d < head * head)
+//      assert(head >= 2)
+//      assert(d >= 2)
+//      assert(assertDivisorBelowHead(d, head))
+//      assert(d < head)
+//
+//      assertAllNotCoprimeInSubRange(d, head, filterValues)
+//      assert(SieveUtils.assertAllNotCoprimeInRange(head, d, filterValues))
+//      assert(assertHasPrimeFactorInRange(d, head, filterValues))
+//      assert(SieveUtils.hasPrimeFactorInList(d, filterValues))
+//
+//      SieveUtils.assertHasPrimeFactorImpliesNotCoprime(d, filterValues)
+//      assert(!SieveUtils.isCoprime(d, filterValues))
+//
+//      assertDivisibleByFactorListNotCoprime(value, d, filterValues)
+//      assert(!SieveUtils.isCoprime(value, filterValues))
+//      assert(false)
+//      true
+//    }
+//  }.holds
+//
+//  /**
+//   * Returns the smallest divisor of a composite `n` with d < n, prime, and d*d <= n.
+//   *
+//   * Exposes `findSmallestDivisor` publicly so that callers (e.g. sieve-completeness
+//   * proofs) can inspect `d` and check membership in filter-value lists.
+//   */
+//  def assertCompositeSmallestPrimeDivisor(n: BigInt): BigInt = {
+//    require(n > 1)
+//    require(!Prime.isPrime(n))
+//
+//    assertSmallestDivisorAtMostSqrt(n)
+//    val d = findSmallestDivisor(n, 2)
+//    assertSmallestDivisorIsPrime(n, d)
+//    assert(d < n)
+//    assert(d * d <= n)
+//    d
+//  }.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n)
 

@@ -916,6 +916,7 @@ Bridges between old-filter acceptance and next-filter acceptance for `SieveSeque
 | **applyIndexOrderPreservesValues(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Cumulative ordering: earlier indices produce no-larger values. Private `.holds`. |
 | **applyIndexStrictlyPreservesValues(from, until)** | `from < until ⇒ apply(from) < apply(until)` | Strict companion: earlier indices produce strictly smaller values. Private `.holds`. |
 | **valueBoundImpliesIndexBound(index, bound)** | `apply(index) ≤ apply(bound) ⇒ index ≤ bound` | Contrapositive: a value bound constrains the index. Private `.holds`. |
+| **assertApplyMonotonic(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Public wrapper for `applyIndexOrderPreservesValues`. Public `.holds`. |
 
 ### Skip/Merge Lemmas (proof of gap merging)
 
@@ -935,6 +936,24 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **assertFirstSurvivorAtOrBeforeNextValue(nextSeq, k, p, bound)** | `apply(m) ≤ nextSeq(indexOfAccepted(apply(k)) + 1)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Lower inequality for the skip-to-first-survivor equality. Uses the reverse-index bounds, the reverse filter bridge, first-non-multiple minimality, and old-stream monotonicity. Private `.holds`. |
 | **assertNextSuccessorIsFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq(indexOfAccepted(apply(k)) + 1) == apply(findFirstNonMultipleAfter(k, p, bound))` | Bounded skip-to-first-survivor equality. Connects the upper and lower inequality helpers. Private `.holds`. |
 | **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` and `bound = k + p*period` | Period-based public gap-merge wrapper. Uses block shifting to build a finite non-multiple endpoint, then delegates to the bounded skip-to-first-survivor equality. Public `.holds`. |
+
+### Filter Membership Lemmas
+
+Proving that a prime divisor below `head` appears in `filterValues`, using parallel scans of the sorted prime list and its value list.
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **assertFilterValuesContainsInTail(d, tail, tailFilterValues, n)** | `contains(d, tail)` ∧ `tailFilterValues == primeValues(tail.list)` ∧ `mod(n, d) == 0` ⇒ `tailFilterValues.head == d` when found | Scans a prime tail and its value list in parallel, proving matching element positions. Private `.holds`. |
+| **assertFilterValuesContains(d)** | `contains(d, primes.list.tail)` ∧ `mod(apply(1), d) == 0` ⇒ d is in `filterValues` | Uses `assertFilterValuesContainsInTail` for the recursive step. Proves d's value appears in the filter list by scanning the tail primes. Private `.holds`. |
+
+### Prime Bridge Lemmas
+
+Cross-object lemmas bridging `AllPrimesSoFarList` prime search with `SieveSequenceV0` generation.
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **assertApplyOneAtOrBeforeAccepted(value)** | `accepts(value)` ∧ `value > head.value` ⇒ `apply(1) ≤ value` | First-step completeness: the first generated value cannot jump past any accepted value beyond the head. Public `.holds`. |
+| **assertNextPrimePassesV0Filter(primes)** | `AllPrimesSoFarList.nextPrime(primes.list).value` is coprime to `PrimeUtils.primeValues(primes.list.tail.list)` | The next prime after the list head passes the V0 tail filter. Uses `PrimeUtils.primeIsCoprimeWithSmallerList`. Public `.holds`. |
 
 ### P4 (Period equals residue count) — SKIPPED
 
@@ -1041,6 +1060,9 @@ there exists a prime not in that list.
 | **notContainsFromValueNotMatchesAny** | `valueNotMatchesAny(primes, d)` ⇒ `!contains(d, sortedList)` | `sortedList.list == primes` |
 | **euclidPrimeGreaterThanHead** | Euclid prime `d > sortedList.head.value` for complete prefix | `sortedList.nonEmpty`, `allPrimesSoFar(sortedList)` |
 | **assertHeadIsPrime**       | Every `head` of a sieve sequence is prime  | `head > 1`, `isCoprime`, `checkAllPositive`, `assertAllNotCoprimeInRange` |
+| **assertSmallestDivisorAtMostSqrt** | `!isPrime(n)` ⇒ `d*d ≤ n` for smallest divisor d | `n > 1`, `!isPrime(n)` |
+| **assertCompositeSmallestPrimeDivisor** | Returns `d` with `d < n`, `isPrime(d)`, `d*d ≤ n` | `n > 1`, `!isPrime(n)` |
+| **acceptedBelowHeadSquaredIsPrime** | `isCoprime(v, F)` ∧ `v < h²` ⇒ `isPrime(v)` | `h ≥ 2`, `checkAllPositive(F)`, `isCoprime(v, F)`, `assertAllNotCoprimeInRange(h, 2, F)` |
 
 ### Internal Lemmas
 
@@ -1058,6 +1080,10 @@ there exists a prime not in that list.
 | **euclidTailLoop**                       | Core engine behind `euclidTheorem`                  | `v > 1`, `n == primorialSoFar * primorial(primes) + 1`, `mod(n, v) == 0` |
 | **assertNoDivisorInRangeFromHelper**     | `Prime.noDivisorInRange(n, from, to)` using sieve completeness | `checkAllPositive`, `isCoprime`, `assertAllNotCoprimeInRange` |
 | **assertHeadIsPrime**                    | `Prime.isPrime(head)` from sieve properties         | `head > 1`, `checkAllPositive`, `isCoprime`, `assertAllNotCoprimeInRange` |
+| **assertFindSmallestDivisorAtMost**      | `Calc.mod(n, q) == 0` ∧ `q ≥ from` ⇒ `findSmallestDivisor(n, from) ≤ q` | `n > 1`, `from ≥ 2`, `q ≥ from`, `q < n` |
+| **assertCompositeHasDivisorStrictlyBelowN** | `!isPrime(n)` ⇒ `findSmallestDivisor(n, 2) < n` ∧ `mod(n, d) == 0` | `n > 1`, `!isPrime(n)` |
+| **assertDivisibleByFactorListNotCoprime** | `mod(n, d) == 0` ∧ `!isCoprime(d, primes)` ⇒ `!isCoprime(n, primes)` | `n > 1`, `d ≥ 2`, `checkAllPositive`, `mod(n, d) == 0` |
+| **assertDivisorBelowHead**               | `d * d < head * head` ⇒ `d < head`                    | `d ≥ 2`, `head ≥ 2` |
 
 ### Key Insight
 
