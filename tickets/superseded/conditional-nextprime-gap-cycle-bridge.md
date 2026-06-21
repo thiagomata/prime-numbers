@@ -462,38 +462,168 @@ Progress:
   `SieveSequenceV0`. The cross-instance calls to private methods caused VC explosion
   (7167 VCs) and verification timeout (only ~1300 verified in 5 min). Deferred.
 
-- 2026-06-21 (end of session): Current verified state: **7138 valid, 0 invalid, 0 unknown**.
-  The following lemmas are verified and active:
+- 2026-06-21 (end of session): Current verified state: **7195 valid, 0 invalid, 0 unknown**.
+  
+  **Verified lemmas (all passing):**
 
-  **PrimeProperties:**
-  - `assertFindSmallestDivisorAtMost` — smallest divisor is truly minimal
-  - `assertCompositeHasDivisorStrictlyBelowN` — finds divisor < n for composites
-  - `assertSmallestDivisorAtMostSqrt` (public) — d*d <= n for smallest divisor d
-  - `assertDivisibleByFactorListNotCoprime` — transitivity: p|d and d|n ⇒ p|n
+  **PrimeProperties** (sqrt-bound chain):
+  - `assertFindSmallestDivisorAtMost` — smallest divisor minimality
+  - `assertCompositeHasDivisorStrictlyBelowN` — finds divisor < n
+  - `assertSmallestDivisorAtMostSqrt` (public) — d*d <= n
+  - `assertDivisibleByFactorListNotCoprime` — divisibility transitivity
   - `assertDivisorBelowHead` — d < head from d*d < head*head
-  - `assertCompositeSmallestPrimeDivisor` (public, `.ensuring`) — returns d with
-    d < n, d prime, d*d <= n
-  - `acceptedBelowHeadSquaredIsPrime` — requires sieve completeness precondition
+  - `assertCompositeSmallestPrimeDivisor` (public, `.ensuring`) — returns d
+  - `acceptedBelowHeadSquaredIsPrime` — requires sieve completeness
 
-  **SieveSequenceV0:**
-  - `assertNextPrimePassesV0Filter` (Lemma 1) — nextPrime coprime to tail primes
-  - `applyStrictlyIncreases` (made public from private)
-  - `assertApplyMonotonic` — public wrapper: `from <= until ⇒ apply(from) <= apply(until)`
-  - `assertFilterValuesContainsInTail` — proves d ∈ tail filter values via parallel scan
-  - `assertFilterValuesContains` — proves d ∈ filterValues from prime list membership
+  **SieveSequenceV0**:
+  - `assertNextPrimePassesV0Filter` — Lemma 1
+  - `applyStrictlyIncreases` (public)
+  - `assertApplyMonotonic` — public ordering wrapper
+  - `assertFilterValuesContainsInTail` — parallel prime/value scan
+  - `assertFilterValuesContains` — d ∈ filterValues proof
+  - `divisorInFilterValues` — `!isCoprime(n, values)` via scanning
+  - `listContains` — utility membership check
+  - `assertApplyOneIsPrimeIfBelowHeadSq` — `Prime.isPrime(apply(1))` when apply(1) < head²
+  - `assertApplyOneLeqValue` — `apply(1) ≤ value` for any accepted value > head
+  - `assertApplyOneGtHead` — `head.value + 1 ≤ apply(1)` (stronger return)
 
-  **Deferred (timeout):**
-  - `divisorInFilterValues` (scans filterValues to prove `!isCoprime`) — recursive VC explosion
-  - `assertApplyOneIsPrimeIfBelowHeadSq` — cross-instance proof that apply(1) is prime
-    when apply(1) < head²
-  - `assertNextPrimeEqualsApplyOneIfBeforeHeadSquared` (Lemma 4) — the conditional equality
+  **Blocked (Lemma 4 — `assertNextPrimeEqualsApplyOneIfBeforeHeadSquared`):**
+  The cross-instance calls to `seq.assertApplyOneIsPrimeIfBelowHeadSq()` and
+  `seq.assertApplyOneGtHead()` each generate complex VCs that time out at 600s.
+  The VCs are large because they include ALL preceding assertions in the lemma body.
+  
+  **Lesson learned:** Cross-instance calls to lemmas that internally unfold `apply(k)` 
+  (searchBound, searchNext, etc.) create large VCs because the solver needs to unfold
+  the entire computation for the new instance. The solution is to avoid assembling
+  many cross-instance calls in a single lemma — each call should be the ONLY call
+  in its lemma, so the VC is small.
+
+- 2026-06-21: Added and verified
+  `SieveSequenceV0.assertApplyOneBelowHeadSqFromUpper(value)`. This isolates the
+  arithmetic step `apply(1) <= value` and `value < head * head` ⇒
+  `apply(1) < head * head`, so the final conditional equality proof does not
+  ask Stainless to rediscover that transitive bound while also unfolding
+  cross-instance sequence lemmas. Verification result:
+  `total: 7198 valid: 7198 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified
+  `SieveSequenceV0.assertApplyOnePrimeFromUpperBelowHeadSq(value)`. This wrapper
+  composes the upper-bound transfer with `assertApplyOneIsPrimeIfBelowHeadSq()`
+  in a single-instance VC. It gives the future conditional bridge the fact
+  `Prime.isPrime(apply(1))` from `apply(1) <= value` and
+  `value < head * head`, without assembling divisor/filter proof internals in
+  the same lemma as `AllPrimesSoFarList.nextPrime`. Verification result:
+  `total: 7207 valid: 7207 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified
+  `SieveSequenceV0.assertOwnNextPrimeAccepted()`. This wrapper packages the
+  current instance's direct `AllPrimesSoFarList.nextPrime(primes.list)` result
+  as a V0 accepted value by combining `p.value > head.value`,
+  `assertNextPrimePassesV0Filter(primes)`, and `passesFilter(p.value)`. This
+  gives Lemma 2 a single fact to consume before proving
+  `apply(1) <= nextPrime.value`. Verification result:
+  `total: 7217 valid: 7217 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified
+  `SieveSequenceV0.assertApplyOneAtOrBeforeOwnNextPrime()`. This completes the
+  Lemma 2 bridge for the current instance:
+  `apply(1) <= AllPrimesSoFarList.nextPrime(primes.list).value`. The wrapper
+  consumes only `assertOwnNextPrimeAccepted()` and `assertApplyOneLeqValue`,
+  keeping the accepted-value search proof isolated from later primality/equality
+  work. Verification result:
+  `total: 7225 valid: 7225 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added and verified
+  `SieveSequenceV0.assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()`. This
+  wrapper proves `Prime.isPrime(apply(1))` in the conditional branch
+  `AllPrimesSoFarList.nextPrime(primes.list).value < head.value * head.value`.
+  It composes only the ordering wrapper
+  `assertApplyOneAtOrBeforeOwnNextPrime()` with the square-bound primality
+  wrapper `assertApplyOnePrimeFromUpperBelowHeadSq(p.value)`, avoiding the
+  global prime-before-square theorem. Verification result:
+  `total: 7234 valid: 7234 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Attempted
+  `SieveSequenceV0.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`, an
+  instance-local equality wrapper intended to avoid the older cross-instance VC.
+  The shape was:
+  use `assertApplyOneAtOrBeforeOwnNextPrime()` for `apply(1) <= nextPrime`,
+  use `assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()` for
+  `Prime.isPrime(apply(1))` in the branch, then contradict
+  `apply(1) < nextPrime` with
+  `AllPrimesSoFarList.noPrimesBetweenExcludesValue(head + 1, nextPrime, apply(1))`.
+  Stainless timed out on two VCs:
+  - line 1807: proving `head.value + 1 <= v1` before calling
+    `noPrimesBetweenExcludesValue`;
+  - line 1813: proving the final `p.value == v1` postcondition.
+  Verification result:
+  `total: 7247 valid: 7245 invalid: 0 unknown: 2 time: 269.98`, exit code 1.
+  Per AGENTS.md, this is a failed attempt and no further proof variation was
+  tried in this loop.
+
+- 2026-06-21: Commented out the timeout-triggering
+  `SieveSequenceV0.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`
+  method while preserving the sketch in source comments. The verified helper
+  wrappers remain active. This restored the project to green. Verification
+  result:
+  `total: 7234 valid: 7234 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Briefly tried a required-facts contradiction helper after the
+  proof-value audit, then removed it. The helper verified by requiring all of
+  the meaningful facts up front (`head + 1 <= apply(1)`, `apply(1) < nextPrime`,
+  `Prime.isPrime(apply(1))`, and `noPrimesBetween(...)`), so it added little
+  project leverage and risked making the bridge look more complete than it is.
+  Exact-name search found no remaining markdown or code references after
+  removal. Verification after removal restored the previous green state:
+  `total: 7234 valid: 7234 invalid: 0 unknown: 0`.
+
+- 2026-06-21: Added a `List.head`-style precondition to
+  `SieveSequenceV0.next`: callers must provide
+  `primes.nextPrime.value < head.value * head.value`. This makes the missing
+  prime-before-square fact explicit at the method boundary while keeping the
+  implementation simple: the body still delegates to `AllPrimesSoFarList.next`
+  and proves the resulting list satisfies the V0 constructor. Verification
+  result:
+  `total: 7235 valid: 7235 invalid: 0 unknown: 0`.
 
 Next target:
 
-- Uncomment and verify `assertApplyOneIsPrimeIfBelowHeadSq`. The lemma together
-  with `divisorInFilterValues` adds too many VCs and times out (7167 total, ~1300
-  verifiable in 5 min). Possible path: move to a new file that avoids cross-instance
-  slowdown, or split `divisorInFilterValues` into a simpler membership lemma.
-- Once `assertApplyOneIsPrimeIfBelowHeadSq` verifies, add Lemma 4 equality.
-- After Lemma 4, prove the cycle-gap bridge theorem in `SieveSequenceV2`.
-  described in the main body.
+- Reframe the remaining work around making `SieveSequenceV0.next` useful rather
+  than forcing the equality `nextPrime == apply(1)`. Keep the V0-generator
+  lemmas that have independent value for `next`, especially
+  `assertApplyOneLeqValue(value)`, `assertOwnNextPrimeAccepted()`, and
+  `assertApplyOneAtOrBeforeOwnNextPrime()`. Treat the square-bound/equality
+  wrappers as conditional support only, not as proof that the next prime lies
+  before `head * head`.
+  First wrapper completed: `assertApplyOneBelowHeadSqFromUpper(value)`.
+  Second wrapper completed: `assertApplyOnePrimeFromUpperBelowHeadSq(value)`.
+  Third wrapper completed: `assertOwnNextPrimeAccepted()`.
+  Fourth wrapper completed: `assertApplyOneAtOrBeforeOwnNextPrime()`.
+  Fifth wrapper completed: `assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()`.
+  Current `next` boundary completed: `SieveSequenceV0.next` now requires
+  `primes.nextPrime.value < head.value * head.value` and verifies green.
+
+## Track Evaluation
+
+2026-06-21 assessment:
+
+- Do **not** continue trying to prove the unconditional theorem "there is always
+  a prime between `head` and `head * head`" as part of this ticket. That path
+  would require either Bertrand-style number theory or a general Chinese-sieve
+  counting theorem, both of which remain outside the current verified library.
+- Keep the progress from the attempted track where it has independent V0 value.
+  The sqrt/divisor lemmas and the V0-specific
+  `assertApplyOneIsPrimeIfBelowHeadSq()` are useful conditional facts, but they
+  do not prove the square-range theorem or complete the equality bridge.
+- The live blocker is not mathematical plausibility; it is Stainless VC size
+  from combining several cross-instance calls in one lemma. The next attempt
+  should split Lemma 4 into single-purpose wrappers:
+  - wrapper for `nextPrime` accepted by V0 tail filter;
+  - wrapper for `apply(1) <= nextPrime`;
+  - wrapper for `apply(1) < head * head` inside the conditional branch;
+  - wrapper for `Prime.isPrime(apply(1))`;
+  - wrapper for `head + 1 <= apply(1)`.
+  Do not add another over-required contradiction helper unless it directly
+  completes a verified final theorem.
+- Treat the unconditional prime-before-square theorem as a separate research
+  ticket. It is not required for the conditional branch shape proposed here.

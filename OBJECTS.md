@@ -888,7 +888,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **accepts(v)** | `passesFilter(v)` | Requires `v >= head.value` |
 | **indexOfAccepted(v)** | Index where `apply(k) == v` | Completeness witness |
 | **assertApplyOneAtOrBeforeAccepted(v)** | `accepts(v)` ∧ `v > head.value` ⇒ `apply(1) <= v` | Public first-step completeness wrapper over the private skipped-interval proof. |
-| **next** | Builds next stage with `primes.next` | Returns SieveSequenceV0 |
+| **next** | Builds next stage with `primes.next` | Requires `primes.nextPrime.value < head.value * head.value`, in the same style as `List.head` requiring a non-empty list. Returns `SieveSequenceV0`. |
 
 ### Gap Lemmas (proved)
 
@@ -898,6 +898,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **assertGapPeriodic(k, p)** | `apply(k+1+p) - apply(k+p) == apply(k+1) - apply(k)` where `p = indexOfAccepted(head+M)` | Uses `assertBlockShift` at `k` and `k+1`. Public `.ensuring`. |
 | **assertGapSum(p)** | `sum_{i=0}^{p-1} (apply(i+1)-apply(i)) == M` | Via `sumGap` (private) + `assertSumGapTelescopes` (private). Public `.holds`. |
 | **assertFilterPreservesNextPosition(nextSeq, k)** | `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(indexOfAccepted(V)+1) == apply(k+1)` | Proves that adding a filter prime preserves the next-position relationship between two V0 sequences. Uses `nextDoesNotPassAcceptedValue` bidirectionally. 6379 valid. |
+| **assertFilterPreservesNextGap(nextSeq, k)** | Same copy-case preconditions as `assertFilterPreservesNextPosition`: `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(vIdx+1) - nextSeq(vIdx) == apply(k+1) - apply(k)` | Public `.holds` corollary. Names the copied-gap fact so later gap-list proofs can consume it directly. Verified with 7259 valid. |
 
 ### Filter Bridge Lemmas
 
@@ -935,7 +936,10 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **assertNextSuccessorOldIndexWithinBound(nextSeq, k, p, bound)** | For `z = nextSeq(indexOfAccepted(apply(k)) + 1)`, `indexOfAccepted(z) ≤ bound` in the old sequence | Bounded reverse-index helper. Uses the upper inequality, old-stream monotonicity, and `valueBoundImpliesIndexBound`. Private `.holds`. |
 | **assertFirstSurvivorAtOrBeforeNextValue(nextSeq, k, p, bound)** | `apply(m) ≤ nextSeq(indexOfAccepted(apply(k)) + 1)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Lower inequality for the skip-to-first-survivor equality. Uses the reverse-index bounds, the reverse filter bridge, first-non-multiple minimality, and old-stream monotonicity. Private `.holds`. |
 | **assertNextSuccessorIsFirstSurvivor(nextSeq, k, p, bound)** | `nextSeq(indexOfAccepted(apply(k)) + 1) == apply(findFirstNonMultipleAfter(k, p, bound))` | Bounded skip-to-first-survivor equality. Connects the upper and lower inequality helpers. Private `.holds`. |
+| **assertPeriodBoundIsNonMultiple(nextSeq, k, period)** | For `p = nextSeq.filterValues.head` and `bound = k + p*period`, proves `p > 0`, `bound > k`, and `Calc.mod(apply(bound), p) != 0` | Public endpoint lemma for period-based bounded search. Exposes the facts callers need before constructing `findFirstNonMultipleAfter`. Public `.ensuring`. Verified with 7321 valid. |
 | **assertSkipUntilNonMultiple(nextSeq, k, period)** | `nextSeq(vIdx+1) == apply(m)` where `m = findFirstNonMultipleAfter(k, p, bound)` and `bound = k + p*period` | Period-based public gap-merge wrapper. Uses block shifting to build a finite non-multiple endpoint, then delegates to the bounded skip-to-first-survivor equality. Public `.holds`. |
+| **assertMergeLandsOnFirstSurvivor(nextSeq, k, period)** | Same landing equality as `assertSkipUntilNonMultiple`: `nextSeq(vIdx+1) == apply(m)` for the first old-stream non-multiple after `k` | Public property-name alias for the merge landing proof. Consumes `assertPeriodBoundIsNonMultiple`, constructs the first-survivor witness, and proves the equality directly. Verified with 7340 valid. |
+| **assertMergeGapEqualsOldGapSum(nextSeq, k, period)** | `nextSeq(vIdx+1) - nextSeq(vIdx) == sumGap(k, m)` where `m = findFirstNonMultipleAfter(k, p, bound)` | Public merged-gap corollary. Uses the landing alias plus `assertSumGapTelescopes(k, m)` to prove that a skipped run merges exactly into the sum of old adjacent gaps. Verified with 7391 valid. |
 
 ### Filter Membership Lemmas
 
@@ -945,6 +949,8 @@ Proving that a prime divisor below `head` appears in `filterValues`, using paral
 |---|---|---|
 | **assertFilterValuesContainsInTail(d, tail, tailFilterValues, n)** | `contains(d, tail)` ∧ `tailFilterValues == primeValues(tail.list)` ∧ `mod(n, d) == 0` ⇒ `tailFilterValues.head == d` when found | Scans a prime tail and its value list in parallel, proving matching element positions. Private `.holds`. |
 | **assertFilterValuesContains(d)** | `contains(d, primes.list.tail)` ∧ `mod(apply(1), d) == 0` ⇒ d is in `filterValues` | Uses `assertFilterValuesContainsInTail` for the recursive step. Proves d's value appears in the filter list by scanning the tail primes. Private `.holds`. |
+| **divisorInFilterValues(n, d, values)** | `mod(n, d) == 0` ∧ `listContains(d, values)` ⇒ `!isCoprime(n, values)` | Scans filter values for d, proving non-coprimality when d divides n. Private `.holds`. |
+| **listContains(d, values)** | Scans values for d (utility function) | No `.holds`. |
 
 ### Prime Bridge Lemmas
 
@@ -954,6 +960,14 @@ Cross-object lemmas bridging `AllPrimesSoFarList` prime search with `SieveSequen
 |---|---|---|
 | **assertApplyOneAtOrBeforeAccepted(value)** | `accepts(value)` ∧ `value > head.value` ⇒ `apply(1) ≤ value` | First-step completeness: the first generated value cannot jump past any accepted value beyond the head. Public `.holds`. |
 | **assertNextPrimePassesV0Filter(primes)** | `AllPrimesSoFarList.nextPrime(primes.list).value` is coprime to `PrimeUtils.primeValues(primes.list.tail.list)` | The next prime after the list head passes the V0 tail filter. Uses `PrimeUtils.primeIsCoprimeWithSmallerList`. Public `.holds`. |
+| **assertApplyOneLeqValue(value)** | `accepts(value)` ∧ `value > head.value` ⇒ `apply(1) ≤ value` | Proves `apply(1)` ≤ any accepted value. Uses `indexOfAccepted` and `assertApplyMonotonic`. Public `.holds`. |
+| **assertApplyOneGtHead()** | `head.value + 1 ≤ apply(1)` | Proves the first generated value is strictly larger than head + 1. Uses `applyStrictlyIncreases`. Public `.holds`. |
+| **assertApplyOneIsPrimeIfBelowHeadSq()** | `apply(1) < head²` ⇒ `Prime.isPrime(apply(1))` | Uses the sqrt-bound lemma + divisor filtering to prove apply(1) cannot be composite below head². Public `.holds`. |
+| **assertApplyOneBelowHeadSqFromUpper(value)** | `apply(1) ≤ value` ∧ `value < head²` ⇒ `apply(1) < head²` | Tiny conditional-branch arithmetic wrapper for feeding `assertApplyOneIsPrimeIfBelowHeadSq()`. Public `.holds`. |
+| **assertApplyOnePrimeFromUpperBelowHeadSq(value)** | `apply(1) ≤ value` ∧ `value < head²` ⇒ `Prime.isPrime(apply(1))` | One-call wrapper around square-bound primality so the final bridge can avoid carrying divisor/filter proof VCs. Public `.holds`. |
+| **assertOwnNextPrimeAccepted()** | `accepts(AllPrimesSoFarList.nextPrime(primes.list).value)` | Packages the current instance's direct next-prime result as a V0 tail-filter accepted value. Public `.holds`. |
+| **assertApplyOneAtOrBeforeOwnNextPrime()** | `apply(1) ≤ AllPrimesSoFarList.nextPrime(primes.list).value` | Lemma 2 wrapper: the first V0 survivor cannot skip past the accepted direct next-prime result. Public `.holds`. |
+| **assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()** | `nextPrime.value < head²` ⇒ `Prime.isPrime(apply(1))` | Conditional-branch wrapper proving apply(1) prime from the direct next-prime square bound, without requiring a global prime-before-square theorem. Public `.holds`. |
 
 ### P4 (Period equals residue count) — SKIPPED
 

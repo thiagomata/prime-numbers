@@ -1085,6 +1085,45 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     res && nextSeq(vIdx + BigInt(1)) == W
   })
 
+  /**
+   * Proves the copied-gap corollary for the immediate-survivor case.
+   *
+   * The old sequence filters by `filterValues`; `nextSeq` filters by one
+   * additional front value followed by the same tail. If `apply(k)` is accepted
+   * by `nextSeq`, it has an index there. If the old immediate successor
+   * `apply(k + 1)` is also not a multiple of the new front filter, then
+   * `nextSeq` must place that successor immediately after `apply(k)`.
+   *
+   * Therefore the gap is copied unchanged:
+   *
+   *   nextSeq(vIdx + 1) - nextSeq(vIdx) == apply(k + 1) - apply(k)
+   *
+   * This is the local copy case used by gap-merge proofs. It deliberately
+   * says nothing about the branch where `apply(k + 1)` is removed by the new
+   * front filter; that branch is handled by merge/skip lemmas.
+   */
+  def assertFilterPreservesNextGap(
+    nextSeq: SieveSequenceV0,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) != BigInt(0))
+
+    val v = apply(k)
+    val w = apply(k + BigInt(1))
+    val vIdx = nextSeq.indexOfAccepted(v)
+
+    assert(nextSeq(vIdx) == v)
+    assert(assertFilterPreservesNextPosition(nextSeq, k))
+    assert(nextSeq(vIdx + BigInt(1)) == w)
+
+    nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == w - v
+  }.holds
+
   private def findFirstNonMultipleAfter(k: BigInt, p: BigInt, bound: BigInt): BigInt = {
     require(k >= BigInt(0))
     require(p > BigInt(0))
@@ -1498,6 +1537,51 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
+   * Exposes the finite endpoint used by the period-based merge proof.
+   *
+   * The skipped-successor merge needs a bounded search for the first old-stream
+   * value after `k` that survives the new front filter `p`. The endpoint
+   * `k + p * period` is useful because one old period adds `filterModulus`, so
+   * `p` whole periods add `p * filterModulus`. That shift preserves the
+   * remainder modulo `p`, which means the endpoint survives whenever `apply(k)`
+   * survives.
+   *
+   * This lemma packages those endpoint facts for callers: the bound is after
+   * `k`, the divisor `p` is positive, and `apply(bound)` is not a multiple of
+   * `p`.
+   */
+  def assertPeriodBoundIsNonMultiple(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val p = nextSeq.filterValues.head
+    val bound = k + p * period
+
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(p > BigInt(0))
+    assert(bound > k)
+    assert(assertBlockShiftMultiple(k, p, period))
+    assert(apply(bound) == apply(k) + p * filterModulus)
+    assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k)))
+    assert(Calc.mod(apply(k), p) != BigInt(0))
+    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, filterModulus))
+    assert(Calc.mod(apply(k) + p * filterModulus, p) == Calc.mod(apply(k), p))
+
+    Calc.mod(apply(bound), p) != BigInt(0)
+  }.ensuring(res => {
+    val p = nextSeq.filterValues.head
+    val bound = k + p * period
+    res && p > BigInt(0) && bound > k && Calc.mod(apply(bound), p) != BigInt(0)
+  })
+
+  /**
    * Period-based gap merge for a skipped immediate old successor.
    *
    * This is the public wrapper around the bounded merge lemma. The bounded
@@ -1543,6 +1627,79 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     nextSeq(vIdx + BigInt(1)) == apply(m)
   }.holds
 
+  /**
+   * Obvious property-name alias for the merge landing point.
+   *
+   * This lemma intentionally restates `assertSkipUntilNonMultiple` with a name
+   * that matches the gap-cycle proof ladder: when the immediate old successor
+   * `apply(k + 1)` is removed by the newly added front filter, the next sequence
+   * lands exactly on the first later old-stream value that survives that new
+   * filter.
+   *
+   * Keeping this public alias makes the merge proof easier to find from the
+   * mathematical property name without forcing callers to remember the helper
+   * implementation name.
+   */
+  def assertMergeLandsOnFirstSurvivor(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val p = nextSeq.filterValues.head
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val bound = k + p * period
+
+    assert(assertPeriodBoundIsNonMultiple(nextSeq, k, period))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+    assert(assertSkipUntilNonMultiple(nextSeq, k, period))
+
+    nextSeq(vIdx + BigInt(1)) == apply(m)
+  }.holds
+
+  /**
+   * Proves the merged-gap corollary for the skipped-successor case.
+   *
+   * When the immediate old successor `apply(k + 1)` is removed by the new front
+   * filter, `nextSeq` lands on the first later old-stream survivor `apply(m)`.
+   * The new gap is therefore not a new arithmetic object; it is exactly the
+   * telescope of the old adjacent gaps from `k` up to `m`.
+   *
+   * This is the gap-list merge shape needed by the prefix transformer: copied
+   * gaps use `assertFilterPreservesNextGap`, while skipped runs use this lemma
+   * to replace several old gaps with their sum.
+   */
+  def assertMergeGapEqualsOldGapSum(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val p = nextSeq.filterValues.head
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+    val bound = k + p * period
+
+    assert(assertPeriodBoundIsNonMultiple(nextSeq, k, period))
+    val m = findFirstNonMultipleAfter(k, p, bound)
+    assert(m >= k)
+    assert(assertMergeLandsOnFirstSurvivor(nextSeq, k, period))
+    assert(nextSeq(vIdx) == apply(k))
+    assert(nextSeq(vIdx + BigInt(1)) == apply(m))
+    assert(assertSumGapTelescopes(k, m))
+
+    nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == sumGap(k, m)
+  }.holds
+
   // P4 (assertPeriodEqualsResidueCount) SKIPPED
   // The property p == residues(M, filterValues).size is true by interval periodicity:
   // isCoprime(x, F) == isCoprime(Calc.mod(x, M), F), so any interval of length M
@@ -1573,12 +1730,12 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     } else if (primes.list.tail.head.value == d) {
       assert(!filterValues.isEmpty)
       assert(filterValues.head == d)
-      true
+      listContains(d, filterValues)
     } else {
       assert(AllPrimesSoFarList.contains(d, primes.list.tail.tail))
       assert(filterValues.tail == PrimeUtils.primeValues(primes.list.tail.tail.list))
       assert(assertFilterValuesContainsInTail(d, primes.list.tail.tail, filterValues.tail, apply(BigInt(1))))
-      true
+      listContains(d, filterValues)
     }
   }.holds
 
@@ -1598,12 +1755,12 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     if (tail.head.value == d) {
       assert(!tailFilterValues.isEmpty)
       assert(tailFilterValues.head == d)
-      true
+      listContains(d, tailFilterValues)
     } else {
       assert(AllPrimesSoFarList.contains(d, tail.tail))
       assert(tailFilterValues.tail == PrimeUtils.primeValues(tail.tail.list))
       assert(assertFilterValuesContainsInTail(d, tail.tail, tailFilterValues.tail, n))
-      true
+      listContains(d, tailFilterValues)
     }
   }.holds
 
@@ -1616,15 +1773,16 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
 
     if (values.isEmpty) {
       assert(false)
-      true
+      !SieveUtils.isCoprime(n, values)
     } else if (values.head == d) {
       assert(Calc.mod(n, d) == BigInt(0))
-      assert(!SieveUtils.isCoprime(n, values))
-      true
+      !SieveUtils.isCoprime(n, values)
+    } else if (Calc.mod(n, values.head) == BigInt(0)) {
+      !SieveUtils.isCoprime(n, values)
     } else {
       assert(listContains(d, values.tail))
       assert(divisorInFilterValues(n, d, values.tail))
-      true
+      !SieveUtils.isCoprime(n, values)
     }
   }.holds
 
@@ -1634,6 +1792,186 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     else if (values.head == d) true
     else listContains(d, values.tail)
   }
+
+  def assertApplyOneIsPrimeIfBelowHeadSq(): Boolean = {
+    require(apply(BigInt(1)) < head.value * head.value)
+
+    val v1 = apply(BigInt(1))
+    assert(applyStrictlyIncreases(0))
+
+    if (Prime.isPrime(v1)) {
+      Prime.isPrime(v1)
+    } else {
+      val d = PrimeProperties.assertCompositeSmallestPrimeDivisor(v1)
+      assert(d < head.value)
+      assert(Calc.mod(v1, d) == BigInt(0))
+
+      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(d, primes.list)
+      assert(AllPrimesSoFarList.contains(d, primes.list.tail))
+      assert(assertFilterValuesContains(d))
+      assert(divisorInFilterValues(v1, d, filterValues))
+      assert(!SieveUtils.isCoprime(v1, filterValues))
+      assert(passesFilter(v1))
+      assert(false)
+      Prime.isPrime(v1)
+    }
+  }.holds
+
+  def assertApplyOneGtHead(): Boolean = {
+    assert(applyStrictlyIncreases(BigInt(0)))
+    val h = head.value
+    val a1 = apply(BigInt(1))
+    assert(a1 > h)
+    h + BigInt(1) <= a1
+  }.holds
+
+  def assertApplyOneLeqValue(value: BigInt): Boolean = {
+    require(value > head.value)
+    require(accepts(value))
+
+    val pIdx = indexOfAccepted(value)
+    assert(pIdx >= BigInt(0))
+    assert(apply(pIdx) == value)
+    if (pIdx == 0) {
+      assert(apply(BigInt(0)) == head.value)
+      assert(false)
+    }
+    assert(pIdx >= 1)
+    assert(assertApplyMonotonic(1, pIdx))
+    apply(BigInt(1)) <= value
+  }.holds
+
+  /**
+   * Carries the conditional branch bound from a later accepted upper value to
+   * `apply(1)`.
+   *
+   * The conditional bridge has the shape `if (nextPrime < head * head) ...`.
+   * Once a smaller wrapper proves `apply(1) <= nextPrime`, this tiny arithmetic
+   * lemma exposes the bound needed by `assertApplyOneIsPrimeIfBelowHeadSq()`
+   * without asking Stainless to rediscover the transitive inequality inside the
+   * full cross-instance equality proof.
+   */
+  def assertApplyOneBelowHeadSqFromUpper(value: BigInt): Boolean = {
+    require(apply(BigInt(1)) <= value)
+    require(value < head.value * head.value)
+
+    apply(BigInt(1)) < head.value * head.value
+  }.holds
+
+  /**
+   * Proves `apply(1)` is prime from an already-established upper bound below
+   * `head * head`.
+   *
+   * This is deliberately a one-call wrapper around the existing square-bound
+   * primality proof. The final `nextPrime == apply(1)` lemma can call this
+   * wrapper after proving `apply(1) <= nextPrime` and
+   * `nextPrime < head * head`, without carrying the divisor/filter proof body
+   * in the same verification condition as the cross-instance prime-search
+   * facts.
+   */
+  def assertApplyOnePrimeFromUpperBelowHeadSq(value: BigInt): Boolean = {
+    require(apply(BigInt(1)) <= value)
+    require(value < head.value * head.value)
+
+    assert(assertApplyOneBelowHeadSqFromUpper(value))
+    assert(assertApplyOneIsPrimeIfBelowHeadSq())
+
+    Prime.isPrime(apply(BigInt(1)))
+  }.holds
+
+  /**
+   * Shows that the direct `AllPrimesSoFarList.nextPrime` result is accepted by
+   * this V0 tail-filter generator.
+   *
+   * This packages the first bridge fact for the current instance: the prime
+   * search result is strictly after `head`, and `assertNextPrimePassesV0Filter`
+   * proves it is coprime to the active tail filters. Later wrappers can consume
+   * the single `accepts(nextPrime.value)` fact instead of rebuilding the prime
+   * list and filter-value connection.
+   */
+  def assertOwnNextPrimeAccepted(): Boolean = {
+    val p = AllPrimesSoFarList.nextPrime(primes.list)
+
+    assert(p.value > head.value)
+    assert(assertNextPrimePassesV0Filter(primes))
+    assert(passesFilter(p.value))
+
+    accepts(p.value)
+  }.holds
+
+  /**
+   * Proves that V0's first generated value appears no later than the direct
+   * `AllPrimesSoFarList.nextPrime` result for this same prime prefix.
+   *
+   * This is Lemma 2 of the conditional bridge in its smallest useful form.
+   * `assertOwnNextPrimeAccepted()` packages the next-prime result as a valid
+   * tail-filter survivor, and `assertApplyOneLeqValue` says the first survivor
+   * after `head` cannot skip past any accepted value. The result is only an
+   * ordering fact; primality and equality are intentionally left to later
+   * wrappers so each verification condition stays small.
+   */
+  def assertApplyOneAtOrBeforeOwnNextPrime(): Boolean = {
+    val p = AllPrimesSoFarList.nextPrime(primes.list)
+
+    assert(assertOwnNextPrimeAccepted())
+    assert(assertApplyOneLeqValue(p.value))
+
+    apply(BigInt(1)) <= p.value
+  }.holds
+
+  /**
+   * Proves V0's first generated value is prime inside the conditional bridge
+   * branch where the direct next prime is still below `head * head`.
+   *
+   * This avoids the global theorem "there is always a prime before `head^2`".
+   * Instead, callers enter this lemma only in the branch where the direct
+   * next-prime search already produced such an upper bound. The proof composes
+   * the verified ordering wrapper with the single-instance square-bound
+   * primality wrapper.
+   */
+  def assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq(): Boolean = {
+    val p = AllPrimesSoFarList.nextPrime(primes.list)
+    require(p.value < head.value * head.value)
+
+    assert(assertApplyOneAtOrBeforeOwnNextPrime())
+    assert(assertApplyOnePrimeFromUpperBelowHeadSq(p.value))
+
+    Prime.isPrime(apply(BigInt(1)))
+  }.holds
+
+//  /**
+//   * Conditional bridge between the direct prime search and V0's first survivor.
+//   *
+//   * This is the equality we need without proving the global theorem that every
+//   * prime prefix has a next prime before `head * head`. If the direct
+//   * `AllPrimesSoFarList.nextPrime` result is below that square bound, then
+//   * `apply(1)` is prime by the preceding wrapper. Since `nextPrime` also proves
+//   * there are no primes in `[head + 1, nextPrime)`, `apply(1)` cannot be a
+//   * smaller value in that interval. The ordering wrapper already proves
+//   * `apply(1) <= nextPrime`, so equality follows.
+//   */
+//  def assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared(): Boolean = {
+//    val p = AllPrimesSoFarList.nextPrime(primes.list)
+//
+//    if (p.value < head.value * head.value) {
+//      assert(assertApplyOneAtOrBeforeOwnNextPrime())
+//      assert(assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq())
+//      assert(assertApplyOneGtHead())
+//
+//      val v1 = apply(BigInt(1))
+//      assert(AllPrimesSoFarList.noPrimesBetween(head.value + BigInt(1), p.value))
+//      if (v1 < p.value) {
+//        assert(head.value + BigInt(1) <= v1)
+//        assert(AllPrimesSoFarList.noPrimesBetweenExcludesValue(head.value + BigInt(1), p.value, v1))
+//        assert(!Prime.isPrime(v1))
+//        assert(false)
+//      }
+//
+//      p.value == v1
+//    } else {
+//      true
+//    }
+//  }.holds
 
 //  def assertNextPrimeEqualsApplyOneIfBeforeHeadSquared(list: SortedPrimeList): Boolean = {
 //    require(list.nonEmpty)
@@ -1649,12 +1987,26 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
 //
 //    if (pVal < head * head) {
 //      assert(pVal > head)
+//
 //      SortedPrimeList.assertTailDescending(list.list)
 //      assert(PrimeUtils.primeIsCoprimeWithSmallerList(pVal, list.tail.list))
 //      assert(seq.accepts(pVal))
-//      // TODO: prove equality seq.apply(1) == pVal using sqrt-bound
-//      // and noPrimesBetween. Blocked by cross-instance private method calls.
-//      true
+//      assert(seq.assertApplyOneLeqValue(pVal))
+//      assert(seq.apply(BigInt(1)) <= pVal)
+//      assert(seq.apply(BigInt(1)) < head * head)
+//
+//      assert(seq.assertApplyOneIsPrimeIfBelowHeadSq())
+//      assert(seq.assertApplyOneGtHead())
+//      val v1 = seq.apply(BigInt(1))
+//
+//      assert(AllPrimesSoFarList.noPrimesBetween(head + BigInt(1), pVal))
+//      if (v1 < pVal) {
+//        assert(head + BigInt(1) <= v1)
+//        AllPrimesSoFarList.noPrimesBetweenExcludesValue(head + BigInt(1), pVal, v1)
+//        assert(false)
+//      }
+//
+//      pVal == v1
 //    } else {
 //      true
 //    }
@@ -1692,7 +2044,22 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
 //    }
 //  }.holds
 
+  /**
+   * Builds the next V0 sieve stage from the next prime in `AllPrimesSoFarList`.
+   *
+   * This method exposes the current proof boundary as a caller obligation, in
+   * the same style as `List.head` requiring a non-empty list. The caller must
+   * provide the missing number-theory fact that the direct next prime is still
+   * before `head * head`.
+   *
+   * The body does not try to rediscover that prime from the V0 generator. It
+   * delegates the prime search to `AllPrimesSoFarList.next`, then proves the new
+   * head is compatible with the V0 constructor: the new sorted list remains
+   * descending, and the new head is coprime to the smaller tail primes.
+   */
   def next: SieveSequenceV0 = {
+    require(primes.nextPrime.value < head.value * head.value)
+
     val newPrimes = primes.next
 
     SortedPrimeList.assertTailDescending(newPrimes.list.list)

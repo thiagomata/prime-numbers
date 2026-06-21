@@ -462,6 +462,43 @@ If >2 tool calls expected, create a ticket. Update after each loop.
 
 Before starting, search `tickets/` for similar work. Extract lessons.
 
+## 18. Cross-instance Lemma Calls [Open]
+
+### 18.1 Cross-instance calls can time out even for simple lemmas
+
+**Observation:** Calling a `.holds` lemma on a different instance of the same
+class (e.g. `seq.assertApplyOneGtHead()` where `seq` is a second
+`SieveSequenceV0`) can time out at 600s per VC even when the lemma itself
+verifies instantly (25s) when called on `this`.
+
+**Failed fixes (ticket `conditional-nextprime-gap-cycle-bridge.md`):**
+1. Increasing per-VC timeout from 120s to 600s — no change for 2 of 3 unknowns
+2. Returning stronger inequality (`h+1 ≤ a1` instead of `a1 > h`) — no change
+3. Adding pure-arithmetic bridge lemma (`assertLeqFromLt`) — no change
+4. Breaking Lemma 4 into smaller pieces (`assertApplyOneLeqValue`) — VC count
+   unchanged, same timeouts persisted
+
+**What's still untested:** Isolating each cross-instance call in its own small
+wrapper lemma where it is the ONLY cross-instance call. The hypothesis is that
+each cross-instance call doubles the VC size because the solver must unfold
+`apply(k)` for the new instance. In a lemma with 3 cross-instance calls, each
+assertion's VC includes ALL 3 unfoldings.
+
+### 18.2 The solver can't derive `a > b ⇒ a ≥ b+1` in cross-instance context
+
+**Observation:** `assert(head + BigInt(1) <= v1)` in Lemma 4 consistently
+times out even though `seq.assertApplyOneGtHead()` (which returns this
+expression directly) was called on the previous line. The solver can't make
+the connection between the lemma's return value and the local variables
+`head` (aliasing `seq.head.value`) and `v1` (aliasing `seq.apply(1)`) in a
+large cross-instance VC.
+
+**Root cause not confirmed.** Possible causes:
+- VC includes all preceding assertions, making the formula too large
+- Cross-instance `apply(k)` unfolding dominates the solver's search space
+- The solver doesn't use cached lemma results across assertion boundaries in
+  large VCs
+
 ## Index
 
 | Lesson | Source ticket | Area |
@@ -505,3 +542,5 @@ Before starting, search `tickets/` for similar work. Extract lessons.
 | 17.1 One assertion per cycle | AGENTS.md | Workflow |
 | 17.4 Ticket before long action | AGENTS.md | Workflow |
 | 17.5 Search tickets first | AGENTS.md | Workflow |
+| 18.1 Cross-instance timeouts [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
+| 18.2 Solver can't derive `a > b ⇒ a ≥ b+1` cross-instance [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
