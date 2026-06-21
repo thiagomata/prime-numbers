@@ -1712,9 +1712,11 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
    * `apply(k + 1)` survives the new front filter, the next old index is simply
    * `k + 1`. Otherwise the step uses the bounded period witness to find the
    * first later old value that is not a multiple of the new front filter. In
-   * both cases the returned index is strictly after `k`, and its value is
-   * accepted by `nextSeq`, which is the induction invariant needed by the
-   * recursive prefix builder.
+   * both cases the returned index is strictly after `k`. Its value is still
+   * accepted by this sequence, is not a multiple of the new front filter, and
+   * is accepted by `nextSeq`. Exporting all three facts is important: callers
+   * cannot rely on the internal proof assertions, so the bridge-shape invariant
+   * must appear in the postcondition.
    */
   def nextMergedGapOldIndex(nextSeq: SieveSequenceV0, k: BigInt, period: BigInt): BigInt = {
     require(k >= BigInt(0))
@@ -1743,7 +1745,12 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
       m
     }
-  }.ensuring(res => res > k && nextSeq.accepts(apply(res)))
+  }.ensuring(res =>
+    res > k &&
+      accepts(apply(res)) &&
+      Calc.mod(apply(res), nextSeq.filterValues.head) != BigInt(0) &&
+      nextSeq.accepts(apply(res))
+  )
 
   /**
    * Builds a bounded prefix of the copied-or-merged gap list.
