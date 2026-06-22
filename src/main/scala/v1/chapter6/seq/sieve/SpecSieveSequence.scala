@@ -8,6 +8,8 @@ import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence, Mo
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
+import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
+import v1.chapter4.cycle.memory.properties.MemCycleProperties
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 import v1.chapter5.prime.properties.PrimeProperties
 
@@ -421,6 +423,40 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
+   * Proves that the first element of any non-empty gapList is the adjacent gap.
+   *
+   * By definition, `gapList(from, count)` for count > 0 unfolds to
+   * `(apply(from + 1) - apply(from)) :: gapList(from + 1, count - 1)`,
+   * so its head equals `apply(from + 1) - apply(from)`.
+   */
+  private def assertGapListFirstEqualsGap(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count > BigInt(0))
+    gapList(from, count).head == apply(from + BigInt(1)) - apply(from)
+  }.holds
+
+  /**
+   * Proves that any position in gapList stores the corresponding adjacent gap.
+   *
+   * `gapList(from, count)(r)` for `r < count` accesses the r-th element
+   * of the gap list. By structural induction on `r`, each element is
+   * `apply(from + r + 1) - apply(from + r)` — the gap at position `from + r`.
+   */
+  private def assertGapListApplyEqualsGapAtPosition(from: BigInt, count: BigInt, r: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count > BigInt(0))
+    require(r >= BigInt(0))
+    require(r < count)
+    decreases(r)
+    if (r == BigInt(0)) {
+      gapList(from, count).apply(r) == apply(from + BigInt(1)) - apply(from)
+    } else {
+      assert(assertGapListApplyEqualsGapAtPosition(from + BigInt(1), count - BigInt(1), r - BigInt(1)))
+      gapList(from, count).apply(r) == apply(from + r + BigInt(1)) - apply(from + r)
+    }
+  }.holds
+
+  /**
    * Builds the finite gap cycle described by this specification sequence.
    *
    * The period witness is the first index whose generated value has looped
@@ -484,6 +520,86 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assert(integral(BigInt(0)) == head.value + gaps.head)
 
     integral(BigInt(0)) == apply(BigInt(1))
+  }.holds
+
+  /**
+   * Proves that every MemCycle access equals the corresponding Spec gap.
+   *
+   * For every position `i >= 0`, the MemCycle built from `specGapCycle(period)`
+   * satisfies `memCycle(i) == apply(i + 1) - apply(i)`. This is the bridge
+   * between the period-stored gaps (accessed modulo `period` through ModCycle)
+   * and the infinite linear Spec gap sequence.
+   *
+   * The proof uses induction on `i`:
+   * - Base (`i < period`): `memCycle(i)` accesses `gapList(0, period)(i)` directly
+   *   (via `smallValueInCycle`), which is `apply(i+1) - apply(i)` by
+   *   `assertGapListApplyEqualsGapAtPosition`.
+   * - Step (`i >= period`): `memCycle(i) == memCycle(i - period)` by
+   *   `valueMatchAfterManyLoops`, and the IH gives `memCycle(i - period) == gap(i - period)`,
+   *   while `assertGapPeriodic(i - period, period)` gives `gap(i) == gap(i - period)`.
+   */
+  private def assertMemCycleGapMatch(i: BigInt, period: BigInt): Boolean = {
+    require(i >= BigInt(0))
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    decreases(i)
+
+    val gapCycle = specGapCycle(period)
+    val mem = gapCycle.memCycle
+
+    assert(assertGapListSize(BigInt(0), period))
+    assert(mem.size == period)
+    assert(mem.size > BigInt(0))
+    assert(mem.values == gapList(BigInt(0), period))
+
+    if (i < period) {
+      assert(MemCycleProperties.smallValueInCycle(mem, i))
+      assert(assertGapListApplyEqualsGapAtPosition(BigInt(0), period, i))
+      mem(i) == apply(i + BigInt(1)) - apply(i)
+    } else {
+      assert(MemCycleProperties.valueMatchAfterManyLoops(mem, i - period, BigInt(1)))
+      assert(assertMemCycleGapMatch(i - period, period))
+      assert(assertGapPeriodic(i - period, period))
+      mem(i) == apply(i + BigInt(1)) - apply(i)
+    }
+  }.holds
+
+  /**
+   * General integral reconstruction theorem for the Spec gap cycle.
+   *
+   * Proves that `CycleIntegral(head.value, specGapCycle(period).memCycle)`
+   * reconstructs the Spec stream: for every `k > 0`,
+   * {{{
+   *   CycleIntegral(head.value, specGapCycle(period).memCycle)(k - 1) == apply(k)
+   * }}}
+   *
+   * The proof is by induction on `k`. The base case `k = 1` is
+   * `assertSpecGapCycleIntegralBase`. For the inductive step:
+   *   1. `assertNextPosition` gives `integral(k-1) == integral(k-2) + memCycle(k-1)`.
+   *   2. The IH gives `integral(k-2) == apply(k-1)`.
+   *   3. `assertMemCycleGapMatch(k-1, period)` gives
+   *      `memCycle(k-1) == apply(k) - apply(k-1)`.
+   *   Combining: `integral(k-1) == apply(k-1) + (apply(k) - apply(k-1)) == apply(k)`.
+   */
+  def assertSpecGapCycleIntegralMatchesApply(period: BigInt, k: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    require(k > BigInt(0))
+    decreases(k)
+
+    val gapCycle = specGapCycle(period)
+    val mem = gapCycle.memCycle
+    val integral = CycleIntegral(head.value, mem)
+
+    if (k == BigInt(1)) {
+      assert(assertSpecGapCycleIntegralBase(period))
+      integral(BigInt(0)) == apply(BigInt(1))
+    } else {
+      assert(CycleIntegralProperties.assertNextPosition(integral, k - BigInt(1)))
+      assert(assertSpecGapCycleIntegralMatchesApply(period, k - BigInt(1)))
+      assert(assertMemCycleGapMatch(k - BigInt(1), period))
+      integral(k - BigInt(1)) == apply(k)
+    }
   }.holds
 
   /**
@@ -1472,6 +1588,33 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(assertBlockShiftMultiple(k, prev, period))
       assert(assertBlockShift(k + prev * period, period))
       apply(k + n * period) == apply(k) + n * filterModulus
+    }
+  }.holds
+
+  /**
+   * Extends `assertGapPeriodic` to multiple periods.
+   *
+   * Proves that gap(k) == gap(k + n * period) for all n >= 0, i.e., shifting
+   * by any integer number of periods preserves the gap value. This is the
+   * induction-on-n version of the single-period `assertGapPeriodic(k, period)`.
+   *
+   * The proof proceeds by induction on n. The base case (n = 0) is trivial.
+   * For the inductive step, `assertGapPeriodic(k + (n-1)*period, period)` gives
+   * gap(k + n*period) == gap(k + (n-1)*period), and the IH gives
+   * gap(k + (n-1)*period) == gap(k).
+   */
+  private def assertGapPeriodicMultiple(k: BigInt, n: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(n >= BigInt(0))
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+    decreases(n)
+    if (n == BigInt(0)) {
+      apply(k + BigInt(1)) - apply(k) == apply(k + BigInt(1)) - apply(k)
+    } else {
+      assert(assertGapPeriodicMultiple(k, n - BigInt(1), period))
+      assert(assertGapPeriodic(k + (n - BigInt(1)) * period, period))
+      apply(k + BigInt(1) + n * period) - apply(k + n * period) == apply(k + BigInt(1)) - apply(k)
     }
   }.holds
 

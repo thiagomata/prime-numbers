@@ -4,11 +4,11 @@
 [info] loading settings for project prime-numbers-build-build from metals.sbt ...
 [info] loading project definition from /Users/thiagomata/github/thiagomata/prime-numbers/project/project
 [success] Generated .bloop/prime-numbers-build-build.json
-[success] Total time: 1 s, completed 22 June 2026, 11:04:24 pm
+[success] Total time: 1 s, completed 22 June 2026, 11:47:52 pm
 [info] loading settings for project prime-numbers-build from metals.sbt,plugins.sbt ...
 [info] loading project definition from /Users/thiagomata/github/thiagomata/prime-numbers/project
 [success] Generated .bloop/prime-numbers-build.json
-[success] Total time: 0 s, completed 22 June 2026, 11:04:24 pm
+[success] Total time: 0 s, completed 22 June 2026, 11:47:52 pm
 [info] loading settings for project root from build.sbt ...
 [info] set current project to prime-numbers (in build file:/Users/thiagomata/github/thiagomata/prime-numbers/)
 [info] Defining stainlessEnabled
@@ -16,8 +16,6 @@
 [info] Reapplying settings...
 [info] set current project to prime-numbers (in build file:/Users/thiagomata/github/thiagomata/prime-numbers/)
 [info] compiling 108 Scala sources to /Users/thiagomata/github/thiagomata/prime-numbers/target/scala-3.5.0/classes ...
-[info] done compiling
-[info] compiling 2 Scala sources to /Users/thiagomata/github/thiagomata/prime-numbers/target/scala-3.5.0/test-classes ...
 [info] done compiling
 [info] Instrumenting 856 classes to /Users/thiagomata/github/thiagomata/prime-numbers/target/scala-3.5.0/jacoco/instrumented-classes
 [info] ClassicCycleIntegralPropertiesTest:
@@ -30,13 +28,33 @@
 [info] assertSumModValueAsListEqualsCycleIntegralLoop
 [info] assertCycleIntegralEqualsSumOfModlValuesAsList
 [info] assertFirstValuesAsSliceEqualsModValuesAsList
-[info] MemCycleTest:
-[info] Cycle checkMod
-[info] - should propagate
-[info] sum
-[info] - should sum values
-[info] Cycle
-[info] - should return value
+[info] HelperTest:
+[info] equals with two terms
+[info] - should be true only with equals values
+[info] equals with three terms
+[info] - should be true only with equals values
+[info] equals with four terms
+[info] - should be true only with equals values
+[info] equals with five terms
+[info] - should be true only with equals values
+[info] equals with six terms
+[info] - should be true only with equals values
+[info] equals with seven terms
+[info] - should be true only with equals values
+[info] equals with eight terms
+[info] - should be true only with equals values
+[info] equals with nine terms
+[info] - should be true only with equals values
+[info] ConsecutiveIntegersTest:
+[info] existsZero
+[info] - should find a zero in p consecutive values
+[info] nonzeroAfterZero
+[info] - should return non-zero for small steps
+[info] CycleWithMemoryIntegralTest:
+[info] small values
+[info] - should return expected increasing values
+[info] big values
+[info] - should return expected increasing values
 [info] DivMainTest:
 [info] println
 [info] - should say hi
@@ -64,11 +82,16 @@
 [info] - should should fail
 [info] invalid 4 of 4 numbers
 [info] - should should fail
-[info] CycleWithMemoryIntegralTest:
-[info] small values
-[info] - should return expected increasing values
-[info] big values
-[info] - should return expected increasing values
+[info] ModCycleIntegralTest:
+[info] apply
+[info] - should return the correct value for any cycle
+[info] MemCycleTest:
+[info] Cycle checkMod
+[info] - should propagate
+[info] sum
+[info] - should sum values
+[info] Cycle
+[info] - should return value
 [info] ListUtilsTest:
 [info] create list from int
 [info] - should create list
@@ -78,9 +101,6 @@
 [info] - should sum values
 [info] sum
 [info] - should sum values with init value
-[info] ModCycleIntegralTest:
-[info] apply
-[info] - should return the correct value for any cycle
 [info] CycleWithMemoryCheckModTest:
 [info] forAnyCheckModValuesRemains
 [info] - should hold for any cycle
@@ -104,35 +124,6 @@
 [info] - should hold for any not evaluated cycle
 [info] afterMethodListAndZeroModCountAreOnSync
 [info] - should hold for any cycle
-[info] HelperTest:
-[info] equals with two terms
-[info] - should be true only with equals values
-[info] equals with three terms
-[info] - should be true only with equals values
-[info] equals with four terms
-[info] - should be true only with equals values
-[info] equals with five terms
-[info] - should be true only with equals values
-[info] equals with six terms
-[info] - should be true only with equals values
-[info] equals with seven terms
-[info] - should be true only with equals values
-[info] equals with eight terms
-[info] - should be true only with equals values
-[info] equals with nine terms
-[info] - should be true only with equals values
-[info] ConsecutiveIntegersTest:
-[info] existsZero
-[info] - should find a zero in p consecutive values
-[info] nonzeroAfterZero
-[info] - should return non-zero for small steps
-[info] SeqTest:
-[info] Seq
-[info] - should return previous value
-[info] Seq
-[info] - should return loop value with loop = (1)
-[info] Seq
-[info] - should return the loop value with loop (10,100)
 [info] ModCycleIntegralPropertiesTest:
 [info] assertFirstValuesMatchIntegral
 [info] assertSimplifiedDiffValuesMatchCycle
@@ -143,6 +134,13 @@
 [info] - should hold for any values
 [info] longProof
 [info] - should hold for any values
+[info] SeqTest:
+[info] Seq
+[info] - should return previous value
+[info] Seq
+[info] - should return loop value with loop = (1)
+[info] Seq
+[info] - should return the loop value with loop (10,100)
 [info] ListUtilsPropertiesTest:
 [info] listSumAddValue
 [info] - should hold
@@ -163,18 +161,6 @@
 [info] ModSmallDividendTest:
 [info] modAdd
 [info] - should hold for any non b zero pair
-[info] SummaryTest:
-[info] Summary
-[info] - should hold for any non b zero pair
-[info] GapCycleTest:
-[info] GapCycle
-[info] - should construct from a single positive value
-[info] - should access gap at position 0
-[info] - should access cumulative sum at position 0
-[info] - should wrap around for positions beyond size
-[info] - should compute cumulative sum for S_2 gaps
-[info] - should compute sum for S_2 gaps
-[info] - should handle S_3 gaps
 [info] ModIdempotenceTest:
 [info] modIdempotence
 [info] - should hold for any values
@@ -184,6 +170,35 @@
 [info] - should hold for any values
 [info] modModMinus
 [info] - should hold for any values
+[info] GapCycleTest:
+[info] GapCycle
+[info] - should construct from a single positive value
+[info] - should access gap at position 0
+[info] - should access cumulative sum at position 0
+[info] - should wrap around for positions beyond size
+[info] - should compute cumulative sum for S_2 gaps
+[info] - should compute sum for S_2 gaps
+[info] - should handle S_3 gaps
+[info] SeqPropertiesTest:
+[info] Seq.first values match previous
+[info] - should match
+[info] first Values Match First Pos In Loop
+[info] - should match
+[info] prev value in the loop
+[info] - should match
+[info] next value in the loop
+[info] - should match
+[info] seqPosMatchSeqLoop
+[info] - should hold
+[info] SpecSieveSequenceTest:
+[info] SpecSieveSequence
+[info] - should use the first prime as the generator head
+[info] - should filter only by the tail primes
+[info] - should accept concrete values that are not multiples of the tail primes
+[info] - should reject concrete values that are multiples of at least one tail prime
+[info] SummaryTest:
+[info] Summary
+[info] - should hold for any non b zero pair
 [info] PrimeTest:
 [info] isPrime
 [info] - should return false for 0 and 1
@@ -198,30 +213,6 @@
 [info] - should return true when no divisor exists in range
 [info] - should return false when n is divisible somewhere in range
 [info] - should return true when from equals to
-[info] SpecSieveSequenceTest:
-[info] SpecSieveSequence
-[info] - should use the first prime as the generator head
-[info] - should filter only by the tail primes
-[info] - should accept concrete values that are not multiples of the tail primes
-[info] - should reject concrete values that are multiples of at least one tail prime
-[info] SeqPropertiesTest:
-[info] Seq.first values match previous
-[info] - should match
-[info] first Values Match First Pos In Loop
-[info] - should match
-[info] prev value in the loop
-[info] - should match
-[info] next value in the loop
-[info] - should match
-[info] seqPosMatchSeqLoop
-[info] - should hold
-[info] IntegralPropertiesTest:
-[info] assertAccDifferenceEqualsTailHead
-[info] assertAccDiffMatchesList
-[info] assertAccMatchesApply
-[info] assertLastEqualsSum
-[info] assertSizeAccEqualsSizeList
-[info] assertLast
 [info] AllPrimesSoFarListTest:
 [info] empty
 [info] - should return when empty
@@ -242,12 +233,22 @@
 [info] nextPrime
 [info] nextPrime
 [info] nextPrime
+[info] IntegralPropertiesTest:
+[info] assertAccDifferenceEqualsTailHead
+[info] assertAccDiffMatchesList
+[info] assertAccMatchesApply
+[info] assertLastEqualsSum
+[info] assertSizeAccEqualsSizeList
+[info] assertLast
 [info] SliceEquivalenceLemmasTest:
 [info] listSumAddValue
 [info] - should hold
 [info] CycleIntegralTest:
 [info] apply
 [info] - should return the correct value for any cycle
+[info] DivTest:
+[info] Div
+[info] - should solve
 [info] CycleSieveSequenceTest:
 [info] CycleSieveSequence.S_0()
 [info] - should have correct properties
@@ -266,9 +267,6 @@
 [info] nextGapCycle
 [info] - should produce GapCycle for S_0
 [info] - should produce GapCycle for S_1
-[info] DivTest:
-[info] Div
-[info] - should solve
 [info] CycleTest:
 [info] sum
 [info] - should sum values
@@ -292,6 +290,13 @@
 [info] - should return the correct value for any cycle from 0 to size time 2
 [info] sum
 [info] - should match sum values
+[info] ModSumTest:
+[info] sumSymmetricalMods
+[info] - should hold
+[info] sumAllMods
+[info] - should hold
+[info] checkValueShift
+[info] - should hold
 [info] AdditionAndMultiplicationTest:
 [info] APlusBSameModPlusDiv
 [info] - should hold for any values
@@ -311,13 +316,6 @@
 [info] - should hold for any values
 [info] LessDivMoreModManyTimes
 [info] - should hold for any values
-[info] ModSumTest:
-[info] sumSymmetricalMods
-[info] - should hold
-[info] sumAllMods
-[info] - should hold
-[info] checkValueShift
-[info] - should hold
 [info] IntegralTest:
 [info] Acc
 [info] - should holds for any list
@@ -347,9 +345,9 @@
 [info] - should hold
 [info] assertCycleOfPosEqualsCycleOfModPos
 [info] - should hold
-[info] Run completed in 7 seconds, 828 milliseconds.
+[info] Run completed in 7 seconds, 457 milliseconds.
 [info] Total number of tests run: 144
 [info] Suites: completed 34, aborted 0
 [info] Tests: succeeded 144, failed 0, canceled 0, ignored 0, pending 0
 [info] All tests passed.
-[success] Total time: 20 s, completed 22 June 2026, 11:04:45 pm
+[success] Total time: 16 s, completed 22 June 2026, 11:48:09 pm

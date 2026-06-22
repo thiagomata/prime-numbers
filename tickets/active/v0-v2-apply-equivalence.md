@@ -85,8 +85,8 @@ These lemmas prove that the finite Spec gap list, once wrapped in `GapCycle` and
 |---|---|---|---|
 | `specGapCycle(period)` | If `period > 0` and `spec(period) = head + filterModulus`, then `GapCycle(gapList(0, period))` is well formed and stores exactly those gaps. | Builds the same object shape used by `CycleSieveSequence`. | Verified. |
 | `assertSpecGapCycleIntegralBase(period)` | `CycleIntegral(head, specGapCycle(period).memCycle)(0) = spec(1)`. | Base case for positive indices. | Verified. |
-| `assertSpecGapCycleIntegralStep(period, k)` | If `k >= 0`, then advancing the integral one step adds the next periodic Spec gap: `I(k + 1) = I(k) + gap(k + 1)`, where `I = CycleIntegral(head, specGapCycle(period).memCycle)`. | Gives the induction step for integral reconstruction. | Required. |
-| `assertSpecGapCycleIntegralMatchesApply(period, k)` | For all `k > 0`, `CycleIntegral(head, specGapCycle(period).memCycle)(k - 1) = spec(k)`. | Converts the Spec stream into the same `apply` shape as `CycleSieveSequence`. | Required; next major Phase 1 lemma. |
+| `assertSpecGapCycleIntegralStep(period, k)` | If `k >= 0`, then advancing the integral one step adds the next periodic Spec gap: `I(k + 1) = I(k) + gap(k + 1)`, where `I = CycleIntegral(head, specGapCycle(period).memCycle)`. | Gives the induction step for integral reconstruction. | Subsumed by `assertSpecGapCycleIntegralMatchesApply`. |
+| `assertSpecGapCycleIntegralMatchesApply(period, k)` | For all `k > 0`, `CycleIntegral(head, specGapCycle(period).memCycle)(k - 1) = spec(k)`. | Converts the Spec stream into the same `apply` shape as `CycleSieveSequence`. | Verified. |
 
 ### D. Cycle Apply As Integral
 
@@ -95,10 +95,10 @@ They are worth local aliases so the final proof does not unfold class internals
 repeatedly.
 
 | Lemma | Mathematical statement | Why needed | Status |
-|---|---|---|---|
+|---|---|---|---|---|
 | `assertCycleApplyZeroIsHead(cycle)` | `cycle(0) = cycle.head`. | Cycle side of the base case. | Trivial; currently used inside base bridge. |
 | `assertCycleApplyPositiveIsIntegral(cycle, k)` | If `k > 0`, then `cycle(k) = cycle.integral(k - 1)`. | Final rewrite in the `k > 0` equivalence proof. | Verified. |
-| `assertCycleIntegralUsesGapCycle(cycle)` | `cycle.integral = CycleIntegral(cycle.head, cycle.gapCycle.memCycle)`. | Makes the integral object explicit when comparing against the Spec-built `CycleIntegral`. | Required alias if Stainless does not unfold the field directly. |
+| `assertCycleIntegralUsesGapCycle(cycle)` | `cycle.integral = CycleIntegral(cycle.head, cycle.gapCycle.memCycle)`. | Makes the integral object explicit when comparing against the Spec-built `CycleIntegral`. | Verified. |
 
 ### E. Residue Pipeline Means Accepted Values
 
@@ -441,20 +441,71 @@ Added the Required Lemma Map near the top of this ticket.
   0 unknown), then full-verified with `just verify` (7826 valid, 0 invalid,
   0 unknown).
 
-### 2026-06-22 — Cycle positive apply alias
+### 2026-06-22 — Cycle integral uses gap cycle alias
 
-Added `SpecCycleSieveEquivalence.assertCycleApplyPositiveIsIntegral`.
+Added `SpecCycleSieveEquivalence.assertCycleIntegralUsesGapCycle`.
 
-- **What it proves:** For every positive `position`,
-  `cycle(position) == cycle.integral(position - 1)`.
-- **Why it matters:** This names the positive branch of
-  `CycleSieveSequence.apply` so the eventual `k > 0` equivalence proof can
-  rewrite the Cycle side into the same integral form as the Spec gap-cycle
-  reconstruction theorem.
-- **Validation:** Focus-verified with
-  `just verify assertCycleApplyPositiveIsIntegral` (3 valid, 0 invalid,
-  0 unknown), then full-verified with `just verify` (7829 valid, 0 invalid,
-  0 unknown).
+- **What it proves:**
+  `cycle.integral == CycleIntegral(cycle.head, cycle.gapCycle.memCycle)`.
+  The cycle implementation's stored integral is exactly the object shape that
+  the Spec-side gap-cycle reconstruction theorem constructs from
+  `specGapCycle(period)`.
+- **Why it matters:** The final apply-equivalence proof for `k > 0` will need
+  to compare the Cycle-side integral (used by `cycle(position)`) with the
+  Spec-side integral (built from `specGapCycle(period).memCycle`). This lemma
+  names the Cycle-side integral construction so the proof does not need to
+  unfold `CycleSieveSequence` internals.
+- **Validation:** Present in code already, verified as part of the 7829-valid
+  full run. No dedicated focus-verify was run (trivial equality on field
+  access).
+
+### 2026-06-22 — Full Spec gap-cycle integral reconstruction theorem
+
+Added five lemmas to `SpecSieveSequence` completing Phase 1 of the equivalence proof:
+
+1. **`assertGapPeriodicMultiple(k, n, period)`** (private) — Extends
+   `assertGapPeriodic` from one period to multiple periods by induction on `n`.
+   Proves `gap(k + n*period) == gap(k)`.
+2. **`assertGapListFirstEqualsGap(from, count)`** (private) — Proves
+   `gapList(from, count).head == apply(from+1) - apply(from)` for `count > 0`.
+3. **`assertGapListApplyEqualsGapAtPosition(from, count, r)`** (private) —
+   Proves `gapList(from, count)(r) == apply(from+r+1) - apply(from+r)` for
+   `r < count`, by induction on `r` shifting the `from` parameter.
+4. **`assertMemCycleGapMatch(i, period)`** (private) — Proves
+   `specGapCycle(period).memCycle(i) == apply(i+1) - apply(i)` for all `i >= 0`.
+   Two-case induction: `i < period` uses `smallValueInCycle` +
+   `assertGapListApplyEqualsGapAtPosition`; `i >= period` uses
+   `valueMatchAfterManyLoops` + `assertGapPeriodic(i - period, period)`.
+5. **`assertSpecGapCycleIntegralMatchesApply(period, k)`** (public) — The main
+   Phase 1 theorem. Proves
+   `CycleIntegral(head.value, specGapCycle(period).memCycle)(k-1) == apply(k)`
+   for all `k > 0`. Induction on `k`: base `k=1` delegates to
+   `assertSpecGapCycleIntegralBase`; step uses `CycleIntegralProperties.assertNextPosition`,
+   the IH, and `assertMemCycleGapMatch(k-1, period)` to chain:
+   `integral(k-1) == integral(k-2) + memCycle(k-1) == apply(k-1) + (apply(k) - apply(k-1)) == apply(k)`.
+
+**Architectural notes:**
+- `assertGapPeriodicMultiple` avoids needing the `Calc.div`/`Calc.mod` identity
+  `a = b*div(a,b) + mod(a,b)` by using `valueMatchAfterManyLoops` with `m = 1`
+  — reducing by exactly one period per recursion step instead of jumping directly
+  to the remainder.
+- `assertMemCycleGapMatch` bridges the gap between periodic MemCycle access
+  (via ModCycle) and the infinite linear Spec gap sequence, which is the core
+  connection needed by the integral reconstruction.
+
+**Validation:** Focus-verified each lemma, then full `just verify` passed with
+7943 valid (0 invalid, 0 unknown). `just test` passed with 144 tests.
+
+**Update to lemma map:** `assertSpecGapCycleIntegralMatchesApply` moved from
+`Required` to `Verified`. `assertSpecGapCycleIntegralStep` (the intermediate
+step lemma) marked as `Subsumed` — the full theorem covers the same ground
+more directly.
+
+**Next steps:** Phase 2 — residue pipeline lemmas (Group E in the lemma map).
+Proving that the residue pipeline in `SieveSequenceNextLevel` produces the same
+gap list as the filtered Spec survivor set.
+
+
 
 ## Related Tickets
 
