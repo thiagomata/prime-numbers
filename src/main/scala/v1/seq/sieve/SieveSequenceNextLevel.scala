@@ -12,37 +12,37 @@ import v1.list.SortedList
 
 object SieveSequenceNextLevel {
 
-  def nextResiduesV2(seq: SieveSequenceV2): List[BigInt] = {
+  def nextResidues(seq: CycleSieveSequence): List[BigInt] = {
     SieveUtils.residues(seq.modulus, seq.primes.tail)
   }
 
-  def nextExpandedV2(seq: SieveSequenceV2): List[BigInt] = {
-    SieveUtils.expandResidues(nextResiduesV2(seq), seq.modulus, seq.head)
+  def nextExpanded(seq: CycleSieveSequence): List[BigInt] = {
+    SieveUtils.expandResidues(nextResidues(seq), seq.modulus, seq.head)
   }
 
-  def nextFilteredV2(seq: SieveSequenceV2): List[BigInt] = {
-    SieveUtils.filterList(nextExpandedV2(seq), seq.head)
+  def nextFiltered(seq: CycleSieveSequence): List[BigInt] = {
+    SieveUtils.filterList(nextExpanded(seq), seq.head)
   }
 
-  def nextSortedV2(seq: SieveSequenceV2): SortedList = {
-    SortedList.fromUnsorted(nextFilteredV2(seq))
+  def nextSorted(seq: CycleSieveSequence): SortedList = {
+    SortedList.fromUnsorted(nextFiltered(seq))
   }
 
-  def nextGapsV2(seq: SieveSequenceV2): List[BigInt] = {
-    SieveUtils.calculateGaps(nextSortedV2(seq).list, seq.modulus * seq.head)
+  def nextGaps(seq: CycleSieveSequence): List[BigInt] = {
+    SieveUtils.calculateGaps(nextSorted(seq).list, seq.modulus * seq.head)
   }
 
-  def nextHeadResidueIndexV2(seq: SieveSequenceV2): BigInt = {
+  def nextHeadResidueIndex(seq: CycleSieveSequence): BigInt = {
     val newHeadVal = seq.apply(BigInt(1))
     val newMod = seq.modulus * seq.head
-    SieveUtils.nextResidueIndex(nextSortedV2(seq).list, BigInt(0), Calc.mod(newHeadVal, newMod))
+    SieveUtils.nextResidueIndex(nextSorted(seq).list, BigInt(0), Calc.mod(newHeadVal, newMod))
   }
 
-  def nextRotatedGapsV2(seq: SieveSequenceV2): List[BigInt] = {
-    SieveUtils.rotateAt(nextGapsV2(seq), nextHeadResidueIndexV2(seq))
+  def nextRotatedGaps(seq: CycleSieveSequence): List[BigInt] = {
+    SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
   }
 
-  def collectGapsV2(seq: SieveSequenceV2, lastSurvivor: BigInt, lastPos: BigInt, pos: BigInt, remaining: BigInt, gaps: List[BigInt]): List[BigInt] = {
+  def collectGaps(seq: CycleSieveSequence, lastSurvivor: BigInt, lastPos: BigInt, pos: BigInt, remaining: BigInt, gaps: List[BigInt]): List[BigInt] = {
     require(remaining >= 0)
     require(pos >= 1)
     require(lastSurvivor > 0)
@@ -57,14 +57,14 @@ object SieveSequenceNextLevel {
     } else {
       val current = seq.apply(pos + 1)
       if (Calc.mod(current, seq.head) == BigInt(0)) {
-        collectGapsV2(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
+        collectGaps(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
       } else {
         assert(seq.integral(pos) == current)
         assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, lastPos, pos))
         assert(current > lastSurvivor)
         val gap = current - lastSurvivor
         assert(gap > BigInt(0))
-        collectGapsV2(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
+        collectGaps(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
       }
     }
   }
@@ -84,8 +84,8 @@ object SieveSequenceNextLevel {
     }
   }.holds
 
-  def assertCollectGapsV2AllPositive(
-    seq: SieveSequenceV2, lastSurvivor: BigInt, lastPos: BigInt,
+  def assertCollectGapsAllPositive(
+    seq: CycleSieveSequence, lastSurvivor: BigInt, lastPos: BigInt,
     pos: BigInt, remaining: BigInt, gaps: List[BigInt]
   ): Boolean = {
     require(remaining >= 0)
@@ -102,79 +102,79 @@ object SieveSequenceNextLevel {
     } else {
       val current = seq.apply(pos + 1)
       if (Calc.mod(current, seq.head) == BigInt(0)) {
-        assertCollectGapsV2AllPositive(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
+        assertCollectGapsAllPositive(seq, lastSurvivor, lastPos, pos + 1, remaining - 1, gaps)
       } else {
         assert(seq.integral(pos) == current)
         assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, lastPos, pos))
         assert(current > lastSurvivor)
         val gap = current - lastSurvivor
         assert(gap > BigInt(0))
-        assertCollectGapsV2AllPositive(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
+        assertCollectGapsAllPositive(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
       }
     }
   }.holds
 
-  def nextGapsWalkV2(seq: SieveSequenceV2): List[BigInt] = {
+  def nextGapsWalk(seq: CycleSieveSequence): List[BigInt] = {
     val steps = seq.head * seq.gapCycle.size
     val newHead = seq.apply(BigInt(1))
-    assert(assertCollectGapsV2AllPositive(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt]))
-    collectGapsV2(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt])
+    assert(assertCollectGapsAllPositive(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt]))
+    collectGaps(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt])
   }
 
-  def nextGapCycleV2(seq: SieveSequenceV2): GapCycle = {
-    val gaps = nextGapsWalkV2(seq)
+  def nextGapCycle(seq: CycleSieveSequence): GapCycle = {
+    val gaps = nextGapsWalk(seq)
     require(gaps.nonEmpty)
     require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
     GapCycle(gaps)
   }
 
-    def assertNextPrimesNonEmpty(seq: SieveSequenceV2): Boolean = {
+    def assertNextPrimesNonEmpty(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     val newPrimes = newHead :: seq.primes
     assert(newPrimes.nonEmpty)
     true
   }.holds
 
-  def assertNextHeadPositive(seq: SieveSequenceV2): Boolean = {
+  def assertNextHeadPositive(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     assert(CycleIntegralProperties.assertCycleIntegralPositive(seq.integral, BigInt(0)))
     newHead > BigInt(0)
   }.holds
 
-  def assertNextPrimesPositive(seq: SieveSequenceV2): Boolean = {
+  def assertNextPrimesPositive(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     val newPrimes = newHead :: seq.primes
     assert(assertNextHeadPositive(seq))
     ListUtils.checkAllPositive(newPrimes)
   }.holds
 
-  def assertNextHeadBiggerThanOne(seq: SieveSequenceV2): Boolean = {
+  def assertNextHeadBiggerThanOne(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     assert(v1.seq.sieve.properties.SieveSequenceProperties.assertStrictlyIncreasing(seq, BigInt(0)))
     newHead > BigInt(1)
   }.holds
 
-  def assertNextPrimesBiggerThanOne(seq: SieveSequenceV2): Boolean = {
+  def assertNextPrimesBiggerThanOne(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     val newPrimes = newHead :: seq.primes
     assert(assertNextHeadBiggerThanOne(seq))
     ListUtils.checkAllBiggerThanValue(newPrimes, BigInt(1))
   }.holds
 
-  def assertNextTailProductEqualOrBiggerThanElements(seq: SieveSequenceV2): Boolean = {
+  def assertNextTailProductEqualOrBiggerThanElements(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     val newPrimes = newHead :: seq.primes
     assert(SieveUtils.assertProductEqualOrBiggerThanElements(seq.primes))
     SieveUtils.assertProductEqualOrBiggerThanElements(newPrimes.tail)
   }.holds
 
-  def assertNextHeadCoprimeToPrimes(seq: SieveSequenceV2): Boolean = {
+  def assertNextHeadCoprimeToPrimes(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
     assert(newHead == seq.primes.head + seq.gapCycle.memCycle(0))
     SieveUtils.isCoprime(newHead, seq.primes)
   }.holds
 
-  def assertNextExpandedCoprime(seq: SieveSequenceV2): Boolean = {
+  def assertNextExpandedCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
     require(seq.modulus == SieveUtils.product(seq.primes.tail))
     require(ListUtils.checkAllPositive(seq.primes.tail))
@@ -182,7 +182,7 @@ object SieveSequenceNextLevel {
     true
   }.holds
 
-  def assertNextFilteredCoprime(seq: SieveSequenceV2): Boolean = {
+  def assertNextFilteredCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
     require(seq.modulus == SieveUtils.product(seq.primes.tail))
     require(ListUtils.checkAllPositive(seq.primes.tail))
@@ -190,15 +190,15 @@ object SieveSequenceNextLevel {
     true
   }.holds
 
-  def assertResiduesCoprime(seq: SieveSequenceV2): Boolean = {
+  def assertResiduesCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
     require(ListUtils.checkAllPositive(seq.primes.tail))
     SieveUtils.assertResiduesAllCoprime(seq.modulus, seq.primes.tail)
     true
   }.holds
 
-  def assertNextGapsNonEmptyV2(seq: SieveSequenceV2): Boolean = {
-    nextGapsV2(seq).nonEmpty
+  def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
+    nextGaps(seq).nonEmpty
   }.holds
 
 }

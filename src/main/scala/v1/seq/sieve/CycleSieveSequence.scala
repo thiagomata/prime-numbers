@@ -8,7 +8,7 @@ import v1.cycle.integral.recursive.CycleIntegral
 import v1.cycle.memory.MemCycle
 import v1.list.ListUtils
 
-case class SieveSequenceV2(
+case class CycleSieveSequence(
   primes: List[BigInt],
   gapCycle: GapCycle
 ) {
@@ -39,23 +39,23 @@ case class SieveSequenceV2(
   def nextHead: BigInt = apply(BigInt(1))
 
   @extern
-  def next(): SieveSequenceV2 = {
+  def next(): CycleSieveSequence = {
     val newHead = apply(BigInt(1))
-    val newGapCycle = SieveSequenceNextLevel.nextGapCycleV2(this)
-    SieveSequenceV2(newHead :: primes, newGapCycle)
+    val newGapCycle = SieveSequenceNextLevel.nextGapCycle(this)
+    CycleSieveSequence(newHead :: primes, newGapCycle)
   }
 }
 
-object SieveSequenceV2 {
-  def S_0V2(): SieveSequenceV2 = {
-    SieveSequenceV2(
+object CycleSieveSequence {
+  def S_0(): CycleSieveSequence = {
+    CycleSieveSequence(
       primes = List(BigInt(2)),
       gapCycle = GapCycle(List(BigInt(1)))
     )
   }
 
-  def S_1V2(): SieveSequenceV2 = {
-    SieveSequenceV2(
+  def S_1(): CycleSieveSequence = {
+    CycleSieveSequence(
       primes = List(BigInt(3), BigInt(2)),
       gapCycle = GapCycle(List(BigInt(2)))
     )

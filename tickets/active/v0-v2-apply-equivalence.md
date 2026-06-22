@@ -182,6 +182,26 @@ of `v0-gap-list-cycle-formalization.md`).
 - Search `tickets/` for existing work on the residue pipeline correctness
   before duplicating effort.
 
+## Update Log
+
+### 2026-06-22 — Naming decision and rename execution
+
+**Decision:** Rename classes to better reflect architectural roles:
+
+| Old | New | Rationale |
+|---|---|---|
+| `SieveSequenceV0` | `SpecSieveSequence` | The specification model — linear scan, obviously correct by construction |
+| `SieveSequenceV2` | `CycleSieveSequence` | The cycle-based implementation — uses precomputed GapCycle and CycleIntegral |
+
+**Also renamed:**
+- Companion methods `S_0V2()`/`S_1V2()` → `S_0()`/`S_1()`
+- All `V2` suffixes on `SieveSequenceNextLevel` methods dropped (e.g., `nextResiduesV2` → `nextResidues`)
+- Files renamed accordingly (e.g., `SieveSequenceV0.scala` → `SpecSieveSequence.scala`)
+
+**Status:** Rename execution underway. Following AGENTS.md rules: one change per verify cycle, green-to-green throughout.
+
+**Assumptions unchanged:** Prime list representation mismatch (risk 1), residue vs. walk pipeline (risk 2), gap cycle construction preconditions (risk 3), period length equivalence (risk 4) — none affected by the rename.
+
 ## Related Tickets
 
 - `v0-gap-list-cycle-formalization.md` — prerequisite: V0's internal gap cycle

@@ -6,12 +6,12 @@ import v1.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.list.ListBoundUtils
 import v1.prime.Prime
 import v1.prime.properties.PrimeProperties
-import v1.seq.sieve.SieveSequenceV2
+import v1.seq.sieve.CycleSieveSequence
 import v1.seq.sieve.SieveUtils
 
 object SieveSequenceProperties {
 
-  def assertStrictlyIncreasing(seq: SieveSequenceV2, k: BigInt): Boolean = {
+  def assertStrictlyIncreasing(seq: CycleSieveSequence, k: BigInt): Boolean = {
     require(k >= 0)
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
     require(seq.integral.cycle.values.nonEmpty)
@@ -26,7 +26,7 @@ object SieveSequenceProperties {
     }
   }.holds
 
-  def assertHeadIsMinimum(seq: SieveSequenceV2, k: BigInt): Boolean = {
+  def assertHeadIsMinimum(seq: CycleSieveSequence, k: BigInt): Boolean = {
     require(k >= 0)
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
     require(seq.integral.cycle.values.nonEmpty)
@@ -42,7 +42,7 @@ object SieveSequenceProperties {
     }
   }.holds
 
-  def assertAllValuesPositive(seq: SieveSequenceV2, k: BigInt): Boolean = {
+  def assertAllValuesPositive(seq: CycleSieveSequence, k: BigInt): Boolean = {
     require(k >= 0)
     require(seq.head > BigInt(0))
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
@@ -57,7 +57,7 @@ object SieveSequenceProperties {
     }
   }.holds
 
-  def assertHeadIsPrime(seq: SieveSequenceV2): Boolean = {
+  def assertHeadIsPrime(seq: CycleSieveSequence): Boolean = {
     require(SieveUtils.assertAllNotCoprimeInRange(seq.head, 2, seq.primes.tail))
     PrimeProperties.assertHeadIsPrime(seq.head, seq.primes.tail)
     Prime.isPrime(seq.head)
