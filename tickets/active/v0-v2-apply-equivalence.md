@@ -131,7 +131,7 @@ These lemmas combine the previous groups into the final theorem.
 | Lemma | Mathematical statement | Why needed | Status |
 |---|---|---|---|
 | `assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps(spec, cycle, period, k)` | If `k > 0`, `spec.head.value == cycle.head`, and `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`, then `spec(k) = cycle(k)`. | Main positive-index theorem under the clean same-head/same-gaps precondition. | Verified. |
-| `assertSpecCycleApplyMatches(spec, cycle, k)` | For all `k >= 0`, if prime lists correspond and gap cycles match, then `spec(k) = cycle(k)`. | Final local equivalence theorem for one stage. | Required. |
+| `assertSpecCycleApplyMatchesFromSameHeadAndGaps(spec, cycle, period, k)` | If `k >= 0`, `spec.head.value == cycle.head`, and `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`, then `spec(k) = cycle(k)`. | Final conditional local equivalence theorem for one stage. It proves same head plus same gap memory is enough for all indices. | Verified. |
 | `assertSpecCycleNextResiduePipelineMatches(spec, cycle)` | If the Cycle gap cycle is constructed by the residue pipeline for the same stage, then the gap-cycle-match precondition of `assertSpecCycleApplyMatches` holds. | Connects the final theorem to the actual construction path we want to trust. | Required after residue work. |
 
 ### H. Optional/Deferred Walk Pipeline Bridge
@@ -593,6 +593,24 @@ Added
   (7959 valid, 0 invalid, 0 unknown).
 - **Next step:** Add the all-index wrapper that combines this lemma with the
   existing `k == 0` base bridge.
+
+### 2026-06-23 — All-index same-head/same-gaps apply equivalence verified
+
+Added `SpecCycleSieveEquivalence.assertSpecCycleApplyMatchesFromSameHeadAndGaps`.
+
+- **What it proves:** For `position >= 0`, if
+  `spec.head.value == cycle.head` and
+  `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`, then
+  `spec(position) == cycle(position)`.
+- **Why it matters:** This completes the conditional Phase 1.5 checkpoint. The
+  current-stage apply equivalence is now reduced entirely to proving the gap
+  equality precondition.
+- **Validation:** Focus-verified with
+  `just verify assertSpecCycleApplyMatchesFromSameHeadAndGaps`
+  (19 valid, 0 invalid, 0 unknown), then full-verified with `just verify`
+  (7978 valid, 0 invalid, 0 unknown).
+- **Next step:** Prove or construct the gap equality bridge:
+  `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`.
 
 
 

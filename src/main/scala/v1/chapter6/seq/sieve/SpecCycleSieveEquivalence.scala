@@ -122,6 +122,43 @@ object SpecCycleSieveEquivalence {
   }.holds
 
   /**
+   * Proves apply equivalence for every index from equal heads and equal gaps.
+   *
+   * This is the all-index wrapper around the positive-index theorem above. At
+   * index 0 both sequences return their head. At every positive index, both
+   * sequences are reconstructed from the same initial value and the same stored
+   * `MemCycle`, so the positive theorem applies directly.
+   */
+  def assertSpecCycleApplyMatchesFromSameHeadAndGaps(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    period: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+    require(period > BigInt(0))
+    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec.head.value == cycle.head)
+    require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
+
+    if (position == BigInt(0)) {
+      assert(spec(BigInt(0)) == spec.head.value)
+      assert(cycle(BigInt(0)) == cycle.head)
+      spec(position) == cycle(position)
+    } else {
+      assert(
+        assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps(
+          spec,
+          cycle,
+          period,
+          position
+        )
+      )
+      spec(position) == cycle(position)
+    }
+  }.holds
+
+  /**
    * Converts the prime-list correspondence assumption into filter equality.
    *
    * The cycle sequence keeps the head prime at `cycle.primes.head`, so its
