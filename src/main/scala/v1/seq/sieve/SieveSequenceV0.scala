@@ -1802,6 +1802,7 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) {
       assert(accepts(apply(k + BigInt(1))))
       assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k + BigInt(1))))
+      assert(assertFilterPreservesNextGap(nextSeq, k))
       k + BigInt(1)
     } else {
       val bound = k + p * period
@@ -1812,13 +1813,18 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       assert(accepts(apply(m)))
       assert(Calc.mod(apply(m), p) != BigInt(0))
       assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
+      assert(assertMergeGapEqualsOldGapSum(nextSeq, k, period))
       m
     }
   }.ensuring(res =>
     res > k &&
       accepts(apply(res)) &&
       Calc.mod(apply(res), nextSeq.filterValues.head) != BigInt(0) &&
-      nextSeq.accepts(apply(res))
+      nextSeq.accepts(apply(res)) &&
+      {
+        val vIdx = nextSeq.indexOfAccepted(apply(k))
+        nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == sumGap(k, res)
+      }
   )
 
   /**

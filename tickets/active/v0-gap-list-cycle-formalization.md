@@ -148,12 +148,15 @@ The ordering above follows the project lessons:
 - `SieveSequenceV0.nextMergedGapOldIndex(nextSeq, k, period)` is the verified
   one-step old-index transformer. It returns an index strictly after `k` whose
   old-stream value is accepted by `nextSeq`, choosing either the copied
-  successor or the first bounded merge survivor. As of commit `8f6091d`, its
+  successor or the first bounded merge survivor. As of `8f6091d`, its
   postcondition was strengthened to also export `accepts(apply(res))` and
-  `Calc.mod(apply(res), nextSeq.filterValues.head) != 0`. This strengthening is
-  the missing piece that makes prefix positivity directly provable: every
-  emitted `sumGap(k, nextK)` now has `nextK > k` guaranteed in the postcondition,
-  so positivity follows from `apply`'s strict monotonicity.
+  `Calc.mod(apply(res), nextSeq.filterValues.head) != 0`. As of 2026-06-22, its
+  postcondition was further strengthened to export the gap equality
+  `nextSeq(vIdx+1) - nextSeq(vIdx) == sumGap(k, res)`, with branch-specific
+  lemma assertions (`assertFilterPreservesNextGap` for copy,
+  `assertMergeGapEqualsOldGapSum` for merge) in each branch body and the
+  telescoped equality re-exported via `.ensuring`. Verified with 7621 valid (+14
+  over 7607).
 - `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)` builds a
   bounded prefix of copied-or-merged gaps by repeatedly using
   `nextMergedGapOldIndex` and emitting `sumGap(k, nextK)`. Its recursion
