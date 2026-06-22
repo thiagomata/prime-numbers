@@ -1921,6 +1921,26 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  def assertMergedGapPrefixFirstGapCorrect(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    period: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    val prefix = mergedGapPrefix(nextSeq, k, BigInt(1), period)
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
+
+    prefix.head == nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx)
+  }.holds
+
   // P4 (assertPeriodEqualsResidueCount) SKIPPED
   // The property p == residues(M, filterValues).size is true by interval periodicity:
   // isCoprime(x, F) == isCoprime(Calc.mod(x, M), F), so any interval of length M

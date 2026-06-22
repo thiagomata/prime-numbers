@@ -948,6 +948,7 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **gapList(from, count)** | Returns `List[BigInt] = [gap(from), ..., gap(from+count-1)]` | Public function. Structural recursion on `count`. Verified with 7568 valid. |
 | **assertGapListPositive(from, count)** | `allGreaterThan(gapList(from, count), 0)` | Public `.holds`. Induction on `count`, uses `assertGapPositive` for each element. Verified with 7579 valid. |
 | **assertGapListSize(from, count)** | `gapList(from, count).size == count` | Public `.holds`. Induction on `count`. Verified with 7590 valid. |
+| **assertMergedGapPrefixFirstGapCorrect(nextSeq, k, period)** | `mergedGapPrefix(nextSeq, k, 1, period).head == nextSeq(vIdx+1) - nextSeq(vIdx)` where `vIdx = nextSeq.indexOfAccepted(apply(k))` | Public `.holds`. Proves the first emitted gap matches the corresponding next-sequence gap. Relies on `nextMergedGapOldIndex`'s strengthened postcondition. Verified with 7643 valid. |
 
 ### Filter Membership Lemmas
 
