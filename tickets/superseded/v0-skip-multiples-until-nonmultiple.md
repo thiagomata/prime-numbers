@@ -12,7 +12,7 @@
 
 ## Goal
 
-Add lemma `assertSkipUntilNonMultiple(nextSeq, k)` to `SieveSequenceV0` that proves:
+Add lemma `assertSkipUntilNonMultiple(nextSeq, k)` to `SpecSieveSequence` that proves:
 
 Given V = seq_n(k) = seq_{n+1}(px) and Calc.mod(seq_n(k+1), p) == 0:
 - There exists a first index m > k where Calc.mod(seq_n(m), p) != 0

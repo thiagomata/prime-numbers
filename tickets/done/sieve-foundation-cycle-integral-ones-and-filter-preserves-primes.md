@@ -28,7 +28,7 @@ These are the base case and inductive step of the sieve's correctness proof.
 
 ## Scope
 
-**Abstract proofs only** — no `SieveSequenceV2` references. The sieve will compose these later.
+**Abstract proofs only** — no `CycleSieveSequence` references. The sieve will compose these later.
 
 ### Files to Create
 
@@ -117,7 +117,7 @@ isPrime(q) ∧ q ≠ filterPrime ⟹ mod(q, filterPrime) ≠ 0
 
 1. Run `just verify` after each lemma
 2. Each lemma must pass before proceeding to next
-3. No `SieveSequenceV2` references in code
+3. No `CycleSieveSequence` references in code
 4. No tickets mentioned in code or articles
 5. No `@extern` or `@inline` — if needed, STOP and ASK FOR HELP
 

@@ -1,8 +1,8 @@
-# Use SieveSequenceV0 to Build the Next-Level Sequence
+# Use SpecSieveSequence to Build the Next-Level Sequence
 
 **Created:** 2026-06-18
 **Updated:** 2026-06-19
-**Status:** Complete — `SieveSequenceV0.next` verified at 5992 valid.
+**Status:** Complete — `SpecSieveSequence.next` verified at 5992 valid.
 
 **Related tickets:**
 - `prove-apply1-is-prime.md` — failed attempt to prove `apply(1)` is prime directly (rendered obsolete by `nextPrime` which doesn't need it)
@@ -14,7 +14,7 @@
 
 ## Goal
 
-Given `SieveSequenceV0(primes)` where `primes = [p_n, p_{n-1}, ..., 2]`, produce `SieveSequenceV0(newPrimes)` where `newPrimes = [p_{n+1}, p_n, ..., 2]`.
+Given `SpecSieveSequence(primes)` where `primes = [p_n, p_{n-1}, ..., 2]`, produce `SpecSieveSequence(newPrimes)` where `newPrimes = [p_{n+1}, p_n, ..., 2]`.
 
 ---
 
@@ -23,7 +23,7 @@ Given `SieveSequenceV0(primes)` where `primes = [p_n, p_{n-1}, ..., 2]`, produce
 The full chain is verified and live:
 
 ```
-AllPrimesSoFarList.nextPrime → AllPrimesSoFarList.next → SieveSequenceV0.next
+AllPrimesSoFarList.nextPrime → AllPrimesSoFarList.next → SpecSieveSequence.next
 ```
 
 | Component | Verified at | What it does |
@@ -36,7 +36,7 @@ AllPrimesSoFarList.nextPrime → AllPrimesSoFarList.next → SieveSequenceV0.nex
 | `primeIsCoprimeWithSmallerList` | 5974 | `isPrime(v)` + descending `primes` with `head < v` ⇒ `isCoprime(v, primeValues(primes))` |
 | `noDivisorInRangeExcludesValue` | 5917 | Extracts `mod(n, value) != 0` from `noDivisorInRange(n, from, to)` for any value in range |
 | `AllPrimesSoFarList.next` | 5980 | Constructs `SortedPrimeList(newPrime :: list.list)` + `AllPrimesSoFarList(…)` using nextPrime's postcondition |
-| `SieveSequenceV0.next` | 5992 | Delegates to `AllPrimesSoFarList.next`, proves `isCoprime` via `primeIsCoprimeWithSmallerList` |
+| `SpecSieveSequence.next` | 5992 | Delegates to `AllPrimesSoFarList.next`, proves `isCoprime` via `primeIsCoprimeWithSmallerList` |
 
 ### Three constructor proofs resolved
 
@@ -44,7 +44,7 @@ AllPrimesSoFarList.nextPrime → AllPrimesSoFarList.next → SieveSequenceV0.nex
 |-------|----------|-----|
 | `SortedPrimeList.isDescending(newPrime :: list.list)` | `newPrime.value > head.value` | `nextPrime` postcondition assures this |
 | `AllPrimesSoFarList.allPrimesSoFar(newSortedList)` | `isPrime(newPrime.value)` + `noPrimesBetween(head+1, newPrime.value)` | `nextPrime` postcondition assures both |
-| `SieveSequenceV0(…)` constructor `isCoprime` | `isCoprime(newPrime.value, oldFilterValues)` | `primeIsCoprimeWithSmallerList` + `SortedPrimeList.assertTailDescending` |
+| `SpecSieveSequence(…)` constructor `isCoprime` | `isCoprime(newPrime.value, oldFilterValues)` | `primeIsCoprimeWithSmallerList` + `SortedPrimeList.assertTailDescending` |
 
 ---
 

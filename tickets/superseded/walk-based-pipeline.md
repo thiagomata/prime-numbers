@@ -31,7 +31,7 @@ The walk-based functions are **saved in the file** (`SieveSequenceNextLevel.scal
 
 **4302 valid, 0 invalid, 0 unknown** — done in 15.39s.
 
-The fix uses `CycleIntegralProperties.assertCycleIntegralPositive(seq.integral, pos)` which proves `seq.integral(pos) > 0` using GapCycle's `allGreaterThan` invariant. The lemma is in `CycleIntegralProperties` (proved in `articles/integral-cycle.md`), and its preconditions are all satisfied by `SieveSequenceV2`'s invariants.
+The fix uses `CycleIntegralProperties.assertCycleIntegralPositive(seq.integral, pos)` which proves `seq.integral(pos) > 0` using GapCycle's `allGreaterThan` invariant. The lemma is in `CycleIntegralProperties` (proved in `articles/integral-cycle.md`), and its preconditions are all satisfied by `CycleSieveSequence`'s invariants.
 
 ### Tests
 
@@ -125,7 +125,7 @@ This works because:
 |------|---------|
 | `SieveSequenceNextLevel.scala` | `collectGapsV2`, `nextGapsWalkV2` (walk-based functions), `nextGapCycleV2` uses walk-based gaps |
 | `GapCycle.scala` | Unchanged (no new lemmas added, they timed out) |
-| `SieveSequenceV2.scala` | `@extern` still on `next()` |
+| `CycleSieveSequence.scala` | `@extern` still on `next()` |
 
 ---
 

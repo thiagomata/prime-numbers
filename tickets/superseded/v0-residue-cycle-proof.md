@@ -12,7 +12,7 @@
 - `primorial-not-divisible-by-new-prime.md` — Euclid's lemma not yet proved. Not a concern here (no product-of-coprime reasoning needed).
 - `prove-apply1-is-prime.md` — Still OPEN. Deep number theory. Our property is structural, not about primality.
 - `v0-next-level-construction.md` — Lessons: `.ensuring` on class methods breaks type inference; one lemma at a time.
-- `complete-prime-prefix-sieve-cycle.md` — Discusses SieveSequenceV0's bounded search shape.
+- `complete-prime-prefix-sieve-cycle.md` — Discusses SpecSieveSequence's bounded search shape.
 
 ## Related Articles
 
@@ -51,7 +51,7 @@ This is the "loop around M" property. It requires proving `apply(k + R) == apply
 - P1 `assertApplyModIsCoprime` verified at 6059
 - `assertResiduesAllCoprime` exists (SieveUtils:716) — proves soundness only
 - `generateResidues` (SieveUtils:242) scans `[0, M)` and collects coprime values — complete by construction but unproven
-- `SieveSequenceV0` has `indexOfAccepted(value)` — returns the unique k such that `apply(k) = value`
+- `SpecSieveSequence` has `indexOfAccepted(value)` — returns the unique k such that `apply(k) = value`
 - `expandedCoprimePreservesFilter` proves: if `isCoprime(r, values)` and `modulus = product(values)`, then `isCoprime(r + i*modulus, values)`
 - `searchBoundPassesFilter(k)` proves `searchBound(k) = head + k*M` is always accepted
 - `apply(k)` postcondition: `accepts(res)`, strict monotonicity proven by `applyStrictlyIncreases`
@@ -60,7 +60,7 @@ This is the "loop around M" property. It requires proving `apply(k + R) == apply
 ## Expected State
 
 - P2: `assertResiduesComplete(M, primes)` verified in SieveUtils
-- P3: `assertApplyResidueCycles(k)` verified in SieveSequenceV0
+- P3: `assertApplyResidueCycles(k)` verified in SpecSieveSequence
 - 0 invalid, 0 unknown
 
 ## Approaches Considered
@@ -95,7 +95,7 @@ def assertGenerateResiduesComplete(i: BigInt, modulus: BigInt, primes: List[BigI
 Prove that in any interval of length M starting at or above `head`, there are exactly R accepted values, where `R = residues(M, filterValues).size`.
 
 ```scala
-def assertAcceptedCountInBlock(seq: SieveSequenceV0, k: BigInt): Boolean = {
+def assertAcceptedCountInBlock(seq: SpecSieveSequence, k: BigInt): Boolean = {
   // in [head + k*M, head + (k+1)*M), exactly R values are accepted
 }
 ```
@@ -150,7 +150,7 @@ This gives a "loop" with period `p` without needing to prove `p = R`. The period
 | **Avoid big combined lemmas** | `sieve-sequence-residue-representation-proof-object.md` | `assertAcceptsAfterAddingModulus` timed out as one lemma. Split P3 into induction base, step, and final equality. |
 | **Structural invariant over opaque proof** | `sieve-properties-step5-coprime-to-modulus.md` | For P3, use structural induction over k (V0's own structure), not opaque abstractions. |
 | **Use `Calc.mod` and `Calc.div`** | AGENTS.md | Never use `%` operator. |
-| **Never modify MemCycle/ModCycle/CycleIntegral** | AGENTS.md | P2 and P3 stay in SieveUtils and SieveSequenceV0. No core cycle types. |
+| **Never modify MemCycle/ModCycle/CycleIntegral** | AGENTS.md | P2 and P3 stay in SieveUtils and SpecSieveSequence. No core cycle types. |
 | **Direct structural recursion** | `sieve-properties-step5-coprime-to-modulus.md` | P2 uses recursion over [0, M) or over the residues list. |
 | **`contains` on lists may cause VC explosion** | `sieve-properties-step5-coprime-to-modulus.md` | For P2, verify that `contains` (or `valueExistInList`) doesn't time out. |
 | **Timeout is failure, not retry** | AGENTS.md stop-and-ask rule | If P2 or P3 times out 3 times, stop and ask. |

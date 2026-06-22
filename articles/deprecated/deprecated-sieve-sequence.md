@@ -265,7 +265,7 @@ def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
 }.holds
 ```
 
-This property completes the proof that every element of the `primes` list in a `SieveSequenceV2` is semantically prime. The full proof chain — from sieve construction through completeness assumption to primality — is verified at **5303 VCs, 0 invalid, 0 unknown**.
+This property completes the proof that every element of the `primes` list in a `CycleSieveSequence` is semantically prime. The full proof chain — from sieve construction through completeness assumption to primality — is verified at **5303 VCs, 0 invalid, 0 unknown**.
 
 ## 5. Implementation Consistency
 

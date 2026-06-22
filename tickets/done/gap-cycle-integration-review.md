@@ -8,7 +8,7 @@
 
 ## Overall Assessment
 
-The ticket is well-structured, correctly identifies risks, and follows the project's one-lemma-per-verify discipline. However, there are several issues and blind spots. **The recommended path forward is a side-by-side `SieveSequenceV2` instead of mutating the existing `SieveSequence`.** See Section V for the revised plan.
+The ticket is well-structured, correctly identifies risks, and follows the project's one-lemma-per-verify discipline. However, there are several issues and blind spots. **The recommended path forward is a side-by-side `CycleSieveSequence` instead of mutating the existing `SieveSequence`.** See Section V for the revised plan.
 
 ---
 
@@ -86,7 +86,7 @@ Each phase should estimate how many verify cycles are needed. Phase 1a (construc
 
 ---
 
-## V. Recommended Approach: Side-by-Side SieveSequenceV2
+## V. Recommended Approach: Side-by-Side CycleSieveSequence
 
 ### Why side-by-side instead of mutating in place
 
@@ -96,7 +96,7 @@ Mutating `SieveSequence` creates a messy intermediate state where:
 - Phase 3 tries to remove requires that are strictly stronger than GapCycle's invariants (Issue #1)
 - The dual-integral confusion persists (Issue #4)
 
-A side-by-side `SieveSequenceV2` eliminates all of these by starting clean.
+A side-by-side `CycleSieveSequence` eliminates all of these by starting clean.
 
 ### How side-by-side resolves the issues
 
@@ -142,22 +142,22 @@ The `checkPositiveOrZero` require becomes redundant (implied by `allGreaterThan(
 
 ---
 
-## VI. Revised Ticket: SieveSequenceV2 with GapCycle
+## VI. Revised Ticket: CycleSieveSequence with GapCycle
 
 ### Goal
 
-Create `SieveSequenceV2` as a side-by-side alternative to `SieveSequence` that uses `GapCycle` as a first-class field, encoding the strictly-positive gap invariant at the type level from construction onward.
+Create `CycleSieveSequence` as a side-by-side alternative to `SieveSequence` that uses `GapCycle` as a first-class field, encoding the strictly-positive gap invariant at the type level from construction onward.
 
 ### Prerequisite: Strengthen GapCycle (1 verify cycle)
 
 Add `require(ListBoundUtils.allGreaterThan(values.list, BigInt(0)))` to `GapCycle` case class. Update `GapCycleTest` to confirm. Verify.
 
-### Phase 1 — SieveSequenceV2 skeleton (2-3 verify cycles)
+### Phase 1 — CycleSieveSequence skeleton (2-3 verify cycles)
 
-Create `src/main/scala/v1/seq/sieve/SieveSequenceV2.scala`:
+Create `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala`:
 
 ```scala
-case class SieveSequenceV2(
+case class CycleSieveSequence(
   primes: List[BigInt],
   gapCycle: GapCycle
 ) {
@@ -193,7 +193,7 @@ case class SieveSequenceV2(
 Add to `SieveSequenceNextLevel` or a new `SieveSequenceNextLevelV2`:
 
 ```scala
-def nextGapCycle(seq: SieveSequenceV2): GapCycle = {
+def nextGapCycle(seq: CycleSieveSequence): GapCycle = {
   val gaps = nextRotatedGaps(seq)  // reuses existing pipeline
   require(gaps.nonEmpty)
   require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))  // stronger: > 0, not >= 0
@@ -202,7 +202,7 @@ def nextGapCycle(seq: SieveSequenceV2): GapCycle = {
 ```
 
 **Cycle 1:** `nextGapCycle` skeleton with requires. Verify.
-**Cycle 2:** Add `next(): SieveSequenceV2` (marked `@extern`). Verify.
+**Cycle 2:** Add `next(): CycleSieveSequence` (marked `@extern`). Verify.
 **Cycle 3:** Add factory methods `S_0V2()`, `S_1V2()`. Verify.
 
 ### Phase 3 — Verify equivalence (2-4 verify cycles)
@@ -211,11 +211,11 @@ Prove that V2 produces the same primes as V1:
 
 ```scala
 def assertS0V2MatchesS0(): Boolean = {
-  SieveSequenceV2.S_0V2().primes == SieveSequence.S_0().primes
+  CycleSieveSequence.S_0V2().primes == SieveSequence.S_0().primes
 }.holds
 
 def assertS1V2MatchesS1(): Boolean = {
-  SieveSequenceV2.S_1V2().primes == SieveSequence.S_1().primes
+  CycleSieveSequence.S_1V2().primes == SieveSequence.S_1().primes
 }.holds
 ```
 
@@ -225,7 +225,7 @@ def assertS1V2MatchesS1(): Boolean = {
 
 ### Phase 4 — Tests (1-2 verify cycles + test runs)
 
-- `SieveSequenceV2Test.scala`: construction, apply, next, equivalence with V1
+- `CycleSieveSequenceTest.scala`: construction, apply, next, equivalence with V1
 - Run `sbt 'set stainlessEnabled := false' 'testOnly v1.seq.sieve.*'`
 - Confirm all V1 tests still pass (no regressions)
 
@@ -242,15 +242,15 @@ def assertS1V2MatchesS1(): Boolean = {
 - Total valid count >= 4240 (current baseline)
 - V1 tests unchanged and passing
 - V2 tests passing
-- `SieveSequenceV2.S_0V2().primes == SieveSequence.S_0().primes` (runtime check)
+- `CycleSieveSequence.S_0V2().primes == SieveSequence.S_0().primes` (runtime check)
 
 ### Files
 
 | File | Action |
 |------|--------|
 | `src/main/scala/v1/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
-| `src/main/scala/v1/seq/sieve/SieveSequenceV2.scala` | Create: new case class |
-| `src/test/scala/v1/seq/sieve/SieveSequenceV2Test.scala` | Create: tests |
+| `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
+| `src/test/scala/v1/seq/sieve/CycleSieveSequenceTest.scala` | Create: tests |
 | `src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` (or create V2 variant) |
 | `src/test/scala/v1/cycle/gap/GapCycleTest.scala` | Modify: add test for strengthened require |
 

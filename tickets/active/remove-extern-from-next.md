@@ -1,4 +1,4 @@
-# Remove @extern from SieveSequenceV2.next()
+# Remove @extern from CycleSieveSequence.next()
 
 **Created:** 2026-06-13
 **Status:** Phase 1 in progress
@@ -8,7 +8,7 @@
 
 ## Goal
 
-Remove `@extern` from `SieveSequenceV2.next()` by proving all VCs that it currently bypasses.
+Remove `@extern` from `CycleSieveSequence.next()` by proving all VCs that it currently bypasses.
 
 ---
 
@@ -47,7 +47,7 @@ Prove `gaps.nonEmpty` for the result of `nextGapsWalkV2`.
 
 **Approach options:**
 - Option A: Prove Euclid's lemma (prime doesn't divide product of distinct primes)
-- Option B: Add `require(Calc.mod(product(primes.tail), primes.head) != 0)` to SieveSequenceV2 (structural invariant)
+- Option B: Add `require(Calc.mod(product(primes.tail), primes.head) != 0)` to CycleSieveSequence (structural invariant)
 - Option C: Scope invariant to `nextGapCycleV2` require instead of full structural proof
 
 ### Phase 4: Remove @extern — NOT STARTED
@@ -73,6 +73,6 @@ Remove `@extern` annotation from `next()`. After Phases 1-3 prove all requires r
 |------|----------|--------|
 | 2026-06-13 | Created ticket with 4-phase plan. Verified current state: 5230 valid. | Phase 1: Rewrite using `Calc.mod`, add explicit `current > lastSurvivor` assertion. |
 | 2026-06-13 | **Phase 1 complete.** Added `assertCollectGapsV2AllPositive` + `assertAllGreaterThanReverse` to SieveSequenceNextLevel. 5292 valid. All 9 tests pass. | Proceed to Phase 2. |
-| 2026-06-13 | **Phase 2 complete.** Added structural invariants to SieveSequenceV2: `isCoprime(apply(1), primes.tail)` and `mod(apply(1), head) != 0`. Expressed as direct computations (`primes.head + gapCycle.memCycle(0)`) because `integral` val is not yet initialized during require. 5300 valid. | Proceed to Phase 3. |
-| 2026-06-13 | **Phase 3 structural invariant added.** Added `Calc.mod(SieveUtils.product(primes.tail), primes.head) != 0` to SieveSequenceV2. 5303 valid. | Attempted Phase 4 (remove @extern). |
+| 2026-06-13 | **Phase 2 complete.** Added structural invariants to CycleSieveSequence: `isCoprime(apply(1), primes.tail)` and `mod(apply(1), head) != 0`. Expressed as direct computations (`primes.head + gapCycle.memCycle(0)`) because `integral` val is not yet initialized during require. 5300 valid. | Proceed to Phase 3. |
+| 2026-06-13 | **Phase 3 structural invariant added.** Added `Calc.mod(SieveUtils.product(primes.tail), primes.head) != 0` to CycleSieveSequence. 5303 valid. | Attempted Phase 4 (remove @extern). |
 | 2026-06-13 | **Phase 4 BLOCKED.** Removing @extern causes timeout on `gaps.nonEmpty` VC in `nextGapCycleV2`. The solver can't prove at least one survivor is found in `head * gapCycle.size` walk steps. This requires a periodicity/Euclid lemma that `mod(modulus, head) != 0` causes residues to cycle through all non-zero values modulo head. | ASK FOR HELP on nonEmpty proof strategy. |

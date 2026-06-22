@@ -6,7 +6,7 @@
 ## Purpose
 
 This is the coordination ticket for formalizing the gap-list and gap-cycle
-properties around `SieveSequenceV0`.
+properties around `SpecSieveSequence`.
 
 Older gap tickets remain available as historical proof logs, but new work should
 start here. When an old ticket contains a useful verified fact, copy the current
@@ -24,23 +24,23 @@ is:
    - `gap(k) > 0`.
    - Estimated complexity: low. This is a direct wrapper over strict
      monotonicity.
-   - Status: verified as `SieveSequenceV0.assertGapPositive(k)`.
+   - Status: verified as `SpecSieveSequence.assertGapPositive(k)`.
 2. Copy case:
    - if the immediate old successor survives the new filter, the next gap is
      the old gap.
    - Estimated complexity: low to medium. The core position-preservation lemma
      is already verified.
-   - Status: verified as `SieveSequenceV0.assertFilterPreservesNextGap(nextSeq, k)`.
+   - Status: verified as `SpecSieveSequence.assertFilterPreservesNextGap(nextSeq, k)`.
 3. Gap periodicity:
    - `gap(k + p) == gap(k)`.
    - Estimated complexity: medium. This depends on block-shift facts at two
      adjacent indices.
-   - Status: verified as `SieveSequenceV0.assertGapPeriodic(k, p)`.
+   - Status: verified as `SpecSieveSequence.assertGapPeriodic(k, p)`.
 4. Gap-period sum:
    - `sumGap(0, p) == filterModulus`.
    - Estimated complexity: medium. This depends on telescoping a bounded gap
      prefix.
-   - Status: verified as `SieveSequenceV0.assertGapSum(p)`.
+   - Status: verified as `SpecSieveSequence.assertGapSum(p)`.
 5. Merge landing point:
    - if the immediate old successor is removed by the new filter, the next
      sequence lands on the first later old survivor.
@@ -52,7 +52,7 @@ is:
    - Estimated complexity: medium to high. This should compose the landing
      equality with `sumGap` telescoping.
    - Status: verified as
-     `SieveSequenceV0.assertMergeGapEqualsOldGapSum(nextSeq, k, period)`.
+     `SpecSieveSequence.assertMergeGapEqualsOldGapSum(nextSeq, k, period)`.
 7. Public apply-to-gap-sum bridge:
    - `apply(k) == head.value + sumGap(0, k)` for all `k >= 0`.
    - Estimated complexity: low. One-line wrapper over private
@@ -61,7 +61,7 @@ is:
    - This is the entry point for expressing V0.apply as a CycleIntegral
      (needed by the V0-V2 matching ticket).
    - Status: not yet added. Planned as
-     `SieveSequenceV0.assertApplyEqualsHeadPlusGapSum(k)`.
+     `SpecSieveSequence.assertApplyEqualsHeadPlusGapSum(k)`.
 8. Gap list extraction:
    - `gapList(from, count)` returns `[gap(from), ..., gap(from+count-1)]` as
      a concrete `List[BigInt]`.
@@ -77,7 +77,7 @@ is:
     - Estimated complexity: high. This introduces a recursive list-building
       proof and accounting for consumed old indices.
     - Status: prefix transformer verified as
-      `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)`;
+      `SpecSieveSequence.mergedGapPrefix(nextSeq, k, remaining, period)`;
       prefix positivity verified as
       `assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`;
       prefix equality verified as
@@ -88,7 +88,7 @@ is:
     - Estimated complexity: high. This bridges finite gap-list equality to
       cycle access and repeated positions.
     - Status: proven by `assertGapPeriodic(k, p)` at
-      `SieveSequenceV0.scala:1037` — `gap(k + p) == gap(k)` for all k.
+      `SpecSieveSequence.scala:1037` — `gap(k + p) == gap(k)` for all k.
       The finite list `[gap(0), ..., gap(p-1)]` therefore generates all gaps
       by repeating. No additional cyclicity lemma needed.
 11. Cycle lift (was item 9):
@@ -103,7 +103,7 @@ is:
       `CycleIntegralProperties`.
 12. Conditional next-prime bridge (was item 10):
     - when the next head alignment is available, connect the gap-list theorem to
-      `SieveSequenceV0.next`.
+      `SpecSieveSequence.next`.
     - Estimated complexity: very high. This depends on the separate conditional
       `nextPrime` / `apply(1)` alignment boundary.
 
@@ -112,7 +112,7 @@ is:
 The ordering above follows the project lessons:
 
 - Prefer same-instance private lemmas for the early gap facts. `LEARNINGS.md`
-  notes that private lemmas inside `SieveSequenceV0` propagate better than
+  notes that private lemmas inside `SpecSieveSequence` propagate better than
   external `.holds` calls.
 - Use `.ensuring` when a later lemma must consume an equality. This was the
   successful pattern for block-shift facts such as
@@ -125,40 +125,40 @@ The ordering above follows the project lessons:
   VCs.
 - Treat cross-instance calls as expensive. The conditional next-prime bridge is
   last because `LEARNINGS.md` records repeated timeouts when calling verified
-  `SieveSequenceV0` lemmas on a different instance.
+  `SpecSieveSequence` lemmas on a different instance.
 - Avoid deep number theory in this ticket. Bertrand, Jacobsthal, and prime-gap
   arguments are out of scope; use explicit preconditions or conditional
   branches for those boundaries.
 
 ## Current Verified Backbone
 
-- `SieveSequenceV0.assertGapPositive(k)` proves each V0 gap is positive.
-- `SieveSequenceV0.assertGapPeriodic(k, p)` proves periodicity when
+- `SpecSieveSequence.assertGapPositive(k)` proves each V0 gap is positive.
+- `SpecSieveSequence.assertGapPeriodic(k, p)` proves periodicity when
   `apply(p) == head.value + filterModulus`.
-- `SieveSequenceV0.assertGapSum(p)` proves the sum of one period is the
+- `SpecSieveSequence.assertGapSum(p)` proves the sum of one period is the
   filter modulus.
-- `SieveSequenceV0.assertFilterPreservesNextPosition(nextSeq, k)` proves the
+- `SpecSieveSequence.assertFilterPreservesNextPosition(nextSeq, k)` proves the
   copy case for an immediate successor that survives the new front filter.
-- `SieveSequenceV0.assertFilterPreservesNextGap(nextSeq, k)` proves the
+- `SpecSieveSequence.assertFilterPreservesNextGap(nextSeq, k)` proves the
   copied-gap corollary: under the same immediate-survivor preconditions, the
   next sequence gap equals the old sequence gap.
-- `SieveSequenceV0.assertSkipUntilNonMultiple(nextSeq, k, period)` proves the
+- `SpecSieveSequence.assertSkipUntilNonMultiple(nextSeq, k, period)` proves the
   core merge case: when the immediate old successor is rejected by the new front
   filter, the next sequence lands exactly on the first later old-stream value
   that survives.
-- `SieveSequenceV0.assertPeriodBoundIsNonMultiple(nextSeq, k, period)` exposes
+- `SpecSieveSequence.assertPeriodBoundIsNonMultiple(nextSeq, k, period)` exposes
   the period-search endpoint facts needed by callers: for `p =
   nextSeq.filterValues.head` and `bound = k + p * period`, it proves `p > 0`,
   `bound > k`, and `apply(bound)` is not a multiple of `p`.
-- `SieveSequenceV0.assertMergeLandsOnFirstSurvivor(nextSeq, k, period)` is now
+- `SpecSieveSequence.assertMergeLandsOnFirstSurvivor(nextSeq, k, period)` is now
   a usable property-name alias for the merge landing proof. It consumes
   `assertPeriodBoundIsNonMultiple`, constructs the first-survivor witness, and
   proves the same landing equality as `assertSkipUntilNonMultiple`.
-- `SieveSequenceV0.assertMergeGapEqualsOldGapSum(nextSeq, k, period)` proves
+- `SpecSieveSequence.assertMergeGapEqualsOldGapSum(nextSeq, k, period)` proves
   the merged-gap corollary: when the new front filter removes the immediate old
   successor, the next sequence gap equals `sumGap(k, m)` for the first later
   old-stream survivor `m`.
-- `SieveSequenceV0.nextMergedGapOldIndex(nextSeq, k, period)` is the verified
+- `SpecSieveSequence.nextMergedGapOldIndex(nextSeq, k, period)` is the verified
   one-step old-index transformer. It returns an index strictly after `k` whose
   old-stream value is accepted by `nextSeq`, choosing either the copied
   successor or the first bounded merge survivor. As of `8f6091d`, its
@@ -170,37 +170,37 @@ The ordering above follows the project lessons:
   `assertMergeGapEqualsOldGapSum` for merge) in each branch body and the
   telescoped equality re-exported via `.ensuring`. Verified with 7621 valid (+14
   over 7607).
-- `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)` builds a
+- `SpecSieveSequence.mergedGapPrefix(nextSeq, k, remaining, period)` builds a
   bounded prefix of copied-or-merged gaps by repeatedly using
   `nextMergedGapOldIndex` and emitting `sumGap(k, nextK)`. Its recursion
   decreases on the requested output count `remaining`, not on the number of old
   indices consumed.
-- `SieveSequenceV0.assertSumGapPositive(from, until)` proves the private
+- `SpecSieveSequence.assertSumGapPositive(from, until)` proves the private
   positivity fact `sumGap(from, until) > 0` whenever `until > from`, by
   inducting on `until - from` and using `applyStrictlyIncreases(from)` for each
   summand. It is the positivity companion to `assertSumGapTelescopes` and the
   single-step foundation for prefix-level positivity. Private `.holds`.
-- `SieveSequenceV0.assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`
+- `SpecSieveSequence.assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`
   lifts positivity to the whole emitted prefix: every gap in
   `mergedGapPrefix(nextSeq, k, remaining, period)` is strictly positive. The
   induction decreases on `remaining`; the cons step combines the single-step
   `assertSumGapPositive` (head) with the inductive hypothesis (tail) and makes
   the head/tail split explicit via `ListBoundUtils.assertGreaterThanHeadTail`.
   Public `.holds`.
-- `SieveSequenceV0.next` now has an explicit `List.head`-style precondition:
+- `SpecSieveSequence.next` now has an explicit `List.head`-style precondition:
   `primes.nextPrime.value < head.value * head.value`.
-- `SieveSequenceV0.assertApplyEqualsHeadPlusGapSum(k)` (new item 7) proves
+- `SpecSieveSequence.assertApplyEqualsHeadPlusGapSum(k)` (new item 7) proves
   `apply(k) == head.value + sumGap(0, k)` for all k >= 0. Trivial wrapper over
   private `assertSumGapTelescopes(0, k)`. Verified: 7562 valid (+7).
-- `SieveSequenceV0.gapList(from, count)` (new item 8) extracts a concrete
+- `SpecSieveSequence.gapList(from, count)` (new item 8) extracts a concrete
   `List[BigInt]` of gaps from position `from` to `from+count-1`. Structural
   recursion on `count`. Verified: 7568 valid (+6).
-- `SieveSequenceV0.assertGapListPositive(from, count)` proves every element in
+- `SpecSieveSequence.assertGapListPositive(from, count)` proves every element in
   the gap list is strictly positive. Induction on `count`, uses `assertGapPositive`
   for each element. Verified: 7579 valid (+11).
-- `SieveSequenceV0.assertGapListSize(from, count)` proves the gap list size
+- `SpecSieveSequence.assertGapListSize(from, count)` proves the gap list size
   equals the requested count. Verified: 7590 valid (+11).
-- `SieveSequenceV0.assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)`
+- `SpecSieveSequence.assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)`
   proves the first gap emitted by `mergedGapPrefix(nextSeq, k, 1, period)` equals
   the corresponding `nextSeq` gap `nextSeq(vIdx+1) - nextSeq(vIdx)`. Uses the
   strengthened postcondition of `nextMergedGapOldIndex`. Verified: 7643 valid (+22).
@@ -209,7 +209,7 @@ The ordering above follows the project lessons:
 
 - 2026-06-22: Audited the first property in the complexity ladder. Gap
   positivity is already verified in
-  `src/main/scala/v1/seq/sieve/SieveSequenceV0.scala` as
+  `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
   `assertGapPositive(k)`. The lemma requires `k >= 0`, calls
   `applyStrictlyIncreases(k)`, and proves
   `apply(k + 1) - apply(k) > 0`. No code change was needed.
@@ -219,13 +219,13 @@ The ordering above follows the project lessons:
   the new front filter, the next gap is copied unchanged. Verification passed:
   `total: 7259 valid: 7259 invalid: 0 unknown: 0`.
 - 2026-06-22: Audited the next ladder property, gap periodicity. It is already
-  verified in `src/main/scala/v1/seq/sieve/SieveSequenceV0.scala` as
+  verified in `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
   `assertGapPeriodic(k, p)`. The lemma requires `apply(p) == head.value +
   filterModulus`, calls `assertBlockShift(k, p)` and
   `assertBlockShift(k + 1, p)`, and proves the adjacent gap repeats after one
   period.
 - 2026-06-22: Audited the gap-period sum property. It is already verified in
-  `src/main/scala/v1/seq/sieve/SieveSequenceV0.scala` as
+  `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
   `assertGapSum(p)`. The lemma requires `apply(p) == head.value +
   filterModulus`, uses `assertSumGapTelescopes(0, p)`, and proves
   `sumGap(0, p) == filterModulus`.
@@ -268,7 +268,7 @@ The ordering above follows the project lessons:
   postcondition, not just in its internal assertions (consistent with
   LEARNINGS.md 1.2 on `.ensuring` propagation).
 - 2026-06-22: Evaluated the ticket against the current code, OBJECTS.md, and
-  LEARNINGS.md. All 11 claimed lemmas are present in `SieveSequenceV0.scala`
+  LEARNINGS.md. All 11 claimed lemmas are present in `SpecSieveSequence.scala`
   (lines 999–1801) and reflected in OBJECTS.md (lines 897–944). The complexity
   ladder and its rationale are consistent with LEARNINGS.md sections 1, 7, 18.
   The conditional next-prime bridge (#10) is explicitly out of scope for this
@@ -345,7 +345,7 @@ The ordering above follows the project lessons:
 ## Downstream Dependency
 
 This ticket is a prerequisite for:
-- `v0-v2-apply-equivalence.md` — proves `SieveSequenceV0.apply(k) == SieveSequenceV2.apply(k)`.
+- `v0-v2-apply-equivalence.md` — proves `SpecSieveSequence.apply(k) == CycleSieveSequence.apply(k)`.
 
 Items 7-8 (the public apply-to-gap-sum lemma and gap list extraction) were identified
 as missing during a cross-ticket audit. They are the entry points the bridge ticket
@@ -375,7 +375,7 @@ consumes from V0.
      gapList partial sums reconstruct nextSeq.apply by construction.
 3. ~~Only after the prefix theorem is green, lift it to a gap-cycle statement.~~ **Done via existing lemmas.**
    - Gap-list cyclicity (ladder item 10) is proven by `assertGapPeriodic(k, p)`:
-     `gap(k + p) == gap(k)` for all k, documented at `SieveSequenceV0.scala:1037`.
+     `gap(k + p) == gap(k)` for all k, documented at `SpecSieveSequence.scala:1037`.
    - The finite gap list `[gap(0), ..., gap(p-1)]` when repeated generates all gaps
      — this follows directly from periodicity. No additional lemma needed.
    - Cycle lift (ladder item 11) — constructing a `GapCycle` from `gapList(0, p)`

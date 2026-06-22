@@ -52,7 +52,7 @@ def assertEuclidCoprimeToList(values: List[BigInt]): Boolean = {
 // Then SieveUtils.assertIsCoprimeForAll(filterModulus + 1, filterValues)
 // connects this to isCoprime(filterModulus + 1, filterValues).
 
-// === Method: in SieveSequenceV0.scala ===
+// === Method: in SpecSieveSequence.scala ===
 
 // Returns the first value in the stream that is not a multiple of head.
 // Termination guaranteed by Euclid witness: filterModulus + 1 (or

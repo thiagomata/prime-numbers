@@ -8,7 +8,7 @@
 
 ## Goal
 
-Create `SieveSequenceV2` as a side-by-side alternative to `SieveSequence` that uses `GapCycle` as a first-class field, encoding the strictly-positive gap invariant at the type level from construction onward.
+Create `CycleSieveSequence` as a side-by-side alternative to `SieveSequence` that uses `GapCycle` as a first-class field, encoding the strictly-positive gap invariant at the type level from construction onward.
 
 This replaces the mutation-based approach from v1 of this ticket (add `gapCycle` alongside `integral`) after review identified a critical issue: GapCycle constructor only stores `checkPositiveOrZero` (>= 0), not `allGreaterThan` (> 0), so Phase 3 removal of `checkAllPositive` require was unsound. The V2 approach starts clean with `allGreaterThan` as a structural invariant.
 
@@ -31,9 +31,9 @@ This replaces the mutation-based approach from v1 of this ticket (add `gapCycle`
 Add `require(ListBoundUtils.allGreaterThan(values.list, BigInt(0)))` to GapCycle constructor.
 The `checkPositiveOrZero` require becomes redundant but is kept (harmless).
 
-### Phase 1 — SieveSequenceV2 skeleton (2-3 verify cycles)
+### Phase 1 — CycleSieveSequence skeleton (2-3 verify cycles)
 
-Create `SieveSequenceV2` with:
+Create `CycleSieveSequence` with:
 - Fields: `primes: List[BigInt]`, `gapCycle: GapCycle`
 - Derived `val integral: CycleIntegral = CycleIntegral(primes.head, gapCycle.memCycle)`
 - Same requires as V1 minus the gap ones (covered by gapCycle)
@@ -44,7 +44,7 @@ Create `SieveSequenceV2` with:
 
 - Add `nextGapCycle(seq: SieveSequence): GapCycle` to `SieveSequenceNextLevel`
   - Same pipeline logic as `nextCycle` but returns `GapCycle` with `require(allGreaterThan(gaps, 0))`
-- Add `next(): SieveSequenceV2` (marked `@extern`) to `SieveSequenceV2`
+- Add `next(): CycleSieveSequence` (marked `@extern`) to `CycleSieveSequence`
   - Creates temporary `SieveSequence` to pass to `nextGapCycle` (pragmatic since `@extern`)
 
 ### Phase 3 — Verify equivalence (2-4 verify cycles)
@@ -53,7 +53,7 @@ Prove V2 produces the same primes as V1 for base cases.
 
 ### Phase 4 — Tests (1-2 verify cycles + test runs)
 
-- `SieveSequenceV2Test.scala`: construction, apply, next, equivalence with V1
+- `CycleSieveSequenceTest.scala`: construction, apply, next, equivalence with V1
 - Confirm all V1 tests still pass
 
 ---
@@ -64,9 +64,9 @@ Prove V2 produces the same primes as V1 for base cases.
 
 **Cycle 1:** Add `require(ListBoundUtils.allGreaterThan(values.list, BigInt(0)))` to `GapCycle` case class. Add test. Verify.
 
-### Phase 1a: SieveSequenceV2 case class
+### Phase 1a: CycleSieveSequence case class
 
-Create `SieveSequenceV2.scala` with requires + derived `integral` val. Verify.
+Create `CycleSieveSequence.scala` with requires + derived `integral` val. Verify.
 
 ### Phase 1b: Add accessors + factories
 
@@ -85,15 +85,15 @@ def nextGapCycle(seq: SieveSequence): GapCycle = {
 
 Verify.
 
-### Phase 2b: Add next() to SieveSequenceV2
+### Phase 2b: Add next() to CycleSieveSequence
 
 ```scala
 @extern
-def next(): SieveSequenceV2 = {
+def next(): CycleSieveSequence = {
   val newHead = apply(BigInt(1))
   val v1 = SieveSequence(primes, integral)
   val newGapCycle = SieveSequenceNextLevel.nextGapCycle(v1)
-  SieveSequenceV2(newHead :: primes, newGapCycle)
+  CycleSieveSequence(newHead :: primes, newGapCycle)
 }
 ```
 
@@ -121,17 +121,17 @@ Compile-check only (`@extern`).
 - `just verify` after each cycle
 - Total valid count >= 4240
 - V1 tests unchanged and passing
-- `SieveSequenceV2.S_0V2().primes == SieveSequence.S_0().primes` (runtime)
-- `SieveSequenceV2.S_0V2().next().primes == SieveSequence.S_0().next().primes` (runtime)
+- `CycleSieveSequence.S_0V2().primes == SieveSequence.S_0().primes` (runtime)
+- `CycleSieveSequence.S_0V2().next().primes == SieveSequence.S_0().next().primes` (runtime)
 
 ## Files
 
 | File | Action |
 |------|--------|
 | `src/main/scala/v1/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
-| `src/main/scala/v1/seq/sieve/SieveSequenceV2.scala` | Create: new case class |
+| `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
 | `src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` |
-| `src/test/scala/v1/seq/sieve/SieveSequenceV2Test.scala` | Create: tests |
+| `src/test/scala/v1/seq/sieve/CycleSieveSequenceTest.scala` | Create: tests |
 
 No changes to `SieveUtils.scala`, `SieveSequence.scala`, or existing V1 tests.
 
@@ -143,7 +143,7 @@ No changes to `SieveUtils.scala`, `SieveSequence.scala`, or existing V1 tests.
 - 4240 valid, 0 invalid (unchanged count)
 
 ### 2026-06-08 — Phase 1 Complete ✅
-- Created `SieveSequenceV2` with: `primes`, `gapCycle` fields, derived `integral` val
+- Created `CycleSieveSequence` with: `primes`, `gapCycle` fields, derived `integral` val
 - Requires: `primes.nonEmpty`, `checkAllPositive(primes)`, `checkAllBiggerThanValue(primes, 1)`, `assertProductEqualOrBiggerThanElements(primes.tail)`
 - Gap invariants structural via `GapCycle` type (no gap-related requires needed)
 - Accessors: `head`, `modulus`, `cycle`, `apply`, `first`, `knownPrimeLimit`, `nextPrime`, `nextHead`
@@ -154,12 +154,12 @@ No changes to `SieveUtils.scala`, `SieveSequence.scala`, or existing V1 tests.
 - Added `nextGapCycle(seq: SieveSequence): GapCycle` to `SieveSequenceNextLevel`
   - Requires: `gaps.nonEmpty`, `ListBoundUtils.allGreaterThan(gaps, BigInt(0))`
   - Verified: 4255 valid, 0 invalid (+2)
-- Added `next(): SieveSequenceV2` (`@extern`) — creates temp V1, calls `nextGapCycle`
+- Added `next(): CycleSieveSequence` (`@extern`) — creates temp V1, calls `nextGapCycle`
 - Added equivalence lemmas: `assertS0V2MatchesS0`, `assertS1V2MatchesS1`
   - Verified: 4257 valid, 0 invalid (+2)
 
 ### 2026-06-08 — Phase 4 Complete ✅
-- Created `SieveSequenceV2Test.scala` — 12 tests
+- Created `CycleSieveSequenceTest.scala` — 12 tests
   - Construction, apply, next for S_0, S_1, S_2
   - Equivalence with V1 for S_0, S_1, S_2
   - `nextGapCycle` produces correct GapCycle

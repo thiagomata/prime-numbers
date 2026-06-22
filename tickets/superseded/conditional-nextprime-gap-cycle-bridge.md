@@ -13,7 +13,7 @@ def assertGapCycleMatchesIfNextPrimeBeforeHeadSquared(...): Boolean = {
   require(local structural invariants)
 
   val primesSoFar = ...
-  val seq = SieveSequenceV0(primesSoFar)
+  val seq = SpecSieveSequence(primesSoFar)
   val nextPrime = primesSoFar.nextPrime
 
   if (nextPrime.value < seq.head.value * seq.head.value) {
@@ -34,15 +34,15 @@ inside the `if` branch as a conditional dependency.
 
 `AllPrimesSoFarList.nextPrime` is currently produced by a direct bounded prime
 search using the Euclid witness, not by the gap cycle and not by
-`SieveSequenceV0.apply(1)`.
+`SpecSieveSequence.apply(1)`.
 
-For a list such as `[5, 3, 2]`, `SieveSequenceV0` filters only the tail
+For a list such as `[5, 3, 2]`, `SpecSieveSequence` filters only the tail
 `[3, 2]`. The head `5` is the starting value, not an active filter. Therefore
 `25` passes the V0 tail filter. This means the equality
 
 ```scala
 AllPrimesSoFarList.nextPrime(list).value ==
-  SieveSequenceV0(AllPrimesSoFarList(list)).apply(BigInt(1))
+  SpecSieveSequence(AllPrimesSoFarList(list)).apply(BigInt(1))
 ```
 
 requires some form of the fact that the next prime after `head` appears before
@@ -62,10 +62,10 @@ into a global unknown. The safer shape is an implication encoded as an `if`.
   `[list.head.value + 1, nextPrime.value)`.
 - `AllPrimesSoFarList.allPrimesSoFar(list)` stores the complete prime-prefix
   invariant.
-- `SieveSequenceV0.apply(k)` is a verified tail-filter linear generator.
-- `SieveSequenceV0.indexOfAccepted(value)` gives the completeness witness for
+- `SpecSieveSequence.apply(k)` is a verified tail-filter linear generator.
+- `SpecSieveSequence.indexOfAccepted(value)` gives the completeness witness for
   any accepted value above the head.
-- `SieveSequenceV0.assertSkipUntilNonMultiple(nextSeq, k, period)` now verifies
+- `SpecSieveSequence.assertSkipUntilNonMultiple(nextSeq, k, period)` now verifies
   the period-based gap merge: when the immediate old successor is a multiple of
   the newly added front filter, the next sequence lands exactly on the first
   later old-stream non-multiple.
@@ -83,7 +83,7 @@ leaving that theorem as an isolated conditional branch.
 ## Related Tickets
 
 - [`prove-apply1-is-prime.md`](./prove-apply1-is-prime.md)
-  - Explains why proving `SieveSequenceV0.apply(1)` is prime directly runs into
+  - Explains why proving `SpecSieveSequence.apply(1)` is prime directly runs into
     the `apply(1) < head^2` / Bertrand boundary.
   - This new ticket supersedes the need to make `apply(1)` primality a global
     production requirement.
@@ -123,7 +123,7 @@ where:
 
 ```scala
 val primesSoFar = AllPrimesSoFarList(list)
-val seq = SieveSequenceV0(primesSoFar)
+val seq = SpecSieveSequence(primesSoFar)
 ```
 
 Reason:
@@ -164,11 +164,11 @@ Reason:
 
 Likely dependency:
 
-- `SieveSequenceV0.nextDoesNotPassAcceptedValue` is currently private. This
+- `SpecSieveSequence.nextDoesNotPassAcceptedValue` is currently private. This
   may require adding a small public wrapper lemma for `k = 0`, or placing the
-  bridge inside `SieveSequenceV0`.
+  bridge inside `SpecSieveSequence`.
 - Verified 2026-06-21 as
-  `SieveSequenceV0.assertApplyOneAtOrBeforeAccepted(value)`. The wrapper keeps
+  `SpecSieveSequence.assertApplyOneAtOrBeforeAccepted(value)`. The wrapper keeps
   the skipped-interval machinery private and exposes only the first-step fact:
   any accepted `value > head.value` satisfies `apply(1) <= value`.
 
@@ -244,7 +244,7 @@ def assertNextPrimeEqualsApplyOneIfBeforeHeadSquared(list: SortedPrimeList): Boo
   require(AllPrimesSoFarList.allPrimesSoFar(list))
 
   val primesSoFar = AllPrimesSoFarList(list)
-  val seq = SieveSequenceV0(primesSoFar)
+  val seq = SpecSieveSequence(primesSoFar)
   val p = primesSoFar.nextPrime
 
   if (p.value < seq.head.value * seq.head.value) {
@@ -372,7 +372,7 @@ infrastructure.
 Rejected. This would move the unknown to all callers of `next` and block the
 verified construction path.
 
-### Alternative D: Change `SieveSequenceV0` to filter the head too
+### Alternative D: Change `SpecSieveSequence` to filter the head too
 
 Rejected for this ticket. A full-filter search would make "first survivor is
 prime" easier, but it changes the meaning of V0 and would diverge from the
@@ -434,11 +434,11 @@ Created 2026-06-21.
 Progress:
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertApplyOneAtOrBeforeAccepted(value)`. Verification
+  `SpecSieveSequence.assertApplyOneAtOrBeforeAccepted(value)`. Verification
   result: `total: 6955 valid: 6955 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added and verified Lemma 1 —
-  `SieveSequenceV0.assertNextPrimePassesV0Filter(primes)`. Proves that
+  `SpecSieveSequence.assertNextPrimePassesV0Filter(primes)`. Proves that
   `AllPrimesSoFarList.nextPrime(list).value` is coprime to all V0 tail filter
   primes by reusing `PrimeUtils.primeIsCoprimeWithSmallerList`. Verification
   result: `total: 6968 valid: 6968 invalid: 0 unknown: 0`.
@@ -459,7 +459,7 @@ Progress:
 
 - 2026-06-21: Attempted to add Lemma 4 (`assertNextPrimeEqualsApplyOneIfBeforeHeadSquared`)
   and the cross-instance helper `assertApplyOneIsPrimeIfBelowHeadSq` in
-  `SieveSequenceV0`. The cross-instance calls to private methods caused VC explosion
+  `SpecSieveSequence`. The cross-instance calls to private methods caused VC explosion
   (7167 VCs) and verification timeout (only ~1300 verified in 5 min). Deferred.
 
 - 2026-06-21 (end of session): Current verified state: **7195 valid, 0 invalid, 0 unknown**.
@@ -475,7 +475,7 @@ Progress:
   - `assertCompositeSmallestPrimeDivisor` (public, `.ensuring`) — returns d
   - `acceptedBelowHeadSquaredIsPrime` — requires sieve completeness
 
-  **SieveSequenceV0**:
+  **SpecSieveSequence**:
   - `assertNextPrimePassesV0Filter` — Lemma 1
   - `applyStrictlyIncreases` (public)
   - `assertApplyMonotonic` — public ordering wrapper
@@ -499,7 +499,7 @@ Progress:
   in its lemma, so the VC is small.
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertApplyOneBelowHeadSqFromUpper(value)`. This isolates the
+  `SpecSieveSequence.assertApplyOneBelowHeadSqFromUpper(value)`. This isolates the
   arithmetic step `apply(1) <= value` and `value < head * head` ⇒
   `apply(1) < head * head`, so the final conditional equality proof does not
   ask Stainless to rediscover that transitive bound while also unfolding
@@ -507,7 +507,7 @@ Progress:
   `total: 7198 valid: 7198 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertApplyOnePrimeFromUpperBelowHeadSq(value)`. This wrapper
+  `SpecSieveSequence.assertApplyOnePrimeFromUpperBelowHeadSq(value)`. This wrapper
   composes the upper-bound transfer with `assertApplyOneIsPrimeIfBelowHeadSq()`
   in a single-instance VC. It gives the future conditional bridge the fact
   `Prime.isPrime(apply(1))` from `apply(1) <= value` and
@@ -516,7 +516,7 @@ Progress:
   `total: 7207 valid: 7207 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertOwnNextPrimeAccepted()`. This wrapper packages the
+  `SpecSieveSequence.assertOwnNextPrimeAccepted()`. This wrapper packages the
   current instance's direct `AllPrimesSoFarList.nextPrime(primes.list)` result
   as a V0 accepted value by combining `p.value > head.value`,
   `assertNextPrimePassesV0Filter(primes)`, and `passesFilter(p.value)`. This
@@ -525,7 +525,7 @@ Progress:
   `total: 7217 valid: 7217 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertApplyOneAtOrBeforeOwnNextPrime()`. This completes the
+  `SpecSieveSequence.assertApplyOneAtOrBeforeOwnNextPrime()`. This completes the
   Lemma 2 bridge for the current instance:
   `apply(1) <= AllPrimesSoFarList.nextPrime(primes.list).value`. The wrapper
   consumes only `assertOwnNextPrimeAccepted()` and `assertApplyOneLeqValue`,
@@ -534,7 +534,7 @@ Progress:
   `total: 7225 valid: 7225 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added and verified
-  `SieveSequenceV0.assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()`. This
+  `SpecSieveSequence.assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()`. This
   wrapper proves `Prime.isPrime(apply(1))` in the conditional branch
   `AllPrimesSoFarList.nextPrime(primes.list).value < head.value * head.value`.
   It composes only the ordering wrapper
@@ -544,7 +544,7 @@ Progress:
   `total: 7234 valid: 7234 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Attempted
-  `SieveSequenceV0.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`, an
+  `SpecSieveSequence.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`, an
   instance-local equality wrapper intended to avoid the older cross-instance VC.
   The shape was:
   use `assertApplyOneAtOrBeforeOwnNextPrime()` for `apply(1) <= nextPrime`,
@@ -562,7 +562,7 @@ Progress:
   tried in this loop.
 
 - 2026-06-21: Commented out the timeout-triggering
-  `SieveSequenceV0.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`
+  `SpecSieveSequence.assertOwnNextPrimeEqualsApplyOneIfBeforeHeadSquared()`
   method while preserving the sketch in source comments. The verified helper
   wrappers remain active. This restored the project to green. Verification
   result:
@@ -578,7 +578,7 @@ Progress:
   `total: 7234 valid: 7234 invalid: 0 unknown: 0`.
 
 - 2026-06-21: Added a `List.head`-style precondition to
-  `SieveSequenceV0.next`: callers must provide
+  `SpecSieveSequence.next`: callers must provide
   `primes.nextPrime.value < head.value * head.value`. This makes the missing
   prime-before-square fact explicit at the method boundary while keeping the
   implementation simple: the body still delegates to `AllPrimesSoFarList.next`
@@ -588,7 +588,7 @@ Progress:
 
 Next target:
 
-- Reframe the remaining work around making `SieveSequenceV0.next` useful rather
+- Reframe the remaining work around making `SpecSieveSequence.next` useful rather
   than forcing the equality `nextPrime == apply(1)`. Keep the V0-generator
   lemmas that have independent value for `next`, especially
   `assertApplyOneLeqValue(value)`, `assertOwnNextPrimeAccepted()`, and
@@ -600,7 +600,7 @@ Next target:
   Third wrapper completed: `assertOwnNextPrimeAccepted()`.
   Fourth wrapper completed: `assertApplyOneAtOrBeforeOwnNextPrime()`.
   Fifth wrapper completed: `assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq()`.
-  Current `next` boundary completed: `SieveSequenceV0.next` now requires
+  Current `next` boundary completed: `SpecSieveSequence.next` now requires
   `primes.nextPrime.value < head.value * head.value` and verifies green.
 
 ## Track Evaluation

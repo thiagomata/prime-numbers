@@ -8,7 +8,7 @@
 
 ## Goal
 
-Add `assertHeadIsPrime(seq: SieveSequenceV2): Boolean` to `SieveSequenceProperties.scala` that proves `Prime.isPrime(seq.head)` by calling `PrimeProperties.assertHeadIsPrime(seq.head, seq.primes.tail)`.
+Add `assertHeadIsPrime(seq: CycleSieveSequence): Boolean` to `SieveSequenceProperties.scala` that proves `Prime.isPrime(seq.head)` by calling `PrimeProperties.assertHeadIsPrime(seq.head, seq.primes.tail)`.
 
 ## Current State
 
@@ -23,7 +23,7 @@ Add `assertHeadIsPrime(seq: SieveSequenceV2): Boolean` to `SieveSequenceProperti
 
 ## Result: ✅ Completed
 
-- Added `assertHeadIsPrime(seq: SieveSequenceV2)` at line 60 of `SieveSequenceProperties.scala`
+- Added `assertHeadIsPrime(seq: CycleSieveSequence)` at line 60 of `SieveSequenceProperties.scala`
 - Verification: **5001 valid, 0 invalid, 0 unknown** (+24 from 4977)
 - Two `require` preconditions: `isCoprime(seq.head, seq.primes.tail)` and `assertAllNotCoprimeInRange(seq.head, 2, seq.primes.tail)`
 - Class invariants provide `seq.head > 1` and `checkAllPositive(seq.primes.tail)` — no explicit requires needed
@@ -32,7 +32,7 @@ Add `assertHeadIsPrime(seq: SieveSequenceV2): Boolean` to `SieveSequenceProperti
 
 - `SieveUtils.isCoprime(seq.head, seq.primes.tail)` must be assumed as precondition (Step 5 will prove from sieve construction)
 - `SieveUtils.assertAllNotCoprimeInRange(seq.head, 2, seq.primes.tail)` — completeness assumption, required as precondition
-- Class invariants of `SieveSequenceV2` provide `seq.head > 1` and `checkAllPositive(seq.primes.tail)`
+- Class invariants of `CycleSieveSequence` provide `seq.head > 1` and `checkAllPositive(seq.primes.tail)`
 
 ## Risks
 

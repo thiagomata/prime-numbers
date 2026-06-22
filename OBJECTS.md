@@ -838,7 +838,7 @@ Wrapper around MinBoundList with **strict positivity** invariant.
 
 ---
 
-## 5.3 SieveSequenceV2 (`v1.seq.sieve.SieveSequenceV2`)
+## 5.3 CycleSieveSequence (`v1.seq.sieve.CycleSieveSequence`)
 
 Main sequence object.
 
@@ -857,7 +857,7 @@ apply(k) = integral(k-1) for k >= 1
 | **apply(k)**     | `head` if k=0, else `integral(k-1)`
 | **head**     | `primes.head`                                   | Prime > 0                   |
 | **modulus**  | `product(primes.tail)`
-| **next**     | Builds next V2 stage with `primes.next`         | Returns SieveSequenceV2     |
+| **next**     | Builds next V2 stage with `primes.next`         | Returns CycleSieveSequence     |
 
 **Critical Chain**:
 
@@ -866,11 +866,11 @@ apply(k) = integral(k-1) for k >= 1
 - `seq.gapCycle` requires `allGreaterThan(values.list, 0)` ✓
 - So `assertCycleIntegralPositive(seq.integral, pos)` is **provable**!
 
-**Source**: `src/main/scala/v1/seq/sieve/SieveSequenceV2.scala`
+**Source**: `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala`
 
 ---
 
-## 5.4 SieveSequenceV0 (`v1.seq.sieve.SieveSequenceV0`)
+## 5.4 SpecSieveSequence (`v1.seq.sieve.SpecSieveSequence`)
 
 Linear-scan baseline model of sieve sequences. Generates values by scanning consecutive integers forward, accepting those coprime to the tail primes.
 
@@ -888,7 +888,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **accepts(v)** | `passesFilter(v)` | Requires `v >= head.value` |
 | **indexOfAccepted(v)** | Index where `apply(k) == v` | Completeness witness |
 | **assertApplyOneAtOrBeforeAccepted(v)** | `accepts(v)` ∧ `v > head.value` ⇒ `apply(1) <= v` | Public first-step completeness wrapper over the private skipped-interval proof. |
-| **next** | Builds next stage with `primes.next` | Requires `primes.nextPrime.value < head.value * head.value`, in the same style as `List.head` requiring a non-empty list. Returns `SieveSequenceV0`. |
+| **next** | Builds next stage with `primes.next` | Requires `primes.nextPrime.value < head.value * head.value`, in the same style as `List.head` requiring a non-empty list. Returns `SpecSieveSequence`. |
 
 ### Search Bound Lemmas
 
@@ -916,7 +916,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 
 ### Filter Bridge Lemmas
 
-Bridges between old-filter acceptance and next-filter acceptance for `SieveSequenceV0.next()`.
+Bridges between old-filter acceptance and next-filter acceptance for `SpecSieveSequence.next()`.
 
 | Lemma | Statement | Notes |
 |---|---|---|
@@ -979,7 +979,7 @@ Proving that a prime divisor below `head` appears in `filterValues`, using paral
 
 ### Prime Bridge Lemmas
 
-Cross-object lemmas bridging `AllPrimesSoFarList` prime search with `SieveSequenceV0` generation.
+Cross-object lemmas bridging `AllPrimesSoFarList` prime search with `SpecSieveSequence` generation.
 
 | Lemma | Statement | Notes |
 |---|---|---|
@@ -1000,7 +1000,7 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 
 ### Source
 
-`src/main/scala/v1/seq/sieve/SieveSequenceV0.scala`
+`src/main/scala/v1/seq/sieve/SpecSieveSequence.scala`
 
 ---
 
@@ -1017,10 +1017,10 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 
 ---
 
-## How SieveSequenceV2 Chains Together
+## How CycleSieveSequence Chains Together
 
 ```
-SieveSequenceV2
+CycleSieveSequence
 ├── primes: List[BigInt]               (all > 0)
 ├── gapCycle: GapCycle
 │   ├── values: MinBoundList           (allGreaterThan > 0)
@@ -1286,7 +1286,7 @@ Each article in the `articles/` directory formalizes and proves properties of th
 | [integral.md](./articles/integral.md)             | Discrete Integration         | Integral (bounded)       |
 | [cycle.md](./articles/cycle.md)                   | Unbounded Lists (Cycles)     | ModCycle, RecursiveCycle |
 | [integral-cycle.md](./articles/integral-cycle.md) | Cycle Integral Properties    | CycleIntegral            |
-| [sieve-sequence.md](./articles/draft-sieve-sequence) | Sieve Sequence Properties    | SieveSequenceV2          |
+| [sieve-sequence.md](./articles/draft-sieve-sequence) | Sieve Sequence Properties    | CycleSieveSequence       |
 | [euclid-theorem.md](articles/draft/draft-euclid-theorem.md) | Euclid's Theorem             | PrimeProperties           |
 
 ---

@@ -14,7 +14,7 @@
 
 ## Goal
 
-Verify structural properties about `Calc.mod(SieveSequenceV0.apply(k), filterModulus)` where `filterModulus = product(filterValues)`:
+Verify structural properties about `Calc.mod(SpecSieveSequence.apply(k), filterModulus)` where `filterModulus = product(filterValues)`:
 
 1. **P1 (Foundation)**: `isCoprime(Calc.mod(apply(k), filterModulus), filterValues)` — the residue modulo M is also coprime
 2. **P2 (Membership)**: The residue belongs to the residues list
@@ -22,7 +22,7 @@ Verify structural properties about `Calc.mod(SieveSequenceV0.apply(k), filterMod
 
 ## Current State
 
-- `SieveSequenceV0` verified (5992+ valid)
+- `SpecSieveSequence` verified (5992+ valid)
 - `apply(k)` postcondition: `res >= head.value && res <= searchBound(k) && accepts(res)` — i.e., `isCoprime(res, filterValues)`
 - The key bridge lemmas **already exist** in the codebase:
   - `SieveUtils.assertMultiplePreservesDivisible(a, b, p)` (SieveUtils:117) — if `Calc.mod(b, p) == 0` then `Calc.mod(a * b, p) == 0`
@@ -35,7 +35,7 @@ Verify structural properties about `Calc.mod(SieveSequenceV0.apply(k), filterMod
 
 ## Expected State
 
-**P1 (Foundation)**: `assertApplyModIsCoprime(k)` verified in SieveSequenceV0.
+**P1 (Foundation)**: `assertApplyModIsCoprime(k)` verified in SpecSieveSequence.
 
 **P2 (Membership)**: After adding a residues-completeness lemma, `assertApplyModInResiduesList(k)` verified.
 

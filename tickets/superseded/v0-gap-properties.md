@@ -19,7 +19,7 @@
 
 ## Goal
 
-Define `gap(k) = apply(k+1) - apply(k)` on `SieveSequenceV0` and prove a set of independent structural properties:
+Define `gap(k) = apply(k+1) - apply(k)` on `SpecSieveSequence` and prove a set of independent structural properties:
 
 1. **Gap positivity**: `gap(k) > 0` for all `k >= 0`
 2. **Gap periodicity**: `gap(k+p) == gap(k)` where `p = indexOfAccepted(head + M)`
@@ -43,7 +43,7 @@ Each property is independent. If one gets stuck (3+ attempts), comment it out an
 
 ## Expected State
 
-- All reachable gap properties added as `.holds` lemmas in `SieveSequenceV0`
+- All reachable gap properties added as `.holds` lemmas in `SpecSieveSequence`
 - 0 invalid, 0 unknown
 - Properties that fail after 3 attempts are commented out with an error note
 
@@ -182,7 +182,7 @@ P1 → P2 → P3 → (P4?) → (P5?)
     if stuck → skip → skip
 ```
 
-Each property is a separate `.holds` lemma in `SieveSequenceV0`. After each:
+Each property is a separate `.holds` lemma in `SpecSieveSequence`. After each:
 1. Run `just verify`
 2. If valid count increased → commit the change, move to next
 3. If timeout/failure → try one alternative approach
@@ -194,7 +194,7 @@ Each property is a separate `.holds` lemma in `SieveSequenceV0`. After each:
 - `assertBlockShift` remains accessible (private, same class)
 - The `.ensuring` postcondition of `assertBlockShift` propagates to callers at different `k` offsets
 - No interaction between independent gap lemmas (concurrent verification)
-- `SieveSequenceV0` class structure stays unchanged (never-destroy rule)
+- `SpecSieveSequence` class structure stays unchanged (never-destroy rule)
 
 ## Risks
 

@@ -315,7 +315,7 @@ without inductive proof.
 
 **Pattern (Path B from `sieve-properties-step5-coprime-to-modulus.md`):**
 ```scala
-case class SieveSequenceV2(primes: SortedPrimeList) {
+case class CycleSieveSequence(primes: SortedPrimeList) {
   require(SieveUtils.isCoprime(primes.head.value, PrimeUtils.primeValues(primes.list.tail.list)))
 }
 ```
@@ -487,7 +487,7 @@ Before starting, search `tickets/` for similar work. Extract lessons.
 
 **Observation:** Calling a `.holds` lemma on a different instance of the same
 class (e.g. `seq.assertApplyOneGtHead()` where `seq` is a second
-`SieveSequenceV0`) can time out at 600s per VC even when the lemma itself
+`SpecSieveSequence`) can time out at 600s per VC even when the lemma itself
 verifies instantly (25s) when called on `this`.
 
 **Failed fixes (ticket `conditional-nextprime-gap-cycle-bridge.md`):**

@@ -8,7 +8,7 @@
 
 ## Goal
 
-Add `assertAllValuesCoprimeToModulus(seq: SieveSequenceV2, k: BigInt): Boolean` to `SieveSequenceProperties.scala` proving:
+Add `assertAllValuesCoprimeToModulus(seq: CycleSieveSequence, k: BigInt): Boolean` to `SieveSequenceProperties.scala` proving:
 
 ```scala
 isCoprime(seq.apply(k), seq.primes.tail)  // for all k >= 0
@@ -100,7 +100,7 @@ Each path is independent. If one gets blocked, switch to the next.
 2. Then `mod(seq.apply(k), p) = mod(head + r_k + q_k*modulus, p) = mod(head + r_k, p)` (since `mod(q_k*modulus, p) = 0`).
 3. Show `mod(head + r_k, p) ≠ 0` because `head + r_k ≡ head (mod p) + r_k (mod p)` — need a lemma that residue r_k ∈ actual residue set.
 
-**Blocked if:** Proving that `cumulative_gaps(k-1)` decomposes into `r_k + q_k*modulus` requires the survivor set information, which `SieveSequenceV2` does not store.
+**Blocked if:** Proving that `cumulative_gaps(k-1)` decomposes into `r_k + q_k*modulus` requires the survivor set information, which `CycleSieveSequence` does not store.
 
 **Status:** ❌ UNTESTED — predicted blocked on survivor set information.
 
@@ -108,7 +108,7 @@ Each path is independent. If one gets blocked, switch to the next.
 
 ### Path B — Prove at `next()`/Pipeline Boundary
 
-**Idea:** Prove the property at pipeline construction time (in `SieveSequenceNextLevel`) where the survivor set IS accessible, then propagate to `SieveSequenceV2`.
+**Idea:** Prove the property at pipeline construction time (in `SieveSequenceNextLevel`) where the survivor set IS accessible, then propagate to `CycleSieveSequence`.
 
 **Sub-lemma (in `SieveSequenceNextLevel`):** `assertNextSurvivorsCoprimeToTail(seq)` — Prove that every survivor produced by `nextExpandedV2` + `nextFilteredV2` is coprime to `new_primes.tail`.
 
@@ -118,7 +118,7 @@ Each path is independent. If one gets blocked, switch to the next.
 - `nextFilteredV2(seq)` removes multiples of `head` — does NOT affect coprimality to `primes.tail`.
 - Therefore all survivors are coprime to `new_primes.tail`.
 
-**Propagation:** The gap cycle stores gaps between consecutive survivors. Each `seq.apply(k)` in the NEW `SieveSequenceV2` is `head + cumulative_gaps(k-1)`. Since each cumulative position IS a survivor, it's coprime to `new_primes.tail`.
+**Propagation:** The gap cycle stores gaps between consecutive survivors. Each `seq.apply(k)` in the NEW `CycleSieveSequence` is `head + cumulative_gaps(k-1)`. Since each cumulative position IS a survivor, it's coprime to `new_primes.tail`.
 
 **Why this might work:** At pipeline construction time, we have direct access to survivors (as lists) and can prove the property by structural recursion over the survivor list, avoiding the opaque gap cycle abstraction.
 
@@ -161,7 +161,7 @@ Proves that `mod(cumulative_sum_of_k_gaps, modulus)` always equals some residue 
 
 **Sub-lemma (in `SieveSequenceProperties`):**
 ```
-assertApplyNotDivisibleByPrime(seq: SieveSequenceV2, k: BigInt, p: BigInt): Boolean —
+assertApplyNotDivisibleByPrime(seq: CycleSieveSequence, k: BigInt, p: BigInt): Boolean —
 ```
 Proves `Calc.mod(seq.apply(k), p) != 0` for a given `p in primes.tail`.
 
@@ -173,19 +173,19 @@ Proves `Calc.mod(seq.apply(k), p) != 0` for a given `p in primes.tail`.
   
 **BUT:** The inductive step still needs the form-preservation property, which loops back to the same problem.
 
-**Blocked if:** The inductive step requires the form-preservation property, which is not accessible from `SieveSequenceV2`.
+**Blocked if:** The inductive step requires the form-preservation property, which is not accessible from `CycleSieveSequence`.
 
 **Status:** ❌ SAME BLOCKER as Path A — inductive step requires survivor set.
 
 ---
 
-### Path E — Add `residueSet` to `SieveSequenceV2` (Structural Solution)
+### Path E — Add `residueSet` to `CycleSieveSequence` (Structural Solution)
 
-**Idea:** Store the residue set as an explicit field in `SieveSequenceV2`, making the coprimality invariant structural.
+**Idea:** Store the residue set as an explicit field in `CycleSieveSequence`, making the coprimality invariant structural.
 
-**Change to `SieveSequenceV2`:**
+**Change to `CycleSieveSequence`:**
 ```scala
-case class SieveSequenceV2(
+case class CycleSieveSequence(
   primes: List[BigInt],
   gapCycle: GapCycle
 ) {
@@ -195,7 +195,7 @@ case class SieveSequenceV2(
 }
 ```
 
-**New invariant in `SieveSequenceV2`:**
+**New invariant in `CycleSieveSequence`:**
 ```scala
 require(CycleUtils.checkNonNegative(residues))  // residues are non-negative
 require(ListBoundUtils.allLessThan(residues, modulus))  // residues < modulus
@@ -211,13 +211,13 @@ require(gapCycle.sum == modulus)  // gap cycle sums to modulus
 **Trade-offs:**
 - ✅ Makes the invariant structural — provable by construction
 - ✅ Avoids reasoning about opaque gap cycle internals
-- ❌ Requires adding a field and invariant to `SieveSequenceV2`
+- ❌ Requires adding a field and invariant to `CycleSieveSequence`
 - ❌ Computing `residues` via `SieveUtils.residues` is recursive and may cause VC explosion in the constructor
 - ❌ `SieveUtils.residues(modulus, primes.tail)` generates ALL residues — potentially expensive for verification
 
 **Mitigation:** Store `residues` as a constructor parameter instead of computing it, letting the caller (pipeline) provide it. Add a `require` that enforces the relationship.
 
-**Status:** ❌ UNTESTED — most invasive change to `SieveSequenceV2`; considered last resort.
+**Status:** ❌ UNTESTED — most invasive change to `CycleSieveSequence`; considered last resort.
 
 ---
 
@@ -267,7 +267,7 @@ Start with Path B (pipeline boundary)
 If ALL paths prove too difficult:
 - **Keep `isCoprime(seq.head, seq.primes.tail)` as a precondition** on `assertHeadIsPrime(seq)` and document that Step 5 is needed to discharge it
 - **Prove the property only for specific levels** (S_0V2, S_1V2, S_2V2) instead of the general case
-- **Add `isCoprime` as a type-level invariant** to `SieveSequenceV2` via a `require` on the case class (may cause constructor VC explosion)
+- **Add `isCoprime` as a type-level invariant** to `CycleSieveSequence` via a `require` on the case class (may cause constructor VC explosion)
 
 ---
 
@@ -285,9 +285,9 @@ If ALL paths prove too difficult:
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-06-13 | Analyzed the sieve structure. Discovered that seq.apply(k) values are always of the form r + q*modulus. Found key lemmas: APlusMultipleTimesBSameMod + assertModZeroImpliesDivTimesBEqualsA. Identified two proof approaches. | Ticket created, awaiting decision on implementation strategy. |
-| 2026-06-13 | Read PROOF_GUIDE.md and Learning Logs from all 22 tickets. Key lessons: direct structural recursion > opaque helpers, one assert per cycle, compose lemmas via .holds, avoid forall over BigInt. Core challenge: form-preservation proof requires survivor set info not stored in SieveSequenceV2. | Expanded to 5 paths (A-E) with decision tree. Added fallback options. Documented cross-cutting lessons. |
+| 2026-06-13 | Read PROOF_GUIDE.md and Learning Logs from all 22 tickets. Key lessons: direct structural recursion > opaque helpers, one assert per cycle, compose lemmas via .holds, avoid forall over BigInt. Core challenge: form-preservation proof requires survivor set info not stored in CycleSieveSequence. | Expanded to 5 paths (A-E) with decision tree. Added fallback options. Documented cross-cutting lessons. |
 | 2026-06-13 | **Started Path B implementation.** Added `assertProductNonNegative` and `assertHeadDividesProduct` to SieveUtils. Found that `assertMultipleModZero(k, n)` requires `k >= 0` — solver timed out proving `product(list.tail) >= 0` from `checkAllPositive`. Fixed by adding `assertProductNonNegative` bridge lemma. | Next: add `assertAllElementsDivideProduct`. |
 | 2026-06-13 | Added `assertAllElementsDivideProduct` via prefix approach (`assertAllFromPrefix`). Previous attempts with `assertDivTransitive` chain timed out. Prefix approach avoids transitivity: each call proves current head divides `prefixProd * product(list)` which stays constant through recursion. Key lesson: avoid `assertDivTransitive` in recursive list functions — VC chain explodes. Verified: 5066 valid. | Next: `assertMultiplePreservesDivisible(a,b,p)` — if `Calc.mod(b,p)==0` and `a>=0` then `Calc.mod(a*b,p)==0`. |
 | 2026-06-13 | Cache is reliable — timeout/unknown/invalid is NEVER due to cache state. When debugging, trust the cache. | Documented this lesson. |
 | 2026-06-13 | **Path B implementation completed.** Added `assertGenerateResiduesAllCoprime`, `assertResiduesAllCoprime` (SieveUtils), `assertResiduesCoprime` (SieveSequenceNextLevel) — proves all residues from `generateResidues` are coprime. Added `assertExpandedForAllJHelper`, `assertExpandedForAllJ`, `assertAllRExpandedCoprime`, `assertAllRExpandedCoprimeRec` (SieveUtils) + `assertNextExpandedCoprime`, `assertNextFilteredCoprime` (SieveSequenceNextLevel) — proves all expanded/filtered pipeline survivors are coprime to `primes.tail`. | Core lemmas complete. |
-| 2026-06-13 | **Structural invariant approach** resolved the @extern next() blocking issue. Added `require(SieveUtils.isCoprime(primes.head, primes.tail))` to `SieveSequenceV2` case class. S_0V2 and S_1V2 verify instantly. Removed `isCoprime` require from `assertHeadIsPrime` — now structural. Final: 5230 valid. | Step 5 goal achieved! |
+| 2026-06-13 | **Structural invariant approach** resolved the @extern next() blocking issue. Added `require(SieveUtils.isCoprime(primes.head, primes.tail))` to `CycleSieveSequence` case class. S_0V2 and S_1V2 verify instantly. Removed `isCoprime` require from `assertHeadIsPrime` — now structural. Final: 5230 valid. | Step 5 goal achieved! |

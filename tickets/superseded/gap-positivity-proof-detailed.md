@@ -1,6 +1,6 @@
 # Gap Positivity Proof — Detailed Explanation
 
-**Goal:** Remove `@extern` from `SieveSequenceV2.next()` by proving the walk-based pipeline produces valid gaps (non-empty, all > 0).
+**Goal:** Remove `@extern` from `CycleSieveSequence.next()` by proving the walk-based pipeline produces valid gaps (non-empty, all > 0).
 
 ---
 
@@ -11,7 +11,7 @@
 When `next()` computes the next sieve sequence, it needs to compute a new gap cycle:
 
 ```scala
-def nextGapCycleV2(seq: SieveSequenceV2): GapCycle = {
+def nextGapCycleV2(seq: CycleSieveSequence): GapCycle = {
   val gaps = nextGapsWalkV2(seq)   // Walk-based gap computation
   require(gaps.nonEmpty)          // VC #1: Must have at least one gap
   require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))  // VC #2: All gaps > 0
@@ -150,7 +150,7 @@ def assertCollectGapsV2AllPositive(...): // Need to add
 
 ```scala
 def assertCollectGapsV2AllPositive(
-  seq: SieveSequenceV2, 
+  seq: CycleSieveSequence, 
   lastSurvivor: BigInt, 
   lastPos: BigInt,
   pos: BigInt, 
@@ -235,7 +235,7 @@ All gaps positive! The lemma should prove this works for any valid input.
 
 2. **Deal with nonEmpty** — If gap positivity is proven but nonEmpty still fails:
    - Option A: Accept `@extern` stays (we made progress on gap > 0)
-   - Option B: Add invariant to `SieveSequenceV2` requiring `primes.tail.product % primes.head != 0`
+   - Option B: Add invariant to `CycleSieveSequence` requiring `primes.tail.product % primes.head != 0`
 
 3. **Wire and remove @extern** — Once both VCs pass, remove `@extern` from `next()`
 

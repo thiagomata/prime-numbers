@@ -6,13 +6,13 @@
 
 ## Goal
 
-Prove that `SieveSequenceV0` and `SieveSequenceV2` generate the same values when
+Prove that `SpecSieveSequence` and `CycleSieveSequence` generate the same values when
 constructed from corresponding prime lists:
 
 ```
-SieveSequenceV0(AllPrimesSoFarList(SortedPrimeList(primes.map(Prime(_))))).apply(k)
+SpecSieveSequence(AllPrimesSoFarList(SortedPrimeList(primes.map(Prime(_))))).apply(k)
   ==
-SieveSequenceV2(primes, gapCycle).apply(k)
+CycleSieveSequence(primes, gapCycle).apply(k)
 
 for all k >= 0 and for every valid sieve stage.
 ```
@@ -20,7 +20,7 @@ for all k >= 0 and for every valid sieve stage.
 ## Current State
 
 - **V0 properties (prerequisite):** Most gap properties are verified in
-  `SieveSequenceV0` (see `v0-gap-list-cycle-formalization.md`). Items 7
+  `SpecSieveSequence` (see `v0-gap-list-cycle-formalization.md`). Items 7
   (`assertApplyEqualsHeadPlusGapSum`) and 8 (`gapList(from, count)`) are the
   two V0 lemmas that were identified as missing — they are the bridge entry
   points this ticket consumes.
@@ -101,7 +101,7 @@ Prove that if V0 and V2 agree at stage n, they also agree at stage n+1:
 
 **Requires:** `V0.gapList(from, count)` and `V0.assertApplyEqualsHeadPlusGapSum(k)`.
 
-Build a lemma (in `SieveSequenceV0` or a companion) that:
+Build a lemma (in `SpecSieveSequence` or a companion) that:
 1. Computes `p = indexOfAccepted(head.value + filterModulus)`.
 2. Computes `gaps = gapList(0, p)`.
 3. Builds `GapCycle(gaps)`.
@@ -133,7 +133,7 @@ for corresponding prime lists.
 ### Work item 3: Phase 3 — Top-level equivalence
 
 ```scala
-def assertV0EqualsV2(v0: SieveSequenceV0, v2: SieveSequenceV2, k: BigInt): Boolean = {
+def assertV0EqualsV2(v0: SpecSieveSequence, v2: CycleSieveSequence, k: BigInt): Boolean = {
   require(k >= 0)
   // prime list correspondence
   // gap cycle equality
@@ -145,7 +145,7 @@ def assertV0EqualsV2(v0: SieveSequenceV0, v2: SieveSequenceV2, k: BigInt): Boole
 
 ### Work item 4: Phase 4 — Inductive stage bridge (future)
 
-Prove that `V0.next().apply(k) == SieveSequenceV2(v2.primes.next, ...).apply(k)`
+Prove that `V0.next().apply(k) == CycleSieveSequence(v2.primes.next, ...).apply(k)`
 under the inductive hypothesis that V0 and V2 agree at the current stage.
 
 **Not yet scoped.** Requires all V0 gap transformation lemmas (items 1-6, 9-11
@@ -165,7 +165,7 @@ of `v0-gap-list-cycle-formalization.md`).
    non-emptiness proof (`p > 0`) is trivial but must be explicit.
 4. **Period length equivalence:** V0's period `p = indexOfAccepted(head + M)`
    and the residue list size should be equal. This is the "P4" property
-   explicitly SKIPPED in SieveSequenceV0 (see OBJECTS.md line 976: counting
+   explicitly SKIPPED in SpecSieveSequence (see OBJECTS.md line 976: counting
    residues timed out). For Phase 2, we may need to avoid relying on this
    equality — use the actual residue list size as the cycle length.
 
@@ -198,7 +198,12 @@ of `v0-gap-list-cycle-formalization.md`).
 - All `V2` suffixes on `SieveSequenceNextLevel` methods dropped (e.g., `nextResiduesV2` → `nextResidues`)
 - Files renamed accordingly (e.g., `SieveSequenceV0.scala` → `SpecSieveSequence.scala`)
 
-**Status:** Rename execution underway. Following AGENTS.md rules: one change per verify cycle, green-to-green throughout.
+**Status:** Rename execution complete. All source files, test files, and markdown docs updated.
+- **Verify:** 7755 valid, 0 invalid, 0 unknown (cache rebuilt).
+- **Tests:** 173 passed, 0 failed.
+- **Docs updated:** OBJECTS.md, LEARNINGS.md, AGENTS.md (0 refs), and 15+ tickets/articles.
+
+**Assumptions unchanged:** All 4 risks (prime list representation, residue vs. walk pipeline, gap cycle preconditions, period length equivalence) unaffected by the rename.
 
 **Assumptions unchanged:** Prime list representation mismatch (risk 1), residue vs. walk pipeline (risk 2), gap cycle construction preconditions (risk 3), period length equivalence (risk 4) — none affected by the rename.
 

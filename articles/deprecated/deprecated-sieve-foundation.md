@@ -414,7 +414,7 @@ Together, these properties show that the sieve's candidate generation and filter
 ## 5. Future Work
 
 Future work may include:
-- Connecting these abstract proofs to the complete `SieveSequenceV2` verification
+- Connecting these abstract proofs to the complete `CycleSieveSequence` verification
 - Using `assertHeadIsPrime` to prove every sieve sequence head is semantically prime
 - Extending to handle edge cases (e.g., empty lists, single elements)
 - Applications to prime number distribution analysis

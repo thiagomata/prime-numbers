@@ -11,13 +11,13 @@
 
 ## Goal
 
-Prove that `SieveSequenceV0.apply(1)` — the first value generated after `head` — is always prime. Currently the postcondition of `apply(k)` only guarantees `accepts(res)` (coprime with filter primes), which is weaker than primality.
+Prove that `SpecSieveSequence.apply(1)` — the first value generated after `head` — is always prime. Currently the postcondition of `apply(k)` only guarantees `accepts(res)` (coprime with filter primes), which is weaker than primality.
 
 Concretely: add a lemma `assertApplyOneIsPrime` to V0 (or a properties file) that proves `Prime.isPrime(apply(1))`.
 
 ## Current State
 
-- `SieveSequenceV0` is verified (580 lines, all `.holds` pass)
+- `SpecSieveSequence` is verified (580 lines, all `.holds` pass)
 - `apply(1)`'s postcondition: `res >= head.value && res <= searchBound(1) && accepts(res)`
 - `accepts(value)` = `passesFilter(value)` = `isCoprime(value, filterValues)` — no primality check
 - `filterPrimes = primes.tail` (head is NOT a filter)
@@ -79,7 +79,7 @@ For `head >= 2`:
 ### A5. Prove `apply(1)` is prime using the known prime list directly
 - We know all primes < head. If `apply(1) < head²`, it's prime. So we need a lemma that `apply(1) < head²` always holds.
 - **Observation:** The first accepted value in `(head, head²)` is specifically looking for the smallest number > head coprime with all smaller primes. This is the **prime gap** problem.
-- **Key insight:** We may not need to prove this unconditionally. Instead, we could prove that `SieveSequenceV0` **iterates through all natural numbers** and that the accepted values are exactly the primes. This is the full correctness statement of the sieve.
+- **Key insight:** We may not need to prove this unconditionally. Instead, we could prove that `SpecSieveSequence` **iterates through all natural numbers** and that the accepted values are exactly the primes. This is the full correctness statement of the sieve.
 
 ### A6. Prove the full correctness of V0: every generated value is prime
 - If we can prove `apply(k)` is prime for ALL `k`, then `apply(1)` is trivially prime
@@ -89,7 +89,7 @@ For `head >= 2`:
 
 ## Recommendation
 
-Start with A5/A6: prove that `SieveSequenceV0.apply(k)` is prime for all `k`. The key lemma needed:
+Start with A5/A6: prove that `SpecSieveSequence.apply(k)` is prime for all `k`. The key lemma needed:
 
 1. If `n` has no prime factor `< head.value`, then either `n` is prime or `n >= head.value²`
 2. `apply(k) < head.value²` for `k >= 1` (or more generally, `apply(k) < head.value * head.value` for `k = 1`)
@@ -101,7 +101,7 @@ For the V0 construction, we don't have a Jacobsthal bound either. This makes a f
 ## Validation Plan
 
 1. **Phase 1: Prove the lemma**. Write a mathematical proof that `apply(1)` is prime for V0, possibly requiring new number-theoretic lemmas
-2. **Phase 2: Implement in Stainless**. Add `assertApplyOneIsPrime` to `SieveSequenceV0` or a new `SieveSequenceV0Properties` object
+2. **Phase 2: Implement in Stainless**. Add `assertApplyOneIsPrime` to `SpecSieveSequence` or a new `SpecSieveSequenceProperties` object
 3. **Phase 3: Verify**. Run `just verify`; must complete without timeout
 
 ## Assumptions
@@ -116,9 +116,9 @@ For the V0 construction, we don't have a Jacobsthal bound either. This makes a f
 - Stainless SMT solver may time out on the required induction
 - The proof may require deep number theory (prime gaps) beyond what SMT can handle
 
-## Attempted Code (archived from `SieveSequenceV0.scala`)
+## Attempted Code (archived from `SpecSieveSequence.scala`)
 
-The following code was attempted in `SieveSequenceV0` but never verified due to the
+The following code was attempted in `SpecSieveSequence` but never verified due to the
 `apply(1) < head.value * head.value` precondition not being universally dischargeable.
 It is preserved here as a starting point:
 
@@ -154,5 +154,5 @@ It is preserved here as a starting point:
 ```
 
 The two assistants `assertFilterValuesContains` and `assertFilterValuesContainsInTail`
-still exist in `SieveSequenceV0.scala` as private lemmas supporting the completeness
+still exist in `SpecSieveSequence.scala` as private lemmas supporting the completeness
 enumeration. They may be reusable when the precondition is discharged.

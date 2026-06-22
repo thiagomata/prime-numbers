@@ -8,7 +8,7 @@
 
 ## Goal
 
-Remove `@extern` from `SieveSequenceV2.next()` by proving that all gaps computed by the walk-based pipeline are strictly positive (`> 0`) and non-empty.
+Remove `@extern` from `CycleSieveSequence.next()` by proving that all gaps computed by the walk-based pipeline are strictly positive (`> 0`) and non-empty.
 
 ---
 
@@ -50,7 +50,7 @@ After `head` cycles, the residues modulo `head` cycle through all non-zero value
 
 **Challenge:** Proving `head ∤ modulus` needs Euclid's lemma (prime doesn't divide product of other primes). Not currently available in the system.
 
-**Difficulty:** HIGH unless we add a stronger invariant to SieveSequenceV2.
+**Difficulty:** HIGH unless we add a stronger invariant to CycleSieveSequence.
 
 ---
 
@@ -132,7 +132,7 @@ Adds ~1 VC (induction base + step). Expected: green.
 
 ```scala
 def assertCollectGapsV2AllPositive(
-  seq: SieveSequenceV2, lastSurvivor: BigInt,
+  seq: CycleSieveSequence, lastSurvivor: BigInt,
   pos: BigInt, remaining: BigInt, gaps: List[BigInt]
 ): Boolean = {
   require(remaining >= 0)
@@ -167,7 +167,7 @@ Expected: green.
 
 **Risk:** If VC #1 (nonEmpty) still blocks, we can:
 - Accept @extern stays, OR
-- Add `require(seq.gapCycle.sum % seq.head != 0)` to `nextGapCycleV2` and adjust the SieveSequenceV2 invariant to guarantee this
+- Add `require(seq.gapCycle.sum % seq.head != 0)` to `nextGapCycleV2` and adjust the CycleSieveSequence invariant to guarantee this
 
 ---
 
@@ -175,7 +175,7 @@ Expected: green.
 
 The cleanest option if nonEmpty proves hard:
 
-**Option A:** Add invariant `primes.tail.product % primes.head != 0` to SieveSequenceV2
+**Option A:** Add invariant `primes.tail.product % primes.head != 0` to CycleSieveSequence
 - This is always true (Euclid) but proving it in Stainless is the heavy part
 
 **Option B:** Narrow the @extern boundary — keep @extern only on `nextGapCycleV2` or on the individual require

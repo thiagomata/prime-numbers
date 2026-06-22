@@ -18,13 +18,13 @@ Examples:
 
 ## Current State
 
-`SieveSequenceV2` already models a current head prime with previous primes in the tail, but `next()` remains `@extern`. The hard proof obligation is connecting the constructed next cycle/gaps to the requirements expected by the next sequence.
+`CycleSieveSequence` already models a current head prime with previous primes in the tail, but `next()` remains `@extern`. The hard proof obligation is connecting the constructed next cycle/gaps to the requirements expected by the next sequence.
 
-`SieveSequenceV0` has an attractive search-style shape, but proving that an upward search terminates requires a finite witness or bound. That proof has been difficult.
+`SpecSieveSequence` has an attractive search-style shape, but proving that an upward search terminates requires a finite witness or bound. That proof has been difficult.
 
 ## Expected State
 
-Introduce a separate restricted object or class that describes a complete prime prefix and its sieve semantics without changing `SieveSequenceV0`, `SieveSequenceV2`, `MemCycle`, `ModCycle`, or `CycleIntegral`.
+Introduce a separate restricted object or class that describes a complete prime prefix and its sieve semantics without changing `SpecSieveSequence`, `CycleSieveSequence`, `MemCycle`, `ModCycle`, or `CycleIntegral`.
 
 The first useful target is a small verified semantic layer:
 
@@ -60,7 +60,7 @@ The first useful target is a small verified semantic layer:
 - `sieve-sequence-residue-representation-proof-object.md` already added
   `SieveSequenceByPrimes` as a separate semantic object over prime lists.
 - `next-constructor-requirement-assertions.md` tracks the current diagnostic
-  assertions around `SieveSequenceV2.next()`.
+  assertions around `CycleSieveSequence.next()`.
 - `remove-extern-from-next.md` identifies the non-empty gap proof as the main
   blocker for removing `@extern`.
 - `gap-positivity-proof.md` and `gap-positivity-proof-detailed.md` connect gap

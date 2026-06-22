@@ -12,7 +12,7 @@
 Prove `assertHeadIsPrime(head, primesTail)` — given `isCoprime(head, primesTail)` and
 that `primesTail` contains all primes < `head`, prove `Prime.isPrime(head)`.
 
-This is needed to add `isPrime(head)` as an invariant to `SieveSequenceV2`, making
+This is needed to add `isPrime(head)` as an invariant to `CycleSieveSequence`, making
 the `primes` list semantically correct (every element is actually prime).
 
 ---
@@ -33,7 +33,7 @@ the `primes` list semantically correct (every element is actually prime).
 
 ## Proof Strategy (Strong Induction, avoids Euclid's Lemma)
 
-**Lemma**: For any `SieveSequenceV2`, `head` is prime.
+**Lemma**: For any `CycleSieveSequence`, `head` is prime.
 
 *Proof:*
 1. `primes.tail` contains every prime < `head` (induction hypothesis from pipeline)
@@ -98,12 +98,12 @@ All risks were successfully mitigated.
 
 ## Next Steps
 
-`assertHeadIsPrime` is ready to be used in `SieveSequenceV2` to prove that
+`assertHeadIsPrime` is ready to be used in `CycleSieveSequence` to prove that
 `seq.head` is prime, making the `primes` list semantically correct.
 Usage would look like:
 
 ```scala
-// In SieveSequenceV2 or SieveSequenceProperties:
+// In CycleSieveSequence or SieveSequenceProperties:
 require(assertHeadIsPrime(seq.head, seq.primes.tail))
 // Then: seq.head can be prepended to primes with confidence
 ```

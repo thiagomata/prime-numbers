@@ -11,7 +11,7 @@
 
 ## Goal
 
-Add a lemma `assertFilterPreservesNextPosition(nextSeq, k)` to `SieveSequenceV0` that proves:
+Add a lemma `assertFilterPreservesNextPosition(nextSeq, k)` to `SpecSieveSequence` that proves:
 
 Given two V0 sequences with the same head, where `nextSeq` has one additional filter prime `p`:
 - `V = this.apply(k) = nextSeq(vIdx)` (same value, different indices)
@@ -51,7 +51,7 @@ Let V = seq_n(k), W = seq_n(k+1), p = nextSeq.filterValues.head.
 
 ## Implementation Plan
 
-1. Add `assertFilterPreservesNextPosition(nextSeq, k)` to SieveSequenceV0 — one `.holds` lemma
+1. Add `assertFilterPreservesNextPosition(nextSeq, k)` to SpecSieveSequence — one `.holds` lemma
 2. Verify
 
 ## Risks

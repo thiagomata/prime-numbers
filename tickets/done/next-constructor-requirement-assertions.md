@@ -8,11 +8,11 @@
 
 ## Goal
 
-Add explicit, named assertions for every `SieveSequenceV2` constructor
+Add explicit, named assertions for every `CycleSieveSequence` constructor
 requirement before using those values to build the next sequence.
 
 The immediate purpose is diagnostic: when `@extern` is removed from
-`SieveSequenceV2.next()`, Stainless should fail at a clear named requirement
+`CycleSieveSequence.next()`, Stainless should fail at a clear named requirement
 instead of inside the constructor call.
 
 ---
@@ -20,7 +20,7 @@ instead of inside the constructor call.
 ## Current State
 
 - `just verify` passes: 5303 valid, 0 invalid, 0 unknown.
-- `SieveSequenceV2.next()` is still `@extern`.
+- `CycleSieveSequence.next()` is still `@extern`.
 - `remove-extern-from-next.md` says the last removal attempt timed out on
   `gaps.nonEmpty` inside `nextGapCycleV2`.
 
@@ -30,14 +30,14 @@ instead of inside the constructor call.
 
 Add one helper assertion at a time in `SieveSequenceNextLevel`, verifying after
 each change. Each helper should correspond to one constructor requirement of
-`SieveSequenceV2(newHead :: seq.primes, newGapCycle)`.
+`CycleSieveSequence(newHead :: seq.primes, newGapCycle)`.
 
 ---
 
 ## Related Tickets
 
 - `remove-extern-from-next.md` — active work to remove `@extern` from
-  `SieveSequenceV2.next()`.
+  `CycleSieveSequence.next()`.
 - `next-level-requirements.md` — superseded for old sequence shape, but its
   lesson still applies: prove each constructor requirement in isolation, then
   compose.

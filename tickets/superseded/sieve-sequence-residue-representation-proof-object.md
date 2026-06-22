@@ -8,7 +8,7 @@
 ## Goal
 
 Try the alternate proof strategy in a separate object: make the semantic
-meaning of `SieveSequenceV2` explicit as a finite residue representation, so
+meaning of `CycleSieveSequence` explicit as a finite residue representation, so
 Stainless can use "values in this cycle are not multiples of any listed prime"
 as a structural fact rather than rediscovering it from the walk.
 
@@ -17,7 +17,7 @@ as a structural fact rather than rediscovering it from the walk.
 ## Current State
 
 - `just verify` passes at 5347 valid, 0 invalid, 0 unknown.
-- `SieveSequenceV2.next()` still uses `@extern`.
+- `CycleSieveSequence.next()` still uses `@extern`.
 - The currently isolated constructor-requirement helpers verify through the
   first new-head coprimality requirement.
 - `SieveSequenceByPrimes` now defines a prime-list-only semantic baseline:
@@ -33,7 +33,7 @@ as a structural fact rather than rediscovering it from the walk.
 
 Create a separate proof object, likely near `v1.seq.sieve.properties`, that
 captures small residue-representation lemmas without modifying `MemCycle`,
-`ModCycle`, `CycleIntegral`, or the `SieveSequenceV2` constructor.
+`ModCycle`, `CycleIntegral`, or the `CycleSieveSequence` constructor.
 
 The first prototype should avoid proving the full representation at once.
 Instead, add one lemma at a time:
@@ -60,7 +60,7 @@ Instead, add one lemma at a time:
 - `sieve-properties-step5-coprime-to-modulus.md` — Path E proposes storing a
   residue set and documents prior coprime-residue lemmas.
 - `OBJECTS.md` lists `SieveUtils.residues`, `isCoprime`, `product`, and
-  `SieveSequenceV2` as the relevant verified objects.
+  `CycleSieveSequence` as the relevant verified objects.
 
 ---
 
