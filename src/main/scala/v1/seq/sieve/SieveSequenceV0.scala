@@ -641,6 +641,38 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     apply(from) <= apply(until)
   }.holds
 
+  def assertApplyIncreases(k: BigInt, m: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(m >= BigInt(0))
+    require(k < m)
+    decreases(m - k)
+    if (k + BigInt(1) == m) {
+      assert(applyStrictlyIncreases(k))
+      apply(k) < apply(m)
+    } else {
+      assert(applyStrictlyIncreases(k))
+      assert(assertApplyIncreases(k + BigInt(1), m))
+      apply(k) < apply(m)
+    }
+  }.holds
+
+  def assertApplyInjective(k: BigInt, m: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(m >= BigInt(0))
+    require(apply(k) == apply(m))
+    if (k == m) {
+      true
+    } else if (k < m) {
+      assert(assertApplyIncreases(k, m))
+      assert(apply(k) < apply(m))
+      k == m
+    } else {
+      assert(assertApplyIncreases(m, k))
+      assert(apply(m) < apply(k))
+      k == m
+    }
+  }.holds
+
   /**
    * Lifts local strict growth into a strict ordered-index comparison.
    *
@@ -1798,11 +1830,13 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
 
     val p = nextSeq.filterValues.head
+    val vIdx = nextSeq.indexOfAccepted(apply(k))
 
     if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) {
       assert(accepts(apply(k + BigInt(1))))
       assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k + BigInt(1))))
       assert(assertFilterPreservesNextGap(nextSeq, k))
+      assert(nextSeq(vIdx + BigInt(1)) == apply(k + BigInt(1)))
       k + BigInt(1)
     } else {
       val bound = k + p * period
@@ -1814,6 +1848,8 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       assert(Calc.mod(apply(m), p) != BigInt(0))
       assert(assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(m)))
       assert(assertMergeGapEqualsOldGapSum(nextSeq, k, period))
+      assert(assertSumGapTelescopes(k, m))
+      assert(nextSeq(vIdx + BigInt(1)) == apply(m))
       m
     }
   }.ensuring(res =>
@@ -1822,8 +1858,9 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       Calc.mod(apply(res), nextSeq.filterValues.head) != BigInt(0) &&
       nextSeq.accepts(apply(res)) &&
       {
-        val vIdx = nextSeq.indexOfAccepted(apply(k))
-        nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == sumGap(k, res)
+        val localVIdx = nextSeq.indexOfAccepted(apply(k))
+        nextSeq(localVIdx + BigInt(1)) == apply(res) &&
+        nextSeq(localVIdx + BigInt(1)) - nextSeq(localVIdx) == sumGap(k, res)
       }
   )
 
@@ -1921,7 +1958,7 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     }
   }.holds
 
-  def assertMergedGapPrefixFirstGapCorrect(
+  def assertMergedGapPrefixHeadMatchesNext(
     nextSeq: SieveSequenceV0,
     k: BigInt,
     period: BigInt
@@ -1939,6 +1976,42 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     val vIdx = nextSeq.indexOfAccepted(apply(k))
 
     prefix.head == nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx)
+  }.holds
+
+  def assertMergedGapPrefixMatchesNext(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    seqIndex: BigInt,
+    remaining: BigInt,
+    period: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(seqIndex >= BigInt(0))
+    require(remaining >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(nextSeq(seqIndex) == apply(k))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    decreases(remaining)
+
+    val prefix = mergedGapPrefix(nextSeq, k, remaining, period)
+
+    if (remaining == BigInt(0)) {
+      prefix == nextSeq.gapList(seqIndex, BigInt(0))
+    } else {
+      val nextOldIndex = nextMergedGapOldIndex(nextSeq, k, period)
+      val localSeqIndex = nextSeq.indexOfAccepted(apply(k))
+
+      assert(nextSeq.assertApplyInjective(seqIndex, localSeqIndex))
+      assert(assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period))
+      assert(assertMergedGapPrefixMatchesNext(nextSeq, nextOldIndex, seqIndex + BigInt(1), remaining - BigInt(1), period))
+
+      prefix == nextSeq.gapList(seqIndex, remaining)
+    }
   }.holds
 
   // P4 (assertPeriodEqualsResidueCount) SKIPPED

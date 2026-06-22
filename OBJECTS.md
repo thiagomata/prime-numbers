@@ -948,7 +948,10 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **gapList(from, count)** | Returns `List[BigInt] = [gap(from), ..., gap(from+count-1)]` | Public function. Structural recursion on `count`. Verified with 7568 valid. |
 | **assertGapListPositive(from, count)** | `allGreaterThan(gapList(from, count), 0)` | Public `.holds`. Induction on `count`, uses `assertGapPositive` for each element. Verified with 7579 valid. |
 | **assertGapListSize(from, count)** | `gapList(from, count).size == count` | Public `.holds`. Induction on `count`. Verified with 7590 valid. |
-| **assertMergedGapPrefixFirstGapCorrect(nextSeq, k, period)** | `mergedGapPrefix(nextSeq, k, 1, period).head == nextSeq(vIdx+1) - nextSeq(vIdx)` where `vIdx = nextSeq.indexOfAccepted(apply(k))` | Public `.holds`. Proves the first emitted gap matches the corresponding next-sequence gap. Relies on `nextMergedGapOldIndex`'s strengthened postcondition. Verified with 7643 valid. |
+| **assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)** | `mergedGapPrefix(nextSeq, k, 1, period).head == nextSeq(vIdx+1) - nextSeq(vIdx)` where `vIdx = nextSeq.indexOfAccepted(apply(k))` | Public `.holds`. Proves the first emitted gap matches the corresponding next-sequence gap. Relies on `nextMergedGapOldIndex`'s strengthened postcondition. Verified with 7643 valid. |
+| **assertApplyIncreases(k, m)** | `apply(k) < apply(m)` when `k < m` | Public `.holds`. Proves strict increase over arbitrary distances by induction on `m - k` using `applyStrictlyIncreases`. Verified with 7752 valid. |
+| **assertApplyInjective(k, m)** | `k == m` given `apply(k) == apply(m)` | Public `.holds`. Proves injectivity of `apply` by contradiction using `assertApplyIncreases`. Verified with 7752 valid. |
+| **assertMergedGapPrefixMatchesNext(nextSeq, k, seqIndex, remaining, period)** | `mergedGapPrefix(...) == nextSeq.gapList(seqIndex, remaining)` where `nextSeq(seqIndex) == apply(k)` | Public `.holds`. Full prefix equality. Induction on `remaining`: head from `assertMergedGapPrefixHeadMatchesNext`, tail from IH with `nextSeq.assertApplyInjective` to connect `seqIndex` to `nextSeq.indexOfAccepted(apply(k))`. Verified with 7755 valid. |
 
 ### Filter Membership Lemmas
 

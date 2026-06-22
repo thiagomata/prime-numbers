@@ -72,13 +72,16 @@ is:
    - This makes the gap cycle explicitly constructable for items 9-11 below
      and for the V0-V2 matching ticket.
    - Status: not yet added.
-9. Prefix lift (was item 7):
-   - repeat copy/merge across a bounded prefix of old generated values.
-   - Estimated complexity: high. This introduces a recursive list-building
-     proof and accounting for consumed old indices.
-   - Status: prefix transformer verified as
-     `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)`;
-     prefix positivity/equality proofs remain open.
+ 9. Prefix lift (was item 7):
+    - repeat copy/merge across a bounded prefix of old generated values.
+    - Estimated complexity: high. This introduces a recursive list-building
+      proof and accounting for consumed old indices.
+    - Status: prefix transformer verified as
+      `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)`;
+      prefix positivity verified as
+      `assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`;
+      prefix equality verified as
+      `assertMergedGapPrefixMatchesNext(nextSeq, k, seqIndex, remaining, period)`.
 10. Gap-list cyclicity (was item 8):
    - prove the finite gap list repeats as a cycle, so later gaps are found by
      cycling through the same bounded list.
@@ -187,6 +190,10 @@ The ordering above follows the project lessons:
   for each element. Verified: 7579 valid (+11).
 - `SieveSequenceV0.assertGapListSize(from, count)` proves the gap list size
   equals the requested count. Verified: 7590 valid (+11).
+- `SieveSequenceV0.assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)`
+  proves the first gap emitted by `mergedGapPrefix(nextSeq, k, 1, period)` equals
+  the corresponding `nextSeq` gap `nextSeq(vIdx+1) - nextSeq(vIdx)`. Uses the
+  strengthened postcondition of `nextMergedGapOldIndex`. Verified: 7643 valid (+22).
 
 ## Progress Log
 
@@ -293,6 +300,30 @@ The ordering above follows the project lessons:
   the V0-V2 bridge. Verification passed:
   `total: 7590 valid: 7590 (7561 from cache, 20 trivial) invalid: 0 unknown: 0`.
   +28 VCs over the previous run (7562). Open Work items #4 and #5 are now complete.
+- 2026-06-22: Strengthened `nextMergedGapOldIndex`'s postcondition with the gap
+  equality `nextSeq(vIdx+1) - nextSeq(vIdx) == sumGap(k, res)`. Added branch-
+  specific lemma assertions (`assertFilterPreservesNextGap` for copy,
+  `assertMergeGapEqualsOldGapSum` for merge) in each branch body, and re-exported
+  the telescoped equality via `.ensuring`. Verified: 7621 valid (+14 over 7607).
+- 2026-06-22: Added `assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)`,
+  proving the first emitted gap of `mergedGapPrefix` matches the corresponding
+  `nextSeq` gap. Relies on `nextMergedGapOldIndex`'s strengthened postcondition.
+  Verification passed:
+  `total: 7643 valid: 7643 (7607 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  +22 VCs over the previous run (7621).
+- 2026-06-22: Strengthened `nextMergedGapOldIndex` step by step with the value
+  equality `nextSeq(vIdx+1) == apply(res)`: (a) added `vIdx` to function body
+  (7646), (b) asserted value equality in copy branch (7649), (c) asserted
+  `assertSumGapTelescopes` then value equality in merge branch (7652→7655),
+  (d) changed `.ensuring` from difference to BOTH value and difference equality
+  (7659). Verified green after each step.
+- 2026-06-22: Added `assertApplyIncreases(k, m)` (public, proves `apply(k) < apply(m)`
+  for `k < m` by induction) and `assertApplyInjective(k, m)` (public, proves `k == m`
+  given `apply(k) == apply(m)`). Verified: 7752 valid (+93).
+- 2026-06-22: Uncommented and verified `assertMergedGapPrefixMatchesNext`.
+  Uses `nextSeq.assertApplyInjective` to connect the parameter `seqIndex` with
+  `nextSeq.indexOfAccepted(apply(k))`, unlocking the inductive tail equality.
+  Verified: 7755 valid (+3). Open Work item #2 (prefix equality) is now complete.
 
 ## Downstream Dependency
 
@@ -311,11 +342,20 @@ consumes from V0.
      lifts it to the entire emitted prefix.
    - Non-emptiness is implicit: when `remaining > 0`, the prefix has exactly
      `remaining` elements by `mergedGapPrefix`'s recursion shape.
-2. Prove prefix equality against the next sequence's first generated values.
-   Two equivalent shapes to prove: (a) the prefix list equals the gaps of
-   `nextSeq` at positions `[indexOfAccepted(apply(k)) + 1 .. + remaining]`,
-   and (b) the prefix's partial sums reconstruct `nextSeq.apply` at those
-   positions. Both will be addressed.
+2. ~~Prove prefix equality against the next sequence's first generated values.~~ **Done.**
+   - `assertApplyIncreases(k, m)` (public) proves `apply(k) < apply(m)` for `k < m`
+     by induction using `applyStrictlyIncreases`. Verified with 7752 valid.
+   - `assertApplyInjective(k, m)` (public) proves `k == m` given `apply(k) == apply(m)`
+     by contradiction using `assertApplyIncreases`. Verified with 7752 valid.
+   - `assertMergedGapPrefixMatchesNext(nextSeq, k, seqIndex, remaining, period)`
+     (public) proves `mergedGapPrefix(...) == nextSeq.gapList(seqIndex, remaining)`
+     where `seqIndex` satisfies `nextSeq(seqIndex) == apply(k)`. Induction on `remaining`:
+     the head matches via `assertMergedGapPrefixHeadMatchesNext`, the tail via IH
+     coupled with `nextSeq.assertApplyInjective` to connect `seqIndex` with
+     `nextSeq.indexOfAccepted(apply(k))` and the `.ensuring` value equality from
+     `nextMergedGapOldIndex`. Verified with 7755 valid.
+   - Shape (b) (partial sums reconstruct nextSeq.apply) is implied by (a) since
+     gapList partial sums reconstruct nextSeq.apply by construction.
 3. Only after the prefix theorem is green, lift it to a gap-cycle statement.
 4. ~~**Add `assertApplyEqualsHeadPlusGapSum(k)`** (ladder item 7).~~ **Done.**
    - Public `.holds` lemma: `apply(k) == head.value + sumGap(0, k)` for k >= 0.
