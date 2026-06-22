@@ -145,7 +145,7 @@ def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnes
 ](
-  ../../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ### 3.2 Property 2: Strict Monotonicity
@@ -189,7 +189,7 @@ def assertCycleIntegralOfOnesStrictlyIncreasing(init: BigInt, a: BigInt, b: BigI
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing
 ](
-  ../../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ### 3.3 Property 3: Distinct Primes Are Coprime
@@ -265,7 +265,7 @@ def assertPrimeNotDivisibleByDistinctPrime(q: BigInt, p: BigInt): Boolean = {
 This property is verified in the [
   FilterPreservesPrimesProperties::assertPrimeNotDivisibleByDistinctPrime
 ](
-  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ### 3.4 Property 4: Filtering Preserves Other Primes
@@ -307,7 +307,7 @@ def assertFilterPreservesAllPrimes(q: BigInt, filterPrime: BigInt): Boolean = {
 This property is verified in the [
   FilterPreservesPrimesProperties::assertFilterPreservesAllPrimes
 ](
-  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ### 3.5 Property 5: Filtered List Contains All Primes
@@ -392,7 +392,7 @@ def assertFilteredContainsAllPrimes(
 This property is verified in the [
   FilterPreservesPrimesProperties::assertFilteredContainsAllPrimes
 ](
-  ../../src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala
+  ../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
 ## 4. Conclusion

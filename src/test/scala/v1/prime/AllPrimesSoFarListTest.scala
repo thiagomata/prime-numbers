@@ -3,6 +3,7 @@ package v1.prime
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
 import stainless.collection.List
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
 
 import scala.language.postfixOps
 

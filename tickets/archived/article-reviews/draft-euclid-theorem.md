@@ -25,7 +25,7 @@ Near publication-ready. Promote after final source-reference cleanup and article
 ## Validation
 
 - Confirm `verify.log` reports `5303 valid`, `0 invalid`, `0 unknown`.
-- Search for `primorialPlusOneModAny`, `newPrimeFromEuclid`, and `euclidTheorem` in `src/main/scala/v1/prime/properties/PrimeProperties.scala`.
+- Search for `primorialPlusOneModAny`, `newPrimeFromEuclid`, and `euclidTheorem` in `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`.
 - Cross-check the Prime section of `OBJECTS.md`.
 
 ## Review Execution Log

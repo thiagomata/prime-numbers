@@ -95,7 +95,7 @@ L_0 + init & \text{if } k = 0 \\
 \end{cases}
 $$
 
-In Scala, this is encoded at [Integral.scala](../src/main/scala/v1/list/integral/Integral.scala):
+In Scala, this is encoded at [Integral.scala](../src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
 ```scala
 case class Integral(list: List[BigInt], init: BigInt = 0) {
@@ -143,7 +143,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertHeadValueMatchDefinition
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.1.
 
 ### 4.2 Integral Equals Sum Until Position
@@ -194,7 +194,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertIntegralEqualsSum
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.2.
 
 ### 4.3 Incremental Change Matches List Value
@@ -245,7 +245,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertAccDiffMatchesList
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.3.
 
 ### 4.4 Final Element Equals Full Sum
@@ -267,7 +267,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertLastEqualsSum
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.4.
 
 ## 5. Implementation Consistency Lemmas
@@ -299,7 +299,7 @@ L_e & \text{if } L = L_e \\
 \end{cases}
 $$
 
-The full Integral implementation including the `acc` method is at [Integral.scala](../src/main/scala/v1/list/integral/Integral.scala):
+The full Integral implementation including the `acc` method is at [Integral.scala](../src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
 ```scala
 case class Integral(list: List[BigInt], init: BigInt = 0) {
@@ -353,7 +353,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertAccMatchesApply
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.5.
 
 ### 5.3 Accumulated Delta Consistency
@@ -388,7 +388,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertAccDiffMatchesList
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.6.
 
 ### 5.4 Last Element Agreement
@@ -450,7 +450,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertLast
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.7.
 
 ### 5.5 Size Agreement
@@ -504,7 +504,7 @@ $$
 This property is verified in the [
   IntegralProperties::assertSizeAccEqualsSizeList
 ](
-  ../src/main/scala/v1/list/integral/properties/IntegralProperties.scala
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.8.
 
 ## 6. Limitations
@@ -551,7 +551,7 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 
 ### A.1 Head Value Matches Definition — assertHeadValueMatchDefinition
 
-Source: [IntegralProperties::assertHeadValueMatchDefinition](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertHeadValueMatchDefinition](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
@@ -566,7 +566,7 @@ def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
 
 ### A.2 Integral Equals Sum Until Position — assertIntegralEqualsSum
 
-Source: [IntegralProperties::assertIntegralEqualsSum](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertIntegralEqualsSum](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
@@ -609,7 +609,7 @@ def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
 
 ### A.3 Incremental Change — assertAccDiffMatchesList
 
-Source: [IntegralProperties::assertAccDiffMatchesList](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertAccDiffMatchesList](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
@@ -652,7 +652,7 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
 
 ### A.4 Final Element Equals Full Sum — assertLastEqualsSum
 
-Source: [IntegralProperties::assertLastEqualsSum](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertLastEqualsSum](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertLastEqualsSum(integral: Integral): Boolean = {
@@ -685,7 +685,7 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 
 ### A.5 Element Consistency — assertAccMatchesApply
 
-Source: [IntegralProperties::assertAccMatchesApply](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertAccMatchesApply](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
@@ -735,13 +735,13 @@ def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
 
 ### A.6 Accumulated Delta Consistency — assertAccDiffMatchesList
 
-Source: [IntegralProperties::assertAccDiffMatchesList](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertAccDiffMatchesList](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 This is the same function as Appendix A.3. The property is used for both the `apply`-based delta (Section 4.3) and the `acc`-based delta (Section 5.3).
 
 ### A.7 Last Element Agreement — assertLast
 
-Source: [IntegralProperties::assertLast](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertLast](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertLast(integral: Integral): Boolean = {
@@ -767,7 +767,7 @@ def assertLast(integral: Integral): Boolean = {
 
 ### A.8 Size Agreement — assertSizeAccEqualsSizeList
 
-Source: [IntegralProperties::assertSizeAccEqualsSizeList](../src/main/scala/v1/list/integral/properties/IntegralProperties.scala)
+Source: [IntegralProperties::assertSizeAccEqualsSizeList](../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {

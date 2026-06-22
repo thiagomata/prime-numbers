@@ -154,7 +154,7 @@ Add `require(ListBoundUtils.allGreaterThan(values.list, BigInt(0)))` to `GapCycl
 
 ### Phase 1 — CycleSieveSequence skeleton (2-3 verify cycles)
 
-Create `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala`:
+Create `src/main/scala/v1/chapter6/seq/sieve/CycleSieveSequence.scala`:
 
 ```scala
 case class CycleSieveSequence(
@@ -248,10 +248,10 @@ def assertS1V2MatchesS1(): Boolean = {
 
 | File | Action |
 |------|--------|
-| `src/main/scala/v1/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
-| `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
+| `src/main/scala/v1/chapter4/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
+| `src/main/scala/v1/chapter6/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
 | `src/test/scala/v1/seq/sieve/CycleSieveSequenceTest.scala` | Create: tests |
-| `src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` (or create V2 variant) |
+| `src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` (or create V2 variant) |
 | `src/test/scala/v1/cycle/gap/GapCycleTest.scala` | Modify: add test for strengthened require |
 
 No changes to `SieveUtils.scala`, `SieveSequence.scala`, or existing V1 tests.

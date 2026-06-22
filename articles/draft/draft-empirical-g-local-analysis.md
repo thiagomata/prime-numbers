@@ -67,7 +67,7 @@ def survivorsInRange(lo: BigInt, hi: BigInt, primes: Array[BigInt]): List[BigInt
 This function is implemented in the [
   SegmentedSieve::survivorsInRange
 ](
-  ../../src/main/scala/v1/seq/sieve/empirical/SegmentedSieve.scala
+  ../../src/main/scala/v1/chapter6/seq/sieve/empirical/SegmentedSieve.scala
 ) as an `@extern` function (not Stainless-verified).
 
 ### 2.2 2-Gap Counting
@@ -83,7 +83,7 @@ def countTwoGaps(survivors: List[BigInt]): BigInt
 This function is implemented in the [
   GapAnalyzer::countTwoGaps
 ](
-  ../../src/main/scala/v1/seq/sieve/empirical/GapAnalyzer.scala
+  ../../src/main/scala/v1/chapter6/seq/sieve/empirical/GapAnalyzer.scala
 ) as an `@extern` function (not Stainless-verified).
 
 ### 2.3 Output Metrics
@@ -272,7 +272,7 @@ The computational functions used (`SegmentedSieve.survivorsInRange` and `GapAnal
 
 The complete dataset is at `data/empirical/results.csv` with columns: `k, p, p_next, G_local, delta, extinction`.
 
-The empirical runner is at `src/main/scala/v1/seq/sieve/empirical/`:
+The empirical runner is at `src/main/scala/v1/chapter6/seq/sieve/empirical/`:
 
 - `EmpiricalRunner.scala` — main entry point
 - `SegmentedSieve.scala` — survivor computation (`@extern`)
@@ -288,4 +288,4 @@ All files use `BigInt` arithmetic for arbitrary-precision coordinate handling.
 
 1. Mata, T. H. (2026). Gap Dynamics and Twin Prime Candidates in Sieve Sequences. `articles/gap-dynamics.md`
 2. Mata, T. H. (2026). Learnings: Capacity Argument for Twin Prime Persistence. `articles/learnings/learnings-capacity-argument.md`
-3. Mata, T. H. (2026). Empirical Runner and Results. `src/main/scala/v1/seq/sieve/empirical/EmpiricalRunner.scala`
+3. Mata, T. H. (2026). Empirical Runner and Results. `src/main/scala/v1/chapter6/seq/sieve/empirical/EmpiricalRunner.scala`

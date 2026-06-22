@@ -280,7 +280,7 @@ Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First
 
 ### A.1 `primorialPlusOneModAny`
 
-**Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala:249`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:249`
 
 Full Scala verification code for Stage 1 (Section 3.1):
 
@@ -296,7 +296,7 @@ This lemma proves that $\text{primorial}(\text{primes}) + 1$ is not divisible by
 
 ### A.2 `newPrimeFromEuclid`
 
-**Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala:302`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:302`
 
 Full Scala verification code for Stage 2 (Section 3.2):
 
@@ -324,7 +324,7 @@ This function constructs a new `Prime` value by finding the smallest divisor of 
 
 ### A.3 `euclidTheorem`
 
-**Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala:361`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:361`
 
 Full Scala verification code for the main theorem (Section 3.4):
 

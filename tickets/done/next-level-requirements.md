@@ -20,7 +20,7 @@
 
 **Quick verify command:**
 ```bash
-./stainless-dotty-standalone-*/stainless --fail-early=true src/main/scala/v1/seq/sieve/SieveSequence.scala src/main/scala/v1/seq/sieve/SieveUtils.scala src/main/scala/v1/seq/sieve/CycleUtils.scala src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala src/main/scala/v1/seq/sieve/properties/SieveSequenceS0Properties.scala src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala
+./stainless-dotty-standalone-*/stainless --fail-early=true src/main/scala/v1/chapter6/seq/sieve/SieveSequence.scala src/main/scala/v1/chapter6/seq/sieve/SieveUtils.scala src/main/scala/v1/chapter6/seq/sieve/CycleUtils.scala src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceS0Properties.scala src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala
 ```
 
 **Fast compile without verification:**
@@ -147,18 +147,18 @@ val newGaps = rotateAt(gaps, headResidueIdx)
 ### Current `SieveSequence` requires (lines 14-26)
 
 ```scala
-require(head > 0)                                              // R1
-require(head >= BigInt(2))                                     // R2
-require(integral.cycle.size > 0)                               // R3
-require(integral.initialValue == head)                         // R4
+require(head > 0) // R1
+require(head >= BigInt(2)) // R2
+require(integral.cycle.size > 0) // R3
+require(integral.initialValue == head) // R4
 require(CycleUtils.checkPositiveOrZero(integral.cycle.values)) // R5
-require(SieveUtils.checkAllPositive(primes))                   // R6
+require(SieveUtils.checkAllPositive(primes)) // R6
 require(SieveUtils.assertProductEqualOrBiggerThanElements(primes)) // R7
-require(v1.seq.sieve.CycleUtils.allLessThan(primes, head))     // R8
-require(SieveUtils.isCoprime(head, primes))                    // R9
-require(integral.cycle.sum() == SieveUtils.product(primes))    // R10
-require(integral.cycle(BigInt(0)) < head)                      // R11
-require(integral.cycle.values.head > BigInt(0))                // R12
+require(CycleUtils.allLessThan(primes, head)) // R8
+require(SieveUtils.isCoprime(head, primes)) // R9
+require(integral.cycle.sum() == SieveUtils.product(primes)) // R10
+require(integral.cycle(BigInt(0)) < head) // R11
+require(integral.cycle.values.head > BigInt(0)) // R12
 require(SieveUtils.isCoprime(head + SieveUtils.product(primes), primes)) // R13
 ```
 

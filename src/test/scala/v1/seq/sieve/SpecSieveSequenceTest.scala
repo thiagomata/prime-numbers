@@ -4,7 +4,8 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import org.scalatest.Tag
 import stainless.collection.List
-import v1.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
+import v1.chapter6.seq.sieve.SpecSieveSequence
 
 object SlowLemmaTest extends Tag("v1.tags.SlowLemmaTest")
 

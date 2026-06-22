@@ -34,7 +34,7 @@ Segmented sieve — compute numbers coprime to $M_k$ in $[p_{k+1}, p_{k+1}^2]$ u
 
 **Package structure:**
 ```
-src/main/scala/v1/seq/sieve/empirical/
+src/main/scala/v1/chapter6/seq/sieve/empirical/
   Types.scala          — OutputRow case class
   SegmentedSieve.scala — Sieve logic
   GapAnalyzer.scala    — 2-gap counting

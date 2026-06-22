@@ -59,23 +59,23 @@ One lemma per verify cycle.
 All phases completed. **Final verify: 4178 valid, 0 invalid**. All tests pass (14/14).
 
 ### Files created
-- `src/main/scala/v1/list/ListBoundUtils.scala` — core predicates + lemmas:
+- `src/main/scala/v1/chapter3/list/ListBoundUtils.scala` — core predicates + lemmas:
   - `allGreaterThan(list, value)` — core predicate
   - `allNonNegative`, `allPositive`, `allGreaterThanOne` — aliases
   - `assertAppendGreaterThan`, `assertAppendLessThan`, `assertTransitiveLessThan` — lemmas
   - `assertGreaterThanAtIndex`, `assertGreaterThanHeadTail` — lemmas (copied from ListUtilsProperties)
   - Removed: `assertCheckNonNegativeAppend` (hardcoded-0 version)
-- `src/main/scala/v1/list/MinBoundList.scala` — `MinBoundList(list, lowerBound)` with
+- `src/main/scala/v1/chapter3/list/MinBoundList.scala` — `MinBoundList(list, lowerBound)` with
   `require(ListBoundUtils.allGreaterThan(list, lowerBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`, `filter`.
   Companion: `assertTailGreaterThan`, `assertFilterPreservesGreaterThan`.
-- `src/main/scala/v1/list/MaxBoundList.scala` — `MaxBoundList(list, upperBound)` with
+- `src/main/scala/v1/chapter3/list/MaxBoundList.scala` — `MaxBoundList(list, upperBound)` with
   `require(ListBoundUtils.allLessThan(list, upperBound))`. Methods: `isEmpty`, `size`, `head`, `last`, `apply`, `tail`, `filter`.
   Companion: `assertTailLessThan`, `assertFilterPreservesLessThan`.
 
 ### Files modified
-- `src/main/scala/v1/list/ListUtils.scala` — delegates to `ListBoundUtils.allGreaterThan`
-- `src/main/scala/v1/list/properties/ListUtilsProperties.scala` — delegates lemmas to `ListBoundUtils`
-- `src/main/scala/v1/list/SortedList.scala` — added `remove(index)` with `removeAt` helper in companion
+- `src/main/scala/v1/chapter3/list/ListUtils.scala` — delegates to `ListBoundUtils.allGreaterThan`
+- `src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala` — delegates lemmas to `ListBoundUtils`
+- `src/main/scala/v1/chapter3/list/SortedList.scala` — added `remove(index)` with `removeAt` helper in companion
   and `assertRemoveKeepsAscending` lemma
 
 ### Changes from original plan

@@ -118,7 +118,7 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-As defined at [ClassicCycleIntegral.scala](../src/main/scala/v1/cycle/integral/classic/ClassicCycleIntegral.scala):
+As defined at [ClassicCycleIntegral.scala](../src/main/scala/v1/chapter4/cycle/integral/classic/ClassicCycleIntegral.scala):
 
 ```scala
 case class ClassicCycleIntegral(
@@ -158,7 +158,7 @@ i < n \implies ClassicCycleIntegral(L, init)_i &= \sum_{j=0}^i Cycle(L)_i + init
 This property is verified in the [
   ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
 ](
-  ../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.1.
 
 #### Step Property
@@ -186,7 +186,7 @@ This property is verified in the [
 This property is verified in the [
   ClassicCycleIntegralProperties::assertDiffEqualsCycleValue
 ](
-  ../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.2.
 
 ### 3.2 Recursive Cycle Integral
@@ -241,7 +241,7 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 This property is verified in the [
   CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.1 (same property structure as the Classic variant).
 
 **Step Property**:
@@ -257,7 +257,7 @@ w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 This property is verified in the [
   CycleIntegralProperties::assertDiffEqualsCycleValue
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.2 (same property structure as the Classic variant).
 
 ### 3.3 Modulo Cycle Integral
@@ -298,7 +298,7 @@ w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
 This property is verified in the [
   ModCycleIntegralProperties::assertFirstValuesMatchIntegral
 ](
-  ../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.3.
 
 #### Step Property
@@ -354,7 +354,7 @@ w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.
 This property is verified in the [
   ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle
 ](
-  ../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.4.
 
 ### 3.4 Equivalence of Definitions
@@ -373,7 +373,7 @@ Since all definitions of Cycle Integral satisfy the same sum and step properties
 This property is verified in the [
   ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
 ](
-  ../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.5.
 
 ## 4. Core Verified Properties
@@ -391,7 +391,7 @@ This follows directly from the recursive definitions of both the Classic and Rec
 This property is verified in the [
   CycleIntegralProperties::assertNextPosition
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
 ) and the equivalent lemma in ClassicCycleIntegralProperties.
 
 ### 4.2 Same Difference After Full Cycle
@@ -405,7 +405,7 @@ The difference between consecutive values is invariant under adding a full cycle
 This property is verified in the [
   CycleIntegralProperties::assertSameDiffAfterCycle
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.6.
 
 ### 4.3 Sum of Mod Values as List
@@ -419,7 +419,7 @@ The cycle integral at any position equals the sum of a constructed list containi
 This property is verified in the [
   CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
 ). The full Scala verification code is in Appendix A.7.
 
 ## 5. Extended Properties [Draft]
@@ -669,9 +669,9 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 
 ### A.1 Sum Property for Small Positions — assertCycleIntegralEqualsSumSmallPositions
 
-Source: [ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
+Source: [ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
 
-The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
+The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
 
 ```scala
 def assertCycleIntegralEqualsSumSmallPositions(
@@ -712,9 +712,9 @@ def assertCycleIntegralEqualsSumSmallPositions(
 
 ### A.2 Step Property — assertDiffEqualsCycleValue
 
-Source: [ClassicCycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
+Source: [ClassicCycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
 
-The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
+The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
 
 ```scala
 def assertDiffEqualsCycleValue(
@@ -731,7 +731,7 @@ def assertDiffEqualsCycleValue(
 
 ### A.3 Mod First Values Match Integral — assertFirstValuesMatchIntegral
 
-Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertFirstValuesMatchIntegral(
@@ -754,7 +754,7 @@ def assertFirstValuesMatchIntegral(
 
 ### A.4 Mod Step Diff — assertSimplifiedDiffValuesMatchCycle
 
-Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertSimplifiedDiffValuesMatchCycle(
@@ -785,7 +785,7 @@ def assertSimplifiedDiffValuesMatchCycle(
 
 ### A.5 Equivalence of Definitions — assertCycleIntegralMatchModCycleDef
 
-Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](../src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralMatchModCycleDef(
@@ -822,7 +822,7 @@ def assertCycleIntegralMatchModCycleDef(
 
 ### A.6 Same Difference After Full Cycle — assertSameDiffAfterCycle
 
-Source: [CycleIntegralProperties::assertSameDiffAfterCycle](../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSameDiffAfterCycle](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSameDiffAfterCycle(
@@ -856,7 +856,7 @@ def assertSameDiffAfterCycle(
 
 ### A.7 Sum of Mod Values as List — assertSumModValueAsListEqualsCycleIntegralLoop
 
-Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSumModValueAsListEqualsCycleIntegralLoop(

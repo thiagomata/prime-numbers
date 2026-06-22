@@ -3,8 +3,8 @@ package v1.cycle.integral.mod
 import org.scalatest.flatspec.*
 import org.scalatest.funsuite.AnyFunSuiteLike
 import org.scalatest.matchers.should.*
-import v1.cycle.integral.mod.ModCycleIntegral
-import v1.cycle.memory.MemCycle
+import v1.chapter4.cycle.integral.mod.ModCycleIntegral
+import v1.chapter4.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt

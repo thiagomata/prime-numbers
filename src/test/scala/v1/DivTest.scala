@@ -3,7 +3,7 @@ package v1
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.div.DivMod
+import v1.chapter2.div.DivMod
 
 case class SolveTestCase(
                           name: String,

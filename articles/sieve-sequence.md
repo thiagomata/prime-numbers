@@ -113,7 +113,7 @@ def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnes
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ---
@@ -156,7 +156,7 @@ def assertCycleIntegralOfOnesStrictMonotonic(init: BigInt, a: BigInt, b: BigInt)
 This property is verified in the [
   CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictMonotonic
 ](
-  ../src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
 ).
 
 ---
@@ -189,7 +189,7 @@ def distinctPrimesCoprime(p: BigInt, q: BigInt): Boolean = {
 This property is verified in the [
   PrimeProperties::distinctPrimesCoprime
 ](
-  ../src/main/scala/v1/prime/PrimeProperties.scala
+  ../src/main/scala/v1/chapter5/prime/PrimeProperties.scala
 ).
 
 ---
@@ -222,7 +222,7 @@ def filterPreservesPrimes(q: BigInt, filterPrime: BigInt): Boolean = {
 This property is verified in the [
   PrimeProperties::filterPreservesPrimes
 ](
-  ../src/main/scala/v1/prime/PrimeProperties.scala
+  ../src/main/scala/v1/chapter5/prime/PrimeProperties.scala
 ).
 
 ### Corollary: Filtered List Contains All Primes
@@ -254,7 +254,7 @@ def filteredContainsAllPrimes(
 This property is verified in the [
   PrimeProperties::filteredContainsAllPrimes
 ](
-  ../src/main/scala/v1/prime/PrimeProperties.scala
+  ../src/main/scala/v1/chapter5/prime/PrimeProperties.scala
 ).
 
 ---
@@ -288,7 +288,7 @@ def assertHeadIsPrime(primes: List[BigInt]): Boolean = {
 This property is verified in the [
   SieveSequenceProperties::assertHeadIsPrime
 ](
-  ../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala
+  ../src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala
 ).
 
 ---

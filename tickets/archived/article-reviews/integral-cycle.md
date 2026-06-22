@@ -23,6 +23,6 @@ Strong foundational article. Needs consistency cleanup and completeness cross-ch
 
 ## Validation
 
-- Search cited function names in `src/main/scala/v1/cycle/integral`.
+- Search cited function names in `src/main/scala/v1/chapter4/cycle/integral`.
 - Confirm `verify.log` is green.
 - Compare article coverage against `OBJECTS.md` and `PROOF_GUIDE.md`.

@@ -34,8 +34,8 @@ These are the base case and inductive step of the sieve's correctness proof.
 
 | File | Purpose |
 |------|---------|
-| `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala` | Lemmas 1-2 |
-| `src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala` | Lemmas 3-5 |
+| `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala` | Lemmas 1-2 |
+| `src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala` | Lemmas 3-5 |
 | `articles/sieve-foundation.md` | New article documenting the proofs |
 
 ### Files to Update

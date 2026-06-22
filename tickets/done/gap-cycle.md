@@ -75,7 +75,7 @@ One lemma / one method per verify cycle.
 
 | File | Purpose |
 |------|---------|
-| `src/main/scala/v1/cycle/gap/GapCycle.scala` | Main class + companion |
+| `src/main/scala/v1/chapter4/cycle/gap/GapCycle.scala` | Main class + companion |
 | `src/test/scala/v1/cycle/gap/GapCycleTest.scala` | Unit tests |
 
 No existing files modified.
@@ -117,10 +117,10 @@ No existing files modified.
 - **Final verify: 4240 valid, 0 invalid** (up from 4178 = +62)
 - **Phases completed**: All 7 phases
 - **Files created**:
-  - `src/main/scala/v1/cycle/gap/GapCycle.scala` — case class + companion (63 lines)
+  - `src/main/scala/v1/chapter4/cycle/gap/GapCycle.scala` — case class + companion (63 lines)
   - `src/test/scala/v1/cycle/gap/GapCycleTest.scala` — 7 unit tests
 - **Files modified**:
-  - `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala` — added `assertCycleValuePositive` and `assertCycleIntegralPositive` lemmas
+  - `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala` — added `assertCycleValuePositive` and `assertCycleIntegralPositive` lemmas
 - **Deviations from plan**:
   - Phase 3: Used `require` (not `assert`) in class body since Stainless doesn't support `assert` in constructor scope
   - Phase 5+6: Combined into positivity lemmas in `CycleIntegralProperties` (stronger than originally planned non-negative), skipped strict-increasing lemma as not needed

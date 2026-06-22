@@ -3,8 +3,8 @@ package v1
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.cycle.memory.MemCycle
-import v1.seq.Seq
+import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter6.seq.Seq
 import v1.tests.ArrayUtils.createList
 
 case class SeqTestCase(

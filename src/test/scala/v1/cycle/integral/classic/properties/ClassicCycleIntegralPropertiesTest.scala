@@ -2,8 +2,9 @@ package v1.cycle.integral.classic.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.cycle.integral.classic.ClassicCycleIntegral
-import v1.cycle.memory.MemCycle
+import v1.chapter4.cycle.integral.classic.ClassicCycleIntegral
+import v1.chapter4.cycle.integral.classic.properties.ClassicCycleIntegralProperties
+import v1.chapter4.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt

@@ -113,11 +113,11 @@ h &\ge 4. && [Q.E.D.] \blacksquare
 
 This property is not yet verified by a dedicated Stainless `.holds` lemma. The implementation computes new gaps from filtered survivors in [
   `SieveUtils::calculateGaps`
-](../src/main/scala/v1/seq/sieve/SieveUtils.scala) and [
+](../src/main/scala/v1/chapter6/seq/sieve/SieveUtils.scala) and [
   `SieveUtils::pairwiseGaps`
-](../src/main/scala/v1/seq/sieve/SieveUtils.scala). The walking construction in [
+](../src/main/scala/v1/chapter6/seq/sieve/SieveUtils.scala). The walking construction in [
   `SieveSequenceNextLevel::collectGapsV2`
-](../src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala) skips deleted values and records the distance to the next survivor.
+](../src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala) skips deleted values and records the distance to the next survivor.
 
 Draft verification target:
 

@@ -191,4 +191,4 @@ The cleanest option if nonEmpty proves hard:
 - `OBJECTS.md` lines 661, 669-670
 - `articles/integral-cycle.md` — CycleIntegral properties
 - `articles/sieve-sequence.md` — mathematical proof of strictly increasing (not in code)
-- `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala`
+- `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala`

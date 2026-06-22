@@ -43,7 +43,7 @@ Recommended fix: add a source-map table with article property, current source fu
 
 ## Additional Suggestions: ConsecutiveIntegers.scala
 
-The file `src/main/scala/v1/div/properties/ConsecutiveIntegers.scala` contains 14 lemmas that are fundamental to sieve theory but are currently NOT in the sieve-sequence article. These lemmas prove:
+The file `src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala` contains 14 lemmas that are fundamental to sieve theory but are currently NOT in the sieve-sequence article. These lemmas prove:
 
 - At most one value divisible by p in any p consecutive integers
 - Exactly one zero per p-sized block  

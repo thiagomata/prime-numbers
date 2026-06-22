@@ -3,6 +3,7 @@ package v1.prime
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
+import v1.chapter5.prime.Prime
 
 class PrimeTest extends FlatSpec with Matchers {
 

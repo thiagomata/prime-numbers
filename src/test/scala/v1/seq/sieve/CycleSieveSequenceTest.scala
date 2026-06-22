@@ -3,7 +3,8 @@ package v1.seq.sieve
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection.List
-import v1.cycle.memory.MemCycle
+import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter6.seq.sieve.{CycleSieveSequence, SieveSequenceNextLevel}
 
 class CycleSieveSequenceTest extends FlatSpec with Matchers {
 

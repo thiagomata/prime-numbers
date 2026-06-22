@@ -128,9 +128,9 @@ Compile-check only (`@extern`).
 
 | File | Action |
 |------|--------|
-| `src/main/scala/v1/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
-| `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
-| `src/main/scala/v1/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` |
+| `src/main/scala/v1/chapter4/cycle/gap/GapCycle.scala` | Modify: add `allGreaterThan` require |
+| `src/main/scala/v1/chapter6/seq/sieve/CycleSieveSequence.scala` | Create: new case class |
+| `src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala` | Modify: add `nextGapCycle` |
 | `src/test/scala/v1/seq/sieve/CycleSieveSequenceTest.scala` | Create: tests |
 
 No changes to `SieveUtils.scala`, `SieveSequence.scala`, or existing V1 tests.

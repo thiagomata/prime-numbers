@@ -209,7 +209,7 @@ The ordering above follows the project lessons:
 
 - 2026-06-22: Audited the first property in the complexity ladder. Gap
   positivity is already verified in
-  `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
+  `src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala` as
   `assertGapPositive(k)`. The lemma requires `k >= 0`, calls
   `applyStrictlyIncreases(k)`, and proves
   `apply(k + 1) - apply(k) > 0`. No code change was needed.
@@ -219,13 +219,13 @@ The ordering above follows the project lessons:
   the new front filter, the next gap is copied unchanged. Verification passed:
   `total: 7259 valid: 7259 invalid: 0 unknown: 0`.
 - 2026-06-22: Audited the next ladder property, gap periodicity. It is already
-  verified in `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
+  verified in `src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala` as
   `assertGapPeriodic(k, p)`. The lemma requires `apply(p) == head.value +
   filterModulus`, calls `assertBlockShift(k, p)` and
   `assertBlockShift(k + 1, p)`, and proves the adjacent gap repeats after one
   period.
 - 2026-06-22: Audited the gap-period sum property. It is already verified in
-  `src/main/scala/v1/seq/sieve/SpecSieveSequence.scala` as
+  `src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala` as
   `assertGapSum(p)`. The lemma requires `apply(p) == head.value +
   filterModulus`, uses `assertSumGapTelescopes(0, p)`, and proves
   `sumGap(0, p) == filterModulus`.

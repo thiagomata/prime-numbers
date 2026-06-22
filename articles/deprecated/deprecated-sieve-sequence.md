@@ -183,7 +183,7 @@ where:
 
 This is equivalent to the cumulative sum approach used in the `Seq` class properties.
 
-Defined at [SieveSequence.scala](../src/main/scala/v1/seq/sieve/SieveSequence.scala) as follows:
+Defined at [SieveSequence.scala](../src/main/scala/v1/chapter6/seq/sieve/SieveSequence.scala) as follows:
 
 <details>
 <summary> Scala Doc </summary>
@@ -279,7 +279,7 @@ This property completes the proof that every element of the `primes` list in a `
 
 This is a direct consequence of the Division Algorithm [[5]](#ref5).
 
-Verified in [SieveSequenceProperties.scala at assertPositionDecomposition](../../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
+Verified in [SieveSequenceProperties.scala at assertPositionDecomposition](../../src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala):
 
 ```scala
 def assertPositionDecomposition(sieve: SieveSequence, position: BigInt): Boolean = {
@@ -301,7 +301,7 @@ def assertPositionDecomposition(sieve: SieveSequence, position: BigInt): Boolean
 
 This is maintained as an invariant of the SieveSequence construction.
 
-Verified in [SieveSequenceProperties.scala at assertResidueCountEqualsGapCount](../../src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala):
+Verified in [SieveSequenceProperties.scala at assertResidueCountEqualsGapCount](../../src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala):
 
 ```scala
 def assertResidueCountEqualsGapCount(sieve: SieveSequence): Boolean = {

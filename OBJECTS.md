@@ -210,7 +210,7 @@ b > a \geq 0 \implies a \text{ div } b & = 0
 
 **Preconditions**: `b > 0`, `b > a`, `a >= 0`
 
-**Source**: `src/main/scala/v1/div/properties/ModSmallDividend.scala:11`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala:11`
 
 ---
 
@@ -232,7 +232,7 @@ n \text{ div } n & = 1
 
 **Preconditions**: `a != 0`
 
-**Source**: `src/main/scala/v1/div/properties/ModIdentity.scala:9`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ModIdentity.scala:9`
 
 **Also**: `longProof` (line #14) - Detailed step-by-step proof
 
@@ -258,7 +258,7 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/div/properties/ModIdempotence.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala`
 
 ---
 
@@ -290,7 +290,7 @@ Quotient invariance under linear shifts.
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/div/properties/AdditionAndMultiplication.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala`
 
 ---
 
@@ -323,7 +323,7 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } 
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/div/properties/ModOperations.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ModOperations.scala`
 
 ---
 
@@ -340,7 +340,7 @@ Summation properties related to modulo.
 | **sumAllModsEqualSumOfAllSmallValues** | `sumAllMods(0,b-1,b) == sumAllValues(0,b-1)` | `b > 0`                              |
 | **checkValueShift**                    | `mod(a,b) == mod(a-b,b)` recursively         | `b > 0`, `a >= 0`                    |
 
-**Source**: `src/main/scala/v1/div/properties/ModSum.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ModSum.scala`
 
 ---
 
@@ -376,7 +376,7 @@ L[f \dots t] &=
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/list/ListUtils.scala`
+**Source**: `src/main/scala/v1/chapter3/list/ListUtils.scala`
 
 ---
 
@@ -391,7 +391,7 @@ Bounds checking for lists.
 | **assertGreaterThanAtIndex(list, v, pos)** | `list(pos) > v`             | Requires allGreaterThan          |
 | **assertAppendGreaterThan(a, b, v)**       | `allGreaterThan(a ++ b, v)` | If both > v                      |
 
-**Source**: `src/main/scala/v1/list/ListBoundUtils.scala`
+**Source**: `src/main/scala/v1/chapter3/list/ListBoundUtils.scala`
 
 ---
 
@@ -426,7 +426,7 @@ L_0 + init & \text{if } k = 0 \\
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/list/integral/Integral.scala`
+**Source**: `src/main/scala/v1/chapter3/list/integral/Integral.scala`
 
 ---
 
@@ -454,7 +454,7 @@ I_{p+1} - I_p &= x_{p+1}
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/list/integral/properties/IntegralProperties.scala`
+**Source**: `src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala`
 
 ---
 
@@ -480,7 +480,7 @@ Three different slice implementations proved equivalent.
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala`
+**Source**: `src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala`
 
 ---
 
@@ -511,7 +511,7 @@ i > 0 &\implies L_i = \text{tail}(L)_{i-1}
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/list/properties/ListUtilsProperties.scala`
+**Source**: `src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala`
 
 ---
 
@@ -531,7 +531,7 @@ Recursive product: empty list → `1`, otherwise `head * product(tail)`.
 | **productConcatCommutative**       | `product(listA ++ listB) == product(listB ++ listA)`            | —             |
 | **positiveProduct**                | `product(elements) > 0`                                         | `allGreaterThan(elements, 0)` |
 
-**Source**: `src/main/scala/v1/list/properties/ListProduct.scala`
+**Source**: `src/main/scala/v1/chapter3/list/properties/ListProduct.scala`
 
 ---
 
@@ -545,7 +545,7 @@ Divisibility lemmas: every element of a list divides the product of the list.
 | **allElementsDivideProduct**       | `mod(product(elements), x) == 0` for every `x in elements`      | `allGreaterThan(elements, 0)` |
 | **insertedElementDividesProduct**  | `mod(product(prefix ++ List(e) ++ suffix), e) == 0`             | `e > 0`, `allGreaterThan(prefix ++ suffix, 0)` |
 
-**Source**: `src/main/scala/v1/list/properties/ListProductDiv.scala`
+**Source**: `src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala`
 
 ---
 
@@ -577,7 +577,7 @@ L &= [v_0, v_1, \dots, v_{n-1}] \in \mathbb{N}_0^n,\quad n = |L|,\quad n > 0 \\
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/cycle/mod/ModCycle.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala`
 
 ---
 
@@ -594,7 +594,7 @@ Memory cycle wrapping ModCycle with caching.
 
 **Invariant**: `isValid(values, modIsZeroForAllValues, ...)`
 
-**Source**: `src/main/scala/v1/cycle/memory/MemCycle.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala`
 
 ---
 
@@ -613,7 +613,7 @@ apply(k) = values(k) if k < size else apply(k - size)
 \text{RecCycle}_i = \text{ModCycle}_i = L_{i \text{ mod } n}
 ```
 
-**Source**: `src/main/scala/v1/cycle/recursive/RecursiveCycle.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala`
 
 ---
 
@@ -642,7 +642,7 @@ ModCycle lemmas.
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/cycle/properties/CycleProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala`
 
 ---
 
@@ -659,7 +659,7 @@ Same as CycleProperties but for MemCycle wrapper.
 | **propagateModFromValueToCycle**        | `cycle(key) % d == cycle.values(mod(key,size)) % d` | `key >= 0`, `d > 0`              |
 | **assertCycleOfPosEqualsCycleOfModPos** | `cycle(pos) == cycle(mod(pos, size))`               | `pos >= 0`, `size > 0`           |
 
-**Source**: `src/main/scala/v1/cycle/memory/properties/MemCycleProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala`
 
 ---
 
@@ -690,7 +690,7 @@ apply(k) = cycle(k) + apply(k-1)
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/cycle/integral/recursive/CycleIntegral.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/recursive/CycleIntegral.scala`
 
 ---
 
@@ -698,7 +698,7 @@ apply(k) = cycle(k) + apply(k-1)
 
 Classic recursive definition of cycle integral.
 
-**Source**: `src/main/scala/v1/cycle/integral/classic/ClassicCycleIntegral.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/classic/ClassicCycleIntegral.scala`
 
 ---
 
@@ -710,7 +710,7 @@ Modulo-based cycle integral formula.
 apply(k) = (k div size) * sum + integralValues(k mod size) + initialValue
 ```
 
-**Source**: `src/main/scala/v1/cycle/integral/mod/ModCycleIntegral.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegral.scala`
 
 ---
 
@@ -744,7 +744,7 @@ apply(k) = (k div size) * sum + integralValues(k mod size) + initialValue
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala`
 
 ---
 
@@ -767,7 +767,7 @@ Same properties as CycleIntegralProperties but for ClassicCycleIntegral.
 | **getModValuesAsList**                             | Helper function
 | **assertFirstValuesAsSliceEqualsModValuesAsList**  |
 
-**Source**: `src/main/scala/v1/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala`
 
 ---
 
@@ -788,7 +788,7 @@ Same properties as CycleIntegralProperties but for ClassicCycleIntegral.
 \end{aligned}
 ```
 
-**Source**: `src/main/scala/v1/cycle/integral/mod/ModCycleIntegralProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala`
 
 ---
 
@@ -812,7 +812,7 @@ Utility functions for sieve sequence construction.
 | **assertHasPrimeFactorImpliesNotCoprime**     | `hasPrimeFactorInList(d) ⇒ !isCoprime(d)`     | `.holds` lemma |
 | **assertNoDivisorInRangeHelper**              | `Calc.mod(n, d) != 0` for all d in `[from, to)` | `.holds` lemma |
 
-**Source**: `src/main/scala/v1/seq/sieve/SieveUtils.scala`
+**Source**: `src/main/scala/v1/chapter6/seq/sieve/SieveUtils.scala`
 
 ---
 
@@ -834,7 +834,7 @@ Wrapper around MinBoundList with **strict positivity** invariant.
 
 **Invariant**: `allGreaterThan(values.list, 0)` — ALL gaps > 0 (strict positivity)
 
-**Source**: `src/main/scala/v1/cycle/gap/GapCycle.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/gap/GapCycle.scala`
 
 ---
 
@@ -866,7 +866,7 @@ apply(k) = integral(k-1) for k >= 1
 - `seq.gapCycle` requires `allGreaterThan(values.list, 0)` ✓
 - So `assertCycleIntegralPositive(seq.integral, pos)` is **provable**!
 
-**Source**: `src/main/scala/v1/seq/sieve/CycleSieveSequence.scala`
+**Source**: `src/main/scala/v1/chapter6/seq/sieve/CycleSieveSequence.scala`
 
 ---
 
@@ -1000,7 +1000,7 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 
 ### Source
 
-`src/main/scala/v1/seq/sieve/SpecSieveSequence.scala`
+`src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala`
 
 ---
 
@@ -1013,7 +1013,7 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 | **assertS1HeadIsThree**  | S_1().head == 3
 | **assertS1PrimesLength** | S_1().primes.size == 2
 
-**Source**: `src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala` (not yet implemented)
+**Source**: `src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala` (not yet implemented)
 
 ---
 
@@ -1060,7 +1060,7 @@ Prime number type with primality verification at construction.
 
 **Invariant**: `Prime.isPrime(inputValue)` holds at construction.
 
-**Source**: `src/main/scala/v1/prime/Prime.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/Prime.scala`
 
 ## 6.2 PrimeUtils (`v1.prime.PrimeUtils`)
 
@@ -1081,7 +1081,7 @@ Utility functions over lists of primes.
 | **primorialPositive**    | `primorial(primes) > 0`                            | —             |
 | **primeIsCoprimeWithSmallerList** | `isPrime(v) ∧ descending(primes) ∧ head.value < v` ⇒ `isCoprime(v, primeValues(primes))` | `v > 1`, `primes.nonEmpty`, `isDescending(primes)`, `head.value < v` |
 
-**Source**: `src/main/scala/v1/prime/PrimeUtils.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/PrimeUtils.scala`
 
 ## 6.3 PrimeProperties (`v1.prime.properties.PrimeProperties`)
 
@@ -1130,7 +1130,7 @@ Assertions inside `.holds` lemmas are cached by Stainless and become available t
 This is how `primorialPlusOneModAny` feeds modular facts into `euclidTheorem` without
 explicit postcondition enrichment. See §4 of [articles/euclid-theorem.md](articles/draft/draft-euclid-theorem.md).
 
-**Source**: `src/main/scala/v1/prime/properties/PrimeProperties.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
 
 ---
 
@@ -1160,7 +1160,7 @@ The helper lemma `noDivisorInRangeImpliesModNonZero` bridges the gap between the
 connect a value `p` to the range `[2, q)` in `noDivisorInRange(q, 2, q)`, so we prove it
 explicitly by induction on `to - from`.
 
-**Source**: `src/main/scala/v1/prime/properties/FilterPreservesPrimesProperties.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala`
 
 ---
 
@@ -1195,7 +1195,7 @@ Descending sorted list of `Prime` values (strictly descending: each element > ne
 
 **Invariant**: `SortedPrimeList.isDescending(list)` holds at construction.
 
-**Source**: `src/main/scala/v1/prime/SortedPrimeList.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/SortedPrimeList.scala`
 
 ---
 
@@ -1230,7 +1230,7 @@ Stores a complete prefix of discovered primes in descending order. The `allPrime
 
 **Invariant**: `AllPrimesSoFarList.allPrimesSoFar(list)` holds at construction.
 
-**Source**: `src/main/scala/v1/prime/AllPrimesSoFarList.scala`
+**Source**: `src/main/scala/v1/chapter5/prime/AllPrimesSoFarList.scala`
 
 ---
 
@@ -1253,7 +1253,7 @@ This is the base case of the sieve's correctness proof.
 A constant cycle of 1s produces an arithmetic progression with step 1.
 For S_0: `init = 2`, so `S_0(n) = n + 2`, giving us 2, 3, 4, 5, ...
 
-**Source**: `src/main/scala/v1/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala`
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala`
 
 ---
 
@@ -1263,7 +1263,7 @@ For S_0: `init = 2`, so `S_0(n) = n + 2`, giving us 2, 3, 4, 5, ...
 
 Properties about consecutive integer sequences.
 
-**Source**: `src/main/scala/v1/div/properties/ConsecutiveIntegers.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala`
 
 ---
 
@@ -1271,7 +1271,7 @@ Properties about consecutive integer sequences.
 
 Aggregated properties for easy verification.
 
-**Source**: `src/main/scala/v1/div/properties/Summary.scala`
+**Source**: `src/main/scala/v1/chapter2/div/properties/Summary.scala`
 
 ---
 

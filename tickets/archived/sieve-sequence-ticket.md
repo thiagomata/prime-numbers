@@ -13,9 +13,9 @@ Implement `SieveSequence` - a mathematical structure representing infinite seque
 
 | File | Status | Notes |
 |------|--------|-------|
-| `src/main/scala/v1/seq/sieve/SieveSequence.scala` | DRAFT | Needs rewrite |
-| `src/main/scala/v1/seq/sieve/CycleUtils.scala` | DRAFT | May not be needed |
-| `src/main/scala/v1/seq/sieve/properties/SieveSequenceProperties.scala` | DRAFT | Needs rewrite |
+| `src/main/scala/v1/chapter6/seq/sieve/SieveSequence.scala` | DRAFT | Needs rewrite |
+| `src/main/scala/v1/chapter6/seq/sieve/CycleUtils.scala` | DRAFT | May not be needed |
+| `src/main/scala/v1/chapter6/seq/sieve/properties/SieveSequenceProperties.scala` | DRAFT | Needs rewrite |
 | `articles/sieve-sequence.md` | DRAFT | Article draft |
 
 ---
@@ -206,7 +206,7 @@ SieveSequence-specific lemmas:
 
 ## References
 
-- `src/main/scala/v1/seq/Seq.scala` - Existing Seq class
-- `src/main/scala/v1/cycle/memory/MemCycle.scala` - Memory cycle
-- `src/main/scala/v1/cycle/integral/mod/ModCycleIntegral.scala` - Pattern to follow
-- `src/main/scala/v1/seq/properties/SeqProperties.scala` - Properties to reuse
+- `src/main/scala/v1/chapter6/seq/Seq.scala` - Existing Seq class
+- `src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala` - Memory cycle
+- `src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegral.scala` - Pattern to follow
+- `src/main/scala/v1/chapter6/seq/properties/SeqProperties.scala` - Properties to reuse

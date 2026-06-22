@@ -160,7 +160,7 @@ L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
 The implementation of `slice` is available in [ListUtils](
-	../src/main/scala/v1/list/ListUtils.scala#slice
+	../src/main/scala/v1/chapter3/list/ListUtils.scala#slice
 ). The full Scala verification code is in Appendix A.3.
 
 ### 2.8 List Sum
@@ -176,7 +176,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 ```
 
 The implementation of `sum` is available in [ListUtils](
-	../src/main/scala/v1/list/ListUtils.scala#sum
+	../src/main/scala/v1/chapter3/list/ListUtils.scala#sum
 ). The full Scala verification code is in Appendix A.1.
 
 ### 2.9 List Product
@@ -192,7 +192,7 @@ head(L) \cdot product(tail(L)) & \text{otherwise} \\
 ```
 
 The implementation of `product` is available in [ListProduct](
-	../src/main/scala/v1/list/properties/ListProduct.scala
+	../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendices A.11 through A.15.
 
 ## 3. Index and Access Properties
@@ -220,7 +220,7 @@ $$
 This property is verified in the [
   ListUtilsProperties::accessTailShiftRight
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.1.
 
 ### 3.2 Last Element Identity
@@ -271,7 +271,7 @@ This property is verified in the [
 This property is verified in the [
   ListUtilsProperties::assertLastEqualsLastPosition
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.2.
 
 ## 4. Slice Properties
@@ -336,7 +336,7 @@ Show:
 This property is verified in the [
   ListUtils::slice
 ](
-  ../src/main/scala/v1/list/ListUtils.scala
+  ../src/main/scala/v1/chapter3/list/ListUtils.scala
 ). The implementation and verification code are in Appendix A.3.
 
 ### 4.2 Head-Recursive Slice
@@ -397,7 +397,7 @@ Show:
 This property is verified in the [
   SliceEquivalenceLemmas::headRecursiveSlice
 ](
-  ../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
+  ../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
 ). The full Scala verification code is in Appendix A.4.
 
 ### 4.3 Index-Range Slice
@@ -458,7 +458,7 @@ Show:
 This property is verified in the [
   SliceEquivalenceLemmas::indexRangeValues
 ](
-  ../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
+  ../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
 ). The full Scala verification code is in Appendix A.5.
 
 ### 4.4 Slice Append Consistency
@@ -476,7 +476,7 @@ L[f \dots t] &= \text{slice}(L, f, t) \\
 This property is verified in the [
   ListUtilsProperties::assertAppendToSlice
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.6.
 
 ## 5. Sum Properties
@@ -553,7 +553,7 @@ Hence, by induction on the size of $L$:
 This property is verified in the [
   ListUtils::sum
 ](
-  ../src/main/scala/v1/list/ListUtils.scala
+  ../src/main/scala/v1/chapter3/list/ListUtils.scala
 ). The implementation and verification code are in Appendix A.7.
 
 ### 5.2 Left Append Preserves Sum
@@ -590,7 +590,7 @@ A & = [x] ⧺ L  & \qquad \text{[Concatenation]} \\
 This property is verified in the [
   ListUtilsProperties::listSumAddValue
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.8.
 
 ### 5.3 Sum over Concatenation
@@ -641,7 +641,7 @@ A ⧺ B & = [\text{head}(A)] ⧺ (\text{tail}(A) ⧺ B)                         
 This property is verified in the [
   ListUtilsProperties::listCombine
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.9.
 
 ### 5.4 Commutativity of Sum over Concatenation
@@ -665,7 +665,7 @@ Since:
 This property is verified in the [
   ListUtilsProperties::listSwap
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.10.
 
 ## 6. Product Properties
@@ -692,7 +692,7 @@ Proof:
 This property is verified in the [
   ListProduct::singletonProduct
 ](
-  ../src/main/scala/v1/list/properties/ListProduct.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendix A.11.
 
 ### 6.2 Product Pull-Out Element
@@ -721,7 +721,7 @@ A single element can be factored out of the product of a concatenated list.
 This property is verified in the [
   ListProduct::productPullOutElement
 ](
-  ../src/main/scala/v1/list/properties/ListProduct.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendix A.12.
 
 ### 6.3 Product over Concatenation
@@ -750,7 +750,7 @@ Product distributes over list concatenation.
 This property is verified in the [
   ListProduct::productConcatLemma
 ](
-  ../src/main/scala/v1/list/properties/ListProduct.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendix A.13.
 
 ### 6.4 Commutativity of Product
@@ -775,7 +775,7 @@ Proof:
 This property is verified in the [
   ListProduct::productConcatCommutative
 ](
-  ../src/main/scala/v1/list/properties/ListProduct.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendix A.14.
 
 ### 6.5 Positive Product
@@ -802,7 +802,7 @@ If every element of a list is strictly positive, then the product is strictly po
 This property is verified in the [
   ListProduct::positiveProduct
 ](
-  ../src/main/scala/v1/list/properties/ListProduct.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
 ). The full Scala verification code is in Appendix A.15.
 
 ## 7. Product Divisibility Properties
@@ -828,7 +828,7 @@ Proof:
 This property is verified in the [
   ListProductDiv::ListProductDiv
 ](
-  ../src/main/scala/v1/list/properties/ListProductDiv.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
 ). The full Scala verification code is in Appendix A.16.
 
 ### 7.2 All Elements Divide Product
@@ -849,7 +849,7 @@ Every element of a positive list divides the product of the list.
 This property is verified in the [
   ListProductDiv::allElementsDivideProduct
 ](
-  ../src/main/scala/v1/list/properties/ListProductDiv.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
 ). The full Scala verification code is in Appendix A.17.
 
 ### 7.3 Inserted Element Divides Product
@@ -874,7 +874,7 @@ Proof:
 This property is verified in the [
   ListProductDiv::insertedElementDividesProduct
 ](
-  ../src/main/scala/v1/list/properties/ListProductDiv.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
 ). The full Scala verification code is in Appendix A.18.
 
 ## 8. Bound and Order Properties
@@ -891,7 +891,7 @@ For every list where all elements are greater than a value, any element at a val
 This property is verified in the [
   ListBoundUtils::assertGreaterThanAtIndex
 ](
-  ../src/main/scala/v1/list/ListBoundUtils.scala
+  ../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
 ). The full Scala verification code is in Appendix A.19.
 
 ### 8.2 Append Preserves All Greater Than
@@ -907,7 +907,7 @@ If both lists have all elements greater than a value, then their concatenation a
 This property is verified in the [
   ListBoundUtils::assertAppendGreaterThan
 ](
-  ../src/main/scala/v1/list/ListBoundUtils.scala
+  ../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
 ). The full Scala verification code is in Appendix A.20.
 
 ### 8.3 All Greater Than Head and Tail
@@ -922,7 +922,7 @@ For a non-empty list where all elements are greater than a value, the head is gr
 This property is verified in the [
   ListBoundUtils::assertGreaterThanHeadTail
 ](
-  ../src/main/scala/v1/list/ListBoundUtils.scala
+  ../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
 ). The full Scala verification code is in Appendix A.21.
 
 ### 8.4 Check All Bigger at Index
@@ -937,7 +937,7 @@ For every list where all elements are bigger than a value, any element at a vali
 This property is verified in the [
   ListUtilsProperties::checkAllBiggerThanValueAtIndex
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.22.
 
 ### 8.5 Check All Bigger Head and Tail
@@ -952,7 +952,7 @@ For a non-empty list where all elements are bigger than a value, the head is big
 This property is verified in the [
   ListUtilsProperties::checkAllBiggerThanValueHeadTail
 ](
-  ../src/main/scala/v1/list/properties/ListUtilsProperties.scala
+  ../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.23.
 
 ## 9. Equivalence Properties
@@ -975,7 +975,7 @@ All three slice implementations — tail-recursive, head-recursive, and index-ra
 This property is verified in the [
   SliceEquivalenceLemmas::tailHeadAndIndexRangeSlicesAreEqual
 ](
-  ../src/main/scala/v1/list/properties/SliceEquivalenceLemmas.scala
+  ../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
 ). The full Scala verification code is in Appendix A.24.
 
 ## 10. Conclusion

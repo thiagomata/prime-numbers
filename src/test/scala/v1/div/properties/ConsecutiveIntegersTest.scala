@@ -2,6 +2,7 @@ package v1.div.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
+import v1.chapter2.div.properties.ConsecutiveIntegers
 
 class ConsecutiveIntegersTest extends FlatSpec with Matchers {
 

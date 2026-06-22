@@ -2,8 +2,9 @@ package v1.seq.properties
 
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
-import v1.cycle.memory.MemCycle
-import v1.seq.Seq
+import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter6.seq.Seq
+import v1.chapter6.seq.properties.SeqProperties
 import v1.tests.ArrayUtils.createList
 
 class SeqPropertiesTest extends FlatSpec with Matchers {
