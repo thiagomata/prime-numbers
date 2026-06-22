@@ -5,15 +5,34 @@ pitfalls, and patterns that worked.
 
 ## 1. Lemma Propagation
 
-### 1.1 Private lemmas propagate better than external `.holds`
+### 1.1 Private lemmas reduce VC complexity at call sites
 
-**Problem:** `.holds` lemmas in external objects (like `SieveUtils.assertExpandedCoprime`)
-cache only `result == true` at call sites. The solver does NOT know WHAT specific
-property the lemma proved — only that it returned `true`.
+External `.holds` lemmas DO propagate their proven equalities — they are used
+successfully throughout the codebase (e.g., `ATimesBSameMod`, `ALessBSameModDecreaseDiv`,
+`ModOperations.modZeroPlusC`). The solver can consume their return expressions
+at call sites.
 
-**Solution:** Private lemmas inside the same class (like
-`expandedCoprimePreservesFilter`) are inlined by the solver, so their return
-expression (e.g., `isCoprime(r + i*modulus, primes)`) is directly available.
+However, when a `.holds` lemma's return expression is complex (e.g., involves
+`isCoprime` with multiple arguments, conditional branches, or quantifier-like
+reasoning), the solver may time out trying to USE it at a call site — not
+because the equality is hidden, but because re-deriving the fact in a new
+context is expensive.
+
+**Solution:** Private lemmas inside the same class reduce VC complexity because
+the solver sees the return expression directly without crossing a module
+boundary. This is particularly effective when the needed fact is a simple
+instance of a more general lemma.
+
+```scala
+// Instead of:
+assert(SieveUtils.assertExpandedCoprime(r, i, modulus, primes))
+// which may be expensive for the solver to inline at the call site:
+
+// Use a private lemma that inlines the specific needed fact:
+private def expandedCoprimePreservesFilter(r: BigInt, i: BigInt, modulus: BigInt, primes: List[BigInt]): Boolean = {
+  isCoprime(r + i * modulus, primes)
+}.holds
+```
 
 **Affected:** P3 `assertBlockShift` timeout. Solved by using V0's own private
 `expandedCoprimePreservesFilter` instead of `SieveUtils.assertExpandedCoprime`.

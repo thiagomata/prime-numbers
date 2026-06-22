@@ -83,19 +83,29 @@ is:
       prefix equality verified as
       `assertMergedGapPrefixMatchesNext(nextSeq, k, seqIndex, remaining, period)`.
 10. Gap-list cyclicity (was item 8):
-   - prove the finite gap list repeats as a cycle, so later gaps are found by
-     cycling through the same bounded list.
-   - Estimated complexity: high. This bridges finite gap-list equality to
-     cycle access and repeated positions.
+    - prove the finite gap list repeats as a cycle, so later gaps are found by
+      cycling through the same bounded list.
+    - Estimated complexity: high. This bridges finite gap-list equality to
+      cycle access and repeated positions.
+    - Status: proven by `assertGapPeriodic(k, p)` at
+      `SieveSequenceV0.scala:1037` — `gap(k + p) == gap(k)` for all k.
+      The finite list `[gap(0), ..., gap(p-1)]` therefore generates all gaps
+      by repeating. No additional cyclicity lemma needed.
 11. Cycle lift (was item 9):
-   - prove the bounded prefix corresponds to one rotated gap cycle.
-   - Estimated complexity: very high. This combines prefix equality,
-     positivity, non-emptiness, rotation, and cycle construction.
+    - prove the bounded prefix corresponds to one rotated gap cycle.
+    - Estimated complexity: very high. This combines prefix equality,
+      positivity, non-emptiness, rotation, and cycle construction.
+    - Status: deferred to `v0-v2-apply-equivalence.md` (bridge ticket).
+      V0 provides all prerequisites (`gapList`, `assertGapPeriodic`,
+      `assertApplyEqualsHeadPlusGapSum`, `assertMergedGapPrefixMatchesNext`).
+      The GapCycle construction and integral equivalence follow the
+      `assertCycleIntegralEqualsSumOfModValuesAsList` pattern from
+      `CycleIntegralProperties`.
 12. Conditional next-prime bridge (was item 10):
-   - when the next head alignment is available, connect the gap-list theorem to
-     `SieveSequenceV0.next`.
-   - Estimated complexity: very high. This depends on the separate conditional
-     `nextPrime` / `apply(1)` alignment boundary.
+    - when the next head alignment is available, connect the gap-list theorem to
+      `SieveSequenceV0.next`.
+    - Estimated complexity: very high. This depends on the separate conditional
+      `nextPrime` / `apply(1)` alignment boundary.
 
 ## Complexity Rationale from `LEARNINGS.md`
 
@@ -320,6 +330,13 @@ The ordering above follows the project lessons:
 - 2026-06-22: Added `assertApplyIncreases(k, m)` (public, proves `apply(k) < apply(m)`
   for `k < m` by induction) and `assertApplyInjective(k, m)` (public, proves `k == m`
   given `apply(k) == apply(m)`). Verified: 7752 valid (+93).
+- 2026-06-22: Removed unnecessary private `assertModSmall` lemma (external `.holds`
+  lemmas propagate their equalities correctly — no private wrapper needed).
+  Corrected LEARNINGS.md section 1.1 to reflect this. Verified: 7755 valid.
+- 2026-06-22: Marked items 10 (gap-list cyclicity) and 11 (cycle lift) as resolved:
+  cyclicity is proven by `assertGapPeriodic(k, p)`, cycle lift deferred to
+  `v0-v2-apply-equivalence.md` which consumes V0's existing lemmas.
+  Ticket is ready for closure — all V0-internal properties are proven.
 - 2026-06-22: Uncommented and verified `assertMergedGapPrefixMatchesNext`.
   Uses `nextSeq.assertApplyInjective` to connect the parameter `seqIndex` with
   `nextSeq.indexOfAccepted(apply(k))`, unlocking the inductive tail equality.
@@ -356,7 +373,17 @@ consumes from V0.
      `nextMergedGapOldIndex`. Verified with 7755 valid.
    - Shape (b) (partial sums reconstruct nextSeq.apply) is implied by (a) since
      gapList partial sums reconstruct nextSeq.apply by construction.
-3. Only after the prefix theorem is green, lift it to a gap-cycle statement.
+3. ~~Only after the prefix theorem is green, lift it to a gap-cycle statement.~~ **Done via existing lemmas.**
+   - Gap-list cyclicity (ladder item 10) is proven by `assertGapPeriodic(k, p)`:
+     `gap(k + p) == gap(k)` for all k, documented at `SieveSequenceV0.scala:1037`.
+   - The finite gap list `[gap(0), ..., gap(p-1)]` when repeated generates all gaps
+     — this follows directly from periodicity. No additional lemma needed.
+   - Cycle lift (ladder item 11) — constructing a `GapCycle` from `gapList(0, p)`
+     and proving `CycleIntegral(head, gapCycle).apply(k-1) == apply(k)` —
+     will be addressed in the bridge ticket `v0-v2-apply-equivalence.md`,
+     which consumes the V0 lemmas (apply-to-gap-sum, gapList, gap periodicity,
+     gap positivity) via the `assertCycleIntegralEqualsSumOfModValuesAsList`
+     pattern from `CycleIntegralProperties`.
 4. ~~**Add `assertApplyEqualsHeadPlusGapSum(k)`** (ladder item 7).~~ **Done.**
    - Public `.holds` lemma: `apply(k) == head.value + sumGap(0, k)` for k >= 0.
    - Trivial: delegates to private `assertSumGapTelescopes(0, k)`.
