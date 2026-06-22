@@ -2,12 +2,10 @@ package v1.seq.sieve
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import org.scalatest.Tag
 import stainless.collection.List
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
 import v1.chapter6.seq.sieve.SpecSieveSequence
-
-object SlowLemmaTest extends Tag("v1.tags.SlowLemmaTest")
+import v1.tags.SlowLemmaTest
 
 class SpecSieveSequenceTest extends FlatSpec with Matchers  {
 
@@ -64,7 +62,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     shouldReject(s3, Seq(BigInt(10), BigInt(12), BigInt(14), BigInt(15), BigInt(18), BigInt(20), BigInt(21), BigInt(22), BigInt(24), BigInt(25)))
   }
 
-  it should "accept head plus any checked multiple of the tail product" in {
+  it should "accept head plus any checked multiple of the tail product" taggedAs(SlowLemmaTest) in {
     val s = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
 
     shouldAccept(
@@ -78,7 +76,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     )
   }
 
-  it should "generate the expected tail-filtered prefixes with apply" in {
+  it should "generate the expected tail-filtered prefixes with apply" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     val s3 = SpecSieveSequence(allPrimesSoFar(List(Prime(7), Prime(5), Prime(3), Prime(2))))
@@ -94,7 +92,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     )
   }
 
-  it should "find an apply index for accepted values" in {
+  it should "find an apply index for accepted values" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
 
@@ -111,7 +109,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
 
   // === Bridge-critical lemma tests for V0-V2 equivalence ===
 
-  it should "extract correct gapList for S_1" in {
+  it should "extract correct gapList for S_1" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     // apply: 3, 5, 7, 9, 11, 13, 15, ... → gaps: 2 repeated
     s1.gapList(BigInt(0), BigInt(4)) should be(
@@ -119,7 +117,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     )
   }
 
-  it should "extract correct gapList for S_2" in {
+  it should "extract correct gapList for S_2" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     // apply: 5, 7, 11, 13, 17, 19, 23, 25, ... → gaps: 2, 4, 2, 4, ...
     s2.gapList(BigInt(0), BigInt(4)) should be(

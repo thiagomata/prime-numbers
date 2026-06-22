@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.*
 import v1.chapter4.cycle.integral.classic.ClassicCycleIntegral
 import v1.chapter4.cycle.integral.classic.properties.ClassicCycleIntegralProperties
 import v1.chapter4.cycle.memory.MemCycle
+import v1.tags.SlowLemmaTest
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt
@@ -32,7 +33,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
 
   val allCycles: List[MemCycle] = primeCycles ++ oddCycles ++ evenCycles
 
-  "assertCycleIntegralEqualsSumFirstPosition" should "hold for any cycle" in {
+  "assertCycleIntegralEqualsSumFirstPosition" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
           val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -43,7 +44,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertCycleIntegralEqualsSumSmallPositions" should "hold for any cycle" in {
+  "assertCycleIntegralEqualsSumSmallPositions" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -58,7 +59,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertCycleIntegralEqualsSliceSum" should "hold for any cycle" in {
+  "assertCycleIntegralEqualsSliceSum" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -73,7 +74,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertDiffEqualsCycleValue" should "hold for any cycle" in {
+  "assertDiffEqualsCycleValue" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -88,7 +89,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertSameDiffAfterCycle" should "hold for any cycle" in {
+  "assertSameDiffAfterCycle" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -103,7 +104,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertLastElementBeforeLoop" should "hold for any cycle" in {
+  "assertLastElementBeforeLoop" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -114,7 +115,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertSumModValueAsListEqualsCycleIntegralLoop" should "hold for any cycle" in {
+  "assertSumModValueAsListEqualsCycleIntegralLoop" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -129,7 +130,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertCycleIntegralEqualsSumOfModlValuesAsList" should "hold for any cycle" in {
+  "assertCycleIntegralEqualsSumOfModlValuesAsList" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)
@@ -144,7 +145,7 @@ class ClassicCycleIntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertFirstValuesAsSliceEqualsModValuesAsList" should "hold for any cycle" in {
+  "assertFirstValuesAsSliceEqualsModValuesAsList" should "hold for any cycle" taggedAs(SlowLemmaTest) in {
     assert(
       allCycles.forall { cycle =>
         val cycleAcc =  ClassicCycleIntegral(1000, cycle)

@@ -4,6 +4,7 @@ import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
 import stainless.collection.List
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
+import v1.tags.SlowLemmaTest
 
 import scala.language.postfixOps
 
@@ -39,7 +40,7 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
     )) should be(false)
   }
 
-  "all primes so far" should "return true for list with range primes" in {
+  "all primes so far" should "return true for list with range primes" taggedAs(SlowLemmaTest) in {
     AllPrimesSoFarList.allPrimesSoFar(SortedPrimeList(
       List(Prime(7), Prime(5), Prime(3), Prime(2)),
     )) should be(true)
@@ -69,21 +70,21 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
     newList.equals(expectedList) should be(true)
   }
 
-  "nextPrime" should "return the next prime after head for [5, 3, 2]" in {
+  "nextPrime" should "return the next prime after head for [5, 3, 2]" taggedAs(SlowLemmaTest) in {
     val list = AllPrimesSoFarList(
       SortedPrimeList(List(Prime(5), Prime(3), Prime(2)))
     )
     list.nextPrime.value should be(7)
   }
 
-  "nextPrime" should "return the next prime after head for [7, 5, 3, 2]" in {
+  "nextPrime" should "return the next prime after head for [7, 5, 3, 2]" taggedAs(SlowLemmaTest) in {
     val list = AllPrimesSoFarList(
       SortedPrimeList(List(Prime(7), Prime(5), Prime(3), Prime(2)))
     )
     list.nextPrime.value should be(11)
   }
 
-  "nextPrime" should "return a prime greater than head for [3, 2]" in {
+  "nextPrime" should "return a prime greater than head for [3, 2]" taggedAs(SlowLemmaTest) in {
     val list = AllPrimesSoFarList(
       SortedPrimeList(List(Prime(3), Prime(2)))
     )
@@ -92,7 +93,7 @@ class AllPrimesSoFarListTest  extends FlatSpec with Matchers {
     Prime.isPrime(p.value) should be(true)
   }
 
-  "nextPrime" should "return 3 for [2]" in {
+  "nextPrime" should "return 3 for [2]" taggedAs(SlowLemmaTest) in {
     val list = AllPrimesSoFarList(
       SortedPrimeList(List(Prime(2)))
     )

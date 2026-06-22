@@ -6,6 +6,7 @@ import stainless.collection
 import stainless.collection.List
 import v1.chapter3.list.integral.properties.IntegralProperties
 import v1.list.integral
+import v1.tags.SlowLemmaTest
 import v1.tests.ArrayUtils.{createList, createListFromInt}
 import v1.chapter3
 
@@ -24,7 +25,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     createListFromInt(Array(1, 10, 100, 1000))
   )
 
-  "assertAccDifferenceEqualsTailHead" should "hold for all lists" in {
+  "assertAccDifferenceEqualsTailHead" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
@@ -35,7 +36,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertAccDiffMatchesList" should "hold for all lists" in {
+  "assertAccDiffMatchesList" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
@@ -48,7 +49,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertAccMatchesApply" should "hold for all lists" in {
+  "assertAccMatchesApply" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
@@ -61,7 +62,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertLastEqualsSum" should "hold for all lists" in {
+  "assertLastEqualsSum" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
@@ -72,7 +73,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertSizeAccEqualsSizeList" should "hold for all lists" in {
+  "assertSizeAccEqualsSizeList" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
@@ -83,7 +84,7 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertLast" should "hold for all lists" in {
+  "assertLast" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {

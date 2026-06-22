@@ -6,6 +6,8 @@ import stainless.lang.*
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence, ModOperations}
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
+import v1.chapter4.cycle.gap.GapCycle
+import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 import v1.chapter5.prime.properties.PrimeProperties
 
@@ -416,6 +418,72 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(assertGapListSize(from + BigInt(1), count - BigInt(1)))
       gapList(from, count).size == count
     }
+  }.holds
+
+  /**
+   * Builds the finite gap cycle described by this specification sequence.
+   *
+   * The period witness is the first index whose generated value has looped
+   * forward by exactly one filter modulus:
+   *
+   * {{{
+   *   apply(period) == head.value + filterModulus
+   * }}}
+   *
+   * Under that witness, `gapList(0, period)` contains exactly one full period
+   * of adjacent specification gaps. `GapCycle` requires two concrete list facts:
+   * the list must be non-empty and every gap must be strictly positive. Those
+   * facts come from `period > 0`, `assertGapListSize(0, period)`, and
+   * `assertGapListPositive(0, period)`.
+   *
+   * This method is the first bridge for the Spec-vs-Cycle equivalence ticket:
+   * it turns the already verified Spec gap facts into the same first-class
+   * `GapCycle` object used by `CycleSieveSequence`.
+   */
+  def specGapCycle(period: BigInt): GapCycle = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+
+    val gaps = gapList(BigInt(0), period)
+
+    assert(assertGapListPositive(BigInt(0), period))
+    assert(assertGapListSize(BigInt(0), period))
+    assert(gaps.size == period)
+    assert(gaps.nonEmpty)
+
+    GapCycle(gaps)
+  }.ensuring(result => result.memCycle.values == gapList(BigInt(0), period))
+
+  /**
+   * Proves the base case of the Spec gap-cycle integral reconstruction.
+   *
+   * `specGapCycle(period)` stores `gapList(0, period)` as a `GapCycle`. The
+   * first value of `CycleIntegral(head.value, gaps)` is therefore:
+   *
+   * {{{
+   *   head.value + gapList(0, period).head
+   *   = apply(0) + (apply(1) - apply(0))
+   *   = apply(1)
+   * }}}
+   *
+   * This lemma intentionally proves only the first integral position. The full
+   * theorem will extend the same idea across all positions using gap-list
+   * periodicity and the recursive definition of `CycleIntegral`.
+   */
+  def assertSpecGapCycleIntegralBase(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+
+    val gaps = gapList(BigInt(0), period)
+    val gapCycle = specGapCycle(period)
+    val integral = CycleIntegral(head.value, gapCycle.memCycle)
+
+    assert(gapCycle.memCycle.values == gaps)
+    assert(gaps.nonEmpty)
+    assert(gaps.head == apply(BigInt(1)) - apply(BigInt(0)))
+    assert(integral(BigInt(0)) == head.value + gaps.head)
+
+    integral(BigInt(0)) == apply(BigInt(1))
   }.holds
 
   /**

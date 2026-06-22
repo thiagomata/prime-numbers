@@ -14,12 +14,14 @@ pitfall avoidance, and timeout resolution strategies.
 
 <commands>
   <verify>just verify</verify>
+  <verify-focus>just verify functionName</verify-focus>
   <verify-log>grep "total:" verify.log</verify-log>
   <fast-compile>sbt 'set stainlessEnabled := false' compile</fast-compile>
   <tests>just test</tests>
 </commands>
 
 `just verify` writes its output to `verify.log` in the project root (and `verify-error.log` for errors).
+`just verify functionName` compiles the full source tree but asks Stainless to verify only that function via `--functions=functionName`; use it for fast proof iteration only, not as a replacement for final full validation.
 To check the latest result WITHOUT re-running, use `<verify-log />` to read the log.
 Do NOT run `just verify` twice in a row — check `verify.log` first.
 Only re-run `just verify` after making a code change.

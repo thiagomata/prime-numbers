@@ -961,6 +961,8 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **gapList(from, count)** | Returns `List[BigInt] = [gap(from), ..., gap(from+count-1)]` | Public function. Structural recursion on `count`. Verified with 7568 valid. |
 | **assertGapListPositive(from, count)** | `allGreaterThan(gapList(from, count), 0)` | Public `.holds`. Induction on `count`, uses `assertGapPositive` for each element. Verified with 7579 valid. |
 | **assertGapListSize(from, count)** | `gapList(from, count).size == count` | Public `.holds`. Induction on `count`. Verified with 7590 valid. |
+| **specGapCycle(period)** | Builds `GapCycle(gapList(0, period))` when `period > 0` and `apply(period) == head.value + filterModulus`; exports `result.memCycle.values == gapList(0, period)` | Public constructor bridge for the Spec-vs-Cycle equivalence ticket. Packages the existing gap-list positivity and non-empty facts into the `GapCycle` constructor preconditions. Verified with 7771 valid. |
+| **assertSpecGapCycleIntegralBase(period)** | `CycleIntegral(head.value, specGapCycle(period).memCycle)(0) == apply(1)` when `period > 0` and `apply(period) == head.value + filterModulus` | Public base case for the Spec gap-cycle integral reconstruction theorem. Proves that the first integral step over the packaged Spec gaps reaches the second Spec-generated value. Verified with 7788 valid. |
 | **assertMergedGapPrefixHeadMatchesNext(nextSeq, k, period)** | `mergedGapPrefix(nextSeq, k, 1, period).head == nextSeq(vIdx+1) - nextSeq(vIdx)` where `vIdx = nextSeq.indexOfAccepted(apply(k))` | Private `.holds`. Proves the first emitted gap matches the corresponding next-sequence gap. Relies on `nextMergedGapOldIndex`'s strengthened postcondition. Verified with 7643 valid. |
 | **assertApplyIncreases(fromIndex, toIndex)** | `apply(fromIndex) < apply(toIndex)` when `fromIndex < toIndex` | Private `.holds`. Proves strict increase over arbitrary distances by induction on `toIndex - fromIndex` using `applyStrictlyIncreases`. Verified with 7755 valid. |
 | **assertApplyInjective(firstIndex, secondIndex)** | `firstIndex == secondIndex` given `apply(firstIndex) == apply(secondIndex)` | Public `.holds`. Proves injectivity of `apply` by contradiction using `assertApplyIncreases`. Verified with 7755 valid. |
@@ -1004,7 +1006,26 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 
 ---
 
-## 5.5 SieveSequenceProperties (`v1.seq.sieve.properties.SieveSequenceProperties`)
+## 5.5 SpecCycleSieveEquivalence (`v1.seq.sieve.SpecCycleSieveEquivalence`)
+
+Local bridge lemmas for the Spec-vs-Cycle apply equivalence proof. These lemmas
+do not introduce new mathematics; they expose already-obvious representation
+facts under local names so the eventual top-level proof can depend on small,
+verified aliases instead of rebuilding representation reasoning inline.
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **assertHeadsMatchFromPrimeValues(spec, cycle)** | `cycle.primes == PrimeUtils.primeValues(spec.primes.list.list)` ⇒ `spec.head.value == cycle.head` | Public representation bridge. Converts full prime-list correspondence into head equality. Verified with 7794 valid. |
+| **assertApplyZeroMatchesFromPrimeValues(spec, cycle)** | `cycle.primes == PrimeUtils.primeValues(spec.primes.list.list)` ⇒ `spec(0) == cycle(0)` | Public base-case apply bridge. Uses head equality plus both `apply(0)` definitions. Verified with 7826 valid. |
+| **assertCycleApplyPositiveIsIntegral(cycle, position)** | `position > 0` ⇒ `cycle(position) == cycle.integral(position - 1)` | Public cycle-side apply bridge. Exposes the positive branch of `CycleSieveSequence.apply` under a local alias for the final equivalence proof. Verified with 7829 valid. |
+| **assertFilterValuesMatchTailPrimes(spec, cycle)** | `cycle.primes == PrimeUtils.primeValues(spec.primes.list.list)` ⇒ `cycle.primes.tail == spec.filterValues` | Public representation bridge. Converts the same full prime-list correspondence into active-filter equality. This is the dependency needed by the next acceptance-predicate bridge. Verified with 7806 valid. |
+| **assertSpecAcceptsMatchesCycleTailCoprime(spec, cycle, value)** | `cycle.primes == PrimeUtils.primeValues(spec.primes.list.list)` ∧ `value >= spec.head.value` ⇒ `spec.accepts(value) == SieveUtils.isCoprime(value, cycle.primes.tail)` | Public semantic bridge. Rewrites Spec acceptance into the cycle-side tail-coprime predicate by consuming `assertFilterValuesMatchTailPrimes`. Verified with 7817 valid. |
+
+**Source**: `src/main/scala/v1/chapter6/seq/sieve/SpecCycleSieveEquivalence.scala`
+
+---
+
+## 5.6 SieveSequenceProperties (`v1.seq.sieve.properties.SieveSequenceProperties`)
 
 > **NOTE**: This file does not yet exist. Properties listed below are aspirational.
 
