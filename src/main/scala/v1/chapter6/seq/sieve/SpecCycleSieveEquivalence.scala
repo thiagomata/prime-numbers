@@ -90,6 +90,38 @@ object SpecCycleSieveEquivalence {
   }.holds
 
   /**
+   * Proves positive-index apply equivalence from equal heads and equal gaps.
+   *
+   * This is the conditional checkpoint for the whole equivalence ticket. It
+   * deliberately does not prove where the cycle-side gaps came from. Instead,
+   * it states the smallest useful bridge: once the Spec stream and Cycle stream
+   * have the same head and the same stored `MemCycle`, every positive `apply`
+   * position is reconstructed by the same `CycleIntegral`.
+   */
+  def assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    period: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(position > BigInt(0))
+    require(period > BigInt(0))
+    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec.head.value == cycle.head)
+    require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
+
+    val specGapCycle = spec.specGapCycle(period)
+    val specIntegral = CycleIntegral(spec.head.value, specGapCycle.memCycle)
+
+    assert(spec.assertSpecGapCycleIntegralMatchesApply(period, position))
+    assert(assertCycleApplyPositiveIsIntegral(cycle, position))
+    assert(assertCycleIntegralUsesGapCycle(cycle))
+    assert(specIntegral == cycle.integral)
+
+    spec(position) == cycle(position)
+  }.holds
+
+  /**
    * Converts the prime-list correspondence assumption into filter equality.
    *
    * The cycle sequence keeps the head prime at `cycle.primes.head`, so its

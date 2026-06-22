@@ -130,15 +130,16 @@ These lemmas combine the previous groups into the final theorem.
 
 | Lemma | Mathematical statement | Why needed | Status |
 |---|---|---|---|
-| `assertSpecCycleApplyPositiveMatches(spec, cycle, k)` | If `k > 0`, prime lists correspond, and gap cycles match, then `spec(k) = cycle(k)`. | Main positive-index theorem. | Required. |
+| `assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps(spec, cycle, period, k)` | If `k > 0`, `spec.head.value == cycle.head`, and `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`, then `spec(k) = cycle(k)`. | Main positive-index theorem under the clean same-head/same-gaps precondition. | Verified. |
 | `assertSpecCycleApplyMatches(spec, cycle, k)` | For all `k >= 0`, if prime lists correspond and gap cycles match, then `spec(k) = cycle(k)`. | Final local equivalence theorem for one stage. | Required. |
 | `assertSpecCycleNextResiduePipelineMatches(spec, cycle)` | If the Cycle gap cycle is constructed by the residue pipeline for the same stage, then the gap-cycle-match precondition of `assertSpecCycleApplyMatches` holds. | Connects the final theorem to the actual construction path we want to trust. | Required after residue work. |
 
 ### H. Optional/Deferred Walk Pipeline Bridge
 
-The current recommendation remains to prove the residue pipeline first. The walk
-pipeline is closer to `next()` as written, but it is harder because it walks
-through `CycleSieveSequence.apply`, which already depends on the gap cycle.
+After the conditional same-head/same-gaps theorem is complete, the current
+recommendation remains to prove the residue pipeline before the walk pipeline.
+The walk pipeline is closer to `next()` as written, but it is harder because it
+walks through `CycleSieveSequence.apply`, which already depends on the gap cycle.
 
 | Lemma | Mathematical statement | Why needed | Status |
 |---|---|---|---|
@@ -155,6 +156,37 @@ through `CycleSieveSequence.apply`, which already depends on the gap cycle.
    equals `V0.apply(k)` using `assertApplyEqualsHeadPlusGapSum` and gap periodicity.
 
 **Verification scope:** All V0-internal. No V2 references.
+
+### Phase 1.5: Conditional same-head/same-gaps equivalence (preferred next step)
+
+Before proving where the Cycle-side gaps come from, prove the simple conditional
+bridge:
+
+```
+if spec.head.value == cycle.head
+and spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle
+then spec.apply(k) == cycle.apply(k)
+```
+
+This is not a different proof strategy. It is the same equivalence chain split
+at the cleanest boundary: two streams with the same starting value and the same
+repeating gaps are the same stream. Proving this first is preferable because it
+isolates the easy final rewrite from the harder gap-construction proof.
+
+Expected proof shape:
+
+1. For `k == 0`, use the head equality and both `apply(0)` definitions.
+2. For `k > 0`, use
+   `SpecSieveSequence.assertSpecGapCycleIntegralMatchesApply(period, k)` to
+   rewrite Spec apply into `CycleIntegral(spec.head.value, specGapCycle(period).memCycle)(k - 1)`.
+3. Use `SpecCycleSieveEquivalence.assertCycleApplyPositiveIsIntegral(cycle, k)`
+   and `assertCycleIntegralUsesGapCycle(cycle)` to rewrite Cycle apply into
+   `CycleIntegral(cycle.head, cycle.gapCycle.memCycle)(k - 1)`.
+4. The assumed head equality and MemCycle equality make the two integral objects
+   identical.
+
+This gives a useful theorem even before the residue or walk pipeline is proven:
+all remaining work can focus on proving the gap equality precondition.
 
 ### Phase 2: V2 gap cycle extraction
 
@@ -174,8 +206,9 @@ Two sub-approaches, either may be chosen:
   exactly `isCoprime(value, filterValues)`, which is the same predicate the
   residue pipeline uses.
 
-**Recommendation:** Start with Option B. Defer the residue-pipeline-to-walk
-equivalence to a separate subticket.
+**Recommendation:** First prove Phase 1.5, the conditional same-head/same-gaps
+equivalence theorem. After that, start with Option B. Defer the
+residue-pipeline-to-walk equivalence to a separate subticket.
 
 ### Phase 3: Equivalence proof
 
@@ -228,23 +261,43 @@ then full-verified with `just verify` (7788 valid).
 The remaining Phase 1 proof is the general integral reconstruction theorem for
 all positions.
 
-### Work item 2: Phase 3 — V0 residue gap construction
+### Work item 2: Group E — Residue pipeline semantics
 
-Prove that the residue pipeline (Path A in `SieveSequenceNextLevel`) produces the
-same gap list for V2's primes as V0's `gapList(0, p)`.
+Prove that the residue pipeline (`nextResidues` → `nextExpanded` → `nextFiltered` → `nextSorted`)
+produces the same set of accepted values that Spec's next-stage survivor window would.
 
-**Key lemma needed:**
-```
-V0.gapList(0, p) == SieveSequenceNextLevel.nextRotatedGapsV2(v2Seq)
-```
-for corresponding prime lists.
+**Already proved (in `SieveUtils`):**
+- `assertResiduesAllCoprime` — every residue in [0, modulus) is coprime to primes.tail (soundness)
+- `assertResiduesComplete` — every value in [0, modulus) coprime to primes.tail appears (completeness)
+- `assertAllRExpandedCoprime` — for every residue r and 0 ≤ i < head, r + i*modulus is coprime to primes.tail
+- `assertExpandResiduesRange` — expanded set is non-negative and bounded by head * modulus
+- `assertFilterListNonNegative`, `assertFilterListAllLessThan` — filterList preserves range properties
 
-**Estimated complexity:** High. Requires:
-- Mapping V0's `filterValues` to V2's `primes.tail`.
-- Proving the residue set is the set of values coprime to the filter primes in `[0, modulus)`.
-- Proving the expanded + filtered set is the survivor set in `[head, head * modulus)`.
-- Proving `calculateGaps` on the sorted survivor set produces the same gaps as
-  `gapList(0, p)`.
+**Group E lemmas (4 required):**
+
+**E1: `assertResiduesAreExactlyCoprimeBelowModulus(modulus, filters, r)`**
+Statement: `r ∈ residues(modulus, primes.tail) ⇔ 0 ≤ r < modulus ∧ isCoprime(r, primes.tail)`
+Proof: Trivial wrapper combining `assertResiduesAllCoprime` (soundness) and `assertResiduesComplete` (completeness) into one bidirectional `.holds` lemma.
+
+**E2: `assertExpandedResiduesRepresentPeriod(seq, value)`**
+Statement: `value ∈ expandResidues(residues(seq.modulus, seq.primes.tail), seq.modulus, seq.head) ⇔ 0 ≤ value < seq.head * seq.modulus ∧ isCoprime(value, seq.primes.tail)`
+Proof:
+- Forward: Every value in the expanded set is coprime to primes.tail (already in `assertAllRExpandedCoprime`) and bounded by head * modulus (already in `assertExpandResiduesRange`).
+- Reverse: Given `0 ≤ v < head*modulus` and `isCoprime(v, primes.tail)`, decompose `r = v % modulus`, `i = Calc.div(v, modulus)`. Need to show `0 ≤ r < modulus`, `isCoprime(r, primes.tail)`, and `0 ≤ i < head`. The bounds follow from `Calc.mod` postcondition and `v < head*modulus`. Coprimality preservation of `v % modulus` with respect to `primes.tail` requires a small helper lemma: if `isCoprime(v, primes)` and `v = q*modulus + r`, then `isCoprime(r, primes)` — which follows from the fact that any divisor of `r` also divides `v` since `modulus` is a product of those primes.
+
+**E3: `assertNextFilteredMatchesSpecAccepted(spec, cycle, value)`**
+Statement: `value ∈ nextFiltered(seq) ⇔ 0 ≤ value < head * modulus ∧ isCoprime(value, head :: primes.tail)`
+Proof: Composes E2 with `filterList` semantics. `filterList(list, head)` removes values where `Calc.mod(v, head) == 0`. So the filtered set = `{v in expanded set | v % head ≠ 0}` = `{v in [0, head*modulus) | isCoprime(v, primes.tail) ∧ v % head ≠ 0}`. Since head is prime, `v % head ≠ 0` iff `isCoprime(v, List(head))`. The conjunction is exactly `isCoprime(v, head :: primes.tail)`.
+
+**E4: `assertNextSortedIsAcceptedWindow(spec, cycle)`**
+Statement: The sorted pipeline output (after sorting) represents the same survivor set as Spec's accepted values in one period `[head, head + head*modulus)`.
+Proof: Sorting does not change the set (only order). The Spec next stage's `accepts(v)` predicate is `v >= head ∧ isCoprime(v, head :: primes.tail)`. The sorted+filtered set contains all such values in `[0, head*modulus)`. The gap cycle `calculateGaps(sorted, head*modulus)` computes pairwise gaps with wrap-around by `head*modulus`, which matches the next stage's first period exactly. The shift from 0-based to head-based does not change the gap cycle (wrapping by `head*modulus` handles the offset).
+
+**Key technical challenges:**
+1. E2 reverse direction needs a lemma that `mod` preserves coprimality: `isCoprime(v, primes) ∧ v = q*modulus + r ⇒ isCoprime(r, primes)`. This is true because any divisor of `r` divides `v` (since `modulus` is the product of primes in `primes`).
+2. E2 also needs the identity `Calc.div(v, modulus) < head` when `v < head*modulus` — this follows from `Calc.div` being the floor of the division.
+
+**Estimated complexity:** Low-Medium. Mostly gluing existing `SieveUtils` lemmas together. The only new proof content is E2's reverse direction (coprimality preservation under `mod`).
 
 ### Work item 3: Phase 3 — Top-level equivalence
 
@@ -501,9 +554,45 @@ Added five lemmas to `SpecSieveSequence` completing Phase 1 of the equivalence p
 step lemma) marked as `Subsumed` — the full theorem covers the same ground
 more directly.
 
-**Next steps:** Phase 2 — residue pipeline lemmas (Group E in the lemma map).
-Proving that the residue pipeline in `SieveSequenceNextLevel` produces the same
-gap list as the filtered Spec survivor set.
+**Next steps:** Phase 1.5 — prove the conditional same-head/same-gaps
+equivalence theorem before entering the residue pipeline lemmas.
+
+### 2026-06-23 — Prefer conditional same-head/same-gaps theorem before Phase 2
+
+After reviewing the proof strategy, the preferred next checkpoint is now the
+conditional theorem:
+
+```
+spec.head.value == cycle.head
+spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle
+-----------------------------------------------------------
+spec.apply(k) == cycle.apply(k)
+```
+
+This does not replace the residue-pipeline work. It isolates the easy final
+rewrite and makes the remaining hard obligation explicit: prove the Cycle gap
+cycle equals the Spec gap cycle. Once this theorem is verified, Phase 2 and
+Phase 3 can focus only on discharging the gap equality precondition.
+
+### 2026-06-23 — Positive same-head/same-gaps apply equivalence verified
+
+Added
+`SpecCycleSieveEquivalence.assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps`.
+
+- **What it proves:** For `position > 0`, if
+  `spec.head.value == cycle.head` and
+  `spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle`, then
+  `spec(position) == cycle(position)`.
+- **Why it matters:** This verifies the positive-index half of the simplified
+  strategy: once both implementations have the same head and same repeated
+  gap memory, both positive apply values are reconstructed by the same
+  `CycleIntegral`.
+- **Validation:** Focus-verified with
+  `just verify assertSpecCycleApplyPositiveMatchesFromSameHeadAndGaps`
+  (16 valid, 0 invalid, 0 unknown), then full-verified with `just verify`
+  (7959 valid, 0 invalid, 0 unknown).
+- **Next step:** Add the all-index wrapper that combines this lemma with the
+  existing `k == 0` base bridge.
 
 
 
