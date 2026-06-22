@@ -129,12 +129,29 @@ The ordering above follows the project lessons:
 - `SieveSequenceV0.nextMergedGapOldIndex(nextSeq, k, period)` is the verified
   one-step old-index transformer. It returns an index strictly after `k` whose
   old-stream value is accepted by `nextSeq`, choosing either the copied
-  successor or the first bounded merge survivor.
+  successor or the first bounded merge survivor. As of commit `8f6091d`, its
+  postcondition was strengthened to also export `accepts(apply(res))` and
+  `Calc.mod(apply(res), nextSeq.filterValues.head) != 0`. This strengthening is
+  the missing piece that makes prefix positivity directly provable: every
+  emitted `sumGap(k, nextK)` now has `nextK > k` guaranteed in the postcondition,
+  so positivity follows from `apply`'s strict monotonicity.
 - `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)` builds a
   bounded prefix of copied-or-merged gaps by repeatedly using
   `nextMergedGapOldIndex` and emitting `sumGap(k, nextK)`. Its recursion
   decreases on the requested output count `remaining`, not on the number of old
   indices consumed.
+- `SieveSequenceV0.assertSumGapPositive(from, until)` proves the private
+  positivity fact `sumGap(from, until) > 0` whenever `until > from`, by
+  inducting on `until - from` and using `applyStrictlyIncreases(from)` for each
+  summand. It is the positivity companion to `assertSumGapTelescopes` and the
+  single-step foundation for prefix-level positivity. Private `.holds`.
+- `SieveSequenceV0.assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`
+  lifts positivity to the whole emitted prefix: every gap in
+  `mergedGapPrefix(nextSeq, k, remaining, period)` is strictly positive. The
+  induction decreases on `remaining`; the cons step combines the single-step
+  `assertSumGapPositive` (head) with the inductive hypothesis (tail) and makes
+  the head/tail split explicit via `ListBoundUtils.assertGreaterThanHeadTail`.
+  Public `.holds`.
 - `SieveSequenceV0.next` now has an explicit `List.head`-style precondition:
   `primes.nextPrime.value < head.value * head.value`.
 
@@ -187,11 +204,62 @@ The ordering above follows the project lessons:
   bounded prefix transformer. It emits `sumGap(k, nextK)` for each copied or
   merged step and terminates by decreasing `remaining`. Verification passed:
   `total: 7478 valid: 7478 invalid: 0 unknown: 0`.
+- 2026-06-22 (commit `8f6091d`, "nextMergedGapOldIndex improved"): Strengthened
+  the postcondition of `nextMergedGapOldIndex` to export three facts instead of
+  one: `accepts(apply(res))`, `Calc.mod(apply(res), nextSeq.filterValues.head)
+  != 0`, and `nextSeq.accepts(apply(res))`, all in addition to `res > k`. The
+  prior postcondition only exported `res > k && nextSeq.accepts(apply(res))`,
+  which was insufficient for prefix positivity because callers could not reuse
+  the bridge-shape invariant. Verification passed:
+  `total: 7488 valid: 7488 (7468 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  This is the source of the 7478 → 7488 valid-count jump not previously logged.
+  Lesson: when a prefix transformer will consume a one-step transformer's
+  invariant, the invariant must appear in the one-step transformer's
+  postcondition, not just in its internal assertions (consistent with
+  LEARNINGS.md 1.2 on `.ensuring` propagation).
+- 2026-06-22: Evaluated the ticket against the current code, OBJECTS.md, and
+  LEARNINGS.md. All 11 claimed lemmas are present in `SieveSequenceV0.scala`
+  (lines 999–1801) and reflected in OBJECTS.md (lines 897–944). The complexity
+  ladder and its rationale are consistent with LEARNINGS.md sections 1, 7, 18.
+  The conditional next-prime bridge (#10) is explicitly out of scope for this
+  session because it is the "prime between p and p²" wall tracked separately
+  in `prove-apply1-is-prime.md` and `conditional-nextprime-gap-cycle-bridge.md`
+  (LEARNINGS.md 10.1, 18.1).
+- 2026-06-22: Added `assertSumGapPositive(from, until)`, the positivity
+  companion to `assertSumGapTelescopes`. It proves `sumGap(from, until) > 0`
+  whenever `until > from` by inducting on `until - from` and using
+  `applyStrictlyIncreases(from)` for each summand. This is the foundation for
+  proving every emitted gap in `mergedGapPrefix` is positive, since
+  `nextMergedGapOldIndex`'s strengthened postcondition guarantees `nextK > k`.
+  Verification passed:
+  `total: 7503 valid: 7503 (7469 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  +15 valid VCs over the previous run (7488).
+- 2026-06-22: Added `assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)`,
+  the list-level positivity lift. Each emitted gap is `sumGap(k, nextOldIndex)`
+  with `nextOldIndex > k`, so each is positive by `assertSumGapPositive`; by
+  induction on `remaining`, the entire emitted prefix satisfies
+  `allGreaterThan(_, 0)`. The cons step makes the head/tail split explicit via
+  `ListBoundUtils.assertGreaterThanHeadTail` (head from the single-step lemma,
+  tail from the inductive hypothesis). Marked **public** because it is a
+  caller-facing property that a future gap-cycle proof will consume.
+  Verification passed:
+  `total: 7555 valid: 7555 (7491 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  +52 valid VCs over the previous run (7503). Open Work item #1 (positivity)
+  is now complete.
 
 ## Open Work
 
-1. Prove the generated prefix is positive and non-empty.
+1. ~~Prove the generated prefix is positive and non-empty.~~ **Done.**
+   - `assertSumGapPositive(from, until)` (private) proves the single-step case.
+   - `assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)` (public)
+     lifts it to the entire emitted prefix.
+   - Non-emptiness is implicit: when `remaining > 0`, the prefix has exactly
+     `remaining` elements by `mergedGapPrefix`'s recursion shape.
 2. Prove prefix equality against the next sequence's first generated values.
+   Two equivalent shapes to prove: (a) the prefix list equals the gaps of
+   `nextSeq` at positions `[indexOfAccepted(apply(k)) + 1 .. + remaining]`,
+   and (b) the prefix's partial sums reconstruct `nextSeq.apply` at those
+   positions. Both will be addressed.
 3. Only after the prefix theorem is green, lift it to a gap-cycle statement.
 
 ## Related Historical Tickets

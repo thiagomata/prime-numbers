@@ -1039,6 +1039,36 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  /**
+   * Proves `sumGap(from, until) > 0` whenever `until > from`.
+   *
+   * This is the positivity companion to `assertSumGapTelescopes`. Each
+   * summand `apply(i + 1) - apply(i)` is strictly positive by
+   * `applyStrictlyIncreases`, so the finite telescoped sum is positive as
+   * long as the range is non-empty. The induction decreases on
+   * `until - from` and explicitly invokes the inductive hypothesis via
+   * `assert`, consistent with LEARNINGS.md 2.2.
+   *
+   * The merged-gap prefix transformer (`mergedGapPrefix`) emits
+   * `sumGap(k, nextK)` for each copied or merged step, where
+   * `nextMergedGapOldIndex` guarantees `nextK > k`. This lemma turns that
+   * index inequality into gap positivity, which is the foundation for
+   * proving every emitted prefix gap is positive.
+   */
+  private def assertSumGapPositive(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until > from)
+    decreases(until - from)
+    if (from + BigInt(1) == until) {
+      assert(applyStrictlyIncreases(from))
+      sumGap(from, until) > BigInt(0)
+    } else {
+      assert(assertSumGapPositive(from + BigInt(1), until))
+      assert(applyStrictlyIncreases(from))
+      sumGap(from, until) > BigInt(0)
+    }
+  }.holds
+
   def assertGapSum(p: BigInt): Boolean = {
     require(p >= BigInt(0))
     require(apply(p) == head.value + filterModulus)
@@ -1799,6 +1829,52 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
       sumGap(k, nextK) :: mergedGapPrefix(nextSeq, nextK, remaining - BigInt(1), period)
     }
   }
+
+  /**
+   * Proves every gap emitted by `mergedGapPrefix` is strictly positive.
+   *
+   * This is the list-level lift of `assertSumGapPositive`. Each emitted gap is
+   * `sumGap(currentOldIndex, nextOldIndex)`, where `nextMergedGapOldIndex`
+   * guarantees `nextOldIndex > currentOldIndex`. By `assertSumGapPositive`,
+   * that single gap is strictly positive, and by induction on `remaining`,
+   * the entire emitted list satisfies `allGreaterThan(_, 0)`.
+   *
+   * The inductive step makes the head/tail split explicit via
+   * `ListBoundUtils.assertGreaterThanHeadTail`, so the solver sees both the
+   * head positivity (from the single-step lemma) and the tail positivity
+   * (from the inductive hypothesis) as separate facts before being asked to
+   * combine them.
+   */
+  def assertMergedGapPrefixAllPositive(
+    nextSeq: SieveSequenceV0,
+    k: BigInt,
+    remaining: BigInt,
+    period: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(remaining >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    decreases(remaining)
+
+    val prefix = mergedGapPrefix(nextSeq, k, remaining, period)
+    if (remaining == BigInt(0)) {
+      ListBoundUtils.allGreaterThan(prefix, BigInt(0))
+    } else {
+      val nextOldIndex = nextMergedGapOldIndex(nextSeq, k, period)
+      val tailPrefix = mergedGapPrefix(nextSeq, nextOldIndex, remaining - BigInt(1), period)
+
+      assert(assertSumGapPositive(k, nextOldIndex))
+      assert(assertMergedGapPrefixAllPositive(nextSeq, nextOldIndex, remaining - BigInt(1), period))
+      assert(ListBoundUtils.assertGreaterThanHeadTail(prefix, BigInt(0)))
+      ListBoundUtils.allGreaterThan(prefix, BigInt(0))
+    }
+  }.holds
 
   // P4 (assertPeriodEqualsResidueCount) SKIPPED
   // The property p == residues(M, filterValues).size is true by interval periodicity:
