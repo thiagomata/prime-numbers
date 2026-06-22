@@ -53,23 +53,42 @@ is:
      equality with `sumGap` telescoping.
    - Status: verified as
      `SieveSequenceV0.assertMergeGapEqualsOldGapSum(nextSeq, k, period)`.
-7. Prefix lift:
+7. Public apply-to-gap-sum bridge:
+   - `apply(k) == head.value + sumGap(0, k)` for all `k >= 0`.
+   - Estimated complexity: low. One-line wrapper over private
+     `assertSumGapTelescopes(0, k)`, which already proves
+     `sumGap(0, k) == apply(k) - apply(0)`.
+   - This is the entry point for expressing V0.apply as a CycleIntegral
+     (needed by the V0-V2 matching ticket).
+   - Status: not yet added. Planned as
+     `SieveSequenceV0.assertApplyEqualsHeadPlusGapSum(k)`.
+8. Gap list extraction:
+   - `gapList(from, count)` returns `[gap(from), ..., gap(from+count-1)]` as
+     a concrete `List[BigInt]`.
+   - Lemmas: all gaps in the result are positive (`allGreaterThan(_, 0)`),
+     result size equals `count`.
+   - Estimated complexity: low. Direct recursion using `apply`, with
+     positivity lemmas via `assertSumGapPositive`.
+   - This makes the gap cycle explicitly constructable for items 9-11 below
+     and for the V0-V2 matching ticket.
+   - Status: not yet added.
+9. Prefix lift (was item 7):
    - repeat copy/merge across a bounded prefix of old generated values.
    - Estimated complexity: high. This introduces a recursive list-building
      proof and accounting for consumed old indices.
    - Status: prefix transformer verified as
      `SieveSequenceV0.mergedGapPrefix(nextSeq, k, remaining, period)`;
      prefix positivity/equality proofs remain open.
-8. Gap-list cyclicity:
+10. Gap-list cyclicity (was item 8):
    - prove the finite gap list repeats as a cycle, so later gaps are found by
      cycling through the same bounded list.
    - Estimated complexity: high. This bridges finite gap-list equality to
      cycle access and repeated positions.
-9. Cycle lift:
+11. Cycle lift (was item 9):
    - prove the bounded prefix corresponds to one rotated gap cycle.
    - Estimated complexity: very high. This combines prefix equality,
      positivity, non-emptiness, rotation, and cycle construction.
-10. Conditional next-prime bridge:
+12. Conditional next-prime bridge (was item 10):
    - when the next head alignment is available, connect the gap-list theorem to
      `SieveSequenceV0.next`.
    - Estimated complexity: very high. This depends on the separate conditional
@@ -154,6 +173,17 @@ The ordering above follows the project lessons:
   Public `.holds`.
 - `SieveSequenceV0.next` now has an explicit `List.head`-style precondition:
   `primes.nextPrime.value < head.value * head.value`.
+- `SieveSequenceV0.assertApplyEqualsHeadPlusGapSum(k)` (new item 7) proves
+  `apply(k) == head.value + sumGap(0, k)` for all k >= 0. Trivial wrapper over
+  private `assertSumGapTelescopes(0, k)`. Verified: 7562 valid (+7).
+- `SieveSequenceV0.gapList(from, count)` (new item 8) extracts a concrete
+  `List[BigInt]` of gaps from position `from` to `from+count-1`. Structural
+  recursion on `count`. Verified: 7568 valid (+6).
+- `SieveSequenceV0.assertGapListPositive(from, count)` proves every element in
+  the gap list is strictly positive. Induction on `count`, uses `assertGapPositive`
+  for each element. Verified: 7579 valid (+11).
+- `SieveSequenceV0.assertGapListSize(from, count)` proves the gap list size
+  equals the requested count. Verified: 7590 valid (+11).
 
 ## Progress Log
 
@@ -246,6 +276,29 @@ The ordering above follows the project lessons:
   `total: 7555 valid: 7555 (7491 from cache, 20 trivial) invalid: 0 unknown: 0`.
   +52 valid VCs over the previous run (7503). Open Work item #1 (positivity)
   is now complete.
+- 2026-06-22: Added `assertApplyEqualsHeadPlusGapSum(k)` (ladder item 7), a
+  public lemma proving `apply(k) == head.value + sumGap(0, k)` for all k >= 0.
+  This is a trivial wrapper over private `assertSumGapTelescopes(0, k)` and is
+  the entry point for the V0-V2 bridge ticket to express V0.apply as a
+  CycleIntegral. Verification passed:
+  `total: 7562 valid: 7562 (7535 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  +7 VCs over the previous run (7555).
+- 2026-06-22: Added `gapList(from, count)` (ladder item 8), extracting a concrete
+  `List[BigInt]` of gaps from the V0 sequence. Followed by `assertGapListPositive`
+  (proves all gaps > 0) and `assertGapListSize` (proves result.size == count).
+  These make the gap cycle explicitly constructable for the cyclicity proofs and
+  the V0-V2 bridge. Verification passed:
+  `total: 7590 valid: 7590 (7561 from cache, 20 trivial) invalid: 0 unknown: 0`.
+  +28 VCs over the previous run (7562). Open Work items #4 and #5 are now complete.
+
+## Downstream Dependency
+
+This ticket is a prerequisite for:
+- `v0-v2-apply-equivalence.md` — proves `SieveSequenceV0.apply(k) == SieveSequenceV2.apply(k)`.
+
+Items 7-8 (the public apply-to-gap-sum lemma and gap list extraction) were identified
+as missing during a cross-ticket audit. They are the entry points the bridge ticket
+consumes from V0.
 
 ## Open Work
 
@@ -261,6 +314,27 @@ The ordering above follows the project lessons:
    and (b) the prefix's partial sums reconstruct `nextSeq.apply` at those
    positions. Both will be addressed.
 3. Only after the prefix theorem is green, lift it to a gap-cycle statement.
+4. ~~**Add `assertApplyEqualsHeadPlusGapSum(k)`** (ladder item 7).~~ **Done.**
+   - Public `.holds` lemma: `apply(k) == head.value + sumGap(0, k)` for k >= 0.
+   - Trivial: delegates to private `assertSumGapTelescopes(0, k)`.
+   - Verified with 7562 valid (+7 from 7555).
+5. ~~**Add `gapList(from, count)` and positivity/size lemmas** (ladder item 8).~~ **Done.**
+   - `gapList(from, count)` returns `List[BigInt] = [gap(from), ..., gap(from+count-1)]`.
+   - `assertGapListPositive(from, count)`: `allGreaterThan(result, 0)`, verified 7579.
+   - `assertGapListSize(from, count)`: `result.size == count`, verified 7590.
+6. After items 2-5 are green, the V0-V2 bridge ticket can consume the results.
+   Once the gap cycle is fully formalized within V0 (items 2-5, 9-12), open a
+   ticket for any remaining V0 properties the bridge needs.
+
+## Complexity Rationale Addendum
+
+Items 7-8 are placed before the complex prefix/cycle work (items 9-11) because:
+- `assertApplyEqualsHeadPlusGapSum` is a trivial one-line wrapper that unblocks
+  the downstream V0-V2 matching ticket.
+- `gapList` is simple structural recursion; its VCs are small and independent of
+  the merge/copy prefix proof.
+- Both provide explicit foundations that the cyclicity proofs (items 10-11)
+  should consume rather than re-deriving.
 
 ## Related Historical Tickets
 

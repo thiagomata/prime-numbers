@@ -944,6 +944,10 @@ The core lemmas for proving that when a new filter prime removes the immediate n
 | **nextMergedGapOldIndex(nextSeq, k, period)** | Returns an old index `res > k` such that `nextSeq.accepts(apply(res))`, choosing `k+1` for the copy case or the first bounded survivor for the merge case | Public one-step index transformer for prefix construction. Preserves the recursive invariant that the returned old-stream value appears in the next sequence. Verified with 7445 valid. |
 | **mergedGapPrefix(nextSeq, k, remaining, period)** | Builds `remaining` copied-or-merged gaps by repeatedly advancing through old indices and emitting `sumGap(k, nextK)` | Public bounded prefix transformer. Termination decreases on `remaining`, while skipped old indices are handled by `nextMergedGapOldIndex`. Verified with 7478 valid. |
 | **assertMergedGapPrefixAllPositive(nextSeq, k, remaining, period)** | `allGreaterThan(mergedGapPrefix(nextSeq, k, remaining, period), 0)` | Public `.holds`. List-level positivity lift. Cons step combines single-step `assertSumGapPositive` (head) with inductive hypothesis (tail), making the head/tail split explicit via `ListBoundUtils.assertGreaterThanHeadTail`. Verified with 7555 valid. |
+| **assertApplyEqualsHeadPlusGapSum(k)** | `apply(k) == head.value + sumGap(0, k)` for k >= 0 | Public `.holds`. Entry point for expressing V0.apply as a CycleIntegral. Wraps private `assertSumGapTelescopes(0, k)`. Verified with 7562 valid. |
+| **gapList(from, count)** | Returns `List[BigInt] = [gap(from), ..., gap(from+count-1)]` | Public function. Structural recursion on `count`. Verified with 7568 valid. |
+| **assertGapListPositive(from, count)** | `allGreaterThan(gapList(from, count), 0)` | Public `.holds`. Induction on `count`, uses `assertGapPositive` for each element. Verified with 7579 valid. |
+| **assertGapListSize(from, count)** | `gapList(from, count).size == count` | Public `.holds`. Induction on `count`. Verified with 7590 valid. |
 
 ### Filter Membership Lemmas
 

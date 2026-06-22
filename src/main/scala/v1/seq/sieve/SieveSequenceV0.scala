@@ -1078,6 +1078,45 @@ case class SieveSequenceV0(primes: AllPrimesSoFarList) {
     sumGap(BigInt(0), p) == filterModulus
   }.holds
 
+  def assertApplyEqualsHeadPlusGapSum(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    assert(assertSumGapTelescopes(BigInt(0), k))
+    apply(k) == head.value + sumGap(BigInt(0), k)
+  }.holds
+
+  def gapList(from: BigInt, count: BigInt): List[BigInt] = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+    if (count == BigInt(0)) List.empty[BigInt]
+    else (apply(from + BigInt(1)) - apply(from)) :: gapList(from + BigInt(1), count - BigInt(1))
+  }
+
+  def assertGapListPositive(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+    if (count == BigInt(0)) {
+      ListBoundUtils.allGreaterThan(List.empty[BigInt], BigInt(0))
+    } else {
+      assert(assertGapPositive(from))
+      assert(assertGapListPositive(from + BigInt(1), count - BigInt(1)))
+      ListBoundUtils.allGreaterThan(gapList(from, count), BigInt(0))
+    }
+  }.holds
+
+  def assertGapListSize(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+    if (count == BigInt(0)) {
+      gapList(from, count).size == BigInt(0)
+    } else {
+      assert(assertGapListSize(from + BigInt(1), count - BigInt(1)))
+      gapList(from, count).size == count
+    }
+  }.holds
+
   def assertFilterPreservesNextPosition(
     nextSeq: SieveSequenceV0,
     k: BigInt
