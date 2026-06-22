@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
   )
 
 
- libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
 
 //unmanagedResources in Compile := (unmanagedResources in Compile).value.filterNot {
 //  _.getPath.contains("stainless-library_3-0.9.8.9-SNAPSHOT-sources/META-INF/MANIFEST.MF")

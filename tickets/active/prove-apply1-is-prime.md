@@ -115,3 +115,44 @@ For the V0 construction, we don't have a Jacobsthal bound either. This makes a f
 - Bertrand's postulate or Jacobsthal function may need to be assumed as axioms
 - Stainless SMT solver may time out on the required induction
 - The proof may require deep number theory (prime gaps) beyond what SMT can handle
+
+## Attempted Code (archived from `SieveSequenceV0.scala`)
+
+The following code was attempted in `SieveSequenceV0` but never verified due to the
+`apply(1) < head.value * head.value` precondition not being universally dischargeable.
+It is preserved here as a starting point:
+
+```scala
+//  /**
+//   * Proves that `apply(1)` is prime when it lies below `head * head`.
+//   *
+//   * If `apply(1)` were composite its smallest prime divisor `d` would satisfy
+//   * `d*d <= apply(1) < head*head`, so `d < head`. By the prime list completeness
+//   * `d` is in `filterValues`, and `Calc.mod(apply(1), d) == 0` contradicts
+//   * `accepts(apply(1))`. Therefore `apply(1)` must be prime.
+//   */
+//  def assertApplyOneIsPrimeIfBelowHeadSq(): Boolean = {
+//    require(apply(BigInt(1)) < head.value * head.value)
+//
+//    // TODO: apply(1) < head² needs to be proved or discharged by a stronger lemma.
+//    // apply(1) transits through searchBound(1) = head + filterModulus.
+//    // Currently no lemma proves this is always < head².
+//
+//    val n = apply(BigInt(1))
+//
+//    // n is accepted — coprime with all filter primes
+//    assert(accepts(n))
+//
+//    // By the filter completeness property, every prime < head is in filterValues
+//    // (requires explicit enumeration lemma proving the prime list is complete).
+//    // If n is composite, its smallest prime factor d divides n and d < n < head²,
+//    // so d < head. Therefore d is in filterValues, and since accepts(n) gives
+//    // mod(n, d) != 0, this is a contradiction.
+//
+//    PrimeUtils.isPrime(n)
+//  }.holds
+```
+
+The two assistants `assertFilterValuesContains` and `assertFilterValuesContainsInTail`
+still exist in `SieveSequenceV0.scala` as private lemmas supporting the completeness
+enumeration. They may be reusable when the precondition is discharged.

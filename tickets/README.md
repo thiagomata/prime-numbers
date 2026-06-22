@@ -21,9 +21,8 @@ verification logs, failed attempts, or completed implementation notes.
 - `archived/` — historical notes, article reviews, summaries, and stale planning
   records that should not drive new implementation work.
 
-## Current Canonical Gap Ticket
+## Completed Canonical Gap Ticket
 
-Use `active/v0-gap-list-cycle-formalization.md` for V0 gap-list and gap-cycle
-formalization work.
-
+V0 gap-list and gap-cycle formalization was completed in
+`done/v0-gap-list-cycle-formalization.md` (7755 valid, all open work resolved).
 Older gap tickets remain in `superseded/` for proof logs and breadcrumbs.

@@ -27,7 +27,13 @@ build:
     sbt clean reload assembly jacoco
 
 test:
-    sbt 'set stainlessEnabled := false' test
+    sbt 'set stainlessEnabled := false' 'testOnly * -- -l v1.tags.SlowLemmaTest' 2>&1 | tee test.log
+
+test-all:
+    sbt 'set stainlessEnabled := false' test 2>&1 | tee test-all.log
+
+test-slow:
+    sbt 'set stainlessEnabled := false' 'testOnly v1.seq.sieve.SieveSequenceV0Test -- -n v1.tags.SlowLemmaTest' 2>&1 | tee test-slow.log
 
 run a b:
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}}
