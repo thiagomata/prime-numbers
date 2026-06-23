@@ -720,4 +720,86 @@ object SpecCycleSieveEquivalence {
 
     expanded.contains(value)
   }.holds
+
+  /**
+   * Forward membership for filterList: if `value ∈ list` and `value % divisor != 0`,
+   * then `value ∈ filterList(list, divisor)`.
+   */
+  private def assertFilterListContainsIf(
+    list: stainless.collection.List[BigInt],
+    value: BigInt,
+    divisor: BigInt
+  ): Boolean = {
+    require(divisor > BigInt(0))
+    require(list.contains(value))
+    require(Calc.mod(value, divisor) != BigInt(0))
+    decreases(list.size)
+    if (list.isEmpty) {
+      false
+    } else if (list.head == value) {
+      SieveUtils.filterList(list, divisor).contains(value)
+    } else {
+      assert(list.tail.contains(value))
+      assert(assertFilterListContainsIf(list.tail, value, divisor))
+      SieveUtils.filterList(list, divisor).contains(value)
+    }
+  }.holds
+
+  /**
+   * Reverse membership for filterList: if `value ∈ filterList(list, divisor)`,
+   * then `value ∈ list` and `value % divisor != 0`.
+   */
+  private def assertFilterListContainsOnlyIf(
+    list: stainless.collection.List[BigInt],
+    value: BigInt,
+    divisor: BigInt
+  ): Boolean = {
+    require(divisor > BigInt(0))
+    require(SieveUtils.filterList(list, divisor).contains(value))
+    decreases(list.size)
+    if (list.isEmpty) {
+      false
+    } else {
+      val rest = SieveUtils.filterList(list.tail, divisor)
+      if (Calc.mod(list.head, divisor) != BigInt(0)) {
+        if (list.head == value) {
+          Calc.mod(value, divisor) != BigInt(0) && list.contains(value)
+        } else {
+          assert(rest.contains(value))
+          assert(assertFilterListContainsOnlyIf(list.tail, value, divisor))
+          Calc.mod(value, divisor) != BigInt(0) && list.contains(value)
+        }
+      } else {
+        assert(rest.contains(value))
+        assert(assertFilterListContainsOnlyIf(list.tail, value, divisor))
+        Calc.mod(value, divisor) != BigInt(0) && list.contains(value)
+      }
+    }
+  }.holds
+
+  /**
+   * Reverse direction for nextFiltered: if `value` is in `[0, head*modulus)`
+   * and coprime to `head :: primes.tail`, then `value ∈ nextFiltered(seq)`.
+   *
+   * Uses E2 to get `value ∈ nextExpanded(seq)`, then `assertFilterListContainsIf`
+   * to propagate through `filterList`.
+   */
+  def assertNextFilteredContainsCoprime(
+    seq: CycleSieveSequence,
+    value: BigInt
+  ): Boolean = {
+    require(value >= BigInt(0))
+    require(value < seq.head * seq.modulus)
+    require(SieveUtils.isCoprime(value, seq.head :: seq.primes.tail))
+
+    val expanded = SieveSequenceNextLevel.nextExpanded(seq)
+
+    assert(assertExpandedResiduesRepresentPeriod(seq, value))
+    assert(expanded.contains(value))
+    assert(Calc.mod(value, seq.head) != BigInt(0))
+    assert(assertFilterListContainsIf(expanded, value, seq.head))
+
+    SieveSequenceNextLevel.nextFiltered(seq).contains(value)
+  }.holds
+
 }
