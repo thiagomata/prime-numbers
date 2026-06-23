@@ -3,7 +3,7 @@ package v1.chapter6.seq.sieve
 import stainless.lang.*
 import v1.chapter2.div.{Calc, DivMod}
 import v1.chapter2.div.properties.{ModIdempotence, ModOperations}
-import v1.chapter3.list.ListUtils
+import v1.chapter3.list.{ListBoundUtils, ListUtils, SortedList}
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter5.prime.PrimeUtils
@@ -163,6 +163,24 @@ object SpecCycleSieveEquivalence {
   }.holds
 
   /**
+   * Proves two cycles with the same head and gap cycle produce the same values.
+   *
+   * `apply(k)` is a deterministic function of `(head, gapCycle.memCycle)`.
+   * Two cycles sharing both produce identical sequences at every position.
+   */
+  def assertCycleApplyMatchesFromSameHeadAndGaps(
+    cycle1: CycleSieveSequence,
+    cycle2: CycleSieveSequence,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+    require(cycle1.head == cycle2.head)
+    require(cycle1.gapCycle.memCycle == cycle2.gapCycle.memCycle)
+
+    cycle1(position) == cycle2(position)
+  }.holds
+
+  /**
    * Exposes the raw-prime shape of `SpecSieveSequence.next`.
    *
    * The Spec next stage is built by prepending `spec.primes.nextPrime` to the
@@ -269,6 +287,75 @@ object SpecCycleSieveEquivalence {
     )
 
     nextSpec(position) == nextCycle(position)
+  }.holds
+
+  /**
+   * Proves the current Cycle `apply(1)` equals the next Spec stage head.
+   *
+   * Under the current-stage equivalence assumptions (same head, same gap cycle)
+   * and the Spec next precondition, the Cycle-side first generated value equals
+   * the Spec-side next head. This is item 1 of the "Work On These Next" list.
+   */
+  def assertCurrentApplyOneEqualsSpecNextHead(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    period: BigInt
+  ): Boolean = {
+    require(period > BigInt(0))
+    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec.head.value == cycle.head)
+    require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+
+    assert(assertSpecCycleApplyMatchesFromSameHeadAndGaps(spec, cycle, period, BigInt(1)))
+    assert(spec(BigInt(1)) == cycle(BigInt(1)))
+
+    assert(spec.assertApplyOneEqualsNextPrime())
+    assert(spec(BigInt(1)) == spec.next.head.value)
+
+    cycle(BigInt(1)) == spec.next.head.value
+  }.holds
+
+  /**
+   * Proves the next-stage acceptance predicate matches cycle-side coprimality.
+   *
+   * The next Spec stage filters by the current stage's full prime list (the
+   * current primes minus the new head, which is `cycle.primes` on the cycle
+   * side). Under the prime-list correspondence and the next() precondition:
+   *
+   * spec.next.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)
+   *
+   * This is item 2 of the "Work On These Next" list.
+   */
+  def assertNextAcceptsMatchesCyclePrimesCoprime(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    value: BigInt
+  ): Boolean = {
+    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+    require(value >= spec.next.head.value)
+
+    assert(spec.primes.list.list.nonEmpty)
+    assert(spec.next.primes.list.tail.list == spec.primes.list.list)
+    assert(spec.next.filterPrimes == spec.next.primes.list.tail.list)
+    assert(spec.next.filterValues == PrimeUtils.primeValues(spec.next.filterPrimes))
+    assert(spec.next.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
+    assert(spec.next.filterValues == cycle.primes)
+    assert(spec.next.accepts(value) == SieveUtils.isCoprime(value, spec.next.filterValues))
+
+    spec.next.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)
+  }.holds
+
+  /**
+   * Proves the walked gap list contains only positive values.
+   *
+   * This uses the `.ensuring` postcondition of `nextGapsWalk`, which
+   * delegates to `collectGaps`'s `.ensuring`.
+   */
+  def assertWalkGapsAllPositive(cycle: CycleSieveSequence): Boolean = {
+    val walkedGaps = SieveSequenceNextLevel.nextGapsWalk(cycle)
+    ListBoundUtils.allGreaterThan(walkedGaps, BigInt(0))
   }.holds
 
   /**
@@ -529,6 +616,153 @@ object SpecCycleSieveEquivalence {
 
     assert(assertModPreservesCoprimeRec(v, modulus, BigInt(1), primes))
     SieveUtils.isCoprime(r, primes)
+  }.holds
+
+  /**
+   * Exposes expanded-value coprimality as a reusable postcondition.
+   *
+   * If `r` is coprime to every remaining prime and `modulus` is a positive
+   * multiple of each of those primes, then adding `i * modulus` cannot make the
+   * value divisible by any remaining prime. The `prefixProd` parameter carries
+   * the product of primes already consumed by the recursion, matching the shape
+   * used by `SieveUtils.assertExpandedCoprimeViaPrefix`.
+   */
+  private def assertExpandedValueCoprimeViaPrefix(
+    r: BigInt,
+    i: BigInt,
+    modulus: BigInt,
+    primes: stainless.collection.List[BigInt],
+    prefixProd: BigInt
+  ): Boolean = {
+    require(i >= BigInt(0))
+    require(modulus > BigInt(0))
+    require(prefixProd > BigInt(0))
+    require(ListUtils.checkAllPositive(primes))
+    require(modulus == prefixProd * SieveUtils.product(primes))
+    require(SieveUtils.isCoprime(r, primes))
+    decreases(primes.size)
+
+    val expanded = r + i * modulus
+
+    if (primes.isEmpty) {
+      SieveUtils.isCoprime(expanded, primes)
+    } else {
+      val p = primes.head
+      val factor = prefixProd * SieveUtils.product(primes.tail)
+      assert(SieveUtils.assertProductNonNegative(primes.tail))
+      assert(SieveUtils.product(primes.tail) >= BigInt(0))
+      assert(factor >= BigInt(0))
+      assert(SieveUtils.assertMultipleModZero(factor, p))
+      assert(Calc.mod(modulus, p) == BigInt(0))
+      assert(SieveUtils.assertIsCoprimeForAll(r, primes))
+      assert(Calc.mod(r, p) != BigInt(0))
+      assert(SieveUtils.assertMultiplePreservesDivisible(i, modulus, p))
+      assert(Calc.mod(i * modulus, p) == BigInt(0))
+      assert(SieveUtils.assertAddPreservesNotZeroMod(r, p, i * modulus))
+      assert(Calc.mod(expanded, p) != BigInt(0))
+      assert(
+        assertExpandedValueCoprimeViaPrefix(
+          r,
+          i,
+          modulus,
+          primes.tail,
+          prefixProd * p
+        )
+      )
+
+      SieveUtils.isCoprime(expanded, primes)
+    }
+  }.holds
+
+  /**
+   * Natural-shape wrapper for expanded-value coprimality.
+   *
+   * This is the caller-facing form of `assertExpandedValueCoprimeViaPrefix`:
+   * when `modulus` is exactly the product of the prime filter list, every
+   * expanded value `r + i * modulus` preserves coprimality with that list.
+   */
+  private def assertExpandedValueCoprime(
+    r: BigInt,
+    i: BigInt,
+    modulus: BigInt,
+    primes: stainless.collection.List[BigInt]
+  ): Boolean = {
+    require(i >= BigInt(0))
+    require(modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(primes))
+    require(modulus == SieveUtils.product(primes))
+    require(SieveUtils.isCoprime(r, primes))
+
+    assert(assertExpandedValueCoprimeViaPrefix(r, i, modulus, primes, BigInt(1)))
+    SieveUtils.isCoprime(r + i * modulus, primes)
+  }.holds
+
+  /**
+   * Proves soundness for one generated residue offset block.
+   *
+   * `generateResidues(from, modulus, primes)` only keeps residues that are
+   * coprime to `primes`. After adding `i * modulus` to every kept residue, each
+   * resulting value is still coprime to `primes` by
+   * `assertExpandedValueCoprime`.
+   */
+  private def assertGeneratedOffsetContainsOnlyCoprime(
+    modulus: BigInt,
+    primes: stainless.collection.List[BigInt],
+    value: BigInt,
+    from: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(from >= BigInt(0))
+    require(from <= modulus)
+    require(i >= BigInt(0))
+    require(modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(primes))
+    require(modulus == SieveUtils.product(primes))
+    require(
+      SieveUtils.addOffset(
+        SieveUtils.generateResidues(from, modulus, primes),
+        i * modulus
+      ).contains(value)
+    )
+    decreases(modulus - from)
+
+    val offset = i * modulus
+
+    if (from == modulus) {
+      false
+    } else {
+      val rest = SieveUtils.generateResidues(from + BigInt(1), modulus, primes)
+      if (SieveUtils.isCoprime(from, primes)) {
+        if (value == from + offset) {
+          assert(assertExpandedValueCoprime(from, i, modulus, primes))
+          SieveUtils.isCoprime(value, primes)
+        } else {
+          assert(SieveUtils.addOffset(rest, offset).contains(value))
+          assert(
+            assertGeneratedOffsetContainsOnlyCoprime(
+              modulus,
+              primes,
+              value,
+              from + BigInt(1),
+              i
+            )
+          )
+          SieveUtils.isCoprime(value, primes)
+        }
+      } else {
+        assert(SieveUtils.addOffset(rest, offset).contains(value))
+        assert(
+          assertGeneratedOffsetContainsOnlyCoprime(
+            modulus,
+            primes,
+            value,
+            from + BigInt(1),
+            i
+          )
+        )
+        SieveUtils.isCoprime(value, primes)
+      }
+    }
   }.holds
 
   /**
@@ -802,4 +1036,166 @@ object SpecCycleSieveEquivalence {
     SieveSequenceNextLevel.nextFiltered(seq).contains(value)
   }.holds
 
+  /**
+   * Proves that `insertSorted(x, list)` always contains `x`.
+   */
+  private def assertInsertSortedContainsSelf(
+    x: BigInt,
+    list: stainless.collection.List[BigInt]
+  ): Boolean = {
+    decreases(list.size)
+    if (list.isEmpty) {
+      SortedList.insertSorted(x, list).contains(x)
+    } else if (x <= list.head) {
+      SortedList.insertSorted(x, list).contains(x)
+    } else {
+      assert(assertInsertSortedContainsSelf(x, list.tail))
+      SortedList.insertSorted(x, list).contains(x)
+    }
+  }.holds
+
+  /**
+   * Proves that `insertSorted` preserves existing membership.
+   * If `list` contains `y`, then `insertSorted(x, list)` also contains `y`.
+   */
+  private def assertInsertSortedPreservesMembership(
+    x: BigInt,
+    list: stainless.collection.List[BigInt],
+    y: BigInt
+  ): Boolean = {
+    require(list.contains(y))
+    decreases(list.size)
+    if (list.isEmpty) {
+      false
+    } else if (x <= list.head) {
+      SortedList.insertSorted(x, list).contains(y)
+    } else {
+      if (list.head == y) {
+        SortedList.insertSorted(x, list).contains(y)
+      } else {
+        assert(list.tail.contains(y))
+        assert(assertInsertSortedPreservesMembership(x, list.tail, y))
+        SortedList.insertSorted(x, list).contains(y)
+      }
+    }
+  }.holds
+
+  /**
+   * Proves that `insertSorted` does not invent values.
+   *
+   * Any value found after inserting `x` was either already present in the
+   * original list or is exactly `x`. This is the soundness counterpart to
+   * `assertInsertSortedPreservesMembership`.
+   */
+  private def assertInsertSortedContainsOnlyExisting(
+    x: BigInt,
+    list: stainless.collection.List[BigInt],
+    y: BigInt
+  ): Boolean = {
+    require(SortedList.insertSorted(x, list).contains(y))
+    decreases(list.size)
+    if (list.isEmpty) {
+      y == x
+    } else if (x <= list.head) {
+      if (y == x) {
+        true
+      } else {
+        assert(list.contains(y))
+        list.contains(y) || y == x
+      }
+    } else {
+      if (y == list.head) {
+        list.contains(y) || y == x
+      } else {
+        assert(SortedList.insertSorted(x, list.tail).contains(y))
+        assert(assertInsertSortedContainsOnlyExisting(x, list.tail, y))
+        list.contains(y) || y == x
+      }
+    }
+  }.holds
+
+  /**
+   * Proves that `sortFiltered` preserves membership.
+   */
+  private def assertSortFilteredContains(
+    list: stainless.collection.List[BigInt],
+    x: BigInt
+  ): Boolean = {
+    require(list.contains(x))
+    decreases(list.size)
+    if (list.isEmpty) {
+      false
+    } else if (list.head == x) {
+      assert(assertInsertSortedContainsSelf(list.head, SortedList.sortFiltered(list.tail)))
+      SortedList.sortFiltered(list).contains(x)
+    } else {
+      assert(list.tail.contains(x))
+      assert(assertSortFilteredContains(list.tail, x))
+      assert(assertInsertSortedPreservesMembership(list.head, SortedList.sortFiltered(list.tail), x))
+      SortedList.sortFiltered(list).contains(x)
+    }
+  }.holds
+
+  /**
+   * Proves that `sortFiltered` does not invent values.
+   *
+   * Sorting repeatedly inserts the current head into the sorted tail. Since
+   * `insertSorted` only contributes the inserted value or values already in the
+   * tail, every value in the sorted output came from the original list.
+   */
+  private def assertSortFilteredContainsOnlyExisting(
+    list: stainless.collection.List[BigInt],
+    x: BigInt
+  ): Boolean = {
+    require(SortedList.sortFiltered(list).contains(x))
+    decreases(list.size)
+    if (list.isEmpty) {
+      false
+    } else {
+      val sortedTail = SortedList.sortFiltered(list.tail)
+      assert(assertInsertSortedContainsOnlyExisting(list.head, sortedTail, x))
+      if (x == list.head) {
+        list.contains(x)
+      } else {
+        assert(sortedTail.contains(x))
+        assert(assertSortFilteredContainsOnlyExisting(list.tail, x))
+        list.contains(x)
+      }
+    }
+  }.holds
+
+  /**
+   * Proves that `nextSorted(seq)` contains every coprime bounded value.
+   */
+  def assertNextSortedContainsCoprime(
+    seq: CycleSieveSequence,
+    value: BigInt
+  ): Boolean = {
+    require(value >= BigInt(0))
+    require(value < seq.head * seq.modulus)
+    require(SieveUtils.isCoprime(value, seq.head :: seq.primes.tail))
+
+    assert(assertNextFilteredContainsCoprime(seq, value))
+    assert(SieveSequenceNextLevel.nextFiltered(seq).contains(value))
+    assert(assertSortFilteredContains(SieveSequenceNextLevel.nextFiltered(seq), value))
+
+    SieveSequenceNextLevel.nextSorted(seq).list.contains(value)
+  }.holds
+
+  /**
+   * Forward membership for the sorted pipeline stage.
+   *
+   * `nextSorted` is only `nextFiltered` wrapped by `SortedList.fromUnsorted`.
+   * This lemma exposes the one-value soundness direction: sorting may reorder
+   * survivors, but it does not create any new survivor value.
+   */
+  def assertNextSortedOnlyContainsFiltered(
+    seq: CycleSieveSequence,
+    value: BigInt
+  ): Boolean = {
+    require(SieveSequenceNextLevel.nextSorted(seq).list.contains(value))
+
+    assert(assertSortFilteredContainsOnlyExisting(SieveSequenceNextLevel.nextFiltered(seq), value))
+    SieveSequenceNextLevel.nextFiltered(seq).contains(value)
+  }.holds
 }

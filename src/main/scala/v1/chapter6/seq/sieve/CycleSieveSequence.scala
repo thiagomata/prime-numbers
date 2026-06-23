@@ -1,6 +1,7 @@
 package v1.chapter6.seq.sieve
 
 import stainless.collection.List
+import stainless.lang.BooleanDecorations
 import v1.chapter2.div.Calc
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter4.cycle.gap.GapCycle
@@ -15,6 +16,7 @@ case class CycleSieveSequence(
   require(ListUtils.checkAllPositive(primes))
   require(ListUtils.checkAllBiggerThanValue(primes, 1))
   require(SieveUtils.assertProductEqualOrBiggerThanElements(primes.tail))
+  require(primes.head + gapCycle.memCycle(0) > primes.head)
   require(SieveUtils.isCoprime(primes.head, primes.tail))
   require(SieveUtils.isCoprime(primes.head + gapCycle.memCycle(0), primes.tail))
   require(Calc.mod(primes.head + gapCycle.memCycle(0), primes.head) != BigInt(0))
@@ -36,6 +38,20 @@ case class CycleSieveSequence(
   def knownPrimeLimit: BigInt = head * head
   def nextPrime: BigInt = head
   def nextHead: BigInt = apply(BigInt(1))
+
+  /**
+   * Exposes the structural progress guaranteed by the first stored gap.
+   *
+   * At position one, `apply` evaluates the integral at position zero, which is
+   * the current head plus `gapCycle.memCycle(0)`. The constructor requires that
+   * concrete value to be strictly greater than the head. Keeping this fact as a
+   * public lemma lets next-stage proofs establish that `apply(1)` is positive
+   * and nonzero without unfolding the cycle integral or the Spec sequence that
+   * may have produced this Cycle representation.
+   */
+  def assertNextHeadGreaterThanHead(): Boolean = {
+    apply(BigInt(1)) > head
+  }.holds
 
   /**
    * Builds the next cycle sieve stage when the caller supplies the new gap

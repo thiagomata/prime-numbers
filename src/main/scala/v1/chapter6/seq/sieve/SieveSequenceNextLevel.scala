@@ -67,7 +67,7 @@ object SieveSequenceNextLevel {
         collectGaps(seq, current, pos, pos + 1, remaining - 1, gap :: gaps)
       }
     }
-  }
+  }.ensuring(res => ListBoundUtils.allGreaterThan(res, BigInt(0)))
 
   def assertAllGreaterThanReverse(list: List[BigInt], value: BigInt): Boolean = {
     require(ListBoundUtils.allGreaterThan(list, value))
@@ -119,7 +119,7 @@ object SieveSequenceNextLevel {
     val newHead = seq.apply(BigInt(1))
     assert(assertCollectGapsAllPositive(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt]))
     collectGaps(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt])
-  }
+  }.ensuring(res => ListBoundUtils.allGreaterThan(res, BigInt(0)))
 
   def nextGapCycle(seq: CycleSieveSequence): GapCycle = {
     val gaps = nextGapsWalk(seq)

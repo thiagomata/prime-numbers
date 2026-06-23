@@ -490,6 +490,234 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     GapCycle(gaps)
   }.ensuring(result => result.memCycle.values == gapList(BigInt(0), period))
 
+//  /*
+//   * Retired 2026-06-24.
+//   *
+//   * Canonical Cycle construction and Spec/Cycle correspondence are now owned
+//   * by CanonicalCycleSieve. This historical block remains commented instead of
+//   * being deleted, following the repository's non-destructive editing rule.
+//   *
+//  /**
+//   * Builds the canonical cycle representation of this Spec stage.
+//   *
+//   * The returned `CycleSieveSequence` is not an independently discovered cycle:
+//   * its gap cycle is exactly `specGapCycle(period)`, which itself is built from
+//   * this sequence's verified `gapList(0, period)`. This gives later proofs a
+//   * concrete alignment point:
+//   *
+//   * {{{
+//   *   toCycle(period).head == head.value
+//   *   toCycle(period).gapCycle.memCycle == specGapCycle(period).memCycle
+//   * }}}
+//   *
+//   * The method is intentionally conditional. Besides the period anchor, the
+//   * current `CycleSieveSequence` constructor requires two next-head facts: the
+//   * first cycle step must not be a multiple of the current head, and the current
+//   * filter product must not be a multiple of the current head. The first fact is
+//   * obtained from `assertApplyOneEqualsNextPrime`; the second is still tracked
+//   * by the product-not-divisible ticket, so callers provide it explicitly here.
+//   */
+//  def toCycle(period: BigInt): CycleSieveSequence = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    val cyclePrimes = PrimeUtils.primeValues(primes.list.list)
+//    val gapCycle = specGapCycle(period)
+//    val firstNext = apply(BigInt(1))
+//
+//    assert(cyclePrimes.head == head.value)
+//    assert(cyclePrimes.tail == filterValues)
+//    assert(ListUtils.checkAllPositive(cyclePrimes))
+//    assert(ListUtils.checkAllBiggerThanValue(cyclePrimes, BigInt(1)))
+//    assert(SieveUtils.assertProductEqualOrBiggerThanElements(cyclePrimes.tail))
+//    assert(SieveUtils.isCoprime(cyclePrimes.head, cyclePrimes.tail))
+//
+//    assert(assertMemCycleGapMatch(BigInt(0), period))
+//    assert(gapCycle.memCycle(BigInt(0)) == firstNext - head.value)
+//    assert(cyclePrimes.head + gapCycle.memCycle(BigInt(0)) == firstNext)
+//    assert(accepts(firstNext))
+//    assert(SieveUtils.isCoprime(firstNext, cyclePrimes.tail))
+//
+//    assert(assertApplyOneEqualsNextPrime())
+//    assert(firstNext > head.value)
+//    assert(Prime.isPrime(firstNext))
+//    assert(Prime.noDivisorInRangeExcludesValue(firstNext, BigInt(2), firstNext, head.value))
+//    assert(Calc.mod(firstNext, head.value) != BigInt(0))
+//    assert(Calc.mod(SieveUtils.product(cyclePrimes.tail), cyclePrimes.head) != BigInt(0))
+//
+//    CycleSieveSequence(cyclePrimes, gapCycle)
+//  }
+//
+//  /**
+//   * Proves that the canonical cycle representation has the same behavior as
+//   * this Spec stage.
+//   *
+//   * The proof is intentionally split at `k = 0`. At position zero, both
+//   * sequences return the same head. At positive positions, the Cycle side is
+//   * `CycleIntegral(head, specGapCycle(period).memCycle)(k - 1)`, and
+//   * `assertSpecGapCycleIntegralMatchesApply` already proves that this integral
+//   * reconstructs `apply(k)`.
+//   */
+//  def assertToCycleApplyMatches(period: BigInt, k: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//    require(k >= BigInt(0))
+//
+//    val cycle = toCycle(period)
+//
+//    if (k == BigInt(0)) {
+//      assert(cycle.head == head.value)
+//      assert(apply(BigInt(0)) == head.value)
+//      cycle(k) == apply(k)
+//    } else {
+//      val gapCycle = specGapCycle(period)
+//      assert(cycle.gapCycle.memCycle == gapCycle.memCycle)
+//      assert(cycle.integral == CycleIntegral(head.value, gapCycle.memCycle))
+//      assert(assertSpecGapCycleIntegralMatchesApply(period, k))
+//      cycle(k) == apply(k)
+//    }
+//  }.holds
+//
+//  /**
+//   * Proves that the canonical cycle view chooses the same next head as Spec.
+//   *
+//   * `CycleSieveSequence.next()` uses `cycle(1)` as the next stage head. For the
+//   * canonical cycle built by `toCycle(period)`, `assertToCycleApplyMatches`
+//   * rewrites that value to `apply(1)`. The Spec-side next-prime bridge then
+//   * rewrites `apply(1)` to `primes.nextPrime.value`, which is exactly the head
+//   * of `next`.
+//   */
+//  def assertToCycleNextHeadMatchesSpecNext(period: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    val cycle = toCycle(period)
+//    val nextSeq = next
+//
+//    assert(assertToCycleApplyMatches(period, BigInt(1)))
+//    assert(assertApplyOneEqualsNextPrime())
+//    assert(cycle(BigInt(1)) == apply(BigInt(1)))
+//    assert(apply(BigInt(1)) == primes.nextPrime.value)
+//    assert(nextSeq.head.value == primes.nextPrime.value)
+//
+//    cycle(BigInt(1)) == nextSeq.head.value
+//  }.holds
+//
+//  /**
+//   * Proves that the canonical cycle view exposes the same next-stage filters as
+//   * `SpecSieveSequence.next`.
+//   *
+//   * The next Spec stage prepends a new head prime, so its active filter tail is
+//   * exactly this stage's full prime list. The canonical cycle stores that same
+//   * full prime list as `cycle.primes`. Therefore, for any value at or above the
+//   * next head, Spec.next accepts the value exactly when it is coprime to the
+//   * canonical cycle's current primes.
+//   */
+//  def assertToCycleNextAcceptsMatchesSpecNext(period: BigInt, value: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//    require(value >= next.head.value)
+//
+//    val cycle = toCycle(period)
+//    val nextSeq = next
+//
+//    assert(cycle.primes == PrimeUtils.primeValues(primes.list.list))
+//    assert(nextSeq.primes.list.tail.list == primes.list.list)
+//    assert(nextSeq.filterPrimes == nextSeq.primes.list.tail.list)
+//    assert(nextSeq.filterValues == PrimeUtils.primeValues(nextSeq.filterPrimes))
+//    assert(nextSeq.filterValues == PrimeUtils.primeValues(primes.list.list))
+//    assert(nextSeq.filterValues == cycle.primes)
+//    assert(nextSeq.accepts(value) == SieveUtils.isCoprime(value, nextSeq.filterValues))
+//
+//    nextSeq.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)
+//  }.holds
+//
+//  /**
+//   * Exposes the head equality of the canonical cycle representation.
+//   *
+//   * This is intentionally a small alias: later proofs should consume this
+//   * stable lemma instead of repeatedly unfolding `toCycle(period)` just to learn
+//   * that the canonical cycle starts from the same head as Spec.
+//   */
+//  def assertToCycleHeadMatches(period: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    toCycle(period).head == head.value
+//  }.holds
+//
+//  /**
+//   * Exposes the prime-list equality of the canonical cycle representation.
+//   *
+//   * The canonical cycle does not invent or transform the current prime prefix;
+//   * it stores the numeric values of this Spec stage's `AllPrimesSoFarList`.
+//   * Later alignment proofs can use this alias to bridge Spec filter predicates
+//   * and Cycle filter predicates without reopening the `toCycle` constructor.
+//   */
+//  def assertToCyclePrimesMatch(period: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    toCycle(period).primes == PrimeUtils.primeValues(primes.list.list)
+//  }.holds
+//
+//  /**
+//   * Exposes the gap-cycle equality of the canonical cycle representation.
+//   *
+//   * This is the central representation fact behind the canonical strategy:
+//   * `toCycle(period)` uses the exact `GapCycle` already certified by Spec.
+//   * Keeping it as a public alias gives later next-stage proofs a cheap way to
+//   * recover the stored cycle equality.
+//   */
+//  def assertToCycleGapCycleMatches(period: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    toCycle(period).gapCycle.memCycle == specGapCycle(period).memCycle
+//  }.holds
+//
+//  /**
+//   * Exposes the raw prime-list equality for the canonical next stage.
+//   *
+//   * A Cycle next stage prepends `cycle(1)` to the current cycle prime values.
+//   * For the canonical cycle, `cycle(1)` is `next.head.value` and the current
+//   * cycle prime values are this Spec stage's prime values. Since `next` is
+//   * built by prepending `primes.nextPrime` to this stage's prime list, the two
+//   * raw prime lists are equal.
+//   */
+//  def assertToCycleNextPrimesMatchSpecNext(period: BigInt): Boolean = {
+//    require(period > BigInt(0))
+//    require(apply(period) == head.value + filterModulus)
+//    require(primes.nextPrime.value < head.value * head.value)
+//    require(Calc.mod(SieveUtils.product(filterValues), head.value) != BigInt(0))
+//
+//    val cycle = toCycle(period)
+//    val nextSeq = next
+//
+//    assert(assertToCycleNextHeadMatchesSpecNext(period))
+//    assert(assertToCyclePrimesMatch(period))
+//    assert(cycle(BigInt(1)) == nextSeq.head.value)
+//    assert(cycle.primes == PrimeUtils.primeValues(primes.list.list))
+//    assert(nextSeq.primes.list.tail.list == primes.list.list)
+//
+//    cycle(BigInt(1)) :: cycle.primes == PrimeUtils.primeValues(nextSeq.primes.list.list)
+//  }.holds
+//  */
+
   /**
    * Proves the base case of the Spec gap-cycle integral reconstruction.
    *
@@ -538,7 +766,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    *   `valueMatchAfterManyLoops`, and the IH gives `memCycle(i - period) == gap(i - period)`,
    *   while `assertGapPeriodic(i - period, period)` gives `gap(i) == gap(i - period)`.
    */
-  private def assertMemCycleGapMatch(i: BigInt, period: BigInt): Boolean = {
+  def assertMemCycleGapMatch(i: BigInt, period: BigInt): Boolean = {
     require(i >= BigInt(0))
     require(period > BigInt(0))
     require(apply(period) == head.value + filterModulus)
@@ -1064,7 +1292,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   /** Proves `apply(from) <= apply(until)` via `applyIndexOrderPreservesValues`. */
-  private def assertApplyMonotonic(from: BigInt, until: BigInt): Boolean = {
+  def assertApplyMonotonic(from: BigInt, until: BigInt): Boolean = {
     require(from >= BigInt(0))
     require(until >= from)
     assert(applyIndexOrderPreservesValues(from, until))
@@ -2389,7 +2617,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * (partial sums reconstruct nextSeq.apply) follows as a corollary because
    * gapList's cumulative sums reconstruct nextSeq.apply by construction.
    */
-  private def assertMergedGapPrefixMatchesNext(
+  def assertMergedGapPrefixMatchesNext(
                                                 nextSeq: SpecSieveSequence,
                                                 k: BigInt,
                                                 seqIndex: BigInt,
@@ -2669,5 +2897,46 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assert(assertApplyOnePrimeFromUpperBelowHeadSq(p.value))
 
     Prime.isPrime(apply(BigInt(1)))
+  }.holds
+
+  /**
+   * Proves V0's first generated value equals the next prime in the prefix.
+   *
+   * Under the next() precondition (nextPrime < head^2), the first generated
+   * value must be exactly the next prime. The proof uses:
+   * 1. assertApplyOneGtHead: head + 1 <= apply(1)
+   * 2. assertApplyOneAtOrBeforeOwnNextPrime: apply(1) <= nextPrime
+   * 3. assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq: Prime.isPrime(apply(1))
+   * 4. AllPrimesSoFarList.nextPrime's postcondition: noPrimesBetween(head+1, nextPrime)
+   * Since apply(1) is prime and > head, no prime exists in (head, nextPrime),
+   * so apply(1) must equal nextPrime.
+   */
+  def assertApplyOneEqualsNextPrime(): Boolean = {
+    require(primes.nextPrime.value < head.value * head.value)
+
+    val nextP = AllPrimesSoFarList.nextPrime(primes.list)
+
+    assert(nextP.value > head.value)
+    assert(Prime.isPrime(nextP.value))
+    assert(AllPrimesSoFarList.noPrimesBetween(head.value + BigInt(1), nextP.value))
+
+    assert(assertApplyOneGtHead())
+    assert(assertApplyOneAtOrBeforeOwnNextPrime())
+    assert(assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq())
+
+    assert(apply(BigInt(1)) <= nextP.value)
+    assert(Prime.isPrime(apply(BigInt(1))))
+    assert(head.value + BigInt(1) <= apply(BigInt(1)))
+
+    if (apply(BigInt(1)) < nextP.value) {
+      assert(AllPrimesSoFarList.noPrimesBetweenExcludesValue(
+        head.value + BigInt(1), nextP.value, apply(BigInt(1))
+      ))
+      assert(!Prime.isPrime(apply(BigInt(1))))
+      assert(false)
+      apply(BigInt(1)) == nextP.value
+    } else {
+      apply(BigInt(1)) == nextP.value
+    }
   }.holds
 }

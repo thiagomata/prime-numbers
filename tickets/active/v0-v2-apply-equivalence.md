@@ -3,6 +3,25 @@
 **Status:** Active coordination ticket
 **Created:** 2026-06-22
 **Depends on:** `v0-gap-list-cycle-formalization.md` (items 1-11 fully verified)
+**Alternative active strategy:** `canonical-spec-to-cycle-alignment.md`
+
+The alternative ticket narrows the proof to the canonical Cycle sequence built
+by the intermediate correspondence representation:
+
+```text
+canonical = CanonicalCycleSieve(spec, period)
+cycle = canonical.cycle
+```
+
+and then tries to prove the recursive alignment theorem:
+
+```text
+canonical.cycle.next() aligns with
+CanonicalCycleSieve(spec.next, nextPeriod).cycle
+```
+
+This may be a more tractable route than proving arbitrary
+`CycleSieveSequence` equivalence.
 
 ## Goal
 
@@ -24,12 +43,112 @@ for all k >= 0 and for every valid sieve stage.
   (`assertApplyEqualsHeadPlusGapSum`) and 8 (`gapList(from, count)`) are the
   two V0 lemmas that were identified as missing — they are the bridge entry
   points this ticket consumes.
-- **V2 gap cycle construction:** `SieveSequenceNextLevel.nextGapCycleV2` computes
-  the next stage's `GapCycle` via a walk pipeline (`collectGapsV2`). It is
-  marked `@extern` (not Stainless-verified). Separately, a residue-based pipeline
-  exists (`nextResiduesV2` through `nextRotatedGapsV2`) but is not used by `next()`.
+- **Cycle next construction:** `CycleSieveSequence.next()` is no longer
+  `@extern`. It is a conditional verified builder: it computes
+  `SieveSequenceNextLevel.nextGapsWalk(this)`, requires the walked gaps to be a
+  valid positive `GapCycle`, requires the first next-cycle value to satisfy the
+  new filters, and delegates to `nextWithGapCycle`.
 - **No cross-verification exists:** V0 and V2 are completely independent
   implementations. No code asserts equality between them.
+
+## Strategy Reset — Recommended Proof Path
+
+The proof should now be organized around the transition from a known-equivalent
+current stage to an equivalent next stage.
+
+**Recommended primary theorem:**
+
+```
+current head equal
+and current gap cycle equal
+  ==> current apply streams equal
+  ==> next heads equal
+  ==> next acceptance predicates equal
+  ==> next walked gaps equal Spec next gaps
+  ==> next gap cycles equal
+  ==> next apply streams equal
+```
+
+The current verified lemmas already cover the first and last implication:
+
+- same current head + same current gap cycle implies current apply equivalence;
+- same next head + same next gap cycle implies next apply equivalence.
+
+The missing producer theorem is:
+
+```
+same current head + same current gap cycle
+  ==> SieveSequenceNextLevel.nextGapsWalk(cycle)
+      == spec.next.gapList(0, nextPeriod)
+```
+
+This is the central proof obligation for this ticket.
+
+### Work On These Next
+
+1. **Next head equality from current equivalence.**
+   Prove a small bridge using the existing all-index apply equivalence at
+   `k = 1`:
+
+   ```
+   same current head + same current gaps
+     ==> cycle(1) == spec(1)
+     ==> cycle(1) == spec.next.head.value
+   ```
+
+   The second step may require the existing Spec-side next-prime/square-bound
+   precondition, but the new head is prime on the Spec side by construction.
+
+2. **Next-stage acceptance predicate equality.**
+   Prove that once `cycle(1) == spec.next.head.value`, both sides use the same
+   next filter:
+
+   ```
+   spec.next.accepts(value)
+     == SieveUtils.isCoprime(value, cycle(1) :: cycle.primes)
+   ```
+
+   This is more directly useful than proving residue-pipeline facts in
+   isolation.
+
+3. **Walk gap equality against Spec next gaps.**
+   Prove the recursive producer theorem:
+
+   ```
+   SieveSequenceNextLevel.nextGapsWalk(cycle)
+     == spec.next.gapList(0, nextPeriod)
+   ```
+
+   This proof should consume current apply equivalence, next head equality, and
+   next acceptance equality.
+
+4. **Derive `next()` requirements from gap equality.**
+   Once walked gaps equal Spec next gaps, use Spec gap-list validity to discharge:
+
+   ```
+   newGaps.nonEmpty
+   ListBoundUtils.allGreaterThan(newGaps, 0)
+   ```
+
+   Then handle the remaining first-next-value filter requirements using the same
+   next acceptance equivalence.
+
+### Do Not Work On These Unless They Directly Feed The Path Above
+
+- Do **not** continue proving general residue-pipeline soundness/completeness as
+  an end in itself.
+- Do **not** add more `nextSorted`/`nextFiltered` aliases unless a later theorem
+  explicitly consumes them.
+- Do **not** attempt counting/permutation/list-extensionality proofs for the
+  residue pipeline unless the direct walk-vs-Spec gap proof fails and the ticket
+  is explicitly re-scoped.
+- Do **not** try to prove `nextGapsWalk == nextGaps` as the immediate next step.
+  That compares two Cycle-side constructions and does not by itself establish
+  Spec/Cycle equivalence.
+
+Residue lemmas already proved are not considered wasted: they remain useful
+supporting facts and may become important if the direct walk proof fails.
+However, the default next work should target the Spec/Cycle transition above.
 
 ## The Equivalence Chain
 
@@ -112,8 +231,9 @@ enumerated by the Spec linear search. This is the main semantic work.
 | `assertResiduesAreExactlyCoprimeBelowModulus(modulus, filters, r)` | For `0 <= r < modulus`, `r in residues(modulus, filters) <=> isCoprime(r, filters)`. | Combines the completeness and soundness halves into the bidirectional residue characterization used by later pipeline lemmas. | Both halves verified separately; bidirectional wrapper deferred (not needed by downstream lemmas). |
 | `assertExpandedResiduesRepresentPeriod(seq, value)` | Values in `nextExpanded(seq)` are exactly `seq.head + r + m * seq.modulus` for residue survivors `r` across the next head window. | Connects residue classes to actual natural numbers near the current head. | Verified. |
 | `assertNextFilteredContainsCoprime(seq, value)` | `0 ≤ value < head*modulus` ∧ `isCoprime(value, head :: primes.tail)` ⇒ `value ∈ nextFiltered(seq)`. | Reverse direction: every coprime bounded value survives the residue + filter pipeline. | Verified. |
-| `assertNextFilteredIsCoprime(seq, value)` | `value ∈ nextFiltered(seq)` ⇒ `isCoprime(value, head :: primes.tail)`. | Forward direction: every pipeline survivor is coprime. | Deferred — requires list-level induction proving all expanded elements are coprime, which timed out. The pipeline construction guarantees this via `SieveUtils.assertAllRExpandedCoprime`. |
-| `assertNextSortedIsAcceptedWindow(spec, cycle)` | `nextSorted(cycle).list` is exactly the sorted list of Spec-accepted values in the relevant period window. | Needed before comparing calculated gaps with `spec.gapList`. | Required. |
+| `assertNextFilteredIsCoprime(seq, value)` | `value ∈ nextFiltered(seq)` ⇒ `isCoprime(value, head :: primes.tail)`. | Forward direction: every filtered survivor is coprime. | In progress — one generated-offset block now has verified membership-to-coprime soundness via `assertGeneratedOffsetContainsOnlyCoprime`; remaining work is lifting that fact through `expandSingleResidue` and `expandResidues`, then combining it with the head filter. |
+| `assertNextSortedContainsCoprime(seq, value)` | `0 ≤ value < head*modulus` ∧ `isCoprime(value, head :: primes.tail)` ⇒ `value ∈ nextSorted(seq).list`. | Reverse direction for the sorted pipeline. Forward direction is guaranteed by construction (sorted from nextFiltered). | Verified. |
+| `assertNextSortedOnlyContainsFiltered(seq, value)` | `value ∈ nextSorted(seq).list` ⇒ `value ∈ nextFiltered(seq)`. | Forward direction for the sorted stage only: sorting can reorder survivors but cannot create a new survivor value. | Verified. |
 
 ### F. Gap List Equality
 
@@ -148,19 +268,18 @@ next-stage proof inside one method body.
 |---|---|---|---|
 | `assertSpecNextPrimeValuesExtendCurrent(spec)` | If `spec.primes.nextPrime.value < spec.head.value * spec.head.value`, then `PrimeUtils.primeValues(spec.next.primes.list.list) = spec.next.head.value :: PrimeUtils.primeValues(spec.primes.list.list)`. | Shows that Spec `next` prepends its new head to the previous raw prime values, matching the raw list shape expected from Cycle next. | Verified. |
 | `assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle)` | If current raw prime lists correspond, `cycle(1) = spec.next.head.value`, and `newGapCycle` satisfies `nextWithGapCycle` preconditions, then `cycle.nextWithGapCycle(newGapCycle).primes = PrimeUtils.primeValues(spec.next.primes.list.list)`. | Gives the next-stage raw-prime correspondence under the isolated next-head and gap-cycle constructor assumptions. | Verified. |
-| `assertConditionalNextApplyMatchesFromSameHeadAndGaps(spec, cycle, newGapCycle, nextPeriod, k)` | If current raw prime lists correspond, `cycle(1) = spec.next.head.value`, `newGapCycle` satisfies `nextWithGapCycle` preconditions, `spec.next(nextPeriod) = spec.next.head.value + spec.next.filterModulus`, and `spec.next.specGapCycle(nextPeriod).memCycle = cycle.nextWithGapCycle(newGapCycle).gapCycle.memCycle`, then `spec.next(k) = cycle.nextWithGapCycle(newGapCycle)(k)`. | Combines the conditional next raw-prime bridge with the all-index same-head/same-gaps theorem, advancing apply equivalence by one stage without using the extern `next()`. | Verified. |
+| `assertConditionalNextApplyMatchesFromSameHeadAndGaps(spec, cycle, newGapCycle, nextPeriod, k)` | If current raw prime lists correspond, `cycle(1) = spec.next.head.value`, `newGapCycle` satisfies `nextWithGapCycle` preconditions, `spec.next(nextPeriod) = spec.next.head.value + spec.next.filterModulus`, and `spec.next.specGapCycle(nextPeriod).memCycle = cycle.nextWithGapCycle(newGapCycle).gapCycle.memCycle`, then `spec.next(k) = cycle.nextWithGapCycle(newGapCycle)(k)`. | Combines the conditional next raw-prime bridge with the all-index same-head/same-gaps theorem, advancing apply equivalence by one stage while keeping the hard `next()` requirements explicit. | Verified. |
 
 ### H. Optional/Deferred Walk Pipeline Bridge
 
-After the conditional same-head/same-gaps theorem is complete, the current
-recommendation remains to prove the residue pipeline before the walk pipeline.
-The walk pipeline is closer to `next()` as written, but it is harder because it
-walks through `CycleSieveSequence.apply`, which already depends on the gap cycle.
+This section is intentionally deferred. These lemmas compare Cycle-side
+pipelines to each other; they are not the preferred immediate route to
+Spec/Cycle equivalence.
 
 | Lemma | Mathematical statement | Why needed | Status |
 |---|---|---|---|
-| `assertWalkGapsMatchResidueGaps(cycle)` | `nextGapsWalk(cycle) = nextGaps(cycle)`. | Would connect the currently extern-backed walk implementation to the residue proof. | Deferred. |
-| `assertNextGapCycleMatchesResidueGapCycle(cycle)` | `SieveSequenceNextLevel.nextGapCycle(cycle).memCycle.values = nextRotatedGaps(cycle)`. | Needed to remove `@extern` from the production `next()` path rather than only proving the residue path. | Deferred. |
+| `assertWalkGapsMatchResidueGaps(cycle)` | `nextGapsWalk(cycle) = nextGaps(cycle)`. | Optional fallback if the direct `nextGapsWalk(cycle) == spec.next.gapList(...)` proof is blocked. It does not by itself prove Spec/Cycle equivalence. | Deferred. |
+| `assertNextGapCycleMatchesResidueGapCycle(cycle)` | `SieveSequenceNextLevel.nextGapCycle(cycle).memCycle.values = nextRotatedGaps(cycle)`. | Optional residue-pipeline bridge. Not the next recommended target because `CycleSieveSequence.next()` currently uses `nextGapsWalk`. | Deferred. |
 
 ## Approach
 
@@ -204,27 +323,30 @@ Expected proof shape:
 This gives a useful theorem even before the residue or walk pipeline is proven:
 all remaining work can focus on proving the gap equality precondition.
 
-### Phase 2: V2 gap cycle extraction
+### Phase 2: Next-stage producer theorem
 
-Two sub-approaches, either may be chosen:
+The previous version of this ticket recommended proving the residue pipeline
+first. That recommendation is now superseded.
 
-**Option A — Walk pipeline (what `nextGapCycleV2` actually uses):**
-- The walk pipeline (`collectGapsV2`) produces gaps by walking V2's own `apply`.
-- Proving this matches V0's gaps is **circular** if V2.apply is defined in terms
-  of the gap cycle. This suggests Option A is impractical for the base equivalence.
+The preferred path is to prove that current Spec/Cycle equivalence produces the
+same next state:
 
-**Option B — Residue pipeline (defined but unused by `next()`):**
-- `nextResiduesV2` through `nextRotatedGapsV2` compute the next gap cycle purely
-  from the prime modulus and residues, without reference to V2.apply.
-- Each pipeline step has a pre-verified `SieveUtils` helper.
-- The gap cycle from residues should equal the gap cycle from the walk.
-- Proving residue gaps == V0 gaps is more direct: V0's `accepts` predicate is
-  exactly `isCoprime(value, filterValues)`, which is the same predicate the
-  residue pipeline uses.
+```
+same current head + same current gap cycle
+  ==> same current apply stream
+  ==> same next head
+  ==> same next accepted values
+  ==> nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)
+```
 
-**Recommendation:** First prove Phase 1.5, the conditional same-head/same-gaps
-equivalence theorem. After that, start with Option B. Defer the
-residue-pipeline-to-walk equivalence to a separate subticket.
+This targets the production path used by `CycleSieveSequence.next()` and avoids
+building a large residue-pipeline proof that may not be consumed by the final
+equivalence theorem.
+
+**Residue pipeline status:** The residue pipeline remains a valid fallback or
+supporting route. It should be used only when a concrete downstream proof needs
+one of its facts, for example to simplify a specific acceptance predicate or to
+replace a failed direct walk argument. It should not be the default next track.
 
 ### Phase 3: Equivalence proof
 
@@ -309,9 +431,9 @@ Proof:
 Statement: `value ∈ nextFiltered(seq) ⇔ 0 ≤ value < head * modulus ∧ isCoprime(value, head :: primes.tail)`
 Proof: Composes E2 with `filterList` semantics. `filterList(list, head)` removes values where `Calc.mod(v, head) == 0`. So the filtered set = `{v in expanded set | v % head ≠ 0}` = `{v in [0, head*modulus) | isCoprime(v, primes.tail) ∧ v % head ≠ 0}`. Since head is prime, `v % head ≠ 0` iff `isCoprime(v, List(head))`. The conjunction is exactly `isCoprime(v, head :: primes.tail)`.
 
-**E4: `assertNextSortedIsAcceptedWindow(spec, cycle)`**
-Statement: The sorted pipeline output (after sorting) represents the same survivor set as Spec's accepted values in one period `[head, head + head*modulus)`.
-Proof: Sorting does not change the set (only order). The Spec next stage's `accepts(v)` predicate is `v >= head ∧ isCoprime(v, head :: primes.tail)`. The sorted+filtered set contains all such values in `[0, head*modulus)`. The gap cycle `calculateGaps(sorted, head*modulus)` computes pairwise gaps with wrap-around by `head*modulus`, which matches the next stage's first period exactly. The shift from 0-based to head-based does not change the gap cycle (wrapping by `head*modulus` handles the offset).
+**E4: `assertNextSortedContainsCoprime(seq, value)`**
+Statement: For `0 ≤ value < head*modulus` and `isCoprime(value, head :: primes.tail)`, `value ∈ nextSorted(seq).list`.
+Proof: `assertNextFilteredContainsCoprime` gives `value ∈ nextFiltered(seq)`. Then `assertInsertSortedContainsSelf`, `assertInsertSortedPreservesMembership`, and `assertSortFilteredContains` lift membership through `sortFiltered` to `SortedList.fromUnsorted`. Sorting preserves the set: every element of the input appears in the sorted output.
 
 **Key technical challenges:**
 1. E2 reverse direction needs a lemma that `mod` preserves coprimality: `isCoprime(v, primes) ∧ v = q*modulus + r ⇒ isCoprime(r, primes)`. This is true because any divisor of `r` divides `v` (since `modulus` is the product of primes in `primes`).
@@ -345,10 +467,12 @@ of `v0-gap-list-cycle-formalization.md`).
 1. **Prime list representation mismatch:** V0 uses `AllPrimesSoFarList` (which
    wraps `SortedPrimeList[Prime]`). V2 uses `List[BigInt]`. Proving they
    correspond may require a translation layer and lemmas about `primeValues`.
-2. **Residue pipeline vs. walk pipeline:** The residue pipeline is defined but
-   unused by `nextGapCycleV2`. The walk pipeline is @extern. Proving the walk
-   pipeline correct is a separate problem that may need the inductive stage
-   bridge (Phase 4) or a separate `remove-extern-from-next.md` ticket.
+2. **Residue pipeline vs. walk pipeline:** The residue pipeline is defined, but
+   `CycleSieveSequence.next()` currently uses `nextGapsWalk`. The walk path is
+   no longer `@extern`, but it is conditional: it requires non-empty positive
+   gaps and first-next-value filter facts. The recommended proof should derive
+   those facts from equality with `spec.next.gapList(...)`, not from an
+   unrelated residue-pipeline proof.
 3. **Gap cycle construction preconditions:** `GapCycle` requires
    `allGreaterThan(values.list, 0)` (proven in V0) and non-empty. The
    non-emptiness proof (`p > 0`) is trivial but must be explicit.
@@ -372,6 +496,54 @@ of `v0-gap-list-cycle-formalization.md`).
   before duplicating effort.
 
 ## Update Log
+
+### 2026-06-23 — Strategy reset: prioritize next-state producer theorem
+
+The proof plan was updated to prevent drift toward residue-pipeline lemmas that
+do not directly advance the final Spec/Cycle equivalence theorem.
+
+**Decision:** The primary route is now:
+
+```
+same current head + same current gap cycle
+  ==> same current apply stream
+  ==> same next head
+  ==> same next acceptance predicate
+  ==> nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)
+  ==> same next gap cycle
+  ==> same next apply stream
+```
+
+**Why:** The project already has the consumer theorem:
+
+```
+same head + same gap cycle ==> same apply(k)
+```
+
+What is missing is the producer theorem:
+
+```
+same current state ==> same next head and same next gaps
+```
+
+Residue-pipeline facts can be useful, but proving them in isolation risks
+creating verified lemmas that do not discharge the requirements of
+`CycleSieveSequence.next()` or the next-stage equivalence bridge.
+
+**Recommended immediate work:**
+
+1. Prove next head equality from current same-head/same-gaps equivalence.
+2. Prove next-stage acceptance predicate equality.
+3. Prove `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`.
+4. Derive `CycleSieveSequence.next()` requirements from that gap equality.
+
+**Explicit non-goals for now:**
+
+- More general `nextFiltered`/`nextSorted` aliases unless directly consumed.
+- Counting/permutation proofs for residue lists.
+- `nextGapsWalk == nextGaps` as the next immediate step.
+- Full residue-pipeline equivalence unless the direct walk proof is blocked and
+  this ticket is deliberately re-scoped.
 
 ### 2026-06-22 — Naming decision and rename execution
 
@@ -709,9 +881,10 @@ Added `SpecCycleSieveEquivalence.assertConditionalNextApplyMatchesFromSameHeadAn
   next-gap, period-anchor, and `nextWithGapCycle` constructor assumptions,
   `spec.next(position) == cycle.nextWithGapCycle(newGapCycle)(position)`.
 - **Why it matters:** This is the conditional next-stage apply equivalence. It
-  does not call `cycle.next()`, so it avoids the `@extern` black box. It proves
-  that once the hard next facts are supplied, the verified conditional Cycle
-  next path matches Spec next for every index.
+  does not call `cycle.next()` directly, so the proof keeps the conditional
+  next construction facts explicit. It proves that once the hard next facts are
+  supplied, the verified conditional Cycle next path matches Spec next for every
+  index.
 - **Validation:** Focus-verified with
   `just verify assertConditionalNextApplyMatchesFromSameHeadAndGaps`
   (39 valid, 0 invalid, 0 unknown), then full-verified with `just verify`
@@ -805,11 +978,205 @@ Added two public lemmas to `SpecCycleSieveEquivalence`:
    **Next steps:** E3 (`assertNextFilteredMatchesSpecAccepted`) — connects the
    residue pipeline's filtered output to Spec's `accepts` predicate.
 
-## Related Tickets
+### 2026-06-23 — Filtered and sorted reverse-direction membership verified
 
-- `v0-gap-list-cycle-formalization.md` — prerequisite: V0's internal gap cycle
-  properties must be fully verified before this ticket can consume them.
-- `remove-extern-from-next.md` — tracks removing @extern from V2.next(). May
-  be partially unblocked by the gap periodicity facts proven in V0.
-- `../superseded/conditional-nextprime-gap-cycle-bridge.md` — historical
-  attempt at bridging V0 and V2 concepts (superseded).
+Added two public lemmas to `SpecCycleSieveEquivalence`:
+
+1. **`assertNextFilteredContainsCoprime`**: If `value` is in the bounded
+   residue window and is coprime to `seq.head :: seq.primes.tail`, then
+   `nextFiltered(seq)` contains `value`. This is the reverse direction of E3.
+
+2. **`assertNextSortedContainsCoprime`**: Under the same bounded-coprime
+   assumptions, `nextSorted(seq).list` contains `value`. This is the reverse
+   direction of E4.
+
+**Validation:** Full `just verify` passed with 8424 valid, 0 invalid, and
+0 unknown.
+
+**Remaining blocker:** The forward direction for `nextFiltered`/`nextSorted`
+is still not locally exposed as a one-value theorem:
+`value in nextFiltered(seq) => isCoprime(value, seq.head :: seq.primes.tail)`.
+The source has `assertFilterListContainsOnlyIf`, and `SieveUtils` has
+`assertAllRExpandedCoprime`, but the missing connector is a usable membership
+lemma from `value in nextExpanded(seq)` to coprime-to-tail. A previous attempt
+at the full list-level induction timed out, so the next attempt should isolate
+that one-value connector rather than rebuild the whole pipeline.
+
+### 2026-06-23 — Sorted forward-direction membership verified
+
+Added `SpecCycleSieveEquivalence.assertNextSortedOnlyContainsFiltered`.
+
+- **What it proves:** If `nextSorted(seq).list` contains `value`, then
+  `nextFiltered(seq)` also contains `value`. This is the forward direction for
+  the sorted stage only: sorting may reorder values, but it does not invent
+  values.
+- **How it was proved:** Added two private structural lemmas:
+  `assertInsertSortedContainsOnlyExisting` proves `insertSorted` contributes
+  only the inserted value or values already present in the input list; and
+  `assertSortFilteredContainsOnlyExisting` lifts that fact across the recursive
+  sort.
+- **Validation:** Full `just verify` passed with 8456 valid, 0 invalid, and
+  0 unknown.
+- **Learning:** This successfully exposes the sorted-stage forward membership
+  half, but it does not solve filtered-stage soundness. The hard frontier is
+  now precise: prove `value in nextFiltered(seq) => isCoprime(value, seq.head ::
+  seq.primes.tail)`, which likely requires a one-value expanded-stage soundness
+  lemma before using `assertFilterListContainsOnlyIf`.
+
+### 2026-06-23 — Expanded-stage soundness attempt rejected
+
+Tried to prove the missing expanded-stage connector through a private
+`assertAddOffsetContainsOnlyCoprime` helper.
+
+- **Attempt 1:** Generalized over an arbitrary `residues` list. Stainless
+  rejected the proof because arbitrary residues do not imply the generated
+  value is nonnegative, bounded, or actually a member of
+  `SieveUtils.residues(modulus, primes)`.
+- **Attempt 2:** Strengthened the helper with
+  `residues == SieveUtils.residues(modulus, primes)`. That fixed some shape
+  issues but broke the recursive tail call because `residues.tail` is not equal
+  to the full generated residue list. The attempt also timed out/returned
+  unknown when trying to turn `SieveUtils.assertExpandedCoprime` into a usable
+  `isCoprime(...)` fact.
+- **Decision:** Removed the helper and restored green verification before
+  proceeding. Do not continue with this exact proof shape. A better next
+  attempt should either expose postconditions from the existing SieveUtils
+  expanded-coprime lemmas or prove a smaller one-value lemma directly over the
+  concrete recursive structure of `expandResidues`.
+
+### 2026-06-23 — Expanded-value coprimality postcondition verified
+
+Added two private arithmetic helpers to `SpecCycleSieveEquivalence`:
+
+1. **`assertExpandedValueCoprimeViaPrefix`**: If `i >= 0`, `modulus` is
+   `prefixProd * product(primes)`, and `r` is coprime to `primes`, then
+   `r + i * modulus` is also coprime to `primes`.
+
+2. **`assertExpandedValueCoprime`**: Natural wrapper for the common case
+   `modulus == product(primes)`.
+
+**Why it matters:** This takes the arithmetic fact already implicit in
+`SieveUtils.assertExpandedCoprimeViaPrefix` and exposes it as a usable
+postcondition. The previous failed expanded-stage attempt got stuck partly
+because the existing helper returned only `true`, so callers could not use it
+to derive `SieveUtils.isCoprime(value, primes)`.
+
+**Validation:** Full `just verify` passed after the prefix helper with 8503
+valid, 0 invalid, and 0 unknown. Full `just verify` passed again after the
+natural wrapper with 8513 valid, 0 invalid, and 0 unknown.
+
+**Next step:** Prove a structural list lemma over
+`SieveUtils.addOffset(SieveUtils.generateResidues(from, modulus, primes), i *
+modulus)`: membership in that offset list implies coprimality to `primes`.
+That lemma should recurse over `generateResidues(from, ...)`, not over an
+arbitrary residue tail, and should call `assertExpandedValueCoprime` only in
+the kept-residue branch.
+
+### 2026-06-23 — Generated-offset soundness verified
+
+Added private lemma **`assertGeneratedOffsetContainsOnlyCoprime`** to
+`SpecCycleSieveEquivalence`.
+
+**Statement:** If a value belongs to
+`SieveUtils.addOffset(SieveUtils.generateResidues(from, modulus, primes), i *
+modulus)`, with `0 <= from <= modulus`, `i >= 0`, positive filters, and
+`modulus == product(primes)`, then the value is coprime to `primes`.
+
+**Why it matters:** This is the first list-level soundness bridge for the
+expanded stage that avoids the previous timeout pattern. The proof follows the
+shape of `generateResidues(from, ...)` directly:
+
+- If `from` is kept by the residue generator, the head case calls
+  `assertExpandedValueCoprime(from, i, modulus, primes)`.
+- If the member value is not the current offset head, or if `from` was not
+  kept, the proof recurses on `from + 1`.
+
+This works because the lemma is specialized to the generated residue list
+instead of trying to prove a false/general property for an arbitrary list of
+residues.
+
+**Validation:** Full `just verify` passed with 8556 valid, 0 invalid, and 0
+unknown.
+
+**Next step:** Prove the corresponding structural soundness for
+`expandSingleResidue(residue, modulus, count)` by recursion over `count`, using
+`assertGeneratedOffsetContainsOnlyCoprime` for the current generated-offset
+block and the induction hypothesis for the remaining blocks. After that, lift
+one more level to `expandResidues(residues(...), modulus, count)` and use it to
+complete `assertNextFilteredIsCoprime`.
+
+### 2026-06-23 — Item 1: Next head equality verified (from current equivalence)
+
+Added two lemmas following the ordered "Work On These Next" plan:
+
+1. **`SpecSieveSequence.assertApplyOneEqualsNextPrime`**
+   (`src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala`):
+   Proves `apply(1) == primes.nextPrime.value` given `nextPrime.value < head^2`.
+   The proof uses:
+   - `assertApplyOneGtHead`: `head + 1 <= apply(1)`
+   - `assertApplyOneAtOrBeforeOwnNextPrime`: `apply(1) <= nextPrime`
+   - `assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq`: `Prime.isPrime(apply(1))`
+   - `AllPrimesSoFarList.nextPrime`'s postcondition:
+     `noPrimesBetween(head+1, nextPrime)`
+   Since `apply(1)` is prime and `> head`, no prime exists in `(head, nextPrime)`,
+   so `apply(1)` must equal `nextPrime`.
+
+2. **`SpecCycleSieveEquivalence.assertCurrentApplyOneEqualsSpecNextHead`**
+   (`src/main/scala/v1/chapter6/seq/sieve/SpecCycleSieveEquivalence.scala`):
+   Proves `cycle(1) == spec.next.head.value` under the current-stage equivalence
+   assumptions (same head, same gaps) plus the Spec `next()` precondition.
+   Combines the all-index apply equivalence at `k=1` with the new Spec-side
+   lemma above.
+
+**Validation:** Focus-verified each lemma, then full `just verify` passed with
+8613 valid (0 invalid, 0 unknown).
+
+**Next step:** Item 2 — Next-stage acceptance predicate equality.
+
+### 2026-06-23 — Item 2: Next-stage acceptance predicate equality verified
+
+Added `SpecCycleSieveEquivalence.assertNextAcceptsMatchesCyclePrimesCoprime`.
+
+**Statement:** Under the prime-list correspondence and the Spec `next()`
+
+## Strategy Update 2026-06-24 — Gap Equality Deferred, Canonical Path Forward
+
+The original "Work On These Next" items 1-4 in this ticket were superseded by
+the canonical strategy (see `canonical-spec-to-cycle-alignment.md`). The
+canonical approach creates `CanonicalCycleSieve(spec, period)` as the sole
+owner of Spec-to-Cycle extraction and alignment.
+
+**Progress on canonical lemmas:**
+
+| Lemma | Status | VCs |
+|-------|--------|-----|
+| Canonical cycle construction | Verified | 8820 verified |
+| `assertApplyMatches(k)` | Verified | same |
+| `assertNextHeadMatches()` | Verified | same |
+| `assertNextAcceptsMatches(v)` | Verified | same |
+| `assertNextPrimesMatch()` | Verified | same |
+| `assertWalkDecisionMatchesNextAccept(k)` | Verified | +55, total 8819 |
+| Gap equality (lemma 5) | **Deferred** | 3 approaches timed out — revisit after easier canonical path is complete |
+
+**Gap equality root cause:** The walk's `collectGaps` is structurally opaque
+from outside `.holds` contexts. Three separate approaches to proving
+`nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)` all timed out:
+(1) direct comparison, (2) position-by-position aux lemma following the
+`ModCycleIntegralProperties` pattern, (3) even `walkedGaps.nonEmpty`. The
+issue is that the walk's diff (`v - lastSurvivor`) depends on ALL
+previous positions, unlike the modulo-cycle-integral case where the diff
+depends only on `mod(position, size)`.
+
+**Current focus:** Build the verified canonical path as far as possible without
+the gap equality. The canonical construction `CanonicalCycleSieve(spec, period)`
+already bridges all known properties for the current stage. The next canonical
+stage `CanonicalCycleSieve(spec.next, nextPeriod).cycle` is the correct
+continuation by construction. The raw `CycleSieveSequence.next()` optimization
+(which uses `nextGapsWalk`) is deferred — we will return to it after completing
+the canonical path.
+
+**Future approaches for the gap equality:**
+(a) Proving a FORALL over intermediate positions via a recursive accumulator
+parameter inside `collectGaps`;
+(b) Strengthening `collectGaps` postconditions to export element-level data;
+(c) A different structural alignment strategy not yet considered.
