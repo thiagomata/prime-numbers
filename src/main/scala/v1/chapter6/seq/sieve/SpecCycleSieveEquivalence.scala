@@ -1,6 +1,9 @@
 package v1.chapter6.seq.sieve
 
 import stainless.lang.*
+import v1.chapter2.div.Calc
+import v1.chapter3.list.ListUtils
+import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter5.prime.PrimeUtils
 
@@ -159,6 +162,115 @@ object SpecCycleSieveEquivalence {
   }.holds
 
   /**
+   * Exposes the raw-prime shape of `SpecSieveSequence.next`.
+   *
+   * The Spec next stage is built by prepending `spec.primes.nextPrime` to the
+   * current complete-prime prefix. On the raw `BigInt` representation used by
+   * `CycleSieveSequence`, that means the next Spec prime list has the next head
+   * value at the front and the current Spec prime values as its tail.
+   */
+  def assertSpecNextPrimeValuesExtendCurrent(
+    spec: SpecSieveSequence
+  ): Boolean = {
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+
+    val nextSpec = spec.next
+    val currentValues = PrimeUtils.primeValues(spec.primes.list.list)
+    val nextValues = PrimeUtils.primeValues(nextSpec.primes.list.list)
+
+    assert(nextValues.head == nextSpec.head.value)
+    assert(nextValues.tail == currentValues)
+
+    nextValues == nextSpec.head.value :: currentValues
+  }.holds
+
+  /**
+   * Bridges the raw prime-list shape of the conditional next stage.
+   *
+   * This lemma does not prove that the cycle-side `apply(1)` is the Spec next
+   * prime. That is the hard next-head theorem we still want to isolate. Instead,
+   * it follows the conditional style used by `SpecSieveSequence.next` and
+   * `CycleSieveSequence.nextWithGapCycle`: if the caller supplies that next-head
+   * equality, and if the supplied gap cycle satisfies the constructor
+   * obligations required by `nextWithGapCycle`, then the next Cycle stage stores
+   * exactly the same raw prime values as `spec.next`.
+   */
+  def assertConditionalNextPrimeValuesMatch(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    newGapCycle: GapCycle
+  ): Boolean = {
+    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+    require(cycle.apply(BigInt(1)) == spec.next.head.value)
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primes))
+    require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(SieveUtils.product(cycle.primes), cycle.apply(BigInt(1))) != BigInt(0))
+
+    val nextSpec = spec.next
+    val nextCycle = cycle.nextWithGapCycle(newGapCycle)
+
+    assert(assertSpecNextPrimeValuesExtendCurrent(spec))
+    assert(PrimeUtils.primeValues(nextSpec.primes.list.list) == nextSpec.head.value :: PrimeUtils.primeValues(spec.primes.list.list))
+    assert(nextCycle.primes == cycle.apply(BigInt(1)) :: cycle.primes)
+    assert(nextCycle.primes == nextSpec.head.value :: PrimeUtils.primeValues(spec.primes.list.list))
+
+    nextCycle.primes == PrimeUtils.primeValues(nextSpec.primes.list.list)
+  }.holds
+
+  /**
+   * Proves next-stage apply equivalence for the verified conditional path.
+   *
+   * This lemma deliberately avoids `CycleSieveSequence.next()`, because that
+   * method is still `@extern` and would be opaque to Stainless. Instead it uses
+   * `nextWithGapCycle`, whose constructor path is verified under explicit
+   * preconditions.
+   *
+   * The remaining hard facts are named as assumptions: the Cycle-side next head
+   * must be the Spec next head, and the supplied gap cycle must match the Spec
+   * next gap cycle for the requested period. Under those assumptions, the
+   * previously verified same-head/same-gaps theorem proves equality for the
+   * requested index.
+   */
+  def assertConditionalNextApplyMatchesFromSameHeadAndGaps(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    newGapCycle: GapCycle,
+    nextPeriod: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+    require(nextPeriod > BigInt(0))
+    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+    require(cycle.apply(BigInt(1)) == spec.next.head.value)
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primes))
+    require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(SieveUtils.product(cycle.primes), cycle.apply(BigInt(1))) != BigInt(0))
+
+    val nextSpec = spec.next
+    val nextCycle = cycle.nextWithGapCycle(newGapCycle)
+
+    require(nextSpec(nextPeriod) == nextSpec.head.value + nextSpec.filterModulus)
+    require(nextSpec.specGapCycle(nextPeriod).memCycle == nextCycle.gapCycle.memCycle)
+
+    assert(assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle))
+    assert(nextCycle.primes == PrimeUtils.primeValues(nextSpec.primes.list.list))
+    assert(assertHeadsMatchFromPrimeValues(nextSpec, nextCycle))
+    assert(nextSpec.head.value == nextCycle.head)
+    assert(
+      assertSpecCycleApplyMatchesFromSameHeadAndGaps(
+        nextSpec,
+        nextCycle,
+        nextPeriod,
+        position
+      )
+    )
+
+    nextSpec(position) == nextCycle(position)
+  }.holds
+
+  /**
    * Converts the prime-list correspondence assumption into filter equality.
    *
    * The cycle sequence keeps the head prime at `cycle.primes.head`, so its
@@ -206,5 +318,84 @@ object SpecCycleSieveEquivalence {
     assert(spec.accepts(value) == SieveUtils.isCoprime(value, spec.filterValues))
 
     spec.accepts(value) == SieveUtils.isCoprime(value, cycle.primes.tail)
+  }.holds
+
+  /**
+   * Exposes one-value completeness of the residue list.
+   *
+   * The residue pipeline starts by enumerating every value in
+   * `[0, modulus)` that is coprime to the filter list. `SieveUtils` already
+   * verifies this through `assertGenerateResiduesContainsCoprime`; this local
+   * alias names the exact shape needed by the Spec/Cycle equivalence proof.
+   *
+   * This is only the completeness half of the "residues are exactly coprime"
+   * property: if a residue passes the filter, then the generated residue list
+   * contains it. The soundness half, from membership back to coprimality, should
+   * stay separate so Stainless can verify each direction independently.
+   */
+  def assertResiduesContainCoprimeBelowModulus(
+    modulus: BigInt,
+    filters: stainless.collection.List[BigInt],
+    residue: BigInt
+  ): Boolean = {
+    require(residue >= BigInt(0))
+    require(residue < modulus)
+    require(modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(filters))
+    require(SieveUtils.isCoprime(residue, filters))
+
+    assert(SieveUtils.assertGenerateResiduesContainsCoprime(
+      residue,
+      BigInt(0),
+      modulus,
+      filters
+    ))
+
+    SieveUtils.residues(modulus, filters).contains(residue)
+  }.holds
+
+  /**
+   * Proves one-value soundness for the recursive residue generator.
+   *
+   * `generateResidues(from, modulus, filters)` walks forward from `from` to
+   * `modulus`, adding a value exactly when it is coprime to `filters`. This
+   * helper exposes the membership direction of that construction: any value
+   * found in the generated list must have passed the same coprime test.
+   *
+   * The public `residues` function is just `generateResidues(0, ...)`; keeping
+   * this recursive helper separate makes the later top-level soundness alias a
+   * direct call instead of a proof that has to rediscover the generator's shape.
+   */
+  def assertGenerateResiduesContainOnlyCoprime(
+    modulus: BigInt,
+    filters: stainless.collection.List[BigInt],
+    residue: BigInt,
+    from: BigInt
+  ): Boolean = {
+    require(from >= BigInt(0))
+    require(from <= modulus)
+    require(modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(filters))
+    require(SieveUtils.generateResidues(from, modulus, filters).contains(residue))
+    decreases(modulus - from)
+
+    if (from == modulus) {
+      false
+    } else {
+      val rest = SieveUtils.generateResidues(from + BigInt(1), modulus, filters)
+      if (SieveUtils.isCoprime(from, filters)) {
+        if (residue == from) {
+          SieveUtils.isCoprime(residue, filters)
+        } else {
+          assert(rest.contains(residue))
+          assert(assertGenerateResiduesContainOnlyCoprime(modulus, filters, residue, from + BigInt(1)))
+          SieveUtils.isCoprime(residue, filters)
+        }
+      } else {
+        assert(rest.contains(residue))
+        assert(assertGenerateResiduesContainOnlyCoprime(modulus, filters, residue, from + BigInt(1)))
+        SieveUtils.isCoprime(residue, filters)
+      }
+    }
   }.holds
 }
