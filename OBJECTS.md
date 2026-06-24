@@ -1045,6 +1045,7 @@ sequence classes focused on their own semantics.
 | **assertNextGapListMatchesSpecNext(from, count)** | `nextGapList(from, count) == spec.next.gapList(from, count)` | List-level equality. Induction on `count` with sliding `from`, mirroring `assertGapListPositive`. Consumes `assertGapListFirstEqualsGap` (made public) for the head case. Verified with 9062 valid. |
 | **assertGapPeriodicMatchesSpec(k, period)** | `cycle(period+k+1) - cycle(period+k) == cycle(k+1) - cycle(k)` under `spec(period) == spec.head.value + spec.filterModulus` | Periodicity transfer. Pure transfer lemma: calls `spec.assertGapPeriodic`, rewrites `spec.apply` → `cycle` via `assertApplyMatches` at four positions. Verified with 9087 valid. |
 | **assertGapPositiveMatchesSpec(k)** | `cycle(k+1) - cycle(k) > 0` | Positivity transfer. Pure transfer: calls `spec.assertGapPositive`, rewrites via `assertApplyMatches`. Verified with 9100 valid. |
+| **assertCopyGapMatchesSpec(k)** | For `k >= 1`, if `cycle(k) mod cycle.head != 0` and `cycle(k+1) mod cycle.head != 0`: `spec.next(nextIndex+1) - spec.next(nextIndex) == cycle(k+1) - cycle(k)` where `nextIndex = spec.next.indexOfAccepted(spec(k))` | Canonical copy rule. When two consecutive current values survive the new head filter, their gap is copied unchanged. Uses `assertCurrentNonMultipleAcceptedByNext` and `assertConsecutiveAcceptedByNextPreservesGap`. Verified with 9266 valid. |
 
 **Source**: `src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`
 

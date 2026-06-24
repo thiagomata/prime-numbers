@@ -663,3 +663,60 @@ fact through a small verified lemma made the final consumer cheap and stable.
 `assertCurrentNonMultipleAcceptedByNext` at `k` and `k + 1`, and then consume
 the already verified pure-Spec
 `assertConsecutiveAcceptedByNextPreservesGap`.
+
+### 2026-06-24 — Copy gap transfer verified (3rd attempt, new approach)
+
+Uncommented and verified `CanonicalCycleSieve.assertCopyGapMatchesSpec(k)`.
+
+The earlier attempts (2 from this ticket + 1 retry) all timed out on
+cross-instance acceptance transfer. The successful approach differs in three ways. An isolation test
+(`assertNextAcceptsViaAlias`, 9 VCs, 8 valid, 1 timeout) confirmed that
+the alias alone reproduces the timeout — the other two factors may also
+help but are not the root cause:
+
+1. **No `nextSeq` alias.** CONFIRMED as root cause. `val nextSeq = spec.next`
+   blocks the solver from connecting cached lemma results to `nextSeq.foo(...)`.
+   Use `spec.next` directly.
+2. **Lemma return values captured and asserted.** Each call to
+   `assertCurrentNonMultipleAcceptedByNext` and
+   `assertCurrentValueAtOrAboveNextHead` captures its return value, then
+   `assert`s it.
+3. **Redundant assertions removed.** Removed the redundant
+   `spec.assertApplyMonotonic` and standalone `spec(k) >= ...` lines.
+   Reduced VCs from 61 to 53.
+
+**Statement:** For `k >= 1`, if both `cycle(k)` and `cycle(k+1)` are not
+multiples of `cycle.head`:
+```
+spec.next(nextIndex + 1) - spec.next(nextIndex) == cycle(k + 1) - cycle(k)
+```
+where `nextIndex = spec.next.indexOfAccepted(spec(k))`.
+
+**Validation:** Focused verification: 53 VCs in 9.70s. Full `just verify`:
+`9266 valid, 0 invalid, 0 unknown`. +53 VCs over previous green (9213).
+
+**Lesson (see LEARNINGS.md 18.3):** Confirmed via isolation test
+(`assertNextAcceptsViaAlias`). The `val nextSeq = spec.next` alias alone,
+in a 9-VC lemma, causes `nextSeq.accepts(spec(k))` to time out. The alias
+blocks the solver from connecting cached `.holds` results to the local
+variable. Fix: use `spec.next` directly + capture/assert return values.
+
+### 2026-06-24 — Status summary and next targets
+
+**Verified (Leg 3):**
+1. `assertNextFirstGapMatchesSpecNext` — first gap equality
+2. `assertNextGapAtMatchesSpecNext` — per-position gap equality
+3. `nextGapList` + `assertNextGapListMatchesSpecNext` — full gap list builder + equality
+4. `assertGapPeriodicMatchesSpec` — gap periodicity transfer
+5. `assertGapPositiveMatchesSpec` — gap positivity transfer
+6. `assertConsecutiveAcceptedByNextPreservesGap` (Spec-side) — pure-Spec copy lemma
+7. `assertCurrentValueAtOrAboveNextHead` — ordering lemma
+8. `assertCurrentNonMultipleAcceptedByNext` — constructive next acceptance
+9. `assertCopyGapMatchesSpec` — canonical copy rule [JUST VERIFIED]
+
+**Remaining for Leg 3:**
+- **Merge rule:** when `cycle(k)` is a multiple of head but `cycle(k+gapSize)`
+  is not, the merged gap equals the sum of intermediate gaps. Transfers from
+  `SpecSieveSequence.assertMergeGapEqualsOldGapSum`.
+- **Period sum:** the sum of next gaps equals the current head times the old
+  period sum. Transfers from existing Spec gap-sum facts.

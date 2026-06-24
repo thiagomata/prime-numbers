@@ -518,48 +518,43 @@ large cross-instance VC.
 - The solver doesn't use cached lemma results across assertion boundaries in
   large VCs
 
+### 18.3 Local `val` aliases block the solver from using cached lemma results [Confirmed]
+
+**Confirmed via isolation test (`assertNextAcceptsViaAlias`), 2026-06-24:**
+
+When a `.holds` lemma returns `spec.next.accepts(spec(k))`, the solver caches
+this result. If the calling code binds `spec.next` to a local alias
+`val nextSeq = spec.next` and then asserts `nextSeq.accepts(spec(k))`, the
+solver cannot connect the cached result to the local alias — even when the
+alias is trivially equal to the original expression.
+
+**Isolation test:** 9 VCs, 8 valid, 1 timed out on `nextSeq.accepts(spec(k))`
+despite `assertCurrentNonMultipleAcceptedByNext(k)` being called and its return
+value asserted on the immediately preceding line.
+
+**Fix:** Use the target instance expression directly (e.g., `spec.next.accepts(...)`)
+rather than binding it to a `val`. Additionally, capture `.holds` return values
+and `assert` them to surface facts:
+```scala
+val acceptedK = assertCurrentNonMultipleAcceptedByNext(k)
+assert(acceptedK)
+// Use spec.next.foo(), NOT nextSeq.foo()
+assert(spec.next.accepts(spec(k)))  // verifies in 0.1s
+```
+
+**Earlier confounding note (corrected):** The successful `assertCopyGapMatchesSpec`
+also changed capture+assert and added explicit lower-bound assertions. The
+isolation test proves the alias alone is sufficient to cause a timeout, even
+without those other factors. The alias IS the root cause.
+
+**Source:** `tickets/active/canonical-next-strategy.md` (2026-06-24 copy gap transfer).
+Isolation test `assertNextAcceptsViaAlias`: commented out at
+`CanonicalCycleSieve.scala` with permanent record of the confirmed root cause.
+
 ## Index
 
 | Lesson | Source ticket | Area |
 |--------|--------------|------|
-| 1.1 Private lemmas | `v0-residue-cycle-proof.md` | Propagation |
-| 1.2 `.ensuring` postcondition | `v0-residue-cycle-proof.md` | Propagation |
-| 1.3 Return equality directly | `v0-residue-cycle-proof.md` | Propagation |
-| 1.4 `.holds` caching | `dead-code-cleanup-and-euclid-article.md` | Propagation |
-| 2.1 IH propagation | `v0-residue-cycle-proof.md` | Induction |
-| 3.1 `modZeroPlusC` | `v0-apply-modulus-loop.md` | Modulo |
-| 3.2 `APlusMultipleTimesBSameMod` | `v0-residue-cycle-proof.md` | Modulo |
-| 3.4 No `%` operator | `v0-apply-modulus-loop.md` | Modulo |
-| 4.1 Prefix-product | `v0-apply-modulus-loop.md` | Product |
-| 4.2 `primorialMatchesSieveProduct` | `v0-apply-modulus-loop.md` | Product |
-| 5.2 Residues completeness | `v0-residue-cycle-proof.md` | Lists |
-| 6.2 Private lemmas over external | `v0-residue-cycle-proof.md` | Timeouts |
-| 6.4 3-attempt rule | `v0-apply-modulus-loop.md` | Timeouts |
-| 7.2 `indexOfAccepted` period | `v0-residue-cycle-proof.md` | Periodicity |
-| 7.3 Two-direction inequality | `v0-residue-cycle-proof.md` | Induction |
-| 8.1 Run tests after verify | `v0-apply-modulus-loop.md` | Testing |
-| 9.1 `.ensuring` breaks type inference | `v0-next-level-construction.md` | Pitfalls |
-| 9.2 No `rm` | `v0-next-level-construction.md` | Pitfalls |
-| 9.3 No destructive git | `v0-next-level-construction.md` | Pitfalls |
-| 9.4 No core cycle modifications | `v0-apply-modulus-loop.md` | Pitfalls |
-| 10.1 Deep number theory limits | `prove-apply1-is-prime.md` | SMT Limits |
-| 10.2 Euclid's lemma wall | `primorial-not-divisible-by-new-prime.md` | SMT Limits |
-| 11.1 Constructor `require` as invariant | `sieve-properties-step5-coprime-to-modulus.md` | Structural |
-| 11.2 Named constructor helpers | `next-constructor-requirement-assertions.md` | Structural |
-| 11.3 Restricted representations | `complete-prime-prefix-sieve-cycle.md` | Structural |
-| 12.1 `@extern` cascading VCs | `remove-extern-from-next.md` | @extern |
-| 12.2 Bridge `apply(k)` to cycles | `next-constructor-requirement-assertions.md` | @extern |
-| 13.1 Abstract foundation lemmas | `sieve-foundation-cycle-integral-ones-and-filter-preserves-primes.md` | Proof Strategies |
-| 13.2 Proof objects before data changes | `sieve-sequence-residue-representation-proof-object.md` | Proof Strategies |
-| 13.3 Head primality wiring | `sieve-properties-step4-assertHeadIsPrime.md` | Proof Strategies |
-| 13.4 Gap positivity pattern | `remove-extern-from-next.md` | Proof Strategies |
-| 14.1 VC counts brittle in articles | `article-review-comparison-2026-06-17.md` | Articles |
-| 14.2 Draft/failed in learnings | `article-evaluation-2026-06-15.md` | Articles |
-| 14.3 No ticket/learning citations in articles | `article-review-comparison-2026-06-17.md` | Articles |
-| 15.1 Empirical runners | `empirical-g-local-crossover.md` | Verification |
-| 16.1 Path analysis before building | `sieve-properties-step5-coprime-to-modulus.md` | Process |
-| 17.1 One assertion per cycle | AGENTS.md | Workflow |
-| 17.4 Ticket before long action | AGENTS.md | Workflow |
-| 17.5 Search tickets first | AGENTS.md | Workflow |
 | 18.1 Cross-instance timeouts [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
 | 18.2 Solver can't derive `a > b ⇒ a ≥ b+1` cross-instance [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
+| 18.3 Local `val` aliases block the solver from using cached lemma results [Confirmed] | `canonical-next-strategy.md` | Cross-instance |
