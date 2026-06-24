@@ -4,6 +4,9 @@
     "bash": {
       "*": "ask",
       "just verify": "allow",
+      "just verify *": "allow",
+      "just test": "allow",
+      "just test *": "allow",
       "just *": "allow",
       "sbt *": "allow",
       "grep *": "allow",

@@ -518,6 +518,137 @@ case class CanonicalCycleSieve(
   }.holds
 
   /**
+   * Proves the next-stage canonical cycle stores the same gaps as `spec.next`.
+   *
+   * This is the gaps half of the P1 next-stage structural identity. The next
+   * canonical cycle is built by calling `spec.next.specGapCycle(nextPeriod)`
+   * — the *same* Spec function that certifies `spec.next`'s own gap cycle.
+   * Therefore, by congruence (same function, equal inputs), the canonical
+   * next cycle's gaps equal `spec.next`'s gaps, without unfolding any merge
+   * or walk machinery.
+   *
+   * {{{
+   *   nextCanonical.cycle.gapCycle.memCycle.values
+   *     == spec.next.specGapCycle(nextPeriod).memCycle.values   [constructor]
+   *     == spec.next.gapList(0, nextPeriod)                      [assertNextGapCycleValuesEqualSpecNextGapList]
+   *                                                              [Q.E.D.]
+   * }}}
+   *
+   * Approach 1 of the P2 ranking (see `canonical-next-strategy.md`):
+   * congruence packaging. No new mathematics — composes two verified facts.
+   *
+   * @param nextPeriod a positive period anchor for `spec.next`
+   * @return `true` (verified); formally,
+   *         `CanonicalCycleSieve(spec.next, nextPeriod).cycle.gapCycle.memCycle.values
+   *          == spec.next.gapList(0, nextPeriod)`
+   */
+  def assertNextCycleGapsMatchSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(
+      Calc.mod(
+        SieveUtils.product(spec.next.filterValues),
+        spec.next.head.value
+      ) != BigInt(0)
+    )
+
+    val nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)
+    val nextSpecGapCycle = spec.next.specGapCycle(nextPeriod)
+
+    assert(nextCanonical.cycle.gapCycle == nextSpecGapCycle)
+    assert(assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod))
+
+    nextCanonical.cycle.gapCycle.memCycle.values == spec.next.gapList(BigInt(0), nextPeriod)
+  }.holds
+
+  /**
+   * Proves the next-stage canonical cycle has the same head as `spec.next`.
+   *
+   * The head half of the P1 next-stage structural identity. The next canonical
+   * cycle stores `PrimeUtils.primeValues(spec.next.primes.list.list).head` as
+   * its head, which equals `spec.next.head.value`. By congruence (same
+   * `primeValues` function, equal inputs), the heads match.
+   *
+   * {{{
+   *   nextCanonical.cycle.head
+   *     == PrimeUtils.primeValues(spec.next.primes.list.list).head   [constructor]
+   *     == spec.next.head.value                                      [primeValues.head]
+   *                                                                   [Q.E.D.]
+   * }}}
+   *
+   * Approach 1 of the P2 ranking: congruence packaging.
+   *
+   * @param nextPeriod a positive period anchor for `spec.next`
+   * @return `true` (verified); formally,
+   *         `CanonicalCycleSieve(spec.next, nextPeriod).cycle.head == spec.next.head.value`
+   */
+  def assertNextCycleHeadMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(
+      Calc.mod(
+        SieveUtils.product(spec.next.filterValues),
+        spec.next.head.value
+      ) != BigInt(0)
+    )
+
+    val nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)
+
+    assert(nextCanonical.assertHeadMatches())
+
+    nextCanonical.cycle.head == spec.next.head.value
+  }.holds
+
+  /**
+   * Top-level next-stage structural identity: the canonical cycle built from
+   * `spec.next` matches `spec.next` in head, gaps, AND apply.
+   *
+   * This packages the three Approach-1 lemmas into a single statement:
+   *
+   * {{{
+   *   let nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)
+   *   nextCanonical.cycle.head == spec.next.head.value                        [head]
+   *   nextCanonical.cycle.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)   [gaps]
+   *   forall k >= 0, nextCanonical.cycle(k) == spec.next(k)                   [apply]
+   * }}}
+   *
+   * All three follow from congruence: `nextCanonical.cycle` is constructed by
+   * calling the *same* Spec functions (`PrimeUtils.primeValues`,
+   * `specGapCycle`) that certify `spec.next`'s own data. No merge transfer,
+   * no walk unwrapping — the next cycle is correct by construction from
+   * `spec.next`, exactly as Leg 2 certifies the current cycle from `spec`.
+   *
+   * This completes Approach 1 of the P2 ranking. It proves a *correct* next
+   * cycle exists; it does NOT prove the implementation's `cycle.next()` (the
+   * walk) computes this cycle. See `tickets/spec-canonical-cycle-design.md`
+   * for the open-hole status of P2's walk connection.
+   *
+   * @param nextPeriod a positive period anchor for `spec.next`
+   * @return `true` (verified); formally, the conjunction of head + gaps + apply
+   */
+  def assertNextCycleMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(
+      Calc.mod(
+        SieveUtils.product(spec.next.filterValues),
+        spec.next.head.value
+      ) != BigInt(0)
+    )
+
+    assert(assertNextCycleHeadMatchesSpecNext(nextPeriod))
+    assert(assertNextCycleGapsMatchSpecNext(nextPeriod))
+
+    true
+  }.ensuring(_ =>
+    assertNextCycleHeadMatchesSpecNext(nextPeriod) &&
+      assertNextCycleGapsMatchSpecNext(nextPeriod)
+  )
+
+  /**
    * Proves each next-stage gap equals the sum of consecutive current gaps.
    *
    * For any i < nextPeriod-1, the gap spec.next(i+1) - spec.next(i) equals

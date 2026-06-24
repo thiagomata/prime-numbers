@@ -926,3 +926,43 @@ Mirror Spec's merge machinery on the canonical cycle, bottom-up:
 Each step mirrors a verified Spec lemma and transfers through
 `assertApplyMatches`. This is the Leg-3 transfer pattern, applied to the
 merge.
+
+## P2 ranked approaches (user directive 2026-06-25: try in order, save learnings, stop only when all exhausted)
+
+**Target:** prove `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches
+`spec.next` in head, gaps, AND apply (the P1 next-cycle, not the walk).
+
+### Ranked approaches
+
+1. **Congruence packaging (cheapest).** All three equalities follow from
+   congruence: `nextCanonical.cycle` is built by calling the *same* Spec
+   functions (`specGapCycle`, `PrimeUtils.primeValues`) that build `spec.next`'s
+   own certified data. Same function symbol + equal inputs ⇒ equal output,
+   without unfolding. head via `assertNextHeadMatches`; apply via P1
+   (`assertNextCycleApplyMatchesSpecNext`); gaps via packaging
+   `assertNextGapCycleValuesEqualSpecNextGapList` + construction.
+   **Why first:** no new mathematics; pure packaging of verified facts.
+
+2. **Corrected-contract merge transfer.** Define a Spec-side merge lemma under
+   `nextSeq.head.value >= head.value` (the contract that fits `spec.next`),
+   mirroring `assertConsecutiveAcceptedByNextPreservesGap` (the copy case,
+   verified). Transfer the conclusion to the cycle. **Why second:** real new
+   Spec proof, moderate cost, but required only if (1) doesn't deliver the
+   gaps equality in the form needed.
+
+3. **Walk connection (`cycle.next()` ≡ spec.next).** Prove
+   `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`. **Why third:** the
+   documented hard open hole; 3 prior timeouts. Try only if (1)+(2) are
+   insufficient AND a genuinely new angle on the walk appears.
+
+4. **`createNextGaps` pure function.** Define a pure function of `(head, gaps)`
+   and prove both sides against it. **Why last:** requires re-proving the
+   merge's soundness/completeness (the hard work Spec already did internally);
+   user flagged this as non-trivial.
+
+### Per-approach contract
+- Each approach may have several lemma variations attempted.
+- After each attempt (success or timeout): record idea, statement, where it
+  timed out, and why. Comment out failures, restore green.
+- Self-check after each: "new idea, or stuck on the same shape?" Stop only
+  when no new idea remains across all approaches.
