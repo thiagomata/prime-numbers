@@ -1050,6 +1050,8 @@ sequence classes focused on their own semantics.
 | **assertAcceptsEqualWhenFalse(seq1, seq2, v)** | `seq1 == seq2 ∧ ¬seq1.accepts(v) ⇒ ¬seq2.accepts(v)` | Dual of `assertAcceptsEqualWhenTrue`. Requires `v >= seq1.head.value` and `¬seq1.passesFilter(v)`, unfolds structural equalities to transfer non-acceptance. |
 | **assertCycleGapEqualsSpecGap(k)** | `spec(k+1) - spec(k) == cycle(k+1) - cycle(k)` for `k >= 0` | Pure consequence of `assertApplyMatches` at `k` and `k+1`. Isolates the cycle-side gap equality from the copy-gap lemma. |
 | **assertNextAcceptsViaAlias(k)** | For `k >= 1` and `Calc.mod(cycle(k), cycle.head) != 0`: `nextSeq.accepts(spec(k))` where `nextSeq = spec.next` | Bridges a cached `.holds` acceptance result through a local `val` alias using `assertAcceptsEqualWhenTrue`. Requires explicit `assertCurrentValueAtOrAboveNextHead(k)` before the bridge call. |
+| **assertCurrentMultipleRejectedByNext(k)** | For `k >= 1` and `Calc.mod(cycle(k), cycle.head) == 0`: `¬spec.next.accepts(spec(k))` | Rejection side of the merge rule. Mirror of `assertCurrentNonMultipleAcceptedByNext`. When a current value is a multiple of head, it is not coprime with `cycle.primes` and is rejected by the next stage. |
+| **assertNextFilterModulusRelation()** | `spec.next.filterModulus == cycle.head * spec.filterModulus` | Period sum transfer. When the old head becomes a filter prime in `spec.next`, the filter modulus grows by that factor. |
 
 **Source**: `src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`
 

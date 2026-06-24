@@ -389,7 +389,7 @@ case class CanonicalCycleSieve(
    * `cycle.head` (= `spec.head.value`) becomes a filter prime, so the product
    * grows by that factor.
    */
-  def assertNextFilterModulusRelation(): Boolean = {
+   def assertNextFilterModulusRelation(): Boolean = {
     assert(assertPrimesMatch())
     assert(cycle.primes.head == cycle.head)
     assert(cycle.primes.tail == spec.filterValues)
@@ -403,6 +403,17 @@ case class CanonicalCycleSieve(
     assert(nextSpec.filterValues.head == cycle.head)
 
     nextSpec.filterModulus == cycle.head * spec.filterModulus
+  }.holds
+
+  /**
+   * Exposes `spec.assertApplyMonotonic` for the canonical context.
+   * Proves that Spec apply values are non-decreasing.
+   */
+  def assertSpecApplyMonotonic(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(from <= until)
+
+    spec.assertApplyMonotonic(from, until)
   }.holds
 
   /**
