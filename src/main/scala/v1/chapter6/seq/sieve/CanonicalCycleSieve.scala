@@ -914,6 +914,61 @@ case class CanonicalCycleSieve(
   }.holds
 
   /**
+   * Position-to-index bridge (base case): the cycle position holding
+   * `spec.next(1)` is a survivor of the new-head filter.
+   *
+   * Walk-correctness base piece (Approach 3). The walk emits a gap at the
+   * first position whose value survives `cycle.head`; this lemma shows that
+   * position is `spec.indexOfAccepted(spec.next(1))` and `cycle` there equals
+   * `spec.next(1)`. Kept deliberately simple for the verifier — one value
+   * lookup, no scanning, no reverse.
+   *
+   * @return `true` (verified)
+   */
+  def assertFirstSurvivorPositionMatchesSpecNextOne(): Boolean = {
+    assert(assertNextValueMatchesCyclePosition(BigInt(1)))
+
+    val firstNextValue = spec.next(BigInt(1))
+    val pos = spec.indexOfAccepted(firstNextValue)
+
+    assert(cycle(pos) == firstNextValue)
+    assert(assertWalkDecisionMatchesNextAccept(pos))
+    assert(Calc.mod(cycle(pos), cycle.head) != BigInt(0))
+
+    cycle(pos) == firstNextValue
+  }.holds
+
+  /**
+   * Position-to-index bridge (general): the cycle position holding
+   * `spec.next(m)` is a survivor of the new-head filter, for any `m >= 0`.
+   *
+   * Generalizes `assertFirstSurvivorPositionMatchesSpecNextOne` from `m == 1`
+   * to arbitrary `m`. This is the per-survivor fact the walk-correctness
+   * invariant will consume: at the position where `cycle` equals `spec.next(m)`,
+   * that value survives `cycle.head` (it is not a multiple of it).
+   *
+   * Kept deliberately simple for the verifier — one value lookup per `m`, no
+   * scanning, no list reasoning.
+   *
+   * @param m the next-stage index, `m >= 0`
+   * @return `true` (verified)
+   */
+  def assertSurvivorPositionMatchesSpecNext(m: BigInt): Boolean = {
+    require(m >= BigInt(0))
+
+    assert(assertNextValueMatchesCyclePosition(m))
+
+    val nextValue = spec.next(m)
+    val pos = spec.indexOfAccepted(nextValue)
+
+    assert(cycle(pos) == nextValue)
+    assert(assertWalkDecisionMatchesNextAccept(pos))
+    assert(Calc.mod(cycle(pos), cycle.head) != BigInt(0))
+
+    cycle(pos) == nextValue
+  }.holds
+
+  /**
    * Proves the next-stage gap at an arbitrary position `index` matches the
    * corresponding element of `spec.next.gapList(0, nextPeriod)`, without
    * scanning positions.

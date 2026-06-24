@@ -1043,3 +1043,43 @@ correctness lemma reaches across more than one stage.
 constructor. Combined with `assertNextCycleMatchesSpecNext`, the next-stage
 equivalence is conditionally proven (head + gaps + apply all match `spec.next`
 under the stated hypotheses).
+
+## Approach 3 — walk correctness (in progress, 2026-06-25)
+
+Goal: prove `nextGapsWalk(cycle0) == spec.next.gapList(0, nextPeriod)`, closing
+the implementation-certification half. Strategy: prove the correspondence
+*from inside the walk's recursion* via an invariant, where the structure IS
+visible — rather than comparing the walk's output to `spec.next.gapList` from
+outside (the shape that timed out 3×).
+
+**Guiding principle (user, 2026-06-25): "Keep things stupid simple for the
+verifier even if computing slower."** Dumb code the solver can follow beats
+clever code it can't. Implications:
+- The reverse in `collectGaps` is a perf optimization that costs proof effort.
+  For proof purposes, prefer forward-appending (`gaps ++ List(gap)`) over
+  prepend+reverse, even though it's O(n²) at runtime. Stainless doesn't care
+  about runtime.
+- Avoid clever compositions; spell out each step.
+
+### Approach 3 plan
+1. **Position-to-index bridge (base case)** — the cycle position holding
+   `spec.next(1)` is a survivor of the new-head filter. ✅ DONE
+   (`assertFirstSurvivorPositionMatchesSpecNextOne`, 9500 valid).
+2. **Position-to-index bridge (inductive step)** — generalize to the m-th
+   survivor: `cycle(spec.indexOfAccepted(spec.next(m))) == spec.next(m)` and
+   that position survives the filter.
+3. **Invariant-carrying companion** to `collectGaps` — a forward-appending
+   variant whose invariant is `gaps == spec.next.gapList(0, m)` after processing
+   the first `m` survivors.
+4. **Top-level wrap** — `nextGapsWalk == spec.next.gapList`.
+
+### 2026-06-25 — Red-state incident + KISS principle applied
+While inserting the bridge lemma, the Edit matched the wrong
+`spec.next(k) == cycle(pos)` site and split `assertNextFirstGapMatchesSpecNext`'s
+doc block, breaking compilation (red state). Per green-to-green, fixed by
+removing the broken insertion and re-inserting at the correct location with a
+unique anchor. Lesson: when an `old_string` appears multiple times in a file,
+use a longer/unique anchor — never a common pattern.
+
+Bridge base case then verified first attempt (15 VCs / 4.32s). Full verify
+`9500 valid: 9500 invalid: 0 unknown: 0` (+15 over 9485).
