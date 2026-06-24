@@ -306,13 +306,6 @@ case class CanonicalCycleSieve(
   */
 
   /**
-   * [TIMED OUT — direct constructive attempt 2, 2026-06-24]
-   *
-   * Removing the standalone lower-bound assertion moved the timeout to the
-   * same lower-bound precondition at the final `nextSpec.accepts(spec(k))`
-   * call. The acceptance postcondition itself verified. Commented out to
-   * restore the green baseline.
-   *
    * Proves next-stage acceptance constructively from the two filter parts.
    *
    * A current generated value already passes `spec.filterValues`, which is the
@@ -326,7 +319,6 @@ case class CanonicalCycleSieve(
    * directly avoids asking Stainless to select and rewrite one branch of a
    * cross-representation boolean equivalence.
    */
-  /*
   def assertCurrentNonMultipleAcceptedByNext(k: BigInt): Boolean = {
     require(k >= BigInt(1))
     require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
@@ -353,13 +345,11 @@ case class CanonicalCycleSieve(
     assert(nextSpec.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
     assert(nextSpec.filterValues == cycle.primes)
 
-    assert(assertNextHeadMatches())
-    assert(spec.assertApplyMonotonic(BigInt(1), k))
+    assert(assertCurrentValueAtOrAboveNextHead(k))
     assert(SieveUtils.isCoprime(value, nextSpec.filterValues))
 
     nextSpec.accepts(spec(k))
   }.holds
-  */
 
   /**
    * Proves the canonical next-stage gap cycle values equal `spec.next.gapList`.

@@ -621,3 +621,45 @@ This confirms the ordering fact is independently cheap and stable. The next
 small change should make the constructive acceptance lemma consume this public
 ordering lemma before its final `accepts` call. No coprimality proof needs to be
 changed.
+
+### 2026-06-24 — Constructive next acceptance verified
+
+Re-enabled `assertCurrentNonMultipleAcceptedByNext(k)` and replaced its local
+ordering reconstruction with:
+
+```text
+assertCurrentValueAtOrAboveNextHead(k)
+```
+
+No coprimality or filter-list reasoning changed. The lemma now verifies:
+
+```text
+k >= 1
+Calc.mod(cycle(k), cycle.head) != 0
+------------------------------------------
+spec.next.accepts(spec(k))
+```
+
+Focused verification:
+
+```text
+43 valid, 0 invalid, 0 unknown
+```
+
+The final `accepts` lower-bound precondition, which previously timed out at
+120 seconds, verified in 0.1 seconds.
+
+Full verification:
+
+```text
+9213 valid, 0 invalid, 0 unknown
+```
+
+**Lesson:** the timeout was caused by combining the ordering derivation with
+the full constructive coprimality context in one VC. Exporting the ordering
+fact through a small verified lemma made the final consumer cheap and stable.
+
+**Next:** re-enable the corrected `assertCopyGapMatchesSpec(k)`, call
+`assertCurrentNonMultipleAcceptedByNext` at `k` and `k + 1`, and then consume
+the already verified pure-Spec
+`assertConsecutiveAcceptedByNextPreservesGap`.
