@@ -2,6 +2,7 @@
 
 **Status:** Active, migrating verified bridges into an intermediate representation
 **Created:** 2026-06-23
+**Umbrella design doc:** [`../spec-canonical-cycle-design.md`](../spec-canonical-cycle-design.md)
 **Related:**
 - `tickets/active/v0-v2-apply-equivalence.md`
 - `tickets/done/v0-gap-list-cycle-formalization.md`

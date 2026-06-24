@@ -3,6 +3,7 @@
 **Status:** Active
 **Created:** 2026-06-24
 **Owner:** `CanonicalCycleSieve` (`src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`)
+**Umbrella design doc:** [`../spec-canonical-cycle-design.md`](../spec-canonical-cycle-design.md)
 
 ## EPIC Context (do not duplicate per-ticket)
 
@@ -754,3 +755,174 @@ Full verify: **9373 valid, 0 invalid, 0 unknown**.
 **Next:** Leg 4 — `CycleSieveSequence` equivalence using only the cycle's
 structural rules, with no Spec link. See `tickets/active/canonical-spec-to-cycle-alignment.md`
 for the epic roadmap.
+
+## Next-Stage Equivalence (P1 / P2)
+
+**Goal:** prove the structural-identity equalities (head + gaps + apply) hold
+one stage later — i.e. for `spec.next` as the current stage. Two planned
+approaches (per `tickets/spec-canonical-cycle-design.md` §1):
+
+- **P1 (math side):** `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k.
+  Proves a *correct* next cycle exists, built from `spec.next`'s own data, by
+  the same construction as Leg 2. Does NOT prove the implementation's `cycle.next()`
+  computes it.
+- **P2 (computational):** `cycle.next()(k) == spec.next(k)` ∀k. Proves the
+  optimized `CycleSieveSequence.next()` (via `nextGapsWalk`) matches `spec.next`.
+
+**Clarification on `stop-and-ask` (user, 2026-06-25):** when a ticket pursues
+multiple planned approaches, the 3-attempt counter applies *per approach*.
+Failure of one approach is expected process — comment it out and try the next.
+Stop-and-ask only when all ticketed approaches are exhausted.
+
+### 2026-06-25 — P1 verified (after fixing an off-by-one-stage bug)
+Added `CanonicalCycleSieve.assertNextCycleApplyMatchesSpecNext(nextPeriod, k)`.
+
+**Statement:** `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` for all `k >= 0`.
+
+This is Leg 2's `assertApplyMatches` instantiated one stage later. The proof
+constructs `nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)` and
+calls `nextCanonical.assertApplyMatches(k)` (Leg 2's current-stage lemma, which
+applies because `nextCanonical.spec == spec.next`).
+
+**Bug in attempt 1 (caught via focused verify):** the first version called
+`nextCanonical.assertNextApplyMatches(nextPeriod, k)` — but that lemma proves
+apply-matches for `nextCanonical.spec.next` = `spec.next.next` (TWO stages
+ahead), demanding a precondition I don't have. Fix: call
+`nextCanonical.assertApplyMatches(k)` instead, which proves
+`nextCanonical.cycle(k) == nextCanonical.spec(k) == spec.next(k)`.
+
+**Validation:** focused verify `just verify assertNextCycleApplyMatchesSpecNext`
+passed in 3.13s (29 VCs) — confirming the user's point that focused verify is
+faster for single-lemma iteration. Full `just verify`:
+`9402 valid: 9402 (9382 from cache, 20 trivial) invalid: 0 unknown: 0`.
++29 VCs over previous green (9373).
+
+**Lesson:** when a method `m` is on a wrapper `W(spec)`, calling `w.m` operates
+on `w.spec`, not on the *original* `spec`. `nextCanonical.assertNextApplyMatches`
+is about `spec.next.next`, not `spec.next`. The right call for "next stage" is
+`nextCanonical.assertApplyMatches` (the current-stage lemma, on the
+next-stage wrapper). Off-by-one-stage bugs are easy to miss on paper — focused
+verify caught it fast.
+
+**Status:** P1 complete. P2 (the computational `cycle.next()` equivalence)
+remains open — that is the deferred Lemma 5 / open hole, and the next planned
+approach.
+
+### P2 exploration contract (user, 2026-06-25)
+
+P2 is a hard theorem (3 prior timeouts before Leg 3 existed). The exploration
+process for P2:
+
+- **Try multiple ideas.** Timeouts are expected and are NOT failure — they are
+  exploration. Each idea gets its own verify cycle.
+- **After each attempt (success or timeout): record what was learned** in this
+  ticket. The learning is the deliverable even when the proof doesn't land.
+  Specifically record: the idea, the statement attempted, where it timed out
+  (which VC / precondition), and why.
+- **Honest self-check after each attempt:** "Do I genuinely have a new idea, or
+  am I stuck retrying variations of the same shape?" If stuck (no new idea) →
+  STOP, summarize all learnings, ask for direction. This is the spirit of
+  `stop-and-ask` applied to multi-approach exploration.
+- **Keep state green:** every failed attempt is commented out (per
+  `never-destroy`), tree restored to green before the next idea.
+
+### 2026-06-25 — P2 idea exploration (no verify cycles spent — analysis only)
+
+Before writing any P2 code, sketched three ideas and self-checked each against
+the documented root cause of the 3 prior timeouts (the walk's opacity).
+
+**Idea A — structural equality of two cycle objects.** Prove
+`cycle.next().gapCycle == CanonicalCycleSieve(spec.next, nextPeriod).cycle.gapCycle`.
+The primes side is easy; the gapCycle side reduces to
+`nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)` — i.e. the exact
+comparison that timed out 3×. **Rejected: reduces to the known-hard problem.**
+
+**Idea B — a `canonicalNext()` builder on `CanonicalCycleSieve` that uses
+`nextGapList` (the verified direct list) instead of the walk.** This sidesteps
+the walk but, on reflection, just restates what P1 already proves (P1 builds
+the next cycle from `spec.next`'s own data). It does not prove the
+implementation's `cycle.next()` is correct. **Rejected: not a new result;
+already covered by P1.**
+
+**Idea C — `nextGapsWalk(cycle) == nextGapList(0, nextPeriod)`.** Compare the
+walk against a Canonical-local list (not `spec.next.gapList` directly), then
+use the already-proven `nextGapList == spec.next.gapList` by transitivity.
+**Self-check:** the left side is still `collectGaps`/`nextGapsWalk`, which
+recurses `head × period` positions and is opaque to the solver from outside
+`.holds`. Changing the right side from `spec.next.gapList` to `nextGapList`
+does not change that the left side must be unwound. **Rejected: same opacity
+shape as the prior failures.**
+
+**Conclusion (honest self-check):** all three ideas bottom out at "the solver
+must see inside `collectGaps`/`nextGapsWalk`," which is the documented root
+cause. I do NOT currently have a genuinely new idea that avoids this. Per the
+P2 contract, this is the "stuck, not exploring" trigger — STOP and surface to
+the user rather than burn verify cycles on known-shape attempts.
+
+**What would constitute a genuinely new idea (for discussion):**
+1. **Strengthen `collectGaps`'s postcondition** (`.ensuring`) to export the
+   element values or the list contents, so external lemmas get structural
+   information without unwinding the recursion. This changes the walk itself,
+   not just the comparison.
+2. **Prove the walk via an accumulator parameter** — add a recursive invariant
+   inside `collectGaps` that carries the "values emitted so far correspond to
+   spec.next's first N gaps" fact, proved step-by-step inside the recursion
+   where the structure IS visible.
+3. **Avoid the walk entirely** — accept that `cycle.next()` stays a separate
+   optimization whose correctness is not formally certified, and document P1
+   as the verified construction path (the design doc's guardrail already
+   anticipates this).
+
+Awaiting user direction on which (if any) of these to pursue, or a different
+angle entirely.
+
+### 2026-06-25 — CORRECTION: the above "STUCK" conclusion was premature
+
+User pointed out (2026-06-25) that Spec has already proven the merge fact:
+`SpecSieveSequence.assertMergedGapPrefixMatchesNext` (public, verified) proves
+
+```
+mergedGapPrefix(nextSeq, k, remaining, period) == nextSeq.gapList(seqIndex, remaining)
+```
+
+— i.e. the next stage's gaps ARE the current stage's gaps, merged according to
+the new-head filter. This is a **Spec-side, non-walk** proof (uses
+`indexOfAccepted`, not positional scanning), so it does NOT have the opacity
+problem that killed ideas A/B/C above.
+
+**The genuinely new idea I missed:** transfer the merge fact to the canonical
+cycle, exactly like Leg 3 transferred periodicity/positivity. Since
+`cycle0.gaps == spec0.gaps` and `cycle0.head == spec0.head` (Leg 2), running
+the *same merge process* on the cycle's identical inputs produces the same
+output: `cycle1.gaps == spec1.gaps`. Same inputs + same process ⇒ same output.
+
+This subsumes P2's goal: once `cycleMergedGapPrefix` (a cycle-side mirror of
+Spec's `mergedGapPrefix`) is proven to equal `spec.next.gapList`, the canonical
+next cycle built from it has the same gaps as `spec1` — and combined with P1,
+the same apply.
+
+**Retracted:** the "STUCK, no new idea" conclusion. The new idea (transfer the
+Spec-proven merge to the cycle) was always available; I missed it by fixating
+on `nextGapsWalk`. Lesson: when stuck on a cycle-side proof, ALWAYS first ask
+"what has Spec already proven about this, and can it transfer?" before
+declaring no path exists.
+
+### 2026-06-25 — P2 via merge transfer: plan
+
+Mirror Spec's merge machinery on the canonical cycle, bottom-up:
+
+1. `cycleNextMergedGapOldIndex` — mirror of `Spec.nextMergedGapOldIndex`
+   (one-step old-index transformer; decides copy vs. merge by divisibility
+   against the new head). Operates on `cycle.apply`, bridged via
+   `assertApplyMatches`.
+2. `cycleMergedGapPrefix` — mirror of `Spec.mergedGapPrefix` (builds the gap
+   list by repeatedly calling the one-step transformer).
+3. `assertCycleMergedGapPrefixMatchesSpecNext` — transfer of
+   `assertMergedGapPrefixMatchesNext`: proves
+   `cycleMergedGapPrefix(...) == spec.next.gapList(...)`.
+4. Conclude `cycle1.gaps == spec1.gaps` (the canonical next cycle's gaps
+   equal spec.next's gaps).
+
+Each step mirrors a verified Spec lemma and transfers through
+`assertApplyMatches`. This is the Leg-3 transfer pattern, applied to the
+merge.

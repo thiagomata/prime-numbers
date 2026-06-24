@@ -450,6 +450,74 @@ case class CanonicalCycleSieve(
   }.holds
 
   /**
+   * Proves the canonical cycle built FROM `spec.next` matches `spec.next` at
+   * every index. This is Leg 2's `assertApplyMatches` instantiated one stage
+   * later: the next Spec stage is itself a valid `SpecSieveSequence`, so the
+   * same construction gives a canonical cycle view that matches it.
+   *
+   * Concretely, let `nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)`.
+   * Then for all `k >= 0`:
+   *
+   * {{{
+   *   nextCanonical.cycle(k) == spec.next(k)
+   * }}}
+   *
+   * Proof mirrors `assertApplyMatches`:
+   *  - `k == 0`: both sides are the shared head `spec.next.head.value`
+   *    (`nextCanonical.cycle.head == spec.next.head.value` by construction).
+   *  - `k  > 0`: `nextCanonical.cycle(k)` unfolds through the integral built
+   *    from `spec.next.specGapCycle(nextPeriod).memCycle`, which
+   *    `assertNextApplyMatches(nextPeriod, k)` already proves reconstructs
+   *    `spec.next(k)`.
+   *
+   * This is **approach P1** of the next-stage equivalence (see
+   * `tickets/spec-canonical-cycle-design.md` and
+   * `tickets/active/canonical-next-strategy.md`): it proves a *correct* next
+   * cycle exists (built from `spec.next`'s own certified data), by the same
+   * math Leg 2 uses. It does NOT prove that the implementation's
+   * `cycle.next()` (the walk) produces this cycle — that is approach P2,
+   * pursued separately.
+   *
+   * The four `require` clauses are the next-stage versions of the
+   * `CanonicalCycleSieve` constructor preconditions: the period anchor, the
+   * next-prime square bound, and the product-not-divisible condition. The
+   * latter two are the known undischarged walls (LEARNINGS 10.1, 10.2) and
+   * are carried explicitly, exactly as the current-stage constructor carries
+   * them.
+   *
+   * @param nextPeriod a positive period anchor for `spec.next`
+   * @param k the index to test, `k >= 0`
+   * @return `true` (verified); formally,
+   *         `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)`
+   */
+  def assertNextCycleApplyMatchesSpecNext(
+    nextPeriod: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(k >= BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(
+      Calc.mod(
+        SieveUtils.product(spec.next.filterValues),
+        spec.next.head.value
+      ) != BigInt(0)
+    )
+
+    val nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)
+
+    if (k == BigInt(0)) {
+      assert(nextCanonical.cycle.head == spec.next.head.value)
+      assert(spec.next(BigInt(0)) == spec.next.head.value)
+      nextCanonical.cycle(k) == spec.next(k)
+    } else {
+      assert(nextCanonical.assertApplyMatches(k))
+      nextCanonical.cycle(k) == spec.next(k)
+    }
+  }.holds
+
+  /**
    * Proves each next-stage gap equals the sum of consecutive current gaps.
    *
    * For any i < nextPeriod-1, the gap spec.next(i+1) - spec.next(i) equals
