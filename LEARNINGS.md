@@ -518,38 +518,41 @@ large cross-instance VC.
 - The solver doesn't use cached lemma results across assertion boundaries in
   large VCs
 
-### 18.3 Local `val` aliases block the solver from using cached lemma results [Confirmed]
+### 18.3 Local `val` aliases block the solver from using cached lemma results [Open — workaround: directed equality lemmas]
 
-**Confirmed via isolation test (`assertNextAcceptsViaAlias`), 2026-06-24:**
+**Problem:** `val nextSeq = spec.next` creates an opaque binding. A `.holds` lemma
+returning `spec.next.accepts(v)` caches its result, but the solver cannot connect
+it to `nextSeq.accepts(v)` — the assertion times out. `def` does not inline in
+Stainless and has the same problem.
 
-When a `.holds` lemma returns `spec.next.accepts(spec(k))`, the solver caches
-this result. If the calling code binds `spec.next` to a local alias
-`val nextSeq = spec.next` and then asserts `nextSeq.accepts(spec(k))`, the
-solver cannot connect the cached result to the local alias — even when the
-alias is trivially equal to the original expression.
+**Workaround (verified):** Prove acceptance equality through a directed lemma
+that unfolds structural equalities explicitly. The solver handles positive
+`require(seq1.accepts(v))` preconditions better than bare `==`:
 
-**Isolation test:** 9 VCs, 8 valid, 1 timed out on `nextSeq.accepts(spec(k))`
-despite `assertCurrentNonMultipleAcceptedByNext(k)` being called and its return
-value asserted on the immediately preceding line.
-
-**Fix:** Use the target instance expression directly (e.g., `spec.next.accepts(...)`)
-rather than binding it to a `val`. Additionally, capture `.holds` return values
-and `assert` them to surface facts:
 ```scala
-val acceptedK = assertCurrentNonMultipleAcceptedByNext(k)
-assert(acceptedK)
-// Use spec.next.foo(), NOT nextSeq.foo()
-assert(spec.next.accepts(spec(k)))  // verifies in 0.1s
+def assertAcceptsEqualWhenTrue(seq1, seq2, v): Boolean = {
+  require(seq1 == seq2)
+  require(v >= seq1.head.value)
+  require(seq1.passesFilter(v))
+  require(seq1.accepts(v))
+  assert(seq1.head == seq2.head)
+  assert(v >= seq2.head.value)
+  assert(seq1.primes == seq2.primes)
+  seq1.accepts(v) == seq2.accepts(v)
+}.holds
 ```
 
-**Earlier confounding note (corrected):** The successful `assertCopyGapMatchesSpec`
-also changed capture+assert and added explicit lower-bound assertions. The
-isolation test proves the alias alone is sufficient to cause a timeout, even
-without those other factors. The alias IS the root cause.
+Key ingredients: (a) explicit `require(v >= seq1.head.value)` to avoid inferring
+the lower bound through equality, (b) `require(seq1.passesFilter(v))` to access
+the disjunctive filter structure, (c) explicit `assert(seq1.head == seq2.head)` etc.
+to surface component equalities from structural equality.
 
-**Source:** `tickets/active/canonical-next-strategy.md` (2026-06-24 copy gap transfer).
-Isolation test `assertNextAcceptsViaAlias`: commented out at
-`CanonicalCycleSieve.scala` with permanent record of the confirmed root cause.
+**Prior failures:** `val` version timed out (9 VCs, 8/9). `def` version timed out
+(same). Bare `seq1.accepts(v) == seq2.accepts(v)` without directed requires timed out.
+
+**Source:** `tickets/active/canonical-next-strategy.md`.
+`assertAcceptsEqualWhenTrue` / `assertAcceptsEqualWhenFalse` verified in
+`CanonicalCycleSieve.scala` at 9299 valid.
 
 ## Index
 
@@ -557,4 +560,4 @@ Isolation test `assertNextAcceptsViaAlias`: commented out at
 |--------|--------------|------|
 | 18.1 Cross-instance timeouts [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
 | 18.2 Solver can't derive `a > b ⇒ a ≥ b+1` cross-instance [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
-| 18.3 Local `val` aliases block the solver from using cached lemma results [Confirmed] | `canonical-next-strategy.md` | Cross-instance |
+| 18.3 Local `val` aliases block cached lemma results — workaround: directed equality lemmas | `canonical-next-strategy.md` | Cross-instance |

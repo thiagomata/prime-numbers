@@ -1058,7 +1058,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   /** True when `value` is coprime with every active filter prime. */
-  private def passesFilter(value: BigInt): Boolean =
+  def passesFilter(value: BigInt): Boolean =
     SieveUtils.isCoprime(value, PrimeUtils.primeValues(filterPrimes))
 
   /**

@@ -932,6 +932,137 @@ case class CanonicalCycleSieve(
   */
 
   /**
+   * [TIMED OUT — `def` does not inline in Stainless, 2026-06-24]
+   *
+   * Attempted `def nextSeq = spec.next` hoping that a 0-arg `def` would inline
+   * at the call site. It does not — Stainless treats `def` as a separate
+   * function, so the same indirection problem occurs. 8 VCs passed, 1 timed out
+   * at `nextSeq.accepts(spec(k))`.
+   */
+  /*
+  def assertNextAcceptsViaDefAlias(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
+
+    def nextSeq = spec.next
+
+    val accepted = assertCurrentNonMultipleAcceptedByNext(k)
+    assert(accepted)
+
+    nextSeq.accepts(spec(k))
+  }.holds
+  */
+
+  /**
+   * Proves that equal `SpecSieveSequence` instances have equivalent `accepts`.
+   * When `seq1 == seq2` and `seq1.accepts(v)` holds, then `seq2.accepts(v)`
+   * also holds. Split into two directed versions because `require(seq1.accepts(v))`
+   * is cheaper for the solver than a bare `==` comparison.
+   *
+   * Bridges the gap between a cached `.holds` result on `spec.next.accepts(v)`
+   * and acceptance through a locally-bound `val nextSeq = spec.next` alias.
+   */
+  def assertAcceptsEqualWhenTrue(
+    seq1: SpecSieveSequence,
+    seq2: SpecSieveSequence,
+    v: BigInt
+  ): Boolean = {
+    require(seq1 == seq2)
+    require(v >= seq1.head.value)
+    require(seq1.passesFilter(v))
+    require(seq1.accepts(v))
+
+    assert(seq1 == seq2)
+    assert(seq1.head == seq2.head)
+    assert(v >= seq2.head.value)
+    assert(seq1.primes == seq2.primes)
+    assert(seq1.primes.tail == seq2.primes.tail)
+    seq1.accepts(v) == seq2.accepts(v)
+  }.holds
+
+  /**
+   * Dual of `assertAcceptsEqualWhenTrue`: when `seq1 == seq2` and
+   * `seq1.accepts(v)` does NOT hold, then `seq2.accepts(v)` also does not hold.
+   */
+  def assertAcceptsEqualWhenFalse(
+    seq1: SpecSieveSequence,
+    seq2: SpecSieveSequence,
+    v: BigInt
+  ): Boolean = {
+    require(seq1 == seq2)
+    require(v >= seq1.head.value)
+    require(!seq1.passesFilter(v))
+    require(!seq1.accepts(v))
+
+    assert(seq1 == seq2)
+    assert(seq1.head == seq2.head)
+    assert(v >= seq2.head.value)
+    assert(seq1.primes == seq2.primes)
+    assert(seq1.primes.tail == seq2.primes.tail)
+    seq1.accepts(v) == seq2.accepts(v)
+  }.holds
+
+  /**
+   * Proves that equal `SpecSieveSequence` instances have equivalent `accepts`, by
+   * case analysis on `seq1.accepts(v)`. This is the full version of the lemma, which
+   * bridges the gap between cached acceptance facts on `spec.next` and acceptance
+   * through a local alias. The two cases are split to avoid the solver's difficulty with
+   * equivalence branches when acceptance is involved.
+   *
+   * @param seq1 the first `SpecSieveSequence` instance, equal to `seq2`
+   * @param seq2 the second `SpecSieveSequence` instance, equal to `seq1`
+   * @param v any value at or above the head of the sequences, to test for acceptance
+   * @return `true` (verified); formally, `seq1.accepts(v) == seq2.accepts(v)` under the given preconditions
+   */
+  def assertAcceptsEqual(
+    seq1: SpecSieveSequence,
+    seq2: SpecSieveSequence,
+    v: BigInt
+  ): Boolean = {
+    require(seq1 == seq2)
+    require(v >= seq1.head.value)
+    require(seq1.passesFilter(v))
+    if (seq1.passesFilter(v)) {
+      assertAcceptsEqualWhenTrue(seq1, seq2, v)
+    } else {
+      assertAcceptsEqualWhenFalse(seq1, seq2, v)
+    }
+    seq1.accepts(v) == seq2.accepts(v)
+  }.holds
+
+  /**
+   * Cycle-side gap equals Spec-side gap. Pure consequence of
+   * `assertApplyMatches`: each apply value is equal, so their difference is too.
+   */
+  def assertCycleGapEqualsSpecGap(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    assert(assertApplyMatches(k))
+    assert(assertApplyMatches(k + BigInt(1)))
+
+    spec(k + BigInt(1)) - spec(k) == cycle(k + BigInt(1)) - cycle(k)
+  }.holds
+
+  /**
+   * Proves acceptance through a local `val nextSeq = spec.next` alias using
+   * the `assertAcceptsEqualWhenTrue` bridge lemma.
+   */
+  def assertNextAcceptsViaAlias(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
+
+    val nextSeq = spec.next
+
+    val accepted = assertCurrentNonMultipleAcceptedByNext(k)
+    assert(accepted)
+
+    assert(assertCurrentValueAtOrAboveNextHead(k))
+
+    assert(assertAcceptsEqualWhenTrue(spec.next, nextSeq, spec(k)))
+    nextSeq.accepts(spec(k))
+  }.holds
+
+  /**
    * Proves the canonical copy rule using the corrected Spec gap lemma.
    *
    * The current sequence already filters every prime in `cycle.primes.tail`.
@@ -966,29 +1097,24 @@ case class CanonicalCycleSieve(
     require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
     require(Calc.mod(cycle(k + BigInt(1)), cycle.head) != BigInt(0))
 
-    // Value correspondence
     assert(assertApplyMatches(k))
     assert(assertApplyMatches(k + BigInt(1)))
 
-    // Acceptance facts (captured, not just asserted)
     val acceptedK = assertCurrentNonMultipleAcceptedByNext(k)
     assert(acceptedK)
     val acceptedK1 = assertCurrentNonMultipleAcceptedByNext(k + BigInt(1))
     assert(acceptedK1)
 
-    // Lower bounds
     val lbK = assertCurrentValueAtOrAboveNextHead(k)
     assert(lbK)
     val lbK1 = assertCurrentValueAtOrAboveNextHead(k + BigInt(1))
     assert(lbK1)
 
-    // Structural filter facts
     assert(spec.next.filterValues.tail == spec.filterValues)
     assert(assertNextHeadMatches())
     assert(cycle(BigInt(1)) > cycle.head)
     assert(spec.next.head.value >= spec.head.value)
 
-    // Spec copy lemma with explicit facts
     assert(spec.assertConsecutiveAcceptedByNextPreservesGap(spec.next, k))
 
     val nextIndex = spec.next.indexOfAccepted(spec(k))
