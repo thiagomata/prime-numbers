@@ -1052,6 +1052,7 @@ sequence classes focused on their own semantics.
 | **assertNextAcceptsViaAlias(k)** | For `k >= 1` and `Calc.mod(cycle(k), cycle.head) != 0`: `nextSeq.accepts(spec(k))` where `nextSeq = spec.next` | Bridges a cached `.holds` acceptance result through a local `val` alias using `assertAcceptsEqualWhenTrue`. Requires explicit `assertCurrentValueAtOrAboveNextHead(k)` before the bridge call. |
 | **assertCurrentMultipleRejectedByNext(k)** | For `k >= 1` and `Calc.mod(cycle(k), cycle.head) == 0`: `¬spec.next.accepts(spec(k))` | Rejection side of the merge rule. Mirror of `assertCurrentNonMultipleAcceptedByNext`. When a current value is a multiple of head, it is not coprime with `cycle.primes` and is rejected by the next stage. |
 | **assertNextFilterModulusRelation()** | `spec.next.filterModulus == cycle.head * spec.filterModulus` | Period sum transfer. When the old head becomes a filter prime in `spec.next`, the filter modulus grows by that factor. |
+| **assertSpecApplyMonotonic(from, until)** | `spec.assertApplyMonotonic(from, until)` for `0 <= from <= until` | Exposes Spec-side apply monotonicity for the canonical context. Pure transfer — delegates to the existing Spec lemma. |
 
 **Source**: `src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`
 

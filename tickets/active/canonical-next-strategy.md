@@ -712,11 +712,45 @@ variable. Fix: use `spec.next` directly + capture/assert return values.
 6. `assertConsecutiveAcceptedByNextPreservesGap` (Spec-side) — pure-Spec copy lemma
 7. `assertCurrentValueAtOrAboveNextHead` — ordering lemma
 8. `assertCurrentNonMultipleAcceptedByNext` — constructive next acceptance
-9. `assertCopyGapMatchesSpec` — canonical copy rule [JUST VERIFIED]
+ 9. `assertCopyGapMatchesSpec` — canonical copy rule
 
-**Remaining for Leg 3:**
-- **Merge rule:** when `cycle(k)` is a multiple of head but `cycle(k+gapSize)`
-  is not, the merged gap equals the sum of intermediate gaps. Transfers from
-  `SpecSieveSequence.assertMergeGapEqualsOldGapSum`.
-- **Period sum:** the sum of next gaps equals the current head times the old
-  period sum. Transfers from existing Spec gap-sum facts.
+### 2026-06-24 — Merge rule and period sum verified
+
+**Merge rule — rejection side:**
+Added `CanonicalCycleSieve.assertCurrentMultipleRejectedByNext(k)`. Mirror of
+`assertCurrentNonMultipleAcceptedByNext`. When `Calc.mod(cycle(k), cycle.head) == 0`,
+the value is not coprime with `cycle.primes` and is rejected by `spec.next`.
+28 VCs, full verify 9354 valid.
+
+**Merge rule — acceptance side:** Already covered by
+`assertCurrentNonMultipleAcceptedByNext` + `assertNextGapEqualsCurrentGapSum`.
+The merged gap equals the sum of current gaps via `indexOfAccepted` on the Spec
+side — no additional cycle lemma needed.
+
+**Period sum:**
+Added `CanonicalCycleSieve.assertNextFilterModulusRelation()`. Proves
+`spec.next.filterModulus == cycle.head * spec.filterModulus`. When the old head
+becomes a filter prime, the filter modulus grows by that factor.
+16 VCs, full verify 9370 valid.
+
+**Isolated assertions restored:**
+- `assertCycleGapEqualsSpecGap(k)` — cycle-side gap equals Spec-side gap (9 VCs)
+- `assertNextAcceptsViaAlias(k)` — acceptance through `val` alias via bridge lemma (18 VCs)
+- `assertSpecApplyMonotonic(from, until)` — Spec apply monotonicity (3 VCs)
+- `assertCurrentMultipleRejectedByNext(k)` — rejection side of merge rule (28 VCs)
+- `assertNextFilterModulusRelation()` — period sum relation (16 VCs)
+
+Full verify: **9373 valid, 0 invalid, 0 unknown**.
+
+**Status: Leg 3 complete.** All items from the ticket's goal are verified:
+- Next head ✅ (`assertNextHeadMatches`)
+- Next acceptance ✅ (`assertCurrentNonMultipleAcceptedByNext` + `assertCurrentMultipleRejectedByNext`)
+- Copy rule ✅ (`assertCopyGapMatchesSpec`)
+- Merge rule ✅ (`assertNextGapEqualsCurrentGapSum` + rejection lemma)
+- Period sum ✅ (`assertNextFilterModulusRelation`)
+- Gap list equality ✅ (`assertNextGapListMatchesSpecNext`)
+- Gap periodicity/positivity transfers ✅ (`assertGapPeriodicMatchesSpec`, `assertGapPositiveMatchesSpec`)
+
+**Next:** Leg 4 — `CycleSieveSequence` equivalence using only the cycle's
+structural rules, with no Spec link. See `tickets/active/canonical-spec-to-cycle-alignment.md`
+for the epic roadmap.
