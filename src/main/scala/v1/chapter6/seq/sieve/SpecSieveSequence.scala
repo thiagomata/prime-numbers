@@ -429,7 +429,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * `(apply(from + 1) - apply(from)) :: gapList(from + 1, count - 1)`,
    * so its head equals `apply(from + 1) - apply(from)`.
    */
-  private def assertGapListFirstEqualsGap(from: BigInt, count: BigInt): Boolean = {
+  def assertGapListFirstEqualsGap(from: BigInt, count: BigInt): Boolean = {
     require(from >= BigInt(0))
     require(count > BigInt(0))
     gapList(from, count).head == apply(from + BigInt(1)) - apply(from)
@@ -442,7 +442,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * of the gap list. By structural induction on `r`, each element is
    * `apply(from + r + 1) - apply(from + r)` — the gap at position `from + r`.
    */
-  private def assertGapListApplyEqualsGapAtPosition(from: BigInt, count: BigInt, r: BigInt): Boolean = {
+  def assertGapListApplyEqualsGapAtPosition(from: BigInt, count: BigInt, r: BigInt): Boolean = {
     require(from >= BigInt(0))
     require(count > BigInt(0))
     require(r >= BigInt(0))
@@ -1757,7 +1757,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * says nothing about the branch where `apply(k + 1)` is removed by the new
    * front filter; that branch is handled by merge/skip lemmas.
    */
-  private def assertFilterPreservesNextGap(
+  def assertFilterPreservesNextGap(
                                             nextSeq: SpecSieveSequence,
                                             k: BigInt
                                           ): Boolean = {

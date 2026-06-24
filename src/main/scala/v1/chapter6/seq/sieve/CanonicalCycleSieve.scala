@@ -450,12 +450,356 @@ case class CanonicalCycleSieve(
 
     spec.next(k) == cycle(pos)
   }.holds
+
+  /**
+   * Proves the first next-stage gap matches the first element of
+   * `spec.next.gapList(0, nextPeriod)`, without scanning positions.
+   *
+   * The first next-stage gap is the distance from the next head to the value
+   * that follows it in the next stream:
+   *
+   * {{{
+   *   firstGap = spec.next(1) - spec.next(0)
+   *            = spec.next(1) - spec.next.head.value     [by apply's base case]
+   * }}}
+   *
+   * The head of `gapList(0, nextPeriod)` is definitionally
+   * `apply(0 + 1) - apply(0)`, i.e. exactly `spec.next(1) - spec.next(0)`.
+   * So the equality reduces to applying `gapList`'s head definition together
+   * with `apply`'s base case:
+   *
+   * {{{
+   *   gapList(0, nextPeriod).head
+   *     = apply(0 + 1) - apply(0)        [gapList head definition]
+   *     = spec.next(1) - spec.next(0)    [by apply's base case]
+   *     = firstGap                       [Q.E.D.]
+   * }}}
+   *
+   * This is the foundational single-gap fact for the Leg-3 gap-list equality
+   * (see `tickets/active/canonical-next-strategy.md`). It avoids the opaque
+   * positional walk that timed out in the prior Leg-2 Lemma 5, and mirrors the
+   * substitution-first style that made `assertNextGapEqualsCurrentGapSum`
+   * verify.
+   *
+   * @param nextPeriod a positive period anchor for `spec.next` satisfying
+   *                   `spec.next(nextPeriod) == spec.next.head.value +
+   *                   spec.next.filterModulus`
+   * @return `true` (verified); formally,
+   *         `spec.next(1) - spec.next(0) == spec.next.gapList(0, nextPeriod).head`
+   */
+  def assertNextFirstGapMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+
+    val firstGap = spec.next(BigInt(1)) - spec.next(BigInt(0))
+    val gapListHead = spec.next.gapList(BigInt(0), nextPeriod).head
+
+    assert(spec.next(BigInt(0)) == spec.next.head.value)
+    assert(spec.next.assertApplyMonotonic(BigInt(0), BigInt(1)))
+    assert(firstGap == spec.next(BigInt(1)) - spec.next.head.value)
+    assert(gapListHead == spec.next(BigInt(1)) - spec.next(BigInt(0)))
+
+    firstGap == gapListHead
+  }.holds
+
+  /**
+   * Proves the next-stage gap at an arbitrary position `index` matches the
+   * corresponding element of `spec.next.gapList(0, nextPeriod)`, without
+   * scanning positions.
+   *
+   * For any valid index `index < nextPeriod`, the `index`-th next-stage gap
+   * is the distance between two consecutive next-stage values:
+   *
+   * {{{
+   *   nextGap(index) = spec.next(index + 1) - spec.next(index)
+   * }}}
+   *
+   * The `index`-th element of `gapList(0, nextPeriod)` is definitionally the
+   * same adjacent difference, by `SpecSieveSequence.assertGapListApplyEqualsGapAtPosition`:
+   *
+   * {{{
+   *   gapList(0, nextPeriod).apply(index)
+   *     = apply(0 + index + 1) - apply(0 + index)   [gapList apply definition]
+   *     = spec.next(index + 1) - spec.next(index)   [by apply's base case]
+   *     = nextGap(index)                            [Q.E.D.]
+   * }}}
+   *
+   * This generalizes `assertNextFirstGapMatchesSpecNext` from `index = 0` to
+   * any valid index, and is the per-position input to the list-level gap
+   * equality proof of Leg 3 (see `tickets/active/canonical-next-strategy.md`).
+   *
+   * @param nextPeriod a positive period anchor for `spec.next` satisfying
+   *                   `spec.next(nextPeriod)` == `spec.next.head.value` +
+   *                   `spec.next.filterModulus`
+   * @param index      the gap position, `0 <= index < nextPeriod`
+   * @return `true` (verified); formally,
+   *         spec.next(index + 1) - spec.next(index)
+   *          == spec.next.gapList(0, nextPeriod).apply(index).
+   */
+  def assertNextGapAtMatchesSpecNext(
+    nextPeriod: BigInt,
+    index: BigInt
+  ): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(index >= BigInt(0))
+    require(index < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+
+    val nextGap = spec.next(index + BigInt(1)) - spec.next(index)
+
+    // Discharge the `index < gapList.size` precondition of `.apply(index)`:
+    // assertGapListSize proves the list built with count = nextPeriod has
+    // exactly nextPeriod elements, and `index < nextPeriod` is already required.
+    assert(spec.next.assertGapListSize(BigInt(0), nextPeriod))
+    assert(spec.next.gapList(BigInt(0), nextPeriod).size == nextPeriod)
+
+    val gapListValue = spec.next.gapList(BigInt(0), nextPeriod).apply(index)
+
+    assert(spec.next.assertGapListApplyEqualsGapAtPosition(BigInt(0), nextPeriod, index))
+    assert(gapListValue == spec.next(index + BigInt(1)) - spec.next(index))
+
+    nextGap == gapListValue
+  }.holds
+
+  /**
+   * Builds the next-stage gap list directly from `spec.next`'s adjacent value
+   * differences, in forward order, without going through the walk pipeline.
+   *
+   * The `i`-th emitted element is `spec.next(from + i + 1) - spec.next(from + i)`,
+   * so the list is in the same forward order as `spec.next.gapList(from, count)`:
+   *
+   * {{{
+   *   nextGapList(from, count) = [ spec.next(from + 1) - spec.next(from),
+   *                                spec.next(from + 2) - spec.next(from + 1),
+   *                                ...,
+   *                                spec.next(from + count) - spec.next(from + count - 1) ]
+   * }}}
+   *
+   * The `from` parameter slides forward by one on each recursive step, mirroring
+   * `SpecSieveSequence.gapList`'s own recursion shape exactly. This sliding
+   * window keeps the period-anchor precondition local at every step, which is
+   * what makes the companion induction lemma verify (see LEARNINGS 2.2).
+   *
+   * @param from   the starting index, `from >= 0`
+   * @param count  number of gaps to emit, `count >= 0`
+   * @return the list of `count` adjacent next-stage gaps, forward-ordered
+   */
+  def nextGapList(from: BigInt, count: BigInt): List[BigInt] = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+    if (count == BigInt(0)) {
+      List.empty[BigInt]
+    } else {
+      (spec.next(from + BigInt(1)) - spec.next(from)) :: nextGapList(from + BigInt(1), count - BigInt(1))
+    }
+  }
+
+  /**
+   * Proves the Canonical-computed next gap list equals Spec's own next
+   * `gapList`, element-for-element, by structural induction on `count`.
+   *
+   * {{{
+   *   nextGapList(from, count) == spec.next.gapList(from, count)
+   * }}}
+   *
+   * Proof by induction on `count` (mirroring `assertGapListPositive`):
+   *  - Base (`count == 0`): both lists are empty.                       `[Q.E.D.]`
+   *  - Step (`count > 0`):
+   *    - head: `nextGapList(from, count).head == spec.next(from + 1) - spec.next(from)`
+   *      by the builder definition, and
+   *      `spec.next.gapList(from, count).head == spec.next(from + 1) - spec.next(from)`
+   *      by `assertGapListFirstEqualsGap`. So the heads are equal.
+   *    - tail: by the inductive hypothesis at `from + 1, count - 1`.
+   *
+   * The sliding `from` parameter keeps the induction self-contained: each
+   * recursive call uses `from + 1`, so no period-anchor precondition needs to
+   * be re-derived. This avoids the recursion-precondition timeout seen in the
+   * first attempt (see `canonical-next-strategy.md` update log).
+   *
+   * This is the list-level lift of Leg 3. It establishes that the
+   * direct-difference computation matches Spec's own `gapList`.
+   *
+   * @param from   the starting index, `from >= 0`
+   * @param count  number of gaps, `count >= 0`
+   * @return `true` (verified); formally,
+   *         `nextGapList(from, count) == spec.next.gapList(from, count)`
+   */
+  def assertNextGapListMatchesSpecNext(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      nextGapList(from, BigInt(0)) == spec.next.gapList(from, BigInt(0))
+    } else {
+      assert(spec.next.assertGapListFirstEqualsGap(from, count))
+      assert(assertNextGapListMatchesSpecNext(from + BigInt(1), count - BigInt(1)))
+      nextGapList(from, count) == spec.next.gapList(from, count)
+    }
+  }.holds
+
+  /**
+   * Transfers Spec's gap periodicity to the canonical cycle.
+   *
+   * Spec's gap periodicity (`spec.assertGapPeriodic`) proves the gap at index
+   * `k` repeats after a period `p` that satisfies
+   * `spec.apply(p) == spec.head.value + spec.filterModulus`:
+   *
+   * {{{
+   *   spec(k + 1 + p) - spec(k + p) == spec(k + 1) - spec(k)
+   * }}}
+   *
+   * Since the canonical cycle replicates Spec at every index
+   * (`assertApplyMatches`: `cycle(i) == spec(i)` for all `i >= 0`), the same
+   * periodicity holds for the cycle's adjacent differences:
+   *
+   * {{{
+   *   cycle(k + 1 + p) - cycle(k + p)
+   *     == spec(k + 1 + p) - spec(k + p)   [by assertApplyMatches, twice]
+   *     == spec(k + 1) - spec(k)           [by spec.assertGapPeriodic]
+   *     == cycle(k + 1) - cycle(k)         [by assertApplyMatches, twice]
+   *                                                                      [Q.E.D.]
+   * }}}
+   *
+   * This is a pure transfer lemma: the period anchor is unchanged, and each
+   * rewrite goes through the verified `assertApplyMatches`. No cycle-strategy
+   * (walk/rotate) machinery is involved.
+   *
+   * @param k any gap index, `k >= 0`
+   * @param period a period anchor satisfying `spec(period) == spec.head.value + spec.filterModulus`
+   * @return `true` (verified); formally,
+   *         `cycle(period + k + 1) - cycle(period + k) == cycle(k + 1) - cycle(k)`
+   */
+  def assertGapPeriodicMatchesSpec(k: BigInt, period: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(period >= BigInt(0))
+    require(spec(period) == spec.head.value + spec.filterModulus)
+
+    assert(spec.assertGapPeriodic(k, period))
+    assert(assertApplyMatches(k))
+    assert(assertApplyMatches(k + BigInt(1)))
+    assert(assertApplyMatches(k + period))
+    assert(assertApplyMatches(k + period + BigInt(1)))
+
+    val specGap = spec(k + BigInt(1)) - spec(k)
+    val cycleGap = cycle(k + BigInt(1)) - cycle(k)
+    val specShiftedGap = spec(k + period + BigInt(1)) - spec(k + period)
+    val cycleShiftedGap = cycle(k + period + BigInt(1)) - cycle(k + period)
+
+    assert(cycleGap == specGap)
+    assert(cycleShiftedGap == specShiftedGap)
+    assert(specGap == specShiftedGap)
+
+    cycleShiftedGap == cycleGap
+  }.holds
+
+  /**
+   * Transfers Spec's gap positivity to the canonical cycle.
+   *
+   * Spec's gap positivity (`spec.assertGapPositive`) proves each adjacent
+   * difference is strictly positive because Spec's stream is strictly
+   * increasing:
+   *
+   * {{{
+   *   spec(k + 1) - spec(k) > 0
+   * }}}
+   *
+   * Since the canonical cycle replicates Spec at every index
+   * (`assertApplyMatches`: `cycle(i) == spec(i)` for all `i >= 0`), the same
+   * positivity holds for the cycle's adjacent differences:
+   *
+   * {{{
+   *   cycle(k + 1) - cycle(k)
+   *     == spec(k + 1) - spec(k)   [by assertApplyMatches, twice]
+   *     > 0                        [by spec.assertGapPositive]
+   *                                                              [Q.E.D.]
+   * }}}
+   *
+   * This is rule 2 of the Leg-3 gap rule list (see
+   * `canonical-next-strategy.md`): a pure-over-`cycle` fact, certified by
+   * transfer through the Spec/Cycle equivalence.
+   *
+   * @param k any gap index, `k >= 0`
+   * @return `true` (verified); formally, `cycle(k + 1) - cycle(k) > 0`
+   */
+  def assertGapPositiveMatchesSpec(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    assert(spec.assertGapPositive(k))
+    assert(assertApplyMatches(k))
+    assert(assertApplyMatches(k + BigInt(1)))
+
+    val specGap = spec(k + BigInt(1)) - spec(k)
+    val cycleGap = cycle(k + BigInt(1)) - cycle(k)
+
+    assert(cycleGap == specGap)
+    assert(specGap > BigInt(0))
+
+    cycleGap > BigInt(0)
+  }.holds
+
+  /**
+   * [TIMED OUT — attempt 1 of 3, 2026-06-24, per stop-and-ask rule]
+   *
+   * Intended: transfer Spec's copy-case gap rule to the canonical cycle.
+   *
+   * When the new stage's head filter keeps both the value at `cycle(k)` and its
+   * successor `cycle(k+1)`, the next-stage gap is simply copied: it equals the
+   * current-stage gap `cycle(k+1) - cycle(k)`.
+   *
+   * The "new head" is `cycle(1)` (the value `cycle.head + cycle.gapCycle.memCycle(0)`),
+   * which equals `spec.next.head.value` (by `assertNextHeadMatches`). A value
+   * survives the new head filter exactly when it is not a multiple of `cycle(1)`.
+   *
+   * {{{
+   *   cycle(k)   mod cycle(1) != 0
+   *   cycle(k+1) mod cycle(1) != 0
+   *   -----------------------------------------------
+   *   nextGap(k) == cycle(k+1) - cycle(k)
+   * }}}
+   *
+   * BLOCKER: The proof needs to discharge precondition 4/6 of
+   * `spec.assertFilterPreservesNextGap`, namely `spec.next.accepts(spec(k))`.
+   * The cycle-side hypothesis `Calc.mod(cycle(k), cycle(1)) != 0` only gives
+   * coprimality against the new head, NOT the full next-stage acceptance
+   * (which is coprimality against the whole `cycle.primes` list).
+   * `assertNextAcceptsMatches(value)` bridges
+   *   `spec.next.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)`,
+   * so the full hypothesis needed is "value is coprime to cycle.primes", not
+   * just "not a multiple of cycle(1)".
+   *
+   * This is a genuine logical gap, not a solver weakness: the stated
+   * precondition is too weak. Options to discuss with user before retrying:
+   *  (a) Strengthen the cycle-side precondition to coprimality against
+   *      `cycle.primes` (matches Spec's actual acceptance predicate), OR
+   *  (b) Keep the weaker mod-new-head precondition but first prove a cycle-side
+   *      lemma that `cycle(k)` being a current generated value implies it is
+   *      coprime to `cycle.primes.tail` (then only the new-head test is needed).
+   *
+   * Commented out rather than deleted per never-destroy rule. The doc and the
+   * analysis above remain as a record of the attempt.
+   */
+//  def assertCopyGapMatchesSpec(
+//    k: BigInt
+//  ): Boolean = {
+//    require(k >= BigInt(0))
+//    require(Calc.mod(cycle(k), cycle(BigInt(1))) != BigInt(0))
+//    require(Calc.mod(cycle(k + BigInt(1)), cycle(BigInt(1))) != BigInt(0))
 //
-//  /**
-//  * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemma]
-//  *
-//  * Recursive predicate: all positions in [from, to) are multiples of head.
-//  *
+//    val nextGap = spec.next(k + BigInt(1)) - spec.next(k)
+//    val cycleGap = cycle(k + BigInt(1)) - cycle(k)
+//
+//    assert(assertApplyMatches(k))
+//    assert(assertApplyMatches(k + BigInt(1)))
+//    assert(assertNextHeadMatches())
+//
+//    assert(spec.assertFilterPreservesNextGap(spec.next, k))
+//    assert(nextGap == spec(k + BigInt(1)) - spec(k))
+//    assert(spec(k + BigInt(1)) - spec(k) == cycleGap)
+//
+//    nextGap == cycleGap
+//  }.holds
 //  * Used as the postcondition of `findNextNonMultiple` to guarantee that the
 //  * returned position is the FIRST non-multiple in the search range.
 //  *
