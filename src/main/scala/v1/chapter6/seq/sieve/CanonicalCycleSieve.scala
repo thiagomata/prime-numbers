@@ -319,7 +319,7 @@ case class CanonicalCycleSieve(
    * directly avoids asking Stainless to select and rewrite one branch of a
    * cross-representation boolean equivalence.
    */
-  def assertCurrentNonMultipleAcceptedByNext(k: BigInt): Boolean = {
+   def assertCurrentNonMultipleAcceptedByNext(k: BigInt): Boolean = {
     require(k >= BigInt(1))
     require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
 
@@ -349,6 +349,60 @@ case class CanonicalCycleSieve(
     assert(SieveUtils.isCoprime(value, nextSpec.filterValues))
 
     nextSpec.accepts(spec(k))
+  }.holds
+
+  /**
+   * Mirror of `assertCurrentNonMultipleAcceptedByNext`: when `cycle(k)` IS a
+   * multiple of `cycle.head`, it is NOT accepted by `spec.next`. This is the
+   * rejection side of the merge rule — values rejected by the new head filter
+   * cause consecutive gaps to be merged.
+   */
+   def assertCurrentMultipleRejectedByNext(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) == BigInt(0))
+
+    val value = cycle(k)
+    val nextSpec = spec.next
+
+    assert(assertApplyMatches(k))
+    assert(value == spec(k))
+
+    assert(assertPrimesMatch())
+    assert(cycle.primes.head == cycle.head)
+    assert(Calc.mod(value, cycle.primes.head) == BigInt(0))
+    assert(!SieveUtils.isCoprime(value, cycle.primes))
+
+    assert(nextSpec.filterPrimes == nextSpec.primes.list.tail.list)
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(nextSpec.filterPrimes))
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
+    assert(nextSpec.filterValues == cycle.primes)
+    assert(!SieveUtils.isCoprime(value, nextSpec.filterValues))
+
+    assert(assertCurrentValueAtOrAboveNextHead(k))
+
+    !nextSpec.accepts(spec(k))
+  }.holds
+
+  /**
+   * Period sum transfer: the next stage's filter modulus equals the old head
+   * times the current filter modulus. When `spec.next` is created, the old head
+   * `cycle.head` (= `spec.head.value`) becomes a filter prime, so the product
+   * grows by that factor.
+   */
+  def assertNextFilterModulusRelation(): Boolean = {
+    assert(assertPrimesMatch())
+    assert(cycle.primes.head == cycle.head)
+    assert(cycle.primes.tail == spec.filterValues)
+
+    val nextSpec = spec.next
+    assert(nextSpec.primes.list.tail.list == spec.primes.list.list)
+    assert(nextSpec.filterPrimes == nextSpec.primes.list.tail.list)
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(nextSpec.filterPrimes))
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
+    assert(nextSpec.filterValues == cycle.primes)
+    assert(nextSpec.filterValues.head == cycle.head)
+
+    nextSpec.filterModulus == cycle.head * spec.filterModulus
   }.holds
 
   /**
