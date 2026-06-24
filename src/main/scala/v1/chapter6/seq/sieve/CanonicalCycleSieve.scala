@@ -165,6 +165,30 @@ case class CanonicalCycleSieve(
   }.holds
 
   /**
+   * Proves every current Spec value from index one onward is in the domain of
+   * the next Spec sequence.
+   *
+   * The next sequence starts at the current value `spec(1)`. Monotonicity of
+   * the current sequence gives `spec(1) <= spec(k)` for every `k >= 1`, while
+   * the canonical next-head correspondence identifies `spec(1)` with
+   * `spec.next.head.value`. Keeping this arithmetic fact separate prevents
+   * acceptance proofs from mixing ordering with filter coprimality.
+   */
+  def assertCurrentValueAtOrAboveNextHead(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+
+    assert(spec.assertApplyMonotonic(BigInt(1), k))
+    assert(spec(BigInt(1)) <= spec(k))
+    assert(assertApplyMatches(BigInt(1)))
+    assert(spec(BigInt(1)) == cycle(BigInt(1)))
+    assert(assertNextHeadMatches())
+    assert(cycle(BigInt(1)) == spec.next.head.value)
+    assert(spec(BigInt(1)) == spec.next.head.value)
+
+    spec(k) >= spec.next.head.value
+  }.holds
+
+  /**
    * Proves `spec.next` accepts exactly the values coprime to the canonical
    * Cycle's current prime list.
    */
@@ -248,6 +272,94 @@ case class CanonicalCycleSieve(
 
     modNonZero == spec.next.accepts(v)
   }.holds
+
+  /**
+   * [TIMED OUT — acceptance transfer attempt 3, 2026-06-24]
+   *
+   * Even as an isolated 17-VC lemma, Stainless timed out when using the
+   * equivalence exported by `assertWalkDecisionMatchesNextAccept` to establish
+   * its positive acceptance branch. Commented out after the third failed
+   * canonical acceptance-transfer attempt, per the stop-and-ask rule.
+   *
+   * Exposes the kept branch of the walk decision directly in Spec terms.
+   *
+   * `assertWalkDecisionMatchesNextAccept` proves an equivalence whose accepted
+   * value is written as `cycle(k)`. Callers that reason about consecutive Spec
+   * values need the more direct endpoint `spec.next.accepts(spec(k))`.
+   *
+   * Keeping this rewrite in a tiny lemma prevents a larger copy-gap proof from
+   * unfolding the canonical representation, the next sequence, and the
+   * acceptance predicate in the same verification condition.
+   */
+  /*
+  def assertWalkNonMultipleAcceptedByNext(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
+
+    assert(assertWalkDecisionMatchesNextAccept(k))
+    assert(spec.next.accepts(cycle(k)))
+    assert(assertApplyMatches(k))
+    assert(cycle(k) == spec(k))
+
+    spec.next.accepts(spec(k))
+  }.holds
+  */
+
+  /**
+   * [TIMED OUT — direct constructive attempt 2, 2026-06-24]
+   *
+   * Removing the standalone lower-bound assertion moved the timeout to the
+   * same lower-bound precondition at the final `nextSpec.accepts(spec(k))`
+   * call. The acceptance postcondition itself verified. Commented out to
+   * restore the green baseline.
+   *
+   * Proves next-stage acceptance constructively from the two filter parts.
+   *
+   * A current generated value already passes `spec.filterValues`, which is the
+   * tail of `cycle.primes`. The additional filter used by `spec.next` is the
+   * current `cycle.head`. Therefore the explicit non-multiple requirement and
+   * the existing tail-coprimality fact together establish coprimality with the
+   * complete next-stage filter list.
+   *
+   * This lemma intentionally does not consume
+   * `assertWalkDecisionMatchesNextAccept`: constructing the positive result
+   * directly avoids asking Stainless to select and rewrite one branch of a
+   * cross-representation boolean equivalence.
+   */
+  /*
+  def assertCurrentNonMultipleAcceptedByNext(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
+
+    val value = cycle(k)
+    val nextSpec = spec.next
+
+    assert(assertApplyMatches(k))
+    assert(value == spec(k))
+    assert(spec(k) >= spec.head.value)
+    assert(spec.accepts(spec(k)))
+    assert(SieveUtils.isCoprime(spec(k), spec.filterValues))
+
+    assert(assertPrimesMatch())
+    assert(cycle.primes.tail == spec.filterValues)
+    assert(SieveUtils.isCoprime(value, cycle.primes.tail))
+    assert(cycle.primes.head == cycle.head)
+    assert(Calc.mod(value, cycle.primes.head) != BigInt(0))
+    assert(SieveUtils.isCoprime(value, cycle.primes))
+
+    assert(nextSpec.primes.list.tail.list == spec.primes.list.list)
+    assert(nextSpec.filterPrimes == nextSpec.primes.list.tail.list)
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(nextSpec.filterPrimes))
+    assert(nextSpec.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
+    assert(nextSpec.filterValues == cycle.primes)
+
+    assert(assertNextHeadMatches())
+    assert(spec.assertApplyMonotonic(BigInt(1), k))
+    assert(SieveUtils.isCoprime(value, nextSpec.filterValues))
+
+    nextSpec.accepts(spec(k))
+  }.holds
+  */
 
   /**
    * Proves the canonical next-stage gap cycle values equal `spec.next.gapList`.
@@ -802,12 +914,13 @@ case class CanonicalCycleSieve(
 //  }.holds
 
   /**
-   * [TIMED OUT — corrected canonical attempt 1, 2026-06-24]
+   * [TIMED OUT — corrected canonical attempt 2, 2026-06-24]
    *
-   * `nextIndex` was evaluated before the proof body established its domain and
-   * acceptance preconditions. Stainless therefore timed out on both
-   * `indexOfAccepted(spec(k))` requirements. A future attempt should move that
-   * call below the assertions, after the Spec copy lemma has been invoked.
+   * Moving `indexOfAccepted` below its prerequisites removed the first
+   * timeout, but Stainless then timed out while transferring the acceptance
+   * equality from `assertWalkDecisionMatchesNextAccept` to
+   * `nextSeq.accepts(spec(k))`. The method remains commented until that
+   * cross-instance acceptance transfer is isolated in a smaller lemma.
    *
    * Proves the canonical copy rule using the corrected Spec-to-Spec gap lemma.
    *
@@ -838,7 +951,6 @@ case class CanonicalCycleSieve(
     require(Calc.mod(cycle(k + BigInt(1)), cycle.head) != BigInt(0))
 
     val nextSeq = spec.next
-    val nextIndex = nextSeq.indexOfAccepted(spec(k))
 
     assert(assertApplyMatches(k))
     assert(assertApplyMatches(k + BigInt(1)))
@@ -856,6 +968,7 @@ case class CanonicalCycleSieve(
     assert(nextSeq.head.value >= spec.head.value)
 
     assert(spec.assertConsecutiveAcceptedByNextPreservesGap(nextSeq, k))
+    val nextIndex = nextSeq.indexOfAccepted(spec(k))
     assert(
       nextSeq(nextIndex + BigInt(1)) - nextSeq(nextIndex) ==
         spec(k + BigInt(1)) - spec(k)

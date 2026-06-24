@@ -409,3 +409,215 @@ restored:
 `assertConsecutiveAcceptedByNextPreservesGap`, and only then evaluate
 `indexOfAccepted(spec(k))`. Do not place any `indexOfAccepted` call, including a
 `val` initializer, before those facts.
+
+### 2026-06-24 — Canonical copy transfer attempt 2 timed out
+
+Moved `indexOfAccepted(spec(k))` below all acceptance and lower-bound
+assertions, exactly as planned. This removed both index precondition timeouts
+from attempt 1.
+
+The next isolated failure was:
+
+```text
+nextSeq.accepts(spec(k))
+```
+
+even after calling:
+
+```text
+assertWalkDecisionMatchesNextAccept(k)
+```
+
+Focused verification reached 10 of 59 obligations before the acceptance
+assertion timed out at 120 seconds. The diagnostic context retained the walk
+lemma call and the lower bound, but did not cheaply rewrite its equality result
+through both representation equality and the local `nextSeq = spec.next` alias.
+
+The method remains commented out. Full verification was restored:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+**Current conclusion:** the pure-Spec copy theorem is verified. The canonical
+wrapper is not yet verified. Index ordering is fixed; the remaining blocker is
+the cross-representation acceptance transfer.
+
+**Next planned unit:** create one small canonical lemma whose postcondition is
+directly:
+
+```text
+Calc.mod(cycle(k), cycle.head) != 0
+  ==> spec.next.accepts(spec(k))
+```
+
+for `k >= 1`. Its body should call `assertApplyMatches(k)` and
+`assertWalkDecisionMatchesNextAccept(k)`, then expose only this implication.
+The copy lemma can consume that direct endpoint without asking Stainless to
+reconstruct the equality inside its larger VC.
+
+### 2026-06-24 — Acceptance transfer attempt 3 timed out
+
+Created the planned isolated lemma
+`assertWalkNonMultipleAcceptedByNext(k)`. It had only the two essential
+requirements:
+
+```text
+k >= 1
+Calc.mod(cycle(k), cycle.head) != 0
+```
+
+Its body called `assertWalkDecisionMatchesNextAccept(k)`, selected the positive
+acceptance branch for `cycle(k)`, and then used `assertApplyMatches(k)` to
+rewrite the endpoint to `spec(k)`.
+
+Focused verification generated only 17 obligations, but timed out on:
+
+```text
+spec.next.accepts(cycle(k))
+```
+
+The final `spec.next.accepts(spec(k))` obligation was also unknown. Result:
+
+```text
+17 total, 15 valid, 0 invalid, 2 unknown
+```
+
+This establishes that the problem is not caused by the size of the copy-gap
+lemma or by the local `nextSeq` alias. Stainless is not exporting the positive
+branch of the boolean equivalence from
+`assertWalkDecisionMatchesNextAccept` cheaply enough for a caller.
+
+The attempted lemma is commented out. Full verification is restored:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+This is the third failed canonical acceptance-transfer attempt. Per
+`AGENTS.md`, stop before trying another variation.
+
+**Decision required before continuing:**
+
+1. Strengthen or reshape `assertWalkDecisionMatchesNextAccept` so the needed
+   positive acceptance fact is part of a direct implication/postcondition,
+   then reverify that existing lemma.
+2. Avoid consuming the equivalence and prove next acceptance directly inside a
+   new small lemma from tail coprimality plus non-divisibility by `cycle.head`.
+
+Option 2 duplicates part of the existing bridge proof but gives Stainless a
+straight-line positive theorem. Option 1 is less duplication but changes a
+currently verified load-bearing lemma and may reproduce the same timeout.
+
+### 2026-06-24 — Direct constructive acceptance test
+
+Tested option 2 as `assertCurrentNonMultipleAcceptedByNext(k)`. The proof
+constructs next acceptance directly:
+
+1. `assertApplyMatches(k)` transfers the current value to `spec(k)`.
+2. `spec.accepts(spec(k))` provides coprimality with the old tail filter.
+3. The nonzero remainder against `cycle.head` supplies the newly added filter.
+4. Structural unfolding proves coprimality with all of `cycle.primes`.
+5. Direct list equalities prove `spec.next.filterValues == cycle.primes`.
+6. The final expression proves `spec.next.accepts(spec(k))`.
+
+Focused result:
+
+```text
+46 total, 45 valid, 0 invalid, 1 unknown
+```
+
+The single timeout was:
+
+```text
+assert(value >= nextSpec.head.value)
+```
+
+This assertion is redundant. Stainless subsequently verified the same
+lower-bound precondition at the final `nextSpec.accepts(spec(k))` call in
+0.1 seconds, and it verified the final acceptance postcondition in 0.4 seconds.
+All coprimality and filter-list construction obligations passed.
+
+The attempted lemma is commented out and full verification is restored:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+**Recommended next iteration:** re-enable the exact constructive lemma and
+remove only the redundant standalone lower-bound assertion. Do not otherwise
+change the proof. This is materially different from the earlier equivalence
+approach: the desired final theorem already verified in this test.
+
+### 2026-06-24 — Direct constructive acceptance attempt 2 timed out
+
+Applied exactly the recommended change: re-enabled the constructive lemma and
+removed only:
+
+```text
+assert(value >= nextSpec.head.value)
+```
+
+Focused verification then timed out on the lower-bound precondition of the
+final call:
+
+```text
+nextSpec.accepts(spec(k))
+```
+
+Result:
+
+```text
+45 total, 44 valid, 0 invalid, 1 unknown
+```
+
+The acceptance postcondition itself remained valid, and every coprimality and
+filter-list equality obligation remained valid. Removing the standalone
+assertion did not eliminate the expensive lower-bound VC; it moved that VC to
+the final consumer. The earlier interpretation that the final call had already
+proved the bound cheaply was cache/run-order dependent and was too optimistic.
+
+The method is commented out again. Full verification is restored:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+**Current precise blocker:** prove or carry
+`spec(k) >= spec.next.head.value` without combining it in one VC with the full
+constructive coprimality context. A future plan should isolate this ordering
+fact in a separate lemma or add it as an explicit requirement to the
+acceptance-transfer lemma. Do not retry another assertion-order variation.
+
+### 2026-06-24 — Isolated next-head ordering lemma verified
+
+Added `CanonicalCycleSieve.assertCurrentValueAtOrAboveNextHead(k)`:
+
+```text
+k >= 1 ==> spec(k) >= spec.next.head.value
+```
+
+The proof follows an already verified local pattern:
+
+```text
+spec(1) <= spec(k)                  [current Spec monotonicity]
+spec(1) == cycle(1)                 [canonical apply equality]
+cycle(1) == spec.next.head.value    [next-head correspondence]
+```
+
+Focused verification:
+
+```text
+21 valid, 0 invalid, 0 unknown
+```
+
+Full verification:
+
+```text
+9170 valid, 0 invalid, 0 unknown
+```
+
+This confirms the ordering fact is independently cheap and stable. The next
+small change should make the constructive acceptance lemma consume this public
+ordering lemma before its final `accepts` call. No coprimality proof needs to be
+changed.

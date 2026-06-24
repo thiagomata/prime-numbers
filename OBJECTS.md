@@ -1030,6 +1030,7 @@ sequence classes focused on their own semantics.
 | **assertPrimesMatch()** | `cycle.primes == PrimeUtils.primeValues(spec.primes.list.list)` | Public representation alias. |
 | **assertGapCycleMatches()** | `cycle.gapCycle.memCycle == spec.specGapCycle(period).memCycle` | Public representation alias. |
 | **assertNextHeadMatches()** | `cycle(1) == spec.next.head.value` | Canonical next-head bridge. |
+| **assertCurrentValueAtOrAboveNextHead(k)** | `k >= 1 ⇒ spec(k) >= spec.next.head.value` | Public ordering bridge. Combines current Spec monotonicity from index one with `assertNextHeadMatches` and canonical apply equality at index one. Isolates the domain fact needed by next-stage acceptance proofs. Full verification: 9170 valid. |
 | **assertNextAcceptsMatches(value)** | `spec.next.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)` | Canonical next-stage filter bridge. |
 | **assertNextPrimesMatch()** | `cycle(1) :: cycle.primes == PrimeUtils.primeValues(spec.next.primes.list.list)` | Canonical next-stage raw-prime-list bridge. |
 | **assertWalkDecisionMatchesNextAccept(k)** | `Calc.mod(cycle(k), cycle.head) != 0 == spec.next.accepts(cycle(k))` for `k >= 1` | Walk branch condition bridge. Connects `collectGaps` skip/keep decision to next-stage acceptance. |
