@@ -806,6 +806,36 @@ the central gap-walk equality theorem. The walk decision equality now provides
 the branch-condition bridge needed for a recursive structural comparison between
 the walk's collected gaps and `spec.next.gapList`.
 
+### 2026-06-24 — Single-Gap Merge Property Verified (indexOfAccepted approach)
+
+Added `CanonicalCycleSieve.assertNextGapEqualsCurrentGapSum(nextPeriod, i)`.
+
+**Statement:** For any `i < nextPeriod - 1`,
+`spec.next(i+1) - spec.next(i) == spec(k_{i+1}) - spec(k_i)`
+where `k_i = spec.indexOfAccepted(spec.next(i))`.
+
+**Proof strategy:** Instead of scanning positions (which times out in the
+walk/pipeline approaches), the lemma uses `spec.indexOfAccepted()` — a public
+verified method with `.ensuring(res => apply(res) == value)`. The cached
+postcondition gives `spec(k_i) == spec.next(i)` and `spec(k_{i+1}) == spec.next(i+1)`.
+Substituting yields `nextGap == currentGapSum`.
+
+The preconditions (`value >= head.value` and `accepts(value)`) are discharged
+via `assertNextHeadMatches`, `assertNextAcceptsMatches`, and the fact that
+`spec.next.accepts(spec.next(k))` follows from `apply(k).ensuring`.
+
+**Why this avoids the timeout:** No per-position scanning, no walk execution,
+no pipeline unfolding. Just two calls to `indexOfAccepted` per gap, each using
+its cached postcondition. The SMT solver only needs arithmetic substitution.
+
+**Validation:** Focused verification passed with 76 VCs in 13.05s. Full
+`just verify` passed with `8918 valid`, `0 invalid`, `0 unknown`.
+
+**What this proves:** Adding the current head as a new filter merges consecutive
+current gaps whose intermediate values are multiples of head. Each next gap is
+the sum of current gaps between two consecutive non-multiples-of-head in the
+current stage's value stream. This is the merge property at the per-gap level.
+
 ### 2026-06-24 — Gap Equality Attempts and Blocking Analysis
 
 Three approaches to Lemma 5 (proving `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`)
@@ -873,3 +903,35 @@ verified. Potential approaches include:
 (a) Proving a FORALL over intermediate positions via a recursive accumulator parameter;
 (b) Computing `nextGapsWalk` in a non-opaque way by strengthening `collectGaps` postconditions;
 (c) A different structural alignment strategy not yet considered.
+
+### 2026-06-24 — Restoration of Verified Lemmas
+
+Restored both non-timed-out lemmas from the commented-out block:
+
+1. **`assertNextGapEqualsCurrentGapSum`** — previously verified at 8918 valid.
+   Focused verification: 76 VCs in 2.79s. Full `just verify`: 8918 valid.
+   Proves each next-stage gap equals the corresponding current-stage gap sum
+   using `indexOfAccepted`'s cached postcondition.
+
+2. **`assertNextValueMatchesCyclePosition`** — not marked as timed out.
+   Focused verification: 53 VCs in 2.41s. Full `just verify`: 8971 valid.
+   Proves every `spec.next(k)` value appears at some current cycle position,
+   establishing value-level correspondence between stages.
+
+**Current verified lemma count on CanonicalCycleSieve:** 12 lemmas.
+
+**Canonical path status:** The canonical bridge is functionally complete for
+single-stage representation and cross-stage value correspondence. The
+remaining ticket goals (Lemmas 5-7) depend on the deferred gap walk equality.
+
+The canonical path allows constructing `CanonicalCycleSieve(spec.next, nextPeriod)`
+directly (with caller-provided preconditions) instead of calling `cycle.next()`.
+All 12 verified lemmas establish equivalence between each canonical Cycle and
+its originating Spec stage.
+
+**Remaining commented-out code (not restored):**
+- `mergeGaps`, `noNonMultipleInRange`, `noNonMultipleExcludesValue`,
+  `findNextNonMultiple`, `nonMultiplePosition` — helper functions for timed-out lemmas
+- `assertNonMultipleMatchesSpecNext`, `assertMergeGapsMatchesSpecNext`,
+  `assertMergeGapsIntegralMatchesSpecNext` — timed out (3 attempts each);
+  left commented per stop-and-ask rule

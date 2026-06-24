@@ -1192,7 +1192,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * `[apply(k) + 1, apply(k + 1))`, contradicting the fact that `apply(k + 1)`
    * is the first accepted value in that interval.
    */
-  private def nextDoesNotPassAcceptedValue(k: BigInt, value: BigInt): Boolean = {
+  def nextDoesNotPassAcceptedValue(k: BigInt, value: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(value >= head.value)
     require(accepts(value))

@@ -1156,6 +1156,7 @@ owner of Spec-to-Cycle extraction and alignment.
 | `assertNextAcceptsMatches(v)` | Verified | same |
 | `assertNextPrimesMatch()` | Verified | same |
 | `assertWalkDecisionMatchesNextAccept(k)` | Verified | +55, total 8819 |
+| `assertNextGapEqualsCurrentGapSum(nextPeriod, i)` | Verified | +76, total 8918 — single-gap merge via `indexOfAccepted` |
 | Gap equality (lemma 5) | **Deferred** | 3 approaches timed out — revisit after easier canonical path is complete |
 
 **Gap equality root cause:** The walk's `collectGaps` is structurally opaque

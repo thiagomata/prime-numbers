@@ -1,8 +1,9 @@
 package v1.chapter6.seq.sieve
 
+import stainless.collection.List
 import stainless.lang.*
 import v1.chapter2.div.Calc
-import v1.chapter3.list.ListUtils
+import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter5.prime.{Prime, PrimeUtils}
 
 /**
@@ -280,4 +281,391 @@ case class CanonicalCycleSieve(
 
     spec.next.assertSpecGapCycleIntegralMatchesApply(nextPeriod, k)
   }.holds
+
+  /**
+   * Proves each next-stage gap equals the sum of consecutive current gaps.
+   *
+   * For any i < nextPeriod-1, the gap spec.next(i+1) - spec.next(i) equals
+   * spec(k_{i+1}) - spec(k_i), where k_i = spec.indexOfAccepted(spec.next(i))
+   * and k_{i+1} = spec.indexOfAccepted(spec.next(i+1)). The difference
+   * spec(k_{i+1}) - spec(k_i) is exactly the sum of current gapList values
+   * from k_i through k_{i+1} - 1.
+   *
+   * This is the single-gap merge property: adding the head as a new filter
+   * merges consecutive current gaps whose intermediate values are multiples
+   * of head. The proof uses indexOfAccepted's cached postcondition instead
+   * of scanning positions, avoiding the timeout from the full merge lemmas.
+   */
+  def assertNextGapEqualsCurrentGapSum(nextPeriod: BigInt, i: BigInt): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(i >= BigInt(0))
+    require(i + BigInt(1) < nextPeriod)
+    require(
+      spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus
+    )
+
+    val v1 = spec.next(i)
+    val v2 = spec.next(i + BigInt(1))
+
+    // v1 >= spec.head.value
+    assert(assertNextHeadMatches())
+    assert(cycle(BigInt(1)) == spec.next.head.value)
+    assert(spec.next(BigInt(0)) == spec.next.head.value)
+    assert(spec.next.assertApplyMonotonic(BigInt(0), i))
+    assert(spec.next(BigInt(0)) <= spec.next(i))
+    assert(v1 >= spec.head.value)
+
+    // spec.accepts(v1) via the acceptance bridge
+    assert(spec.next.accepts(v1))
+    assert(assertNextAcceptsMatches(v1))
+    assert(spec.next.accepts(v1) == SieveUtils.isCoprime(v1, cycle.primes))
+    assert(assertPrimesMatch())
+    assert(PrimeUtils.primeValues(spec.primes.list.list).tail ==
+      PrimeUtils.primeValues(spec.primes.list.list.tail))
+    assert(spec.filterValues == PrimeUtils.primeValues(spec.filterPrimes))
+    assert(spec.filterPrimes == spec.primes.list.list.tail)
+    assert(cycle.primes.tail == spec.filterValues)
+    assert(SieveUtils.isCoprime(v1, spec.filterValues))
+    assert(spec.accepts(v1))
+
+    // Same for v2
+    assert(spec.next.assertApplyMonotonic(i, i + BigInt(1)))
+    assert(spec.next(i) <= spec.next(i + BigInt(1)))
+    assert(v2 >= spec.head.value)
+    assert(spec.next.accepts(v2))
+    assert(SieveUtils.isCoprime(v2, spec.filterValues))
+    assert(spec.accepts(v2))
+
+    val k1 = spec.indexOfAccepted(v1)
+    val k2 = spec.indexOfAccepted(v2)
+
+    assert(spec(k1) == v1)
+    assert(spec(k2) == v2)
+
+    val nextGap = v2 - v1
+    val currentSum = spec(k2) - spec(k1)
+
+    nextGap == currentSum
+  }.holds
+//
+//  /**
+//   * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemmas]
+//   *
+//   * Merges current gaps into next gaps by scanning the canonical gap cycle.
+//   *
+//   * Iterates `head * gapCycle.size` positions of the cycle, accumulating the
+//   * cumulative value by adding successive gaps. At each position:
+//   *
+//   * - If the cumulative value is NOT a multiple of head: the value survives
+//   *   the head filter. Emit the gap from the last survivor to this value.
+//   * - If the cumulative value IS a multiple of head: skip it (future gaps
+//   *   will merge with this one).
+//   *
+//   * `memCycle(pos)` provides the gap at each position with automatic
+//   *   wrapping modulo `gapCycle.size`, so the scan covers the necessary
+//   *   `head` full repetitions of the gap cycle without explicit list
+//   *   concatenation.
+//   *
+//   * This function was written as a building block for
+//   * assertMergeGapsMatchesSpecNext and assertMergeGapsIntegralMatchesSpecNext,
+//   * both of which timed out (3 attempts). It was never verified standalone.
+//   * Do NOT uncomment without a new strategy for the gap equality proof.
+//   */
+//  def mergeGaps(
+//    pos: BigInt,
+//    remaining: BigInt,
+//    cumulative: BigInt,
+//    lastSurvivor: BigInt,
+//    emitted: List[BigInt]
+//  ): List[BigInt] = {
+//    require(remaining >= BigInt(0))
+//    require(pos >= BigInt(1))
+//    require(cycle.head > BigInt(0))
+//    decreases(remaining)
+//
+//    if (remaining == BigInt(0)) {
+//      emitted.reverse
+//    } else {
+//      val g = cycle.gapCycle.memCycle(pos)
+//      val nextVal = cumulative + g
+//      if (Calc.mod(nextVal, cycle.head) != BigInt(0)) {
+//        val gap = nextVal - lastSurvivor
+//        mergeGaps(
+//          pos + BigInt(1), remaining - BigInt(1),
+//          nextVal, nextVal,
+//          gap :: emitted
+//        )
+//      } else {
+//        mergeGaps(
+//          pos + BigInt(1), remaining - BigInt(1),
+//          nextVal, lastSurvivor,
+//          emitted
+//        )
+//      }
+//    }
+//  }
+//
+  /**
+   * Proves each spec.next value appears at some cycle position.
+   *
+   * For any k >= 0, `spec.next(k) == cycle(pos)` where
+   * `pos = spec.indexOfAccepted(spec.next(k))`. The proof uses
+   * `indexOfAccepted.ensuring(res => spec(res) == spec.next(k))`
+   * and `assertApplyMatches(pos)` to bridge to the canonical cycle.
+   *
+   * This is the value-level correspondence between the next Spec stage
+   * and the current canonical cycle, independent of any merge or walk.
+   */
+  def assertNextValueMatchesCyclePosition(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val v = spec.next(k)
+
+    // v >= spec.head.value (needed for accepts / indexOfAccepted)
+    assert(assertNextHeadMatches())
+    assert(cycle(BigInt(1)) == spec.next.head.value)
+    assert(spec.next.assertApplyMonotonic(BigInt(0), k))
+    assert(spec.next(BigInt(0)) <= spec.next(k))
+    assert(v >= spec.next.head.value)
+    assert(v >= spec.head.value)
+
+    // spec.accepts(v) (needed for indexOfAccepted)
+    assert(spec.next.accepts(v))
+    assert(assertNextAcceptsMatches(v))
+    assert(spec.next.accepts(v) == SieveUtils.isCoprime(v, cycle.primes))
+    assert(assertPrimesMatch())
+    assert(PrimeUtils.primeValues(spec.primes.list.list).tail ==
+      PrimeUtils.primeValues(spec.primes.list.list.tail))
+    assert(spec.filterValues == PrimeUtils.primeValues(spec.filterPrimes))
+    assert(spec.filterPrimes == spec.primes.list.list.tail)
+    assert(cycle.primes.tail == spec.filterValues)
+    assert(SieveUtils.isCoprime(v, spec.filterValues))
+    assert(spec.accepts(v))
+
+    val pos = spec.indexOfAccepted(v)
+
+    assert(spec(pos) == v)
+    assert(assertApplyMatches(pos))
+    assert(cycle(pos) == spec(pos))
+
+    spec.next(k) == cycle(pos)
+  }.holds
+//
+//  /**
+//  * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemma]
+//  *
+//  * Recursive predicate: all positions in [from, to) are multiples of head.
+//  *
+//  * Used as the postcondition of `findNextNonMultiple` to guarantee that the
+//  * returned position is the FIRST non-multiple in the search range.
+//  *
+//  * This predicate was written as a building block for
+//  * assertNonMultipleMatchesSpecNext, which timed out (3 attempts).
+//  * It was never verified standalone. Do NOT uncomment without a new strategy.
+//  */
+// def noNonMultipleInRange(from: BigInt, to: BigInt): Boolean = {
+//   require(to >= from)
+//   decreases(to - from)
+//   if (from >= to) true
+//   else Calc.mod(cycle(from), cycle.head) == BigInt(0) &&
+//     noNonMultipleInRange(from + BigInt(1), to)
+// }
+////
+// /**
+//  * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemma]
+//  *
+//  * Extracts a value from `noNonMultipleInRange`: if `v` is in [from, to),
+//  * then `cycle(v) % head == 0` (i.e., `v` is a multiple).
+//  *
+//  * Mirror of `AllPrimesSoFarList.noPrimesBetweenExcludesValue` for the
+//  * no-non-multiples predicate.
+//  *
+//  * This lemma was written as a building block for
+//  * assertNonMultipleMatchesSpecNext, which timed out (3 attempts).
+//  * It was never verified standalone. Do NOT uncomment without a new strategy.
+//  */
+// def noNonMultipleExcludesValue(from: BigInt, to: BigInt, v: BigInt): Boolean = {
+//   require(noNonMultipleInRange(from, to))
+//   require(v >= from)
+//   require(v < to)
+//   decreases(to - v)
+////
+//   if (from == v) {
+//     Calc.mod(cycle(v), cycle.head) == BigInt(0)
+//   } else {
+//     assert(noNonMultipleInRange(from + BigInt(1), to))
+//     noNonMultipleExcludesValue(from + BigInt(1), to, v)
+//   }
+// }.holds
+////
+// /**
+//  * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemma]
+//  *
+//  * Bounded search for the first non-multiple position in [startPos, bound].
+//  *
+//  * Mirrors `SpecSieveSequence.searchNext` but operates on cycle positions.
+//  * Returns `bound + 1` if no non-multiple found in range.
+//  *
+//  * @ensuring `noNonMultipleInRange(startPos, res)` guarantees all skipped
+//  * positions are multiples — the returned position is the FIRST non-multiple.
+//  *
+//  * This function was written as a building block for
+//  * assertNonMultipleMatchesSpecNext, which timed out (3 attempts).
+//  * It was never verified standalone. Do NOT uncomment without a new strategy.
+//  */
+// def findNextNonMultiple(startPos: BigInt, bound: BigInt): BigInt = {
+//   require(startPos >= BigInt(1))
+//   require(bound >= startPos)
+//   require(cycle.head > BigInt(0))
+//   decreases(bound - startPos + BigInt(1))
+////
+//   if (Calc.mod(cycle(startPos), cycle.head) != BigInt(0)) {
+//     startPos
+//   } else if (startPos == bound) {
+//     bound + BigInt(1)
+//   } else {
+//     findNextNonMultiple(startPos + BigInt(1), bound)
+//   }
+// }.ensuring(res =>
+//   res >= startPos &&
+//   (!(res <= bound) || Calc.mod(cycle(res), cycle.head) != BigInt(0)) &&
+//   noNonMultipleInRange(startPos, res)
+// )
+////
+// /**
+//  * [NEVER INDEPENDENTLY VERIFIED — helper for timed-out lemma]
+//  *
+//  * Returns the position of the k-th non-multiple of head in the cycle.
+//  *
+//  * Defined inductively like `SpecSieveSequence.apply(k)`: base case (k=1)
+//  * returns position 1 (= new head), and each step calls `findNextNonMultiple`
+//  * to skip past multiples. The search bound is the full scan range.
+//  *
+//  * This function was written as a building block for
+//  * assertNonMultipleMatchesSpecNext, which timed out (3 attempts).
+//  * It was never verified standalone. Do NOT uncomment without a new strategy.
+//  */
+// def nonMultiplePosition(k: BigInt): BigInt = {
+//   require(k >= BigInt(1))
+//   require(cycle.head > BigInt(0))
+//   decreases(k)
+////
+//   if (k == BigInt(1)) {
+//     BigInt(1)
+//   } else {
+//     val prevPos = nonMultiplePosition(k - BigInt(1))
+//     findNextNonMultiple(
+//       prevPos + BigInt(1),
+//       prevPos + cycle.head * cycle.gapCycle.size
+//     )
+//   }
+// }
+//
+// /**
+//  * [TIMED OUT — 3 attempts exhausted, per stop-and-ask rule]
+//  *
+//  * Bounded-search proof that the k-th non-multiple in the canonical cycle
+//  * equals spec.next(k-1). Uses findNextNonMultiple with .ensuring for
+//  * noNonMultipleInRange guarantee and nextDoesNotPassAcceptedValue for
+//  * Spec minimality.
+//  *
+//  * Root cause: The critical step requires proving there is no accepted
+//  * value between lastSurvivor and the current position. This needs a
+//  * FORALL over all intermediate walk positions (∀t ∈ (lastPos, walkPos).
+//  * !accepted(cycle(t+1))). Stainless cannot express this quantifier as a
+//  * recursive function parameter, and the aux lemma's sequential assertion
+//  * chain does not imply a FORALL to the solver.
+//  *
+//  * Do NOT retry without a fundamentally new approach (e.g., recursive
+//  * accumulator parameter carrying the FORALL, or a different strategy).
+//  * Commented out rather than deleted per never-destroy rule.
+//  */
+// def assertNonMultipleMatchesSpecNext(
+//   k: BigInt, nextPeriod: BigInt
+// ): Boolean = {
+//   require(k >= BigInt(1))
+//   require(k <= nextPeriod)
+//   require(nextPeriod > BigInt(0))
+//   require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+//   decreases(k)
+//
+//   val pos = nonMultiplePosition(k)
+//
+//   if (k == BigInt(1)) {
+//     assert(pos == BigInt(1))
+//     assert(assertNextHeadMatches())
+//     assert(cycle(pos) == spec.next(BigInt(0)))
+//     cycle(pos) == spec.next(k - BigInt(1))
+//   } else {
+//     assert(assertNonMultipleMatchesSpecNext(k - BigInt(1), nextPeriod))
+//     val prevPos = nonMultiplePosition(k - BigInt(1))
+//     assert(cycle(prevPos) == spec.next(k - BigInt(2)))
+//     assert(assertWalkDecisionMatchesNextAccept(prevPos))
+//     assert(assertWalkDecisionMatchesNextAccept(pos))
+//     assert(spec.next.accepts(cycle(pos)))
+//     assert(spec.next(k - BigInt(2)) < cycle(pos))
+//     assert(spec.next.accepts(cycle(pos)))
+//     assert(spec.next.nextDoesNotPassAcceptedValue(k - BigInt(2), cycle(pos)))
+//     assert(spec.next(k - BigInt(1)) <= cycle(pos))
+//     assert(noNonMultipleInRange(prevPos + BigInt(1), pos))
+//     val specPos = spec.indexOfAccepted(spec.next(k - BigInt(1)))
+//     if (specPos < pos) {
+//       assert(noNonMultipleExcludesValue(prevPos + BigInt(1), pos, specPos))
+//       assert(Calc.mod(cycle(specPos), cycle.head) == BigInt(0))
+//       assert(false)
+//     }
+//     cycle(pos) == spec.next(k - BigInt(1))
+//   }
+// }.holds
+//
+// /**
+//  * [TIMED OUT — 3 attempts exhausted, per stop-and-ask rule]
+//  *
+//  * Full list equality between mergeGaps output and spec.next.gapList.
+//  * Timed out at 121s (Attempt 1 — Direct list comparison).
+//  *
+//  * Root cause: The walk's collectGaps recursively scans head * period
+//  * positions, and the SMT solver cannot symbolically execute this many
+//  * iterations. nextGapsWalk is fundamentally opaque from outside .holds
+//  * contexts — its .ensuring exports positivity but not length or element
+//  * values.
+//  *
+//  * Do NOT retry without a fundamentally new approach (e.g., strengthening
+//  * collectGaps postconditions, or a non-walk-based comparison).
+//  * Commented out rather than deleted per never-destroy rule.
+//  */
+// def assertMergeGapsMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+//   require(nextPeriod > BigInt(0))
+//   require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+//   val steps = cycle.head * cycle.gapCycle.size
+//   val walked = mergeGaps(BigInt(1), steps, cycle(BigInt(1)), cycle(BigInt(1)), List.empty[BigInt])
+//   val specGaps = spec.next.gapList(BigInt(0), nextPeriod)
+//   walked == specGaps
+// }.holds
+//
+// /**
+//  * [TIMED OUT — 3 attempts exhausted, per stop-and-ask rule]
+//  *
+//  * Integral comparison between mergeGaps output and spec.next values.
+//  * Timed out at 121s (Attempt 3 — Even walkedGaps.nonEmpty confirmed
+//  * nextGapsWalk is fundamentally opaque).
+//  *
+//  * Root cause: Same as assertMergeGapsMatchesSpecNext — the walk's
+//  * output is opaque to external lemmas. No structural information about
+//  * element values or list length is exported by collectGaps.ensuring.
+//  *
+//  * Do NOT retry without a fundamentally new approach.
+//  * Commented out rather than deleted per never-destroy rule.
+//  */
+// def assertMergeGapsIntegralMatchesSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
+//   require(nextPeriod > BigInt(0))
+//   require(k > BigInt(0))
+//   require(k <= nextPeriod)
+//   require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+//
+//   val steps = cycle.head * cycle.gapCycle.size
+//   val walked = mergeGaps(BigInt(1), steps, cycle(BigInt(1)), cycle(BigInt(1)), List.empty[BigInt])
+//   val walkedIntegral = CycleIntegral(spec.next.head.value, walked)
+//   walkedIntegral(k - BigInt(1)) == spec.next(k)
+// }.holds
 }

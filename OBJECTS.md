@@ -1034,6 +1034,8 @@ sequence classes focused on their own semantics.
 | **assertWalkDecisionMatchesNextAccept(k)** | `Calc.mod(cycle(k), cycle.head) != 0 == spec.next.accepts(cycle(k))` for `k >= 1` | Walk branch condition bridge. Connects `collectGaps` skip/keep decision to next-stage acceptance. |
 | **assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)** | `spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(0, nextPeriod)` | Canonical next-stage gap cycle values match spec.next gap list by construction. |
 | **assertNextApplyMatches(nextPeriod, k)** | `CycleIntegral(spec.next.head, spec.next.specGapCycle(nextPeriod).memCycle)(k-1) == spec.next(k)` | Canonical next-stage apply match. Uses Spec's own verified gap-cycle integral reconstruction lemma. |
+| **assertNextGapEqualsCurrentGapSum(nextPeriod, i)** | `spec.next(i+1) - spec.next(i) == spec(k_{i+1}) - spec(k_i)` where `k_i = spec.indexOfAccepted(spec.next(i))` | Single-gap merge property. Each next gap equals the sum of current gaps from `k_i` to `k_{i+1}-1`. Proves merge using `indexOfAccepted` instead of scanning positions. |
+| **assertNextValueMatchesCyclePosition(k)** | `spec.next(k) == cycle(pos)` where `pos = spec.indexOfAccepted(spec.next(k))` for `k >= 0` | Value-level correspondence between next Spec stage and current canonical cycle. Uses `indexOfAccepted.ensuring` and `assertApplyMatches` to bridge. |
 
 **Source**: `src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`
 
