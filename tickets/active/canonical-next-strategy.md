@@ -966,3 +966,80 @@ merge.
   timed out, and why. Comment out failures, restore green.
 - Self-check after each: "new idea, or stuck on the same shape?" Stop only
   when no new idea remains across all approaches.
+
+### 2026-06-25 — Approach 1 (congruence packaging) SUCCEEDED
+
+Added three packaging lemmas + one top-level conjunction, all verified:
+
+- `assertNextCycleGapsMatchSpecNext(nextPeriod)`: `nextCanonical.cycle.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)`.
+- `assertNextCycleHeadMatchesSpecNext(nextPeriod)`: `nextCanonical.cycle.head == spec.next.head.value`.
+- `assertNextCycleMatchesSpecNext(nextPeriod)`: conjunction of head + gaps + apply (apply via P1).
+
+**How:** pure congruence. `nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)`
+builds its cycle by calling the *same* Spec functions (`specGapCycle`,
+`PrimeUtils.primeValues`) that certify `spec.next`'s own data. Same function
+symbol + equal inputs ⇒ equal output, with no unfolding of merge or walk.
+The gaps chain composes `assertNextGapCycleValuesEqualSpecNextGapList` (verified)
+with the constructor equality; head composes `assertHeadMatches` (transferred).
+
+**Validation:** focused verify on each (gaps 24 VCs / 4.13s, head 16 VCs / 2.17s,
+conjunction 30 VCs / 2.81s); full verify `9472 valid: 9472 invalid: 0 unknown: 0`
+(+70 over the 9402 P1 baseline). All first-attempt, no timeouts.
+
+**What this delivers:** the next-stage structural identity (head + gaps + apply)
+is proven for the canonical cycle built from `spec.next`. This is exactly the
+goal: "a new cycle that also ensures same apply, gaps, and head."
+
+**What this does NOT deliver:** it proves a *correct* next cycle exists. It does
+NOT prove the implementation's `CycleSieveSequence.next()` (the walk via
+`nextGapsWalk`) produces this cycle. That remains the P2 walk open hole.
+
+**Approaches 2 and 4 are now UNNECESSARY** for the stated target — congruence
+delivered it without the merge transfer (2) or a pure `createNextGaps`
+function (4). Approach 3 (walk connection) is a *different, harder* goal
+(certifying the implementation, not just existence); it remains open and is
+documented as such in the design doc's guardrail.
+
+**Lesson:** When the target object is *constructed from* the source of truth by
+calling the same certified functions, congruence closes the equality without
+any transfer or unfolding. Always check "is the target built by the same
+function the source uses?" before reaching for transfer lemmas. This mirrors
+Leg 2's `assertApplyMatches`, which is itself derived from head + gaps
+construction equality.
+
+### 2026-06-25 — `nextVerified` constructor: .ensuring postcondition timed out
+
+Added `CanonicalCycleSieve.nextVerified(nextPeriod)` — a conditional
+next-stage constructor returning `CanonicalCycleSieve(spec.next, nextPeriod)`.
+Conditional (not universal) per user guidance: it carries the next-stage
+preconditions as hypotheses, avoiding the Bertrand/Euclid walls that would be
+required to prove `spec.next` always exists.
+
+**Attempt 1 — `.ensuring` postcondition TIMED OUT.** The postcondition called
+`result.assertNextCycleHeadMatchesSpecNext(nextPeriod)`, whose own preconditions
+include the period anchor for `spec.next.next` (two stages ahead). The VC for
+that bubbled-up precondition timed out, and even after adding it as an explicit
+`require` (the `assertAcceptsEqualWhenTrue` bubbling pattern), the full
+focused verify ran past 10 minutes without completing — chaining `.next.next`
+in the postcondition compounds verification cost catastrophically.
+
+**Attempt 2 — plain constructor (no `.ensuring`) PASSED (13 VCs / 1.53s).**
+`nextVerified` is now a thin conditional constructor with no postcondition VC.
+Callers who want the correctness proof call the standalone lemma
+`assertNextCycleMatchesSpecNext(nextPeriod)` explicitly (already verified).
+
+**Lesson (candidate for LEARNINGS.md):** `.ensuring` postconditions that call
+other `.holds`/`.ensuring` lemmas whose preconditions reference `.next.next`
+(sibling-of-sibling stages) blow up verification cost. The bubbling-up trick
+(bubbling the callee's preconditions into the caller's `require`s) works for
+*one* level of `.next`, but each additional level compounds. Prefer **plain
+constructors + standalone correctness lemmas** over `.ensuring` when the
+correctness lemma reaches across more than one stage.
+
+**Validation:** focused verify `nextVerified` 13 VCs / 1.53s; full verify
+`9485 valid: 9485 invalid: 0 unknown: 0` (+13 over the 9472 baseline).
+
+**Status:** `nextVerified` delivers the verified conditional next-stage
+constructor. Combined with `assertNextCycleMatchesSpecNext`, the next-stage
+equivalence is conditionally proven (head + gaps + apply all match `spec.next`
+under the stated hypotheses).

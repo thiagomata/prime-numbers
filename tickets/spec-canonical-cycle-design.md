@@ -93,23 +93,29 @@ instead, and surface the gap to the user rather than burning attempts.
 | 3 | The cycle strategy (next head + next gaps) is correct, certified via Canonical matching `spec.next` | ✅ Done | `CanonicalCycleSieve` (see §4) |
 | 4 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | ❌ Not started | (future ticket) |
 
-### ⚠️ Open hole — partial progress (P1 done, P2 open)
+### ⚠️ Open hole — partial progress (Approach 1 done, walk still open)
 
-The next-stage structural identity is pursued via two planned approaches:
+The next-stage structural identity is pursued via ranked approaches:
 
-- **P1 (math side) — ✅ DONE (2026-06-25).** `assertNextCycleApplyMatchesSpecNext`
-  proves `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k.
-  This is Leg 2 instantiated one stage later: a *correct* next cycle exists,
-  built from `spec.next`'s own certified data.
-- **P2 (computational) — ❌ OPEN.** `cycle.next()(k) == spec.next(k)` ∀k is NOT
-  proven. This would prove the optimized `CycleSieveSequence.next()` (via
-  `nextGapsWalk`) produces the cycle that P1 specifies. 3 prior direct attempts
-  timed out (before Leg 3's rules existed); a fresh attempt routing through the
-  Leg-3 cycle rules may now be tractable.
+- **Approach 1 (congruence packaging) — ✅ DONE (2026-06-25, `9472 valid`).**
+  `assertNextCycleMatchesSpecNext` proves
+  `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
+  head, gaps, AND apply. All three by congruence: the next canonical cycle is
+  built by calling the *same* Spec functions (`specGapCycle`, `primeValues`)
+  that certify `spec.next`'s own data — same function + equal inputs ⇒ equal
+  output, no unfolding. Approaches 2 (merge transfer) and 4 (pure function)
+  proved unnecessary.
+- **Approach 3 (walk connection) — ❌ OPEN.** `cycle.next()(k) == spec.next(k)`
+  ∀k is NOT proven. This would certify the implementation's
+  `CycleSieveSequence.next()` (via `nextGapsWalk`) actually computes the cycle
+  Approach 1 specifies. 3 prior direct attempts timed out; the opacity of
+  `collectGaps`/`nextGapsWalk` is the documented root cause. Not currently
+  tractable without either strengthening `collectGaps`'s postcondition or
+  adding an accumulator invariant.
 
-**Net state:** the head/gaps/apply equalities are proven at construction for
-both the current stage (Leg 2) and the next stage (P1). They are **not** proven
-to be produced by `cycle.next()`. See the guardrail in §1.
+**Net state:** a verified *correct* next cycle exists at both stages (current
+via Leg 2, next via Approach 1). The implementation's `cycle.next()` walk is
+NOT certified to produce it. See the guardrail in §1.
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 

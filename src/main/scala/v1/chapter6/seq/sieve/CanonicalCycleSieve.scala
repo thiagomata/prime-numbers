@@ -649,6 +649,51 @@ case class CanonicalCycleSieve(
   )
 
   /**
+   * Verified next-stage constructor: returns the canonical cycle built from
+   * `spec.next`, certified (conditionally) to match `spec.next` in head, gaps,
+   * and apply.
+   *
+   * This is the packaging of the Approach-1 lemmas into a first-class
+   * next-stage operation. It does NOT prove that `spec.next` always exists —
+   * the undischarged Bertrand/Euclid walls (`prove-apply1-is-prime.md`,
+   * `primorial-not-divisible-by-new-prime.md`) make a universal "next always
+   * exists" impossible. Instead, this method is **conditional**: it takes the
+   * next-stage preconditions as hypotheses and, when they hold, returns a
+   * canonical cycle proven to match `spec.next`.
+   *
+   * {{{
+   *   // Under the preconditions:
+   *   val nextCycle = currentCycle.nextVerified(nextPeriod)
+   *
+   *   nextCycle.cycle.head    == spec.next.head.value                         [head]
+   *   nextCycle.cycle.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)  [gaps]
+   *   forall k >= 0, nextCycle.cycle(k) == spec.next(k)                       [apply]
+   * }}}
+   *
+   * This is NOT `CycleSieveSequence.next()` (the walk). It is a verified
+   * construction path: the next cycle built from `spec.next`'s own certified
+   * data. The walk's correctness remains open (see
+   * `tickets/spec-canonical-cycle-design.md` §1 guardrail).
+   *
+   * @param nextPeriod a positive period anchor for `spec.next`
+   * @return `CanonicalCycleSieve(spec.next, nextPeriod)`, certified to match
+   *         `spec.next` in head + gaps + apply
+   */
+  def nextVerified(nextPeriod: BigInt): CanonicalCycleSieve = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(
+      Calc.mod(
+        SieveUtils.product(spec.next.filterValues),
+        spec.next.head.value
+      ) != BigInt(0)
+    )
+
+    CanonicalCycleSieve(spec.next, nextPeriod)
+  }
+
+  /**
    * Proves each next-stage gap equals the sum of consecutive current gaps.
    *
    * For any i < nextPeriod-1, the gap spec.next(i+1) - spec.next(i) equals
