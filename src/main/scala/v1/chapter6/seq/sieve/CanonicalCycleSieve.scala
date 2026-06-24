@@ -800,6 +800,75 @@ case class CanonicalCycleSieve(
 //
 //    nextGap == cycleGap
 //  }.holds
+
+  /**
+   * [TIMED OUT — corrected canonical attempt 1, 2026-06-24]
+   *
+   * `nextIndex` was evaluated before the proof body established its domain and
+   * acceptance preconditions. Stainless therefore timed out on both
+   * `indexOfAccepted(spec(k))` requirements. A future attempt should move that
+   * call below the assertions, after the Spec copy lemma has been invoked.
+   *
+   * Proves the canonical copy rule using the corrected Spec-to-Spec gap lemma.
+   *
+   * The current sequence already filters every prime in `cycle.primes.tail`.
+   * Moving to `spec.next` adds the current head, `cycle.head`, to that filter.
+   * Therefore a current value survives the next filter exactly when its
+   * remainder modulo `cycle.head` is nonzero; `cycle(1)` is the next sequence's
+   * starting value, not the newly added filter divisor.
+   *
+   * If both consecutive current values survive, no merge occurs between them.
+   * `assertConsecutiveAcceptedByNextPreservesGap` proves that they remain
+   * consecutive in `spec.next`. The next-stage index is obtained from
+   * `indexOfAccepted(spec(k))`; it is intentionally not assumed to equal the
+   * old index `k`, because earlier rejected values may have shifted positions.
+   *
+   * {{{
+   *   cycle(k)   mod cycle.head != 0
+   *   cycle(k+1) mod cycle.head != 0
+   *   ------------------------------------------------------------
+   *   spec.next(nextIndex+1) - spec.next(nextIndex)
+   *     == cycle(k+1) - cycle(k)
+   * }}}
+   */
+  /*
+  def assertCopyGapMatchesSpec(k: BigInt): Boolean = {
+    require(k >= BigInt(1))
+    require(Calc.mod(cycle(k), cycle.head) != BigInt(0))
+    require(Calc.mod(cycle(k + BigInt(1)), cycle.head) != BigInt(0))
+
+    val nextSeq = spec.next
+    val nextIndex = nextSeq.indexOfAccepted(spec(k))
+
+    assert(assertApplyMatches(k))
+    assert(assertApplyMatches(k + BigInt(1)))
+    assert(assertWalkDecisionMatchesNextAccept(k))
+    assert(assertWalkDecisionMatchesNextAccept(k + BigInt(1)))
+    assert(nextSeq.accepts(spec(k)))
+    assert(nextSeq.accepts(spec(k + BigInt(1))))
+
+    assert(assertNextHeadMatches())
+    assert(spec.assertApplyMonotonic(BigInt(1), k))
+    assert(spec.assertApplyMonotonic(BigInt(1), k + BigInt(1)))
+    assert(spec(k) >= nextSeq.head.value)
+    assert(spec(k + BigInt(1)) >= nextSeq.head.value)
+    assert(nextSeq.filterValues.tail == spec.filterValues)
+    assert(nextSeq.head.value >= spec.head.value)
+
+    assert(spec.assertConsecutiveAcceptedByNextPreservesGap(nextSeq, k))
+    assert(
+      nextSeq(nextIndex + BigInt(1)) - nextSeq(nextIndex) ==
+        spec(k + BigInt(1)) - spec(k)
+    )
+    assert(
+      spec(k + BigInt(1)) - spec(k) ==
+        cycle(k + BigInt(1)) - cycle(k)
+    )
+
+    nextSeq(nextIndex + BigInt(1)) - nextSeq(nextIndex) ==
+      cycle(k + BigInt(1)) - cycle(k)
+  }.holds
+  */
 //  * Used as the postcondition of `findNextNonMultiple` to guarantee that the
 //  * returned position is the FIRST non-multiple in the search range.
 //  *

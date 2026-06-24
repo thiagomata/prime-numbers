@@ -233,3 +233,179 @@ at `9100 valid`. Promoted `spec.assertFilterPreservesNextGap` to public
 **Status:** STOPPED per `stop-and-ask` (1 of 3 attempts; this is a logical gap
 worth user input, not a retry-the-same-thing situation). Awaiting direction
 between options (a) and (b) above.
+
+### 2026-06-24 — Copy rule correction approved
+
+The previous `assertFilterPreservesNextGap` is not reusable for the actual
+`spec.next` stage because it also requires:
+
+```text
+nextSeq.head.value == head.value
+```
+
+That is false for a real next stage, whose head is `spec(1) > spec.head`.
+Tail-coprimality alone therefore cannot repair the old lemma.
+
+The corrected pure-Spec lemma will use the actual load-bearing contract:
+
+```text
+nextSeq.filterValues.tail == filterValues
+nextSeq.head.value >= head.value
+nextSeq.accepts(apply(k))
+nextSeq.accepts(apply(k + 1))
+```
+
+From those assumptions:
+
+1. `apply(k)` and `apply(k+1)` both occur in `nextSeq`.
+2. They are consecutive in the old stream.
+3. Any `nextSeq` value between them is accepted by the old tail filter because
+   `nextSeq.filterValues.tail == filterValues`.
+4. Therefore no third accepted value can lie strictly between them in either
+   stream.
+
+The conclusion is the copied-gap equality:
+
+```text
+nextSeq(nextSeq.indexOfAccepted(apply(k)) + 1)
+  - nextSeq(nextSeq.indexOfAccepted(apply(k)))
+==
+apply(k + 1) - apply(k)
+```
+
+Canonical will then use `assertWalkDecisionMatchesNextAccept` at `k` and
+`k + 1` to establish the two next-acceptance assumptions, and transfer the old
+values through `assertApplyMatches`.
+
+### 2026-06-24 — Corrected Spec copy lemma attempt 1 timed out
+
+Attempted
+`SpecSieveSequence.assertConsecutiveAcceptedByNextPreservesGap(nextSeq, k)`
+with the corrected no-equal-head contract described above.
+
+The mathematical body mostly verified, including:
+
+- projecting a `nextSeq` value through `nextSeq.filterValues.tail` into old
+  acceptance;
+- proving the old successor is at or below the next-sequence successor;
+- proving the next-sequence successor is at or below the accepted old
+  successor;
+- concluding the copied-gap equality.
+
+However, focused verification timed out on three precondition VCs before or at
+the beginning of the body:
+
+```text
+nextSeq.accepts(apply(k))
+nextSeq.accepts(apply(k + 1))
+nextSeq.indexOfAccepted(apply(k)) requires apply(k) >= nextSeq.head.value
+```
+
+Stainless did not retain the lower-bound component hidden inside the
+cross-instance `accepts` requirements. Result:
+
+```text
+47 total, 44 valid, 3 unknown, 3 timeouts at 120 seconds each
+```
+
+This matches `LEARNINGS.md` section 18: cross-instance calls can lose simple
+arithmetic facts when several unfoldings share one VC.
+
+The attempted lemma was commented out, not deleted. Full verification was
+restored:
+
+```text
+9100 valid, 0 invalid, 0 unknown
+```
+
+Do not retry the same shape. The next viable approach is to isolate the lower
+bound as its own tiny lemma or change the copy lemma contract to carry explicit
+facts:
+
+```text
+apply(k) >= nextSeq.head.value
+apply(k + 1) >= nextSeq.head.value
+```
+
+Only one of those changes should be tried in the next verification cycle.
+
+### 2026-06-24 — Corrected Spec copy lemma attempt 2 verified
+
+Retried the same mathematical sandwich proof with the two domain facts exposed
+as explicit preconditions:
+
+```text
+apply(k) >= nextSeq.head.value
+apply(k + 1) >= nextSeq.head.value
+```
+
+This separates two logically distinct obligations:
+
+- `nextSeq.accepts(value)` says that the value passes the next filter;
+- `value >= nextSeq.head.value` says that the value belongs to the searchable
+  domain of `nextSeq.indexOfAccepted`.
+
+With those facts available directly, Stainless verifies
+`assertConsecutiveAcceptedByNextPreservesGap`. The lemma proves that when two
+consecutive old-sequence values are both accepted by the next sequence, they
+remain consecutive there, so their gap is copied unchanged. It does not assume
+equal sequence heads.
+
+Focused verification:
+
+```text
+49 valid, 0 invalid, 0 unknown
+```
+
+Full verification:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+**Next:** transfer this pure-Spec fact through `CanonicalCycleSieve`. The
+canonical lemma must use the old head `cycle.head` as the newly added filter,
+not `cycle(1)`: `cycle(1)` is the next sequence's starting value, while
+`cycle.head` is the prime newly included in `spec.next.filterValues`.
+
+### 2026-06-24 — Canonical copy transfer attempt 1 timed out
+
+Attempted `CanonicalCycleSieve.assertCopyGapMatchesSpec(k)` with the corrected
+filter condition:
+
+```text
+Calc.mod(cycle(k), cycle.head) != 0
+Calc.mod(cycle(k + 1), cycle.head) != 0
+```
+
+and the corrected next-stage index:
+
+```text
+nextIndex = spec.next.indexOfAccepted(spec(k))
+```
+
+The proof body was layered through `assertApplyMatches`,
+`assertWalkDecisionMatchesNextAccept`, and the newly verified
+`assertConsecutiveAcceptedByNextPreservesGap`.
+
+**Timeout:** `nextIndex` was declared before those assertions. Stainless checks
+method-call preconditions at the declaration site, so it timed out before
+entering the useful proof body on both requirements of `indexOfAccepted`:
+
+```text
+spec(k) >= spec.next.head.value
+spec.next.accepts(spec(k))
+```
+
+This is an ordering problem in the attempted implementation, not a new
+mathematical gap. The attempted method is commented out. Full verification was
+restored:
+
+```text
+9149 valid, 0 invalid, 0 unknown
+```
+
+**Next planned attempt:** establish acceptance and lower bounds first, invoke
+`assertConsecutiveAcceptedByNextPreservesGap`, and only then evaluate
+`indexOfAccepted(spec(k))`. Do not place any `indexOfAccepted` call, including a
+`val` initializer, before those facts.

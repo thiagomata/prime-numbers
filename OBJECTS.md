@@ -909,6 +909,7 @@ Linear-scan baseline model of sieve sequences. Generates values by scanning cons
 | **assertSumGapPositive(from, until)** | `until > from ⇒ sumGap(from, until) > 0` | Private `.holds`. Positivity companion to `assertSumGapTelescopes`. Inducts on `until - from`, using `applyStrictlyIncreases(from)` for each summand. Foundation for proving every gap emitted by `mergedGapPrefix` is positive. |
 | **assertFilterPreservesNextPosition(nextSeq, k)** | `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(indexOfAccepted(V)+1) == apply(k+1)` | Proves that adding a filter prime preserves the next-position relationship between two V0 sequences. Uses `nextDoesNotPassAcceptedValue` bidirectionally. Private .holds. 6379 valid. |
 | **assertFilterPreservesNextGap(nextSeq, k)** | Same copy-case preconditions as `assertFilterPreservesNextPosition`: `nextSeq.filterValues.tail == filterValues` ∧ `nextSeq.accepts(apply(k))` ∧ `Calc.mod(apply(k+1), p) ≠ 0` ⇒ `nextSeq(vIdx+1) - nextSeq(vIdx) == apply(k+1) - apply(k)` | Private `.holds` corollary. Names the copied-gap fact so later gap-list proofs can consume it directly. Verified with 7259 valid. |
+| **assertConsecutiveAcceptedByNextPreservesGap(nextSeq, k)** | If `nextSeq.filterValues.tail == filterValues`, its head is no smaller, and both `apply(k)` and `apply(k+1)` are in its domain and accepted, then `nextSeq(indexOfAccepted(apply(k))+1) - nextSeq(indexOfAccepted(apply(k))) == apply(k+1) - apply(k)` | Public `.holds`. General copy rule that does not require equal sequence heads. Uses a two-sided no-skipping argument to prove the next-sequence successor of `apply(k)` is exactly `apply(k+1)`. The explicit lower-bound preconditions keep cross-instance domain facts visible to Stainless. Full verification: 9149 valid. |
 
 ### Residue Cycle Lemmas
 
@@ -934,7 +935,7 @@ Bridges between old-filter acceptance and next-filter acceptance for `SpecSieveS
 | **applyIndexOrderPreservesValues(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Cumulative ordering: earlier indices produce no-larger values. Private `.holds`. |
 | **applyIndexStrictlyPreservesValues(from, until)** | `from < until ⇒ apply(from) < apply(until)` | Strict companion: earlier indices produce strictly smaller values. Private `.holds`. |
 | **valueBoundImpliesIndexBound(index, bound)** | `apply(index) ≤ apply(bound) ⇒ index ≤ bound` | Contrapositive: a value bound constrains the index. Private `.holds`. |
-| **assertApplyMonotonic(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Public wrapper for `applyIndexOrderPreservesValues`. Private `.holds`. |
+| **assertApplyMonotonic(from, until)** | `from ≤ until ⇒ apply(from) ≤ apply(until)` | Public wrapper for `applyIndexOrderPreservesValues`. Exposed for Canonical cross-instance lower-bound proofs. |
 
 ### Skip/Merge Lemmas (proof of gap merging)
 

@@ -1780,6 +1780,60 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
+   * Proves that accepting two consecutive old values copies their gap.
+   *
+   * Unlike `assertFilterPreservesNextGap`, this lemma does not require the two
+   * sequences to have the same head. That makes it applicable to the actual
+   * `next` stage, whose head is strictly greater than the current head.
+   *
+   * The next sequence must use this sequence's filters as its tail and must
+   * accept both `apply(k)` and `apply(k + 1)`. The first value therefore has an
+   * index in `nextSeq`. Its immediate next value cannot be below
+   * `apply(k + 1)`, because every next-sequence value also passes the old tail
+   * filters and the old sequence has no accepted value between consecutive
+   * generated values. It cannot be above `apply(k + 1)` because that value is
+   * itself accepted by `nextSeq`. The two bounds force equality, so the gap is
+   * copied unchanged.
+   */
+  def assertConsecutiveAcceptedByNextPreservesGap(
+    nextSeq: SpecSieveSequence,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value >= head.value)
+    require(apply(k) >= nextSeq.head.value)
+    require(apply(k + BigInt(1)) >= nextSeq.head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(nextSeq.accepts(apply(k + BigInt(1))))
+
+    val v = apply(k)
+    val w = apply(k + BigInt(1))
+    val vIdx = nextSeq.indexOfAccepted(v)
+
+    assert(nextSeq(vIdx) == v)
+    assert(nextSeq.applyStrictlyIncreases(vIdx))
+    val z = nextSeq(vIdx + BigInt(1))
+    assert(z > v)
+    assert(z >= nextSeq.head.value)
+    assert(z >= head.value)
+    assert(SieveUtils.isCoprime(z, nextSeq.filterValues))
+    assert(SieveUtils.assertIsCoprimeSound(z, nextSeq.filterValues))
+    assert(SieveUtils.isCoprime(z, nextSeq.filterValues.tail))
+    assert(SieveUtils.isCoprime(z, filterValues))
+    assert(accepts(z))
+    assert(nextDoesNotPassAcceptedValue(k, z))
+    assert(w <= z)
+
+    assert(nextSeq.accepts(w))
+    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, w))
+    assert(z <= w)
+    assert(z == w)
+
+    nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == w - v
+  }.holds
+
+  /**
    * Finds the first old index > k whose value is not a multiple of p, within bound.
    * Returns `k+1` if `apply(k+1)` is not a multiple, otherwise recurses forward.
    * The postcondition guarantees the result is in `[k+1, bound]` and that its
