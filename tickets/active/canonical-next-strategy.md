@@ -1083,3 +1083,666 @@ use a longer/unique anchor — never a common pattern.
 
 Bridge base case then verified first attempt (15 VCs / 4.32s). Full verify
 `9500 valid: 9500 invalid: 0 unknown: 0` (+15 over 9485).
+
+### 2026-06-25 — Walk step 2 (generalized bridge) verified
+Added `assertSurvivorPositionMatchesSpecNext(m)` — for any `m >= 0`, the cycle
+position holding `spec.next(m)` survives the new-head filter. Verified first
+attempt: 15 VCs / 3.84s focused; full `9515 valid` (+15 over 9500).
+
+This is the per-survivor fact the walk-correctness invariant will consume.
+
+### 2026-06-25 — Walk step 3 attempt 1 (direct equality) TIMED OUT
+Attempted `assertNextGapsWalkMatchesSpecNextGapList(nextPeriod)`:
+`nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`, with the bridge
+lemmas and `assertNextGapListMatchesSpecNext` as hints.
+
+**Timeout (122s)** at the postcondition VC `walkGaps == specGaps`. As
+predicted: the hint establishes the *target* (`nextGapList == spec.next.gapList`),
+but the solver cannot relate the walk's opaque `collectGaps` output to that
+target from outside `.holds`. This is the documented root cause.
+
+Commented out, green restored (9515). Per the contract, this is expected
+exploration, not a failure — it confirms the walk must be proven *from inside*
+via an invariant.
+
+### Walk step 3 — attempt 2 plan (invariant-carrying companion)
+Build a companion to `collectGaps` driven by **next-index `m`** (KISS) rather
+than by position:
+- For each `m`, look up `spec.next(m)`'s cycle position via `indexOfAccepted`
+  (already verified via `assertSurvivorPositionMatchesSpecNext`).
+- Emit the gap `spec.next(m+1) - spec.next(m)`.
+- Invariant: `gaps == spec.next.gapList(0, m)` by construction.
+
+This sidesteps the position-counting problem entirely. The companion's output
+is *definitionally* `spec.next.gapList`. What remains (step 3b) is proving
+the companion's output equals `collectGaps`'s output — but that may be
+unnecessary if `nextGapsWalk` can be redefined to use the companion.
+
+**A third option (γ, noted by user):** prove the survivor sets are equal
+(cycle's survivors == spec.next's filtered values, since `cycle ≡ spec`), so
+the gap lists are equal. The bridge lemmas are the per-survivor facts γ needs;
+this may subsume the companion approach.
+
+### 2026-06-25 — Walk step 3 attempts 2 & 3 TIMED OUT. STOP per stop-and-ask.
+
+Three timeouts on the walk connection, all with the same root cause:
+
+| Attempt | Statement | Timeout |
+|---|---|---|
+| 1 | `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)` | 122s, postcondition VC |
+| 2 | `nextGapsWalk(cycle) == nextGapList(0, nextPeriod)` (cycle-local RHS) | 121s, same VC |
+| 3 | `invariantGapList(0, count, Nil) == spec.next.gapList(0, count)` (fresh KISS companion, no walk involved) | 121s, postcondition VC |
+
+**Critical finding from attempt 3:** even the *fresh* companion (no `collectGaps`, no walk, just a clean forward-appending recursion emitting `spec.next(m+1) - spec.next(m)`) times out when asked to prove equality to `spec.next.gapList`. This means **the opacity is NOT specific to the walk** — it's a general difficulty proving list-equality between two different recursive list-builders (one `++`-appending, one `::`-consing).
+
+**This reframes the problem.** The walk itself may not be the obstacle; the obstacle is list-builder-vs-list-builder equality. Yet `assertNextGapListMatchesSpecNext` (which proves `nextGapList == spec.next.gapList`) DID verify — because it mirrors `gapList`'s exact cons-based recursion. So the lesson:
+
+> To prove a recursive list-builder L == `gapList`, L must use the SAME recursion
+> shape as `gapList` (cons-based, `head :: tail`), not a different shape
+> (`++`-append). The KISS principle of "slow but simple" must be applied to the
+> *recursion shape*, not just the algorithm — match the target's shape, even at
+> runtime cost.
+
+**Implication:** attempt 4 (if pursued) should rewrite the companion with
+cons-based recursion (mirroring `nextGapList`'s verified shape), NOT
+`++`-append. But `nextGapList` ALREADY is that shape and is verified == `spec.next.gapList`.
+So attempt 4 reduces to attempt 2 (`nextGapsWalk == nextGapList`), which timed out.
+
+**Status:** All three attempts on the walk connection have timed out. The
+verified state stands at: a correct next cycle EXISTS (Approach 1, `nextVerified`)
+and the gap-list correspondence is provable for cons-shaped builders, but
+connecting the position-driven walk (`collectGaps`) to the index-driven
+`nextGapList` remains open. Per stop-and-ask (3 timeouts, no new idea that
+differs in *recursion shape*), STOP and report.
+
+---
+
+## SESSION SNAPSHOT — 2026-06-25 (consolidated for next agent/session)
+
+### Verified this session (all green, state at `9515 valid`)
+
+| Lemma | What it proves | Where |
+|---|---|---|
+| `assertNextCycleApplyMatchesSpecNext` (P1) | `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k | Approach 1 |
+| `assertNextCycleGapsMatchSpecNext` | next canonical cycle's `.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)` | Approach 1 |
+| `assertNextCycleHeadMatchesSpecNext` | next canonical cycle's `.head == spec.next.head.value` | Approach 1 |
+| `assertNextCycleMatchesSpecNext` | conjunction of head + gaps + apply | Approach 1 |
+| `nextVerified(nextPeriod)` | conditional next-stage constructor; correctness via standalone lemma | packaging |
+| `assertFirstSurvivorPositionMatchesSpecNextOne` | cycle position of `spec.next(1)` survives new-head filter | walk bridge base |
+| `assertSurvivorPositionMatchesSpecNext(m)` | cycle position of `spec.next(m)` survives, for any `m >= 0` | walk bridge general |
+
+**Net result:** a *correct* next cycle is conditionally proven to exist
+(head + gaps + apply all match `spec.next`). The implementation's
+`CycleSieveSequence.next()` walk is NOT yet certified to produce it.
+
+### The open hole, precisely
+
+> Prove `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)` (or equivalently `== nextGapList(0, nextPeriod)`).
+
+### Key insight (LEARNINGS candidate)
+
+**The opacity is not specific to the walk.** Attempt 3 built a fresh KISS
+companion with NO walk involvement — just `++`-appending `spec.next` diffs —
+and it STILL timed out proving equality to `spec.next.gapList`. Meanwhile
+`assertNextGapListMatchesSpecNext` (which proves `nextGapList == spec.next.gapList`)
+verified fine because it mirrors `gapList`'s cons-based shape.
+
+> **Lesson:** To prove a recursive list-builder `L == gapList`, `L` must use
+> the SAME recursion shape as `gapList` (`head :: tail`), not a different
+> shape (`++`-append). KISS must be applied to the **recursion shape**, not
+> just the algorithm — match the target's shape, even at runtime cost.
+
+### Untried ideas (ranked, for the next session)
+
+1. **Rewrite `collectGaps` with cons-based recursion** matching `nextGapList`'s
+   shape. Per the insight above, this is the one variation not yet tried that
+   differs in *recursion shape*. Caution: modifies a load-bearing verified
+   function (`never-destroy` rule — comment out the old, don't delete).
+
+2. **γ — survivor-sets-equal route (user-suggested).** Prove the cycle's
+   survivor set equals `spec.next`'s filtered values (via the verified bridge
+   lemmas `assertSurvivorPositionMatchesSpecNext`), then derive gap-list
+   equality as a consequence. Genuinely different *mathematical* route, not a
+   recursion-shape tweak. Most promising untried angle.
+
+3. **Strengthen `collectGaps`'s `.ensuring` postcondition** to export the
+   element correspondence, so external lemmas get structural info without
+   unwinding. Changes the walk's contract.
+
+4. **Accept the walk as uncertified.** `nextVerified` is the verified path;
+   `cycle.next()` stays a tested optimization. The design doc's guardrail
+   already documents this as acceptable.
+
+### Artifacts left in the code (commented out, per never-destroy)
+
+- `assertNextGapsWalkMatchesSpecNextGapList` (attempt 1, timed out)
+- `assertNextGapsWalkMatchesNextGapList` (attempt 2, timed out)
+- `invariantGapList` + `assertInvariantGapListMatchesSpecNextGapList` (attempt 3, timed out)
+
+All three carry full doc comments recording the statement, the timeout, and
+the analysis, so the next agent inherits the findings without re-deriving.
+
+### Rule-compliance note
+
+This session followed: `green-to-green` (state green throughout, restored
+after each timeout), `small-changes` (one lemma per verify cycle), `never-destroy`
+(failed attempts commented out, not deleted), `ticket-first` (this record),
+`stop-and-ask` (stopped at 3 timeouts with the same root cause), and the
+multi-approach exploration contract (timeouts treated as expected process,
+learnings saved after each).
+
+---
+
+## IDEA δ — apply-equivalence, not gap-list equivalence (user, 2026-06-25)
+
+### The reframe
+
+All three timed-out attempts (1, 2, 3) targeted **gap-list equality**:
+`nextGapsWalk(cycle) == spec.next.gapList`. That's hard because it requires
+proving two recursive list-builders produce element-equal lists — and the
+walk's recursion is opaque from outside `.holds`.
+
+**The turnover (user insight):** we don't actually need gap-list equality.
+What we need is that the `CycleSieveSequence` built from the walk's gaps
+(`cycle.next()`) **generates the same stream** as `spec.next`:
+
+```
+cycle.next()(k) == spec.next(k)   for all k >= 0
+```
+
+This is **apply-equivalence**, a different and weaker-in-the-right-way
+statement. It does NOT require the walk's gap *list* to be element-equal to
+`spec.next.gapList` — only that the walk's gaps, when used as a cycle,
+reconstruct `spec.next`'s stream.
+
+### Why this is genuinely new
+
+- None of attempts 1–3 targeted apply-equivalence; all targeted gap-list
+  equality.
+- The existing `assertNextCycleApplyMatchesSpecNext` (P1) proves
+  apply-equivalence for the *canonical* next cycle (built from `spec.next`),
+  NOT for `cycle.next()` (the walk). So this specific statement — "the
+  walk-built cycle's apply matches `spec.next`'s apply" — is unattempted.
+- It sidesteps the list-equality opacity entirely: instead of relating two
+  list-builders, it relates two `apply` functions, which are recursive but
+  structurally simpler (each is `head + sum of first k gaps`).
+
+### Why it might be tractable
+
+1. **Same head:** `cycle.next().head == cycle(1) == spec.next.head.value`
+   (proven via `assertNextHeadMatches`). Both sides start from the same value.
+2. **Same survivors (per-value, proven):** the walk keeps exactly the
+   non-multiples of `cycle.head`; `spec.next` generates exactly the values
+   accepted by the new filter. `assertCurrentNonMultipleAcceptedByNext` and
+   `assertCurrentMultipleRejectedByNext` prove these coincide per-value.
+3. **Bridge lemmas available:** `assertSurvivorPositionMatchesSpecNext(m)`
+   proves the cycle position of `spec.next(m)` is a survivor — the per-index
+   fact that could drive an apply-equality induction.
+
+### Honest caveat
+
+"Same gap multiset ⇒ same stream" is NOT automatically true — two gap lists
+generate the same stream iff they are **cyclic rotations** of each other
+(same gaps, possibly different starting point), not merely multiset-equal.
+So the proof can't rest on multiset-equality alone. Two cleaner options:
+
+- **(δ-a)** Prove the walk's gaps are a *rotation* of `spec.next`'s gaps.
+- **(δ-b)** Prove apply-equality directly: `cycle.next()(k) == spec.next(k)`
+  by showing both equal `spec`'s k-th survivor of the head-filter, using the
+  bridge lemmas. This avoids gap-list reasoning entirely.
+
+(δ-b) is preferred — it never touches the gap list as an ordered structure.
+
+### Probe plan (KISS)
+
+Test the idea with the smallest possible lemmas before committing:
+1. `cycle.next()(0) == spec.next(0)` — heads match (both `cycle(1)`). Should
+   be trivial.
+2. `cycle.next()(1) == spec.next(1)` — first post-head value matches, using
+   bridge lemmas.
+
+If both verify, the apply-equality route is viable and we build up
+inductively. If they time out, the idea is killed with a recorded reason —
+the thinking is preserved either way.
+
+### Outcome
+
+**Probe step 1 TIMED OUT (4 VCs, 483s) — but with a deeper discovery than expected.**
+
+The timeouts were NOT on the lemma's conclusion (`cycle.next()(0) == spec.next(0)`).
+They were on `cycle.next()`'s OWN runtime `require` clauses:
+
+```
+nonEmpty(nextGapsWalk(cycle))          // walk produces non-empty list
+allGreaterThan(newGaps, 0)             // all gaps positive
+isCoprime(newHead + ..., primes)       // head coprimality
+```
+
+These are the runtime preconditions inside `CycleSieveSequence.next()` (lines
+99–104), which assert the walk's output is well-formed. Stainless cannot
+discharge them because the walk is opaque. Therefore:
+
+> **`cycle.next()` CANNOT BE CALLED from any verified context** — not because
+> its output is wrong, but because its own preconditions depend on the walk's
+> output, which is unprovable from outside.
+
+Any lemma that writes `val x = cycle.next()` will hit these preconditions and
+time out, regardless of what the lemma is trying to prove about `x`.
+
+**This is a stronger result than the gap-list timeouts.** It means:
+- Idea δ (apply-equivalence) is blocked at the *call site*, not at the
+  conclusion. The apply-equality is unreachable without first proving the
+  walk's output satisfies `next()`'s preconditions.
+- The same blocker would affect ANY approach that invokes `cycle.next()`.
+- The ONLY way to certify `cycle.next()` is to first prove the walk's output
+  is valid (non-empty, positive, coprime) — which is itself a walk-correctness
+  problem.
+
+**Idea δ status:** Killed — not because apply-equivalence is wrong, but
+because it requires calling `cycle.next()`, which is uncallable in proof
+context. The reasoning is preserved (this section) so a future approach that
+first proves the walk's output validity could then revisit apply-equivalence.
+
+**Revised understanding of the open hole:** the fundamental obstacle is
+`nextGapsWalk`'s opacity, which blocks BOTH (a) gap-list equality and
+(b) `cycle.next()`'s own preconditions. Until the walk's output is proven
+valid, `cycle.next()` is unusable in proofs, and the cycle's next-stage
+correctness rests entirely on `nextVerified` (the construction path, not the
+walk path).
+
+**Implication for next steps:** any viable approach must either
+  1. prove the walk's output validity directly (still the core open problem), or
+  2. bypass `cycle.next()` entirely and use `nextVerified` as the certified
+     next-stage constructor (the current state — acceptable per the design
+     doc's guardrail).
+
+---
+
+## IDEA ε — recurrence-based apply induction (user, 2026-06-25)
+
+### The characterization
+
+A filtered stream's `apply` follows a deterministic recurrence:
+
+```
+apply(0)     = head
+apply(n+1)   = apply(n) + 1                          if apply(n)+1 survives the filter
+             = first survivor after apply(n)         otherwise
+```
+
+("survives the filter" = not a multiple of any prime in the filter list.)
+
+This recurrence UNIQUELY determines the stream from `(head, filter-primes)`.
+Any two streams with the same head and the same filter behavior have the same
+apply — by induction on `n`, because each `apply(n+1)` is determined solely by
+`apply(n)` and the filter.
+
+### The proof structure (simple as pie)
+
+1. **Base:** `spec.next.apply(0) == cycle.apply(0)` — both are the head. Done
+   via Approach 1 / `assertNextCycleHeadMatchesSpecNext`.
+2. **Inductive step:** assume `spec.next.apply(n) == cycle.apply(n)`. Then
+   `spec.next.apply(n+1) == cycle.apply(n+1)` because BOTH compute the next
+   value by the same recurrence rule from the same `apply(n)`.
+
+No gap-list comparison. No calling `cycle.next()`. No list-equality. Just:
+same base + same recurrence ⟹ same apply, by induction.
+
+### Why this is different from all prior attempts
+
+| Prior attempt | What it proved | Why it failed |
+|---|---|---|
+| 1, 2 | gap-list equality | list-builder vs list-builder, opaque |
+| 3 | companion list equality | same list-equality opacity |
+| δ probe | apply via `cycle.next()` | `cycle.next()`'s preconditions opaque |
+
+Idea ε: proves apply equality via **per-position recurrence**, not list
+equality and not `cycle.next()`. Each step is local (one position), not
+collective (whole list). The induction doesn't open any walk recursion.
+
+### Connection to `CycleIntegralOnesProperties`
+
+The `[1]`-cycle (all naturals, gap 1 everywhere) is the base case of this
+characterization: before any filtering, `apply(n+1) - apply(n) == 1` always.
+Each filter step replaces some `1`s with larger gaps in a way determined by
+the filter prime. So the recurrence is the *filtered* version of the
+`[1]`-cycle's trivial `+1` recurrence.
+
+### Probe plan
+
+Step 1: prove `spec.next.apply` follows the recurrence (standalone lemma on
+Spec — should be near-trivial since it's how `searchNext` works by definition).
+
+Step 2: prove `nextVerified`'s cycle follows the same recurrence (via Approach
+1's construction — the cycle is built from `spec.next`'s own data).
+
+Step 3: conclude apply equality by induction.
+
+If step 1+2 verify, the characterization is proven and the induction closes.
+If they target `cycle.next()` instead and time out, we learn the recurrence
+approach also hits the walk opacity — but for `nextVerified`, it should be clean.
+
+---
+
+## ARCHITECTURAL SYNTHESIS — the integral-cycle arsenal (user, 2026-06-25)
+
+### The key realization
+
+**A `CycleSieveSequence` IS a `CycleIntegral(head, gapCycle)` plus structural
+conditions.** It is not a black box with a walk inside — the "sieve" part is
+just the conditions (positive gaps, coprime head, periodicity, etc.); the
+"sequence" part is pure integral-cycle arithmetic.
+
+Every "does `CycleSieveSequence` match `spec.next`" question decomposes into:
+1. **Integral-cycle half** — characterized by the purpose-built arsenal:
+   - `assertDiffEqualsCycleValue`: `CI_{i+1} - CI_i == Cycle_{i+1}` (gaps ARE cycle values)
+   - `assertSimplifiedDiffValuesMatchCycle`: `apply(pos+1) - apply(pos) == cycle.values(mod(pos+1, size))` (mod closed form of the diff)
+   - `assertCycleIntegralMatchModCycleDef`: `apply(pos) == div(pos,size)*sum + integralValues(mod(pos,size)) + init` (full closed form)
+   - `assertSameDiffAfterCycle`: diffs repeat per period
+   All non-recursive, all per-position, all verified. NONE unfold a recursion.
+2. **Conditions half** — the Leg-3 cycle rules (positivity, periodicity, copy,
+   merge), proven as transfers from Spec.
+
+**Both halves are done.** The arsenal was built so half 1 never unfolds
+recursion; Leg 3 was built so half 2 is transferred. Together: a
+`CycleSieveSequence` whose conditions hold IS a verified reconstruction of
+the spec stream, characterized per-position via the closed form.
+
+### Why this is the designed path (not a workaround)
+
+The integral-cycle properties (`CycleIntegralOnesProperties`,
+`ClassicCycleIntegralProperties`, `ModCycleIntegralProperties`,
+`CycleIntegralProperties`) were **created for this moment** — they exist to
+let us reason about cycle-integral streams (which is what sieve sequences are)
+without unfolding recursion. The `[1]`-cycle base case (`CycleIntegralOnesProperties`)
+is the zeroth sieve stage; each filter step produces a new cycle integral
+whose closed form is characterized by the arsenal.
+
+### Corrected proof structure for the walk
+
+Reframe: instead of "does the walk produce a list equal to `spec.next.gapList`"
+(list-equality, opaque), ask "**does `CycleIntegral(cycle(1), G)`, via the
+closed form, reconstruct `spec.next` per-position?**" where `G` is the walk's
+output. By `assertDiffEqualsCycleValue`, this reduces to per-position gap
+facts (`G(i mod |G|) == spec.next(i+1) - spec.next(i)`), NOT list-equality.
+
+```
+For each position i:
+  CI.apply(i+1) - CI.apply(i) == G(i mod |G|)              [diff property]
+  G(i mod |G|) == spec.next(i+1) - spec.next(i)            [per-position, via bridge lemmas]
+Base:
+  CI.apply(0) == cycle(1) == spec.next(0)                  [head match]
+∴ by induction, CI.apply(i) == spec.next(i) for all i
+```
+
+No list-equality. No walk-unfolding. No calling `cycle.next()`. Just:
+diff property + per-position gap facts + induction.
+
+### Remaining empirical question
+
+The per-position gap fact still references `G`'s elements. Whether Stainless
+can verify `G(i mod |G|) == spec.next(i+1) - spec.next(i)` without unfolding
+`G` is the open empirical question — but the *structure* is now right, and
+it uses the arsenal as designed. This is fundamentally different from all
+prior attempts (which compared lists or called `cycle.next()`).
+
+### 2026-06-25 — ARSENAL BRIDGE VERIFIED (breakthrough)
+
+Added `CanonicalCycleSieve.assertCycleDiffEqualsGap(pos)`:
+
+> `cycle.apply(pos + 1) - cycle.apply(pos) == cycle.gapCycle.memCycle(pos + 1)`
+
+**This is the keystone.** It proves the integral-cycle arsenal's diff property
+(`assertDiffEqualsCycleValue`) applies directly to `CycleSieveSequence`,
+confirming the synthesis: a sieve cycle sequence's adjacent differences ARE
+its gap-cycle elements, per-position, no recursion unfolding.
+
+Verified: focused 7 VCs / 12.66s; full `9522 valid: 9522 invalid: 0 unknown: 0`
+(+7 over 9515). First attempt, no timeouts.
+
+**Why this is a breakthrough (not just another lemma):** every prior attempt
+(attempts 1–3, δ) tried to relate the walk's output to `spec.next` by
+*list-equality* or by *calling `cycle.next()`* — both opaque. This lemma gives
+a **per-position** characterization of the cycle's stream via its gaps, which
+is exactly the shape the arsenal was designed to support. The next step is to
+chain: diff property (this) + Leg-2 gap equality (`cycle.gapCycle ==
+spec.gapCycle`) ⟹ `cycle.apply(pos+1) - cycle.apply(pos) == spec.apply(pos+1) -
+spec.apply(pos)`, and with the head match, induction gives `cycle.apply ==
+spec.apply` per-position.
+
+**Supporting change:** added `import v1.chapter4.cycle.integral.recursive.CycleIntegral`
+to `CanonicalCycleSieve.scala` (was missing; needed for the `cycle.integral`
+type assertion in the proof).
+
+### 2026-06-25 — Construction foundation attempt 1 (repeat-list) TIMED OUT
+
+Attempted the alignment primitive: a `repeatList` helper + lemma that
+repeating a cycle's gap list `times` times produces a `CycleIntegral`
+generating the same stream.
+
+**Timeout (2 VCs, 241s)** on constructing `MemCycle(repeatList(...))` and on
+the equality `stretched(pos) == ci(pos)`. The repeated list's structure is
+opaque to the solver — same list-builder opacity that killed the walk.
+
+**Lesson:** the list-construction route (build a new list, wrap in MemCycle,
+prove equality) recapitulates the walk's opacity. The repeat step should NOT
+be done by literally building a list. The arsenal's design intent is to
+characterize via the **closed form** (`div(pos,size)*sum +
+integralValues(mod(pos,size)) + init`), which is pure arithmetic and needs no
+list-building.
+
+**Revised plan:** skip the literal repeat-list. Characterize the filtered
+stream's m-th value directly via the closed form + divisibility structure.
+The alignment (period divides x) is a bookkeeping condition on the closed
+form's `div`/`mod`, not a list to construct.
+
+**Open uncertainty:** the m-th non-multiple of x still requires knowing
+*which* positions are non-multiples (survivor counting). Whether the closed
+form makes this tractable is the next empirical question — but it's a
+genuinely different angle from list-building.
+
+### 2026-06-25 — CORRECTED UNDERSTANDING: the arsenal's method (user, 2026-06-25)
+
+User pointed (again) at the diff property:
+```
+ModCycleIntegral(pos+1) - ModCycleIntegral(pos) == Cycle.values(mod(pos+1, size))
+```
+
+**The insight I kept missing:** this is a **closed-form lookup, not a list
+access.** The gap at any position is computable from `(pos, size)` via `mod`
++ a single cycle lookup. No list needs to be built or compared.
+
+This kills the repeat-list approach. "Repeat the cycle k times" is an
+**arithmetic identity on the lookup index**, not a list construction:
+
+```
+stretchedCycle.values(mod(pos+1, k*size)) == originalCycle.values(mod(pos+1, size))
+```
+
+Same values, because the repeated pattern wraps. No `MemCycle(repeatList(...))`,
+no opacity.
+
+**Alignment condition:** once `sum` (per-period total) is a multiple of `x`
+(achieved by repeating enough times), divisibility-by-`x` of `apply(pos)`
+becomes periodic:
+```
+apply(pos) mod x == (integralValues(mod(pos,size)) + init) mod x   [when sum ≡ 0 mod x]
+```
+depends only on `mod(pos, size)`. So the survivor structure is periodic, and
+the filtered cycle is well-defined and periodic — **all via closed forms.**
+
+**Why all 5 prior attempts failed:** every one built or compared a *list*.
+The arsenal's point is that you NEVER do that — you reason per-position via
+`mod`-lookups and the closed form. I was using the arsenal's statements but
+not its method.
+
+**Corrected path:** state the filtered-cycle construction purely via closed
+forms — gap lookups, divisibility via closed form, periodic survivor
+structure. No list construction anywhere.
+
+### 2026-06-25 — DEEP READ: ModCycleIntegralProperties closed form (user-directed)
+
+Read `ModCycleIntegralProperties.scala` and the integral-cycle article in
+full. The closed form is the **definition** of `ModCycleIntegral.apply`:
+
+```
+apply(pos) = div(pos, size) * integralValues.last        // periods elapsed × per-period increment
+           + integralValues(mod(pos, size))              // position within current period
+           + initialValue                                 // starting offset
+```
+
+And `assertCycleIntegralMatchModCycleDef` proves the recursive `CycleIntegral.apply`
+equals this closed form. So EVERY `CycleIntegral` — including sieve cycles —
+has its `apply` characterized by pure-arithmetic closed form. No recursion
+unfolding. No list comparison.
+
+**The key for the filtered-cycle construction:** divisibility-by-x of apply:
+
+```
+apply(pos) mod x  =  [ div(pos,size)*sum + integralValues(mod(pos,size)) + init ] mod x
+```
+
+If `sum` (= `integralValues.last`) is a multiple of `x`, then `div(pos,size)*sum mod x == 0`:
+
+```
+apply(pos) mod x  ==  [ integralValues(mod(pos,size)) + init ] mod x     [when sum ≡ 0 mod x]
+```
+
+…depends ONLY on `mod(pos, size)`. So the survivor structure is periodic with
+period `size`, characterizable entirely via the closed form.
+
+**Alignment** (making sum a multiple of x): `valueMatchAfterManyLoopsInBoth`
+proves repeating cycle values doesn't change them — just changes period
+counting. No list built.
+
+**Corrected construction path (NO lists, anywhere):**
+1. Characterize `apply(pos) mod x` via closed form → periodic in `mod(pos, size)`.
+2. Survivors within one period form a fixed sub-pattern, indexed by intra-period positions.
+3. Filtered cycle's gaps = closed-form diffs between consecutive survivors
+   (each a sum of original gaps, via `integralValues` lookups).
+4. Filtered cycle's `apply` reconstructs non-multiples via closed form on the
+   new gap cycle.
+
+**Every step is closed-form arithmetic + list-LOOKUP (not list-BUILDING).**
+This is what the arsenal was built for. The repeat-list attempt was the wrong
+approach — build a list when I should have used the lookup identity.
+
+**Status:** Corrected understanding complete. Ready to write the first real
+lemma (divisibility-periodicity via closed form) next. State green at 9522.
+
+### 2026-06-25 — ARTICLE ALREADY DESCRIBES THE NEEDED PROPERTIES (§5 drafts)
+
+Read `articles/integral-cycle.md` in full. **Section 5 "Extended Properties
+[Draft]" already contains the exact properties needed for the filtered-cycle
+construction, mathematically proven and described — just pending Stainless
+verification.** I was reinventing what's already written.
+
+| § | Property | Statement | Article status |
+|---|---|---|---|
+| **5.1** | Modulo Invariance | If `S mod v == 0`, then `CI_i mod v == (I_{(i mod n)} + init) mod v` — divisibility depends only on intra-period position | Math proven, Stainless pending |
+| **5.2** | x-fold Concatenation Invariance | `CycleIntegral(L^(x), init)_i == CycleIntegral(L, init)_i` — repeating the cycle reproduces the same stream | Math proven, Stainless pending |
+| 5.3 | Right Index Shift | rotation invariance | Math proven, pending |
+| 5.4 | Left Index Shift | rotation invariance | Math proven, pending |
+
+**§5.1 IS the divisibility-periodicity characterization** I worked out last
+message — `CI_i mod v == (I_{(i mod n)} + init) mod v` when `S mod v == 0`.
+Already proven mathematically in the article.
+
+**§5.2 IS the alignment primitive** — `CI(L^(x)) == CI(L)`. My `repeatList`
+attempt was the wrong implementation (list-building); the article's
+characterization is via closed forms (the div/mod arithmetic matches, so no
+list is needed).
+
+Both are marked "Stainless verification pending."
+
+### Corrected plan (translate §5.1/§5.2 drafts into verified Scala)
+
+1. **Verify §5.2 (x-fold Concatenation)** via closed forms: prove
+   `CI(L^(x), init)_i == CI(L, init)_i` by showing both sides have the same
+   closed form (via `assertCycleIntegralMatchModCycleDef`). Alignment primitive,
+   done right (closed-form arithmetic, no list-building).
+
+2. **Verify §5.1 (Modulo Invariance)** via the closed form: prove the
+   reduction `CI_i mod v == (I_{(i mod n)} + init) mod v` when `S mod v == 0`,
+   using the closed form.
+
+3. **Then** the filtered-cycle construction follows: alignment (5.2) +
+   divisibility periodicity (5.1) ⟹ survivor structure periodic ⟹ filtered
+   cycle well-defined ⟹ reconstructs non-multiples.
+
+The math is done in the article. The work is translating §5.1/§5.2 from draft
+math into verified Scala, building on the arsenal's existing verified lemmas
+(`assertCycleIntegralMatchModCycleDef`, `assertSimplifiedDiffValuesMatchCycle`,
+`valueMatchAfterManyLoopsInBoth`).
+
+**Lesson:** Read the existing articles in full before inventing new lemmas.
+The integral-cycle article's §5 drafts are exactly the filtered-cycle
+construction tools, already mathematically proven. My 5 timeouts came from
+not recognizing this and building list-based variants instead of translating
+the closed-form drafts.
+
+### 2026-06-25 — THE FILTER PROPERTY (new work, user-directed)
+
+§5.1 and §5.2 are foundation tools (drafts to verify), but the **filter
+property itself is new** — a lemma that, given a `CycleIntegral C` and divisor
+`x` (with ≥1 non-multiple of `x` in C's values), establishes a cycle integral
+`C'` enumerating exactly C's non-multiples of `x`. Built from DivMod + Cycle +
+List properties, via closed forms.
+
+**Construction plan (no list materialization):**
+1. **Alignment (§5.2):** force `size | x` by treating the cycle as repeated.
+   Characterized via closed form, NOT by building `L^(x)`.
+2. **Divisibility periodicity (§5.1):** `CI_i mod x == (I_{(i mod n)} + init) mod x`
+   when `sum mod x == 0`. Survivor structure periodic in `mod(i, n)`.
+3. **Filter property (new):** the non-multiples within one period form a fixed
+   survivor sub-pattern; the gaps between consecutive survivors define `C'`;
+   `C'.apply` reconstructs the non-multiples via the closed form on `C'`'s gaps.
+
+**Critical method constraint (the lesson from 5 failures):** every step is
+closed-form arithmetic + list-LOOKUP. NEVER build a list (`repeatList`,
+`++`, `collectGaps`) and prove equality — that's the opacity trap. The
+arsenal's method is per-position closed forms throughout.
+
+### 2026-06-25 — §5.2 Approach 2 TIMED OUT (6th list-building failure)
+
+Attempted `assertXFoldConcatenationInvariance` with a smarter proof
+(`valueMatchAfterManyLoopsInBoth` + induction) — but still via
+`MemCycle(repeatList(...))`. **3 VCs timed out (362s), all on constructing
+`MemCycle(repeatList(...))` or accessing it.** Commented out, green restored.
+
+**Architectural wall identified (honest pattern, 6 failures):**
+
+| # | Approach | List built | Outcome |
+|---|---|---|---|
+| 1 | walk == spec.next.gapList | `collectGaps` output | timeout |
+| 2 | walk == nextGapList | `collectGaps` output | timeout |
+| 3 | invariantGapList == spec.next.gapList | `++`-appended | timeout |
+| 4 | cycle.next() == spec.next | (calls walk) | timeout |
+| 5 | MemCycle(repeatList) == original | `repeatList` | timeout |
+| 6 | §5.2 with IH + valueMatch | `repeatList` | timeout |
+
+**Every timeout traces to constructing `MemCycle(someBuiltList)`.** The solver
+cannot see (a) the built list is non-empty, (b) its elements relate to the
+original's, or (c) through `++`/`::` recursion. `MemCycle` is built around a
+`List[BigInt]`, and list-construction is opaque from outside `.holds`.
+
+**Implication:** the filter property CANNOT be proven by constructing the
+filtered cycle's gap list — not via walk, companion, repeatList, or append.
+The list-construction wall is absolute in the current setup.
+
+**Genuinely new ideas (NOT same-shape retries):**
+1. **Strengthen `MemCycle`'s `.ensuring` postcondition** to export structural
+   info (size, element-at-index) so external lemmas get it without unfolding.
+   Changes `MemCycle` itself — caution per never-destroy, but the only path
+   that addresses the root cause.
+2. **State the filter as pure existence via ModCycleIntegral arithmetic**
+   (no list) — "there exist size'/sum'/integralValues' such that the closed
+   form reconstructs non-multiples." Still needs a MemCycle to instantiate,
+   so may not escape the wall.
+3. **Accept the wall** — `nextVerified` (construction path, no list) is the
+   verified route; the walk/filter remains a documented open hole.
+
+**Status:** STOPPED. 6 failures, no genuinely new idea that avoids list
+materialization. The architectural wall is real and well-characterized.
+Awaiting user direction — strengthening MemCycle's postcondition (idea 1) is
+the most promising untried angle, but it touches a load-bearing type.

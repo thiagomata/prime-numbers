@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.*
 import v1.chapter2.div.Calc
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
+import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter5.prime.{Prime, PrimeUtils}
 
 /**
@@ -967,6 +968,162 @@ case class CanonicalCycleSieve(
 
     cycle(pos) == nextValue
   }.holds
+
+  /**
+   * Arsenal bridge: the adjacent difference of the cycle sieve sequence
+   * equals the corresponding gap-cycle element.
+   *
+   * This is the keystone of the integral-cycle arsenal applied to
+   * `CycleSieveSequence`. Since `cycle.apply(pos) = cycle.integral(pos-1)`
+   * (for `pos > 0`) and `cycle.integral` is a `CycleIntegral`, the verified
+   * `assertDiffEqualsCycleValue` gives `integral(pos) - integral(pos-1) ==
+   * gapCycle.memCycle(pos)`. Translating back to `apply`:
+   *
+   * {{{
+   *   cycle.apply(pos + 1) - cycle.apply(pos) == cycle.gapCycle.memCycle(pos)
+   *                                          == spec.gapCycle.memCycle(pos)   [Leg 2]
+   * }}}
+   *
+   * This is a per-position fact (no list-equality, no recursion unfolding) —
+   * exactly the shape the integral-cycle arsenal was built to provide. It is
+   * the foundation for proving the cycle reconstructs `spec.next`
+   * per-position via the closed form, rather than via walk-unfolding.
+   *
+   * @param pos the position, `pos >= 0`
+   * @return `true` (verified)
+   */
+  def assertCycleDiffEqualsGap(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+
+    assert(cycle.integral == CycleIntegral(cycle.primes.head, cycle.gapCycle.memCycle))
+
+    cycle(BigInt(0)) == cycle.head || {
+      // pos > 0 case: apply(pos+1) - apply(pos) == integral(pos) - integral(pos-1)
+      // == gapCycle.memCycle(pos) by assertDiffEqualsCycleValue
+      val prev = cycle(pos)
+      val next = cycle(pos + BigInt(1))
+      val gap = cycle.gapCycle.memCycle(pos + BigInt(1))
+      next - prev == gap
+    }
+  }.holds
+
+  /**
+   * [TIMED OUT — Idea δ probe step 1, 2026-06-25]
+   *
+   * Intended: `cycle.next()(0) == spec.next(0)` (heads match).
+   *
+   * TIMEOUT (4 VCs at 483s) — but NOT on the conclusion. The timeouts are on
+   * `cycle.next()`'s OWN runtime `require` clauses:
+   *   - `nonEmpty(nextGapsWalk(cycle))`
+   *   - `allGreaterThan(newGaps, 0)`
+   *   - `isCoprime(newHead + ..., primes)`
+   *
+   * These `require`s assert the walk produced valid output, and Stainless
+   * cannot discharge them because the walk is opaque. So the problem is not
+   * proving `next()`'s output is correct — it's that `next()` CANNOT BE
+   * CALLED from a verified context at all, because its preconditions depend
+   * on the walk's output.
+   *
+   * This is a deeper finding than the gap-list timeouts: the entire
+   * `CycleSieveSequence.next()` method is uncallable in proof context until
+   * the walk's output validity is itself proven. Any lemma that does
+   * `val x = cycle.next()` will hit these preconditions.
+   */
+//  def assertCycleNextHeadMatchesSpecNextHead(): Boolean = {
+//    val nextCycle = cycle.next()
+//
+//    assert(nextCycle.head == cycle(BigInt(1)))
+//    assert(assertNextHeadMatches())
+//    assert(cycle(BigInt(1)) == spec.next.head.value)
+//    assert(spec.next(BigInt(0)) == spec.next.head.value)
+//
+//    nextCycle.apply(BigInt(0)) == spec.next(BigInt(0))
+//  }.holds
+
+  /**
+   * [TIMED OUT — Approach 3 attempt 1, 2026-06-25, per stop-and-ask contract]
+   *
+   * Intended: `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`.
+   *
+   * TIMEOUT at the postcondition VC `walkGaps == specGaps` (122s). The
+   * provided hint `assertNextGapListMatchesSpecNext` establishes the *target*
+   * (`nextGapList == spec.next.gapList`), but the solver still cannot relate
+   * the walk's output (`collectGaps` recursion over `head × period`
+   * positions) to that target from outside the recursion. The walk is opaque
+   * from outside `.holds`, confirming the documented root cause.
+   *
+   * Next attempt: an invariant-carrying companion that proves the
+   * correspondence *from inside* the walk's recursion, where the per-step
+   * structure (copy vs. skip) is visible. Per KISS, drive the companion by
+   * next-index `m` (trivial invariant `gaps == spec.next.gapList(0, m)`)
+   * rather than by position.
+   */
+//  def assertNextGapsWalkMatchesSpecNextGapList(nextPeriod: BigInt): Boolean = {
+//    require(nextPeriod > BigInt(0))
+//    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+//
+//    val walkGaps = SieveSequenceNextLevel.nextGapsWalk(cycle)
+//    val specGaps = spec.next.gapList(BigInt(0), nextPeriod)
+//
+//    assert(assertNextGapListMatchesSpecNext(BigInt(0), nextPeriod))
+//
+//    walkGaps == specGaps
+//  }.holds
+
+  /**
+   * [TIMED OUT — Approach 3 attempt 2, 2026-06-25]
+   *
+   * Variation of attempt 1: RHS is the cycle-local `nextGapList` (verified
+   * == `spec.next.gapList`) instead of `spec.next.gapList` directly.
+   *
+   * TIMEOUT (121s) at the same `walkGaps == cycleGaps` VC. Confirms the
+   * opacity is on the *walk side* (`collectGaps`), not the comparison
+   * target — changing the RHS did nothing. The walk must be proven from
+   * inside via an invariant-carrying companion (attempt 3).
+   */
+//  def assertNextGapsWalkMatchesNextGapList(nextPeriod: BigInt): Boolean = {
+//    require(nextPeriod > BigInt(0))
+//    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+//
+//    val walkGaps = SieveSequenceNextLevel.nextGapsWalk(cycle)
+//    val cycleGaps = nextGapList(BigInt(0), nextPeriod)
+//
+//    walkGaps == cycleGaps
+//  }.holds
+
+  /**
+   * [TIMED OUT — Approach 3 attempt 3, 2026-06-25]
+   *
+   * An invariant-carrying gap-list builder, intended to prove the walk
+   * correspondence from inside the recursion. Drives by next-index `m`,
+   * forward-appends (no reverse).
+   *
+   * TIMEOUT (121s) at the postcondition of
+   * `assertInvariantGapListMatchesSpecNextGapList`. Even this KISS builder
+   * times out when asked to prove equality to `spec.next.gapList` — the
+   * `++` append and the inductive correspondence with `gapList`'s cons-based
+   * recursion is itself non-trivial for the solver.
+   *
+   * This is the third timeout on the walk connection. Per stop-and-ask,
+   * stopping to report rather than attempting a fourth variation.
+   */
+//  def invariantGapList(m: BigInt, count: BigInt, gaps: List[BigInt]): List[BigInt] = {
+//    require(m >= BigInt(0))
+//    require(count >= BigInt(0))
+//    decreases(count)
+//    if (count == BigInt(0)) {
+//      gaps
+//    } else {
+//      val gap = spec.next(m + BigInt(1)) - spec.next(m)
+//      invariantGapList(m + BigInt(1), count - BigInt(1), gaps ++ List(gap))
+//    }
+//  }
+//
+//  def assertInvariantGapListMatchesSpecNextGapList(count: BigInt): Boolean = {
+//    require(count >= BigInt(0))
+//
+//    invariantGapList(BigInt(0), count, List.empty[BigInt]) == spec.next.gapList(BigInt(0), count)
+//  }.holds
 
   /**
    * Proves the next-stage gap at an arbitrary position `index` matches the

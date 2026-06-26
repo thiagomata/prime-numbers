@@ -8,6 +8,7 @@ import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter4.cycle.CycleUtils
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
+import v1.chapter4.cycle.memory.MemCycle
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
 
 object CycleIntegralProperties {
@@ -373,5 +374,138 @@ object CycleIntegralProperties {
       assert(assertNextPosition(ci, pos))
       ci(pos) > BigInt(0)
     }
+  }.holds
+
+  /**
+   * [TIMED OUT — attempt 1, 2026-06-25]
+   *
+   * Intended: a list-repeat helper and a lemma that repeating a cycle's gap
+   * list `times` times produces a cycle integral generating the same stream.
+   *
+   * TIMEOUT (2 VCs, 241s) on:
+   *   1. constructing `MemCycle(repeatList(...))` — the repeated list's
+   *      preconditions (non-empty, etc.) are opaque to the solver because
+   *      `repeatList`'s output isn't unfolded.
+   *   2. the final `stretched(pos) == ci(pos)` equality.
+   *
+   * Lesson: building a new list via `repeatList` and proving the resulting
+   * `MemCycle`/`CycleIntegral` equals the original hits the same list-builder
+   * opacity that killed the walk attempts. The repeat step may be unnecessary
+   * — alignment might be characterizable via the arsenal's closed form
+   * directly, without constructing a stretched list. Reconsidering.
+   */
+//  def repeatList(list: List[BigInt], times: BigInt): List[BigInt] = {
+//    require(list.nonEmpty)
+//    require(times > BigInt(0))
+//    decreases(times)
+//    if (times == BigInt(1)) {
+//      list
+//    } else {
+//      list ++ repeatList(list, times - BigInt(1))
+//    }
+//  }
+//
+//  def assertRepeatedCycleMatchesOriginal(
+//    ci: CycleIntegral,
+//    times: BigInt,
+//    pos: BigInt
+//  ): Boolean = {
+//    require(times > BigInt(0))
+//    require(pos >= BigInt(0))
+//    require(ci.cycle.values.nonEmpty)
+//
+//    val stretched = CycleIntegral(ci.initialValue, MemCycle(repeatList(ci.cycle.values, times)))
+//
+//    stretched(pos) == ci(pos)
+//  }.holds
+
+  /**
+   * [TIMED OUT — §5.2 Approach 2, 2026-06-25]
+   *
+   * Intended: §5.2 Invariance by x-fold Concatenation —
+   * `CycleIntegral(init, MemCycle(repeatList(G, times))).apply(pos) ==
+   *  CycleIntegral(init, MemCycle(G)).apply(pos)`.
+   *
+   * Attempted with smarter value-equality proof (via valueMatchAfterManyLoopsInBoth
+   * + induction), but the timeouts (3 VCs, 362s) are ALL on constructing
+   * `MemCycle(repeatList(...))` and accessing it. The list materialization
+   * itself is opaque — regardless of how I prove the resulting values match.
+   *
+   * Lesson: ANY approach that constructs `MemCycle(someBuiltList)` will time
+   * out, because the solver can't see through the built list's preconditions
+   * or its relationship to the original. The only viable path is to NOT
+   * materialize the stretched list — characterize the stretched cycle purely
+   * abstractly (existence) or via the ModCycleIntegral closed form on the
+   * ORIGINAL cycle (no new list).
+   */
+//  def assertXFoldConcatenationInvariance(
+//    ci: CycleIntegral,
+//    times: BigInt,
+//    pos: BigInt
+//  ): Boolean = {
+//    require(times > BigInt(0))
+//    require(pos >= BigInt(0))
+//    require(ci.cycle.values.nonEmpty)
+//    decreases(pos)
+//
+//    if (pos == BigInt(0)) {
+//      val stretchedCycle = MemCycle(repeatList(ci.cycle.values, times))
+//      assert(stretchedCycle(0) == ci.cycle(0))
+//      CycleIntegral(ci.initialValue, stretchedCycle)(0) == ci(0)
+//    } else {
+//      assert(assertXFoldConcatenationInvariance(ci, times, pos - BigInt(1)))
+//      val stretchedCycle = MemCycle(repeatList(ci.cycle.values, times))
+//      assert(stretchedCycle(pos) == ci.cycle(pos))
+//      CycleIntegral(ci.initialValue, stretchedCycle)(pos) == ci(pos)
+//    }
+//  }.holds
+//
+//  def repeatList(list: List[BigInt], times: BigInt): List[BigInt] = {
+//    require(list.nonEmpty)
+//    require(times > BigInt(0))
+//    decreases(times)
+//    if (times == BigInt(1)) {
+//      list
+//    } else {
+//      list ++ repeatList(list, times - BigInt(1))
+//    }
+//  }
+
+  /**
+   * Foundation for single-element merge: the difference across two consecutive
+   * gaps equals their sum.
+   *
+   * {{{
+   *   ci.apply(k+1) - ci.apply(k-1) == ci.cycle(k) + ci.cycle(k+1)
+   * }}}
+   *
+   * This is the arithmetic the merge rests on: if we collapse gaps at positions
+   * `k` and `k+1` into one gap `g_k + g_{k+1}`, the new single gap still spans
+   * the same distance (`ci.apply(k+1) - ci.apply(k-1)`). So merging preserves
+   * the total distance covered.
+   *
+   * Pure original-cycle reasoning — no merged cycle constructed. Proved via
+   * `assertDiffEqualsCycleValue` applied twice.
+   *
+   * @param ci the cycle integral
+   * @param k  the merge position, `k >= 1` and `k+1 < ci.size`
+   * @return `true` (verified)
+   */
+  def assertConsecutiveGapSumEqualsDiff(
+    ci: CycleIntegral,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(1))
+    require(ci.cycle.size > k + BigInt(1))
+    require(ci.cycle.values.nonEmpty)
+
+    assert(assertDiffEqualsCycleValue(ci, k - BigInt(1)))
+    assert(assertDiffEqualsCycleValue(ci, k))
+
+    // From the two diff facts:
+    //   ci(k)   - ci(k-1) == ci.cycle(k)
+    //   ci(k+1) - ci(k)   == ci.cycle(k+1)
+    // Adding: ci(k+1) - ci(k-1) == ci.cycle(k) + ci.cycle(k+1)
+    ci(k + BigInt(1)) - ci(k - BigInt(1)) == ci.cycle(k) + ci.cycle(k + BigInt(1))
   }.holds
 }
