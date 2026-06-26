@@ -146,6 +146,15 @@ object ListRepeatProperties {
     ListUtils.sum(repeat(list, times)) == listSum + ListUtils.sum(repeat(list, times - 1))
   }.holds
 
+  def assertRepeatSumTimes(
+    list: List[BigInt],
+    times: BigInt
+  ): Boolean = {
+    require(times >= 0)
+    assertRepeatSumMultiplier(list, times)
+    ListUtils.sum(repeat(list, times)) == ListUtils.sum(list) * times
+  }.holds
+
   def assertRepeatedIndex(
     list: List[BigInt],
     times: BigInt,
