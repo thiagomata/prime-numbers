@@ -16,7 +16,8 @@ case class RepeatedList(original: List[BigInt], nTimes: BigInt) {
     require(index < size)
     original(Calc.mod(index, original.size))
   }.ensuring(result =>
-    result == original(Calc.mod(index, original.size)))
+    result == original(Calc.mod(index, original.size)) &&
+    (index >= original.size || result == original(index)))
 
   def toValues: List[BigInt] = {
     decreases(nTimes)
