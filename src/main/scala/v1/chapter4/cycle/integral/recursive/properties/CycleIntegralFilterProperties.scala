@@ -876,35 +876,4 @@ object CycleIntegralFilterProperties {
     newIntegral(newSize) == oldIntegral(oldSize)
   }.holds
 
-  /*
-  def assertMergedSumPreserved(
-    oldIntegral: CycleIntegral,
-    newIntegral: CycleIntegral,
-    mergeIndex: BigInt
-  ): Boolean = {
-    require(mergeIndex > 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
-    require(oldIntegral.initialValue == newIntegral.initialValue)
-    require(newIntegral.cycle(mergeIndex) ==
-      oldIntegral.cycle(mergeIndex) +
-        oldIntegral.cycle(mergeIndex + 1))
-    require(newIntegral.cycle(0) == oldIntegral.cycle(0))
-    require(newIntegral(0) == oldIntegral(0))
-    require(allGapsMatchBeforeMerge(
-      oldIntegral, newIntegral, mergeIndex, mergeIndex - 1))
-    require(allGapsMatchAfterMerge(
-      oldIntegral, newIntegral, mergeIndex,
-      newIntegral.cycle.values.size - 1))
-    require(newIntegral.size > mergeIndex)
-
-    assertCIShiftEqualsSum(oldIntegral, 0)
-    assertCIShiftEqualsSum(newIntegral, 0)
-    assertNewCIAtSizeEqualsOld(
-      oldIntegral, newIntegral, mergeIndex)
-
-    newIntegral.sum == oldIntegral.sum
-  }.holds
-  */
-
 }

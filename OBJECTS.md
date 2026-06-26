@@ -527,7 +527,29 @@ i > 0 &\implies L_i = \text{tail}(L)_{i-1}
 
 ---
 
-## 2.7 ListProduct (`v1.list.properties.ListProduct`)
+## 2.7 ListRepeatProperties (`v1.list.properties.ListRepeatProperties`)
+
+List repetition and merge-sum preservation. Foundation for the cycle
+filter-merge theorem (see `tickets/active/filter-merge-foundation-gaps.md`).
+
+| Lemma | Statement | Notes |
+|---|---|---|
+| **repeat(list, times)** | `list ++ list ++ ... (times times)` | Public function. |
+| **assertRepeatSumMultiplier** | `sum(repeat(L, t)) == t * sum(L)` | Induction on `t` via `listCombine`. |
+| **assertRepeatSize** | `repeat(L, t).size == L.size * t` | |
+| **assertRepeatedIndex** | `repeat(L, t)(k) == L(mod(k, L.size))` for `k < L.size * t` | Induction on `t`; uses `assertConcatAccessLeft/Right` + `ATimesBSameMod`. |
+| **assertConcatAccessLeft/Right** | `(A ++ B)(k) == A(k)` / `== B(k - A.size)` | `++` access primitives. |
+| **sumAfterMerge(values, mergeIndex)** | recursive helper computing merged-list sum | Mirrors merged-list construction. |
+| **assertMergePreservesListSum** | `sumAfterMerge(values, k) == sum(values)` | Induction on `k`. Verified. |
+| **newValuesAfterMerge(old, new, k)** | predicate: `new` mirrors `sumAfterMerge`'s recursion shape | Structural-match predicate. |
+| **assertSumNewValuesAfterMerge** | `sum(newValues) == sumAfterMerge(oldValues, k)` given `newValuesAfterMerge` | Bridge lemma. Verified 31/31. |
+| **assertMergeSumPreserved** | `sum(newValues) == sum(oldValues)` given `newValuesAfterMerge` | GAP 2 closure. Composes bridge + `assertMergePreservesListSum`. Verified 15/15 (10256 valid). |
+
+**Source**: `src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala`
+
+---
+
+## 2.8 ListProduct (`v1.list.properties.ListProduct`)
 
 Product of all elements in a list. Provides lemmas about product factorization.
 

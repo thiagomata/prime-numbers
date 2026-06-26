@@ -161,18 +161,27 @@ Fill each gap in dependency order: list `repeat` → CI sum invariance → post-
 
 ## Implementation Plan
 
-### Phase 1: List foundation (GAP 1)
-1. Define `repeat(list: List[BigInt], times: BigInt): List[BigInt]` — `ListRepeatProperties.scala`
-2. Prove `assertRepeatSumMultiplier(L, f): sum(repeat(L,f)) == f * sum(L)` — uses `listCombine` + induction on `f`
-3. Prove `assertRepeatAccess(L, f, k): repeat(L,f)(k) == L(Calc.mod(k, L.size))` for `k < f * L.size`
+### Phase 1: List foundation (GAP 1) ✅ DONE
+1. Define `repeat(list: List[BigInt], times: BigInt): List[BigInt]` — `ListRepeatProperties.scala` ✅
+2. Prove `assertRepeatSumMultiplier(L, f): sum(repeat(L,f)) == f * sum(L)` — uses `listCombine` + induction on `f` ✅
+3. Prove `assertRepeatedIndex`: `repeat(L, f)(k) == L(Calc.mod(k, L.size))` ✅
+4. Prove `assertConcatAccessLeft/Right`: `++` access properties ✅
+5. Create `RepeatedList` class with `apply`/`toValues`/`size`/`sum` + ensurings ✅
+6. Prove `assertSumMultiplier` for `RepeatedList` ✅
+7. Prove `assertElementNotMultiple` for `RepeatedList` ✅
 
-### Phase 2: CI merge invariants (GAP 2, GAP 3)
-4. Prove `assertMergedSumPreserved(oldCI, newCI, mergeIndex): newCI.sum == oldCI.sum` — `CycleIntegralFilterProperties.scala`
-5. Prove `assertMergedPositionNotMultiple(oldCI, newCI, mergeIndex, f): CI_new(mergeIndex) mod f == CI_old(mergeIndex + 1) mod f` — extends `assertShiftAtMerge`
+### Phase 2: CI merge invariants (GAP 2, GAP 3) ⚠️ PARTIAL
+4. ~~Prove `assertMergedSumPreserved(oldCI, newCI, mergeIndex): newCI.sum == oldCI.sum`~~ — timed out (CI level), commented out
+5. Prove `assertRemoveMultipleModNotZero`: `CI_new(m) mod f != 0` if `CI_old(m+1) mod f != 0` ✅
+6. Prove `assertCycleAtSizeMatch`: cycle values at period boundary match ✅
+7. Prove `assertNewCIAtSizeEqualsOld`: `CI_new(newSize) == CI_old(oldSize)` ✅
+8. Prove `assertMergeSumBase` (list-level, base case) ✅
+9. Prove `assertMergeSumStep` (list-level, inductive step) ✅
+10. ~~Prove `assertMergeSumPreserved` (list-level, full induction)~~ — 3+ failed attempts, commented out ⚠️
 
-### Phase 3: Composition stitching
-6. Prove `gapsFromValues(survivorValues(ci, f, 0, ci.size))` satisfies `allGapsMatch` for a new CI constructed externally
-7. Full filter-merge composition theorem
+### Phase 3: Composition stitching ⬜ PENDING
+11. Prove `gapsFromValues(survivorValues(ci, f, 0, ci.size))` satisfies `allGapsMatch` for a new CI
+12. Full filter-merge composition theorem
 
 ## Related Articles
 
@@ -186,3 +195,24 @@ Fill each gap in dependency order: list `repeat` → CI sum invariance → post-
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-06-26 | Ticket created. Gap analysis complete: 3 genuine gaps (list repeat, CI sum invariance, post-merge non-multiple) + 1 composable (mod nesting). Related tickets reviewed. Single-merge atom and replication invariance already verified at 9948 valid. | Start Phase 1: list `repeat` function. |
+| 2026-06-26 | GAP 1 (list foundation) complete. `repeat`, `assertRepeatSumMultiplier`, `assertRepeatedIndex`, `assertRepeatSize`, `assertConcatAccessLeft`, `assertConcatAccessRight` all verified. `RepeatedList` class created with `apply`/`toValues`/`size`/`sum` ensurings. `RepeatedListProperties` with `assertSumMultiplier` (9/9, base + step induction), `assertElementNotMultiple` (8/8). 10135 valid. | Move to GAP 2 and GAP 3. |
+| 2026-06-26 | GAP 3 (post-merge non-multiple) complete. `assertRemoveMultipleModNotZero` (16/16) — after merge at multiple, new value not a multiple provided next old value isn't. 10102 valid. | Move to GAP 2. |
+| 2026-06-26 | GAP 2 atom `assertCycleAtSizeMatch` (13/13): `new.cycle(newSize) == old.cycle(oldSize)` given `new.cycle(0) == old.cycle(0)`. | Next step. |
+| 2026-06-26 | GAP 2 atom `assertNewCIAtSizeEqualsOld` (33/33): `CI_new(newSize) == CI_old(oldSize)` using `assertCycleAtSizeMatch` + `assertDiffEqualsCycleValue` + merge lemmas. Two branches (after merge vs at merge). | Next step. |
+| 2026-06-26 | GAP 2 composition `assertMergedSumPreserved` at CI level: timed out. Composes `assertCIShiftEqualsSum` ×2 + `assertNewCIAtSizeEqualsOld`. VC explosion. Commented out. | Move to list-level approach. |
+| 2026-06-26 | GAP 2 list-level `assertMergeSumBase` (8/8): sum equality when mergeIndex==0, heads merge, tail sums match. `assertMergeSumStep` (5/5): sum equality when heads match and tail sums match. | Next step. |
+| 2026-06-26 | GAP 2 list-level induction `assertMergeSumPreserved`: 3+ failed attempts. The solver can't propagate tail premises (`oldValues.head == newValues.head`, tail sum equality) through the recursion. Each variant: conditional requires (`||`) in top-level require + explicit assertions for size/element equality, recursive call preconditions still fail. Commented out. 10193 green. **ASKING FOR HELP** on this induction. The atoms are verified; the composition is the wall. | Await guidance. |
+| 2026-06-26 | **GAP 2 CLOSED via Approach 1 (decompose via `sumAfterMerge`).** Added `newValuesAfterMerge` predicate (mirrors `sumAfterMerge`'s recursion shape) + `assertSumNewValuesAfterMerge` bridge lemma (`sum(newValues) == sumAfterMerge(oldValues, mergeIndex)`, 31/31, 4.72s) + `assertMergeSumPreserved` closure (composes bridge + verified `assertMergePreservesListSum`, 15/15, 4.30s). Full verify `10256 valid: 10256 invalid: 0 unknown: 0` (+63 over 10193). **Approach 2 (bubble premises into induction) unnecessary — Approach 1 succeeded.** | Proceed to Phase 3 (composition stitching) or revisit `assertMergedSumPreserved` at CI level with the list foundation now in place. |
+
+### GAP 2 Resolution (2026-06-26)
+
+**Root cause of the failed induction:** `assertMergeSumPreserved`'s recursion needed the *tail-merge-relation* (`newValues.tail(mergeIndex-1) == oldValues.tail(mergeIndex-1) + oldValues.tail(mergeIndex)`) at the recursive call, but the outer lemma only had the relation at the original `mergeIndex`. The solver couldn't derive the shifted relation from the outer `require`s.
+
+**Why decomposition works:** `sumAfterMerge` is defined recursively with the *same structure* as the merged list. So relating `newValues` to `sumAfterMerge` is a *predicate match* (`newValuesAfterMerge`), not an arithmetic equality proof. The predicate mirrors the recursion exactly, so its induction propagates trivially. Then `assertMergePreservesListSum` (already verified) closes `sumAfterMerge == sum(oldValues)`.
+
+**Lesson (LEARNINGS candidate):** when a list-equality induction stalls on tail-relation propagation, decompose into:
+1. A *predicate* that mirrors a verified recursive helper's structure (structural match, easy to induct).
+2. A *bridge* lemma proving the candidate list matches the helper's output (trivial IH).
+3. The *helper*'s own correctness (already verified).
+
+This converts an arithmetic-induction wall into a structural-match + two easy inductions. The key is choosing a helper whose recursion shape matches the candidate list's structure — `sumAfterMerge` matched because both walk the mergeIndex down identically.
