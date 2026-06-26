@@ -4,8 +4,11 @@ import stainless.collection.List
 import stainless.lang.*
 import v1.chapter1.verification.Helper.assert
 import v1.chapter2.div.Calc
+import v1.chapter2.div.properties.AdditionAndMultiplication
 import v1.chapter2.div.properties.ModOperations
 import v1.chapter3.list.ListBoundUtils
+import v1.chapter3.list.ListUtils
+import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
@@ -594,6 +597,228 @@ object CycleIntegralFilterProperties {
         oldIntegral(position) + oldIntegral.cycle(position + 1))
     }
     newIntegral(position) == oldIntegral(position + 1)
+  }.holds
+
+  /**
+   * Remove one multiple from the cycle integral.
+   *
+   * When a position `multiplePosition` in the old integral is a multiple
+   * of `filterValue`, merging the cycle values at that position and the
+   * next produces a new integral where the multiple is absent — the new
+   * value at position `multiplePosition` equals the old value at position
+   * `multiplePosition + 1`.
+   *
+   * Precondition: the old integral must be strictly increasing (so that
+   * `assertSameBeforeMerge` and sibling lemmas can be called).
+   *
+   * @param oldIntegral      the original cycle integral
+   * @param newIntegral      the cycle integral after merging one pair
+   * @param filterValue      the filter value
+   * @param multiplePosition the position whose old value is a multiple
+   * @return the new integral skips the multiple
+   */
+  def assertRemoveOneMultiple(
+    oldIntegral: CycleIntegral,
+    newIntegral: CycleIntegral,
+    filterValue: BigInt,
+    multiplePosition: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(multiplePosition > 0)
+    require(multiplePosition + 1 < oldIntegral.size)
+    require(newIntegral.size == oldIntegral.size - 1)
+    require(oldIntegral.initialValue == newIntegral.initialValue)
+    require(Calc.mod(oldIntegral(multiplePosition), filterValue) ==
+      BigInt(0))
+    require(Calc.mod(oldIntegral(0), filterValue) != BigInt(0))
+    require(allGapsMatchBeforeMerge(
+      oldIntegral, newIntegral, multiplePosition, multiplePosition - 1))
+    require(newIntegral.cycle(multiplePosition) ==
+      oldIntegral.cycle(multiplePosition) +
+        oldIntegral.cycle(multiplePosition + 1))
+    require(allGapsMatchAfterMerge(
+      oldIntegral, newIntegral, multiplePosition, multiplePosition))
+    assertShiftAtMerge(oldIntegral, newIntegral, multiplePosition)
+    newIntegral(multiplePosition) ==
+      oldIntegral(multiplePosition + 1)
+  }.holds
+
+  /**
+   * Linear scan for the first position `>= scanPosition` whose
+   * CycleIntegral value is a multiple of `filterValue`.
+   *
+   * Returns `cycleIntegral.size` as sentinel when no multiple is found.
+   *
+   * @param cycleIntegral the cycle integral to scan
+   * @param filterValue   the filter value
+   * @param scanPosition  the position to start scanning from
+   * @return the first multiple position, or `size` if none
+   */
+  def findFirstMultiple(
+    cycleIntegral: CycleIntegral,
+    filterValue: BigInt,
+    scanPosition: BigInt
+  ): BigInt = {
+    require(scanPosition >= 1)
+    require(scanPosition <= cycleIntegral.size)
+    require(filterValue > 0)
+    decreases(cycleIntegral.size - scanPosition)
+    if (scanPosition == cycleIntegral.size) scanPosition
+    else if (Calc.mod(cycleIntegral(scanPosition), filterValue) ==
+      BigInt(0)) scanPosition
+    else findFirstMultiple(cycleIntegral, filterValue, scanPosition + 1)
+  }.ensuring(res => res >= scanPosition && res <= cycleIntegral.size)
+
+  /**
+   * If `findFirstMultiple` returns a position before `size`, the value
+   * at that position is indeed a multiple. If it returns `size`, no
+   * multiple was found in `[scanPosition, size)`.
+   */
+  def assertFindFirstMultipleCorrect(
+    cycleIntegral: CycleIntegral,
+    filterValue: BigInt,
+    scanPosition: BigInt
+  ): Boolean = {
+    require(scanPosition >= 1)
+    require(scanPosition <= cycleIntegral.size)
+    require(filterValue > 0)
+    decreases(cycleIntegral.size - scanPosition)
+    val found = findFirstMultiple(cycleIntegral, filterValue, scanPosition)
+    if (scanPosition == cycleIntegral.size) {
+      assert(found == cycleIntegral.size)
+    } else if (Calc.mod(cycleIntegral(scanPosition), filterValue) ==
+      BigInt(0)) {
+      assert(found == scanPosition)
+    } else {
+      assertFindFirstMultipleCorrect(
+        cycleIntegral, filterValue, scanPosition + 1)
+    }
+    found == cycleIntegral.size ||
+    Calc.mod(cycleIntegral(found), filterValue) == BigInt(0)
+  }.holds
+
+  def cyclesMatch(
+    firstIntegral: CycleIntegral,
+    secondIntegral: CycleIntegral,
+    maxIndex: BigInt
+  ): Boolean = {
+    require(maxIndex >= -1)
+    decreases(maxIndex + 1)
+    if (maxIndex < 0) true
+    else secondIntegral.cycle(maxIndex) ==
+      firstIntegral.cycle(maxIndex) &&
+      cyclesMatch(firstIntegral, secondIntegral, maxIndex - 1)
+  }
+
+  def assertSameCIWithSameCycle(
+    firstIntegral: CycleIntegral,
+    secondIntegral: CycleIntegral,
+    position: BigInt
+  ): Boolean = {
+    require(position >= 0)
+    require(firstIntegral.initialValue == secondIntegral.initialValue)
+    require(cyclesMatch(firstIntegral, secondIntegral, position))
+    decreases(position)
+    if (position == 0) true
+    else {
+      assert(cyclesMatch(firstIntegral, secondIntegral, position - 1))
+      assertSameCIWithSameCycle(
+        firstIntegral, secondIntegral, position - 1)
+      assert(secondIntegral(position) ==
+        secondIntegral(position - 1) + secondIntegral.cycle(position))
+      assert(firstIntegral(position) ==
+        firstIntegral(position - 1) + firstIntegral.cycle(position))
+    }
+    secondIntegral(position) == firstIntegral(position)
+  }.holds
+
+  /**
+   * Replication invariance: the cycle value at any position is unchanged
+   * when the underlying gap list is replicated `factor` times.
+   *
+   * Uses `findValueInCycle` to express cycle values as list access
+   * modulo size, then the mod-nesting property
+   * `Calc.mod(Calc.mod(pos, f*n), n) == Calc.mod(pos, n)` (via
+   * `ATimesBSameMod`) to prove equality without constructing the
+   * replicated list.
+   *
+   * @param originalIntegral    the original cycle integral
+   * @param replicatedIntegral  the integral with f-times replicated gaps
+   * @param factor              replication factor, factor > 0
+   * @param position            the position to check
+   * @return cycle values are equal
+   *
+   * ```math
+   * \begin{aligned}
+   * \text{Cycle}_f(\text{pos}) &=
+   *   \text{Values}_f(\text{pos} \bmod f n) \\
+   * &= \text{Values}_1((\text{pos} \bmod f n) \bmod n) \\
+   * &= \text{Values}_1(\text{pos} \bmod n) \\
+   * &= \text{Cycle}_1(\text{pos})
+   * \end{aligned}
+   * ```
+   */
+  def assertReplicatedCycleValueEqual(
+    originalIntegral: CycleIntegral,
+    replicatedIntegral: CycleIntegral,
+    factor: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(factor > 0)
+    require(originalIntegral.size > 0)
+    require(replicatedIntegral.size == originalIntegral.size * factor)
+    require(position >= 0)
+    require(replicatedIntegral.initialValue == originalIntegral.initialValue)
+    require(
+      (position < originalIntegral.cycle.size &&
+        replicatedIntegral.cycle(position) ==
+          originalIntegral.cycle(position)) ||
+      (position >= originalIntegral.cycle.size &&
+        replicatedIntegral.cycle(position) ==
+          originalIntegral.cycle(
+            Calc.mod(position, originalIntegral.cycle.size))))
+
+    val originalSize = originalIntegral.cycle.size
+    if (position < originalSize) true
+    else {
+      MemCycleProperties.findValueInCycle(
+        originalIntegral.cycle, position)
+      assert(originalIntegral.cycle(position) ==
+        originalIntegral.cycle(
+          Calc.mod(position, originalSize)))
+    }
+    replicatedIntegral.cycle(position) ==
+      originalIntegral.cycle(position)
+  }.holds
+
+  /**
+   * After merging at a multiple position, the new value at that position
+   * is not a multiple of `filterValue`, provided the NEXT old value is
+   * also not a multiple.
+   *
+   * From `assertShiftAtMerge`: `CI_new(m) == CI_old(m + 1)`.
+   * If `CI_old(m + 1) mod f != 0`, then `CI_new(m) mod f != 0`.
+   */
+  def assertRemoveMultipleModNotZero(
+    oldIntegral: CycleIntegral,
+    newIntegral: CycleIntegral,
+    mergeIndex: BigInt,
+    filterValue: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(mergeIndex >= 0)
+    require(mergeIndex + 1 < oldIntegral.size)
+    require(newIntegral.size == oldIntegral.size - 1)
+    require(oldIntegral.initialValue == newIntegral.initialValue)
+    require(newIntegral.cycle(mergeIndex) ==
+      oldIntegral.cycle(mergeIndex) +
+        oldIntegral.cycle(mergeIndex + 1))
+    require(allGapsMatchBeforeMerge(
+      oldIntegral, newIntegral, mergeIndex, mergeIndex - 1))
+    require(Calc.mod(oldIntegral(mergeIndex + 1),
+      filterValue) != BigInt(0))
+    assertShiftAtMerge(oldIntegral, newIntegral, mergeIndex)
+    Calc.mod(newIntegral(mergeIndex), filterValue) != BigInt(0)
   }.holds
 
 }
