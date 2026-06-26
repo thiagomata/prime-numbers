@@ -112,6 +112,40 @@ object ListRepeatProperties {
     repeat(list, times).size == list.size * times
   }.holds
 
+  def assertRepeatConcat(
+    list: List[BigInt],
+    times: BigInt
+  ): Boolean = {
+    require(times > 0)
+    decreases(times)
+    if (times == 1) {
+      assert(repeat(list, 1) == list)
+    } else {
+      assertRepeatConcat(list, times - 1)
+    }
+    repeat(list, times) == list ++ repeat(list, times - 1)
+  }.holds
+
+  def assertRepeatSumDecomposition(
+    list: List[BigInt],
+    times: BigInt
+  ): Boolean = {
+    require(list.nonEmpty)
+    require(times > 0)
+    decreases(times)
+    val listSum = ListUtils.sum(list)
+    if (times == 1) {
+      assert(repeat(list, 1) == list)
+      assert(ListUtils.sum(repeat(list, 1)) == listSum)
+    } else {
+      assertRepeatSumDecomposition(list, times - 1)
+      ListUtilsProperties.listCombine(list, repeat(list, times - 1))
+      assert(ListUtils.sum(repeat(list, times)) ==
+        listSum + ListUtils.sum(repeat(list, times - 1)))
+    }
+    ListUtils.sum(repeat(list, times)) == listSum + ListUtils.sum(repeat(list, times - 1))
+  }.holds
+
   def assertRepeatedIndex(
     list: List[BigInt],
     times: BigInt,

@@ -9,6 +9,7 @@ import v1.chapter2.div.properties.ModOperations
 import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.ListUtils
 import v1.chapter3.list.properties.ListUtilsProperties
+import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
