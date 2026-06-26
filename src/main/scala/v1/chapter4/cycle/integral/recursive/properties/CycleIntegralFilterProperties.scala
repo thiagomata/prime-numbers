@@ -821,4 +821,90 @@ object CycleIntegralFilterProperties {
     Calc.mod(newIntegral(mergeIndex), filterValue) != BigInt(0)
   }.holds
 
+  def assertCycleAtSizeMatch(
+    oldIntegral: CycleIntegral,
+    newIntegral: CycleIntegral
+  ): Boolean = {
+    require(newIntegral.cycle(0) == oldIntegral.cycle(0))
+    val oldSize = oldIntegral.size
+    val newSize = newIntegral.size
+    MemCycleProperties.valueMatchAfterManyLoopsInBoth(
+      newIntegral.cycle, BigInt(0), BigInt(0), BigInt(1))
+    MemCycleProperties.valueMatchAfterManyLoopsInBoth(
+      oldIntegral.cycle, BigInt(0), BigInt(0), BigInt(1))
+    newIntegral.cycle(newSize) == oldIntegral.cycle(oldSize)
+  }.holds
+
+  def assertNewCIAtSizeEqualsOld(
+    oldIntegral: CycleIntegral,
+    newIntegral: CycleIntegral,
+    mergeIndex: BigInt
+  ): Boolean = {
+    require(mergeIndex > 0)
+    require(mergeIndex + 1 < oldIntegral.size)
+    require(newIntegral.size == oldIntegral.size - 1)
+    require(oldIntegral.initialValue == newIntegral.initialValue)
+    require(newIntegral.cycle(mergeIndex) ==
+      oldIntegral.cycle(mergeIndex) +
+        oldIntegral.cycle(mergeIndex + 1))
+    require(allGapsMatchBeforeMerge(
+      oldIntegral, newIntegral, mergeIndex, mergeIndex - 1))
+    require(allGapsMatchAfterMerge(
+      oldIntegral, newIntegral, mergeIndex,
+      newIntegral.cycle.values.size - 1))
+    require(newIntegral.cycle(0) == oldIntegral.cycle(0))
+    require(newIntegral.size > mergeIndex)
+
+    val oldSize = oldIntegral.size
+    val newSize = newIntegral.size
+
+    CycleIntegralProperties.assertDiffEqualsCycleValue(
+      newIntegral, newSize - 1)
+
+    if (newSize - 1 > mergeIndex) {
+      assertShiftAfterMerge(
+        oldIntegral, newIntegral, mergeIndex, newSize - 1)
+    } else {
+      assertShiftAtMerge(
+        oldIntegral, newIntegral, mergeIndex)
+    }
+
+    assertCycleAtSizeMatch(oldIntegral, newIntegral)
+    CycleIntegralProperties.assertDiffEqualsCycleValue(
+      oldIntegral, oldSize - 1)
+
+    newIntegral(newSize) == oldIntegral(oldSize)
+  }.holds
+
+  /*
+  def assertMergedSumPreserved(
+    oldIntegral: CycleIntegral,
+    newIntegral: CycleIntegral,
+    mergeIndex: BigInt
+  ): Boolean = {
+    require(mergeIndex > 0)
+    require(mergeIndex + 1 < oldIntegral.size)
+    require(newIntegral.size == oldIntegral.size - 1)
+    require(oldIntegral.initialValue == newIntegral.initialValue)
+    require(newIntegral.cycle(mergeIndex) ==
+      oldIntegral.cycle(mergeIndex) +
+        oldIntegral.cycle(mergeIndex + 1))
+    require(newIntegral.cycle(0) == oldIntegral.cycle(0))
+    require(newIntegral(0) == oldIntegral(0))
+    require(allGapsMatchBeforeMerge(
+      oldIntegral, newIntegral, mergeIndex, mergeIndex - 1))
+    require(allGapsMatchAfterMerge(
+      oldIntegral, newIntegral, mergeIndex,
+      newIntegral.cycle.values.size - 1))
+    require(newIntegral.size > mergeIndex)
+
+    assertCIShiftEqualsSum(oldIntegral, 0)
+    assertCIShiftEqualsSum(newIntegral, 0)
+    assertNewCIAtSizeEqualsOld(
+      oldIntegral, newIntegral, mergeIndex)
+
+    newIntegral.sum == oldIntegral.sum
+  }.holds
+  */
+
 }

@@ -184,4 +184,59 @@ object ListRepeatProperties {
     ListUtils.sum(values) == sumAfterMerge(values, mergeIndex)
   }.holds
 
+  def assertMergeSumBase(
+    oldValues: List[BigInt],
+    newValues: List[BigInt]
+  ): Boolean = {
+    require(oldValues.size >= 2)
+    require(newValues.size == oldValues.size - 1)
+    require(newValues.head == oldValues.head + oldValues.tail.head)
+    require(ListUtils.sum(newValues.tail) ==
+      ListUtils.sum(oldValues.tail.tail))
+    ListUtils.sum(newValues) == ListUtils.sum(oldValues)
+  }.holds
+
+  def assertMergeSumStep(
+    oldValues: List[BigInt],
+    newValues: List[BigInt]
+  ): Boolean = {
+    require(oldValues.nonEmpty)
+    require(newValues.nonEmpty)
+    require(oldValues.head == newValues.head)
+    require(ListUtils.sum(newValues.tail) ==
+      ListUtils.sum(oldValues.tail))
+    ListUtils.sum(newValues) == ListUtils.sum(oldValues)
+  }.holds
+
+  /*
+  def assertMergeSumPreserved(
+    oldValues: List[BigInt],
+    newValues: List[BigInt],
+    mergeIndex: BigInt
+  ): Boolean = {
+    require(mergeIndex >= 0)
+    require(mergeIndex + 1 < oldValues.size)
+    require(newValues.size == oldValues.size - 1)
+    require(newValues(mergeIndex) ==
+      oldValues(mergeIndex) + oldValues(mergeIndex + 1))
+    require(mergeIndex > 0 ||
+      ListUtils.sum(newValues.tail) == ListUtils.sum(oldValues.tail.tail))
+    require(mergeIndex == 0 || oldValues.head == newValues.head)
+    decreases(mergeIndex)
+    if (mergeIndex == 0) {
+      assertMergeSumBase(oldValues, newValues)
+    } else {
+      assert(mergeIndex - 1 >= 0)
+      assert(mergeIndex < oldValues.size - 1)
+      assert(newValues.tail.size == oldValues.tail.size - 1)
+      assert(newValues.tail(mergeIndex - 1) ==
+        oldValues.tail(mergeIndex - 1) + oldValues.tail(mergeIndex))
+      assertMergeSumPreserved(
+        oldValues.tail, newValues.tail, mergeIndex - 1)
+      assertMergeSumStep(oldValues, newValues)
+    }
+    ListUtils.sum(newValues) == ListUtils.sum(oldValues)
+  }.holds
+  */
+
 }
