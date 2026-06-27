@@ -366,6 +366,41 @@ object CycleIntegralFilterProperties {
   }.holds
 
   /**
+   * Size of gapsFromValues: gaps(L).size == L.size - 1 for non-empty L.
+   */
+  def assertGapsFromValuesSize(
+    sourceList: List[BigInt]
+  ): Boolean = {
+    require(!sourceList.isEmpty)
+    decreases(sourceList.size)
+    if (sourceList.tail.isEmpty) {
+      assert(gapsFromValues(sourceList).isEmpty)
+    } else {
+      assertGapsFromValuesSize(sourceList.tail)
+    }
+    gapsFromValues(sourceList).size == sourceList.size - 1
+  }.holds
+
+  /**
+   * If ci(start) mod f != 0, then the first survivor is ci(start).
+   * The solver only needs one level of survivorValues recursion to
+   * see this — the condition ci(start) mod f != 0 fixes the head.
+   */
+  def assertFirstSurvivorHead(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(Calc.mod(ci(startPosition), filterValue) != BigInt(0))
+    survivorValues(ci, filterValue, startPosition, count).head ==
+      ci(startPosition)
+  }.holds
+
+  /**
    * Predicate: the new cycle's gaps match the differences between
    * consecutive survivor values, for all positions `0` through `maxIndex`.
    *
