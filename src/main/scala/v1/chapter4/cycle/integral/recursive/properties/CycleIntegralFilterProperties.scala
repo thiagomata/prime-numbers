@@ -1001,4 +1001,33 @@ object CycleIntegralFilterProperties {
     Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
   }.holds
 
+  /**
+   * Verify that the new CI built from survivors has no multiples of filterValue
+   * at a given position. Composes assertNewCIMatchesSurvivors + assertSurvivorAtNotMultiple.
+   */
+  def assertNextGapsValid(
+    ci: CycleIntegral,
+    newCI: CycleIntegral,
+    survivors: List[BigInt],
+    filterValue: BigInt,
+    steps: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(ci.size > 0)
+    require(steps <= ci.size)
+    require(steps >= 0)
+    require(!survivors.isEmpty)
+    require(survivors == survivorValues(ci, filterValue, BigInt(0), steps))
+    require(newCI.cycle.values == gapsFromValues(survivors))
+    require(newCI.initialValue == survivors.head)
+    require(position >= 0)
+    require(position < newCI.size)
+    require(survivors.size > position + 1)
+
+    assertNewCIMatchesSurvivors(survivors, newCI, position)
+    assertSurvivorAtNotMultiple(ci, filterValue, BigInt(0), steps, position + 1)
+    Calc.mod(newCI(position), filterValue) != BigInt(0)
+  }.holds
+
 }
