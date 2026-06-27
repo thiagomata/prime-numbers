@@ -55,7 +55,36 @@ object CycleIntegralFilterProperties {
         (cycleIntegral(toPosition - 1) - cycleIntegral(fromPosition))
   }.holds
 
-}
+  def assertSurvivorAtNotMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt,
+    index: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count >= 0)
+    require(index >= 0)
+    val survivors = survivorValues(ci, filterValue, startPosition, count)
+    require(index < survivors.size)
+    decreases(count)
+
+    if (count == 0) true
+    else if (Calc.mod(ci(startPosition), filterValue) != BigInt(0)) {
+      if (index == 0) {
+        assert(Calc.mod(survivors.head, filterValue) != BigInt(0))
+      } else {
+        assertSurvivorAtNotMultiple(ci, filterValue,
+          startPosition + 1, count - 1, index - 1)
+      }
+    } else {
+      assertSurvivorAtNotMultiple(ci, filterValue,
+        startPosition + 1, count - 1, index)
+    }
+    Calc.mod(survivors(index), filterValue) != BigInt(0)
+  }.holds
+
   /**
    * Bounded forward search for the next survivor position.
    *
@@ -870,4 +899,4 @@ object CycleIntegralFilterProperties {
       allGapsMatch(newCI, survivors, maxIndex)
     }
   }.holds
-
+}

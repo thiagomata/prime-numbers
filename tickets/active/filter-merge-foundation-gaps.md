@@ -179,9 +179,10 @@ Fill each gap in dependency order: list `repeat` → CI sum invariance → post-
 9. Prove `assertMergeSumStep` (list-level, inductive step) ✅
 10. ~~Prove `assertMergeSumPreserved` (list-level, full induction)~~ — 3+ failed attempts, commented out ⚠️
 
-### Phase 3: Composition stitching ⬜ PENDING
-11. Prove `gapsFromValues(survivorValues(ci, f, 0, ci.size))` satisfies `allGapsMatch` for a new CI
-12. Full filter-merge composition theorem
+### Phase 3: Composition stitching ⚠️ PARTIAL
+11. Prove `gapsFromValues(survivorValues(ci, f, 0, ci.size))` satisfies `allGapsMatch` for a new CI ✅
+12a. Prove survivors contain no multiples of f ✅
+12b. Full filter-merge composition theorem ⬜ PENDING
 
 ## Related Articles
 
@@ -204,6 +205,7 @@ Fill each gap in dependency order: list `repeat` → CI sum invariance → post-
 | 2026-06-26 | GAP 2 list-level induction `assertMergeSumPreserved`: 3+ failed attempts. The solver can't propagate tail premises (`oldValues.head == newValues.head`, tail sum equality) through the recursion. Each variant: conditional requires (`||`) in top-level require + explicit assertions for size/element equality, recursive call preconditions still fail. Commented out. 10193 green. **ASKING FOR HELP** on this induction. The atoms are verified; the composition is the wall. | Await guidance. |
 | 2026-06-26 | **GAP 2 CLOSED via Approach 1 (decompose via `sumAfterMerge`).** Added `newValuesAfterMerge` predicate (mirrors `sumAfterMerge`'s recursion shape) + `assertSumNewValuesAfterMerge` bridge lemma (`sum(newValues) == sumAfterMerge(oldValues, mergeIndex)`, 31/31, 4.72s) + `assertMergeSumPreserved` closure (composes bridge + verified `assertMergePreservesListSum`, 15/15, 4.30s). Full verify `10256 valid: 10256 invalid: 0 unknown: 0` (+63 over 10193). **Approach 2 (bubble premises into induction) unnecessary — Approach 1 succeeded.** | Proceed to Phase 3 (composition stitching) or revisit `assertMergedSumPreserved` at CI level with the list foundation now in place. |
 | 2026-06-27 | List repeat foundation expanded: `assertRepeatConcat` (8/8), `assertRepeatSumDecomposition` (15/15), `assertRepeatSumTimes` (3/3), `assertModCycleEqualsMemCycle` bridge (3/3). 10285 valid (+29). Full "repeated cycle values equal" (MemCycle/ModCycle/CI) TIMEOUT: solver can't stitch `findValueInCycle` + `assertRepeatedIndex` in one VC. Bridge lemma `assertModCycleEqualsMemCycle` verified, serves as stepping stone. | Move to Phase 3: composition stitching (item 11). |
+| 2026-06-27 | Phase 3 item 12a: `assertSurvivorAtNotMultiple` (24/24) — proves `Calc.mod(survivors(index), filterValue) != 0` for any index in `survivorValues(ci, f, start, count)`. Mirrors `survivorValues` recursion to prove by induction that every included value is not a multiple of `f`. 10315 valid (+24). | Phase 3 item 12b (final composition theorem) is next. |
 | 2026-06-27 | Phase 3 item 11: `assertGapsFromSurvivorsMatchCI` (24/24) — proves `allGapsMatch(newCI, survivors, maxIndex)` given `newCI.cycle.values == gapsFromValues(survivors)` and `newCI.initialValue == survivors.head`. Takes `survivors` as parameter (avoids unfolding `survivorValues` recursion, which caused timeouts). 10291 valid (+6). | Phase 3 item 12 (full filter-merge composition theorem) is next. |
 
 ### GAP 2 Resolution (2026-06-26)
