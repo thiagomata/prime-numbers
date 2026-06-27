@@ -958,4 +958,47 @@ object CycleIntegralFilterProperties {
       allGapsMatch(newCI, survivors, maxIndex)
     }
   }.holds
+
+  /**
+   * Full filter-merge composition theorem (Phase 3, item 12b).
+   *
+   * Given:
+   *   - originalCI with sum mod f == 0 and CI(0) mod f != 0
+   *   - survivors = survivorValues(originalCI, f, 0, originalCI.size)
+   *   - newCI built from survivors: init = survivors.head, cycle.values = gapsFromValues(survivors)
+   *
+   * Proves: newCI(k) mod f != 0 for all k in [0, maxIndex]
+   * i.e. the new filtered CI has no multiples of f.
+   */
+  def assertFilterMergeComposition(
+    originalCI: CycleIntegral,
+    newCI: CycleIntegral,
+    survivors: List[BigInt],
+    filterValue: BigInt,
+    maxIndex: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(originalCI.size > 0)
+    require(Calc.mod(originalCI(0), filterValue) != BigInt(0))
+    require(survivors == survivorValues(originalCI, filterValue,
+      BigInt(0), originalCI.size))
+    require(!survivors.isEmpty)
+    require(newCI.initialValue == survivors.head)
+    require(newCI.cycle.values == gapsFromValues(survivors))
+    require(maxIndex >= 0)
+    require(maxIndex < newCI.size)
+    require(survivors.size > maxIndex + 1)
+    decreases(maxIndex + 1)
+
+    assertNewCIMatchesSurvivors(survivors, newCI, maxIndex)
+    assertSurvivorAtNotMultiple(originalCI, filterValue,
+      BigInt(0), originalCI.size, maxIndex + 1)
+
+    if (maxIndex > 0) {
+      assertFilterMergeComposition(originalCI, newCI,
+        survivors, filterValue, maxIndex - 1)
+    }
+    Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
+  }.holds
+
 }
