@@ -446,6 +446,30 @@ object CycleIntegralFilterProperties {
     filteredIntegral(position) == survivorList(position + 1)
   }.holds
 
+  /**
+   * Simple composition: if newCI's cycle values = gapsFromValues(survivors)
+   * and initialValue = survivors.head, then newCI(k) == survivors(k+1).
+   *
+   * Composes assertGapsFromSurvivorsMatchCI + assertNewCIGeneratesFiltered.
+   */
+  def assertNewCIMatchesSurvivors(
+    survivors: List[BigInt],
+    newCI: CycleIntegral,
+    position: BigInt
+  ): Boolean = {
+    require(!survivors.isEmpty)
+    require(survivors.size > position + 1)
+    require(position >= 0)
+    require(position < newCI.size)
+    require(newCI.cycle.values == gapsFromValues(survivors))
+    require(newCI.initialValue == survivors.head)
+    require(newCI.size > 0)
+    assertGapsFromSurvivorsMatchCI(survivors, newCI, position)
+    assert(allGapsMatch(newCI, survivors, position))
+    assertNewCIGeneratesFiltered(newCI, survivors, position)
+    newCI(position) == survivors(position + 1)
+  }.holds
+
   def allGapsMatchBeforeMerge(
     oldIntegral: CycleIntegral,
     newIntegral: CycleIntegral,
