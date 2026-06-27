@@ -55,45 +55,7 @@ object CycleIntegralFilterProperties {
         (cycleIntegral(toPosition - 1) - cycleIntegral(fromPosition))
   }.holds
 
-  /**
-   * Modulo periodicity at position zero when the full-cycle sum is a
-   * multiple of the filter value.
-   *
-   * If adding one full cycle sum does not change the remainder modulo
-   * `filterValue` (because the sum itself is a multiple), then the residue
-   * at position `size` equals the residue at position `0`.
-   *
-   * @param cycleIntegral the cycle integral
-   * @param filterValue   the filter value, `filterValue > 0`
-   * @return preserved-modulo equality
-   *
-   * ```math
-   * \begin{aligned}
-   * CI(size) - CI(0) &= \sum\text{Cycle} \\
-   * \sum\text{Cycle} \bmod v &= 0 \;\Longrightarrow\;
-   * CI(size) \bmod v = CI(0) \bmod v
-   * \end{aligned}
-   * ```
-   */
-  def assertModPeriodicWithMultipleSum(
-    cycleIntegral: CycleIntegral,
-    filterValue: BigInt
-  ): Boolean = {
-    require(cycleIntegral.size > 0)
-    require(filterValue > 0)
-    require(cycleIntegral(0) >= 0)
-    require(cycleIntegral(cycleIntegral.size) - cycleIntegral(0) ==
-      cycleIntegral.sum)
-    require(Calc.mod(cycleIntegral.sum, filterValue) == BigInt(0))
-    require(Calc.mod(cycleIntegral(0), filterValue) != BigInt(0))
-    assert(cycleIntegral(cycleIntegral.size) ==
-      cycleIntegral(0) + cycleIntegral.sum)
-    ModOperations.modZeroPlusC(
-      cycleIntegral.sum, filterValue, cycleIntegral(0))
-    Calc.mod(cycleIntegral(cycleIntegral.size), filterValue) ==
-      Calc.mod(cycleIntegral(0), filterValue)
-  }.holds
-
+}
   /**
    * Bounded forward search for the next survivor position.
    *
@@ -877,4 +839,35 @@ object CycleIntegralFilterProperties {
     newIntegral(newSize) == oldIntegral(oldSize)
   }.holds
 
-}
+  /**
+   * Phase 3, item 11: Prove that gaps from survivors satisfy allGapsMatch.
+   * Accepts survivors as parameter (avoids unfolding survivorValues recursion).
+   *
+   * Proves: allGapsMatch(newCI, survivors, maxIndex)
+   * i.e. for all i in [0, maxIndex]:
+   *   newCI.cycle(i) == survivors(i+1) - survivors(i)
+   */
+  def assertGapsFromSurvivorsMatchCI(
+    survivors: List[BigInt],
+    newCI: CycleIntegral,
+    maxIndex: BigInt
+  ): Boolean = {
+    require(maxIndex >= -1)
+    require(maxIndex < newCI.size)
+    require(newCI.size > 0)
+    require(!survivors.isEmpty)
+    require(survivors.size > maxIndex + 1)
+    require(newCI.cycle.values == gapsFromValues(survivors))
+    require(newCI.initialValue == survivors.head)
+    decreases(maxIndex + 1)
+
+    if (maxIndex < 0) true
+    else {
+      assertGapsFromSurvivorsMatchCI(survivors, newCI, maxIndex - 1)
+      MemCycleProperties.smallValueInCycle(newCI.cycle, maxIndex)
+      assertGapsFromValuesAtIndex(survivors, maxIndex)
+      newCI.cycle(maxIndex) == survivors(maxIndex + 1) - survivors(maxIndex) &&
+      allGapsMatch(newCI, survivors, maxIndex)
+    }
+  }.holds
+

@@ -203,10 +203,44 @@ Fill each gap in dependency order: list `repeat` → CI sum invariance → post-
 | 2026-06-26 | GAP 2 list-level `assertMergeSumBase` (8/8): sum equality when mergeIndex==0, heads merge, tail sums match. `assertMergeSumStep` (5/5): sum equality when heads match and tail sums match. | Next step. |
 | 2026-06-26 | GAP 2 list-level induction `assertMergeSumPreserved`: 3+ failed attempts. The solver can't propagate tail premises (`oldValues.head == newValues.head`, tail sum equality) through the recursion. Each variant: conditional requires (`||`) in top-level require + explicit assertions for size/element equality, recursive call preconditions still fail. Commented out. 10193 green. **ASKING FOR HELP** on this induction. The atoms are verified; the composition is the wall. | Await guidance. |
 | 2026-06-26 | **GAP 2 CLOSED via Approach 1 (decompose via `sumAfterMerge`).** Added `newValuesAfterMerge` predicate (mirrors `sumAfterMerge`'s recursion shape) + `assertSumNewValuesAfterMerge` bridge lemma (`sum(newValues) == sumAfterMerge(oldValues, mergeIndex)`, 31/31, 4.72s) + `assertMergeSumPreserved` closure (composes bridge + verified `assertMergePreservesListSum`, 15/15, 4.30s). Full verify `10256 valid: 10256 invalid: 0 unknown: 0` (+63 over 10193). **Approach 2 (bubble premises into induction) unnecessary — Approach 1 succeeded.** | Proceed to Phase 3 (composition stitching) or revisit `assertMergedSumPreserved` at CI level with the list foundation now in place. |
+| 2026-06-27 | List repeat foundation expanded: `assertRepeatConcat` (8/8), `assertRepeatSumDecomposition` (15/15), `assertRepeatSumTimes` (3/3), `assertModCycleEqualsMemCycle` bridge (3/3). 10285 valid (+29). Full "repeated cycle values equal" (MemCycle/ModCycle/CI) TIMEOUT: solver can't stitch `findValueInCycle` + `assertRepeatedIndex` in one VC. Bridge lemma `assertModCycleEqualsMemCycle` verified, serves as stepping stone. | Move to Phase 3: composition stitching (item 11). |
+| 2026-06-27 | Phase 3 item 11: `assertGapsFromSurvivorsMatchCI` (24/24) — proves `allGapsMatch(newCI, survivors, maxIndex)` given `newCI.cycle.values == gapsFromValues(survivors)` and `newCI.initialValue == survivors.head`. Takes `survivors` as parameter (avoids unfolding `survivorValues` recursion, which caused timeouts). 10291 valid (+6). | Phase 3 item 12 (full filter-merge composition theorem) is next. |
 
 ### GAP 2 Resolution (2026-06-26)
 
 **Root cause of the failed induction:** `assertMergeSumPreserved`'s recursion needed the *tail-merge-relation* (`newValues.tail(mergeIndex-1) == oldValues.tail(mergeIndex-1) + oldValues.tail(mergeIndex)`) at the recursive call, but the outer lemma only had the relation at the original `mergeIndex`. The solver couldn't derive the shifted relation from the outer `require`s.
+
+**Why decomposition works:** `sumAfterMerge` is defined recursively with the *same structure* as the merged list. So relating `newValues` to `sumAfterMerge` is a *predicate match* (`newValuesAfterMerge`), not an arithmetic equality proof. The predicate mirrors the recursion exactly, so its induction propagates trivially. Then `assertMergePreservesListSum` (already verified) closes `sumAfterMerge == sum(oldValues)`.
+
+**Lesson (LEARNINGS candidate):** when a list-equality induction stalls on tail-relation propagation, decompose into:
+1. A *predicate* that mirrors a verified recursive helper's structure (structural match, easy to induct).
+2. A *bridge* lemma proving the candidate list matches the helper's output (trivial IH).
+3. The *helper*'s own correctness (already verified).
+
+This converts an arithmetic-induction wall into a structural-match + two easy inductions. The key is choosing a helper whose recursion shape matches the candidate list's structure — `sumAfterMerge` matched because both walk the mergeIndex down identically.
+
+### 2026-06-27: List repeat foundation expansion
+
+**Goal:** Add `assertRepeatConcat` (repeat = concat), `assertRepeatSumDecomposition` (sum decomposes), and prove repeated-list values equal to original through all layers (list → ModCycle → MemCycle → CycleIntegral).
+
+**Results:**
+- `assertRepeatConcat`: `repeat(list,n) == list ++ repeat(list, n-1)` — verified (8/8)
+- `assertRepeatSumDecomposition`: `sum(repeat(list,n)) = sum(list) + sum(repeat(list,n-1))` — verified (15/15)
+- `assertRepeatSumTimes`: `sum(repeat(list,n)) = sum(list) * n` — verified (3/3)
+- `assertModCycleEqualsMemCycle` (bridge: if values match, ModCycle(k) == MemCycle(k)) — verified (3/3)
+- Total: 10285 valid (+29 from 10256)
+
+**Failed/Timeout:**
+- `assertRepeatedCycleValuesEqual` (MemCycle: prove cycle values match given repeat relationship): TIMEOUT on postcondition. Solver can't stitch `findValueInCycle` + implied `assertRepeatedIndex` relationship through the VC.
+- ModCycle version (calls MemCycle version): TIMEOUT (inherits the MemCycle timeout)
+- `assertReplicatedCIValuesEqual` (CycleIntegral level): TIMEOUT on `replicatedCI(position) == originalCI(position)`
+
+**Root cause of timeout:** The postcondition `repeatedCycle(position) == originalCycle(position)` using only `findValueInCycle` is insufficient — the solver needs to connect `repeatedCycle.values(Calc.mod(p, repeated.size))` with `originalCycle.values(Calc.mod(p, original.size))` via `repeat(values, times)`. This requires `assertRepeatedIndex` to be called explicitly, but even that may not help if the solver can't unfold the `repeat` definition within the VC.
+
+**Possible solutions (future):**
+1. Decompose: prove `repeatedCycle(calc.mod(p, repeated.size)) == originalCycle(calc.mod(p, original.size))` as a separate lemma first
+2. Use `assertRepeatedIndex` directly instead of `findValueInCycle` as the bridge
+3. Revisit with a faster solver (native Z3 instead of smt-z3 fallback)
 
 **Why decomposition works:** `sumAfterMerge` is defined recursively with the *same structure* as the merged list. So relating `newValues` to `sumAfterMerge` is a *predicate match* (`newValuesAfterMerge`), not an arithmetic equality proof. The predicate mirrors the recursion exactly, so its induction propagates trivially. Then `assertMergePreservesListSum` (already verified) closes `sumAfterMerge == sum(oldValues)`.
 

@@ -6,6 +6,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence, ModOperations}
 import v1.chapter4.cycle.CycleUtils
 import v1.chapter4.cycle.mod.ModCycle
+import v1.chapter4.cycle.memory.MemCycle
 
 object CycleProperties {
 
@@ -23,6 +24,22 @@ object CycleProperties {
     require(key >= 0)
     require(cycle.size > 0)
     cycle(key) == cycle.values(Calc.mod(key, cycle.size))
+  }.holds
+
+  /**
+   * Bridge lemma: If ModCycle and MemCycle have the same values,
+   * they produce the same result at any position.
+   */
+  def assertModCycleEqualsMemCycle(
+    modCycle: ModCycle,
+    memCycle: MemCycle,
+    position: BigInt
+  ): Boolean = {
+    require(modCycle.values == memCycle.values)
+    require(modCycle.size == memCycle.size)
+    require(position >= 0)
+    require(position < modCycle.size)
+    modCycle(position) == memCycle(position)
   }.holds
 
   /**
