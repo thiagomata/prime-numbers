@@ -1859,4 +1859,84 @@ case class CanonicalCycleSieve(
 //   val walkedIntegral = CycleIntegral(spec.next.head.value, walked)
 //   walkedIntegral(k - BigInt(1)) == spec.next(k)
 // }.holds
+
+  /**
+   * Proves: cycle.integral(0) = spec.next(0).
+   * This is the base case: the first survivor (newHead) equals spec.next(0).
+   * No survivorValues call needed — uses constructor invariants.
+   */
+  def assertFirstSurvivorEqualsSpecNext0(): Boolean = {
+    assert(assertNextHeadMatches())
+    assert(cycle(BigInt(1)) == cycle.integral(BigInt(0)))
+    cycle.integral(BigInt(0)) == spec.next.head.value
+  }.holds
+
+  /**
+   * Proves that the survivor at index k equals spec.next(k) via gaps.
+   *
+   * Uses:
+   *   1. assertNextGapEqualsCurrentGapSum → spec.next gap == spec pos gap
+   *   2. assertSurvivorPositionMatchesSpecNext → cycle(pos) == spec.next(k)
+   *   3. assertApplyMatches(pos) → cycle(pos) == spec(pos)
+   *
+   * Together: survivors(k) - survivors(k-1) == spec.next(k) - spec.next(k-1)
+   * and by induction: survivors(k) == spec.next(k)
+   *
+   * DOES NOT call survivorValues — works entirely through position lemmas.
+   */
+  def assertSurvivorGapEqualsSpecNextGap(
+    nextPeriod: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(k >= BigInt(0))
+    require(k + BigInt(1) < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+
+    val pos1 = spec.indexOfAccepted(spec.next(k))
+    val pos2 = spec.indexOfAccepted(spec.next(k + BigInt(1)))
+
+    assert(assertSurvivorPositionMatchesSpecNext(k))
+    assert(assertSurvivorPositionMatchesSpecNext(k + BigInt(1)))
+    assert(spec.next(k) == cycle(pos1))
+    assert(spec.next(k + BigInt(1)) == cycle(pos2))
+    assert(assertNextGapEqualsCurrentGapSum(nextPeriod, k))
+    assert(spec.next(k + BigInt(1)) - spec.next(k) == spec(pos2) - spec(pos1))
+    assert(assertApplyMatches(pos1))
+    assert(assertApplyMatches(pos2))
+    assert(spec(pos1) == cycle(pos1))
+    assert(spec(pos2) == cycle(pos2))
+
+    spec.next(k + BigInt(1)) - spec.next(k) == cycle(pos2) - cycle(pos1)
+  }.holds
+
+  /**
+   * Per-element equality: spec.next(k) == cycle(indexOfAccepted(spec.next(k))).
+   * Base case (k=0) uses assertFirstSurvivorEqualsSpecNext0.
+   * Step uses assertSurvivorGapEqualsSpecNextGap + induction.
+   *
+   * This proves spec.next(k) is a survivor (not divisible by head)
+   * and matches the k-th survivor position in the cycle.
+   */
+  def assertSpecNextIsKthSurvivor(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(k >= BigInt(0))
+    require(k < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    decreases(k)
+
+    if (k == BigInt(0)) {
+      assertFirstSurvivorEqualsSpecNext0()
+      spec.next(BigInt(0)) == cycle.integral(BigInt(0))
+    } else {
+      assertSpecNextIsKthSurvivor(nextPeriod, k - BigInt(1))
+      if (k < nextPeriod - BigInt(1)) {
+        assert(assertSurvivorGapEqualsSpecNextGap(nextPeriod, k - BigInt(1)))
+      }
+      val pos = spec.indexOfAccepted(spec.next(k))
+      assert(assertSurvivorPositionMatchesSpecNext(k))
+      spec.next(k) == cycle(pos)
+    }
+  }.holds
+
 }
