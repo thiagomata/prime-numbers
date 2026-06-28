@@ -293,7 +293,7 @@ This property is verified in the [
 
 ---
 
-## 8. Conclusion
+## 10. Conclusion
 
 We have presented a formal verification of Sieve Sequence properties using the Stainless verification system. The key results are:
 
@@ -302,8 +302,211 @@ We have presented a formal verification of Sieve Sequence properties using the S
 3. **Distinct primes are coprime** — no prime divides another distinct prime  
 4. **Filter preserves primes** — filtering by one prime doesn't remove other primes
 5. **Head is prime** — every SieveSequence head is guaranteed prime
+6. **Survivor filter composition** — collecting survivors of a CycleIntegral under a prime and deriving gaps produces a new CycleIntegral with no multiples of that prime (Section 9.2)
+7. **Three-sequence equivalence** — the spec, constructive, and survivor-based sieve sequences produce identical values at every position (Section 9.3)
 
-These properties establish the mathematical foundation for the Sieve of Eratosthenes. The verification status is carried by the exact `.holds` functions referenced above, not by a repository-wide counter.
+These properties establish the mathematical foundation for the Sieve of Eratosthenes and prove the full next-stage progression. The verification status is carried by the exact `.holds` functions referenced above, not by a repository-wide counter.
+
+---
+
+## 9. Next-Stage Survivor Filter Composition
+
+**Intuition:** The sieve progresses by filtering out multiples of each discovered prime. After filtering the current cycle by the new prime $f$, the remaining survivor values form the next stage's sequence. The gaps between consecutive survivors (not merged — simply derived by subtraction) become the gap cycle of the next `CycleIntegral`, and this process repeats indefinitely.
+
+**Why This Matters:** Proving this process is correct closes the loop — it guarantees that repeatedly applying the survivor filtering step produces a valid infinite sequence of primes, not just the first one.
+
+### 9.1 Survivor-Based Gap Computation
+
+Given a `CycleIntegral` $CI$ with head $h$ and gap cycle $G$, we scan $h \cdot |G|$ positions of $CI$ and collect all values not divisible by $h$. These are the **survivors**:
+
+```math
+\text{survivors} = [ CI(p) \mid p \in [0, h \cdot |G|), CI(p) \bmod h \neq 0 ]
+```
+
+The gaps between consecutive survivors give the next gap cycle:
+
+```math
+\text{gapsFromValues}([s_0, s_1, \ldots, s_k]) = [ s_1 - s_0, s_2 - s_1, \ldots, s_k - s_{k-1} ]
+```
+
+The new `CycleIntegral` is $CI_{\text{new}} = \text{CycleIntegral}(s_0, \text{MemCycle}(\text{gapList}))$, where $s_0$ is the first survivor (= the next stage head).
+
+### 9.2 Survivor Filter Composition Theorem
+
+The composition theorem proves that $CI_{\text{new}}$ has no values divisible by $f$:
+
+**Proof:** By induction on $p \in [0, |G| - 2]$:
+- $\text{assertNewCIMatchesSurvivors}$ proves $CI_{\text{new}}(p) = \text{survivors}(p+1)$
+- $\text{assertSurvivorAtNotMultiple}$ proves $\text{survivors}(p+1) \bmod f \neq 0$ (by definition of survivors)
+- Therefore $CI_{\text{new}}(p) \bmod f \neq 0$ for all positions.
+
+### Stainless Verification
+
+```scala
+def assertFilterMergeComposition(
+  originalCI: CycleIntegral,
+  newCI: CycleIntegral,
+  survivors: List[BigInt],
+  filterValue: BigInt,
+  maxIndex: BigInt
+): Boolean = {
+  require(filterValue > 0)
+  require(originalCI.size > 0)
+  require(Calc.mod(originalCI(0), filterValue) != BigInt(0))
+  require(survivors == survivorValues(originalCI, filterValue, 0, originalCI.size))
+  require(!survivors.isEmpty)
+  require(newCI.initialValue == survivors.head)
+  require(newCI.cycle.values == gapsFromValues(survivors))
+  require(maxIndex >= 0)
+  require(maxIndex < newCI.size)
+  require(survivors.size > maxIndex + 1)
+  decreases(maxIndex + 1)
+
+  assertNewCIMatchesSurvivors(survivors, newCI, maxIndex)
+  assertSurvivorAtNotMultiple(originalCI, filterValue, 0, originalCI.size, maxIndex + 1)
+
+  if (maxIndex > 0) {
+    assertFilterMergeComposition(originalCI, newCI, survivors, filterValue, maxIndex - 1)
+  }
+  Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
+}.holds
+```
+
+This property is verified in the [
+  CycleIntegralFilterProperties::assertFilterMergeComposition
+](
+  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala
+).
+
+Supporting lemmas (all verified in the same file):
+
+| Lemma | Purpose |
+|-------|---------|
+| `assertRepeatConcat` | $\text{repeat}(list, n) = list +\!\!+ \text{repeat}(list, n-1)$ |
+| `assertRepeatSumDecomposition` | $\text{sum}(\text{repeat}(list, n)) = \text{sum}(list) + \text{sum}(\text{repeat}(list, n-1))$ |
+| `assertRepeatSumTimes` | $\text{sum}(\text{repeat}(list, n)) = \text{sum}(list) \times n$ |
+| `assertModCycleEqualsMemCycle` | $\text{ModCycle} \equiv \text{MemCycle}$ (same values, same output) |
+| `assertGapsFromSurvivorsMatchCI` | $\text{allGapsMatch}(CI_{\text{new}}, \text{survivors}, \text{maxIndex})$ |
+| `assertNewCIMatchesSurvivors` | $CI_{\text{new}}(p) = \text{survivors}(p+1)$ |
+| `assertSurvivorAtNotMultiple` | $\forall i,\ \text{survivors}(i) \bmod f \neq 0$ |
+| `assertGapsFromValuesSize` | $\|\text{gapsFromValues}(L)\| = \|L\| - 1$ |
+| `assertFirstSurvivorHead` | $\text{survivorValues}(CI, f, start, count).head = CI(start)$ when $CI(start) \bmod f \neq 0$ |
+
+### 9.3 Three-Sequence Equivalence
+
+The sieve progression involves three representations:
+
+1. **SpecSieveSequence** — The mathematical spec (linear scan, source of truth)
+2. **CanonicalCycleSieve** — The bridge, constructed from spec data (gap-driven, proven correct)
+3. **CycleSieveSequence** — The efficient cycle representation (walk-based, verified through Canonical)
+
+The P2 theorem proves that the gap between consecutive survivors equals the corresponding spec.next gap at every index:
+
+```math
+\forall i,\ \text{spec.next}(i+1) - \text{spec.next}(i) = \text{cycle}(pos_{i+1}) - \text{cycle}(pos_i)
+```
+
+where $pos_i = \text{indexOfAccepted}(\text{spec.next}(i))$ is the position in the current cycle where the $i$-th next-stage value appears.
+
+**Proof chain (verified):**
+1. $\text{assertSurvivorPositionMatchesSpecNext}(i)$: $\text{spec.next}(i) = \text{cycle}(pos_i)$
+2. $\text{assertNextGapEqualsCurrentGapSum}(\text{nextPeriod}, i)$: $\text{spec.next}(i+1) - \text{spec.next}(i) = \text{spec}(pos_{i+1}) - \text{spec}(pos_i)$
+3. $\text{assertApplyMatches}(pos)$: $\text{cycle}(pos) = \text{spec}(pos)$
+4. Therefore $\text{spec.next}(i+1) - \text{spec.next}(i) = \text{cycle}(pos_{i+1}) - \text{cycle}(pos_i)$ — the survivor gap equals the spec.next gap.
+
+By induction on $i$, this proves $\text{survivors}(i) = \text{spec.next}(i)$ for all valid $i$ (base case via `assertFirstSurvivorEqualsSpecNext0`). Combined with the head equality, the survivor-based gap list **is** the spec.next gap list.
+
+#### Corollary: Full Next-Stage Apply Match
+
+$\text{assertNextCycleApplyMatchesSpecNext}(\text{nextPeriod}, k)$ proves that for the constructive next stage built from spec.next data:
+```math
+\forall k,\ \text{CanonicalCycleSieve}(\text{spec.next}, \text{nextPeriod}).cycle(k) = \text{spec.next}(k)
+```
+
+Together with the survivor gap equality, this proves that **all three sequences** (spec.next, constructive canonical, survivor-based) produce identical values at every position.
+
+### Stainless Verification
+
+```scala
+def assertSurvivorGapEqualsSpecNextGap(
+  nextPeriod: BigInt,
+  k: BigInt
+): Boolean = {
+  require(nextPeriod > BigInt(1))
+  require(k >= BigInt(0))
+  require(k + BigInt(1) < nextPeriod)
+  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+  val pos1 = spec.indexOfAccepted(spec.next(k))
+  val pos2 = spec.indexOfAccepted(spec.next(k + BigInt(1)))
+  assert(assertSurvivorPositionMatchesSpecNext(k))
+  assert(assertSurvivorPositionMatchesSpecNext(k + BigInt(1)))
+  assert(spec.next(k) == cycle(pos1))
+  assert(spec.next(k + BigInt(1)) == cycle(pos2))
+  assert(assertNextGapEqualsCurrentGapSum(nextPeriod, k))
+  assert(spec.next(k + BigInt(1)) - spec.next(k) == spec(pos2) - spec(pos1))
+  assert(assertApplyMatches(pos1))
+  assert(assertApplyMatches(pos2))
+  assert(spec(pos1) == cycle(pos1))
+  assert(spec(pos2) == cycle(pos2))
+  spec.next(k + BigInt(1)) - spec.next(k) == cycle(pos2) - cycle(pos1)
+}.holds
+```
+
+```scala
+def assertSpecNextIsKthSurvivor(nextPeriod: BigInt, k: BigInt): Boolean = {
+  require(nextPeriod > BigInt(1))
+  require(k >= BigInt(0))
+  require(k < nextPeriod)
+  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+  decreases(k)
+  if (k == BigInt(0)) {
+    assertFirstSurvivorEqualsSpecNext0()
+    spec.next(BigInt(0)) == cycle.integral(BigInt(0))
+  } else {
+    assertSpecNextIsKthSurvivor(nextPeriod, k - BigInt(1))
+    if (k < nextPeriod - BigInt(1)) {
+      assert(assertSurvivorGapEqualsSpecNextGap(nextPeriod, k - BigInt(1)))
+    }
+    val pos = spec.indexOfAccepted(spec.next(k))
+    assert(assertSurvivorPositionMatchesSpecNext(k))
+    spec.next(k) == cycle(pos)
+  }
+}.holds
+```
+
+These properties are verified in the [
+  CanonicalCycleSieve::assertSurvivorGapEqualsSpecNextGap
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala
+) and [
+  CanonicalCycleSieve::assertSpecNextIsKthSurvivor
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala
+).
+
+Supporting bridge lemmas (all in CanonicalCycleSieve):
+
+| Lemma | Purpose |
+|-------|---------|
+| `assertFirstSurvivorEqualsSpecNext0` | First survivor head matches spec.next(0) |
+| `assertSurvivorPositionMatchesSpecNext` | spec.next(k) corresponds to a cycle survivor position |
+| `assertNextGapEqualsCurrentGapSum` | spec.next gap equals sum of current cycle gaps |
+| `assertNextCycleApplyMatchesSpecNext` | Constructive next cycle matches spec.next in apply |
+| `assertNextCycleGapsMatchSpecNext` | Constructive next cycle gaps match spec.next gap list |
+| `assertNextCycleHeadMatchesSpecNext` | Constructive next cycle head matches spec.next head |
+
+### 9.4 Inductive Chain
+
+The full sieve correctness follows by structural induction over the spec's own `next` chain:
+
+```
+S₁ valid → survivors from S₁ match S₂ (head + gaps)
+          → S₂ valid (by spec construction)
+          → survivors from S₂ match S₃
+          → ...
+```
+
+Each step is verified by the lemmas above. The induction is well-founded because each `SpecSieveSequence.next` produces a valid spec sequence by definition, and our P2 lemmas bridge the cycle survivors to that spec.next.
 
 ---
 

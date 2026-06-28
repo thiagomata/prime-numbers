@@ -3,13 +3,13 @@
 **Created:** 2026-06-26
 **Updated:** 2026-06-26
 **Status:** Plan phase
-**Depends on:** `cycle-integral-filter-merge.md` (complete, 9948 valid)
+**Depends on:** `../done/cycle-integral-filter-merge.md` (complete, 9948 valid)
 
 ## Related Tickets
 
-- `cycle-integral-filter-merge.md` — Filter-merge lemmas at CI level (complete). Delivered `assertReplicatedCycleValueEqual`, `assertSameCIWithSameCycle`, `assertShiftAtMerge`, `assertSameBeforeMerge`, `assertShiftAfterMerge`, `findFirstMultiple`, `assertConsecutiveGapSumEqualsDiff`.
-- `canonical-next-strategy.md` — Canonical transfer of Spec merge facts (complete, Leg 3 at 9472). Demonstrates the transfer pattern but skips the CI-native construction.
-- `remove-extern-from-next.md` — Walk-based `collectGaps` has opacity issues. The filter-merge at CycleIntegral level provides a structural alternative.
+- `../done/cycle-integral-filter-merge.md` — Filter-merge lemmas at CI level (complete). Delivered `assertReplicatedCycleValueEqual`, `assertSameCIWithSameCycle`, `assertShiftAtMerge`, `assertSameBeforeMerge`, `assertShiftAfterMerge`, `findFirstMultiple`, `assertConsecutiveGapSumEqualsDiff`.
+- `canonical-next-strategy.md` — Canonical transfer of Spec merge facts and the current survival-walk open hole. Demonstrates the transfer pattern but skips the CI-native construction.
+- `../superseded/remove-extern-from-next.md` — Old walk-based `collectGaps` framing. The filter-merge at CycleIntegral level remains a structural alternative.
 - `sieve-foundation-cycle-integral-ones-and-filter-preserves-primes.md` — Done ticket about CI ones and filter preserves primes.
 
 ## Goal

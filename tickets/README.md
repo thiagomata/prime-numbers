@@ -16,10 +16,26 @@ verification logs, failed attempts, or completed implementation notes.
 ## Folders
 
 - `active/` — current work and canonical planning tickets.
+- `blocked/` — real open problems that are not current work because they need
+  substantial new mathematics or a new solver strategy.
 - `done/` — completed tickets with useful final state or implementation notes.
 - `superseded/` — older tickets replaced by a newer canonical plan.
 - `archived/` — historical notes, article reviews, summaries, and stale planning
   records that should not drive new implementation work.
+
+## Current Sieve-Sequence Proof Ticket
+
+The canonical active ticket for the Spec/Canonical/Cycle sieve-sequence proof is
+`active/canonical-next-strategy.md`.
+
+Older plans for the same proof have been moved out of `active/`:
+
+- `done/canonical-spec-to-cycle-alignment.md` — current-stage Spec-to-Canonical
+  alignment was completed and remains useful background.
+- `superseded/v0-v2-apply-equivalence.md` — replaced by the canonical strategy.
+- `superseded/remove-extern-from-next.md` — old `next()` removal framing; the
+  remaining issue is now tracked as the survival-walk correctness gap in the
+  canonical ticket.
 
 ## Completed Canonical Gap Ticket
 

@@ -3,8 +3,9 @@
 **Status:** Living document. Bird's-eye view of the three-way sieve
 equivalence effort, traced down to individual tickets and verified lemmas.
 **Created:** 2026-06-24.
-**Maintained alongside:** `active/canonical-spec-to-cycle-alignment.md`
-(Leg 2) and `active/canonical-next-strategy.md` (Leg 3).
+**Maintained alongside:** `active/canonical-next-strategy.md` (the canonical
+active sieve-sequence proof ticket). Historical Leg-2 notes live in
+`done/canonical-spec-to-cycle-alignment.md`.
 
 > This document is the coordination point. Individual legs live in their own
 > tickets; this file explains how they fit together and what is proven today.
@@ -75,8 +76,8 @@ instead, and surface the gap to the user rather than burning attempts.
       v
    Canonical
       |
-      |  Leg 3: cycle strategy produces next head +      [DONE]
-      |         next gaps matching spec.next
+      |  Leg 3: canonical next exists and matches        [DONE]
+      |         spec.next by construction
       v
    CanonicalCycleSieve(spec.next, nextPeriod)            [by construction]
       |
@@ -90,7 +91,7 @@ instead, and surface the gap to the user rather than burning attempts.
 |---|---|---|---|
 | 1 | Spec is correct | ✅ Done | `SpecSieveSequence` |
 | 2 | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k | ✅ Done | `CanonicalCycleSieve.assertApplyMatches` |
-| 3 | The cycle strategy (next head + next gaps) is correct, certified via Canonical matching `spec.next` | ✅ Done | `CanonicalCycleSieve` (see §4) |
+| 3 | The canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done | `CanonicalCycleSieve` (see §4) |
 | 4 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | ❌ Not started | (future ticket) |
 
 ### ⚠️ Open hole — partial progress (Approach 1 done, walk still open)
@@ -114,8 +115,11 @@ The next-stage structural identity is pursued via ranked approaches:
   adding an accumulator invariant.
 
 **Net state:** a verified *correct* next cycle exists at both stages (current
-via Leg 2, next via Approach 1). The implementation's `cycle.next()` walk is
-NOT certified to produce it. See the guardrail in §1.
+via Leg 2, next via Approach 1). The implementation's `cycle.next()` survival
+walk is NOT certified to produce it. In particular, the project still lacks a
+verified theorem that `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`
+or that `cycle.next()(k) == spec.next(k)`. See the guardrail in §1 and the
+current active ticket.
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 
@@ -233,10 +237,10 @@ against the linear scan.
 
 | Item | Where |
 |---|---|
-| "Prime between p and p²" (Bertrand-style) | `active/prove-apply1-is-prime.md` — undischarged wall (LEARNINGS 10.1) |
-| Product not divisible by head | `active/primorial-not-divisible-by-new-prime.md` — Euclid's lemma wall (LEARNINGS 10.2) |
-| Removing `@extern` from `CycleSieveSequence.next` | `active/remove-extern-from-next.md` |
-| Old Spec/Cycle equivalence plan (partially superseded) | `active/v0-v2-apply-equivalence.md` |
+| "Prime between p and p²" (Bertrand-style) | `blocked/prove-apply1-is-prime.md` — undischarged wall (LEARNINGS 10.1) |
+| Product not divisible by head | `blocked/primorial-not-divisible-by-new-prime.md` — Euclid's lemma wall (LEARNINGS 10.2) |
+| Old `CycleSieveSequence.next` / walk framing | `superseded/remove-extern-from-next.md` |
+| Old Spec/Cycle equivalence plan | `superseded/v0-v2-apply-equivalence.md` |
 | Failed walk-based pipeline (do not revive) | `superseded/walk-based-pipeline.md` |
 
 ---

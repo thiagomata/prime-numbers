@@ -2,6 +2,7 @@
 
 **Status:** Active
 **Created:** 2026-06-24
+**Updated:** 2026-06-28
 **Owner:** `CanonicalCycleSieve` (`src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`)
 **Umbrella design doc:** [`../spec-canonical-cycle-design.md`](../spec-canonical-cycle-design.md)
 
@@ -20,7 +21,24 @@ A three-way connection between three sieve representations:
 
 ## Goal
 
-Prove that the **cycle strategy** — computing the next head and next gaps from the cycle's own arithmetic — produces results that match what `spec.next` produces:
+Keep the Spec/Canonical/Cycle sieve-sequence proof organized around one
+canonical active ticket.
+
+The current verified result is:
+
+```
+CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)
+```
+
+with matching head and gap list, under the existing next-stage preconditions.
+
+The remaining unverified result is the **survival-to-gaps producer theorem**:
+the concrete survival walk used by `CycleSieveSequence.next()` must be shown to
+emit the same ordered gaps as `spec.next.gapList(0, nextPeriod)`.
+
+Equivalently, prove that the **cycle strategy** — computing the next head and
+next gaps from the cycle's own arithmetic — produces results that match what
+`spec.next` produces:
 
 ```
 next head:  cycle(1) == spec.next.head.value                          [already proven: assertNextHeadMatches]
@@ -31,8 +49,21 @@ The "cycle strategy" is whichever verified idiom produces the next gap list from
 
 ## Current State
 
-- **Next head:** ✅ Proven. `CanonicalCycleSieve.assertNextHeadMatches()` gives `cycle(1) == spec.next.head.value`. The pure cycle-arithmetic form `cycle(1) = cycle.head + cycle.gapCycle.memCycle(0)` is exposed by `CycleSieveSequence.assertNextHeadGreaterThanHead`.
-- **Next gaps:** ❌ Open. This is the real work of this ticket.
+- **Next head:** Verified. `CanonicalCycleSieve.assertNextHeadMatches()` gives
+  `cycle(1) == spec.next.head.value`. The pure cycle-arithmetic form
+  `cycle(1) = cycle.head + cycle.gapCycle.memCycle(0)` is exposed by
+  `CycleSieveSequence.assertNextHeadGreaterThanHead`.
+- **Canonical next stage:** Verified. `assertNextCycleApplyMatchesSpecNext`,
+  `assertNextCycleGapsMatchSpecNext`, `assertNextCycleHeadMatchesSpecNext`,
+  and `assertNextCycleMatchesSpecNext` prove that the next canonical cycle
+  built from `spec.next` matches `spec.next`.
+- **Per-survivor bridges:** Verified. `assertSurvivorPositionMatchesSpecNext`
+  and `assertSurvivorGapEqualsSpecNextGap` show that `spec.next` values occur
+  at survivor positions of the current cycle and that adjacent survivor
+  differences match adjacent `spec.next` gaps.
+- **Survival-walk producer:** Open. No verified lemma currently proves
+  `SieveSequenceNextLevel.nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`.
+  No verified lemma currently proves `cycle.next()(k) == spec.next(k)`.
 
 ## Expected State
 
@@ -78,7 +109,7 @@ spec.primes.nextPrime.value < spec.head.value * spec.head.value
 1. **Diff idiom applicability.** `assertSameDiffAfterCycle` proves `integral(pos+1)-integral(pos) == integral(pos+size+1)-integral(pos+size)`. This is a *single-period* shift. The next gap list spans `head` periods (one per value filtered by the new head). Need to confirm the diff idiom lifts cleanly across `head` periods, not just one.
 2. **Cross-instance calls are expensive (LEARNINGS 18).** Canonical calling `spec.next.gapList` and `spec.next.indexOfAccepted` is a cross-instance call. Keep the number of such calls per lemma small; isolate them.
 3. **Period anchor for the next stage.** `nextPeriod` must satisfy `spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus`. This is the same shape as the current-stage anchor; carry it as a precondition.
-4. **The product-not-divisible caveat** (`Calc.mod(SieveUtils.product(filterValues), head.value) != 0`) is still an open constructor obligation on `CycleSieveSequence`. Out of scope here; it's tracked in `primorial-not-divisible-by-new-prime.md`.
+4. **The product-not-divisible caveat** (`Calc.mod(SieveUtils.product(filterValues), head.value) != 0`) is still an open constructor obligation on `CycleSieveSequence`. Out of scope here; it is tracked in `../blocked/primorial-not-divisible-by-new-prime.md`.
 
 ## Validation
 
@@ -89,9 +120,12 @@ spec.primes.nextPrime.value < spec.head.value * spec.head.value
 
 ## Related Tickets
 
-- `tickets/active/canonical-spec-to-cycle-alignment.md` — Leg 2 (canonical construction + current-stage equivalence). Its Lemma 5 (gap-walk equality) is superseded in scope by this ticket's diff-based approach.
-- `tickets/active/v0-v2-apply-equivalence.md` — overall Spec/Cycle equivalence plan; documents the residue-vs-walk decision and the conditional next bridge.
-- `tickets/superseded/walk-based-pipeline.md` — failed walk approach to avoid.
+- `../done/canonical-spec-to-cycle-alignment.md` — Leg 2 (canonical construction + current-stage equivalence). Its Lemma 5 (gap-walk equality) is superseded in scope by this ticket's diff-based approach, but the proof log remains useful.
+- `../superseded/v0-v2-apply-equivalence.md` — older overall Spec/Cycle equivalence plan; documents the residue-vs-walk decision and the conditional next bridge.
+- `../superseded/remove-extern-from-next.md` — old `CycleSieveSequence.next()` removal framing. The surviving issue is the walk producer theorem listed here.
+- `../superseded/walk-based-pipeline.md` — failed walk approach to avoid.
+- `../blocked/prove-apply1-is-prime.md` — hard "prime before p squared" wall. Keep separate from equivalence unless a future proof actually needs primality.
+- `../blocked/primorial-not-divisible-by-new-prime.md` — hard Euclid-lemma/product wall.
 
 ## Update Log
 
@@ -753,7 +787,7 @@ Full verify: **9373 valid, 0 invalid, 0 unknown**.
 - Gap periodicity/positivity transfers ✅ (`assertGapPeriodicMatchesSpec`, `assertGapPositiveMatchesSpec`)
 
 **Next:** Leg 4 — `CycleSieveSequence` equivalence using only the cycle's
-structural rules, with no Spec link. See `tickets/active/canonical-spec-to-cycle-alignment.md`
+structural rules, with no Spec link. See `../done/canonical-spec-to-cycle-alignment.md`
 for the epic roadmap.
 
 ## Next-Stage Equivalence (P1 / P2)
@@ -1746,3 +1780,65 @@ The list-construction wall is absolute in the current setup.
 materialization. The architectural wall is real and well-characterized.
 Awaiting user direction — strengthening MemCycle's postcondition (idea 1) is
 the most promising untried angle, but it touches a load-bearing type.
+
+### 2026-06-28 — Ticket cleanup and article-proof audit
+
+Audited `articles/sieve-sequence.md` against the current code and ticket state.
+The article's strongest "three-sequence equivalence" wording is too broad if
+read as certifying the concrete survival walk.
+
+**What is source-backed today:**
+
+- `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
+  head, stored gaps, and apply behavior.
+- Current-stage Canonical matches Spec by construction (`assertApplyMatches`).
+- Per-survivor bridge lemmas show that `spec.next` values occur at survivor
+  positions of the current cycle, and adjacent survivor differences match
+  adjacent `spec.next` gaps.
+
+**What remains missing:**
+
+1. Prove the concrete survival walk emits the spec gaps in order:
+
+   ```text
+   SieveSequenceNextLevel.nextGapsWalk(cycle)
+     == spec.next.gapList(0, nextPeriod)
+   ```
+
+2. Or bypass list equality and prove apply equivalence for the concrete
+   `next()` result:
+
+   ```text
+   cycle.next()(k) == spec.next(k)
+   ```
+
+   This is currently blocked even before the conclusion because calling
+   `cycle.next()` requires proving properties of `nextGapsWalk(cycle)`
+   (`nonEmpty`, positivity, and first next-cycle filter facts).
+
+3. If returning to the walk route, add proof strength inside or around
+   `collectGaps`: either stronger `.ensuring` postconditions with element/order
+   correspondence, or an accumulator invariant that exposes the emitted gap
+   prefix while the recursion is still visible.
+
+4. Keep primality and product-number-theory walls separate unless a future
+   proof truly needs them. The equivalence proof should not drag in
+   "prime before p squared" or Euclid's lemma by default.
+
+**Ticket lifecycle cleanup:**
+
+- Kept this file as the one active sieve-sequence proof ticket.
+- Moved completed alignment/background tickets out of `active/`:
+  `canonical-spec-to-cycle-alignment.md`, `cycle-integral-filter-merge.md`,
+  `assert-no-divisor-by-factor-list.md`, `euclid-full-formalization.md`, and
+  `euclid-h4-strategy.md`.
+- Moved replaced sieve proof plans out of `active/`:
+  `v0-v2-apply-equivalence.md`, `remove-extern-from-next.md`, and
+  `draft-nextprime-v0.md`.
+- Moved hard, real but currently non-actionable mathematical walls into
+  `tickets/blocked/`: `prove-apply1-is-prime.md` and
+  `primorial-not-divisible-by-new-prime.md`.
+
+**Validation:** Markdown-only cleanup. Checked the existing `verify.log` first:
+`10495 valid`, `0 invalid`, `0 unknown`. Per AGENTS.md, no Stainless rerun was
+needed because no non-markdown files were changed.
