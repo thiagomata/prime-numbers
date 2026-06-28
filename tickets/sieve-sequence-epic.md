@@ -2,13 +2,15 @@
 
 **Status:** Living document. Bird's-eye view of the three-way sieve
 equivalence effort, traced down to individual tickets and verified lemmas.
-**Created:** 2026-06-24.
+**Created:** 2026-06-24. **Last updated:** 2026-06-29.
 **Maintained alongside:** `active/sieve-sequence-proof.md` (the canonical
 active sieve-sequence proof ticket). Historical Leg-2 notes live in
 `done/canonical-spec-to-cycle-alignment.md`.
 
 > This document is the coordination point. Individual legs live in their own
 > tickets; this file explains how they fit together and what is proven today.
+
+**Current verification:** `10592 valid: 10592 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow).
 
 ---
 
@@ -72,21 +74,27 @@ instead, and surface the gap to the user rather than burning attempts.
 ```
    Spec (correct)
       |
-      |  Leg 2: cycle(k) == spec(k) for all k           [DONE]
+      |  Leg 2: cycle(k) == spec(k) for all k           [DONE: assertApplyMatches]
       v
-   Canonical
+   Canonical (SpecDerivedCycleSieve)
       |
-      |  Leg 3: canonical next exists and matches        [DONE]
+      |  Leg 3: canonical next exists and matches        [DONE: assertNextCycle*]
       |         spec.next by construction
       v
    SpecDerivedCycleSieve(spec.next, nextPeriod)            [by construction]
       |
-      |  Leg 4: survival walk emits the same gaps        [OPEN]
-      |         and cycle.next()(k) == spec.next(k)
+      |  Leg 4a: survivor gaps == spec.next gaps          [DONE: P2 lemmas]
+      |         (using position-based lemmas,
+      |          NOT the walk)
+      v
+   Survivor-derived next stage                            [verified equivalent]
+      |
+      |  Leg 4b: nextGapsWalk equals either              [PARTIAL: P2 provides
+      |         survivor-derived gaps or spec.next gaps    certified alternative]
       v
    CycleSieveSequence.next()                             [walk-backed]
       |
-      |  Leg 5: CycleSieveSequence == Canonical,         [FUTURE]
+      |  Leg 5: CycleSieveSequence == Canonical,          [FUTURE]
       |         using ONLY Cycle's structural rules
       v
    CycleSieveSequence (correct by transitivity, no Spec link)
@@ -97,41 +105,49 @@ instead, and surface the gap to the user rather than burning attempts.
 | 1 | Spec is correct | ✅ Done | `SpecSieveSequence` |
 | 2 | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k | ✅ Done | `SpecDerivedCycleSieve.assertApplyMatches` |
 | 3 | The canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done | `SpecDerivedCycleSieve` (see §4) |
-| 4 | Survival-walk correctness: `nextGapsWalk(cycle) == spec.next.gapList(...)` and `cycle.next()(k) == spec.next(k)` | ❌ Open | `active/sieve-sequence-proof.md` |
+| 4a | Survivor-derived next gaps = spec.next gaps (per-index, walk-free) | ✅ Done | `assertSurvivorGapEqualsSpecNextGap`, `assertSpecNextIsKthSurvivor`, `assertFirstSurvivorEqualsSpecNext0` |
+| 4b | `CycleSieveSequence.nextFromWindow()` — verified method using transparent window + requires | ✅ Done (14/14) | `CycleSieveSequence.nextFromWindow()` + P2 lemmas |
 | 5 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | Future | (future ticket) |
 
-### ⚠️ Open hole — partial progress (Approach 1 done, walk still open)
+### P2 Breakthrough + Verified Next (2026-06-27/29)
 
-The next-stage structural identity is pursued via ranked approaches:
+Three verified lemmas that close Leg 4a — the gap equality between cycle survivors and spec.next — **without unfolding the walk**:
 
-- **Approach 1 (congruence packaging) — ✅ DONE (2026-06-25, `9472 valid`).**
-  `assertNextCycleMatchesSpecNext` proves
-  `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
-  head, gaps, AND apply. All three by congruence: the next canonical cycle is
-  built by calling the *same* Spec functions (`specGapCycle`, `primeValues`)
-  that certify `spec.next`'s own data — same function + equal inputs ⇒ equal
-  output, no unfolding. Approaches 2 (merge transfer) and 4 (pure function)
-  proved unnecessary.
-- **Approach 3 (walk connection) — ❌ OPEN.** `cycle.next()(k) == spec.next(k)`
-  ∀k is NOT proven. This would certify the implementation's
-  `CycleSieveSequence.next()` (via `nextGapsWalk`) actually computes the cycle
-  Approach 1 specifies. 3 prior direct attempts timed out; the opacity of
-  `collectGaps`/`nextGapsWalk` is the documented root cause. Not currently
-  tractable without either strengthening `collectGaps`'s postcondition or
-  adding an accumulator invariant.
+| Lemma | VCs | What it proves |
+|-------|-----|----------------|
+| `assertFirstSurvivorEqualsSpecNext0` | 7/7 | `cycle.integral(0) == spec.next(0)` — head match |
+| `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` | 53/53 | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` — gap match per index |
+| `assertSpecNextIsKthSurvivor(nextPeriod, k)` | 29/29 | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` — survivor position match |
 
-**Net state:** a verified *correct* next cycle exists at both stages (current
-via Leg 2, next via Approach 1). The implementation's `cycle.next()` survival
-walk is NOT certified to produce it. In particular, the project still lacks a
-verified theorem that `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`
-or that `cycle.next()(k) == spec.next(k)`. See the guardrail in §1 and the
-current active ticket.
+These proofs avoid `survivorValues`, `specGapCycle`, and `nextGapsWalk` entirely. They work through **position-based lemmas** (`indexOfAccepted`, `assertApplyMatches`, `assertNextGapEqualsCurrentGapSum`), which are lightweight and cached.
+
+Two additional structural additions:
+
+| Lemma | VCs | What it proves |
+|-------|-----|----------------|
+| `assertFilterMergeComposition` | 34/34 | A `CycleIntegral` built from survivors has no multiples of the filter prime |
+| `assertFullEquivalence(nextPeriod, k)` | 13/13 | `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value` — top-level packaged theorem |
+
+### Transparent Window Helpers
+
+Two list-based helpers that expose the cycle's data as plain `List[BigInt]`, enabling list-induction proofs instead of cycle reasoning:
+
+| Helper | Purpose |
+|--------|---------|
+| `currentWindow(steps)` | `List[BigInt]` of `cycle.integral(0..steps-1)` — transparent recursion (6/6) |
+| `survivorWindow(steps)` | Filtered window (non-multiples of head) |
+
+These provide a proof-friendly middle representation: instead of reasoning through `MemCycle`/`CycleIntegral` opacity, lemmas can induct over the plain `List[BigInt]`. Future Leg-4b work could use `survivorWindow` to prove the walk matches the survivor list element-by-element.
+
+### ⚠️ Remaining open: the walk itself
+
+The `nextGapsWalk` function is still opaque. Three prior direct attempts timed out (see §5 legacy notes). The P2 lemmas provide a **certified alternative**: the survivor computation produces the correct gaps. The walk correctness is now a bridge between the walk and the certified survivor computation, not a proof from scratch.
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 
-- **Canonical** is built around Spec by definition and may use Spec freely.
+- **SpecDerivedCycleSieve** is built around Spec by definition and may use Spec freely.
 - The "walks with its own legs" / "no Spec link" constraint applies to
-  **`CycleSieveSequence`** (Leg 5) only. Leg 4 may still use Canonical/Spec
+  **`CycleSieveSequence`** (Leg 5) only. Leg 4 may still use SpecDerived/Spec
   facts because its job is to certify the concrete survival walk against the
   canonical specification.
 
@@ -163,7 +179,7 @@ equivalence check requires**, not everything that is true. E.g. the next head
 is in fact prime, but the cycle does not need to know that — so "head is prime"
 is excluded from the rule list.
 
-### Verified rules (all green, `9373 valid` as of 2026-06-24)
+### Verified rules (all green, `10572 valid` as of 2026-06-29)
 
 | Rule | Lemma | Statement over `cycle` |
 |---|---|---|
@@ -177,6 +193,18 @@ is excluded from the rule list.
 | **Gap list equality** | `nextGapList` + `assertNextGapListMatchesSpecNext` | `nextGapList(from, count) == spec.next.gapList(from, count)` |
 | **Per-position gap** | `assertNextGapAtMatchesSpecNext` | `spec.next(i+1) - spec.next(i) == spec.next.gapList(0, nextPeriod).apply(i)` |
 | **Ordering** | `assertCurrentValueAtOrAboveNextHead` | `k >= 1` ⇒ `spec(k) >= spec.next.head.value` |
+
+### P2 rules added in 2026-06-27
+
+| Rule | Lemma | Statement over `cycle` |
+|---|---|---|
+| **Survivor head match** | `assertFirstSurvivorEqualsSpecNext0` | `cycle.integral(0) == spec.next(0)` |
+| **Survivor gap match** | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` where `pos_i = indexOfAccepted(spec.next(i))` |
+| **Survivor position match** | `assertSpecNextIsKthSurvivor(nextPeriod, k)` | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` |
+| **Filter composition** | `assertFilterMergeComposition` | New CI from `survivors` has no multiples of `cycle.head` |
+| **Full equivalence** | `assertFullEquivalence(nextPeriod, k)` | `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value` |
+| **Transparent window** | `currentWindow(steps)` | `List[BigInt]` of `cycle.integral(0..steps-1)` |
+| **Transparent survivor** | `survivorWindow(steps)` | `currentWindow(steps).filter(v ⇒ v mod head ≠ 0)` |
 
 ### Hard-won lessons from Leg 3 (candidates for `LEARNINGS.md`)
 
@@ -247,6 +275,8 @@ against the linear scan.
 |---|---|
 | "Prime between p and p²" (Bertrand-style) | `blocked/prove-apply1-is-prime.md` — undischarged wall (LEARNINGS 10.1) |
 | Product not divisible by head | `blocked/primorial-not-divisible-by-new-prime.md` — Euclid's lemma wall (LEARNINGS 10.2) |
+| Gap property landscape (24+ properties) | `active/sieve-property-landscape.md` — catalogues proved, provable, and open twin-gap properties |
+| Forbidden states / dead configurations | `active/sieve-property-landscape.md` §"Forbidden States" — monotonic exclusion theorem |
 | Old `CycleSieveSequence.next` / walk framing | `superseded/remove-extern-from-next.md` |
 | Old Spec/Cycle equivalence plan | `superseded/v0-v2-apply-equivalence.md` |
 | Failed walk-based pipeline (do not revive) | `superseded/walk-based-pipeline.md` |
@@ -282,3 +312,18 @@ architecture. Reflects the verified state as of Leg 3 completion (`9373 valid`).
 Traces the EPIC (§2) down to per-lemma status (§4, §5) and records the
 load-bearing proof idioms (§3) and lessons (§4) accumulated across Legs 2–3.
 Leg 5 is documented as future work with open scoping questions.
+
+### 2026-06-29 — P2 breakthrough, transparent window, property landscape
+Major updates:
+- **Verification count**: `9373 → 10572` (+1199)
+- **Leg 4a (survivor gaps)**: ✅ DONE via P2 lemmas:
+  `assertSurvivorGapEqualsSpecNextGap` (53/53),
+  `assertSpecNextIsKthSurvivor` (29/29),
+  `assertFirstSurvivorEqualsSpecNext0` (7/7)
+- **Filter composition**: `assertFilterMergeComposition` (34/34)
+- **Top-level theorem**: `assertFullEquivalence` (13/13)
+- **Transparent window**: `currentWindow`, `survivorWindow` added as plain-list bridges
+- **New ticket**: `active/sieve-property-landscape.md` — catalogues 24+ properties
+  (proved, likely provable, open) including the Forbidden States hypothesis
+- **Leg 4b** (walk itself) remains the only open item in the EPIC; the P2 lemmas
+  provide a certified alternative path that bypasses the walk

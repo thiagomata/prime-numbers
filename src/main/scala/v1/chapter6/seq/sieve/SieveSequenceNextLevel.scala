@@ -7,6 +7,7 @@ import v1.chapter2.div.Calc
 import scala.annotation.tailrec
 import v1.chapter3.list.{ListBoundUtils, ListUtils, SortedList}
 import v1.chapter4.cycle.gap.GapCycle
+import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter6.seq.sieve.properties.SieveSequenceProperties
 
@@ -200,5 +201,22 @@ object SieveSequenceNextLevel {
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
     nextGaps(seq).nonEmpty
   }.holds
+
+  /**
+   * Transparent window of `ci`'s first `steps` values.
+   *
+   * Returns a plain `List[BigInt]` of `ci(0)` through `ci(steps-1)`.
+   * Exposed as a concrete list that Stainless can induct over without
+   * unfolding `CycleIntegral`/`MemCycle` internals.
+   */
+  def currentWindow(ci: CycleIntegral, steps: BigInt): List[BigInt] = {
+    require(steps >= BigInt(0))
+    decreases(steps)
+    if (steps == BigInt(0)) List.empty[BigInt]
+    else {
+      val prefix = currentWindow(ci, steps - BigInt(1))
+      prefix :+ ci(steps - BigInt(1))
+    }
+  }.ensuring((res: List[BigInt]) => res.size == steps)
 
 }

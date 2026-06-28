@@ -6,6 +6,7 @@ import v1.chapter2.div.Calc
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
+import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralFilterProperties
 import v1.chapter5.prime.{Prime, PrimeUtils}
 
 /**
