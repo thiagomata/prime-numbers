@@ -494,7 +494,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
 //   * Retired 2026-06-24.
 //   *
 //   * Canonical Cycle construction and Spec/Cycle correspondence are now owned
-//   * by CanonicalCycleSieve. This historical block remains commented instead of
+//   * by SpecDerivedCycleSieve. This historical block remains commented instead of
 //   * being deleted, following the repository's non-destructive editing rule.
 //   *
 //  /**

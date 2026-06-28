@@ -2,7 +2,7 @@
 
 **Status:** Active, migrating verified bridges into an intermediate representation
 **Created:** 2026-06-23
-**Umbrella design doc:** [`../spec-canonical-cycle-design.md`](../spec-canonical-cycle-design.md)
+**Umbrella design doc:** [`../sieve-sequence-epic.md`](../sieve-sequence-epic.md)
 **Related:**
 - `tickets/active/v0-v2-apply-equivalence.md`
 - `tickets/done/v0-gap-list-cycle-formalization.md`
@@ -103,7 +103,7 @@ SpecSieveSequence
 CycleSieveSequence
   owns generic cycle mechanics and invariants intrinsic to every valid cycle.
 
-CanonicalCycleSieve
+SpecDerivedCycleSieve
   receives a SpecSieveSequence, extracts the canonical Cycle representation,
   and owns every Spec/Cycle correspondence lemma.
 ```
@@ -111,7 +111,7 @@ CanonicalCycleSieve
 Proposed intermediate representation:
 
 ```scala
-case class CanonicalCycleSieve(
+case class SpecDerivedCycleSieve(
   spec: SpecSieveSequence,
   period: BigInt
 ) {
@@ -136,7 +136,7 @@ mention `CycleSieveSequence`.
 
 1. Expose only the existing Spec proof utility needed to reconstruct its gap
    cycle behavior; do not move Cycle knowledge into that utility.
-2. Add `CanonicalCycleSieve` with the canonical construction.
+2. Add `SpecDerivedCycleSieve` with the canonical construction.
 3. Move canonical head, prime-list, gap-cycle, apply, next-head,
    next-acceptance, and next-prime-list lemmas into the bridge.
 4. Retire the corresponding methods from `SpecSieveSequence` without changing
@@ -168,7 +168,7 @@ def toCycle(period: BigInt): CycleSieveSequence = {
 ### Option B: Wrapper Object
 
 ```scala
-case class CanonicalCycleSieve(
+case class SpecDerivedCycleSieve(
   spec: SpecSieveSequence,
   period: BigInt
 ) {
@@ -181,7 +181,7 @@ case class CanonicalCycleSieve(
 
 **Superseded recommendation:** Option A was useful for proving feasibility, but
 it mixed the mathematical specification with the optimized representation.
-The current recommendation is the intermediate `CanonicalCycleSieve` described
+The current recommendation is the intermediate `SpecDerivedCycleSieve` described
 above.
 
 ## Required Lemmas
@@ -585,7 +585,7 @@ After the first structural strengthening:
 
 1. [Done] Add a public Cycle-side alias exposing `apply(1) > head`.
 2. [Done, superseded shape] Prove canonical next-prime-list correspondence on
-   `CanonicalCycleSieve` without calling `nextWithGapCycle`.
+   `SpecDerivedCycleSieve` without calling `nextWithGapCycle`.
 3. Add one-step correspondence helpers for the next-gap walk.
 4. Prove one-step gap equality, then generalize to the full next-gap walk.
 
@@ -606,7 +606,7 @@ coprimality against the complete old prime list:
 SieveUtils.isCoprime(current, cycle.primes)
 ```
 
-`CanonicalCycleSieve.assertNextAcceptsMatches(current)` then rewrites that
+`SpecDerivedCycleSieve.assertNextAcceptsMatches(current)` then rewrites that
 predicate to:
 
 ```text
@@ -660,7 +660,7 @@ Completed:
 
 1. Should the raw `CycleSieveSequence` constructor eventually become private,
    with canonical construction as the public path?
-2. [Resolved] `CanonicalCycleSieve` owns canonical construction and all direct
+2. [Resolved] `SpecDerivedCycleSieve` owns canonical construction and all direct
    Spec/Cycle correspondence.
 3. Which existing Spec lemma best exposes `spec(1) == spec.next.head.value`?
 4. Can `CycleSieveSequence.next()` requirements be discharged from
@@ -747,13 +747,13 @@ Validation after the next-prime-list bridge: focused verification passed for
   check after the code change.
 - Architecture review rejected keeping canonical construction and
   correspondence lemmas on `SpecSieveSequence`. The ticket now adopts
-  `CanonicalCycleSieve(spec, period)` as the sole owner of Spec-to-Cycle
+  `SpecDerivedCycleSieve(spec, period)` as the sole owner of Spec-to-Cycle
   extraction and alignment. Intrinsic Cycle invariants remain on
   `CycleSieveSequence`; pure Spec lemmas remain on `SpecSieveSequence`.
 - Exposed `SpecSieveSequence.assertMemCycleGapMatch(i, period)` publicly. Its
   statement remains purely about the Spec-derived gap cycle; the visibility
   change lets the intermediate representation consume it.
-- Added and fully verified `CanonicalCycleSieve(spec, period)`. Its `cycle`
+- Added and fully verified `SpecDerivedCycleSieve(spec, period)`. Its `cycle`
   field extracts the raw prime values and exact `specGapCycle(period)` from the
   supplied Spec stage.
 - Moved the verified canonical proof surface to the intermediate
@@ -770,7 +770,7 @@ Validation after the next-prime-list bridge: focused verification passed for
   non-destructive editing rule. Active Spec code no longer constructs or
   returns `CycleSieveSequence`.
 - Updated `OBJECTS.md` and the coordination ticket to make
-  `CanonicalCycleSieve` the canonical owner.
+  `SpecDerivedCycleSieve` the canonical owner.
 - Final full verification after the ownership migration:
   `8764 valid`, `0 invalid`, `0 unknown`.
 - Selected the first post-migration proof target: canonical walk decision
@@ -780,7 +780,7 @@ Validation after the next-prime-list bridge: focused verification passed for
 
 ### 2026-06-24 — Walk Decision Equality Verified
 
-Added `CanonicalCycleSieve.assertWalkDecisionMatchesNextAccept(k)`.
+Added `SpecDerivedCycleSieve.assertWalkDecisionMatchesNextAccept(k)`.
 
 **Statement:** For every `k >= 1`,
 `Calc.mod(cycle(k), cycle.head) != 0 == spec.next.accepts(cycle(k))`.
@@ -809,7 +809,7 @@ the walk's collected gaps and `spec.next.gapList`.
 
 ### 2026-06-24 — Single-Gap Merge Property Verified (indexOfAccepted approach)
 
-Added `CanonicalCycleSieve.assertNextGapEqualsCurrentGapSum(nextPeriod, i)`.
+Added `SpecDerivedCycleSieve.assertNextGapEqualsCurrentGapSum(nextPeriod, i)`.
 
 **Statement:** For any `i < nextPeriod - 1`,
 `spec.next(i+1) - spec.next(i) == spec(k_{i+1}) - spec(k_i)`
@@ -892,9 +892,9 @@ on `mod(position, size)`. This prevents using the
 `ModCycleIntegralProperties` "induction via diff lemma" pattern.
 
 **Current focus:** Build the verified canonical path as far as possible without
-the gap equality. The canonical construction `CanonicalCycleSieve(spec, period)`
+the gap equality. The canonical construction `SpecDerivedCycleSieve(spec, period)`
 already bridges all known properties for the current stage. The next canonical
-stage `CanonicalCycleSieve(spec.next, nextPeriod).cycle` is the correct
+stage `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` is the correct
 continuation by construction. The raw `CycleSieveSequence.next()` method (which
 uses `nextGapsWalk`) is a separate optimization whose correctness can be
 addressed once the easier canonical path is complete.
@@ -919,13 +919,13 @@ Restored both non-timed-out lemmas from the commented-out block:
    Proves every `spec.next(k)` value appears at some current cycle position,
    establishing value-level correspondence between stages.
 
-**Current verified lemma count on CanonicalCycleSieve:** 12 lemmas.
+**Current verified lemma count on SpecDerivedCycleSieve:** 12 lemmas.
 
 **Canonical path status:** The canonical bridge is functionally complete for
 single-stage representation and cross-stage value correspondence. The
 remaining ticket goals (Lemmas 5-7) depend on the deferred gap walk equality.
 
-The canonical path allows constructing `CanonicalCycleSieve(spec.next, nextPeriod)`
+The canonical path allows constructing `SpecDerivedCycleSieve(spec.next, nextPeriod)`
 directly (with caller-provided preconditions) instead of calling `cycle.next()`.
 All 12 verified lemmas establish equivalence between each canonical Cycle and
 its originating Spec stage.

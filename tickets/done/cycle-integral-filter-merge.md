@@ -7,7 +7,7 @@
 
 ## Related Tickets
 
-- `tickets/active/canonical-next-strategy.md` — Leg 3 gap-copy and merge rules transferred from Spec to Canonical (complete at 9472 valid). Demonstrates the transfer pattern but is tied to Spec's `indexOfAccepted`/`accepts` framework.
+- `tickets/active/sieve-sequence-proof.md` — Leg 3 gap-copy and merge rules transferred from Spec to Canonical (complete at 9472 valid). Demonstrates the transfer pattern but is tied to Spec's `indexOfAccepted`/`accepts` framework.
 - `tickets/done/v0-gap-list-cycle-formalization.md` — Spec-level `mergedGapPrefix` and `assertMergedGapPrefixMatchesNext` proven. The algorithm exists but only for SpecSieveSequence.
 - `tickets/superseded/v0-skip-multiples-until-nonmultiple.md` — Proves `assertSkipUntilNonMultiple` for finding the first survivor after a multiple within one period. Spec-level, not CycleIntegral-level.
 - `tickets/active/remove-extern-from-next.md` — Walk-based `collectGaps` has opacity issues. The filter-merge at CycleIntegral level provides a structural alternative.
@@ -28,7 +28,7 @@ The SieveSequence is the special case where v = head (the current prime), init =
 
 - **Verification:** 9531 valid, 0 invalid, 0 unknown (green)
 - **SpecSieveSequence** has `mergedGapPrefix`/`nextMergedGapOldIndex`/`sumGap` — fully verified filter-merge algorithm, but tied to the Spec model (uses `accepts`, `indexOfAccepted`, `apply` via linear scan)
-- **CanonicalCycleSieve** transfers Spec's merge facts through `assertApplyMatches` (Leg 3 complete)
+- **SpecDerivedCycleSieve** transfers Spec's merge facts through `assertApplyMatches` (Leg 3 complete)
 - **CycleIntegralProperties** has foundational lemmas: `assertDiffEqualsCycleValue`, `assertCycleIntegralIncreasing`, `assertConsecutiveGapSumEqualsDiff`, `assertSameDiffAfterCycle`
 - **No CycleIntegral-native filter-merge theorem exists**
 

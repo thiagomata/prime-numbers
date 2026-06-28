@@ -26,7 +26,7 @@ verification logs, failed attempts, or completed implementation notes.
 ## Current Sieve-Sequence Proof Ticket
 
 The canonical active ticket for the Spec/Canonical/Cycle sieve-sequence proof is
-`active/canonical-next-strategy.md`.
+`active/sieve-sequence-proof.md`.
 
 Older plans for the same proof have been moved out of `active/`:
 

@@ -97,17 +97,22 @@
 | `assertCycleValuePositive`                       | CycleIntegralProperties.scala        | CycleInteg|
 | `assertCycleIntegralPositive`                    | CycleIntegralProperties.scala        | CycleInteg|
 | `assertConsecutiveGapSumEqualsDiff`              | CycleIntegralProperties.scala        | CycleInteg|
-| `assertCITelescopeRecurrence`                    | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `assertModPeriodicWithMultipleSum`               | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `assertCIShiftEqualsSum`                         | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `findNextSurvivor`                               | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `mergedGaps`                                     | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `allMultiplesBetween`                            | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `assertMergedGapIsCITelescope`                   | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `survivorValues`                                 | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `gapsFromValues`                                 | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `allGapsMatch`                                   | CycleIntegralFilterProperties.scala  | CycleInteg|
-| `assertNewCIGeneratesFiltered`                   | CycleIntegralFilterProperties.scala  | CycleInteg|
+| `assertModCycleEqualsMemCycle`                   | CycleProperties.scala                | Cycles      |
+| `assertFilterMergeComposition`                  | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertNextGapsValid`                          | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertGapsFromValuesSize`                     | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertFirstSurvivorHead`                      | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertCITelescopeRecurrence`                    | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertModPeriodicWithMultipleSum`               | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertCIShiftEqualsSum`                         | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `findNextSurvivor`                               | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `mergedGaps`                                     | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `allMultiplesBetween`                            | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertMergedGapIsCITelescope`                   | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `survivorValues`                                 | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `gapsFromValues`                                 | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `allGapsMatch`                                   | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertNewCIGeneratesFiltered`                   | CycleIntegralFilterProperties.scala  | CycleInteg |
 | `assertCycleIntegralEqualsSumFirstPosition`      | ClassicCycleIntegralProperties.scala | CycleInteg|
 | `assertCycleIntegralEqualsSumSmallPositions`     | ClassicCycleIntegralProperties.scala | CycleInteg|
 | `assertCycleIntegralEqualsSliceSum`              | ClassicCycleIntegralProperties.scala | CycleInteg|
@@ -139,6 +144,9 @@
 | `hasPrimeFactorInList`                           | SieveUtils.scala                     | Sieve      |
 | `assertHasPrimeFactorImpliesNotCoprime`          | SieveUtils.scala                     | Sieve      |
 | `assertNoDivisorInRangeHelper`                   | SieveUtils.scala                     | Sieve      |
+| `assertRepeatConcat`                             | ListRepeatProperties.scala           | Lists      |
+| `assertRepeatSumDecomposition`                   | ListRepeatProperties.scala           | Lists      |
+| `assertRepeatSumTimes`                           | ListRepeatProperties.scala           | Lists      |
 | **Prime**                                       |                                      |
 | `isPrime`                                       | Prime.scala                          | Prime|
 | `noDivisorInRange`                              | Prime.scala                          | Prime|
@@ -544,6 +552,9 @@ filter-merge theorem (see `tickets/active/filter-merge-foundation-gaps.md`).
 | **newValuesAfterMerge(old, new, k)** | predicate: `new` mirrors `sumAfterMerge`'s recursion shape | Structural-match predicate. |
 | **assertSumNewValuesAfterMerge** | `sum(newValues) == sumAfterMerge(oldValues, k)` given `newValuesAfterMerge` | Bridge lemma. Verified 31/31. |
 | **assertMergeSumPreserved** | `sum(newValues) == sum(oldValues)` given `newValuesAfterMerge` | GAP 2 closure. Composes bridge + `assertMergePreservesListSum`. Verified 15/15 (10256 valid). |
+| **assertRepeatConcat** | `repeat(list,n) == list ++ repeat(list, n-1)` for `n > 0` | Recursive decomposition of repeat. Verified 8/8 (10285 valid). |
+| **assertRepeatSumDecomposition** | `sum(repeat(list,n)) == sum(list) + sum(repeat(list, n-1))` | Sum under repeat decomposes recursively. Verified 15/15. |
+| **assertRepeatSumTimes** | `sum(repeat(list,n)) == sum(list) * n` | Closed-form sum under repeat. Verified 3/3. |
 
 **Source**: `src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala`
 
@@ -665,6 +676,7 @@ ModCycle lemmas.
 | **assertCycleOfPosEqualsCycleOfModPos** | `cycle(pos) == cycle(mod(pos, size))`               | `pos >= 0`, `size > 0`           |
 | **cycleValuePositiveOrZero**            | `cycle(pos) >= 0`                                   | `pos >= 0`, `size > 0`           |
 | **rotateAtValue**                       | `rotateAt(k)(i) == cycle(k + i)`                    | `k >= 0`, `i >= 0`               |
+| **assertModCycleEqualsMemCycle**        | If `ModCycle.values == MemCycle.values`, then `ModCycle(k) == MemCycle(k)` | Bridge lemma linking ModCycle and MemCycle. Verified 3/3. |
 
 **Mathematical Properties** (from [articles/cycle.md](./articles/cycle.md)):
 
@@ -1049,7 +1061,7 @@ The property `indexOfAccepted(head+M) == residues(M, filterValues).size` is math
 
 ---
 
-## 5.5 CanonicalCycleSieve (`v1.seq.sieve.CanonicalCycleSieve`)
+## 5.5 SpecDerivedCycleSieve (`v1.seq.sieve.SpecDerivedCycleSieve`)
 
 Intermediate representation that receives a `SpecSieveSequence` and extracts
 its unique canonical `CycleSieveSequence`. This object owns all direct
@@ -1071,14 +1083,14 @@ sequence classes focused on their own semantics.
 | **assertCurrentNonMultipleAcceptedByNext(k)** | `k >= 1 ∧ Calc.mod(cycle(k), cycle.head) != 0 ⇒ spec.next.accepts(spec(k))` | Public constructive acceptance bridge. Combines current tail-filter acceptance with non-divisibility by the newly added head filter. Consumes `assertCurrentValueAtOrAboveNextHead` for the next-sequence domain bound, avoiding the previous combined-VC timeout. Full verification: 9213 valid. |
 | **assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)** | `spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(0, nextPeriod)` | Canonical next-stage gap cycle values match spec.next gap list by construction. |
 | **assertNextApplyMatches(nextPeriod, k)** | `CycleIntegral(spec.next.head, spec.next.specGapCycle(nextPeriod).memCycle)(k-1) == spec.next(k)` | Canonical next-stage apply match. Uses Spec's own verified gap-cycle integral reconstruction lemma. |
-| **assertNextCycleApplyMatchesSpecNext(nextPeriod, k)** | `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` for `k >= 0` | Next-stage apply equality (approach P1). Leg 2's `assertApplyMatches` instantiated one stage later: constructs the canonical wrapper of `spec.next` and applies the current-stage lemma. Verified with 9402 valid. |
-| **assertNextCycleGapsMatchSpecNext(nextPeriod)** | `CanonicalCycleSieve(spec.next, nextPeriod).cycle.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)` | Next-stage gaps equality (Approach 1, congruence packaging). Composes constructor equality (`nextCanonical.cycle.gapCycle == spec.next.specGapCycle(nextPeriod)`) with `assertNextGapCycleValuesEqualSpecNextGapList`. No unfolding. Verified with 9472 valid. |
-| **assertNextCycleHeadMatchesSpecNext(nextPeriod)** | `CanonicalCycleSieve(spec.next, nextPeriod).cycle.head == spec.next.head.value` | Next-stage head equality (Approach 1). Transfers `assertHeadMatches` to the next-stage wrapper. Verified with 9472 valid. |
+| **assertNextCycleApplyMatchesSpecNext(nextPeriod, k)** | `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` for `k >= 0` | Next-stage apply equality (approach P1). Leg 2's `assertApplyMatches` instantiated one stage later: constructs the canonical wrapper of `spec.next` and applies the current-stage lemma. Verified with 9402 valid. |
+| **assertNextCycleGapsMatchSpecNext(nextPeriod)** | `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)` | Next-stage gaps equality (Approach 1, congruence packaging). Composes constructor equality (`nextCanonical.cycle.gapCycle == spec.next.specGapCycle(nextPeriod)`) with `assertNextGapCycleValuesEqualSpecNextGapList`. No unfolding. Verified with 9472 valid. |
+| **assertNextCycleHeadMatchesSpecNext(nextPeriod)** | `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle.head == spec.next.head.value` | Next-stage head equality (Approach 1). Transfers `assertHeadMatches` to the next-stage wrapper. Verified with 9472 valid. |
 | **assertNextCycleMatchesSpecNext(nextPeriod)** | conjunction: head + gaps + apply (the latter via P1) all match `spec.next` | Top-level next-stage structural identity. Approach 1 complete. Proves a *correct* next cycle exists; does NOT prove `CycleSieveSequence.next()` (the walk) computes it. Verified with 9472 valid. |
-| **nextVerified(nextPeriod)** | returns `CanonicalCycleSieve(spec.next, nextPeriod)` under conditional next-stage preconditions | Verified conditional next-stage constructor. No `.ensuring` (postcondition VC timed out via `.next.next` cost); correctness via standalone `assertNextCycleMatchesSpecNext`. Avoids the Bertrand/Euclid walls by carrying preconditions as hypotheses. Verified with 9485 valid. |
+| **nextVerified(nextPeriod)** | returns `SpecDerivedCycleSieve(spec.next, nextPeriod)` under conditional next-stage preconditions | Verified conditional next-stage constructor. No `.ensuring` (postcondition VC timed out via `.next.next` cost); correctness via standalone `assertNextCycleMatchesSpecNext`. Avoids the Bertrand/Euclid walls by carrying preconditions as hypotheses. Verified with 9485 valid. |
 | **assertNextGapEqualsCurrentGapSum(nextPeriod, i)** | `spec.next(i+1) - spec.next(i) == spec(k_{i+1}) - spec(k_i)` where `k_i = spec.indexOfAccepted(spec.next(i))` | Single-gap merge property. Each next gap equals the sum of current gaps from `k_i` to `k_{i+1}-1`. Proves merge using `indexOfAccepted` instead of scanning positions. |
 | **assertNextValueMatchesCyclePosition(k)** | `spec.next(k) == cycle(pos)` where `pos = spec.indexOfAccepted(spec.next(k))` for `k >= 0` | Value-level correspondence between next Spec stage and current canonical cycle. Uses `indexOfAccepted.ensuring` and `assertApplyMatches` to bridge. |
-| **assertNextFirstGapMatchesSpecNext(nextPeriod)** | `spec.next(1) - spec.next(0) == spec.next.gapList(0, nextPeriod).head` | First single-gap equality for the Leg-3 gap-list proof (see `canonical-next-strategy.md`). Proves the head of the next gap list without scanning positions — pure arithmetic substitution plus `assertApplyMonotonic`. Foundation for the list-level lift. |
+| **assertNextFirstGapMatchesSpecNext(nextPeriod)** | `spec.next(1) - spec.next(0) == spec.next.gapList(0, nextPeriod).head` | First single-gap equality for the Leg-3 gap-list proof (see `sieve-sequence-proof.md`). Proves the head of the next gap list without scanning positions — pure arithmetic substitution plus `assertApplyMonotonic`. Foundation for the list-level lift. |
 | **assertNextGapAtMatchesSpecNext(nextPeriod, index)** | `spec.next(index+1) - spec.next(index) == spec.next.gapList(0, nextPeriod).apply(index)` for `0 <= index < nextPeriod` | Positional single-gap equality. Generalizes `assertNextFirstGapMatchesSpecNext` to arbitrary index. Consumes `SpecSieveSequence.assertGapListApplyEqualsGapAtPosition` (made public) and `assertGapListSize` (to discharge the `.apply` precondition). Per-position input to the list-level equality. |
 | **nextGapList(from, count)** | `[spec.next(from+1)-spec.next(from), ..., spec.next(from+count)-spec.next(from+count-1)]` | Canonical-computed next gap list, forward-ordered, built directly from `spec.next` adjacent differences. Sliding `from` parameter mirrors `spec.next.gapList`'s recursion shape. |
 | **assertNextGapListMatchesSpecNext(from, count)** | `nextGapList(from, count) == spec.next.gapList(from, count)` | List-level equality. Induction on `count` with sliding `from`, mirroring `assertGapListPositive`. Consumes `assertGapListFirstEqualsGap` (made public) for the head case. Verified with 9062 valid. |
@@ -1092,8 +1104,17 @@ sequence classes focused on their own semantics.
 | **assertCurrentMultipleRejectedByNext(k)** | For `k >= 1` and `Calc.mod(cycle(k), cycle.head) == 0`: `¬spec.next.accepts(spec(k))` | Rejection side of the merge rule. Mirror of `assertCurrentNonMultipleAcceptedByNext`. When a current value is a multiple of head, it is not coprime with `cycle.primes` and is rejected by the next stage. |
 | **assertNextFilterModulusRelation()** | `spec.next.filterModulus == cycle.head * spec.filterModulus` | Period sum transfer. When the old head becomes a filter prime in `spec.next`, the filter modulus grows by that factor. |
 | **assertSpecApplyMonotonic(from, until)** | `spec.assertApplyMonotonic(from, until)` for `0 <= from <= until` | Exposes Spec-side apply monotonicity for the canonical context. Pure transfer — delegates to the existing Spec lemma. |
+| **assertWalkInitialPrefix()** | `cycle(1) == spec.next(0) ∧ List.empty == spec.next.gapList(0, 0)` | Base case for the future survival-walk prefix invariant. Proves the walk starts with the first next-stage survivor and an empty emitted gap prefix. Verified with 10514 valid. |
+| **assertWalkSkippedValueRejected(pos)** | For `pos >= 1` and `Calc.mod(cycle(pos), cycle.head) == 0`: `¬spec.next.accepts(cycle(pos))` | Skip branch for the future survival-walk prefix invariant. Proves that values skipped by the walk are exactly rejected by the next Spec stage because the current head becomes part of the next filter. Verified with 10530 valid. |
+| **assertWalkSurvivorAccepted(pos)** | For `pos >= 1` and `Calc.mod(cycle(pos), cycle.head) != 0`: `spec.next.accepts(cycle(pos))` | Emit branch for the future survival-walk prefix invariant. Proves that values kept by the walk are accepted by the next Spec stage because they pass both the old filter and the new head filter. Verified with 10546 valid. |
+| **assertFirstSurvivorEqualsSpecNext0()** | `cycle.integral(0) == spec.next(0)` | First survivor head matches spec.next(0). Verified 7/7. |
+| **assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)** | `spec.next(i+1) - spec.next(i) == cycle(pos_{i+1}) - cycle(pos_i)` where `pos_i = indexOfAccepted(spec.next(i))` | Per-index survivor gap equals spec.next gap. Proves gap equality without survivorValues or walk unfolding. Verified 53/53. |
+| **assertSpecNextIsKthSurvivor(nextPeriod, k)** | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` | Per-position: spec.next(k) matches the k-th cycle survivor. Verified 29/29. |
+| **currentWindow(steps)** | `List[BigInt]` of `cycle.integral(0..steps-1)` | Transparent list of cumulative values. Verified 6/6 (size invariant). |
+| **survivorWindow(steps)** | `currentWindow(steps).filter(v => v mod cycle.head != 0)` | Transparent survivor list. |
+| **assertFullEquivalence(nextPeriod, k)** | `cycle(k) == spec(k) ∧ cycle(1) == spec.next.head.value` | Top-level theorem: same-stage + next-stage head. Verified 13/13. |
 
-**Source**: `src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`
+**Source**: `src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala`
 
 ---
 

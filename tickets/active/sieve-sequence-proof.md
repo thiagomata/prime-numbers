@@ -1,10 +1,10 @@
-# Canonical Next Strategy (Leg 3 of the Spec/Canonical/Cycle EPIC)
+# Sieve Sequence Proof — Survival Walk Correctness
 
 **Status:** Active
 **Created:** 2026-06-24
 **Updated:** 2026-06-28
-**Owner:** `CanonicalCycleSieve` (`src/main/scala/v1/chapter6/seq/sieve/CanonicalCycleSieve.scala`)
-**Umbrella design doc:** [`../spec-canonical-cycle-design.md`](../spec-canonical-cycle-design.md)
+**Owner:** `SpecDerivedCycleSieve` (`src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala`)
+**Umbrella design doc:** [`../sieve-sequence-epic.md`](../sieve-sequence-epic.md)
 
 ## EPIC Context (do not duplicate per-ticket)
 
@@ -13,11 +13,12 @@ A three-way connection between three sieve representations:
 | Leg | Statement | Status |
 |---|---|---|
 | 1 | Spec is correct | ✅ Done (`SpecSieveSequence` linear scan) |
-| 2 | Canonical ≡ Spec, current stage | ✅ Done (`CanonicalCycleSieve.assertApplyMatches(k)`: `cycle(k) == spec(k)`) |
-| **3** | **The cycle strategy (merge / rotate / new-head) is correct, certified via Canonical matching `spec.next`** | ❌ **This ticket** |
-| 4 | `CycleSieveSequence` ≡ Canonical, using ONLY Cycle's structural rules (no Spec link) | Future |
+| 2 | Spec-derived Cycle ≡ Spec, current stage | ✅ Done (`SpecDerivedCycleSieve.assertApplyMatches(k)`: `cycle(k) == spec(k)`) |
+| 3 | Canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done (`assertNextCycleMatchesSpecNext`) |
+| **4** | **Survival walk producer theorem: `nextGapsWalk(cycle)` emits `spec.next` gaps and `cycle.next()(k) == spec.next(k)`** | ❌ **This ticket** |
+| 5 | `CycleSieveSequence` ≡ Canonical, using ONLY Cycle's structural rules (no Spec link) | Future |
 
-**Key architectural fact (confirmed with user, 2026-06-24):** Canonical is *built around Spec by definition* and is allowed to use Spec freely. The "walks with its own legs" / "no Spec link" constraint applies to **`CycleSieveSequence`** (Leg 4), not to Canonical (Leg 3). So Leg 3 may invoke Spec facts.
+**Key architectural fact (confirmed with user, 2026-06-24; renumbered 2026-06-28):** Canonical is *built around Spec by definition* and is allowed to use Spec freely. The "walks with its own legs" / "no Spec link" constraint applies to the future raw **`CycleSieveSequence`** refinement (Leg 5), not to Canonical (Leg 3) or the survival-walk bridge (Leg 4).
 
 ## Goal
 
@@ -27,7 +28,7 @@ canonical active ticket.
 The current verified result is:
 
 ```
-CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)
+SpecDerivedCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)
 ```
 
 with matching head and gap list, under the existing next-stage preconditions.
@@ -49,7 +50,7 @@ The "cycle strategy" is whichever verified idiom produces the next gap list from
 
 ## Current State
 
-- **Next head:** Verified. `CanonicalCycleSieve.assertNextHeadMatches()` gives
+- **Next head:** Verified. `SpecDerivedCycleSieve.assertNextHeadMatches()` gives
   `cycle(1) == spec.next.head.value`. The pure cycle-arithmetic form
   `cycle(1) = cycle.head + cycle.gapCycle.memCycle(0)` is exposed by
   `CycleSieveSequence.assertNextHeadGreaterThanHead`.
@@ -67,12 +68,20 @@ The "cycle strategy" is whichever verified idiom produces the next gap list from
 
 ## Expected State
 
-A Canonical-side lemma, e.g.:
+A verified Leg-4 bridge from the concrete survival walk to the canonical
+`spec.next` stage.
+
+The final theorem can be split in two layers.
+
+### Layer A — Survival Walk Emits Spec Gaps
+
+First prove that the concrete walk-backed gap producer emits the same ordered
+gap list as the Spec next stage:
 
 ```
-assertNextGapsMatchSpecNextGapList(nextPeriod)
-  :  <canonical-computed next gap list>
-     == spec.next.gapList(0, nextPeriod)
+assertNextGapsWalkMatchesSpecNextGapList(nextPeriod)
+  : SieveSequenceNextLevel.nextGapsWalk(cycle)
+      == spec.next.gapList(0, nextPeriod)
 ```
 
 under the period anchors:
@@ -84,24 +93,234 @@ spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus
 spec.primes.nextPrime.value < spec.head.value * spec.head.value
 ```
 
-## Known Proof Idioms (per Q2 guidance)
+### Layer B — Concrete `next()` Matches Spec Next
+
+Then use Layer A to discharge the facts needed by `cycle.next()` and prove:
+
+```
+assertCycleNextApplyMatchesSpecNext(nextPeriod, k)
+  : cycle.next()(k) == spec.next(k)
+```
+
+This should follow from:
+
+1. `cycle.next().head == cycle(1) == spec.next.head.value`
+2. `cycle.next().gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)`
+3. the already verified reconstruction lemma for cycles built from Spec gaps
+   (`assertNextCycleApplyMatchesSpecNext`)
+
+## Leg 4 Math Plan — Survival Walk Prefix Invariant
+
+The failed attempts compared the **completed** walked list against
+`spec.next.gapList(...)` from outside:
+
+```text
+nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)
+```
+
+That shape is too opaque because `collectGaps` hides the relationship between
+its accumulator, its last survivor, and the number of emitted survivor gaps.
+The next attempt should prove the correspondence **inside the recursion**.
+
+Define an invariant-carrying walk with an explicit emitted survivor count:
+
+```text
+walkPrefix(lastSurvivor, lastPos, pos, remaining, emitted, gaps)
+```
+
+where:
+
+- `gaps.reverse == spec.next.gapList(0, emitted)` after emitting `emitted`
+  next-stage gaps;
+- `lastSurvivor == spec.next(emitted)` when `emitted < nextPeriod`;
+- `lastSurvivor == cycle(lastPos)` and `cycle(lastPos) == spec(lastPos)`;
+- every scanned value between `lastPos` and `pos` that was not emitted is
+  rejected by `spec.next`;
+- when `cycle(pos + 1)` survives the new-head filter, it equals
+  `spec.next(emitted + 1)` and the emitted gap is:
+
+```text
+cycle(pos + 1) - lastSurvivor
+  == spec.next(emitted + 1) - spec.next(emitted)
+  == spec.next.gapList(emitted, 1).head
+```
+
+The two branch obligations are:
+
+### Skip Branch
+
+If the current walked value is a multiple of the current head:
+
+```text
+Calc.mod(cycle(pos + 1), cycle.head) == 0
+```
+
+then `assertCurrentMultipleRejectedByNext(pos + 1)` proves it is rejected by
+`spec.next`, so the emitted prefix does not change:
+
+```text
+emitted' = emitted
+gaps' = gaps
+lastSurvivor' = lastSurvivor
+```
+
+### Emit Branch
+
+If the current walked value is not a multiple of the current head:
+
+```text
+Calc.mod(cycle(pos + 1), cycle.head) != 0
+```
+
+then `assertCurrentNonMultipleAcceptedByNext(pos + 1)` proves it is accepted by
+`spec.next`. The missing local proof is that it is the **next** accepted value
+after `lastSurvivor`, not merely some later accepted value. The likely bridge is
+to combine:
+
+- the recursive invariant that all skipped interior values were rejected;
+- `SpecSieveSequence.indexOfAccepted` for `lastSurvivor`;
+- `assertConsecutiveAcceptedByNextPreservesGap` or the existing merge/copy
+  lemmas when the old-index relationship is visible.
+
+When that bridge is established:
+
+```text
+cycle(pos + 1) == spec.next(emitted + 1)
+gap = cycle(pos + 1) - lastSurvivor
+    == spec.next(emitted + 1) - spec.next(emitted)
+```
+
+and the prefix advances:
+
+```text
+emitted' = emitted + 1
+gaps' = gap :: gaps
+lastSurvivor' = cycle(pos + 1)
+```
+
+## Draft Code Shape
+
+This is a proof scaffold, not code to paste all at once. Add one helper or
+postcondition at a time and verify between changes.
+
+```scala
+def collectGapsWithSpecPrefix(
+  lastSurvivor: BigInt,
+  lastPos: BigInt,
+  pos: BigInt,
+  remaining: BigInt,
+  emitted: BigInt,
+  gaps: List[BigInt],
+  nextPeriod: BigInt
+): List[BigInt] = {
+  require(nextPeriod > BigInt(1))
+  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+  require(remaining >= BigInt(0))
+  require(pos >= BigInt(1))
+  require(lastPos >= BigInt(0))
+  require(lastPos < pos)
+  require(emitted >= BigInt(0))
+  require(emitted < nextPeriod)
+  require(lastSurvivor == spec.next(emitted))
+  require(cycle(lastPos) == lastSurvivor)
+  require(gaps.reverse == spec.next.gapList(BigInt(0), emitted))
+  require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
+  decreases(remaining)
+
+  if (remaining == BigInt(0)) {
+    gaps.reverse
+  } else {
+    val current = cycle(pos + BigInt(1))
+    if (Calc.mod(current, cycle.head) == BigInt(0)) {
+      assert(assertCurrentMultipleRejectedByNext(pos + BigInt(1)))
+      collectGapsWithSpecPrefix(
+        lastSurvivor,
+        lastPos,
+        pos + BigInt(1),
+        remaining - BigInt(1),
+        emitted,
+        gaps,
+        nextPeriod
+      )
+    } else {
+      assert(assertCurrentNonMultipleAcceptedByNext(pos + BigInt(1)))
+
+      // Missing bridge lemma:
+      // current == spec.next(emitted + 1)
+      assert(assertWalkSurvivorIsNextSpecValue(
+        lastPos,
+        pos + BigInt(1),
+        emitted,
+        nextPeriod
+      ))
+
+      val gap = current - lastSurvivor
+      assert(gap == spec.next(emitted + BigInt(1)) - spec.next(emitted))
+      assert(spec.next.assertGapListFirstEqualsGap(emitted, BigInt(1)))
+
+      collectGapsWithSpecPrefix(
+        current,
+        pos + BigInt(1),
+        pos + BigInt(1),
+        remaining - BigInt(1),
+        emitted + BigInt(1),
+        gap :: gaps,
+        nextPeriod
+      )
+    }
+  }
+}.ensuring(res =>
+  ListBoundUtils.allGreaterThan(res, BigInt(0)) &&
+  (emitted == nextPeriod ==> res == spec.next.gapList(BigInt(0), nextPeriod))
+)
+```
+
+Expected supporting lemmas, in likely order:
+
+1. `assertWalkInitialPrefix(nextPeriod)`
+   - Shows the walk starts with `lastSurvivor == spec.next(0)` and an empty
+     emitted prefix.
+2. `assertWalkSkippedValueRejected(pos)`
+   - Alias over `assertCurrentMultipleRejectedByNext(pos)` using the exact
+     walk indexing convention.
+3. `assertWalkSurvivorAccepted(pos)`
+   - Alias over `assertCurrentNonMultipleAcceptedByNext(pos)`.
+4. `assertWalkSurvivorIsNextSpecValue(lastPos, pos, emitted, nextPeriod)`
+   - The key missing bridge: if all values between `lastPos` and `pos` were
+     rejected and `cycle(pos)` is accepted, then `cycle(pos)` is
+     `spec.next(emitted + 1)`.
+5. `assertCollectGapsPrefixMatchesSpec(nextPeriod, emitted)`
+   - Recursive invariant proof for the prefix-producing helper.
+6. `assertNextGapsWalkMatchesSpecNextGapList(nextPeriod)`
+   - Thin top-level wrapper, preferably after either replacing `nextGapsWalk`
+     with the invariant-carrying helper or proving the helper has the same
+     recursion/output shape as `nextGapsWalk`.
+
+**Do not start with item 6.** The old attempts already showed that comparing
+the completed walked list from outside times out. The next proof must expose
+the prefix invariant inside the walk recursion first.
+
+## Known Proof Idioms
 
 | Idiom | Source | Shape | Trade-off |
 |---|---|---|---|
-| **Diff-based induction** | `ClassicCycleIntegralProperties.assertDiffEqualsCycleValue` + `assertSameDiffAfterCycle` | `integral(k+1) - integral(k) == cycle(k+1)`; diffs repeat per period via `MemCycleProperties.valueMatchAfterManyLoopsInBoth` | **Primary candidate.** Pure cycle arithmetic, avoids the walk's opacity, periodic so no `head × period` scan. |
+| **Internal walk prefix invariant** | New Leg-4 helper around `SieveSequenceNextLevel.collectGaps` | Carries `emitted`, `lastSurvivor == spec.next(emitted)`, and `gaps.reverse == spec.next.gapList(0, emitted)` through the recursion | **Primary candidate for the next EPIC step.** The old outside comparison timed out; proving the prefix while the recursion is visible is the best next move. |
+| **Diff-based induction** | `ClassicCycleIntegralProperties.assertDiffEqualsCycleValue` + `assertSameDiffAfterCycle` | `integral(k+1) - integral(k) == cycle(k+1)`; diffs repeat per period via `MemCycleProperties.valueMatchAfterManyLoopsInBoth` | Useful supporting arithmetic, but not enough by itself to certify `nextGapsWalk`, because the walk's `lastSurvivor` accumulator still needs an emitted-prefix invariant. |
 | Merge via `indexOfAccepted` | `SpecSieveSequence.mergedGapPrefix` + `assertMergedGapPrefixMatchesNext` | Walks current stage's accepted indices, no positional scan over naturals | Verified on Spec; reusable as fallback. |
-| Walk / `collectGaps` | `SieveSequenceNextLevel.nextGapsWalk` | Recurses `head × period` positions | **AVOID.** Timed out 3× (per `canonical-spec-to-cycle-alignment.md` Update Log). Diff depends on `lastSurvivor` (all previous positions), so Stainless treats it as opaque. |
+| Outside comparison of walk output | `SieveSequenceNextLevel.nextGapsWalk` after it returns | `val walked = nextGapsWalk(cycle); walked == spec.next.gapList(...)` | **Avoid.** Timed out repeatedly. The walk must expose correspondence through its own recursion or a same-shape verified helper. |
 
-**Decision:** Pursue the **diff-based induction** idiom first. Fall back to the `mergedGapPrefix`/`indexOfAccepted` idiom if the diff approach stalls.
+**Decision:** Pursue the **internal walk prefix invariant** first. Use
+diff-based and `indexOfAccepted` lemmas only as supporting facts inside the
+emit branch.
 
 ## Placement
 
-- New computation/lemmas live on **`CanonicalCycleSieve`** (or a small sibling object if cohesion demands it). Not on `CycleSieveSequence` (that's Leg 4) and not on `SpecSieveSequence`.
+- New proof lemmas live on **`SpecDerivedCycleSieve`** or a focused sibling/helper around `SieveSequenceNextLevel.collectGaps` if the walk needs an internal invariant. Avoid changing `CycleSieveSequence` itself until the walk producer facts are isolated.
 
 ## Alternatives Considered
 
-1. Reuse `SpecSieveSequence.mergedGapPrefix` directly. Rejected as primary: it walks Spec's `apply`, which is fine for Canonical (Leg 3 may use Spec) but doesn't surface the cycle-arithmetic structure that Leg 4 will need. Keep as fallback.
-2. Write a `CanonicalNextLevel` sibling object. Deferred — start with methods on `CanonicalCycleSieve`; refactor if it grows.
+1. Reuse `SpecSieveSequence.mergedGapPrefix` directly. Rejected as primary: it walks Spec's `apply`, which is fine for Canonical (Leg 3 may use Spec) but doesn't surface the cycle-arithmetic structure that the later raw Cycle refinement (Leg 5) will need. Keep as fallback.
+2. Write a `CanonicalNextLevel` sibling object. Deferred — start with methods on `SpecDerivedCycleSieve`; refactor if it grows.
 3. The residue pipeline (`nextRotatedGaps`). Rejected: `v0-v2-apply-equivalence.md` 2026-06-23 log shows the project deliberately de-prioritized residue-pipeline proofs.
 
 ## Risks and Assumptions
@@ -129,11 +348,120 @@ spec.primes.nextPrime.value < spec.head.value * spec.head.value
 
 ## Update Log
 
+### 2026-06-29 — Canonical bridge renamed to SpecDerivedCycleSieve
+
+Renamed the bridge class/file from `CanonicalCycleSieve` to
+`SpecDerivedCycleSieve`.
+
+**Reason:** the old name encouraged treating this bridge as a generic
+"canonical" proof object, while the actual strategy is more precise: the cycle
+is derived from a `SpecSieveSequence`, and the future proof should expose
+Spec-derived repeated windows and survivor gaps instead of accumulating more
+local lemmas around an opaque walk.
+
+**Validation:** full `just verify` passed after the Scala rename:
+
+```text
+total: 10546 valid: 10546 (10525 from cache, 21 trivial) invalid: 0 unknown: 0 time: 33.23
+```
+
+### 2026-06-28 — Walk prefix base case verified
+
+Added `SpecDerivedCycleSieve.assertWalkInitialPrefix()`.
+
+**Statement:**
+
+```scala
+cycle(1) == spec.next(0) &&
+  List.empty[BigInt] == spec.next.gapList(0, 0)
+```
+
+This verifies item 1 from the expected supporting lemmas:
+`assertWalkInitialPrefix`. It packages the base case for the future
+survival-walk prefix invariant:
+
+- before any gap is emitted, the emitted gap prefix is empty;
+- the empty prefix is definitionally `spec.next.gapList(0, 0)`;
+- the walk's initial survivor `cycle(1)` is exactly `spec.next(0)`, via the
+  existing next-head bridge and `assertFirstSurvivorEqualsSpecNext0`.
+
+**Why this matters:** the full walk theorem needs an induction over emitted
+survivor gaps. This lemma gives the verified base state of that induction
+without unfolding `nextGapsWalk` or comparing the completed walk output from
+outside, which previously timed out.
+
+**Validation:** full `just verify` passed:
+
+```text
+total: 10514 valid: 10514 (10476 from cache, 21 trivial) invalid: 0 unknown: 0 time: 36.15
+```
+
+### 2026-06-28 — Walk skip branch verified
+
+Added `SpecDerivedCycleSieve.assertWalkSkippedValueRejected(pos)`.
+
+**Statement:**
+
+```scala
+pos >= 1 &&
+  Calc.mod(cycle(pos), cycle.head) == 0
+  ==> !spec.next.accepts(cycle(pos))
+```
+
+This verifies item 2 from the expected supporting lemmas:
+`assertWalkSkippedValueRejected`. It packages the local skip branch for the
+future survival-walk prefix invariant: if the walked current-stage value is a
+multiple of the old head, then the next Spec stage rejects that value because
+the old head is now part of the next filter.
+
+**Why this matters:** in the recursive walk proof, skipped positions must leave
+the emitted gap prefix unchanged. This lemma supplies the branch condition
+bridge needed to justify that the skipped value is not a missing `spec.next`
+element.
+
+**Validation:** full `just verify` passed:
+
+```text
+total: 10530 valid: 10530 (10495 from cache, 21 trivial) invalid: 0 unknown: 0 time: 37.01
+```
+
+### 2026-06-28 — Walk emit branch verified
+
+Added `SpecDerivedCycleSieve.assertWalkSurvivorAccepted(pos)`.
+
+**Statement:**
+
+```scala
+pos >= 1 &&
+  Calc.mod(cycle(pos), cycle.head) != 0
+  ==> spec.next.accepts(cycle(pos))
+```
+
+This verifies item 3 from the expected supporting lemmas:
+`assertWalkSurvivorAccepted`. It packages the local emit branch for the future
+survival-walk prefix invariant: if the walked current-stage value is not a
+multiple of the old head, then the next Spec stage accepts that value.
+
+**Why this matters:** together with `assertWalkSkippedValueRejected`, the proof
+now has verified branch facts for both outcomes of the walk decision. The next
+missing step is no longer "does this branch match Spec acceptance?"; it is the
+stronger recursive invariant that connects each emitted survivor to the correct
+`spec.next` index and gap prefix.
+
+**Validation:** full `just verify` passed:
+
+```text
+total: 10546 valid: 10546 (10511 from cache, 21 trivial) invalid: 0 unknown: 0 time: 34.62
+```
+
+**Bookkeeping:** added the lemma to `OBJECTS.md` and the supporting verifier
+table in `articles/sieve-sequence.md`.
+
 ### 2026-06-24 — Ticket created
-Scoped Leg 3. Confirmed with user: Canonical may use Spec freely; the "no Spec link" constraint is Leg 4 (`CycleSieveSequence`) only. Selected diff-based induction (`ClassicCycleIntegralProperties` pattern) as the primary proof idiom, with `mergedGapPrefix`/`indexOfAccepted` as fallback. Walk approach explicitly excluded (3 prior timeouts).
+Scoped Leg 3. Confirmed with user: Canonical may use Spec freely; the "no Spec link" constraint applied to the raw `CycleSieveSequence` refinement (then called Leg 4, now Leg 5 after the 2026-06-28 survival-walk split). Selected diff-based induction (`ClassicCycleIntegralProperties` pattern) as the primary proof idiom, with `mergedGapPrefix`/`indexOfAccepted` as fallback. Walk approach explicitly excluded (3 prior timeouts).
 
 ### 2026-06-24 — First single-gap lemma verified
-Added `CanonicalCycleSieve.assertNextFirstGapMatchesSpecNext(nextPeriod)`.
+Added `SpecDerivedCycleSieve.assertNextFirstGapMatchesSpecNext(nextPeriod)`.
 
 **Statement:** `spec.next(1) - spec.next(0) == spec.next.gapList(0, nextPeriod).head`, proved without scanning positions.
 
@@ -146,14 +474,14 @@ Added `CanonicalCycleSieve.assertNextFirstGapMatchesSpecNext(nextPeriod)`.
 **Next:** Either (a) lift to the full list via diff induction, or (b) first add a positional single-gap lemma `assertNextGapAtMatchesSpecNext(i)` generalizing this to arbitrary `i`, mirroring `assertNextGapEqualsCurrentGapSum`. Leaning (b) as the next atomic step, since it's the natural generalization and consumes the same pattern.
 
 ### 2026-06-24 — Positional single-gap lemma verified (with one fixed timeout)
-Added `CanonicalCycleSieve.assertNextGapAtMatchesSpecNext(nextPeriod, index)`.
+Added `SpecDerivedCycleSieve.assertNextGapAtMatchesSpecNext(nextPeriod, index)`.
 
 **Statement:** For any `0 <= index < nextPeriod`,
 `spec.next(index + 1) - spec.next(index) == spec.next.gapList(0, nextPeriod).apply(index)`.
 
 This generalizes `assertNextFirstGapMatchesSpecNext` from `index = 0` to any valid index, and is the per-position input to the list-level equality.
 
-**Attempt 1 — timeout (VC at CanonicalCycleSieve.scala:549):** the precondition `index < gapList.size` for `gapList(0, nextPeriod).apply(index)` timed out at 120s. The solver could not connect `index < nextPeriod` to `gapList(0, nextPeriod).size == nextPeriod` on its own.
+**Attempt 1 — timeout (VC at SpecDerivedCycleSieve.scala:549):** the precondition `index < gapList.size` for `gapList(0, nextPeriod).apply(index)` timed out at 120s. The solver could not connect `index < nextPeriod` to `gapList(0, nextPeriod).size == nextPeriod` on its own.
 
 **Attempt 2 — fix and verify:** added one `assert(spec.next.assertGapListSize(0, nextPeriod))` to discharge the size precondition before the `.apply(index)` call. Verified:
 `total: 9033 valid: 9033 (8993 from cache, 20 trivial) invalid: 0 unknown: 0`.
@@ -166,8 +494,8 @@ This generalizes `assertNextFirstGapMatchesSpecNext` from `index = 0` to any val
 **Next:** Lift from per-position equality to full list equality. Two candidate idioms: (a) induction on `nextPeriod` using `assertNextGapAtMatchesSpecNext` for the head + recursive IH for the tail (mirrors `SpecSieveSequence.assertMergedGapPrefixMatchesNext`); (b) diff-based induction via `ClassicCycleIntegralProperties.assertSameDiffAfterCycle`. Leaning (a) since the per-position lemma is already verified and the list-equality induction is a direct structural lift.
 
 ### 2026-06-24 — List-equality lemma verified (after fixing a real bug in attempt 1)
-Added `CanonicalCycleSieve.nextGapList(from, count)` (builder) and
-`CanonicalCycleSieve.assertNextGapListMatchesSpecNext(from, count)` (lemma).
+Added `SpecDerivedCycleSieve.nextGapList(from, count)` (builder) and
+`SpecDerivedCycleSieve.assertNextGapListMatchesSpecNext(from, count)` (lemma).
 
 **Statement:** `nextGapList(from, count) == spec.next.gapList(from, count)` for all `from, count >= 0`.
 
@@ -206,7 +534,7 @@ Therefore every Spec gap fact transfers to the canonical cycle by rewriting each
 Each is a pure transfer: call the Spec lemma, rewrite through `assertApplyMatches`, conclude. No timeouts expected.
 
 ### 2026-06-24 — Periodicity transfer verified (first attempt)
-Added `CanonicalCycleSieve.assertGapPeriodicMatchesSpec(k, period)`.
+Added `SpecDerivedCycleSieve.assertGapPeriodicMatchesSpec(k, period)`.
 
 **Statement:** `cycle(period + k + 1) - cycle(period + k) == cycle(k + 1) - cycle(k)`.
 
@@ -226,7 +554,7 @@ User guidance (2026-06-24): the rules stated over `canonical.cycle` should carry
 So far the load-bearing cycle facts are: gap positivity, gap periodicity, the copy rule, the merge rule, and the period sum. "Head is prime" is excluded.
 
 ### 2026-06-24 — Gap positivity transfer verified
-Added `CanonicalCycleSieve.assertGapPositiveMatchesSpec(k)`.
+Added `SpecDerivedCycleSieve.assertGapPositiveMatchesSpec(k)`.
 
 **Statement:** `cycle(k + 1) - cycle(k) > 0` for all `k >= 0`.
 
@@ -398,14 +726,14 @@ Full verification:
 9149 valid, 0 invalid, 0 unknown
 ```
 
-**Next:** transfer this pure-Spec fact through `CanonicalCycleSieve`. The
+**Next:** transfer this pure-Spec fact through `SpecDerivedCycleSieve`. The
 canonical lemma must use the old head `cycle.head` as the newly added filter,
 not `cycle(1)`: `cycle(1)` is the next sequence's starting value, while
 `cycle.head` is the prime newly included in `spec.next.filterValues`.
 
 ### 2026-06-24 — Canonical copy transfer attempt 1 timed out
 
-Attempted `CanonicalCycleSieve.assertCopyGapMatchesSpec(k)` with the corrected
+Attempted `SpecDerivedCycleSieve.assertCopyGapMatchesSpec(k)` with the corrected
 filter condition:
 
 ```text
@@ -626,7 +954,7 @@ acceptance-transfer lemma. Do not retry another assertion-order variation.
 
 ### 2026-06-24 — Isolated next-head ordering lemma verified
 
-Added `CanonicalCycleSieve.assertCurrentValueAtOrAboveNextHead(k)`:
+Added `SpecDerivedCycleSieve.assertCurrentValueAtOrAboveNextHead(k)`:
 
 ```text
 k >= 1 ==> spec(k) >= spec.next.head.value
@@ -701,7 +1029,7 @@ the already verified pure-Spec
 
 ### 2026-06-24 — Copy gap transfer verified (3rd attempt, new approach)
 
-Uncommented and verified `CanonicalCycleSieve.assertCopyGapMatchesSpec(k)`.
+Uncommented and verified `SpecDerivedCycleSieve.assertCopyGapMatchesSpec(k)`.
 
 The earlier attempts (2 from this ticket + 1 retry) all timed out on
 cross-instance acceptance transfer. The successful approach differs in three ways. An isolation test
@@ -752,7 +1080,7 @@ variable. Fix: use `spec.next` directly + capture/assert return values.
 ### 2026-06-24 — Merge rule and period sum verified
 
 **Merge rule — rejection side:**
-Added `CanonicalCycleSieve.assertCurrentMultipleRejectedByNext(k)`. Mirror of
+Added `SpecDerivedCycleSieve.assertCurrentMultipleRejectedByNext(k)`. Mirror of
 `assertCurrentNonMultipleAcceptedByNext`. When `Calc.mod(cycle(k), cycle.head) == 0`,
 the value is not coprime with `cycle.primes` and is rejected by `spec.next`.
 28 VCs, full verify 9354 valid.
@@ -763,7 +1091,7 @@ The merged gap equals the sum of current gaps via `indexOfAccepted` on the Spec
 side — no additional cycle lemma needed.
 
 **Period sum:**
-Added `CanonicalCycleSieve.assertNextFilterModulusRelation()`. Proves
+Added `SpecDerivedCycleSieve.assertNextFilterModulusRelation()`. Proves
 `spec.next.filterModulus == cycle.head * spec.filterModulus`. When the old head
 becomes a filter prime, the filter modulus grows by that factor.
 16 VCs, full verify 9370 valid.
@@ -786,17 +1114,18 @@ Full verify: **9373 valid, 0 invalid, 0 unknown**.
 - Gap list equality ✅ (`assertNextGapListMatchesSpecNext`)
 - Gap periodicity/positivity transfers ✅ (`assertGapPeriodicMatchesSpec`, `assertGapPositiveMatchesSpec`)
 
-**Next:** Leg 4 — `CycleSieveSequence` equivalence using only the cycle's
-structural rules, with no Spec link. See `../done/canonical-spec-to-cycle-alignment.md`
-for the epic roadmap.
+**Next:** Leg 4 — survival-walk correctness: prove the concrete
+`nextGapsWalk` output matches `spec.next` gaps, then use that to prove
+`cycle.next()(k) == spec.next(k)`. See `../sieve-sequence-epic.md` for the
+epic roadmap.
 
 ## Next-Stage Equivalence (P1 / P2)
 
 **Goal:** prove the structural-identity equalities (head + gaps + apply) hold
 one stage later — i.e. for `spec.next` as the current stage. Two planned
-approaches (per `tickets/spec-canonical-cycle-design.md` §1):
+approaches (per `tickets/sieve-sequence-epic.md` §1):
 
-- **P1 (math side):** `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k.
+- **P1 (math side):** `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k.
   Proves a *correct* next cycle exists, built from `spec.next`'s own data, by
   the same construction as Leg 2. Does NOT prove the implementation's `cycle.next()`
   computes it.
@@ -809,12 +1138,12 @@ Failure of one approach is expected process — comment it out and try the next.
 Stop-and-ask only when all ticketed approaches are exhausted.
 
 ### 2026-06-25 — P1 verified (after fixing an off-by-one-stage bug)
-Added `CanonicalCycleSieve.assertNextCycleApplyMatchesSpecNext(nextPeriod, k)`.
+Added `SpecDerivedCycleSieve.assertNextCycleApplyMatchesSpecNext(nextPeriod, k)`.
 
-**Statement:** `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` for all `k >= 0`.
+**Statement:** `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` for all `k >= 0`.
 
 This is Leg 2's `assertApplyMatches` instantiated one stage later. The proof
-constructs `nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)` and
+constructs `nextCanonical = SpecDerivedCycleSieve(spec.next, nextPeriod)` and
 calls `nextCanonical.assertApplyMatches(k)` (Leg 2's current-stage lemma, which
 applies because `nextCanonical.spec == spec.next`).
 
@@ -866,12 +1195,12 @@ Before writing any P2 code, sketched three ideas and self-checked each against
 the documented root cause of the 3 prior timeouts (the walk's opacity).
 
 **Idea A — structural equality of two cycle objects.** Prove
-`cycle.next().gapCycle == CanonicalCycleSieve(spec.next, nextPeriod).cycle.gapCycle`.
+`cycle.next().gapCycle == SpecDerivedCycleSieve(spec.next, nextPeriod).cycle.gapCycle`.
 The primes side is easy; the gapCycle side reduces to
 `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)` — i.e. the exact
 comparison that timed out 3×. **Rejected: reduces to the known-hard problem.**
 
-**Idea B — a `canonicalNext()` builder on `CanonicalCycleSieve` that uses
+**Idea B — a `canonicalNext()` builder on `SpecDerivedCycleSieve` that uses
 `nextGapList` (the verified direct list) instead of the walk.** This sidesteps
 the walk but, on reflection, just restates what P1 already proves (P1 builds
 the next cycle from `spec.next`'s own data). It does not prove the
@@ -963,7 +1292,7 @@ merge.
 
 ## P2 ranked approaches (user directive 2026-06-25: try in order, save learnings, stop only when all exhausted)
 
-**Target:** prove `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches
+**Target:** prove `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` matches
 `spec.next` in head, gaps, AND apply (the P1 next-cycle, not the walk).
 
 ### Ranked approaches
@@ -1009,7 +1338,7 @@ Added three packaging lemmas + one top-level conjunction, all verified:
 - `assertNextCycleHeadMatchesSpecNext(nextPeriod)`: `nextCanonical.cycle.head == spec.next.head.value`.
 - `assertNextCycleMatchesSpecNext(nextPeriod)`: conjunction of head + gaps + apply (apply via P1).
 
-**How:** pure congruence. `nextCanonical = CanonicalCycleSieve(spec.next, nextPeriod)`
+**How:** pure congruence. `nextCanonical = SpecDerivedCycleSieve(spec.next, nextPeriod)`
 builds its cycle by calling the *same* Spec functions (`specGapCycle`,
 `PrimeUtils.primeValues`) that certify `spec.next`'s own data. Same function
 symbol + equal inputs ⇒ equal output, with no unfolding of merge or walk.
@@ -1043,8 +1372,8 @@ construction equality.
 
 ### 2026-06-25 — `nextVerified` constructor: .ensuring postcondition timed out
 
-Added `CanonicalCycleSieve.nextVerified(nextPeriod)` — a conditional
-next-stage constructor returning `CanonicalCycleSieve(spec.next, nextPeriod)`.
+Added `SpecDerivedCycleSieve.nextVerified(nextPeriod)` — a conditional
+next-stage constructor returning `SpecDerivedCycleSieve(spec.next, nextPeriod)`.
 Conditional (not universal) per user guidance: it carries the next-stage
 preconditions as hypotheses, avoiding the Bertrand/Euclid walls that would be
 required to prove `spec.next` always exists.
@@ -1197,7 +1526,7 @@ differs in *recursion shape*), STOP and report.
 
 | Lemma | What it proves | Where |
 |---|---|---|
-| `assertNextCycleApplyMatchesSpecNext` (P1) | `CanonicalCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k | Approach 1 |
+| `assertNextCycleApplyMatchesSpecNext` (P1) | `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle(k) == spec.next(k)` ∀k | Approach 1 |
 | `assertNextCycleGapsMatchSpecNext` | next canonical cycle's `.gapCycle.memCycle.values == spec.next.gapList(0, nextPeriod)` | Approach 1 |
 | `assertNextCycleHeadMatchesSpecNext` | next canonical cycle's `.head == spec.next.head.value` | Approach 1 |
 | `assertNextCycleMatchesSpecNext` | conjunction of head + gaps + apply | Approach 1 |
@@ -1522,7 +1851,7 @@ prior attempts (which compared lists or called `cycle.next()`).
 
 ### 2026-06-25 — ARSENAL BRIDGE VERIFIED (breakthrough)
 
-Added `CanonicalCycleSieve.assertCycleDiffEqualsGap(pos)`:
+Added `SpecDerivedCycleSieve.assertCycleDiffEqualsGap(pos)`:
 
 > `cycle.apply(pos + 1) - cycle.apply(pos) == cycle.gapCycle.memCycle(pos + 1)`
 
@@ -1545,7 +1874,7 @@ spec.apply(pos)`, and with the head match, induction gives `cycle.apply ==
 spec.apply` per-position.
 
 **Supporting change:** added `import v1.chapter4.cycle.integral.recursive.CycleIntegral`
-to `CanonicalCycleSieve.scala` (was missing; needed for the `cycle.integral`
+to `SpecDerivedCycleSieve.scala` (was missing; needed for the `cycle.integral`
 type assertion in the proof).
 
 ### 2026-06-25 — Construction foundation attempt 1 (repeat-list) TIMED OUT
@@ -1789,7 +2118,7 @@ read as certifying the concrete survival walk.
 
 **What is source-backed today:**
 
-- `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
+- `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
   head, stored gaps, and apply behavior.
 - Current-stage Canonical matches Spec by construction (`assertApplyMatches`).
 - Per-survivor bridge lemmas show that `spec.next` values occur at survivor

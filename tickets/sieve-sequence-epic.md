@@ -3,7 +3,7 @@
 **Status:** Living document. Bird's-eye view of the three-way sieve
 equivalence effort, traced down to individual tickets and verified lemmas.
 **Created:** 2026-06-24.
-**Maintained alongside:** `active/canonical-next-strategy.md` (the canonical
+**Maintained alongside:** `active/sieve-sequence-proof.md` (the canonical
 active sieve-sequence proof ticket). Historical Leg-2 notes live in
 `done/canonical-spec-to-cycle-alignment.md`.
 
@@ -20,7 +20,7 @@ generate the stream of survivor values, not in *which* values they generate.
 | Representation | File | Generates values by |
 |---|---|---|
 | **Spec** (`SpecSieveSequence`) | `v1/chapter6/seq/sieve/SpecSieveSequence.scala` | **Linear scan** of consecutive naturals, keeping those coprime to the tail primes. The mathematical source of truth. |
-| **Canonical** (`CanonicalCycleSieve`) | `v1/chapter6/seq/sieve/CanonicalCycleSieve.scala` | An *intermediate representation*. Built **from** a Spec stage; extracts Spec's certified prime list and gap cycle into a `CycleSieveSequence`. Owns all Spec↔Cycle correspondence lemmas. **Allowed to use Spec freely.** |
+| **Canonical** (`SpecDerivedCycleSieve`) | `v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala` | An *intermediate representation*. Built **from** a Spec stage; extracts Spec's certified prime list and gap cycle into a `CycleSieveSequence`. Owns all Spec↔Cycle correspondence lemmas. **Allowed to use Spec freely.** |
 | **Cycle** (`CycleSieveSequence`) | `v1/chapter6/seq/sieve/CycleSieveSequence.scala` | **Cycle arithmetic** — a stored `GapCycle` replayed through `CycleIntegral`. The optimized implementation. Carries only its own structural invariants; **no link to Spec**. |
 
 ### Why three, not two
@@ -58,7 +58,7 @@ inside the cycle.** The hard, walk-opaque territory is
 `CycleSieveSequence.next()` (which calls `nextGapsWalk`). Three prior attempts
 to prove `nextGapsWalk(cycle) == spec.next.gapList(...)` timed out and were
 commented out (see §5). The structural-identity equalities above are proven
-**at construction** (`CanonicalCycleSieve(spec, period).cycle` vs `spec`); they
+**at construction** (`SpecDerivedCycleSieve(spec, period).cycle` vs `spec`); they
 are **not** proven to be preserved by `cycle.next()`. If you find yourself
 trying to prove `cycle.next()(k) == spec.next(k)` by reasoning *inside* the
 walk, **STOP** — that is the deferred open hole (§5, Lemma 5), not something
@@ -79,9 +79,14 @@ instead, and surface the gap to the user rather than burning attempts.
       |  Leg 3: canonical next exists and matches        [DONE]
       |         spec.next by construction
       v
-   CanonicalCycleSieve(spec.next, nextPeriod)            [by construction]
+   SpecDerivedCycleSieve(spec.next, nextPeriod)            [by construction]
       |
-      |  Leg 4: CycleSieveSequence == Canonical,         [NOT STARTED]
+      |  Leg 4: survival walk emits the same gaps        [OPEN]
+      |         and cycle.next()(k) == spec.next(k)
+      v
+   CycleSieveSequence.next()                             [walk-backed]
+      |
+      |  Leg 5: CycleSieveSequence == Canonical,         [FUTURE]
       |         using ONLY Cycle's structural rules
       v
    CycleSieveSequence (correct by transitivity, no Spec link)
@@ -90,9 +95,10 @@ instead, and surface the gap to the user rather than burning attempts.
 | Leg | Statement | Status | Owner |
 |---|---|---|---|
 | 1 | Spec is correct | ✅ Done | `SpecSieveSequence` |
-| 2 | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k | ✅ Done | `CanonicalCycleSieve.assertApplyMatches` |
-| 3 | The canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done | `CanonicalCycleSieve` (see §4) |
-| 4 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | ❌ Not started | (future ticket) |
+| 2 | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k | ✅ Done | `SpecDerivedCycleSieve.assertApplyMatches` |
+| 3 | The canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done | `SpecDerivedCycleSieve` (see §4) |
+| 4 | Survival-walk correctness: `nextGapsWalk(cycle) == spec.next.gapList(...)` and `cycle.next()(k) == spec.next(k)` | ❌ Open | `active/sieve-sequence-proof.md` |
+| 5 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | Future | (future ticket) |
 
 ### ⚠️ Open hole — partial progress (Approach 1 done, walk still open)
 
@@ -100,7 +106,7 @@ The next-stage structural identity is pursued via ranked approaches:
 
 - **Approach 1 (congruence packaging) — ✅ DONE (2026-06-25, `9472 valid`).**
   `assertNextCycleMatchesSpecNext` proves
-  `CanonicalCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
+  `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` matches `spec.next` in
   head, gaps, AND apply. All three by congruence: the next canonical cycle is
   built by calling the *same* Spec functions (`specGapCycle`, `primeValues`)
   that certify `spec.next`'s own data — same function + equal inputs ⇒ equal
@@ -125,7 +131,9 @@ current active ticket.
 
 - **Canonical** is built around Spec by definition and may use Spec freely.
 - The "walks with its own legs" / "no Spec link" constraint applies to
-  **`CycleSieveSequence`** (Leg 4) only.
+  **`CycleSieveSequence`** (Leg 5) only. Leg 4 may still use Canonical/Spec
+  facts because its job is to certify the concrete survival walk against the
+  canonical specification.
 
 ---
 
@@ -213,21 +221,21 @@ is excluded from the rule list.
 
 ---
 
-## 6. Leg 4 — Cycle ≡ Canonical (NOT STARTED)
+## 6. Leg 5 — Cycle ≡ Canonical (FUTURE)
 
-**Goal:** prove `CycleSieveSequence.apply(k) == CanonicalCycleSieve(spec, period).cycle.apply(k)`
+**Goal:** prove `CycleSieveSequence.apply(k) == SpecDerivedCycleSieve(spec, period).cycle.apply(k)`
 using **only** `CycleSieveSequence`'s structural invariants — no reference to
 Spec whatsoever.
 
 This is the leg that makes the optimized Cycle implementation correct *on its
-own terms*. Once Leg 4 is done, the full chain Spec → Canonical → Cycle is
+own terms*. Once Leg 5 is done, the full chain Spec → Canonical → Cycle is
 closed, and `CycleSieveSequence` can be trusted without re-proving anything
 against the linear scan.
 
 **No ticket exists yet.** Open scoping questions:
 - Which of `CycleSieveSequence`'s constructor `require`s are sufficient to
   carry the Leg-4 proof?
-- Does Leg 4 need the Leg-3 cycle rules (positivity, periodicity, copy, merge)
+- Does Leg 5 need the Leg-3 cycle rules (positivity, periodicity, copy, merge)
   as hypotheses, or can it re-derive them from Cycle's structural invariants
   alone?
 
@@ -258,10 +266,11 @@ design:
   this (copy rule acceptance transfer) and were unblocked only by isolating
   the failing fact into its own small lemma.
 - **`never-destroy`** — failed lemmas are commented out, never deleted.
-  `CanonicalCycleSieve.scala` retains commented-out records of timed-out
+  `SpecDerivedCycleSieve.scala` retains commented-out records of timed-out
   attempts as proof logs.
 - **`stay-on-track`** — the 3-way architecture and the Leg boundaries are
-  fixed; do not fold Leg 4 into Leg 3 or vice versa.
+  fixed; do not fold Leg 4 into Leg 3, or Leg 5 into Leg 4, unless the user
+  explicitly changes the architecture.
 
 ---
 
@@ -272,4 +281,4 @@ Bird's-eye design doc consolidating the 3-way Spec/Canonical/Cycle
 architecture. Reflects the verified state as of Leg 3 completion (`9373 valid`).
 Traces the EPIC (§2) down to per-lemma status (§4, §5) and records the
 load-bearing proof idioms (§3) and lessons (§4) accumulated across Legs 2–3.
-Leg 4 is documented as not-started with open scoping questions.
+Leg 5 is documented as future work with open scoping questions.

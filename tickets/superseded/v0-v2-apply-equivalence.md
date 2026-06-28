@@ -9,7 +9,7 @@ The alternative ticket narrows the proof to the canonical Cycle sequence built
 by the intermediate correspondence representation:
 
 ```text
-canonical = CanonicalCycleSieve(spec, period)
+canonical = SpecDerivedCycleSieve(spec, period)
 cycle = canonical.cycle
 ```
 
@@ -17,7 +17,7 @@ and then tries to prove the recursive alignment theorem:
 
 ```text
 canonical.cycle.next() aligns with
-CanonicalCycleSieve(spec.next, nextPeriod).cycle
+SpecDerivedCycleSieve(spec.next, nextPeriod).cycle
 ```
 
 This may be a more tractable route than proving arbitrary
@@ -1143,7 +1143,7 @@ Added `SpecCycleSieveEquivalence.assertNextAcceptsMatchesCyclePrimesCoprime`.
 
 The original "Work On These Next" items 1-4 in this ticket were superseded by
 the canonical strategy (see `canonical-spec-to-cycle-alignment.md`). The
-canonical approach creates `CanonicalCycleSieve(spec, period)` as the sole
+canonical approach creates `SpecDerivedCycleSieve(spec, period)` as the sole
 owner of Spec-to-Cycle extraction and alignment.
 
 **Progress on canonical lemmas:**
@@ -1169,9 +1169,9 @@ previous positions, unlike the modulo-cycle-integral case where the diff
 depends only on `mod(position, size)`.
 
 **Current focus:** Build the verified canonical path as far as possible without
-the gap equality. The canonical construction `CanonicalCycleSieve(spec, period)`
+the gap equality. The canonical construction `SpecDerivedCycleSieve(spec, period)`
 already bridges all known properties for the current stage. The next canonical
-stage `CanonicalCycleSieve(spec.next, nextPeriod).cycle` is the correct
+stage `SpecDerivedCycleSieve(spec.next, nextPeriod).cycle` is the correct
 continuation by construction. The raw `CycleSieveSequence.next()` optimization
 (which uses `nextGapsWalk`) is deferred — we will return to it after completing
 the canonical path.

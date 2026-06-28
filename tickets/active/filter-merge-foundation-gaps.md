@@ -8,7 +8,7 @@
 ## Related Tickets
 
 - `../done/cycle-integral-filter-merge.md` — Filter-merge lemmas at CI level (complete). Delivered `assertReplicatedCycleValueEqual`, `assertSameCIWithSameCycle`, `assertShiftAtMerge`, `assertSameBeforeMerge`, `assertShiftAfterMerge`, `findFirstMultiple`, `assertConsecutiveGapSumEqualsDiff`.
-- `canonical-next-strategy.md` — Canonical transfer of Spec merge facts and the current survival-walk open hole. Demonstrates the transfer pattern but skips the CI-native construction.
+- `sieve-sequence-proof.md` — Canonical transfer of Spec merge facts and the current survival-walk open hole. Demonstrates the transfer pattern but skips the CI-native construction.
 - `../superseded/remove-extern-from-next.md` — Old walk-based `collectGaps` framing. The filter-merge at CycleIntegral level remains a structural alternative.
 - `sieve-foundation-cycle-integral-ones-and-filter-preserves-primes.md` — Done ticket about CI ones and filter preserves primes.
 
@@ -192,6 +192,26 @@ Given:
 - `newCI` built from survivors: `initialValue = survivors.head`, `cycle.values = gapsFromValues(survivors)`
 
 Proves: `newCI(k) mod f != 0` for all `k in [0, maxIndex]` by induction.
+
+## P2 Breakthrough
+
+Three lemmas that close the next-stage equivalence without walk unfolding:
+
+| Lemma | VCs | Statement |
+|-------|-----|-----------|
+| `assertFirstSurvivorEqualsSpecNext0` | 7/7 | `cycle.integral(0) == spec.next(0)` |
+| `assertSurvivorGapEqualsSpecNextGap` | 53/53 | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` |
+| `assertSpecNextIsKthSurvivor` | 29/29 | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` |
+
+These proofs avoid `survivorValues` and `specGapCycle` entirely — they work through position-based lemmas (`indexOfAccepted`, `assertApplyMatches`, `assertNextGapEqualsCurrentGapSum`).
+
+## Transparent Window Helpers
+
+| Helper | Purpose |
+|--------|---------|
+| `currentWindow(steps)` | Plain `List[BigInt]` of integral values, transparent recursion (6/6) |
+| `survivorWindow(steps)` | Filtered window (non-multiples of head) |
+| `assertFullEquivalence(nextPeriod, k)` | Top-level: `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value` (13/13) |
 
 **Composes:** `assertNewCIMatchesSurvivors` (maps newCI to survivors) + `assertSurvivorAtNotMultiple` (survivors have no multiples).
 

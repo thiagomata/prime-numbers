@@ -195,7 +195,7 @@ The `SpecSieveSequence` (chapter 6) uses `AllPrimesSoFarList` as its prime sourc
 
 ## Layer 6: Sieve Sequences
 
-**Files:** `src/main/scala/v1/chapter6/seq/sieve/{SpecSieveSequence, CycleSieveSequence, CanonicalCycleSieve, SieveSequenceNextLevel, ...}`
+**Files:** `src/main/scala/v1/chapter6/seq/sieve/{SpecSieveSequence, CycleSieveSequence, SpecDerivedCycleSieve, SieveSequenceNextLevel, ...}`
 
 ### Three-sequence architecture
 
@@ -205,7 +205,7 @@ flowchart TB
         SS["SpecSieveSequence\n(linear scan, source of truth)"]
     end
     subgraph Bridge
-        CCS["CanonicalCycleSieve\n(proved equivalence)"]
+        SDS["SpecDerivedCycleSieve\n(proved equivalence)\ncurrentWindow / survivorWindow"]
     end
     subgraph Cycle
         CS["CycleSieveSequence\n(efficient gap-driven)"]
@@ -234,7 +234,7 @@ flowchart TB
   - `nextWithGapCycle(newGapCycle)` — takes a pre-computed gap cycle, used by the constructive path
 - **No reference to `SpecSieveSequence`** — fully independent data structure
 
-### `CanonicalCycleSieve` — the bridge
+### `SpecDerivedCycleSieve` — the bridge
 
 **Construction:** Takes a `SpecSieveSequence` + `period`, builds a `CycleSieveSequence` from the spec's own data.
 
@@ -244,9 +244,12 @@ flowchart TB
 | `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value` — next head matches |
 | `assertNextCycleGapsMatchSpecNext` | Constructive next gaps == spec.next gap list |
 | `assertNextCycleApplyMatchesSpecNext` | Constructive next cycle matches spec.next in apply |
-| `assertSurvivorGapEqualsSpecNextGap` | Survivor gap(i) == spec.next gap(i) |
+| `assertSurvivorGapEqualsSpecNextGap` | Survivor gap(i) == spec.next gap(i) — P2 |
 | `assertSpecNextIsKthSurvivor` | `spec.next(k) == cycle(pos)` — per-position survivor equivalence |
 | `assertFilterMergeComposition` | New CI from survivors has no multiples of the filter prime |
+| `currentWindow(steps)` | Transparent `List[BigInt]` of `cycle.integral(0..steps-1)` |
+| `survivorWindow(steps)` | Filtered window (non-multiples of head) |
+| `assertFullEquivalence` | Top-level: same-stage + next-stage head (13/13) |
 
 ### Survivor-based next-stage derivation
 
