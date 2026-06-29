@@ -23,7 +23,7 @@ import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList
  * methods to discharge `nextFromWindow()` requires. Convert to `CycleSieveSequence`
  * via `cycle` when a concrete sequence is needed.
  */
-case class SpecDerivedSieveAPSFL(
+case class SpecDerivedSieveSequence(
   spec: SpecSieveSequence,
   period: BigInt
 ) {
@@ -125,9 +125,8 @@ case class SpecDerivedSieveAPSFL(
 
   /**
    * Proves the cycle position k returns the (k+1)-th value coprime to all
-   * tail primes.  Exclusion (no false positives) via assertCycleValueCoprimeToTail.
-   * Inclusion (no omissions) via assertApplyMatches — the spec enumerates every
-   * accepted value at the correct position, and the cycle matches the spec.
+   * tail primes.  Exclusion via assertCycleValueCoprimeToTail.
+   * Inclusion via assertApplyMatches.
    */
   def assertCyclePositionMatchesSpec(k: BigInt): Boolean = {
     require(k >= BigInt(0))
@@ -137,4 +136,75 @@ case class SpecDerivedSieveAPSFL(
     assert(SieveUtils.isCoprime(cycle(k), cyclePrimes.tail))
     true
   }.holds
+
+  /**
+   * First survivor head matches spec.next(0).
+   */
+  def assertFirstSurvivorEqualsSpecNext0(): Boolean = {
+    assert(assertNextHeadMatches())
+    assert(cycle(BigInt(1)) == cycle.integral(BigInt(0)))
+    assert(spec.next(BigInt(0)) == spec.next.head.value)
+    cycle.integral(BigInt(0)) == spec.next.head.value
+  }.holds
+
+  /**
+   * Per-index gap equality: survivor gap = spec.next gap.
+   */
+  def assertSurvivorGapEqualsSpecNextGap(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(k >= BigInt(0))
+    require(k + BigInt(1) < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    val pos1 = spec.indexOfAccepted(spec.next(k))
+    val pos2 = spec.indexOfAccepted(spec.next(k + BigInt(1)))
+    assert(assertApplyMatches(pos1))
+    assert(assertApplyMatches(pos2))
+    assert(spec(pos1) == spec.next(k))
+    assert(spec(pos2) == spec.next(k + BigInt(1)))
+    spec.next(k + BigInt(1)) - spec.next(k) == cycle(pos2) - cycle(pos1)
+  }.holds
+
+  /**
+   * Per-position: spec.next(k) == cycle(spec.indexOfAccepted(spec.next(k))).
+   */
+  def assertSpecNextIsKthSurvivor(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(k >= BigInt(0))
+    require(k < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    decreases(k)
+    if (k == BigInt(0)) {
+      assertFirstSurvivorEqualsSpecNext0()
+    } else {
+      assertSpecNextIsKthSurvivor(nextPeriod, k - BigInt(1))
+      if (k < nextPeriod - BigInt(1)) {
+        assert(assertSurvivorGapEqualsSpecNextGap(nextPeriod, k - BigInt(1)))
+      }
+    }
+    val pos = spec.indexOfAccepted(spec.next(k))
+    assert(assertApplyMatches(pos))
+    spec.next(k) == cycle(pos)
+  }.holds
+
+  /**
+   * Top-level theorem: same-stage + next-stage head equality.
+   */
+  def assertFullEquivalence(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(k >= BigInt(0))
+    require(k < nextPeriod)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    assert(assertApplyMatches(k))
+    assert(assertNextHeadMatches())
+    assert(assertFirstSurvivorEqualsSpecNext0())
+    cycle(k) == spec(k) && cycle(BigInt(1)) == spec.next.head.value
+  }.holds
+
+  def nextVerified(nextPeriod: BigInt): SpecDerivedSieveSequence = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+    SpecDerivedSieveSequence(spec.next, nextPeriod)
+  }
 }
