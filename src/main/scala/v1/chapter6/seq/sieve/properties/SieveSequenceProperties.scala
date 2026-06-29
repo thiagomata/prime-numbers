@@ -57,8 +57,8 @@ object SieveSequenceProperties {
   }.holds
 
   def assertHeadIsPrime(seq: CycleSieveSequence): Boolean = {
-    require(SieveUtils.assertAllNotCoprimeInRange(seq.head, 2, seq.primesTailValues))
-    PrimeProperties.assertHeadIsPrime(seq.head, seq.primesTailValues)
+    assert(seq.primes.head.value == seq.head)
+    assert(Prime.isPrime(seq.primes.head.value))
     Prime.isPrime(seq.head)
   }.holds
 }

@@ -34,7 +34,7 @@ object SpecCycleSieveEquivalence {
     spec: SpecSieveSequence,
     cycle: CycleSieveSequence
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+      require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
 
     assert(spec.primes.list.list.nonEmpty)
     assert(PrimeUtils.primeValues(spec.primes.list.list).head == spec.head.value)
@@ -54,7 +54,7 @@ object SpecCycleSieveEquivalence {
     spec: SpecSieveSequence,
     cycle: CycleSieveSequence
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
 
     assert(assertHeadsMatchFromPrimeValues(spec, cycle))
     assert(spec(BigInt(0)) == spec.head.value)
@@ -275,7 +275,7 @@ object SpecCycleSieveEquivalence {
     require(nextSpec.specGapCycle(nextPeriod).memCycle == nextCycle.gapCycle.memCycle)
 
     assert(assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle))
-    assert(nextCycle.primes == PrimeUtils.primeValues(nextSpec.primes.list.list))
+    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) == PrimeUtils.primeValues(nextSpec.primes.list.list))
     assert(assertHeadsMatchFromPrimeValues(nextSpec, nextCycle))
     assert(nextSpec.head.value == nextCycle.head)
     assert(

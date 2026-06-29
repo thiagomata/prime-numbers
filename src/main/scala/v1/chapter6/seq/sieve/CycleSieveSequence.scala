@@ -15,9 +15,10 @@ case class CycleSieveSequence(
   primes: AllPrimesSoFarList,
   gapCycle: GapCycle
 ) {
+  require(!primes.isEmpty)
   require(primes.head.value + gapCycle.memCycle(0) > primes.head.value)
   require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))
-  require(Calc.mod(PrimeUtils.primorial(primes.list.list), primes.head.value) != BigInt(0))
+  require(Calc.mod(PrimeUtils.primorial(primes.list.tail.list), primes.head.value) != BigInt(0))
 
   val primesValues: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
   val primesTailValues: List[BigInt] = PrimeUtils.primeValues(primes.list.tail.list)
@@ -54,6 +55,8 @@ case class CycleSieveSequence(
     assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
     assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
     assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
+    assert(primes.next.isEmpty == false)
+    assert(primes.next.head.value == newHead)
 
     CycleSieveSequence(primes.next, newGapCycle)
   }
