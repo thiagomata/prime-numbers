@@ -20,10 +20,7 @@ source "$HOME/.sdkman/bin/sdkman-init.sh" 2>/dev/null || true
 sdk install java 21.0.7-zulu > /dev/null 2>&1 || true
 sdk use java 21.0.7-zulu > /dev/null 2>&1 || true
 
-pkill -f sbt 2>/dev/null || true
-pkill -f java 2>/dev/null || true
-pkill -f stainless 2>/dev/null || true
-sleep 1
+bash "$BASE_DIR/scripts/verify-stop.sh"
 
 STAINLESS="$BASE_DIR/stainless-dotty-standalone-0.9.8.8/stainless"
 Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"

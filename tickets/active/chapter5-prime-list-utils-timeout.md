@@ -108,3 +108,9 @@ unchanged.
   compared the newer `AllPrimesSoFarList` wrapper directly with raw lists.
   `just test` now passes: 133 tests, 0 failures. Re-ran `just verify-ch 5`:
   981 valid, 0 unknown.
+- 2026-06-30: Made the prime-list membership aliasing explicit:
+  `AllPrimesSoFarList.containsValue` delegates to the canonical
+  `PrimeListUtils.contains`, `containsPrime` delegates through the prime value,
+  and the legacy `contains` method remains as a compatibility alias. Validation:
+  `just test` passes with 133 tests, and `just verify-ch 5` remains green with
+  981 valid, 0 unknown.

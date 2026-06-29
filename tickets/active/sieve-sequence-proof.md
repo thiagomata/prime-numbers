@@ -2171,3 +2171,74 @@ read as certifying the concrete survival walk.
 **Validation:** Markdown-only cleanup. Checked the existing `verify.log` first:
 `10495 valid`, `0 invalid`, `0 unknown`. Per AGENTS.md, no Stainless rerun was
 needed because no non-markdown files were changed.
+
+## 2026-06-30 — Chapter 5 extraction lesson applied to Chapter 6 audit
+
+Chapter 5 timeout root cause was a split proof surface after extracting
+`PrimeListUtils`: `PrimeProperties` proved facts about the extracted utility
+predicates while `AllPrimesSoFarList` callers still consumed local duplicate
+predicates. The fix was to make the old/public wrappers delegate to the
+canonical utility and restore the load-bearing postconditions.
+
+Chapter 6 has one analogous risk cluster in `SpecSieveSequence`, around
+`assertApplyOneEqualsNextPrime` and helper lemmas that call
+`AllPrimesSoFarList.contains`, `primeAtOrBelowHeadIsContained`,
+`nextPrime`, and `noPrimesBetween*`. This is not currently a separate code bug:
+after the Chapter 5 fix those wrappers delegate to the canonical
+`PrimeListUtils` facts. If these Chapter 6 VCs regress later, first check for a
+new split between canonical utility predicates and local/wrapper predicates
+before increasing solver timeouts.
+
+Saved the general rule in `LEARNINGS.md` section 5.3.
+
+**Validation:** Markdown-only documentation update; no Stainless rerun needed.
+
+## 2026-06-30 — Chapter 6 membership aliases and solver cleanup
+
+Applied the Chapter 5 canonical-membership lesson to the Chapter 6 prime bridge
+cluster in `SpecSieveSequence`.
+
+Code changes:
+
+- `assertFilterValuesContains`, `assertFilterValuesContainsInTail`, and
+  `assertApplyOneIsPrimeIfBelowHeadSq` now call
+  `AllPrimesSoFarList.containsValue` for BigInt membership in prime lists.
+- The local `listContains(d, values: List[BigInt])` helper is now only a
+  compatibility alias to local `containsValue`, which itself delegates to
+  `values.contains`.
+- Scaladoc documents the distinction: raw `List[BigInt]` filter values use
+  Scala list membership; `SortedPrimeList` membership uses
+  `AllPrimesSoFarList.containsValue`; neither helper should be reimplemented as
+  a second recursive predicate.
+- Added `just verify-stop`, backed by `scripts/verify-stop.sh`, and wired
+  `just verify` / `just verify-ch` through it so interrupted Stainless/Z3 runs
+  can be cleaned up before another verification starts.
+
+Current validation:
+
+- `just test`: 133 tests passed before the comment-only Scaladoc pass.
+- Focused Chapter 6 bridge check:
+  `scripts/verify-ch.sh 6 --functions=v1.chapter6.seq.sieve.SpecSieveSequence.assertApplyOneIsPrimeIfBelowHeadSq`
+  returned 34 valid, 0 unknown before the comment-only Scaladoc pass.
+- `just verify-stop` returned "No Stainless/Z3 verification processes found"
+  after the interrupted broad Chapter 6 run.
+
+Broad `just verify-ch 6` is intentionally not the next validation step. Chapter
+6 already has known timeout debt, so the correct lane is dependency-ordered
+focused verification.
+
+Dependency order for Chapter 6 verification:
+
+1. Base utility layer: `CycleUtils._`, then `SieveUtils._`, then
+   `SieveSequenceByPrimes._`, then `CompletePrimePrefix._`.
+2. Core sequence constructors: `CycleSieveSequence` entry points that do not
+   call the known heavy `next` path, then `SieveSequenceNextLevel` pipeline
+   helpers from residues through sorted/filter/gap construction.
+3. Spec base layer: `SpecSieveSequence` accessors and filter/product lemmas
+   before index/order lemmas.
+4. Spec prime bridge cluster: `assertFilterValuesContains`,
+   `assertFilterValuesContainsInTail`, `divisorInFilterValues`,
+   `assertApplyOneIsPrimeIfBelowHeadSq`, then `assertApplyOneEqualsNextPrime`.
+5. Derived/equivalence layer: `SpecDerivedSieveSequence._` and then
+   `SpecCycleSieveEquivalence` in smaller function clusters, not as a whole
+   first pass.

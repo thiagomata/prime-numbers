@@ -183,7 +183,55 @@ def assertGenerateResiduesContainsCoprime(v, i, modulus, primes): Boolean = {
 }.holds
 ```
 
+### 5.3 Keep extracted predicates canonical
+
+When extracting helper predicates into a utility object, do not leave
+logically-equivalent local copies behind unless they are deliberate wrappers
+that delegate to the canonical helper. Stainless treats
+`OldObject.contains(x, list)` and `NewUtils.contains(x, list)` as different
+functions even if their bodies are textually identical, so a lemma that proves a
+fact about one surface may not satisfy a caller that consumes the other.
+
+**Pattern that worked:** make old/public surfaces delegate to the extracted
+utility, then keep postconditions stated through the wrapper only when callers
+need backward compatibility.
+
+```scala
+def contains(current: BigInt, list: SortedPrimeList): Boolean =
+  PrimeListUtils.contains(current, list)
+```
+
+Also preserve load-bearing postconditions when moving recursive helpers.
+`searchNextPrimeUpTo` needed the full `noPrimesBetween(current, res.value)`
+postcondition as its induction hypothesis; weakening it to a numeric bound made
+later VCs time out even though the implementation looked unchanged.
+
+**Affected:** Chapter 5 `PrimeListUtils` extraction. `PrimeProperties` proved
+facts using `PrimeListUtils.contains`, while `AllPrimesSoFarList` still consumed
+local duplicate predicates. Aligning `AllPrimesSoFarList.contains`,
+`allPrimesSoFar`, `noPrimesBetween`, and
+`primeAtOrBelowHeadIsContained` through `PrimeListUtils` removed the
+`PrimeListUtils._` and `AllPrimesSoFarList._` unknowns.
+
+**Chapter 6 audit note:** `SpecSieveSequence` has proofs that call the Chapter 5
+prime-list wrappers (`AllPrimesSoFarList.contains`,
+`primeAtOrBelowHeadIsContained`, `nextPrime`, and `noPrimesBetween*`) in the
+`assertApplyOneEqualsNextPrime` chain. Those wrappers are safe only while they
+delegate to the canonical `PrimeListUtils` predicates; if Chapter 6 develops
+similar timeouts, first check for a split predicate surface before increasing
+timeouts or adding heavier assertions.
+
 ## 6. Timeout Resolution Strategies
+
+### 6.0 Stop orphaned verification workers before reruns
+
+If a Stainless run is interrupted or appears stale, run `just verify-stop`
+before starting another verification command. It terminates orphaned Stainless,
+Java verifier, SBT, `smt-z3`, and `z3` workers with `TERM` first, then uses
+`KILL` only for matching verification processes that are still alive.
+
+Avoid overlapping solver runs. They hide the real timeout profile and can make
+otherwise-local Chapter 5/6 proof changes look much worse than they are.
 
 ### 6.1 Substitution chain
 

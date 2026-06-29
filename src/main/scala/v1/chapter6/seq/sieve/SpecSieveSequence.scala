@@ -2716,7 +2716,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    */
   private def assertFilterValuesContains(d: BigInt): Boolean = {
     require(d >= 2)
-    require(AllPrimesSoFarList.contains(d, primes.list.tail))
+    require(AllPrimesSoFarList.containsValue(d, primes.list.tail))
     require(Calc.mod(apply(BigInt(1)), d) == BigInt(0))
     decreases(primes.list.tail.size)
 
@@ -2728,7 +2728,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(filterValues.head == d)
       listContains(d, filterValues)
     } else {
-      assert(AllPrimesSoFarList.contains(d, primes.list.tail.tail))
+      assert(AllPrimesSoFarList.containsValue(d, primes.list.tail.tail))
       assert(filterValues.tail == PrimeUtils.primeValues(primes.list.tail.tail.list))
       assert(assertFilterValuesContainsInTail(d, primes.list.tail.tail, filterValues.tail, apply(BigInt(1))))
       listContains(d, filterValues)
@@ -2747,7 +2747,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
                                               ): Boolean = {
     require(d >= 2)
     require(tail.nonEmpty)
-    require(AllPrimesSoFarList.contains(d, tail))
+    require(AllPrimesSoFarList.containsValue(d, tail))
     require(tailFilterValues == PrimeUtils.primeValues(tail.list))
     require(Calc.mod(n, d) == BigInt(0))
     decreases(tail.size)
@@ -2757,7 +2757,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(tailFilterValues.head == d)
       listContains(d, tailFilterValues)
     } else {
-      assert(AllPrimesSoFarList.contains(d, tail.tail))
+      assert(AllPrimesSoFarList.containsValue(d, tail.tail))
       assert(tailFilterValues.tail == PrimeUtils.primeValues(tail.tail.list))
       assert(assertFilterValuesContainsInTail(d, tail.tail, tailFilterValues.tail, n))
       listContains(d, tailFilterValues)
@@ -2791,12 +2791,29 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
-  /** Linear membership check for `d` in `values`. */
+  /**
+   * Canonical value-level membership for local `List[BigInt]` filter values.
+   *
+   * Keep this as a thin alias to `values.contains`. Do not restore a local
+   * recursive `listContains`: Chapter 5 timed out when different objects had
+   * proof facts about different recursive membership predicates. These lists
+   * are raw `BigInt` filter values, so their canonical predicate is Scala's
+   * list membership; prime-list membership should use
+   * `AllPrimesSoFarList.containsValue`.
+   */
+  private def containsValue(d: BigInt, values: List[BigInt]): Boolean = {
+    values.contains(d)
+  }
+
+  /**
+   * Compatibility alias for older local proofs.
+   *
+   * This method must remain an alias to `containsValue`, not another recursive
+   * implementation. The name is intentionally preserved for proof readability,
+   * while the verifier sees only one local value-membership predicate.
+   */
   private def listContains(d: BigInt, values: List[BigInt]): Boolean = {
-    decreases(values.size)
-    if (values.isEmpty) false
-    else if (values.head == d) true
-    else listContains(d, values.tail)
+    containsValue(d, values)
   }
 
   /**
@@ -2819,7 +2836,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(Calc.mod(v1, d) == BigInt(0))
 
       AllPrimesSoFarList.primeAtOrBelowHeadIsContained(d, primes.list)
-      assert(AllPrimesSoFarList.contains(d, primes.list.tail))
+      assert(AllPrimesSoFarList.containsValue(d, primes.list.tail))
       assert(assertFilterValuesContains(d))
       assert(divisorInFilterValues(v1, d, filterValues))
       assert(!SieveUtils.isCoprime(v1, filterValues))

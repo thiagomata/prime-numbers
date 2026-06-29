@@ -12,8 +12,7 @@ verify focus="":
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
-    pkill -f sbt 2>/dev/null; pkill -f java; pkill -f stainless 2>/dev/null; pkill -f z3 2>/dev/null;
-    sleep 1
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
     cd "{{justfile_directory()}}"
     rm -f verify-error.log
     rm -f verify.log
@@ -29,6 +28,10 @@ verify focus="":
 verify-ch chapters="":
     #!/usr/bin/env bash
     exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{chapters}}
+
+verify-stop:
+    #!/usr/bin/env bash
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
 
 verify-file file pattern="":
     #!/usr/bin/env bash

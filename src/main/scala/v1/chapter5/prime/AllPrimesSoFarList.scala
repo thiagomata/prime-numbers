@@ -203,8 +203,37 @@ object AllPrimesSoFarList {
 //    }
 //  }
 
-  def contains(current: BigInt, list: SortedPrimeList): Boolean = {
+  /**
+   * Canonical value-level membership for prime lists.
+   *
+   * Keep this as a direct alias to `PrimeListUtils.contains`. Do not reimplement
+   * the recursion here: duplicated recursive predicates create separate proof
+   * surfaces, so Stainless may prove membership facts about one `contains` but
+   * fail to use them at callers that mention the other.
+   */
+  def containsValue(current: BigInt, list: SortedPrimeList): Boolean = {
     PrimeListUtils.contains(current, list)
+  }
+
+  /**
+   * Domain-level membership for a `Prime` wrapper.
+   *
+   * This intentionally delegates through `containsValue(prime.value, list)` so
+   * the public API can distinguish `Prime` membership from raw numeric
+   * membership while the verifier still sees one canonical value predicate.
+   */
+  def containsPrime(prime: Prime, list: SortedPrimeList): Boolean = {
+    containsValue(prime.value, list)
+  }
+
+  /**
+   * Backward-compatible value-membership alias.
+   *
+   * Existing proofs call `AllPrimesSoFarList.contains`; keep it as a thin alias
+   * to `containsValue`, not as another recursive implementation.
+   */
+  def contains(current: BigInt, list: SortedPrimeList): Boolean = {
+    containsValue(current, list)
   }
 
   @tailrec
