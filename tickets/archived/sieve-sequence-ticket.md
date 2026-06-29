@@ -33,10 +33,10 @@ Implement `SieveSequence` - a mathematical structure representing infinite seque
 | `MemCycle` | `cycle(i) = values(i % size)` | Gaps indexed by position |
 | `Integral(list)` | Cumulative sum of list | Sum of first r gaps |
 | `ModCycleIntegral(init, mCycle)` | `div * last + integral(mod) + init` | **Exact formula needed!** |
-| `Seq(previous, loop)` | Cumulative sum with preamble | Delegates to loop values |
+| ~~`Seq(previous, loop)`~~ | ~~Cumulative sum with preamble~~ | ~~Delegates to loop values~~ (removed, unused in production) |
 
 ### 3. The Pattern Discovered
-The `Seq` class already implements what we need:
+The `Seq` class (now deleted — had no remaining consumers) implemented the cumulative sum pattern:
 ```scala
 case class Seq(
   previous: List[BigInt],  // Initial elements (just head)
@@ -47,7 +47,7 @@ case class Seq(
   }
 }
 ```
-This is the exact pattern for accumulating gaps!
+This was the exact pattern for accumulating gaps, later replaced by `CycleIntegral`.
 
 ### 4. S_0's Special Role
 - **Filter 1** → Remove 1 from naturals → S_0 = [2, 3, 4, 5, ...]

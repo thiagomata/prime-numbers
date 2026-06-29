@@ -7,7 +7,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModSmallDividend}
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListProduct
-import v1.chapter6.seq.sieve.SieveUtils
+import v1.chapter5.prime.CoprimeUtils
 
 import scala.annotation.tailrec
 
@@ -188,7 +188,7 @@ object PrimeUtils {
       assert(Prime.noDivisorInRangeExcludesValue(v, 2, v, primes.head.value))
       assert(Calc.mod(v, primes.head.value) != BigInt(0))
       assert(ListUtils.checkAllPositive(primeValues(primes)))
-      SieveUtils.isCoprime(v, primeValues(primes))
+      CoprimeUtils.isCoprime(v, primeValues(primes))
     } else {
       assert(primes.head.value >= 2)
       assert(primes.head.value < v)
@@ -199,7 +199,7 @@ object PrimeUtils {
       assert(primes.tail.head.value < v)
       assert(primeIsCoprimeWithSmallerList(v, primes.tail))
       assert(ListUtils.checkAllPositive(primeValues(primes)))
-      SieveUtils.isCoprime(v, primeValues(primes))
+      CoprimeUtils.isCoprime(v, primeValues(primes))
     }
   }.holds
 

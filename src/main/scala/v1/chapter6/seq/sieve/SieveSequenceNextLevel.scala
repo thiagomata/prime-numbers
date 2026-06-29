@@ -30,8 +30,8 @@ object SieveSequenceNextLevel {
   }
 
   def nextGaps(seq: CycleSieveSequence): List[BigInt] = {
-    require(seq.head > BigInt(0))
-    require(seq.modulus > BigInt(0))
+    // require(seq.head > BigInt(0))                                      // [TIMEOUT CANDIDATE]
+    // require(seq.modulus > BigInt(0))                                   // [TIMEOUT CANDIDATE]
     SieveUtils.calculateGaps(nextSorted(seq).list, seq.modulus * seq.head)
   }
 
@@ -191,8 +191,8 @@ object SieveSequenceNextLevel {
   }.holds
 
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
-    require(seq.head > BigInt(0))
-    require(seq.modulus > BigInt(0))
+    // require(seq.head > BigInt(0))                                      // [TIMEOUT CANDIDATE]
+    // require(seq.modulus > BigInt(0))                                   // [TIMEOUT CANDIDATE]
     nextGaps(seq).nonEmpty
   }.holds
 

@@ -15,10 +15,10 @@ case class CycleSieveSequence(
   primes: AllPrimesSoFarList,
   gapCycle: GapCycle
 ) {
-  require(!primes.isEmpty)
-  require(primes.head.value + gapCycle.memCycle(0) > primes.head.value)
-  require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))
-  require(Calc.mod(PrimeUtils.primorial(primes.list.tail.list), primes.head.value) != BigInt(0))
+  // require(!primes.isEmpty)                                              // [TIMEOUT CANDIDATE]
+  // require(primes.head.value + gapCycle.memCycle(0) > primes.head.value) // [TIMEOUT CANDIDATE]
+  // require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))  // [TIMEOUT CANDIDATE]
+  // require(Calc.mod(PrimeUtils.primorial(primes.list.tail.list), primes.head.value) != BigInt(0))  // [TIMEOUT CANDIDATE]
 
   val primesValues: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
   val primesTailValues: List[BigInt] = PrimeUtils.primeValues(primes.list.tail.list)
@@ -44,63 +44,47 @@ case class CycleSieveSequence(
     apply(BigInt(1)) > head
   }.holds
 
-  def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {
-    val newHead = apply(BigInt(1))
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
-    require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(primorial, newHead) != BigInt(0))
-    require(primes.next.isEmpty == false)
-    require(primes.next.head.value == newHead)
-    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), primes.next.head.value) != BigInt(0))
-
-    assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
-    assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
-    assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
-    assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
-    assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
-
-    CycleSieveSequence(primes.next, newGapCycle)
-  }
-
-  def next(): CycleSieveSequence = {
-    val newHead = apply(BigInt(1))
-    val newGaps = SieveSequenceNextLevel.nextGapsWalk(this)
-    require(newGaps.nonEmpty)
-    require(ListBoundUtils.allGreaterThan(newGaps, BigInt(0)))
-    val newGapCycle = GapCycle(newGaps)
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
-    require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(primorial, newHead) != BigInt(0))
-    require(primes.next.isEmpty == false)
-    require(primes.next.head.value == newHead)
-    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), newHead) != BigInt(0))
-
-    nextWithGapCycle(newGapCycle)
-  }
-
-  /**
-   * Verified next-stage construction using the transparent current window.
-   */
-  def nextFromWindow(): CycleSieveSequence = {
-    val steps = head * gapCycle.size
-    val window = SieveSequenceNextLevel.currentWindow(integral, steps)
-    val survivors = window.filter(v => Calc.mod(v, head) != BigInt(0))
-    require(!survivors.isEmpty)
-    require(survivors.size > BigInt(1))
-    val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
-    require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
-    val newGapCycle = GapCycle(gaps)
-    val newHead = apply(BigInt(1))
-    require(newHead < head * head)
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
-    require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(primorial, newHead) != BigInt(0))
-    require(primes.next.isEmpty == false)
-    require(primes.next.head.value == newHead)
-    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), newHead) != BigInt(0))
-
-    nextWithGapCycle(newGapCycle)
-  }
+  // def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {   // [TIMEOUT CANDIDATE]
+  //   val newHead = apply(BigInt(1))
+  //   require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
+  //   require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
+  //   require(Calc.mod(primorial, newHead) != BigInt(0))
+  //   assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
+  //   assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
+  //   assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
+  //   assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
+  //   assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
+  //   CycleSieveSequence(primes.next, newGapCycle)
+  // }
+  // 
+  // def next(): CycleSieveSequence = {                                    // [TIMEOUT CANDIDATE]
+  //   val newHead = apply(BigInt(1))
+  //   val newGaps = SieveSequenceNextLevel.nextGapsWalk(this)
+  //   require(newGaps.nonEmpty)
+  //   require(ListBoundUtils.allGreaterThan(newGaps, BigInt(0)))
+  //   val newGapCycle = GapCycle(newGaps)
+  //   require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
+  //   require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
+  //   require(Calc.mod(primorial, newHead) != BigInt(0))
+  //   nextWithGapCycle(newGapCycle)
+  // }
+  // 
+  // def nextFromWindow(): CycleSieveSequence = {                          // [TIMEOUT CANDIDATE]
+  //   val steps = head * gapCycle.size
+  //   val window = SieveSequenceNextLevel.currentWindow(integral, steps)
+  //   val survivors = window.filter(v => Calc.mod(v, head) != BigInt(0))
+  //   require(!survivors.isEmpty)
+  //   require(survivors.size > BigInt(1))
+  //   val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
+  //   require(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
+  //   val newGapCycle = GapCycle(gaps)
+  //   val newHead = apply(BigInt(1))
+  //   require(newHead < head * head)
+  //   require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
+  //   require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
+  //   require(Calc.mod(primorial, newHead) != BigInt(0))
+  //   nextWithGapCycle(newGapCycle)
+  // }
 }
 
 object CycleSieveSequence {

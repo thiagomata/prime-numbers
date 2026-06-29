@@ -181,8 +181,6 @@ where:
 - $h$ is the head (first element)
 - $C$ is the cycle of gaps that generate the sequence
 
-This is equivalent to the cumulative sum approach used in the `Seq` class properties.
-
 Defined at [SieveSequence.scala](../src/main/scala/v1/chapter6/seq/sieve/SieveSequence.scala) as follows:
 
 <details>

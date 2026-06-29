@@ -7,8 +7,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication.ATimesBSameMod
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModOperations, ModSmallDividend}
 import v1.chapter3.list.ListUtils
-import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
-import v1.chapter6.seq.sieve.SieveUtils
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList, CoprimeUtils}
 
 object PrimeProperties {
 
@@ -482,15 +481,15 @@ object PrimeProperties {
     require(from >= 2)
     require(to >= from)
     require(ListUtils.checkAllPositive(primes))
-    require(SieveUtils.isCoprime(n, primes))
-    require(SieveUtils.assertAllNotCoprimeInRange(to, from, primes))
+    require(CoprimeUtils.isCoprime(n, primes))
+    require(CoprimeUtils.assertAllNotCoprimeInRange(to, from, primes))
     decreases(to - from)
     if (from >= to) {
       Prime.noDivisorInRange(n, from, to)
     } else {
-      assert(SieveUtils.hasPrimeFactorInList(from, primes))
-      assert(SieveUtils.assertHasPrimeFactorImpliesNotCoprime(from, primes))
-      assert(SieveUtils.assertNoDivisorByFactorList(n, from, primes))
+      assert(CoprimeUtils.hasPrimeFactorInList(from, primes))
+      assert(CoprimeUtils.assertHasPrimeFactorImpliesNotCoprime(from, primes))
+      assert(CoprimeUtils.assertNoDivisorByFactorList(n, from, primes))
       assert(assertNoDivisorInRangeFromHelper(n, primes, from + 1, to))
       Prime.noDivisorInRange(n, from, to)
     }
@@ -499,8 +498,8 @@ object PrimeProperties {
   def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
     require(head > 1)
     require(ListUtils.checkAllPositive(primesTail))
-    require(SieveUtils.isCoprime(head, primesTail))
-    require(SieveUtils.assertAllNotCoprimeInRange(head, 2, primesTail))
+    require(CoprimeUtils.isCoprime(head, primesTail))
+    require(CoprimeUtils.assertAllNotCoprimeInRange(head, 2, primesTail))
     assertNoDivisorInRangeFromHelper(head, primesTail, 2, head)
     Prime.isPrime(head)
   }.holds
@@ -593,15 +592,15 @@ object PrimeProperties {
     require(n > 1 && d >= 2)
     require(ListUtils.checkAllPositive(primes))
     require(Calc.mod(n, d) == BigInt(0))
-    require(!SieveUtils.isCoprime(d, primes))
+    require(!CoprimeUtils.isCoprime(d, primes))
 
-    if (SieveUtils.isCoprime(n, primes)) {
-      SieveUtils.assertNoDivisorByFactorList(n, d, primes)
+    if (CoprimeUtils.isCoprime(n, primes)) {
+      CoprimeUtils.assertNoDivisorByFactorList(n, d, primes)
       assert(Calc.mod(n, d) != BigInt(0))
       assert(false)
     }
 
-    !SieveUtils.isCoprime(n, primes)
+    !CoprimeUtils.isCoprime(n, primes)
   }.holds
 
   private def assertDivisorBelowHead(d: BigInt, head: BigInt): Boolean = {
@@ -691,15 +690,15 @@ object PrimeProperties {
 //  ): Boolean = {
 //    require(d >= 2 && d <= limit)
 //    require(ListUtils.checkAllPositive(primes))
-//    require(SieveUtils.assertAllNotCoprimeInRange(limit, 2, primes))
+//    require(CoprimeUtils.assertAllNotCoprimeInRange(limit, 2, primes))
 //    decreases(d - 2)
 //
 //    if (d == 2) {
-//      SieveUtils.assertAllNotCoprimeInRange(limit, d, primes)
+//      CoprimeUtils.assertAllNotCoprimeInRange(limit, d, primes)
 //    } else {
 //      assert(assertAllNotCoprimeInSubRange(d - 1, limit, primes))
-//      assert(SieveUtils.assertAllNotCoprimeInRange(limit, d - 1, primes))
-//      SieveUtils.assertAllNotCoprimeInRange(limit, d, primes)
+//      assert(CoprimeUtils.assertAllNotCoprimeInRange(limit, d - 1, primes))
+//      CoprimeUtils.assertAllNotCoprimeInRange(limit, d, primes)
 //    }
 //  }.holds
 //
@@ -709,7 +708,7 @@ object PrimeProperties {
 //   *
 //   * Used by `acceptedBelowHeadSquaredIsPrime` to extend a prime divisor `d`
 //   * of `value` (which is a filter prime) to a contradiction with
-//   * `SieveUtils.isCoprime(value, filterValues)`.
+//   * `CoprimeUtils.isCoprime(value, filterValues)`.
 //   */
 //  private def assertDivisibleByFactorListNotCoprime(
 //    n: BigInt,
@@ -719,15 +718,15 @@ object PrimeProperties {
 //    require(n > 1 && d >= 2)
 //    require(ListUtils.checkAllPositive(primes))
 //    require(Calc.mod(n, d) == BigInt(0))
-//    require(!SieveUtils.isCoprime(d, primes))
+//    require(!CoprimeUtils.isCoprime(d, primes))
 //
-//    if (SieveUtils.isCoprime(n, primes)) {
-//      SieveUtils.assertNoDivisorByFactorList(n, d, primes)
+//    if (CoprimeUtils.isCoprime(n, primes)) {
+//      CoprimeUtils.assertNoDivisorByFactorList(n, d, primes)
 //      assert(Calc.mod(n, d) != BigInt(0))
 //      assert(false)
 //    }
 //
-//    !SieveUtils.isCoprime(n, primes)
+//    !CoprimeUtils.isCoprime(n, primes)
 //  }.holds
 //
 //  /**
@@ -744,9 +743,9 @@ object PrimeProperties {
 //  ): Boolean = {
 //    require(d >= 2 && d < limit)
 //    require(ListUtils.checkAllPositive(primes))
-//    require(SieveUtils.assertAllNotCoprimeInRange(limit, d, primes))
+//    require(CoprimeUtils.assertAllNotCoprimeInRange(limit, d, primes))
 //
-//    SieveUtils.hasPrimeFactorInList(d, primes)
+//    CoprimeUtils.hasPrimeFactorInList(d, primes)
 //  }.holds
 //
 //  /**
@@ -782,8 +781,8 @@ object PrimeProperties {
 //    require(value > head)
 //    require(value < head * head)
 //    require(ListUtils.checkAllPositive(filterValues))
-//    require(SieveUtils.isCoprime(value, filterValues))
-//    require(SieveUtils.assertAllNotCoprimeInRange(head, 2, filterValues))
+//    require(CoprimeUtils.isCoprime(value, filterValues))
+//    require(CoprimeUtils.assertAllNotCoprimeInRange(head, 2, filterValues))
 //
 //    if (Prime.isPrime(value)) {
 //      true
@@ -801,15 +800,15 @@ object PrimeProperties {
 //      assert(d < head)
 //
 //      assertAllNotCoprimeInSubRange(d, head, filterValues)
-//      assert(SieveUtils.assertAllNotCoprimeInRange(head, d, filterValues))
+//      assert(CoprimeUtils.assertAllNotCoprimeInRange(head, d, filterValues))
 //      assert(assertHasPrimeFactorInRange(d, head, filterValues))
-//      assert(SieveUtils.hasPrimeFactorInList(d, filterValues))
+//      assert(CoprimeUtils.hasPrimeFactorInList(d, filterValues))
 //
-//      SieveUtils.assertHasPrimeFactorImpliesNotCoprime(d, filterValues)
-//      assert(!SieveUtils.isCoprime(d, filterValues))
+//      CoprimeUtils.assertHasPrimeFactorImpliesNotCoprime(d, filterValues)
+//      assert(!CoprimeUtils.isCoprime(d, filterValues))
 //
 //      assertDivisibleByFactorListNotCoprime(value, d, filterValues)
-//      assert(!SieveUtils.isCoprime(value, filterValues))
+//      assert(!CoprimeUtils.isCoprime(value, filterValues))
 //      assert(false)
 //      true
 //    }

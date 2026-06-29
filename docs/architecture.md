@@ -288,3 +288,74 @@ The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every
 | **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), gap cycles, survivor filtering — the sieve's computational engine |
 | **ch5: Primes** | Prime definitions, Euclid's theorem, filter preservation — the mathematical guarantee that the sieve works |
 | **ch6: Sieve** | The full pipeline — spec as source of truth, cycle as efficient representation, canonical bridge proving they match, survivor-based next-stage derivation |
+
+---
+
+## Dependency Map
+
+### Cross-chapter import graph
+
+```
+ch1(Verification) → ch2(Div/Mod) → ch3(Lists) → ch4(Cycles) → ch5(Primes) → ch6(Sieve)
+                                                              ↑              |
+                                                              |  (SieveUtils) |
+                                                              +--------------+
+```
+
+The dependency graph is a strict DAG with **one backward edge**: `ch5` imports `SieveUtils` (a `filterList`/`isCoprime` utility) from `ch6`. This is used by 4 files in `ch5`:
+
+| Chapter 5 file | Imports from chapter 6 |
+|---|---|
+| `PrimeUtils.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
+| `PrimeProperties.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
+| `FilterPreservesPrimesProperties.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
+| `PrimeSieveBridge.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
+
+### File counts per chapter
+
+| Chapter | Production files | Property files | Total |
+|---------|:-:|:-:|:-:|
+| ch1: Verification | 1 | 0 | 1 |
+| ch2: Div/Mod | 3 | 9 | 12 |
+| ch3: Lists | 8 | 6 | 15 (1 excluded: `old/RepeatedList`) |
+| ch4: Cycles | 7 | 9 | 16 |
+| ch5: Primes | 4 | 3 | 7 |
+| ch6: Sieve | 11 | 1 | 12 |
+
+### Isolated files (zero internal `v1.*` imports)
+
+These files import only from `stainless.lang`, `stainless.collection`, or standard library — they form the bottom of the dependency stack:
+
+| File | Package |
+|---|---|
+| `Helper.scala` | `v1.chapter1.verification` |
+| `DivMain.scala` | `v1.chapter2.div` |
+| `ListBuilder.scala` | `v1.chapter3.list` |
+| `SortedList.scala` | `v1.chapter3.list` |
+| `Integral.scala` | `v1.chapter3.list.integral` |
+| `SortedPrimeList.scala` | `v1.chapter5.prime` |
+| `CycleUtils.scala` | `v1.chapter6.seq.sieve` |
+| `CsvWriter.scala` | `v1.chapter6.seq.sieve.empirical` |
+| `EmpiricalRunner.scala` | `v1.chapter6.seq.sieve.empirical` |
+| `GapAnalyzer.scala` | `v1.chapter6.seq.sieve.empirical` |
+| `SegmentedSieve.scala` | `v1.chapter6.seq.sieve.empirical` |
+| `Types.scala` | `v1.chapter6.seq.sieve.empirical` |
+
+Note: the `empirical/` files are `@extern` — not verified by Stainless.
+
+### Heaviest importers (by count of distinct internal packages imported)
+
+| File | Imports from |
+|---|---|
+| `SpecSieveSequence.scala` (ch6) | ch2(Calc, +3 properties), ch3(2 files), ch4(4 files), ch5(4 files) |
+| `CycleSieveSequence.scala` (ch6) | ch2(Calc), ch3(3 files), ch4(4 files), ch5(4 files) |
+| `CycleIntegralFilterProperties.scala` (ch4) | ch1(Helper), ch2(Calc, +2 properties), ch3(4 files), ch4(3 files) |
+| `CycleIntegralProperties.scala` (ch4) | ch1(Helper), ch2(Calc), ch3(3 files), ch4(3 files) |
+| `SpecCycleSieveEquivalence.scala` (ch6) | ch2(Calc,DivMod,+2 properties), ch3(3 files), ch4(2 files), ch5(2 files) |
+
+### Key structural notes
+
+- **`SieveUtils`** (ch6) is the single most imported module across the project — used by 4 ch5 files and 2 ch6 files
+- **`Helper.assert`** (ch1) is imported by every property file across all chapters
+- **`Calc`** (ch2) is the cross-cutting dependency — imported by every chapter from ch2 through ch6
+- The old `Seq` case class (`v1.chapter6.seq.Seq`) and its `SeqProperties` were removed — they had zero production dependents

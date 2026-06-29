@@ -5,7 +5,7 @@ import stainless.lang.{BigInt, BooleanDecorations, decreases}
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.ModSmallDividend
 import v1.chapter5.prime.Prime
-import v1.chapter6.seq.sieve.SieveUtils
+import v1.chapter5.prime.CoprimeUtils
 
 /**
  * # Filtering Preserves All Primes
@@ -224,7 +224,7 @@ object FilterPreservesPrimesProperties {
       // Contradiction: q is in empty list
       false
     } else {
-      val filtered = SieveUtils.filterList(originalPrimes, filterPrime)
+      val filtered = CoprimeUtils.filterList(originalPrimes, filterPrime)
       if (originalPrimes.head == q) {
         // q is the head of the list
         // By Lemma 4: mod(q, filterPrime) ≠ 0
