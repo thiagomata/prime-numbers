@@ -7,7 +7,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication.ATimesBSameMod
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModOperations, ModSmallDividend}
 import v1.chapter3.list.ListUtils
-import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList, CoprimeUtils}
+import v1.chapter5.prime.{Prime, PrimeUtils, SortedPrimeList, CoprimeUtils, PrimeListUtils}
 
 object PrimeProperties {
 
@@ -366,12 +366,12 @@ object PrimeProperties {
     decreases(primes.size)
 
     if (primes.isEmpty) {
-      !AllPrimesSoFarList.contains(d, sortedList)
+      !PrimeListUtils.contains(d, sortedList)
     } else {
       assert(primes.head.value != d)
       assert(notContainsFromValueNotMatchesAny(primes.tail, sortedList.tail, d))
-      assert(!AllPrimesSoFarList.contains(d, sortedList.tail))
-      !AllPrimesSoFarList.contains(d, sortedList)
+      assert(!PrimeListUtils.contains(d, sortedList.tail))
+      !PrimeListUtils.contains(d, sortedList)
     }
   }.holds
 
@@ -389,7 +389,7 @@ object PrimeProperties {
    */
   def euclidPrimeGreaterThanHead(sortedList: SortedPrimeList): Boolean = {
     require(sortedList.nonEmpty)
-    require(AllPrimesSoFarList.allPrimesSoFar(sortedList))
+    require(PrimeListUtils.allPrimesSoFar(sortedList))
 
     val primes = sortedList.list
     val upperPrime = newPrimeFromEuclid(primes)
@@ -401,7 +401,7 @@ object PrimeProperties {
     if (d <= sortedList.head.value) {
       // By the complete-prefix invariant, any prime at or below head
       // must already be contained — contradicting the Euclid non-membership.
-      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(d, sortedList)
+      PrimeListUtils.primeAtOrBelowHeadIsContained(d, sortedList)
     }
 
     d > sortedList.head.value

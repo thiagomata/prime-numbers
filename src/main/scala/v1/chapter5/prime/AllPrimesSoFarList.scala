@@ -56,10 +56,7 @@ case class AllPrimesSoFarList(list: SortedPrimeList) {
 
 object AllPrimesSoFarList {
   def allPrimesSoFar(list: SortedPrimeList): Boolean = {
-    if list.isEmpty then
-      true
-    else
-      loopCheckAllPrimesSoFar(list)
+    PrimeListUtils.allPrimesSoFar(list)
   }
 
   def loopCheckAllPrimesSoFar(list: SortedPrimeList): Boolean = {
@@ -78,20 +75,10 @@ object AllPrimesSoFarList {
     }
   }
 
-  @tailrec
   def noPrimesBetween(from: BigInt, to: BigInt): Boolean = {
-    decreases(to - from)
     require(from >= 0)
     require(to >= from)
-    if (from == to) {
-      true
-    } else {
-      if (Prime.isPrime(from)) {
-        false
-      } else {
-        noPrimesBetween(from + 1, to)
-      }
-    }
+    PrimeListUtils.noPrimesBetween(from, to)
   }
 
   /**
@@ -143,7 +130,7 @@ object AllPrimesSoFarList {
     assert(PrimeProperties.notContainsFromValueNotMatchesAny(list.list, list, upperPrime.value))
 
     if (upperPrime.value <= list.head.value) {
-      AllPrimesSoFarList.primeAtOrBelowHeadIsContained(upperPrime.value, list)
+      PrimeListUtils.primeAtOrBelowHeadIsContained(upperPrime.value, list)
     }
 
     AllPrimesSoFarList.searchNextPrimeUpTo(list.head.value + BigInt(1), upperPrime)
@@ -193,31 +180,8 @@ object AllPrimesSoFarList {
     require(value >= 0)
     require(Prime.isPrime(value))
     require(value <= list.head.value)
-    decreases(list.size)
 
-    if (value == list.head.value) {
-      contains(value, list)
-    } else if (list.size == BigInt(1)) {
-      assert(list.head.value == BigInt(2))
-      assert(value < BigInt(2))
-      assert(!Prime.isPrime(value))
-      contains(value, list)
-    } else {
-      assert(loopCheckAllPrimesSoFar(list))
-      assert(noPrimesBetween(list.tail.head.value + BigInt(1), list.head.value))
-      if (value > list.tail.head.value) {
-        assert(value >= list.tail.head.value + BigInt(1))
-        assert(value < list.head.value)
-        assert(noPrimesBetweenExcludesValue(list.tail.head.value + BigInt(1), list.head.value, value))
-        assert(!Prime.isPrime(value))
-        contains(value, list)
-      } else {
-        assert(allPrimesSoFar(list.tail))
-        assert(primeAtOrBelowHeadIsContained(value, list.tail))
-        assert(contains(value, list.tail))
-        contains(value, list)
-      }
-    }
+    PrimeListUtils.primeAtOrBelowHeadIsContained(value, list)
   }.ensuring(res => res && contains(value, list))
 
 
@@ -239,16 +203,8 @@ object AllPrimesSoFarList {
 //    }
 //  }
 
-  @tailrec
   def contains(current: BigInt, list: SortedPrimeList): Boolean = {
-    decreases(list.size)
-    if (list.isEmpty) {
-      false
-    } else if (list.head.value == current) {
-      true
-    } else {
-      contains(current, list.tail)
-    }
+    PrimeListUtils.contains(current, list)
   }
 
   @tailrec
