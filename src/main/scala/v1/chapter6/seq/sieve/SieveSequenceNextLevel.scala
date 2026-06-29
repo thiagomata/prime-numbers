@@ -14,7 +14,7 @@ import v1.chapter6.seq.sieve.properties.SieveSequenceProperties
 object SieveSequenceNextLevel {
 
   def nextResidues(seq: CycleSieveSequence): List[BigInt] = {
-    SieveUtils.residues(seq.modulus, seq.primes.tail)
+    SieveUtils.residues(seq.modulus, seq.primesTailValues)
   }
 
   def nextExpanded(seq: CycleSieveSequence): List[BigInt] = {
@@ -130,9 +130,6 @@ object SieveSequenceNextLevel {
   }
 
     def assertNextPrimesNonEmpty(seq: CycleSieveSequence): Boolean = {
-    val newHead = seq.apply(BigInt(1))
-    val newPrimes = newHead :: seq.primes
-    assert(newPrimes.nonEmpty)
     true
   }.holds
 
@@ -143,10 +140,8 @@ object SieveSequenceNextLevel {
   }.holds
 
   def assertNextPrimesPositive(seq: CycleSieveSequence): Boolean = {
-    val newHead = seq.apply(BigInt(1))
-    val newPrimes = newHead :: seq.primes
     assert(assertNextHeadPositive(seq))
-    ListUtils.checkAllPositive(newPrimes)
+    ListUtils.checkAllPositive(seq.primesValues)
   }.holds
 
   def assertNextHeadBiggerThanOne(seq: CycleSieveSequence): Boolean = {
@@ -156,45 +151,40 @@ object SieveSequenceNextLevel {
   }.holds
 
   def assertNextPrimesBiggerThanOne(seq: CycleSieveSequence): Boolean = {
-    val newHead = seq.apply(BigInt(1))
-    val newPrimes = newHead :: seq.primes
     assert(assertNextHeadBiggerThanOne(seq))
-    ListUtils.checkAllBiggerThanValue(newPrimes, BigInt(1))
+    ListUtils.checkAllBiggerThanValue(seq.primesValues, BigInt(1))
   }.holds
 
   def assertNextTailProductEqualOrBiggerThanElements(seq: CycleSieveSequence): Boolean = {
-    val newHead = seq.apply(BigInt(1))
-    val newPrimes = newHead :: seq.primes
-    assert(SieveUtils.assertProductEqualOrBiggerThanElements(seq.primes))
-    SieveUtils.assertProductEqualOrBiggerThanElements(newPrimes.tail)
+    SieveUtils.assertProductEqualOrBiggerThanElements(seq.primesValues)
   }.holds
 
   def assertNextHeadCoprimeToPrimes(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
-    assert(newHead == seq.primes.head + seq.gapCycle.memCycle(0))
-    SieveUtils.isCoprime(newHead, seq.primes)
+    assert(newHead == seq.primes.head.value + seq.gapCycle.memCycle(0))
+    SieveUtils.isCoprime(newHead, seq.primesValues)
   }.holds
 
   def assertNextExpandedCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
-    require(seq.modulus == SieveUtils.product(seq.primes.tail))
-    require(ListUtils.checkAllPositive(seq.primes.tail))
-    assert(SieveUtils.assertAllRExpandedCoprime(seq.modulus, seq.head, seq.primes.tail))
+    require(seq.modulus == SieveUtils.product(seq.primesTailValues))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    assert(SieveUtils.assertAllRExpandedCoprime(seq.modulus, seq.head, seq.primesTailValues))
     true
   }.holds
 
   def assertNextFilteredCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
-    require(seq.modulus == SieveUtils.product(seq.primes.tail))
-    require(ListUtils.checkAllPositive(seq.primes.tail))
+    require(seq.modulus == SieveUtils.product(seq.primesTailValues))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
     assert(assertNextExpandedCoprime(seq))
     true
   }.holds
 
   def assertResiduesCoprime(seq: CycleSieveSequence): Boolean = {
     require(seq.modulus > 0)
-    require(ListUtils.checkAllPositive(seq.primes.tail))
-    SieveUtils.assertResiduesAllCoprime(seq.modulus, seq.primes.tail)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    SieveUtils.assertResiduesAllCoprime(seq.modulus, seq.primesTailValues)
     true
   }.holds
 

@@ -9,25 +9,23 @@ import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralFilterProperties
 import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
 case class CycleSieveSequence(
-  primes: List[BigInt],
+  primes: AllPrimesSoFarList,
   gapCycle: GapCycle
 ) {
-  require(primes.nonEmpty)
-  require(ListUtils.checkAllPositive(primes))
-  require(ListUtils.checkAllBiggerThanValue(primes, 1))
-  require(SieveUtils.assertProductEqualOrBiggerThanElements(primes.tail))
-  require(primes.head + gapCycle.memCycle(0) > primes.head)
-  require(SieveUtils.isCoprime(primes.head, primes.tail))
-  require(SieveUtils.isCoprime(primes.head + gapCycle.memCycle(0), primes.tail))
-  require(Calc.mod(primes.head + gapCycle.memCycle(0), primes.head) != BigInt(0))
-  require(Calc.mod(SieveUtils.product(primes.tail), primes.head) != BigInt(0))
+  require(primes.head.value + gapCycle.memCycle(0) > primes.head.value)
+  require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))
+  require(Calc.mod(PrimeUtils.primorial(primes.list.list), primes.head.value) != BigInt(0))
 
-  val integral: CycleIntegral = CycleIntegral(primes.head, gapCycle.memCycle)
+  val primesValues: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
+  val primesTailValues: List[BigInt] = PrimeUtils.primeValues(primes.list.tail.list)
+  val primorial: BigInt = PrimeUtils.primorial(primes.list.list)
+  val integral: CycleIntegral = CycleIntegral(primes.head.value, gapCycle.memCycle)
 
-  def head: BigInt = primes.head
-  def modulus: BigInt = SieveUtils.product(primes.tail)
+  def head: BigInt = primes.head.value
+  def modulus: BigInt = PrimeUtils.primorial(primes.list.tail.list)
   def cycle: MemCycle = gapCycle.memCycle
 
   def apply(position: BigInt): BigInt = {
@@ -47,9 +45,9 @@ case class CycleSieveSequence(
 
   def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {
     val newHead = apply(BigInt(1))
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primes))
+    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(SieveUtils.product(primes), newHead) != BigInt(0))
+    require(Calc.mod(primorial, newHead) != BigInt(0))
 
     assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
     assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
@@ -57,7 +55,7 @@ case class CycleSieveSequence(
     assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
     assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
 
-    CycleSieveSequence(newHead :: primes, newGapCycle)
+    CycleSieveSequence(primes.next, newGapCycle)
   }
 
   def next(): CycleSieveSequence = {
@@ -66,23 +64,15 @@ case class CycleSieveSequence(
     require(newGaps.nonEmpty)
     require(ListBoundUtils.allGreaterThan(newGaps, BigInt(0)))
     val newGapCycle = GapCycle(newGaps)
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primes))
+    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(SieveUtils.product(primes), newHead) != BigInt(0))
+    require(Calc.mod(primorial, newHead) != BigInt(0))
 
     nextWithGapCycle(newGapCycle)
   }
 
   /**
    * Verified next-stage construction using the transparent current window.
-   *
-   * Builds a plain `List[BigInt]` of the first `head * gapCycle.size` integral
-   * values (via `currentWindow`), filters out multiples of `head`, derives
-   * gaps from survivors, and constructs the next stage.
-   *
-   * Preconditions mirror `nextWithGapCycle` — the caller must discharge them.
-   * Use `SpecDerivedCycleSieve`'s P2 lemmas to prove the survivor gaps
-   * satisfy these invariants.
    */
   def nextFromWindow(): CycleSieveSequence = {
     val steps = head * gapCycle.size
@@ -95,9 +85,9 @@ case class CycleSieveSequence(
     val newGapCycle = GapCycle(gaps)
     val newHead = apply(BigInt(1))
     require(newHead < head * head)
-    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primes))
+    require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(SieveUtils.product(primes), newHead) != BigInt(0))
+    require(Calc.mod(primorial, newHead) != BigInt(0))
 
     nextWithGapCycle(newGapCycle)
   }
@@ -106,14 +96,14 @@ case class CycleSieveSequence(
 object CycleSieveSequence {
   def S_0(): CycleSieveSequence = {
     CycleSieveSequence(
-      primes = List(BigInt(2)),
+      primes = AllPrimesSoFarList(SortedPrimeList(List(Prime(BigInt(2))))),
       gapCycle = GapCycle(List(BigInt(1)))
     )
   }
 
   def S_1(): CycleSieveSequence = {
     CycleSieveSequence(
-      primes = List(BigInt(3), BigInt(2)),
+      primes = AllPrimesSoFarList(SortedPrimeList(List(Prime(BigInt(3)), Prime(BigInt(2))))),
       gapCycle = GapCycle(List(BigInt(2)))
     )
   }

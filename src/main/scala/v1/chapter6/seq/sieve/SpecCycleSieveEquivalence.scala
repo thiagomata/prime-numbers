@@ -38,7 +38,7 @@ object SpecCycleSieveEquivalence {
 
     assert(spec.primes.list.list.nonEmpty)
     assert(PrimeUtils.primeValues(spec.primes.list.list).head == spec.head.value)
-    assert(cycle.primes.head == spec.head.value)
+    assert(PrimeUtils.primeValues(cycle.primes.list.list).head == spec.head.value)
 
     spec.head.value == cycle.head
   }.holds
@@ -219,22 +219,23 @@ object SpecCycleSieveEquivalence {
     cycle: CycleSieveSequence,
     newGapCycle: GapCycle
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
     require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
     require(cycle.apply(BigInt(1)) == spec.next.head.value)
-    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primes))
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
     require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
-    require(Calc.mod(SieveUtils.product(cycle.primes), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
 
     val nextSpec = spec.next
     val nextCycle = cycle.nextWithGapCycle(newGapCycle)
 
     assert(assertSpecNextPrimeValuesExtendCurrent(spec))
-    assert(PrimeUtils.primeValues(nextSpec.primes.list.list) == nextSpec.head.value :: PrimeUtils.primeValues(spec.primes.list.list))
-    assert(nextCycle.primes == cycle.apply(BigInt(1)) :: cycle.primes)
-    assert(nextCycle.primes == nextSpec.head.value :: PrimeUtils.primeValues(spec.primes.list.list))
+    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) == 
+      PrimeUtils.primeValues(nextSpec.primes.list.list))
+    assert(cycle.primes == spec.primes)
 
-    nextCycle.primes == PrimeUtils.primeValues(nextSpec.primes.list.list)
+    PrimeUtils.primeValues(nextCycle.primes.list.list) == 
+      PrimeUtils.primeValues(nextSpec.primes.list.list)
   }.holds
 
   /**
@@ -260,12 +261,12 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(position >= BigInt(0))
     require(nextPeriod > BigInt(0))
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
     require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
     require(cycle.apply(BigInt(1)) == spec.next.head.value)
-    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primes))
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
     require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
-    require(Calc.mod(SieveUtils.product(cycle.primes), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
 
     val nextSpec = spec.next
     val nextCycle = cycle.nextWithGapCycle(newGapCycle)
@@ -332,7 +333,7 @@ object SpecCycleSieveEquivalence {
     cycle: CycleSieveSequence,
     value: BigInt
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
     require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
     require(value >= spec.next.head.value)
 
@@ -341,10 +342,9 @@ object SpecCycleSieveEquivalence {
     assert(spec.next.filterPrimes == spec.next.primes.list.tail.list)
     assert(spec.next.filterValues == PrimeUtils.primeValues(spec.next.filterPrimes))
     assert(spec.next.filterValues == PrimeUtils.primeValues(spec.primes.list.list))
-    assert(spec.next.filterValues == cycle.primes)
-    assert(spec.next.accepts(value) == SieveUtils.isCoprime(value, spec.next.filterValues))
+    assert(spec.next.filterValues == PrimeUtils.primeValues(cycle.primes.list.list))
 
-    spec.next.accepts(value) == SieveUtils.isCoprime(value, cycle.primes)
+    spec.next.accepts(value) == SieveUtils.isCoprime(value, PrimeUtils.primeValues(cycle.primes.list.list))
   }.holds
 
   /**
@@ -370,7 +370,7 @@ object SpecCycleSieveEquivalence {
     spec: SpecSieveSequence,
     cycle: CycleSieveSequence
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
 
     assert(spec.primes.list.list.nonEmpty)
     assert(
@@ -379,9 +379,9 @@ object SpecCycleSieveEquivalence {
     )
     assert(spec.filterPrimes == spec.primes.list.list.tail)
     assert(spec.filterValues == PrimeUtils.primeValues(spec.primes.list.list.tail))
-    assert(cycle.primes.tail == spec.filterValues)
+    assert(cycle.primesTailValues == spec.filterValues)
 
-    cycle.primes.tail == spec.filterValues
+    cycle.primesTailValues == spec.filterValues
   }.holds
 
   /**
@@ -398,14 +398,14 @@ object SpecCycleSieveEquivalence {
     cycle: CycleSieveSequence,
     value: BigInt
   ): Boolean = {
-    require(cycle.primes == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
     require(value >= spec.head.value)
 
     assert(assertFilterValuesMatchTailPrimes(spec, cycle))
-    assert(cycle.primes.tail == spec.filterValues)
+    assert(cycle.primesTailValues == spec.filterValues)
     assert(spec.accepts(value) == SieveUtils.isCoprime(value, spec.filterValues))
 
-    spec.accepts(value) == SieveUtils.isCoprime(value, cycle.primes.tail)
+    spec.accepts(value) == SieveUtils.isCoprime(value, cycle.primesTailValues)
   }.holds
 
   /**
@@ -930,9 +930,9 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(value >= BigInt(0))
     require(value < seq.head * seq.modulus)
-    require(SieveUtils.isCoprime(value, seq.primes.tail))
+    require(SieveUtils.isCoprime(value, seq.primesTailValues))
 
-    val residues = SieveUtils.residues(seq.modulus, seq.primes.tail)
+    val residues = SieveUtils.residues(seq.modulus, seq.primesTailValues)
     val expanded = SieveUtils.expandResidues(residues, seq.modulus, seq.head)
 
     val dm = DivMod(value, seq.modulus, BigInt(0), value).solve
@@ -944,10 +944,10 @@ object SpecCycleSieveEquivalence {
     assert(q >= BigInt(0))
     assert(q < seq.head)
 
-    assert(assertModPreservesCoprime(value, seq.modulus, seq.primes.tail))
-    assert(SieveUtils.isCoprime(r, seq.primes.tail))
+    assert(assertModPreservesCoprime(value, seq.modulus, seq.primesTailValues))
+    assert(SieveUtils.isCoprime(r, seq.primesTailValues))
 
-    assert(assertResiduesContainCoprimeBelowModulus(seq.modulus, seq.primes.tail, r))
+    assert(assertResiduesContainCoprimeBelowModulus(seq.modulus, seq.primesTailValues, r))
     assert(residues.contains(r))
 
     assert(assertExpandResiduesContainsShifted(residues, r, seq.modulus, seq.head, q))
@@ -1024,7 +1024,7 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(value >= BigInt(0))
     require(value < seq.head * seq.modulus)
-    require(SieveUtils.isCoprime(value, seq.head :: seq.primes.tail))
+    require(SieveUtils.isCoprime(value, seq.head :: seq.primesTailValues))
 
     val expanded = SieveSequenceNextLevel.nextExpanded(seq)
 
@@ -1173,7 +1173,7 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(value >= BigInt(0))
     require(value < seq.head * seq.modulus)
-    require(SieveUtils.isCoprime(value, seq.head :: seq.primes.tail))
+    require(SieveUtils.isCoprime(value, seq.head :: seq.primesTailValues))
 
     assert(assertNextFilteredContainsCoprime(seq, value))
     assert(SieveSequenceNextLevel.nextFiltered(seq).contains(value))

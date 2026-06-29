@@ -47,7 +47,7 @@ case class SpecDerivedSieveSequence(
   val cyclePrimes: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
 
   /** Standard CycleSieveSequence (for callers that need the concrete type). */
-  val cycle: CycleSieveSequence = CycleSieveSequence(cyclePrimes, gapCycle)
+  val cycle: CycleSieveSequence = CycleSieveSequence(primes, gapCycle)
 
   /** Cycle integral — same as cycle.integral. */
   val integral: CycleIntegral = cycle.integral
