@@ -49,14 +49,15 @@ case class CycleSieveSequence(
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
     require(Calc.mod(primorial, newHead) != BigInt(0))
+    require(primes.next.isEmpty == false)
+    require(primes.next.head.value == newHead)
+    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), primes.next.head.value) != BigInt(0))
 
     assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
     assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
     assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
     assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
     assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
-    assert(primes.next.isEmpty == false)
-    assert(primes.next.head.value == newHead)
 
     CycleSieveSequence(primes.next, newGapCycle)
   }
@@ -70,6 +71,9 @@ case class CycleSieveSequence(
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
     require(Calc.mod(primorial, newHead) != BigInt(0))
+    require(primes.next.isEmpty == false)
+    require(primes.next.head.value == newHead)
+    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), newHead) != BigInt(0))
 
     nextWithGapCycle(newGapCycle)
   }
@@ -91,6 +95,9 @@ case class CycleSieveSequence(
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
     require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
     require(Calc.mod(primorial, newHead) != BigInt(0))
+    require(primes.next.isEmpty == false)
+    require(primes.next.head.value == newHead)
+    require(Calc.mod(PrimeUtils.primorial(primes.next.list.tail.list), newHead) != BigInt(0))
 
     nextWithGapCycle(newGapCycle)
   }

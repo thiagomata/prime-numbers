@@ -6,7 +6,7 @@ import v1.chapter2.div.properties.{ModIdempotence, ModOperations}
 import v1.chapter3.list.{ListBoundUtils, ListUtils, SortedList}
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
-import v1.chapter5.prime.PrimeUtils
+import v1.chapter5.prime.{Prime, PrimeUtils}
 
 /**
  * Local bridge lemmas for proving that the specification sieve and the
@@ -21,6 +21,17 @@ import v1.chapter5.prime.PrimeUtils
  */
 object SpecCycleSieveEquivalence {
 
+  private def primorialMatchesSieveProduct(primeList: stainless.collection.List[Prime]): Boolean = {
+    decreases(primeList.size)
+
+    if (primeList.isEmpty) {
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    } else {
+      primorialMatchesSieveProduct(primeList.tail)
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    }
+  }.holds
+
   /**
    * Converts the prime-list correspondence assumption into head equality.
    *
@@ -34,7 +45,7 @@ object SpecCycleSieveEquivalence {
     spec: SpecSieveSequence,
     cycle: CycleSieveSequence
   ): Boolean = {
-      require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
 
     assert(spec.primes.list.list.nonEmpty)
     assert(PrimeUtils.primeValues(spec.primes.list.list).head == spec.head.value)
@@ -88,8 +99,8 @@ object SpecCycleSieveEquivalence {
    * `specGapCycle(period)` without repeatedly unfolding the class field.
    */
   def assertCycleIntegralUsesGapCycle(
-    cycle: CycleSieveSequence
-  ): Boolean = {
+                                       cycle: CycleSieveSequence
+                                     ): Boolean = {
     cycle.integral == CycleIntegral(cycle.head, cycle.gapCycle.memCycle)
   }.holds
 
@@ -230,11 +241,11 @@ object SpecCycleSieveEquivalence {
     val nextCycle = cycle.nextWithGapCycle(newGapCycle)
 
     assert(assertSpecNextPrimeValuesExtendCurrent(spec))
-    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) == 
+    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) ==
       PrimeUtils.primeValues(nextSpec.primes.list.list))
     assert(cycle.primes == spec.primes)
 
-    PrimeUtils.primeValues(nextCycle.primes.list.list) == 
+    PrimeUtils.primeValues(nextCycle.primes.list.list) ==
       PrimeUtils.primeValues(nextSpec.primes.list.list)
   }.holds
 
@@ -600,7 +611,7 @@ object SpecCycleSieveEquivalence {
    * `primes`. This holds because any prime `p` dividing `Calc.mod(v, modulus)`
    * would also divide `v` (since `v = q*modulus + r` and `p | modulus`).
    */
-  private def assertModPreservesCoprime(
+  def assertModPreservesCoprime(
     v: BigInt,
     modulus: BigInt,
     primes: stainless.collection.List[BigInt]
@@ -859,25 +870,25 @@ object SpecCycleSieveEquivalence {
     assert(assertExpandSingleResidueContains(residues, r, mod, p, BigInt(0)))
     // assertExpandSingleResidueContains proves for i=0, which only contains r + 0*mod = r
     // I need r + q*mod for arbitrary q. The previous lemma only proves for i = q.
-    
+
     // Actually, assertExpandSingleResidueContains proves expandSingleResidue(..., i).contains(r + i*mod)
     // So for i = q: expandSingleResidue(..., q).contains(r + q*mod)
     // But I need expandResidues(..., p).contains(r + q*mod)
     // expandResidues = expandSingleResidue(..., 0)
     // I need to show that expandSingleResidue(..., 0) contains all values from expandSingleResidue(..., q)
-    
+
     // This requires the "++ preserves right-side membership" lemma iterated q times.
     assert(assertExpandSingleResidueContains(residues, r, mod, p, q))
     // expandSingleResidue(..., q).contains(r + q*mod)
-    
+
     // Now I need to show that expandSingleResidue(..., 0) contains everything from expandSingleResidue(..., q)
     // By structural induction: expandSingleResidue(..., i) = currentSet ++ expandSingleResidue(..., i+1)
     // So expandSingleResidue(..., 0) = currentSet_0 ++ currentSet_1 ++ ... ++ currentSet_{q-1} ++ expandSingleResidue(..., q)
     // By q applications of assertAppendContainsRight, r + q*mod is in the result
-    
+
     // I need a recursive helper for this
     assert(assertExpandResiduesExtendsTo(residues, mod, p, BigInt(0), q, r + q * mod))
-    
+
     SieveUtils.expandResidues(residues, mod, p).contains(r + q * mod)
   }.holds
 
@@ -944,6 +955,8 @@ object SpecCycleSieveEquivalence {
     assert(q >= BigInt(0))
     assert(q < seq.head)
 
+    assert(primorialMatchesSieveProduct(seq.primes.list.tail.list))
+    assert(seq.modulus == SieveUtils.product(seq.primesTailValues))
     assert(assertModPreservesCoprime(value, seq.modulus, seq.primesTailValues))
     assert(SieveUtils.isCoprime(r, seq.primesTailValues))
 
