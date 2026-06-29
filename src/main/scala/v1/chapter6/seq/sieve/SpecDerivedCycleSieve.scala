@@ -2108,4 +2108,32 @@ case class SpecDerivedCycleSieve(
     cycle(BigInt(1)) == spec.next.head.value
   }.holds
 
+  /**
+   * Proves that cycle(k) is coprime to all tail primes (old primes excluding head).
+   */
+  def assertCycleValueCoprimeToTail(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    assert(assertApplyMatches(k))
+    assert(spec.accepts(spec(k)))
+    assert(assertPrimesMatch())
+    SieveUtils.isCoprime(cycle(k), cycle.primes.tail)
+  }.holds
+
+  /**
+   * Proves that cycle(1) is coprime to all current primes.
+   * Tail via assertCycleValueCoprimeToTail(1).
+   * Head via spec.assertApplyOneEqualsNextPrime + Prime.noDivisorInRangeExcludesValue.
+   */
+  def assertNewHeadCoprimeToAllPrimes(): Boolean = {
+    assert(assertCycleValueCoprimeToTail(BigInt(1)))
+    assert(spec.assertApplyOneEqualsNextPrime())
+    assert(assertNextHeadMatches())
+    assert(Prime.isPrime(spec(BigInt(1))))
+    assert(Prime.noDivisorInRangeExcludesValue(
+      spec(BigInt(1)), BigInt(2), spec(BigInt(1)), spec.head.value))
+    assert(Calc.mod(spec(BigInt(1)), spec.head.value) != BigInt(0))
+    Calc.mod(cycle(BigInt(1)), cycle.head) != BigInt(0) &&
+    SieveUtils.isCoprime(cycle(BigInt(1)), cycle.primes)
+  }.holds
+
 }

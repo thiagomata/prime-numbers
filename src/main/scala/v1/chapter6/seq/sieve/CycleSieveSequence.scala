@@ -41,45 +41,10 @@ case class CycleSieveSequence(
   def nextPrime: BigInt = head
   def nextHead: BigInt = apply(BigInt(1))
 
-  /**
-   * Exposes the structural progress guaranteed by the first stored gap.
-   *
-   * At position one, `apply` evaluates the integral at position zero, which is
-   * the current head plus `gapCycle.memCycle(0)`. The constructor requires that
-   * concrete value to be strictly greater than the head. Keeping this fact as a
-   * public lemma lets next-stage proofs establish that `apply(1)` is positive
-   * and nonzero without unfolding the cycle integral or the Spec sequence that
-   * may have produced this Cycle representation.
-   */
   def assertNextHeadGreaterThanHead(): Boolean = {
     apply(BigInt(1)) > head
   }.holds
 
-  /**
-   * Builds the next cycle sieve stage when the caller supplies the new gap
-   * cycle together with the hard constructor facts for that gap cycle.
-   *
-   * This method is intentionally conditional. The easy next-stage facts are
-   * already known locally: `apply(1)` is positive, bigger than one, coprime to
-   * the current prime list, and prepending it preserves the raw prime-list
-   * shape required by `CycleSieveSequence`. The difficult part is not the raw
-   * list shape; it is proving that the candidate gap cycle is the correct one
-   * for the new filter head.
-   *
-   * The three `require` clauses below are exactly the constructor obligations
-   * that depend on the supplied `newGapCycle` rather than on the old sequence
-   * alone:
-   *
-   *  - the first generated value after the new head must still pass the old
-   *    prime filters;
-   *  - that same value must not be a multiple of the new head;
-   *  - the old modulus must not collapse to zero modulo the new head.
-   *
-   * Keeping these facts as explicit preconditions mirrors `SpecSieveSequence.next`,
-   * where the hard "next prime is before head squared" fact is required by the
-   * method. This gives us a verified construction point while the larger
-   * gap-cycle correctness proof remains isolated in the equivalence ticket.
-   */
   def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {
     val newHead = apply(BigInt(1))
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primes))
