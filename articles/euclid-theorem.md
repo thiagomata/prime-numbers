@@ -356,4 +356,4 @@ The `.holds` postcondition asserts: given any non-empty list of primes, there ex
 
 ## Appendix B: Stainless Verification Status and Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [verify.log](../verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)

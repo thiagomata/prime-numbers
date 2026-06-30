@@ -316,9 +316,9 @@ Each direction is proved independently, then combined with `assert(==)`.
 Verification proves the lemmas; tests prove the runtime behavior matches.
 Run `just test` after `just verify` succeeds.
 
-### 8.2 Check verify.log
+### 8.2 Check logs/verify.log
 
-`just verify` writes to `verify.log`. Check `grep "total:" verify.log` for
+`just verify` writes to `logs/verify.log`. Check `grep "total:" logs/verify.log` for
 the summary. Timeouts appear as "unknown" in the valid/invalid/unknown count.
 
 ## 9. Common Pitfalls
@@ -539,9 +539,9 @@ Induct on `k` with `decreases(k)` instead.
 
 NEVER batch `assert(a && b && c)`. One per change.
 
-### 17.2 Check `verify.log` before action
+### 17.2 Check `logs/verify.log` before action
 
-`grep "total:" verify.log`. Don't re-run on clean state.
+`grep "total:" logs/verify.log`. Don't re-run on clean state.
 
 ### 17.3 Tests after verify
 

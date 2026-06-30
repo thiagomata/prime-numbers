@@ -1587,5 +1587,5 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [verify.log](../verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
 

@@ -15,15 +15,16 @@ pitfall avoidance, and timeout resolution strategies.
 <commands>
   <verify>just verify</verify>
   <verify-focus>just verify functionName</verify-focus>
-  <verify-log>grep "total:" verify.log</verify-log>
-  <fast-compile>sbt 'set stainlessEnabled := false' compile</fast-compile>
+  <verify-log>grep "total:" logs/verify.log</verify-log>
+  <fast-compile>just compile</fast-compile>
+  <build>just jar</build>
   <tests>just test</tests>
 </commands>
 
-`just verify` writes its output to `verify.log` in the project root (and `verify-error.log` for errors).
+`just verify` writes its output to `logs/verify.log` (and `logs/verify-error.log` for errors).
 `just verify functionName` compiles the full source tree but asks Stainless to verify only that function via `--functions=functionName`; use it for fast proof iteration only, not as a replacement for final full validation.
 To check the latest result WITHOUT re-running, use `<verify-log />` to read the log.
-Do NOT run `just verify` twice in a row — check `verify.log` first.
+Do NOT run `just verify` twice in a row — check `logs/verify.log` first.
 Only re-run `just verify` after making a code change.
 
 <rules>
@@ -183,7 +184,7 @@ Only re-run `just verify` after making a code change.
 <checklist-before>
   Before EVERY tool call, answer silently:
   <item>Is this exactly ONE small change? (If no → split it)</item>
-  <item>Did `just verify` pass on the current state? (Check verify.log via <verify-log />, do NOT re-run)</item>
+  <item>Did `just verify` pass on the current state? (Check logs/verify.log via <verify-log />, do NOT re-run)</item>
   <item>Am I about to run a denied command (git checkout, rm, --force)?</item>
   <item>Have I tried this same assertion 3+ times? (If yes → STOP and ASK)</item>
   <item>Am I plan mode or build mode? (Plan = no edits allowed)</item>
@@ -194,7 +195,7 @@ Only re-run `just verify` after making a code change.
 <checklist-after>
   After EVERY tool call, answer silently:
   <item>Did it succeed? (If error → read the error, do NOT retry blindly)</item>
-  <item>Did `just verify` pass? (Check verify.log via <verify-log />, do NOT re-run)</item>
+  <item>Did `just verify` pass? (Check logs/verify.log via <verify-log />, do NOT re-run)</item>
   <item>Is the total valid count the same or higher than before?</item>
   <item>If the verify timed out → STOP. Do NOT try a different approach.</item>
   <item>If stuck for 3+ attempts → STOP and ASK FOR HELP.</item>

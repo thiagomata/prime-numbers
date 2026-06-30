@@ -752,10 +752,10 @@ The full proof bodies are kept in source files rather than duplicated here. The 
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest checked `verify.log` summary reports:
+The latest checked `logs/verify.log` summary reports:
 
 ```text
 total: 10495 valid: 10495 (10474 from cache, 21 trivial) invalid: 0 unknown: 0 time: 34.38
 ```
 
-The full log output is available at: [verify.log](../verify.log)
+The full log output is available at: [logs/verify.log](../logs/verify.log)

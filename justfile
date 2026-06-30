@@ -18,8 +18,9 @@ verify focus="":
     sdk use java 21.0.7-zulu
     bash "{{justfile_directory()}}/scripts/verify-stop.sh"
     cd "{{justfile_directory()}}"
-    rm -f verify-error.log
-    rm -f verify.log
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify.log
     Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
     function_filter=()
     if [[ -n "{{focus}}" ]]; then
@@ -27,7 +28,7 @@ verify focus="":
     fi
     DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
-    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
+    ./stainless-dotty-standalone-*/stainless --timeout=300 "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify.log >&2) 1> >(tee -a logs/verify.log)
 
 verify-ch chapters="":
     #!/usr/bin/env bash

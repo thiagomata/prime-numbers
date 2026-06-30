@@ -50,10 +50,11 @@ fi
 LOG_TAG=$(echo "$CHAPTERS" | tr ' ' '-')
 if [[ -n "$FOCUS" ]]; then
   FOCUS_TAG=$(echo "$FOCUS" | tr -c '[:alnum:]_' '-' | sed 's/-\+/-/g; s/^-//; s/-$//')
-  LOG_FILE="$BASE_DIR/verify-ch-$LOG_TAG-$FOCUS_TAG.log"
+LOG_FILE="$BASE_DIR/logs/verify-ch-$LOG_TAG-$FOCUS_TAG.log"
 else
-  LOG_FILE="$BASE_DIR/verify-ch-$LOG_TAG.log"
+  LOG_FILE="$BASE_DIR/logs/verify-ch-$LOG_TAG.log"
 fi
+mkdir -p "$BASE_DIR/logs"
 rm -f "$LOG_FILE"
 
 FOCUS_FLAG=()
