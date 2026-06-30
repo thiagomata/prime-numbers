@@ -27,6 +27,7 @@
 | `modZeroPlusC`                                   | ModOperations.scala                  | Div/Mod|
 | `modLess`                                        | ModOperations.scala                  | Div/Mod|
 | `addOne`                                         | ModOperations.scala                  | Div/Mod|
+| `modByPositiveMultipleThenBase`                  | ModOperations.scala                  | Div/Mod|
 | `sumSymmetricalMods`                             | ModSum.scala                         | Div/Mod|
 | `checkAllPreviousValues`                         | ModSum.scala                         | Div/Mod|
 | `sumAllValues`                                   | ModSum.scala                         | Div/Mod|
@@ -81,6 +82,7 @@
 | `valueMatchAfterManyLoopsInBoth`                 | MemCycleProperties.scala             | Cycles|
 | `propagateModFromValueToCycle`                   | MemCycleProperties.scala             | Cycles|
 | `assertCycleOfPosEqualsCycleOfModPos`            | MemCycleProperties.scala             | Cycles|
+| `assertRepeatedValuesCycleMatches`               | MemCycleProperties.scala             | Cycles|
 | **Cycle Integrals**                              |                                      |
 | `assertCycleIntegralEqualsSumFirstPosition`      | CycleIntegralProperties.scala        | CycleInteg|
 | `assertCycleIntegralEqualsSumSmallPositions`     | CycleIntegralProperties.scala        | CycleInteg|
@@ -97,6 +99,7 @@
 | `assertCycleValuePositive`                       | CycleIntegralProperties.scala        | CycleInteg|
 | `assertCycleIntegralPositive`                    | CycleIntegralProperties.scala        | CycleInteg|
 | `assertConsecutiveGapSumEqualsDiff`              | CycleIntegralProperties.scala        | CycleInteg|
+| `assertRepeatedValuesIntegralMatches`            | CycleIntegralProperties.scala        | CycleInteg|
 | `assertModCycleEqualsMemCycle`                   | CycleProperties.scala                | Cycles      |
 | `assertFilterMergeComposition`                  | CycleIntegralFilterProperties.scala  | CycleInteg |
 | `assertNextGapsValid`                          | CycleIntegralFilterProperties.scala  | CycleInteg |
@@ -147,6 +150,7 @@
 | `assertRepeatConcat`                             | ListRepeatProperties.scala           | Lists      |
 | `assertRepeatSumDecomposition`                   | ListRepeatProperties.scala           | Lists      |
 | `assertRepeatSumTimes`                           | ListRepeatProperties.scala           | Lists      |
+| `assertRepeatAllGreaterThan`                     | ListRepeatProperties.scala           | Lists      |
 | **Prime**                                       |                                      |
 | `isPrime`                                       | Prime.scala                          | Prime|
 | `noDivisorInRange`                              | Prime.scala                          | Prime|
@@ -163,6 +167,11 @@
 | `assertFilteredContainsAllPrimes`              | FilterPreservesPrimesProperties.scala| Prime|
 | `assertNoDivisorInRangeFromHelper`             | PrimeProperties.scala                | Prime|
 | `assertHeadIsPrime`                            | PrimeProperties.scala                | Prime|
+| `repeatedCycle`                                | SpecDerivedSieveSequence.scala       | Sieve|
+| `assertRepeatedGapListIndexMatches`            | SpecDerivedSieveSequence.scala       | Sieve|
+| `assertRepeatedCycleGapMatches`                | SpecDerivedSieveSequence.scala       | Sieve|
+| `assertRepeatedCycleIntegralMatches`           | SpecDerivedSieveSequence.scala       | Sieve|
+| `assertRepeatedCycleApplyMatches`              | SpecDerivedSieveSequence.scala       | Sieve|
 | **CycleIntegralOnes**                          |                                      |
 | `assertCycleIntegralOfOnes`                    | CycleIntegralOnesProperties.scala    | CycleIntegral |
 | `assertCycleIntegralOfOnesStrictlyIncreasing`  | CycleIntegralOnesProperties.scala    | CycleIntegral |
@@ -324,6 +333,7 @@ Modulo distributivity over addition/subtraction.
 | **modZeroPlusC** | If `mod(a,b) == 0`: `mod(a+c,b) == mod(c,b)` | `b != 0`, `c >= 0`, `mod(a,b)==0` |
 | **modLess**      | `mod(a-c,b) == mod(mod(a,b) - mod(c,b), b)`  | `b != 0`                          |
 | **addOne**       | Unit-step increment law                      | `b > 0`, `a >= 0`                 |
+| **modByPositiveMultipleThenBase** | `mod(mod(a, base * times), base) == mod(a, base)` | `a >= 0`, `base > 0`, `times > 0`. Repeated-cycle period bridge. Verified 22/22. |
 
 **Mathematical Formula** (from [articles/modulo.md](./articles/modulo.md)):
 
@@ -555,6 +565,7 @@ filter-merge theorem (see `tickets/active/filter-merge-foundation-gaps.md`).
 | **assertRepeatConcat** | `repeat(list,n) == list ++ repeat(list, n-1)` for `n > 0` | Recursive decomposition of repeat. Verified 8/8 (10285 valid). |
 | **assertRepeatSumDecomposition** | `sum(repeat(list,n)) == sum(list) + sum(repeat(list, n-1))` | Sum under repeat decomposes recursively. Verified 15/15. |
 | **assertRepeatSumTimes** | `sum(repeat(list,n)) == sum(list) * n` | Closed-form sum under repeat. Verified 3/3. |
+| **assertRepeatAllGreaterThan** | `allGreaterThan(list, v) => allGreaterThan(repeat(list, times), v)` | Constructor bridge for repeated positive gap cycles. Verified 14/14. |
 
 **Source**: `src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala`
 
@@ -674,6 +685,7 @@ ModCycle lemmas.
 | **valueMatchAfterManyLoopsInBoth**      | `cycle(key + size*m1) == cycle(key + size*m2)`      | `key >= 0`, `m1,m2 >= 0`         |
 | **propagateModFromValueToCycle**        | `cycle(key) % d == cycle.values(mod(key,size)) % d` | `key >= 0`, `d > 0`              |
 | **assertCycleOfPosEqualsCycleOfModPos** | `cycle(pos) == cycle(mod(pos, size))`               | `pos >= 0`, `size > 0`           |
+| **assertRepeatedValuesCycleMatches**    | `repeatedCycle(position) == cycle(position)` when `repeatedCycle.values == repeat(cycle.values, times)` | `times > 0`, `position >= 0`, `cycle.size > 0`. Uses `modByPositiveMultipleThenBase` to collapse the larger physical period back to the original period. Verified 39/39. |
 | **cycleValuePositiveOrZero**            | `cycle(pos) >= 0`                                   | `pos >= 0`, `size > 0`           |
 | **rotateAtValue**                       | `rotateAt(k)(i) == cycle(k + i)`                    | `k >= 0`, `i >= 0`               |
 | **assertModCycleEqualsMemCycle**        | If `ModCycle.values == MemCycle.values`, then `ModCycle(k) == MemCycle(k)` | Bridge lemma linking ModCycle and MemCycle. Verified 3/3. |
@@ -778,6 +790,7 @@ apply(k) = (k div size) * sum + integralValues(k mod size) + initialValue
 | **assertFirstValuesAsSliceEqualsModValuesAsList**  | Two helper lists equal                                    | `pos >= 0`, `pos < size`                       |
 | **assertCycleValuePositive**                       | `ci.cycle(pos) > 0`                                       | `pos >= 0`, `allGreaterThan(cycle.values, 0)`  |
 | **assertCycleIntegralPositive**                    | `ci(pos) > 0`                                             | `init >= 0`, `allGreaterThan(cycle.values, 0)` |
+| **assertRepeatedValuesIntegralMatches**            | `repeatedCI(position) == ci(position)` when the repeated integral has the same initial value and repeated cycle values | `times > 0`, `position >= 0`, `ci.cycle.size > 0`. Induction decreases `position`; recursive step uses `position - 1` plus `assertRepeatedValuesCycleMatches`. Verified 51/51. |
 
 **Key Lemma**: `assertCycleIntegralPositive` — proves integral values > 0 when cycle values > 0
 
@@ -1113,8 +1126,13 @@ sequence classes focused on their own semantics.
 | **currentWindow(steps)** | `List[BigInt]` of `cycle.integral(0..steps-1)` | Transparent list of cumulative values. Verified 6/6 (size invariant). |
 | **survivorWindow(steps)** | `currentWindow(steps).filter(v => v mod cycle.head != 0)` | Transparent survivor list. |
 | **assertFullEquivalence(nextPeriod, k)** | `cycle(k) == spec(k) ∧ cycle(1) == spec.next.head.value` | Top-level theorem: same-stage + next-stage head. Verified 13/13. |
+| **repeatedCycle(times)** | `CycleSieveSequence(primes, GapCycle(repeat(cycle.gapCycle.memCycle.values, times)))` | Current `SpecDerivedSieveSequence` helper. Repeats B's physical gap storage without changing its semantic cycle. Verified 14/14. |
+| **assertRepeatedGapListIndexMatches(times, index)** | `repeat(G,times)(index) == G(mod(index, size(G)))` for `0 <= index < size(G) * times` | List-level seed for repeated-cycle invariance. Verified 13/13. |
+| **assertRepeatedCycleGapMatches(times, position)** | `repeatedCycle(times).gapCycle.memCycle(position) == cycle.gapCycle.memCycle(position)` | MemCycle-level repeated-storage invariance for B. Delegates to `MemCycleProperties.assertRepeatedValuesCycleMatches`. Verified 18/18. |
+| **assertRepeatedCycleIntegralMatches(times, position)** | `repeatedCycle(times).integral(position) == cycle.integral(position)` | Integral-level repeated-storage invariance for B. Delegates to `CycleIntegralProperties.assertRepeatedValuesIntegralMatches`. Verified 17/17. |
+| **assertRepeatedCycleApplyMatches(times, k)** | `repeatedCycle(times)(k) == cycle(k)` | Sequence-level repeated-storage invariance. For `k > 0`, lowers sequence index `k` to integral index `k - 1`. Verified 31/31. |
 
-**Source**: `src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala`
+**Source**: historical entries above are from `src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala`; repeated-cycle entries are current in `src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala`.
 
 ---
 

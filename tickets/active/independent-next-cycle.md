@@ -263,6 +263,10 @@ Lessons:
 - The repeated-cycle result is a support lemma for the final target: equality
   of the three sequence representations' `apply` and `next` behavior. It does
   not itself prove the independent next pipeline equals the spec pipeline.
+- `OBJECTS.md` has been updated with the newly proved repeated-list,
+  repeated-`MemCycle`, repeated-`CycleIntegral`, and Chapter 6 repeated-cycle
+  properties so future proof work can find these lemmas from the project
+  catalog.
 
 Meaning:
 
@@ -333,6 +337,135 @@ Meaning:
   it reduces to the producer equality theorem.
 - Remaining hard theorem:
   `nextPipelineGaps() == spec.next.gapList(0,nextPeriod)`.
+
+## 2026-07-01 Plan: Verifier Stepping Stones Before M3
+
+The repeated-cycle timeout showed the main Stainless limitation for this ticket:
+facts that are obvious by representation are often invisible unless named as
+small lemmas. Before attempting the full producer theorem, prove the following
+classes of bridge facts upfront and verify them in isolation.
+
+### S1: Representation Alias Lemmas
+
+Goal: avoid reopening constructors and field definitions inside M3.
+
+- Name every equality between spec, derived, and cycle representations that M3
+  will need.
+- Examples already useful: `cycle.integral` construction alias, prime-value
+  aliases, canonical `spec.next.gapList` aliases.
+- Missing likely aliases: any direct alias between `nextPipelineGaps()`,
+  `SieveSequenceNextLevel.nextRotatedGaps(cycle)`, `nextGapList(0,nextPeriod)`,
+  and `spec.next.gapList(0,nextPeriod)` once the right intermediate target is
+  chosen.
+
+### S2: Period and Modulo Normalization Lemmas
+
+Goal: make cycle-period arithmetic explicit instead of expecting Stainless to
+discover it.
+
+- Proven example: `modByPositiveMultipleThenBase`.
+- Reuse/prove small lemmas for:
+  - reducing through repeated periods,
+  - shifting by whole periods,
+  - converting `cycle(k)` to `cycle(mod(k,size))`,
+  - comparing old period, expanded period, and rotated next period indices.
+
+### S3: List Construction Shape Lemmas
+
+Goal: bridge lists that contain the same values but are built by different
+recursion shapes.
+
+- Proven examples: repeated-list indexing and `nextGapList == spec.next.gapList`.
+- Missing likely shape bridges:
+  - pipeline survivor list equals the cycle survivor list,
+  - sorted/filtered pipeline output preserves exactly the expected survivor
+    values,
+  - filtering preserves sorting, so if an expanded/candidate list is already
+    sorted then the filtered survivor list remains sorted,
+  - filtered-gap merge property: the gap between two consecutive filtered
+    survivors equals the sum of the original consecutive gaps across the
+    removed interval,
+  - rotated pipeline gaps align index-by-index with the canonical next gap list.
+
+### S4: Positivity and Non-Empty Transfer Lemmas
+
+Goal: keep constructor VCs separate from producer equality.
+
+- Proven examples: repeat preserves positivity, rotate/split preserve positivity,
+  canonical spec next gaps are positive, and `nextPipelineGapCycleIfMatchesSpec`
+  conditionally constructs the `GapCycle`.
+- Remaining use: once producer equality is proven, positivity should be
+  transferred from `spec.next.gapList` rather than reproved from the pipeline.
+
+### S5: Sortedness Preservation Lemmas
+
+Goal: keep ordering facts available through the pipeline instead of relying on
+Stainless to infer them after filtering.
+
+- Add/prove a focused lemma that filtering a sorted list preserves sortedness.
+- This matters for the survivor pipeline because `nextFiltered` removes values
+  but should not disturb the order needed by `nextSorted`, `nextGaps`, and the
+  eventual index-by-index comparison with `spec.next.gapList`.
+- Prefer a reusable list-level lemma first, then a narrow pipeline wrapper if
+  the call site still needs representation aliases.
+
+### S6: Filter Merge/Sum Lemmas
+
+Goal: connect filtered survivor gaps to sums over the original unfiltered gap
+sequence.
+
+- Prove the merge property explicitly: if two consecutive values in the
+  filtered survivor list come from original indices `i < j`, then the filtered
+  gap between them equals the sum of original adjacent gaps from `i` through
+  `j - 1`.
+- In sequence notation, for original values `V` and filtered survivor values
+  `F`, if `F(m) = V(i)` and `F(m + 1) = V(j)`, then:
+
+  ```math
+  F(m + 1) - F(m) =
+    V(j) - V(i) =
+    \sum_{r=i}^{j-1} (V(r + 1) - V(r))
+  ```
+
+- This is the precise bridge between "filter removes multiples" and "next
+  gaps are merged old gaps." It should be proven before the full rotated-gap
+  equality, otherwise Stainless will see the filtered list values and original
+  gap list as unrelated constructions.
+- Check existing `CycleIntegralFilterProperties` helpers first:
+  `assertMergedGapIsCITelescope`, `mergedGaps`, `survivorValues`,
+  `gapsFromValues`, `allGapsMatch`, and `assertNewCIGeneratesFiltered` may
+  already contain reusable pieces of this theorem.
+
+### S7: Apply-vs-Integral Lowering Lemmas
+
+Goal: avoid hiding the `k > 0 => integral(k - 1)` branch inside large proofs.
+
+- Proven example: repeated-cycle apply equality lowers positive sequence index
+  `k` to integral index `k - 1`.
+- M3/M4 should use this pattern whenever comparing `CycleSieveSequence.apply`
+  values through gap/integral facts.
+
+### S8: Directional Transfer Lemmas
+
+Goal: transfer facts from the representation where they are cheap to the
+representation where they are needed.
+
+- Proven examples: Chapter 5 `contains` alias lesson, spec/cycle apply transfer,
+  and conditional pipeline-gaps positivity from spec equality.
+- Missing likely transfers:
+  - survivor acceptance/rejection from `spec.next` to pipeline-filter facts,
+  - sorted membership to filtered membership and back in the exact shape needed
+    by M3,
+  - gap equality from survivor positions to rotated pipeline gap positions.
+
+### S9: Conditional Builders
+
+Goal: isolate hard theorems from constructor noise.
+
+- Proven example: `nextPipelineGapCycleIfMatchesSpec(nextPeriod)`.
+- Continue this pattern for `nextFromCycle()`: build conditional methods first,
+  then remove or discharge their equality preconditions only after the producer
+  theorem is proven.
 
 ## Questions
 
