@@ -1192,6 +1192,7 @@ object SpecCycleSieveEquivalence {
     seq: CycleSieveSequence,
     value: BigInt
   ): Boolean = {
+    require(seq.modulus > 0)
     require(SieveSequenceNextLevel.nextSorted(seq).list.contains(value))
 
     assert(assertSortFilteredContainsOnlyExisting(SieveSequenceNextLevel.nextFiltered(seq), value))

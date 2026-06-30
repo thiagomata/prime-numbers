@@ -10,7 +10,7 @@ import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
-import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList, CoprimeUtils}
 import v1.chapter5.prime.properties.PrimeProperties
 
 import scala.annotation.tailrec
@@ -43,7 +43,7 @@ import scala.annotation.tailrec
 case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   require(!primes.isEmpty)
   require(primes.size > 1)
-  require(SieveUtils.isCoprime(primes.head.value, PrimeUtils.primeValues(primes.list.tail.list)))
+  require(CoprimeUtils.isCoprime(primes.head.value, PrimeUtils.primeValues(primes.list.tail.list)))
 
   /**
    * Returns the `k`-th value in the tail-filtered stream.
@@ -1059,7 +1059,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
 
   /** True when `value` is coprime with every active filter prime. */
   def passesFilter(value: BigInt): Boolean =
-    SieveUtils.isCoprime(value, PrimeUtils.primeValues(filterPrimes))
+    CoprimeUtils.isCoprime(value, PrimeUtils.primeValues(filterPrimes))
 
   /**
    * Lifts acceptance from this sequence to a sequence with one extra front filter.
@@ -1806,6 +1806,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(apply(k + BigInt(1)) >= nextSeq.head.value)
     require(nextSeq.accepts(apply(k)))
     require(nextSeq.accepts(apply(k + BigInt(1))))
+    require(ListUtils.checkAllPositive(nextSeq.filterValues))
 
     val v = apply(k)
     val w = apply(k + BigInt(1))
@@ -1817,10 +1818,10 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assert(z > v)
     assert(z >= nextSeq.head.value)
     assert(z >= head.value)
-    assert(SieveUtils.isCoprime(z, nextSeq.filterValues))
-    assert(SieveUtils.assertIsCoprimeSound(z, nextSeq.filterValues))
-    assert(SieveUtils.isCoprime(z, nextSeq.filterValues.tail))
-    assert(SieveUtils.isCoprime(z, filterValues))
+    assert(CoprimeUtils.isCoprime(z, nextSeq.filterValues))
+    assert(CoprimeUtils.assertIsCoprimeForAll(z, nextSeq.filterValues))
+    assert(CoprimeUtils.isCoprime(z, nextSeq.filterValues.tail))
+    assert(CoprimeUtils.isCoprime(z, filterValues))
     assert(accepts(z))
     assert(nextDoesNotPassAcceptedValue(k, z))
     assert(w <= z)

@@ -30,6 +30,7 @@ case class SpecDerivedSieveSequence(
   require(period > BigInt(0))
   require(spec(period) == spec.head.value + spec.filterModulus)
   require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+  require(spec.primes.list.nonEmpty)
   require(
     Calc.mod(
       SieveUtils.product(spec.filterValues),

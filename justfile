@@ -2,6 +2,8 @@
 
 compile:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log compile "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -9,6 +11,8 @@ compile:
 
 verify focus="":
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -27,14 +31,20 @@ verify focus="":
 
 verify-ch chapters="":
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-ch "{{justfile_directory()}}"
     exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{chapters}}
 
 verify-stop:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-stop "{{justfile_directory()}}"
     bash "{{justfile_directory()}}/scripts/verify-stop.sh"
 
 verify-file file pattern="":
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-file "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -56,6 +66,8 @@ verify-file file pattern="":
 
 verify-debug focus="":
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-debug "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -78,6 +90,8 @@ verify-debug focus="":
 
 verify-no-cache focus="":
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-no-cache "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -95,17 +109,35 @@ verify-no-cache focus="":
     ./stainless-dotty-standalone-*/stainless --batched --timeout=300 --vc-cache=false "${function_filter[@]}" $(find ./src/main/scala -name '*.scala' | sort | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
 
 verify-docker:
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-docker "{{justfile_directory()}}"
     docker-compose -f docker-compose.yaml run stainless
 
 build:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log build "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
     sbt clean reload assembly jacoco
 
+jar:
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log jar "{{justfile_directory()}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk use java 21.0.7-zulu
+    export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
+    sbt 'set stainlessEnabled := false' clean assembly
+
+bin: jar
+
 test:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log test "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
@@ -113,6 +145,8 @@ test:
 
 test-all:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log test-all "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
@@ -120,13 +154,21 @@ test-all:
 
 test-slow:
     #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log test-slow "{{justfile_directory()}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
     sbt 'set stainlessEnabled := false' 'testOnly * -- -n v1.tags.SlowLemmaTest' 2>&1 | tee test-slow.log
 
-run a b:
+run a b: jar
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log run "{{justfile_directory()}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}}
 
-check a b div mod:
+check a b div mod: jar
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log check "{{justfile_directory()}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}} {{div}} {{mod}}

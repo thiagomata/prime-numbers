@@ -16,13 +16,8 @@ case class CycleSieveSequence(
   gapCycle: GapCycle
 ) {
   require(!primes.isEmpty)
-  // These constructor invariants are deferred to call-site assertions.
-  // Making them requires forces every construction site to re-prove them,
-  // which the solver struggles with in complex call chains like next().
-  // Instead they are verified as part of each next-method's local proof.
-  // require(primes.head.value + gapCycle.memCycle(0) > primes.head.value)
-  // require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))
-  // require(Calc.mod(PrimeUtils.primorial(primes.list.list), primes.head.value) != BigInt(0))
+  // require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))  // requires newHead==primes.next.head which is the sieve correctness property
+  // require(Calc.mod(PrimeUtils.primorial(primes.list.list), primes.head.value) != BigInt(0))  // false for S_0
 
   val primesValues: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
   val primesTailValues: List[BigInt] = PrimeUtils.primeValues(primes.list.tail.list)
@@ -51,14 +46,11 @@ case class CycleSieveSequence(
   def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {
     val newHead = apply(BigInt(1))
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
-    require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(primorial, newHead) != BigInt(0))
 
-    // assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
-    // assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
-    // assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
-    // assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
-    // assert(SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes(this))
+    assert(SieveSequenceNextLevel.assertNextPrimesNonEmpty(this))
+    assert(SieveSequenceNextLevel.assertNextPrimesPositive(this))
+    assert(SieveSequenceNextLevel.assertNextPrimesBiggerThanOne(this))
+    assert(SieveSequenceNextLevel.assertNextTailProductEqualOrBiggerThanElements(this))
 
     CycleSieveSequence(primes.next, newGapCycle)
   }
@@ -76,10 +68,6 @@ case class CycleSieveSequence(
     nextWithGapCycle(newGapCycle)
   }
 
-  /*
-  // [TIMEOUT] nextFromWindow has a VC on line 91 that times out.
-  // The solver can't prove mod(newHead + newGapCycle.memCycle(0), newHead) != 0
-  // from the survivor-filter context. Left here for future debugging.
   def nextFromWindow(): CycleSieveSequence = {
     val steps = head * gapCycle.size
     val window = SieveSequenceNextLevel.currentWindow(integral, steps)
@@ -92,12 +80,9 @@ case class CycleSieveSequence(
     val newHead = apply(BigInt(1))
     require(newHead < head * head)
     require(SieveUtils.isCoprime(newHead + newGapCycle.memCycle(0), primesValues))
-    require(Calc.mod(newHead + newGapCycle.memCycle(0), newHead) != BigInt(0))
-    require(Calc.mod(primorial, newHead) != BigInt(0))
 
     nextWithGapCycle(newGapCycle)
   }
-  */
 }
 
 object CycleSieveSequence {

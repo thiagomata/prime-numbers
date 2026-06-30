@@ -48,7 +48,12 @@ if [[ -z "$FOCUS" && "$CHAPTERS" != "all" ]]; then
 fi
 
 LOG_TAG=$(echo "$CHAPTERS" | tr ' ' '-')
-LOG_FILE="$BASE_DIR/verify-ch-$LOG_TAG.log"
+if [[ -n "$FOCUS" ]]; then
+  FOCUS_TAG=$(echo "$FOCUS" | tr -c '[:alnum:]_' '-' | sed 's/-\+/-/g; s/^-//; s/-$//')
+  LOG_FILE="$BASE_DIR/verify-ch-$LOG_TAG-$FOCUS_TAG.log"
+else
+  LOG_FILE="$BASE_DIR/verify-ch-$LOG_TAG.log"
+fi
 rm -f "$LOG_FILE"
 
 FOCUS_FLAG=()
@@ -59,7 +64,7 @@ fi
 DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
 JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
 "$STAINLESS" \
-  --batched --timeout=300 \
+  --batched --timeout=300 --cache-dir="$BASE_DIR/.stainless-cache" \
   "${FOCUS_FLAG[@]}" \
   $SRC_FILES \
   2>&1 | tee "$LOG_FILE"

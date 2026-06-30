@@ -2293,3 +2293,36 @@ Lesson: when a wrapper delegates to a verified helper, mirror the helper's
 preconditions at the wrapper boundary. Otherwise Stainless spends time
 rediscovering basic structural facts through `CycleSieveSequence`, and small
 pipeline methods can look like hard timeouts.
+
+## 2026-06-30 — Stainless cache behavior during focused Chapter 6 runs
+
+Investigated the suspicion that focused Chapter 6 checks were not always using
+the cache.
+
+Findings:
+
+- The repo has a local `.stainless-cache/vccache.bin`, currently about 2.4G.
+- Stainless 0.9.8.8 defaults to `--vc-cache=true` and
+  `--cache-dir=.stainless-cache`.
+- A controlled repeat of the exact same focused command confirmed the cache can
+  work:
+  `scripts/verify-ch.sh 6 --functions=v1.chapter6.seq.sieve.SieveSequenceNextLevel.nextGaps`
+  first reported 4 valid, 0 from cache; the immediate second identical command
+  reported 4 valid, 4 from cache.
+- The confusing part is expected: VCs generated for a caller's preconditions
+  are not necessarily the same cache entries as the callee function's own VCs.
+  Also, every source edit reshapes affected VC hashes, so the first run after a
+  small proof-contract change may need to fill the cache again.
+
+Workflow changes:
+
+- `scripts/verify-ch.sh` now passes the cache path explicitly with
+  `--cache-dir="$BASE_DIR/.stainless-cache"`.
+- Focused runs now write focus-specific logs, for example
+  `verify-ch-6-v1-chapter6-seq-sieve-SieveSequenceNextLevel-nextGaps.log`,
+  instead of overwriting `verify-ch-6.log`. This keeps cache/no-cache evidence
+  from adjacent focused checks.
+
+Lesson: for timing diagnosis, compare exact same command twice with no source
+edit between runs. A call-site check going green from cache does not imply the
+callee's focused function check will also hit the same cache entries.
