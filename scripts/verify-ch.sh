@@ -55,6 +55,7 @@ else
   LOG_FILE="$BASE_DIR/logs/verify-ch-$LOG_TAG.log"
 fi
 mkdir -p "$BASE_DIR/logs"
+echo "Stainless log: $LOG_FILE" >&2
 rm -f "$LOG_FILE"
 
 FOCUS_FLAG=()
@@ -65,7 +66,7 @@ fi
 DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
 JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
 "$STAINLESS" \
-  --batched --timeout=300 --cache-dir="$BASE_DIR/.stainless-cache" \
+  --timeout=300 --cache-dir="$BASE_DIR/.stainless-cache" \
   "${FOCUS_FLAG[@]}" \
   $SRC_FILES \
   2>&1 | tee "$LOG_FILE"

@@ -10,13 +10,45 @@ just_log() {
   mkdir -p "$log_dir"
 
   # Append start marker, then redirect all output to both terminal and log files
+  local start_timestamp
+  start_timestamp="$(date '+%Y-%m-%d %H:%M:%S %z')"
   {
     echo
-    echo "===== just $recipe started at $(date '+%Y-%m-%d %H:%M:%S %z') ====="
-    echo "cwd: $(pwd)"
-  } >> "$log_file" "$overall_log"
+    echo "[$start_timestamp] ===== just $recipe started ====="
+    echo "[$start_timestamp] cwd: $(pwd)"
+    echo "[$start_timestamp] log: $log_file"
+    echo "[$start_timestamp] overall log: $overall_log"
+  } | tee -a "$log_file" "$overall_log"
 
-  # Tee stdout/stderr to terminal (as-is) and append to log files
+  # Keep terminal output unchanged, but timestamp every saved log line.
   exec 3>&1 4>&2
-  exec > >(tee -a "$log_file" "$overall_log") 2>&1
+  local restore_wrap=0
+  if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
+    if tput rmam 2>/dev/null; then
+      restore_wrap=1
+    fi
+  fi
+  local fifo_dir="${TMPDIR:-/tmp}/prime-just-log.$$"
+  local fifo="$fifo_dir/output"
+  mkdir -p "$fifo_dir"
+  mkfifo "$fifo"
+  trap 'if [[ "$restore_wrap" == "1" ]]; then tput smam 2>/dev/null || true; fi; rm -f "$fifo"; rmdir "$fifo_dir" 2>/dev/null || true' EXIT
+
+  awk -v log_file="$log_file" -v overall_log="$overall_log" '
+      {
+        cmd = "date \"+%Y-%m-%d %H:%M:%S %z\""
+        cmd | getline timestamp
+        close(cmd)
+
+        print
+        print "[" timestamp "] " $0 >> log_file
+        print "[" timestamp "] " $0 >> overall_log
+
+        fflush()
+        fflush(log_file)
+        fflush(overall_log)
+      }
+    ' < "$fifo" >&3 &
+
+  exec > "$fifo" 2>&1
 }

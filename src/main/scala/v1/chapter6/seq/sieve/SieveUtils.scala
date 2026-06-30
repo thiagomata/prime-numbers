@@ -4,7 +4,7 @@ import stainless.collection.List
 import stainless.lang.*
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication
-import v1.chapter3.list.ListUtils
+import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter5.prime.CoprimeUtils
 import scala.annotation.tailrec
@@ -429,6 +429,31 @@ object SieveUtils {
     }
   }
 
+  def assertSplitAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
+    require(index >= 0 && index <= list.size)
+    require(ListBoundUtils.allGreaterThan(list, value))
+    decreases(index)
+    val (front, back) = splitAt(list, index)
+    if (index == BigInt(0)) {
+      assert(front == List.empty[BigInt])
+      assert(back == list)
+      ListBoundUtils.allGreaterThan(front, value) &&
+        ListBoundUtils.allGreaterThan(back, value)
+    } else {
+      assert(list.nonEmpty)
+      assert(list.head > value)
+      assert(ListBoundUtils.allGreaterThan(list.tail, value))
+      assert(assertSplitAtPreservesAllGreaterThan(list.tail, index - BigInt(1), value))
+      val (tailFront, tailBack) = splitAt(list.tail, index - BigInt(1))
+      assert(front == list.head :: tailFront)
+      assert(back == tailBack)
+      assert(ListBoundUtils.allGreaterThan(tailFront, value))
+      assert(ListBoundUtils.allGreaterThan(tailBack, value))
+      ListBoundUtils.allGreaterThan(front, value) &&
+        ListBoundUtils.allGreaterThan(back, value)
+    }
+  }.holds
+
   @tailrec
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
     require(index >= 0)
@@ -436,10 +461,30 @@ object SieveUtils {
     if (list.isEmpty || index == BigInt(0)) list
     else if (index >= list.size) rotateAt(list, index - list.size)
     else {
-      val (front, back) = ListUtils.splitAt(list, index)
+      val (front, back) = splitAt(list, index)
       back ++ front
     }
   }
+
+  def assertRotateAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
+    require(index >= 0)
+    require(ListBoundUtils.allGreaterThan(list, value))
+    decreases(index)
+    if (list.isEmpty || index == BigInt(0)) {
+      ListBoundUtils.allGreaterThan(rotateAt(list, index), value)
+    } else if (index >= list.size) {
+      assert(assertRotateAtPreservesAllGreaterThan(list, index - list.size, value))
+      ListBoundUtils.allGreaterThan(rotateAt(list, index), value)
+    } else {
+      assert(assertSplitAtPreservesAllGreaterThan(list, index, value))
+      val (front, back) = splitAt(list, index)
+      assert(ListBoundUtils.allGreaterThan(front, value))
+      assert(ListBoundUtils.allGreaterThan(back, value))
+      assert(ListBoundUtils.assertAppendGreaterThan(back, front, value))
+      ListBoundUtils.allGreaterThan(rotateAt(list, index), value)
+    }
+  }.holds
+
   def assertRotateAtPreservesNonEmpty(list: List[BigInt], index: BigInt): Boolean = {
     require(list.nonEmpty)
     require(index >= 0)

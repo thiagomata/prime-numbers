@@ -203,6 +203,130 @@ case class SpecDerivedSieveSequence(
     cycle(k) == spec(k) && cycle(BigInt(1)) == spec.next.head.value
   }.holds
 
+  /**
+   * Canonical next-stage gap-cycle packaging.
+   *
+   * This lemma is intentionally about the Spec-certified next cycle, not about
+   * the independent pipeline output. It records the construction fact that
+   * `spec.next.specGapCycle(nextPeriod)` stores exactly
+   * `spec.next.gapList(0, nextPeriod)` as its memory-cycle values. Keeping this
+   * bridge explicit prevents future edits from mistaking the canonical
+   * Spec-derived cycle proof for a proof about `nextRotatedGaps(cycle)`.
+   */
+  def assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+
+    spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(BigInt(0), nextPeriod)
+  }.holds
+
+  /**
+   * Canonical next-stage apply equality.
+   *
+   * This is the current-stage `assertApplyMatches` lemma instantiated one stage
+   * later: construct the Spec-derived wrapper for `spec.next`, then use that
+   * wrapper's current-stage apply lemma. It proves a correct canonical next
+   * cycle exists; it still does not claim the independent pipeline computed it.
+   */
+  def assertNextCycleApplyMatchesSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(k >= BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
+    assert(nextCanonical.assertApplyMatches(k))
+
+    nextCanonical.cycle(k) == spec.next(k)
+  }.holds
+
+  /**
+   * Canonical next-stage head equality.
+   *
+   * The next canonical wrapper is built from `spec.next`, so its cycle head is
+   * the same prime head stored by `spec.next`. This is another construction
+   * fact, intentionally separate from any independent pipeline claim.
+   */
+  def assertNextCycleHeadMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
+
+    nextCanonical.cycle.head == spec.next.head.value
+  }.holds
+
+  /**
+   * Canonical next-stage gap equality.
+   *
+   * The canonical wrapper for `spec.next` stores `spec.next.specGapCycle` as
+   * its gap cycle. The earlier packaging lemma exposes that this gap cycle's
+   * memory values are exactly `spec.next.gapList(0, nextPeriod)`.
+   */
+  def assertNextCycleGapsMatchSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
+    val nextSpecGapCycle = spec.next.specGapCycle(nextPeriod)
+
+    assert(nextCanonical.cycle.gapCycle == nextSpecGapCycle)
+    assert(assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod))
+
+    nextCanonical.cycle.gapCycle.memCycle.values == spec.next.gapList(BigInt(0), nextPeriod)
+  }.holds
+
+  /**
+   * Canonical next-stage structural identity.
+   *
+   * Packages the separately verified canonical facts: the wrapper built from
+   * `spec.next` has the same head and stored gap list as `spec.next`, and its
+   * apply behavior is available through `assertNextCycleApplyMatchesSpecNext`.
+   * This is the migrated "correct next cycle exists" theorem, still distinct
+   * from proving that the independent pipeline produced that cycle.
+   */
+  def assertNextCycleMatchesSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    assert(assertNextCycleHeadMatchesSpecNext(nextPeriod))
+    assert(assertNextCycleGapsMatchSpecNext(nextPeriod))
+
+    true
+  }.holds
+
+//  /**
+//   * Computes the next stage gap cycle independently from B's own cycle,
+//   * then wraps A.next to match.
+//   *
+//   * The gap computation uses `nextRotatedGaps` (pure cycle math, no A.next data).
+//   * Precondition discharge uses A (available to B) — this is separate from the
+//   * gap computation itself.
+//   */
+//  def nextFromCycle(): CycleSieveSequence = {
+//    assert(assertModulusPositive())
+//    assert(assertPrimesTailValuesPositive())
+//    assert(assertHeadPositive())
+//    assert(assertModulusTimesHeadPositive())
+//    assert(SieveSequenceNextLevel.assertNextGapsNonEmpty(cycle))
+//
+//    val newGaps = SieveSequenceNextLevel.nextRotatedGaps(cycle)
+//    val newGapCycle = GapCycle(newGaps)
+//
+//    CycleSieveSequence(primes.next, newGapCycle)
+//  }
+
   def nextVerified(nextPeriod: BigInt): SpecDerivedSieveSequence = {
     require(nextPeriod > BigInt(0))
     require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
