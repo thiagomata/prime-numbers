@@ -857,6 +857,42 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }
 
   /**
+   * Projects a value emitted by `next` back into this sequence's acceptance
+   * predicate.
+   *
+   * This is an important verifier bridge. The next stage filters by the old
+   * whole prime list: its head is the newly discovered prime and its tail is
+   * this stage's active filters. Therefore every value accepted by `next`
+   * also survives this stage's filter tail. Scala can run both predicates just
+   * fine, but Stainless treats `next.accepts(value)` and `accepts(value)` as
+   * different facts until this relationship is stated explicitly. Future
+   * editors should call this lemma instead of asking downstream proofs to
+   * rediscover the filter-tail relationship.
+   */
+  def assertNextValueAcceptedByThis(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(primes.nextPrime.value < head.value * head.value)
+
+    val nextSeq = next
+    val value = nextSeq(k)
+
+    assert(value >= nextSeq.head.value)
+    assert(nextSeq.head.value > head.value)
+    assert(value >= head.value)
+    assert(nextSeq.filterPrimes == primes.list.list)
+    assert(nextSeq.filterValues == PrimeUtils.primeValues(primes.list.list))
+    assert(nextSeq.filterValues.tail == PrimeUtils.primeValues(primes.list.tail.list))
+    assert(filterValues == PrimeUtils.primeValues(primes.list.tail.list))
+    assert(nextSeq.filterValues.tail == filterValues)
+    assert(nextSeq.accepts(value))
+    assert(CoprimeUtils.isCoprime(value, nextSeq.filterValues))
+    assert(SieveUtils.assertIsCoprimeSound(value, nextSeq.filterValues))
+    assert(CoprimeUtils.isCoprime(value, nextSeq.filterValues.tail))
+    assert(CoprimeUtils.isCoprime(value, filterValues))
+    accepts(value)
+  }.holds
+
+  /**
    * The first value of this generator.
    *
    * `AllPrimesSoFarList` stores primes in descending order, so the list head is

@@ -221,6 +221,32 @@ delegate to the canonical `PrimeListUtils` predicates; if Chapter 6 develops
 similar timeouts, first check for a split predicate surface before increasing
 timeouts or adding heavier assertions.
 
+### 5.4 Bridge related predicates explicitly
+
+Sometimes two predicates are not duplicates, but one logically implies the
+other through a structural relationship. Do not expect Stainless to infer that
+relationship at a distant call site.
+
+**Pattern that worked:** add a named bridge lemma at the owner of the
+relationship, then call it before the expensive precondition.
+
+```scala
+def assertNextValueAcceptedByThis(k: BigInt): Boolean = {
+  val nextSeq = next
+  val value = nextSeq(k)
+  // nextSeq filters by the old whole prime list; this stage filters by its tail.
+  accepts(value)
+}.holds
+```
+
+**Affected:** Chapter 6 `SpecDerivedSieveSequence.assertSurvivorGapEqualsSpecNextGap`
+timed out proving that `spec.next(k + 1)` could be passed to
+`spec.indexOfAccepted`. The value was accepted by `spec.next`, while
+`indexOfAccepted` needed acceptance by `spec`. Adding
+`SpecSieveSequence.assertNextValueAcceptedByThis` exposed the filter-tail
+projection once, and the class-level check dropped from a 300s timeout to a
+green `SpecDerivedSieveSequence._` run.
+
 ## 6. Timeout Resolution Strategies
 
 ### 6.0 Stop orphaned verification workers before reruns

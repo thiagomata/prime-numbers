@@ -11,6 +11,8 @@ target
 .vscode
 .bsp
 .bsp/**
+__pycache__/
+*.pyc
 *.log
 logs/*.log
 

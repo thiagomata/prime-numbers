@@ -41,6 +41,12 @@ verify-stop:
     just_log verify-stop "{{justfile_directory()}}"
     bash "{{justfile_directory()}}/scripts/verify-stop.sh"
 
+check-cycles scope="":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log check-cycles "{{justfile_directory()}}"
+    python3 "{{justfile_directory()}}/scripts/check-scala-cycles.py" "{{scope}}"
+
 verify-file file pattern="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"

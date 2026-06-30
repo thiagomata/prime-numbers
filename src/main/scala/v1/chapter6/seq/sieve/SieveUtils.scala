@@ -6,6 +6,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication
 import v1.chapter3.list.ListUtils
 import v1.chapter3.list.properties.ListUtilsProperties
+import v1.chapter5.prime.CoprimeUtils
 import scala.annotation.tailrec
 
 object SieveUtils {
@@ -15,13 +16,19 @@ object SieveUtils {
     else list.head * product(list.tail)
   }
 
-  @tailrec
+  /**
+   * Alias to the canonical chapter 5 coprimality predicate.
+   *
+   * Chapter 6 used to carry a structurally identical local implementation.
+   * Scala accepted that duplication, but Stainless treated
+   * `SieveUtils.isCoprime` and `CoprimeUtils.isCoprime` as different logical
+   * functions, forcing bridge proofs to rediscover equivalence between the two.
+   * Keeping this method as an alias preserves the chapter 6 API while ensuring
+   * every caller reasons through the same predicate.
+   */
   def isCoprime(value: BigInt, primes: List[BigInt]): Boolean = {
     require(ListUtils.checkAllPositive(primes))
-    decreases(primes.size)
-    if (primes.isEmpty) true
-    else if (Calc.mod(value, primes.head) == BigInt(0)) false
-    else isCoprime(value, primes.tail)
+    CoprimeUtils.isCoprime(value, primes)
   }
 
   def assertIsCoprimeSound(value: BigInt, primes: List[BigInt]): Boolean = {

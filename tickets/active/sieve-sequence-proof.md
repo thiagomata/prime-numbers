@@ -2349,6 +2349,16 @@ smoke test was `just verify-stop`, which wrote the same output to
 Portability note: use `tee -a "$command_log" "$overall_log"` rather than
 repeating `-a`; BSD/macOS `tee` treats the second `-a` as a filename.
 
+Each emitted line is timestamped inside `scripts/just-log.sh` before it reaches
+the saved log files. This gives gnomon-like timing evidence without making
+`gnomon` a project dependency. The terminal keeps the original unprefixed stream
+so long command output is less likely to wrap; the per-recipe log and `all.log`
+receive timestamped lines.
+
+When the terminal supports it, `scripts/just-log.sh` also disables automatic
+terminal wrapping for the duration of a recipe and restores it on exit. This is
+terminal-only; saved logs still keep complete lines.
+
 This should reduce ghost chasing: failed compiles, stale jar rebuilds,
 verification stops, focused verification runs, and tests now leave command
 history in one place as well as recipe-specific logs.
@@ -2389,3 +2399,87 @@ Validation: `just jar` passed after this change,
 manifest says `Main-Class: v1.chapter2.div.DivMain`, and
 `java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar 10 3` returned
 `div: 3, mod: 1`.
+
+## 2026-06-30 — Static Scala cycle checker
+
+Added `scripts/check-scala-cycles.py` and `just check-cycles`.
+
+The checker is intentionally static and lightweight: it reads
+`src/main/scala/**/*.scala`, builds a conservative object/class reference graph
+from references shaped like `ObjectName.method`, and exits with:
+
+- `0` when no object/class reference cycles are found.
+- `1` when one or more cycles are found.
+
+It does not run Java, SBT, Stainless, Z3, Docker, or any network command, so it
+is safe to run while a verification process is already active. The purpose is to
+catch Scala-level reference cycles that Scala compilation may tolerate but that
+can become expensive or unstable for Stainless proof dependencies.
+
+The recipe accepts an optional scope. Use `just check-cycles` for the whole repo,
+or `just check-cycles 6` to inspect only `src/main/scala/v1/chapter6`.
+
+## 2026-06-30 — Chapter 6 coprimality predicate canonicalized
+
+Chapter 6 had its own `SieveUtils.isCoprime` implementation even though chapter
+5 already had the canonical `CoprimeUtils.isCoprime` predicate. The two methods
+were structurally identical, but Stainless treats them as different logical
+functions. That made bridge lemmas expensive when one side unfolded
+`SpecSieveSequence.accepts` through `CoprimeUtils.isCoprime` and the other side
+asked for `SieveUtils.isCoprime`.
+
+Changed `SieveUtils.isCoprime` into a documented alias to
+`CoprimeUtils.isCoprime`, preserving existing chapter 6 call sites while giving
+Stainless a single coprimality predicate to reason about.
+
+Validation:
+
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SpecCycleSieveEquivalence.assertNextAcceptsMatchesCyclePrimesCoprime"`
+  passed with `total: 21 valid: 21 unknown: 0 time: 4.38`; this is the function
+  that previously timed out at line 328.
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SieveUtils.isCoprime"`
+  passed with `total: 1 valid: 1 unknown: 0`.
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SieveUtils.assertIsCoprimeSound"`
+  passed with `total: 10 valid: 10 unknown: 0`.
+
+## 2026-06-30 — Chapter 6 next-acceptance bridge
+
+The next class-by-class timeout was in
+`SpecDerivedSieveSequence.assertSurvivorGapEqualsSpecNextGap`, at the second
+`spec.indexOfAccepted(spec.next(k + 1))` call. The timed-out precondition was
+not arithmetic gap equality; Stainless was trying to prove that a value accepted
+by `spec.next` is also accepted by the current `spec`.
+
+Added `SpecSieveSequence.assertNextValueAcceptedByThis(k)` to expose the
+structural filter relationship directly: `spec.next` filters by the old whole
+prime list, while `spec` filters by that list's tail, so every value emitted by
+`spec.next` is acceptable to `spec`. `SpecDerivedSieveSequence` now calls this
+bridge for `k` and `k + 1` before using `spec.indexOfAccepted`.
+
+Focused validation:
+
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SpecSieveSequence.assertNextValueAcceptedByThis"`
+  passed with `total: 29 valid: 29 unknown: 0 time: 19.50`.
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SpecDerivedSieveSequence.assertSurvivorGapEqualsSpecNextGap"`
+  passed with `total: 37 valid: 37 unknown: 0 time: 17.19`.
+- `just verify-ch "6 --functions=v1.chapter6.seq.sieve.SpecDerivedSieveSequence._"`
+  passed with `total: 186 valid: 186 unknown: 0 time: 19.23`.
+
+Class-by-class chapter 6 proof-core status after the fix:
+
+| Filter | Result |
+|---|---|
+| `v1.chapter6.seq.sieve.SieveUtils._` | `717/717` valid |
+| `v1.chapter6.seq.sieve.CycleUtils._` | `50/50` valid |
+| `v1.chapter6.seq.sieve.SieveSequenceByPrimes._` | `9/9` valid |
+| `v1.chapter6.seq.sieve.CompletePrimePrefix._` | `17/17` valid |
+| `v1.chapter6.seq.sieve.CycleSieveSequence._` | `48/48` valid |
+| `v1.chapter6.seq.sieve.SpecSieveSequence._` | `2114/2114` valid |
+| `v1.chapter6.seq.sieve.SpecDerivedSieveSequence._` | `186/186` valid |
+| `v1.chapter6.seq.sieve.SieveSequenceNextLevel._` | `199/199` valid |
+| `v1.chapter6.seq.sieve.properties.SieveSequenceProperties._` | `59/59` valid |
+| `v1.chapter6.seq.sieve.SpecCycleSieveEquivalence._` | `692/692` valid |
+
+Empirical/runtime helpers (`Types._`, `SegmentedSieve._`, `GapAnalyzer._`,
+`CsvWriter._`, and `EmpiricalRunner._`) produced `0/0` VCs and completed
+without unknowns.

@@ -156,6 +156,8 @@ case class SpecDerivedSieveSequence(
     require(k >= BigInt(0))
     require(k + BigInt(1) < nextPeriod)
     require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
     val pos1 = spec.indexOfAccepted(spec.next(k))
     val pos2 = spec.indexOfAccepted(spec.next(k + BigInt(1)))
     assert(assertApplyMatches(pos1))
