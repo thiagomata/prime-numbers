@@ -15,10 +15,14 @@ pitfall avoidance, and timeout resolution strategies.
 <commands>
   <verify>just verify</verify>
   <verify-focus>just verify functionName</verify-focus>
+  <verify-debug>just verify-debug functionName</verify-debug>
+  <verify-no-cache>just verify-no-cache functionName</verify-no-cache>
+  <verify-class>just verify-class ClassName</verify-class>
   <verify-log>grep "total:" logs/verify.log</verify-log>
   <fast-compile>just compile</fast-compile>
   <build>just jar</build>
   <tests>just test</tests>
+  <clean-logs>just clean-logs</clean-logs>
 </commands>
 
 `just verify` writes its output to `logs/verify.log` (and `logs/verify-error.log` for errors).

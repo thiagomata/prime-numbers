@@ -44,8 +44,10 @@ if [[ "${#PIDS[@]}" -eq 0 ]]; then
   exit 0
 fi
 
-echo "Stopping verification processes: ${PIDS[*]}"
+echo "Stopping verification processes:"
 for pid in "${PIDS[@]}"; do
+  runtime=$(ps -o etime= -p "$pid" 2>/dev/null | tr -d ' ' || echo "?")
+  echo "  PID $pid (running $runtime)"
   kill -TERM "$pid" 2>/dev/null || true
 done
 
@@ -59,8 +61,10 @@ for pid in "${PIDS[@]}"; do
 done
 
 if [[ "${#STILL_RUNNING[@]}" -gt 0 ]]; then
-  echo "Force-stopping stubborn verification processes: ${STILL_RUNNING[*]}"
+  echo "Force-stopping stubborn verification processes:"
   for pid in "${STILL_RUNNING[@]}"; do
+    runtime=$(ps -o etime= -p "$pid" 2>/dev/null | tr -d ' ' || echo "?")
+    echo "  PID $pid (still alive after $runtime)"
     kill -KILL "$pid" 2>/dev/null || true
   done
 fi

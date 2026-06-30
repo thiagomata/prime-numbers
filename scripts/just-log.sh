@@ -3,6 +3,7 @@
 just_log() {
   local recipe="$1"
   local base_dir="${2:-$(pwd)}"
+  local args="$3"
   local log_dir="$base_dir/logs"
   local log_file="$log_dir/$recipe.log"
   local overall_log="$log_dir/all.log"
@@ -15,9 +16,12 @@ just_log() {
   {
     echo
     echo "[$start_timestamp] ===== just $recipe started ====="
-    echo "[$start_timestamp] cwd: $(pwd)"
-    echo "[$start_timestamp] log: $log_file"
-    echo "[$start_timestamp] overall log: $overall_log"
+    if [[ -n "$args" ]]; then
+      echo "[$start_timestamp]   args: $args"
+    fi
+    echo "[$start_timestamp]   cwd: $(pwd)"
+    echo "[$start_timestamp]   log: $log_file"
+    echo "[$start_timestamp]   overall log: $overall_log"
   } | tee -a "$log_file" "$overall_log"
 
   # Keep terminal output unchanged, but timestamp every saved log line.

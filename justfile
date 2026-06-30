@@ -12,7 +12,7 @@ compile:
 verify focus="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify "{{justfile_directory()}}"
+    just_log verify "{{justfile_directory()}}" "focus={{focus}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
@@ -33,7 +33,7 @@ verify focus="":
 verify-ch chapters="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-ch "{{justfile_directory()}}"
+    just_log verify-ch "{{justfile_directory()}}" "chapters={{chapters}}"
     exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{chapters}}
 
 verify-stop:
@@ -42,23 +42,37 @@ verify-stop:
     just_log verify-stop "{{justfile_directory()}}"
     bash "{{justfile_directory()}}/scripts/verify-stop.sh"
 
+clean-logs:
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log clean-logs "{{justfile_directory()}}"
+    rm -f "{{justfile_directory()}}"/logs/*.log
+    echo "Cleared all logs in logs/"
+
+verify-class class="":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-class "{{justfile_directory()}}" "class={{class}}"
+    cd "{{justfile_directory()}}" && exec just verify "{{class}}._"
+
 check-cycles scope="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log check-cycles "{{justfile_directory()}}"
+    just_log check-cycles "{{justfile_directory()}}" "scope={{scope}}"
     python3 "{{justfile_directory()}}/scripts/check-scala-cycles.py" "{{scope}}"
 
 verify-file file pattern="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-file "{{justfile_directory()}}"
+    just_log verify-file "{{justfile_directory()}}" "file={{file}} pattern={{pattern}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
-    pkill -f sbt 2>/dev/null; pkill -f java;
-    rm -f verify-error.log
-    rm -f verify.log
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
     cd "{{justfile_directory()}}"
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify-file.log
     Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
     funcs=()
     while IFS= read -r line; do
@@ -69,43 +83,41 @@ verify-file file pattern="":
     done < <(grep -v "^//\|^$\|^import\|^package\|^object\|^class\|^case\|^require\|^val\|^var\|^def this" "$file")
     DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
-    ./stainless-dotty-standalone-*/stainless --timeout=300 "${funcs[@]}" $(find ./src/main/scala -name '*.scala' | sort | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
+    ./stainless-dotty-standalone-*/stainless --timeout=300 "${funcs[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify-file.log >&2) 1> >(tee -a logs/verify-file.log)
 
 verify-debug focus="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-debug "{{justfile_directory()}}"
+    just_log verify-debug "{{justfile_directory()}}" "focus={{focus}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
-    pkill -f sbt 2>/dev/null; pkill -f java;
-    rm -f verify-error.log
-    rm -f verify.log
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
     cd "{{justfile_directory()}}"
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify-debug.log
     Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
     function_filter=()
     if [[ -n "{{focus}}" ]]; then
-      function_filter=(--functions="{{focus}}")
+      function_filter=(--functions="{{focus}}" --debug-objects="{{focus}}")
     fi
-    debug_flags=(
-      --debug=verification,full-vc,solver,timers
-      --debug-objects=assertExpandedResiduesRepresentPeriod,assertModPreservesCoprime,nextGaps,nextSorted,calculateGaps
-    )
     DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
-    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 "${debug_flags[@]}" "${function_filter[@]}" $(find ./src/main/scala -name '*.scala' | sort | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
+    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 --debug=verification,full-vc,solver "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify-debug.log >&2) 1> >(tee -a logs/verify-debug.log)
 
 verify-no-cache focus="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-no-cache "{{justfile_directory()}}"
+    just_log verify-no-cache "{{justfile_directory()}}" "focus={{focus}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk install java 21.0.7-zulu
     sdk use java 21.0.7-zulu
-    pkill -f sbt 2>/dev/null; pkill -f java;
-    rm -f verify-error.log
-    rm -f verify.log
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
     cd "{{justfile_directory()}}"
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify-no-cache.log
     Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
     function_filter=()
     if [[ -n "{{focus}}" ]]; then
@@ -113,13 +125,7 @@ verify-no-cache focus="":
     fi
     DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
-    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 --vc-cache=false "${function_filter[@]}" $(find ./src/main/scala -name '*.scala' | sort | tr '\n' ' ') 2> >(tee verify-error.log | tee -a verify.log >&2) 1> >(tee -a verify.log)
-
-verify-docker:
-    #!/usr/bin/env bash
-    source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-docker "{{justfile_directory()}}"
-    docker-compose -f docker-compose.yaml run stainless
+    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 --vc-cache=false "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify-no-cache.log >&2) 1> >(tee -a logs/verify-no-cache.log)
 
 build:
     #!/usr/bin/env bash
@@ -172,11 +178,11 @@ test-slow:
 run a b: jar
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log run "{{justfile_directory()}}"
+    just_log run "{{justfile_directory()}}" "a={{a}} b={{b}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}}
 
 check a b div mod: jar
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log check "{{justfile_directory()}}"
+    just_log check "{{justfile_directory()}}" "a={{a}} b={{b}} div={{div}} mod={{mod}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}} {{div}} {{mod}}
