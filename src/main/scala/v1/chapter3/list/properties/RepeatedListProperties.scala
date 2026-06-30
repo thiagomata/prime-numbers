@@ -25,7 +25,7 @@ object RepeatedListProperties {
     require(times > 1)
     val current = RepeatedList(list, times)
     val prev = RepeatedList(list, times - 1)
-    ListUtilsProperties.listCombine(list, prev.toValues)
+    ListUtils.listCombine(list, prev.toValues)
     current.sum == ListUtils.sum(list) + prev.sum
   }.holds
 

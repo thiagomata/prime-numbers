@@ -655,7 +655,7 @@ object SieveUtils {
       ListUtils.sum(calculateGaps(sorted, modulus)) == modulus
     } else {
       assertSumPairwiseGaps(sorted)
-      ListUtilsProperties.listCombine(
+      ListUtils.listCombine(
         pairwiseGaps(sorted),
         List(modulus - sorted.last + sorted.head)
       )

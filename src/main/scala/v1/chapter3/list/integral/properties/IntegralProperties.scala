@@ -5,6 +5,7 @@ import stainless.lang.*
 import v1.chapter1.verification.Helper.assert
 import v1.chapter3.list.ListUtils
 import v1.chapter3.list.integral.Integral
+import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.properties.ListUtilsProperties
 
 object IntegralProperties {
@@ -151,7 +152,7 @@ object IntegralProperties {
       assert(integral.acc.nonEmpty)
       assert(integral.list.size == integral.acc.size)
       assert(position < integral.acc.size)
-      assert(ListUtilsProperties.assertTailShiftLeft(integral.acc, position))
+      assert(ListBoundUtils.assertTailShiftLeft(integral.acc, position))
       assert(integral.acc.tail(position - 1) == integral.acc(position))
       assert(integral.acc(position) == integral.acc.tail(position - 1))
       assert(integral.acc.tail(position - 1) == next.acc(position - 1))
@@ -235,7 +236,7 @@ object IntegralProperties {
       assert(next.last == next.init + ListUtils.sum(next.list))
       assert(next.last == integral.init + integral.list.head + ListUtils.sum(next.list))
       assert(integral.last == integral.init + integral.list.head + ListUtils.sum(next.list))
-      assert(ListUtilsProperties.listSumAddValue(next.list,integral.list.head))
+      assert(ListUtils.listSumAddValue(next.list,integral.list.head))
       assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) ++ integral.list.tail))
       assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(integral.list))
       assert(integral.last == integral.init + ListUtils.sum(integral.list))
@@ -281,7 +282,7 @@ object IntegralProperties {
       assert(integral.apply(position - 1) == integral.init + prevSum)
       assert(integral.apply(position) == integral.apply(position - 1) + integral.list(position))
       assert(integral.apply(position) == integral.init + prevSum + integral.list(position))
-      assert(ListUtilsProperties.listSumAddValue(integral.list, integral.list(position)))
+      assert(ListUtils.listSumAddValue(integral.list, integral.list(position)))
       assert(ListUtilsProperties.assertAppendToSlice(integral.list, 0, position))
       assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) ++ List(integral.list(position)))
       assert(integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))

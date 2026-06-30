@@ -3,6 +3,7 @@ package v1.div.properties
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
 import v1.chapter2.div.properties.AdditionAndMultiplication
+import v1.chapter2.div.properties.ModIdempotence
 
 class AdditionAndMultiplicationTest extends FlatSpec with Matchers {
 
@@ -43,21 +44,21 @@ class AdditionAndMultiplicationTest extends FlatSpec with Matchers {
   }
 
   "MoreDivLessMod" should "hold for any values" in {
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(10, 2, 5, 0))
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, 2, 5, 1))
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(0, 2, 0, 0))
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(10, 1, 10, 0))
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, -2, -5, 1))
-    assert(AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(11, -3, 5, 26))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(10, 2, 5, 0))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(11, 2, 5, 1))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(0, 2, 0, 0))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(10, 1, 10, 0))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(11, -2, -5, 1))
+    assert(ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(11, -3, 5, 26))
   }
 
   "LessDivMoreMod" should "hold for any values" in {
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(10, 2, 5, 0))
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, 2, 5, 1))
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(0, 2, 0, 0))
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(10, 1, 10, 0))
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, -2, -5, 1))
-    assert(AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(11, -3, 5, 26))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(10, 2, 5, 0))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(11, 2, 5, 1))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(0, 2, 0, 0))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(10, 1, 10, 0))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(11, -2, -5, 1))
+    assert(ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(11, -3, 5, 26))
   }
 
   "MoreDivLessModManyTimes" should "hold for any values" in {

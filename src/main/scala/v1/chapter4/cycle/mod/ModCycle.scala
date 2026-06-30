@@ -6,6 +6,7 @@ import v1.chapter1.verification.Helper.assert
 import stainless.lang.BooleanDecorations
 import v1.chapter2.div.Calc
 import v1.chapter3.list.ListUtils
+import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter4.cycle.CycleUtils
 import v1.chapter4.cycle.integral.mod.ModCycleIntegralProperties
@@ -77,7 +78,7 @@ case class ModCycle(values: List[BigInt]) {
       values.head >= BigInt(0)
     } else {
       assert(checkPositiveOrZeroAtIndex(values.tail, idx - 1))
-      assert(ListUtilsProperties.assertTailShiftLeft(values, idx))
+      assert(ListBoundUtils.assertTailShiftLeft(values, idx))
       values(idx) >= BigInt(0)
     }
   }.holds

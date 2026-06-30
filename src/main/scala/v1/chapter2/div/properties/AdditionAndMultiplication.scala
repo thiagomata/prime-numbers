@@ -249,99 +249,7 @@ object AdditionAndMultiplication {
       Calc.div(a,b) - m == Calc.div(a-b*m,b)
   }.holds
 
-  /**
-   * Increasing the quotient (div) by 1 and decreasing the remainder (mod) by
-   * b yields the same solution.
-   *
-   * In other words:
-   *
-   * a == div * b + mod == (div + 1) * b + ( mod − b )
-   * DivMod(a, b, div + 1, mod - b).solve == DivMod(a, b, div, mod).solve
-   *
-   * @param a BigInt Dividend
-   * @param b BigInt Divisor
-   * @param div BigInt Quotient
-   * @param mod BigInt Remainder
-   * @return Boolean True if the property holds
-   */
-  def assertDivModWithMoreDivAndLessModSameSolution(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b != 0)
-    require(div * b + mod == a)
-    val div1 = DivMod(a, b, div, mod)
-    val div2 = DivMod(a, b, div + 1, mod - b)
 
-    if (div1.isFinal) assert(!div2.isFinal && div2.solve == div1.solve)
-    if (div2.isFinal) assert(!div1.isFinal && div1.solve == div2.solve)
-
-    if (div1.mod < 0) {
-      assert(div1.solve == div1.increaseMod)
-      if (b > 0) {
-        equality(
-          div2.solve, //       is equals to
-          div2.increaseMod, // is equals to
-          div1.increaseMod, // is equals to
-          div1.solve
-        )
-      } else {
-        equality(
-          div1.increaseMod, // is equals to
-          div2.solve, //       is equals to
-          div1.solve
-        )
-      }
-      assert(div1.solve == div2.solve)
-    }
-    if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
-      if (b > 0 ) {
-        assert(div2.mod < div1.mod)
-        equality(
-          div1.solve, //       is equals to
-          div1.reduceMod, //   is equals to
-          div2.solve
-        )
-      } else {
-        assert(div2.mod > div1.mod)
-        equality(
-          div2.solve, //     is equals to
-          div2.reduceMod, // is equals to
-          div2.solve
-        )
-      }
-    }
-    assert(div1.solve == div2.solve)
-    DivMod(a,b, div + 1, mod - b).solve == DivMod(a,b, div, mod).solve &&
-      DivMod(a,b, div + 1, mod - b).solve.div == DivMod(a,b, div, mod).solve.div &&
-      DivMod(a,b, div + 1, mod - b).solve.mod == DivMod(a,b, div, mod).solve.mod
-  }.holds
-
-  /**
-   * Decreasing the quotient (div) by 1 and increasing the remainder (mod) by
-   * b yields the same solution
-   *
-   * In other words:
-   *
-   * a == div * b + mod == (div - 1) * b + ( mod + b )
-   * DivMod(a,b, div - 1, mod + b).solve == DivMod(a, b, div, mod).solve
-   *
-   * @param a BigInt Dividend
-   * @param b BigInt Divisor
-   * @param div BigInt Quotient
-   * @param mod BigInt Remainder
-   * @return Boolean True if the property holds
-   */
-  def assertDivModWithLessDivAndMoreModSameSolution(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
-    require(b != 0)
-    require(div * b + mod == a)
-
-    equality(
-      a,                         // is equals to
-      div * b + mod,             // is equals to
-      (div - 1) * b + (mod + b)
-    )
-    assertDivModWithMoreDivAndLessModSameSolution(a, b, div - 1, mod + b)
-
-    DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve
-  }.holds
 
   /**
    * Any valid DivMod with the same Dividend and Divisor will generate the same solution.
@@ -363,7 +271,7 @@ object AdditionAndMultiplication {
     require(m >= 1)
     decreases(m)
 
-    assertDivModWithMoreDivAndLessModSameSolution(a, b, div, mod)
+    ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(a, b, div, mod)
 
     val finalDiv = div + m
     val finalMod = mod - m * b
@@ -372,7 +280,7 @@ object AdditionAndMultiplication {
       val prevDiv = div + m - 1
       val prevMod = mod - m * b + b
 
-      assertDivModWithMoreDivAndLessModSameSolution(a, b, prevDiv, prevMod)
+      ModIdempotence.assertDivModWithMoreDivAndLessModSameSolution(a, b, prevDiv, prevMod)
 
       assert(DivMod(a, b, prevDiv, prevMod).solve == DivMod(a, b, finalDiv, finalMod).solve)
       assert(MoreDivLessModManyTimes(a, b, div, mod, m - 1))
@@ -404,7 +312,7 @@ object AdditionAndMultiplication {
     require(m > 0)
     decreases(m)
 
-    assertDivModWithLessDivAndMoreModSameSolution(a, b, div, mod)
+    ModIdempotence.assertDivModWithLessDivAndMoreModSameSolution(a, b, div, mod)
     if (m > 1) {
       LessDivMoreModManyTimes(a, b, div - 1, mod + b, m - 1)
       assert(DivMod(a, b, div - 1, mod + b).solve == DivMod(a, b, div, mod).solve)

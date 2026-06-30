@@ -46,8 +46,8 @@ object CycleIntegralProperties {
   def assertCycleIntegralEqualsSumFirstPosition(cycleIntegral: CycleIntegral): Boolean = {
     val smallList = List(cycleIntegral.initialValue) ++ List(cycleIntegral.cycle(0))
     assert(ListUtils.sum(List()) == BigInt(0))
-    ListUtilsProperties.listAddValueTail(List(), cycleIntegral.initialValue)
-    ListUtilsProperties.listAddValueTail(List(cycleIntegral.initialValue), cycleIntegral.cycle(0))
+    ListUtils.listAddValueTail(List(), cycleIntegral.initialValue)
+    ListUtils.listAddValueTail(List(cycleIntegral.initialValue), cycleIntegral.cycle(0))
     assert(ListUtils.sum(smallList) == cycleIntegral.initialValue + cycleIntegral.cycle(0))
     assert(cycleIntegral(0) == cycleIntegral.initialValue + cycleIntegral.cycle(0))
     assert(smallList == getFirstValuesAsSlice(cycleIntegral, 0))
@@ -82,7 +82,7 @@ object CycleIntegralProperties {
     val currentList = List(cycleIntegral.cycle.values(position)) ++ prev
     val currentValue = cycleIntegral.cycle(position)
     val currentSum = ListUtils.sum(prev) + currentValue
-    assert(ListUtilsProperties.listAddValueTail(prev, currentValue))
+    assert(ListUtils.listAddValueTail(prev, currentValue))
     assert(ListUtils.sum(prev) + currentValue == ListUtils.sum(currentList))
     assert(assertNextPosition(cycleIntegral = cycleIntegral, position = position))
     equality(
@@ -221,7 +221,7 @@ object CycleIntegralProperties {
       }
       assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position - 1)
       assert(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
-      assert(ListUtilsProperties.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
+      assert(ListUtils.listAddValueTail(getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
       iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
         iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position))
     }
@@ -253,7 +253,7 @@ object CycleIntegralProperties {
     require(position < cycleIntegral.size)
     decreases(position)
 
-    ListUtilsProperties.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
+    ListUtils.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
     val result = List(cycleIntegral.initialValue) ++
       ListUtils.slice(cycleIntegral.cycle.values, 0, position)
 
@@ -295,11 +295,11 @@ object CycleIntegralProperties {
     }
 
     if (position == 0) {
-      assert(ListUtilsProperties.listAddValueTail(List(cycleIntegral.cycle(0)), cycleIntegral.initialValue))
+      assert(ListUtils.listAddValueTail(List(cycleIntegral.cycle(0)), cycleIntegral.initialValue))
       List(cycleIntegral.initialValue) ++ List(cycleIntegral.cycle(0))
     } else {
       val prev = getModValuesAsList(cycleIntegral, position - 1)
-      assert(ListUtilsProperties.listAddValueTail(prev, cycleIntegral.cycle(position)))
+      assert(ListUtils.listAddValueTail(prev, cycleIntegral.cycle(position)))
       prev ++ List(cycleIntegral.cycle(position))
     }
   }

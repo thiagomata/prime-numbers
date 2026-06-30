@@ -37,7 +37,7 @@ class ListUtilsTest extends FlatSpec with Matchers {
     val received = ListUtils.sum(
       list :+ 100,
     )
-    assert(ListUtilsProperties.listSumAddValue(list,BigInt(100)))
+    assert(ListUtils.listSumAddValue(list,BigInt(100)))
     assert(received == BigInt(106))
   }
 }

@@ -3,7 +3,6 @@ package v1.chapter3.list
 import stainless.collection.List
 import stainless.lang.decreases
 import stainless.lang.BooleanDecorations
-import v1.chapter3.list.properties.ListUtilsProperties.assertTailShiftLeft
 
 import scala.annotation.tailrec
 
@@ -93,5 +92,21 @@ object ListBoundUtils {
     require(allGreaterThan(list, value))
     require(list.nonEmpty)
     list.head > value && allGreaterThan(list.tail, value)
+  }.holds
+
+  def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
+    require(list.nonEmpty)
+    require(position >= 0 && position < list.size)
+    decreases(position)
+
+    if (position == 0) {
+      list(position) == list.head
+    } else {
+      assert(list == List(list.head) ++ list.tail)
+      assert(list(position) == list.apply(position))
+      assert(assertTailShiftLeft(list.tail, position - 1))
+      assert(list.apply(position) == list.tail.apply(position - 1))
+      list(position) == list.tail(position - 1)
+    }
   }.holds
 }

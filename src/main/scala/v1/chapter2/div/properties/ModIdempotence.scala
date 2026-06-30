@@ -2,7 +2,7 @@ package v1.chapter2.div.properties
 
 import stainless.lang.*
 import v1.chapter2.div.Calc.{div, mod}
-import v1.chapter1.verification.Helper.assert
+import v1.chapter1.verification.Helper.{assert, equality}
 import v1.chapter2.div.DivMod
 
 object ModIdempotence {
@@ -74,14 +74,14 @@ object ModIdempotence {
       assert(x == y)
     }
     if (divx < divy) {
-      AdditionAndMultiplication.assertDivModWithMoreDivAndLessModSameSolution(a, b, divx, modx)
+      assertDivModWithMoreDivAndLessModSameSolution(a, b, divx, modx)
       val next =  DivMod(a, b, divx + 1, modx - b)
       assert(x.solve == next.solve)
       modUnique(a, b, divx + 1, modx - b, divy, mody)
       assert(x.solve == y.solve)
     }
     if (divx > divy) {
-      AdditionAndMultiplication.assertDivModWithLessDivAndMoreModSameSolution(a, b, divx, modx)
+      assertDivModWithLessDivAndMoreModSameSolution(a, b, divx, modx)
       val next =  DivMod(a, b, divx - 1, modx + b)
       assert(x.solve == next.solve)
       modUnique(a, b, divx - 1, modx + b, divy, mody)
@@ -232,5 +232,69 @@ object ModIdempotence {
     }
 
     mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b * div(mod(a, b) - mod(c, b), b)
+  }.holds
+
+  def assertDivModWithMoreDivAndLessModSameSolution(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
+    require(b != 0)
+    require(div * b + mod == a)
+    val div1 = DivMod(a, b, div, mod)
+    val div2 = DivMod(a, b, div + 1, mod - b)
+
+    if (div1.isFinal) assert(!div2.isFinal && div2.solve == div1.solve)
+    if (div2.isFinal) assert(!div1.isFinal && div1.solve == div2.solve)
+
+    if (div1.mod < 0) {
+      assert(div1.solve == div1.increaseMod)
+      if (b > 0) {
+        equality(
+          div2.solve,
+          div2.increaseMod,
+          div1.increaseMod,
+          div1.solve
+        )
+      } else {
+        equality(
+          div1.increaseMod,
+          div2.solve,
+          div1.solve
+        )
+      }
+      assert(div1.solve == div2.solve)
+    }
+    if (div1.mod > 0 && ! div1.isFinal && ! div2.isFinal) {
+      if (b > 0) {
+        assert(div2.mod < div1.mod)
+        equality(
+          div1.solve,
+          div1.reduceMod,
+          div2.solve
+        )
+      } else {
+        assert(div2.mod > div1.mod)
+        equality(
+          div2.solve,
+          div2.reduceMod,
+          div2.solve
+        )
+      }
+    }
+    assert(div1.solve == div2.solve)
+    DivMod(a,b, div + 1, mod - b).solve == DivMod(a,b, div, mod).solve &&
+      DivMod(a,b, div + 1, mod - b).solve.div == DivMod(a,b, div, mod).solve.div &&
+      DivMod(a,b, div + 1, mod - b).solve.mod == DivMod(a,b, div, mod).solve.mod
+  }.holds
+
+  def assertDivModWithLessDivAndMoreModSameSolution(a: BigInt, b: BigInt, div: BigInt, mod: BigInt): Boolean = {
+    require(b != 0)
+    require(div * b + mod == a)
+
+    equality(
+      a,
+      div * b + mod,
+      (div - 1) * b + (mod + b)
+    )
+    assertDivModWithMoreDivAndLessModSameSolution(a, b, div - 1, mod + b)
+
+    DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve
   }.holds
 }

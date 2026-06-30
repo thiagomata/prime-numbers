@@ -2,7 +2,8 @@ package v1.chapter3.list
 
 import stainless.collection.List
 import stainless.lang.decreases
-import v1.chapter3.list.properties.ListUtilsProperties
+import stainless.lang.BooleanDecorations
+import v1.chapter1.verification.Helper.assert
 import scala.annotation.tailrec
 
 object ListUtils {
@@ -54,10 +55,48 @@ object ListUtils {
       List(current)
     } else {
       val prev = slice(list, from, to - 1)
-      ListUtilsProperties.listAddValueTail(prev, current)
+      listAddValueTail(prev, current)
       prev ++ List(current)
     }
   }
+
+  def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
+    sum(List(value) ++ list) == value + sum(list)
+  }.holds
+
+  def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    decreases(listA.size)
+
+    if (listA.isEmpty) {
+      assert(sum(listA) == BigInt(0))
+      assert(sum(listB) == BigInt(0) + sum(listB))
+      assert(sum(listB) == sum(listA) + sum(listB))
+      assert(listA ++ listB == listB)
+    } else {
+      listCombine(listA.tail, listB)
+      val bigList = listA ++ listB
+      assert(bigList == List(listA.head) ++ listA.tail ++ listB)
+      listSumAddValue(listA.tail ++ listB, listA.head)
+    }
+    sum(listA ++ listB) == sum(listA) + sum(listB)
+  }.holds
+
+  def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    listCombine(listA, listB)
+    listCombine(listB, listA)
+    assert(sum(listA ++ listB) == sum(listA) + sum(listB))
+    assert(sum(listB ++ listA) == sum(listB) + sum(listA))
+    assert(sum(listA) + sum(listB) == sum(listB) + sum(listA))
+    sum(listA ++ listB) == sum(listB ++ listA)
+  }.holds
+
+  def listAddValueTail(list: List[BigInt], value: BigInt): Boolean = {
+    listSwap(list, List(value))
+    listSumAddValue(list, value)
+    assert(sum(List(value) ++ list) == sum(list ++ List(value)))
+    sum(list ++ List(value)) == value + sum(list) &&
+      sum(List(value) ++ list) == sum(list) + value
+  }.holds
 
   def checkAllBiggerThanValue(list: List[BigInt], value: BigInt): Boolean = {
     ListBoundUtils.allGreaterThan(list, value)

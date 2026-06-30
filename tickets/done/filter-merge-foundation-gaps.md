@@ -2,7 +2,7 @@
 
 **Created:** 2026-06-26
 **Updated:** 2026-06-26
-**Status:** Plan phase
+**Status:** Done — all phases complete, verify green
 **Depends on:** `../done/cycle-integral-filter-merge.md` (complete, 9948 valid)
 
 ## Related Tickets

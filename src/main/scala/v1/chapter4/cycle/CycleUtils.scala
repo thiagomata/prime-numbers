@@ -5,7 +5,7 @@ import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter1.verification.Helper.assert
 import v1.chapter2.div.Calc
-import v1.chapter3.list.properties.ListUtilsProperties
+import v1.chapter3.list.ListBoundUtils
 import v1.chapter4.cycle.memory.MemCycle
 
 import scala.annotation.tailrec
@@ -190,7 +190,7 @@ object CycleUtils {
       values.head >= BigInt(0)
     } else {
       assert(checkPositiveOrZeroAtIndex(values.tail, idx - 1))
-      assert(ListUtilsProperties.assertTailShiftLeft(values, idx))
+      assert(ListBoundUtils.assertTailShiftLeft(values, idx))
       values(idx) >= BigInt(0)
     }
   }.holds
@@ -238,7 +238,7 @@ object CycleUtils {
     if (pos == BigInt(0)) {
       rotated.head == values(Calc.mod(start, values.size))
     } else {
-      assert(ListUtilsProperties.assertTailShiftLeft(rotated, pos))
+      assert(ListBoundUtils.assertTailShiftLeft(rotated, pos))
       assert(collectRotatedValueAt(values, start + 1, count - 1, pos - 1))
       rotated(pos) == values(Calc.mod(start + pos, values.size))
     }

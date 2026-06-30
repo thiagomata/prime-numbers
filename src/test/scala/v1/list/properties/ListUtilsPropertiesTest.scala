@@ -4,6 +4,7 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection.List
 import v1.chapter3.list.ListUtils
+import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.properties.ListUtilsProperties
 
 import scala.BigInt
@@ -23,14 +24,14 @@ class ListUtilsPropertiesTest extends FlatSpec with Matchers {
 
   "listSumAddValue" should "hold" in {
     val list = List(BigInt(1), BigInt(10), BigInt(100), BigInt(1000))
-    assert(ListUtilsProperties.listSumAddValue(list,list.head))
+    assert(ListUtils.listSumAddValue(list,list.head))
   }
 
   "listCombine" should "hold" in {
     assert(
       manyLists.forall(
         listA => manyLists.forall(
-          listB => ListUtilsProperties.listCombine(listA, listB)
+          listB => ListUtils.listCombine(listA, listB)
         )
       )
     )
@@ -40,7 +41,7 @@ class ListUtilsPropertiesTest extends FlatSpec with Matchers {
     assert(
       manyLists.forall(
         listA => manyLists.forall(
-          listB => ListUtilsProperties.listSwap(listA, listB)
+          listB => ListUtils.listSwap(listA, listB)
         )
       )
     )
@@ -50,7 +51,7 @@ class ListUtilsPropertiesTest extends FlatSpec with Matchers {
     assert(
       manyLists.forall(
         list => manyLists.forall(
-          value => ListUtilsProperties.listAddValueTail(list, value.head)
+          value => ListUtils.listAddValueTail(list, value.head)
         )
       )
     )
@@ -120,7 +121,7 @@ class ListUtilsPropertiesTest extends FlatSpec with Matchers {
         list => {
           (BigInt(0) until list.size).forall(
             position => {
-              ListUtilsProperties.assertTailShiftLeft(list, position)
+              ListBoundUtils.assertTailShiftLeft(list, position)
             }
           )
         }

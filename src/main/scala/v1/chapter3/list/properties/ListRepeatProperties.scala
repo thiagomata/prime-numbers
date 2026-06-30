@@ -51,7 +51,7 @@ object ListRepeatProperties {
       assert(ListUtils.sum(repeat(list, 0)) == BigInt(0))
     } else {
       assertRepeatSumMultiplier(list, times - 1)
-      ListUtilsProperties.listCombine(list, repeat(list, times - 1))
+      ListUtils.listCombine(list, repeat(list, times - 1))
       assert(ListUtils.sum(repeat(list, times)) ==
         totalSum + ListUtils.sum(repeat(list, times - 1)))
       assert(ListUtils.sum(repeat(list, times - 1)) ==
@@ -139,7 +139,7 @@ object ListRepeatProperties {
       assert(ListUtils.sum(repeat(list, 1)) == listSum)
     } else {
       assertRepeatSumDecomposition(list, times - 1)
-      ListUtilsProperties.listCombine(list, repeat(list, times - 1))
+      ListUtils.listCombine(list, repeat(list, times - 1))
       assert(ListUtils.sum(repeat(list, times)) ==
         listSum + ListUtils.sum(repeat(list, times - 1)))
     }
@@ -300,7 +300,7 @@ object ListRepeatProperties {
     if (mergeIndex == 0) {
       assert(newValues.head == oldValues.head + oldValues.tail.head)
       assert(newValues.tail == oldValues.tail.tail)
-      ListUtilsProperties.listCombine(newValues.head :: newValues.tail, List.empty[BigInt])
+      ListUtils.listCombine(newValues.head :: newValues.tail, List.empty[BigInt])
     } else {
       assertSumNewValuesAfterMerge(
         oldValues.tail, newValues.tail, mergeIndex - 1)
