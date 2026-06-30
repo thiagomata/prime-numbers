@@ -21,16 +21,17 @@ import v1.chapter5.prime.{Prime, PrimeUtils}
  */
 object SpecCycleSieveEquivalence {
 
-  // private def primorialMatchesSieveProduct(primeList: stainless.collection.List[Prime]): Boolean = {  // [TIMEOUT CANDIDATE]
-  //   decreases(primeList.size)
-  // 
-  //   if (primeList.isEmpty) {
-  //     PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
-  //   } else {
-  //     primorialMatchesSieveProduct(primeList.tail)
-  //     PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
-  //   }
-  // }.holds
+
+  private def primorialMatchesSieveProduct(primeList: stainless.collection.List[Prime]): Boolean = {
+    decreases(primeList.size)
+
+    if (primeList.isEmpty) {
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    } else {
+      primorialMatchesSieveProduct(primeList.tail)
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    }
+  }.holds
 
   /**
    * Converts the prime-list correspondence assumption into head equality.
@@ -225,59 +226,66 @@ object SpecCycleSieveEquivalence {
    * obligations required by `nextWithGapCycle`, then the next Cycle stage stores
    * exactly the same raw prime values as `spec.next`.
    */
-  // def assertConditionalNextPrimeValuesMatch(                           // [TIMEOUT CANDIDATE]
-  //   spec: SpecSieveSequence,
-  //   cycle: CycleSieveSequence,
-  //   newGapCycle: GapCycle
-  // ): Boolean = {
-  //   require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
-  //   require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
-  //   require(cycle.apply(BigInt(1)) == spec.next.head.value)
-  //   require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
-  //   require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
-  //   require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
-  //   val nextSpec = spec.next
-  //   val nextCycle = cycle.nextWithGapCycle(newGapCycle)
-  //   assert(assertSpecNextPrimeValuesExtendCurrent(spec))
-  //   assert(PrimeUtils.primeValues(nextCycle.primes.list.list) ==
-  //     PrimeUtils.primeValues(nextSpec.primes.list.list))
-  //   PrimeUtils.primeValues(nextCycle.primes.list.list) ==
-  //     PrimeUtils.primeValues(nextSpec.primes.list.list)
-  // }.holds
+  def assertConditionalNextPrimeValuesMatch(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    newGapCycle: GapCycle
+  ): Boolean = {
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+    require(cycle.apply(BigInt(1)) == spec.next.head.value)
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
+    require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
 
-  // def assertConditionalNextApplyMatchesFromSameHeadAndGaps(             // [TIMEOUT CANDIDATE]
-  //   spec: SpecSieveSequence,
-  //   cycle: CycleSieveSequence,
-  //   newGapCycle: GapCycle,
-  //   nextPeriod: BigInt,
-  //   position: BigInt
-  // ): Boolean = {
-  //   require(position >= BigInt(0))
-  //   require(nextPeriod > BigInt(0))
-  //   require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
-  //   require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
-  //   require(cycle.apply(BigInt(1)) == spec.next.head.value)
-  //   require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
-  //   require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
-  //   require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
-  //   val nextSpec = spec.next
-  //   val nextCycle = cycle.nextWithGapCycle(newGapCycle)
-  //   require(nextSpec(nextPeriod) == nextSpec.head.value + nextSpec.filterModulus)
-  //   require(nextSpec.specGapCycle(nextPeriod).memCycle == nextCycle.gapCycle.memCycle)
-  //   assert(assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle))
-  //   assert(PrimeUtils.primeValues(nextCycle.primes.list.list) == PrimeUtils.primeValues(nextSpec.primes.list.list))
-  //   assert(assertHeadsMatchFromPrimeValues(nextSpec, nextCycle))
-  //   assert(nextSpec.head.value == nextCycle.head)
-  //   assert(
-  //     assertSpecCycleApplyMatchesFromSameHeadAndGaps(
-  //       nextSpec,
-  //       nextCycle,
-  //       nextPeriod,
-  //       position
-  //     )
-  //   )
-  //   nextSpec(position) == nextCycle(position)
-  // }.holds
+    val nextSpec = spec.next
+    val nextCycle = cycle.nextWithGapCycle(newGapCycle)
+
+    assert(assertSpecNextPrimeValuesExtendCurrent(spec))
+    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) ==
+      PrimeUtils.primeValues(nextSpec.primes.list.list))
+
+    PrimeUtils.primeValues(nextCycle.primes.list.list) ==
+      PrimeUtils.primeValues(nextSpec.primes.list.list)
+  }.holds
+
+  def assertConditionalNextApplyMatchesFromSameHeadAndGaps(
+    spec: SpecSieveSequence,
+    cycle: CycleSieveSequence,
+    newGapCycle: GapCycle,
+    nextPeriod: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+    require(nextPeriod > BigInt(0))
+    require(PrimeUtils.primeValues(cycle.primes.list.list) == PrimeUtils.primeValues(spec.primes.list.list))
+    require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
+    require(cycle.apply(BigInt(1)) == spec.next.head.value)
+    require(SieveUtils.isCoprime(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.primesValues))
+    require(Calc.mod(cycle.apply(BigInt(1)) + newGapCycle.memCycle(0), cycle.apply(BigInt(1))) != BigInt(0))
+    require(Calc.mod(cycle.primorial, cycle.apply(BigInt(1))) != BigInt(0))
+
+    val nextSpec = spec.next
+    val nextCycle = cycle.nextWithGapCycle(newGapCycle)
+
+    require(nextSpec(nextPeriod) == nextSpec.head.value + nextSpec.filterModulus)
+    require(nextSpec.specGapCycle(nextPeriod).memCycle == nextCycle.gapCycle.memCycle)
+
+    assert(assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle))
+    assert(PrimeUtils.primeValues(nextCycle.primes.list.list) == PrimeUtils.primeValues(nextSpec.primes.list.list))
+    assert(assertHeadsMatchFromPrimeValues(nextSpec, nextCycle))
+    assert(nextSpec.head.value == nextCycle.head)
+    assert(
+      assertSpecCycleApplyMatchesFromSameHeadAndGaps(
+        nextSpec,
+        nextCycle,
+        nextPeriod,
+        position
+      )
+    )
+
+    nextSpec(position) == nextCycle(position)
+  }.holds
 
   /**
    * Proves the current Cycle `apply(1)` equals the next Spec stage head.
@@ -933,8 +941,8 @@ object SpecCycleSieveEquivalence {
     assert(q >= BigInt(0))
     assert(q < seq.head)
 
-    // assert(primorialMatchesSieveProduct(seq.primes.list.tail.list))    // [TIMEOUT CANDIDATE]
-    // assert(seq.modulus == SieveUtils.product(seq.primesTailValues))    // [TIMEOUT CANDIDATE]
+    assert(primorialMatchesSieveProduct(seq.primes.list.tail.list))
+    assert(seq.modulus == SieveUtils.product(seq.primesTailValues))
     assert(assertModPreservesCoprime(value, seq.modulus, seq.primesTailValues))
     assert(SieveUtils.isCoprime(r, seq.primesTailValues))
 

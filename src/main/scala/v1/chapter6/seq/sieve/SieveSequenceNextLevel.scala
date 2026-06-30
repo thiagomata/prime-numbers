@@ -14,34 +14,55 @@ import v1.chapter6.seq.sieve.properties.SieveSequenceProperties
 object SieveSequenceNextLevel {
 
   def nextResidues(seq: CycleSieveSequence): List[BigInt] = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
     SieveUtils.residues(seq.modulus, seq.primesTailValues)
   }
 
   def nextExpanded(seq: CycleSieveSequence): List[BigInt] = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
     SieveUtils.expandResidues(nextResidues(seq), seq.modulus, seq.head)
   }
 
   def nextFiltered(seq: CycleSieveSequence): List[BigInt] = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
     SieveUtils.filterList(nextExpanded(seq), seq.head)
   }
 
   def nextSorted(seq: CycleSieveSequence): SortedList = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
     SortedList.fromUnsorted(nextFiltered(seq))
   }
 
   def nextGaps(seq: CycleSieveSequence): List[BigInt] = {
-    // require(seq.head > BigInt(0))                                      // [TIMEOUT CANDIDATE]
-    // require(seq.modulus > BigInt(0))                                   // [TIMEOUT CANDIDATE]
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    require(seq.modulus * seq.head > 0)
     SieveUtils.calculateGaps(nextSorted(seq).list, seq.modulus * seq.head)
   }
 
   def nextHeadResidueIndex(seq: CycleSieveSequence): BigInt = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    require(seq.modulus * seq.head > 0)
     val newHeadVal = seq.apply(BigInt(1))
     val newMod = seq.modulus * seq.head
     SieveUtils.nextResidueIndex(nextSorted(seq).list, BigInt(0), Calc.mod(newHeadVal, newMod))
   }
 
   def nextRotatedGaps(seq: CycleSieveSequence): List[BigInt] = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    require(seq.modulus * seq.head > 0)
     SieveUtils.rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
   }
 
@@ -163,7 +184,10 @@ object SieveSequenceNextLevel {
 
   def assertNextHeadCoprimeToPrimes(seq: CycleSieveSequence): Boolean = {
     val newHead = seq.apply(BigInt(1))
+    require(Calc.mod(newHead, seq.head) != BigInt(0))
+    require(SieveUtils.isCoprime(newHead, seq.primesTailValues))
     assert(newHead == seq.primes.head.value + seq.gapCycle.memCycle(0))
+    assert(seq.primesValues == seq.head :: seq.primesTailValues)
     SieveUtils.isCoprime(newHead, seq.primesValues)
   }.holds
 
@@ -191,8 +215,8 @@ object SieveSequenceNextLevel {
   }.holds
 
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
-    // require(seq.head > BigInt(0))                                      // [TIMEOUT CANDIDATE]
-    // require(seq.modulus > BigInt(0))                                   // [TIMEOUT CANDIDATE]
+    require(seq.head > BigInt(0))
+    require(seq.modulus > BigInt(0))
     nextGaps(seq).nonEmpty
   }.holds
 

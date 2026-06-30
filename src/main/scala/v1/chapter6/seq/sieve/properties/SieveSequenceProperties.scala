@@ -4,9 +4,9 @@ import stainless.collection.List
 import stainless.lang.{BigInt, BooleanDecorations, decreases}
 import v1.chapter3.list.ListBoundUtils
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
-import v1.chapter5.prime.Prime
+import v1.chapter5.prime.{Prime, CoprimeUtils}
 import v1.chapter5.prime.properties.PrimeProperties
-import v1.chapter6.seq.sieve.{CycleSieveSequence, SieveUtils}
+import v1.chapter6.seq.sieve.CycleSieveSequence
 
 object SieveSequenceProperties {
 
@@ -56,9 +56,10 @@ object SieveSequenceProperties {
     }
   }.holds
 
-  // def assertHeadIsPrime(seq: CycleSieveSequence): Boolean = {          // [TIMEOUT CANDIDATE]
-  //   require(SieveUtils.assertAllNotCoprimeInRange(seq.head, 2, seq.primesTailValues))
-  //   PrimeProperties.assertHeadIsPrime(seq.head, seq.primesTailValues)
-  //   Prime.isPrime(seq.head)
-  // }.holds
+  def assertHeadIsPrime(seq: CycleSieveSequence): Boolean = {
+    require(CoprimeUtils.isCoprime(seq.head, seq.primesTailValues))
+    require(CoprimeUtils.assertAllNotCoprimeInRange(seq.head, 2, seq.primesTailValues))
+    PrimeProperties.assertHeadIsPrime(seq.head, seq.primesTailValues)
+    Prime.isPrime(seq.head)
+  }.holds
 }

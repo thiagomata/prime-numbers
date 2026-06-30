@@ -2242,3 +2242,54 @@ Dependency order for Chapter 6 verification:
 5. Derived/equivalence layer: `SpecDerivedSieveSequence._` and then
    `SpecCycleSieveEquivalence` in smaller function clusters, not as a whole
    first pass.
+
+## 2026-06-30 — Chapter 6 dependency-ordered repair pass
+
+Started the Chapter 6 repair using the dependency order above instead of a
+broad `verify-ch 6` run.
+
+Verified green layers:
+
+- `CycleUtils._`: 50 valid, 0 invalid, 0 unknown.
+- `SieveUtils._`: 722 valid, 0 invalid, 0 unknown.
+- `SieveSequenceByPrimes._`: 9 valid, 0 invalid, 0 unknown.
+- `CompletePrimePrefix._`: 17 valid, 0 invalid, 0 unknown.
+- `CycleSieveSequence._`: initially 15 valid, 4 invalid, then 21 valid, 0
+  invalid, 0 unknown after adding the structural non-empty-prime invariant.
+
+Fixes applied:
+
+- `CycleSieveSequence` now requires `!primes.isEmpty`. This is the lightweight
+  structural invariant required by `head`, `integral`, `modulus`, and
+  `primesTailValues`. Heavier arithmetic invariants stay out of the case-class
+  constructor because they would make every construction VC pay for them.
+- `SieveSequenceNextLevel.assertNextHeadCoprimeToPrimes` is no longer stated for
+  arbitrary cycles. Stainless produced a concrete counterexample:
+  primes `[2]`, gap `[2]`, so `apply(1) = 4`, which is not coprime to `[2]`.
+  The lemma now requires the two actual facts it needs: non-divisibility by the
+  current head and coprimality against the tail prime values.
+- The pure `SieveSequenceNextLevel` wrappers now expose the callee contracts
+  directly:
+  `seq.modulus > 0`, `ListUtils.checkAllPositive(seq.primesTailValues)`,
+  `seq.head > 0`, and for gap/index wrappers
+  `seq.modulus * seq.head > 0`.
+
+Focused next-level validation:
+
+- `assertNextHeadCoprimeToPrimes`: 9 valid, 0 invalid, 0 unknown.
+- `nextResidues`: 2 valid, 0 invalid, 0 unknown.
+- `nextExpanded`: 4 valid, 0 invalid, 0 unknown.
+- `nextFiltered`: 4 valid, 0 invalid, 0 unknown.
+- `nextSorted`: 3 valid, 0 invalid, 0 unknown.
+- `nextGaps`: 4 valid, 0 invalid, 0 unknown.
+- `nextHeadResidueIndex`: 7 valid, 0 invalid, 0 unknown.
+- `nextRotatedGaps`: 9 valid, 0 invalid, 0 unknown.
+
+The whole `SieveSequenceNextLevel._` object still should not be used as the
+next broad check: it reaches the known walk-heavy helpers and behaves like the
+existing timeout debt. Continue from the focused method clusters.
+
+Lesson: when a wrapper delegates to a verified helper, mirror the helper's
+preconditions at the wrapper boundary. Otherwise Stainless spends time
+rediscovering basic structural facts through `CycleSieveSequence`, and small
+pipeline methods can look like hard timeouts.
