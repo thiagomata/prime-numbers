@@ -6,7 +6,24 @@
 
 ## Goal
 
-Give B (`SpecDerivedSieveSequence`) a `nextFromCycle()` method that:
+Prove the three sequence representations agree on both current-stage `apply`
+and next-stage construction:
+
+- A: `SpecSieveSequence`
+- B: `SpecDerivedSieveSequence`
+- C: `CycleSieveSequence`
+
+The target theorem is not merely that gaps are positive. Gap positivity is a
+constructor invariant required by `GapCycle`, and it follows from strict
+increase of the relevant `apply` sequence. The final goal is equality of
+observable sequence behavior:
+
+1. A.apply == B.apply == C.apply for the current stage.
+2. A.next.apply == B.next.apply == C.next.apply for the next stage.
+3. The independently computed next gap cycle is the same cycle that realizes
+   A.next/B.next apply behavior.
+
+Operationally, give B (`SpecDerivedSieveSequence`) a `nextFromCycle()` method that:
 1. Computes the next stage's gap cycle **independently** by running the standard sieve pipeline (`SieveSequenceNextLevel` functions) on B's own cycle data.
 2. After computation, **proves** the output matches A.next's properties (head equality, gap equality, apply equality).
 
@@ -127,6 +144,16 @@ Portable lemmas found in the old bridge:
 | `assertNextCycleGapsMatchSpecNext(nextPeriod)` | canonical next-cycle gaps equal `spec.next.gapList(0,nextPeriod)` | Ported and focused verified: 25/25 valid |
 | `assertNextCycleHeadMatchesSpecNext(nextPeriod)` | canonical next-cycle head equals `spec.next.head.value` | Ported and focused verified: 16/16 valid |
 | `assertNextCycleMatchesSpecNext(nextPeriod)` | packages canonical head + gaps; apply via indexed lemma | Ported and focused verified: 25/25 valid |
+| `SpecSieveSequence.assertSpecGapPeriodPositive(period)` | `gapList(0,period)` is strictly positive via existing apply/gap invariant | Added and focused verified: 7/7 valid |
+| `assertNextCycleGapsPositive(nextPeriod)` | canonical next-cycle stored gaps are strictly positive | Added and focused verified: 25/25 valid |
+| `nextGapList(from,count)` + `assertNextGapListMatchesSpecNext(from,count)` | direct adjacent-difference target equals `spec.next.gapList` in forward order | Re-ported and focused verified: 21/21 valid |
+| `assertModulusPositive()` | B.cycle tail modulus is positive | Added and focused verified: 3/3 valid |
+| `assertPrimesTailValuesPositive()` | B.cycle tail prime values are all positive | Added and focused verified: 3/3 valid |
+| `assertHeadPositive()` | B.cycle head is positive | Added and focused verified: 1/1 valid |
+| `assertModulusTimesHeadPositive()` | B.cycle expanded modulus `modulus * head` is positive | Added and focused verified: 3/3 valid |
+| `nextPipelineGaps()` | computes `SieveSequenceNextLevel.nextRotatedGaps(cycle)` after discharging all pipeline preconditions | Added and focused verified: 8/8 valid |
+| `assertNextPipelineGapsPositiveFromSpec(nextPeriod)` | conditional positivity: if pipeline gaps equal canonical spec gaps, then pipeline gaps are positive | Added and focused verified: 12/12 valid |
+| `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` | conditional `GapCycle` builder behind the future producer-equality precondition | Added and focused verified: 25/25 valid |
 | `assertSurvivorPositionMatchesSpecNext(m)` | survivor bridge through `indexOfAccepted` | Partially replaced by `assertSpecNextIsKthSurvivor`; compare before porting |
 | `assertCycleDiffEqualsGap(pos)` | adjacent `cycle` difference equals gap-cycle element | Needs careful review; old code may have off-by-one risk in doc/code |
 
@@ -150,11 +177,117 @@ Verified reusable helper work from this pass:
 
 Remaining independent-pipeline proof obligation:
 
-- Prove or expose `ListBoundUtils.allGreaterThan(SieveSequenceNextLevel.nextGaps(seq), 0)`
-  for the standard `nextGaps`/`calculateGaps` pipeline. Once that exists,
+- Primary obligation: prove the independent pipeline's rotated gap list equals
+  the canonical next gap list:
+  `SieveSequenceNextLevel.nextRotatedGaps(cycle) == spec.next.gapList(0,nextPeriod)`.
+- Once that equality exists, positivity should come from the already verified
+  canonical facts (`assertSpecGapPeriodPositive`, `assertNextCycleGapsPositive`)
+  instead of a separate sorted-list positivity proof.
+- Secondary fallback obligation: if the equality bridge is too large, prove or
+  expose `ListBoundUtils.allGreaterThan(SieveSequenceNextLevel.nextGaps(seq), 0)`
+  for the standard `nextGaps`/`calculateGaps` pipeline, then use
   `assertRotateAtPreservesAllGreaterThan(nextGaps(seq), nextHeadResidueIndex(seq), 0)`
-  should bridge the `nextRotatedGaps` positivity part of the `GapCycle(newGaps)`
-  timeout.
+  to discharge the `GapCycle(newGaps)` constructor.
+
+## 2026-07-01 Refinement: Positivity is Supporting Evidence, Apply Equality is the Goal
+
+The observation "gaps are required to be non-null/positive, therefore apply is
+required to be always increasing" is correct and already represented in the
+code:
+
+- `SpecSieveSequence.assertGapPositive(k)` proves each adjacent apply
+  difference is positive.
+- `SpecSieveSequence.assertGapListPositive(from,count)` lifts that to lists.
+- `SpecSieveSequence.assertSpecGapPeriodPositive(period)` now exposes the full
+  period positivity fact directly.
+- `SpecDerivedSieveSequence.assertNextCycleGapsPositive(nextPeriod)` now exposes
+  the same fact through the canonical next-cycle bridge.
+
+This is not a replacement for the main theorem. It is a way to avoid proving
+positivity in the wrong representation. The main proof should still target
+three-way equality of `apply` and `next`; positivity then follows from equality
+with the canonical gap/apply representation.
+
+## 2026-07-01 Progress: Canonical Target Re-Established in Current Class
+
+Re-ported `nextGapList(from,count)` and
+`assertNextGapListMatchesSpecNext(from,count)` from the deleted bridge into
+`SpecDerivedSieveSequence`.
+
+Validation:
+
+- `just verify assertNextGapListMatchesSpecNext`
+- Result: 21/21 valid, 0 invalid, 0 unknown
+
+Meaning:
+
+- This proves the direct adjacent-difference list built from `spec.next.apply`
+  equals `spec.next.gapList`.
+- It is still a canonical target, not an independent pipeline theorem.
+- Producer proofs can now target either `nextGapList(0,nextPeriod)` or
+  `spec.next.gapList(0,nextPeriod)` without reintroducing the deleted class.
+
+## 2026-07-01 Progress: M1 Pipeline Preconditions Discharged
+
+Added the four named precondition lemmas used by the commented `nextFromCycle`
+sketch:
+
+- `assertModulusPositive()` -> 3/3 valid
+- `assertPrimesTailValuesPositive()` -> 3/3 valid
+- `assertHeadPositive()` -> 1/1 valid
+- `assertModulusTimesHeadPositive()` -> 3/3 valid
+
+Meaning:
+
+- B can now locally satisfy the `SieveSequenceNextLevel` requires for
+  `nextResidues`, `nextExpanded`, `nextFiltered`, `nextSorted`, `nextGaps`, and
+  `nextRotatedGaps`.
+- This does not yet solve the `GapCycle(newGaps)` constructor requirement.
+  The remaining positivity/equality theorem is still needed before wrapping the
+  independent pipeline output as a cycle.
+
+## 2026-07-01 Progress: Independent Pipeline List Exposed
+
+Added `nextPipelineGaps()`, which computes
+`SieveSequenceNextLevel.nextRotatedGaps(cycle)` after asserting the four M1
+preconditions.
+
+Validation:
+
+- `just verify nextPipelineGaps`
+- Result: 8/8 valid, 0 invalid, 0 unknown
+
+Meaning:
+
+- The independent producer can now run far enough to return a plain rotated gap
+  list.
+- The next proof target is no longer "can B call the pipeline?" It can.
+- The remaining blocker is exactly the producer theorem:
+  `nextPipelineGaps() == spec.next.gapList(0,nextPeriod)` (or the equivalent
+  direct target `nextGapList(0,nextPeriod)`).
+
+## 2026-07-01 Progress: Constructor Barrier Isolated Behind Equality
+
+Added two conditional bridge methods:
+
+- `assertNextPipelineGapsPositiveFromSpec(nextPeriod)`
+- `nextPipelineGapCycleIfMatchesSpec(nextPeriod)`
+
+Validation:
+
+- `just verify assertNextPipelineGapsPositiveFromSpec` -> 12/12 valid
+- `just verify nextPipelineGapCycleIfMatchesSpec` -> 25/25 valid
+
+Meaning:
+
+- If the future producer theorem proves
+  `nextPipelineGaps() == spec.next.gapList(0,nextPeriod)`, then the pipeline
+  output is known positive by the existing spec apply/gap invariant.
+- Under the same equality precondition, `GapCycle(nextPipelineGaps())` now
+  verifies. The old constructor timeout is therefore not an independent mystery;
+  it reduces to the producer equality theorem.
+- Remaining hard theorem:
+  `nextPipelineGaps() == spec.next.gapList(0,nextPeriod)`.
 
 ## Questions
 

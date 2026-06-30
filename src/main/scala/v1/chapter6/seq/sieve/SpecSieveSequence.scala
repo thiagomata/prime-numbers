@@ -490,6 +490,25 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     GapCycle(gaps)
   }.ensuring(result => result.memCycle.values == gapList(BigInt(0), period))
 
+  /**
+   * Exposes the positivity invariant for the full spec gap period.
+   *
+   * Gap positivity is the local form of `apply` being strictly increasing:
+   * each element of `gapList(0, period)` is an adjacent difference
+   * `apply(k + 1) - apply(k)`, and `assertGapListPositive` proves every such
+   * difference is strictly greater than zero. Pipeline proofs should bridge
+   * their computed gap list to this spec-certified list instead of reproving
+   * positivity from sorted residues whenever they are proving equivalence to
+   * the next spec stage.
+   */
+  def assertSpecGapPeriodPositive(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + filterModulus)
+
+    assert(assertGapListPositive(BigInt(0), period))
+    ListBoundUtils.allGreaterThan(gapList(BigInt(0), period), BigInt(0))
+  }.holds
+
 //  /*
 //   * Retired 2026-06-24.
 //   *

@@ -285,6 +285,79 @@ case class SpecDerivedSieveSequence(
   }.holds
 
   /**
+   * Canonical next-stage gap positivity.
+   *
+   * This is the positivity side of the canonical next-cycle bridge. The next
+   * spec stage already proves that `gapList(0, nextPeriod)` is strictly
+   * positive because it is built from adjacent increasing `apply` values. This
+   * lemma exposes the same fact through the canonical next cycle's stored gap
+   * list, giving the independent pipeline proof a precise equality target:
+   * first prove the pipeline gaps equal these canonical gaps, then reuse this
+   * positivity theorem for `GapCycle(newGaps)`.
+   */
+  def assertNextCycleGapsPositive(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
+
+    assert(assertNextCycleGapsMatchSpecNext(nextPeriod))
+    assert(spec.next.assertSpecGapPeriodPositive(nextPeriod))
+
+    v1.chapter3.list.ListBoundUtils.allGreaterThan(
+      nextCanonical.cycle.gapCycle.memCycle.values,
+      BigInt(0)
+    )
+  }.holds
+
+  /**
+   * Builds the next-stage gap list directly from adjacent `spec.next` values.
+   *
+   * This is a canonical target for producer proofs, not an independent
+   * producer. Its recursion deliberately mirrors `SpecSieveSequence.gapList`:
+   * the `from` parameter slides forward and each step conses the next adjacent
+   * difference. Keeping the same forward order avoids the reversed-builder
+   * timeout that older attempts hit.
+   */
+  def nextGapList(from: BigInt, count: BigInt): List[BigInt] = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+    if (count == BigInt(0)) {
+      List.empty[BigInt]
+    } else {
+      (spec.next(from + BigInt(1)) - spec.next(from)) ::
+        nextGapList(from + BigInt(1), count - BigInt(1))
+    }
+  }
+
+  /**
+   * Proves the direct adjacent-difference target equals `spec.next.gapList`.
+   *
+   * Future independent pipeline or walk proofs should target this list, or the
+   * equivalent `spec.next.gapList`, when proving next-stage equality. This
+   * lemma is intentionally small: it only aligns two canonical descriptions of
+   * the same next-stage gaps and does not assert that the pipeline produced
+   * them.
+   */
+  def assertNextGapListMatchesSpecNext(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      nextGapList(from, BigInt(0)) == spec.next.gapList(from, BigInt(0))
+    } else {
+      assert(spec.next.assertGapListFirstEqualsGap(from, count))
+      assert(assertNextGapListMatchesSpecNext(from + BigInt(1), count - BigInt(1)))
+      nextGapList(from, count) == spec.next.gapList(from, count)
+    }
+  }.holds
+
+  /**
    * Canonical next-stage structural identity.
    *
    * Packages the separately verified canonical facts: the wrapper built from
@@ -305,6 +378,136 @@ case class SpecDerivedSieveSequence(
 
     true
   }.holds
+
+  /**
+   * Packages the current and canonical next-stage apply equalities.
+   *
+   * This names the main equality spine for the three-representation proof:
+   * the current `cycle` stored by this derived wrapper agrees with `spec`, and
+   * the canonical next wrapper built from `spec.next` agrees with `spec.next`.
+   * It deliberately does not claim that the independent pipeline produced the
+   * next wrapper's gap cycle; that producer theorem remains the separate
+   * `nextFromCycle` obligation.
+   */
+  def assertCurrentAndCanonicalNextApplyMatches(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(k >= BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
+    require(spec.next.primes.list.nonEmpty)
+    require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
+
+    assert(assertApplyMatches(k))
+    assert(assertNextCycleApplyMatchesSpecNext(nextPeriod, k))
+
+    cycle(k) == spec(k) &&
+      SpecDerivedSieveSequence(spec.next, nextPeriod).cycle(k) == spec.next(k)
+  }.holds
+
+  /**
+   * Pipeline precondition: the cycle modulus is positive.
+   *
+   * `SieveSequenceNextLevel` operates on the tail-prime modulus. For a
+   * Spec-derived cycle this is exactly the primorial of `primes.list.tail`,
+   * and chapter 5 already proves every primorial is strictly positive.
+   */
+  def assertModulusPositive(): Boolean = {
+    assert(PrimeUtils.primorialPositive(primes.list.tail.list))
+    cycle.modulus > BigInt(0)
+  }.holds
+
+  /**
+   * Pipeline precondition: every tail-prime value is positive.
+   *
+   * `PrimeUtils.primeValues` is the single bridge from `List[Prime]` to
+   * `List[BigInt]`; its postcondition already exports positivity. Keeping this
+   * as a named lemma prevents future pipeline proofs from duplicating the same
+   * list/value reasoning.
+   */
+  def assertPrimesTailValuesPositive(): Boolean = {
+    assert(cycle.primesTailValues == PrimeUtils.primeValues(primes.list.tail.list))
+    v1.chapter3.list.ListUtils.checkAllPositive(cycle.primesTailValues)
+  }.holds
+
+  /**
+   * Pipeline precondition: the current head prime is positive.
+   */
+  def assertHeadPositive(): Boolean = {
+    cycle.head > BigInt(0)
+  }.holds
+
+  /**
+   * Pipeline precondition: the expanded next-stage modulus is positive.
+   *
+   * This combines the two independent positive factors required by
+   * `SieveSequenceNextLevel.nextGaps`: the current tail modulus and the current
+   * head prime.
+   */
+  def assertModulusTimesHeadPositive(): Boolean = {
+    assert(assertModulusPositive())
+    assert(assertHeadPositive())
+    cycle.modulus * cycle.head > BigInt(0)
+  }.holds
+
+  /**
+   * Computes the independent next-stage rotated gap list from B's own cycle.
+   *
+   * This is the producer half of `nextFromCycle`, isolated before the
+   * `GapCycle` constructor. Keeping it as a plain list lets us prove equality
+   * against the canonical target first; only after that equality is available
+   * should callers reuse canonical positivity to build `GapCycle(newGaps)`.
+   */
+  def nextPipelineGaps(): List[BigInt] = {
+    assert(assertModulusPositive())
+    assert(assertPrimesTailValuesPositive())
+    assert(assertHeadPositive())
+    assert(assertModulusTimesHeadPositive())
+
+    SieveSequenceNextLevel.nextRotatedGaps(cycle)
+  }
+
+  /**
+   * Conditional bridge from the future producer equality to gap positivity.
+   *
+   * The hard theorem is the equality in the precondition: the independent
+   * pipeline must produce the same rotated gap list as the canonical next spec
+   * period. Once that equality is available, positivity is immediate from the
+   * existing apply/gap invariant on `spec.next`.
+   */
+  def assertNextPipelineGapsPositiveFromSpec(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(nextPipelineGaps() == spec.next.gapList(BigInt(0), nextPeriod))
+
+    assert(spec.next.assertSpecGapPeriodPositive(nextPeriod))
+    v1.chapter3.list.ListBoundUtils.allGreaterThan(nextPipelineGaps(), BigInt(0))
+  }.holds
+
+  /**
+   * Builds the independent pipeline gap cycle once producer equality is known.
+   *
+   * The equality precondition is intentionally the only hard fact here. It lets
+   * this method reuse the canonical next period for both constructor facts:
+   * non-emptiness follows from `nextPeriod > 0` and `gapList` size, while
+   * positivity follows from `assertNextPipelineGapsPositiveFromSpec`.
+   */
+  def nextPipelineGapCycleIfMatchesSpec(nextPeriod: BigInt): GapCycle = {
+    require(nextPeriod > BigInt(0))
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(nextPipelineGaps() == spec.next.gapList(BigInt(0), nextPeriod))
+
+    val gaps = nextPipelineGaps()
+    val specGaps = spec.next.gapList(BigInt(0), nextPeriod)
+
+    assert(gaps == specGaps)
+    assert(spec.next.assertGapListSize(BigInt(0), nextPeriod))
+    assert(specGaps.size == nextPeriod)
+    assert(specGaps.nonEmpty)
+    assert(gaps.nonEmpty)
+    assert(assertNextPipelineGapsPositiveFromSpec(nextPeriod))
+
+    GapCycle(gaps)
+  }.ensuring(result => result.memCycle.values == nextPipelineGaps())
 
 //  /**
 //   * Computes the next stage gap cycle independently from B's own cycle,
