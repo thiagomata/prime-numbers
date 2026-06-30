@@ -14,7 +14,7 @@ just_log() {
   started_at="$(date '+%Y-%m-%d %H:%M:%S %z')"
 
   mkfifo "$fifo"
-  tee -a "$command_log" -a "$overall_log" < "$fifo" &
+  tee -a "$command_log" "$overall_log" < "$fifo" &
   tee_pid="$!"
 
   exec 3>&1 4>&2

@@ -127,12 +127,13 @@ jar:
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
     just_log jar "{{justfile_directory()}}"
-    source "$HOME/.sdkman/bin/sdkman-init.sh"
-    sdk use java 21.0.7-zulu
-    export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
-    sbt 'set stainlessEnabled := false' clean assembly
+    bash "{{justfile_directory()}}/scripts/build-jar.sh"
 
-bin: jar
+bin:
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log bin "{{justfile_directory()}}"
+    bash "{{justfile_directory()}}/scripts/build-jar.sh"
 
 test:
     #!/usr/bin/env bash

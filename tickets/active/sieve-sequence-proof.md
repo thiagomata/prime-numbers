@@ -2326,3 +2326,66 @@ Workflow changes:
 Lesson: for timing diagnosis, compare exact same command twice with no source
 edit between runs. A call-site check going green from cache does not imply the
 callee's focused function check will also hit the same cache entries.
+
+## 2026-06-30 — Unified just command logging
+
+Added a shared `scripts/just-log.sh` helper and wired every recipe in `justfile`
+through it.
+
+Every `just` recipe now appends output to:
+
+- `logs/just/<recipe>.log` for the recipe-specific stream.
+- `logs/just/all.log` for the overall command history.
+
+`bin` is a real logged recipe, not just a dependency alias, so it writes
+`logs/just/bin.log`. `bin` and `jar` share `scripts/build-jar.sh` to keep their
+build behavior identical.
+
+The helper uses a named FIFO instead of Bash process substitution because the
+macOS sandbox rejected `/dev/fd` during the first smoke test. The successful
+smoke test was `just verify-stop`, which wrote the same output to
+`logs/just/verify-stop.log` and `logs/just/all.log`.
+
+Portability note: use `tee -a "$command_log" "$overall_log"` rather than
+repeating `-a`; BSD/macOS `tee` treats the second `-a` as a filename.
+
+This should reduce ghost chasing: failed compiles, stale jar rebuilds,
+verification stops, focused verification runs, and tests now leave command
+history in one place as well as recipe-specific logs.
+
+## 2026-06-30 — `just jar` Stainless library workaround fixed
+
+`just jar` was failing after Scala compilation during `assembly` with 229
+duplicate `stainless/**` entries. The failure was not caused by chapter 6
+sources; it came from library wiring.
+
+The old workaround put both local Stainless jars on the application compile
+classpath:
+
+- `project/lib/sbt-stainless.jar`
+- `project/lib/stainless-library.jar`
+
+The SBT plugin jar belongs to the build definition classpath and is already
+loaded from `project/lib` by SBT. It should not be an application dependency.
+Keeping it in `Compile / unmanagedJars` leaks build tooling into the app jar.
+
+The corrected split is:
+
+- Keep `project/lib/stainless-library.jar` on `Compile / unmanagedJars`, because
+  the Scala sources and verification setup still need the Stainless library.
+- Do not add `project/lib/sbt-stainless.jar` to `Compile / unmanagedJars`.
+- Exclude `stainless-library.jar` from `assembly`, because the Stainless
+  plugin/compiler path already places the required `stainless/**` runtime classes
+  in `target/classes`; feeding the physical jar to assembly adds a second copy.
+
+After assembly passed, a direct `java -jar` smoke test exposed a second stale
+configuration issue: the manifest still pointed at `v1.div.DivMain`, but the
+actual class is `v1.chapter2.div.DivMain`. `build.sbt` now uses the current
+main class in both compile and assembly settings.
+
+Validation: `just jar` passed after this change,
+`target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar` contains both
+`v1/chapter2/div/DivMain` and `stainless/lang/package$BigInt$.class`, the
+manifest says `Main-Class: v1.chapter2.div.DivMain`, and
+`java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar 10 3` returned
+`div: 3, mod: 1`.

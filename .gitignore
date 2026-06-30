@@ -11,6 +11,8 @@ target
 .vscode
 .bsp
 .bsp/**
+*.log
+logs/*.log
 
 # ignore macOS files
 .DS_Store

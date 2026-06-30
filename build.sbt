@@ -1,4 +1,4 @@
-import sbtassembly.AssemblyPlugin.autoImport.assembly
+import sbtassembly.AssemblyPlugin.autoImport.{assembly, assemblyExcludedJars}
 
 scalaVersion := "3.5.0"
 crossScalaVersions := Seq("3.5.0")
@@ -23,16 +23,16 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
 // sounds good does not work
 //libraryDependencies += "ch.epfl.lara" % "stainless-dotty-plugin_3.5.0" % "0.9.8.9"
 
-// forcing the jar load as alternative
-//unmanagedJars in Compile += baseDirectory.value / "lib" / "stainless-dotty-plugin-0.9.8.9.jar"
-Compile / unmanagedJars += baseDirectory.value / "project" / "lib" / "sbt-stainless.jar"
+// The Stainless SBT plugin is loaded from project/lib by SBT itself.
+// Application sources only need the Stainless library on their compile/runtime
+// classpath; adding the SBT plugin jar here leaks build tooling into the app jar.
 Compile / unmanagedJars += baseDirectory.value / "project" / "lib" / "stainless-library.jar"
 
 lazy val root = (project in file("."))
   .enablePlugins(StainlessPlugin)
   .settings(
     name := "prime-numbers",
-    assembly / mainClass := Some("v1.div.DivMain"),
+    assembly / mainClass := Some("v1.chapter2.div.DivMain"),
   )
 
 
@@ -43,8 +43,17 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test
 //}
 
 
-mainClass in Compile   := Some("v1.div.DivMain")
-mainClass in assembly  := Some("v1.div.DivMain")
+mainClass in Compile   := Some("v1.chapter2.div.DivMain")
+mainClass in assembly  := Some("v1.chapter2.div.DivMain")
+
+assembly / assemblyExcludedJars := {
+  // Keep stainless-library.jar available for compilation and verification, but
+  // do not feed the physical jar to assembly. The Stainless plugin/compiler path
+  // already places the runtime classes in target/classes, so including the jar
+  // again produces duplicate stainless/** entries in the fat jar.
+  val classpath = (assembly / fullClasspath).value
+  classpath.filter(_.data.getName == "stainless-library.jar")
+}
 
 artifactName in (Compile, packageBin) := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
   s"${module.name}-${module.revision}.jar"
