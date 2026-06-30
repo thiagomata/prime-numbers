@@ -5,6 +5,7 @@ import stainless.lang.*
 import v1.chapter1.verification.Helper.{assert, equality}
 import v1.chapter2.div.Calc
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
+import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter4.cycle.CycleUtils
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
@@ -12,6 +13,94 @@ import v1.chapter4.cycle.memory.MemCycle
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
 
 object CycleIntegralProperties {
+
+  /**
+   * Repeating the physical values of a cycle preserves the recursive integral
+   * when the initial value is unchanged.
+   *
+   * Math:
+   *
+   *   C      = cycleIntegral
+   *   C_t    = repeatedCycleIntegral
+   *   times  > 0
+   *
+   *   C_t.initialValue = C.initialValue
+   *   C_t.cycle.values = repeat(C.cycle.values, times)
+   *
+   *   C(0)   = C.initialValue   + C.cycle(0)
+   *   C_t(0) = C_t.initialValue + C_t.cycle(0)
+   *
+   *   C(k)   = C(k - 1)   + C.cycle(k)
+   *   C_t(k) = C_t(k - 1) + C_t.cycle(k)
+   *
+   *   C_t.cycle(k) = C.cycle(k)
+   *
+   * Therefore, by induction on `position`:
+   *
+   *   C_t(position) = C(position)
+   *
+   * The proof decreases `position`; the recursive step uses the already-proven
+   * equality at `position - 1` plus the memory-cycle repeated-values lemma for
+   * the current gap lookup.
+   */
+  def assertRepeatedValuesIntegralMatches(
+    cycleIntegral: CycleIntegral,
+    repeatedCycleIntegral: CycleIntegral,
+    times: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+    require(cycleIntegral.cycle.size > BigInt(0))
+    require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
+    require(repeatedCycleIntegral.cycle.values ==
+      ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
+    decreases(position)
+
+    if (position == BigInt(0)) {
+      assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
+        cycleIntegral.cycle,
+        repeatedCycleIntegral.cycle,
+        times,
+        BigInt(0)
+      ))
+      assert(repeatedCycleIntegral.cycle(BigInt(0)) == cycleIntegral.cycle(BigInt(0)))
+      assert(repeatedCycleIntegral(position) ==
+        repeatedCycleIntegral.cycle(BigInt(0)) + repeatedCycleIntegral.initialValue)
+      assert(cycleIntegral(position) ==
+        cycleIntegral.cycle(BigInt(0)) + cycleIntegral.initialValue)
+      assert(repeatedCycleIntegral(position) == cycleIntegral(position))
+
+      repeatedCycleIntegral(position) == cycleIntegral(position)
+    } else {
+      assert(assertRepeatedValuesIntegralMatches(
+        cycleIntegral,
+        repeatedCycleIntegral,
+        times,
+        position - BigInt(1)
+      ))
+      assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
+        cycleIntegral.cycle,
+        repeatedCycleIntegral.cycle,
+        times,
+        position
+      ))
+
+      val repeatedGap = repeatedCycleIntegral.cycle(position)
+      val originalGap = cycleIntegral.cycle(position)
+      val repeatedPrevious = repeatedCycleIntegral(position - BigInt(1))
+      val originalPrevious = cycleIntegral(position - BigInt(1))
+
+      assert(repeatedGap == originalGap)
+      assert(repeatedPrevious == originalPrevious)
+      assert(repeatedCycleIntegral(position) == repeatedGap + repeatedPrevious)
+      assert(cycleIntegral(position) == originalGap + originalPrevious)
+      assert(repeatedGap + repeatedPrevious == originalGap + originalPrevious)
+      assert(repeatedCycleIntegral(position) == cycleIntegral(position))
+
+      repeatedCycleIntegral(position) == cycleIntegral(position)
+    }
+  }.holds
 
   def assertCycleIntegralIncreasing(ci: CycleIntegral, a: BigInt, b: BigInt): Boolean = {
     require(a >= 0)

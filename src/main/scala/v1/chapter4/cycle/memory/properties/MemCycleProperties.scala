@@ -4,7 +4,8 @@ import stainless.lang.*
 import stainless.collection.List
 import v1.chapter1.verification.Helper.assert
 import v1.chapter2.div.Calc
-import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence}
+import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence, ModOperations}
+import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.CycleUtils
 import v1.chapter4.cycle.memory.MemCycle
 
@@ -41,6 +42,71 @@ object MemCycleProperties {
     require(key < cycle.size)
     require(cycle.size > 0)
     cycle(key) == cycle.values(key)
+  }.holds
+
+  /**
+   * A memory cycle backed by repeated physical storage has the same semantic
+   * lookup as the original memory cycle.
+   *
+   * Math:
+   *
+   *   C      = cycle
+   *   C_t    = repeatedCycle
+   *   V      = C.values
+   *   R      = repeat(V, times)
+   *   n      = size(V)
+   *   period = n * times
+   *
+   * Given:
+   *
+   *   C_t.values = R
+   *
+   * Then:
+   *
+   *   C_t(position)
+   *     = R(mod(position, period))
+   *     = V(mod(mod(position, period), n))
+   *     = V(mod(position, n))
+   *     = C(position)
+   *
+   * The proof deliberately separates construction from lookup equality. Callers
+   * are responsible for building a valid `MemCycle` from the repeated storage;
+   * this lemma only says that once such a cycle exists, the larger physical
+   * period does not change the value read at any position.
+   */
+  def assertRepeatedValuesCycleMatches(
+    cycle: MemCycle,
+    repeatedCycle: MemCycle,
+    times: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+    require(cycle.size > BigInt(0))
+    require(repeatedCycle.values == ListRepeatProperties.repeat(cycle.values, times))
+
+    val values = cycle.values
+    val repeatedValues = repeatedCycle.values
+    val repeatedIndex = Calc.mod(position, values.size * times)
+    val originalIndex = Calc.mod(position, values.size)
+
+    assert(ListRepeatProperties.assertRepeatSize(values, times))
+    assert(repeatedCycle.size == values.size * times)
+
+    assert(findValueInCycle(repeatedCycle, position))
+    assert(repeatedCycle(position) == repeatedValues(repeatedIndex))
+
+    assert(ListRepeatProperties.assertRepeatedIndex(values, times, repeatedIndex))
+    assert(repeatedValues(repeatedIndex) == values(Calc.mod(repeatedIndex, values.size)))
+
+    assert(ModOperations.modByPositiveMultipleThenBase(position, values.size, times))
+    assert(Calc.mod(repeatedIndex, values.size) == originalIndex)
+    assert(repeatedValues(repeatedIndex) == values(originalIndex))
+
+    assert(findValueInCycle(cycle, position))
+    assert(cycle(position) == values(originalIndex))
+
+    repeatedCycle(position) == cycle(position)
   }.holds
 
   /**

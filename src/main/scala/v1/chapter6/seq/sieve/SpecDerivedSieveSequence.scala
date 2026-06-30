@@ -4,9 +4,14 @@ import stainless.collection.List
 import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
+import v1.chapter2.div.properties.ModOperations
+import v1.chapter3.list.ListBoundUtils
+import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
+import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter4.cycle.memory.properties.MemCycleProperties
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
 /**
@@ -508,6 +513,230 @@ case class SpecDerivedSieveSequence(
 
     GapCycle(gaps)
   }.ensuring(result => result.memCycle.values == nextPipelineGaps())
+
+  /**
+   * Builds the same B cycle with its gap period repeated `times` times.
+   *
+   * Math:
+   *
+   *   B      = cycle
+   *   G      = B.gapCycle.memCycle.values
+   *   times  > 0
+   *   G^times = repeat(G, times)
+   *
+   *   repeatedCycle(times) = CycleSieveSequence(primes, GapCycle(G^times))
+   *
+   * Repeating the stored gap list does not change the semantic cycle: it only
+   * changes the physical period length. This constructor is isolated so later
+   * lemmas can compare the original and repeated cycles without reopening
+   * `GapCycle` positivity/non-emptiness obligations.
+   */
+  def repeatedCycle(times: BigInt): CycleSieveSequence = {
+    require(times > BigInt(0))
+
+    val gaps = cycle.gapCycle.memCycle.values
+    val repeatedGaps = ListRepeatProperties.repeat(gaps, times)
+
+    assert(GapCycle.assertMemCycleValuesPositive(cycle.gapCycle))
+    assert(ListRepeatProperties.assertRepeatAllGreaterThan(gaps, times, BigInt(0)))
+    assert(ListRepeatProperties.assertRepeatSize(gaps, times))
+    assert(repeatedGaps.size == gaps.size * times)
+    assert(gaps.nonEmpty)
+    assert(repeatedGaps.nonEmpty)
+    assert(ListBoundUtils.allGreaterThan(repeatedGaps, BigInt(0)))
+
+    CycleSieveSequence(primes, GapCycle(repeatedGaps))
+  }
+
+  /**
+   * Bounded-index equality for B's repeated gap period.
+   *
+   * Math:
+   *
+   *   G = cycle.gapCycle.memCycle.values
+   *   R = repeat(G, times)
+   *
+   *   times > 0
+   *   0 <= index < size(G) * times
+   *
+   *   R(index) = G(mod(index, size(G)))
+   *
+   * If we physically repeat B's stored gap list `times` times, any index inside
+   * that repeated list reads the same gap as the original list at the modulo
+   * position. This is the list-level seed for proving the repeated cycle has
+   * the same `apply` behavior as B.
+   */
+  def assertRepeatedGapListIndexMatches(times: BigInt, index: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(index >= BigInt(0))
+
+    val gaps = cycle.gapCycle.memCycle.values
+    require(index < gaps.size * times)
+
+    val repeatedGaps = ListRepeatProperties.repeat(gaps, times)
+
+    assert(GapCycle.assertMemCycleValuesPositive(cycle.gapCycle))
+    assert(ListRepeatProperties.assertRepeatSize(gaps, times))
+    assert(ListRepeatProperties.assertRepeatedIndex(gaps, times, index))
+
+    repeatedGaps(index) == gaps(Calc.mod(index, gaps.size))
+  }.holds
+
+  /**
+   * Repeating B's physical gap storage does not change B's gap cycle lookup.
+   *
+   * Math:
+   *
+   *   B      = cycle
+   *   B_t    = repeatedCycle(times)
+   *   G      = B.gapCycle.memCycle.values
+   *   R      = repeat(G, times)
+   *   n      = size(G)
+   *   period = n * times
+   *
+   *   B_t.gap(position)
+   *     = R(mod(position, period))
+   *     = G(mod(mod(position, period), n))
+   *     = G(mod(position, n))
+   *     = B.gap(position)
+   *
+   * The repeated cycle has a larger memory period (`oldSize * times`), so its
+   * raw position is first reduced by that larger period. The chapter-2 modular
+   * bridge then reduces that index back to the same old-period index used by
+   * B's original `MemCycle`. This is the exact fact future `apply` proofs need:
+   * repeated storage is an implementation detail, not a semantic change.
+   */
+  def assertRepeatedCycleGapMatches(times: BigInt, position: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+
+    val gaps = cycle.gapCycle.memCycle.values
+    val repeated = repeatedCycle(times)
+    val repeatedGaps = ListRepeatProperties.repeat(gaps, times)
+
+    assert(GapCycle.assertMemCycleValuesPositive(cycle.gapCycle))
+    assert(gaps.nonEmpty)
+    assert(gaps.size > BigInt(0))
+    assert(ListRepeatProperties.assertRepeatSize(gaps, times))
+    assert(repeatedGaps.size == gaps.size * times)
+    assert(repeated.gapCycle.memCycle.values == repeatedGaps)
+    assert(repeated.gapCycle.memCycle.size == gaps.size * times)
+
+    assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
+      cycle.gapCycle.memCycle,
+      repeated.gapCycle.memCycle,
+      times,
+      position
+    ))
+
+    repeated.gapCycle.memCycle(position) == cycle.gapCycle.memCycle(position)
+  }.holds
+
+  /**
+   * Repeating B's gap storage preserves B's cumulative integral.
+   *
+   * Math:
+   *
+   *   B   = cycle
+   *   B_t = repeatedCycle(times)
+   *
+   *   integral_B(0)   = head(B)   + gap_B(0)
+   *   integral_B(k)   = integral_B(k - 1)   + gap_B(k)
+   *   integral_Bt(0)  = head(B_t) + gap_Bt(0)
+   *   integral_Bt(k)  = integral_Bt(k - 1)  + gap_Bt(k)
+   *
+   *   head(B_t) = head(B)
+   *   gap_Bt(k) = gap_B(k)
+   *
+   *   Therefore, by the generic repeated-values integral lemma:
+   *
+   *   integral_Bt(k) = integral_B(k)
+   */
+  def assertRepeatedCycleIntegralMatches(times: BigInt, position: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+
+    val gaps = cycle.gapCycle.memCycle.values
+    val repeated = repeatedCycle(times)
+    val repeatedGaps = ListRepeatProperties.repeat(gaps, times)
+
+    assert(GapCycle.assertMemCycleValuesPositive(cycle.gapCycle))
+    assert(gaps.size > BigInt(0))
+    assert(ListRepeatProperties.assertRepeatSize(gaps, times))
+    assert(repeated.gapCycle.memCycle.values == repeatedGaps)
+    assert(repeated.integral.initialValue == cycle.integral.initialValue)
+    assert(CycleIntegralProperties.assertRepeatedValuesIntegralMatches(
+      cycle.integral,
+      repeated.integral,
+      times,
+      position
+    ))
+
+    repeated.integral(position) == cycle.integral(position)
+  }.holds
+
+  /**
+   * Repeating B's gap period preserves B's sequence value at every position.
+   * The proof is intentionally staged by lowering a positive sequence index
+   * `k` to the strictly smaller integral index `k - 1`.
+   *
+   * Math:
+   *
+   *   B   = cycle
+   *   B_t = repeatedCycle(times)
+   *   times > 0, k >= 0
+   *
+   *   B(0)   = head(B)
+   *   B_t(0) = head(B_t) = head(B)
+   *
+   *   For k > 0:
+   *
+   *   j      = k - 1, so 0 <= j < k
+   *   B(k)   = integral_B(k - 1)
+   *   B_t(k) = integral_Bt(k - 1)
+   *          = integral_B(k - 1)
+   *          = B(k)
+   *
+   * Therefore:
+   *
+   *   repeatedCycle(times)(k) = cycle(k)
+   *
+   * This is the semantic version of the repeated-storage fact: repeating a
+   * physical gap period changes the memory representation only, not the
+   * generated sequence.
+   */
+  def assertRepeatedCycleApplyMatches(times: BigInt, k: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(k >= BigInt(0))
+
+    val repeated = repeatedCycle(times)
+
+    if (k == BigInt(0)) {
+      assert(repeated.head == cycle.head)
+      assert(repeated(k) == repeated.head)
+      assert(cycle(k) == cycle.head)
+      assert(repeated(k) == cycle(k))
+
+      repeated(k) == cycle(k)
+    } else {
+      val previousPosition = k - BigInt(1)
+      assert(previousPosition >= BigInt(0))
+      assert(previousPosition < k)
+      assert(assertRepeatedCycleIntegralMatches(times, previousPosition))
+      val repeatedValue = repeated(k)
+      val originalValue = cycle(k)
+      val repeatedIntegral = repeated.integral(previousPosition)
+      val originalIntegral = cycle.integral(previousPosition)
+
+      assert(repeatedIntegral == originalIntegral)
+      assert(repeatedValue == repeatedIntegral)
+      assert(originalValue == originalIntegral)
+      assert(repeatedValue == originalValue)
+      assert(repeated(k) == cycle(k))
+
+      repeated(k) == cycle(k)
+    }
+  }.holds
 
 //  /**
 //   * Computes the next stage gap cycle independently from B's own cycle,

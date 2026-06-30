@@ -10,6 +10,59 @@ import v1.chapter2.div.{Calc, DivMod}
 object ModOperations {
 
   /**
+   * Reducing a non-negative value by a positive multiple of `base`, and then
+   * reducing that result by `base`, gives the same remainder as reducing the
+   * original value by `base`.
+   *
+   * Math:
+   *
+   *   a >= 0, base > 0, times > 0
+   *   period = base * times
+   *   q      = div(a, period)
+   *   r      = mod(a, period)
+   *
+   *   a = period * q + r
+   *     = base * times * q + r
+   *     = base * (times * q) + r
+   *
+   *   Therefore `a` and `r` differ by a multiple of `base`, so:
+   *
+   *   mod(mod(a, base * times), base) = mod(r, base)
+   *                                   = mod(a, base)
+   *
+   * This is the arithmetic bridge used by repeated physical cycles: a cycle
+   * whose storage length is `base * times` has the same `base`-position as the
+   * original cycle after the outer period reduction.
+   */
+  def modByPositiveMultipleThenBase(
+    a: BigInt,
+    base: BigInt,
+    times: BigInt
+  ): Boolean = {
+    require(a >= 0)
+    require(base > 0)
+    require(times > 0)
+
+    val period = base * times
+    val periodDiv = div(a, period)
+    val periodMod = mod(a, period)
+    val solved = DivMod(a, period, 0, a).solve
+
+    assert(period > 0)
+    assert(solved.div == periodDiv)
+    assert(solved.mod == periodMod)
+    assert(a == period * periodDiv + periodMod)
+    assert(a == base * times * periodDiv + periodMod)
+    assert(a == base * (times * periodDiv) + periodMod)
+    assert(periodMod + base * (times * periodDiv) == a)
+    assert(AdditionAndMultiplication.ATimesBSameMod(periodMod, base, times * periodDiv))
+    assert(mod(periodMod, base) == mod(periodMod + base * (times * periodDiv), base))
+    assert(mod(periodMod, base) == mod(a, base))
+
+    mod(mod(a, period), base) == mod(a, base)
+  }.holds
+
+  /**
    * mod(a + c, b) == mod(mod(a, b) + mod(c, b), b) &&
    * div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
    *

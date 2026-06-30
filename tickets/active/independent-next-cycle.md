@@ -219,6 +219,51 @@ Validation:
 - `just verify assertNextGapListMatchesSpecNext`
 - Result: 21/21 valid, 0 invalid, 0 unknown
 
+## 2026-07-01 Progress: Bottom-Up Repeated-Cycle Ladder
+
+The repeated-cycle proof is now built from the lower representations upward,
+instead of proving the Chapter 6 sequence fact directly:
+
+1. Repeated list indexing.
+2. Repeated `MemCycle` lookup.
+3. Repeated `CycleIntegral` lookup.
+4. Repeated `CycleSieveSequence.apply`.
+
+This matters because `CycleSieveSequence.apply(k)` delegates to
+`integral(k - 1)` when `k > 0`. The top-level apply proof therefore lowers the
+sequence index `k` to the strictly smaller integral index `k - 1`; the Javadoc
+on `assertRepeatedCycleApplyMatches` now states this at the method top to make
+the induction shape harder to miss.
+
+Validated helper ladder:
+
+| Helper | Statement | Validation |
+|---|---|---|
+| `ListRepeatProperties.assertRepeatAllGreaterThan` | repeating a positive-bounded list preserves the bound | Focused verified: 14/14 valid |
+| `ModOperations.modByPositiveMultipleThenBase(a,base,times)` | `mod(mod(a, base * times), base) == mod(a, base)` for positive `base,times` | Focused verified: 22/22 valid |
+| `MemCycleProperties.assertRepeatedValuesCycleMatches(cycle,repeatedCycle,times,position)` | a `MemCycle` backed by repeated values has the same lookup as the original cycle | Focused verified: 39/39 valid |
+| `CycleIntegralProperties.assertRepeatedValuesIntegralMatches(cycleIntegral,repeatedCycleIntegral,times,position)` | repeated physical cycle values preserve the recursive integral with the same initial value | Focused verified: 51/51 valid |
+| `SpecDerivedSieveSequence.repeatedCycle(times)` | constructs the repeated physical gap storage for B | Focused verified: 14/14 valid |
+| `SpecDerivedSieveSequence.assertRepeatedGapListIndexMatches(times,index)` | repeated gap list indexing agrees with the original periodic gap lookup | Focused verified: 13/13 valid |
+| `SpecDerivedSieveSequence.assertRepeatedCycleGapMatches(times,position)` | repeated B gap-cycle lookup equals original B gap-cycle lookup | Focused verified: 18/18 valid |
+| `SpecDerivedSieveSequence.assertRepeatedCycleIntegralMatches(times,position)` | repeated B integral lookup equals original B integral lookup | Focused verified: 17/17 valid |
+| `SpecDerivedSieveSequence.assertRepeatedCycleApplyMatches(times,k)` | repeated B sequence apply equals original B sequence apply | Focused verified: 31/31 valid |
+
+Lessons:
+
+- Local Chapter 6 recursive versions of the integral/apply proofs initially
+  timed out on final postconditions. Branch-local return expressions and stable
+  aliases helped, but the better permanent fix was moving the repeated-cycle
+  facts down into Chapter 4 where `MemCycle` and `CycleIntegral` can prove their
+  own representation invariance directly.
+- The generic `MemCycle` lemma intentionally takes an already-built repeated
+  `MemCycle` plus a `values == repeat(...)` precondition. That keeps constructor
+  obligations out of the generic proof and lets Chapter 6 discharge them at the
+  concrete call site.
+- The repeated-cycle result is a support lemma for the final target: equality
+  of the three sequence representations' `apply` and `next` behavior. It does
+  not itself prove the independent next pipeline equals the spec pipeline.
+
 Meaning:
 
 - This proves the direct adjacent-difference list built from `spec.next.apply`

@@ -34,6 +34,19 @@ case class GapCycle private (values: MinBoundList) {
 
 object GapCycle {
 
+  /**
+   * Exposes the positivity invariant through the public memory-cycle values.
+   *
+   * `GapCycle` stores its constructor list inside a `MemCycle`; callers usually
+   * see `gc.memCycle.values`, not the private bounded-list wrapper. This lemma
+   * keeps downstream proofs from having to rediscover that the public list is
+   * the same positive gap list accepted by the constructor.
+   */
+  def assertMemCycleValuesPositive(gc: GapCycle): Boolean = {
+    gc.memCycle.values == gc.values.list &&
+      ListBoundUtils.allGreaterThan(gc.memCycle.values, BigInt(0))
+  }.holds
+
   def assertCumulativeSumPositive(gc: GapCycle, pos: BigInt): Boolean = {
     require(pos >= 0)
     assert(CycleIntegralProperties.assertCycleIntegralPositive(gc.integral, pos))

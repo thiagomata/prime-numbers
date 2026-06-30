@@ -5,6 +5,7 @@ import stainless.lang.*
 import v1.chapter1.verification.Helper.assert
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication
+import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.ListUtils
 import v1.chapter3.list.properties.ListUtilsProperties
 
@@ -110,6 +111,35 @@ object ListRepeatProperties {
         list.size + repeat(list, times - 1).size)
     }
     repeat(list, times).size == list.size * times
+  }.holds
+
+  /**
+   * Repeating a list preserves a strict lower bound on every element.
+   *
+   * This is the constructor bridge for repeated gap cycles: if one period of
+   * gaps is positive, then any positive number of repeated periods is still
+   * positive element-by-element.
+   */
+  def assertRepeatAllGreaterThan(
+    list: List[BigInt],
+    times: BigInt,
+    value: BigInt
+  ): Boolean = {
+    require(times >= 0)
+    require(ListBoundUtils.allGreaterThan(list, value))
+    decreases(times)
+    if (times == 0) {
+      ListBoundUtils.allGreaterThan(repeat(list, times), value)
+    } else {
+      assertRepeatAllGreaterThan(list, times - 1, value)
+      assert(ListBoundUtils.allGreaterThan(repeat(list, times - 1), value))
+      assert(ListBoundUtils.assertAppendGreaterThan(
+        list,
+        repeat(list, times - 1),
+        value
+      ))
+      ListBoundUtils.allGreaterThan(repeat(list, times), value)
+    }
   }.holds
 
   def assertRepeatConcat(
