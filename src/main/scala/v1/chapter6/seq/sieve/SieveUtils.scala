@@ -4,7 +4,7 @@ import stainless.collection.List
 import stainless.lang.*
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication
-import v1.chapter3.list.{ListBoundUtils, ListUtils}
+import v1.chapter3.list.{ListBoundUtils, ListUtils, SortedList}
 import v1.chapter3.list.properties.ListUtilsProperties
 import v1.chapter5.prime.CoprimeUtils
 import scala.annotation.tailrec
@@ -269,6 +269,21 @@ object SieveUtils {
     }
   }
 
+  def assertFilterPreservesAscending(list: List[BigInt], divisor: BigInt): Boolean = {
+    require(divisor > 0)
+    require(SortedList.isAscending(list))
+    decreases(list.size)
+    if (list.isEmpty || list.tail.isEmpty) {
+      SortedList.isAscending(filterList(list, divisor))
+    } else if (Calc.mod(list.head, divisor) != BigInt(0)) {
+      assert(assertFilterPreservesAscending(list.tail, divisor))
+      SortedList.isAscending(filterList(list, divisor))
+    } else {
+      assert(assertFilterPreservesAscending(list.tail, divisor))
+      SortedList.isAscending(filterList(list, divisor))
+    }
+  }.holds
+
   def assertIsCoprimeForAll(n: BigInt, primes: List[BigInt]): Boolean = {
     require(ListUtils.checkAllPositive(primes))
     require(isCoprime(n, primes))
@@ -382,12 +397,36 @@ object SieveUtils {
     }
   }
 
+  def assertCalculateGapsSize(sorted: List[BigInt], modulus: BigInt): Boolean = {
+    require(modulus > 0)
+    require(sorted.nonEmpty)
+    if (sorted.size == 1) {
+      calculateGaps(sorted, modulus).size == BigInt(1)
+    } else {
+      assert(assertPairwiseGapsSize(sorted))
+      calculateGaps(sorted, modulus).size == sorted.size
+    }
+  }.holds
+
   def pairwiseGaps(list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
     if (list.size < 2) List.empty
     else if (list.size == 2) List(list(1) - list(0))
     else (list(1) - list(0)) :: pairwiseGaps(list.tail)
   }
+
+  def assertPairwiseGapsSize(list: List[BigInt]): Boolean = {
+    require(list.size >= 1)
+    decreases(list.size)
+    if (list.size == 1) {
+      pairwiseGaps(list).size == 0
+    } else if (list.size == 2) {
+      pairwiseGaps(list).size == 1
+    } else {
+      assert(assertPairwiseGapsSize(list.tail))
+      pairwiseGaps(list).size == list.size - 1
+    }
+  }.holds
 
   @tailrec
   def getAt(list: List[BigInt], index: BigInt): BigInt = {

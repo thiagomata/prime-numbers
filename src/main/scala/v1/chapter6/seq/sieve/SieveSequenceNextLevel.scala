@@ -220,6 +220,15 @@ object SieveSequenceNextLevel {
     nextGaps(seq).nonEmpty
   }.holds
 
+  def assertNextGapsSize(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    require(seq.modulus * seq.head > 0)
+    assert(SieveUtils.assertCalculateGapsSize(nextSorted(seq).list, seq.modulus * seq.head))
+    nextGaps(seq).size == nextSorted(seq).list.size
+  }.holds
+
   /**
    * Transparent window of `ci`'s first `steps` values.
    *

@@ -338,6 +338,17 @@ Meaning:
 - Remaining hard theorem:
   `nextPipelineGaps() == spec.next.gapList(0,nextPeriod)`.
 
+## 2026-07-01 Plan: Verifier Stepping Stones Before M3 (WORK IN PROGRESS)
+
+**Starting with S1: Representation Alias Lemmas.** Adding them one by one,
+each change followed by `just verify`.
+
+### S1 Progress
+
+| # | Lemma | Statement | Validation |
+|---|-------|-----------|------------|
+| 1 | `assertCycleHeadMatchesSpecHead` | `cycle.head == spec.head.value` via `assertApplyMatches(0)` | 3/3 valid, 0 invalid |
+
 ## 2026-07-01 Plan: Verifier Stepping Stones Before M3
 
 The repeated-cycle timeout showed the main Stainless limitation for this ticket:

@@ -105,6 +105,65 @@ case class SpecDerivedSieveSequence(
     true
   }.holds
 
+  /** Proves `cycle.head == spec.head.value` — S1 alias. */
+  def assertCycleHeadMatchesSpecHead(): Boolean = {
+    assert(assertApplyMatches(BigInt(0)))
+    cycle.head == spec.head.value
+  }.holds
+
+  /** S1 alias: `cycle.primesTailValues == spec.filterValues`. */
+  def assertCyclePrimesTailEqualsSpecFilterValues(): Boolean = {
+    cycle.primesTailValues == spec.filterValues
+  }.holds
+
+  /** Helper: primorial(list) == product(primeValues(list)) for any prime list. */
+  private def primorialMatchesProduct(primeList: List[Prime]): Boolean = {
+    decreases(primeList.size)
+    if (primeList.isEmpty) {
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    } else {
+      primorialMatchesProduct(primeList.tail)
+      PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))
+    }
+  }.holds
+
+  /** S1 alias: `cycle.modulus == spec.filterModulus`. */
+  def assertCycleModulusEqualsSpecFilterModulus(): Boolean = {
+    assert(primorialMatchesProduct(spec.primes.list.tail.list))
+    cycle.modulus == spec.filterModulus
+  }.holds
+
+  /** S1 alias: `nextPipelineGaps() == nextRotatedGaps(cycle)` (definitional). */
+  def assertNextPipelineGapsIsNextRotatedGaps(): Boolean = {
+    assert(assertModulusPositive())
+    assert(assertPrimesTailValuesPositive())
+    assert(assertHeadPositive())
+    assert(assertModulusTimesHeadPositive())
+    nextPipelineGaps() == SieveSequenceNextLevel.nextRotatedGaps(cycle)
+  }.holds
+
+  /** S1 alias: `cycle.gapCycle == spec.specGapCycle(period)`. */
+  def assertCycleGapCycleEqualsSpecGapCycle(): Boolean = {
+    cycle.gapCycle == spec.specGapCycle(period)
+  }.holds
+
+  /** S7 alias: `cycle(k) == integral(k-1)` for k > 0 (apply-vs-integral lowering). */
+  def assertCycleApplyLowersToIntegral(k: BigInt): Boolean = {
+    require(k > BigInt(0))
+    cycle(k) == cycle.integral(k - BigInt(1))
+  }.holds
+
+  /** S4 alias: the cycle's gap list is non-empty. */
+  def assertCycleGapListNonEmpty(): Boolean = {
+    cycle.gapCycle.memCycle.values.nonEmpty
+  }.holds
+
+  /** S4 alias: every gap in the cycle is strictly positive. */
+  def assertCycleGapPositiveAt(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    cycle.gapCycle.memCycle(pos) > BigInt(0)
+  }.holds
+
   /** Proves cycle(k) is coprime to all tail primes (by spec bridge). */
   def assertCycleValueCoprimeToTail(k: BigInt): Boolean = {
     require(k >= BigInt(0))

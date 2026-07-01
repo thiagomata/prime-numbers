@@ -171,6 +171,7 @@
 | `assertRepeatedGapListIndexMatches`            | SpecDerivedSieveSequence.scala       | Sieve|
 | `assertRepeatedCycleGapMatches`                | SpecDerivedSieveSequence.scala       | Sieve|
 | `assertRepeatedCycleIntegralMatches`           | SpecDerivedSieveSequence.scala       | Sieve|
+| `assertCycleHeadMatchesSpecHead`               | SpecDerivedSieveSequence.scala       | Sieve|
 | `assertRepeatedCycleApplyMatches`              | SpecDerivedSieveSequence.scala       | Sieve|
 | **CycleIntegralOnes**                          |                                      |
 | `assertCycleIntegralOfOnes`                    | CycleIntegralOnesProperties.scala    | CycleIntegral |
@@ -1126,6 +1127,7 @@ sequence classes focused on their own semantics.
 | **currentWindow(steps)** | `List[BigInt]` of `cycle.integral(0..steps-1)` | Transparent list of cumulative values. Verified 6/6 (size invariant). |
 | **survivorWindow(steps)** | `currentWindow(steps).filter(v => v mod cycle.head != 0)` | Transparent survivor list. |
 | **assertFullEquivalence(nextPeriod, k)** | `cycle(k) == spec(k) ∧ cycle(1) == spec.next.head.value` | Top-level theorem: same-stage + next-stage head. Verified 13/13. |
+| **assertCycleHeadMatchesSpecHead()** | `cycle.head == spec.head.value` | S1 alias. Head equality via `assertApplyMatches(0)`. Verified 3/3. |
 | **repeatedCycle(times)** | `CycleSieveSequence(primes, GapCycle(repeat(cycle.gapCycle.memCycle.values, times)))` | Current `SpecDerivedSieveSequence` helper. Repeats B's physical gap storage without changing its semantic cycle. Verified 14/14. |
 | **assertRepeatedGapListIndexMatches(times, index)** | `repeat(G,times)(index) == G(mod(index, size(G)))` for `0 <= index < size(G) * times` | List-level seed for repeated-cycle invariance. Verified 13/13. |
 | **assertRepeatedCycleGapMatches(times, position)** | `repeatedCycle(times).gapCycle.memCycle(position) == cycle.gapCycle.memCycle(position)` | MemCycle-level repeated-storage invariance for B. Delegates to `MemCycleProperties.assertRepeatedValuesCycleMatches`. Verified 18/18. |
