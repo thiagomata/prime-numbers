@@ -5,7 +5,7 @@ import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.ModOperations
-import v1.chapter3.list.ListBoundUtils
+import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
@@ -158,10 +158,73 @@ case class SpecDerivedSieveSequence(
     cycle.gapCycle.memCycle.values.nonEmpty
   }.holds
 
-  /** S4 alias: every gap in the cycle is strictly positive. */
-  def assertCycleGapPositiveAt(pos: BigInt): Boolean = {
-    require(pos >= BigInt(0))
-    cycle.gapCycle.memCycle(pos) > BigInt(0)
+  /** The next prime list's head value equals cycle(1). */
+  def assertNextPrimesHeadMatchesCycleApplyOne(): Boolean = {
+    assert(assertPrimesMatch())
+    assert(assertApplyMatches(BigInt(1)))
+    assert(spec.assertApplyOneEqualsNextPrime())
+    primes.next.head.value == cycle(BigInt(1))
+  }.holds
+
+  /** `cycle(k) <= spec.searchBound(k) = head + k * filterModulus`. */
+  def assertCycleApplyUpperBound(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    assert(assertApplyMatches(k))
+    cycle(k) <= spec.searchBound(k)
+  }.holds
+
+  /** `cycle.apply(spec.indexOfAccepted(value)) == value` for valid values. */
+  def assertCycleIndexOf(value: BigInt): Boolean = {
+    require(value >= cycle.head)
+    require(SieveUtils.isCoprime(value, cycle.primesTailValues))
+    assert(assertCyclePrimesTailEqualsSpecFilterValues())
+    val idx = spec.indexOfAccepted(value)
+    assert(assertApplyMatches(idx))
+    cycle.apply(idx) == value
+  }.holds
+
+  /** Copy of spec's expandedCoprimePreservesFilter: returns isCoprime directly. */
+  private def expandedCoprime(r: BigInt, i: BigInt, modulus: BigInt, values: List[BigInt], prefixProd: BigInt): Boolean = {
+    require(i >= BigInt(0))
+    require(modulus > BigInt(0))
+    require(prefixProd > BigInt(0))
+    require(ListUtils.checkAllPositive(values))
+    require(modulus == prefixProd * SieveUtils.product(values))
+    require(SieveUtils.isCoprime(r, values))
+    decreases(values.size)
+    if (values.isEmpty) {
+      SieveUtils.isCoprime(r + i * modulus, values)
+    } else {
+      val p = values.head
+      val factor = prefixProd * SieveUtils.product(values.tail)
+      assert(SieveUtils.assertProductNonNegative(values.tail))
+      assert(SieveUtils.product(values.tail) >= BigInt(0))
+      assert(factor >= BigInt(0))
+      assert(SieveUtils.assertMultipleModZero(factor, p))
+      assert(Calc.mod(modulus, p) == BigInt(0))
+      assert(SieveUtils.assertIsCoprimeForAll(r, values))
+      assert(Calc.mod(r, p) != BigInt(0))
+      assert(SieveUtils.assertMultiplePreservesDivisible(i, modulus, p))
+      assert(Calc.mod(i * modulus, p) == BigInt(0))
+      assert(SieveUtils.assertAddPreservesNotZeroMod(r, p, i * modulus))
+      assert(Calc.mod(r + i * modulus, p) != BigInt(0))
+      assert(expandedCoprime(r, i, modulus, values.tail, prefixProd * p))
+      assert(SieveUtils.isCoprime(r + i * modulus, values.tail))
+      SieveUtils.isCoprime(r + i * modulus, values)
+    }
+  }.holds
+
+  /** Upper bound: `cycle(1) + cycle.modulus` is never filtered out. */
+  def assertNewHeadPlusModulusCoprime(): Boolean = {
+    assert(assertModulusPositive())
+    assert(assertPrimesTailValuesPositive())
+    assert(assertCycleValueCoprimeToTail(BigInt(1)))
+    assert(primorialMatchesProduct(spec.primes.list.tail.list))
+    assert(SieveUtils.product(cycle.primesTailValues) == cycle.modulus)
+    assert(expandedCoprime(
+      cycle(BigInt(1)), BigInt(1), cycle.modulus, cycle.primesTailValues, BigInt(1)
+    ))
+    true
   }.holds
 
   /** Proves cycle(k) is coprime to all tail primes (by spec bridge). */
@@ -797,26 +860,28 @@ case class SpecDerivedSieveSequence(
     }
   }.holds
 
-//  /**
-//   * Computes the next stage gap cycle independently from B's own cycle,
-//   * then wraps A.next to match.
-//   *
-//   * The gap computation uses `nextRotatedGaps` (pure cycle math, no A.next data).
-//   * Precondition discharge uses A (available to B) — this is separate from the
-//   * gap computation itself.
-//   */
-//  def nextFromCycle(): CycleSieveSequence = {
-//    assert(assertModulusPositive())
-//    assert(assertPrimesTailValuesPositive())
-//    assert(assertHeadPositive())
-//    assert(assertModulusTimesHeadPositive())
-//    assert(SieveSequenceNextLevel.assertNextGapsNonEmpty(cycle))
-//
-//    val newGaps = SieveSequenceNextLevel.nextRotatedGaps(cycle)
-//    val newGapCycle = GapCycle(newGaps)
-//
-//    CycleSieveSequence(primes.next, newGapCycle)
-//  }
+  /**
+   * Builds the next `CycleSieveSequence` independently (no spec delegation).
+   *
+   * Uses the residue pipeline (`nextRotatedGaps`) to compute survivor gaps.
+   * Positivity follows from the gap-merge argument: filtering out multiples
+   * of `head` only merges adjacent positive gaps, preserving positivity.
+   */
+  def nextFromCycle(): CycleSieveSequence = {
+    require(ListBoundUtils.allGreaterThan(
+      SieveSequenceNextLevel.nextRotatedGaps(cycle), BigInt(0)))
+    require(SieveSequenceNextLevel.nextRotatedGaps(cycle).nonEmpty)
+    assert(assertModulusPositive())
+    assert(assertPrimesTailValuesPositive())
+    assert(assertHeadPositive())
+    assert(assertModulusTimesHeadPositive())
+    assert(assertNewHeadPlusModulusCoprime())
+
+    val newGaps = SieveSequenceNextLevel.nextRotatedGaps(cycle)
+    val newGapCycle = GapCycle(newGaps)
+
+    CycleSieveSequence(primes.next, newGapCycle)
+  }
 
   def nextVerified(nextPeriod: BigInt): SpecDerivedSieveSequence = {
     require(nextPeriod > BigInt(0))

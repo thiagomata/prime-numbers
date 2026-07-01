@@ -31,6 +31,20 @@ To check the latest result WITHOUT re-running, use `<verify-log />` to read the 
 Do NOT run `just verify` twice in a row — check `logs/verify.log` first.
 Only re-run `just verify` after making a code change.
 
+<search-primacy priority="supreme">
+  BEFORE WRITING ANY NEW LEMMA:
+  1. Search EXISTING `.holds` lemmas across the full codebase first.
+  2. Check GapCycle, CycleIntegralProperties, MemCycleProperties,
+     CycleIntegralFilterProperties, SieveUtils, SieveSequenceNextLevel,
+     SpecCycleSieveEquivalence, SortedList — these modules contain
+     lemmas that cover 90% of what you'd try to reprove.
+  3. Use `grep` / `bash grep` with explicit search patterns.
+  4. Read the lemma body before concluding it does what you need.
+  5. If stuck: search again. Do not write code as a replacement for search.
+  6. LEARNINGS.md sections 1-5, 13 document existing lemmas and patterns.
+  7. Failing to search = wasting hours proving what's already proven.
+</search-primacy>
+
 <rules>
   <rule id="green-to-green" priority="critical">
     Run <verify /> before ANY code change. Run <verify /> after ANY code change.
@@ -194,6 +208,7 @@ Only re-run `just verify` after making a code change.
   <item>Am I plan mode or build mode? (Plan = no edits allowed)</item>
   <item>Is this a long action (>2 tool calls)? If yes → create/update a ticket first</item>
   <item>Did I search for similar tickets and link them?</item>
+  <item>DEEP SEARCH: Did I search existing .holds lemmas (GapCycle, CycleIntegralProperties, MemCycleProperties, CycleIntegralFilterProperties, SieveUtils) before writing new code?</item>
 </checklist-before>
 
 <checklist-after>

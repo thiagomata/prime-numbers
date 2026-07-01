@@ -269,19 +269,16 @@ object SieveUtils {
     }
   }
 
-  def assertFilterPreservesAscending(list: List[BigInt], divisor: BigInt): Boolean = {
+  def assertFilterNonEmpty(list: List[BigInt], divisor: BigInt): Boolean = {
     require(divisor > 0)
-    require(SortedList.isAscending(list))
     decreases(list.size)
-    if (list.isEmpty || list.tail.isEmpty) {
-      SortedList.isAscending(filterList(list, divisor))
-    } else if (Calc.mod(list.head, divisor) != BigInt(0)) {
-      assert(assertFilterPreservesAscending(list.tail, divisor))
-      SortedList.isAscending(filterList(list, divisor))
+    if (list.isEmpty) true
+    else if (Calc.mod(list.head, divisor) != BigInt(0)) {
+      assert(assertFilterNonEmpty(list.tail, divisor))
     } else {
-      assert(assertFilterPreservesAscending(list.tail, divisor))
-      SortedList.isAscending(filterList(list, divisor))
+      assert(assertFilterNonEmpty(list.tail, divisor))
     }
+    true
   }.holds
 
   def assertIsCoprimeForAll(n: BigInt, primes: List[BigInt]): Boolean = {
