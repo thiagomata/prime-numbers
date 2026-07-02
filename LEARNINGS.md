@@ -680,6 +680,62 @@ a shape the solver recognizes.
 `assertAcceptsEqualWhenTrue` / `assertAcceptsEqualWhenFalse` verified in
 `CanonicalCycleSieve.scala` at 9299 valid.
 
+### 18.5 Return explicit branch invariants from recursive-search wrappers
+
+**Observation:** When a public wrapper exposes a fact proved by a private
+recursive search, Stainless may time out at the final postcondition even after
+all internal recursive lemma calls verify. The solver tries to rediscover that
+the wrapper result is the same first-survivor/search result used by the private
+lemma, then reopens the branch structure.
+
+**Failure shape:** `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`
+initially proved the needed recursive fact inside the branch that called
+`assertSkippedIndexBeforeFirstIsMultiple`, but returned the final expression
+after the branch:
+
+```scala
+if (skippedCase) {
+  assert(assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound))
+}
+
+Calc.mod(apply(idx), p) == BigInt(0)
+```
+
+The focused run verified `51/52` VCs but timed out for 300s on the final
+postcondition. The recursive lemma call itself was valid; the timeout was the
+solver failing to cheaply reuse its result after crossing the wrapper/branch
+boundary.
+
+**Fix (verified):** Return the branch invariant itself as a local value:
+
+```scala
+val skippedIsMultiple =
+  if (immediateSuccessorSurvives) {
+    false
+  } else {
+    assert(assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound))
+    assert(Calc.mod(apply(idx), p) == BigInt(0))
+    Calc.mod(apply(idx), p) == BigInt(0)
+  }
+
+skippedIsMultiple
+```
+
+This makes the recursive-call result part of the expression Stainless is
+verifying, rather than a fact it must recover later. The same focused proof then
+verified `56/56`, and the public wrapper `nextAcceptedOldIndex` verified
+`27/27`.
+
+**Lesson:** For recursive-search wrappers, carry the exact recursive invariant
+through the branch result or an `.ensuring` postcondition. Do not leave the
+important fact as an internal assertion followed by a distant final expression,
+especially when the final expression depends on equality between a public
+wrapper result and a private recursive finder.
+
+**Source:** `tickets/active/independent-next-cycle.md`.
+Verified in `SpecSieveSequence.nextAcceptedOldIndex` and
+`SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`.
+
 ## Index
 
 | Lesson | Source ticket | Area |
@@ -687,3 +743,5 @@ a shape the solver recognizes.
 | 18.1 Cross-instance timeouts [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
 | 18.2 Solver can't derive `a > b ⇒ a ≥ b+1` cross-instance [Open] | `conditional-nextprime-gap-cycle-bridge.md` | Cross-instance |
 | 18.3 Local `val` aliases block cached lemma results — workaround: directed equality lemmas | `canonical-next-strategy.md` | Cross-instance |
+| 18.4 Recursive producer facts belong in `.ensuring` | `canonical-next-strategy.md` | Recursive producers |
+| 18.5 Return explicit branch invariants from recursive-search wrappers | `independent-next-cycle.md` | Recursive search |

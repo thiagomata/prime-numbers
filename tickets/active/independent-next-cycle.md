@@ -262,7 +262,12 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
    Status: mostly already proved on the spec side through
    `assertNextValueAcceptedByThis`, `assertSpecNextIsKthSurvivor`,
    `assertSurvivorGapEqualsSpecNextGap`, and the private merge/copy lemmas in
-   `SpecSieveSequence`.
+   `SpecSieveSequence`. New public hooks now expose the needed filter-step
+   shape: `nextAcceptedOldIndex(nextSeq,k,period)` returns the old-stream index
+   used for the next emitted `nextSeq` value, and
+   `assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)`
+   proves every skipped old index before it is a multiple of the new front
+   filter.
 
    ```math
    spec.next(i) = spec(j)
@@ -491,6 +496,8 @@ Verified reusable helper work from this pass:
 | `GapProperties.assertFirstSurvivorAtPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivor head is `ci(pos)` | Focused verified: 47/47 valid |
 | `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` | Focused verified: 44/44 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
+| `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 27/27 valid |
+| `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 56/56 valid |
 
 Verifier-shape lesson from Phase E:
 
@@ -498,6 +505,12 @@ Verifier-shape lesson from Phase E:
   attempts at the next-level wrapper timed out only when Stainless had to expose
   `SortedList.isAscending(nextSorted(seq).list)` from the `SortedList` wrapper
   inside the larger VC.
+- When a public wrapper around a recursive/private search is used in a
+  postcondition, carry the recursive result as an explicit local invariant.
+  Here, returning `skippedIsMultiple` from the branch that calls
+  `assertSkippedIndexBeforeFirstIsMultiple` avoided a 300s postcondition
+  timeout caused by Stainless trying to rediscover the branch fact through
+  `nextAcceptedOldIndex`.
 - Attaching strict sortedness to the recursive sorting producers with
   `.ensuring` turned the wrapper green without requiring strict sortedness as a
   local precondition. This confirms the next missing stepping stone is **not**

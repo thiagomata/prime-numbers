@@ -639,6 +639,8 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertApplyMonotonic(from,until)**                                    | `from <= until => apply(from) <= apply(until)`                 |
 | **assertFilterPreservesNextGap(nextSeq,k)**                             | Gap copy when old value accepted by next                       |
 | **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**              | Consecutive old values accepted => gap copied                  |
+| **nextAcceptedOldIndex(nextSeq,k,period)**                              | Next emitted `nextSeq` value as an old-stream index            |
+| **assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)** | Skipped old indices before next accepted index are new-head multiples |
 | **assertMergeGapEqualsOldGapSum(nextSeq,k,period)**                     | Private: skipped successor merge equals old gap telescope      |
 | **assertMergedGapPrefixMatchesNext(nextSeq,k,seqIdx,remaining,period)** | `mergedGapPrefix(...)(seqIdx) == nextSeq.gapList(...)(seqIdx)` |
 | **assertApplyOneEqualsNextPrime()**                                     | `apply(1) == nextPrime.value` when `nextPrime < head*head`     |

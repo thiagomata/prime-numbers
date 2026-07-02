@@ -2581,6 +2581,102 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   )
 
   /**
+   * Public wrapper for the old-index step used by the next-stage filter.
+   *
+   * This exposes the already-verified `nextMergedGapOldIndex` result without
+   * exposing the private search helpers. Starting from an old index `k` whose
+   * value appears in `nextSeq`, the returned old index is the next value
+   * emitted by `nextSeq`. It is strictly after `k`, survives the newly added
+   * front filter, and its value equals `nextSeq(indexOfAccepted(apply(k)) + 1)`.
+   *
+   * Math:
+   *
+   *   j = nextAcceptedOldIndex(nextSeq, k, period)
+   *   nextSeq(indexOfAccepted(apply(k)) + 1) = apply(j)
+   *   j > k
+   *   mod(apply(j), nextSeq.filterValues.head) != 0
+   */
+  def nextAcceptedOldIndex(
+    nextSeq: SpecSieveSequence,
+    k: BigInt,
+    period: BigInt
+  ): BigInt = {
+    require(k >= BigInt(0))
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+
+    nextMergedGapOldIndex(nextSeq, k, period)
+  }.ensuring(result =>
+    result > k &&
+      accepts(apply(result)) &&
+      Calc.mod(apply(result), nextSeq.filterValues.head) != BigInt(0) &&
+      nextSeq.accepts(apply(result)) && {
+      val computedNextSeqIndex = nextSeq.indexOfAccepted(apply(k))
+      nextSeq(computedNextSeqIndex + BigInt(1)) == apply(result)
+    }
+  )
+
+  /**
+   * Every old index skipped by `nextAcceptedOldIndex` is removed by the new
+   * front filter.
+   *
+   * This is the public, caller-friendly form of the private
+   * `assertSkippedIndexBeforeFirstIsMultiple` recursion. It is the fact needed
+   * to feed `GapProperties.allMultiplesInRange` on the cycle side: the new
+   * sequence did not skip arbitrary values; it skipped exactly a prefix whose
+   * old values are multiples of `nextSeq.filterValues.head`.
+   *
+   * Math:
+   *
+   *   k < idx < nextAcceptedOldIndex(nextSeq, k, period)
+   *   ------------------------------------------------------------
+   *   mod(apply(idx), nextSeq.filterValues.head) = 0
+   */
+  def assertSkippedBeforeNextAcceptedOldIndexIsMultiple(
+    nextSeq: SpecSieveSequence,
+    k: BigInt,
+    idx: BigInt,
+    period: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(idx > k)
+    require(period > BigInt(0))
+    require(nextSeq.filterValues.nonEmpty)
+    require(nextSeq.filterValues.tail == filterValues)
+    require(nextSeq.head.value == head.value)
+    require(nextSeq.accepts(apply(k)))
+    require(apply(period) == head.value + filterModulus)
+    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(idx < nextAcceptedOldIndex(nextSeq, k, period))
+
+    val p = nextSeq.filterValues.head
+    val nextOldIndex = nextAcceptedOldIndex(nextSeq, k, period)
+
+    val skippedIsMultiple = if (Calc.mod(apply(k + BigInt(1)), p) != BigInt(0)) {
+      assert(nextOldIndex == k + BigInt(1))
+      assert(idx < k + BigInt(1))
+      false
+    } else {
+      val bound = k + p * period
+
+      assert(assertPeriodBoundIsNonMultiple(nextSeq, k, period))
+      val firstSurvivor = findFirstNonMultipleAfter(k, p, bound)
+      assert(nextOldIndex == firstSurvivor)
+      assert(idx < firstSurvivor)
+      assert(assertSkippedIndexBeforeFirstIsMultiple(k, idx, p, bound))
+      assert(Calc.mod(apply(idx), p) == BigInt(0))
+      Calc.mod(apply(idx), p) == BigInt(0)
+    }
+
+    skippedIsMultiple
+  }.holds
+
+  /**
    * Builds a bounded prefix of the copied-or-merged gap list.
    *
    * This is the executable shape of the gap-merge process. The parameter
