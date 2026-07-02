@@ -214,6 +214,50 @@ object SieveSequenceNextLevel {
     true
   }.holds
 
+  /**
+   * Expanded residues are bounded by modulus * head.
+   */
+  def assertNextExpandedAllLessThan(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > BigInt(0))
+
+    val residues = nextResidues(seq)
+    assert(SieveUtils.assertExpandResiduesRange(residues, seq.modulus, seq.head))
+    CycleUtils.allLessThan(nextExpanded(seq), seq.modulus * seq.head)
+  }.holds
+
+  /**
+   * Filtered expanded residues stay bounded.
+   */
+  def assertNextFilteredAllLessThan(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > BigInt(0))
+
+    assert(assertNextExpandedAllLessThan(seq))
+    assert(SieveUtils.assertFilterListAllLessThan(
+      nextExpanded(seq), seq.modulus * seq.head, seq.head))
+    CycleUtils.allLessThan(nextFiltered(seq), seq.modulus * seq.head)
+  }.holds
+
+  /**
+   * Wrapper: nextFiltered with the allLessThan bound via `.ensuring`.
+   * Proves the bound internally using assertNextFilteredAllLessThan.
+   */
+  def nextFilteredWithBound(seq: CycleSieveSequence): List[BigInt] = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    val result = nextFiltered(seq)
+    assert(assertNextFilteredAllLessThan(seq))
+    result
+  }.ensuring(res => CycleUtils.allLessThan(res, seq.modulus * seq.head))
+
+  // DRAFT: assertNextSortedAllLessThan — composing expand/filter/sort bounds
+  // in one lemma times out. Each individual lemma is verified; the composition
+  // requires a different strategy (e.g., .ensuring on recursive producers).
+
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
     require(seq.head > BigInt(0))
     require(seq.modulus > BigInt(0))

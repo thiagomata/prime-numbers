@@ -142,6 +142,227 @@ The core theorem. Two sub-steps:
 
 **M3b:** Prove the pipeline's rotated gaps = A.next's gap cycle values. Use Lemma 4a (`assertSurvivorGapEqualsSpecNextGap`) as the bridge — if pipeline survivors match survivors in Lemma 4a, and Lemma 4a proves survivor gaps = A.next gaps, then pipeline gaps = A.next gaps by transitivity.
 
+#### M3 Proof Ladder ("Santa Claus List")
+
+The final target is:
+
+```scala
+SieveSequenceNextLevel.nextRotatedGaps(cycle) ==
+  spec.next.gapList(0, nextPeriod)
+```
+
+The proof should move through the following small lemmas in order. Each lemma
+states one mathematically true fact in the representation where it is cheapest
+to prove, then exports it in the shape needed by the next layer.
+
+Placement rule: put every reusable fact in the lowest chapter/representation
+that can state it without mentioning chapter 6 sequence objects. Chapter 6
+should mostly contain transfer lemmas and composition lemmas. In practice:
+
+- Pure list order/membership/sort facts belong in chapter 3 list modules.
+- Pure cycle/integral/gap/survivor facts belong in chapter 4, preferably
+  `GapProperties` when they consume `CycleIntegralFilterProperties`.
+- Prime/coprime/filter-value facts belong in chapter 5 unless they require a
+  chapter 6 sequence object.
+- Chapter 6 should connect `SpecSieveSequence`, `SpecDerivedSieveSequence`,
+  `CycleSieveSequence`, and `SieveSequenceNextLevel` after lower-level facts
+  already expose the needed math.
+
+1. **Current apply equality**
+
+   Status: already proved by `assertApplyMatches(k)`.
+
+   ```math
+   cycle(k) = spec(k)
+   ```
+
+   Purpose: every current-stage value used by the cycle pipeline is the same
+   current-stage value used by the spec sequence.
+
+2. **Current filter-head equality**
+
+   Status: mostly already proved by `assertCycleHeadMatchesSpecHead()` and the
+   definition of `spec.next.filterValues`.
+
+   ```math
+   cycle.head = spec.head.value = spec.next.filterValues.head
+   ```
+
+   Purpose: both sides test divisibility by the same newly added filter value
+   when constructing the next stage.
+
+3. **Keep/drop predicate transfer**
+
+   Status: missing as a named transfer lemma.
+   Home: chapter 6 (`SpecDerivedSieveSequence`) because it relates `cycle(k)`,
+   `spec(k)`, and `spec.next.filterValues`.
+
+   ```math
+   cycle(k) = spec(k)
+   \land cycle.head = spec.next.filterValues.head
+   \Rightarrow
+   \bigl(\operatorname{mod}(cycle(k), cycle.head) \ne 0\bigr)
+   =
+   \bigl(\operatorname{mod}(spec(k), spec.next.filterValues.head) \ne 0\bigr)
+   ```
+
+   Candidate name:
+   `assertCycleSpecNextFilterDecisionMatches(k)`.
+
+   Purpose: this is the small "same value, same divisor, same decision" bridge.
+   It prevents downstream survivor proofs from repeatedly reconstructing the
+   equality through `assertApplyMatches`, head aliases, and `Calc.mod`.
+
+4. **Cycle survivor exactness**
+
+   Status: value-level pieces now proved in `GapProperties`:
+   `assertSurvivorValuesContainsNonMultipleAtPosition`,
+   `assertSurvivorValuesContainsOnlyNonMultiples`, and
+   `assertSurvivorValuesExcludesMultipleAtPosition`.
+   Home: chapter 4 (`GapProperties`) because it is a pure
+   `CycleIntegral`/survivor scan fact.
+
+   ```math
+   start \le k < start + count
+   \Rightarrow
+   cycle(k) \in survivorValues(cycle.integral, cycle.head, start, count)
+   \iff
+   \operatorname{mod}(cycle(k), cycle.head) \ne 0
+   ```
+
+   Purpose: the cycle-side survivor scan removes multiples of `cycle.head` and
+   only those. The value-level lemmas are enough for membership/exclusion; the
+   next refinement needs the survivor index/position mapping.
+
+5. **Spec survivor exactness**
+
+   Status: mostly already proved on the spec side through
+   `assertNextValueAcceptedByThis`, `assertSpecNextIsKthSurvivor`,
+   `assertSurvivorGapEqualsSpecNextGap`, and the private merge/copy lemmas in
+   `SpecSieveSequence`.
+
+   ```math
+   spec.next(i) = spec(j)
+   \quad\text{where } j \text{ is the } i\text{-th current value accepted by}
+   \quad spec.next.filterValues
+   ```
+
+   Purpose: the spec sequence already knows that its next values are exactly the
+   old accepted values under the added front filter.
+
+6. **Ordered survivor equality**
+
+   Status: missing; this is the next major bridge.
+   Home: split it. The survivor index/position mapping should be chapter 4
+   if it can be stated over `CycleIntegral` and `survivorValues`; the final
+   equality to `spec.next(i)` belongs in chapter 6.
+
+   ```math
+   cycleSurvivor(i) = spec.next(i)
+   ```
+
+   More explicit form:
+
+   ```scala
+   survivorValues(cycle.integral, cycle.head, start, count)(i) == spec.next(i)
+   ```
+
+   Purpose: membership is not enough; gaps depend on consecutive order. This
+   lemma should combine current apply equality, filter-decision equality, and
+   first-survivor/next-survivor facts.
+
+7. **Expanded pipeline enumerates the same ordered survivor candidates**
+
+   Status: missing/partially covered by `assertExpandedResiduesRepresentPeriod`
+   and `assertNextFilteredContainsCoprime`.
+   Home: chapter 6, because this talks about `SieveSequenceNextLevel` pipeline
+   stages. Any reusable list-level filter membership/order helper discovered
+   while proving it should move down to chapter 3.
+
+   ```math
+   nextFiltered(cycle)
+   =
+   \{ cycle(k) \mid 0 \le cycle(k) < cycle.modulus \cdot cycle.head
+      \land \operatorname{mod}(cycle(k), cycle.head) \ne 0 \}
+   ```
+
+   Purpose: connect the residue/expand/filter pipeline representation to the
+   survivor scan/spec representation.
+
+8. **Sort/order bridge**
+
+   Status: missing.
+   Home: chapter 3 for generic "filter preserves sorting" or "sort preserves
+   ordered values" facts; chapter 6 only for the pipeline wrapper that applies
+   those facts to `nextFiltered`/`nextSorted`.
+
+   ```math
+   nextSorted(cycle).list(i) = spec.next(i)
+   ```
+
+   Purpose: `nextFiltered` is a list built by residue expansion and filtering;
+   `spec.next` is an increasing sequence. Either prove the filtered pipeline is
+   already ordered, or prove sorting reorders it into the same increasing
+   survivor sequence.
+
+9. **Gap calculation equality**
+
+   Status: missing, but should become straightforward after ordered survivor
+   equality.
+   Home: chapter 4 for generic "equal ordered survivor values imply equal
+   gaps/telescoped gaps"; chapter 6 for the wrapper tying
+   `calculateGaps(nextSorted(...))` to `spec.next.gapList`.
+
+   ```math
+   calculateGaps(nextSorted(cycle).list, cycle.modulus \cdot cycle.head)(i)
+   =
+   spec.next.gapList(0, nextPeriod)(i)
+   ```
+
+   Purpose: consecutive equal survivor values have equal adjacent differences.
+   The wrap gap needs the period endpoint equality:
+
+   ```math
+   spec.next(nextPeriod) = spec.next.head.value + spec.next.filterModulus
+   ```
+
+10. **Rotation anchor equality**
+
+    Status: missing.
+    Home: chapter 3/4 for generic rotation/index facts; chapter 6 for the
+    concrete equality involving `nextHeadResidueIndex(cycle)` and
+    `spec.next.head.value`.
+
+    ```math
+    nextHeadResidueIndex(cycle)
+    =
+    \text{index of } spec.next.head.value \text{ in } nextSorted(cycle).list
+    ```
+
+    Purpose: the pipeline computes unrotated gaps from sorted residues, then
+    rotates to begin at the next head. We must prove that this rotation is the
+    same canonical start used by `spec.next.gapList`.
+
+11. **Rotated gap equality**
+
+    Status: final M3 theorem.
+
+    ```math
+    nextRotatedGaps(cycle) = spec.next.gapList(0, nextPeriod)
+    ```
+
+    Purpose: this unlocks `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` and
+    then `nextFromCycle()`.
+
+Recommended implementation order:
+
+1. Add the tiny filter-decision transfer lemma in `SpecDerivedSieveSequence`.
+2. Add position/index survivor exactness for `survivorValues` in
+   `GapProperties`, building on the value-level exactness lemmas.
+3. Bridge cycle survivors to `spec.next` survivors.
+4. Bridge `nextFiltered`/`nextSorted` to that same ordered survivor list.
+5. Prove gap equality, then rotation equality.
+
 ### M4: C uses the same nextFromCycle
 
 Replace `C.next()`'s walk with the pipeline-based computation (same `SieveSequenceNextLevel` functions). Since the pipeline is pure `(CycleSieveSequence) => GapCycle`, C can call it directly with no spec dependency.

@@ -5,6 +5,7 @@ import stainless.lang.decreases
 
 import scala.annotation.tailrec
 import stainless.lang.BooleanDecorations
+import v1.chapter3.list.ListBoundUtils
 
 /**
  * Utility functions for SieveSequence.
@@ -80,6 +81,22 @@ object CycleUtils {
       assert(checkNonNegative(listA.tail ++ listB))
       assert(listA.head >= 0)
       checkNonNegative(listA ++ listB)
+    }
+  }.holds
+
+  /**
+   * CycleUtils.allLessThan and ListBoundUtils.allLessThan are equivalent.
+   * Both check that every element is less than the bound.
+   */
+  def assertAllLessThanEquivalent(list: List[BigInt], bound: BigInt): Boolean = {
+    decreases(list.size)
+    if (list.isEmpty) {
+      CycleUtils.allLessThan(list, bound) ==
+        ListBoundUtils.allLessThan(list, bound)
+    } else {
+      assert(assertAllLessThanEquivalent(list.tail, bound))
+      CycleUtils.allLessThan(list, bound) ==
+        ListBoundUtils.allLessThan(list, bound)
     }
   }.holds
 }

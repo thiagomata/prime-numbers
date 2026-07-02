@@ -147,6 +147,32 @@ case class SpecDerivedSieveSequence(
     cycle.gapCycle == spec.specGapCycle(period)
   }.holds
 
+  /**
+   * Keep/drop predicate transfer (S2/S3 bridge).
+   *
+   * cycle(k) == spec(k) and cycle.head == spec.next.filterValues.head
+   * ==> Calc.mod(cycle(k), cycle.head) != 0 ==
+   *     Calc.mod(spec(k), spec.next.filterValues.head) != 0
+   *
+   * Same value, same divisor, same decision. Prevents downstream survivor
+   * proofs from repeatedly reconstructing the equality through
+   * assertApplyMatches, head aliases, and Calc.mod.
+   */
+  def assertCycleSpecNextFilterDecisionMatches(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    assert(assertApplyMatches(k))
+    assert(assertCycleHeadMatchesSpecHead())
+
+    val nextSeq = spec.next
+    assert(nextSeq.filterPrimes == spec.primes.list.list)
+    assert(nextSeq.filterValues == PrimeUtils.primeValues(nextSeq.filterPrimes))
+    assert(nextSeq.filterValues.head == spec.head.value)
+    assert(cycle.head == spec.next.filterValues.head)
+
+    (Calc.mod(cycle(k), cycle.head) != BigInt(0)) ==
+      (Calc.mod(spec(k), spec.next.filterValues.head) != BigInt(0))
+  }.holds
+
   /** S7 alias: `cycle(k) == integral(k-1)` for k > 0 (apply-vs-integral lowering). */
   def assertCycleApplyLowersToIntegral(k: BigInt): Boolean = {
     require(k > BigInt(0))
