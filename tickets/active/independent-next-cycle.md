@@ -2,45 +2,46 @@
 
 **Created:** 2026-07-01
 **Updated:** 2026-07-02
-**Status:** Plan phase — green baseline restored, foundation work continues
+**Status:** Plan phase — Phase B complete, all chapters green
 
 ## Current Verification Status (2026-07-02)
 
-**GREEN baseline restored.** All chapters 0/0/0. All 133 tests pass.
+**All chapters green.** All 133 tests pass. Phase B (ShiftedList) verified.
 
 | Chapter | Valid | Invalid | Unknown | Notes |
 |----------|-------|---------|---------|-------|
 | ch1 | 16 | 0 | 0 | Green |
 | ch2 | 1346 | 0 | 0 | Green |
-| ch3 | **1343** | 0 | 0 | Green (2 failing methods commented out) |
+| ch3 | **1474** | 0 | 0 | Green (ShiftedList complete) |
 | ch4 | 2393 | 0 | 0 | Green |
 | ch5 | 981 | 0 | 0 | Green |
 | ch6 | 4629 | 0 | 0 | Green |
 | `just test` | — | — | — | **133/133 passed** |
 
-### Restored to green (2026-07-02)
+### Phase B complete (2026-07-02)
 
-Three fixes applied to return to green:
+The `ShiftedList` type is now fully verified. Root cause: `shift` was creating
+`ShiftedList(origHead + gaps.head, gaps)` with **unchanged gaps**, which meant
+`shifted.apply(i) == orig.apply(i+1)` was false for `i >= 1` (counts `gaps(0)`
+twice and never reaches `gaps(i)`).
 
-1. **Removed `@tailrec` from `SieveUtils.rotateAt`** (line 476) — the Phase A7
-   delegation wrapper had no recursion; Scala rejected the annotation.
-   `just compile` and `just test` now pass.
+**Fix:** changed `shift` to use rotated gaps:
+```scala
+ShiftedList(origHead + gaps.head, ListUtils.rotateAt(gaps, BigInt(1)))
+```
 
-2. **Commented out `assertGapTranslation`** (ShiftedList.scala, companion object)
-   — had 1 invalid VC: the assertion at line 126 claims
-   `shifted.apply(i+1) - shifted.apply(i) == gaps(i+1)` but the preceding
-   `assertAdjacentDifferenceEqualsGap(i+1)` caches the postcondition
-   `shifted.apply(i+2) - shifted.apply(i+1) == gaps(i+1)`. The assertion chain
-   used `i+1` for both calls when the shifted side needed `i`. Left as
-   commented-out with explanation.
+This makes the positional-shift law and gap-translation law mathematically true.
 
-3. **Commented out `assertShiftedApplyIsOriginalPlusOne`** (ShiftedList.scala,
-   companion object) — postcondition timed out at 300s. The inductive step
-   (position `i`, using `i-1` hypothesis + gap law at `i-1`) could not be
-   closed by the SMT solver. Left as commented-out with explanation.
+**New foundation lemmas added to ch3:**
 
-The `ShiftedList` class itself, `apply`, `assertAdjacentDifferenceEqualsGap`,
-`assertSamePeriod`, and the `shift` factory are verified and remain active.
+| Lemma | File | Statement | VCs |
+|-------|------|-----------|-----|
+| `assertAppendApplyLeft` | `ListUtilsProperties` | `(left ++ right).apply(k) == left.apply(k)` for `k < left.size` | 12/12 |
+| `assertAppendApplyRight` | `ListUtilsProperties` | `(left ++ right).apply(k) == right.apply(k - left.size)` for `k >= left.size` | 12/12 |
+| `assertSplitAtOne` | `ListUtilsProperties` | `splitAt(list, 1)._1 == List(list.head) && splitAt(list, 1)._2 == list.tail` | 4/4 |
+| `assertRotatedAtIndexPlusOne` | `RotationProperties` | `rotateAt(list, 1).apply(k) == list.apply(k+1)` for `k+1 < size` | 30/30 |
+| `assertShiftedApplyIsOriginalPlusOne` | `ShiftedList` | `shifted.apply(i) == orig.apply(i+1)` | 42/42 |
+| `assertGapTranslation` | `ShiftedList` | `shifted.apply(i+1)-shifted.apply(i) == orig.apply(i+2)-orig.apply(i+1)` | 30/30 |
 
 ## Goal
 
@@ -85,11 +86,11 @@ Once proven for B, C (`CycleSieveSequence`) can use the **same** `nextFromCycle(
 | Lemma 4a (survivors = A.next) | Proven in bridge |
 | C.next() (walk-based) | Exists, unproven against spec |
 | Phase A (rotation theory) | **DONE** — ch3 rotation, split, preserve-bounds, same-elements, same-sum, same-size |
-| Phase A7 (ch6→ch3 delegation) | **DONE** — ch6 wrappers delegate to ch3; `@tailrec` compile error fixed |
-| Phase B (ShiftedList) | **PARTIAL — 2 lemmas disabled** — class + `apply` + `assertAdjacentDifferenceEqualsGap` + `assertSamePeriod` + `shift` factory verified; `assertGapTranslation` (invalid assertion chain) and `assertShiftedApplyIsOriginalPlusOne` (postcondition timeout) commented out |
+| Phase A7 (ch6→ch3 delegation) | **DONE** — ch6 wrappers delegate to ch3 |
+| Phase B (ShiftedList) | **DONE** — shift uses rotated gaps; assertShiftedApplyIsOriginalPlusOne + assertGapTranslation proved; 4 new foundation lemmas added |
 | `just test` | **GREEN** — 133/133 |
 | ch6 verification | **GREEN** — 4629/4629, 0 invalid, 0 unknown |
-| ch3 verification | **GREEN** — 1343/1343, 0 invalid, 0 unknown |
+| ch3 verification | **GREEN** — 1474/1474, 0 invalid, 0 unknown |
 
 ## Milestones
 

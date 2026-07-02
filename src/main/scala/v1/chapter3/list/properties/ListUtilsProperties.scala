@@ -139,4 +139,54 @@ object ListUtilsProperties {
     require(list.nonEmpty)
     ListBoundUtils.assertGreaterThanHeadTail(list, value)
   }.holds
+
+  /**
+   * `splitAt(list, 1)._2 == list.tail` and `splitAt(list, 1)._1 == List(list.head)`
+   * for any non-empty list.
+   */
+  def assertSplitAtOne(list: List[BigInt]): Boolean = {
+    require(list.nonEmpty)
+    val (front, back) = ListUtils.splitAt(list, BigInt(1))
+    front == List(list.head) && back == list.tail
+  }.holds
+
+  /**
+   * Indexed access into the left side of a concatenation: for `k < left.size`,
+   * `(left ++ right).apply(k) == left.apply(k)`.
+   */
+  def assertAppendApplyLeft[T](
+    left: List[T],
+    right: List[T],
+    k: BigInt
+  ): Boolean = {
+    require(k >= 0)
+    require(k < left.size)
+    decreases(k)
+    if (k == BigInt(0)) {
+      (left ++ right).apply(0) == left.apply(0)
+    } else {
+      assert(assertAppendApplyLeft(left.tail, right, k - 1))
+      (left ++ right).apply(k) == left.apply(k)
+    }
+  }.holds
+
+  /**
+   * Indexed access into the right side of a concatenation: for `k >= left.size`
+   * and `k < left.size + right.size`, `(left ++ right).apply(k) == right.apply(k - left.size)`.
+   */
+  def assertAppendApplyRight[T](
+    left: List[T],
+    right: List[T],
+    k: BigInt
+  ): Boolean = {
+    require(k >= left.size)
+    require(k < left.size + right.size)
+    decreases(k)
+    if (left.isEmpty) {
+      (left ++ right).apply(k) == right.apply(k - left.size)
+    } else {
+      assert(assertAppendApplyRight(left.tail, right, k - 1))
+      (left ++ right).apply(k) == right.apply(k - left.size)
+    }
+  }.holds
 }

@@ -308,4 +308,44 @@ object RotationProperties {
       ListBoundUtils.allLessThan(ListUtils.rotateAt(list, index), bound)
     }
   }.holds
+
+  /**
+   * Rotation-by-one index access: for `k + 1 < size`,
+   * `rotateAt(list, 1)(k) == list(k + 1)`.
+   *
+   * Because `rotateAt(list, 1) = back ++ front` where
+   * `(front, back) = splitAt(list, 1)`, `back == list.tail`, and
+   * `front == List(list.head)`. For `k < back.size`, the element at
+   * index `k` comes from `back`, which is `list.tail`, giving `list(k + 1)`.
+   */
+  def assertRotatedAtIndexPlusOne(
+    list: List[BigInt],
+    k: BigInt
+  ): Boolean = {
+    require(list.nonEmpty)
+    require(k >= 0)
+    require(k + 1 < list.size)
+    decreases(k)
+
+    val (front, back) = ListUtils.splitAt(list, BigInt(1))
+    val rotated = back ++ front
+
+    assert(ListUtilsProperties.assertSplitAtRecombines(list, BigInt(1)))
+    assert(front ++ back == list)
+
+    assert(ListUtilsProperties.assertSplitAtOne(list))
+    assert(front == List(list.head))
+    assert(back == list.tail)
+
+    if (k == BigInt(0)) {
+      rotated.apply(k) == list.apply(k + 1)
+    } else {
+      assert(k < back.size)
+      assert(ListUtilsProperties.assertAppendApplyLeft(back, front, k))
+      assert(rotated.apply(k) == back.apply(k))
+      assert(ListUtilsProperties.accessTailShiftRight(list, k))
+      assert(list.tail(k) == list(k + 1))
+      rotated.apply(k) == list.apply(k + 1)
+    }
+  }.holds
 }

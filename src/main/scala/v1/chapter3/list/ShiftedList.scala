@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.{decreases, BooleanDecorations}
 import stainless.lang.BigInt
 import v1.chapter1.verification.Helper.assert
+import v1.chapter3.list.properties.RotationProperties
 
 /**
  * A value sequence viewed one position later, with a new head.
@@ -89,13 +90,12 @@ object ShiftedList {
 
   /**
    * Constructs the shifted view of an original sequence `(origHead, gaps)`:
-   * the new head is `origHead + gaps.head`, the gap list is unchanged.
-   *
-   * This is the canonical "advance one stage" operation on a value sequence.
+   * the new head is `origHead + gaps.head`, and the gap list is rotated by one
+   * position so that `shifted.apply(i) == original.apply(i + 1)`.
    */
   def shift(origHead: BigInt, gaps: List[BigInt]): ShiftedList = {
     require(gaps.nonEmpty)
-    ShiftedList(origHead + gaps.head, gaps)
+    ShiftedList(origHead + gaps.head, ListUtils.rotateAt(gaps, BigInt(1)))
   }
 
   /**
@@ -111,51 +111,68 @@ object ShiftedList {
    * leaves the gap list unchanged and only moves the head — the adjacent-
    * difference law (`apply(k+1) - apply(k) == gaps(k)`) holds for both views.
    */
-  // Disabled: 1 invalid VC (assertion chain calls assertAdjacentDifferenceEqualsGap(i+1)
-  // but then asserts shifted.apply(i+1)-shifted.apply(i)==gaps(i+1) which doesn't follow
-  // from the cached postcondition apply(i+2)-apply(i+1)==gaps(i+1).
-  // def assertGapTranslation(
-  //   origHead: BigInt,
-  //   gaps: List[BigInt],
-  //   i: BigInt
-  // ): Boolean = {
-  //   require(gaps.nonEmpty)
-  //   require(i >= 0)
-  //   require(i + 2 < gaps.size)
-  //   val shifted = shift(origHead, gaps)
-  //   val orig = ShiftedList(origHead, gaps)
-  //   assert(shifted.assertAdjacentDifferenceEqualsGap(i + 1))
-  //   assert(orig.assertAdjacentDifferenceEqualsGap(i + 1))
-  //   assert(shifted.apply(i + 1) - shifted.apply(i) == gaps(i + 1))
-  //   assert(orig.apply(i + 2) - orig.apply(i + 1) == gaps(i + 1))
-  //   shifted.apply(i + 1) - shifted.apply(i) ==
-  //     orig.apply(i + 2) - orig.apply(i + 1)
-  // }.holds
+  /**
+   * Gap-translation law: shifting a sequence translates its adjacent-gap
+   * sequence by one index. Concretely, if `shifted = shift(origHead, gaps)`
+   * and `orig = ShiftedList(origHead, gaps)` (the original, un-shifted view),
+   * then:
+   *
+   *   shifted.apply(i + 1) - shifted.apply(i) == orig.apply(i + 2) - orig.apply(i + 1)
+   *
+   * Both sides equal `gaps(i + 1)`: the shifted adjacent difference at index
+   * `i` uses `shifted.gaps(i)` = `gaps(i+1)` (rotation by one), while the
+   * original adjacent difference at index `i+1` uses `gaps(i+1)` directly.
+   */
+  def assertGapTranslation(
+    origHead: BigInt,
+    gaps: List[BigInt],
+    i: BigInt
+  ): Boolean = {
+    require(gaps.nonEmpty)
+    require(i >= 0)
+    require(i + 2 < gaps.size)
+    val shifted = shift(origHead, gaps)
+    val orig = ShiftedList(origHead, gaps)
+    assert(shifted.assertAdjacentDifferenceEqualsGap(i))
+    assert(orig.assertAdjacentDifferenceEqualsGap(i + 1))
+    assert(RotationProperties.assertRotatedAtIndexPlusOne(gaps, i))
+    assert(shifted.gaps(i) == gaps(i + 1))
+    assert(shifted.apply(i + 1) - shifted.apply(i) == gaps(i + 1))
+    shifted.apply(i + 1) - shifted.apply(i) ==
+      orig.apply(i + 2) - orig.apply(i + 1)
+  }.holds
 
-  // Disabled: postcondition times out (300s) — SMT solver cannot close the induction step.
-  // def assertShiftedApplyIsOriginalPlusOne(
-  //   origHead: BigInt,
-  //   gaps: List[BigInt],
-  //   i: BigInt
-  // ): Boolean = {
-  //   require(gaps.nonEmpty)
-  //   require(i >= 0)
-  //   require(i + 1 < gaps.size)
-  //   decreases(i)
-  //   val shifted = shift(origHead, gaps)
-  //   val orig = ShiftedList(origHead, gaps)
-  //   if (i == BigInt(0)) {
-  //     assert(shifted.head == origHead + gaps.head)
-  //     assert(orig.apply(BigInt(1)) == origHead + gaps.head)
-  //     shifted.apply(i) == orig.apply(i + 1)
-  //   } else {
-  //     assert(assertShiftedApplyIsOriginalPlusOne(origHead, gaps, i - 1))
-  //     assert(shifted.apply(i - 1) == orig.apply(i))
-  //     assert(shifted.assertAdjacentDifferenceEqualsGap(i - 1))
-  //     assert(shifted.apply(i) == shifted.apply(i - 1) + gaps(i - 1))
-  //     assert(orig.assertAdjacentDifferenceEqualsGap(i))
-  //     assert(orig.apply(i + 1) == orig.apply(i) + gaps(i))
-  //     shifted.apply(i) == orig.apply(i + 1)
-  //   }
-  // }.holds
+  /**
+   * Positional-shift law: `shifted.apply(i) == orig.apply(i + 1)`.
+   *
+   * The shifted sequence at index `i` equals the original at index `i + 1`,
+   * because the shifted head is `origHead + gaps.head = orig.apply(1)` and the
+   * cumulative-gap structure is rotated by one. Proved by induction on `i`,
+   * using the adjacent-difference law to step both sides forward by one gap.
+   */
+  def assertShiftedApplyIsOriginalPlusOne(
+    origHead: BigInt,
+    gaps: List[BigInt],
+    i: BigInt
+  ): Boolean = {
+    require(gaps.nonEmpty)
+    require(i >= 0)
+    require(i + 1 < gaps.size)
+    decreases(i)
+    val shifted = shift(origHead, gaps)
+    val orig = ShiftedList(origHead, gaps)
+    if (i == BigInt(0)) {
+      assert(shifted.head == origHead + gaps.head)
+      assert(orig.apply(BigInt(1)) == origHead + gaps.head)
+      shifted.apply(i) == orig.apply(i + 1)
+    } else {
+      assert(assertShiftedApplyIsOriginalPlusOne(origHead, gaps, i - 1))
+      assert(shifted.apply(i - 1) == orig.apply(i))
+      assert(shifted.assertAdjacentDifferenceEqualsGap(i - 1))
+      assert(orig.assertAdjacentDifferenceEqualsGap(i))
+      assert(RotationProperties.assertRotatedAtIndexPlusOne(gaps, i - 1))
+      assert(shifted.gaps(i - 1) == gaps(i))
+      shifted.apply(i) == orig.apply(i + 1)
+    }
+  }.holds
 }
