@@ -2,7 +2,7 @@
 
 **Created:** 2026-06-30
 **Updated:** 2026-07-02
-**Status:** In progress — foundation work (Phase A underway)
+**Status:** In progress — Phases A-D complete, Phase E in progress
 **Depends on:** `verify-timeout-root-cause.md`, `independent-next-cycle.md`
 
 ## Goal
@@ -121,8 +121,9 @@ For each fix: focused verify on the changed lemma → `verify-ch 3` green → (a
 | 2026-07-02 | **Phase A3 done.** `assertRotateSameSize` added. | Focused 14/14 valid. |
 | 2026-07-02 | **Phase A4 (bounds) done.** Added `assertSplitAtPreservesAllGreaterThan`/`assertSplitAtPreservesAllLessThan` to ch3 `ListBoundUtils` (the ch3 home for the bound-preservation fact; ch6 originals still present, to be delegated later). Then `assertRotateSameLowerBound`/`assertRotateSameUpperBound`. | Bounds focused 46/46 valid; the two splitAt-helper lemmas 23/23 valid. |
 | 2026-07-02 | **Phase A4 (sum) done.** Explicit `listCombine`/`listSwap` substitution chain (§6.1) resolved the grinding 14th VC. | `assertRotateSameSum` 18/18 valid. |
-| 2026-07-02 | **Phase A (rotation theory) COMPLETE.** All permutation invariants proven head-free in ch3 `RotationProperties`: same-elements, same-size, same-sum, same-lower-bound, same-upper-bound, plus keystone `assertSplitAtRecombines` and `assertSplitAtPreservesAllGreaterThan/LessThan` in `ListBoundUtils`. | Full `verify-ch 3`: **1322/1322, 0 unknown (7s).** (Was 1108 baseline; +214 VCs.) |
-| 2026-07-02 | **Phase A7 done.** ch6 `SieveUtils` `splitAt`/`rotateAt`/`assertSplitAtPreservesAllGreaterThan`/`assertRotateAtPreservesAllGreaterThan`/`assertRotateAtPreservesNonEmpty` converted to delegating wrappers over the ch3 canonical versions (§5.3). First attempt dropped the `require` clauses → 3 invalid VCs (contract didn't propagate through the wrapper). Restoring the `require`s on the wrappers fixed it. | Full `verify-ch 6`: **4629/4629, 0 unknown, 0 invalid (22s)** — down from 4678 (delegation removed redundant VCs). |
+| 2026-07-02 | **Phase C (gap-positivity) complete.** Added `assertSumPositive` (sumPositive) in ListUtilsProperties (20/20), `assertIntegralStrictlyIncreasing` (50/50) and `assertGapsPositive` (17/17) in IntegralProperties. GapProperties (ch4) provides 13 wrapping lemmas for gap arithmetic + survivor brackets + div/mod formula + periodic shift + periodic mod. | ch3 1561/1561, ch4 2675/2675 |
+| 2026-07-02 | **Phase D complete.** Changed `isAscending` from `<=` to `<` (strict). Added `assertIsAscendingAtIndex` bridge lemma in SortedList (18/18). `assertNextSortedStrictlyAscending` (18/18) in SieveSequenceNextLevel proves `sorted(i+1) > sorted(i)` via the SortedList invariant. OBJECTS.md fully updated with 487 lemmas. | ch3 1582/1582, ch6 4647/4647, test 133/133 |
+| | **Phase E next:** assemble `allGreaterThan(nextRotatedGaps(cycle), 0)` and remove `nextFromCycle` require. | |
 
 ## Phase A (rotation theory) — COMPLETE (2026-07-02)
 

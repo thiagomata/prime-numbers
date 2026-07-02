@@ -3,16 +3,16 @@
 Complete inventory of all verified `.holds` lemmas across the codebase.
 Last updated: 2026-07-02
 
-**Total: 485 verified lemmas** across 6 chapters.
+**Total: 487 verified lemmas** across 6 chapters.
 
 | Chapter                               | Lemmas |
 |---------------------------------------|--------|
 | ch1 (Verification Helpers)            | 0      |
 | ch2 (Div/Mod)                         | 39     |
-| ch3 (Lists, Integrals, Bounds)        | 86     |
+| ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 213    |
+| ch6 (Sieve Sequence, Pipeline)        | 214    |
 
 ---
 
@@ -227,7 +227,8 @@ Last updated: 2026-07-02
 | **assertSortFilteredAscending(list)**      | `sortFiltered` produces ascending list |
 | **assertInsertSortedAscending(x,list)**    | `insertSorted` preserves ascending     |
 | **assertTailAscending(list)**              | Tail of ascending is ascending         |
-| **assertRemoveKeepsAscending(list,index)** | `removeAt` preserves ascending         |
+| **assertRemoveKeepsAscending(list,index)** | `removeAt` preserves ascending |
+| **assertIsAscendingAtIndex(list,i)** | `isAscending(list) => list(i+1) > list(i)` for valid i |
 
 ## 3.10 MinBoundList (`v1.chapter3.list.MinBoundList`)
 
@@ -541,6 +542,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertResiduesCoprime(seq)**                          | `all r in residues(seq): isCoprime(r, tailPrimes)`           |
 | **assertNextGapsNonEmpty(seq)**                         | `nextGaps(seq).nonEmpty`                                     |
 | **assertNextGapsSize(seq)**                             | `nextGaps(seq).size == nextSorted(seq).list.size`            |
+| **assertNextSortedStrictlyAscending(seq,i)**           | `nextSorted(seq).list(i+1) > nextSorted(seq).list(i)`       |
 
 ## 6.4 SieveUtils (`v1.chapter6.seq.sieve.SieveUtils`)
 

@@ -2,17 +2,18 @@
 
 **Created:** 2026-07-01
 **Updated:** 2026-07-02
-**Status:** Plan phase — Phase B complete, all chapters green
+**Status:** Phases A-D complete, Phase E in progress
 
 ## Current Verification Status (2026-07-02)
-
-**All chapters green.** All 133 tests pass. Phase B (ShiftedList) verified.
 
 | Chapter | Valid | Invalid | Unknown | Notes |
 |----------|-------|---------|---------|-------|
 | ch1 | 16 | 0 | 0 | Green |
 | ch2 | 1346 | 0 | 0 | Green |
-| ch3 | **1474** | 0 | 0 | Green (ShiftedList complete) |
+| ch3 | **1582** | 0 | 0 | Green (+108 from Phase B/C/D) |
+| ch4 | **2675** | 0 | 0 | Green (+282 from GapProperties) |
+| ch5 | 981 | 0 | 0 | Green |
+| ch6 | **4647** | 0 | 0 | Green (+18 from Phase D) |
 | ch4 | 2393 | 0 | 0 | Green |
 | ch5 | 981 | 0 | 0 | Green |
 | ch6 | 4629 | 0 | 0 | Green |
@@ -85,12 +86,13 @@ Once proven for B, C (`CycleSieveSequence`) can use the **same** `nextFromCycle(
 | Pipeline output = A.next gap cycle lemma | Does NOT exist |
 | Lemma 4a (survivors = A.next) | Proven in bridge |
 | C.next() (walk-based) | Exists, unproven against spec |
-| Phase A (rotation theory) | **DONE** — ch3 rotation, split, preserve-bounds, same-elements, same-sum, same-size |
-| Phase A7 (ch6→ch3 delegation) | **DONE** — ch6 wrappers delegate to ch3 |
-| Phase B (ShiftedList) | **DONE** — shift uses rotated gaps; assertShiftedApplyIsOriginalPlusOne + assertGapTranslation proved; 4 new foundation lemmas added |
+| Phase A (rotation theory) | **DONE** |
+| Phase A7 (ch6→ch3 delegation) | **DONE** |
+| Phase B (ShiftedList) | **DONE** |
+| Phase C (gap-positivity) | **DONE** — `assertSumPositive`, `assertIntegralStrictlyIncreasing`, `assertGapsPositive` at ch3 level. GapProperties provides 13 ch4 wrappers. |
+| Phase D (`assertNextSortedStrictlyAscending`) | **DONE** — `isAscending` changed to strict `<`; `assertIsAscendingAtIndex` bridge lemma. |
+| Phase E (`allGreaterThan(nextRotatedGaps(cycle), 0)`) | **NEXT** |
 | `just test` | **GREEN** — 133/133 |
-| ch6 verification | **GREEN** — 4629/4629, 0 invalid, 0 unknown |
-| ch3 verification | **GREEN** — 1474/1474, 0 invalid, 0 unknown |
 
 ## Milestones
 

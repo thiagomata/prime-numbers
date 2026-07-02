@@ -34,7 +34,7 @@ object SortedList {
   def isAscending(list: List[BigInt]): Boolean = {
     decreases(list.size)
     if (list.isEmpty || list.tail.isEmpty) true
-    else if (list.head > list.tail.head) false
+    else if (list.head >= list.tail.head) false
     else isAscending(list.tail)
   }
 
@@ -48,7 +48,8 @@ object SortedList {
   def insertSorted(x: BigInt, list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
     if (list.isEmpty) List(x)
-    else if (x <= list.head) x :: list
+    else if (x < list.head) x :: list
+    else if (x == list.head) list
     else list.head :: insertSorted(x, list.tail)
   }
 
@@ -80,7 +81,8 @@ object SortedList {
     require(isAscending(list))
     decreases(list.size)
     if (list.isEmpty) isAscending(insertSorted(x, list))
-    else if (x <= list.head) isAscending(insertSorted(x, list))
+    else if (x < list.head) isAscending(insertSorted(x, list))
+    else if (x == list.head) isAscending(list)
     else {
       assert(isAscending(list.tail))
       assert(assertInsertSortedAscending(x, list.tail))
@@ -97,6 +99,25 @@ object SortedList {
     else {
       assert(assertTailAscending(list.tail))
       isAscending(list.tail)
+    }
+  }.holds
+
+  /**
+   * `isAscending` implies strict ordering at any position:
+   *   isAscending(list) && i+1 < list.size => list(i+1) > list(i)
+   */
+  def assertIsAscendingAtIndex(list: List[BigInt], i: BigInt): Boolean = {
+    require(i >= 0)
+    require(i + 1 < list.size)
+    require(isAscending(list))
+    decreases(i)
+    if (i == BigInt(0)) {
+      list(i + 1) > list(i)
+    } else {
+      assert(assertTailAscending(list))
+      assert(isAscending(list.tail))
+      assert(assertIsAscendingAtIndex(list.tail, i - 1))
+      list(i + 1) > list(i)
     }
   }.holds
 

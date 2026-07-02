@@ -236,6 +236,24 @@ object SieveSequenceNextLevel {
     nextGaps(seq).size == nextSorted(seq).list.size
   }.holds
 
+  def assertNextSortedStrictlyAscending(
+    seq: CycleSieveSequence,
+    i: BigInt
+  ): Boolean = {
+    require(seq.modulus > 0)
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > 0)
+    require(i >= 0)
+    require(i + 1 < nextSorted(seq).list.size)
+
+    val sorted = nextSorted(seq).list
+    val filtered = nextFiltered(seq)
+    assert(SortedList.assertSortFilteredAscending(filtered))
+    assert(SortedList.isAscending(sorted))
+    assert(SortedList.assertIsAscendingAtIndex(sorted, i))
+    sorted(i + 1) > sorted(i)
+  }.holds
+
   /**
    * Transparent window of `ci`'s first `steps` values.
    *
