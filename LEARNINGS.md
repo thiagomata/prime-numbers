@@ -624,6 +624,58 @@ to surface component equalities from structural equality.
 **Prior failures:** `val` version timed out (9 VCs, 8/9). `def` version timed out
 (same). Bare `seq1.accepts(v) == seq2.accepts(v)` without directed requires timed out.
 
+### 18.4 Put reusable recursive producer facts in `.ensuring`
+
+**Observation:** `SortedList.fromUnsorted(list)` guarantees
+`SortedList.isAscending(sorted.list)`, but asking Stainless to rediscover that
+inside a larger compositor lemma can produce a 300s timeout. In Phase E of
+`independent-next-cycle.md`, `assertNextGapsAllPositiveGivenSortedBounds`
+timed out twice when the lemma body or a downstream helper precondition had to
+prove `SortedList.isAscending(nextSorted(seq).list)` from the `SortedList`
+wrapper.
+
+**Debug evidence:** `just verify-debug assertNextGapsAllPositiveGivenSortedBounds`
+showed repeated matcher instantiation for `isAscending(nextSorted(seq).list)`,
+followed by unrolling through `nextSorted(seq)`,
+`SortedList.fromUnsorted(nextFiltered(seq))`, `nextFiltered(seq)`, recursive
+`isAscending` tails, and unrelated prime-tail invariants. This is the signature
+that Stainless is not shortcutting to the already verified constructor/helper
+fact at the compositor site; it is reopening the producer pipeline. The debug
+log stopped before a final summary, so use the focused non-debug run as the
+validation result and the debug log only as mechanism evidence.
+
+**Better fix (verified):** Put the reusable recursive facts directly on the
+producer functions:
+
+- `SortedList.insertSorted(x,list)` now ensures
+  `isAscending(list) => isAscending(result)`.
+- `SortedList.sortFiltered(list)` now ensures `isAscending(result)`.
+
+After those postconditions were attached to the recursive producers,
+`assertNextGapsAllPositiveGivenSortedBounds` no longer needed
+`require(SortedList.isAscending(nextSorted(seq).list))`; the focused run
+verified `24/24`. `assertNextRotatedGapsAllPositiveGivenSortedBounds` also no
+longer needed that sortedness precondition and verified `36/36`.
+
+**Proof shape (verified):** Keep low-level facts proved independently and make
+the compositor lemma's role explicit. For the next-gap positivity bridge:
+
+- `assertPairwiseGapsAllPositive` proves adjacent gap positivity.
+- `assertWrapGapPositive` proves the final wrap gap is positive.
+- `assertCalculateGapsAllPositive` composes those two.
+- `assertNextGapsAllPositiveGivenSortedBounds` consumes sortedness from
+  `sortFiltered`'s postcondition, requires only the remaining sorted-output
+  range/head facts (`nonEmpty`, upper bound, nonnegative head), and verifies
+  quickly.
+- `assertNextRotatedGapsAllPositiveGivenSortedBounds` adds only rotation
+  preservation on top.
+
+**Lesson:** When a fact comes from a recursive producer and will be used by
+large downstream VCs, prefer attaching it to the producer with `.ensuring`.
+If the fact is only proved by a separate `.holds` lemma, Stainless may still
+try to reopen the producer at the call site unless the exact lemma is called in
+a shape the solver recognizes.
+
 **Source:** `tickets/active/canonical-next-strategy.md`.
 `assertAcceptsEqualWhenTrue` / `assertAcceptsEqualWhenFalse` verified in
 `CanonicalCycleSieve.scala` at 9299 valid.

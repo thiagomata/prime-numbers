@@ -425,6 +425,116 @@ object SieveUtils {
     }
   }.holds
 
+  /**
+   * Pairwise gaps of a strictly ascending list are positive.
+   *
+   * Math:
+   *
+   *   isAscending(L) => forall i < size(L)-1:
+   *     L(i + 1) - L(i) > 0
+   *
+   * `pairwiseGaps` stores exactly those adjacent differences, so every emitted
+   * gap is greater than zero. This is the local positivity step for
+   * `calculateGaps`; it deliberately avoids the wrap gap and pipeline range
+   * obligations.
+   */
+  def assertPairwiseGapsAllPositive(list: List[BigInt]): Boolean = {
+    require(list.nonEmpty)
+    require(SortedList.isAscending(list))
+    decreases(list.size)
+
+    val gaps = pairwiseGaps(list)
+    if (list.size <= BigInt(1)) {
+      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
+    } else if (list.size == BigInt(2)) {
+      assert(SortedList.assertIsAscendingAtIndex(list, BigInt(0)))
+      assert(list(BigInt(1)) > list(BigInt(0)))
+      assert(list(BigInt(1)) - list(BigInt(0)) > BigInt(0))
+      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
+    } else {
+      assert(SortedList.assertIsAscendingAtIndex(list, BigInt(0)))
+      assert(list(BigInt(1)) > list(BigInt(0)))
+      assert(list(BigInt(1)) - list(BigInt(0)) > BigInt(0))
+      assert(SortedList.assertTailAscending(list))
+      assert(SortedList.isAscending(list.tail))
+      assert(assertPairwiseGapsAllPositive(list.tail))
+      assert(ListBoundUtils.allGreaterThan(pairwiseGaps(list.tail), BigInt(0)))
+      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
+    }
+  }.holds
+
+  /**
+   * The wrap gap of an upper-bounded sorted residue list is positive.
+   *
+   * Math:
+   *
+   *   sorted.last < modulus
+   *   sorted.head >= 0
+   *   ------------------------------
+   *   modulus - sorted.last + sorted.head > 0
+   *
+   * This isolates the final gap in `calculateGaps`. The upper bound arrives as
+   * the recursive predicate `allLessThan(sorted, modulus)`, so the proof first
+   * exposes the pointwise fact at index `size - 1` and then rewrites it through
+   * `last`.
+   */
+  def assertWrapGapPositive(sorted: List[BigInt], modulus: BigInt): Boolean = {
+    require(modulus > BigInt(0))
+    require(sorted.nonEmpty)
+    require(ListBoundUtils.allLessThan(sorted, modulus))
+    require(sorted.head >= BigInt(0))
+
+    assert(ListUtilsProperties.assertLastEqualsLastPosition(sorted))
+    assert(sorted.last == sorted(sorted.size - BigInt(1)))
+    assert(ListBoundUtils.assertLessThanAtIndex(sorted, modulus, sorted.size - BigInt(1)))
+    assert(sorted(sorted.size - BigInt(1)) < modulus)
+    assert(sorted.last < modulus)
+    assert(modulus - sorted.last > BigInt(0))
+    assert(modulus - sorted.last + sorted.head > BigInt(0))
+    modulus - sorted.last + sorted.head > BigInt(0)
+  }.holds
+
+  /**
+   * `calculateGaps` emits only positive gaps for a sorted residue list inside a
+   * positive modulus.
+   *
+   * Math:
+   *
+   *   adjacent gaps: sorted(i + 1) - sorted(i) > 0
+   *   wrap gap:      modulus - sorted.last + sorted.head > 0
+   *   -----------------------------------------------------
+   *   all gaps emitted by calculateGaps(sorted, modulus) > 0
+   *
+   * The proof composes the pairwise-gap and wrap-gap lemmas instead of asking
+   * Stainless to rediscover sorting, bounds, and append preservation in the
+   * same VC.
+   */
+  def assertCalculateGapsAllPositive(sorted: List[BigInt], modulus: BigInt): Boolean = {
+    require(modulus > BigInt(0))
+    require(sorted.nonEmpty)
+    require(SortedList.isAscending(sorted))
+    require(ListBoundUtils.allLessThan(sorted, modulus))
+    require(sorted.head >= BigInt(0))
+
+    val gaps = calculateGaps(sorted, modulus)
+    if (sorted.size == BigInt(1)) {
+      assert(gaps == List(modulus))
+      assert(modulus > BigInt(0))
+      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
+    } else {
+      val pw = pairwiseGaps(sorted)
+      val wrapGap = modulus - sorted.last + sorted.head
+      assert(gaps == pw ++ List(wrapGap))
+      assert(assertPairwiseGapsAllPositive(sorted))
+      assert(ListBoundUtils.allGreaterThan(pw, BigInt(0)))
+      assert(assertWrapGapPositive(sorted, modulus))
+      assert(wrapGap > BigInt(0))
+      assert(ListBoundUtils.allGreaterThan(List(wrapGap), BigInt(0)))
+      assert(ListBoundUtils.assertAppendGreaterThan(pw, List(wrapGap), BigInt(0)))
+      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
+    }
+  }.holds
+
   @tailrec
   def getAt(list: List[BigInt], index: BigInt): BigInt = {
     require(index >= 0)

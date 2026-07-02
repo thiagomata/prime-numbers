@@ -149,6 +149,31 @@ object ListBoundUtils {
     }
   }.holds
 
+  /**
+   * Every indexed element of an upper-bounded list is below the bound.
+   *
+   * Math:
+   *
+   *   allLessThan(L, b) => forall i, 0 <= i < |L|:
+   *     L(i) < b
+   *
+   * This is the pointwise bridge for the recursive `allLessThan` predicate.
+   * Later proofs use it to expose facts such as `list.last < bound` by first
+   * rewriting `last` as `list(size - 1)`.
+   */
+  def assertLessThanAtIndex(list: List[BigInt], bound: BigInt, pos: BigInt): Boolean = {
+    require(allLessThan(list, bound))
+    require(pos >= 0 && pos < list.size)
+    decreases(pos)
+    if (pos == BigInt(0)) {
+      list.head < bound
+    } else {
+      assert(assertLessThanAtIndex(list.tail, bound, pos - 1))
+      assert(assertTailShiftLeft(list, pos))
+      list(pos) < bound
+    }
+  }.holds
+
   def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
     require(allGreaterThan(list, value))
     require(list.nonEmpty)

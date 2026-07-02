@@ -221,6 +221,39 @@ Verified reusable helper work from this pass:
 |---|---|---|
 | `SieveUtils.assertSplitAtPreservesAllGreaterThan(list,index,value)` | splitting a positive-bounded list preserves the bound on both pieces | Focused verified: 23/23 valid |
 | `SieveUtils.assertRotateAtPreservesAllGreaterThan(list,index,value)` | rotating a positive-bounded list preserves the bound | Focused verified: 20/20 valid |
+| `ListBoundUtils.assertLessThanAtIndex(list,bound,pos)` | `allLessThan(list,bound)` exposes the pointwise fact `list(pos) < bound` | Focused verified: 13/13 valid |
+| `SieveUtils.assertPairwiseGapsAllPositive(list)` | strict ascending input gives positive adjacent gaps | Focused verified: 36/36 valid |
+| `SieveUtils.assertWrapGapPositive(sorted,modulus)` | `sorted.last < modulus` and `sorted.head >= 0` give positive wrap gap | Focused verified: 21/21 valid |
+| `SieveUtils.assertCalculateGapsAllPositive(sorted,modulus)` | sorted bounded residues give positive calculated gaps | Focused verified: 23/23 valid |
+| `SortedList.insertSorted(x,list)` | postcondition exposes `isAscending(list) => isAscending(result)` at recursive call sites | Focused verified: 21/21 valid |
+| `SortedList.sortFiltered(list)` | postcondition exposes `isAscending(result)` directly from the recursive sorting producer | Focused verified: 14/14 valid |
+| `SieveSequenceNextLevel.assertNextGapsAllPositiveGivenSortedBounds(seq)` | `sortFiltered` sortedness plus nonempty/range/head bounds imply `nextGaps(seq)` is positive | Focused verified: 24/24 valid |
+| `SieveSequenceNextLevel.assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` | positive `nextGaps(seq)` implies `nextRotatedGaps(seq)` is positive by rotation preservation | Focused verified: 36/36 valid |
+
+Verifier-shape lesson from Phase E:
+
+- The low-level gap arithmetic is now proved independently. The first two
+  attempts at the next-level wrapper timed out only when Stainless had to expose
+  `SortedList.isAscending(nextSorted(seq).list)` from the `SortedList` wrapper
+  inside the larger VC.
+- Attaching strict sortedness to the recursive sorting producers with
+  `.ensuring` turned the wrapper green without requiring strict sortedness as a
+  local precondition. This confirms the next missing stepping stone is **not**
+  gap positivity; it is a small upstream bridge that exposes the remaining
+  sorted-output facts (`nonEmpty`, `allLessThan`, `head >= 0`) from the
+  expand/filter/sort pipeline in a verifier-friendly shape.
+- `just verify-debug assertNextGapsAllPositiveGivenSortedBounds` confirmed the
+  mechanism: the generated VCs repeatedly instantiate matchers for
+  `isAscending(nextSorted(seq).list)` and then unroll through
+  `nextSorted(seq)`, `SortedList.fromUnsorted(nextFiltered(seq))`,
+  `nextFiltered(seq)`, prime-tail invariants, and recursive tails of
+  `isAscending`. In other words, Stainless is not simply reusing the previously
+  verified `SortedList.fromUnsorted`/constructor fact at the compositor site; it
+  tries to unwrap the pipeline again. The debug log stopped after `25 / 27`
+  while solving the body assertion, so use it as mechanism evidence rather than
+  as a final verification result. After adding the producer `.ensuring`
+  postconditions, the clean validation source is the focused non-debug run
+  (`24/24 valid`).
 
 Remaining independent-pipeline proof obligation:
 
@@ -230,11 +263,11 @@ Remaining independent-pipeline proof obligation:
 - Once that equality exists, positivity should come from the already verified
   canonical facts (`assertSpecGapPeriodPositive`, `assertNextCycleGapsPositive`)
   instead of a separate sorted-list positivity proof.
-- Secondary fallback obligation: if the equality bridge is too large, prove or
-  expose `ListBoundUtils.allGreaterThan(SieveSequenceNextLevel.nextGaps(seq), 0)`
-  for the standard `nextGaps`/`calculateGaps` pipeline, then use
-  `assertRotateAtPreservesAllGreaterThan(nextGaps(seq), nextHeadResidueIndex(seq), 0)`
-  to discharge the `GapCycle(newGaps)` constructor.
+- Secondary fallback obligation: discharge the remaining sorted-output bounds
+  and call `assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` to prove
+  `ListBoundUtils.allGreaterThan(SieveSequenceNextLevel.nextRotatedGaps(seq), 0)`
+  for the standard pipeline. The sorting, gap arithmetic, and rotation parts are
+  now focused-verified; only the remaining range/head bridge remains.
 
 ## 2026-07-01 Refinement: Positivity is Supporting Evidence, Apply Equality is the Goal
 

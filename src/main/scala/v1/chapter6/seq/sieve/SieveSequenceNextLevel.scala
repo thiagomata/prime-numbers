@@ -255,6 +255,104 @@ object SieveSequenceNextLevel {
   }.holds
 
   /**
+   * Positivity of `nextGaps` once the sorted pipeline output has its local
+   * bounds exposed.
+   *
+   * Math:
+   *
+   *   sorted = nextSorted(seq).list
+   *   isAscending(sorted)       [from SortedList.sortFiltered postcondition]
+   *   0 <= sorted.head
+   *   forall x in sorted: x < seq.modulus * seq.head
+   *   --------------------------------------------------
+   *   forall g in nextGaps(seq): g > 0
+   *
+   * This keeps the gap arithmetic separate from the pipeline range proof.
+   * Sortedness comes from the recursive sorting producer contract; the remaining
+   * upstream obligation is to prove the range/head bounds from
+   * expand/filter/sort preservation.
+   */
+  def assertNextGapsAllPositiveGivenSortedBounds(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > BigInt(0))
+    require(seq.modulus * seq.head > BigInt(0))
+    require(nextSorted(seq).list.nonEmpty)
+    require(ListBoundUtils.allLessThan(nextSorted(seq).list, seq.modulus * seq.head))
+    require(nextSorted(seq).list.head >= BigInt(0))
+
+    val sorted = nextSorted(seq).list
+    assert(SieveUtils.assertCalculateGapsAllPositive(sorted, seq.modulus * seq.head))
+    ListBoundUtils.allGreaterThan(nextGaps(seq), BigInt(0))
+  }.holds
+
+  /**
+   * Rotation preserves positivity for the independently computed next gaps,
+   * once the sorted pipeline bounds have been exposed.
+   *
+   * Math:
+   *
+   *   forall g in nextGaps(seq): g > 0
+   *   nextRotatedGaps(seq) = rotateAt(nextGaps(seq), nextHeadResidueIndex(seq))
+   *   -----------------------------------------------------------------------
+   *   forall g in nextRotatedGaps(seq): g > 0
+   *
+   * This is the Phase E L2 wrapper. It deliberately depends on
+   * `assertNextGapsAllPositiveGivenSortedBounds` so the rotation proof never
+   * reopens the sorting, pairwise-gap, or wrap-gap arithmetic.
+   */
+  def assertNextRotatedGapsAllPositiveGivenSortedBounds(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus > BigInt(0))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    require(seq.head > BigInt(0))
+    require(seq.modulus * seq.head > BigInt(0))
+    require(nextSorted(seq).list.nonEmpty)
+    require(ListBoundUtils.allLessThan(nextSorted(seq).list, seq.modulus * seq.head))
+    require(nextSorted(seq).list.head >= BigInt(0))
+
+    val gaps = nextGaps(seq)
+    val index = nextHeadResidueIndex(seq)
+    assert(assertNextGapsAllPositiveGivenSortedBounds(seq))
+    assert(ListBoundUtils.allGreaterThan(gaps, BigInt(0)))
+    assert(index >= BigInt(0))
+    assert(SieveUtils.assertRotateAtPreservesAllGreaterThan(gaps, index, BigInt(0)))
+    ListBoundUtils.allGreaterThan(nextRotatedGaps(seq), BigInt(0))
+  }.holds
+
+  // --- Phase E: DRAFT — all sub-lemmas verified, SMT chain times out ---
+  //
+  // To prove: `allGreaterThan(nextRotatedGaps(seq), 0)`
+  //
+  // Decomposition:
+  //   1. nextRotatedGaps = rotateAt(nextGaps, index)
+  //      rotation preserves allGreaterThan via assertRotateAtPreservesAllGreaterThan (✓)
+  //   2. nextGaps = calculateGaps(sorted, modulus*head) = pairwiseGaps(sorted) ++ wrapGap
+  //      a. pairwiseGaps positive via assertPairwiseGapsAllPositive (✓ 15/15) + Phase D (✓)
+  //      b. wrapGap = modulus*head - sorted.last + sorted.head
+  //         Needs sorted.last < modulus*head — requires bounds chain:
+  //         expanded < modulus*head (assertExpandResiduesRange) → filterList preserves
+  //         (assertFilterListAllLessThan) → sortFiltered preserves
+  //         (assertSortFilteredAllLessThan). Each lemma is individually verified
+  //         but composing them in one lemma exhausts the solver (3 attempts timed out).
+  //
+  // Strategy: split into two lemmas —
+  //   L1: allGreaterThan(nextGaps, 0) (pairwise + wrap)
+  //   L2: allGreaterThan(nextRotatedGaps, 0) (L1 + rotation)
+  //
+  // def assertNextRotatedGapsAllPositive(
+  //   seq: CycleSieveSequence
+  // ): Boolean = {
+  //   require(seq.modulus > 0)
+  //   require(ListUtils.checkAllPositive(seq.primesTailValues))
+  //   require(seq.head > 0)
+  //   require(seq.modulus * seq.head > 0)
+  //   require(nextSorted(seq).list.nonEmpty)
+  //
+  //   val rotated = nextRotatedGaps(seq)
+  //   ListBoundUtils.allGreaterThan(rotated, BigInt(0))
+  // }.holds
+
+  /**
    * Transparent window of `ci`'s first `steps` values.
    *
    * Returns a plain `List[BigInt]` of `ci(0)` through `ci(steps-1)`.

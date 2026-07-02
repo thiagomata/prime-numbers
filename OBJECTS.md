@@ -133,6 +133,7 @@ Last updated: 2026-07-02
 | **assertSplitAtPreservesAllLessThan(list,index,bound)**    | `splitAt` preserves `allLessThan` on both halves         |
 | **assertTransitiveLessThan(list,b,b2)**                    | `allLessThan(list,b) && b <= b2 => allLessThan(list,b2)` |
 | **assertGreaterThanAtIndex(list,value,pos)**               | `allGreaterThan(list,v) => list(pos) > v`                |
+| **assertLessThanAtIndex(list,bound,pos)**                  | `allLessThan(list,b) => list(pos) < b`                   |
 | **assertGreaterThanHeadTail(list,value)**                  | `allGreaterThan(list,v) => head > v && tail satisfies`   |
 | **assertTailShiftLeft(list,position)**                     | `list(position) == list.tail(position - 1)`              |
 
@@ -224,6 +225,8 @@ Last updated: 2026-07-02
 
 | Lemma                                      | Statement                              |
 |--------------------------------------------|----------------------------------------|
+| **insertSorted(x,list)**                   | Postcondition: sorted input implies sorted output |
+| **sortFiltered(list)**                     | Postcondition: output is ascending     |
 | **assertSortFilteredAscending(list)**      | `sortFiltered` produces ascending list |
 | **assertInsertSortedAscending(x,list)**    | `insertSorted` preserves ascending     |
 | **assertTailAscending(list)**              | Tail of ascending is ascending         |
@@ -543,6 +546,8 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextGapsNonEmpty(seq)**                         | `nextGaps(seq).nonEmpty`                                     |
 | **assertNextGapsSize(seq)**                             | `nextGaps(seq).size == nextSorted(seq).list.size`            |
 | **assertNextSortedStrictlyAscending(seq,i)**           | `nextSorted(seq).list(i+1) > nextSorted(seq).list(i)`       |
+| **assertNextGapsAllPositiveGivenSortedBounds(seq)**     | `sortFiltered` sortedness plus range/head bounds imply `allGreaterThan(nextGaps,0)` |
+| **assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)** | Positive next gaps imply rotated next gaps are positive |
 
 ## 6.4 SieveUtils (`v1.chapter6.seq.sieve.SieveUtils`)
 
@@ -571,6 +576,9 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNoDivisorByFactorList(n,d,primes)**                       | Coprime + d has factor => `mod(n,d) != 0`                              |
 | **assertCalculateGapsSize(sorted,modulus)**                       | `calculateGaps(sorted,modulus).size == sorted.size`                    |
 | **assertPairwiseGapsSize(list)**                                  | `pairwiseGaps(list).size == list.size - 1`                             |
+| **assertPairwiseGapsAllPositive(list)**                           | Strict ascending input gives positive adjacent gaps                    |
+| **assertWrapGapPositive(sorted,modulus)**                         | Upper-bound + nonnegative head gives positive wrap gap                 |
+| **assertCalculateGapsAllPositive(sorted,modulus)**                 | Sorted bounded residues give positive calculated gaps                  |
 | **assertSplitAtPreservesAllGreaterThan(list,index,value)**        | Delegation to ch3                                                      |
 | **assertRotateAtPreservesAllGreaterThan(list,index,value)**       | Delegation to ch3                                                      |
 | **assertRotateAtPreservesNonEmpty(list,index)**                   | Rotation preserves non-emptiness                                       |

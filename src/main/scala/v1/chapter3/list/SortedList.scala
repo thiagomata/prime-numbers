@@ -45,19 +45,42 @@ object SortedList {
 
   val empty: SortedList = SortedList(List.empty[BigInt])
 
+  /**
+   * Insert one value while preserving strict ascending order when the input
+   * list is already sorted.
+   *
+   * Math:
+   *
+   *   isAscending(list) => isAscending(insertSorted(x, list))
+   *
+   * The postcondition is intentionally attached to the recursive producer so
+   * later callers can reuse the sortedness fact without reopening the whole
+   * insertion recursion.
+   */
   def insertSorted(x: BigInt, list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
     if (list.isEmpty) List(x)
     else if (x < list.head) x :: list
     else if (x == list.head) list
     else list.head :: insertSorted(x, list.tail)
-  }
+  }.ensuring(res => !isAscending(list) || isAscending(res))
 
+  /**
+   * Sorting by repeated insertion always returns a strict ascending list.
+   *
+   * Math:
+   *
+   *   isAscending(sortFiltered(list))
+   *
+   * This postcondition is attached to the recursive producer so downstream
+   * proofs can consume sortedness from the returned list directly instead of
+   * unfolding `fromUnsorted`, `insertSorted`, and the recursive sort.
+   */
   def sortFiltered(list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
     if (list.isEmpty) List.empty
     else insertSorted(list.head, sortFiltered(list.tail))
-  }
+  }.ensuring(res => isAscending(res))
 
   def removeAt(l: List[BigInt], i: BigInt): List[BigInt] = {
     require(i >= 0 && i < l.size)
