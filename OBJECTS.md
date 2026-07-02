@@ -3,13 +3,13 @@
 Complete inventory of all verified `.holds` lemmas across the codebase.
 Last updated: 2026-07-02
 
-**Total: 483 verified lemmas** across 6 chapters.
+**Total: 485 verified lemmas** across 6 chapters.
 
 | Chapter                               | Lemmas |
 |---------------------------------------|--------|
 | ch1 (Verification Helpers)            | 0      |
 | ch2 (Div/Mod)                         | 39     |
-| ch3 (Lists, Integrals, Bounds)        | 84     |
+| ch3 (Lists, Integrals, Bounds)        | 86     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
 | ch6 (Sieve Sequence, Pipeline)        | 213    |
@@ -217,6 +217,8 @@ Last updated: 2026-07-02
 | **assertLastEqualsSum(integral)**               | `integral.last == init + sum(list)`                   |
 | **assertIntegralEqualsSum(integral,position)**  | `apply(pos) == init + sum(slice(list,0,pos))`         |
 | **assertLast(integral)**                        | `apply(size-1) == integral.last`                      |
+| **assertIntegralStrictlyIncreasing(integral,a,b)** | `allGreaterThan(list,0) && b > a => apply(b) > apply(a)` |
+| **assertGapsPositive(integral,pos)**              | `apply(pos+1) > apply(pos) => list(pos+1) > 0` |
 
 ## 3.9 SortedList (`v1.chapter3.list.SortedList`)
 
