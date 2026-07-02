@@ -5,6 +5,7 @@ import stainless.lang.{decreases, BooleanDecorations}
 import stainless.lang.BigInt
 import v1.chapter1.verification.Helper.assert
 import v1.chapter2.div.Calc
+import v1.chapter2.div.properties.{AdditionAndMultiplication, ModIdempotence, ModOperations, ModSmallDividend}
 import v1.chapter3.list.{ListBoundUtils, ListUtils, ShiftedList}
 import v1.chapter3.list.properties.{ListRepeatProperties, ListUtilsProperties, RotationProperties}
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
@@ -268,17 +269,168 @@ object GapProperties {
   }.holds
 
   // ------------------------------------------------------------
+  //  4b. DIV/MOD FORMULA
+  // ------------------------------------------------------------
+
+  /**
+   * Decompose the integral at any position using div and mod:
+   *
+   *   ci(pos) == ci(pos % size) + (pos / size) * ci.sum
+   *
+   * This makes large-position evaluations O(1) instead of O(pos).
+   * Wraps `assertCycleIntegralEqualsSumOfModValuesAsList`.
+   */
+  def assertCIModDivFormula(
+    ci: CycleIntegral,
+    pos: BigInt
+  ): Boolean = {
+    require(ci.size > 0)
+    require(pos >= 0)
+    CycleIntegralProperties.assertCycleIntegralEqualsSumOfModValuesAsList(ci, pos)
+  }.holds
+
+  /**
+   * Filtering one full period preserves the total gap sum.
+   * Scans `ci.size + 1` positions (one more than the cycle size
+   * to cover all gaps exactly once).
+   *
+   *   survivors.last - survivors.head == ci.sum
+   */
+  def assertFilteredSumEqualsOriginalSum(
+    ci: CycleIntegral,
+    filterValue: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(ci.size > 0)
+    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(Calc.mod(ci(BigInt(0)), filterValue) != BigInt(0))
+    require(Calc.mod(ci(ci.size), filterValue) != BigInt(0))
+
+    val totalPositions = ci.size + BigInt(1)
+
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, BigInt(0), totalPositions
+    )
+
+    assert(assertCIModDivFormula(ci, ci.size))
+    assert(ci(ci.size) == ci(BigInt(0)) + ci.sum)
+
+    assert(assertFirstSurvivorIsHead(ci, filterValue, BigInt(0), totalPositions))
+    assert(survivors.head == ci(BigInt(0)))
+
+    assert(assertLastSurvivorIsLastScanned(ci, filterValue, BigInt(0), totalPositions))
+    assert(survivors.last == ci(ci.size))
+
+    survivors.last - survivors.head == ci.sum
+  }.holds
+
+  private def assertAddZeroModValuePreservesMod(
+    value: BigInt,
+    zeroModValue: BigInt,
+    m: BigInt
+  ): Boolean = {
+    require(m > 0)
+    require(Calc.mod(zeroModValue, m) == BigInt(0))
+
+    assert(ModOperations.modAdd(value, m, zeroModValue))
+    assert(Calc.mod(value + zeroModValue, m) ==
+      Calc.mod(Calc.mod(value, m) + Calc.mod(zeroModValue, m), m))
+    assert(Calc.mod(value + zeroModValue, m) ==
+      Calc.mod(Calc.mod(value, m), m))
+    assert(ModIdempotence.modIdempotence(value, m))
+    assert(Calc.mod(Calc.mod(value, m), m) == Calc.mod(value, m))
+
+    Calc.mod(value + zeroModValue, m) == Calc.mod(value, m)
+  }.holds
+
+  /**
+   * The residue modulo `m` repeats with period `ci.size` when the
+   * cycle sum is a multiple of `m`:
+   *
+   *   mod(ci(pos), m) == mod(ci(pos % ci.size), m)
+   *
+   * Corollary: if mod(ci(k), m) != 0 for all k in [0, ci.size],
+   * then no position is ever a multiple of m.
+   *
+   * Proof decreases `pos` by one full cycle at a time via
+   * ci(k + ci.size) == ci(k) + ci.sum. Since ci.sum is 0 mod m,
+   * adding one full cycle does not change the residue.
+   */
+  def assertModIsPeriodic(
+    ci: CycleIntegral,
+    m: BigInt,
+    pos: BigInt
+  ): Boolean = {
+    require(ci.size > 0)
+    require(m > 0)
+    require(pos >= 0)
+    require(Calc.mod(ci.sum, m) == BigInt(0))
+    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    decreases(pos)
+
+    val size = ci.size
+    val r = Calc.mod(pos, size)
+
+    if (pos < size) {
+      assert(ModSmallDividend.modSmallDividend(pos, size))
+      assert(r == pos)
+      assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+    } else {
+      val previous = pos - size
+      val previousR = Calc.mod(previous, size)
+
+      assert(previous >= BigInt(0))
+      assert(previous < pos)
+      assert(previous + size == pos)
+      assert(AdditionAndMultiplication.APlusBSameModPlusDiv(previous, size))
+      assert(Calc.mod(previous + size, size) == Calc.mod(previous, size))
+      assert(r == previousR)
+
+      assert(assertModIsPeriodic(ci, m, previous))
+      assert(Calc.mod(ci(previous), m) == Calc.mod(ci(previousR), m))
+
+      assert(CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, previous))
+      assert(ci(previous + size) - ci(previous) == ci.sum)
+      assert(ci(pos) - ci(previous) == ci.sum)
+      assert(ci(pos) == ci(previous) + ci.sum)
+
+      assert(assertAddZeroModValuePreservesMod(ci(previous), ci.sum, m))
+      assert(Calc.mod(ci(previous) + ci.sum, m) == Calc.mod(ci(previous), m))
+      assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previous), m))
+      assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previousR), m))
+      assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+    }
+
+    Calc.mod(ci(pos), m) == Calc.mod(ci(r), m)
+  }.holds
+
+  // ------------------------------------------------------------
   //  5.  CYCLE-PERIOD SHIFT
   // ------------------------------------------------------------
 
   /**
+   * After one full cycle from any position, the integral advances by
+   * the cycle sum. Pure gap arithmetic — no filter dependency.
+   *
+   *   ci(k + ci.size) - ci(k) == ci.sum
+   */
+  def assertPeriodicShift(
+    ci: CycleIntegral,
+    k: BigInt
+  ): Boolean = {
+    require(ci.size > 0)
+    require(k >= 0)
+    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, k)
+  }.holds
+
+  /**
    * Shifting by one full cycle adds the sum of all cycle values.
    *
-   * \[ ci(pos + ci.size) == ci(pos) + sum(ci.cycle.values) \]
+   *   ci(pos + ci.size) == ci(pos) + ci.sum
    *
-   * This is the termination bound for survivor searches: within one
-   * cycle period, a survivor is always found because the integral
-   * advances by a fixed amount and the gap list is non-empty.
+   * This is the termination bound: within one cycle period, a survivor
+   * is always found because the integral advances by a fixed amount.
    *
    * [Verified] in `CycleIntegralFilterProperties.assertCIShiftEqualsSum`.
    */
@@ -293,14 +445,11 @@ object GapProperties {
   }.holds
 
   /**
-   * After `m` full cycles, the integral advances by `m * sum(gaps)`.
+   * After `m` full cycles, the integral advances by `m * ci.sum`.
    *
-   * \[ ci(pos + ci.size \cdot m) = ci(pos) + m \cdot \sum \text{cycle.values} \]
+   *   ci(pos + ci.size * m) == ci(pos) + m * ci.sum
    *
-   * Proved by induction on `m` using `assertFullCycleShift` at each step.
-   * This gives the periodic termination bound: every `ci.size` positions,
-   * the integral increases by a constant amount, so survivor search within
-   * one period is sufficient.
+   * Proved by induction on `m` using `assertFullCycleShift`.
    */
   def assertMultiCycleShift(
     ci: CycleIntegral,
@@ -345,26 +494,12 @@ object GapProperties {
   // decreases measure on (to - from) does not terminate in the SMT solver.
 
   // ------------------------------------------------------------
-  //  5.  GAP-APPLY IDENTITY
+  //  4c. FILTERED SUM = ORIGINAL SUM  (DRAFT — mixes gap + filter)
   // ------------------------------------------------------------
 
-  /**
-   * The adjacent difference at `position` equals the cycle value at that
-   * position:
-   *
-   *   ci(position + 1) - ci(position) == ci.cycle(position)
-   *
-   * [Verified] in `CycleIntegralProperties.assertDiffEqualsCycleValue`.
-   */
-  def assertGapEqualsCycleValue(
-    ci: CycleIntegral,
-    position: BigInt
-  ): Boolean = {
-    require(position >= 0)
-    require(position < ci.cycle.size)
-    require(position < ci.size)
-    require(ci.cycle.values.nonEmpty)
-    CycleIntegralProperties.assertDiffEqualsCycleValue(ci, position)
-  }.holds
+  // The composition is correct and sub-lemmas are verified, but the
+  // lemma mixes pure gap arithmetic (ci(ci.size) == ci(0) + ci.sum)
+  // with filter-dependent survivor brackets. These should be kept
+  // as separate lemmas and composed at call sites.
 
 }

@@ -426,6 +426,14 @@ discover it.
   - converting `cycle(k)` to `cycle(mod(k,size))`,
   - comparing old period, expanded period, and rotated next period indices.
 
+Progress:
+
+- `GapProperties.assertModIsPeriodic(ci,m,pos)` is now proved and focused
+  verified: if `ci.sum mod m == 0` and one full cycle advances by `ci.sum`,
+  then `ci(pos) mod m == ci(pos mod ci.size) mod m`. The proof avoids the
+  previous timeout-prone global div/mod decomposition by recursively subtracting
+  one full cycle from `pos`.
+
 ### S3: List Construction Shape Lemmas
 
 Goal: bridge lists that contain the same values but are built by different

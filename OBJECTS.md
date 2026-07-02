@@ -116,6 +116,10 @@
 | `gapsFromValues`                                 | CycleIntegralFilterProperties.scala  | CycleInteg |
 | `allGapsMatch`                                   | CycleIntegralFilterProperties.scala  | CycleInteg |
 | `assertNewCIGeneratesFiltered`                   | CycleIntegralFilterProperties.scala  | CycleInteg |
+| `assertCIModDivFormula`                          | GapProperties.scala                  | CycleInteg |
+| `assertFilteredSumEqualsOriginalSum`             | GapProperties.scala                  | CycleInteg |
+| `assertModIsPeriodic`                            | GapProperties.scala                  | CycleInteg |
+| `assertPeriodicShift`                            | GapProperties.scala                  | CycleInteg |
 | `assertCycleIntegralEqualsSumFirstPosition`      | ClassicCycleIntegralProperties.scala | CycleInteg|
 | `assertCycleIntegralEqualsSumSmallPositions`     | ClassicCycleIntegralProperties.scala | CycleInteg|
 | `assertCycleIntegralEqualsSliceSum`              | ClassicCycleIntegralProperties.scala | CycleInteg|
@@ -862,7 +866,10 @@ Unified gap properties for sieve cycles. Composes verified lemmas from `CycleInt
 | **assertRepeatedGapsPreservesIntegral**    | Repeated gaps → same integral at bounded positions   | `CycleIntegralProperties.assertRepeatedValuesIntegralMatches` |
 | **assertTwoGapSumEqualsDiff**             | Two consecutive gaps telescope to integral diff      | `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff` |
 | **assertMergedGapPositive**               | Merged gap (survivor diff after filtering) is positive | `CycleIntegralFilterProperties.assertMergedGapIsCITelescope` |
-| **assertGapEqualsCycleValue**             | Adjacent diff equals cycle value at that position     | `CycleIntegralProperties.assertDiffEqualsCycleValue` |
+| **assertCIModDivFormula**                 | Wraps the mod-value list decomposition for `ci(pos)` | `CycleIntegralProperties.assertCycleIntegralEqualsSumOfModValuesAsList` |
+| **assertFilteredSumEqualsOriginalSum**    | Full-period filtered survivor span equals the original cycle sum | Uses first/last survivor bracket lemmas plus `assertCIModDivFormula` |
+| **assertModIsPeriodic**                   | If `ci.sum mod m == 0`, then `ci(pos) mod m == ci(pos mod ci.size) mod m` | Recursive proof by subtracting one full cycle; verified 79/79 focused. |
+| **assertPeriodicShift**                   | One full cycle advances the integral by `ci.sum` | `CycleIntegralFilterProperties.assertCIShiftEqualsSum` |
 
 **Open extensions (drafted but not yet verified):**
 
