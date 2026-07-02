@@ -498,6 +498,9 @@ Verified reusable helper work from this pass:
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
 | `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 27/27 valid |
 | `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 56/56 valid |
+| `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix | Focused verified: 91/91 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 81/81 valid |
+| `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` | Focused verified: 41/41 valid |
 
 Verifier-shape lesson from Phase E:
 
@@ -517,6 +520,13 @@ Verifier-shape lesson from Phase E:
   gap positivity; it is a small upstream bridge that exposes the remaining
   sorted-output facts (`nonEmpty`, `allLessThan`, `head >= 0`) from the
   expand/filter/sort pipeline in a verifier-friendly shape.
+- For the spec-to-cycle survivor bridge, the successful shape was to make the
+  `spec.next` precondition bundle explicit before calling `nextAcceptedOldIndex`:
+  lower bound for `next.accepts`, non-empty filter values, tail equality with
+  `spec.filterValues`, head equality with `spec.head`, and the period
+  non-multiple fact. Without those facts as local invariants, Stainless unfolded
+  the search wrapper and timed out instead of reusing the already-verified
+  skipped-index lemma.
 - `just verify-debug assertNextGapsAllPositiveGivenSortedBounds` confirmed the
   mechanism: the generated VCs repeatedly instantiate matchers for
   `isAscending(nextSorted(seq).list)` and then unroll through

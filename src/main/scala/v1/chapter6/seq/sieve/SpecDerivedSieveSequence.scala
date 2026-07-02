@@ -339,6 +339,190 @@ case class SpecDerivedSieveSequence(
   }.holds
 
   /**
+   * Spec skipped-old-index facts as cycle-integral skipped-prefix facts.
+   *
+   * If `currentOldIndex` is aligned with `spec.next`, then
+   * `spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period)` is the next
+   * old-stream index emitted by `spec.next`. Every old index strictly between
+   * those two is a multiple of the new front filter. Since
+   * `cycle.integral(pos) == cycle(pos + 1) == spec(pos + 1)`, the skipped old
+   * indices `(currentOldIndex, nextOldIndex)` are exactly the integral
+   * positions `[currentOldIndex, nextOldIndex - 1)`.
+   *
+   * Math:
+   *
+   *   currentOldIndex <= from <= until <= nextOldIndex - 1
+   *   ------------------------------------------------------------
+   *   allMultiplesInRange(cycle.integral, cycle.head, from, until)
+   */
+  def assertCycleIntegralSkippedRangeAllMultiples(
+    currentOldIndex: BigInt,
+    fromPos: BigInt,
+    untilPos: BigInt
+  ): Boolean = {
+    require(currentOldIndex >= BigInt(0))
+    require(fromPos >= currentOldIndex)
+    require(untilPos >= fromPos)
+    require(spec(currentOldIndex) >= spec.next.head.value)
+    require(spec.next.filterValues.nonEmpty)
+    require(spec.next.filterValues.tail == spec.filterValues)
+    require(spec.next.head.value == spec.head.value)
+    require(Calc.mod(
+      spec.head.value + spec.filterModulus,
+      spec.next.filterValues.head
+    ) != BigInt(0))
+    require(spec.next.accepts(spec(currentOldIndex)))
+    require(untilPos <=
+      spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period) - BigInt(1))
+    decreases(untilPos - fromPos)
+
+    val nextSeq = spec.next
+    val nextOldIndex = spec.nextAcceptedOldIndex(nextSeq, currentOldIndex, period)
+
+    assert(nextSeq.filterPrimes == spec.primes.list.list)
+    assert(nextSeq.filterValues == PrimeUtils.primeValues(nextSeq.filterPrimes))
+    assert(nextSeq.filterValues.head == spec.head.value)
+    assert(nextSeq.filterValues.tail == spec.filterValues)
+    assert(nextSeq.head.value == spec.head.value)
+    assert(assertCycleHeadMatchesSpecHead())
+    assert(cycle.head == nextSeq.filterValues.head)
+
+    if (fromPos == untilPos) {
+      GapProperties.allMultiplesInRange(
+        cycle.integral, cycle.head, fromPos, untilPos)
+    } else {
+      val skippedOldIndex = fromPos + BigInt(1)
+
+      assert(skippedOldIndex > currentOldIndex)
+      assert(skippedOldIndex < nextOldIndex)
+      assert(spec.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(
+        nextSeq, currentOldIndex, skippedOldIndex, period))
+      assert(Calc.mod(spec(skippedOldIndex), nextSeq.filterValues.head) == BigInt(0))
+      assert(assertApplyMatches(skippedOldIndex))
+      assert(cycle(skippedOldIndex) == spec(skippedOldIndex))
+      assert(assertCycleApplyLowersToIntegral(skippedOldIndex))
+      assert(cycle(skippedOldIndex) == cycle.integral(fromPos))
+      assert(Calc.mod(cycle.integral(fromPos), cycle.head) == BigInt(0))
+      assert(assertCycleIntegralSkippedRangeAllMultiples(
+        currentOldIndex, fromPos + BigInt(1), untilPos))
+      GapProperties.allMultiplesInRange(
+        cycle.integral, cycle.head, fromPos, untilPos)
+    }
+  }.holds
+
+  /**
+   * Splits the cycle survivor scan at the next spec-accepted old index.
+   *
+   * `nextAcceptedOldIndex` gives the next old-stream value emitted by
+   * `spec.next`. The previous lemma translates all skipped old indices into an
+   * all-multiple cycle-integral prefix, so the chapter-4 ordered split can peel
+   * exactly that next survivor from the cycle scan.
+   *
+   * Math:
+   *
+   *   j = nextAcceptedOldIndex(spec.next, currentOldIndex, period)
+   *   pos = j - 1
+   *   allMultiplesInRange(cycle.integral, cycle.head, currentOldIndex, pos)
+   *   mod(cycle.integral(pos), cycle.head) != 0
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, currentOldIndex, count)
+   *     = cycle.integral(pos) ::
+   *       survivorValues(cycle.integral, cycle.head, j,
+   *         currentOldIndex + count - j)
+   */
+  def assertCycleSurvivorValuesSplitAtNextAccepted(
+    currentOldIndex: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(currentOldIndex >= BigInt(0))
+    require(count > BigInt(0))
+    require(spec(currentOldIndex) >= spec.next.head.value)
+    require(spec.next.filterValues.nonEmpty)
+    require(spec.next.filterValues.tail == spec.filterValues)
+    require(spec.next.head.value == spec.head.value)
+    require(Calc.mod(
+      spec.head.value + spec.filterModulus,
+      spec.next.filterValues.head
+    ) != BigInt(0))
+    require(spec.next.accepts(spec(currentOldIndex)))
+    require(
+      spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period) - BigInt(1) <
+        currentOldIndex + count)
+
+    val nextSeq = spec.next
+    val nextOldIndex = spec.nextAcceptedOldIndex(nextSeq, currentOldIndex, period)
+    val survivorPos = nextOldIndex - BigInt(1)
+    val remaining = currentOldIndex + count - nextOldIndex
+
+    assert(nextOldIndex > currentOldIndex)
+    assert(survivorPos >= currentOldIndex)
+    assert(survivorPos < currentOldIndex + count)
+    assert(assertCycleIntegralSkippedRangeAllMultiples(
+      currentOldIndex, currentOldIndex, survivorPos))
+    assert(GapProperties.allMultiplesInRange(
+      cycle.integral, cycle.head, currentOldIndex, survivorPos))
+    assert(assertApplyMatches(nextOldIndex))
+    assert(cycle(nextOldIndex) == spec(nextOldIndex))
+    assert(assertCycleApplyLowersToIntegral(nextOldIndex))
+    assert(cycle(nextOldIndex) == cycle.integral(survivorPos))
+    assert(Calc.mod(spec(nextOldIndex), nextSeq.filterValues.head) != BigInt(0))
+    assert(Calc.mod(cycle.integral(survivorPos), cycle.head) != BigInt(0))
+    assert(GapProperties.assertSurvivorValuesSplitAtFirstPosition(
+      cycle.integral, cycle.head, currentOldIndex, count, survivorPos))
+
+    CycleIntegralFilterProperties.survivorValues(
+      cycle.integral, cycle.head, currentOldIndex, count) ==
+      cycle.integral(survivorPos) ::
+        CycleIntegralFilterProperties.survivorValues(
+          cycle.integral, cycle.head, nextOldIndex, remaining)
+  }.holds
+
+  /**
+   * The survivor peeled by `nextAcceptedOldIndex` is the next spec value.
+   *
+   * This is the value-level companion to the survivor split above. It connects
+   * the cycle-integral position `nextOldIndex - 1` back to the already verified
+   * spec search postcondition:
+   *
+   * Math:
+   *
+   *   j = nextAcceptedOldIndex(spec.next, currentOldIndex, period)
+   *   s = spec.next.indexOfAccepted(spec(currentOldIndex))
+   *   cycle.integral(j - 1) = cycle(j) = spec(j)
+   *   spec.next(s + 1) = spec(j)
+   *   ------------------------------------------------------------
+   *   cycle.integral(j - 1) = spec.next(s + 1)
+   */
+  def assertCycleNextAcceptedSurvivorMatchesSpecNext(
+    currentOldIndex: BigInt
+  ): Boolean = {
+    require(currentOldIndex >= BigInt(0))
+    require(spec(currentOldIndex) >= spec.next.head.value)
+    require(spec.next.filterValues.nonEmpty)
+    require(spec.next.filterValues.tail == spec.filterValues)
+    require(spec.next.head.value == spec.head.value)
+    require(Calc.mod(
+      spec.head.value + spec.filterModulus,
+      spec.next.filterValues.head
+    ) != BigInt(0))
+    require(spec.next.accepts(spec(currentOldIndex)))
+
+    val nextSeq = spec.next
+    val nextOldIndex = spec.nextAcceptedOldIndex(nextSeq, currentOldIndex, period)
+    val nextSeqIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+    val survivorPos = nextOldIndex - BigInt(1)
+
+    assert(nextOldIndex > currentOldIndex)
+    assert(assertApplyMatches(nextOldIndex))
+    assert(cycle(nextOldIndex) == spec(nextOldIndex))
+    assert(assertCycleApplyLowersToIntegral(nextOldIndex))
+    assert(cycle.integral(survivorPos) == cycle(nextOldIndex))
+    assert(nextSeq(nextSeqIndex + BigInt(1)) == spec(nextOldIndex))
+
+    cycle.integral(survivorPos) == nextSeq(nextSeqIndex + BigInt(1))
+  }.holds
+
+  /**
    * Per-index gap equality: survivor gap = spec.next gap.
    */
   def assertSurvivorGapEqualsSpecNextGap(nextPeriod: BigInt, k: BigInt): Boolean = {
