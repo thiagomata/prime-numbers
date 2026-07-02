@@ -9,7 +9,11 @@ import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
-import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
+import v1.chapter4.cycle.integral.recursive.properties.{
+  CycleIntegralFilterProperties,
+  CycleIntegralProperties,
+  GapProperties
+}
 import v1.chapter4.cycle.memory.MemCycle
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
@@ -299,6 +303,39 @@ case class SpecDerivedSieveSequence(
     assert(cycle(BigInt(1)) == cycle.integral(BigInt(0)))
     assert(spec.next(BigInt(0)) == spec.next.head.value)
     cycle.integral(BigInt(0)) == spec.next.head.value
+  }.holds
+
+  /**
+   * Cycle-side survivor scan starts at the spec next head.
+   *
+   * The current cycle integral is indexed one step behind `cycle.apply`:
+   * `integral(0) == cycle(1)`. The value `cycle(1)` is the next prime and is
+   * not divisible by the old head, so no prefix is skipped and the survivor
+   * scan splits immediately at position 0.
+   *
+   * Math:
+   *
+   *   integral(0) = cycle(1) = spec.next.head.value
+   *   mod(integral(0), cycle.head) != 0
+   *   ------------------------------------------------------------
+   *   survivorValues(integral, cycle.head, 0, count)
+   *     = spec.next.head.value :: survivorValues(integral, cycle.head, 1, count - 1)
+   */
+  def assertCycleSurvivorValuesStartAtSpecNextHead(count: BigInt): Boolean = {
+    require(count > BigInt(0))
+
+    assert(assertFirstSurvivorEqualsSpecNext0())
+    assert(assertNewHeadCoprimeToAllPrimes())
+    assert(cycle(BigInt(1)) == cycle.integral(BigInt(0)))
+    assert(Calc.mod(cycle(BigInt(1)), cycle.head) != BigInt(0))
+    assert(Calc.mod(cycle.integral(BigInt(0)), cycle.head) != BigInt(0))
+    assert(GapProperties.assertSurvivorValuesSplitAtFirstPosition(
+      cycle.integral, cycle.head, BigInt(0), count, BigInt(0)))
+
+    CycleIntegralFilterProperties.survivorValues(
+      cycle.integral, cycle.head, BigInt(0), count) ==
+      spec.next.head.value :: CycleIntegralFilterProperties.survivorValues(
+        cycle.integral, cycle.head, BigInt(1), count - BigInt(1))
   }.holds
 
   /**

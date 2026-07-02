@@ -234,6 +234,181 @@ object GapProperties {
   }.holds
 
   /**
+   * Prefix predicate for survivor scans.
+   *
+   * `allMultiplesInRange(ci, f, from, until)` means every scanned value in the
+   * half-open range `[from, until)` is removed by the filter `f`.
+   *
+   * Math:
+   *
+   *   \forall i. from <= i < until => mod(ci(i), f) = 0
+   *
+   * This shape is intentionally different from
+   * `CycleIntegralFilterProperties.allMultiplesBetween`, whose endpoints are
+   * exclusive for merged-gap telescoping. Survivor head proofs need the
+   * inclusive-left prefix `[start, pos)` so they can show that no earlier
+   * scanned position was retained.
+   */
+  def allMultiplesInRange(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    fromPos: BigInt,
+    untilPos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(fromPos >= 0)
+    require(untilPos >= fromPos)
+    decreases(untilPos - fromPos)
+
+    if (fromPos == untilPos) true
+    else Calc.mod(ci(fromPos), filterValue) == BigInt(0) &&
+      allMultiplesInRange(ci, filterValue, fromPos + BigInt(1), untilPos)
+  }
+
+  /**
+   * Tail of a non-empty all-multiple prefix is still an all-multiple prefix.
+   *
+   * Math:
+   *
+   *   allMultiplesInRange(ci, f, from, until)
+   *   from < until
+   *   ------------------------------------------------------------
+   *   allMultiplesInRange(ci, f, from + 1, until)
+   */
+  def assertAllMultiplesInRangeTail(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    fromPos: BigInt,
+    untilPos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(fromPos >= 0)
+    require(untilPos > fromPos)
+    require(allMultiplesInRange(ci, filterValue, fromPos, untilPos))
+
+    allMultiplesInRange(ci, filterValue, fromPos + BigInt(1), untilPos)
+  }.holds
+
+  /**
+   * First retained value when all earlier scanned values are multiples.
+   *
+   * If every value in `[start, pos)` is removed by the filter and `ci(pos)` is
+   * not removed, then the head of `survivorValues` over a scan range including
+   * `pos` is exactly `ci(pos)`.
+   *
+   * Math:
+   *
+   *   start <= pos < start + count
+   *   allMultiplesInRange(ci, filterValue, start, pos)
+   *   mod(ci(pos), filterValue) != 0
+   *   ------------------------------------------------------------
+   *   survivorValues(ci, filterValue, start, count).head = ci(pos)
+   *
+   * This is the ordered companion to the membership/exclusion lemmas below:
+   * membership says `ci(pos)` is somewhere in the survivor list; this lemma
+   * says it is the first survivor when the prefix before it was filtered out.
+   */
+  def assertFirstSurvivorAtPosition(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPos: BigInt,
+    count: BigInt,
+    pos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPos >= 0)
+    require(count > 0)
+    require(pos >= startPos)
+    require(pos < startPos + count)
+    require(allMultiplesInRange(ci, filterValue, startPos, pos))
+    require(Calc.mod(ci(pos), filterValue) != BigInt(0))
+    decreases(count)
+
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count)
+
+    if (pos == startPos) {
+      assert(Calc.mod(ci(startPos), filterValue) != BigInt(0))
+      assert(assertFirstSurvivorIsHead(ci, filterValue, startPos, count))
+      survivors.head == ci(pos)
+    } else {
+      assert(pos > startPos)
+      assert(Calc.mod(ci(startPos), filterValue) == BigInt(0))
+      assert(pos >= startPos + BigInt(1))
+      assert(pos < startPos + BigInt(1) + (count - BigInt(1)))
+      assert(assertAllMultiplesInRangeTail(
+        ci, filterValue, startPos, pos))
+      assert(allMultiplesInRange(
+        ci, filterValue, startPos + BigInt(1), pos))
+      assert(assertFirstSurvivorAtPosition(
+        ci, filterValue, startPos + BigInt(1), count - BigInt(1), pos))
+      survivors.head == ci(pos)
+    }
+  }.holds
+
+  /**
+   * Structural split at the first retained position.
+   *
+   * If `[start, pos)` is removed by the filter and `pos` survives, then the
+   * whole survivor scan is exactly `ci(pos)` followed by the survivor scan that
+   * starts after `pos`.
+   *
+   * Math:
+   *
+   *   remaining = start + count - pos - 1
+   *   allMultiplesInRange(ci, f, start, pos)
+   *   mod(ci(pos), f) != 0
+   *   ------------------------------------------------------------
+   *   survivorValues(ci, f, start, count)
+   *     = ci(pos) :: survivorValues(ci, f, pos + 1, remaining)
+   *
+   * This is the ordered-list version of `assertFirstSurvivorAtPosition`.
+   * Later chapter 6 bridges can use it to peel one survivor at a time without
+   * forcing Stainless to rediscover how the skipped prefix was filtered out.
+   */
+  def assertSurvivorValuesSplitAtFirstPosition(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPos: BigInt,
+    count: BigInt,
+    pos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPos >= 0)
+    require(count > 0)
+    require(pos >= startPos)
+    require(pos < startPos + count)
+    require(allMultiplesInRange(ci, filterValue, startPos, pos))
+    require(Calc.mod(ci(pos), filterValue) != BigInt(0))
+    decreases(count)
+
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count)
+    val remaining = startPos + count - pos - BigInt(1)
+    val afterPos = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, pos + BigInt(1), remaining)
+
+    if (pos == startPos) {
+      assert(Calc.mod(ci(startPos), filterValue) != BigInt(0))
+      survivors == ci(pos) :: afterPos
+    } else {
+      assert(pos > startPos)
+      assert(Calc.mod(ci(startPos), filterValue) == BigInt(0))
+      assert(pos >= startPos + BigInt(1))
+      assert(pos < startPos + BigInt(1) + (count - BigInt(1)))
+      assert(assertAllMultiplesInRangeTail(
+        ci, filterValue, startPos, pos))
+      assert(allMultiplesInRange(
+        ci, filterValue, startPos + BigInt(1), pos))
+      assert(startPos + BigInt(1) + (count - BigInt(1)) - pos - BigInt(1) ==
+        remaining)
+      assert(assertSurvivorValuesSplitAtFirstPosition(
+        ci, filterValue, startPos + BigInt(1), count - BigInt(1), pos))
+      survivors == ci(pos) :: afterPos
+    }
+  }.holds
+
+  /**
    * Survivor scan completeness for one original position.
    *
    * If a scanned CI value is not a multiple of the filter value, then the

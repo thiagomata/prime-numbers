@@ -193,7 +193,8 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 
 3. **Keep/drop predicate transfer**
 
-   Status: missing as a named transfer lemma.
+   Status: proved by `assertCycleSpecNextFilterDecisionMatches(k)`.
+   Focused verification: `18/18 valid`.
    Home: chapter 6 (`SpecDerivedSieveSequence`) because it relates `cycle(k)`,
    `spec(k)`, and `spec.next.filterValues`.
 
@@ -215,10 +216,14 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 
 4. **Cycle survivor exactness**
 
-   Status: value-level pieces now proved in `GapProperties`:
+   Status: value-level pieces plus the first ordered survivor head are now
+   proved in `GapProperties`:
    `assertSurvivorValuesContainsNonMultipleAtPosition`,
    `assertSurvivorValuesContainsOnlyNonMultiples`, and
-   `assertSurvivorValuesExcludesMultipleAtPosition`.
+   `assertSurvivorValuesExcludesMultipleAtPosition`; plus
+   `allMultiplesInRange`, `assertAllMultiplesInRangeTail`, and
+   `assertFirstSurvivorAtPosition` /
+   `assertSurvivorValuesSplitAtFirstPosition`.
    Home: chapter 4 (`GapProperties`) because it is a pure
    `CycleIntegral`/survivor scan fact.
 
@@ -232,7 +237,25 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 
    Purpose: the cycle-side survivor scan removes multiples of `cycle.head` and
    only those. The value-level lemmas are enough for membership/exclusion; the
-   next refinement needs the survivor index/position mapping.
+   first-survivor-position lemma is the first ordered refinement:
+
+   ```math
+   allMultiplesInRange(ci, f, start, pos)
+   \land \operatorname{mod}(ci(pos), f) \ne 0
+   \Rightarrow
+   survivorValues(ci, f, start, count).head = ci(pos)
+   ```
+
+   The stronger structural split is also proved:
+
+   ```math
+   survivorValues(ci, f, start, count)
+   =
+   ci(pos) :: survivorValues(ci, f, pos + 1, start + count - pos - 1)
+   ```
+
+   Remaining refinement: expose the same idea for the next/`i`-th survivor,
+   not only the head of the current scan.
 
 5. **Spec survivor exactness**
 
@@ -252,7 +275,13 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 
 6. **Ordered survivor equality**
 
-   Status: missing; this is the next major bridge.
+   Status: missing, but advanced by the new chapter 4 ordered split lemma:
+   `assertSurvivorValuesSplitAtFirstPosition` proves the first survivor of a
+   scan and the remaining tail when the skipped prefix is known to be
+   multiples. The chapter 6 base bridge
+   `assertCycleSurvivorValuesStartAtSpecNextHead(count)` now applies that split
+   at position 0 and proves the cycle-side survivor scan starts at
+   `spec.next.head.value`.
    Home: split it. The survivor index/position mapping should be chapter 4
    if it can be stated over `CycleIntegral` and `survivorValues`; the final
    equality to `spec.next(i)` belongs in chapter 6.
@@ -275,6 +304,11 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 
    Status: missing/partially covered by `assertExpandedResiduesRepresentPeriod`
    and `assertNextFilteredContainsCoprime`.
+   Progress: bounds for the expanded/filtered pipeline are now proved via
+   `assertNextExpandedAllLessThan(seq)` (`11/11 valid`),
+   `assertNextFilteredAllLessThan(seq)`, and
+   `nextFilteredWithBound(seq)` (`8/8 valid`). These are range facts, not yet
+   ordered survivor equality.
    Home: chapter 6, because this talks about `SieveSequenceNextLevel` pipeline
    stages. Any reusable list-level filter membership/order helper discovered
    while proving it should move down to chapter 3.
@@ -453,6 +487,10 @@ Verified reusable helper work from this pass:
 | `GapProperties.assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)` | scanned non-multiple CI value is kept in `survivorValues` | Focused verified: 29/29 valid |
 | `GapProperties.assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)` | every value kept in `survivorValues` is a non-multiple | Focused verified: 31/31 valid |
 | `GapProperties.assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)` | scanned multiple CI value is excluded from `survivorValues` | Focused verified: 14/14 valid |
+| `GapProperties.assertAllMultiplesInRangeTail(ci,fv,from,until)` | tail of an all-multiple prefix remains all-multiple | Focused verified: 7/7 valid |
+| `GapProperties.assertFirstSurvivorAtPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivor head is `ci(pos)` | Focused verified: 47/47 valid |
+| `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` | Focused verified: 44/44 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
 
 Verifier-shape lesson from Phase E:
 

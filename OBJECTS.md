@@ -418,6 +418,10 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertMergedGapPositive(ci,fv,from,to)**                       | Merged survivor gap > 0                                         |
 | **assertFirstSurvivorIsHead(ci,fv,start,count)**                 | First survivor = CI head                                        |
 | **assertSurvivorsNonEmpty(ci,fv,start,count)**                   | Survivors list non-empty                                        |
+| **allMultiplesInRange(ci,fv,from,until)**                        | Predicate: every CI value in `[from, until)` is a multiple of fv |
+| **assertAllMultiplesInRangeTail(ci,fv,from,until)**              | Tail of a non-empty all-multiple prefix is all-multiple         |
+| **assertFirstSurvivorAtPosition(ci,fv,start,count,pos)**         | If `[start,pos)` are multiples and `pos` survives, head survivor is `ci(pos)` |
+| **assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)** | If `[start,pos)` are multiples and `pos` survives, split survivors at `ci(pos)` |
 | **assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)** | Scanned non-multiple CI value is kept in survivors              |
 | **assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)** | Every value kept in survivors is a non-multiple                 |
 | **assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)** | Scanned multiple CI value is excluded from survivors            |
@@ -654,9 +658,11 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertCycleModulusEqualsSpecFilterModulus()**        | `cycle.modulus == spec.filterModulus`                       |
 | **assertNextPipelineGapsIsNextRotatedGaps()**          | `nextPipelineGaps(cycle) == nextRotatedGaps(cycle)`         |
 | **assertCycleGapCycleEqualsSpecGapCycle()**            | `cycle.gapCycle == spec.specGapCycle(period)`               |
+| **assertCycleSpecNextFilterDecisionMatches(k)**        | `cycle(k)` and `spec(k)` have the same next-filter decision |
 | **assertCycleApplyLowersToIntegral(k)**                | `cycle(k) == cycle.integral(k - 1)` for `k > 0`             |
 | **assertNewHeadCoprimeToAllPrimes()**                  | `isCoprime(cycle(1), allPrimeValues)`                       |
 | **assertCycleValueCoprimeToTail(k)**                   | `isCoprime(cycle(k), tailPrimes)`                           |
+| **assertCycleSurvivorValuesStartAtSpecNextHead(count)** | cycle survivor scan splits at `spec.next.head.value`       |
 | **assertFullEquivalence(nextPeriod,k)**                | `cycle(k) == spec(k) && cycle(1) == spec.next.head.value`   |
 | **assertNextGapListMatchesSpecNext(from,count)**       | `nextGapList(from,count) == spec.next.gapList(from,count)`  |
 | **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next                |
