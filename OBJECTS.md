@@ -852,6 +852,29 @@ Same properties as CycleIntegralProperties but for ClassicCycleIntegral.
 
 ---
 
+## 4.7 GapProperties (`v1.cycle.integral.recursive.properties.GapProperties`)
+
+Unified gap properties for sieve cycles. Composes verified lemmas from `CycleIntegralProperties`, `CycleIntegralFilterProperties`, and `ShiftedList` into a single file.
+
+| Lemma                                      | Statement                                          | Delegates To |
+|--------------------------------------------|----------------------------------------------------|--------------|
+| **assertRotateOneShiftsIntegralByOne**     | Rotation-by-1 + head shift = integral shift by 1   | `ShiftedList.assertShiftedApplyIsOriginalPlusOne` |
+| **assertRepeatedGapsPreservesIntegral**    | Repeated gaps → same integral at bounded positions   | `CycleIntegralProperties.assertRepeatedValuesIntegralMatches` |
+| **assertTwoGapSumEqualsDiff**             | Two consecutive gaps telescope to integral diff      | `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff` |
+| **assertMergedGapPositive**               | Merged gap (survivor diff after filtering) is positive | `CycleIntegralFilterProperties.assertMergedGapIsCITelescope` |
+| **assertGapEqualsCycleValue**             | Adjacent diff equals cycle value at that position     | `CycleIntegralProperties.assertDiffEqualsCycleValue` |
+
+**Open extensions (drafted but not yet verified):**
+
+| Extension                                  | Description |
+|--------------------------------------------|-------------|
+| **assertShiftKEqualsOriginalPlusK**        | Shift-by-`k` generalisation: `shift_k(i) == orig(i + k)`. Blocked on rotation-index + rotation-sum bridging. |
+| **assertMergedGapsEqualSum**              | N-gap version: `ci(to) - ci(from) == sum(gaps[from..to-1])`. Blocked on sum-slice decomposition lemma. |
+
+**Source**: `src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala`
+
+---
+
 # Domain 5: Sieve Sequence
 
 ## 5.1 SieveUtils (`v1.seq.sieve.SieveUtils`)
