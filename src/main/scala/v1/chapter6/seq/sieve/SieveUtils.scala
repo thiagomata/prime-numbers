@@ -472,7 +472,6 @@ object SieveUtils {
   }.holds
 
   // Delegates to the canonical ch3 definition (ListUtils.rotateAt).
-  @tailrec
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
     require(index >= 0)
     ListUtils.rotateAt(list, index)
