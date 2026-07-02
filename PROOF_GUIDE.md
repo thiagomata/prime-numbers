@@ -21,9 +21,11 @@ Example:
 > starting from `init + 1`. This is how the sieve generates all natural numbers
 > from 2 onward.
 
-### 2. Mathematical Proof (LaTeX)
+### 2. Mathematical Proof
 
-Formal statement and step-by-step derivation:
+Articles use Formal statement and step-by-step derivation with `\`\`\`math` blocks with LaTeX notation. 
+Javadoc in `.scala` files uses plain ASCII math (see AGENTS.md rule `javadoc-math`).
+
 
 ```math
 \begin{aligned}
@@ -67,7 +69,7 @@ the English layer if the formula is self-explanatory.
 
 ### Format
 
-Use LaTeX notation in ```math blocks:
+Use LaTeX notation in `\`\`\`math` blocks:
 
 ```math
 \begin{aligned}

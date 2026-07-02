@@ -27,11 +27,7 @@ object CycleIntegralFilterProperties {
    * @param toPosition    ending position, `toPosition > fromPosition`
    * @return the recurrence identity
    *
-   * ```math
-   * \begin{aligned}
-   * CI(to) - CI(from) = Cycle(to) + \big(CI(to - 1) - CI(from)\big)
-   * \end{aligned}
-   * ```
+    *   CI(to) - CI(from) == Cycle(to) + (CI(to - 1) - CI(from))
    */
   def assertCITelescopeRecurrence(
     cycleIntegral: CycleIntegral,
@@ -127,10 +123,7 @@ object CycleIntegralFilterProperties {
    * @return the shift identity
    *
    * ```math
-   * \begin{aligned}
-   * CI(pos + size) - CI(pos) = \sum_{j=0}^{size-1} \text{Cycle}_j
-   * \end{aligned}
-   * ```
+    *   CI(pos + size) - CI(pos) == sum of all cycle values
    */
   def assertCIShiftEqualsSum(
     cycleIntegral: CycleIntegral,
@@ -336,12 +329,8 @@ object CycleIntegralFilterProperties {
   /**
    * Correctness of `gapsFromValues`.
    *
-   * The gap at index `index` equals the difference between consecutive
-   * elements of the source list.
-   *
-   * ```math
-   * \text{gapsFromValues}(S)_i = S_{i+1} - S_i
-   * ```
+    * The gap at index `index` equals the difference between consecutive
+    * elements of the source list: gapsFromValues(S)[i] == S[i+1] - S[i].
    *
    * @param sourceList  the list of values
    * @param index       the gap index, `0 <= index < sourceList.size - 1`
@@ -402,15 +391,9 @@ object CycleIntegralFilterProperties {
 
   /**
    * Predicate: the new cycle's gaps match the differences between
-   * consecutive survivor values, for all positions `0` through `maxIndex`.
-   *
-   * ```math
-   * \begin{aligned}
-   * \forall\, i \in [0, maxIndex]:\;
-   * \text{FilteredCycle}_i = S_{i+1} - S_i
-   * \end{aligned}
-   * ```
-   * where `S` is the list of survivor values from the old cycle integral.
+    * consecutive survivor values, for all positions `0` through `maxIndex`.
+    * For each i in [0, maxIndex]: FilteredCycle[i] == S[i+1] - S[i],
+    * where `S` is the list of survivor values from the old cycle integral.
    *
    * @param filteredIntegral  the new (filtered) cycle integral
    * @param survivorValues    survivor values from the old cycle integral
@@ -445,15 +428,9 @@ object CycleIntegralFilterProperties {
    * @param position          the position in the new integral
    * @return equality of the filtered integral with the survivor sequence
    *
-   * ```math
-   * \begin{aligned}
-   * \text{CI}_\text{new}(0) &= S_0 \\
-   * \forall\, i \in [0, k]:\;
-   * \text{Cycle}_\text{new}(i) &= S_{i+1} - S_i \\
-   * &\Longrightarrow
-   * \text{CI}_\text{new}(k) = S_{k+1}
-   * \end{aligned}
-   * ```
+    *   CI_new(0) = S(0)
+    *   For i in [0, k]: Cycle_new(i) = S(i+1) - S(i)
+    *   Therefore CI_new(k) = S(k+1)
    */
   def assertNewCIGeneratesFiltered(
     filteredIntegral: CycleIntegral,
@@ -798,16 +775,11 @@ object CycleIntegralFilterProperties {
    * @param factor              replication factor, factor > 0
    * @param position            the position to check
    * @return cycle values are equal
-   *
-   * ```math
-   * \begin{aligned}
-   * \text{Cycle}_f(\text{pos}) &=
-   *   \text{Values}_f(\text{pos} \bmod f n) \\
-   * &= \text{Values}_1((\text{pos} \bmod f n) \bmod n) \\
-   * &= \text{Values}_1(\text{pos} \bmod n) \\
-   * &= \text{Cycle}_1(\text{pos})
-   * \end{aligned}
-   * ```
+    *
+    *   Cycle_f(pos) = Values_f(pos % (f*n))
+    *                = Values_1((pos % (f*n)) % n)
+    *                = Values_1(pos % n)
+    *                = Cycle_1(pos)
    */
   def assertReplicatedCycleValueEqual(
     originalIntegral: CycleIntegral,

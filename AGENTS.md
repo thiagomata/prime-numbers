@@ -89,7 +89,7 @@ Only re-run `just verify` after making a code change.
     will cause failures.
   </rule>
   <rule id="three-representations" priority="high">
-    Every property in an article MUST be presented in ALL THREE forms:
+    Every property in an **article** MUST be presented in ALL THREE forms:
     1. **English text** — Explain what the property means, covering the intuition
        (why it's true) and why it matters (what it enables), woven into natural prose
        without explicit labels. Place ABOVE the math as an overview.
@@ -110,6 +110,13 @@ Only re-run `just verify` after making a code change.
     See `PROOF_GUIDE.md` for full details. See finished articles (`integral-cycle.md`,
     `integral.md`, `cycle.md`, `modulo.md`, `list.md`) for real examples.
     Draft articles that skip any of the three forms are NOT ready for publication.
+  </rule>
+  <rule id="javadoc-math" priority="high">
+    Javadoc comments in `.scala` source files MUST use plain ASCII math notation.
+    No LaTeX (`\begin{aligned}`, `\text{}`, `\bmod`, `\cdot`, `\sum`).
+    Use `==`, `!=`, `mod()`, `div()`, `/`, `*`, `+` instead.
+    Articles in `articles/*.md` may use ```math blocks with LaTeX — those are
+    rendered by the article system and LaTeX is appropriate there.
   </rule>
   <rule id="property-completeness" priority="high">
     Before publishing an article, verify that the article covers ALL important
@@ -139,7 +146,7 @@ Only re-run `just verify` after making a code change.
        Stainless `.holds` verification code → mark it explicitly as
        **"Draft — mathematically proven, Stainless verification pending"**
        in the article. This applies to:
-       - The mathematical proof is included (English + LaTeX)
+        - The mathematical proof is included (English + ASCII math)
        - The Scala code block is marked as `// TODO: verify with Stainless`
          or omitted with an explicit note
        - The property is clearly distinct from fully verified properties
