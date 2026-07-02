@@ -170,6 +170,34 @@ object ListUtilsProperties {
     }
   }.holds
 
+  // ------------------------------------------------------------
+  //  Sum-positivity
+  // ------------------------------------------------------------
+
+  /**
+   * Sum of a non-empty list of positive values is positive.
+   *
+   *   allGreaterThan(list, 0) && list.nonEmpty ==> sum(list) > 0
+   */
+  def assertSumPositive(
+    list: List[BigInt]
+  ): Boolean = {
+    require(ListBoundUtils.allGreaterThan(list, BigInt(0)))
+    require(list.nonEmpty)
+    decreases(list.size)
+    if (list.tail.isEmpty) {
+      assert(list.head > BigInt(0))
+      ListUtils.sum(list) > BigInt(0)
+    } else {
+      assert(ListBoundUtils.allGreaterThan(list.tail, BigInt(0)))
+      assert(list.head > BigInt(0))
+      assert(assertSumPositive(list.tail))
+      assert(ListUtils.sum(list.tail) > BigInt(0))
+      assert(ListUtils.sum(list) == list.head + ListUtils.sum(list.tail))
+      ListUtils.sum(list) > BigInt(0)
+    }
+  }.holds
+
   /**
    * Indexed access into the right side of a concatenation: for `k >= left.size`
    * and `k < left.size + right.size`, `(left ++ right).apply(k) == right.apply(k - left.size)`.
