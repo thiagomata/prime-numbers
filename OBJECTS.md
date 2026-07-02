@@ -418,6 +418,9 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertMergedGapPositive(ci,fv,from,to)**                       | Merged survivor gap > 0                                         |
 | **assertFirstSurvivorIsHead(ci,fv,start,count)**                 | First survivor = CI head                                        |
 | **assertSurvivorsNonEmpty(ci,fv,start,count)**                   | Survivors list non-empty                                        |
+| **assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)** | Scanned non-multiple CI value is kept in survivors              |
+| **assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)** | Every value kept in survivors is a non-multiple                 |
+| **assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)** | Scanned multiple CI value is excluded from survivors            |
 | **assertLastSurvivorIsLastScanned(ci,fv,start,count)**           | Last survivor = last scanned                                    |
 | **assertCIModDivFormula(ci,pos)**                                | `ci(pos) == ci(pos%size) + (pos/size)*ci.sum`                   |
 | **assertFilteredSumEqualsOriginalSum(ci,fv)**                    | Filtered sum = ci.sum (1 period, size+1 positions)              |
@@ -626,9 +629,13 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertMemCycleGapMatch(i,period)**                                    | `memCycle(i) == apply(i+1) - apply(i)`                         |
 | **assertSpecGapCycleIntegralMatchesApply(period,k)**                    | `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`       |
 | **assertNextValueAcceptedByThis(k)**                                    | `mod(next(k), head) != 0`                                      |
+| **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: old accepted + new-head non-multiple => accepted by next |
+| **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple |
+| **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**            | Private: new-head multiple is rejected by next                 |
 | **assertApplyMonotonic(from,until)**                                    | `from <= until => apply(from) <= apply(until)`                 |
 | **assertFilterPreservesNextGap(nextSeq,k)**                             | Gap copy when old value accepted by next                       |
 | **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**              | Consecutive old values accepted => gap copied                  |
+| **assertMergeGapEqualsOldGapSum(nextSeq,k,period)**                     | Private: skipped successor merge equals old gap telescope      |
 | **assertMergedGapPrefixMatchesNext(nextSeq,k,seqIdx,remaining,period)** | `mergedGapPrefix(...)(seqIdx) == nextSeq.gapList(...)(seqIdx)` |
 | **assertApplyOneEqualsNextPrime()**                                     | `apply(1) == nextPrime.value` when `nextPrime < head*head`     |
 | **assertMergeLandsOnFirstSurvivor(nextSeq,k,period)**                   | Merged gap lands on first survivor position                    |
@@ -679,6 +686,8 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertResiduesContainCoprimeBelowModulus(modulus,filters,residue)**      | Completeness: all coprime residues in `[0, modulus)` in list           |
 | **assertGenerateResiduesContainOnlyCoprime(modulus,filters,residue,from)** | Soundness: all generated residues are coprime                          |
 | **assertResiduesAreCoprimeBelowModulus(modulus,filters,residue)**          | Wrapper: all residues are coprime                                      |
+| **assertFilterListContainsIf(list,value,divisor)**                         | Private: input value with nonzero mod survives `filterList`            |
+| **assertFilterListContainsOnlyIf(list,value,divisor)**                     | Private: `filterList` output came from input and has nonzero mod       |
 | **assertExpandedResiduesRepresentPeriod(seq,value)**                       | Every coprime value in `[0, head*modulus)` in expanded residues        |
 | **assertNextFilteredContainsCoprime(seq,value)**                           | `nextFiltered(seq).contains(value)` for any coprime `value`            |
 | **assertNextSortedContainsCoprime(seq,value)**                             | `nextSorted(seq).contains(value)` for any coprime `value`              |

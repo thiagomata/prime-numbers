@@ -1,7 +1,7 @@
 # Independent Next-Cycle Computation (B.nextFromCycle)
 
 **Created:** 2026-07-01
-**Updated:** 2026-07-02
+**Updated:** 2026-07-03
 **Status:** Phases A-D complete, Phase E in progress
 
 ## Current Verification Status (2026-07-02)
@@ -229,6 +229,9 @@ Verified reusable helper work from this pass:
 | `SortedList.sortFiltered(list)` | postcondition exposes `isAscending(result)` directly from the recursive sorting producer | Focused verified: 14/14 valid |
 | `SieveSequenceNextLevel.assertNextGapsAllPositiveGivenSortedBounds(seq)` | `sortFiltered` sortedness plus nonempty/range/head bounds imply `nextGaps(seq)` is positive | Focused verified: 24/24 valid |
 | `SieveSequenceNextLevel.assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` | positive `nextGaps(seq)` implies `nextRotatedGaps(seq)` is positive by rotation preservation | Focused verified: 36/36 valid |
+| `GapProperties.assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)` | scanned non-multiple CI value is kept in `survivorValues` | Focused verified: 29/29 valid |
+| `GapProperties.assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)` | every value kept in `survivorValues` is a non-multiple | Focused verified: 31/31 valid |
+| `GapProperties.assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)` | scanned multiple CI value is excluded from `survivorValues` | Focused verified: 14/14 valid |
 
 Verifier-shape lesson from Phase E:
 
@@ -530,6 +533,14 @@ sequence.
   gaps are merged old gaps." It should be proven before the full rotated-gap
   equality, otherwise Stainless will see the filtered list values and original
   gap list as unrelated constructions.
+- Progress: `GapProperties` now has the value-level exactness pair for
+  `survivorValues`: scanned non-multiples are kept, kept values are
+  non-multiples, and scanned multiples are excluded. This avoids a dependency
+  cycle because `GapProperties` can consume `CycleIntegralFilterProperties`
+  without the lower filter module depending back on gap wrappers.
+- Remaining bridge: position/index exactness for consecutive survivors. The
+  current exactness lemmas prove membership/exclusion by value; the merge-sum
+  theorem still needs the original positions `i < j` for adjacent survivors.
 - Check existing `CycleIntegralFilterProperties` helpers first:
   `assertMergedGapIsCITelescope`, `mergedGaps`, `survivorValues`,
   `gapsFromValues`, `allGapsMatch`, and `assertNewCIGeneratesFiltered` may

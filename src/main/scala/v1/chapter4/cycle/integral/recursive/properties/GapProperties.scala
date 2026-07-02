@@ -234,6 +234,154 @@ object GapProperties {
   }.holds
 
   /**
+   * Survivor scan completeness for one original position.
+   *
+   * If a scanned CI value is not a multiple of the filter value, then the
+   * survivor list contains that value. This is the first half of the exactness
+   * statement for filtering: non-multiples are not removed.
+   *
+   * Math:
+   *
+   *   start <= pos < start + count
+   *   mod(ci(pos), filterValue) != 0
+   *   ------------------------------------------------------------
+   *   ci(pos) in survivorValues(ci, filterValue, start, count)
+   */
+  def assertSurvivorValuesContainsNonMultipleAtPosition(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPos: BigInt,
+    count: BigInt,
+    pos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPos >= 0)
+    require(count >= 0)
+    require(pos >= startPos)
+    require(pos < startPos + count)
+    require(Calc.mod(ci(pos), filterValue) != BigInt(0))
+    decreases(count)
+
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count)
+
+    if (count == BigInt(0)) {
+      false
+    } else if (pos == startPos) {
+      assert(Calc.mod(ci(startPos), filterValue) != BigInt(0))
+      survivors.contains(ci(pos))
+    } else {
+      assert(pos > startPos)
+      assert(pos >= startPos + BigInt(1))
+      assert(pos < startPos + BigInt(1) + (count - BigInt(1)))
+      assert(assertSurvivorValuesContainsNonMultipleAtPosition(
+        ci, filterValue, startPos + BigInt(1), count - BigInt(1), pos))
+      CycleIntegralFilterProperties.survivorValues(
+        ci, filterValue, startPos + BigInt(1), count - BigInt(1)
+      ).contains(ci(pos))
+      survivors.contains(ci(pos))
+    }
+  }.holds
+
+  /**
+   * Survivor scan soundness for one retained value.
+   *
+   * If a value appears in the survivor list, then it is not a multiple of the
+   * filter value. This is the second half of the exactness statement for
+   * filtering: the scan only keeps non-multiples.
+   *
+   * Math:
+   *
+   *   value in survivorValues(ci, filterValue, start, count)
+   *   ------------------------------------------------------------
+   *   mod(value, filterValue) != 0
+   */
+  def assertSurvivorValuesContainsOnlyNonMultiples(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPos: BigInt,
+    count: BigInt,
+    value: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPos >= 0)
+    require(count >= 0)
+    require(CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count).contains(value))
+    decreases(count)
+
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count)
+
+    if (count == BigInt(0)) {
+      false
+    } else {
+      val tailSurvivors = CycleIntegralFilterProperties.survivorValues(
+        ci, filterValue, startPos + BigInt(1), count - BigInt(1))
+
+      if (Calc.mod(ci(startPos), filterValue) != BigInt(0)) {
+        if (ci(startPos) == value) {
+          assert(Calc.mod(value, filterValue) != BigInt(0))
+        } else {
+          assert(tailSurvivors.contains(value))
+          assert(assertSurvivorValuesContainsOnlyNonMultiples(
+            ci, filterValue, startPos + BigInt(1), count - BigInt(1), value))
+        }
+      } else {
+        assert(tailSurvivors.contains(value))
+        assert(assertSurvivorValuesContainsOnlyNonMultiples(
+          ci, filterValue, startPos + BigInt(1), count - BigInt(1), value))
+      }
+    }
+
+    Calc.mod(value, filterValue) != BigInt(0)
+  }.holds
+
+  /**
+   * Survivor scan excludes a scanned multiple.
+   *
+   * This corollary packages the soundness lemma in the direct "removed value"
+   * shape: if the CI value at a scanned position is a multiple of the filter
+   * value, then that value is absent from the survivor list.
+   *
+   * Math:
+   *
+   *   start <= pos < start + count
+   *   mod(ci(pos), filterValue) == 0
+   *   ------------------------------------------------------------
+   *   ci(pos) notin survivorValues(ci, filterValue, start, count)
+   */
+  def assertSurvivorValuesExcludesMultipleAtPosition(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPos: BigInt,
+    count: BigInt,
+    pos: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPos >= 0)
+    require(count >= 0)
+    require(pos >= startPos)
+    require(pos < startPos + count)
+    require(Calc.mod(ci(pos), filterValue) == BigInt(0))
+
+    val value = ci(pos)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      ci, filterValue, startPos, count)
+
+    if (survivors.contains(value)) {
+      assert(assertSurvivorValuesContainsOnlyNonMultiples(
+        ci, filterValue, startPos, count, value))
+      assert(Calc.mod(value, filterValue) != BigInt(0))
+      false
+    } else {
+      true
+    }
+
+    !survivors.contains(value)
+  }.holds
+
+  /**
    * The last survivor is the last scanned CI value — when the final
    * position in the scan range also passes the filter, it ends up as
    * the final element of the survivors list.
