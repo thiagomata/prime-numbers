@@ -320,4 +320,57 @@ object IntegralProperties {
     )
     integral.apply(integral.size - 1) == integral.last
   }.holds
+
+  /**
+   * If all list values are positive, the integral is strictly increasing.
+   *
+   *   allGreaterThan(integral.list, 0) && b > a => integral.apply(b) > integral.apply(a)
+   */
+  def assertIntegralStrictlyIncreasing(
+    integral: Integral,
+    a: BigInt,
+    b: BigInt
+  ): Boolean = {
+    require(a >= 0)
+    require(b > a)
+    require(b < integral.list.size)
+    require(ListBoundUtils.allGreaterThan(integral.list, BigInt(0)))
+    decreases(b - a)
+
+    if (b == a + BigInt(1)) {
+      assert(assertAccDiffMatchesList(integral, a))
+      assert(integral.apply(a + BigInt(1)) - integral.apply(a) == integral.list(a + BigInt(1)))
+      assert(ListBoundUtils.assertGreaterThanAtIndex(integral.list, BigInt(0), a + BigInt(1)))
+      assert(integral.list(a + BigInt(1)) > BigInt(0))
+      integral.apply(b) > integral.apply(a)
+    } else {
+      assert(assertIntegralStrictlyIncreasing(integral, a, b - BigInt(1)))
+      assert(integral.apply(b - BigInt(1)) > integral.apply(a))
+      assert(assertAccDiffMatchesList(integral, b - BigInt(1)))
+      assert(integral.apply(b) - integral.apply(b - BigInt(1)) == integral.list(b))
+      assert(ListBoundUtils.assertGreaterThanAtIndex(integral.list, BigInt(0), b))
+      assert(integral.list(b) > BigInt(0))
+      integral.apply(b) > integral.apply(a)
+    }
+  }.holds
+
+  /**
+   * If the integral is strictly increasing, each list element is positive.
+   * Follows from: apply(pos+1) - apply(pos) == list(pos+1).
+   *
+   *   integral.apply(pos+1) > integral.apply(pos) => integral.list(pos+1) > 0
+   */
+  def assertGapsPositive(
+    integral: Integral,
+    pos: BigInt
+  ): Boolean = {
+    require(pos >= 0)
+    require(pos + BigInt(1) < integral.list.size)
+    require(integral.apply(pos + BigInt(1)) > integral.apply(pos))
+
+    assert(assertAccDiffMatchesList(integral, pos))
+    assert(integral.apply(pos + BigInt(1)) - integral.apply(pos) == integral.list(pos + BigInt(1)))
+    assert(integral.list(pos + BigInt(1)) > BigInt(0))
+    integral.list(pos + BigInt(1)) > BigInt(0)
+  }.holds
 }
