@@ -496,11 +496,13 @@ Verified reusable helper work from this pass:
 | `GapProperties.assertFirstSurvivorAtPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivor head is `ci(pos)` | Focused verified: 47/47 valid |
 | `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` | Focused verified: 44/44 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorHeadMatchesSpecNext0(count)` | initial cycle survivor scan head equals `spec.next(0)` | Focused verified: 13/13 valid |
 | `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 27/27 valid |
 | `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 56/56 valid |
 | `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix | Focused verified: 91/91 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 81/81 valid |
 | `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` | Focused verified: 41/41 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)` | head of the remaining cycle survivor scan equals the following `spec.next` value | Focused verified: 49/49 valid |
 
 Verifier-shape lesson from Phase E:
 
@@ -527,6 +529,13 @@ Verifier-shape lesson from Phase E:
   non-multiple fact. Without those facts as local invariants, Stainless unfolded
   the search wrapper and timed out instead of reusing the already-verified
   skipped-index lemma.
+- The next recursive ordered-survivor lemma must carry a raw old-window endpoint,
+  not only a survivor offset. A condition such as `count > offset` is too weak:
+  the cycle scan count measures old integral positions, while the survivor
+  offset counts only retained values. The induction should thread an invariant
+  of the form "the old index for the target `spec.next` value is inside
+  `[currentOldIndex, currentOldIndex + count]`" so each recursive tail call can
+  prove its own `nextAcceptedOldIndex(...)-1 < start + count` precondition.
 - `just verify-debug assertNextGapsAllPositiveGivenSortedBounds` confirmed the
   mechanism: the generated VCs repeatedly instantiate matchers for
   `isAscending(nextSorted(seq).list)` and then unroll through

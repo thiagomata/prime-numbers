@@ -648,7 +648,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-41 lemmas (39 public, 2 private). Key public lemmas:
+43 lemmas (41 public, 2 private). Key public lemmas:
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -665,9 +665,11 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNewHeadCoprimeToAllPrimes()**                  | `isCoprime(cycle(1), allPrimeValues)`                       |
 | **assertCycleValueCoprimeToTail(k)**                   | `isCoprime(cycle(k), tailPrimes)`                           |
 | **assertCycleSurvivorValuesStartAtSpecNextHead(count)** | cycle survivor scan splits at `spec.next.head.value`       |
+| **assertCycleSurvivorHeadMatchesSpecNext0(count)**     | initial cycle survivor scan head equals `spec.next(0)`      |
 | **assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)** | spec skipped old indices become cycle-integral all-multiple prefix |
 | **assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)** | cycle survivor scan peels the next `spec.next` old-stream survivor |
 | **assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)** | peeled cycle survivor equals the next value in `spec.next` |
+| **assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)** | remaining cycle survivor scan head equals the next `spec.next` value |
 | **assertFullEquivalence(nextPeriod,k)**                | `cycle(k) == spec(k) && cycle(1) == spec.next.head.value`   |
 | **assertNextGapListMatchesSpecNext(from,count)**       | `nextGapList(from,count) == spec.next.gapList(from,count)`  |
 | **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next                |

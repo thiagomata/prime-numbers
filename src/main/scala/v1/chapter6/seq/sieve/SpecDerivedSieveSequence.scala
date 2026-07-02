@@ -339,6 +339,32 @@ case class SpecDerivedSieveSequence(
   }.holds
 
   /**
+   * Head form of the initial survivor split.
+   *
+   * The base survivor scan starts at integral position 0, so its first retained
+   * value is the new prime head. Since `spec.next(0)` is definitionally
+   * `spec.next.head.value`, this packages the base case in the same indexed
+   * form used by the tail-head bridge.
+   *
+   * Math:
+   *
+   *   survivorValues(cycle.integral, cycle.head, 0, count)
+   *     = spec.next(0) :: tail
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, 0, count).head = spec.next(0)
+   */
+  def assertCycleSurvivorHeadMatchesSpecNext0(count: BigInt): Boolean = {
+    require(count > BigInt(0))
+
+    assert(assertCycleSurvivorValuesStartAtSpecNextHead(count))
+    assert(spec.next(BigInt(0)) == spec.next.head.value)
+
+    CycleIntegralFilterProperties.survivorValues(
+      cycle.integral, cycle.head, BigInt(0), count).head ==
+      spec.next(BigInt(0))
+  }.holds
+
+  /**
    * Spec skipped-old-index facts as cycle-integral skipped-prefix facts.
    *
    * If `currentOldIndex` is aligned with `spec.next`, then
@@ -520,6 +546,54 @@ case class SpecDerivedSieveSequence(
     assert(nextSeq(nextSeqIndex + BigInt(1)) == spec(nextOldIndex))
 
     cycle.integral(survivorPos) == nextSeq(nextSeqIndex + BigInt(1))
+  }.holds
+
+  /**
+   * Head form of the aligned survivor split.
+   *
+   * Once `spec(currentOldIndex)` is already an emitted value of `spec.next`,
+   * the remaining cycle survivor scan starts at the following emitted value of
+   * `spec.next`. This is the base step needed by the later ordered-list
+   * induction: it exposes the head equality directly, instead of forcing the
+   * caller to combine the structural split and value bridge again.
+   *
+   * Math:
+   *
+   *   s = spec.next.indexOfAccepted(spec(currentOldIndex))
+   *   survivorValues(cycle.integral, cycle.head, currentOldIndex, count)
+   *     = spec.next(s + 1) :: tail
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, currentOldIndex, count).head
+   *     = spec.next(s + 1)
+   */
+  def assertCycleSurvivorTailHeadMatchesSpecNext(
+    currentOldIndex: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(currentOldIndex >= BigInt(0))
+    require(count > BigInt(0))
+    require(spec(currentOldIndex) >= spec.next.head.value)
+    require(spec.next.filterValues.nonEmpty)
+    require(spec.next.filterValues.tail == spec.filterValues)
+    require(spec.next.head.value == spec.head.value)
+    require(Calc.mod(
+      spec.head.value + spec.filterModulus,
+      spec.next.filterValues.head
+    ) != BigInt(0))
+    require(spec.next.accepts(spec(currentOldIndex)))
+    require(
+      spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period) - BigInt(1) <
+        currentOldIndex + count)
+
+    val nextSeq = spec.next
+    val nextSeqIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+
+    assert(assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex, count))
+    assert(assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex))
+
+    CycleIntegralFilterProperties.survivorValues(
+      cycle.integral, cycle.head, currentOldIndex, count).head ==
+      nextSeq(nextSeqIndex + BigInt(1))
   }.holds
 
   /**
