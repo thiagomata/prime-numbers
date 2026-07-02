@@ -1165,6 +1165,10 @@ object SpecCycleSieveEquivalence {
 
   /**
    * Proves that `nextSorted(seq)` contains every coprime bounded value.
+   *
+   * Note: currently unused (no callers). Retained as a working lemma; one of
+   * its VCs times out in the full-chapter run — see ticket
+   * `fix-ch6-timeout-file-by-file.md`.
    */
   def assertNextSortedContainsCoprime(
     seq: CycleSieveSequence,
@@ -1187,6 +1191,10 @@ object SpecCycleSieveEquivalence {
    * `nextSorted` is only `nextFiltered` wrapped by `SortedList.fromUnsorted`.
    * This lemma exposes the one-value soundness direction: sorting may reorder
    * survivors, but it does not create any new survivor value.
+   *
+   * Note: currently unused (no callers). Retained as a working lemma; several
+   * of its precondition VCs time out in the full-chapter run — see ticket
+   * `fix-ch6-timeout-file-by-file.md`.
    */
   def assertNextSortedOnlyContainsFiltered(
     seq: CycleSieveSequence,

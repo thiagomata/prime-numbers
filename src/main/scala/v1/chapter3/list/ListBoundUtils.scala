@@ -29,6 +29,39 @@ object ListBoundUtils {
     }
   }.holds
 
+  /**
+   * Splitting a lower-bounded list preserves the bound on BOTH halves.
+   *
+   * `allGreaterThan(list, value)` and `(front, back) = splitAt(list, index)`
+   * together imply `allGreaterThan(front, value) && allGreaterThan(back, value)`.
+   *
+   * This is the ch3 home for the bound-preservation fact that the rotation
+   * theory needs; it mirrors the ch6 `SieveUtils.assertSplitAtPreservesAllGreaterThan`
+   * (which will eventually delegate here once the move is complete).
+   */
+  def assertSplitAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
+    require(index >= 0 && index <= list.size)
+    require(allGreaterThan(list, value))
+    decreases(index)
+    val (front, back) = ListUtils.splitAt(list, index)
+    if (index == BigInt(0)) {
+      assert(front == List.empty[BigInt])
+      assert(back == list)
+      allGreaterThan(front, value) && allGreaterThan(back, value)
+    } else {
+      assert(list.nonEmpty)
+      assert(list.head > value)
+      assert(allGreaterThan(list.tail, value))
+      assert(assertSplitAtPreservesAllGreaterThan(list.tail, index - BigInt(1), value))
+      val (tailFront, tailBack) = ListUtils.splitAt(list.tail, index - BigInt(1))
+      assert(front == list.head :: tailFront)
+      assert(back == tailBack)
+      assert(allGreaterThan(tailFront, value))
+      assert(allGreaterThan(tailBack, value))
+      allGreaterThan(front, value) && allGreaterThan(back, value)
+    }
+  }.holds
+
   def allNonNegative(list: List[BigInt]): Boolean = allGreaterThan(list, BigInt(-1))
   def allPositive(list: List[BigInt]): Boolean = allGreaterThan(list, BigInt(0))
   def allGreaterThanOne(list: List[BigInt]): Boolean = allGreaterThan(list, BigInt(1))
@@ -58,6 +91,34 @@ object ListBoundUtils {
       assert(allLessThan(listA.tail ++ listB, bound))
       assert(listA.head < bound)
       allLessThan(listA ++ listB, bound)
+    }
+  }.holds
+
+  /**
+   * Splitting an upper-bounded list preserves the bound on BOTH halves.
+   *
+   * Mirror of `assertSplitAtPreservesAllGreaterThan` for `allLessThan`.
+   */
+  def assertSplitAtPreservesAllLessThan(list: List[BigInt], index: BigInt, bound: BigInt): Boolean = {
+    require(index >= 0 && index <= list.size)
+    require(allLessThan(list, bound))
+    decreases(index)
+    val (front, back) = ListUtils.splitAt(list, index)
+    if (index == BigInt(0)) {
+      assert(front == List.empty[BigInt])
+      assert(back == list)
+      allLessThan(front, bound) && allLessThan(back, bound)
+    } else {
+      assert(list.nonEmpty)
+      assert(list.head < bound)
+      assert(allLessThan(list.tail, bound))
+      assert(assertSplitAtPreservesAllLessThan(list.tail, index - BigInt(1), bound))
+      val (tailFront, tailBack) = ListUtils.splitAt(list.tail, index - BigInt(1))
+      assert(front == list.head :: tailFront)
+      assert(back == tailBack)
+      assert(allLessThan(tailFront, bound))
+      assert(allLessThan(tailBack, bound))
+      allLessThan(front, bound) && allLessThan(back, bound)
     }
   }.holds
 

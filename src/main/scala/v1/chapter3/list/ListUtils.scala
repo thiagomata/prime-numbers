@@ -44,6 +44,28 @@ object ListUtils {
     }
   }
 
+  /**
+   * Rotates a list by an index, returning a cyclic permutation.
+   *
+   * `rotateAt(list, index) = back ++ front` where `(front, back) = splitAt(list, index)`.
+   * This is a pure re-indexing of the same elements: the head value does not
+   * change, only the viewing position shifts. The rotation theory (same
+   * elements, same bounds, same sum, same size, same product) lives in
+   * `RotationProperties`; it is stated entirely over flat `List[BigInt]` and
+   * never mentions a head.
+   */
+  @tailrec
+  def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
+    require(index >= 0)
+    decreases(index)
+    if (list.isEmpty || index == BigInt(0)) list
+    else if (index >= list.size) rotateAt(list, index - list.size)
+    else {
+      val (front, back) = splitAt(list, index)
+      back ++ front
+    }
+  }
+
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
     require(from >= 0)
     require(to >= from)

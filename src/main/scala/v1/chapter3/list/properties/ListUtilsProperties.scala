@@ -71,6 +71,43 @@ object ListUtilsProperties {
   }.holds
 
   /**
+   * Keystone recombination lemma for `splitAt`.
+   *
+   * Splitting a list at an index and concatenating the two halves in the
+   * original order recovers the original list exactly:
+   *
+   *   front ++ back == list   where (front, back) = splitAt(list, index)
+   *
+   * This is the load-bearing fact that makes rotation a permutation: since
+   * `rotateAt(list, index) = back ++ front`, the rotated list is a reordering
+   * of the same elements (proven via this lemma together with the sum and
+   * contains lemmas over `++`). Stated purely over `List[BigInt]`; no head,
+   * no index-0, no cycle concepts.
+   *
+   * @param list  any list
+   * @param index split point, `0 <= index <= list.size`
+   * @return true iff `front ++ back == list`
+   */
+  def assertSplitAtRecombines(list: List[BigInt], index: BigInt): Boolean = {
+    require(index >= 0 && index <= list.size)
+    decreases(index)
+    val (front, back) = ListUtils.splitAt(list, index)
+    if (index == BigInt(0)) {
+      assert(front == List.empty[BigInt])
+      assert(back == list)
+      front ++ back == list
+    } else {
+      assert(list.nonEmpty)
+      val (tailFront, tailBack) = ListUtils.splitAt(list.tail, index - BigInt(1))
+      assert(front == list.head :: tailFront)
+      assert(back == tailBack)
+      assert(assertSplitAtRecombines(list.tail, index - BigInt(1)))
+      assert(tailFront ++ tailBack == list.tail)
+      front ++ back == list
+    }
+  }.holds
+
+  /**
     * For every list where all elements are bigger than a value,
     * any element at a valid position is also bigger than that value.
     *

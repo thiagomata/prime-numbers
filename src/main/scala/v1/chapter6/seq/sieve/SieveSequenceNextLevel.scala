@@ -225,6 +225,13 @@ object SieveSequenceNextLevel {
     require(ListUtils.checkAllPositive(seq.primesTailValues))
     require(seq.head > 0)
     require(seq.modulus * seq.head > 0)
+    // The sorted survivor list is non-empty (there is always at least one value
+    // coprime to the tail primes within one period). This is true for every real
+    // sequence; stating it as a caller obligation avoids the solver having to
+    // re-derive `nextSorted(seq).list.nonEmpty` (the precondition of
+    // `assertCalculateGapsSize`) inside this VC — that re-derivation timed out
+    // even in isolation. See ticket fix-ch6-timeout-file-by-file.md.
+    require(nextSorted(seq).list.nonEmpty)
     assert(SieveUtils.assertCalculateGapsSize(nextSorted(seq).list, seq.modulus * seq.head))
     nextGaps(seq).size == nextSorted(seq).list.size
   }.holds
