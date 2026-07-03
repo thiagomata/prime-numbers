@@ -502,6 +502,18 @@ Replace `C.next()`'s walk with the pipeline-based computation (same `SieveSequen
 - `tickets/active/sieve-sequence-proof.md` — broader SieveSequence proof effort, Leg 4 (survival walk) attempted 6 times and deferred. This ticket replaces Leg 4's walk approach with pipeline-based computation for both B and C, which makes Leg 5 (C independent) trivially solvable
 - `tickets/active/verify-timeout-root-cause.md` — circular dependency cleanup (already fixed)
 
+## Companion article
+
+`articles/sieve-sequence.md` is the published write-up of these results. Its
+**§8a "Properties by Proof Status"** is the canonical map of which sequence
+properties are verified vs. mathematically-true-but-pending vs. genuinely
+blocked — the same taxonomy tracked operationally by this ticket's Failure log
+(F1–F7) and START HERE section. When a lemma changes status (verified, deferred,
+or blocked), update §8a and the relevant Failure-log entry together so the
+article and the ticket stay in sync. The article's §8a.1 also names the
+migration-independent leaf (`assertHeadPlusFilterModulusNotFrontMultiple`) that
+stays green regardless of the contract-shape debate.
+
 ## 2026-07-01 Audit: Deleted `SpecDerivedCycleSieve` Lemmas
 
 `SpecDerivedCycleSieve.scala` was deleted in commit `9f99e029` when

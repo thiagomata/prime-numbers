@@ -469,6 +469,163 @@ The remaining gap is the optimized survival walk. The current code has important
 
 ---
 
+## 8a. Properties by Proof Status
+
+This section catalogs the sieve-sequence properties by their *current* proof
+status, so the reader can tell at a glance what is verified, what is
+mathematically true but not yet verified, and what is genuinely blocked. The
+status of any individual lemma may change as work proceeds; to check the live
+state, re-run `just verify-ch 6` (criterion: `invalid: 0 unknown: 0`) and
+consult `OBJECTS.md` §6.5–6.7. The narrative behind the pending and blocked
+items — including which proof attempts failed and why — is recorded in
+`tickets/active/independent-next-cycle.md` (Failure log F1–F7).
+
+For the next stage, the code uses three representations whose relationship is
+the central question of this article:
+
+- **A = `SpecSieveSequence`** — the deliberately simple linear-scan model.
+- **B = `SpecDerivedSieveSequence`** — a cycle representation built from
+  Spec-certified data; bridges A and C. (Earlier sections call this
+  `SpecDerivedCycleSieve`; that class was renamed and the older name is
+  retained above for continuity.)
+- **C = `CycleSieveSequence`** — the gap-cycle implementation.
+
+### 8a.1 Verified (in the current green code)
+
+These properties are discharged by Stainless `.holds` / `.ensuring` lemmas in
+the current source. Lemma names link to the file; the grouping follows the
+object that owns each proof.
+
+**A — current-stage reference model (`SpecSieveSequence`):**
+
+- Soundness and completeness of `apply` — `apply(k)` emits only values passing
+  the tail filters, and `indexOfAccepted(value)` is a constructive witness for
+  any accepted value. ([SpecSieveSequence::apply],
+  [SpecSieveSequence::indexOfAccepted]).
+- Strict monotonicity and injectivity — `apply(k+1) > apply(k)` and
+  `apply(i) == apply(j) ⇒ i == j`. ([SpecSieveSequence::applyStrictlyIncreases],
+  [SpecSieveSequence::assertApplyInjective]).
+- Residue periodicity — gaps are periodic with the filter-modulus period, and
+  `apply(pos) == head.value + sumGap(0, pos)`.
+  ([SpecSieveSequence::assertGapPeriodic], [SpecSieveSequence::assertGapSum]).
+- Gap-list positivity, size, and index correctness
+  ([SpecSieveSequence::assertGapListPositive], [::assertGapListSize],
+  [::assertGapListApplyEqualsGapAtPosition]).
+- Gap-cycle reconstruction — the `CycleIntegral` built from
+  `specGapCycle(period)` reconstructs `apply(k)`:
+  `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`.
+  ([SpecSieveSequence::assertSpecGapCycleIntegralMatchesApply]).
+- Conditional next-stage primality — `apply(1) == nextPrime.value` and
+  `apply(1)` is prime, *under the precondition* `nextPrime.value < head²`
+  (see §8a.3). ([SpecSieveSequence::assertApplyOneEqualsNextPrime],
+  [::assertApplyOneIsPrimeIfBelowHeadSq]).
+
+**B — derived cycle bridge (`SpecDerivedSieveSequence`):**
+
+- Current-stage apply equivalence — `cycle(k) == spec(k)` for all `k ≥ 0`.
+  ([SpecDerivedSieveSequence::assertApplyMatches]).
+- Head, primes, modulus aliasing with the spec
+  ([::assertNextHeadMatches], [::assertPrimesMatch],
+  [::assertCycleModulusEqualsSpecFilterModulus]).
+- Filter-decision transfer — same value and same divisor ⇒ same keep/drop
+  decision between cycle and spec.next. ([::assertCycleSpecNextFilterDecisionMatches]).
+- Apply lowers to the integral — `cycle(k) == cycle.integral(k-1)` for `k > 0`.
+  ([::assertCycleApplyLowersToIntegral]).
+- Survivor bridge (canonical): `spec.next(k)` equals the cycle survivor at the
+  corresponding accepted index, and the survivor gap equals the `spec.next` gap.
+  ([::assertSpecNextIsKthSurvivor], [::assertSurvivorGapEqualsSpecNextGap]).
+- Canonical next-cycle equivalence — `SpecDerivedSieveSequence(spec.next,
+  nextPeriod)` matches `spec.next` in head, gaps, and apply, under the
+  next-stage preconditions. ([::assertNextCycleMatchesSpecNext]).
+- Repeated-cycle invariance — repeating the gap period preserves gap, integral,
+  and apply lookups. ([::assertRepeatedCycleApplyMatches]).
+- Pipeline preconditions — the four `SieveSequenceNextLevel` pipeline
+  preconditions (positive modulus, positive tail values, positive head, positive
+  product) are discharged for `cycle`. ([::assertModulusPositive],
+  [::assertPrimesTailValuesPositive], [::assertHeadPositive],
+  [::assertModulusTimesHeadPositive]).
+- Migration-independent leaf — `mod(spec.head.value + spec.filterModulus,
+  spec.next.filterValues.head) != 0`.
+  ([SpecDerivedSieveSequence::assertHeadPlusFilterModulusNotFrontMultiple]).
+  This is the fact that replaces the false identification of the next head with
+  the next front filter (see §8a.3 and LEARNINGS §18.6).
+
+**Value-level filter lemmas (`SieveCycleAfterProof`, the "new approach"):**
+
+- Every cycle-integral survivor (a value not divisible by `head`) is coprime
+  with all primes, hence with `spec.next.filterValues`, hence passes
+  `spec.next.passesFilter`. ([SieveCycleAfterProof::assertCycleSurvivorCoprimeToCyclePrimes],
+  [::assertCycleSurvivorPassesSpecNextFilter]).
+- The first survivor equals `spec.next.head.value`.
+  ([SieveCycleAfterProof::assertFirstSurvivorEqualsSpecNextHead]).
+
+### 8a.2 Mathematically true — Stainless verification pending
+
+These properties have precise mathematical statements (and, in most cases,
+written proof sketches that focused-verified before being set aside), but are
+not in the current green code. Each is blocked by a specific, documented wall,
+not by missing mathematics.
+
+**The independent next-cycle theorem (M3).** The central open result is
+
+```math
+\text{nextRotatedGaps}(\text{cycle}) \;\stackrel{?}{=}\; \text{spec.next.gapList}(0,\,\text{nextPeriod})
+```
+
+i.e. that running the standard sieve pipeline (`residues → expand → filter →
+sort → gaps → rotate`) on B's own cycle data produces exactly the next stage's
+gap list. The conditional scaffolding for this theorem already exists and is
+verified: `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` takes the equality
+above as a precondition, so the constructor obligation and the hard equality
+are isolated. Discharging the equality unlocks `nextFromCycle()` (B's
+independent next-stage constructor) and then the C-side analog (M4).
+*Wall:* list extensionality across differently-shaped recursions (Failure log
+F1) and symbolic-position induction / cross-instance unfolding (F5, F6).
+
+**Twelve "survivor window/gap" lemmas.** A self-contained cluster of twelve
+lemmas proving ordered survivor equality (`cycleSurvivor(i) == spec.next(i)`)
+and the bridge from survivor positions to list-level gap equality. They were
+written, focused-verified, and then removed during the 2026-07-03 recovery
+because they are coupled to a half-finished *contract-shape migration* of
+`nextAcceptedOldIndex` and siblings in A (Failure log F4). They are preserved
+in git history (`pre-recovery-snapshot`) and will re-activate once that
+migration is redone correctly — callee + all callers + these twelve lemmas in
+one green-to-green change. *Wall:* engineering (mid-migration wiring), not
+mathematics; the recipe is in `independent-next-cycle.md` ("The Correct Track").
+
+### 8a.3 Genuinely blocked (deep prerequisites)
+
+These two properties are blocked on number-theoretic facts Stainless cannot
+prove on its own; both have dedicated tickets under `tickets/blocked/`.
+
+**Unconditional `apply(1)` is prime.** The conditional form
+(`apply(1) < head² ⇒ isPrime(apply(1))`) is verified (§8a.1). The unconditional
+form requires proving a prime exists in `(head, head²)` — Bertrand's postulate
+(or a Jacobsthal/prime-gap bound) — which is beyond SMT. The next-stage
+constructor therefore carries `require(nextPrime.value < head²)` as an explicit
+precondition rather than discharging it. (`tickets/blocked/prove-apply1-is-prime.md`.)
+
+**Primorial not divisible by a new prime.**
+`mod(primorial(primes), p.value) != 0` for a new prime `p` not in `primes` with
+all list values `< p`. The inductive step is exactly Euclid's lemma
+(`mod(h, p) != 0 ∧ mod(tailPrim, p) != 0 ⇒ mod(h · tailPrim, p) != 0`); Z3 times
+out on the abstract case, and a Bezout/extended-Euclidean proof has not yet been
+formalized. This blocks a `CycleSieveSequence` construction precondition.
+(`tickets/blocked/primorial-not-divisible-by-new-prime.md`.)
+
+> **Why the contract-shape migration exists at all.** A subtle point worth
+> recording: in a next-stage sequence, `nextSeq.head.value` (the next emitted
+> prime) is *not* equal to `nextSeq.filterValues.head` (the front filter, which
+> is the *previous* head). Older bridge lemmas used the stronger-but-unsound
+> `require(nextSeq.head.value == head.value)`; the corrected shape is
+> `require(nextSeq.filterValues.head == head.value)`. The migration from the
+> old shape to the corrected shape is what the twelve pending lemmas depend on
+> (LEARNINGS §18.6). The leaf
+> `assertHeadPlusFilterModulusNotFrontMultiple` (§8a.1) is the
+> migration-independent piece of this correction and is already verified.
+
+---
+
 ## 9. Next-Stage Survivor Filter Composition
 
 **Intuition:** The sieve progresses by taking a current stage and adding the current head as a new filter for the next stage. Values that are multiples of the current head are skipped; values that are not multiples of it are survivors. The next-stage gaps are the differences between consecutive survivors.
