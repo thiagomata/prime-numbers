@@ -497,15 +497,25 @@ Verified reusable helper work from this pass:
 | `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` | Focused verified: 44/44 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorHeadMatchesSpecNext0(count)` | initial cycle survivor scan head equals `spec.next(0)` | Focused verified: 13/13 valid |
-| `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 27/27 valid |
-| `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 56/56 valid |
-| `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix | Focused verified: 91/91 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 81/81 valid |
+| `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 30/30 valid |
+| `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 61/61 valid |
+| `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix | Focused verified: 96/96 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 84/84 valid |
 | `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` | Focused verified: 41/41 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)` | head of the remaining cycle survivor scan equals the following `spec.next` value | Focused verified: 49/49 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)` | aligned survivor window head equals `spec.next(specIndex + 1)` | Focused verified: 55/55 valid |
 | `SpecDerivedSieveSequence.survivorWindowCovers(specIndex,currentOldIndex,count,offset)` | raw old-window coverage predicate threaded by recursive ordered survivor equality | Focused validated with `assertCycleSurvivorWindowAtMatchesSpecNext` |
 | `SpecDerivedSieveSequence.assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)` | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` | Focused verified: 128/128 valid |
+| `SpecDerivedSieveSequence.assertHeadPlusFilterModulusNotFrontMultiple()` | exposes that the period endpoint is not divisible by the next front filter | Focused verified: 32/32 valid |
+| `SpecDerivedSieveSequence.initialSurvivorWindowCovers(count,offset)` | raw initial-window coverage predicate for direct survivor equality | Focused validated with `assertCycleSurvivorAtMatchesSpecNext` |
+| `SpecDerivedSieveSequence.assertCycleSurvivorAtMatchesSpecNext(offset,count)` | initial survivor scan at `offset` equals `spec.next(offset)` | Focused verified: 94/94 valid |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapMatchesSpecNextGap(k,count)` | adjacent initial survivor gap equals adjacent `spec.next` gap | Focused verified: 35/35 valid |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k,count)` | `gapsFromValues(initialSurvivors)(k)` equals adjacent `spec.next` gap | Focused verified: 28/28 valid |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListAtMatchesSpecNextGapList(k,count,nextPeriod)` | pointwise initial survivor gap list equals `spec.next.gapList` | Focused verified: 29/29 valid |
+| `SpecDerivedSieveSequence.initialSurvivorGapListCovers(scanCount,from,gapCount)` | recursive adjacent-pair coverage predicate for survivor gap prefixes | Focused verified: 9/9 valid |
+| `SpecDerivedSieveSequence.initialSurvivorGapList(from,gapCount,scanCount)` | forward gap prefix built from adjacent initial survivor values | Focused verified: 18/18 valid |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals canonical adjacent next-gap prefix | Focused verified: 46/46 valid |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesSpecNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals `spec.next.gapList` | Focused verified: 24/24 valid |
 
 Verifier-shape lesson from Phase E:
 
@@ -539,6 +549,20 @@ Verifier-shape lesson from Phase E:
   of the form "the old index for the target `spec.next` value is inside
   `[currentOldIndex, currentOldIndex + count]`" so each recursive tail call can
   prove its own `nextAcceptedOldIndex(...)-1 < start + count` precondition.
+- Do not equate `nextSeq.head.value` with `nextSeq.filterValues.head`. In a
+  next-stage sequence, `nextSeq.head.value` is the next emitted prime/head,
+  while `nextSeq.filterValues.head` is the old head/front filter. The verified
+  contract shape is `nextSeq.filterValues.head == spec.head.value`, plus a
+  separate lower bound `apply(k) >= nextSeq.head.value` before calling
+  `nextSeq.accepts(apply(k))`. Expose the period-endpoint non-multiple fact
+  with `assertHeadPlusFilterModulusNotFrontMultiple()` instead of rediscovering
+  it at every recursive-search call.
+- For recursive list lifts over survivor gaps, make the coverage invariant
+  first. `initialSurvivorGapListCovers(scanCount,from,gapCount)` records the
+  adjacent-pair coverage needed by every gap in the prefix; with that predicate
+  available, `initialSurvivorGapList` and the list equality
+  `assertInitialSurvivorGapListMatchesSpecNextGapList` verify as simple
+  same-shape recursions rather than a generic list extensionality problem.
 - `just verify-debug assertNextGapsAllPositiveGivenSortedBounds` confirmed the
   mechanism: the generated VCs repeatedly instantiate matchers for
   `isAscending(nextSorted(seq).list)` and then unroll through

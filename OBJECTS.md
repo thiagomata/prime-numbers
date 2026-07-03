@@ -648,7 +648,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-45 lemmas (43 public, 2 private), plus 1 public coverage predicate. Key public lemmas:
+52 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key public lemmas:
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -663,6 +663,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertCycleSpecNextFilterDecisionMatches(k)**        | `cycle(k)` and `spec(k)` have the same next-filter decision |
 | **assertCycleApplyLowersToIntegral(k)**                | `cycle(k) == cycle.integral(k - 1)` for `k > 0`             |
 | **assertNewHeadCoprimeToAllPrimes()**                  | `isCoprime(cycle(1), allPrimeValues)`                       |
+| **assertHeadPlusFilterModulusNotFrontMultiple()**      | `mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0` |
 | **assertCycleValueCoprimeToTail(k)**                   | `isCoprime(cycle(k), tailPrimes)`                           |
 | **assertCycleSurvivorValuesStartAtSpecNextHead(count)** | cycle survivor scan splits at `spec.next.head.value`       |
 | **assertCycleSurvivorHeadMatchesSpecNext0(count)**     | initial cycle survivor scan head equals `spec.next(0)`      |
@@ -673,6 +674,15 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)** | aligned survivor window head equals `spec.next(specIndex + 1)` |
 | **survivorWindowCovers(specIndex,currentOldIndex,count,offset)** | raw old-window coverage predicate for recursive survivor equality |
 | **assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)** | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` |
+| **initialSurvivorWindowCovers(count,offset)**          | initial survivor scan coverage predicate                    |
+| **assertCycleSurvivorAtMatchesSpecNext(offset,count)** | initial survivor scan at `offset` equals `spec.next(offset)` |
+| **assertInitialSurvivorGapMatchesSpecNextGap(k,count)** | adjacent initial survivor gap equals adjacent `spec.next` gap |
+| **assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k,count)** | `gapsFromValues(initialSurvivors)(k)` equals adjacent `spec.next` gap |
+| **assertInitialSurvivorGapListAtMatchesSpecNextGapList(k,count,nextPeriod)** | `gapsFromValues(initialSurvivors)(k) == spec.next.gapList(0,nextPeriod)(k)` |
+| **initialSurvivorGapListCovers(scanCount,from,gapCount)** | adjacent-pair coverage predicate for survivor gap prefixes |
+| **initialSurvivorGapList(from,gapCount,scanCount)**    | forward gap prefix built from adjacent initial survivor values |
+| **assertInitialSurvivorGapListMatchesNextGapList(from,gapCount,scanCount)** | survivor-gap prefix equals canonical `nextGapList` |
+| **assertInitialSurvivorGapListMatchesSpecNextGapList(from,gapCount,scanCount)** | survivor-gap prefix equals `spec.next.gapList` |
 | **assertFullEquivalence(nextPeriod,k)**                | `cycle(k) == spec(k) && cycle(1) == spec.next.head.value`   |
 | **assertNextGapListMatchesSpecNext(from,count)**       | `nextGapList(from,count) == spec.next.gapList(from,count)`  |
 | **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next                |

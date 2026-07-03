@@ -736,6 +736,79 @@ wrapper result and a private recursive finder.
 Verified in `SpecSieveSequence.nextAcceptedOldIndex` and
 `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`.
 
+### 18.6 Next-stage head is not the next-stage front filter
+
+**Observation:** In `SpecSieveSequence` next-stage proofs, two similarly named
+facts are easy to confuse:
+
+- `nextSeq.head.value` is the new sequence head, the next emitted prime.
+- `nextSeq.filterValues.head` is the front filter used by that new sequence,
+  which is the previous sequence head.
+
+The false/stale contract shape is:
+
+```scala
+require(nextSeq.head.value == head.value)
+```
+
+The verified shape is:
+
+```scala
+require(nextSeq.filterValues.head == head.value)
+require(apply(k) >= nextSeq.head.value) // when calling nextSeq.accepts(apply(k))
+```
+
+**Fix (verified):** Replace the stale head equality with the front-filter
+equality, and expose the period endpoint non-multiple fact once:
+
+```scala
+assertHeadPlusFilterModulusNotFrontMultiple()
+```
+
+This prevents Stainless from unfolding the next-stage filter construction and
+the recursive search wrapper just to rediscover that
+`mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0`.
+
+**Validation:** Focused runs verified
+`SpecSieveSequence.nextAcceptedOldIndex` (`30/30`),
+`SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple` (`61/61`),
+`SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples` (`96/96`),
+and `SpecDerivedSieveSequence.assertCycleSurvivorAtMatchesSpecNext` (`94/94`).
+
+**Source:** `tickets/active/independent-next-cycle.md`.
+
+### 18.7 Recursive list lifts need explicit coverage predicates
+
+**Observation:** A pointwise survivor equality is not enough for a recursive
+list proof unless each recursive call can prove its own index coverage. In the
+next-cycle bridge, `count > offset` was too weak because `count` measures raw
+cycle-integral scan positions, while `offset` measures retained survivors.
+
+**Fix (verified):** Create a recursive coverage predicate with the same shape
+as the list proof:
+
+```scala
+initialSurvivorGapListCovers(scanCount, from, gapCount)
+```
+
+It records that every adjacent pair required by a survivor-gap prefix is
+available. With that invariant, the proof can use same-shape recursion:
+
+- `initialSurvivorGapList(from,gapCount,scanCount)` builds survivor gaps in
+  forward order.
+- `assertInitialSurvivorGapListMatchesNextGapList` proves equality with the
+  canonical adjacent-difference list.
+- `assertInitialSurvivorGapListMatchesSpecNextGapList` composes that with the
+  existing `nextGapList == spec.next.gapList` bridge.
+
+**Validation:** Focused runs verified
+`initialSurvivorGapListCovers` (`9/9`),
+`initialSurvivorGapList` (`18/18`),
+`assertInitialSurvivorGapListMatchesNextGapList` (`46/46`), and
+`assertInitialSurvivorGapListMatchesSpecNextGapList` (`24/24`).
+
+**Source:** `tickets/active/independent-next-cycle.md`.
+
 ## Index
 
 | Lesson | Source ticket | Area |
@@ -745,3 +818,5 @@ Verified in `SpecSieveSequence.nextAcceptedOldIndex` and
 | 18.3 Local `val` aliases block cached lemma results — workaround: directed equality lemmas | `canonical-next-strategy.md` | Cross-instance |
 | 18.4 Recursive producer facts belong in `.ensuring` | `canonical-next-strategy.md` | Recursive producers |
 | 18.5 Return explicit branch invariants from recursive-search wrappers | `independent-next-cycle.md` | Recursive search |
+| 18.6 Next-stage head is not the next-stage front filter | `independent-next-cycle.md` | Next-stage filters |
+| 18.7 Recursive list lifts need explicit coverage predicates | `independent-next-cycle.md` | Recursive list proofs |
