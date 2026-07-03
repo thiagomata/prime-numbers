@@ -257,6 +257,46 @@ case class SpecDerivedSieveSequence(
     true
   }.holds
 
+  /**
+   * The first value in the next old period is not removed by the new front
+   * filter.
+   *
+   * The front filter of `spec.next` is the current head prime. The constructor
+   * assumption says the current filter modulus is not a multiple of that head.
+   * Adding one full head preserves the same non-zero remainder.
+   *
+   * Math:
+   *
+   *   spec.next.filterValues.head = spec.head.value
+   *   mod(spec.filterModulus, spec.head.value) != 0
+   *   mod(spec.head.value, spec.head.value) = 0
+   *   ------------------------------------------------------------
+   *   mod(spec.head.value + spec.filterModulus,
+   *       spec.next.filterValues.head) != 0
+   */
+  def assertHeadPlusFilterModulusNotFrontMultiple(): Boolean = {
+    assert(assertHeadPositive())
+    assert(primorialMatchesProduct(spec.primes.list.tail.list))
+    assert(spec.filterModulus == SieveUtils.product(spec.filterValues))
+    assert(Calc.mod(spec.filterModulus, spec.head.value) != BigInt(0))
+    assert(SieveUtils.assertModZero(spec.head.value))
+    assert(Calc.mod(spec.head.value, spec.head.value) == BigInt(0))
+    assert(SieveUtils.assertAddPreservesNotZeroMod(
+      spec.filterModulus,
+      spec.head.value,
+      spec.head.value))
+    assert(Calc.mod(spec.filterModulus + spec.head.value, spec.head.value) != BigInt(0))
+    assert(spec.filterModulus + spec.head.value == spec.head.value + spec.filterModulus)
+    assert(Calc.mod(spec.head.value + spec.filterModulus, spec.head.value) != BigInt(0))
+    assert(spec.next.filterPrimes == spec.primes.list.list)
+    assert(spec.next.filterValues == PrimeUtils.primeValues(spec.next.filterPrimes))
+    assert(spec.next.filterValues.head == spec.head.value)
+    Calc.mod(
+      spec.head.value + spec.filterModulus,
+      spec.next.filterValues.head
+    ) != BigInt(0)
+  }.holds
+
   /** Proves cycle(k) is coprime to all tail primes (by spec bridge). */
   def assertCycleValueCoprimeToTail(k: BigInt): Boolean = {
     require(k >= BigInt(0))
