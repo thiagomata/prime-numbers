@@ -1379,3 +1379,117 @@ replace the old approach as the active path.
 `assertHeadPlusFilterModulusNotFrontMultiple` (already re-activated, green) and
 the 5 `SieveCycleAfterProof` lemmas are **path-independent** — neither depends
 on the contract-shape debate. Keep them regardless of which path is chosen.
+
+---
+
+## Failure log — what was tried and why it didn't work
+
+Purpose: **break the circles.** Before re-attempting something, check it isn't
+already on this list. Each entry names the dead end, the mechanism, the lesson,
+and — where known — the fix that eventually worked. Newest last. (No verify
+counts — see the documentation rule in START HERE.)
+
+### F1. Survival-walk list equality (Leg 4) — list extensionality wall
+- **Tried:** prove `nextGapsWalk(cycle) == spec.next.gapList(0, nextPeriod)`
+  directly, in `SieveSequenceNextLevel` / `SpecCycleSieveEquivalence`.
+  Attempted ~6 times across `sieve-sequence-proof.md` (Leg 4).
+- **Mechanism:** the walk's `collectGaps` is opaque from outside its recursion,
+  so Stainless cannot relate the constructed list to the spec gap list. List
+  extensionality over differently-shaped recursions is a genuine SMT weak spot.
+- **Lesson:** do not compare *completed constructed lists* of different
+  recursion shapes. Either (a) prove correspondence *inside* the recursion via
+  an invariant-carrying walk, or (b) avoid list equality entirely and prove
+  per-position apply equality.
+- **Current status:** deferred. The pipeline approach (this ticket) replaced
+  the walk, but M3 risks the same wall — see Risk §2 and the fallback there.
+
+### F2. `GapCycle(newGaps)` constructor positivity — call-site positivity wall
+- **Tried:** `nextFromCycle` builds `GapCycle(nextRotatedGaps(cycle))`; the
+  `GapCycle` constructor requires `allGreaterThan(gaps, 0)`.
+- **Mechanism:** Stainless cannot prove the rotated gaps are positive *at the
+  constructor call site*, even though positivity is provable from sortedness +
+  bounds in isolation. The constructor obligation forces re-unfolding the whole
+  pipeline instead of reusing the sortedness fact.
+- **Fix that worked (partial):** isolate the equality from the constructor —
+  `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` takes the producer-equality
+  as a precondition, so the hard theorem and the constructor obligation are
+  separated. Also: `.ensuring` sortedness on the recursive sort *producers*
+  (`sortFiltered`, `insertSorted`) lets the wrapper reuse the fact instead of
+  re-deriving it (LEARNINGS 18.4). Remaining gap: the range/head bridge
+  (`nonEmpty`, `allLessThan`, `head >= 0`) from the filter pipeline.
+
+### F3. Repeated-cycle global postconditions — chapter-6 unwinding wall
+- **Tried:** prove repeated-`CycleSieveSequence.apply` equality directly in
+  chapter 6. Timed out on final postconditions.
+- **Mechanism:** the chapter-6 apply proof lowers `apply(k)` to
+  `integral(k - 1)`; doing the repeated-cycle invariance at the sequence level
+  forces Stainless to unwind through the integral recursion it can't see inside.
+- **Fix that worked:** push the representation-invariance facts *down* into
+  chapter 4 (`MemCycle`, `CycleIntegral`) where each representation proves its
+  own repeated-cycle invariance directly; chapter 6 only composes. Pattern:
+  representation facts belong in the lowest chapter that can state them.
+
+### F4. Contract migration committed mid-flight — broke HEAD red
+- **Tried (2026-07-03):** migrate `nextAcceptedOldIndex` + 4 siblings to a
+  stronger `require` shape across two commits, leaving callers and B-side
+  dependent lemmas un-migrated.
+- **Mechanism:** a stronger precondition is backwards-incompatible. Callers
+  with the old (weak) shape cannot discharge the new (strong) callee
+  precondition → timeout at `assertMergedGapPrefixAllPositive`. Committing the
+  callee migration without the callers = red by construction.
+- **Lesson:** a precondition migration must move callee + ALL callers +
+  cross-file dependent lemmas in **one** green-to-green change. Never commit a
+  mid-migration state. (Now LEARNINGS 18.8 + the Correct Track recipe above.)
+- **Outcome:** recovered by restoring both files to the last green commit
+  (`5145c1e5`); tag `pre-recovery-snapshot` preserves the broken state.
+
+### F5. Symbolic-position integral monotonicity — induction wall
+- **Tried:** `CycleIntegralProperties.assertCycleIntegralIncreasing` to supply
+  the `survivor >= head` lower bound needed by `spec.next.accepts(survivor)`.
+- **Mechanism:** recursive induction on `CycleIntegral` positions times out for
+  symbolic `pos`. The monotonicity is true but the induction doesn't scale.
+- **Workaround (new approach):** route around `accepts` entirely — use
+  `spec.next.passesFilter` (no `>=` precondition) and prove filter-passing via
+  coprimality. This removes the obstacle but only on the *easy* part (filter
+  membership); the hard parts (ordered/gap/rotation equality) still face the
+  same family of induction walls. Untested whether the new style clears them.
+
+### F6. Cross-instance `accepts` call — LEARNINGS 18.1 wall
+- **Tried:** `SpecCycleSieveEquivalence.assertNextAcceptsMatchesCyclePrimesCoprime`
+  calls `spec.next.accepts(value)` from a different object → full unfold, timeout.
+- **Mechanism:** cross-instance calls trigger Stainless to unfold the callee
+  instead of reusing its contract, even for simple lemmas (LEARNINGS 18.1-18.3).
+- **Workaround:** directed equality lemmas, explicit `require` for component
+  equalities, avoid `val` aliases, and (per F5) prefer `passesFilter` over
+  `accepts` to dodge the `>=` precondition that triggers the unfold.
+
+### F7. Wrapper postcondition sortedness — producer-reuse wall
+- **Tried:** wrappers around `nextSorted`/`SortedList` needed
+  `isAscending(nextSorted(seq).list)` in their postconditions; timed out.
+- **Mechanism:** Stainless re-instantiates the matcher and unwraps the pipeline
+  (`nextSorted` → `SortedList.fromUnsorted` → `nextFiltered` → prime tails →
+  recursive `isAscending`) instead of reusing the verified sortedness fact.
+  Confirmed via `just verify-debug`.
+- **Fix that worked:** attach strict sortedness to the recursive *producers*
+  via `.ensuring` (`sortFiltered`, `insertSorted`), so the fact is in scope at
+  the compositor site without unwinding (LEARNINGS 18.4). Also carry branch
+  invariants explicitly out of recursive searches (LEARNINGS 18.5).
+- **General lesson:** this is the canonical example of the debug-first method
+  in START HERE — a "wall" that dissolved entirely once the missing producer
+  postcondition was named. Most timeouts here look like this.
+
+### Recurring theme
+F2, F3, F6, F7 are all the *same* failure mode: **Stainless re-derives a fact
+the proof never handed it.** F1 and F5 are closer to genuine SMT limits
+(list extensionality, symbolic induction) — but even those should be audited
+with `just verify-debug` before being accepted as real walls. **Default
+assumption: a timeout is a missing named fact, not a math wall, until the
+debug-first audit proves otherwise.**
+
+### How to add to this log
+When an attempt fails (3 strikes per the stopping rule), append an entry:
+- **Tried:** the lemma/approach and where.
+- **Mechanism:** what Stainless was doing when it timed out (cite the debug).
+- **Lesson / fix:** what to do instead, or the lemma that unblocked it.
+Do NOT record VC counts. Do NOT delete an entry when it's later solved —
+mark it **Resolved (by ...)** so the dead-end knowledge persists.
