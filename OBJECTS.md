@@ -671,18 +671,28 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)** | cycle survivor scan peels the next `spec.next` old-stream survivor |
 | **assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)** | peeled cycle survivor equals the next value in `spec.next` |
 | **assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)** | remaining cycle survivor scan head equals the next `spec.next` value |
-| **assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)** | aligned survivor window head equals `spec.next(specIndex + 1)` |
-| **survivorWindowCovers(specIndex,currentOldIndex,count,offset)** | raw old-window coverage predicate for recursive survivor equality |
-| **assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)** | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` |
-| **initialSurvivorWindowCovers(count,offset)**          | initial survivor scan coverage predicate                    |
-| **assertCycleSurvivorAtMatchesSpecNext(offset,count)** | initial survivor scan at `offset` equals `spec.next(offset)` |
-| **assertInitialSurvivorGapMatchesSpecNextGap(k,count)** | adjacent initial survivor gap equals adjacent `spec.next` gap |
-| **assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k,count)** | `gapsFromValues(initialSurvivors)(k)` equals adjacent `spec.next` gap |
-| **assertInitialSurvivorGapListAtMatchesSpecNextGapList(k,count,nextPeriod)** | `gapsFromValues(initialSurvivors)(k) == spec.next.gapList(0,nextPeriod)(k)` |
-| **initialSurvivorGapListCovers(scanCount,from,gapCount)** | adjacent-pair coverage predicate for survivor gap prefixes |
-| **initialSurvivorGapList(from,gapCount,scanCount)**    | forward gap prefix built from adjacent initial survivor values |
-| **assertInitialSurvivorGapListMatchesNextGapList(from,gapCount,scanCount)** | survivor-gap prefix equals canonical `nextGapList` |
-| **assertInitialSurvivorGapListMatchesSpecNextGapList(from,gapCount,scanCount)** | survivor-gap prefix equals `spec.next.gapList` |
+
+> **DEFERRED (2026-07-03 recovery):** The 12 lemmas below were removed from the
+> code in commit `bd444a35` because they are coupled to a half-finished
+> contract-shape migration that left HEAD red. They are preserved in commits
+> `cb49ccf2`/`d97bffcb` and tag `pre-recovery-snapshot`, and will be re-activated
+> once the migration is redone correctly (callee + callers + these lemmas
+> together). See the "Recovery Log" in `tickets/active/independent-next-cycle.md`.
+> `assertHeadPlusFilterModulusNotFrontMultiple` (the migration-independent leaf)
+> has already been re-activated in commit `49c79b58`.
+
+| ~~assertCycleSurvivorWindowHeadMatchesSpecNext~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~survivorWindowCovers~~                              | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertCycleSurvivorWindowAtMatchesSpecNext~~        | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~initialSurvivorWindowCovers~~                       | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertCycleSurvivorAtMatchesSpecNext~~              | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapMatchesSpecNextGap~~        | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListAtMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~initialSurvivorGapListCovers~~                      | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~initialSurvivorGapList~~                            | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListMatchesNextGapList~~    | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
 | **assertFullEquivalence(nextPeriod,k)**                | `cycle(k) == spec(k) && cycle(1) == spec.next.head.value`   |
 | **assertNextGapListMatchesSpecNext(from,count)**       | `nextGapList(from,count) == spec.next.gapList(from,count)`  |
 | **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next                |
