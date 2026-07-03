@@ -968,32 +968,123 @@ against the OLD shape.
 
 ### Deferred work (needs a properly-scoped change)
 The **12 remaining survivor lemmas** (~635 lines) are coupled to the contract
-migration and require it to be redone **correctly** — migrating A's 5 callees
-**and** their 4 A-side callers **and** B's lemmas together in one consistent,
-verified change:
+migration. They are stored in commits `cb49ccf2`/`d97bffcb` and tag
+`pre-recovery-snapshot`, and are NOT in the current code. To bring them back,
+follow **The Correct Track** below — do NOT improvise, do NOT migrate one
+function at a time, do NOT commit a red state.
 
-`cb49ccf2` batch (B): `assertCycleSurvivorWindowHeadMatchesSpecNext`,
-`survivorWindowCovers`, `assertCycleSurvivorWindowAtMatchesSpecNext`,
-`initialSurvivorWindowCovers`, `assertCycleSurvivorAtMatchesSpecNext`.
-`d97bffcb` batch (B): `assertInitialSurvivorGapMatchesSpecNextGap`,
-`assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap`,
-`assertInitialSurvivorGapListAtMatchesSpecNextGapList`,
-`initialSurvivorGapListCovers`, `initialSurvivorGapList`,
-`assertInitialSurvivorGapListMatchesNextGapList`,
-`assertInitialSurvivorGapListMatchesSpecNextGapList`.
+---
 
-These form a self-contained cluster (call graph internal, lines ~716-1190 in B
-at `pre-recovery-snapshot`). To re-activate: migrate `nextAcceptedOldIndex` +
-the 4 siblings in A to NEW shape, migrate the 4 A-side callers in lockstep, then
-restore the 12 B lemmas — verifying the whole chapter stays green at each step.
+## The Correct Track — read this before touching the migration
+
+This is the step-by-step recipe to redo the contract migration so it stays
+green end-to-end. The previous editor got lost by migrating the callee alone
+and committing red. **Every step ends green or you revert.**
+
+### Background: what the migration is
+Two `require` shapes for the next-stage bridge functions in
+`SpecSieveSequence` (A):
+
+- **OLD shape (current, green):** `require(nextSeq.head.value == head.value)`
+- **NEW shape (target):**
+  `require(nextSeq.filterValues.head == head.value)` +
+  `require(apply(k) >= nextSeq.head.value)` (the latter only where the body
+  calls `nextSeq.accepts(apply(k))`)
+
+The OLD shape is *mathematically weaker* (`head.value != filterValues.head` in
+general — see LEARNINGS 18.6). The NEW shape is the correct one but is
+backwards-incompatible: every caller must be upgraded to supply the stronger
+facts. That is why this must be done as one atomic change.
+
+### The four groups that must move together (all or nothing)
+Before writing any code, confirm these lists with `grep`. They are the complete
+dependency closure of the migration.
+
+**Group 1 — A-side callees to migrate to NEW shape (5 functions):**
+- `SpecSieveSequence.assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple`
+- `SpecSieveSequence.assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple`
+- `SpecSieveSequence.nextMergedGapOldIndex` (private)
+- `SpecSieveSequence.nextAcceptedOldIndex`
+- `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`
+
+**Group 2 — A-side direct callers that must be upgraded in lockstep:**
+These call a Group-1 callee and were the actual timeout site last time:
+- `SpecSieveSequence.mergedGapPrefix` (calls `nextMergedGapOldIndex`)
+- `SpecSieveSequence.assertMergedGapPrefixAllPositive` (calls `nextMergedGapOldIndex`)
+- `SpecSieveSequence.assertMergedGapPrefixHeadMatchesNext` (calls `nextMergedGapOldIndex`)
+- `SpecSieveSequence.assertMergedGapPrefixMatchesNext` (calls `nextMergedGapOldIndex`)
+
+(Other A-side callers of the Group-1 acceptance bridges —
+`assertNextValueAtOrBeforeFirstSurvivor`,
+`assertNextSuccessorOldIndexAfterAnchor`,
+`assertFirstSurvivorAtOrBeforeNextValue`,
+`assertPeriodBoundIsNonNonMultiple`,
+`assertSkipUntilNonMultiple` — were green in both shapes last time; re-check them
+with `just verify` but they likely need no change.)
+
+**Group 3 — B-side lemmas written against the NEW shape (12 functions):**
+Restored verbatim from `pre-recovery-snapshot` (lines ~716-1190 in
+`SpecDerivedSieveSequence.scala`). They call `spec.nextAcceptedOldIndex` and
+internally `require(spec.next.filterValues.head == spec.head.value)`, so they
+ONLY compile-and-prove once Group 1 is NEW-shape.
+- `survivorWindowCovers`, `initialSurvivorWindowCovers`,
+  `assertCycleSurvivorWindowHeadMatchesSpecNext`,
+  `assertCycleSurvivorWindowAtMatchesSpecNext`,
+  `assertCycleSurvivorAtMatchesSpecNext`
+- `assertInitialSurvivorGapMatchesSpecNextGap`,
+  `assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap`,
+  `assertInitialSurvivorGapListAtMatchesSpecNextGapList`,
+  `initialSurvivorGapListCovers`, `initialSurvivorGapList`,
+  `assertInitialSurvivorGapListMatchesNextGapList`,
+  `assertInitialSurvivorGapListMatchesSpecNextGapList`
+
+**Group 4 — already re-activated, leave alone:**
+- `SpecDerivedSieveSequence.assertHeadPlusFilterModulusNotFrontMultiple`
+  (leaf, migration-independent, green at HEAD `49c79b58`).
+
+### The recipe (do ALL of 1-4 in one working tree before verifying)
+1. **Branch off the current green HEAD** (`49c79b58` or later). Tag it:
+   `git tag migration-attempt-<date> HEAD`.
+2. **Migrate Group 1 + Group 2 in A together** — edit all 9 functions' require
+   blocks (5 callees to NEW shape, 4 callers upgraded to supply the NEW facts).
+   Do this in one editing pass; do not verify until Step 3.
+3. **Restore Group 3 into B** from the snapshot:
+   `git show pre-recovery-snapshot:src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala`
+   and copy out the 12 functions (lines ~716-1190) into the current B, placing
+   them after `assertHeadPlusFilterModulusNotFrontMultiple` / the survivor-scan
+   lemmas as in the snapshot. Do NOT re-add the deleted OLD-shape
+   `require(spec.next.head.value == spec.head.value)` lines — those were the
+   point of the migration.
+4. **`just verify-ch 6`** (full chapter, NOT focused). Expected: green,
+   `~5830 valid` (5199 current + ~32 per re-activated lemma, rough).
+
+### If it goes red
+- **Do NOT commit. Do NOT "finish it later."** That is exactly what broke HEAD.
+- `git restore --source=49c79b58 --worktree <both files>` to return to green.
+- Read the SPECIFIC timeout VC. If it's a Group-2 caller failing a Group-1
+  callee precondition, that caller needs an additional fact (likely derivable
+  from `assertHeadPlusFilterModulusNotFrontMultiple()` or the existing
+  acceptance-bridge lemmas) — add it as a local `assert(...)`, not a new
+  `require`.
+- If after 3 attempts it's still red, STOP and ask for help (project rule
+  `stop-and-ask`). Report the failing VC verbatim.
+
+### Validation gate (what "done" means)
+- `just verify-ch 6` → `invalid: 0 unknown: 0`, total valid >= 5800.
+- The 12 Group-3 functions each appear with `valid` status in the log.
+- `OBJECTS.md`: un-strike the 12 DEFERRED rows (revert the 2026-07-03 edit).
+- Commit as ONE commit with a message listing all migrated functions.
 
 ### Lessons
 - **A contract migration must move callee + ALL callers + dependent lemmas in
   one green-to-green change.** Doing the callee alone leaves callers unable to
-  discharge the stronger precondition.
+  discharge the stronger precondition. (Now LEARNINGS 18.8.)
 - **When two files are touched by the same commit, suspect coupling.** The
   migration was not independent of B's new lemmas.
 - The leaf lemma `assertHeadPlusFilterModulusNotFrontMultiple` is the *correct*
   fact that replaces the false assumption `nextSeq.head.value ==
   nextSeq.filterValues.head` (LEARNINGS 18.6) — keep it independent of the
   migration so it stays green regardless of shape.
+- **Mid-migration states are red by construction.** Never commit one. Verify the
+  whole chapter, not just the touched function (focused runs hide cross-file
+  breakage).

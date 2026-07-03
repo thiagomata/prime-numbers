@@ -745,37 +745,46 @@ facts are easy to confuse:
 - `nextSeq.filterValues.head` is the front filter used by that new sequence,
   which is the previous sequence head.
 
-The false/stale contract shape is:
+These are NOT equal in general, so the OLD contract shape is unsound as a
+precondition even though it happened to verify on its own:
 
 ```scala
-require(nextSeq.head.value == head.value)
+require(nextSeq.head.value == head.value)   // OLD shape — weaker (head != front filter)
 ```
 
-The verified shape is:
+The intended NEW shape is stronger and correct:
 
 ```scala
 require(nextSeq.filterValues.head == head.value)
 require(apply(k) >= nextSeq.head.value) // when calling nextSeq.accepts(apply(k))
 ```
 
-**Fix (verified):** Replace the stale head equality with the front-filter
-equality, and expose the period endpoint non-multiple fact once:
+**Status (updated 2026-07-03 recovery):** The migration from OLD to NEW was
+attempted in commits `cb49ccf2`/`d97bffcb` and **broke HEAD red**. The previous
+"validated" numbers below came from that broken state and have been retracted.
+The migration was left half-finished: the NEW-shape callees were committed but
+their A-side callers and B-side dependent lemmas were not, so callers could not
+discharge the stronger precondition (timeout at `assertMergedGapPrefixAllPositive`).
+Recovery reverted both files to the green OLD-shape baseline (`5145c1e5`,
+committed `bd444a35`) and re-activated only the migration-independent leaf lemma
+(`assertHeadPlusFilterModulusNotFrontMultiple`, commit `49c79b58`).
+
+**The mathematics here is correct, but the migration is NOT done.** To redo it
+safely, see **18.8** below — migrate callee + ALL callers + dependent lemmas in
+one green-to-green change. Do NOT repeat the partial migration.
+
+**Reusable leaf fact (verified, migration-independent):** Expose the period
+endpoint non-multiple fact once, regardless of contract shape:
 
 ```scala
 assertHeadPlusFilterModulusNotFrontMultiple()
 ```
 
-This prevents Stainless from unfolding the next-stage filter construction and
-the recursive search wrapper just to rediscover that
-`mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0`.
+This proves `mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0`
+without depending on the head-vs-front-filter contract debate. It is currently
+the ONLY piece of the next-stage-filter work that is active and green.
 
-**Validation:** Focused runs verified
-`SpecSieveSequence.nextAcceptedOldIndex` (`30/30`),
-`SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple` (`61/61`),
-`SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples` (`96/96`),
-and `SpecDerivedSieveSequence.assertCycleSurvivorAtMatchesSpecNext` (`94/94`).
-
-**Source:** `tickets/active/independent-next-cycle.md`.
+**Source:** `tickets/active/independent-next-cycle.md` (Recovery Log section).
 
 ### 18.7 Recursive list lifts need explicit coverage predicates
 
@@ -801,6 +810,54 @@ available. With that invariant, the proof can use same-shape recursion:
 - `assertInitialSurvivorGapListMatchesSpecNextGapList` composes that with the
   existing `nextGapList == spec.next.gapList` bridge.
 
+### 18.8 A precondition migration must move callee + ALL callers + dependents together
+
+**Observation:** Strengthening a `require` (contract migration) is the most
+dangerous kind of edit in this codebase, because it is *backwards-incompatible*:
+every caller that previously discharged the old (weaker) precondition must now
+discharge the new (stronger) one. The 2026-07-03 red HEAD was caused by a
+partial migration of `nextAcceptedOldIndex` and 4 siblings in
+`SpecSieveSequence` to a stronger shape, while their callers were left on the
+old shape. Stainless then timed out trying to prove the callers could meet a
+precondition they were no longer given the facts for.
+
+**The rule — migrate as one atomic, green-to-green change:**
+
+1. **List every site** before touching code: the callee(s) being strengthened,
+   every direct caller, and every lemma in *other files* whose `require`/proof
+   was written against the new shape. A `grep` for the callee name across the
+   whole `src/main/scala/` is mandatory — the dependency can cross files (it
+   crossed from `SpecSieveSequence` into `SpecDerivedSieveSequence` here).
+2. **Migrate callee + callers together**, in one working-tree state, NOT one
+   commit at a time. A mid-migration commit is red by construction: the callee
+   is strong, the callers are weak, the precondition cannot be discharged.
+3. **`just verify` the whole chapter** (not just the touched function) before
+   committing. Focused `--functions=` runs hide cross-file breakage.
+4. **If it goes red, do NOT commit and continue.** Revert to green and replan.
+   Committing a red state and "finishing later" is how HEAD stayed red for
+   multiple commits.
+
+**Smell test for a partial migration:** if your working tree strengthens a
+`require` in function F but you have NOT edited every `grep` hit for `F(`,
+you are mid-migration and almost certainly red. Stop.
+
+**Recovery pattern that worked (when a partial migration was already committed
+across two commits + working tree):** since the offending commits touched only
+code-and-its-dependents, restoring *both* files to the last green commit
+(`git restore --source=<green-sha> --worktree <file>`) was cleaner than
+commenting out individual functions. `git restore` is permitted (only
+`checkout`/`revert`/`push --force`/`rm` are denied). Tag the broken HEAD first
+(`git tag <name> HEAD`) so nothing is lost.
+
+**Anti-pattern that failed: the "surgical callee-only revert."** Reverting only
+the callee back to the weak shape cleared *its* timeout but surfaced a *new*
+timeout in a dependent lemma in the other file that had been written against
+the strong shape. When two files are touched by the same commit, assume they
+are coupled.
+
+**Source:** `tickets/active/independent-next-cycle.md` (Recovery Log + Correct
+Track sections).
+
 **Validation:** Focused runs verified
 `initialSurvivorGapListCovers` (`9/9`),
 `initialSurvivorGapList` (`18/18`),
@@ -820,3 +877,4 @@ available. With that invariant, the proof can use same-shape recursion:
 | 18.5 Return explicit branch invariants from recursive-search wrappers | `independent-next-cycle.md` | Recursive search |
 | 18.6 Next-stage head is not the next-stage front filter | `independent-next-cycle.md` | Next-stage filters |
 | 18.7 Recursive list lifts need explicit coverage predicates | `independent-next-cycle.md` | Recursive list proofs |
+| 18.8 Precondition migration must move callee + ALL callers + dependents together | `independent-next-cycle.md` | Contract migration / workflow |
