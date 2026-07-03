@@ -503,6 +503,9 @@ Verified reusable helper work from this pass:
 | `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 81/81 valid |
 | `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` | Focused verified: 41/41 valid |
 | `SpecDerivedSieveSequence.assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)` | head of the remaining cycle survivor scan equals the following `spec.next` value | Focused verified: 49/49 valid |
+| `SpecDerivedSieveSequence.assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)` | aligned survivor window head equals `spec.next(specIndex + 1)` | Focused verified: 55/55 valid |
+| `SpecDerivedSieveSequence.survivorWindowCovers(specIndex,currentOldIndex,count,offset)` | raw old-window coverage predicate threaded by recursive ordered survivor equality | Focused validated with `assertCycleSurvivorWindowAtMatchesSpecNext` |
+| `SpecDerivedSieveSequence.assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)` | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` | Focused verified: 128/128 valid |
 
 Verifier-shape lesson from Phase E:
 
