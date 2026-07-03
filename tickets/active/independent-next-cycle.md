@@ -1088,3 +1088,162 @@ ONLY compile-and-prove once Group 1 is NEW-shape.
 - **Mid-migration states are red by construction.** Never commit one. Verify the
   whole chapter, not just the touched function (focused runs hide cross-file
   breakage).
+
+---
+
+## NEW APPROACH: `SieveCycleAfterProof` (2026-07-03)
+
+**Status:** 5 lemmas verified, 0 contract migration needed. See `SieveCycleAfterProof.scala`.
+
+### Motivation
+
+The contract migration (Groups 1-3 above) was **abandoned after it broke HEAD**.
+Note: HEAD broke because the migration was left *half-finished* (callee migrated,
+callers and B-side lemmas not — see the Recovery Log above), **not** because the
+survivor math timed out. The 12 deferred lemmas *did* focused-verify (94/94,
+128/128, etc.); only the wiring was broken. That framing matters: the math is
+not disproven, the engineering procedure was. The Correct Track recipe above
+documents the fix.
+
+Separately, two genuine mathematical obstacles exist in the *index-based* proof
+style — recursive integral monotonicity (`assertCycleIntegralIncreasing`) times
+out for symbolic positions, and cross-instance `accepts` calls unfold and time
+out (LEARNINGS §18.1). The new value-level approach below is an attempt to route
+around those obstacles rather than pay the migration cost. Whether it clears the
+harder rungs (ordered equality, gap equality, rotation) is **not yet known** —
+see the Approach Comparison section at the end of this ticket.
+
+### Core idea
+
+Replace the index-based `nextAcceptedOldIndex` with a direct **value-level scan** through the cycle integral, filtering by the new filter head. The scan is bounded by the repeated-gap cycle (`head.value` repetitions) — proven finite by existing arithmetic lemmas (`assertHeadPlusFilterModulusNotFrontMultiple`, distinct-prime coprimality).
+
+### Verified lemmas (all focused-verified, no contract migration)
+
+| Function | VCs | What it proves | Techniques |
+|----------|-----|----------------|------------|
+| `assertCycleSurvivorCoprimeToCyclePrimes` | 6/6 | Every cycle-integral survivor (not divisible by head) is coprime with all primes | `assertCycleValueCoprimeToTail` + `mod(survivor, head) != 0` |
+| `assertSpecNextFilterEqCyclePrimes` | 10/10 | `spec.next.filterValues == cyclePrimes` | `assertPrimesMatch`, prime list chain through spec |
+| `assertCycleSurvivorCoprimeToSpecNextFilter` | 10/10 | Every survivor is coprime with `spec.next.filterValues` | Combines the two lemmas above |
+| `assertCycleSurvivorPassesSpecNextFilter` | 8/8 | Every survivor passes `spec.next.passesFilter` | Coprimality lemma + `passesFilter` delegation (avoids `accepts` >= precondition) |
+| `assertFirstSurvivorEqualsSpecNextHead` | 7/7 | `cycle.integral(0) == spec.next.head.value` | `assertNextHeadMatches`, `assertApplyMatches(1)` |
+
+### Timeout obstacles found
+
+1. **`CycleIntegralProperties.assertCycleIntegralIncreasing`** — recursive induction on integral positions times out for symbolic `pos`. This blocks the `>=` precondition in `spec.next.accepts(survivor)`.
+2. **`SpecCycleSieveEquivalence.assertNextAcceptsMatchesCyclePrimesCoprime`** — cross-instance call timeout (LEARNINGS §18.1 pattern). Calls `spec.next.accepts(value)` inside SpecCycleSieveEquivalence, which triggers full unfold.
+3. **Workaround**: Use `spec.next.passesFilter` directly (no `>=` precondition), proving filter-passing through coprimality + filter-equality chains.
+
+### Remaining bridge to full theorem
+
+`nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)` needs:
+
+1. Prove `nextSorted.list` survivors are the same values as `spec.next(i) - head` after rotation alignment
+2. Prove gap lists match (inner + wrap gaps)
+
+Key risks: rotation-index proof (may trigger recursion timeout), sorted-list survivor ordering vs spec.next ordering.
+
+### Updated phase plan
+
+| Phase | What | Status |
+|-------|------|--------|
+| 1 | `SieveCycleAfterProof` coprimality + filter lemmas | **5/5 verified** |
+| 2 | Prove `nextSorted.list` survivors = `spec.next` values (ordered) | NOT STARTED |
+| 3 | Prove gap equality from value equality | NOT STARTED |
+| 4 | M4: C uses pipeline | NOT STARTED |
+| (alt path) | Contract migration (Groups 1-3) | **PAUSED, not disproven** — broke HEAD from a wiring bug; 12 lemmas focused-verified. See Approach Comparison below. |
+
+Which path is *active* is a decision, not settled — see **Approach Comparison &
+Recommendation** below. Do not assume value-level has won just because it is the
+most recent commit; it has proven less of the ladder so far.
+
+---
+
+## Approach Comparison & Recommendation (2026-07-03)
+
+This section is the decision frame for the two paths. Read it before choosing.
+
+### They are not two ways to prove the same lemma
+
+The two approaches target **different rungs of the M3 ladder** (see the Santa
+Claus List above):
+
+- **Old (contract migration)** is a *refactor of the spec-side bridge* so that
+  12 already-written survivor-window lemmas can be re-activated. Those lemmas
+  prove `cycleSurvivor(i) == spec.next(i)` — **ladder step 6 (ordered survivor
+  equality)** — via index/old-stream machinery. The migration is plumbing; it
+  does not itself prove the pipeline equality, it unblocks the existing step-6
+  proof.
+- **New (`SieveCycleAfterProof`)** is a *fresh value-level proof* that bypasses
+  the index machinery. Its 5 verified lemmas establish survivor ⟹ coprime ⟹
+  passes `spec.next.passesFilter` — **ladder steps 3-5 (filter-decision +
+  membership)**, done a different way. It has **not yet reached step 6, nor
+  steps 7-11** (ordered equality, sort bridge, gap equality, rotation).
+
+So the "94/94, 128/128" focused-verify numbers (old) and the "5/5 verified"
+numbers (new) measure **different things**. Both can be true without
+contradiction. Comparing them as if they were head-to-head is the first trap.
+
+### What each is actually blocked on
+
+| | Old (contract migration) | New (SieveCycleAfterProof) |
+|---|---|---|
+| Done | 12 lemmas written + focused-verified (red globally only due to migration) | 5 lemmas written + globally green |
+| The wall | **Mechanical**: 9 coupled `require` changes across 2 files; one misstep breaks HEAD. **Known fix** (Correct Track recipe). | **Mathematical**: rotation-index proof + sorted-survivor ordering vs `spec.next` ordering. **Unknown if provable.** |
+| Risk shape | High *engineering* risk, low *mathematical* risk. Math is already proven; only wiring is broken. | Low *engineering* risk, high *mathematical* risk. Hard part still ahead and looks like known-timeout territory. |
+| Reaches final theorem? | Yes — once green, step 6 is done; steps 7-11 remain (always needed). | Unknown — steps 6-11 all ahead; step 6 must be re-derived in value-level style. |
+
+### The decisive fact
+
+**The new approach has proven less of the ladder than the old one, not more.**
+`SieveCycleAfterProof`'s filter-passing result is a *prerequisite* of ordered
+survivor equality — the old approach's 12 lemmas assume that territory and go
+further. The new approach is currently at "survivors pass the filter," which is
+necessary but not sufficient. It still has to clear the *same ordering/gap/
+rotation wall* the old approach was trying to short-circuit — and the ticket
+itself flags that wall as the likely timeout region (Risk §2: "might hit the
+same list-equality wall as the walk"; the walk timed out 6 times).
+
+The `passesFilter`-instead-of-`accepts` workaround (avoiding the `>=`
+precondition) is genuinely clever and removes **one** obstacle. But it removes
+an obstacle on the **easy part** (filter membership). The hard part (ordered
+equality, gap equality, rotation) is still entirely unproven in the new style.
+
+### Recommendation: hedge, old first
+
+The new approach is the right **insurance policy**, but it should not yet
+replace the old approach as the active path.
+
+1. **Don't abandon proven math.** The old approach's 12 lemmas are real,
+   focused-verified progress on step 6. The new approach would have to
+   re-derive that from scratch in a style whose hard cases are untested.
+2. **The old approach's blocker is mechanical and now has a checklist.** The
+   Correct Track recipe turns "9 coupled changes" into an ordered procedure
+   with a validation gate. The risk was *procedural* (a dev got lost), not
+   *mathematical*. With the procedure written down, that risk is far lower.
+3. **The new approach's blocker is mathematical and unknown.** "5/5 verified"
+   is evidence the approach-to-the-wall is clean, not that the wall is
+   scalable.
+4. **Run them as a hedge, old first.** Try the migration (now well-specified;
+   unblocks the most proven work). If green, the 12 lemmas are back and step 6
+   is done. If the migration *or* the re-activated lemmas reveal a deeper
+   timeout, pivot to value-level — and the 5 green `SieveCycleAfterProof`
+   lemmas are a reusable foundation either way.
+
+### Concrete failure signals (when to pivot)
+
+- **Old approach → pivot to new if:** after a Correct-Track migration,
+  `assertCycleSurvivorWindowAtMatchesSpecNext` or
+  `assertInitialSurvivorGapListMatchesSpecNextGapList` times out *even with the
+  correct preconditions*. That means the index-based step-6 proof itself does
+  not scale, and the value-level style is worth the re-derivation cost.
+- **New approach → do not keep hammering if:** the rotation-index lemma or the
+  sorted-survivor-ordering lemma times out. That is the known wall. It means
+  *neither* approach clears step 7+ cheaply, and the real decision becomes
+  whether a third representation is needed (e.g. per-position apply equality
+  rather than list equality — the Risk §2 fallback).
+
+### Reusable regardless of path
+
+`assertHeadPlusFilterModulusNotFrontMultiple` (already re-activated, green) and
+the 5 `SieveCycleAfterProof` lemmas are **path-independent** — neither depends
+on the contract-shape debate. Keep them regardless of which path is chosen.
