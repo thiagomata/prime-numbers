@@ -981,6 +981,15 @@ This is the step-by-step recipe to redo the contract migration so it stays
 green end-to-end. The previous editor got lost by migrating the callee alone
 and committing red. **Every step ends green or you revert.**
 
+> **Why this matters (the dependency on the Santa Claus List).** The 12 deferred
+> Group-3 lemmas are the bridge from per-position survivor matching to list-level
+> gap equality. The final one, `assertInitialSurvivorGapListMatchesSpecNextGapList`,
+> is what lets the pipeline output be compared list-by-list to
+> `spec.next.gapList`. Without these, the M3 pipeline-output theorem can only be
+> attacked value-by-value, which is the fragile cross-instance path that times
+> out. So the migration is not cosmetic — it unblocks the cheapest known route
+> through M3 ladder step 6.
+
 ### Background: what the migration is
 Two `require` shapes for the next-stage bridge functions in
 `SpecSieveSequence` (A):
@@ -1007,12 +1016,42 @@ dependency closure of the migration.
 - `SpecSieveSequence.nextAcceptedOldIndex`
 - `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`
 
+Per-function require diff (line numbers verified at green HEAD):
+
+| # | Function (line) | OLD require | NEW require | Add lower bound? |
+|---|---|---|---|---|
+| 1 | `assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple` (L1133) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | No — takes `value: BigInt`, not `apply(k)` |
+| 2 | `assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple` (L1166) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | No — takes `value: BigInt`, not `apply(k)` |
+| 3 | `nextMergedGapOldIndex` (L2539) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — body calls `nextSeq.accepts(apply(k))` |
+| 4 | `nextAcceptedOldIndex` (L2599) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — delegates to `nextMergedGapOldIndex` |
+| 5 | `assertSkippedBeforeNextAcceptedOldIndexIsMultiple` (L2640) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — calls `nextAcceptedOldIndex` |
+
 **Group 2 — A-side direct callers that must be upgraded in lockstep:**
 These call a Group-1 callee and were the actual timeout site last time:
 - `SpecSieveSequence.mergedGapPrefix` (calls `nextMergedGapOldIndex`)
 - `SpecSieveSequence.assertMergedGapPrefixAllPositive` (calls `nextMergedGapOldIndex`)
 - `SpecSieveSequence.assertMergedGapPrefixHeadMatchesNext` (calls `nextMergedGapOldIndex`)
 - `SpecSieveSequence.assertMergedGapPrefixMatchesNext` (calls `nextMergedGapOldIndex`)
+
+Per-function require diff (line numbers verified at green HEAD). All four get
+BOTH the filterValues-head swap AND the lower bound:
+
+| # | Function (line) | OLD require | NEW require | Add lower bound? |
+|---|---|---|---|---|
+| 6 | `mergedGapPrefix` (L2697) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — calls `nextMergedGapOldIndex` |
+| 7 | `assertMergedGapPrefixAllPositive` (L2742) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — calls `mergedGapPrefix` |
+| 8 | `assertMergedGapPrefixHeadMatchesNext` (L2786) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — calls `mergedGapPrefix` |
+| 9 | `assertMergedGapPrefixMatchesNext` (L2826) | `nextSeq.head.value == head.value` | `nextSeq.filterValues.head == head.value` | **Yes** — calls `mergedGapPrefix` |
+
+> **Lower-bound caveat (corrects a common misconception).** The four Group-2
+> callers already carry `require(nextSeq.accepts(apply(k)))`. It is tempting to
+> think that `accepts` *implies* `apply(k) >= nextSeq.head.value`, so the new
+> lower-bound require comes for free. **It does not.** `accepts(value)` itself
+> has `require(value >= head.value)` (SpecSieveSequence L163-164) — i.e. the
+> lower bound is a *precondition of* `accepts`, not a consequence of it. So each
+> Group-2 caller must derive `apply(k) >= nextSeq.head.value` independently
+> (e.g. from an existing monotonicity lemma, or a local `assert(...)`) and add
+> it as an explicit require. Do not assume the solver connects these on its own.
 
 (Other A-side callers of the Group-1 acceptance bridges —
 `assertNextValueAtOrBeforeFirstSurvivor`,
