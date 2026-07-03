@@ -1,23 +1,102 @@
 # Independent Next-Cycle Computation (B.nextFromCycle)
 
 **Created:** 2026-07-01
-**Updated:** 2026-07-03
-**Status:** Phases A-D complete, Phase E in progress
+**Updated:** 2026-07-04
+**Status:** Green baseline at HEAD; M3 (pipeline = spec.next) is the open theorem.
 
-## Current Verification Status (2026-07-02)
+---
 
-| Chapter | Valid | Invalid | Unknown | Notes |
-|----------|-------|---------|---------|-------|
-| ch1 | 16 | 0 | 0 | Green |
-| ch2 | 1346 | 0 | 0 | Green |
-| ch3 | **1582** | 0 | 0 | Green (+108 from Phase B/C/D) |
-| ch4 | **2675** | 0 | 0 | Green (+282 from GapProperties) |
-| ch5 | 981 | 0 | 0 | Green |
-| ch6 | **4647** | 0 | 0 | Green (+18 from Phase D) |
-| ch4 | 2393 | 0 | 0 | Green |
-| ch5 | 981 | 0 | 0 | Green |
-| ch6 | 4629 | 0 | 0 | Green |
-| `just test` | — | — | — | **133/133 passed** |
+## ⤴ START HERE — current plan (read this first, before any code)
+
+This section is the active plan. Everything below `## Reference & History` is
+context. If you cannot state the micro-goal and the method in one sentence each,
+your first job is to re-read this section — not to edit code.
+
+### Where we actually are
+- **Green baseline:** HEAD verifies clean (`just verify-ch 6` → 0 invalid,
+  0 unknown). A+B Scala files are at the `5145c1e5` shape.
+- **What's proven and active:** current-stage equality (`cycle(k) == spec(k)`),
+  the M1 pipeline preconditions, the repeated-cycle ladder, the canonical
+  next-cycle lemmas, and the migration-independent leaf
+  `assertHeadPlusFilterModulusNotFrontMultiple`.
+- **What's NOT proven:** M3 — `nextRotatedGaps(cycle) == spec.next.gapList(0,nextPeriod)`.
+  This is the only theorem that matters. Everything else is supporting work.
+
+### The micro-goal (one lemma at a time)
+The next concrete step is **not** "do M3." It is one falsifiable lemma, chosen
+because it's the cheapest unproven rung that unblocks the next. Define it
+*before* coding, in this shape:
+
+> **Lemma:** <name> — <one-line statement>
+> **Preconditions it needs:** <explicit list — every fact the body relies on>
+> **Why it's the next step:** <which rung it clears, what it unblocks>
+
+State the precondition list by reading the proof you intend to write, not by
+guessing. If you can't enumerate the preconditions, you don't yet understand the
+lemma — keep reading reference material until you can.
+
+### The method: debug-first precondition audit (do this on EVERY timeout)
+Most timeouts here are **not** deep math — they are Stainless re-deriving facts
+the proof never handed it. Evidence: LEARNINGS 18.4/18.5, the `accepts`/`>=`
+precondition-of-a-precondition gap found 2026-07-03, and the debug note that
+Stainless "tries to unwrap the pipeline again" instead of reusing verified facts.
+
+**On any timeout, before considering a new approach:**
+1. Run `just verify-debug <fn>` and read what Stainless is actually unfolding.
+2. List every fact it is trying to rediscover (cross-instance calls, recursive
+   unwinds, monotonicity it won't reuse).
+3. Assert each one explicitly — as a local `assert(...)`, a `.ensuring` on the
+   producer, or a directed equality lemma (LEARNINGS 18.3).
+4. Re-verify. Repeat with the next unfolding.
+5. **Only after a thorough audit yields nothing** is the wall "real" — and even
+   then, the fallback is per-position apply equality (Risk §2), not a brand-new
+   representation.
+
+This replaces the old habit of "hit wall → invent new approach → add a section."
+A new approach is a last resort, not a first response.
+
+### Stopping rules (do NOT drift)
+- **One lemma per working tree.** Define it, prove it green, commit. Then pick
+  the next. Never carry two in-flight lemmas.
+- **3 failed attempts on one lemma → STOP and surface the debug output**, do not
+  try a variation, do not pivot approach. Report the failing VC verbatim.
+- **Never commit red.** Mid-migration states are red by construction (see
+  Recovery Log). If green isn't reachable in one working tree, revert and
+  redefine the micro-goal smaller.
+- **If the session can't state the micro-goal, the session stops** — it does not
+  edit code. Re-read this section or ask.
+
+### Documentation rule: no verify counts
+**Do not record VC counts, `X/X valid` tallies, or "focused-verified" status
+claims in this ticket or in OBJECTS.md.** They go stale the moment anything
+changes (they already survived a red HEAD once, which made them actively
+misleading). The durable facts are: the lemma *name*, *what it proves*, and the
+*commit* that introduced it. For current status, re-run `just verify-ch 6`; the
+only durable criterion is `invalid: 0 unknown: 0`. Record the green signal
+(0/0), never the count.
+
+### Two known approaches (decide once, don't relitigate)
+The reference section documents both; the **Approach Comparison** subsection
+gives the full analysis. Short version: **hedge, contract-migration first.**
+The migration is mechanical (recipe in `## The Correct Track`) and unblocks 12
+already-written lemmas (their focused-verify claims predate the red HEAD, so
+treat them as drafts until re-verified); the value-level `SieveCycleAfterProof`
+path is insurance but has proven less of the ladder. Pivot only on the failure signals
+listed in the comparison. Do not start a third approach without exhausting the
+debug-first audit on the existing two.
+
+---
+
+## Current Verification Status
+
+**Authoritative as of 2026-07-04 recovery:** `just verify-ch 6` is green
+(0 invalid, 0 unknown), full chapter, after restoring the `5145c1e5` baseline
+and re-activating the leaf lemma. `just test` → 133/133.
+
+> The per-chapter table that used to live here had duplicate/contradictory rows
+> from stale baselines and was removed. Do not record verify counts in this
+> ticket — they go stale immediately. To check current status, re-run
+> `just verify-ch 6`; the durable criterion is `invalid: 0 unknown: 0`.
 
 ### Phase B complete (2026-07-02)
 
@@ -35,8 +114,8 @@ This makes the positional-shift law and gap-translation law mathematically true.
 
 **New foundation lemmas added to ch3:**
 
-| Lemma | File | Statement | VCs |
-|-------|------|-----------|-----|
+| Lemma | Statement |
+|-------|-----------|
 | `assertAppendApplyLeft` | `ListUtilsProperties` | `(left ++ right).apply(k) == left.apply(k)` for `k < left.size` | 12/12 |
 | `assertAppendApplyRight` | `ListUtilsProperties` | `(left ++ right).apply(k) == right.apply(k - left.size)` for `k >= left.size` | 12/12 |
 | `assertSplitAtOne` | `ListUtilsProperties` | `splitAt(list, 1)._1 == List(list.head) && splitAt(list, 1)._2 == list.tail` | 4/4 |
@@ -194,7 +273,6 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
 3. **Keep/drop predicate transfer**
 
    Status: proved by `assertCycleSpecNextFilterDecisionMatches(k)`.
-   Focused verification: `18/18 valid`.
    Home: chapter 6 (`SpecDerivedSieveSequence`) because it relates `cycle(k)`,
    `spec(k)`, and `spec.next.filterValues`.
 
@@ -310,9 +388,9 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
    Status: missing/partially covered by `assertExpandedResiduesRepresentPeriod`
    and `assertNextFilteredContainsCoprime`.
    Progress: bounds for the expanded/filtered pipeline are now proved via
-   `assertNextExpandedAllLessThan(seq)` (`11/11 valid`),
+   `assertNextExpandedAllLessThan(seq)`,
    `assertNextFilteredAllLessThan(seq)`, and
-   `nextFilteredWithBound(seq)` (`8/8 valid`). These are range facts, not yet
+   `nextFilteredWithBound(seq)`. These are range facts, not yet
    ordered survivor equality.
    Home: chapter 6, because this talks about `SieveSequenceNextLevel` pipeline
    stages. Any reusable list-level filter membership/order helper discovered
@@ -446,21 +524,21 @@ Portable lemmas found in the old bridge:
 
 | Old lemma | Meaning | Porting status |
 |---|---|---|
-| `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)` | `spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(0, nextPeriod)` | Ported and focused verified: 11/11 valid |
-| `assertNextCycleApplyMatchesSpecNext(nextPeriod, k)` | `SpecDerivedSieveSequence(spec.next, nextPeriod).cycle(k) == spec.next(k)` | Ported and focused verified: 20/20 valid |
-| `assertNextCycleGapsMatchSpecNext(nextPeriod)` | canonical next-cycle gaps equal `spec.next.gapList(0,nextPeriod)` | Ported and focused verified: 25/25 valid |
-| `assertNextCycleHeadMatchesSpecNext(nextPeriod)` | canonical next-cycle head equals `spec.next.head.value` | Ported and focused verified: 16/16 valid |
-| `assertNextCycleMatchesSpecNext(nextPeriod)` | packages canonical head + gaps; apply via indexed lemma | Ported and focused verified: 25/25 valid |
-| `SpecSieveSequence.assertSpecGapPeriodPositive(period)` | `gapList(0,period)` is strictly positive via existing apply/gap invariant | Added and focused verified: 7/7 valid |
-| `assertNextCycleGapsPositive(nextPeriod)` | canonical next-cycle stored gaps are strictly positive | Added and focused verified: 25/25 valid |
-| `nextGapList(from,count)` + `assertNextGapListMatchesSpecNext(from,count)` | direct adjacent-difference target equals `spec.next.gapList` in forward order | Re-ported and focused verified: 21/21 valid |
-| `assertModulusPositive()` | B.cycle tail modulus is positive | Added and focused verified: 3/3 valid |
-| `assertPrimesTailValuesPositive()` | B.cycle tail prime values are all positive | Added and focused verified: 3/3 valid |
-| `assertHeadPositive()` | B.cycle head is positive | Added and focused verified: 1/1 valid |
-| `assertModulusTimesHeadPositive()` | B.cycle expanded modulus `modulus * head` is positive | Added and focused verified: 3/3 valid |
-| `nextPipelineGaps()` | computes `SieveSequenceNextLevel.nextRotatedGaps(cycle)` after discharging all pipeline preconditions | Added and focused verified: 8/8 valid |
-| `assertNextPipelineGapsPositiveFromSpec(nextPeriod)` | conditional positivity: if pipeline gaps equal canonical spec gaps, then pipeline gaps are positive | Added and focused verified: 12/12 valid |
-| `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` | conditional `GapCycle` builder behind the future producer-equality precondition | Added and focused verified: 25/25 valid |
+| `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)` | `spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(0, nextPeriod)` |
+| `assertNextCycleApplyMatchesSpecNext(nextPeriod, k)` | `SpecDerivedSieveSequence(spec.next, nextPeriod).cycle(k) == spec.next(k)` |
+| `assertNextCycleGapsMatchSpecNext(nextPeriod)` | canonical next-cycle gaps equal `spec.next.gapList(0,nextPeriod)` |
+| `assertNextCycleHeadMatchesSpecNext(nextPeriod)` | canonical next-cycle head equals `spec.next.head.value` |
+| `assertNextCycleMatchesSpecNext(nextPeriod)` | packages canonical head + gaps; apply via indexed lemma |
+| `SpecSieveSequence.assertSpecGapPeriodPositive(period)` | `gapList(0,period)` is strictly positive via existing apply/gap invariant |
+| `assertNextCycleGapsPositive(nextPeriod)` | canonical next-cycle stored gaps are strictly positive |
+| `nextGapList(from,count)` + `assertNextGapListMatchesSpecNext(from,count)` | direct adjacent-difference target equals `spec.next.gapList` in forward order |
+| `assertModulusPositive()` | B.cycle tail modulus is positive |
+| `assertPrimesTailValuesPositive()` | B.cycle tail prime values are all positive |
+| `assertHeadPositive()` | B.cycle head is positive |
+| `assertModulusTimesHeadPositive()` | B.cycle expanded modulus `modulus * head` is positive |
+| `nextPipelineGaps()` | computes `SieveSequenceNextLevel.nextRotatedGaps(cycle)` after discharging all pipeline preconditions |
+| `assertNextPipelineGapsPositiveFromSpec(nextPeriod)` | conditional positivity: if pipeline gaps equal canonical spec gaps, then pipeline gaps are positive |
+| `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` | conditional `GapCycle` builder behind the future producer-equality precondition |
 | `assertSurvivorPositionMatchesSpecNext(m)` | survivor bridge through `indexOfAccepted` | Partially replaced by `assertSpecNextIsKthSurvivor`; compare before porting |
 | `assertCycleDiffEqualsGap(pos)` | adjacent `cycle` difference equals gap-cycle element | Needs careful review; old code may have off-by-one risk in doc/code |
 
@@ -479,43 +557,43 @@ Verified reusable helper work from this pass:
 
 | Helper | Statement | Validation |
 |---|---|---|
-| `SieveUtils.assertSplitAtPreservesAllGreaterThan(list,index,value)` | splitting a positive-bounded list preserves the bound on both pieces | Focused verified: 23/23 valid |
-| `SieveUtils.assertRotateAtPreservesAllGreaterThan(list,index,value)` | rotating a positive-bounded list preserves the bound | Focused verified: 20/20 valid |
-| `ListBoundUtils.assertLessThanAtIndex(list,bound,pos)` | `allLessThan(list,bound)` exposes the pointwise fact `list(pos) < bound` | Focused verified: 13/13 valid |
-| `SieveUtils.assertPairwiseGapsAllPositive(list)` | strict ascending input gives positive adjacent gaps | Focused verified: 36/36 valid |
-| `SieveUtils.assertWrapGapPositive(sorted,modulus)` | `sorted.last < modulus` and `sorted.head >= 0` give positive wrap gap | Focused verified: 21/21 valid |
-| `SieveUtils.assertCalculateGapsAllPositive(sorted,modulus)` | sorted bounded residues give positive calculated gaps | Focused verified: 23/23 valid |
-| `SortedList.insertSorted(x,list)` | postcondition exposes `isAscending(list) => isAscending(result)` at recursive call sites | Focused verified: 21/21 valid |
-| `SortedList.sortFiltered(list)` | postcondition exposes `isAscending(result)` directly from the recursive sorting producer | Focused verified: 14/14 valid |
-| `SieveSequenceNextLevel.assertNextGapsAllPositiveGivenSortedBounds(seq)` | `sortFiltered` sortedness plus nonempty/range/head bounds imply `nextGaps(seq)` is positive | Focused verified: 24/24 valid |
-| `SieveSequenceNextLevel.assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` | positive `nextGaps(seq)` implies `nextRotatedGaps(seq)` is positive by rotation preservation | Focused verified: 36/36 valid |
-| `GapProperties.assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)` | scanned non-multiple CI value is kept in `survivorValues` | Focused verified: 29/29 valid |
-| `GapProperties.assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)` | every value kept in `survivorValues` is a non-multiple | Focused verified: 31/31 valid |
-| `GapProperties.assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)` | scanned multiple CI value is excluded from `survivorValues` | Focused verified: 14/14 valid |
-| `GapProperties.assertAllMultiplesInRangeTail(ci,fv,from,until)` | tail of an all-multiple prefix remains all-multiple | Focused verified: 7/7 valid |
-| `GapProperties.assertFirstSurvivorAtPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivor head is `ci(pos)` | Focused verified: 47/47 valid |
-| `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` | Focused verified: 44/44 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 | Focused verified: 27/27 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorHeadMatchesSpecNext0(count)` | initial cycle survivor scan head equals `spec.next(0)` | Focused verified: 13/13 valid |
-| `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index | Focused verified: 30/30 valid |
-| `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter | Focused verified: 61/61 valid |
-| `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix | Focused verified: 96/96 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan | Focused verified: 84/84 valid |
-| `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` | Focused verified: 41/41 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)` | head of the remaining cycle survivor scan equals the following `spec.next` value | Focused verified: 49/49 valid |
-| `SpecDerivedSieveSequence.assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)` | aligned survivor window head equals `spec.next(specIndex + 1)` | Focused verified: 55/55 valid |
-| `SpecDerivedSieveSequence.survivorWindowCovers(specIndex,currentOldIndex,count,offset)` | raw old-window coverage predicate threaded by recursive ordered survivor equality | Focused validated with `assertCycleSurvivorWindowAtMatchesSpecNext` |
-| `SpecDerivedSieveSequence.assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)` | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` | Focused verified: 128/128 valid |
-| `SpecDerivedSieveSequence.assertHeadPlusFilterModulusNotFrontMultiple()` | exposes that the period endpoint is not divisible by the next front filter | Focused verified: 32/32 valid |
-| `SpecDerivedSieveSequence.initialSurvivorWindowCovers(count,offset)` | raw initial-window coverage predicate for direct survivor equality | Focused validated with `assertCycleSurvivorAtMatchesSpecNext` |
-| `SpecDerivedSieveSequence.assertCycleSurvivorAtMatchesSpecNext(offset,count)` | initial survivor scan at `offset` equals `spec.next(offset)` | Focused verified: 94/94 valid |
-| `SpecDerivedSieveSequence.assertInitialSurvivorGapMatchesSpecNextGap(k,count)` | adjacent initial survivor gap equals adjacent `spec.next` gap | Focused verified: 35/35 valid |
-| `SpecDerivedSieveSequence.assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k,count)` | `gapsFromValues(initialSurvivors)(k)` equals adjacent `spec.next` gap | Focused verified: 28/28 valid |
-| `SpecDerivedSieveSequence.assertInitialSurvivorGapListAtMatchesSpecNextGapList(k,count,nextPeriod)` | pointwise initial survivor gap list equals `spec.next.gapList` | Focused verified: 29/29 valid |
-| `SpecDerivedSieveSequence.initialSurvivorGapListCovers(scanCount,from,gapCount)` | recursive adjacent-pair coverage predicate for survivor gap prefixes | Focused verified: 9/9 valid |
-| `SpecDerivedSieveSequence.initialSurvivorGapList(from,gapCount,scanCount)` | forward gap prefix built from adjacent initial survivor values | Focused verified: 18/18 valid |
-| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals canonical adjacent next-gap prefix | Focused verified: 46/46 valid |
-| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesSpecNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals `spec.next.gapList` | Focused verified: 24/24 valid |
+| `SieveUtils.assertSplitAtPreservesAllGreaterThan(list,index,value)` | splitting a positive-bounded list preserves the bound on both pieces |
+| `SieveUtils.assertRotateAtPreservesAllGreaterThan(list,index,value)` | rotating a positive-bounded list preserves the bound |
+| `ListBoundUtils.assertLessThanAtIndex(list,bound,pos)` | `allLessThan(list,bound)` exposes the pointwise fact `list(pos) < bound` |
+| `SieveUtils.assertPairwiseGapsAllPositive(list)` | strict ascending input gives positive adjacent gaps |
+| `SieveUtils.assertWrapGapPositive(sorted,modulus)` | `sorted.last < modulus` and `sorted.head >= 0` give positive wrap gap |
+| `SieveUtils.assertCalculateGapsAllPositive(sorted,modulus)` | sorted bounded residues give positive calculated gaps |
+| `SortedList.insertSorted(x,list)` | postcondition exposes `isAscending(list) => isAscending(result)` at recursive call sites |
+| `SortedList.sortFiltered(list)` | postcondition exposes `isAscending(result)` directly from the recursive sorting producer |
+| `SieveSequenceNextLevel.assertNextGapsAllPositiveGivenSortedBounds(seq)` | `sortFiltered` sortedness plus nonempty/range/head bounds imply `nextGaps(seq)` is positive |
+| `SieveSequenceNextLevel.assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` | positive `nextGaps(seq)` implies `nextRotatedGaps(seq)` is positive by rotation preservation |
+| `GapProperties.assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)` | scanned non-multiple CI value is kept in `survivorValues` |
+| `GapProperties.assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)` | every value kept in `survivorValues` is a non-multiple |
+| `GapProperties.assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)` | scanned multiple CI value is excluded from `survivorValues` |
+| `GapProperties.assertAllMultiplesInRangeTail(ci,fv,from,until)` | tail of an all-multiple prefix remains all-multiple |
+| `GapProperties.assertFirstSurvivorAtPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivor head is `ci(pos)` |
+| `GapProperties.assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)` | if `[start,pos)` are multiples and `pos` survives, survivors split at `ci(pos)` |
+| `SpecDerivedSieveSequence.assertCycleSurvivorValuesStartAtSpecNextHead(count)` | cycle survivor scan starts with `spec.next.head.value` and splits at integral position 0 |
+| `SpecDerivedSieveSequence.assertCycleSurvivorHeadMatchesSpecNext0(count)` | initial cycle survivor scan head equals `spec.next(0)` |
+| `SpecSieveSequence.nextAcceptedOldIndex(nextSeq,k,period)` | exposes the next emitted `nextSeq` value as an old-stream index |
+| `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)` | every old index skipped before `nextAcceptedOldIndex` is a multiple of the new front filter |
+| `SpecDerivedSieveSequence.assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)` | translates spec skipped old indices into a cycle-integral all-multiple prefix |
+| `SpecDerivedSieveSequence.assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)` | peels the next `spec.next` survivor from the cycle-integral survivor scan |
+| `SpecDerivedSieveSequence.assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)` | value peeled by the cycle survivor scan equals the next value in `spec.next` |
+| `SpecDerivedSieveSequence.assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)` | head of the remaining cycle survivor scan equals the following `spec.next` value |
+| `SpecDerivedSieveSequence.assertCycleSurvivorWindowHeadMatchesSpecNext(specIndex,currentOldIndex,count)` | aligned survivor window head equals `spec.next(specIndex + 1)` |
+| `SpecDerivedSieveSequence.survivorWindowCovers(specIndex,currentOldIndex,count,offset)` | raw old-window coverage predicate threaded by recursive ordered survivor equality |
+| `SpecDerivedSieveSequence.assertCycleSurvivorWindowAtMatchesSpecNext(specIndex,offset,currentOldIndex,count)` | aligned survivor window at `offset` equals `spec.next(specIndex + offset + 1)` |
+| `SpecDerivedSieveSequence.assertHeadPlusFilterModulusNotFrontMultiple()` | exposes that the period endpoint is not divisible by the next front filter |
+| `SpecDerivedSieveSequence.initialSurvivorWindowCovers(count,offset)` | raw initial-window coverage predicate for direct survivor equality |
+| `SpecDerivedSieveSequence.assertCycleSurvivorAtMatchesSpecNext(offset,count)` | initial survivor scan at `offset` equals `spec.next(offset)` |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapMatchesSpecNextGap(k,count)` | adjacent initial survivor gap equals adjacent `spec.next` gap |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k,count)` | `gapsFromValues(initialSurvivors)(k)` equals adjacent `spec.next` gap |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListAtMatchesSpecNextGapList(k,count,nextPeriod)` | pointwise initial survivor gap list equals `spec.next.gapList` |
+| `SpecDerivedSieveSequence.initialSurvivorGapListCovers(scanCount,from,gapCount)` | recursive adjacent-pair coverage predicate for survivor gap prefixes |
+| `SpecDerivedSieveSequence.initialSurvivorGapList(from,gapCount,scanCount)` | forward gap prefix built from adjacent initial survivor values |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals canonical adjacent next-gap prefix |
+| `SpecDerivedSieveSequence.assertInitialSurvivorGapListMatchesSpecNextGapList(from,gapCount,scanCount)` | survivor-gap prefix equals `spec.next.gapList` |
 
 Verifier-shape lesson from Phase E:
 
@@ -573,8 +651,7 @@ Verifier-shape lesson from Phase E:
   tries to unwrap the pipeline again. The debug log stopped after `25 / 27`
   while solving the body assertion, so use it as mechanism evidence rather than
   as a final verification result. After adding the producer `.ensuring`
-  postconditions, the clean validation source is the focused non-debug run
-  (`24/24 valid`).
+  postconditions, re-run the focused non-debug verify for a clean result.
 
 Remaining independent-pipeline proof obligation:
 
@@ -587,8 +664,9 @@ Remaining independent-pipeline proof obligation:
 - Secondary fallback obligation: discharge the remaining sorted-output bounds
   and call `assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)` to prove
   `ListBoundUtils.allGreaterThan(SieveSequenceNextLevel.nextRotatedGaps(seq), 0)`
-  for the standard pipeline. The sorting, gap arithmetic, and rotation parts are
-  now focused-verified; only the remaining range/head bridge remains.
+  for the standard pipeline. The sorting, gap arithmetic, and rotation parts have
+  supporting lemmas written; only the remaining range/head bridge is open.
+  (Re-verify each before relying on it — status claims here have gone stale before.)
 
 ## 2026-07-01 Refinement: Positivity is Supporting Evidence, Apply Equality is the Goal
 
@@ -618,7 +696,7 @@ Re-ported `nextGapList(from,count)` and
 Validation:
 
 - `just verify assertNextGapListMatchesSpecNext`
-- Result: 21/21 valid, 0 invalid, 0 unknown
+-
 
 ## 2026-07-01 Progress: Bottom-Up Repeated-Cycle Ladder
 
@@ -640,15 +718,15 @@ Validated helper ladder:
 
 | Helper | Statement | Validation |
 |---|---|---|
-| `ListRepeatProperties.assertRepeatAllGreaterThan` | repeating a positive-bounded list preserves the bound | Focused verified: 14/14 valid |
-| `ModOperations.modByPositiveMultipleThenBase(a,base,times)` | `mod(mod(a, base * times), base) == mod(a, base)` for positive `base,times` | Focused verified: 22/22 valid |
-| `MemCycleProperties.assertRepeatedValuesCycleMatches(cycle,repeatedCycle,times,position)` | a `MemCycle` backed by repeated values has the same lookup as the original cycle | Focused verified: 39/39 valid |
-| `CycleIntegralProperties.assertRepeatedValuesIntegralMatches(cycleIntegral,repeatedCycleIntegral,times,position)` | repeated physical cycle values preserve the recursive integral with the same initial value | Focused verified: 51/51 valid |
-| `SpecDerivedSieveSequence.repeatedCycle(times)` | constructs the repeated physical gap storage for B | Focused verified: 14/14 valid |
-| `SpecDerivedSieveSequence.assertRepeatedGapListIndexMatches(times,index)` | repeated gap list indexing agrees with the original periodic gap lookup | Focused verified: 13/13 valid |
-| `SpecDerivedSieveSequence.assertRepeatedCycleGapMatches(times,position)` | repeated B gap-cycle lookup equals original B gap-cycle lookup | Focused verified: 18/18 valid |
-| `SpecDerivedSieveSequence.assertRepeatedCycleIntegralMatches(times,position)` | repeated B integral lookup equals original B integral lookup | Focused verified: 17/17 valid |
-| `SpecDerivedSieveSequence.assertRepeatedCycleApplyMatches(times,k)` | repeated B sequence apply equals original B sequence apply | Focused verified: 31/31 valid |
+| `ListRepeatProperties.assertRepeatAllGreaterThan` | repeating a positive-bounded list preserves the bound |
+| `ModOperations.modByPositiveMultipleThenBase(a,base,times)` | `mod(mod(a, base * times), base) == mod(a, base)` for positive `base,times` |
+| `MemCycleProperties.assertRepeatedValuesCycleMatches(cycle,repeatedCycle,times,position)` | a `MemCycle` backed by repeated values has the same lookup as the original cycle |
+| `CycleIntegralProperties.assertRepeatedValuesIntegralMatches(cycleIntegral,repeatedCycleIntegral,times,position)` | repeated physical cycle values preserve the recursive integral with the same initial value |
+| `SpecDerivedSieveSequence.repeatedCycle(times)` | constructs the repeated physical gap storage for B |
+| `SpecDerivedSieveSequence.assertRepeatedGapListIndexMatches(times,index)` | repeated gap list indexing agrees with the original periodic gap lookup |
+| `SpecDerivedSieveSequence.assertRepeatedCycleGapMatches(times,position)` | repeated B gap-cycle lookup equals original B gap-cycle lookup |
+| `SpecDerivedSieveSequence.assertRepeatedCycleIntegralMatches(times,position)` | repeated B integral lookup equals original B integral lookup |
+| `SpecDerivedSieveSequence.assertRepeatedCycleApplyMatches(times,k)` | repeated B sequence apply equals original B sequence apply |
 
 Lessons:
 
@@ -682,10 +760,10 @@ Meaning:
 Added the four named precondition lemmas used by the commented `nextFromCycle`
 sketch:
 
-- `assertModulusPositive()` -> 3/3 valid
-- `assertPrimesTailValuesPositive()` -> 3/3 valid
-- `assertHeadPositive()` -> 1/1 valid
-- `assertModulusTimesHeadPositive()` -> 3/3 valid
+- `assertModulusPositive()`
+- `assertPrimesTailValuesPositive()`
+- `assertHeadPositive()`
+- `assertModulusTimesHeadPositive()`
 
 Meaning:
 
@@ -705,7 +783,7 @@ preconditions.
 Validation:
 
 - `just verify nextPipelineGaps`
-- Result: 8/8 valid, 0 invalid, 0 unknown
+-
 
 Meaning:
 
@@ -725,8 +803,8 @@ Added two conditional bridge methods:
 
 Validation:
 
-- `just verify assertNextPipelineGapsPositiveFromSpec` -> 12/12 valid
-- `just verify nextPipelineGapCycleIfMatchesSpec` -> 25/25 valid
+- `just verify assertNextPipelineGapsPositiveFromSpec`
+- `just verify nextPipelineGapCycleIfMatchesSpec`
 
 Meaning:
 
@@ -746,9 +824,7 @@ each change followed by `just verify`.
 
 ### S1 Progress
 
-| # | Lemma | Statement | Validation |
-|---|-------|-----------|------------|
-| 1 | `assertCycleHeadMatchesSpecHead` | `cycle.head == spec.head.value` via `assertApplyMatches(0)` | 3/3 valid, 0 invalid |
+`assertCycleHeadMatchesSpecHead` — `cycle.head == spec.head.value` via `assertApplyMatches(0)`.
 
 ## 2026-07-01 Plan: Verifier Stepping Stones Before M3
 
@@ -895,6 +971,24 @@ Goal: isolate hard theorems from constructor noise.
   then remove or discharge their equality preconditions only after the producer
   theorem is proven.
 
+---
+
+## ⬇ Reference & History (context only — the active plan is at the top)
+
+Everything below is background. **Do not start a session here.** It is preserved
+because the proven-fact tables and dependency analysis have lasting value, but
+it accreted over many attempts and contains stale framing. The three sections
+worth jumping to from here:
+
+- **`## The Correct Track`** — the full contract-migration recipe (Group 1/2/3
+  function lists, require-diff tables, validation gate).
+- **`## NEW APPROACH: SieveCycleAfterProof`** — the value-level alternative and
+  its remaining bridge.
+- **`## Approach Comparison & Recommendation`** — the decision frame and the
+  failure signals for when to pivot between the two.
+
+When in doubt, trust the START HERE section at the top over anything below.
+
 ## Questions
 
 1. Should `nextFromCycle()` accept `nextPeriod` as a parameter (like `nextVerified`), or compute it from the cycle size?
@@ -952,12 +1046,11 @@ against the OLD shape.
    - `git restore --source=5145c1e5 --worktree <file>` for B (A already reverted
      by editing the 5 require blocks). `git restore` is NOT in the opencode.json
      deny list (only `checkout`/`revert`/`push --force`/`rm` are).
-4. Verified green: `just verify-ch 6` → `total 5167 valid 5167 (5162 cache)
-   invalid 0 unknown 0`. Committed as `bd444a35`.
+4. Verified green via `just verify-ch 6` (0 invalid, 0 unknown). Committed as
+   `bd444a35`.
 5. Re-activated the ONE migration-independent leaf lemma from `cb49ccf2`:
    `assertHeadPlusFilterModulusNotFrontMultiple` (self-contained, no
-   migration-shape require). Verified green: `5199 valid, 0 invalid, 0 unknown`
-   (+32 VCs). Committed as `49c79b58`.
+   migration-shape require). Verified green; committed as `49c79b58`.
 
 ### Current state
 - **HEAD = `49c79b58`** — green (5199/5199). Contains the green baseline plus
@@ -1094,8 +1187,8 @@ ONLY compile-and-prove once Group 1 is NEW-shape.
    lemmas as in the snapshot. Do NOT re-add the deleted OLD-shape
    `require(spec.next.head.value == spec.head.value)` lines — those were the
    point of the migration.
-4. **`just verify-ch 6`** (full chapter, NOT focused). Expected: green,
-   `~5830 valid` (5199 current + ~32 per re-activated lemma, rough).
+4. **`just verify-ch 6`** (full chapter, NOT focused). Expected: green
+   (`invalid: 0 unknown: 0`), with all 12 Group-3 functions present and valid.
 
 ### If it goes red
 - **Do NOT commit. Do NOT "finish it later."** That is exactly what broke HEAD.
@@ -1109,7 +1202,7 @@ ONLY compile-and-prove once Group 1 is NEW-shape.
   `stop-and-ask`). Report the failing VC verbatim.
 
 ### Validation gate (what "done" means)
-- `just verify-ch 6` → `invalid: 0 unknown: 0`, total valid >= 5800.
+- `just verify-ch 6` → `invalid: 0 unknown: 0`.
 - The 12 Group-3 functions each appear with `valid` status in the log.
 - `OBJECTS.md`: un-strike the 12 DEFERRED rows (revert the 2026-07-03 edit).
 - Commit as ONE commit with a message listing all migrated functions.
@@ -1156,15 +1249,15 @@ see the Approach Comparison section at the end of this ticket.
 
 Replace the index-based `nextAcceptedOldIndex` with a direct **value-level scan** through the cycle integral, filtering by the new filter head. The scan is bounded by the repeated-gap cycle (`head.value` repetitions) — proven finite by existing arithmetic lemmas (`assertHeadPlusFilterModulusNotFrontMultiple`, distinct-prime coprimality).
 
-### Verified lemmas (all focused-verified, no contract migration)
+### Verified lemmas (value-level, no contract migration)
 
-| Function | VCs | What it proves | Techniques |
-|----------|-----|----------------|------------|
-| `assertCycleSurvivorCoprimeToCyclePrimes` | 6/6 | Every cycle-integral survivor (not divisible by head) is coprime with all primes | `assertCycleValueCoprimeToTail` + `mod(survivor, head) != 0` |
-| `assertSpecNextFilterEqCyclePrimes` | 10/10 | `spec.next.filterValues == cyclePrimes` | `assertPrimesMatch`, prime list chain through spec |
-| `assertCycleSurvivorCoprimeToSpecNextFilter` | 10/10 | Every survivor is coprime with `spec.next.filterValues` | Combines the two lemmas above |
-| `assertCycleSurvivorPassesSpecNextFilter` | 8/8 | Every survivor passes `spec.next.passesFilter` | Coprimality lemma + `passesFilter` delegation (avoids `accepts` >= precondition) |
-| `assertFirstSurvivorEqualsSpecNextHead` | 7/7 | `cycle.integral(0) == spec.next.head.value` | `assertNextHeadMatches`, `assertApplyMatches(1)` |
+| Function | What it proves | Techniques |
+|----------|----------------|------------|
+| `assertCycleSurvivorCoprimeToCyclePrimes` | Every cycle-integral survivor (not divisible by head) is coprime with all primes | `assertCycleValueCoprimeToTail` + `mod(survivor, head) != 0` |
+| `assertSpecNextFilterEqCyclePrimes` | `spec.next.filterValues == cyclePrimes` | `assertPrimesMatch`, prime list chain through spec |
+| `assertCycleSurvivorCoprimeToSpecNextFilter` | Every survivor is coprime with `spec.next.filterValues` | Combines the two lemmas above |
+| `assertCycleSurvivorPassesSpecNextFilter` | Every survivor passes `spec.next.passesFilter` | Coprimality lemma + `passesFilter` delegation (avoids `accepts` >= precondition) |
+| `assertFirstSurvivorEqualsSpecNextHead` | `cycle.integral(0) == spec.next.head.value` | `assertNextHeadMatches`, `assertApplyMatches(1)` |
 
 ### Timeout obstacles found
 
@@ -1189,7 +1282,7 @@ Key risks: rotation-index proof (may trigger recursion timeout), sorted-list sur
 | 2 | Prove `nextSorted.list` survivors = `spec.next` values (ordered) | NOT STARTED |
 | 3 | Prove gap equality from value equality | NOT STARTED |
 | 4 | M4: C uses pipeline | NOT STARTED |
-| (alt path) | Contract migration (Groups 1-3) | **PAUSED, not disproven** — broke HEAD from a wiring bug; 12 lemmas focused-verified. See Approach Comparison below. |
+| (alt path) | Contract migration (Groups 1-3) | **PAUSED, not disproven** — broke HEAD from a wiring bug; 12 lemmas written (need re-verification). See Approach Comparison below. |
 
 Which path is *active* is a decision, not settled — see **Approach Comparison &
 Recommendation** below. Do not assume value-level has won just because it is the
@@ -1226,7 +1319,7 @@ contradiction. Comparing them as if they were head-to-head is the first trap.
 
 | | Old (contract migration) | New (SieveCycleAfterProof) |
 |---|---|---|
-| Done | 12 lemmas written + focused-verified (red globally only due to migration) | 5 lemmas written + globally green |
+| Done | 12 lemmas written (red globally only due to migration; need re-verification) | 5 lemmas written, globally green |
 | The wall | **Mechanical**: 9 coupled `require` changes across 2 files; one misstep breaks HEAD. **Known fix** (Correct Track recipe). | **Mathematical**: rotation-index proof + sorted-survivor ordering vs `spec.next` ordering. **Unknown if provable.** |
 | Risk shape | High *engineering* risk, low *mathematical* risk. Math is already proven; only wiring is broken. | Low *engineering* risk, high *mathematical* risk. Hard part still ahead and looks like known-timeout territory. |
 | Reaches final theorem? | Yes — once green, step 6 is done; steps 7-11 remain (always needed). | Unknown — steps 6-11 all ahead; step 6 must be re-derived in value-level style. |
@@ -1252,8 +1345,8 @@ equality, gap equality, rotation) is still entirely unproven in the new style.
 The new approach is the right **insurance policy**, but it should not yet
 replace the old approach as the active path.
 
-1. **Don't abandon proven math.** The old approach's 12 lemmas are real,
-   focused-verified progress on step 6. The new approach would have to
+1. **Don't abandon written math.** The old approach's 12 lemmas are real,
+       written progress on step 6. The new approach would have to
    re-derive that from scratch in a style whose hard cases are untested.
 2. **The old approach's blocker is mechanical and now has a checklist.** The
    Correct Track recipe turns "9 coupled changes" into an ordered procedure
