@@ -334,4 +334,51 @@ case class SpecDerivedBySurvivors(
     assert(PrimeUtils.primorialUnfold(derived.spec.primes.list.list))
     derived.cycle.head * derived.cycle.modulus == derived.spec.next.filterModulus
   }.holds
+
+  /**
+   * Spec-side membership in the sorted pipeline (companion to the cycle-side bridge).
+   *
+   * For each `k` in `[0, nextPeriod)`, the reduced value
+   * `Calc.mod(spec.next(k), head * modulus)` appears in
+   * `nextSorted(cycle).list`. This complements
+   * `assertCycleSurvivorAppearsInNextSorted`: together they show that both
+   * survivor sources (cycle-integral scan and spec.next) map into the same
+   * pipeline set.
+   *
+   * The chain mirrors `assertCycleSurvivorAppearsInNextSorted` but uses
+   * `spec.next(k)` directly as the value (no `indexOfAccepted` / index
+   * bookkeeping). `spec.next(k)` is coprime to `spec.next.filterValues` by
+   * the `apply` postcondition, and `spec.next.filterValues == cyclePrimes`
+   * by `assertSpecNextFilterEqCyclePrimes`, so coprimality to
+   * `head :: primesTailValues` is immediate.
+   */
+  def assertSpecNextReducedAppearsInNextSorted(
+    nextPeriod: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(nextPeriod > BigInt(1))
+    require(k >= BigInt(0))
+    require(k < nextPeriod)
+    require(derived.spec.next(nextPeriod) ==
+      derived.spec.next.head.value + derived.spec.next.filterModulus)
+
+    val v: BigInt = Calc.mod(
+      derived.spec.next(k),
+      derived.cycle.head * derived.cycle.modulus)
+
+    assert(assertSpecNextFilterEqCyclePrimes())
+    assert(derived.assertPrimesTailValuesPositive())
+    assert(derived.assertHeadPositive())
+    assert(derived.spec.next(k) >= derived.spec.next.head.value)
+    assert(assertHeadModulusEqualsProductAllPrimes())
+    assert(SpecCycleSieveEquivalence.assertModPreservesCoprime(
+      derived.spec.next(k),
+      derived.cycle.head * derived.cycle.modulus,
+      derived.cycle.head :: derived.cycle.primesTailValues))
+    assert(v >= BigInt(0))
+    assert(v < derived.cycle.head * derived.cycle.modulus)
+    assert(SpecCycleSieveEquivalence.assertNextSortedContainsCoprime(
+      derived.cycle, v))
+    SieveSequenceNextLevel.nextSorted(derived.cycle).list.contains(v)
+  }.holds
 }
