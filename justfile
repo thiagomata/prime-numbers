@@ -42,6 +42,13 @@ verify-stop:
     just_log verify-stop "{{justfile_directory()}}"
     bash "{{justfile_directory()}}/scripts/verify-stop.sh"
 
+verify-watch focus="":
+    #!/usr/bin/env bash
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java 21.0.7-zulu
+    sdk use java 21.0.7-zulu
+    exec "{{justfile_directory()}}/scripts/verify-watch.sh" {{focus}}
+
 clean-logs:
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"

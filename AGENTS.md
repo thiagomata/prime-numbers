@@ -22,6 +22,8 @@ pitfall avoidance, and timeout resolution strategies.
   <fast-compile>just compile</fast-compile>
   <build>just jar</build>
   <tests>just test</tests>
+  <watch>just verify-watch</watch>
+  <watch-focus>just verify-watch functionName</watch-focus>
   <clean-logs>just clean-logs</clean-logs>
 </commands>
 
@@ -30,6 +32,7 @@ pitfall avoidance, and timeout resolution strategies.
 To check the latest result WITHOUT re-running, use `<verify-log />` to read the log.
 Do NOT run `just verify` twice in a row — check `logs/verify.log` first.
 Only re-run `just verify` after making a code change.
+`just verify-watch` keeps Stainless running and re-verifies on file save. First run is a cold compile (~5-10 min), subsequent saves trigger incremental re-verify (~seconds). Add new `.scala` files and the watcher detects them, kills Stainless, and restarts with the updated file list. Output writes to `logs/verify-watch.log`.
 
 <search-primacy priority="supreme">
   BEFORE WRITING ANY NEW LEMMA:
