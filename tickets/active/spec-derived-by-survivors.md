@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** 17 lemmas verified + 1 stub (18 total). Expansion bridge fully proven in the cycle-survivor → pipeline direction (membership, through both `nextFiltered` and `nextSorted`). Rotation anchor arithmetic proven. Remaining M3 work: ordered list equality + rotation index + final gap equality (ladder steps 7b→9→10→11).
+**Status:** 19 lemmas verified + 1 stub (20 total). **Both membership directions of the expansion bridge proven** (cycle-survivor → pipeline AND spec.next → pipeline, through both `nextFiltered` and `nextSorted`). Load-bearing identity `head*modulus == spec.next.filterModulus` proven. Rotation anchor arithmetic proven. Remaining M3 work: size/count equality, ordered equality, rotation index, final gap equality.
 **Full chapter:** 12271 valid, 0 invalid, 0 unknown (after commit `c411ea45`).
 
 ---
@@ -372,6 +372,125 @@ diagnosed and recorded with three concrete alternative approaches. The M3
 strategic assessment above lays out the remaining ladder and two paths to
 the final theorem.
 
+### 2026-07-05 (session 3) — Ordered sort equality: S_2 concrete analysis
+
+**User direction:** work on ladder step 8 (ordered sort equality).
+
+**Critical finding from S_2 hand-computation (primes [5,3,2], head=5, modulus=6):**
+the naive ladder statement `nextSorted(cycle).list(i) == spec.next(i)` is **FALSE**
+for two independent reasons:
+
+1. **Range/order mismatch:** the pipeline list is sorted ascending from its
+   smallest element. For S_2: `nextSorted.list = [1, 7, 11, 13, 17, 19, 23, 29]`,
+   starting at the sub-head extra `1`. `spec.next` starts at `head = 7`:
+   `spec.next(0..7) = [7, 11, 13, 17, 19, 23, 29, 31]`.
+
+2. **Wrap mismatch:** `spec.next(nextPeriod-1) = spec.next(7) = 31` lies in
+   `[head*modulus, head+filterModulus) = [30, 37)` — outside the pipeline's
+   `[0, head*modulus) = [0, 30)` range. It needs mod reduction: `mod(31, 30) = 1`,
+   which IS in the pipeline list (as the sub-head extra).
+
+**The TRUE statements (confirmed by hand on S_2):**
+
+- **Cyclic + modular (Statement 1):** for `i ∈ [0, nextPeriod)`,
+  ```
+  nextSorted(cycle).list((rotationIdx + i) mod list.size)
+    == Calc.mod(spec.next(i), head*modulus)
+  ```
+  where `rotationIdx = findResidueIndex(nextSorted.list, 0, mod(spec.next.head.value, head*modulus))`
+  and `list.size == nextPeriod`. For S_2: rotationIdx=1, list.size=8=nextPeriod,
+  and all 8 positions match (including `i=7`: `list[0]=1 == mod(31,30)=1`). ✓
+
+- **Decomposition (Statement 2):**
+  ```
+  nextSorted(cycle).list == subHeadExtras ++ specNextValuesInHeadModulus
+  ```
+  where `subHeadExtras = {r ∈ [0, head) : isCoprime(r, primesValues)}` (here `[1]`)
+  and `specNextValuesInHeadModulus = [spec.next(0), ..., spec.next(m-1)]` for the
+  largest `m` with `spec.next(m-1) < head*modulus` (here `[7..29]`, m=7). The wrap
+  element `spec.next(nextPeriod-1)` reduces mod `head*modulus` to the smallest
+  sub-head extra.
+
+**Load-bearing identity:** `cycle.head * cycle.modulus == spec.next.filterModulus`
+(here `5*6 = 30 = primorial([5,3,2])`). Holds because `spec.next.filterPrimes ==
+spec.primes.list.list`, so `primorial(head :: tail) = head * primorial(tail)`.
+This connects the cycle's `head*modulus` to the spec's `filterModulus`.
+
+**M3 gap equality confirmed by hand on S_2:**
+- `nextGaps = calculateGaps([1,7,11,13,17,19,23,29], 30) = [6,4,2,4,2,4,6,2]`
+- `nextRotatedGaps = rotateAt([6,4,2,4,2,4,6,2], 1) = [4,2,4,2,4,6,2,6]`
+- `spec.next.gapList(0, 8) = [4,2,4,2,4,6,2,6]` ✓
+
+So the M3 theorem IS true; it just requires the cyclic+modular framing.
+
+**Implication for the proof path:** the decomposition form (Statement 2) is more
+amenable to incremental proof than the cyclic form. Key sub-facts to establish:
+
+1. **`nextSorted(cycle).list.size == nextPeriod`** — load-bearing for any cyclic
+   statement. Equivalently `nextFiltered(cycle).size == nextPeriod`. This is a
+   count equality (φ(head*modulus) both ways).
+2. **Every element of `nextSorted(cycle).list` is `mod(integral(pos), head*modulus)`
+   for some survivor pos** (the reverse of my bridge — step 7b). This makes the
+   pipeline list exactly the reduced survivor set.
+3. **The reduced survivor set, sorted, equals spec.next reduced** (combining 1, 2,
+   and the existing `assertSpecNextIsKthSurvivor`).
+
+The `findResidueIndex` helper (step 10) is still needed for the rotation index
+correctness, but it's now clear that step 8 (ordered equality) and step 10
+(rotation index) can be approached via the decomposition form, potentially
+sidestepping the hardest index-arithmetic parts.
+
+### 2026-07-05 (session 3, cont.) — Both membership directions + load-bearing identity
+
+Three more verified lemmas (commit `691a8615`, full chapter 12312 valid):
+
+| Lemma | VCs | Statement |
+|-------|-----|-----------|
+| `assertHeadModulusEqualsSpecNextFilterModulus()` | 8 | `cycle.head * cycle.modulus == spec.next.filterModulus` (load-bearing identity) |
+| `assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)` | 33 | `mod(spec.next(k), head*modulus) ∈ nextSorted(cycle).list` (spec-side membership) |
+
+**Both membership directions now proven:**
+- Cycle-survivor → pipeline: `mod(integral(pos), head*modulus) ∈ nextSorted.list` (session 1)
+- Spec.next → pipeline: `mod(spec.next(k), head*modulus) ∈ nextSorted.list` (this session)
+
+Together these show both survivor sources (cycle-integral scan and spec.next)
+map into the same pipeline set `nextSorted(cycle).list`.
+
+**Key simplification (user, session 3):** the spec-side lemma was first written
+with `assertSpecNextIsKthSurvivor` + `indexOfAccepted` + `pos-1` bookkeeping.
+The user pointed out that `spec.next(k)` being coprime to `cyclePrimes` follows
+directly from the spec.next filter structure (`apply` postcondition +
+`assertSpecNextFilterEqCyclePrimes`), so the index machinery is unnecessary.
+Rewritten with the direct coprimality approach — no `indexOfAccepted`, no
+`pos-1`. **Lesson: prefer the direct coprimality path over index-based reasoning
+whenever the value's coprimality is structurally evident.**
+
+**Lesson (modulus-product precondition):** when `assertModPreservesCoprime` needs
+`modulus == product(primes)`, reuse the existing helper that proves exactly that
+form (`assertHeadModulusEqualsProductAllPrimes`, session 1). Restating the
+equality inline as `assert(spec.next.filterModulus == product(...))` forces Z3
+to re-derive it and **times out at 300s**. This was the only failure in the
+spec-side lemma; switching to the cached helper made all VCs pass in <1s each.
+
+### Remaining work for ordered equality (ladder step 8)
+
+The membership directions are done. What remains for full ordered equality:
+
+1. **Size/count equality:** `nextSorted(cycle).list.size == nextPeriod`. This is
+   `φ(head*modulus) == nextPeriod` — the count of survivors in one period
+   matches. Load-bearing for the cyclic statement to be well-formed.
+
+2. **Ordered correspondence:** the cyclic+modular statement
+   `nextSorted.list((rotationIdx + i) mod size) == mod(spec.next(i), head*modulus)`
+   for `i ∈ [0, nextPeriod)`. This needs the membership facts (have) + sortedness
+   (free from SortedList invariant) + the count equality + the rotation index
+   correctness.
+
+3. **Rotation index (step 10):** `nextHeadResidueIndex(cycle)` returns the
+   position of `spec.next.head.value` in `nextSorted.list`. Arithmetic prereq
+   done (`assertNextHeadResidueIsSpecNextHead`); the `findResidueIndex`
+   correctness helper timed out earlier and needs an alternative formulation.
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
@@ -437,7 +556,7 @@ which composes `assertModPreservesCoprime` + `assertExpandedResiduesRepresentPer
 `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` (a duplicate of the existing lemma at
 lines 36–42) is the seed for this — it should be grown into the real bridge lemma.
 
-### Summary of what the class proved (17 verified lemmas + 1 stub)
+### Summary of what the class proved (19 verified lemmas + 1 stub)
 
 | # | Lemma | VCs | What it proves |
 |---|-------|-----|----------------|
@@ -455,9 +574,11 @@ lines 36–42) is the seed for this — it should be grown into the real bridge 
 | 12 | `assertCycleModulusEqualsProductTail()` | 5 | `cycle.modulus == product(cyclePrimes.tail)` |
 | 13 | `assertCycleSurvivorModModulusCoprimeToTail(pos)` | 27 | `mod(integral(pos), cycle.modulus)` coprime to tail primes |
 | 14 | `assertHeadModulusEqualsProductAllPrimes()` | 2 | `head * modulus == product(head :: primesTailValues)` |
-| 15 | **`assertCycleSurvivorAppearsInNextFiltered(pos)`** | 34 | `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))` — bridge |
+| 15 | **`assertCycleSurvivorAppearsInNextFiltered(pos)`** | 34 | `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))` — cycle→pipeline bridge |
 | 16 | **`assertCycleSurvivorAppearsInNextSorted(pos)`** | 34 | `nextSorted(cycle).list.contains(mod(integral(pos), head*modulus))` — bridge through sort |
 | 17 | **`assertNextHeadResidueIsSpecNextHead()`** | 9 | `mod(cycle(1), head*modulus) == spec.next.head.value` (head≥3) — rotation anchor arithmetic |
+| 18 | `assertHeadModulusEqualsSpecNextFilterModulus()` | 8 | `head * modulus == spec.next.filterModulus` — load-bearing identity |
+| 19 | **`assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)`** | 33 | `nextSorted(cycle).list.contains(mod(spec.next(k), head*modulus))` — spec→pipeline bridge |
 | — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | Unused duplicate of #4; candidate for removal |
 
 **Note:** `assertNextHeadLessThanHeadSquared()` was removed from this class on 2026-07-05
