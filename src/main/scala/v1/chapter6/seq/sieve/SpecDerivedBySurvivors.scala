@@ -286,4 +286,30 @@ case class SpecDerivedBySurvivors(
       derived.cycle, v))
     SieveSequenceNextLevel.nextSorted(derived.cycle).list.contains(v)
   }.holds
+
+  /**
+   * Rotation anchor (ladder step 10, arithmetic prerequisite).
+   *
+   * Proves that the value `nextHeadResidueIndex` searches for in
+   * `nextSorted(cycle).list` is exactly `spec.next.head.value`. This holds
+   * because `cycle(1) == spec.next.head.value` (assertNextHeadMatches) and,
+   * for stages with `head >= 3`, `cycle(1) < head * modulus`
+   * (assertNextHeadLessThanNewModulus), so reducing `cycle(1)` modulo
+   * `head * modulus` leaves it unchanged.
+   *
+   * The S_0 seed stage (head = 2, modulus = 1) is excluded: there
+   * `cycle(1) = 3 > 2 = head*modulus`, so the reduction wraps. S_0 does not
+   * need the pipeline equivalence (it is defined directly).
+   */
+  def assertNextHeadResidueIsSpecNextHead(): Boolean = {
+    require(derived.spec.head.value >= 3)
+    require(derived.spec.filterModulus >= 2)
+
+    assert(derived.assertNextHeadMatches())
+    assert(derived.assertNextHeadLessThanNewModulus())
+    assert(derived.assertCycleModulusEqualsSpecFilterModulus())
+    Calc.mod(derived.cycle(BigInt(1)),
+             derived.cycle.head * derived.cycle.modulus) ==
+      derived.spec.next.head.value
+  }.holds
 }
