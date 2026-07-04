@@ -378,6 +378,17 @@ case class SpecDerivedSieveSequence(
         cycle.integral, cycle.head, BigInt(1), count - BigInt(1))
   }.holds
 
+//  def assertCycleSurvivorHeadMatchesSpecNext0(count: BigInt): Boolean = {
+//    require(count > BigInt(0))
+//
+//    assert(assertCycleSurvivorValuesStartAtSpecNextHead(count))
+//    assert(spec.next(BigInt(0)) == spec.next.head.value)
+//
+//    CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count).head ==
+//      spec.next(BigInt(0))
+//  }.holds
+
   /**
    * Spec skipped-old-index facts as cycle-integral skipped-prefix facts.
    *
@@ -561,6 +572,587 @@ case class SpecDerivedSieveSequence(
 
     cycle.integral(survivorPos) == nextSeq(nextSeqIndex + BigInt(1))
   }.holds
+
+//  def assertCycleSurvivorTailHeadMatchesSpecNext(
+//    currentOldIndex: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(currentOldIndex >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(spec(currentOldIndex) >= spec.next.head.value)
+//    require(spec.next.filterValues.nonEmpty)
+//    require(spec.next.filterValues.tail == spec.filterValues)
+//    require(spec.next.filterValues.head == spec.head.value)
+//    require(Calc.mod(
+//      spec.head.value + spec.filterModulus,
+//      spec.next.filterValues.head
+//    ) != BigInt(0))
+//    require(spec.next.accepts(spec(currentOldIndex)))
+//    require(
+//      spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period) - BigInt(1) <
+//        currentOldIndex + count)
+//
+//    val nextSeq = spec.next
+//    val nextSeqIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+//
+//    assert(assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex, count))
+//    assert(assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex))
+//
+//    CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, currentOldIndex, count).head ==
+//      nextSeq(nextSeqIndex + BigInt(1))
+//  }.holds
+
+  /**
+   * Head equality for an explicitly indexed aligned survivor window.
+   *
+   * This is the caller-friendly form of
+   * `assertCycleSurvivorTailHeadMatchesSpecNext`. The tail-head lemma names the
+   * previous next-stage position as
+   * `spec.next.indexOfAccepted(spec(currentOldIndex))`; this wrapper lets the
+   * recursive ordered-survivor proof carry that position as the explicit
+   * `specIndex` parameter instead. The only extra work is an injectivity bridge
+   * showing that the carried `specIndex` is the same index returned by
+   * `indexOfAccepted`.
+   *
+   * Math:
+   *
+   *   spec(currentOldIndex) = spec.next(specIndex)
+   *   s = spec.next.indexOfAccepted(spec(currentOldIndex))
+   *   spec.next(s) = spec(currentOldIndex)
+   *   spec.next(specIndex) = spec(currentOldIndex)
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, currentOldIndex, count).head
+   *     = spec.next(specIndex + 1)
+   */
+//  def assertCycleSurvivorWindowHeadMatchesSpecNext(
+//    specIndex: BigInt,
+//    currentOldIndex: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(specIndex >= BigInt(0))
+//    require(currentOldIndex >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(spec(currentOldIndex) == spec.next(specIndex))
+//    require(spec(currentOldIndex) >= spec.next.head.value)
+//    require(spec.next.filterValues.nonEmpty)
+//    require(spec.next.filterValues.tail == spec.filterValues)
+//    require(spec.next.filterValues.head == spec.head.value)
+//    require(Calc.mod(
+//      spec.head.value + spec.filterModulus,
+//      spec.next.filterValues.head
+//    ) != BigInt(0))
+//    require(spec.next.accepts(spec(currentOldIndex)))
+//    require(
+//      spec.nextAcceptedOldIndex(spec.next, currentOldIndex, period) - BigInt(1) <
+//        currentOldIndex + count)
+//
+//    val nextSeq = spec.next
+//    val computedIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+//
+//    assert(nextSeq(specIndex) == spec(currentOldIndex))
+//    assert(nextSeq(computedIndex) == spec(currentOldIndex))
+//    assert(nextSeq.assertApplyInjective(specIndex, computedIndex))
+//    assert(specIndex == computedIndex)
+//    assert(assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex, count))
+//
+//    CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, currentOldIndex, count).head ==
+//      nextSeq(specIndex + BigInt(1))
+//  }.holds
+
+  /**
+   * Raw-window coverage for ordered survivor recursion.
+   *
+   * The recursive survivor equality consumes retained values, but `count`
+   * measures raw old integral positions. This predicate records the exact
+   * bridge between those coordinate systems: every next accepted old index
+   * needed for `offset` recursive survivor steps remains inside the current
+   * raw scan window.
+   *
+   * Math:
+   *
+   *   covers(s, k, c, 0)
+   *     := nextAcceptedOldIndex(spec.next, k, period) - 1 < k + c
+   *
+   *   covers(s, k, c, n + 1)
+   *     := j = nextAcceptedOldIndex(spec.next, k, period)
+   *        j < k + c
+   *        covers(s + 1, j, k + c - j, n)
+   */
+//  def survivorWindowCovers(
+//    specIndex: BigInt,
+//    currentOldIndex: BigInt,
+//    count: BigInt,
+//    offset: BigInt
+//  ): Boolean = {
+//    require(specIndex >= BigInt(0))
+//    require(currentOldIndex >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(offset >= BigInt(0))
+//    require(spec(currentOldIndex) == spec.next(specIndex))
+//    require(spec(currentOldIndex) >= spec.next.head.value)
+//    require(spec.next.filterValues.nonEmpty)
+//    require(spec.next.filterValues.tail == spec.filterValues)
+//    require(spec.next.filterValues.head == spec.head.value)
+//    require(Calc.mod(
+//      spec.head.value + spec.filterModulus,
+//      spec.next.filterValues.head
+//    ) != BigInt(0))
+//    require(spec.next.accepts(spec(currentOldIndex)))
+//    decreases(offset)
+//
+//    val nextSeq = spec.next
+//    val nextOldIndex = spec.nextAcceptedOldIndex(nextSeq, currentOldIndex, period)
+//
+//    if (offset == BigInt(0)) {
+//      nextOldIndex - BigInt(1) < currentOldIndex + count
+//    } else {
+//      val computedIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+//      val remaining = currentOldIndex + count - nextOldIndex
+//
+//      assert(nextSeq(specIndex) == spec(currentOldIndex))
+//      assert(nextSeq(computedIndex) == spec(currentOldIndex))
+//      assert(nextSeq.assertApplyInjective(specIndex, computedIndex))
+//      assert(specIndex == computedIndex)
+//      assert(nextSeq(computedIndex + BigInt(1)) == spec(nextOldIndex))
+//      assert(spec(nextOldIndex) == nextSeq(specIndex + BigInt(1)))
+//      assert(nextSeq.accepts(spec(nextOldIndex)))
+//
+//      nextOldIndex < currentOldIndex + count &&
+//        survivorWindowCovers(
+//          specIndex + BigInt(1),
+//          nextOldIndex,
+//          remaining,
+//          offset - BigInt(1))
+//    }
+//  }
+
+  /**
+   * Indexed ordered survivor equality for an aligned non-initial window.
+   *
+   * This is the recursive form used after the initial survivor has been peeled:
+   * `currentOldIndex` is the old-stream index for `spec.next(specIndex)`, and
+   * the `offset`-th retained value in the remaining cycle survivor scan is the
+   * following next-stage value `spec.next(specIndex + offset + 1)`.
+   *
+   * Math:
+   *
+   *   spec(currentOldIndex) = spec.next(specIndex)
+   *   covers(specIndex, currentOldIndex, count, offset)
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, currentOldIndex, count)(offset)
+   *     = spec.next(specIndex + offset + 1)
+   */
+//  def assertCycleSurvivorWindowAtMatchesSpecNext(
+//    specIndex: BigInt,
+//    offset: BigInt,
+//    currentOldIndex: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(specIndex >= BigInt(0))
+//    require(offset >= BigInt(0))
+//    require(currentOldIndex >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(spec(currentOldIndex) == spec.next(specIndex))
+//    require(spec(currentOldIndex) >= spec.next.head.value)
+//    require(spec.next.filterValues.nonEmpty)
+//    require(spec.next.filterValues.tail == spec.filterValues)
+//    require(spec.next.filterValues.head == spec.head.value)
+//    require(Calc.mod(
+//      spec.head.value + spec.filterModulus,
+//      spec.next.filterValues.head
+//    ) != BigInt(0))
+//    require(spec.next.accepts(spec(currentOldIndex)))
+//    require(survivorWindowCovers(specIndex, currentOldIndex, count, offset))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, currentOldIndex, count).size > offset)
+//    decreases(offset)
+//
+//    val nextSeq = spec.next
+//    val survivors = CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, currentOldIndex, count)
+//
+//    if (offset == BigInt(0)) {
+//      assert(assertCycleSurvivorWindowHeadMatchesSpecNext(
+//        specIndex, currentOldIndex, count))
+//      survivors(offset) == nextSeq(specIndex + BigInt(1))
+//    } else {
+//      val nextOldIndex = spec.nextAcceptedOldIndex(nextSeq, currentOldIndex, period)
+//      val remaining = currentOldIndex + count - nextOldIndex
+//      val tailSurvivors = CycleIntegralFilterProperties.survivorValues(
+//        cycle.integral, cycle.head, nextOldIndex, remaining)
+//      val computedIndex = nextSeq.indexOfAccepted(spec(currentOldIndex))
+//
+//      assert(nextSeq(specIndex) == spec(currentOldIndex))
+//      assert(nextSeq(computedIndex) == spec(currentOldIndex))
+//      assert(nextSeq.assertApplyInjective(specIndex, computedIndex))
+//      assert(specIndex == computedIndex)
+//      assert(nextSeq(computedIndex + BigInt(1)) == spec(nextOldIndex))
+//      assert(spec(nextOldIndex) == nextSeq(specIndex + BigInt(1)))
+//      assert(nextSeq.accepts(spec(nextOldIndex)))
+//      assert(survivorWindowCovers(
+//        specIndex + BigInt(1),
+//        nextOldIndex,
+//        remaining,
+//        offset - BigInt(1)))
+//      assert(assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex, count))
+//      assert(survivors == cycle.integral(nextOldIndex - BigInt(1)) :: tailSurvivors)
+//      assert(survivors.tail == tailSurvivors)
+//      assert(tailSurvivors.size > offset - BigInt(1))
+//      assert(assertCycleSurvivorWindowAtMatchesSpecNext(
+//        specIndex + BigInt(1),
+//        offset - BigInt(1),
+//        nextOldIndex,
+//        remaining))
+//
+//      survivors(offset) == nextSeq(specIndex + offset + BigInt(1))
+//    }
+//  }.holds
+
+  /**
+   * Raw-window coverage for the initial survivor scan.
+   *
+   * The first retained value is `spec.next(0)`, and the remaining scan starts
+   * at old integral position 1. For non-zero offsets, the tail coverage is
+   * exactly `survivorWindowCovers(0, 1, count - 1, offset - 1)`.
+   */
+//  def initialSurvivorWindowCovers(
+//    count: BigInt,
+//    offset: BigInt
+//  ): Boolean = {
+//    require(count > BigInt(0))
+//    require(offset >= BigInt(0))
+//
+//    if (offset == BigInt(0)) {
+//      true
+//    } else if (count <= BigInt(1)) {
+//      false
+//    } else {
+//      assert(assertFirstSurvivorEqualsSpecNext0())
+//      assert(spec(BigInt(1)) == spec.next(BigInt(0)))
+//      assert(spec(BigInt(1)) >= spec.next.head.value)
+//      assert(spec.next.accepts(spec(BigInt(1))))
+//      survivorWindowCovers(
+//        BigInt(0),
+//        BigInt(1),
+//        count - BigInt(1),
+//        offset - BigInt(1))
+//    }
+//  }
+
+  /**
+   * Indexed ordered survivor equality for the initial cycle scan.
+   *
+   * This packages the initial head case and the aligned tail-window recursion
+   * into the direct statement needed by gap equality: the `offset`-th value
+   * retained from the current cycle integral is exactly `spec.next(offset)`.
+   *
+   * Math:
+   *
+   *   initialSurvivorWindowCovers(count, offset)
+   *   ------------------------------------------------------------
+   *   survivorValues(cycle.integral, cycle.head, 0, count)(offset)
+   *     = spec.next(offset)
+   */
+//  def assertCycleSurvivorAtMatchesSpecNext(
+//    offset: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(offset >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(initialSurvivorWindowCovers(count, offset))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count).size > offset)
+//    decreases(offset)
+//
+//    val survivors = CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count)
+//
+//    if (offset == BigInt(0)) {
+//      assert(assertCycleSurvivorHeadMatchesSpecNext0(count))
+//      survivors(offset) == spec.next(offset)
+//    } else {
+//      val tailSurvivors = CycleIntegralFilterProperties.survivorValues(
+//        cycle.integral, cycle.head, BigInt(1), count - BigInt(1))
+//
+//      assert(assertCycleSurvivorValuesStartAtSpecNextHead(count))
+//      assert(survivors == spec.next.head.value :: tailSurvivors)
+//      assert(survivors.tail == tailSurvivors)
+//      assert(tailSurvivors.size > offset - BigInt(1))
+//      assert(assertFirstSurvivorEqualsSpecNext0())
+//      assert(spec.assertApplyOneEqualsNextPrime())
+//      assert(spec(BigInt(1)) == spec.primes.nextPrime.value)
+//      assert(spec.next.head.value == spec.primes.nextPrime.value)
+//      assert(spec.next(BigInt(0)) == spec.next.head.value)
+//      assert(spec(BigInt(1)) == spec.next(BigInt(0)))
+//      assert(spec(BigInt(1)) >= spec.next.head.value)
+//      assert(spec.next.filterPrimes == spec.primes.list.list)
+//      assert(spec.next.filterValues == PrimeUtils.primeValues(spec.next.filterPrimes))
+//      assert(spec.next.filterValues.head == spec.head.value)
+//      assert(spec.next.filterValues.tail == spec.filterValues)
+//      assert(spec.next.filterValues.head == spec.head.value)
+//      assert(spec.next.accepts(spec(BigInt(1))))
+//      assert(assertHeadPlusFilterModulusNotFrontMultiple())
+//      assert(survivorWindowCovers(
+//        BigInt(0),
+//        BigInt(1),
+//        count - BigInt(1),
+//        offset - BigInt(1)))
+//      assert(assertCycleSurvivorWindowAtMatchesSpecNext(
+//        BigInt(0),
+//        offset - BigInt(1),
+//        BigInt(1),
+//        count - BigInt(1)))
+//
+//      survivors(offset) == spec.next(offset)
+//    }
+//  }.holds
+
+  /**
+   * Adjacent survivor gaps match adjacent `spec.next` gaps.
+   *
+   * The ordered survivor bridge proves equality pointwise:
+   * `survivors(k) = spec.next(k)` and
+   * `survivors(k + 1) = spec.next(k + 1)`. Taking the adjacent difference on
+   * both sides gives the gap equality needed before moving to list-level
+   * `gapsFromValues` proofs.
+   *
+   * Math:
+   *
+   *   S(k) = spec.next(k)
+   *   S(k + 1) = spec.next(k + 1)
+   *   ------------------------------------------------------------
+   *   S(k + 1) - S(k) = spec.next(k + 1) - spec.next(k)
+   */
+//  def assertInitialSurvivorGapMatchesSpecNextGap(
+//    k: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(k >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(initialSurvivorWindowCovers(count, k))
+//    require(initialSurvivorWindowCovers(count, k + BigInt(1)))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count).size > k + BigInt(1))
+//
+//    val survivors = CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count)
+//
+//    assert(assertCycleSurvivorAtMatchesSpecNext(k, count))
+//    assert(assertCycleSurvivorAtMatchesSpecNext(k + BigInt(1), count))
+//    assert(survivors(k) == spec.next(k))
+//    assert(survivors(k + BigInt(1)) == spec.next(k + BigInt(1)))
+//
+//    survivors(k + BigInt(1)) - survivors(k) ==
+//      spec.next(k + BigInt(1)) - spec.next(k)
+//  }.holds
+
+  /**
+   * The gap list computed from ordered survivors matches the adjacent
+   * `spec.next` gap at index `k`.
+   *
+   * This is the list-facing form of
+   * `assertInitialSurvivorGapMatchesSpecNextGap`: chapter 4 proves that
+   * `gapsFromValues(S)(k)` is the adjacent difference `S(k + 1) - S(k)`,
+   * while the local survivor bridge proves those two survivor values are
+   * `spec.next(k)` and `spec.next(k + 1)`.
+   *
+   * Math:
+   *
+   *   gapsFromValues(S)(k) = S(k + 1) - S(k)
+   *   S(k + 1) - S(k) = spec.next(k + 1) - spec.next(k)
+   *   ------------------------------------------------------------
+   *   gapsFromValues(S)(k) = spec.next(k + 1) - spec.next(k)
+   */
+//  def assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(
+//    k: BigInt,
+//    count: BigInt
+//  ): Boolean = {
+//    require(k >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(initialSurvivorWindowCovers(count, k))
+//    require(initialSurvivorWindowCovers(count, k + BigInt(1)))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count).size > k + BigInt(1))
+//
+//    val survivors = CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count)
+//
+//    assert(!survivors.isEmpty)
+//    assert(CycleIntegralFilterProperties.assertGapsFromValuesAtIndex(survivors, k))
+//    assert(assertInitialSurvivorGapMatchesSpecNextGap(k, count))
+//
+//    CycleIntegralFilterProperties.gapsFromValues(survivors)(k) ==
+//      spec.next(k + BigInt(1)) - spec.next(k)
+//  }.holds
+
+  /**
+   * The survivor-derived gap list matches `spec.next.gapList` at index `k`.
+   *
+   * This adds only the final spec-list projection to
+   * `assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap`. The spec
+   * sequence already proves that `gapList(0, nextPeriod)(k)` is the adjacent
+   * next-stage difference.
+   *
+   * Math:
+   *
+   *   gapsFromValues(S)(k) = spec.next(k + 1) - spec.next(k)
+   *   spec.next.gapList(0, P)(k) = spec.next(k + 1) - spec.next(k)
+   *   ------------------------------------------------------------
+   *   gapsFromValues(S)(k) = spec.next.gapList(0, P)(k)
+   */
+//  def assertInitialSurvivorGapListAtMatchesSpecNextGapList(
+//    k: BigInt,
+//    count: BigInt,
+//    nextPeriod: BigInt
+//  ): Boolean = {
+//    require(k >= BigInt(0))
+//    require(count > BigInt(0))
+//    require(nextPeriod > BigInt(0))
+//    require(k < nextPeriod)
+//    require(initialSurvivorWindowCovers(count, k))
+//    require(initialSurvivorWindowCovers(count, k + BigInt(1)))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count).size > k + BigInt(1))
+//
+//    val survivors = CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), count)
+//
+//    assert(assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap(k, count))
+//    assert(spec.next.assertGapListApplyEqualsGapAtPosition(BigInt(0), nextPeriod, k))
+//
+//    CycleIntegralFilterProperties.gapsFromValues(survivors)(k) ==
+//      spec.next.gapList(BigInt(0), nextPeriod)(k)
+//  }.holds
+
+  /**
+   * Coverage predicate for a consecutive survivor-gap prefix.
+   *
+   * A gap at position `from` needs two survivor values: `from` and `from + 1`.
+   * Recursing over `gapCount` records exactly that adjacent-pair coverage for
+   * every gap in the prefix.
+   */
+//  def initialSurvivorGapListCovers(
+//    scanCount: BigInt,
+//    from: BigInt,
+//    gapCount: BigInt
+//  ): Boolean = {
+//    require(scanCount > BigInt(0))
+//    require(from >= BigInt(0))
+//    require(gapCount >= BigInt(0))
+//    decreases(gapCount)
+//
+//    if (gapCount == BigInt(0)) {
+//      true
+//    } else {
+//      initialSurvivorWindowCovers(scanCount, from) &&
+//        initialSurvivorWindowCovers(scanCount, from + BigInt(1)) &&
+//        initialSurvivorGapListCovers(scanCount, from + BigInt(1), gapCount - BigInt(1))
+//    }
+//  }
+
+  /**
+   * Forward gap prefix built from the initial ordered survivor values.
+   *
+   * This is intentionally shaped like `nextGapList`: each step emits the
+   * adjacent survivor difference at `from`, then recurses at `from + 1`.
+   */
+//  def initialSurvivorGapList(
+//    from: BigInt,
+//    gapCount: BigInt,
+//    scanCount: BigInt
+//  ): List[BigInt] = {
+//    require(scanCount > BigInt(0))
+//    require(from >= BigInt(0))
+//    require(gapCount >= BigInt(0))
+//    require(initialSurvivorGapListCovers(scanCount, from, gapCount))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), scanCount).size > from + gapCount)
+//    decreases(gapCount)
+//
+//    if (gapCount == BigInt(0)) {
+//      List.empty[BigInt]
+//    } else {
+//      val survivors = CycleIntegralFilterProperties.survivorValues(
+//        cycle.integral, cycle.head, BigInt(0), scanCount)
+//
+//      (survivors(from + BigInt(1)) - survivors(from)) ::
+//        initialSurvivorGapList(from + BigInt(1), gapCount - BigInt(1), scanCount)
+//    }
+//  }
+
+  /**
+   * The forward survivor-gap prefix equals the canonical adjacent next-gap
+   * prefix.
+   *
+   * Both lists recurse in the same direction. The head equality is exactly
+   * `assertInitialSurvivorGapMatchesSpecNextGap`; the tail equality is the
+   * induction hypothesis over `from + 1`.
+   *
+   * Math:
+   *
+   *   survivorGap(from) = spec.next(from + 1) - spec.next(from)
+   *   initialSurvivorGapList(from + 1, n - 1, scan)
+   *     = nextGapList(from + 1, n - 1)
+   *   ------------------------------------------------------------
+   *   initialSurvivorGapList(from, n, scan) = nextGapList(from, n)
+   */
+//  def assertInitialSurvivorGapListMatchesNextGapList(
+//    from: BigInt,
+//    gapCount: BigInt,
+//    scanCount: BigInt
+//  ): Boolean = {
+//    require(scanCount > BigInt(0))
+//    require(from >= BigInt(0))
+//    require(gapCount >= BigInt(0))
+//    require(initialSurvivorGapListCovers(scanCount, from, gapCount))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), scanCount).size > from + gapCount)
+//    decreases(gapCount)
+//
+//    if (gapCount == BigInt(0)) {
+//      initialSurvivorGapList(from, BigInt(0), scanCount) ==
+//        nextGapList(from, BigInt(0))
+//    } else {
+//      assert(initialSurvivorWindowCovers(scanCount, from))
+//      assert(initialSurvivorWindowCovers(scanCount, from + BigInt(1)))
+//      assert(initialSurvivorGapListCovers(
+//        scanCount, from + BigInt(1), gapCount - BigInt(1)))
+//      assert(assertInitialSurvivorGapMatchesSpecNextGap(from, scanCount))
+//      assert(assertInitialSurvivorGapListMatchesNextGapList(
+//        from + BigInt(1), gapCount - BigInt(1), scanCount))
+//
+//      initialSurvivorGapList(from, gapCount, scanCount) ==
+//        nextGapList(from, gapCount)
+//    }
+//  }.holds
+
+  /**
+   * The forward survivor-gap prefix equals `spec.next.gapList`.
+   *
+   * This composes the survivor-prefix equality with the canonical
+   * `nextGapList == spec.next.gapList` bridge. It gives the next pipeline proof
+   * a list-level target without reopening either recursion.
+   */
+//  def assertInitialSurvivorGapListMatchesSpecNextGapList(
+//    from: BigInt,
+//    gapCount: BigInt,
+//    scanCount: BigInt
+//  ): Boolean = {
+//    require(scanCount > BigInt(0))
+//    require(from >= BigInt(0))
+//    require(gapCount >= BigInt(0))
+//    require(initialSurvivorGapListCovers(scanCount, from, gapCount))
+//    require(CycleIntegralFilterProperties.survivorValues(
+//      cycle.integral, cycle.head, BigInt(0), scanCount).size > from + gapCount)
+//
+//    assert(assertInitialSurvivorGapListMatchesNextGapList(from, gapCount, scanCount))
+//    assert(assertNextGapListMatchesSpecNext(from, gapCount))
+//
+//    initialSurvivorGapList(from, gapCount, scanCount) ==
+//      spec.next.gapList(from, gapCount)
+//  }.holds
 
   /**
    * Per-index gap equality: survivor gap = spec.next gap.

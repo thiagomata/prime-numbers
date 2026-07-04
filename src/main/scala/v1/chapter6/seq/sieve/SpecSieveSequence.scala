@@ -1138,6 +1138,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    //    require(nextSeq.filterValues.head == head.value) // bad agent
     require(accepts(value))
     require(Calc.mod(value, nextSeq.filterValues.head) != BigInt(0))
 
@@ -1171,6 +1172,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    // require(nextSeq.filterValues.head == head.value) // bad agent
     require(nextSeq.accepts(value))
 
     assert(value >= head.value)
@@ -2344,6 +2346,24 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     nextSeq(vIdx + BigInt(1)) == apply(m)
   }.holds
 
+
+// bad agent
+//  private def assertRejectedByNextWhenNewHeadMultiple(
+//                                                       nextSeq: SpecSieveSequence,
+//                                                       value: BigInt,
+//                                                       p: BigInt
+//                                                     ): Boolean = {
+//    require(value >= nextSeq.head.value)
+//    require(nextSeq.filterValues.nonEmpty)
+//    require(nextSeq.filterValues.head == p)
+//    require(Calc.mod(value, p) == BigInt(0))
+//
+//    assert(Calc.mod(value, nextSeq.filterValues.head) == BigInt(0))
+//    assert(!SieveUtils.isCoprime(value, nextSeq.filterValues))
+//    assert(!nextSeq.passesFilter(value))
+//    !nextSeq.accepts(value)
+//  }.holds
+
   /**
    * Exposes the finite endpoint used by the period-based merge proof.
    *
@@ -2542,6 +2562,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    //     require(nextSeq.filterValues.head == head.value) // bad agent
     require(nextSeq.accepts(apply(k)))
     require(apply(period) == head.value + filterModulus)
     require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
@@ -2606,6 +2627,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    //     require(nextSeq.filterValues.head == head.value) // bad agent
     require(nextSeq.accepts(apply(k)))
     require(apply(period) == head.value + filterModulus)
     require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
@@ -2649,6 +2671,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    //     require(nextSeq.filterValues.head == head.value) // bad agent
     require(nextSeq.accepts(apply(k)))
     require(apply(period) == head.value + filterModulus)
     require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
@@ -2706,6 +2729,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
+    //     require(nextSeq.filterValues.head == head.value) // bad agent
     require(nextSeq.accepts(apply(k)))
     require(apply(period) == head.value + filterModulus)
     require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))

@@ -246,3 +246,123 @@ Only re-run `just verify` after making a code change.
   <item>Did I update the ticket with the conclusion (outcome, lessons, what's next)?</item>
   <item>Are there articles in `articles/` that should be updated? If so, list them and ask the user.</item>
 </checklist-after>
+
+<agent-pipeline>
+  Every MODIFYING action (edit, write, verify, bash with side-effects) follows
+  a three-actor protocol. Read-only actions (read, grep, glob, passive bash)
+  skip the pipeline entirely.
+
+  <pipeline-diagram>
+    Worker (Research) → Critic (Sanity Review) → Proposal → Monitor (Gate)
+      ↑                    ↓ CONCERNS                              ↓
+      └── revise (max 3) ←┘                              Execute → Monitor (Post-Check)
+                                                          ↑ PASS  ↓ PASS/FAIL
+                                                          └───────┘
+  </pipeline-diagram>
+
+  <mode id="worker">
+    <goal>
+      Read the active ticket, research the codebase, plan exactly ONE change
+      (per <rule id="small-changes"/>), and submit a Plan to the Critic.
+    </goal>
+    <steps>
+      1. Read the active ticket's ## START HERE section for the micro-goal.
+      2. Search the codebase, LEARNINGS.md, and existing `.holds` lemmas
+         for relevant context and dependencies.
+      3. Plan exactly ONE change — one assertion, one lemma, one require.
+      4. Submit the Plan for Critic review (no formal output yet — just
+         state the plan concisely so the Critic can evaluate it).
+    </steps>
+  </mode>
+
+  <mode id="critic">
+    <goal>
+      Review the Worker's plan for REASONING QUALITY before a formal proposal
+      is written. The Monitor handles rule compliance separately; the Critic
+      handles semantic soundness.
+    </goal>
+    <checks>
+      1. **Freshness** — Do all referenced functions/files/classes exist at HEAD?
+      2. **Preconditions** — Does the plan account for every precondition the
+         target function needs? (Verifier "not seeing" preconditions is usually
+         a missing precondition the Worker didn't assert.)
+      3. **Lemma Precision** — For each lemma cited, does the actual lemma body
+         prove what the Worker claims? (Not just name-matching — read the body.)
+      4. **Historical** — Has this exact approach already been tried and failed?
+         Check ticket Learning Log and LEARNINGS.md.
+      5. **Loop Detection** — Is the Worker repeating the same (target, change
+         pattern, lemma strategy) from a prior failed attempt? "Doing the same
+         thing again expecting different results" must be flagged.
+      6. **Off-Rails** — Does the target file/function have a clear path back to
+         the ticket's micro-goal? If the action is unrelated or tangential, flag it.
+      7. **Pitfalls** — Does the plan repeat a known failure pattern documented in
+         LEARNINGS.md? (e.g., public lemma instead of private, % instead of DivMod,
+         multiple assertions per cycle.)
+    </checks>
+    <output-format>
+      ## Critic Review: PASS
+      -- or --
+      ## Critic Review: CONCERNS
+      - **Loop:** <specific repeated pattern, reference to prior attempt>
+      - **Off-Rails:** <ticket scope vs. proposed target — why disconnected>
+      - **Freshness:** <removed code referenced>
+      - **Preconditions:** <missing precondition for target function>
+      - **Historical:** <prior failed attempt with matching strategy>
+      - **Pitfalls:** <known failure pattern from LEARNINGS.md being repeated>
+    </output-format>
+    <circuit-breaker>
+      If the Critic returns CONCERNS 3 times on the same micro-goal → STOP and
+      ask for help. Do NOT keep revising. Enforce <rule id="stop-and-ask"/>.
+    </circuit-breaker>
+  </mode>
+
+  <mode id="monitor">
+    <goal>
+      Gate the Worker's formal Action Proposal for RULE COMPLIANCE. The Critic
+      already cleared semantic quality; the Monitor enforces mechanical rules.
+    </goal>
+    <pre-execution>
+      1. Validate the formal Action Proposal against EVERY rule in <rules/>.
+      2. Validate against EVERY item in <checklist-before/>.
+      3. Output a visible verdict.
+    </pre-execution>
+    <post-execution>
+      1. Validate result against EVERY item in <checklist-after/>.
+      2. If verify failed/timed out → enforce <rule id="red-cascade"/>.
+      3. Output a visible verdict.
+      4. If 3 total attempts on the same micro-goal have failed across Critic
+         and Monitor gates → enforce <rule id="stop-and-ask"/>.
+    </post-execution>
+    <output-format>
+      ## Monitor Verdict (Pre-Execution)
+      - **Verdict:** PASS | FAIL
+      - **Rule violations:** <list of rule id + explanation per violation, or NONE>
+      - **checklist-before:** <all items passed, or first item that failed>
+
+      ## Monitor Verdict (Post-Execution)
+      - **Verdict:** PASS | FAIL
+      - **verify result:** X valid, X invalid, X unknown
+      - **checklist-after:** <all items passed, or first item that failed>
+      - **Next action:** <proceed to next step / revise / stop-and-ask / done>
+    </output-format>
+  </mode>
+
+  <proposal-format>
+    After Critic review passes, the Worker outputs a formal Action Proposal:
+
+    ## Worker Action Proposal
+    - **Ticket:** <ticket-file.md>
+    - **Micro-goal:** <one-sentence from ticket>
+    - **Target:** <file.scala>:<function>
+    - **Change:** <the exact change — old text → new text>
+    - **Verify:** <just verify command, e.g. just verify FunctionName>
+    - **Dependencies:** <lemmas/facts/preconditions relied on, with source file + line refs>
+  </proposal-format>
+
+  <interaction-with-existing-rules>
+    The pipeline does NOT replace existing rules, checklists, or anti-patterns.
+    It enforces them. The Monitor references rules by ID; the Critic references
+    LEARNINGS.md sections. All existing sections in AGENTS.md remain authoritative.
+    The pipeline is the execution protocol that makes them operational.
+  </interaction-with-existing-rules>
+</agent-pipeline>
