@@ -744,7 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-15 verified lemmas (value-level survivor proof + expansion bridge). Wraps `SpecDerivedSieveSequence`.
+17 verified lemmas + 1 stub (value-level survivor proof + expansion bridge). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -762,19 +762,21 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertCycleModulusEqualsProductTail()**                 | `cycle.modulus == product(cyclePrimes.tail)` |
 | **assertCycleSurvivorModModulusCoprimeToTail(pos)**       | If `mod(integral(pos), head) != 0` then `isCoprime(mod(integral(pos), cycle.modulus), primesTailValues)` |
 | **assertHeadModulusEqualsProductAllPrimes()**             | `head * modulus == product(head :: primesTailValues)` |
-| **assertCycleSurvivorAppearsInNextFiltered(pos)**         | **If `mod(integral(pos), head) != 0` then `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))`** — expansion bridge |
+| **assertCycleSurvivorAppearsInNextFiltered(pos)**         | If `mod(integral(pos), head) != 0` then `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))` — expansion bridge |
+| **assertCycleSurvivorAppearsInNextSorted(pos)**           | If `mod(integral(pos), head) != 0` then `nextSorted(cycle).list.contains(mod(integral(pos), head*modulus))` — bridge through sort |
+| **assertNextHeadResidueIsSpecNextHead()**                 | If `head >= 3, modulus >= 2` then `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor arithmetic |
 
 **Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
 the underlying proof still lives in `SpecDerivedSieveSequence:1784`.
 
-**Expansion bridge — cycle-survivor direction PROVEN (2026-07-05, commit `66ad45b7`):**
-`assertCycleSurvivorAppearsInNextFiltered(pos)` closes the cycle-survivor → `nextFiltered`
-direction. It composes `assertCycleSurvivorCoprimeToCyclePrimes` +
-`assertHeadModulusEqualsProductAllPrimes` + `assertModPreservesCoprime` to show the
-reduced survivor `mod(integral(pos), head*modulus)` satisfies the preconditions of
-`SpecCycleSieveEquivalence.assertNextFilteredContainsCoprime` (which already does the
-pipeline side). The reverse direction is not needed for M3 — rotation handles it. See
-ticket `active/spec-derived-by-survivors.md`.
+**Expansion bridge progress (2026-07-05):** Cycle-survivor → pipeline membership direction
+fully proven (through both `nextFiltered` and `nextSorted`), plus the rotation anchor
+arithmetic. The membership lemmas compose `assertCycleSurvivorCoprimeToCyclePrimes` +
+`assertHeadModulusEqualsProductAllPrimes` + `assertModPreservesCoprime` to satisfy the
+preconditions of `SpecCycleSieveEquivalence.assertNextFilteredContainsCoprime` /
+`assertNextSortedContainsCoprime`. Remaining M3 work: ordered list equality, gap equality,
+rotation index equality, final rotated-gap equality. See ticket
+`active/spec-derived-by-survivors.md` §"M3 strategic assessment".
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
 

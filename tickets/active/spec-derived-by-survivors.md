@@ -2,8 +2,8 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** 15 lemmas verified. **Cycle-survivor → nextFiltered direction of the expansion bridge is PROVEN** (`assertCycleSurvivorAppearsInNextFiltered`, commit `66ad45b7`). For any cycle-integral survivor, its reduction `mod(_, head*modulus)` appears in `nextFiltered(cycle)`. The reverse direction is not needed for M3 (rotation handles sub-head extras).
-**Full chapter:** 12228 valid, 0 invalid, 0 unknown.
+**Status:** 17 lemmas verified + 1 stub (18 total). Expansion bridge fully proven in the cycle-survivor → pipeline direction (membership, through both `nextFiltered` and `nextSorted`). Rotation anchor arithmetic proven. Remaining M3 work: ordered list equality + rotation index + final gap equality (ladder steps 7b→9→10→11).
+**Full chapter:** 12271 valid, 0 invalid, 0 unknown (after commit `c411ea45`).
 
 ---
 
@@ -253,6 +253,80 @@ any pipeline values below `head` (e.g. the value `1` for S_2) are chopped off by
 rotation, since `nextHeadResidueIndex` starts the gap list at
 `mod(cycle(1), newMod) > head`.
 
+### 2026-07-05 (session 2) — Sort-bridge membership + rotation anchor arithmetic
+
+Three more verified lemmas toward M3, all building on the session-1 bridge:
+
+| Lemma | VCs | Statement | Commit |
+|-------|-----|-----------|--------|
+| `assertCycleSurvivorAppearsInNextSorted(pos)` | 34 | `nextSorted(cycle).list.contains(mod(integral(pos), head*modulus))` — bridge through sort stage | `fd62094f` |
+| `assertNextHeadResidueIsSpecNextHead()` | 9 | `mod(cycle(1), head*modulus) == spec.next.head.value` (head≥3) — rotation anchor arithmetic | `c411ea45` |
+
+**Key discoveries this session:**
+
+1. **`SortedList` carries sortedness by type** (`require(SortedList.isAscending(list))`
+   as a class invariant, `SortedList.scala:7`). So `nextSorted(cycle).list` is sorted
+   *for free* — no need to prove sortedness. This collapses ladder step 8's "prove
+   sorting reorders correctly" worry: the type already guarantees it.
+
+2. **`assertNextSortedContainsCoprime`** (public, `SpecCycleSieveEquivalence.scala:1173`)
+   does the sort-stage membership direction (it internally chains
+   `assertNextFilteredContainsCoprime` + `assertSortFilteredContains`). So extending
+   the bridge from `nextFiltered` to `nextSorted` was a one-line change of the final
+   call. **Lesson reinforced: the pipeline-side lemmas were already comprehensive;
+   the work is on the cycle-survivor side, satisfying their preconditions.**
+
+3. **The rotation anchor `findResidueIndex` is a "lower-bound" search**, not strict
+   equality: `findResidueIndex(list, idx, value)` returns `idx` at the first element
+   `>= value` (`SieveUtils.scala:559`). This is correct because the sorted list
+   contains the value, so "first >= value" is the value's position. Proving this
+   needs the value to be present (which my bridge gives for pos=0) and the list to
+   be sorted (free from SortedList).
+
+4. **S_0 edge case excluded from the rotation anchor.** For S_0 (head=2, modulus=1),
+   `cycle(1)=3 > 2=head*modulus`, so `mod(cycle(1), head*modulus) = 1 ≠ 3`. The lemma
+   `assertNextHeadResidueIsSpecNextHead` requires `head >= 3`, excluding S_0. This is
+   acceptable: S_0 is the seed stage defined directly, and M3 only needs to hold for
+   stages S_1 onward.
+
+### M3 strategic assessment — remaining work
+
+The M3 ladder (from `tickets/active/independent-next-cycle.md` §"M3 Proof Ladder")
+remaining steps, with current status:
+
+| Step | Statement | Status |
+|------|-----------|--------|
+| 6 | Ordered survivor equality: `cycleSurvivor(i) == spec.next(i)` | Partial (head only, via `assertCycleSurvivorValuesStartAtSpecNextHead`) |
+| 7a | Cycle-survivor ∈ `nextFiltered` (membership) | **DONE** (`assertCycleSurvivorAppearsInNextFiltered`) |
+| 7b | `nextFiltered` value → cycle-survivor (reverse membership) | Open — but **not strictly needed** if rotation handles extras |
+| 8 | `nextSorted(cycle).list(i) == spec.next(i)` (ordered) | Membership direction **DONE** (`assertCycleSurvivorAppearsInNextSorted`); ordered equality open |
+| 9 | `calculateGaps(nextSorted(cycle).list, head*modulus)(i) == spec.next.gapList(0,nextPeriod)(i)` | Open |
+| 10 | `nextHeadResidueIndex(cycle) == index of spec.next.head.value` | Arithmetic prereq **DONE** (`assertNextHeadResidueIsSpecNextHead`); index-equality open |
+| 11 | **`nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)`** (final M3) | Open — the target |
+
+**Two paths to M3 from here:**
+
+- **Path A (incremental, follows the ladder):** prove step 6 (ordered survivor
+  equality) → step 8 (ordered sort equality) → step 9 (gap equality) → step 10
+  (index equality) → step 11 (final). Many small lemmas. Lower risk per step.
+
+- **Path B (direct per-position):** leverage `assertSurvivorGapEqualsSpecNextGap`
+  (already proven) which gives survivor-gap = spec.next.gap per index, and use my
+  membership bridge to transfer those gaps to the pipeline. This skips proving
+  full ordered list equality but requires careful reasoning about how
+  `calculateGaps` + `rotateAt` interact with the membership facts. Higher risk
+  per step, fewer total steps.
+
+**Recommended next concrete step (whichever path):** prove that
+`nextSorted(cycle).list` contains `spec.next.head.value` *at the index returned by
+`nextHeadResidueIndex`*. This is the bridge between my membership lemma and the
+rotation: it requires a chapter-3 helper about `findResidueIndex` on a sorted list
+("if a sorted list contains `v`, `findResidueIndex(list, 0, v)` returns the position
+of `v`"). That helper is reusable and belongs in chapter 3.
+
+**Full chapter count (post `c411ea45`):** 12271 valid, 0 invalid, 0 unknown.
+The session added +43 from the 12228 baseline of session 1.
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
@@ -318,7 +392,7 @@ which composes `assertModPreservesCoprime` + `assertExpandedResiduesRepresentPer
 `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` (a duplicate of the existing lemma at
 lines 36–42) is the seed for this — it should be grown into the real bridge lemma.
 
-### Summary of what the class proved (15 verified lemmas + 1 stub)
+### Summary of what the class proved (17 verified lemmas + 1 stub)
 
 | # | Lemma | VCs | What it proves |
 |---|-------|-----|----------------|
@@ -336,7 +410,9 @@ lines 36–42) is the seed for this — it should be grown into the real bridge 
 | 12 | `assertCycleModulusEqualsProductTail()` | 5 | `cycle.modulus == product(cyclePrimes.tail)` |
 | 13 | `assertCycleSurvivorModModulusCoprimeToTail(pos)` | 27 | `mod(integral(pos), cycle.modulus)` coprime to tail primes |
 | 14 | `assertHeadModulusEqualsProductAllPrimes()` | 2 | `head * modulus == product(head :: primesTailValues)` |
-| 15 | **`assertCycleSurvivorAppearsInNextFiltered(pos)`** | 34 | **`nextFiltered(cycle).contains(mod(integral(pos), head*modulus))`** — the bridge |
+| 15 | **`assertCycleSurvivorAppearsInNextFiltered(pos)`** | 34 | `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))` — bridge |
+| 16 | **`assertCycleSurvivorAppearsInNextSorted(pos)`** | 34 | `nextSorted(cycle).list.contains(mod(integral(pos), head*modulus))` — bridge through sort |
+| 17 | **`assertNextHeadResidueIsSpecNextHead()`** | 9 | `mod(cycle(1), head*modulus) == spec.next.head.value` (head≥3) — rotation anchor arithmetic |
 | — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | Unused duplicate of #4; candidate for removal |
 
 **Note:** `assertNextHeadLessThanHeadSquared()` was removed from this class on 2026-07-05
