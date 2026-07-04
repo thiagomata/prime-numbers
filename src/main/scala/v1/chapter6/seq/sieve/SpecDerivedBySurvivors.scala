@@ -251,4 +251,39 @@ case class SpecDerivedBySurvivors(
       derived.cycle, v))
     SieveSequenceNextLevel.nextFiltered(derived.cycle).contains(v)
   }.holds
+
+  /**
+   * Expansion bridge through the sort stage (ladder step 8, membership direction).
+   *
+   * For any cycle-integral survivor `integral(pos)`, the reduced value
+   * `v = Calc.mod(integral(pos), head * modulus)` appears in
+   * `nextSorted(cycle).list`. Same as `assertCycleSurvivorAppearsInNextFiltered`
+   * but extended through `SortedList.fromUnsorted` via
+   * `assertNextSortedContainsCoprime` (which proves sorting preserves membership).
+   */
+  def assertCycleSurvivorAppearsInNextSorted(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    val v: BigInt = Calc.mod(
+      derived.cycle.integral(pos),
+      derived.cycle.head * derived.cycle.modulus)
+
+    assert(assertCycleSurvivorCoprimeToCyclePrimes(pos))
+    assert(derived.assertPrimesTailValuesPositive())
+    assert(derived.assertHeadPositive())
+    assert(GapCycle.assertMemCycleValuesPositive(derived.cycle.gapCycle))
+    assert(CycleIntegralProperties.assertCycleIntegralPositive(
+      derived.cycle.integral, pos))
+    assert(assertHeadModulusEqualsProductAllPrimes())
+    assert(SpecCycleSieveEquivalence.assertModPreservesCoprime(
+      derived.cycle.integral(pos),
+      derived.cycle.head * derived.cycle.modulus,
+      derived.cycle.head :: derived.cycle.primesTailValues))
+    assert(v >= BigInt(0))
+    assert(v < derived.cycle.head * derived.cycle.modulus)
+    assert(SpecCycleSieveEquivalence.assertNextSortedContainsCoprime(
+      derived.cycle, v))
+    SieveSequenceNextLevel.nextSorted(derived.cycle).list.contains(v)
+  }.holds
 }
