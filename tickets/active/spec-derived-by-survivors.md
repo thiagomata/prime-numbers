@@ -93,49 +93,39 @@ The 5 `SieveCycleAfterProof` lemmas + bulk induction — all 6 verified.
 - **Timed out** at 300s — naive induction without intermediate lemmas
 - Reverted, back to green
 
-### 2026-07-04 — Bridged from passesFilter to accepts
+### 2026-07-04 — F5 timeout during rotation lemma attempt
 
-- Added `assertIntegralGeIntegral0(pos)` — 20/20, proves `integral(pos) >= integral(0)` by induction using `assertCycleValuePositive` + definitional unfolding
-- Added `assertSurvivorAcceptedBySpecNext(pos)` — 12/12, proves `spec.next.accepts(integral(pos))` for any survivor position, using `assertIntegralGeIntegral0` to satisfy the `accepts` `>= head.value` precondition
-- Full chapter: 12114 valid, 0 invalid, 0 unknown
-- OBJECTS.md §6.9 updated — 10 lemmas, ch6 count 222→224
+- Attempted `assertNextHeadLessThanNewModulus` — proves `cycle(1) < head * modulus` for rotation, needed `spec(1) < head + filterModulus` which requires chaining monotonicity across `period` steps — **timed out** at 300s
+- This is the same monotonicity wall (F5) — chaining `applyStrictlyIncreases` across a symbolic period is too expensive
+- Reverted — the class stays at 10 lemmas, all green
 
-### Current class (10 lemmas, all verified)
+### Status Assessment — Path to M3
 
-1. `assertCycleSurvivorCoprimeToCyclePrimes(pos)` — 8 — survivor coprime to all primes
-2. `assertSpecNextFilterEqCyclePrimes()` — 5 — `spec.next.filterValues == cyclePrimes`
-3. `assertCycleSurvivorCoprimeToSpecNextFilter(pos)` — 10 — survivor coprime to next filter
-4. `assertCycleSurvivorPassesSpecNextFilter(pos)` — 8 — survivor passes next filter (no `>=`)
-5. `assertFirstSurvivorEqualsSpecNextHead()` — 4 — `integral(0) == spec.next.head.value`
-6. `assertAllSurvivorsPassSpecNextFilter(count)` — 10 — all survivors in `[0,count)` pass filter
-7. `assertAllSurvivorsPassSpecNextFilterFrom(from,count)` — 11 — same, from arbitrary position
-8. `assertIntegralIncreasingForCount(count)` — 14 — `integral(pos) < integral(pos+1)` for all pos
-9. `assertIntegralGeIntegral0(pos)` — 20 — `integral(pos) >= integral(0)`
-10. `assertSurvivorAcceptedBySpecNext(pos)` — 12 — survivor accepted by `spec.next.accepts`
+The class has proven its core mission: survivors pass the next filter (value-level, no `>=` precondition)
+and are accepted by `spec.next.accepts`. The remaining path to M3 requires:
 
-### Significance
+1. **Expansion bridge**: prove that the pipeline's `nextFiltered` contains exactly the cycle-integral
+   survivors. This is partially solved by `assertExpandedResiduesRepresentPeriod` (for values in
+   `[0, head*modulus)`), insufficient for later survivors beyond one period.
 
-The incremental-approach strategy (suggested by user after the timeout) succeeded:
-- **Attempt 1** (naive induction on integral): timed out at 300s
-- **Attempt 2** (add MemCycleValuePositive lemma): timed out at 300s
-- **Attempt 3** (use existing `CycleIntegralProperties.assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive`): **14/14 in 11.53s**
+2. **Rotation anchor**: prove `nextHeadResidueIndex(cycle) == 0`. Requires `cycle(1) < head * modulus`
+   which timed out due to monotonicity chaining.
 
-The F5 timeout wall is **not an inherent limit** — it was a missing-intermediate-lemma problem.
-The existing `assertCycleValuePositive` uses `assertGreaterThanAtIndex` which avoids the
-recursive `allGreaterThan` unfolding, making the induction efficient.
+3. **Composition**: combine pipeline gaps with `spec.next.gapList` equality. This builds on
+   `assertSurvivorGapEqualsSpecNextGap` (already verified).
+
+These three items require the expansion bridge + periodic reasoning, which is the remaining
+hard problem for the independent-next-cycle ticket.
 
 ### Next direction
 
-With `assertSurvivorAcceptedBySpecNext`, the class bridges the value-level proofs to
-`accepts`-based lemmas. This enables connecting with `SpecDerivedSieveSequence`'s
-index-based lemmas (`assertSpecNextIsKthSurvivor`, `assertSurvivorGapEqualsSpecNextGap`)
-for the ordered survivor equality. The next step: use monotonicity to prove that
-survivors match `spec.next` values in order — combining the value-level filter-passing
-with the index-based position matching.
+The class is at a natural stopping point. The next steps toward M3 (expansion bridge,
+rotation proof) are outside this class's scope — they belong in the pipeline proofs
+(`SieveSequenceNextLevel`, `SpecCycleSieveEquivalence`).
 
-Alternatively, use the `accepts` bridge to chain survivors through the pipeline:
-prove that `nextFiltered(cycle)` values are exactly the cycle-integral survivors,
-then that `nextGaps` matches `spec.next.gapList`.
+Consider reviewing `tickets/active/independent-next-cycle.md` for the coordinated plan,
+especially S5 (sortedness preservation) or S6 (filter merge/sum) which are pipeline-related
+and could leverage this class's results.
 
 ### Next steps
 
