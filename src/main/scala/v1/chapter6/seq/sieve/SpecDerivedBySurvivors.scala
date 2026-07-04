@@ -312,4 +312,26 @@ case class SpecDerivedBySurvivors(
              derived.cycle.head * derived.cycle.modulus) ==
       derived.spec.next.head.value
   }.holds
+
+  /**
+   * Load-bearing modulus identity for the expansion bridge.
+   *
+   * Proves `cycle.head * cycle.modulus == spec.next.filterModulus`. This is
+   * the key arithmetic fact that connects the cycle's reduced range
+   * `[0, head*modulus)` to the spec's next-stage filter modulus. It holds
+   * because:
+   *   cycle.modulus == spec.filterModulus                         (assertCycleModulusEqualsSpecFilterModulus)
+   *   spec.next.filterPrimes == spec.primes.list.list             (definitional: primes.next.list.tail.list)
+   *   spec.filterPrimes == spec.primes.list.tail.list             (definitional)
+   *   primorial(head :: tail) == head * primorial(tail)           (primorialUnfold)
+   *
+   * Confirmed load-bearing by the S_2 hand-analysis: `5 * 6 = 30 = primorial([5,3,2])`.
+   */
+  def assertHeadModulusEqualsSpecNextFilterModulus(): Boolean = {
+    assert(derived.assertCycleModulusEqualsSpecFilterModulus())
+    assert(derived.spec.filterPrimes == derived.spec.primes.list.tail.list)
+    assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
+    assert(PrimeUtils.primorialUnfold(derived.spec.primes.list.list))
+    derived.cycle.head * derived.cycle.modulus == derived.spec.next.filterModulus
+  }.holds
 }
