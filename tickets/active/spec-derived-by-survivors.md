@@ -2,8 +2,8 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** 13 lemmas verified (11 structural + 2 expansion-bridge blocks). Bridge approach confirmed: `assertNextFilteredContainsCoprime` already does the pipeline side; remaining work is to show the reduced survivor satisfies its preconditions. Next lemma `assertCycleSurvivorAppearsInNextFiltered` will close the cycle-survivor → nextFiltered direction.
-**Full chapter:** 12192 valid, 0 invalid, 0 unknown (commit `9d273dc4`).
+**Status:** 15 lemmas verified. **Cycle-survivor → nextFiltered direction of the expansion bridge is PROVEN** (`assertCycleSurvivorAppearsInNextFiltered`, commit `66ad45b7`). For any cycle-integral survivor, its reduction `mod(_, head*modulus)` appears in `nextFiltered(cycle)`. The reverse direction is not needed for M3 (rotation handles sub-head extras).
+**Full chapter:** 12228 valid, 0 invalid, 0 unknown.
 
 ---
 
@@ -202,6 +202,57 @@ proves `v` satisfies the three preconditions of
 
 This will be one lemma, one verify cycle.
 
+### 2026-07-05 — Expansion-bridge cycle-survivor direction PROVEN
+
+**Milestone (commit `66ad45b7`, full chapter 12228 valid):**
+`assertCycleSurvivorAppearsInNextFiltered(pos)` is verified (34/34 in 16.6s). It proves
+that for any cycle-integral survivor `integral(pos)`, the reduced value
+`v = Calc.mod(integral(pos), head*modulus)` satisfies
+`nextFiltered(cycle).contains(v)`.
+
+**Two more helper lemmas added this session (commits `9d273dc4` and `66ad45b7`):**
+
+| Lemma | VCs | Statement |
+|-------|-----|-----------|
+| `assertHeadModulusEqualsProductAllPrimes()` | 2 | `head*modulus == product(head :: primesTailValues)` |
+| `assertCycleSurvivorAppearsInNextFiltered(pos)` | 34 | **`nextFiltered(cycle).contains(mod(integral(pos), head*modulus))`** |
+
+**Why it worked on the first attempt:** the bridge lemma was built on top of three
+already-verified building blocks (`assertCycleSurvivorCoprimeToCyclePrimes`,
+`assertHeadModulusEqualsProductAllPrimes`, `assertModPreservesCoprime`), each its own
+focused verify cycle. By the time the bridge itself was assembled, every precondition
+of `assertNextFilteredContainsCoprime` (the workhorse on the pipeline side) was
+discharged by a cached fact. **Lesson reinforced: incremental decomposition is the
+timeouts-avoidance strategy.** Each helper is a small VC; the composed lemma just
+chains them.
+
+**Key discovery that simplified the whole effort:** `assertNextFilteredContainsCoprime`
+(public, `SpecCycleSieveEquivalence.scala:1020`) already proves
+`nextFiltered(seq).contains(value)` for any value in `[0, head*modulus)` coprime to
+`head :: primesTailValues`. The *entire* pipeline side of the bridge was already done
+by that lemma. The new work was only to show the reduced cycle-survivor satisfies its
+three preconditions — a much smaller scope than originally anticipated.
+
+### M3 remaining work
+
+The cycle-survivor → nextFiltered direction is now closed. For M3
+(`nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)`), the remaining path is:
+
+1. **Connect the bridge to the sorted-list view:** `nextSorted(cycle).list` is the
+   sorted form of `nextFiltered(cycle)`. After rotation by `nextHeadResidueIndex`
+   (which aligns the start to `mod(cycle(1), newMod)`), the gaps match the survivor
+   gaps.
+2. **Reuse `assertSurvivorGapEqualsSpecNextGap`** (already proven, ticket epic §4a):
+   the gaps between consecutive cycle-integral survivors equal `spec.next.gapList`.
+3. **The bridge** proven here guarantees every cycle-integral survivor appears in
+   `nextFiltered(cycle)`, so the rotated sorted list is non-decreasing through the
+   survivors — providing the alignment needed for the gap equality to transfer.
+
+**The reverse direction (pipeline survivor → cycle survivor) is NOT needed for M3**:
+any pipeline values below `head` (e.g. the value `1` for S_2) are chopped off by the
+rotation, since `nextHeadResidueIndex` starts the gap list at
+`mod(cycle(1), newMod) > head`.
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
@@ -267,7 +318,7 @@ which composes `assertModPreservesCoprime` + `assertExpandedResiduesRepresentPer
 `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` (a duplicate of the existing lemma at
 lines 36–42) is the seed for this — it should be grown into the real bridge lemma.
 
-### Summary of what the class proved (13 verified lemmas + 1 stub seed)
+### Summary of what the class proved (15 verified lemmas + 1 stub)
 
 | # | Lemma | VCs | What it proves |
 |---|-------|-----|----------------|
@@ -282,9 +333,11 @@ lines 36–42) is the seed for this — it should be grown into the real bridge 
 | 9 | `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` |
 | 10 | `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` |
 | 11 | `assertNextHeadLessThanNewModulus()` | 9 | `cycle(1) < head * modulus` |
-| 12 | `assertCycleModulusEqualsProductTail()` | 5 | `cycle.modulus == product(cyclePrimes.tail)` (bridge block) |
-| 13 | `assertCycleSurvivorModModulusCoprimeToTail(pos)` | 27 | mod by `cycle.modulus` preserves tail-coprimality (bridge block) |
-| — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | Seed for `assertCycleSurvivorAppearsInNextFiltered` |
+| 12 | `assertCycleModulusEqualsProductTail()` | 5 | `cycle.modulus == product(cyclePrimes.tail)` |
+| 13 | `assertCycleSurvivorModModulusCoprimeToTail(pos)` | 27 | `mod(integral(pos), cycle.modulus)` coprime to tail primes |
+| 14 | `assertHeadModulusEqualsProductAllPrimes()` | 2 | `head * modulus == product(head :: primesTailValues)` |
+| 15 | **`assertCycleSurvivorAppearsInNextFiltered(pos)`** | 34 | **`nextFiltered(cycle).contains(mod(integral(pos), head*modulus))`** — the bridge |
+| — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | Unused duplicate of #4; candidate for removal |
 
 **Note:** `assertNextHeadLessThanHeadSquared()` was removed from this class on 2026-07-05
 (it was a one-line delegator). It still lives in `SpecDerivedSieveSequence.scala:1784`,
