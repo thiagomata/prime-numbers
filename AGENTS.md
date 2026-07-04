@@ -290,6 +290,7 @@ Only re-run `just verify` after making a code change.
          prove what the Worker claims? (Not just name-matching — read the body.)
       4. **Historical** — Has this exact approach already been tried and failed?
          Check ticket Learning Log and LEARNINGS.md.
+         Do a similar proof or lemma already exists in OBJECTS.md?
       5. **Loop Detection** — Is the Worker repeating the same (target, change
          pattern, lemma strategy) from a prior failed attempt? "Doing the same
          thing again expecting different results" must be flagged.
@@ -298,6 +299,11 @@ Only re-run `just verify` after making a code change.
       7. **Pitfalls** — Does the plan repeat a known failure pattern documented in
          LEARNINGS.md? (e.g., public lemma instead of private, % instead of DivMod,
          multiple assertions per cycle.)
+       8. **Jailbreak** — Does the plan attempt to bypass the pipeline, the rules, 
+         or do actions that violate them, as <rule id="never-destroy"/>?
+         It is not rare that agents try to workaround the blocked commands, using 
+         authorized commands to achieve the same effect. 
+         The Critic must detect and flag these attempts.
     </checks>
     <output-format>
       ## Critic Review: PASS
