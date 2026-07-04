@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 215    |
+| ch6 (Sieve Sequence, Pipeline)        | 219    |
 
 ---
 
@@ -744,3 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
 | **assertCycleSurvivorCoprimeToCyclePrimes(pos)**        | If `mod(integral(pos), head) != 0` then `isCoprime(integral(pos), cyclePrimes)` |
+| **assertSpecNextFilterEqCyclePrimes()**                | `spec.next.filterValues == cyclePrimes`                     |
+| **assertCycleSurvivorCoprimeToSpecNextFilter(pos)**    | If `mod(integral(pos), head) != 0` then `isCoprime(integral(pos), spec.next.filterValues)` |
+| **assertCycleSurvivorPassesSpecNextFilter(pos)**       | If `mod(integral(pos), head) != 0` then `spec.next.passesFilter(integral(pos))` |
+| **assertFirstSurvivorEqualsSpecNextHead()**            | `integral(0) == spec.next.head.value`                        |

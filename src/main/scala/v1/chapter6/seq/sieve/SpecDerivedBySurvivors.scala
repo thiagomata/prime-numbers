@@ -14,4 +14,32 @@ case class SpecDerivedBySurvivors(
     assert(derived.assertCycleValueCoprimeToTail(pos + BigInt(1)))
     SieveUtils.isCoprime(derived.cycle.integral(pos), derived.cyclePrimes)
   }.holds
+
+  def assertSpecNextFilterEqCyclePrimes(): Boolean = {
+    assert(derived.assertPrimesMatch())
+    assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
+    derived.spec.next.filterValues == derived.cyclePrimes
+  }.holds
+
+  def assertCycleSurvivorCoprimeToSpecNextFilter(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    assert(assertCycleSurvivorCoprimeToCyclePrimes(pos))
+    assert(assertSpecNextFilterEqCyclePrimes())
+    SieveUtils.isCoprime(derived.cycle.integral(pos), derived.spec.next.filterValues)
+  }.holds
+
+  def assertCycleSurvivorPassesSpecNextFilter(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    assert(assertCycleSurvivorCoprimeToSpecNextFilter(pos))
+    derived.spec.next.passesFilter(derived.cycle.integral(pos))
+  }.holds
+
+  def assertFirstSurvivorEqualsSpecNextHead(): Boolean = {
+    assert(derived.assertFirstSurvivorEqualsSpecNext0())
+    derived.cycle.integral(BigInt(0)) == derived.spec.next.head.value
+  }.holds
 }

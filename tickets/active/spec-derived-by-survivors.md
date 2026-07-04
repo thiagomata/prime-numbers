@@ -68,6 +68,38 @@ Green: `12012 valid: 0 invalid: 0 unknown`
 - `assertFirstSurvivorEqualsSpecNextHead` would have duplicated existing `assertFirstSurvivorEqualsSpecNext0()` in SpecDerivedSieveSequence — skipped it
 - OBJECTS.md updated with new §6.9 entry, ch6 count bumped from 214→215
 
+### 2026-07-04 — Lemma 2 verified
+
+- Added `assertSpecNextFilterEqCyclePrimes()` — verified 5/5, proves `spec.next.filterValues == cyclePrimes`
+- Full chapter: 12025 valid, 0 invalid, 0 unknown
+- Uses only `assertPrimesMatch()` + structural fact `spec.next.filterPrimes == spec.primes.list.list` (from `SpecSieveSequence` construction)
+- OBJECTS.md §6.9 updated, ch6 count 215→216
+
+### 2026-07-04 — Lemmas 3-5 verified (full chain complete)
+
+- **Lemma 3** `assertCycleSurvivorCoprimeToSpecNextFilter(pos)` — 10/10: combines lemmas 1+2
+- **Lemma 4** `assertCycleSurvivorPassesSpecNextFilter(pos)` — 8/8: uses `passesFilter` (no `>=` precondition)
+- **Lemma 5** `assertFirstSurvivorEqualsSpecNextHead()` — 4/4: delegates to existing `assertFirstSurvivorEqualsSpecNext0()`
+- Full chapter: 12047 valid, 0 invalid, 0 unknown
+- OBJECTS.md §6.9 table complete with all 5 lemmas, ch6 count 216→219
+
+### What the 5-lemma chain proves
+
+For any `pos >= 0` where `mod(cycle.integral(pos), spec.head.value) != 0`:
+
+1. `isCoprime(integral(pos), cyclePrimes)` — coprime to all primes
+2. `spec.next.filterValues == cyclePrimes` — next-stage filter = full primes
+3. `isCoprime(integral(pos), spec.next.filterValues)` — coprime to next filter
+4. `spec.next.passesFilter(integral(pos))` — passes next filter (no `>=` precondition)
+5. `integral(0) == spec.next.head.value` — first survivor = next stage head
+
+### Next steps
+
+The 5-lemma chain from `SieveCycleAfterProof` is now fully verified in `SpecDerivedBySurvivors`. The next work is:
+- Ordered survivor equality (ladder step 6): prove that `spec.next(k)` values appear as cycle-integral survivors in order
+- Gap equality (ladder step 9)
+- Rotation equality (ladder steps 10-11 → M3)
+
 ---
 
 ## Lessons Learned
