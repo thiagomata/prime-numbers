@@ -2,7 +2,7 @@
 
 **Status:** Living document. Bird's-eye view of the three-way sieve
 equivalence effort, traced down to individual tickets and verified lemmas.
-**Created:** 2026-06-24. **Last updated:** 2026-06-29.
+**Created:** 2026-06-24. **Last updated:** 2026-07-04.
 **Maintained alongside:** `active/sieve-sequence-proof.md` (the canonical
 active sieve-sequence proof ticket). Historical Leg-2 notes live in
 `done/canonical-spec-to-cycle-alignment.md`.
@@ -163,6 +163,10 @@ by using existing `CycleIntegralProperties.assertCycleValuePositive` +
 success in 11.53s. The rotation-proxy inequality `cycle(1) < head * modulus` was also
 unblocked (3 attempts: naive induction timed out, intermediate bound timed out,
 `spec.apply.ensuring` + Z3 arithmetic succeeded).
+
+A bridge class `SpecDerivedEquivalence` (4 lemmas) proves both derived classes share
+the same `cycle`, `apply(k)`, `gapCycle`, and head/modulus — certifying that proofs
+from either class transfer to the other.
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 

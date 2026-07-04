@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 228    |
+| ch6 (Sieve Sequence, Pipeline)        | 232    |
 
 ---
 
@@ -757,3 +757,14 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
 | **assertNextHeadLessThanNewModulus()**                    | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`     |
 | **assertNextHeadLessThanHeadSquared()**                   | `cycle(1) < head^2`                                            |
+
+## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
+
+4 lemmas (bridge between `SpecDerivedSieveSequence` and `SpecDerivedBySurvivors`).
+
+| Lemma                                                  | Statement                                                   |
+|--------------------------------------------------------|-------------------------------------------------------------|
+| **assertHeadMatches()**                                | `cycle.head == cycle.head` and `cycle.modulus == cycle.modulus` across both classes |
+| **assertApplyMatches(k)**                              | `cycle(k) == cycle(k)` across both classes                  |
+| **assertGapCycleMatches()**                            | `gapCycle.memCycle.values` match across both classes        |
+| **assertNextHeadNewModulusMatch()**                    | `assertNextHeadLessThanNewModulus()` agrees across both classes |
