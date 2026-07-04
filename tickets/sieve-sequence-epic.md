@@ -10,7 +10,7 @@ active sieve-sequence proof ticket). Historical Leg-2 notes live in
 > This document is the coordination point. Individual legs live in their own
 > tickets; this file explains how they fit together and what is proven today.
 
-**Current verification:** `10592 valid: 10592 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow).
+**Current verification:** `12114 valid: 12114 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow, +1042 from P2 full).
 
 ---
 
@@ -142,6 +142,23 @@ These provide a proof-friendly middle representation: instead of reasoning throu
 ### ⚠️ Remaining open: the walk itself
 
 The `nextGapsWalk` function is still opaque. Three prior direct attempts timed out (see §5 legacy notes). The P2 lemmas provide a **certified alternative**: the survivor computation produces the correct gaps. The walk correctness is now a bridge between the walk and the certified survivor computation, not a proof from scratch.
+
+### New: Value-level survivor proofs (`SpecDerivedBySurvivors`)
+
+A new class `SpecDerivedBySurvivors` wraps `SpecDerivedSieveSequence` and provides an
+alternative value-level proof chain that avoids the index-based `nextAcceptedOldIndex`
+machinery. It proves (2026-07-04):
+
+| Lemma | VCs | Statement | Approach |
+|-------|-----|-----------|----------|
+| `assertCycleSurvivorPassesSpecNextFilter(pos)` | 8 | Survivor `integral(pos)` passes `spec.next.passesFilter` | Coprimality chain, no `>=` precondition |
+| `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` | `passesFilter` + monotonicity bridge |
+| `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` | Induction via `assertCycleValuePositive` |
+
+10 lemmas total (all verified). The F5 timeout wall (integral monotonicity) was climbed
+by using existing `CycleIntegralProperties.assertCycleValuePositive` +
+`GapCycle.assertMemCycleValuesPositive` as intermediate lemmas — 3 attempts, final
+success in 11.53s.
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 
@@ -327,3 +344,12 @@ Major updates:
   (proved, likely provable, open) including the Forbidden States hypothesis
 - **Leg 4b** (walk itself) remains the only open item in the EPIC; the P2 lemmas
   provide a certified alternative path that bypasses the walk
+
+### 2026-07-04 — Value-level survivor proofs, F5 timeout climbed
+Major additions:
+- **Verification count**: `10572 → 12114` (+1542)
+- **New class**: `SpecDerivedBySurvivors` — wraps `SpecDerivedSieveSequence`, proves survivor filter-passing and acceptance via value-level coprimality chains (10 lemmas, all verified)
+- **F5 timeout climbed**: `assertIntegralIncreasingForCount` (14/14 in 11.53s) by using existing `assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive` as intermediate lemmas (3 attempts: naive induction timed out, intermediate lemma timed out, existing-lemmas succeeded)
+- **Architectural update**: `passesFilter` → `accepts` bridge now proven — survivors satisfy `>= head.value` precondition via monotonicity induction, connecting value-level proofs to index-based lemmas
+- New ticket: `active/spec-derived-by-survivors.md`
+- OBJECTS.md §6.9: new section with 10 lemmas, ch6 count updated

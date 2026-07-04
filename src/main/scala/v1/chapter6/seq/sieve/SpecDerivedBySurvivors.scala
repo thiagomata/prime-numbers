@@ -3,6 +3,8 @@ package v1.chapter6.seq.sieve
 import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
+import v1.chapter4.cycle.gap.GapCycle
+import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 
 case class SpecDerivedBySurvivors(
   derived: SpecDerivedSieveSequence
@@ -72,5 +74,44 @@ case class SpecDerivedBySurvivors(
       }
       true
     }
+  }.holds
+
+  def assertIntegralIncreasingForCount(count: BigInt): Boolean = {
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count <= BigInt(1)) true
+    else {
+      assert(GapCycle.assertMemCycleValuesPositive(derived.cycle.gapCycle))
+      assert(CycleIntegralProperties.assertCycleValuePositive(
+        derived.cycle.integral, count - BigInt(1)))
+      assert(assertIntegralIncreasingForCount(count - BigInt(1)))
+      derived.cycle.integral(count - BigInt(2)) < derived.cycle.integral(count - BigInt(1))
+    }
+  }.holds
+
+  def assertIntegralGeIntegral0(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    decreases(pos)
+
+    if (pos == BigInt(0)) derived.cycle.integral(pos) >= derived.cycle.integral(BigInt(0))
+    else {
+      assert(GapCycle.assertMemCycleValuesPositive(derived.cycle.gapCycle))
+      assert(CycleIntegralProperties.assertCycleValuePositive(derived.cycle.integral, pos))
+      assert(derived.cycle.integral(pos) ==
+        derived.cycle.integral(pos - BigInt(1)) + derived.cycle.integral.cycle(pos))
+      assert(assertIntegralGeIntegral0(pos - BigInt(1)))
+      derived.cycle.integral(pos) >= derived.cycle.integral(BigInt(0))
+    }
+  }.holds
+
+  def assertSurvivorAcceptedBySpecNext(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    assert(assertFirstSurvivorEqualsSpecNextHead())
+    assert(assertIntegralGeIntegral0(pos))
+    assert(assertCycleSurvivorPassesSpecNextFilter(pos))
+    derived.spec.next.accepts(derived.cycle.integral(pos))
   }.holds
 }

@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 221    |
+| ch6 (Sieve Sequence, Pipeline)        | 224    |
 
 ---
 
@@ -739,7 +739,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-1 lemma (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
+10 lemmas (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -750,3 +750,6 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertFirstSurvivorEqualsSpecNextHead()**            | `integral(0) == spec.next.head.value`                        |
 | **assertAllSurvivorsPassSpecNextFilter(count)**        | All cycle-integral survivors in `[0,count)` pass `spec.next.passesFilter` |
 | **assertAllSurvivorsPassSpecNextFilterFrom(from,count)** | All cycle-integral survivors in `[from,from+count)` pass `spec.next.passesFilter` |
+| **assertIntegralIncreasingForCount(count)**               | `integral(pos) < integral(pos+1)` for all `pos` in `[0, count)` |
+| **assertIntegralGeIntegral0(pos)**                        | `integral(pos) >= integral(0)` for all `pos >= 0`              |
+| **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
