@@ -58,4 +58,19 @@ case class SpecDerivedBySurvivors(
       true
     }
   }.holds
+
+  def assertAllSurvivorsPassSpecNextFilterFrom(from: BigInt, count: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) true
+    else {
+      val rest = assertAllSurvivorsPassSpecNextFilterFrom(from + BigInt(1), count - BigInt(1))
+      if (Calc.mod(derived.cycle.integral(from), derived.spec.head.value) != BigInt(0)) {
+        assert(assertCycleSurvivorPassesSpecNextFilter(from))
+      }
+      true
+    }
+  }.holds
 }

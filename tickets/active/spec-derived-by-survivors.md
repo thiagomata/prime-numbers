@@ -81,23 +81,39 @@ The 5 `SieveCycleAfterProof` lemmas + bulk induction — all 6 verified.
 - Full chapter: 12047 valid, 0 invalid, 0 unknown
 - OBJECTS.md §6.9 table complete with all 5 lemmas, ch6 count 216→219
 
-### 2026-07-04 — Lemma 6: bulk survivor induction
+### 2026-07-04 — Lemma 7: generalized bulk induction
 
-- Added `assertAllSurvivorsPassSpecNextFilter(count)` — 10/10, proves by induction that ALL cycle-integral survivors in `[0, count)` pass `spec.next.passesFilter`
-- Full chapter: 12057 valid, 0 invalid, 0 unknown
-- Uses the per-position lemma 4 inside a structural induction on `count` — no timeout (10.94s)
-- OBJECTS.md §6.9 updated, ch6 count 219→220
+- Added `assertAllSurvivorsPassSpecNextFilterFrom(from, count)` — 11/11
+- Full chapter: 12068 valid, 0 invalid, 0 unknown
+- OBJECTS.md §6.9 updated, ch6 count 220→221
 
-### What the class currently proves
+### 2026-07-04 — F5 wall hit: `assertCycleIntegralIncreasing` timeout
 
-For any `pos >= 0` where `mod(cycle.integral(pos), spec.head.value) != 0`:
+- Attempted `assertCycleIntegralIncreasing(count)` — induction on cycle integral positions
+- **Timed out** at 300s (confirmed LEARNINGS F5 / ticket F5)
+  The integral induction is too expensive for symbolic `count`
+- Reverted (removed the lemma), back to green 12068/12068
+- **Learned:** `passesFilter` workaround is necessary; monotonicity is the wall
+- The class stays at 7 lemmas, which is the achievable ceiling for the value-level approach
 
-1. `isCoprime(integral(pos), cyclePrimes)` — coprime to all primes
-2. `spec.next.filterValues == cyclePrimes` — next-stage filter = full primes
-3. `isCoprime(integral(pos), spec.next.filterValues)` — coprime to next filter
-4. `spec.next.passesFilter(integral(pos))` — passes next filter (no `>=` precondition)
-5. `integral(0) == spec.next.head.value` — first survivor = next stage head
-6. **Bulk**: all survivors in `[0, count)` pass the filter (induction)
+### What the class proves (7 lemmas, all verified)
+
+1. `assertCycleSurvivorCoprimeToCyclePrimes(pos)` — 8 — survivor coprime to all primes
+2. `assertSpecNextFilterEqCyclePrimes()` — 5 — `spec.next.filterValues == cyclePrimes`
+3. `assertCycleSurvivorCoprimeToSpecNextFilter(pos)` — 10 — survivor coprime to next filter
+4. `assertCycleSurvivorPassesSpecNextFilter(pos)` — 8 — survivor passes next filter (no `>=`)
+5. `assertFirstSurvivorEqualsSpecNextHead()` — 4 — `integral(0) == spec.next.head.value`
+6. `assertAllSurvivorsPassSpecNextFilter(count)` — 10 — all survivors in `[0,count)` pass filter
+7. `assertAllSurvivorsPassSpecNextFilterFrom(from,count)` — 11 — same, from arbitrary position
+
+### Next direction
+
+The class is mature. The natural next step toward M3 is outside this class's scope:
+connect the pipeline (`nextFiltered` / `nextSorted`) to the survivors. This requires
+the expansion-integral bridge, which is a separate problem.
+
+Consider pivoting to the independent-next-cycle S5 step (sortedness preservation
+for `filterList`) or S6 (merge-sum gaps from `CycleIntegralFilterProperties`).
 
 ### Next steps
 
