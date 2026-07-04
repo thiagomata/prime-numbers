@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 224    |
+| ch6 (Sieve Sequence, Pipeline)        | 228    |
 
 ---
 
@@ -648,7 +648,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-52 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key public lemmas:
+54 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key public lemmas:
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -703,6 +703,8 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertRepeatedCycleApplyMatches(times,k)**           | `repeatedCycle(times)(k) == cycle(k)`                       |
 | **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos          |
 | **assertSpecNextIsKthSurvivor(nextPeriod,k)**          | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`      |
+| **assertNextHeadLessThanNewModulus()**                 | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`   |
+| **assertNextHeadLessThanHeadSquared()**                | `cycle(1) < head^2`                                          |
 
 ## 6.7 SpecCycleSieveEquivalence (`v1.chapter6.seq.sieve.SpecCycleSieveEquivalence`)
 
@@ -739,7 +741,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-10 lemmas (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
+12 lemmas (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -753,3 +755,5 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertIntegralIncreasingForCount(count)**               | `integral(pos) < integral(pos+1)` for all `pos` in `[0, count)` |
 | **assertIntegralGeIntegral0(pos)**                        | `integral(pos) >= integral(0)` for all `pos >= 0`              |
 | **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
+| **assertNextHeadLessThanNewModulus()**                    | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`     |
+| **assertNextHeadLessThanHeadSquared()**                   | `cycle(1) < head^2`                                            |

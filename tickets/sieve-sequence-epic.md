@@ -10,7 +10,7 @@ active sieve-sequence proof ticket). Historical Leg-2 notes live in
 > This document is the coordination point. Individual legs live in their own
 > tickets; this file explains how they fit together and what is proven today.
 
-**Current verification:** `12114 valid: 12114 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow, +1042 from P2 full).
+**Current verification:** `12138 valid: 12138 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow, +1042 from P2 full, +756 from value-level survivor proofs).
 
 ---
 
@@ -154,11 +154,15 @@ machinery. It proves (2026-07-04):
 | `assertCycleSurvivorPassesSpecNextFilter(pos)` | 8 | Survivor `integral(pos)` passes `spec.next.passesFilter` | Coprimality chain, no `>=` precondition |
 | `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` | `passesFilter` + monotonicity bridge |
 | `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` | Induction via `assertCycleValuePositive` |
+| `assertNextHeadLessThanNewModulus()` | 9 | `cycle(1) < head * modulus` | `spec.apply.ensuring` + Z3 arithmetic |
+| `assertNextHeadLessThanHeadSquared()` | 3 | `cycle(1) < head^2` | Constructor require + `assertNextHeadMatches` |
 
-10 lemmas total (all verified). The F5 timeout wall (integral monotonicity) was climbed
+12 lemmas total (all verified). The F5 timeout wall (integral monotonicity) was climbed
 by using existing `CycleIntegralProperties.assertCycleValuePositive` +
 `GapCycle.assertMemCycleValuesPositive` as intermediate lemmas — 3 attempts, final
-success in 11.53s.
+success in 11.53s. The rotation-proxy inequality `cycle(1) < head * modulus` was also
+unblocked (3 attempts: naive induction timed out, intermediate bound timed out,
+`spec.apply.ensuring` + Z3 arithmetic succeeded).
 
 ### Architectural rule (confirmed with user, 2026-06-24)
 

@@ -3,7 +3,6 @@ package v1.chapter6.seq.sieve
 import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
-import v1.chapter3.list.ListBoundUtils
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 
@@ -117,11 +116,19 @@ case class SpecDerivedBySurvivors(
   }.holds
 
   def assertNextHeadLessThanNewModulus(): Boolean = {
+    require(derived.spec.head.value >= 3)
+    require(derived.spec.filterModulus >= 2)
+
     assert(derived.assertApplyMatches(BigInt(1)))
     assert(derived.assertCycleModulusEqualsSpecFilterModulus())
-    val newMod = derived.cycle.head * derived.cycle.modulus
-    assert(derived.spec(BigInt(1)) < derived.spec.head.value + derived.spec.filterModulus)
-    assert(derived.spec.head.value + derived.spec.filterModulus < newMod)
-    derived.cycle(BigInt(1)) < newMod
+    assert(derived.spec(BigInt(1)) <= derived.spec.searchBound(BigInt(1)))
+    assert(derived.spec.head.value * derived.spec.filterModulus >
+           derived.spec.head.value + derived.spec.filterModulus)
+    derived.cycle(BigInt(1)) < derived.cycle.head * derived.cycle.modulus
+  }.holds
+
+  def assertNextHeadLessThanHeadSquared(): Boolean = {
+    assert(derived.assertNextHeadMatches())
+    derived.cycle(BigInt(1)) < derived.spec.head.value * derived.spec.head.value
   }.holds
 }

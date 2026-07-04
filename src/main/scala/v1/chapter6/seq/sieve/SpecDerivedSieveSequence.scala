@@ -1769,4 +1769,20 @@ case class SpecDerivedSieveSequence(
     require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
     SpecDerivedSieveSequence(spec.next, nextPeriod)
   }
+
+  def assertNextHeadLessThanNewModulus(): Boolean = {
+    require(spec.head.value >= 3)
+    require(spec.filterModulus >= 2)
+
+    assert(assertApplyMatches(BigInt(1)))
+    assert(assertCycleModulusEqualsSpecFilterModulus())
+    assert(spec(BigInt(1)) <= spec.searchBound(BigInt(1)))
+    assert(spec.head.value * spec.filterModulus > spec.head.value + spec.filterModulus)
+    cycle(BigInt(1)) < cycle.head * cycle.modulus
+  }.holds
+
+  def assertNextHeadLessThanHeadSquared(): Boolean = {
+    assert(assertNextHeadMatches())
+    cycle(BigInt(1)) < spec.head.value * spec.head.value
+  }.holds
 }
