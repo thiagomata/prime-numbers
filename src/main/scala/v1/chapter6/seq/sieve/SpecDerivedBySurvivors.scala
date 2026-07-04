@@ -127,8 +127,11 @@ case class SpecDerivedBySurvivors(
     derived.cycle(BigInt(1)) < derived.cycle.head * derived.cycle.modulus
   }.holds
 
-  def assertNextHeadLessThanHeadSquared(): Boolean = {
-    assert(derived.assertNextHeadMatches())
-    derived.cycle(BigInt(1)) < derived.spec.head.value * derived.spec.head.value
+  def assertMinimalCycleSurvivorPassSpecNextFilter(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    assert(assertCycleSurvivorPassesSpecNextFilter(pos))
+    derived.spec.next.passesFilter(derived.cycle.integral(pos))
   }.holds
 }

@@ -521,7 +521,7 @@ object SpecCycleSieveEquivalence {
    * `modAdd` with `assertMultiplePreservesDivisible` to show
    * `Calc.mod(v, p) == Calc.mod(r, p)`, which preserves the non-zero status.
    */
-  private def assertModPreservesCoprimeForPrime(
+  def assertModPreservesCoprimeForPrime(
     v: BigInt,
     modulus: BigInt,
     p: BigInt
@@ -552,7 +552,7 @@ object SpecCycleSieveEquivalence {
    * known product of the prefix primes. This avoids the impossible precondition
    * `modulus == product(remaining)` on the recursive call.
    */
-  private def assertModPreservesCoprimeRec(
+  def assertModPreservesCoprimeRec(
     v: BigInt,
     modulus: BigInt,
     prefixProd: BigInt,
@@ -597,7 +597,7 @@ object SpecCycleSieveEquivalence {
    * `primes`. This holds because any prime `p` dividing `Calc.mod(v, modulus)`
    * would also divide `v` (since `v = q*modulus + r` and `p | modulus`).
    */
-  private def assertModPreservesCoprime(
+  def assertModPreservesCoprime(
     v: BigInt,
     modulus: BigInt,
     primes: stainless.collection.List[BigInt]
