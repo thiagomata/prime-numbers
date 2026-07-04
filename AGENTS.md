@@ -296,6 +296,9 @@ Only re-run `just verify` after making a code change.
          thing again expecting different results" must be flagged.
       6. **Off-Rails** — Does the target file/function have a clear path back to
          the ticket's micro-goal? If the action is unrelated or tangential, flag it.
+         Considering the recent learnings as the ticket progresses, 
+         is the proposed target still relevant to the micro-goal / epic?
+         Is the proposed target a dead-end or a distraction from the epic goal?
       7. **Pitfalls** — Does the plan repeat a known failure pattern documented in
          LEARNINGS.md? (e.g., public lemma instead of private, % instead of DivMod,
          multiple assertions per cycle.)

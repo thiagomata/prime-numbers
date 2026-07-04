@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-04
-**Status:** Ticket created, first lemma planned.
+**Status:** 6 lemmas verified (filter-passing chain + bulk induction).
 
 ---
 
@@ -30,22 +30,20 @@ SpecDerivedBySurvivors(derived: SpecDerivedSieveSequence)
         assertSpecNextFilterEqCyclePrimes()
         assertCycleSurvivorCoprimeToSpecNextFilter(pos)
         assertCycleSurvivorPassesSpecNextFilter(pos)
-        ──→ (future: ordered survivor equality, gap equality, rotation equality)
+        assertFirstSurvivorEqualsSpecNextHead()
+        assertAllSurvivorsPassSpecNextFilter(count)
+        ──→ (future: pipeline bridge, merge-sum, sortedness)
 ```
 
 Each lemma reuses existing verified methods from `SpecDerivedSieveSequence`, adding value-level reasoning on top.
 
 ### Current state
 
-Green: `12012 valid: 0 invalid: 0 unknown`
+Green: `12057 valid: 0 invalid: 0 unknown`
 
-### Next micro-goal
+### Original micro-goal (done)
 
-**Lemma:** `assertFirstSurvivorEqualsSpecNextHead()` in `SpecDerivedBySurvivors`
-- Statement: `cycle.integral(0) == spec.next.head.value`
-- Preconditions: none beyond constructor requires
-- Proof: `assertNextHeadMatches()` gives `cycle(1) == spec.next.head.value`; by definition of `CycleSieveSequence.apply`, `cycle(1) == cycle.integral(0)`
-- Why it's first: simplest lemma, no new groundwork needed, validates the class wiring in one cycle
+The 5 `SieveCycleAfterProof` lemmas + bulk induction — all 6 verified.
 
 ---
 
@@ -82,6 +80,33 @@ Green: `12012 valid: 0 invalid: 0 unknown`
 - **Lemma 5** `assertFirstSurvivorEqualsSpecNextHead()` — 4/4: delegates to existing `assertFirstSurvivorEqualsSpecNext0()`
 - Full chapter: 12047 valid, 0 invalid, 0 unknown
 - OBJECTS.md §6.9 table complete with all 5 lemmas, ch6 count 216→219
+
+### 2026-07-04 — Lemma 6: bulk survivor induction
+
+- Added `assertAllSurvivorsPassSpecNextFilter(count)` — 10/10, proves by induction that ALL cycle-integral survivors in `[0, count)` pass `spec.next.passesFilter`
+- Full chapter: 12057 valid, 0 invalid, 0 unknown
+- Uses the per-position lemma 4 inside a structural induction on `count` — no timeout (10.94s)
+- OBJECTS.md §6.9 updated, ch6 count 219→220
+
+### What the class currently proves
+
+For any `pos >= 0` where `mod(cycle.integral(pos), spec.head.value) != 0`:
+
+1. `isCoprime(integral(pos), cyclePrimes)` — coprime to all primes
+2. `spec.next.filterValues == cyclePrimes` — next-stage filter = full primes
+3. `isCoprime(integral(pos), spec.next.filterValues)` — coprime to next filter
+4. `spec.next.passesFilter(integral(pos))` — passes next filter (no `>=` precondition)
+5. `integral(0) == spec.next.head.value` — first survivor = next stage head
+6. **Bulk**: all survivors in `[0, count)` pass the filter (induction)
+
+### Next steps
+
+The class now has per-position AND bulk survivor filter-passing proofs. The next work toward the epic (M3: `nextRotatedGaps(cycle) == spec.next.gapList`):
+- **Pipeline filter bridge**: connect cycle-integral survivors to `nextFiltered(cycle)` — both produce same survivors
+- **Merge-sum bridge**: prove that gaps between consecutive survivors equal sums of original gaps (S6 from independent-next-cycle plan)
+- **Sortedness**: prove `nextFiltered` preserves order (S5)
+
+All of these are smaller sub-steps than "ordered survivor equality." Update this ticket once the next direction is clear.
 
 ### What the 5-lemma chain proves
 

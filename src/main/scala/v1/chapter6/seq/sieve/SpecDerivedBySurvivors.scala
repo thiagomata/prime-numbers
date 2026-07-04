@@ -1,6 +1,7 @@
 package v1.chapter6.seq.sieve
 
 import stainless.lang.BooleanDecorations
+import stainless.lang.decreases
 import v1.chapter2.div.Calc
 
 case class SpecDerivedBySurvivors(
@@ -41,5 +42,20 @@ case class SpecDerivedBySurvivors(
   def assertFirstSurvivorEqualsSpecNextHead(): Boolean = {
     assert(derived.assertFirstSurvivorEqualsSpecNext0())
     derived.cycle.integral(BigInt(0)) == derived.spec.next.head.value
+  }.holds
+
+  def assertAllSurvivorsPassSpecNextFilter(count: BigInt): Boolean = {
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) true
+    else {
+      val rest = assertAllSurvivorsPassSpecNextFilter(count - BigInt(1))
+      val pos = count - BigInt(1)
+      if (Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0)) {
+        assert(assertCycleSurvivorPassesSpecNextFilter(pos))
+      }
+      true
+    }
   }.holds
 }
