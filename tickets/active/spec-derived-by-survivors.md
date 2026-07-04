@@ -1,9 +1,9 @@
 # SpecDerivedBySurvivors — Value-Level Survivor Proof
 
 **Created:** 2026-07-04
-**Updated:** 2026-07-04
-**Status:** 12 lemmas verified. Rotation anchor solved. Expansion bridge remains.
-**Full chapter:** 12138 valid, 0 invalid, 0 unknown.
+**Updated:** 2026-07-05
+**Status:** 11 lemmas verified (one wrapper removed, one bridge-stub seed added). Expansion bridge approach identified; `assertModPreservesCoprime*` made public as the enabler. Bridge lemma not yet written.
+**Full chapter:** 12160 valid, 0 invalid, 0 unknown.
 
 ---
 
@@ -106,6 +106,38 @@ The 5 `SieveCycleAfterProof` lemmas + bulk induction — all 6 verified.
 1. Integral monotonicity: used `assertCycleValuePositive` (which uses `assertGreaterThanAtIndex`) instead of unfolding `allGreaterThan` recursively
 2. `cycle(1) < head*modulus`: used `spec.apply.ensuring` (already postcondition) instead of chaining `applyStrictlyIncreases` across `period` steps
 
+### 2026-07-05 — Expansion bridge approach identified; lemmas made public
+
+**Context reconstruction.** Reviewed the uncommitted working tree left by the previous
+session. Two edits were in flight on `feature/prime_seq`:
+
+1. `SpecCycleSieveEquivalence.scala` — `assertModPreservesCoprimeForPrime`,
+   `assertModPreservesCoprimeRec`, `assertModPreservesCoprime` flipped
+   `private def` → `def`. **Verified green** at `12160 valid, 0 invalid, 0 unknown`
+   (per `logs/verify-watch.log` 02:10:56).
+2. `SpecDerivedBySurvivors.scala` — removed the `assertNextHeadLessThanHeadSquared`
+   delegator (still present in `SpecDerivedSieveSequence:1784`), added a stub lemma
+   `assertMinimalCycleSurvivorPassSpecNextFilter(pos)`. The stub is currently a
+   byte-for-byte duplicate of `assertCycleSurvivorPassesSpecNextFilter(pos)` (lines 36–42)
+   — intended as a seed for the bridge lemma, not yet grown.
+
+**Mathematical bridge identified (hand-verified, not yet in Stainless):**
+`Calc.mod(integral(pos), head*modulus)` is the reduction that maps each cycle-integral
+survivor into a `nextFiltered(cycle)` element. See "Expansion bridge — approach
+identified" section above for the full argument.
+
+**Decision (user, 2026-07-05):**
+- "Make it public" half of the prior instruction → **done** (in-place, green).
+- "Move to chapter 2" half → **rejected**. The three lemmas are entangled with
+  chapter-6 `SieveUtils` helpers; chapter 2 currently has zero chapter-6 deps and moving
+  them would create a backwards dependency. They stay public in place.
+
+**Next action (deferred to next session):** write the bridge lemma
+`assertCycleSurvivorAppearsInNextFiltered(pos)` by composing
+`assertModPreservesCoprime` + `assertExpandedResiduesRepresentPeriod` +
+`assertFilterListContainsIf`. Use the existing stub as the seed. **One lemma per verify
+cycle per `<rule id="small-changes"/>`.**
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
@@ -117,7 +149,61 @@ The remaining blocker for M3 is the **expansion bridge**: proving the pipeline s
 scope — it belongs in `SpecCycleSieveEquivalence` (which already has
 `assertExpandedResiduesRepresentPeriod`).
 
-### Summary of what the class proved (12 lemmas)
+### Expansion bridge — approach identified (2026-07-05)
+
+**The mathematical bridge (verified by hand, not yet in code):**
+
+For any cycle-integral survivor `integral(pos)` (where `mod(integral(pos), head) != 0`),
+the reduced value `Calc.mod(integral(pos), head * modulus)` is:
+
+1. In `[0, head*modulus)` — trivially, since it's a `mod` result.
+2. **Still coprime to the tail primes** — because `head*modulus` is a multiple of every
+   tail prime `p` (as `modulus = product(tailPrimes)`), reducing by `head*modulus` does
+   not change `mod(_, p)`. So coprimality is preserved.
+3. **Still not divisible by `head`** — `mod(mod(integral(pos), head*modulus), head) ==
+   mod(integral(pos), head) != 0`.
+
+Together, (1)+(2)+(3) put the reduced value in `nextFiltered(cycle)` via
+`assertExpandedResiduesRepresentPeriod` + `assertFilterListContainsIf`. **This is the
+cycle-survivor → pipeline-survivor direction.**
+
+The reverse direction (every pipeline survivor `>= head` corresponds to a cycle-integral
+survivor) is **not needed for M3**: the rotation in `nextRotatedGaps` aligns the pipeline
+list to start at `cycle(1)`, chopping off any sub-`head` extras (e.g. the value `1` for
+S_2). The remaining gaps then match `spec.next.gapList` via the already-proven
+`assertSurvivorGapEqualsSpecNextGap`.
+
+**Reusable fact already in the codebase:**
+
+`SpecCycleSieveEquivalence` proves exactly the modulo-preserves-coprimality fact needed
+for step (2):
+
+- `assertModPreservesCoprimeForPrime(v, modulus, p)` — per-prime
+- `assertModPreservesCoprimeRec(v, modulus, prefixProd, remaining)` — per-list, recursive
+- `assertModPreservesCoprime(v, modulus, primes)` — top-level wrapper
+
+**2026-07-05 change:** all three were flipped from `private def` to `def` (now public).
+Verified green at `12160 valid`. This unblocks `SpecDerivedBySurvivors` from calling them
+directly when building the bridge lemma.
+
+**Layering note (do NOT move them to chapter 2):** An earlier plan was to *move* these
+three lemmas to `ModOperations` (chapter 2) "where they belong." Investigation showed
+they are entangled with `SieveUtils.assertMultiplePreservesDivisible`,
+`SieveUtils.assertHeadDividesProduct`, `SieveUtils.assertIsCoprimeForAll`,
+`SieveUtils.isCoprime`, `SieveUtils.product` — all chapter-6 helpers. Chapter 2 currently
+has **zero** chapter-6 dependencies; moving them would create a backwards
+chapter-2 → chapter-6 dependency. **Decision (user, 2026-07-05): keep them public in
+place; do not move.**
+
+**Next step (the actual M3 progress):** write the bridge lemma in
+`SpecDerivedBySurvivors` — tentatively `assertCycleSurvivorAppearsInNextFiltered(pos)` —
+which composes `assertModPreservesCoprime` + `assertExpandedResiduesRepresentPeriod` +
+`assertFilterListContainsIf` to prove that every cycle-integral survivor's
+`mod(_, head*modulus)` reduction appears in `nextFiltered(cycle)`. The current stub
+`assertMinimalCycleSurvivorPassSpecNextFilter(pos)` (a duplicate of the existing lemma at
+lines 36–42) is the seed for this — it should be grown into the real bridge lemma.
+
+### Summary of what the class proved (11 verified lemmas + 1 stub seed)
 
 | # | Lemma | VCs | What it proves |
 |---|-------|-----|----------------|
@@ -132,7 +218,11 @@ scope — it belongs in `SpecCycleSieveEquivalence` (which already has
 | 9 | `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` |
 | 10 | `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` |
 | 11 | `assertNextHeadLessThanNewModulus()` | 9 | `cycle(1) < head * modulus` |
-| 12 | `assertNextHeadLessThanHeadSquared()` | 3 | `cycle(1) < head^2` |
+| — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | **Seed for the bridge lemma — currently a duplicate of #4, to be grown into `assertCycleSurvivorAppearsInNextFiltered`** |
+
+**Note:** `assertNextHeadLessThanHeadSquared()` was removed from this class on 2026-07-05
+(it was a one-line delegator). It still lives in `SpecDerivedSieveSequence.scala:1784`,
+so no proof was lost.
 
 ---
 

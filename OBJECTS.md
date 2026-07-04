@@ -708,7 +708,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.7 SpecCycleSieveEquivalence (`v1.chapter6.seq.sieve.SpecCycleSieveEquivalence`)
 
-39 lemmas (21 public, 18 private). Key public lemmas:
+39 lemmas (24 public, 15 private). Key public lemmas:
 
 | Lemma                                                                      | Statement                                                              |
 |----------------------------------------------------------------------------|------------------------------------------------------------------------|
@@ -730,6 +730,9 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextFilteredContainsCoprime(seq,value)**                           | `nextFiltered(seq).contains(value)` for any coprime `value`            |
 | **assertNextSortedContainsCoprime(seq,value)**                             | `nextSorted(seq).contains(value)` for any coprime `value`              |
 | **assertNextSortedOnlyContainsFiltered(seq,value)**                        | `nextSorted(seq).contains(value) => nextFiltered(seq).contains(value)` |
+| **assertModPreservesCoprimeForPrime(v,modulus,p)**                         | If `mod(v,p)!=0` and `mod(modulus,p)==0` then `mod(mod(v,modulus),p)!=0` (made public 2026-07-05) |
+| **assertModPreservesCoprimeRec(v,modulus,prefixProd,remaining)**           | Per-list recursive variant: `mod(v,modulus)` coprime to all `remaining` |
+| **assertModPreservesCoprime(v,modulus,primes)**                            | `mod(v,modulus)` coprime to `primes` whenever `v` is and `modulus == product(primes)` |
 
 ## 6.8 CycleUtils (`v1.chapter6.seq.sieve.CycleUtils`)
 
@@ -741,7 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-12 lemmas (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
+11 verified lemmas + 1 stub seed (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -756,7 +759,17 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertIntegralGeIntegral0(pos)**                        | `integral(pos) >= integral(0)` for all `pos >= 0`              |
 | **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
 | **assertNextHeadLessThanNewModulus()**                    | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`     |
-| **assertNextHeadLessThanHeadSquared()**                   | `cycle(1) < head^2`                                            |
+| **assertMinimalCycleSurvivorPassSpecNextFilter(pos)** (stub) | Seed for the expansion-bridge lemma; currently a duplicate of `assertCycleSurvivorPassesSpecNextFilter`, intended to be grown into `assertCycleSurvivorAppearsInNextFiltered(pos)` |
+
+**Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
+the underlying proof still lives in `SpecDerivedSieveSequence:1784`.
+
+**Expansion bridge (next M3 step, not yet written):** prove that for any cycle-integral
+survivor `integral(pos)`, the reduced value `Calc.mod(integral(pos), head*modulus)`
+appears in `nextFiltered(cycle)`. Composes three now-public lemmas in
+`SpecCycleSieveEquivalence` (`assertModPreservesCoprime` +
+`assertExpandedResiduesRepresentPeriod` + `assertFilterListContainsIf`). See ticket
+`active/spec-derived-by-survivors.md` §"Expansion bridge — approach identified".
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
 

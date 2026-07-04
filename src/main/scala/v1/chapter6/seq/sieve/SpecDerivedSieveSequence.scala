@@ -120,8 +120,18 @@ case class SpecDerivedSieveSequence(
     cycle.primesTailValues == spec.filterValues
   }.holds
 
-  /** Helper: primorial(list) == product(primeValues(list)) for any prime list. */
-  private def primorialMatchesProduct(primeList: List[Prime]): Boolean = {
+  /**
+   * Proves `primorial(primeList) == SieveUtils.product(primeValues(primeList))`
+   * for any prime list.
+   *
+   * Made public on 2026-07-05 so that the expansion-bridge lemmas in
+   * `SpecDerivedBySurvivors` can derive the precondition
+   * `modulus == product(primes)` required by `assertModPreservesCoprime`
+   * (in `SpecCycleSieveEquivalence`). Previously this fact was only available
+   * as an inline `assert(...)` inside private lemmas, which left no public
+   * route to the product form of the modulus.
+   */
+  def primorialMatchesProduct(primeList: List[Prime]): Boolean = {
     decreases(primeList.size)
     if (primeList.isEmpty) {
       PrimeUtils.primorial(primeList) == SieveUtils.product(PrimeUtils.primeValues(primeList))

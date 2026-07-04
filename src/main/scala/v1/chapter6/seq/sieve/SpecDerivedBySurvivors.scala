@@ -5,6 +5,7 @@ import stainless.lang.decreases
 import v1.chapter2.div.Calc
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
+import v1.chapter5.prime.PrimeUtils
 
 case class SpecDerivedBySurvivors(
   derived: SpecDerivedSieveSequence
@@ -133,5 +134,55 @@ case class SpecDerivedBySurvivors(
 
     assert(assertCycleSurvivorPassesSpecNextFilter(pos))
     derived.spec.next.passesFilter(derived.cycle.integral(pos))
+  }.holds
+
+  /**
+   * Proves `cycle.modulus == SieveUtils.product(cyclePrimes.tail)`.
+   *
+   * This is the structural fact that the cycle modulus (the primorial of the
+   * tail primes) equals the product of the tail prime values. It is the
+   * precondition needed by `SpecCycleSieveEquivalence.assertModPreservesCoprime`
+   * when reducing a cycle survivor modulo `cycle.modulus`, and is therefore a
+   * prerequisite for the expansion-bridge chain.
+   *
+   * Chain:
+   *   primorialMatchesProduct(spec.primes.list.tail.list)
+   *     => primorial(tail) == product(primeValues(tail))
+   *   cycle.modulus == primorial(spec.primes.list.tail.list)  (CycleSieveSequence.modulus)
+   *   cyclePrimes.tail == primeValues(spec.primes.list.tail.list) (list structure of primeValues)
+   */
+  def assertCycleModulusEqualsProductTail(): Boolean = {
+    assert(derived.primorialMatchesProduct(derived.spec.primes.list.tail.list))
+    assert(derived.cyclePrimes == PrimeUtils.primeValues(derived.spec.primes.list.list))
+    derived.cycle.modulus == SieveUtils.product(derived.cyclePrimes.tail)
+  }.holds
+
+  /**
+   * Proves that reducing a cycle-integral survivor modulo `cycle.modulus`
+   * preserves coprimality to the tail primes.
+   *
+   * For any position `pos` whose integral is not divisible by `head`, the
+   * value `Calc.mod(integral(pos), cycle.modulus)` is coprime to
+   * `cycle.primesTailValues`. Second building block of the expansion bridge:
+   * lifts the survivor's tail-coprimality through the modulus reduction.
+   */
+  def assertCycleSurvivorModModulusCoprimeToTail(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    assert(assertCycleSurvivorCoprimeToCyclePrimes(pos))
+    assert(derived.assertPrimesTailValuesPositive())
+    assert(GapCycle.assertMemCycleValuesPositive(derived.cycle.gapCycle))
+    assert(CycleIntegralProperties.assertCycleIntegralPositive(
+      derived.cycle.integral, pos))
+    assert(assertCycleModulusEqualsProductTail())
+    assert(derived.cyclePrimes.tail == derived.cycle.primesTailValues)
+    assert(SpecCycleSieveEquivalence.assertModPreservesCoprime(
+      derived.cycle.integral(pos),
+      derived.cycle.modulus,
+      derived.cycle.primesTailValues))
+    SieveUtils.isCoprime(
+      Calc.mod(derived.cycle.integral(pos), derived.cycle.modulus),
+      derived.cycle.primesTailValues)
   }.holds
 }
