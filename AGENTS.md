@@ -193,6 +193,21 @@ Only re-run `just verify` after making a code change.
     Emojis are inconsistent across renderers, cannot be searched, and
     break the academic tone of the articles.
   </rule>
+  <rule id="red-cascade" priority="critical">
+    After a change produces a **non-green state** (any invalid/unknown/timeout):
+    1. Do NOT cascade — do NOT modify additional functions, add comments,
+       restore lemmas, or create new files while still in the red.
+    2. Allowed actions from a non-green state:
+       a. **Revert** the specific change that caused the red state
+          (to the last green baseline).
+       b. **Retry** only the single failing function with a different
+          proof approach — no other files touched.
+       c. **Ask for help**.
+    3. Cascading (adding changes to other functions while still in the
+       red) is forbidden.
+    4. Once reverted to green, a new approach for a different scope
+       must start from green.
+  </rule>
 </rules>
 
 <antipatterns>
