@@ -185,4 +185,70 @@ case class SpecDerivedBySurvivors(
       Calc.mod(derived.cycle.integral(pos), derived.cycle.modulus),
       derived.cycle.primesTailValues)
   }.holds
+
+  /**
+   * Proves `cycle.head * cycle.modulus == product(cycle.head :: cycle.primesTailValues)`.
+   *
+   * This is the modulus-product precondition required by
+   * `assertModPreservesCoprime` when reducing a cycle survivor modulo
+   * `head * modulus` (the full next-stage range). It combines
+   * `assertCycleModulusEqualsProductTail` with the structural unfolding of
+   * `product(head :: tail) = head * product(tail)`.
+   */
+  def assertHeadModulusEqualsProductAllPrimes(): Boolean = {
+    assert(assertCycleModulusEqualsProductTail())
+    derived.cycle.head * derived.cycle.modulus ==
+      SieveUtils.product(derived.cycle.head :: derived.cycle.primesTailValues)
+  }.holds
+
+  /**
+   * Expansion bridge (cycle-survivor -> nextFiltered direction).
+   *
+   * For any cycle-integral survivor `integral(pos)` (where
+   * `mod(integral(pos), head) != 0`), the reduced value
+   * `v = Calc.mod(integral(pos), head * modulus)` appears in
+   * `nextFiltered(cycle)`. This is the direction needed for M3: it links the
+   * cycle-integral survivors to the pipeline survivors.
+   *
+   * Chain:
+   *   assertCycleSurvivorCoprimeToCyclePrimes(pos)
+   *     => isCoprime(integral(pos), cyclePrimes)
+   *   assertPrimesTailValuesPositive()
+   *     => checkAllPositive(head :: primesTailValues)
+   *   assertCycleIntegralPositive(integral, pos)
+   *     => integral(pos) > 0 >= 0
+   *   assertHeadModulusEqualsProductAllPrimes()
+   *     => head*modulus == product(head :: primesTailValues)
+   *   assertModPreservesCoprime(integral(pos), head*modulus, head :: primesTailValues)
+   *     => isCoprime(v, head :: primesTailValues)   where v = mod(integral(pos), head*modulus)
+   *   Calc.mod postcondition
+   *     => v >= 0 and v < head*modulus
+   *   assertNextFilteredContainsCoprime(cycle, v)
+   *     => nextFiltered(cycle).contains(v)
+   */
+  def assertCycleSurvivorAppearsInNextFiltered(pos: BigInt): Boolean = {
+    require(pos >= BigInt(0))
+    require(Calc.mod(derived.cycle.integral(pos), derived.spec.head.value) != BigInt(0))
+
+    val v: BigInt = Calc.mod(
+      derived.cycle.integral(pos),
+      derived.cycle.head * derived.cycle.modulus)
+
+    assert(assertCycleSurvivorCoprimeToCyclePrimes(pos))
+    assert(derived.assertPrimesTailValuesPositive())
+    assert(derived.assertHeadPositive())
+    assert(GapCycle.assertMemCycleValuesPositive(derived.cycle.gapCycle))
+    assert(CycleIntegralProperties.assertCycleIntegralPositive(
+      derived.cycle.integral, pos))
+    assert(assertHeadModulusEqualsProductAllPrimes())
+    assert(SpecCycleSieveEquivalence.assertModPreservesCoprime(
+      derived.cycle.integral(pos),
+      derived.cycle.head * derived.cycle.modulus,
+      derived.cycle.head :: derived.cycle.primesTailValues))
+    assert(v >= BigInt(0))
+    assert(v < derived.cycle.head * derived.cycle.modulus)
+    assert(SpecCycleSieveEquivalence.assertNextFilteredContainsCoprime(
+      derived.cycle, v))
+    SieveSequenceNextLevel.nextFiltered(derived.cycle).contains(v)
+  }.holds
 }

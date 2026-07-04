@@ -2,8 +2,8 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** 11 lemmas verified (one wrapper removed, one bridge-stub seed added). Expansion bridge approach identified; `assertModPreservesCoprime*` made public as the enabler. Bridge lemma not yet written.
-**Full chapter:** 12160 valid, 0 invalid, 0 unknown.
+**Status:** 13 lemmas verified (11 structural + 2 expansion-bridge blocks). Bridge approach confirmed: `assertNextFilteredContainsCoprime` already does the pipeline side; remaining work is to show the reduced survivor satisfies its preconditions. Next lemma `assertCycleSurvivorAppearsInNextFiltered` will close the cycle-survivor → nextFiltered direction.
+**Full chapter:** 12192 valid, 0 invalid, 0 unknown (commit `9d273dc4`).
 
 ---
 
@@ -138,6 +138,70 @@ identified" section above for the full argument.
 `assertFilterListContainsIf`. Use the existing stub as the seed. **One lemma per verify
 cycle per `<rule id="small-changes"/>`.**
 
+### 2026-07-05 — First two bridge blocks verified; enabler made public
+
+**Session goal:** begin the expansion bridge. Reached the first two verified
+building blocks; the actual `nextFiltered` bridge is now unblocked and the next
+step is clear.
+
+**Key simplification discovered:** `SpecCycleSieveEquivalence.assertNextFilteredContainsCoprime`
+(public, line 1020) already proves `nextFiltered(seq).contains(value)` for any `value`
+satisfying three preconditions: `value >= 0`, `value < head*modulus`,
+`isCoprime(value, head :: primesTailValues)`. **The entire expansion+filter side
+of the bridge is already done by that one lemma.** The remaining work is purely
+to show that the reduced cycle-survivor value `Calc.mod(integral(pos), head*modulus)`
+satisfies those three preconditions.
+
+**Changes (commit `9d273dc4`, full chapter 12192 valid):**
+
+1. **`primorialMatchesProduct` made public** in `SpecDerivedSieveSequence`
+   (`private def` → `def`). Previously only available as an inline `assert(...)`
+   inside private lemmas, leaving no public route to the product form of the
+   modulus. Same public-flip pattern as the prior `assertModPreservesCoprime*`
+   change. Verified 5/5 from cache — no body change, just visibility.
+
+2. **`assertCycleModulusEqualsProductTail()`** — new lemma in
+   `SpecDerivedBySurvivors`. Proves
+   `cycle.modulus == SieveUtils.product(cyclePrimes.tail)`. This is the
+   `modulus == product(primes)` precondition required by
+   `assertModPreservesCoprime`. Chain:
+   `primorialMatchesProduct(spec.primes.list.tail.list)` + the structural fact
+   `cyclePrimes == primeValues(primes.list.list)`. 5/5 valid in 11.95s.
+
+3. **`assertCycleSurvivorModModulusCoprimeToTail(pos)`** — new lemma. Proves
+   that `Calc.mod(integral(pos), cycle.modulus)` is coprime to
+   `cycle.primesTailValues` for any cycle-integral survivor. Composes
+   `assertCycleSurvivorCoprimeToCyclePrimes(pos)` (tail weakening) +
+   `assertCycleModulusEqualsProductTail()` (modulus=product) +
+   `assertModPreservesCoprime` (the modular-arithmetic core). 27/27 valid in
+   15.72s.
+
+**Lesson (positivity):** When `integral(pos) >= 0` is needed, use
+`CycleIntegralProperties.assertCycleIntegralPositive(integral, pos)` — it
+returns `integral(pos) > 0` via a cached, purpose-built lemma. Do NOT write a
+manual `assert(derived.cycle.integral(BigInt(0)) >= BigInt(0))`: that forces Z3
+to unfold `integral(0)` from scratch and times out (300s). This was the only
+failure in attempt 1; switching to the cached lemma made all 5 preconditions of
+`assertModPreservesCoprime` verify in <1s each.
+
+**Lesson (visibility as a tool):** Two consecutive sessions have now unblocked
+proof chains by flipping `private def` → `def` on lemmas that were already
+verified but inaccessible. This is the lowest-risk, highest-leverage move when
+the only blocker is "the fact exists but I can't call it." Notably cheaper than
+re-proving the same fact in a new location.
+
+**Next step:** write `assertCycleSurvivorAppearsInNextFiltered(pos)` — the
+actual bridge. It computes `v = Calc.mod(integral(pos), head*modulus)` and
+proves `v` satisfies the three preconditions of
+`assertNextFilteredContainsCoprime(cycle, v)`:
+- `v >= 0` and `v < head*modulus` — both from `Calc.mod` postconditions.
+- `isCoprime(v, head :: primesTailValues)` — combine
+  `assertCycleSurvivorModModulusCoprimeToTail` (for tail) with the fact that
+  `mod(v, head) = mod(integral(pos), head) != 0` (the survivor precondition,
+  preserved because `head | head*modulus`).
+
+This will be one lemma, one verify cycle.
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
@@ -203,7 +267,7 @@ which composes `assertModPreservesCoprime` + `assertExpandedResiduesRepresentPer
 `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` (a duplicate of the existing lemma at
 lines 36–42) is the seed for this — it should be grown into the real bridge lemma.
 
-### Summary of what the class proved (11 verified lemmas + 1 stub seed)
+### Summary of what the class proved (13 verified lemmas + 1 stub seed)
 
 | # | Lemma | VCs | What it proves |
 |---|-------|-----|----------------|
@@ -218,7 +282,9 @@ lines 36–42) is the seed for this — it should be grown into the real bridge 
 | 9 | `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` |
 | 10 | `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` |
 | 11 | `assertNextHeadLessThanNewModulus()` | 9 | `cycle(1) < head * modulus` |
-| — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | **Seed for the bridge lemma — currently a duplicate of #4, to be grown into `assertCycleSurvivorAppearsInNextFiltered`** |
+| 12 | `assertCycleModulusEqualsProductTail()` | 5 | `cycle.modulus == product(cyclePrimes.tail)` (bridge block) |
+| 13 | `assertCycleSurvivorModModulusCoprimeToTail(pos)` | 27 | mod by `cycle.modulus` preserves tail-coprimality (bridge block) |
+| — | `assertMinimalCycleSurvivorPassSpecNextFilter(pos)` | (stub) | Seed for `assertCycleSurvivorAppearsInNextFiltered` |
 
 **Note:** `assertNextHeadLessThanHeadSquared()` was removed from this class on 2026-07-05
 (it was a one-line delegator). It still lives in `SpecDerivedSieveSequence.scala:1784`,

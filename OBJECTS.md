@@ -744,7 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-11 verified lemmas + 1 stub seed (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
+13 verified lemmas + 1 stub seed (value-level survivor proof). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -759,16 +759,19 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertIntegralGeIntegral0(pos)**                        | `integral(pos) >= integral(0)` for all `pos >= 0`              |
 | **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
 | **assertNextHeadLessThanNewModulus()**                    | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`     |
-| **assertMinimalCycleSurvivorPassSpecNextFilter(pos)** (stub) | Seed for the expansion-bridge lemma; currently a duplicate of `assertCycleSurvivorPassesSpecNextFilter`, intended to be grown into `assertCycleSurvivorAppearsInNextFiltered(pos)` |
+| **assertCycleModulusEqualsProductTail()**                 | `cycle.modulus == product(cyclePrimes.tail)` (bridge block, made public-needed 2026-07-05) |
+| **assertCycleSurvivorModModulusCoprimeToTail(pos)**       | If `mod(integral(pos), head) != 0` then `isCoprime(mod(integral(pos), cycle.modulus), primesTailValues)` (bridge block) |
+| **assertMinimalCycleSurvivorPassSpecNextFilter(pos)** (stub) | Seed for `assertCycleSurvivorAppearsInNextFiltered(pos)` — the actual `nextFiltered` bridge lemma |
 
 **Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
 the underlying proof still lives in `SpecDerivedSieveSequence:1784`.
 
-**Expansion bridge (next M3 step, not yet written):** prove that for any cycle-integral
-survivor `integral(pos)`, the reduced value `Calc.mod(integral(pos), head*modulus)`
-appears in `nextFiltered(cycle)`. Composes three now-public lemmas in
-`SpecCycleSieveEquivalence` (`assertModPreservesCoprime` +
-`assertExpandedResiduesRepresentPeriod` + `assertFilterListContainsIf`). See ticket
+**Expansion bridge progress (2026-07-05):** Two of three building blocks verified
+(`assertCycleModulusEqualsProductTail`, `assertCycleSurvivorModModulusCoprimeToTail`).
+The pipeline side is already covered by `SpecCycleSieveEquivalence.assertNextFilteredContainsCoprime`
+(public). The remaining lemma `assertCycleSurvivorAppearsInNextFiltered(pos)` will
+show the reduced survivor `Calc.mod(integral(pos), head*modulus)` satisfies that
+lemma's three preconditions. See ticket
 `active/spec-derived-by-survivors.md` §"Expansion bridge — approach identified".
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
