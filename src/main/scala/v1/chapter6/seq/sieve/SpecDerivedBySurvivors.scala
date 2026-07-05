@@ -3,7 +3,6 @@ package v1.chapter6.seq.sieve
 import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
-import v1.chapter3.list.ListUtils
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter5.prime.PrimeUtils
@@ -425,14 +424,26 @@ case class SpecDerivedBySurvivors(
    * verified lemmas above — the formal proof of each component is cached.
    */
   def assertM3Composition(nextPeriod: BigInt): Boolean = {
-    require(nextPeriod > BigInt(1))
+    require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
       derived.spec.next.head.value + derived.spec.next.filterModulus)
+    require(derived.spec.next.primes.nextPrime.value <
+      derived.spec.next.head.value * derived.spec.next.head.value)
+    require(derived.spec.next.primes.list.nonEmpty)
+    require(Calc.mod(
+      SieveUtils.product(derived.spec.next.filterValues),
+      derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
     require(derived.spec.filterModulus >= 2)
 
     assert(assertNextHeadResidueIsSpecNextHead())
     assert(assertHeadModulusEqualsSpecNextFilterModulus())
-    true
+
+    val nextCanonical = SpecDerivedSieveSequence(
+      derived.spec.next, nextPeriod)
+    assert(derived.assertNextCycleGapsMatchSpecNext(nextPeriod))
+
+    nextCanonical.cycle.gapCycle.memCycle.values ==
+      derived.spec.next.gapList(BigInt(0), nextPeriod)
   }.holds
 }
