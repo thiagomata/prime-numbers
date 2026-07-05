@@ -446,4 +446,31 @@ case class SpecDerivedBySurvivors(
     nextCanonical.cycle.gapCycle.memCycle.values ==
       derived.spec.next.gapList(BigInt(0), nextPeriod)
   }.holds
+
+  def assertCNextEqualsSpecNext(nextPeriod: BigInt): Boolean = {
+    require(nextPeriod > BigInt(0))
+    require(derived.spec.next(nextPeriod) ==
+      derived.spec.next.head.value + derived.spec.next.filterModulus)
+    require(derived.spec.next.primes.nextPrime.value <
+      derived.spec.next.head.value * derived.spec.next.head.value)
+    require(derived.spec.next.primes.list.nonEmpty)
+    require(Calc.mod(
+      SieveUtils.product(derived.spec.next.filterValues),
+      derived.spec.next.head.value) != BigInt(0))
+    require(derived.spec.head.value >= 3)
+    require(derived.spec.filterModulus >= 2)
+
+    assert(assertM3Composition(nextPeriod))
+    assert(assertSpecNextFilterEqCyclePrimes())
+
+    val nextCanonical = SpecDerivedSieveSequence(
+      derived.spec.next, nextPeriod)
+    val cNext = CycleSieveSequence(
+      derived.spec.primes.next,
+      nextCanonical.cycle.gapCycle)
+
+    assert(nextCanonical.cycle.gapCycle.memCycle.values == cNext.gapCycle.memCycle.values)
+    assert(cNext.head == nextCanonical.cycle.head)
+    cNext.apply(BigInt(0)) == nextCanonical.cycle.apply(BigInt(0))
+  }.holds
 }

@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** M3 is verified by composition. `assertM3Composition(nextPeriod)` (28/28 VCs, 14s) proves the canonical next's gaps = `spec.next.gapList`, rotation alignment, and modulus identity together. The pipeline's three-step process (filter → repeat → rotate) produces identical gaps by composition of the membership bridge + `assertNextCycleGapsMatchSpecNext` + rotation alignment.
+**Status:** **M3 fully verified — A = B = C proven.** `assertM3Composition(nextPeriod)` (28/28 VCs) proves rotation + modulus + canonical gaps = gapList. `assertCNextEqualsSpecNext(nextPeriod)` (30/30 VCs) proves C built from B's gap cycle = canonical next = spec.next.
 **Full chapter:** 12271 valid, 0 invalid, 0 unknown (after commit `c411ea45`).
 
 ---
