@@ -297,4 +297,12 @@ object ModIdempotence {
 
     DivMod(a, b, div, mod).solve == DivMod(a, b, div - 1, mod + b).solve
   }.holds
+
+  def modBetweenMAnd2M(v: BigInt, m: BigInt): Boolean = {
+    require(v >= 0)
+    require(m > 0)
+    require(v >= m)
+    require(v < 2 * m)
+    mod(v, m) == v - m
+  }.holds
 }

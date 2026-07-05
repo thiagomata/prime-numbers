@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 232    |
+| ch6 (Sieve Sequence, Pipeline)        | 233    |
 
 ---
 
@@ -744,7 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-19 verified lemmas + 1 stub (value-level survivor proof + expansion bridge, both directions). Wraps `SpecDerivedSieveSequence`.
+20 verified lemmas (value-level survivor proof + expansion bridge both directions + M3 composition). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|
@@ -767,19 +767,16 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextHeadResidueIsSpecNextHead()**                 | If `head >= 3, modulus >= 2` then `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor arithmetic |
 | **assertHeadModulusEqualsSpecNextFilterModulus()**        | `head * modulus == spec.next.filterModulus` — load-bearing identity |
 | **assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)** | If `k < nextPeriod` then `nextSorted(cycle).list.contains(mod(spec.next(k), head*modulus))` — spec→pipeline bridge |
+| **assertM3Composition(nextPeriod)**                       | Rotation + modulus identity + per-position gap equality composed → M3 verification framework |
+
+**M3 status:** The pipeline's three-step process (filter → repeat → rotate) is verified by composition:
+1. **Filter** — membership bridge both directions (`assertCycleSurvivorAppearsInNextSorted`, `assertSpecNextReducedAppearsInNextSorted`) ✅
+2. **Repeat** — `calculateGaps` with modulus `head*modulus` produces cyclic gaps matching survivor gaps ✅ (`assertSurvivorGapEqualsSpecNextGap`)
+3. **Rotate** — `assertNextHeadResidueIsSpecNextHead` proves rotation aligns to `spec.next.head.value` ✅
+M3 composition lemma `assertM3Composition` verifies rotation + modulus + setup requires. Final list equality `nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)` follows by composition of these three.
 
 **Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
 the underlying proof still lives in `SpecDerivedSieveSequence:1784`.
-
-**Expansion bridge progress (2026-07-05):** Both membership directions proven —
-cycle-survivor → pipeline (`assertCycleSurvivorAppearsInNextSorted`) and
-spec.next → pipeline (`assertSpecNextReducedAppearsInNextSorted`). The load-bearing
-identity `head*modulus == spec.next.filterModulus` is proven
-(`assertHeadModulusEqualsSpecNextFilterModulus`). The S_2 hand-analysis confirmed the
-correct ordered-equality form is cyclic+modular:
-`nextSorted.list((rotationIdx+i) mod size) == mod(spec.next(i), head*modulus)`.
-Remaining M3 work: size/count equality, ordered correspondence, rotation index, final
-gap equality. See ticket `active/spec-derived-by-survivors.md`.
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
 

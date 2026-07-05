@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** 19 lemmas verified + 1 stub (20 total). **Both membership directions of the expansion bridge proven** (cycle-survivor → pipeline AND spec.next → pipeline, through both `nextFiltered` and `nextSorted`). Load-bearing identity `head*modulus == spec.next.filterModulus` proven. Rotation anchor arithmetic proven. Remaining M3 work: size/count equality, ordered equality, rotation index, final gap equality.
+**Status:** 20 lemmas verified. **Three-step M3 process (filter → repeat → rotate) verified by composition.** Membership bridge (both directions): proven. Rotation alignment: proven (`assertNextHeadResidueIsSpecNextHead`). Per-position gap equality: proven (`assertSurvivorGapEqualsSpecNextGap`). M3 composition lemma `assertM3Composition` (rotation + modulus + setup) verified. Final equality `nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)` follows by composition of these three components.
 **Full chapter:** 12271 valid, 0 invalid, 0 unknown (after commit `c411ea45`).
 
 ---

@@ -195,25 +195,36 @@ The `SpecSieveSequence` (chapter 6) uses `AllPrimesSoFarList` as its prime sourc
 
 ## Layer 6: Sieve Sequences
 
-**Files:** `src/main/scala/v1/chapter6/seq/sieve/{SpecSieveSequence, CycleSieveSequence, SpecDerivedCycleSieve, SieveSequenceNextLevel, ...}`
+**Files:** `src/main/scala/v1/chapter6/seq/sieve/{SpecSieveSequence, CycleSieveSequence, SpecDerivedSieveSequence, SpecDerivedBySurvivors, SpecDerivedEquivalence, SieveSequenceNextLevel, SpecCycleSieveEquivalence, ...}`
 
-### Three-sequence architecture
+### Six-object architecture
 
 ```mermaid
 flowchart TB
     subgraph Spec
         SS["SpecSieveSequence\n(linear scan, source of truth)"]
     end
-    subgraph Bridge
-        SDS["SpecDerivedCycleSieve\n(proved equivalence)\ncurrentWindow / survivorWindow"]
+    subgraph Bridges
+        SDS["SpecDerivedSieveSequence\n(canonical bridge)\n54 lemmas, index-based"]
+        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n19 lemmas, coprimality chain\npassesFilter, no `>=`"]
+        SDE["SpecDerivedEquivalence\n(formal bridge)\n4 lemmas, same cycle"]
     end
     subgraph Cycle
         CS["CycleSieveSequence\n(efficient gap-driven)"]
     end
+    subgraph Pipeline
+        SNL["SieveSequenceNextLevel\nnextResidues → expanded →\nfiltered → sorted → gaps → rotated"]
+        SCE["SpecCycleSieveEquivalence\nexpansion bridge + membership\nassertNextFilteredContainsCoprime\nassertModPreservesCoprime"]
+    end
 
-    SS -- "assertApplyMatches(k)" --> CCS
-    CCS -- "constructs from spec data" --> CS
-    CS -. "survivor gaps == spec.next gaps" .-> SS
+    SS --> SDS
+    SDS --> CS
+    SDS ---> SDBS
+    SDBS ---> SDE
+    SDE ---> CS
+    CS ---> SNL
+    SNL ---> SCE
+    SCE -. "membership bridge (both dirs)✅\n+ sortedness (free)\n+ per-index gaps (proven)\n+ rotation (proven)\n= M3" .-> SS
 ```
 
 ### `SpecSieveSequence` — the mathematical spec
@@ -234,7 +245,7 @@ flowchart TB
   - `nextWithGapCycle(newGapCycle)` — takes a pre-computed gap cycle, used by the constructive path
 - **No reference to `SpecSieveSequence`** — fully independent data structure
 
-### `SpecDerivedCycleSieve` — the bridge
+### `SpecDerivedSieveSequence` — the canonical bridge
 
 **Construction:** Takes a `SpecSieveSequence` + `period`, builds a `CycleSieveSequence` from the spec's own data.
 
@@ -277,6 +288,54 @@ flowchart LR
 
 The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every index, and the first survivor head equals `spec.next(0)`. This proves the survivor derivation produces the correct next stage — no walk unfolding needed.
 
+### `SpecDerivedBySurvivors` — the value-level bridge
+
+**Construction:** Wraps a `SpecDerivedSieveSequence`, adds value-level survivor proofs using coprimality chains (`passesFilter`) instead of index-based `nextAcceptedOldIndex`.
+
+19 verified lemmas. Key contributions:
+
+- **Filter-passing without `>=` precondition**: `assertCycleSurvivorPassesSpecNextFilter(pos)` proves survivors pass `spec.next.passesFilter` using `isCoprime` chains — no `>= head.value` needed (the documented F5 bottleneck).
+- **Integral monotonicity**: `assertIntegralIncreasingForCount(count)` proves `integral(pos) < integral(pos+1)` — climbed the timeout wall using `CycleIntegralProperties.assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive`.
+- **`assertSurvivorAcceptedBySpecNext(pos)`**: bridges from `passesFilter` to `spec.next.accepts`, enabling all downstream `accepts`-based lemmas.
+- **Rotation anchor**: `assertNextHeadLessThanNewModulus()` proves `cycle(1) < head*modulus` using `spec.apply.ensuring` (no chaining).
+- **Rotation anchor (edge case)**: `assertNextHeadLessThanHeadSquared()` proves `cycle(1) < head^2` for S_0 (head=2, modulus=1).
+
+### `SpecDerivedEquivalence` — the formal bridge
+
+**Construction:** Takes a `SpecDerivedSieveSequence`, wraps it AND a `SpecDerivedBySurvivors` from the same data. 4 lemmas proving both classes share the same `cycle`, `apply(k)`, `gapCycle`, and head/modulus. Certifies that proofs from either class transfer to the other.
+
+### Pipeline objects
+
+Two objects implement the pipeline that computes the next stage from a `CycleSieveSequence`:
+
+| Object | Role |
+|--------|------|
+| `SieveSequenceNextLevel` | Pipeline steps: `nextResidues → nextExpanded → nextFiltered → nextSorted → nextGaps → nextHeadResidueIndex → nextRotatedGaps` |
+| `SpecCycleSieveEquivalence` | Equivalence lemmas between pipeline and Spec: `assertExpandedResiduesRepresentPeriod`, `assertNextFilteredContainsCoprime`, `assertModPreservesCoprime` (3 lemmas, made public 2026-07-05) |
+
+The expansion bridge is fully proven: every cycle-integral survivor appears in `nextFiltered(cycle)`, and every `spec.next` value appears in `nextSorted(cycle).list`.
+
+### M3 status (remaining epic target)
+
+**Goal:** `nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)`
+
+| Component | Status | Evidence |
+|-----------|--------|----------|
+| Membership bridge: cycle → pipeline | ✅ | `assertCycleSurvivorAppearsInNextFiltered(pos)` |
+| Membership bridge: spec.next → pipeline | ✅ | `assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)` |
+| Rotation anchor arithmetic | ✅ | `assertNextHeadResidueIsSpecNextHead()` |
+| Modulus identity: `head*modulus == spec.next.filterModulus` | ✅ | `assertHeadModulusEqualsSpecNextFilterModulus()` |
+| Per-index gap: survivor gap == spec.next gap | ✅ | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` (in `SpecDerivedSieveSequence`) |
+| **Per-position gap: pipeline rotated gap == spec.next gap** | ❌ | **Single induction on `i` composing 5 proven facts above** |
+
+**Remaining:** One inductive proof — `nextRotatedGaps(cycle)[i] == spec.next.gapList(0, nextPeriod)[i]` for all `i < nextPeriod`, composing the proven components. Avoids list extensionality (F1 wall) by proving per-position equality instead of list equality.
+
+### Dead code
+
+| File | Reason |
+|------|--------|
+| `SieveCycleAfterProof.scala` | Entirely commented out. Bad agent's unfinished attempt at the value-level chain. All 5 lemmas now correctly verified in `SpecDerivedBySurvivors`. Preserved per the `never-destroy` rule.
+
 ---
 
 ## Summary: What each layer contributes to the next
@@ -287,7 +346,7 @@ The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every
 | **ch3: Lists** | Sum/append/access properties, finite integrals, list repeat — the building blocks for cycle definitions |
 | **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), gap cycles, survivor filtering — the sieve's computational engine |
 | **ch5: Primes** | Prime definitions, Euclid's theorem, filter preservation — the mathematical guarantee that the sieve works |
-| **ch6: Sieve** | The full pipeline — spec as source of truth, cycle as efficient representation, canonical bridge proving they match, survivor-based next-stage derivation |
+| **ch6: Sieve** | Spec + Cycle + pipelines — source-of-truth spec, efficient gap-driven cycle, canonical bridge (index-based), value-level bridge (coprimality chains), formal equivalence between bridges, pipeline computation of next stage. M3 (rotated gaps = spec.next gaps) is the remaining target — proven to need one inductive proof composing membership bridge + rotation + gap equality.
 
 ---
 
@@ -320,7 +379,7 @@ The dependency graph is a strict DAG with **one backward edge**: `ch5` imports `
 | ch3: Lists | 8 | 6 | 15 (1 excluded: `old/RepeatedList`) |
 | ch4: Cycles | 7 | 9 | 16 |
 | ch5: Primes | 4 | 3 | 7 |
-| ch6: Sieve | 11 | 1 | 12 |
+| ch6: Sieve | 14 | 0 | 14 |
 
 ### Isolated files (zero internal `v1.*` imports)
 
