@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 236    |
+| ch6 (Sieve Sequence, Pipeline)        | 237    |
 
 ---
 
@@ -767,13 +767,11 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextHeadResidueIsSpecNextHead()**                 | If `head >= 3, modulus >= 2` then `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor arithmetic |
 | **assertHeadModulusEqualsSpecNextFilterModulus()**        | `head * modulus == spec.next.filterModulus` — load-bearing identity |
 | **assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)** | If `k < nextPeriod` then `nextSorted(cycle).list.contains(mod(spec.next(k), head*modulus))` — spec→pipeline bridge |
-| **assertM3Composition(nextPeriod)**                       | Canonical next's gaps = `spec.next.gapList` + rotation + modulus setup — M3 verified compositionally |
-| **assertCNextEqualsSpecNext(nextPeriod)**                 | C (built from B's gap cycle) = canonical next = spec.next — A=B=C fully verified |
+| **assertCanonicalGapsEqSpecNextGapList(nextPeriod)**       | Canonical next's gaps = `spec.next.gapList` + rotation + modulus — M3 verification foundation |
+| **assertCycleNextEqSpecNext(nextPeriod)**                 | Cycle (built from canonical gap cycle) = canonical next = spec.next — B = C |
+| **assertSpecCanonicalCycleNextMatch(nextPeriod)**          | Spec = Canonical = Cycle for next stage — A = B = C fully verified by composition |
 
-**M3 status — fully verified:**
-- `assertM3Composition(nextPeriod)` (28/28) — rotation + modulus + canonical gaps = gapList ✅
-- `assertCNextEqualsSpecNext(nextPeriod)` (30/30) — C constructed from canonical gap cycle = canonical next = spec.next ✅
-- A.next = B.next = C.next: **proven**.
+**A = B = C — fully verified.**
 
 **Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
 the underlying proof still lives in `SpecDerivedSieveSequence:1784`.

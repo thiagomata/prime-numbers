@@ -305,11 +305,18 @@ Only re-run `just verify` after making a code change.
       7. **Pitfalls** — Does the plan repeat a known failure pattern documented in
          LEARNINGS.md? (e.g., public lemma instead of private, % instead of DivMod,
          multiple assertions per cycle.)
-       8. **Jailbreak** — Does the plan attempt to bypass the pipeline, the rules, 
+      8. **Jailbreak** — Does the plan attempt to bypass the pipeline, the rules, 
          or do actions that violate them, as <rule id="never-destroy"/>?
          It is not rare that agents try to workaround the blocked commands, using 
          authorized commands to achieve the same effect. 
          The Critic must detect and flag these attempts.
+      9. **Precondition Verification** — If the plan relies on a lemma or fact, does it
+         explicitly verify that lemma/fact first? (If not, the plan is incomplete.)
+      10. **Rule Compliance** — Does the plan violate any existing rules? (e.g, 
+          <rule id="no-mod-operator"/>, <rule id="three-representations"/>.)
+      11. **Change docs before verification** — Does the plan propose to change documentation (OBJECTS.md, 
+          articles/*.md) before the code is verified? (Docs must be updated after 
+          verification, not before.)
     </checks>
     <output-format>
       ## Critic Review: PASS

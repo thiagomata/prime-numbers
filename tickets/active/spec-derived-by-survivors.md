@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-04
 **Updated:** 2026-07-05
-**Status:** **M3 fully verified — A = B = C proven.** `assertM3Composition(nextPeriod)` (28/28 VCs) proves rotation + modulus + canonical gaps = gapList. `assertCNextEqualsSpecNext(nextPeriod)` (30/30 VCs) proves C built from B's gap cycle = canonical next = spec.next.
+**Status:** **A = B = C fully proven.** `assertAEqualsC(nextPeriod)` (29/29 VCs) composes `assertM3Composition` (A = B) + `assertCNextEqualsSpecNext` (B = C). All three representations (Spec, Canonical, Cycle) produce identical next-stage streams.
 **Full chapter:** 12271 valid, 0 invalid, 0 unknown (after commit `c411ea45`).
 
 ---

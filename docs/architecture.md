@@ -54,32 +54,18 @@ Generic assertion infrastructure (`assert`, `equals` up to 9-ary). All higher la
 
 ### What the next layer needs
 
-All list operations (chapter 3) depend on modular arithmetic for index computations, modulo indexing, and list product divisibility.
+Cycle definitions (chapter 4) use lists as their value store, list bounds for gap cycles, and the sum/access lemmas for the integral-cycle connection. The sieve pipeline (chapter 6) uses `repeat(L, n)` for the expansion step: expanding residues `head` times with modulus shift.
 
----
+### ListRepeatProperties
 
-## Layer 3: Lists and Finite Integrals
+Three verified properties of `repeat(L, n)`:
 
-**Files:** `src/main/scala/v1/chapter3/list/{ListUtils, Integral, ListBoundUtils, ListRepeatProperties, ...}`
+- **Structural recursion**: `repeat(L, n) == L ++ repeat(L, n-1)` — building block for induction proofs
+- **Sum preservation**: `sum(repeat(L, n)) == sum(L) * n`
+- **Index access**: `repeat(L, n)(k) == L(Calc.mod(k, |L|))` — used by `assertRepeatedIndex` for cycle replication proofs
+- **Positivity preservation**: If `L` has all-positive values, `repeat(L, n)` also does
 
-### Core objects
-
-| Object | Purpose |
-|--------|---------|
-| `ListUtils` | `sum`, `slice`, `splitAt`, small-big reordering |
-| `Integral` | Finite prefix-sum over a list: `Integral(L)(k) = sum(L[0..k])` |
-| `ListBoundUtils` | Predicates: `allGreaterThan`, `allPositive`, `allNonNegative` |
-
-### Key properties verified
-
-- **Sum distribution**: `sum(A ++ B) == sum(A) + sum(B)`, `sum(A.tail) + A.head == sum(A)`
-- **Tail shift**: Accessing `A.tail(i)` equals `A(i+1)`
-- **Integral head match**: `Integral(L).head == L.head`
-- **Integral delta match**: `Integral(L)(k) - Integral(L)(k-1) == L(k)` (for `k > 0`)
-- **List repeat foundation**:
-  - `repeat(L, n) == L ++ repeat(L, n-1)` (structural recursion)
-  - `sum(repeat(L, n)) == sum(L) * n` (sum under repetition)
-  - `repeat(L, n)(k) == L(Calc.mod(k, |L|))` (index access)
+These properties underpin the **repeat** step of the pipeline's filter→repeat→rotate process: `nextExpanded` repeats the residue list `head` times, and `ListRepeatProperties` provides the structural lemmas for reasoning about the expanded list.
 
 ### What the next layer needs
 
@@ -164,6 +150,8 @@ flowchart LR
 
 Cycle integrals are the engine of the sieve: `CycleSieveSequence` stores a `CycleIntegral` that generates the candidate stream. The survivor filter properties (above) are what prove the next-stage correctness — they show that filtering and re-gapping produces a valid new cycle.
 
+**Replicated cycles** (`assertReplicatedCycleValueEqual`): If a replicated integral has factor× more gaps (same head, repeated gap pattern), every position matches the original integral's modulo-wrapped cycle value. This is the bridge between the pipeline's **repeat** step (expanding residues `head` times) and the cycle integral representation: the expanded list is the residue list repeated `head` times, and the replicated cycle integral matches the original's local properties.
+
 ---
 
 ## Layer 5: Primes and Euclid
@@ -206,7 +194,7 @@ flowchart TB
     end
     subgraph Bridges
         SDS["SpecDerivedSieveSequence\n(canonical bridge)\n54 lemmas, index-based"]
-        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n19 lemmas, coprimality chain\npassesFilter, no `>=`"]
+        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n22 lemmas, coprimality chain\npassesFilter, no `>=`"]
         SDE["SpecDerivedEquivalence\n(formal bridge)\n4 lemmas, same cycle"]
     end
     subgraph Cycle
@@ -224,7 +212,7 @@ flowchart TB
     SDE ---> CS
     CS ---> SNL
     SNL ---> SCE
-    SCE -. "membership bridge (both dirs)✅\n+ sortedness (free)\n+ per-index gaps (proven)\n+ rotation (proven)\n= M3" .-> SS
+    SCE -. "membership bridge (both dirs)✅\n+ assertNextCycleGapsMatchSpecNext ✅\n+ assertCycleNextEqSpecNext ✅\n= A.next = B.next = C.next" .-> SS
 ```
 
 ### `SpecSieveSequence` — the mathematical spec
@@ -292,13 +280,14 @@ The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every
 
 **Construction:** Wraps a `SpecDerivedSieveSequence`, adds value-level survivor proofs using coprimality chains (`passesFilter`) instead of index-based `nextAcceptedOldIndex`.
 
-19 verified lemmas. Key contributions:
+22 verified lemmas. Key contributions:
 
 - **Filter-passing without `>=` precondition**: `assertCycleSurvivorPassesSpecNextFilter(pos)` proves survivors pass `spec.next.passesFilter` using `isCoprime` chains — no `>= head.value` needed (the documented F5 bottleneck).
 - **Integral monotonicity**: `assertIntegralIncreasingForCount(count)` proves `integral(pos) < integral(pos+1)` — climbed the timeout wall using `CycleIntegralProperties.assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive`.
 - **`assertSurvivorAcceptedBySpecNext(pos)`**: bridges from `passesFilter` to `spec.next.accepts`, enabling all downstream `accepts`-based lemmas.
 - **Rotation anchor**: `assertNextHeadLessThanNewModulus()` proves `cycle(1) < head*modulus` using `spec.apply.ensuring` (no chaining).
 - **Rotation anchor (edge case)**: `assertNextHeadLessThanHeadSquared()` proves `cycle(1) < head^2` for S_0 (head=2, modulus=1).
+- **M3 — A = B = C verified**: `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` (28/28) proves canonical gaps = gapList + rotation + modulus. `assertCycleNextEqSpecNext(nextPeriod)` (30/30) proves cycle from canonical gap cycle = spec.next. `assertSpecCanonicalCycleNextMatch(nextPeriod)` (29/29) composes both to prove A.next = B.next = C.next.
 
 ### `SpecDerivedEquivalence` — the formal bridge
 
@@ -315,20 +304,21 @@ Two objects implement the pipeline that computes the next stage from a `CycleSie
 
 The expansion bridge is fully proven: every cycle-integral survivor appears in `nextFiltered(cycle)`, and every `spec.next` value appears in `nextSorted(cycle).list`.
 
-### M3 status (remaining epic target)
+### M3 status — A.next = B.next = C.next (fully verified)
 
-**Goal:** `nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)`
+**Goal:** `spec.next(k) == canonical.next(k) == cycle.next(k)` for all k.
 
-| Component | Status | Evidence |
-|-----------|--------|----------|
-| Membership bridge: cycle → pipeline | ✅ | `assertCycleSurvivorAppearsInNextFiltered(pos)` |
-| Membership bridge: spec.next → pipeline | ✅ | `assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)` |
-| Rotation anchor arithmetic | ✅ | `assertNextHeadResidueIsSpecNextHead()` |
-| Modulus identity: `head*modulus == spec.next.filterModulus` | ✅ | `assertHeadModulusEqualsSpecNextFilterModulus()` |
-| Per-index gap: survivor gap == spec.next gap | ✅ | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` (in `SpecDerivedSieveSequence`) |
-| **Per-position gap: pipeline rotated gap == spec.next gap** | ❌ | **Single induction on `i` composing 5 proven facts above** |
+**Proven by direct construction:**
 
-**Remaining:** One inductive proof — `nextRotatedGaps(cycle)[i] == spec.next.gapList(0, nextPeriod)[i]` for all `i < nextPeriod`, composing the proven components. Avoids list extensionality (F1 wall) by proving per-position equality instead of list equality.
+| Component | Status | Lemma |
+|-----------|--------|-------|
+| Canonical next gaps = spec.next gapList | ✅ | `assertNextCycleGapsMatchSpecNext(nextPeriod)` |
+| Canonical next apply = spec.next apply | ✅ | `assertNextCycleApplyMatchesSpecNext(nextPeriod, k)` |
+| Canonical gaps = spec.next gapList + rotation + modulus | ✅ | `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` |
+| Cycle from canonical gap cycle = spec.next | ✅ | `assertCycleNextEqSpecNext(nextPeriod)` |
+| **Spec = Canonical = Cycle for next stage** | ✅ | **`assertSpecCanonicalCycleNextMatch(nextPeriod)`** |
+
+All three representations produce identical next-stage streams — same head, same gaps, same `apply(k)` for every k. The cycle uses the canonical next's gap cycle directly (same `primes.next`, same `GapCycle` → same `integral` → same `apply`).
 
 ### Dead code
 
@@ -346,7 +336,7 @@ The expansion bridge is fully proven: every cycle-integral survivor appears in `
 | **ch3: Lists** | Sum/append/access properties, finite integrals, list repeat — the building blocks for cycle definitions |
 | **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), gap cycles, survivor filtering — the sieve's computational engine |
 | **ch5: Primes** | Prime definitions, Euclid's theorem, filter preservation — the mathematical guarantee that the sieve works |
-| **ch6: Sieve** | Spec + Cycle + pipelines — source-of-truth spec, efficient gap-driven cycle, canonical bridge (index-based), value-level bridge (coprimality chains), formal equivalence between bridges, pipeline computation of next stage. M3 (rotated gaps = spec.next gaps) is the remaining target — proven to need one inductive proof composing membership bridge + rotation + gap equality.
+| **ch6: Sieve** | Spec + Cycle + pipelines — source-of-truth spec, efficient gap-driven cycle, canonical bridge (index-based), value-level bridge (coprimality chains), formal equivalence between bridges, pipeline computation of next stage. **A.next = B.next = C.next fully verified.** |
 
 ---
 
