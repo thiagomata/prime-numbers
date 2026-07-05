@@ -866,6 +866,31 @@ Track sections).
 
 **Source:** `tickets/active/independent-next-cycle.md`.
 
+## 19. Lemma Composition [Verified]
+
+### 19.1 Reuse the expensive construction, not the `.holds`
+
+Two independently-verified `.holds` lemmas should compose cleanly. When they don't,
+the culprit is almost always **duplicate construction of an expensive object** inside
+their bodies — not a logical gap or a "wall."
+
+In chapter 6, `assertCanonicalGapsEqSpecNextGapList` and `assertCycleNextEqSpecNext`
+both constructed `SpecDerivedSieveSequence(spec.next, nextPeriod)` internally.
+Individually verified at 48s and 45s. Composed in a third lemma, they timed out
+at 313s with 1 unknown VC.
+
+The fix: merge them into ONE lemma (`assertCanonicalCycleNextMatchSpecNext`, 36/36,
+62s) that constructs the expensive object once and does both proof steps in a
+single body. Both composition lemmas now call this merged lemma as a cached call
+(11s each, from cache).
+
+**Pattern:** When two lemmas share an expensive construction, extract the
+construction into the outermost proof body and pass the result to both. Don't
+construct it inside each `.holds` separately — the `.holds` boundary doesn't
+cache the construction across the composition boundary.
+
+**Source:** `tickets/active/lean-ch6-proof-spine.md`, `SpecDerivedBySurvivors.scala`.
+
 ## Index
 
 | Lesson | Source ticket | Area |
