@@ -491,6 +491,169 @@ The membership directions are done. What remains for full ordered equality:
    done (`assertNextHeadResidueIsSpecNextHead`); the `findResidueIndex`
    correctness helper timed out earlier and needs an alternative formulation.
 
+### 2026-07-05 — Cycle reframing of M3 (user insight)
+
+**User insight (2026-07-05):** the cyclic access `nextSorted.list((rotationIdx + i) mod size)`
+is exactly the `MemCycle.apply` definition (`values(mod(position, values.size))`).
+The sorted pipeline list, viewed cyclically from the rotation anchor, **is** a cycle.
+The M3 argument is therefore: *the spec gaps and the cycle-list gaps match forever,
+because both lists hold the same values and start at the same point — so their
+integrals match forever.*
+
+**Restated cleanly, the M3 proof has exactly two obligations:**
+
+The pipeline side and the spec side each produce the same infinite sequence of
+next-stage survivor values:
+
+- **Cycle/spec side (verified spine):** `cycle(k)` for `k ≥ 1` enumerates survivors
+  via the integral scan. `assertSpecNextIsKthSurvivor(nextPeriod, i)` proves
+  `spec.next(i) == cycle(indexOfAccepted(spec.next(i)))` per index. So the cycle's
+  survivor stream **is** the `spec.next` stream, position by position.
+
+- **Pipeline side (the thing to certify):** `nextSorted(cycle).list` is a finite,
+  sorted list of survivor residues in `[0, head*modulus)`. Viewed as a `MemCycle`
+  (cyclic access from the rotation anchor), it reproduces an infinite stream. The
+  rotation anchor is chosen so this stream **starts at `spec.next.head.value`**.
+
+The claim: if (a) the pipeline list and the spec.next stream contain the same
+values, and (b) they start at the same point, then their **gaps match forever**,
+and therefore the integrals match forever — i.e. `nextRotatedGaps ==
+spec.next.gapList(0, nextPeriod)`, and the next-stage `GapCycle` built from the
+pipeline is correct by construction.
+
+Where (a) and (b) reduce to proven + open facts:
+
+| Obligation | Status |
+|---|---|
+| (a) every `mod(spec.next(i), head*modulus)` ∈ `nextSorted.list` | **DONE** (`assertSpecNextReducedAppearsInNextSorted`) |
+| (a) every `mod(integral(pos), head*modulus)` ∈ `nextSorted.list` | **DONE** (`assertCycleSurvivorAppearsInNextSorted`) |
+| (a) `nextSorted.list` sorted ascending | **FREE** (`SortedList` class invariant `require(isAscending(list))`) |
+| (a) `nextSorted.list.size == nextPeriod` (count equality) | **OPEN** — load-bearing for cyclic access to be well-defined |
+| (b) `nextHeadResidueIndex(cycle)` = index of `spec.next.head.value` | arithmetic prereq **DONE** (`assertNextHeadResidueIsSpecNextHead`); index-finding helper **OPEN** |
+| conclusion: gaps match forever (same sorted values, same start ⇒ same adjacent differences) | follows from (a)+(b) + sortedness |
+| conclusion: integrals/heads match forever | follows from gap equality + the cycle machinery (`assertModCycleEqualsMemCycle` + `valueMatchAfterManyLoops`) — no per-position induction needed |
+
+**Why this collapses the back-half:** once the two list-level facts (count + start)
+are proven, the *consequences* of M3 — apply equality, integral equality, head
+equality, behavior equivalence — come for free from `CycleProperties.assertModCycleEqualsMemCycle`
+(two `MemCycle`s with equal `.values` agree on `.apply` at every position < size)
+combined with `MemCycleProperties.valueMatchAfterManyLoops` (which extends to
+unbounded positions via the `mod(position, size)` reduction). The per-position
+apply induction that earlier attempts (the commented `assertCycleSurvivorAtMatchesSpecNext`
+etc.) were reaching for is **not needed** if we prove the two list-level facts
+directly.
+
+**Why this does NOT collapse the front-half:** the reframing reduces the
+*conclusion* of M3 cleanly, but the two list-level facts (count equality, start
+equality) remain genuine obligations. They are smaller and better-targeted than
+the original ladder, but they are the actual work.
+
+**Confirmed-existing cycle machinery that supports the back-half (research):**
+
+- `MemCycle.apply(p) == values(Calc.mod(p, values.size))` via `ModCycle.apply`
+  (`ModCycle.scala:35-44`) + `MemCycle.apply` delegation (`MemCycle.scala:38-41`).
+  Captured as `MemCycleProperties.findValueInCycle` (cyclic-index law).
+- `GapCycle` is a thin wrapper: `GapCycle(values).memCycle == MemCycle(values.list)`
+  (`GapCycle.scala:18`), so `GapCycle.apply` inherits the cyclic semantics.
+- `CycleProperties.assertModCycleEqualsMemCycle(modCycle, memCycle, position)`
+  (`CycleProperties.scala:33-43`): two cycles with equal `.values` agree on
+  `.apply` for `position < size`.
+- `MemCycleProperties.valueMatchAfterManyLoops` (`MemCycleProperties.scala:122-128`):
+  extends apply-equality to unbounded positions via the mod reduction.
+- `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)`
+  (`SpecDerivedSieveSequence.scala:1232-1237`): the *canonical* next cycle's
+  values equal `spec.next.gapList(0, nextPeriod)` (this is about the canonical
+  cycle built from spec, NOT the pipeline — but it's the target the pipeline
+  must match).
+- `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` (`SpecDerivedSieveSequence.scala:1510-1526`):
+  conditional `GapCycle` builder; under the M3 precondition
+  `nextPipelineGaps() == spec.next.gapList(0, nextPeriod)`, produces a `GapCycle`
+  whose `.memCycle.values == nextPipelineGaps()`. This is the consumer of M3.
+
+### 2026-07-05 — Full collapse: M3 is a single finite list equality
+
+**User insight (2026-07-05):** the cyclic/repeated-gap machinery has already
+been proven (`MemCycleProperties.assertRepeatedValuesCycleMatches`,
+`valueMatchAfterManyLoops`, `RepeatedListProperties`). A `GapCycle` repeats its
+finite `memCycle.values` forever via `apply(k) = values(mod(k, size))`, and we
+have already shown that repeating a cycle's gaps does not change its `apply`
+result. Therefore **two `GapCycle`s with equal `.memCycle.values` generate the
+same infinite sequence, automatically — no per-position induction needed.**
+
+This collapses M3 to a **single finite list-level obligation**:
+
+```
+nextRotatedGaps(cycle) == spec.next.gapList(0, nextPeriod)        [as lists]
+```
+
+Once this list equality holds:
+- The pipeline's `GapCycle` and the spec's `GapCycle` have identical
+  `.memCycle.values`.
+- `CycleProperties.assertModCycleEqualsMemCycle` (two cycles with equal values
+  agree on `apply` for `position < size`) + `MemCycleProperties.valueMatchAfterManyLoops`
+  (extends to unbounded positions) give apply-equality forever.
+- Integrals match forever, the head matches, behavior is identical. The
+  conditional consumer `nextPipelineGapCycleIfMatchesSpec(nextPeriod)`
+  (`SpecDerivedSieveSequence.scala:1510`) takes exactly this list equality as
+  its precondition and produces the verified `GapCycle`.
+
+**What this removes from the obligation list:**
+
+- **The count equality** (`list.size == nextPeriod`) — NOT a separate obligation.
+  If two periodic streams are pointwise-equal forever, they have the same period;
+  the count falls out. (Reinforces the earlier user insight: "the count does not
+  matter if the result is always the same.")
+- **The `findResidueIndex` correctness helper** — NOT needed. The rotation index
+  is internal to how `nextRotatedGaps` computes its finite list; what we owe is
+  the final list equality, not a theorem about the index function. The earlier
+  `findResidueIndex` timeout was a symptom of attacking the wrong layer.
+- **The "start equality" as a separate axiom** — subsumed. The start is part of
+  *how* the list equality is established, not a separate fact.
+
+**What remains: prove the finite list equality directly.** The list is
+`rotateAt(calculateGaps(nextSorted.list, head*modulus), rotationIdx)`. The
+target is `spec.next.gapList(0, nextPeriod)`. Both are finite lists of gaps
+over the same value-set (the survivor residues in `[0, head*modulus)`), as
+confirmed by the S_2 hand-analysis and the two membership lemmas. The cleanest
+path is to show both gap lists equal a common canonical form
+(e.g. `gapsFromValues(sortedSurvivorResidues)`).
+
+**Supporting cycle machinery (all verified, available for the back-half):**
+- `MemCycleProperties.assertRepeatedValuesCycleMatches` — repeating a cycle's
+  values doesn't change `apply`.
+- `MemCycleProperties.valueMatchAfterManyLoops` — `cycle(k) == cycle(k + size*m)`.
+- `CycleProperties.assertModCycleEqualsMemCycle` — equal `.values` ⇒ equal `apply`.
+- `RepeatedListProperties` — facts about `RepeatedList(list, times)`, including
+  that `apply(index)` reduces to `original(mod(index, original.size))`.
+
+1. **Count equality:** `nextSorted(cycle).list.size == nextPeriod`.
+   - Need a count fact about `residues` / `expandResidues` / `filterList`, OR
+     a direct bridge from `nextPeriod` to the pipeline list size.
+
+   **UPDATE (user, 2026-07-05): the count does NOT matter as a separate obligation.**
+   If the two streams produce the same value at every position forever
+   (`pipeline_stream(i) == spec.next(i)` for all `i ≥ 0`, viewed cyclically from
+   their respective starts), the gaps match forever and the count equality
+   `list.size == nextPeriod` is a *consequence* (both have the same period),
+   not a precondition. The count only appeared load-bearing because the finite
+   bijection framing `nextSorted.list((rotationIdx+i) mod size) == ...` for
+   `i ∈ [0, size)` requires `size` to be written down. Proving the **unbounded**
+   pointwise equality (or gap equality directly) sidesteps the count entirely.
+
+2. **Start equality:** `nextSorted(cycle).list(nextHeadResidueIndex(cycle)) == spec.next.head.value`.
+   - Needs the `findResidueIndex` correctness helper (timed out once — needs a
+     reformulation, e.g. base-index-parameterized or via a cleaner `indexOfValue`).
+   - **This is now the single remaining hard obligation.** Once the start is
+     fixed and the two value-cycles have the same values (proven by the two
+     membership lemmas, both directions), apply-equality-forever follows from
+     the cycle machinery, gaps follow from apply-equality, and M3 follows.
+
+3. **Gap equality from value-cycle equality:** a small bridge showing that two
+   sorted lists with the same values and same designated start produce the same
+   `calculateGaps` + `rotateAt` output. This is the payoff lemma that consumes
+   the membership facts + the start equality. (The count is not needed as an
+   input here — it falls out of the proof.)
+
 ### Current status assessment — Path to M3
 
 The rotation anchor (`cycle(1) < head * modulus`) is now **SOLVED**. A bridge class
