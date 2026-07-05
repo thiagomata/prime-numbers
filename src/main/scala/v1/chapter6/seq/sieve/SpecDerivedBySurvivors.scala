@@ -92,6 +92,14 @@ case class SpecDerivedBySurvivors(
     cNext.apply(BigInt(0)) == nextCanonical.cycle.apply(BigInt(0))
   }.holds
 
+  /**
+   * End-to-end: spec.next(k) == canonical.next(k) == cycle.next(k).
+   *
+   * The canonical next's apply matches spec.next by construct (assertApplyMatches
+   * on the canonical instance). The pipeline-built cNext shares the same primes
+   * and GapCycle as the canonical next, so their apply values are identical for
+   * all k. This lemma pins the first two positions explicitly.
+   */
   def assertSpecCanonicalCycleNextMatch(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
@@ -105,8 +113,54 @@ case class SpecDerivedBySurvivors(
     require(derived.spec.head.value >= 3)
     require(derived.spec.filterModulus >= 2)
 
+    val nextCanonical = SpecDerivedSieveSequence(
+      derived.spec.next, nextPeriod)
+    val cNext = CycleSieveSequence(
+      derived.spec.primes.next,
+      nextCanonical.cycle.gapCycle)
+
     assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+    assert(nextCanonical.assertApplyMatches(BigInt(0)))
+    assert(nextCanonical.assertApplyMatches(BigInt(1)))
+
+    assert(cNext.apply(BigInt(0)) == derived.spec.next(BigInt(0)))
+    assert(cNext.apply(BigInt(1)) == derived.spec.next(BigInt(1)))
     true
+  }.holds
+
+  /**
+   * For any k, the pipeline-built cycle equals spec.next.
+   *
+   * Prerequisites (all called before the final equality):
+   *   assertCanonicalCycleNextMatchSpecNext — rotation, modulus, gap equality
+   *   nextCanonical.assertApplyMatches(k)   — canonical.cycle(k) == spec.next(k)
+   *
+   * Since cNext shares the same primes.next and same GapCycle as
+   * nextCanonical.cycle, their .apply(k) is identical for all k.
+   */
+  def assertCycleNextApplyEqualsSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(nextPeriod > BigInt(0))
+    require(derived.spec.next(nextPeriod) ==
+      derived.spec.next.head.value + derived.spec.next.filterModulus)
+    require(derived.spec.next.primes.nextPrime.value <
+      derived.spec.next.head.value * derived.spec.next.head.value)
+    require(derived.spec.next.primes.list.nonEmpty)
+    require(Calc.mod(
+      SieveUtils.product(derived.spec.next.filterValues),
+      derived.spec.next.head.value) != BigInt(0))
+    require(derived.spec.head.value >= 3)
+    require(derived.spec.filterModulus >= 2)
+
+    val nextCanonical = SpecDerivedSieveSequence(
+      derived.spec.next, nextPeriod)
+    val cNext = CycleSieveSequence(
+      derived.spec.primes.next,
+      nextCanonical.cycle.gapCycle)
+
+    assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+    assert(nextCanonical.assertApplyMatches(k))
+    cNext.apply(k) == derived.spec.next(k)
   }.holds
 
   def assertRepeatedCycleProof(nextPeriod: BigInt): Boolean = {

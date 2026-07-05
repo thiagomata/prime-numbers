@@ -16,17 +16,17 @@ case class CycleSieveSequence(
   gapCycle: GapCycle
 ) {
   require(!primes.isEmpty)
-  // Structural positivity invariant: the modulus (primorial of the tail primes)
-  // is strictly positive. This is true for every real sequence (product of
-  // positive primes, with primorial([]) == 1) and is discharged trivially at
-  // every construction site (S_0, S_1, next...). Making it structural means
-  // `seq.modulus > 0` is a free fact at every call site instead of being
-  // re-derived by unfolding `primorial` inside large VCs — which was the cause
-  // of three full-chapter timeouts in `assertNextSortedOnlyContainsFiltered`
-  // (see ticket fix-ch6-timeout-file-by-file.md, unknowns #2–4).
+  /*
+   * Structural positivity invariant: the modulus (primorial of the tail primes)
+   * is strictly positive. This is true for every real sequence (product of
+   * positive primes, with primorial([]) == 1) and is discharged trivially at
+   * every construction site (S_0, S_1, next...). Making it structural means
+   * `seq.modulus > 0` is a free fact at every call site instead of being
+   * re-derived by unfolding `primorial` inside large VCs — which was the cause
+   * of three full-chapter timeouts in `assertNextSortedOnlyContainsFiltered`
+   * (see ticket fix-ch6-timeout-file-by-file.md, unknowns #2–4).
+   */
   require(PrimeUtils.primorial(primes.list.tail.list) > BigInt(0))
-  // require(Calc.mod(primes.head.value + gapCycle.memCycle(0), primes.head.value) != BigInt(0))  // requires newHead==primes.next.head which is the sieve correctness property
-  // require(Calc.mod(PrimeUtils.primorial(primes.list.list), primes.head.value) != BigInt(0))  // false for S_0
 
   val primesValues: List[BigInt] = PrimeUtils.primeValues(primes.list.list)
   val primesTailValues: List[BigInt] = PrimeUtils.primeValues(primes.list.tail.list)

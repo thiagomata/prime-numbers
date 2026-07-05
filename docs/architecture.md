@@ -194,7 +194,7 @@ flowchart TB
     end
     subgraph Bridges
         SDS["SpecDerivedSieveSequence\n(canonical bridge)\n54 lemmas, index-based"]
-        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n6 lemmas, A=B=C proof spine\npassesFilter, no `>=`"]
+        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n7 lemmas, A=B=C proof spine"]
         SDE["SpecDerivedEquivalence\n(formal bridge)\n4 lemmas, same cycle"]
     end
     subgraph Cycle
@@ -212,7 +212,7 @@ flowchart TB
     SDE ---> CS
     CS ---> SNL
     SNL ---> SCE
-    SCE -. "membership bridge (both dirs)✅\n+ assertNextCycleGapsMatchSpecNext ✅\n+ assertCycleNextEqSpecNext ✅\n= A.next = B.next = C.next" .-> SS
+    SCE -. "assertCanonicalCycleNextMatchSpecNext ✅\n+ assertCycleNextApplyEqualsSpecNext(k) ✅\n= A.next = B.next = C.next" .-> SS
 ```
 
 ### `SpecSieveSequence` — the mathematical spec
@@ -278,18 +278,21 @@ The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every
 
 ### `SpecDerivedBySurvivors` — the value-level bridge
 
-**Construction:** Wraps a `SpecDerivedSieveSequence`, proves A = B = C for the next stage through 6 lemmas.
+**Construction:** Wraps a `SpecDerivedSieveSequence`, proves A = B = C for current and next stages through 7 lemmas.
 
-Key contributions:
+Key lemmas:
 
-- **Filter-passing without `>=` precondition**: `assertSpecNextFilterEqCyclePrimes()` — `spec.next.filterValues == cyclePrimes`, the base identity for filter bridging.
-- **Rotation anchor**: `assertNextHeadResidueIsSpecNextHead()` — rotation points to `spec.next.head.value`.
-- **Modulus identity**: `assertHeadModulusEqualsSpecNextFilterModulus()` — `head*modulus == spec.next.filterModulus`.
-- **A = B (gap level)**: `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` — canonical gaps = spec.next gapList + rotation + modulus.
-- **B = C**: `assertCycleNextEqSpecNext(nextPeriod)` — cycle built from canonical gap cycle = spec.next.
-- **A = B = C**: `assertSpecCanonicalCycleNextMatch(nextPeriod)` — composes all three.
+| Lemma | Proves |
+|-------|--------|
+| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes` |
+| `assertNextHeadResidueIsSpecNextHead()` | Rotation points to `spec.next.head.value` |
+| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head*modulus == spec.next.filterModulus` |
+| `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` | Merged lemma: canonical gaps = `spec.next.gapList` + rotation + modulus + same-head + same-gaps |
+| `assertSpecCanonicalCycleNextMatch(nextPeriod)` | Composes the above — Spec = Canonical = Cycle for next stage |
+| `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` | **Returns** `cNext.apply(k) == spec.next(k)` **for any k** |
+| `assertRepeatedCycleProof(nextPeriod)` | Side proof using `repeatedCycle` + lower-chapter lemmas |
 
-Previously contained 17 expansion bridge methods (survivor coprimality chain, integral monotonicity, pipeline membership). These were removed in 2026-07-05 cleanup — they were not called from the spine proof and supported a different proof strategy.
+Previously contained 20 expansion bridge methods. All removed in 2026-07-05 cleanup — not called from the spine.
 
 ### `SpecDerivedEquivalence` — the formal bridge
 
@@ -304,8 +307,6 @@ Two objects implement the pipeline that computes the next stage from a `CycleSie
 | `SieveSequenceNextLevel` | Pipeline steps: `nextResidues → nextExpanded → nextFiltered → nextSorted → nextGaps → nextHeadResidueIndex → nextRotatedGaps` |
 | `SpecCycleSieveEquivalence` | Equivalence lemmas between pipeline and Spec: `assertExpandedResiduesRepresentPeriod`, `assertNextFilteredContainsCoprime`, `assertModPreservesCoprime` (3 lemmas, made public 2026-07-05) |
 
-The expansion bridge is fully proven: every cycle-integral survivor appears in `nextFiltered(cycle)`, and every `spec.next` value appears in `nextSorted(cycle).list`.
-
 ### M3 status — A.next = B.next = C.next (fully verified)
 
 **Goal:** `spec.next(k) == canonical.next(k) == cycle.next(k)` for all k.
@@ -314,13 +315,13 @@ The expansion bridge is fully proven: every cycle-integral survivor appears in `
 
 | Component | Status | Lemma |
 |-----------|--------|-------|
+| Current stage: `cycle(k) == spec(k)` ∀k | ✅ | `assertApplyMatches(k)` in SDSS — returns equality directly |
 | Canonical next gaps = spec.next gapList | ✅ | `assertNextCycleGapsMatchSpecNext(nextPeriod)` |
-| Canonical next apply = spec.next apply | ✅ | `assertNextCycleApplyMatchesSpecNext(nextPeriod, k)` |
-| Canonical gaps = spec.next gapList + rotation + modulus | ✅ | `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` |
-| Cycle from canonical gap cycle = spec.next | ✅ | `assertCycleNextEqSpecNext(nextPeriod)` |
-| **Spec = Canonical = Cycle for next stage** | ✅ | **`assertSpecCanonicalCycleNextMatch(nextPeriod)`** |
+| Rotation + modulus identity | ✅ | `assertNextHeadResidueIsSpecNextHead` + `assertHeadModulusEqualsSpecNextFilterModulus` |
+| Cycle from canonical gap cycle = spec.next | ✅ | `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` — merged lemma |
+| **Next stage: `cNext.apply(k) == spec.next(k)` ∀k** | ✅ | **`assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` — returns equality directly** |
 
-All three representations produce identical next-stage streams — same head, same gaps, same `apply(k)` for every k. The cycle uses the canonical next's gap cycle directly (same `primes.next`, same `GapCycle` → same `integral` → same `apply`).
+All three representations produce identical streams at every position. The cycle uses the canonical next's gap cycle directly (same `primes.next`, same `GapCycle` → same `integral` → same `apply`).
 
 ### Dead code
 

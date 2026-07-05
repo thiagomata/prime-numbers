@@ -254,10 +254,6 @@ object SieveSequenceNextLevel {
     result
   }.ensuring(res => CycleUtils.allLessThan(res, seq.modulus * seq.head))
 
-  // DRAFT: assertNextSortedAllLessThan — composing expand/filter/sort bounds
-  // in one lemma times out. Each individual lemma is verified; the composition
-  // requires a different strategy (e.g., .ensuring on recursive producers).
-
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
     require(seq.head > BigInt(0))
     require(seq.modulus > BigInt(0))
@@ -269,12 +265,14 @@ object SieveSequenceNextLevel {
     require(ListUtils.checkAllPositive(seq.primesTailValues))
     require(seq.head > 0)
     require(seq.modulus * seq.head > 0)
-    // The sorted survivor list is non-empty (there is always at least one value
-    // coprime to the tail primes within one period). This is true for every real
-    // sequence; stating it as a caller obligation avoids the solver having to
-    // re-derive `nextSorted(seq).list.nonEmpty` (the precondition of
-    // `assertCalculateGapsSize`) inside this VC — that re-derivation timed out
-    // even in isolation. See ticket fix-ch6-timeout-file-by-file.md.
+    /*
+     * The sorted survivor list is non-empty (there is always at least one value
+     * coprime to the tail primes within one period). This is true for every real
+     * sequence; stating it as a caller obligation avoids the solver having to
+     * re-derive `nextSorted(seq).list.nonEmpty` (the precondition of
+     * `assertCalculateGapsSize`) inside this VC — that re-derivation timed out
+     * even in isolation. See ticket fix-ch6-timeout-file-by-file.md.
+     */
     require(nextSorted(seq).list.nonEmpty)
     assert(SieveUtils.assertCalculateGapsSize(nextSorted(seq).list, seq.modulus * seq.head))
     nextGaps(seq).size == nextSorted(seq).list.size
@@ -341,7 +339,7 @@ object SieveSequenceNextLevel {
    *   -----------------------------------------------------------------------
    *   forall g in nextRotatedGaps(seq): g > 0
    *
-   * This is the Phase E L2 wrapper. It deliberately depends on
+   * asserts `allGreaterThan(nextRotatedGaps(seq), 0)` using
    * `assertNextGapsAllPositiveGivenSortedBounds` so the rotation proof never
    * reopens the sorting, pairwise-gap, or wrap-gap arithmetic.
    */
@@ -362,39 +360,6 @@ object SieveSequenceNextLevel {
     assert(SieveUtils.assertRotateAtPreservesAllGreaterThan(gaps, index, BigInt(0)))
     ListBoundUtils.allGreaterThan(nextRotatedGaps(seq), BigInt(0))
   }.holds
-
-  // --- Phase E: DRAFT — all sub-lemmas verified, SMT chain times out ---
-  //
-  // To prove: `allGreaterThan(nextRotatedGaps(seq), 0)`
-  //
-  // Decomposition:
-  //   1. nextRotatedGaps = rotateAt(nextGaps, index)
-  //      rotation preserves allGreaterThan via assertRotateAtPreservesAllGreaterThan (✓)
-  //   2. nextGaps = calculateGaps(sorted, modulus*head) = pairwiseGaps(sorted) ++ wrapGap
-  //      a. pairwiseGaps positive via assertPairwiseGapsAllPositive (✓ 15/15) + Phase D (✓)
-  //      b. wrapGap = modulus*head - sorted.last + sorted.head
-  //         Needs sorted.last < modulus*head — requires bounds chain:
-  //         expanded < modulus*head (assertExpandResiduesRange) → filterList preserves
-  //         (assertFilterListAllLessThan) → sortFiltered preserves
-  //         (assertSortFilteredAllLessThan). Each lemma is individually verified
-  //         but composing them in one lemma exhausts the solver (3 attempts timed out).
-  //
-  // Strategy: split into two lemmas —
-  //   L1: allGreaterThan(nextGaps, 0) (pairwise + wrap)
-  //   L2: allGreaterThan(nextRotatedGaps, 0) (L1 + rotation)
-  //
-  // def assertNextRotatedGapsAllPositive(
-  //   seq: CycleSieveSequence
-  // ): Boolean = {
-  //   require(seq.modulus > 0)
-  //   require(ListUtils.checkAllPositive(seq.primesTailValues))
-  //   require(seq.head > 0)
-  //   require(seq.modulus * seq.head > 0)
-  //   require(nextSorted(seq).list.nonEmpty)
-  //
-  //   val rotated = nextRotatedGaps(seq)
-  //   ListBoundUtils.allGreaterThan(rotated, BigInt(0))
-  // }.holds
 
   /**
    * Transparent window of `ci`'s first `steps` values.

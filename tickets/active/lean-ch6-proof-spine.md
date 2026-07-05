@@ -2,8 +2,8 @@
 
 **Created:** 2026-07-05
 **Updated:** 2026-07-05
-**Status:** Deduplication + full SDBS trim completed. 17 methods removed from SDBS (2 duplicates + 15 unreached expansion bridge methods). Spine intact. Green at 12152/12152.
-**Next:** SDSS Phase 1 (47 unreached methods) or lower-chapter replacements.
+**Status:** **Complete.** SDSS trimmed from ~1800 to ~380 lines. 50 methods removed from SDSS. SDBS trimmed from 472 to 132 lines (17 methods removed). Both files verified green at 11426/11426.
+**Next:** Update architecture.md and epic.
 
 ---
 

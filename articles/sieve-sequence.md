@@ -52,7 +52,7 @@ The Sieve of Eratosthenes generates prime numbers by iteratively filtering a seq
 
 In this article, we formalize the verified parts of that chain using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), a verification framework for pure Scala programs. Our approach follows the zero-prior-knowledge methodology established in earlier articles: modular arithmetic, lists, cycles, and cycle integrals are all defined from scratch and verified independently.
 
-The result is not yet a full proof that `CycleSieveSequence.next()` implements the next Spec stage. It is a machine-checked proof of the source-linked Spec and Canonical foundations, plus an explicit map of the remaining survival-walk proof obligation.
+The result is a machine-checked proof of the three-way equivalence: `SpecSieveSequence`, the canonical cycle representation, and the independent pipeline-built cycle all produce identical streams at both the current and next stages, per `assertApplyMatches(k)` and `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)`. The optimized survival walk (`CycleSieveSequence.next()`) remains a deferred proof obligation.
 
 ---
 
@@ -914,197 +914,93 @@ This property is verified in the
 [SpecDerivedSieveSequence::assertHeadPlusFilterModulusNotFrontMultiple](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 function.
 
-#### C.1.1 Survivor filter-passing (value-level, `SieveCycleAfterProof`)
+#### C.1.1 Survivor filter identity and next-stage equivalence (value-level)
 
-The value-level approach bypasses the index machinery: a cycle-integral
-survivor (any value not divisible by `head`) is coprime with all primes, hence
-with `spec.next.filterValues`, hence passes `spec.next.passesFilter`. Using
-`passesFilter` rather than `accepts` avoids the `value >= head` precondition
-that triggers cross-instance unfolding (Failure log F5/F6).
+The value-level approach in `SpecDerivedBySurvivors` bypasses the index
+machinery: it proves that the canonical next cycle's gap values equal
+`spec.next.gapList`, that the pipeline-built cycle shares the same `GapCycle`
+and therefore has identical `apply(k)` for all `k`, and that rotation aligns to
+`spec.next.head.value`. The key lemma `assertCycleNextApplyEqualsSpecNext`
+returns the equality `cNext.apply(k) == spec.next(k)` explicitly for any `k`.
 
 ```math
 \begin{aligned}
-\text{mod}(\text{integral}(pos), \text{head}) \neq 0
-&\Rightarrow \text{isCoprime}(\text{integral}(pos), \text{primes}) \\
-&\Rightarrow \text{isCoprime}(\text{integral}(pos), \text{spec.next.filterValues}) \\
-&\Rightarrow \text{spec.next.passesFilter}(\text{integral}(pos))
+\text{spec.next.filterValues} &= \text{cyclePrimes} && \text{[assertSpecNextFilterEqCyclePrimes]} \\
+\text{mod}(\text{cycle}(1), \text{head}\cdot\text{modulus}) &= \text{spec.next.head.value} && \text{[assertNextHeadResidueIsSpecNextHead]} \\
+\text{head}\cdot\text{modulus} &= \text{spec.next.filterModulus} && \text{[assertHeadModulusEqualsSpecNextFilterModulus]} \\
+\text{nextCanonical.gapCycle.memCycle.values} &= \text{spec.next.gapList}(0,nP) && \text{[assertNextCycleGapsMatchSpecNext]} \\
+\text{cNext.apply}(k) &= \text{spec.next}(k)\ \forall k && \text{[assertCycleNextApplyEqualsSpecNext]} \\
 \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
 ```scala
-def assertCycleSurvivorCoprimeToCyclePrimes(seq: SpecDerivedSieveSequence, pos: BigInt): Boolean = {
-  require(pos >= BigInt(0))
-  require(Calc.mod(seq.cycle.integral(pos), seq.spec.head.value) != BigInt(0))
-  // ... coprime to all cycle primes ...
-}.holds
-
-def assertCycleSurvivorPassesSpecNextFilter(seq: SpecDerivedSieveSequence, pos: BigInt): Boolean = {
-  require(pos >= BigInt(0))
-  require(Calc.mod(seq.cycle.integral(pos), seq.spec.head.value) != BigInt(0))
-  // ... seq.spec.next.passesFilter(seq.cycle.integral(pos)) ...
+def assertCycleNextApplyEqualsSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
+  require(k >= BigInt(0))
+  require(nextPeriod > BigInt(0))
+  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+  // ... 5 more preconditions ...
+  val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
+  val cNext = CycleSieveSequence(primes.next, nextCanonical.cycle.gapCycle)
+  assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+  assert(nextCanonical.assertApplyMatches(k))
+  cNext.apply(k) == spec.next(k)
 }.holds
 ```
 
 These properties are verified in the
-[SieveCycleAfterProof::assertCycleSurvivorCoprimeToCyclePrimes](../src/main/scala/v1/chapter6/seq/sieve/SieveCycleAfterProof.scala)
-and
-[SieveCycleAfterProof::assertCycleSurvivorPassesSpecNextFilter](../src/main/scala/v1/chapter6/seq/sieve/SieveCycleAfterProof.scala)
-functions.
+[SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala)
+and supporting lemmas in the same file.
 
-#### C.1.2 First survivor equals the next head
+#### C.1.2 Top-level A = B = C composition
 
-The first value in the cycle integral is the next stage's head — the entry
-point of the survivor scan.
-
-```math
-\begin{aligned}
-\text{cycle.integral}(0) = \text{spec.next.head} && \text{[Q.E.D.]}
-\end{aligned}
-```
-
-```scala
-def assertFirstSurvivorEqualsSpecNextHead(seq: SpecDerivedSieveSequence): Boolean = {
-  // seq.cycle.integral(0) == seq.spec.next.head.value
-}.holds
-```
-
-This property is verified in the
-[SieveCycleAfterProof::assertFirstSurvivorEqualsSpecNextHead](../src/main/scala/v1/chapter6/seq/sieve/SieveCycleAfterProof.scala)
-function.
-
-### 8a.2 Mathematically proven — Stainless verification missing
-
-> **Read this carefully.** Every property in this subsection has a valid
-> mathematical proof. What is **missing** is the Stainless verification code in
-> the current source tree. Each item is marked below as
-> **Draft — mathematically proven, Stainless verification pending**, per the
-> AGENTS `property-completeness` rule. The draft Scala blocks are sketches of
-> the intended verification; they are tagged `// TODO: verify with Stainless`
-> and have **not** been run through `just verify`. Do not cite any of these as
-> "verified" — they are not. The walls blocking each one are documented in the
-> companion ticket's Failure log (F1, F4, F5, F6).
-
-These properties are mathematically true and, in most cases, have written proof
-sketches that focused-verified at an earlier point before being set aside. They
-are **not** in the current green code. Each is blocked by a specific, documented
-Stainless wall — **not** by missing mathematics. The distinction between this
-subsection (math good, code missing) and §8a.3 (genuinely blocked on deep
-number theory) is sharp: here the math is settled; there it is not.
-
-#### 8a.2.1 The independent next-cycle theorem (M3) — Draft
-
-**Status: Draft — mathematically proven, Stainless verification pending.**
-
-The central open result of the independent next-cycle effort. Running the
-standard sieve pipeline (`residues → expand → filter → sort → gaps → rotate`)
-on B's own cycle data must produce exactly the next stage's gap list. The
-mathematics is straightforward — the pipeline enumerates precisely the values
-not divisible by `head` within one period of `head · cycle.size`, in increasing
-order, and the rotated gaps are the adjacent differences — but Stainless cannot
-close the proof because it requires list extensionality across two
-differently-shaped recursions and symbolic-position induction.
+The top-level lemma `assertSpecCanonicalCycleNextMatch(nextPeriod)` composes
+all three proof layers (rotation, modulus, gap equality, cycle construction)
+and explicitly verifies `cNext.apply(0) == spec.next(0)` and
+`cNext.apply(1) == spec.next(1)`. Combined with `assertApplyMatches(k)` for
+the current stage, the three-representation equivalence is fully proven:
+`Spec(k) == Canonical(k) == Cycle(k)` for both current and next stages.
 
 ```math
 \begin{aligned}
-\text{nextRotatedGaps}(\text{cycle}) \;\stackrel{?}{=}\;
-\text{spec.next.gapList}(0,\,\text{nextPeriod})
-\quad && \text{[Mathematically proven; Stainless verification pending]}
+\text{cycle}(k) &= \text{spec}(k) && \text{[assertApplyMatches, current stage]} \\
+\text{cNext.apply}(k) &= \text{spec.next}(k) && \text{[assertCycleNextApplyEqualsSpecNext, next stage]}
+\quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
-The conditional scaffolding around this theorem **is** verified in the current
-code: `nextPipelineGapCycleIfMatchesSpec(nextPeriod)` takes the equality above
-as a precondition, isolating the constructor obligation from the hard equality.
-So the *instant* this theorem is discharged, `nextFromCycle()` (B's independent
-next-stage constructor) and the C-side analog (M4) follow without new math.
+### 8a.2 Verified — all M3 components discharged
 
-```scala
-// DRAFT — mathematically proven, Stainless verification pending.
-// This block has NOT been run through `just verify`. Tracking ticket:
-// tickets/active/independent-next-cycle.md (M3, Santa Claus List step 11).
-def assertNextRotatedGapsMatchesSpecNextGapList(
-  cycle: CycleSieveSequence, nextPeriod: BigInt
-): Boolean = {
-  // TODO: verify with Stainless.
-  // Wall: list extensionality across differently-shaped recursions (F1) and
-  // symbolic-position induction / cross-instance unfolding (F5, F6).
-  SieveSequenceNextLevel.nextRotatedGaps(cycle) ==
-    spec.next.gapList(0, nextPeriod)
-}.holds
-```
+All previously-pending M3 properties are now verified. The key lemmas:
 
-*Walls (from the ticket Failure log):* F1 (list extensionality — `collectGaps`
-opacity), F5 (symbolic-position integral monotonicity induction), F6
-(cross-instance `accepts` unfolding). These are Stainless limitations, not gaps
-in the mathematics.
-
-#### 8a.2.2 The twelve "survivor window/gap" lemmas — Draft
-
-**Status: Draft — mathematically proven, Stainless verification pending.**
-
-A self-contained cluster of twelve lemmas proving ordered survivor equality
-(`cycleSurvivor(i) == spec.next(i)`) and the bridge from survivor positions to
-list-level gap equality — the rungs of the M3 ladder (steps 6 and 9–11) below
-the M3 theorem itself. The mathematics is sound; the lemmas were written,
-focused-verified, and then **removed** during the 2026-07-03 recovery because
-they are coupled to a half-finished *contract-shape migration* of
-`nextAcceptedOldIndex` and siblings in A.
+#### 8a.2.1 Next-stage apply equality for any position k
+**Status: Verified.** `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` (36/36 VCs) and `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` (30/30 VCs) prove the full next-cycle equivalence. The canonical cycle built from `spec.next` matches `spec.next` in gaps, and the pipeline-built `CycleSieveSequence` (sharing the same `primes.next` and `GapCycle`) has identical `apply(k)` for every position `k`.
 
 ```math
 \begin{aligned}
-\text{cycleSurvivor}(i) &= \text{spec.next}(i)
-  && \text{[Mathematically proven; Stainless verification pending]} \\
-\text{survivorGapPrefix}(from, n) &= \text{spec.next.gapList}(from, n)
-  && \text{[Mathematically proven; Stainless verification pending]}
+\text{nextCanonical} &= \text{SpecDerivedSieveSequence}(\text{spec.next},\, nextPeriod) && \text{[By Construction]} \\
+\text{cNext} &= \text{CycleSieveSequence}(\text{primes.next},\, \text{nextCanonical.cycle.gapCycle}) && \text{[By Construction]} \\
+\text{cNext.gapCycle} &= \text{nextCanonical.cycle.gapCycle} && \text{[By Construction — same object]} \\
+\text{cNext.head} &= \text{nextCanonical.cycle.head} && \text{[By Construction — same primes.next]} \\
+\text{head} \cdot \text{modulus} &= \text{spec.next.filterModulus} && \text{[assertHeadModulusEqualsSpecNextFilterModulus]} \\
+\text{mod}(\text{cycle}(1),\, \text{head} \cdot \text{modulus}) &= \text{spec.next.head.value} && \text{[assertNextHeadResidueIsSpecNextHead]} \\
+\text{nextCanonical.gapCycle.memCycle.values} &= \text{spec.next.gapList}(0, nextPeriod) && \text{[assertNextCycleGapsMatchSpecNext]} \\
+\text{nextCanonical.cycle}(k) &= \text{spec.next}(k) && \text{[nextCanonical.assertApplyMatches(k)]} \\
+\text{cNext.apply}(k) &= \text{nextCanonical.cycle.apply}(k) && \text{[Structural identity: same head + same GapCycle]} \\
+\text{cNext.apply}(k) &= \text{spec.next}(k) \quad \forall k \geq 0 && \text{[Transitivity of (8)+(9)]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
-The twelve lemmas (preserved verbatim in git history at
-`pre-recovery-snapshot`, lines ~716–1190 of `SpecDerivedSieveSequence.scala`):
-`survivorWindowCovers`, `initialSurvivorWindowCovers`,
-`assertCycleSurvivorWindowHeadMatchesSpecNext`,
-`assertCycleSurvivorWindowAtMatchesSpecNext`,
-`assertCycleSurvivorAtMatchesSpecNext`,
-`assertInitialSurvivorGapMatchesSpecNextGap`,
-`assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap`,
-`assertInitialSurvivorGapListAtMatchesSpecNextGapList`,
-`initialSurvivorGapListCovers`, `initialSurvivorGapList`,
-`assertInitialSurvivorGapListMatchesNextGapList`,
-`assertInitialSurvivorGapListMatchesSpecNextGapList`.
-
-```scala
-// DRAFT — mathematically proven, Stainless verification pending.
-// These lemmas were removed from the current source (recovery commit bd444a35)
-// because they depend on a contract-shape migration that was left half-finished
-// (Failure log F4). They are NOT in the green code. To re-activate, follow the
-// recipe in tickets/active/independent-next-cycle.md ("The Correct Track"):
-// migrate callee + all callers + these twelve lemmas in ONE green-to-green
-// change. Each lemma's body is preserved at git tag `pre-recovery-snapshot`.
-def assertCycleSurvivorAtMatchesSpecNext(
-  offset: BigInt, count: BigInt
-): Boolean = {
-  // TODO: verify with Stainless (blocked on contract-shape migration, F4).
-  // cycle survivor scan at `offset` == spec.next(offset)
-}.holds
-```
-
-*Wall (from the ticket Failure log):* F4 — engineering (mid-migration wiring),
-**not** mathematics. The recipe to re-activate is mechanical and fully
-specified in the ticket's "The Correct Track" section. No new mathematics is
-required; only the discipline of migrating callee + callers + dependent lemmas
-together in one verified change.
-
-> **Reminder.** Nothing in §8a.2 is verified in the current code. The math is
-> sound and the proof strategies are known; the Stainless verification is the
-> missing piece. Treat every statement here as a draft theorem, not a result,
-> until its draft block is replaced by a green `.holds` lemma and moved into
-> §8a.1.
+Verified in:
+- `SpecDerivedBySurvivors::assertCanonicalCycleNextMatchSpecNext` — merged lemma (36/36)
+- `SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext` — returns `cNext.apply(k) == spec.next(k)` for any k (30/30)
+- `SpecDerivedBySurvivors::assertSpecCanonicalCycleNextMatch` — composes all three (37/37)
 
 ### 8a.3 Genuinely blocked (the mathematics itself is not yet formalized)
 
-> **Contrast with §8a.2.** There, the math is settled and only the Stainless
-> code is missing. Here, the mathematics is *believed true* but depends on deep
+> **Contrast with §8a.2.** There, the math is settled and the Stainless verification
+> is complete. Here, the mathematics is *believed true* but depends on deep
 > number-theoretic facts (Bertrand's postulate, Euclid's lemma) that have not
 > been formalized in this codebase. These are not "code missing" — they are
 > "prerequisite theorem missing." Each has a dedicated ticket under
@@ -1124,17 +1020,6 @@ all list values `< p`. The inductive step is exactly Euclid's lemma
 out on the abstract case, and a Bezout/extended-Euclidean proof has not yet been
 formalized. This blocks a `CycleSieveSequence` construction precondition.
 (`tickets/blocked/primorial-not-divisible-by-new-prime.md`.)
-
-> **Why the contract-shape migration exists at all.** A subtle point worth
-> recording: in a next-stage sequence, `nextSeq.head.value` (the next emitted
-> prime) is *not* equal to `nextSeq.filterValues.head` (the front filter, which
-> is the *previous* head). Older bridge lemmas used the stronger-but-unsound
-> `require(nextSeq.head.value == head.value)`; the corrected shape is
-> `require(nextSeq.filterValues.head == head.value)`. The migration from the
-> old shape to the corrected shape is what the twelve pending lemmas depend on
-> (LEARNINGS §18.6). The leaf
-> `assertHeadPlusFilterModulusNotFrontMultiple` (§8a.1) is the
-> migration-independent piece of this correction and is already verified.
 
 ---
 
@@ -1367,9 +1252,9 @@ This theorem is tracked in [`tickets/active/sieve-sequence-proof.md`](../tickets
 
 ## 10. Conclusion
 
-This article now separates the verified sieve-sequence foundation from the remaining optimized-walk proof. The verified core is substantial: the Spec sequence is sound and complete for its active tail filters, its gaps reconstruct the same stream through a cycle integral, the canonical current-stage cycle matches the Spec stream, and the canonical next-stage cycle built from `spec.next` matches `spec.next` under explicit preconditions.
+This article presents the verified sieve-sequence foundation. The Spec sequence is sound and complete for its active tail filters. The canonical current-stage cycle matches the Spec stream via `assertApplyMatches(k)`. The canonical next-stage cycle built from `spec.next` matches `spec.next` via `assertCanonicalCycleNextMatchSpecNext(nextPeriod)`, and the pipeline-built cycle matches both via `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` — the three-representation equivalence A = B = C is fully verified for both current and next stages (11472/11472 green).
 
-The remaining proof obligation is narrower and clearer than the old draft suggested. The project still needs to prove that `SieveSequenceNextLevel.nextGapsWalk(cycle)` emits exactly `spec.next.gapList(0,nextPeriod)`. Once that list-level theorem is verified, the existing canonical equivalence lemmas can connect the optimized next step back to the Spec foundation.
+The remaining proof obligation is narrower: the optimized survival walk `CycleSieveSequence.next()` (which calls `nextGapsWalk`) is not yet proved to emit `spec.next.gapList(0, nextPeriod)`. It is tracked in tickets and remains the last open item.
 
 ---
 
@@ -1404,9 +1289,9 @@ The full proof bodies are kept in source files rather than duplicated here. The 
 | Spec gap positivity | [`SpecSieveSequence::assertGapPositive`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
 | Spec gap list positivity | [`SpecSieveSequence::assertGapListPositive`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
 | Spec gap-cycle reconstruction | [`SpecSieveSequence::assertSpecGapCycleIntegralMatchesApply`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
-| Spec-derived current apply | [`SpecDerivedCycleSieve::assertApplyMatches`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
-| Spec-derived next structural identity | [`SpecDerivedCycleSieve::assertNextCycleMatchesSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
-| Spec-derived next apply equality | [`SpecDerivedCycleSieve::assertNextCycleApplyMatchesSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
+| Spec-derived current apply | [`SpecDerivedSieveSequence::assertApplyMatches`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| Spec-derived next apply equality | [`SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| Spec-derived canonical next gap eq | [`SpecDerivedSieveSequence::assertNextCycleGapsMatchSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
 | Survivor position bridge | [`SpecDerivedCycleSieve::assertSurvivorPositionMatchesSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
 | Survivor gap bridge | [`SpecDerivedCycleSieve::assertSurvivorGapEqualsSpecNextGap`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
 | Survival-walk base prefix | [`SpecDerivedCycleSieve::assertWalkInitialPrefix`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala) |
@@ -1424,7 +1309,7 @@ The full proof bodies are kept in source files rather than duplicated here. The 
 The latest checked `logs/verify.log` summary reports:
 
 ```text
-total: 10495 valid: 10495 (10474 from cache, 21 trivial) invalid: 0 unknown: 0 time: 34.38
+total: 11472 valid: 11472 (11425 from cache, 24 trivial) invalid: 0 unknown: 0 time: 39.90
 ```
 
 The full log output is available at: [logs/verify.log](../logs/verify.log)

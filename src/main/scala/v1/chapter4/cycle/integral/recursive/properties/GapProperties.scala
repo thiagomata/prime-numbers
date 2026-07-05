@@ -54,14 +54,6 @@ object GapProperties {
     ShiftedList.assertShiftedApplyIsOriginalPlusOne(origHead, gaps, i)
   }.holds
 
-  // GENERALISATION TO k > 1 (DRAFT — requires rotation-sum lemmas):
-  //
-  // shift_k(head, gaps, k).apply(i) == orig.apply(i + k)
-  //
-  // Where shift_k advances head by sum(gaps[0..k-1]) and rotates gaps by k.
-  // The induction step needs bridging between shift_{k-1}(shifted) and
-  // shift_k via rotation-index + rotation-sum lemmas.
-
   def shiftK(
     origHead: BigInt,
     gaps: List[BigInt],

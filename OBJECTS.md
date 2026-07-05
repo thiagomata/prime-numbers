@@ -3,7 +3,7 @@
 Complete inventory of all verified `.holds` lemmas across the codebase.
 Last updated: 2026-07-05
 
-**Total: 487 verified lemmas** across 6 chapters.
+**Total: 307 verified lemmas** across 6 chapters.
 
 | Chapter                               | Lemmas |
 |---------------------------------------|--------|
@@ -12,7 +12,7 @@ Last updated: 2026-07-05
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 220    |
+| ch6 (Sieve Sequence, Pipeline)        |  57    |
 
 ---
 
@@ -744,37 +744,43 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-6 verified lemmas (A = B = C next-stage proof spine). Wraps `SpecDerivedSieveSequence`.
+7 verified lemmas (A = B = C next-stage proof spine). Wraps `SpecDerivedSieveSequence`.
 
-| Lemma                                                  | Statement                                                   |
-|--------------------------------------------------------|-------------------------------------------------------------|
-| **assertCycleSurvivorCoprimeToCyclePrimes(pos)**        | If `mod(integral(pos), head) != 0` then `isCoprime(integral(pos), cyclePrimes)` |
-| **assertSpecNextFilterEqCyclePrimes()**                | `spec.next.filterValues == cyclePrimes`                     |
-| **assertCycleSurvivorCoprimeToSpecNextFilter(pos)**    | If `mod(integral(pos), head) != 0` then `isCoprime(integral(pos), spec.next.filterValues)` |
-| **assertCycleSurvivorPassesSpecNextFilter(pos)**       | If `mod(integral(pos), head) != 0` then `spec.next.passesFilter(integral(pos))` |
-| **assertFirstSurvivorEqualsSpecNextHead()**            | `integral(0) == spec.next.head.value`                        |
-| **assertAllSurvivorsPassSpecNextFilter(count)**        | All cycle-integral survivors in `[0,count)` pass `spec.next.passesFilter` |
-| **assertAllSurvivorsPassSpecNextFilterFrom(from,count)** | All cycle-integral survivors in `[from,from+count)` pass `spec.next.passesFilter` |
-| **assertIntegralIncreasingForCount(count)**               | `integral(pos) < integral(pos+1)` for all `pos` in `[0, count)` |
-| **assertIntegralGeIntegral0(pos)**                        | `integral(pos) >= integral(0)` for all `pos >= 0`              |
-| **assertSurvivorAcceptedBySpecNext(pos)**                 | Survivor `integral(pos)` is accepted by `spec.next.accepts`    |
-| **assertNextHeadLessThanNewModulus()**                    | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`     |
-| **assertCycleModulusEqualsProductTail()**                 | `cycle.modulus == product(cyclePrimes.tail)` |
-| **assertCycleSurvivorModModulusCoprimeToTail(pos)**       | If `mod(integral(pos), head) != 0` then `isCoprime(mod(integral(pos), cycle.modulus), primesTailValues)` |
-| **assertHeadModulusEqualsProductAllPrimes()**             | `head * modulus == product(head :: primesTailValues)` |
-| **assertCycleSurvivorAppearsInNextFiltered(pos)**         | If `mod(integral(pos), head) != 0` then `nextFiltered(cycle).contains(mod(integral(pos), head*modulus))` — cycle→pipeline bridge |
-| **assertCycleSurvivorAppearsInNextSorted(pos)**           | If `mod(integral(pos), head) != 0` then `nextSorted(cycle).list.contains(mod(integral(pos), head*modulus))` — bridge through sort |
-| **assertNextHeadResidueIsSpecNextHead()**                 | If `head >= 3, modulus >= 2` then `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor arithmetic |
-| **assertHeadModulusEqualsSpecNextFilterModulus()**        | `head * modulus == spec.next.filterModulus` — load-bearing identity |
-| **assertSpecNextReducedAppearsInNextSorted(nextPeriod, k)** | If `k < nextPeriod` then `nextSorted(cycle).list.contains(mod(spec.next(k), head*modulus))` — spec→pipeline bridge |
-| **assertCanonicalGapsEqSpecNextGapList(nextPeriod)**       | Canonical next's gaps = `spec.next.gapList` + rotation + modulus — M3 verification foundation |
-| **assertCycleNextEqSpecNext(nextPeriod)**                 | Cycle (built from canonical gap cycle) = canonical next = spec.next — B = C |
-| **assertSpecCanonicalCycleNextMatch(nextPeriod)**          | Spec = Canonical = Cycle for next stage — A = B = C fully verified by composition |
+| Lemma | Statement |
+|-------|-----------|
+| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes` |
+| `assertNextHeadResidueIsSpecNextHead()` | `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor |
+| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head*modulus == spec.next.filterModulus` — load-bearing identity |
+| `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` | Merged lemma: canonical gaps = `spec.next.gapList` + rotation + modulus + same-head + same-gaps (cycle from canonical GapCycle) |
+| `assertSpecCanonicalCycleNextMatch(nextPeriod)` | Composes above — Spec = Canonical = Cycle for next stage |
+| `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` | **`cNext.apply(k) == spec.next(k)` for any k** — next-stage apply equality, returns the equality explicitly |
+| `assertRepeatedCycleProof(nextPeriod)` | Side proof using `repeatedCycle` + `assertRepeatedCycleApplyMatches` + `assertSurvivorGapEqualsSpecNextGap` |
 
-**A = B = C — fully verified.**
+**A = B = C — fully verified for current and next stages.**
 
-**Removed (2026-07-05):** `assertNextHeadLessThanHeadSquared` — was a one-line delegator;
-the underlying proof still lives in `SpecDerivedSieveSequence:1784`.
+Previously contained 20 expansion bridge + survivor chain lemmas. All removed in 2026-07-05 cleanup —
+they were not called from the spine proof.
+
+---
+
+### §6.6 SpecDerivedSieveSequence — 14 methods (trimmed from 62)
+
+| Lemma | Statement |
+|-------|-----------|
+| `assertApplyMatches(k)` | **`cycle(k) == spec(k)` for any k** — current-stage equivalence |
+| `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value` |
+| `assertPrimesMatch()` | Prime list structural equality |
+| `primorialMatchesProduct(...)` | Primorial-to-product bridge |
+| `assertCycleModulusEqualsSpecFilterModulus()` | `cycle.modulus == spec.filterModulus` |
+| `assertNextHeadLessThanNewModulus()` | `cycle(1) < head*modulus` — rotation bound |
+| `assertNextCycleGapsMatchSpecNext(nextPeriod)` | Canonical next gaps = `spec.next.gapList` |
+| `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)` | Gap cycle values = gapList |
+| `assertSurvivorGapEqualsSpecNextGap(nextPeriod, k)` | Survivor gap = spec.next gap per index |
+| `repeatedCycle(times)` | Build repeated gap cycle (ch3 ListRepeatProperties) |
+| `assertRepeatedCycleIntegralMatches(times, pos)` | Repeated integral = original integral |
+| `assertRepeatedCycleApplyMatches(times, k)` | `repeatedCycle(times).apply(k) == cycle.apply(k)` |
+| `assertRepeatedCycleGapMatches(times, pos)` | Repeated gap = original gap (orphaned) |
+| `assertRepeatedGapListIndexMatches(times, idx)` | Index equality for repeated lists (orphaned) |
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
 

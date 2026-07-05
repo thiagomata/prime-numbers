@@ -565,67 +565,41 @@ object SieveUtils {
     else findResidueIndex(list.tail, idx + 1, value)
   }.ensuring(_ >= BigInt(0))
 
-  // Delegates to the canonical ch3 definition (ListUtils.splitAt). Kept as a
-  // thin wrapper so existing ch6 callers compile unchanged; the canonical
-  // implementation and its recombination lemma live in ch3 (LEARNINGS §5.3:
-  // avoid duplicate predicate surfaces that Stainless treats as distinct).
+  /*
+   * Delegates to the canonical ch3 definition (ListUtils.splitAt). Kept as a
+   * thin wrapper so existing ch6 callers compile unchanged; the canonical
+   * implementation and its recombination lemma live in ch3 (LEARNINGS §5.3:
+   * avoid duplicate predicate surfaces that Stainless treats as distinct).
+   */
   def splitAt(list: List[BigInt], index: BigInt): (List[BigInt], List[BigInt]) = {
     require(index >= 0 && index <= list.size)
     ListUtils.splitAt(list, index)
   }
 
-  // Delegates to the canonical ch3 lemma (ListBoundUtils.assertSplitAtPreservesAllGreaterThan).
+  /* Delegates to the canonical ch3 lemma (ListBoundUtils.assertSplitAtPreservesAllGreaterThan). */
   def assertSplitAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
     require(index >= 0 && index <= list.size)
     require(ListBoundUtils.allGreaterThan(list, value))
     ListBoundUtils.assertSplitAtPreservesAllGreaterThan(list, index, value)
   }.holds
 
-  // Delegates to the canonical ch3 definition (ListUtils.rotateAt).
+  /* Delegates to the canonical ch3 definition (ListUtils.rotateAt). */
   def rotateAt(list: List[BigInt], index: BigInt): List[BigInt] = {
     require(index >= 0)
     ListUtils.rotateAt(list, index)
   }
 
-//  def rotateAtPreserving(list: List[BigInt], index: BigInt): List[BigInt] = {
-//    require(index >= 0)
-//    require(ListBoundUtils.allGreaterThan(list, BigInt(0)))
-//    rotateAt(list, index)
-//  }.ensuring(
-//    res => ListBoundUtils.allGreaterThan(res, BigInt(0))
-//  )
-
-//  def rotateAtPreservingLoop(list: List[BigInt], index: BigInt, lowerBound: BigInt): List[BigInt] = {
-//    require(index >= 0)
-//    require(ListBoundUtils.allGreaterThan(list, lowerBound))
-//    decreases(index)
-//    if (list.isEmpty || index == BigInt(0)) list
-//    else if (index >= list.size) rotateAtPreservingLoop(list, index - list.size, lowerBound)
-//    else {
-//      val (front, back) = splitAt(list, index)
-//      assert(ListBoundUtils.allGreaterThan(list, lowerBound))
-//      assert(assertSplitAtPreservesAllGreaterThan(list, index, lowerBound))
-//      assert(ListBoundUtils.allGreaterThan(front, lowerBound))
-//      assert(ListBoundUtils.allGreaterThan(back, lowerBound))
-//      assert(ListBoundUtils.allGreaterThan(back ++ front, lowerBound))
-//      back ++ front
-//    }
-//  }.ensuring(
-//    res => {
-//      ListBoundUtils.allGreaterThan(list, lowerBound) &&
-//      ListBoundUtils.allGreaterThan(res, lowerBound)
-//    }
-//  )
-
-  // Delegates to the canonical ch3 lemma (RotationProperties.assertRotateSameLowerBound).
+  /* Delegates to the canonical ch3 lemma (RotationProperties.assertRotateSameLowerBound). */
   def assertRotateAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
     require(index >= 0)
     require(ListBoundUtils.allGreaterThan(list, value))
     RotationProperties.assertRotateSameLowerBound(list, index, value)
   }.holds
 
-  // Non-emptiness follows from same-size (rotation preserves size); delegates
-  // to the canonical ch3 lemma.
+  /*
+   * Non-emptiness follows from same-size (rotation preserves size); delegates
+   * to the canonical ch3 lemma.
+   */
   def assertRotateAtPreservesNonEmpty(list: List[BigInt], index: BigInt): Boolean = {
     require(list.nonEmpty)
     require(index >= 0)
