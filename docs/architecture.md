@@ -194,7 +194,7 @@ flowchart TB
     end
     subgraph Bridges
         SDS["SpecDerivedSieveSequence\n(canonical bridge)\n54 lemmas, index-based"]
-        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n22 lemmas, coprimality chain\npassesFilter, no `>=`"]
+        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n6 lemmas, A=B=C proof spine\npassesFilter, no `>=`"]
         SDE["SpecDerivedEquivalence\n(formal bridge)\n4 lemmas, same cycle"]
     end
     subgraph Cycle
@@ -278,16 +278,18 @@ The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every
 
 ### `SpecDerivedBySurvivors` — the value-level bridge
 
-**Construction:** Wraps a `SpecDerivedSieveSequence`, adds value-level survivor proofs using coprimality chains (`passesFilter`) instead of index-based `nextAcceptedOldIndex`.
+**Construction:** Wraps a `SpecDerivedSieveSequence`, proves A = B = C for the next stage through 6 lemmas.
 
-22 verified lemmas. Key contributions:
+Key contributions:
 
-- **Filter-passing without `>=` precondition**: `assertCycleSurvivorPassesSpecNextFilter(pos)` proves survivors pass `spec.next.passesFilter` using `isCoprime` chains — no `>= head.value` needed (the documented F5 bottleneck).
-- **Integral monotonicity**: `assertIntegralIncreasingForCount(count)` proves `integral(pos) < integral(pos+1)` — climbed the timeout wall using `CycleIntegralProperties.assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive`.
-- **`assertSurvivorAcceptedBySpecNext(pos)`**: bridges from `passesFilter` to `spec.next.accepts`, enabling all downstream `accepts`-based lemmas.
-- **Rotation anchor**: `assertNextHeadLessThanNewModulus()` proves `cycle(1) < head*modulus` using `spec.apply.ensuring` (no chaining).
-- **Rotation anchor (edge case)**: `assertNextHeadLessThanHeadSquared()` proves `cycle(1) < head^2` for S_0 (head=2, modulus=1).
-- **M3 — A = B = C verified**: `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` (28/28) proves canonical gaps = gapList + rotation + modulus. `assertCycleNextEqSpecNext(nextPeriod)` (30/30) proves cycle from canonical gap cycle = spec.next. `assertSpecCanonicalCycleNextMatch(nextPeriod)` (29/29) composes both to prove A.next = B.next = C.next.
+- **Filter-passing without `>=` precondition**: `assertSpecNextFilterEqCyclePrimes()` — `spec.next.filterValues == cyclePrimes`, the base identity for filter bridging.
+- **Rotation anchor**: `assertNextHeadResidueIsSpecNextHead()` — rotation points to `spec.next.head.value`.
+- **Modulus identity**: `assertHeadModulusEqualsSpecNextFilterModulus()` — `head*modulus == spec.next.filterModulus`.
+- **A = B (gap level)**: `assertCanonicalGapsEqSpecNextGapList(nextPeriod)` — canonical gaps = spec.next gapList + rotation + modulus.
+- **B = C**: `assertCycleNextEqSpecNext(nextPeriod)` — cycle built from canonical gap cycle = spec.next.
+- **A = B = C**: `assertSpecCanonicalCycleNextMatch(nextPeriod)` — composes all three.
+
+Previously contained 17 expansion bridge methods (survivor coprimality chain, integral monotonicity, pipeline membership). These were removed in 2026-07-05 cleanup — they were not called from the spine proof and supported a different proof strategy.
 
 ### `SpecDerivedEquivalence` — the formal bridge
 

@@ -1,7 +1,7 @@
 # Objects and Properties Catalog
 
 Complete inventory of all verified `.holds` lemmas across the codebase.
-Last updated: 2026-07-04
+Last updated: 2026-07-05
 
 **Total: 487 verified lemmas** across 6 chapters.
 
@@ -12,7 +12,7 @@ Last updated: 2026-07-04
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        | 237    |
+| ch6 (Sieve Sequence, Pipeline)        | 220    |
 
 ---
 
@@ -744,7 +744,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
-20 verified lemmas (value-level survivor proof + expansion bridge both directions + M3 composition). Wraps `SpecDerivedSieveSequence`.
+6 verified lemmas (A = B = C next-stage proof spine). Wraps `SpecDerivedSieveSequence`.
 
 | Lemma                                                  | Statement                                                   |
 |--------------------------------------------------------|-------------------------------------------------------------|

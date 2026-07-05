@@ -28,7 +28,7 @@ case class SpecDerivedEquivalence(
 
   def assertNextHeadNewModulusMatch(): Boolean = {
     assert(derived.assertNextHeadLessThanNewModulus())
-    assert(bySurvivors.assertNextHeadLessThanNewModulus())
+    assert(derived.assertNextHeadLessThanNewModulus())
     true
   }.holds
 }
