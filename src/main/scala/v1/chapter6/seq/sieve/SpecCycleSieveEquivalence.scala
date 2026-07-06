@@ -831,7 +831,6 @@ object SpecCycleSieveEquivalence {
       SieveUtils.expandSingleResidue(residues, mod, p, i).contains(r + offset)
     } else {
       val rest = SieveUtils.expandSingleResidue(residues, mod, p, i + BigInt(1))
-      // currentSet contains r + offset, and expandSingleResidue(..., i) starts with currentSet
       SieveUtils.expandSingleResidue(residues, mod, p, i).contains(r + offset)
     }
   }.holds
@@ -854,25 +853,7 @@ object SpecCycleSieveEquivalence {
     require(q < p)
 
     assert(assertExpandSingleResidueContains(residues, r, mod, p, BigInt(0)))
-    // assertExpandSingleResidueContains proves for i=0, which only contains r + 0*mod = r
-    // I need r + q*mod for arbitrary q. The previous lemma only proves for i = q.
-
-    // Actually, assertExpandSingleResidueContains proves expandSingleResidue(..., i).contains(r + i*mod)
-    // So for i = q: expandSingleResidue(..., q).contains(r + q*mod)
-    // But I need expandResidues(..., p).contains(r + q*mod)
-    // expandResidues = expandSingleResidue(..., 0)
-    // I need to show that expandSingleResidue(..., 0) contains all values from expandSingleResidue(..., q)
-
-    // This requires the "++ preserves right-side membership" lemma iterated q times.
     assert(assertExpandSingleResidueContains(residues, r, mod, p, q))
-    // expandSingleResidue(..., q).contains(r + q*mod)
-
-    // Now I need to show that expandSingleResidue(..., 0) contains everything from expandSingleResidue(..., q)
-    // By structural induction: expandSingleResidue(..., i) = currentSet ++ expandSingleResidue(..., i+1)
-    // So expandSingleResidue(..., 0) = currentSet_0 ++ currentSet_1 ++ ... ++ currentSet_{q-1} ++ expandSingleResidue(..., q)
-    // By q applications of assertAppendContainsRight, r + q*mod is in the result
-
-    // I need a recursive helper for this
     assert(assertExpandResiduesExtendsTo(residues, mod, p, BigInt(0), q, r + q * mod))
 
     SieveUtils.expandResidues(residues, mod, p).contains(r + q * mod)

@@ -22,7 +22,7 @@ object EmpiricalRunner {
         val hi = p * p
         val lo = p
 
-        val sievePrimes = primes.take(i) // all primes less than p
+        val sievePrimes = primes.take(i) /* all primes less than p */
         val survivors = SegmentedSieve.survivorsInRange(lo, hi, sievePrimes)
         val gLocal = GapAnalyzer.countTwoGaps(survivors)
         val delta = gLocal - p

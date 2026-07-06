@@ -26,14 +26,11 @@ import v1.chapter4.cycle.integral.recursive.CycleIntegral
  *    shifts the integral by 1 (via `ShiftedList.assertShiftedApplyIsOriginalPlusOne`).
  *
  * The `k > 1` rotations (multi-step shift) and the full merged-gap equality
- * (`ci(to) - ci(from) == sum(gaps[from..to-1])`) are open extensions
- * documented as drafts.
+ * (`ci(to) - ci(from) == sum(gaps[from..to-1])`) are open extensions.
  */
 object GapProperties {
 
-  // ------------------------------------------------------------
-  //  1. GAP ROTATION + HEAD CHANGE → INTEGRAL SHIFT
-  // ------------------------------------------------------------
+  /* ---- GAP ROTATION + HEAD CHANGE (integral shift) ---- */
 
   /**
    * Rotation-by-1 with head-adjustment shifts the integral by 1 position.
@@ -66,9 +63,7 @@ object GapProperties {
     ShiftedList(origHead + prefixSum, ListUtils.rotateAt(gaps, k))
   }
 
-  // ------------------------------------------------------------
-  //  2.  REPEATED GAPS → SAME INTEGRAL WITHIN ORIGINAL PERIOD
-  // ------------------------------------------------------------
+  /* ---- REPEATED GAPS (same integral within original period) ---- */
 
   /**
    * Repeating a gap cycle `times` times does not change the integral at
@@ -93,9 +88,7 @@ object GapProperties {
     )
   }.holds
 
-  // ------------------------------------------------------------
-  //  3.  MERGED GAPS (telescoping · filtered)
-  // ------------------------------------------------------------
+  /* ---- MERGED GAPS (telescoping, filtered) ---- */
 
   /**
    * Two consecutive gaps telescope to the integral difference.
@@ -139,19 +132,17 @@ object GapProperties {
     )
   }.holds
 
-  // GENERALISATION TO N-GAP MERGE (DRAFT):
-  //
-  // ci(toPosition) - ci(fromPosition) == sum(ci.cycle.values[fromPosition..toPosition-1])
-  //
-  // The n-gap version follows by induction on (toPos - fromPos),
-  // using assertConsecutiveGapSumEqualsDiff at each step.
-  // Open because sum(slice(values, from, to)) equality with term-by-term
-  // induction requires an explicit sum-slice decomposition lemma.
+  /* GENERALISATION TO N-GAP MERGE (open extension):
+   *
+   *   ci(toPosition) - ci(fromPosition) == sum(ci.cycle.values[fromPosition..toPosition-1])
+   *
+   *   The n-gap version follows by induction on (toPos - fromPos),
+   *   using assertConsecutiveGapSumEqualsDiff at each step.
+   *   Open because sum(slice(values, from, to)) equality with term-by-term
+   *   induction requires an explicit sum-slice decomposition lemma.
+   */
 
-  // ------------------------------------------------------------
-  // ------------------------------------------------------------
-  //  4.  SUPPORT: SUM-SLICE DECOMPOSITION
-  // ------------------------------------------------------------
+  /* ---- SUPPORT: SUM-SLICE DECOMPOSITION ---- */
 
   /**
    * Step-lemma: `sum(slice(list, from, to)) == sum(slice(list, from, to-1)) + list(to)`.
@@ -183,9 +174,7 @@ object GapProperties {
       ListUtils.sum(ListUtils.slice(list, from, to - BigInt(1))) + list(to)
   }.holds
 
-  // ------------------------------------------------------------
-  //  4.  MERGED GAPS: SURVIVOR PROPERTIES
-  // ------------------------------------------------------------
+  /* ---- MERGED GAPS: SURVIVOR PROPERTIES ---- */
 
   /**
    * The first survivor is the head of the cycle integral — the value at
@@ -583,9 +572,7 @@ object GapProperties {
     }
   }.holds
 
-  // ------------------------------------------------------------
-  //  4b. DIV/MOD FORMULA
-  // ------------------------------------------------------------
+  /* ---- DIV/MOD FORMULA ---- */
 
   /**
    * Decompose the integral at any position using div and mod:
@@ -719,9 +706,7 @@ object GapProperties {
     Calc.mod(ci(pos), m) == Calc.mod(ci(r), m)
   }.holds
 
-  // ------------------------------------------------------------
-  //  5.  CYCLE-PERIOD SHIFT
-  // ------------------------------------------------------------
+  /* ---- CYCLE-PERIOD SHIFT ---- */
 
   /**
    * After one full cycle from any position, the integral advances by
@@ -793,28 +778,5 @@ object GapProperties {
       ci(pos + period * m) == ci(pos) + totalGaps * m
     }
   }.holds
-
-  // ------------------------------------------------------------
-  //  5.  MERGED GAPS = INTEGRAL DIFFERENCE (DRAFT)
-  // ------------------------------------------------------------
-
-  // The telescoping sum property:
-  //
-  //   ci(to) - ci(from) == sum(slice(ci.cycle.values, from, to - BigInt(1)))
-  //
-  // The two-gap case is proven (assertConsecutiveGapSumEqualsDiff).
-  // The n-gap case follows by induction with sum-slice decomposition;
-  // the sum-step helper (assertSumSliceStep, 26/26) is verified, but
-  // the induction over the integral cannot close the gap because the
-  // decreases measure on (to - from) does not terminate in the SMT solver.
-
-  // ------------------------------------------------------------
-  //  4c. FILTERED SUM = ORIGINAL SUM  (DRAFT — mixes gap + filter)
-  // ------------------------------------------------------------
-
-  // The composition is correct and sub-lemmas are verified, but the
-  // lemma mixes pure gap arithmetic (ci(ci.size) == ci(0) + ci.sum)
-  // with filter-dependent survivor brackets. These should be kept
-  // as separate lemmas and composed at call sites.
 
 }

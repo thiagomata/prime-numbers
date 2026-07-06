@@ -336,11 +336,13 @@ object PrimeProperties {
     val p = newPrimeFromEuclid(primes)
     euclidTheorem(primes)
 
-    // Re-derive d to link euclidTheorem's internal d with p.value.
-    // Both newPrimeFromEuclid and euclidTheorem compute d via
-    // findSmallestDivisor(n, 2) where n = primorial + 1, so
-    // p.value == d and euclidTheorem proves valueNotMatchesAny(primes, d)
-    // which is the same as valueNotMatchesAny(primes, p.value).
+    /*
+     * Re-derive d to link euclidTheorem's internal d with p.value.
+     * Both newPrimeFromEuclid and euclidTheorem compute d via
+     * findSmallestDivisor(n, 2) where n = primorial + 1, so
+     * p.value == d and euclidTheorem proves valueNotMatchesAny(primes, d)
+     * which is the same as valueNotMatchesAny(primes, p.value).
+     */
     val n = PrimeUtils.primorial(primes) + 1
     val d = findSmallestDivisor(n, 2)
 

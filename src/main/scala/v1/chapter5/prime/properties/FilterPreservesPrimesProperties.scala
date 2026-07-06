@@ -125,17 +125,21 @@ object FilterPreservesPrimesProperties {
     require(Prime.isPrime(p))
     require(q != p)
     if (q > p) {
-      // Case 1: q > p
-      // isPrime(q) means noDivisorInRange(q, 2, q)
-      // p is in [2, q) since p >= 2 (from require) and p < q (from q > p)
-      // By helper lemma: mod(q, p) ≠ 0
+      /*
+       * Case 1: q > p
+       * isPrime(q) means noDivisorInRange(q, 2, q)
+       * p is in [2, q) since p >= 2 (from require) and p < q (from q > p)
+       * By helper lemma: mod(q, p) ≠ 0
+       */
       assert(noDivisorInRangeImpliesModNonZero(q, 2, q, p))
       Calc.mod(q, p) != BigInt(0)
     } else {
-      // Case 2: q < p
-      // mod(q, p) = q when q < p
-      // isPrime(q) means q > 1
-      // Therefore mod(q, p) = q ≠ 0
+      /*
+       * Case 2: q < p
+       * mod(q, p) = q when q < p
+       * isPrime(q) means q > 1
+       * Therefore mod(q, p) = q ≠ 0
+       */
       assert(ModSmallDividend.modSmallDividend(q, p))
       Calc.mod(q, p) != BigInt(0)
     }

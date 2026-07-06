@@ -496,10 +496,12 @@ object CycleIntegralProperties {
     assert(assertDiffEqualsCycleValue(ci, k - BigInt(1)))
     assert(assertDiffEqualsCycleValue(ci, k))
 
-    // From the two diff facts:
-    //   ci(k)   - ci(k-1) == ci.cycle(k)
-    //   ci(k+1) - ci(k)   == ci.cycle(k+1)
-    // Adding: ci(k+1) - ci(k-1) == ci.cycle(k) + ci.cycle(k+1)
+      /*
+       * From the two diff facts:
+       *   ci(k)   - ci(k-1) == ci.cycle(k)
+       *   ci(k+1) - ci(k)   == ci.cycle(k+1)
+       * Adding: ci(k+1) - ci(k-1) == ci.cycle(k) + ci.cycle(k+1)
+       */
     ci(k + BigInt(1)) - ci(k - BigInt(1)) == ci.cycle(k) + ci.cycle(k + BigInt(1))
   }.holds
 }
