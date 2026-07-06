@@ -193,3 +193,9 @@ check a b div mod: jar
     source "{{justfile_directory()}}/scripts/just-log.sh"
     just_log check "{{justfile_directory()}}" "a={{a}} b={{b}} div={{div}} mod={{mod}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  {{a}} {{b}} {{div}} {{mod}}
+
+show steps count: jar
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log show "{{justfile_directory()}}" "steps={{steps}} count={{count}}"
+    java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  show {{steps}} {{count}}
