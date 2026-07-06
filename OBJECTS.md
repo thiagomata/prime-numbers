@@ -12,7 +12,7 @@ Last updated: 2026-07-05
 | ch3 (Lists, Integrals, Bounds)        | 87     |
 | ch4 (Cycles, Cycle Integrals, Filter) | 106    |
 | ch5 (Primes, Coprimality)             | 41     |
-| ch6 (Sieve Sequence, Pipeline)        |  57    |
+| ch6 (Sieve Sequence, Pipeline)        | 57     |
 
 ---
 
@@ -152,7 +152,7 @@ Last updated: 2026-07-05
 | **assertSumPositive(list)**                        | `allGreaterThan(list,0) && nonEmpty => sum(list) > 0`             |
 | **assertAppendApplyRight(left,right,k)**           | `(left ++ right)(k) == right(k - left.size)` for `k >= left.size` |
 
-## 3.4 ShiftedList (`v1.chapter3.list.ShiftedList`)
+## 3.4 GapList (`v1.chapter3.list.GapList`)
 
 | Lemma                                                    | Statement                                                                |
 |----------------------------------------------------------|--------------------------------------------------------------------------|
@@ -208,30 +208,30 @@ Last updated: 2026-07-05
 
 ## 3.8 IntegralProperties (`v1.chapter3.list.integral.properties.IntegralProperties`)
 
-| Lemma                                           | Statement                                             |
-|-------------------------------------------------|-------------------------------------------------------|
-| **assertHeadValueMatchDefinition(integral)**    | `integral.head == integral.list.head + integral.init` |
-| **assertAccDifferenceEqualsTailHead(integral)** | `acc(1) - acc(0) == list(1)`                          |
-| **assertAccDiffMatchesList(integral,position)** | `acc(pos+1) - acc(pos) == list(pos+1)`                |
-| **assertAccMatchesApply(integral,position)**    | `acc(position) == apply(position)`                    |
-| **assertSizeAccEqualsSizeList(integral)**       | `acc.size == list.size`                               |
-| **assertLastEqualsSum(integral)**               | `integral.last == init + sum(list)`                   |
-| **assertIntegralEqualsSum(integral,position)**  | `apply(pos) == init + sum(slice(list,0,pos))`         |
-| **assertLast(integral)**                        | `apply(size-1) == integral.last`                      |
+| Lemma                                              | Statement                                                |
+|----------------------------------------------------|----------------------------------------------------------|
+| **assertHeadValueMatchDefinition(integral)**       | `integral.head == integral.list.head + integral.init`    |
+| **assertAccDifferenceEqualsTailHead(integral)**    | `acc(1) - acc(0) == list(1)`                             |
+| **assertAccDiffMatchesList(integral,position)**    | `acc(pos+1) - acc(pos) == list(pos+1)`                   |
+| **assertAccMatchesApply(integral,position)**       | `acc(position) == apply(position)`                       |
+| **assertSizeAccEqualsSizeList(integral)**          | `acc.size == list.size`                                  |
+| **assertLastEqualsSum(integral)**                  | `integral.last == init + sum(list)`                      |
+| **assertIntegralEqualsSum(integral,position)**     | `apply(pos) == init + sum(slice(list,0,pos))`            |
+| **assertLast(integral)**                           | `apply(size-1) == integral.last`                         |
 | **assertIntegralStrictlyIncreasing(integral,a,b)** | `allGreaterThan(list,0) && b > a => apply(b) > apply(a)` |
-| **assertGapsPositive(integral,pos)**              | `apply(pos+1) > apply(pos) => list(pos+1) > 0` |
+| **assertGapsPositive(integral,pos)**               | `apply(pos+1) > apply(pos) => list(pos+1) > 0`           |
 
 ## 3.9 SortedList (`v1.chapter3.list.SortedList`)
 
-| Lemma                                      | Statement                              |
-|--------------------------------------------|----------------------------------------|
-| **insertSorted(x,list)**                   | Postcondition: sorted input implies sorted output |
-| **sortFiltered(list)**                     | Postcondition: output is ascending     |
-| **assertSortFilteredAscending(list)**      | `sortFiltered` produces ascending list |
-| **assertInsertSortedAscending(x,list)**    | `insertSorted` preserves ascending     |
-| **assertTailAscending(list)**              | Tail of ascending is ascending         |
-| **assertRemoveKeepsAscending(list,index)** | `removeAt` preserves ascending |
-| **assertIsAscendingAtIndex(list,i)** | `isAscending(list) => list(i+1) > list(i)` for valid i |
+| Lemma                                      | Statement                                              |
+|--------------------------------------------|--------------------------------------------------------|
+| **insertSorted(x,list)**                   | Postcondition: sorted input implies sorted output      |
+| **sortFiltered(list)**                     | Postcondition: output is ascending                     |
+| **assertSortFilteredAscending(list)**      | `sortFiltered` produces ascending list                 |
+| **assertInsertSortedAscending(x,list)**    | `insertSorted` preserves ascending                     |
+| **assertTailAscending(list)**              | Tail of ascending is ascending                         |
+| **assertRemoveKeepsAscending(list,index)** | `removeAt` preserves ascending                         |
+| **assertIsAscendingAtIndex(list,i)**       | `isAscending(list) => list(i+1) > list(i)` for valid i |
 
 ## 3.10 MinBoundList (`v1.chapter3.list.MinBoundList`)
 
@@ -410,28 +410,28 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 4.12 GapProperties (`v1.chapter4.cycle.integral.recursive.properties.GapProperties`)
 
-| Lemma                                                            | Statement                                                       |
-|------------------------------------------------------------------|-----------------------------------------------------------------|
-| **assertRotateOneShiftsIntegralByOne(head,gaps,i)**              | Rotation-by-1 + head shift = integral shift by 1                |
-| **assertRepeatedGapsPreservesIntegral(ci,repeatedCI,times,pos)** | Repeated gaps preserve integral at bounded pos                  |
-| **assertTwoGapSumEqualsDiff(ci,k)**                              | 2-gap telescoping sum                                           |
-| **assertMergedGapPositive(ci,fv,from,to)**                       | Merged survivor gap > 0                                         |
-| **assertFirstSurvivorIsHead(ci,fv,start,count)**                 | First survivor = CI head                                        |
-| **assertSurvivorsNonEmpty(ci,fv,start,count)**                   | Survivors list non-empty                                        |
-| **allMultiplesInRange(ci,fv,from,until)**                        | Predicate: every CI value in `[from, until)` is a multiple of fv |
-| **assertAllMultiplesInRangeTail(ci,fv,from,until)**              | Tail of a non-empty all-multiple prefix is all-multiple         |
-| **assertFirstSurvivorAtPosition(ci,fv,start,count,pos)**         | If `[start,pos)` are multiples and `pos` survives, head survivor is `ci(pos)` |
-| **assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)** | If `[start,pos)` are multiples and `pos` survives, split survivors at `ci(pos)` |
-| **assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)** | Scanned non-multiple CI value is kept in survivors              |
-| **assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)** | Every value kept in survivors is a non-multiple                 |
-| **assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)** | Scanned multiple CI value is excluded from survivors            |
-| **assertLastSurvivorIsLastScanned(ci,fv,start,count)**           | Last survivor = last scanned                                    |
-| **assertCIModDivFormula(ci,pos)**                                | `ci(pos) == ci(pos%size) + (pos/size)*ci.sum`                   |
-| **assertFilteredSumEqualsOriginalSum(ci,fv)**                    | Filtered sum = ci.sum (1 period, size+1 positions)              |
-| **assertModIsPeriodic(ci,m,pos)**                                | `mod(ci(pos),m) == mod(ci(pos%size),m)` when `mod(ci.sum,m)==0` |
-| **assertPeriodicShift(ci,k)**                                    | `ci(k+size) - ci(k) == ci.sum`                                  |
-| **assertFullCycleShift(ci,pos)**                                 | One period shift                                                |
-| **assertMultiCycleShift(ci,pos,m)**                              | `ci(pos+size*m) == ci(pos) + m*ci.sum`                          |
+| Lemma                                                                        | Statement                                                                       |
+|------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| **assertRotateOneShiftsIntegralByOne(head,gaps,i)**                          | Rotation-by-1 + head shift = integral shift by 1                                |
+| **assertRepeatedGapsPreservesIntegral(ci,repeatedCI,times,pos)**             | Repeated gaps preserve integral at bounded pos                                  |
+| **assertTwoGapSumEqualsDiff(ci,k)**                                          | 2-gap telescoping sum                                                           |
+| **assertMergedGapPositive(ci,fv,from,to)**                                   | Merged survivor gap > 0                                                         |
+| **assertFirstSurvivorIsHead(ci,fv,start,count)**                             | First survivor = CI head                                                        |
+| **assertSurvivorsNonEmpty(ci,fv,start,count)**                               | Survivors list non-empty                                                        |
+| **allMultiplesInRange(ci,fv,from,until)**                                    | Predicate: every CI value in `[from, until)` is a multiple of fv                |
+| **assertAllMultiplesInRangeTail(ci,fv,from,until)**                          | Tail of a non-empty all-multiple prefix is all-multiple                         |
+| **assertFirstSurvivorAtPosition(ci,fv,start,count,pos)**                     | If `[start,pos)` are multiples and `pos` survives, head survivor is `ci(pos)`   |
+| **assertSurvivorValuesSplitAtFirstPosition(ci,fv,start,count,pos)**          | If `[start,pos)` are multiples and `pos` survives, split survivors at `ci(pos)` |
+| **assertSurvivorValuesContainsNonMultipleAtPosition(ci,fv,start,count,pos)** | Scanned non-multiple CI value is kept in survivors                              |
+| **assertSurvivorValuesContainsOnlyNonMultiples(ci,fv,start,count,value)**    | Every value kept in survivors is a non-multiple                                 |
+| **assertSurvivorValuesExcludesMultipleAtPosition(ci,fv,start,count,pos)**    | Scanned multiple CI value is excluded from survivors                            |
+| **assertLastSurvivorIsLastScanned(ci,fv,start,count)**                       | Last survivor = last scanned                                                    |
+| **assertCIModDivFormula(ci,pos)**                                            | `ci(pos) == ci(pos%size) + (pos/size)*ci.sum`                                   |
+| **assertFilteredSumEqualsOriginalSum(ci,fv)**                                | Filtered sum = ci.sum (1 period, size+1 positions)                              |
+| **assertModIsPeriodic(ci,m,pos)**                                            | `mod(ci(pos),m) == mod(ci(pos%size),m)` when `mod(ci.sum,m)==0`                 |
+| **assertPeriodicShift(ci,k)**                                                | `ci(k+size) - ci(k) == ci.sum`                                                  |
+| **assertFullCycleShift(ci,pos)**                                             | One period shift                                                                |
+| **assertMultiCycleShift(ci,pos,m)**                                          | `ci(pos+size*m) == ci(pos) + m*ci.sum`                                          |
 
 ## 4.13 ModCycleIntegralProperties (`v1.chapter4.cycle.integral.mod.ModCycleIntegralProperties`)
 
@@ -536,25 +536,25 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.3 SieveSequenceNextLevel (`v1.chapter6.seq.sieve.SieveSequenceNextLevel`)
 
-| Lemma                                                   | Statement                                                    |
-|---------------------------------------------------------|--------------------------------------------------------------|
-| **assertAllGreaterThanReverse(list,value)**             | `allGreaterThan(list, v) == allGreaterThan(list.reverse, v)` |
-| **assertCollectGapsAllPositive(seq,...)**               | `allGreaterThan(collectGaps(seq), 0)`                        |
-| **assertNextPrimesNonEmpty(seq)**                       | `seq.next.primes.nonEmpty`                                   |
-| **assertNextHeadPositive(seq)**                         | `seq.next.head.value > 0`                                    |
-| **assertNextPrimesPositive(seq)**                       | `allGreaterThan(primeValues(seq.next.primes), 0)`            |
-| **assertNextHeadBiggerThanOne(seq)**                    | `seq.next.head.value > 1`                                    |
-| **assertNextPrimesBiggerThanOne(seq)**                  | `allGreaterThan(primeValues(seq.next.primes), 1)`            |
-| **assertNextTailProductEqualOrBiggerThanElements(seq)** | `product(tailPrimes) >= each tail prime value`               |
-| **assertNextHeadCoprimeToPrimes(seq)**                  | `isCoprime(nextHead, allPrimeValues)`                        |
-| **assertNextExpandedCoprime(seq)**                      | Expanded residues remain coprime to tail primes              |
-| **assertNextFilteredCoprime(seq)**                      | Filtered residues remain coprime to tail primes              |
-| **assertResiduesCoprime(seq)**                          | `all r in residues(seq): isCoprime(r, tailPrimes)`           |
-| **assertNextGapsNonEmpty(seq)**                         | `nextGaps(seq).nonEmpty`                                     |
-| **assertNextGapsSize(seq)**                             | `nextGaps(seq).size == nextSorted(seq).list.size`            |
-| **assertNextSortedStrictlyAscending(seq,i)**           | `nextSorted(seq).list(i+1) > nextSorted(seq).list(i)`       |
-| **assertNextGapsAllPositiveGivenSortedBounds(seq)**     | `sortFiltered` sortedness plus range/head bounds imply `allGreaterThan(nextGaps,0)` |
-| **assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)** | Positive next gaps imply rotated next gaps are positive |
+| Lemma                                                      | Statement                                                                           |
+|------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| **assertAllGreaterThanReverse(list,value)**                | `allGreaterThan(list, v) == allGreaterThan(list.reverse, v)`                        |
+| **assertCollectGapsAllPositive(seq,...)**                  | `allGreaterThan(collectGaps(seq), 0)`                                               |
+| **assertNextPrimesNonEmpty(seq)**                          | `seq.next.primes.nonEmpty`                                                          |
+| **assertNextHeadPositive(seq)**                            | `seq.next.head.value > 0`                                                           |
+| **assertNextPrimesPositive(seq)**                          | `allGreaterThan(primeValues(seq.next.primes), 0)`                                   |
+| **assertNextHeadBiggerThanOne(seq)**                       | `seq.next.head.value > 1`                                                           |
+| **assertNextPrimesBiggerThanOne(seq)**                     | `allGreaterThan(primeValues(seq.next.primes), 1)`                                   |
+| **assertNextTailProductEqualOrBiggerThanElements(seq)**    | `product(tailPrimes) >= each tail prime value`                                      |
+| **assertNextHeadCoprimeToPrimes(seq)**                     | `isCoprime(nextHead, allPrimeValues)`                                               |
+| **assertNextExpandedCoprime(seq)**                         | Expanded residues remain coprime to tail primes                                     |
+| **assertNextFilteredCoprime(seq)**                         | Filtered residues remain coprime to tail primes                                     |
+| **assertResiduesCoprime(seq)**                             | `all r in residues(seq): isCoprime(r, tailPrimes)`                                  |
+| **assertNextGapsNonEmpty(seq)**                            | `nextGaps(seq).nonEmpty`                                                            |
+| **assertNextGapsSize(seq)**                                | `nextGaps(seq).size == nextSorted(seq).list.size`                                   |
+| **assertNextSortedStrictlyAscending(seq,i)**               | `nextSorted(seq).list(i+1) > nextSorted(seq).list(i)`                               |
+| **assertNextGapsAllPositiveGivenSortedBounds(seq)**        | `sortFiltered` sortedness plus range/head bounds imply `allGreaterThan(nextGaps,0)` |
+| **assertNextRotatedGapsAllPositiveGivenSortedBounds(seq)** | Positive next gaps imply rotated next gaps are positive                             |
 
 ## 6.4 SieveUtils (`v1.chapter6.seq.sieve.SieveUtils`)
 
@@ -585,7 +585,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertPairwiseGapsSize(list)**                                  | `pairwiseGaps(list).size == list.size - 1`                             |
 | **assertPairwiseGapsAllPositive(list)**                           | Strict ascending input gives positive adjacent gaps                    |
 | **assertWrapGapPositive(sorted,modulus)**                         | Upper-bound + nonnegative head gives positive wrap gap                 |
-| **assertCalculateGapsAllPositive(sorted,modulus)**                 | Sorted bounded residues give positive calculated gaps                  |
+| **assertCalculateGapsAllPositive(sorted,modulus)**                | Sorted bounded residues give positive calculated gaps                  |
 | **assertSplitAtPreservesAllGreaterThan(list,index,value)**        | Delegation to ch3                                                      |
 | **assertRotateAtPreservesAllGreaterThan(list,index,value)**       | Delegation to ch3                                                      |
 | **assertRotateAtPreservesNonEmpty(list,index)**                   | Rotation preserves non-emptiness                                       |
@@ -617,60 +617,61 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 65 lemmas (20 public, 45 private). Key public lemmas:
 
-| Lemma                                                                   | Statement                                                      |
-|-------------------------------------------------------------------------|----------------------------------------------------------------|
-| **applyStrictlyIncreases(k)**                                           | `apply(k+1) > apply(k)`                                        |
-| **assertApplyInjective(i,j)**                                           | `apply(i) == apply(j) => i == j`                               |
-| **assertApplyModIsCoprime(k)**                                          | `isCoprime(mod(apply(k), filterModulus), filterValues)`        |
-| **assertGapPositive(k)**                                                | `apply(k+1) - apply(k) > 0`                                    |
-| **assertGapSum(p)**                                                     | `sumGap(0, p) == filterModulus`                                |
-| **assertApplyEqualsHeadPlusGapSum(pos)**                                | `apply(pos) == head + sumGap(0, pos)`                          |
-| **assertGapListPositive(from,count)**                                   | `allGreaterThan(gapList(from, count), 0)`                      |
-| **assertGapListSize(from,count)**                                       | `gapList(from, count).size == count`                           |
-| **assertGapListApplyEqualsGapAtPosition(from,count,r)**                 | `gapList(from,count)(r) == apply(from+r+1) - apply(from+r)`    |
-| **assertSpecGapPeriodPositive(period)**                                 | `allGreaterThan(specGapPeriod(period).memCycle.values, 0)`     |
-| **assertSpecGapCycleIntegralBase(period)**                              | `CycleIntegral(head, gaps)(0) == apply(1)`                     |
-| **assertMemCycleGapMatch(i,period)**                                    | `memCycle(i) == apply(i+1) - apply(i)`                         |
-| **assertSpecGapCycleIntegralMatchesApply(period,k)**                    | `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`       |
-| **assertNextValueAcceptedByThis(k)**                                    | `mod(next(k), head) != 0`                                      |
-| **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: old accepted + new-head non-multiple => accepted by next |
-| **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple |
-| **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**            | Private: new-head multiple is rejected by next                 |
-| **assertApplyMonotonic(from,until)**                                    | `from <= until => apply(from) <= apply(until)`                 |
-| **assertFilterPreservesNextGap(nextSeq,k)**                             | Gap copy when old value accepted by next                       |
-| **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**              | Consecutive old values accepted => gap copied                  |
-| **nextAcceptedOldIndex(nextSeq,k,period)**                              | Next emitted `nextSeq` value as an old-stream index            |
-| **assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)** | Skipped old indices before next accepted index are new-head multiples |
-| **assertMergeGapEqualsOldGapSum(nextSeq,k,period)**                     | Private: skipped successor merge equals old gap telescope      |
-| **assertMergedGapPrefixMatchesNext(nextSeq,k,seqIdx,remaining,period)** | `mergedGapPrefix(...)(seqIdx) == nextSeq.gapList(...)(seqIdx)` |
-| **assertApplyOneEqualsNextPrime()**                                     | `apply(1) == nextPrime.value` when `nextPrime < head*head`     |
-| **assertMergeLandsOnFirstSurvivor(nextSeq,k,period)**                   | Merged gap lands on first survivor position                    |
+| Lemma                                                                        | Statement                                                             |
+|------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| **applyStrictlyIncreases(k)**                                                | `apply(k+1) > apply(k)`                                               |
+| **assertApplyInjective(i,j)**                                                | `apply(i) == apply(j) => i == j`                                      |
+| **assertApplyModIsCoprime(k)**                                               | `isCoprime(mod(apply(k), tailPrimorial), filterValues)`               |
+| **assertGapPositive(k)**                                                     | `apply(k+1) - apply(k) > 0`                                           |
+| **assertGapSum(p)**                                                          | `sumGap(0, p) == tailPrimorial`                                       |
+| **assertApplyEqualsHeadPlusGapSum(pos)**                                     | `apply(pos) == head + sumGap(0, pos)`                                 |
+| **assertGapListPositive(from,count)**                                        | `allGreaterThan(gapList(from, count), 0)`                             |
+| **assertGapListSize(from,count)**                                            | `gapList(from, count).size == count`                                  |
+| **assertGapListApplyEqualsGapAtPosition(from,count,r)**                      | `gapList(from,count)(r) == apply(from+r+1) - apply(from+r)`           |
+| **assertSpecGapPeriodPositive(period)**                                      | `allGreaterThan(specGapPeriod(period).memCycle.values, 0)`            |
+| **assertSpecGapCycleIntegralBase(period)**                                   | `CycleIntegral(head, gaps)(0) == apply(1)`                            |
+| **assertMemCycleGapMatch(i,period)**                                         | `memCycle(i) == apply(i+1) - apply(i)`                                |
+| **assertSpecGapCycleIntegralMatchesApply(period,k)**                         | `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`              |
+| **assertNextValueAcceptedByThis(k)**                                         | `mod(next(k), head) != 0`                                             |
+| **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq,value)**  | Private: old accepted + new-head non-multiple => accepted by next     |
+| **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple   |
+| **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**                 | Private: new-head multiple is rejected by next                        |
+| **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
+| **assertFilterPreservesNextGap(nextSeq,k)**                                  | Gap copy when old value accepted by next                              |
+| **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**                   | Consecutive old values accepted => gap copied                         |
+| **nextAcceptedOldIndex(nextSeq,k,period)**                                   | Next emitted `nextSeq` value as an old-stream index                   |
+| **assertSkippedBeforeNextAcceptedOldIndexIsMultiple(nextSeq,k,idx,period)**  | Skipped old indices before next accepted index are new-head multiples |
+| **assertMergeGapEqualsOldGapSum(nextSeq,k,period)**                          | Private: skipped successor merge equals old gap telescope             |
+| **assertMergedGapPrefixMatchesNext(nextSeq,k,seqIdx,remaining,period)**      | `mergedGapPrefix(...)(seqIdx) == nextSeq.gapList(...)(seqIdx)`        |
+| **assertApplyOneEqualsNextPrime()**                                          | `apply(1) == nextPrime.value` when `nextPrime < head*head`            |
+| **assertMergeLandsOnFirstSurvivor(nextSeq,k,period)**                        | Merged gap lands on first survivor position                           |
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-54 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key public lemmas:
+54 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key
+public lemmas:
 
-| Lemma                                                  | Statement                                                   |
-|--------------------------------------------------------|-------------------------------------------------------------|
-| **assertApplyMatches(k)**                              | `cycle(k) == spec(k)` for small `k`                         |
-| **assertNextHeadMatches()**                            | `cycle(1) == spec.next.head.value`                          |
-| **assertPrimesMatch()**                                | `primesMatch` for all cached prime + head equivalences      |
-| **assertCycleHeadMatchesSpecHead()**                   | `cycle.head == spec.head.value`                             |
-| **assertCyclePrimesTailEqualsSpecFilterValues()**      | `cycle.primesTailValues == spec.filterValues`               |
-| **assertCycleModulusEqualsSpecFilterModulus()**        | `cycle.modulus == spec.filterModulus`                       |
-| **assertNextPipelineGapsIsNextRotatedGaps()**          | `nextPipelineGaps(cycle) == nextRotatedGaps(cycle)`         |
-| **assertCycleGapCycleEqualsSpecGapCycle()**            | `cycle.gapCycle == spec.specGapCycle(period)`               |
-| **assertCycleSpecNextFilterDecisionMatches(k)**        | `cycle(k)` and `spec(k)` have the same next-filter decision |
-| **assertCycleApplyLowersToIntegral(k)**                | `cycle(k) == cycle.integral(k - 1)` for `k > 0`             |
-| **assertNewHeadCoprimeToAllPrimes()**                  | `isCoprime(cycle(1), allPrimeValues)`                       |
-| **assertHeadPlusFilterModulusNotFrontMultiple()**      | `mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0` |
-| **assertCycleValueCoprimeToTail(k)**                   | `isCoprime(cycle(k), tailPrimes)`                           |
-| **assertCycleSurvivorValuesStartAtSpecNextHead(count)** | cycle survivor scan splits at `spec.next.head.value`       |
-| **assertCycleSurvivorHeadMatchesSpecNext0(count)**     | initial cycle survivor scan head equals `spec.next(0)`      |
-| **assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)** | spec skipped old indices become cycle-integral all-multiple prefix |
-| **assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)** | cycle survivor scan peels the next `spec.next` old-stream survivor |
-| **assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)** | peeled cycle survivor equals the next value in `spec.next` |
-| **assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)** | remaining cycle survivor scan head equals the next `spec.next` value |
+| Lemma                                                                             | Statement                                                                     |
+|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| **assertApplyMatches(k)**                                                         | `cycle(k) == spec(k)` for small `k`                                           |
+| **assertNextHeadMatches()**                                                       | `cycle(1) == spec.next.head.value`                                            |
+| **assertPrimesMatch()**                                                           | `primesMatch` for all cached prime + head equivalences                        |
+| **assertCycleHeadMatchesSpecHead()**                                              | `cycle.head == spec.head.value`                                               |
+| **assertCyclePrimesTailEqualsSpecFilterValues()**                                 | `cycle.primesTailValues == spec.filterValues`                                 |
+| **assertCycleModulusEqualsSpecFilterModulus()**                                   | `cycle.modulus == spec.tailPrimorial`                                         |
+| **assertNextPipelineGapsIsNextRotatedGaps()**                                     | `nextPipelineGaps(cycle) == nextRotatedGaps(cycle)`                           |
+| **assertCycleGapCycleEqualsSpecGapCycle()**                                       | `cycle.gapCycle == spec.specGapCycle(period)`                                 |
+| **assertCycleSpecNextFilterDecisionMatches(k)**                                   | `cycle(k)` and `spec(k)` have the same next-filter decision                   |
+| **assertCycleApplyLowersToIntegral(k)**                                           | `cycle(k) == cycle.integral(k - 1)` for `k > 0`                               |
+| **assertNewHeadCoprimeToAllPrimes()**                                             | `isCoprime(cycle(1), allPrimeValues)`                                         |
+| **assertHeadPlusFilterModulusNotFrontMultiple()**                                 | `mod(spec.head.value + spec.tailPrimorial, spec.next.filterValues.head) != 0` |
+| **assertCycleValueCoprimeToTail(k)**                                              | `isCoprime(cycle(k), tailPrimes)`                                             |
+| **assertCycleSurvivorValuesStartAtSpecNextHead(count)**                           | cycle survivor scan splits at `spec.next.head.value`                          |
+| **assertCycleSurvivorHeadMatchesSpecNext0(count)**                                | initial cycle survivor scan head equals `spec.next(0)`                        |
+| **assertCycleIntegralSkippedRangeAllMultiples(currentOldIndex,fromPos,untilPos)** | spec skipped old indices become cycle-integral all-multiple prefix            |
+| **assertCycleSurvivorValuesSplitAtNextAccepted(currentOldIndex,count)**           | cycle survivor scan peels the next `spec.next` old-stream survivor            |
+| **assertCycleNextAcceptedSurvivorMatchesSpecNext(currentOldIndex)**               | peeled cycle survivor equals the next value in `spec.next`                    |
+| **assertCycleSurvivorTailHeadMatchesSpecNext(currentOldIndex,count)**             | remaining cycle survivor scan head equals the next `spec.next` value          |
 
 > **DEFERRED (2026-07-03 recovery):** The 12 lemmas below were removed from the
 > code in commit `bd444a35` because they are coupled to a half-finished
@@ -682,57 +683,69 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 > has already been re-activated in commit `49c79b58`.
 
 | ~~assertCycleSurvivorWindowHeadMatchesSpecNext~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~survivorWindowCovers~~                              | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertCycleSurvivorWindowAtMatchesSpecNext~~        | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~initialSurvivorWindowCovers~~                       | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertCycleSurvivorAtMatchesSpecNext~~              | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertInitialSurvivorGapMatchesSpecNextGap~~        | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertInitialSurvivorGapListAtMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~initialSurvivorGapListCovers~~                      | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~initialSurvivorGapList~~                            | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertInitialSurvivorGapListMatchesNextGapList~~    | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
-| ~~assertInitialSurvivorGapListMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in `pre-recovery-snapshot`) |
+| ~~survivorWindowCovers~~                              | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertCycleSurvivorWindowAtMatchesSpecNext~~        | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~initialSurvivorWindowCovers~~                       | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertCycleSurvivorAtMatchesSpecNext~~              | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapMatchesSpecNextGap~~        | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapsFromValuesAtMatchesSpecNextGap~~ | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListAtMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~initialSurvivorGapListCovers~~                      | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~initialSurvivorGapList~~                            | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListMatchesNextGapList~~    | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
+| ~~assertInitialSurvivorGapListMatchesSpecNextGapList~~ | DEFERRED — pending migration redo (in
+`pre-recovery-snapshot`) |
 | **assertFullEquivalence(nextPeriod,k)**                | `cycle(k) == spec(k) && cycle(1) == spec.next.head.value`   |
 | **assertNextGapListMatchesSpecNext(from,count)**       | `nextGapList(from,count) == spec.next.gapList(from,count)`  |
-| **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next                |
+| **assertNextCycleMatchesSpecNext(nextPeriod)**         | Next canonical cycle fully matches spec.next |
 | **assertModulusPositive()**                            | `cycle.modulus > 0`                                         |
 | **assertPrimesTailValuesPositive()**                   | `allGreaterThan(primesTailValues, 0)`                       |
 | **assertNextPipelineGapsPositiveFromSpec(nextPeriod)** | `allGreaterThan(nextPipelineGaps, 0)` from spec equivalence |
 | **assertRepeatedGapListIndexMatches(times,index)**     | `repeatedGapList(times)(index) == gapList(mod(index,size))` |
 | **assertRepeatedCycleApplyMatches(times,k)**           | `repeatedCycle(times)(k) == cycle(k)`                       |
-| **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos          |
+| **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos |
 | **assertSpecNextIsKthSurvivor(nextPeriod,k)**          | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`      |
 | **assertNextHeadLessThanNewModulus()**                 | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`   |
-| **assertNextHeadLessThanHeadSquared()**                | `cycle(1) < head^2`                                          |
+| **assertNextHeadLessThanHeadSquared()**                |
+`cycle(1) < head^2`                                          |
 
 ## 6.7 SpecCycleSieveEquivalence (`v1.chapter6.seq.sieve.SpecCycleSieveEquivalence`)
 
 39 lemmas (24 public, 15 private). Key public lemmas:
 
-| Lemma                                                                      | Statement                                                              |
-|----------------------------------------------------------------------------|------------------------------------------------------------------------|
-| **assertHeadsMatchFromPrimeValues(spec,cycle)**                            | `cycle.head == spec.head.value`                                        |
-| **assertApplyZeroMatchesFromPrimeValues(spec,cycle)**                      | `cycle(0) == spec(0)`                                                  |
-| **assertSpecCycleApplyMatchesFromSameHeadAndGaps(spec,cycle,period,pos)**  | `cycle(pos) == spec(pos)` for all `pos` given same head/gaps           |
-| **assertCycleApplyMatchesFromSameHeadAndGaps(cycle1,cycle2,pos)**          | Two cycles with same head+gaps produce identical sequences             |
-| **assertCurrentApplyOneEqualsSpecNextHead(spec,cycle,period)**             | `cycle(1) == spec.next.head.value`                                     |
-| **assertNextAcceptsMatchesCyclePrimesCoprime(spec,cycle,value)**           | `spec.next.accepts(value) == isCoprime(value, cycle.primes)`           |
-| **assertWalkGapsAllPositive(cycle)**                                       | `allGreaterThan(walkGaps(cycle), 0)`                                   |
-| **assertFilterValuesMatchTailPrimes(spec,cycle)**                          | `cycle.tailPrimesValues == spec.filterValues`                          |
-| **assertSpecAcceptsMatchesCycleTailCoprime(spec,cycle,value)**             | `spec.accepts(value) == isCoprime(value, tailPrimesValues)`            |
-| **assertResiduesContainCoprimeBelowModulus(modulus,filters,residue)**      | Completeness: all coprime residues in `[0, modulus)` in list           |
-| **assertGenerateResiduesContainOnlyCoprime(modulus,filters,residue,from)** | Soundness: all generated residues are coprime                          |
-| **assertResiduesAreCoprimeBelowModulus(modulus,filters,residue)**          | Wrapper: all residues are coprime                                      |
-| **assertFilterListContainsIf(list,value,divisor)**                         | Private: input value with nonzero mod survives `filterList`            |
-| **assertFilterListContainsOnlyIf(list,value,divisor)**                     | Private: `filterList` output came from input and has nonzero mod       |
-| **assertExpandedResiduesRepresentPeriod(seq,value)**                       | Every coprime value in `[0, head*modulus)` in expanded residues        |
-| **assertNextFilteredContainsCoprime(seq,value)**                           | `nextFiltered(seq).contains(value)` for any coprime `value`            |
-| **assertNextSortedContainsCoprime(seq,value)**                             | `nextSorted(seq).contains(value)` for any coprime `value`              |
-| **assertNextSortedOnlyContainsFiltered(seq,value)**                        | `nextSorted(seq).contains(value) => nextFiltered(seq).contains(value)` |
+| Lemma                                                                      | Statement                                                                                         |
+|----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| **assertHeadsMatchFromPrimeValues(spec,cycle)**                            | `cycle.head == spec.head.value`                                                                   |
+| **assertApplyZeroMatchesFromPrimeValues(spec,cycle)**                      | `cycle(0) == spec(0)`                                                                             |
+| **assertSpecCycleApplyMatchesFromSameHeadAndGaps(spec,cycle,period,pos)**  | `cycle(pos) == spec(pos)` for all `pos` given same head/gaps                                      |
+| **assertCycleApplyMatchesFromSameHeadAndGaps(cycle1,cycle2,pos)**          | Two cycles with same head+gaps produce identical sequences                                        |
+| **assertCurrentApplyOneEqualsSpecNextHead(spec,cycle,period)**             | `cycle(1) == spec.next.head.value`                                                                |
+| **assertNextAcceptsMatchesCyclePrimesCoprime(spec,cycle,value)**           | `spec.next.accepts(value) == isCoprime(value, cycle.primes)`                                      |
+| **assertWalkGapsAllPositive(cycle)**                                       | `allGreaterThan(walkGaps(cycle), 0)`                                                              |
+| **assertFilterValuesMatchTailPrimes(spec,cycle)**                          | `cycle.tailPrimesValues == spec.filterValues`                                                     |
+| **assertSpecAcceptsMatchesCycleTailCoprime(spec,cycle,value)**             | `spec.accepts(value) == isCoprime(value, tailPrimesValues)`                                       |
+| **assertResiduesContainCoprimeBelowModulus(modulus,filters,residue)**      | Completeness: all coprime residues in `[0, modulus)` in list                                      |
+| **assertGenerateResiduesContainOnlyCoprime(modulus,filters,residue,from)** | Soundness: all generated residues are coprime                                                     |
+| **assertResiduesAreCoprimeBelowModulus(modulus,filters,residue)**          | Wrapper: all residues are coprime                                                                 |
+| **assertFilterListContainsIf(list,value,divisor)**                         | Private: input value with nonzero mod survives `filterList`                                       |
+| **assertFilterListContainsOnlyIf(list,value,divisor)**                     | Private: `filterList` output came from input and has nonzero mod                                  |
+| **assertExpandedResiduesRepresentPeriod(seq,value)**                       | Every coprime value in `[0, head*modulus)` in expanded residues                                   |
+| **assertNextFilteredContainsCoprime(seq,value)**                           | `nextFiltered(seq).contains(value)` for any coprime `value`                                       |
+| **assertNextSortedContainsCoprime(seq,value)**                             | `nextSorted(seq).contains(value)` for any coprime `value`                                         |
+| **assertNextSortedOnlyContainsFiltered(seq,value)**                        | `nextSorted(seq).contains(value) => nextFiltered(seq).contains(value)`                            |
 | **assertModPreservesCoprimeForPrime(v,modulus,p)**                         | If `mod(v,p)!=0` and `mod(modulus,p)==0` then `mod(mod(v,modulus),p)!=0` (made public 2026-07-05) |
-| **assertModPreservesCoprimeRec(v,modulus,prefixProd,remaining)**           | Per-list recursive variant: `mod(v,modulus)` coprime to all `remaining` |
-| **assertModPreservesCoprime(v,modulus,primes)**                            | `mod(v,modulus)` coprime to `primes` whenever `v` is and `modulus == product(primes)` |
+| **assertModPreservesCoprimeRec(v,modulus,prefixProd,remaining)**           | Per-list recursive variant: `mod(v,modulus)` coprime to all `remaining`                           |
+| **assertModPreservesCoprime(v,modulus,primes)**                            | `mod(v,modulus)` coprime to `primes` whenever `v` is and `modulus == product(primes)`             |
 
 ## 6.8 CycleUtils (`v1.chapter6.seq.sieve.CycleUtils`)
 
@@ -746,15 +759,15 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 7 verified lemmas (A = B = C next-stage proof spine). Wraps `SpecDerivedSieveSequence`.
 
-| Lemma | Statement |
-|-------|-----------|
-| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes` |
-| `assertNextHeadResidueIsSpecNextHead()` | `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor |
-| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head*modulus == spec.next.filterModulus` — load-bearing identity |
+| Lemma                                               | Statement                                                                                                                       |
+|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| `assertSpecNextFilterEqCyclePrimes()`               | `spec.next.filterValues == cyclePrimes`                                                                                         |
+| `assertNextHeadResidueIsSpecNextHead()`             | `mod(cycle(1), head*modulus) == spec.next.head.value` — rotation anchor                                                         |
+| `assertHeadModulusEqualsSpecNextFilterModulus()`    | `head*modulus == spec.next.tailPrimorial` — load-bearing identity                                                               |
 | `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` | Merged lemma: canonical gaps = `spec.next.gapList` + rotation + modulus + same-head + same-gaps (cycle from canonical GapCycle) |
-| `assertSpecCanonicalCycleNextMatch(nextPeriod)` | Composes above — Spec = Canonical = Cycle for next stage |
-| `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` | **`cNext.apply(k) == spec.next(k)` for any k** — next-stage apply equality, returns the equality explicitly |
-| `assertRepeatedCycleProof(nextPeriod)` | Side proof using `repeatedCycle` + `assertRepeatedCycleApplyMatches` + `assertSurvivorGapEqualsSpecNextGap` |
+| `assertSpecCanonicalCycleNextMatch(nextPeriod)`     | Composes above — Spec = Canonical = Cycle for next stage                                                                        |
+| `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` | **`cNext.apply(k) == spec.next(k)` for any k** — next-stage apply equality, returns the equality explicitly                     |
+| `assertRepeatedCycleProof(nextPeriod)`              | Side proof using `repeatedCycle` + `assertRepeatedCycleApplyMatches` + `assertSurvivorGapEqualsSpecNextGap`                     |
 
 **A = B = C — fully verified for current and next stages.**
 
@@ -765,30 +778,30 @@ they were not called from the spine proof.
 
 ### §6.6 SpecDerivedSieveSequence — 14 methods (trimmed from 62)
 
-| Lemma | Statement |
-|-------|-----------|
-| `assertApplyMatches(k)` | **`cycle(k) == spec(k)` for any k** — current-stage equivalence |
-| `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value` |
-| `assertPrimesMatch()` | Prime list structural equality |
-| `primorialMatchesProduct(...)` | Primorial-to-product bridge |
-| `assertCycleModulusEqualsSpecFilterModulus()` | `cycle.modulus == spec.filterModulus` |
-| `assertNextHeadLessThanNewModulus()` | `cycle(1) < head*modulus` — rotation bound |
-| `assertNextCycleGapsMatchSpecNext(nextPeriod)` | Canonical next gaps = `spec.next.gapList` |
-| `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)` | Gap cycle values = gapList |
-| `assertSurvivorGapEqualsSpecNextGap(nextPeriod, k)` | Survivor gap = spec.next gap per index |
-| `repeatedCycle(times)` | Build repeated gap cycle (ch3 ListRepeatProperties) |
-| `assertRepeatedCycleIntegralMatches(times, pos)` | Repeated integral = original integral |
-| `assertRepeatedCycleApplyMatches(times, k)` | `repeatedCycle(times).apply(k) == cycle.apply(k)` |
-| `assertRepeatedCycleGapMatches(times, pos)` | Repeated gap = original gap (orphaned) |
-| `assertRepeatedGapListIndexMatches(times, idx)` | Index equality for repeated lists (orphaned) |
+| Lemma                                                      | Statement                                                       |
+|------------------------------------------------------------|-----------------------------------------------------------------|
+| `assertApplyMatches(k)`                                    | **`cycle(k) == spec(k)` for any k** — current-stage equivalence |
+| `assertNextHeadMatches()`                                  | `cycle(1) == spec.next.head.value`                              |
+| `assertPrimesMatch()`                                      | Prime list structural equality                                  |
+| `primorialMatchesProduct(...)`                             | Primorial-to-product bridge                                     |
+| `assertCycleModulusEqualsSpecFilterModulus()`              | `cycle.modulus == spec.tailPrimorial`                           |
+| `assertNextHeadLessThanNewModulus()`                       | `cycle(1) < head*modulus` — rotation bound                      |
+| `assertNextCycleGapsMatchSpecNext(nextPeriod)`             | Canonical next gaps = `spec.next.gapList`                       |
+| `assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod)` | Gap cycle values = gapList                                      |
+| `assertSurvivorGapEqualsSpecNextGap(nextPeriod, k)`        | Survivor gap = spec.next gap per index                          |
+| `repeatedCycle(times)`                                     | Build repeated gap cycle (ch3 ListRepeatProperties)             |
+| `assertRepeatedCycleIntegralMatches(times, pos)`           | Repeated integral = original integral                           |
+| `assertRepeatedCycleApplyMatches(times, k)`                | `repeatedCycle(times).apply(k) == cycle.apply(k)`               |
+| `assertRepeatedCycleGapMatches(times, pos)`                | Repeated gap = original gap (orphaned)                          |
+| `assertRepeatedGapListIndexMatches(times, idx)`            | Index equality for repeated lists (orphaned)                    |
 
 ## 6.10 SpecDerivedEquivalence (`v1.chapter6.seq.sieve.SpecDerivedEquivalence`)
 
 4 lemmas (bridge between `SpecDerivedSieveSequence` and `SpecDerivedBySurvivors`).
 
-| Lemma                                                  | Statement                                                   |
-|--------------------------------------------------------|-------------------------------------------------------------|
-| **assertHeadMatches()**                                | `cycle.head == cycle.head` and `cycle.modulus == cycle.modulus` across both classes |
-| **assertApplyMatches(k)**                              | `cycle(k) == cycle(k)` across both classes                  |
-| **assertGapCycleMatches()**                            | `gapCycle.memCycle.values` match across both classes        |
-| **assertNextHeadNewModulusMatch()**                    | `assertNextHeadLessThanNewModulus()` agrees across both classes |
+| Lemma                               | Statement                                                                           |
+|-------------------------------------|-------------------------------------------------------------------------------------|
+| **assertHeadMatches()**             | `cycle.head == cycle.head` and `cycle.modulus == cycle.modulus` across both classes |
+| **assertApplyMatches(k)**           | `cycle(k) == cycle(k)` across both classes                                          |
+| **assertGapCycleMatches()**         | `gapCycle.memCycle.values` match across both classes                                |
+| **assertNextHeadNewModulusMatch()** | `assertNextHeadLessThanNewModulus()` agrees across both classes                     |

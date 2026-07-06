@@ -37,7 +37,7 @@ case class SpecDerivedSieveSequence(
   period: BigInt
 ) {
   require(period > BigInt(0))
-  require(spec(period) == spec.head.value + spec.filterModulus)
+  require(spec(period) == spec.head.value + spec.tailPrimorial)
   require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)
   require(spec.primes.list.nonEmpty)
   require(
@@ -118,9 +118,9 @@ case class SpecDerivedSieveSequence(
     }
   }.holds
 
-  def assertCycleModulusEqualsSpecFilterModulus(): Boolean = {
+  def assertCycleModulusEqualsSpecTailPrimorial(): Boolean = {
     assert(primorialMatchesProduct(spec.primes.list.tail))
-    cycle.modulus == spec.filterModulus
+    cycle.modulus == spec.tailPrimorial
   }.holds
 
   /**
@@ -134,7 +134,7 @@ case class SpecDerivedSieveSequence(
     require(nextPeriod > BigInt(1))
     require(k >= BigInt(0))
     require(k + BigInt(1) < nextPeriod)
-    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial)
     assert(spec.assertNextValueAcceptedByThis(k))
     assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
     val pos1 = spec.indexOfAccepted(spec.next(k))
@@ -158,7 +158,7 @@ case class SpecDerivedSieveSequence(
    */
   def assertNextGapCycleValuesEqualSpecNextGapList(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
-    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial)
 
     spec.next.specGapCycle(nextPeriod).memCycle.values == spec.next.gapList(BigInt(0), nextPeriod)
   }.holds
@@ -172,7 +172,7 @@ case class SpecDerivedSieveSequence(
    */
   def assertNextCycleGapsMatchSpecNext(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
-    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+    require(spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial)
     require(spec.next.primes.nextPrime.value < spec.next.head.value * spec.next.head.value)
     require(spec.next.primes.list.nonEmpty)
     require(Calc.mod(SieveUtils.product(spec.next.filterValues), spec.next.head.value) != BigInt(0))
@@ -412,12 +412,12 @@ case class SpecDerivedSieveSequence(
 
   def assertNextHeadLessThanNewModulus(): Boolean = {
     require(spec.head.value >= 3)
-    require(spec.filterModulus >= 2)
+    require(spec.tailPrimorial >= 2)
 
     assert(assertApplyMatches(BigInt(1)))
-    assert(assertCycleModulusEqualsSpecFilterModulus())
+    assert(assertCycleModulusEqualsSpecTailPrimorial())
     assert(spec(BigInt(1)) <= spec.searchBound(BigInt(1)))
-    assert(spec.head.value * spec.filterModulus > spec.head.value + spec.filterModulus)
+    assert(spec.head.value * spec.tailPrimorial > spec.head.value + spec.tailPrimorial)
     cycle(BigInt(1)) < cycle.head * cycle.modulus
   }.holds
 }

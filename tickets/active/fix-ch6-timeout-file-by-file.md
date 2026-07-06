@@ -73,7 +73,7 @@ lives at one ad-hoc site with no abstraction.
 - invariant: `sum`, `max`, `min`, `product`, `size` (same multiset)
 
 **Shifted list** — head-aware, values are integral results so they change
-(ch3, a `ShiftedList` type):
+(ch3, a `GapList` type):
 - carries `newHead = oldHead + firstGap`
 - `shifted.apply(i) = original.apply(i+1)` (positional shift via the integral)
 - same period: `shifted.size == original.size`
@@ -87,14 +87,14 @@ lives at one ad-hoc site with no abstraction.
 1. **Rotation stays head-free** — never mentions head/index 0/first element.
 2. **Shift is the only head-aware abstraction**, isolated in its own type.
 3. **Rotate:** lemmas only, no type. New `RotationProperties` object in ch3.
-4. **Shift:** a `ShiftedList` case class in ch3.
+4. **Shift:** a `GapList` case class in ch3.
 5. **Move rotate/split machinery** ch6→ch3 with delegating wrappers (LEARNINGS §5.3).
 6. **Make new versions work before removing duplicates.**
 
 ## Approved Plan (phases)
 
 - **A.** ch3 rotation theory: A1 `assertSplitAtRecombines` (keystone) → A2 same-elements → A3/A4 same-bounds/sum/size/product → A7 move rotate/split ch6→ch3.
-- **B.** ch3 `ShiftedList` type + apply-shift / same-period / gap-translation laws.
+- **B.** ch3 `GapList` type + apply-shift / same-period / gap-translation laws.
 - **C.** ch3 gap-positivity foundation (sum-positive, strict-ascending, gaps-positive, subsequence-diff).
 - **D.** ch6 `assertNextSortedStrictlyAscending` (the one prime-dependent part).
 - **E.** assemble `allGreaterThan(nextRotatedGaps(cycle), 0)`; remove `nextFromCycle` require.

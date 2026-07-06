@@ -196,6 +196,13 @@ Only re-run `just verify` after making a code change.
     Emojis are inconsistent across renderers, cannot be searched, and
     break the academic tone of the articles.
   </rule>
+  <rule id="no-ticket-references" priority="high">
+    NEVER reference tickets (tickets/*, ticket files, "the ticket", "the companion ticket",
+    "ticket XYZ") in published or draft articles under `articles/` (including deprecated/).
+    Tickets are internal project artifacts. Articles must be self-contained — if a fact
+    matters, state it directly in the article, not "see the ticket." Internal learnings
+    docs (`articles/learnings/`) are exempt.
+  </rule>
   <rule id="red-cascade" priority="critical">
     After a change produces a **non-green state** (any invalid/unknown/timeout):
     1. Do NOT cascade — do NOT modify additional functions, add comments,

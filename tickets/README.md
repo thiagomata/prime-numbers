@@ -10,8 +10,11 @@ Start with:
 tickets/active/
 ```
 
-Only expand into the other folders when you need historical context,
-verification logs, failed attempts, or completed implementation notes.
+Then expand to `tickets/blocked/` for open problems blocked on new math or tooling.
+Completed tickets are in `tickets/done/`.
+
+Stale tickets (superseded approaches, old planning docs, article reviews) have been
+moved to `tickets/trash/` — do not use them as a source of current strategy.
 
 ## Folders
 
@@ -19,26 +22,14 @@ verification logs, failed attempts, or completed implementation notes.
 - `blocked/` — real open problems that are not current work because they need
   substantial new mathematics or a new solver strategy.
 - `done/` — completed tickets with useful final state or implementation notes.
-- `superseded/` — older tickets replaced by a newer canonical plan.
-- `archived/` — historical notes, article reviews, summaries, and stale planning
-  records that should not drive new implementation work.
+- `trash/` — superseded approaches, old planning records, and article reviews.
+  Kept for historical reference only; do NOT drive new work from them.
 
 ## Current Sieve-Sequence Proof Ticket
 
 The canonical active ticket for the Spec/Canonical/Cycle sieve-sequence proof is
 `active/sieve-sequence-proof.md`.
 
-Older plans for the same proof have been moved out of `active/`:
-
-- `done/canonical-spec-to-cycle-alignment.md` — current-stage Spec-to-Canonical
-  alignment was completed and remains useful background.
-- `superseded/v0-v2-apply-equivalence.md` — replaced by the canonical strategy.
-- `superseded/remove-extern-from-next.md` — old `next()` removal framing; the
-  remaining issue is now tracked as the survival-walk correctness gap in the
-  canonical ticket.
-
-## Completed Canonical Gap Ticket
-
-V0 gap-list and gap-cycle formalization was completed in
-`done/v0-gap-list-cycle-formalization.md` (7755 valid, all open work resolved).
-Older gap tickets remain in `superseded/` for proof logs and breadcrumbs.
+The A = B = C equivalence (Spec ≡ Canonical ≡ Cycle for both current and next
+stages) is fully proven. The remaining open work is Leg 4 (survival walk
+correctness) tracked in the proof ticket.

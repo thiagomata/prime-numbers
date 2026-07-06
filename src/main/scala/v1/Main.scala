@@ -1,8 +1,9 @@
-package v1.chapter2.div
+package v1
 
 import stainless.annotation.extern
+import v1.chapter2.div.DivMod
 
-object DivMain {
+object Main {
 
   @extern
   def println(message: String): Unit = {
@@ -71,7 +72,7 @@ object DivMain {
 
   @extern
   private def computePeriod(spec: v1.chapter6.seq.sieve.SpecSieveSequence): BigInt = {
-    val target = spec.head.value + spec.filterModulus
+    val target = spec.head.value + spec.tailPrimorial
     var k = BigInt(1)
     while (spec(k) != target) {
       k += 1
@@ -81,9 +82,9 @@ object DivMain {
 
   @extern
   private def showEquivalence(steps: Int, count: Int): Unit = {
-    import v1.chapter6.seq.sieve.{SpecSieveSequence, CycleSieveSequence, SpecDerivedSieveSequence}
-    import v1.chapter5.prime.{AllPrimesSoFarList, SortedPrimeList, Prime}
     import stainless.collection.List
+    import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
+    import v1.chapter6.seq.sieve.{CycleSieveSequence, SpecDerivedSieveSequence, SpecSieveSequence}
 
     val spec0 = SpecSieveSequence(
       AllPrimesSoFarList(SortedPrimeList(List(Prime(BigInt(3)), Prime(BigInt(2))))))

@@ -158,7 +158,7 @@ This avoids needing `allElementsDivideProduct` (which requires
 
 ### 4.2 `primorialMatchesSieveProduct` is the product invariant
 
-This lemma proves `filterModulus == SieveUtils.product(filterValues)`. It should
+This lemma proves `tailPrimorial == SieveUtils.product(filterValues)`. It should
 be called at the start of any lemma that needs the product equality.
 
 ## 5. List Functions
@@ -247,6 +247,39 @@ timed out proving that `spec.next(k + 1)` could be passed to
 projection once, and the class-level check dropped from a 300s timeout to a
 green `SpecDerivedSieveSequence._` run.
 
+### 5.5 Assert list size before `.apply()` with external bound
+
+When a lemma calls `list.apply(index)` where `index` is bounded by an external
+parameter (e.g. `nextPeriod`) rather than by `list.size` directly, Stainless
+cannot synthesize the size precondition even when `index < externalBound` is
+required. Always precede such an `.apply` with an explicit size assertion:
+
+```scala
+assert(spec.next.assertGapListSize(0, nextPeriod))
+// now safe: spec.next.gapList(0, nextPeriod).apply(index)
+```
+
+**Source:** `sieve-sequence-proof.md` — `assertNextGapAtMatchesSpecNext` timeout.
+
+### 5.6 Verify builder order before induction
+
+When proving `myBuilder == specBuilder` by induction, sanity-check the builder
+produces the same order as the spec builder on paper first. A reversed builder
+makes the goal unprovable, and the solver expresses this as a timeout rather
+than a counterexample — which looks like solver weakness but is actually a
+logic bug.
+
+**Sliding-window induction** over `from` beats fixed-`from` induction over
+`count` when the list builder recurses on `from + 1`. The period anchor and
+other preconditions stay local; no re-derivation needed at recursive calls.
+
+```scala
+// Forward-order builder with sliding window:
+(spec.next(from + 1) - spec.next(from)) :: nextGapList(from + 1, count - 1)
+```
+
+**Source:** `sieve-sequence-proof.md` — `assertNextGapListMatchesSpecNext` bug.
+
 ## 6. Timeout Resolution Strategies
 
 ### 6.0 Stop orphaned verification workers before reruns
@@ -285,6 +318,29 @@ persists with an external lemma, rewrite it as a private lemma in the same class
 
 After 3 failed attempts on the same VC, stop and ask for help. Do NOT try
 variations. Document the error and the attempted fixes.
+
+### 6.5 Constructor invariants kill cross-file unknowns
+
+A single constructor `require` can eliminate unknowns spread across multiple
+files by making a fact structurally available everywhere. Adding
+`require(PrimeUtils.primorial(primes.list.tail.list) > BigInt(0))` to
+`CycleSieveSequence` (i.e. `modulus > 0`) killed 5 unknowns in 4 different
+functions across 3 files.
+
+**Tradeoff:** Every construction site must satisfy the new require. Work on
+small stages first (S_0, S_1) where the fact is trivially true.
+
+**Source:** `fix-ch6-timeout-file-by-file.md`
+
+### 6.6 Don't disable working lemmas due to timeout
+
+Timeout on a lemma means the solver failed, not that the lemma is wrong.
+Disabling it loses a verified fact. Instead: add `require` preconditions that
+make the solver's job easier, or strengthen constructor invariants to make the
+fact available structurally (6.5).
+
+**Source:** `fix-ch6-timeout-file-by-file.md` — user corrected the attempt to
+comment out 5 timeout lemmas.
 
 ## 7. Structural Patterns
 
@@ -780,7 +836,7 @@ endpoint non-multiple fact once, regardless of contract shape:
 assertHeadPlusFilterModulusNotFrontMultiple()
 ```
 
-This proves `mod(spec.head.value + spec.filterModulus, spec.next.filterValues.head) != 0`
+This proves `mod(spec.head.value + spec.tailPrimorial, spec.next.filterValues.head) != 0`
 without depending on the head-vs-front-filter contract debate. It is currently
 the ONLY piece of the next-stage-filter work that is active and green.
 
@@ -891,6 +947,28 @@ cache the construction across the composition boundary.
 
 **Source:** `tickets/active/lean-ch6-proof-spine.md`, `SpecDerivedBySurvivors.scala`.
 
+## 20. Cross-Chapter Dependency Management
+
+### 20.1 Avoid circular imports between chapters
+
+If chapter 5 imports from chapter 6 and chapter 6 imports from chapter 5, the
+solver must verify ALL chapters in one batch, generating too many VCs.
+
+**Fix:** Extract shared utilities into the lower-numbered chapter and update
+imports so the dependency flows one direction only. Applied to `SieveUtils` in
+ch6 → `CoprimeUtils` in ch5.
+
+**Source:** `verify-timeout-root-cause.md` — root cause #1.
+
+### 20.2 macOS DYLD_LIBRARY_PATH stripping
+
+macOS strips `DYLD_LIBRARY_PATH` from subprocesses, so the Z3 dynamic library
+cannot be found by Java JNI even when the environment variable is set. Fix:
+use `install_name_tool -change libz3.dylib <absolute-path>` to embed the
+absolute path in `libz3java.dylib`.
+
+**Source:** `verify-timeout-root-cause.md` — root cause #2.
+
 ## Index
 
 | Lesson | Source ticket | Area |
@@ -903,3 +981,10 @@ cache the construction across the composition boundary.
 | 18.6 Next-stage head is not the next-stage front filter | `independent-next-cycle.md` | Next-stage filters |
 | 18.7 Recursive list lifts need explicit coverage predicates | `independent-next-cycle.md` | Recursive list proofs |
 | 18.8 Precondition migration must move callee + ALL callers + dependents together | `independent-next-cycle.md` | Contract migration / workflow |
+| 5.5 Assert list size before `.apply()` with external bound | `sieve-sequence-proof.md` | List functions |
+| 5.6 Verify builder order before induction | `sieve-sequence-proof.md` | List functions |
+| 6.5 Constructor invariants kill cross-file unknowns | `fix-ch6-timeout-file-by-file.md` | Timeout resolution |
+| 6.6 Don't disable working lemmas due to timeout | `fix-ch6-timeout-file-by-file.md` | Timeout resolution |
+| 19.1 Reuse the expensive construction, not the `.holds` | `lean-ch6-proof-spine.md` | Lemma composition |
+| 20.1 Avoid circular imports between chapters | `verify-timeout-root-cause.md` | Dependency management |
+| 20.2 macOS DYLD_LIBRARY_PATH stripping | `verify-timeout-root-cause.md` | Tooling |

@@ -76,7 +76,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       val upper = searchBound(k)
 
       assert(previous <= searchBound(k - BigInt(1)))
-      assert(filterModulus > BigInt(0))
+      assert(tailPrimorial > BigInt(0))
       assert(searchBound(k - BigInt(1)) < upper)
       assert(previous + BigInt(1) <= upper)
       assert(searchBoundPassesFilter(k))
@@ -121,7 +121,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * That distinction matters because the head is the starting point of the
    * stream, not a divisor to eliminate.
    */
-  def filterModulus: BigInt = {
+  def tailPrimorial: BigInt = {
     PrimeUtils.primorialPositive(filterPrimes)
     PrimeUtils.primorial(filterPrimes)
   }.ensuring(_ > BigInt(0))
@@ -144,7 +144,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   def searchBound(k: BigInt): BigInt = {
     require(k >= BigInt(0))
 
-    head.value + k * filterModulus
+    head.value + k * tailPrimorial
   }.ensuring(_ >= head.value)
 
   /**
@@ -182,7 +182,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     val next = apply(k + BigInt(1))
 
     assert(previous <= searchBound(k))
-    assert(filterModulus > BigInt(0))
+    assert(tailPrimorial > BigInt(0))
     assert(searchBound(k) < upper)
     assert(previous + BigInt(1) <= upper)
     assert(searchBoundPassesFilter(k + BigInt(1)))
@@ -243,7 +243,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.ensuring(res => res >= BigInt(0) && apply(res) == value)
 
   /**
-   * Proves that the residue of apply(k) modulo filterModulus is coprime
+   * Proves that the residue of apply(k) modulo tail primorial is coprime
    * with all filter primes. This establishes the fundamental connection
    * between V0's linear-scan generator and the residue cycle: every
    * generated value, when reduced modulo the filter modulus, lands on
@@ -251,12 +251,12 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    *
    * For each filter prime p:
    *   1. accepts(apply(k)) gives Calc.mod(apply(k), p) != 0
-   *      2. Since filterModulus = product(filterValues), each p divides it.
+   *      2. Since tailPrimorial = product(filterValues), each p divides it.
    *      Uses the prefix-product decomposition from expandedCoprimePreservesFilter
-   *      to prove Calc.mod(filterModulus, p) == 0 at each step.
-   *      3. assertMultiplePreservesDivisible gives Calc.mod(q * filterModulus, p) == 0
-   *      4. modZeroPlusC gives Calc.mod(q*filterModulus + r, p) == Calc.mod(r, p)
-   *      (when mod(q*filterModulus, p) == 0, which follows from step 2)
+   *      to prove Calc.mod(tailPrimorial, p) == 0 at each step.
+   *      3. assertMultiplePreservesDivisible gives Calc.mod(q * tailPrimorial, p) == 0
+   *      4. modZeroPlusC gives Calc.mod(q*tailPrimorial + r, p) == Calc.mod(r, p)
+   *      (when mod(q*tailPrimorial, p) == 0, which follows from step 2)
    *      5. From (1) and (4): Calc.mod(r, p) != 0
    *      Therefore isCoprime(r, filterValues).
    */
@@ -264,34 +264,34 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(k >= BigInt(0))
 
     val value = apply(k)
-    val r = Calc.mod(value, filterModulus)
-    val q = Calc.div(value, filterModulus)
+    val r = Calc.mod(value, tailPrimorial)
+    val q = Calc.div(value, tailPrimorial)
 
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
 
-    assertModIsCoprimeForAll(value, r, q, filterModulus, filterValues, BigInt(1))
+    assertModIsCoprimeForAll(value, r, q, tailPrimorial, filterValues, BigInt(1))
   }.holds
 
   /**
-   * Proves that the residues of apply(k) modulo filterModulus cycle
-   * with period p = indexOfAccepted(head + filterModulus).
+   * Proves that the residues of apply(k) modulo tailPrimorial cycle
+   * with period p = indexOfAccepted(head + tailPrimorial).
    *
-   * From assertBlockShift: apply(k + p) == apply(k) + filterModulus.
+   * From assertBlockShift: apply(k + p) == apply(k) + tailPrimorial.
    * Then mod(apply(k+p), M) == mod(apply(k) + M, M) == mod(apply(k), M).
    */
   def assertApplyResidueCycles(k: BigInt, p: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(p >= BigInt(0))
-    require(apply(p) == head.value + filterModulus)
+    require(apply(p) == head.value + tailPrimorial)
     true
   }.ensuring(res => {
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(assertBlockShift(k, p))
-    assert(apply(k + p) == apply(k) + filterModulus)
-    assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(apply(k), filterModulus, BigInt(1)))
-    res && Calc.mod(apply(k + p), filterModulus) == Calc.mod(apply(k), filterModulus)
+    assert(apply(k + p) == apply(k) + tailPrimorial)
+    assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(apply(k), tailPrimorial, BigInt(1)))
+    res && Calc.mod(apply(k + p), tailPrimorial) == Calc.mod(apply(k), tailPrimorial)
   })
 
   def assertGapPositive(k: BigInt): Boolean = {
@@ -303,34 +303,34 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   def assertGapPeriodic(k: BigInt, p: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(p >= BigInt(0))
-    require(apply(p) == head.value + filterModulus)
+    require(apply(p) == head.value + tailPrimorial)
     true
   }.ensuring(res => {
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(assertBlockShift(k, p))
-    assert(apply(k + p) == apply(k) + filterModulus)
+    assert(apply(k + p) == apply(k) + tailPrimorial)
     assert(assertBlockShift(k + BigInt(1), p))
-    assert(apply(k + BigInt(1) + p) == apply(k + BigInt(1)) + filterModulus)
+    assert(apply(k + BigInt(1) + p) == apply(k + BigInt(1)) + tailPrimorial)
     val g1 = apply(k + BigInt(1)) - apply(k)
     val g2 = apply(k + BigInt(1) + p) - apply(k + p)
     res && g1 == g2
   })
 
   /**
-   * Asserts that the sum of gaps from `0` to `p` equals `filterModulus`, where
-   * p = indexOfAccepted(head + filterModulus).
+   * Asserts that the sum of gaps from `0` to `p` equals `tailPrimorial`, where
+   * p = indexOfAccepted(head + tailPrimorial).
    *
    * @param p any position
    * @return true if the assertion holds
    */
   def assertGapSum(p: BigInt): Boolean = {
     require(p >= BigInt(0))
-    require(apply(p) == head.value + filterModulus)
+    require(apply(p) == head.value + tailPrimorial)
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(assertSumGapTelescopes(BigInt(0), p))
-    sumGap(BigInt(0), p) == filterModulus
+    sumGap(BigInt(0), p) == tailPrimorial
   }.holds
 
   /**
@@ -463,7 +463,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * forward by exactly one filter modulus:
    *
    * {{{
-   *   apply(period) == head.value + filterModulus
+   *   apply(period) == head.value + tailPrimorial
    * }}}
    *
    * Under that witness, `gapList(0, period)` contains exactly one full period
@@ -478,7 +478,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    */
   def specGapCycle(period: BigInt): GapCycle = {
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
 
     val gaps = gapList(BigInt(0), period)
 
@@ -503,7 +503,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    */
   def assertSpecGapPeriodPositive(period: BigInt): Boolean = {
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
 
     assert(assertGapListPositive(BigInt(0), period))
     ListBoundUtils.allGreaterThan(gapList(BigInt(0), period), BigInt(0))
@@ -527,7 +527,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    */
   def assertSpecGapCycleIntegralBase(period: BigInt): Boolean = {
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
 
     val gaps = gapList(BigInt(0), period)
     val gapCycle = specGapCycle(period)
@@ -560,7 +560,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   def assertMemCycleGapMatch(i: BigInt, period: BigInt): Boolean = {
     require(i >= BigInt(0))
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
     decreases(i)
 
     val gapCycle = specGapCycle(period)
@@ -602,7 +602,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    */
   def assertSpecGapCycleIntegralMatchesApply(period: BigInt, k: BigInt): Boolean = {
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
     require(k > BigInt(0))
     decreases(k)
 
@@ -697,7 +697,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   /**
    * Bridge lemma between the prime-domain product and the sieve-domain product.
    *
-   * `filterModulus` is expressed with `PrimeUtils.primorial(filterPrimes)`
+   * `tailPrimorial` is expressed with `PrimeUtils.primorial(filterPrimes)`
    * because that API already proves strict positivity for lists of `Prime`.
    * Some sieve lemmas, however, are written over `List[BigInt]` and expect the
    * same product to be named as `SieveUtils.product(filterValues)`.
@@ -784,11 +784,11 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(k >= BigInt(0))
 
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(expandedCoprimePreservesFilter(
       head.value,
       k,
-      filterModulus,
+      tailPrimorial,
       filterValues,
       BigInt(1)
     ))
@@ -1001,7 +1001,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     val result = apply(k)
 
     assert(previous <= searchBound(k - BigInt(1)))
-    assert(filterModulus > BigInt(0))
+    assert(tailPrimorial > BigInt(0))
     assert(searchBound(k - BigInt(1)) < upper)
     assert(previous + BigInt(1) <= upper)
     assert(searchBoundPassesFilter(k))
@@ -1378,12 +1378,12 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   /**
-   * Proves that apply(k + p) == apply(k) + filterModulus for all k >= 0,
-   * where p = indexOfAccepted(head + filterModulus).
+   * Proves that apply(k + p) == apply(k) + tailPrimorial for all k >= 0,
+   * where p = indexOfAccepted(head + tailPrimorial).
    *
    * This is the core "loop around M" property: each block of length
-   * filterModulus contains exactly p generated values, so shifting by
-   * the period p adds exactly filterModulus.
+   * tailPrimorial contains exactly p generated values, so shifting by
+   * the period p adds exactly tailPrimorial.
    *
    * The inductive step uses two inequalities:
    *   1. apply(k+p) <= apply(k) + M (by nextDoesNotPassAcceptedValue
@@ -1395,47 +1395,47 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   private def assertBlockShift(k: BigInt, p: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(p >= BigInt(0))
-    require(apply(p) == head.value + filterModulus)
+    require(apply(p) == head.value + tailPrimorial)
     decreases(k)
 
     if (k == BigInt(0)) {
       true
     } else {
       primorialMatchesSieveProduct(filterPrimes)
-      assert(filterModulus == SieveUtils.product(filterValues))
+      assert(tailPrimorial == SieveUtils.product(filterValues))
       assert(assertBlockShift(k - 1, p))
       true
     }
   }.ensuring(res => {
     if (k == BigInt(0)) {
-      res && apply(p) == apply(k) + filterModulus
+      res && apply(p) == apply(k) + tailPrimorial
     } else {
       primorialMatchesSieveProduct(filterPrimes)
-      assert(filterModulus == SieveUtils.product(filterValues))
+      assert(tailPrimorial == SieveUtils.product(filterValues))
 
-      val target = apply(k) + filterModulus
+      val target = apply(k) + tailPrimorial
       assert(target >= head.value)
       primorialMatchesSieveProduct(filterPrimes)
-      assert(filterModulus == SieveUtils.product(filterValues))
+      assert(tailPrimorial == SieveUtils.product(filterValues))
       assert(SieveUtils.isCoprime(apply(k), filterValues))
       assert(expandedCoprimePreservesFilter(
-        apply(k), BigInt(1), filterModulus, filterValues, BigInt(1)
+        apply(k), BigInt(1), tailPrimorial, filterValues, BigInt(1)
       ))
       assert(accepts(target))
       assert(apply(k - 1 + p) < target)
       assert(nextDoesNotPassAcceptedValue(k - 1 + p, target))
       assert(apply(k + p) <= target)
 
-      val shifted = apply(k + p) - filterModulus
+      val shifted = apply(k + p) - tailPrimorial
       assert(shifted >= BigInt(0))
-      assert(assertReverseCoprimePreservation(shifted, filterModulus, filterValues, BigInt(1)))
+      assert(assertReverseCoprimePreservation(shifted, tailPrimorial, filterValues, BigInt(1)))
       assert(accepts(shifted))
       assert(apply(k - 1) < shifted)
       assert(nextDoesNotPassAcceptedValue(k - 1, shifted))
       assert(apply(k) <= shifted)
-      assert(apply(k) + filterModulus <= apply(k + p))
+      assert(apply(k) + tailPrimorial <= apply(k + p))
 
-      res && apply(k + p) == apply(k) + filterModulus
+      res && apply(k + p) == apply(k) + tailPrimorial
     }
   })
 
@@ -1681,7 +1681,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.ensuring(res => res >= k + BigInt(1) && res <= bound && Calc.mod(apply(res), p) != BigInt(0))
 
   /**
-   * Proves `apply(k + n * period) == apply(k) + n * filterModulus` for any n >= 0.
+   * Proves `apply(k + n * period) == apply(k) + n * tailPrimorial` for any n >= 0.
    * Induction on n: base `n=0` is trivial, step uses `assertBlockShift(k + (n-1)*period, period)`
    * to propagate the shift equality one period at a time.
    */
@@ -1689,15 +1689,15 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(k >= BigInt(0))
     require(n >= BigInt(0))
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
     decreases(n)
     if (n == BigInt(0)) {
-      apply(k + n * period) == apply(k) + n * filterModulus
+      apply(k + n * period) == apply(k) + n * tailPrimorial
     } else {
       val prev = n - BigInt(1)
       assert(assertBlockShiftMultiple(k, prev, period))
       assert(assertBlockShift(k + prev * period, period))
-      apply(k + n * period) == apply(k) + n * filterModulus
+      apply(k + n * period) == apply(k) + n * tailPrimorial
     }
   }.holds
 
@@ -1717,7 +1717,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(k >= BigInt(0))
     require(n >= BigInt(0))
     require(period > BigInt(0))
-    require(apply(period) == head.value + filterModulus)
+    require(apply(period) == head.value + tailPrimorial)
     decreases(n)
     if (n == BigInt(0)) {
       apply(k + BigInt(1)) - apply(k) == apply(k + BigInt(1)) - apply(k)
@@ -2121,8 +2121,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    *
    * The skipped-successor merge needs a bounded search for the first old-stream
    * value after `k` that survives the new front filter `p`. The endpoint
-   * `k + p * period` is useful because one old period adds `filterModulus`, so
-   * `p` whole periods add `p * filterModulus`. That shift preserves the
+   * `k + p * period` is useful because one old period adds `tailPrimorial`, so
+   * `p` whole periods add `p * tailPrimorial`. That shift preserves the
    * remainder modulo `p`, which means the endpoint survives whenever `apply(k)`
    * survives.
    *
@@ -2137,22 +2137,22 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val p = nextSeq.filterValues.head
     val bound = k + p * period
 
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(p > BigInt(0))
     assert(bound > k)
     assert(assertBlockShiftMultiple(k, p, period))
-    assert(apply(bound) == apply(k) + p * filterModulus)
+    assert(apply(bound) == apply(k) + p * tailPrimorial)
     assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k)))
     assert(Calc.mod(apply(k), p) != BigInt(0))
-    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, filterModulus))
-    assert(Calc.mod(apply(k) + p * filterModulus, p) == Calc.mod(apply(k), p))
+    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, tailPrimorial))
+    assert(Calc.mod(apply(k) + p * tailPrimorial, p) == Calc.mod(apply(k), p))
 
     Calc.mod(apply(bound), p) != BigInt(0)
   }.ensuring(res => {
@@ -2168,7 +2168,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * lemma needs a finite endpoint whose old-stream value is not a multiple of
    * the new front filter `p`. The period witness supplies exactly that endpoint:
    * shifting `k` by `p` whole old periods moves the value from `apply(k)` to
-   * `apply(k) + p * filterModulus`, which has the same remainder modulo `p`.
+   * `apply(k) + p * tailPrimorial`, which has the same remainder modulo `p`.
    *
    * The precondition `Calc.mod(apply(k + 1), p) == 0` describes the interesting
    * merge case: the next old value is rejected by the new filter, so the next
@@ -2183,23 +2183,23 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
     require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val p = nextSeq.filterValues.head
     val vIdx = nextSeq.indexOfAccepted(apply(k))
     val bound = k + p * period
 
     primorialMatchesSieveProduct(filterPrimes)
-    assert(filterModulus == SieveUtils.product(filterValues))
+    assert(tailPrimorial == SieveUtils.product(filterValues))
     assert(p > BigInt(0))
     assert(bound > k)
     assert(assertBlockShiftMultiple(k, p, period))
-    assert(apply(bound) == apply(k) + p * filterModulus)
+    assert(apply(bound) == apply(k) + p * tailPrimorial)
     assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq, apply(k)))
     assert(Calc.mod(apply(k), p) != BigInt(0))
-    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, filterModulus))
-    assert(Calc.mod(apply(k) + p * filterModulus, p) == Calc.mod(apply(k), p))
+    assert(AdditionAndMultiplication.ATimesBSameMod(apply(k), p, tailPrimorial))
+    assert(Calc.mod(apply(k) + p * tailPrimorial, p) == Calc.mod(apply(k), p))
     assert(Calc.mod(apply(bound), p) != BigInt(0))
     val m = findFirstNonMultipleAfter(k, p, bound)
     assert(assertNextSuccessorIsFirstSurvivor(nextSeq, k, p, bound))
@@ -2228,8 +2228,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
     require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val p = nextSeq.filterValues.head
     val vIdx = nextSeq.indexOfAccepted(apply(k))
@@ -2262,8 +2262,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
     require(Calc.mod(apply(k + BigInt(1)), nextSeq.filterValues.head) == BigInt(0))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val p = nextSeq.filterValues.head
     val vIdx = nextSeq.indexOfAccepted(apply(k))
@@ -2315,8 +2315,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val frontFilterPrime = nextSeq.filterValues.head
     val nextSeqIndex = nextSeq.indexOfAccepted(apply(k))
@@ -2379,8 +2379,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     nextMergedGapOldIndex(nextSeq, k, period)
   }.ensuring(result =>
@@ -2422,8 +2422,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
     require(idx < nextAcceptedOldIndex(nextSeq, k, period))
 
     val p = nextSeq.filterValues.head
@@ -2479,8 +2479,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
     decreases(remaining)
 
     if (remaining == BigInt(0)) {
@@ -2524,8 +2524,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
     decreases(remaining)
 
     val prefix = mergedGapPrefix(nextSeq, k, remaining, period)
@@ -2566,8 +2566,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.filterValues.tail == filterValues)
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
 
     val prefix = mergedGapPrefix(nextSeq, k, BigInt(1), period)
     val nextSeqIndex = nextSeq.indexOfAccepted(apply(k))
@@ -2611,8 +2611,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     require(nextSeq.head.value == head.value)
     require(nextSeq.accepts(apply(k)))
     require(nextSeq(seqIndex) == apply(k))
-    require(apply(period) == head.value + filterModulus)
-    require(Calc.mod(head.value + filterModulus, nextSeq.filterValues.head) != BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(head.value + tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
     decreases(remaining)
 
     val prefix = mergedGapPrefix(nextSeq, k, remaining, period)

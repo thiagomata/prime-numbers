@@ -29,11 +29,11 @@ case class SpecDerivedBySurvivors(
    */
   def assertNextHeadResidueIsSpecNextHead(): Boolean = {
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     assert(derived.assertNextHeadMatches())
     assert(derived.assertNextHeadLessThanNewModulus())
-    assert(derived.assertCycleModulusEqualsSpecFilterModulus())
+    assert(derived.assertCycleModulusEqualsSpecTailPrimorial())
     Calc.mod(derived.cycle(BigInt(1)),
              derived.cycle.head * derived.cycle.modulus) ==
       derived.spec.next.head.value
@@ -42,29 +42,29 @@ case class SpecDerivedBySurvivors(
   /**
    * Load-bearing modulus identity for the expansion bridge.
    *
-   * Proves `cycle.head * cycle.modulus == spec.next.filterModulus`. This is
+   * Proves `cycle.head * cycle.modulus == spec.next.tailPrimes`. This is
    * the key arithmetic fact that connects the cycle's reduced range
    * `[0, head*modulus)` to the spec's next-stage filter modulus. It holds
    * because:
-   *   cycle.modulus == spec.filterModulus                         (assertCycleModulusEqualsSpecFilterModulus)
+   *   cycle.modulus == spec.tailPrimes.                           (assertCycleModulusEqualsSpecTailPrimorial)
    *   spec.next.filterPrimes == spec.primes.list.list             (definitional: primes.next.list.tail.list)
    *   spec.filterPrimes == spec.primes.list.tail.list             (definitional)
    *   primorial(head :: tail) == head * primorial(tail)           (primorialUnfold)
    *
    * Confirmed load-bearing by the S_2 hand-analysis: `5 * 6 = 30 = primorial([5,3,2])`.
    */
-  def assertHeadModulusEqualsSpecNextFilterModulus(): Boolean = {
-    assert(derived.assertCycleModulusEqualsSpecFilterModulus())
+  def assertHeadModulusEqualsSpecNextTailPrimorial(): Boolean = {
+    assert(derived.assertCycleModulusEqualsSpecTailPrimorial())
     assert(derived.spec.filterPrimes == derived.spec.primes.list.tail.list)
     assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
     assert(PrimeUtils.primorialUnfold(derived.spec.primes.list.list))
-    derived.cycle.head * derived.cycle.modulus == derived.spec.next.filterModulus
+    derived.cycle.head * derived.cycle.modulus == derived.spec.next.tailPrimorial
   }.holds
 
   def assertCanonicalCycleNextMatchSpecNext(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.filterModulus)
+      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
     require(derived.spec.next.primes.nextPrime.value <
       derived.spec.next.head.value * derived.spec.next.head.value)
     require(derived.spec.next.primes.list.nonEmpty)
@@ -72,13 +72,13 @@ case class SpecDerivedBySurvivors(
       SieveUtils.product(derived.spec.next.filterValues),
       derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
 
     assert(assertNextHeadResidueIsSpecNextHead())
-    assert(assertHeadModulusEqualsSpecNextFilterModulus())
+    assert(assertHeadModulusEqualsSpecNextTailPrimorial())
     assert(derived.assertNextCycleGapsMatchSpecNext(nextPeriod))
     assert(nextCanonical.cycle.gapCycle.memCycle.values ==
       derived.spec.next.gapList(BigInt(0), nextPeriod))
@@ -103,7 +103,7 @@ case class SpecDerivedBySurvivors(
   def assertSpecCanonicalCycleNextMatch(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.filterModulus)
+      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
     require(derived.spec.next.primes.nextPrime.value <
       derived.spec.next.head.value * derived.spec.next.head.value)
     require(derived.spec.next.primes.list.nonEmpty)
@@ -111,7 +111,7 @@ case class SpecDerivedBySurvivors(
       SieveUtils.product(derived.spec.next.filterValues),
       derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -142,7 +142,7 @@ case class SpecDerivedBySurvivors(
     require(k >= BigInt(0))
     require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.filterModulus)
+      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
     require(derived.spec.next.primes.nextPrime.value <
       derived.spec.next.head.value * derived.spec.next.head.value)
     require(derived.spec.next.primes.list.nonEmpty)
@@ -150,7 +150,7 @@ case class SpecDerivedBySurvivors(
       SieveUtils.product(derived.spec.next.filterValues),
       derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -175,7 +175,7 @@ case class SpecDerivedBySurvivors(
     require(k >= BigInt(0))
     require(nextPeriod > BigInt(0))
     require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.filterModulus)
+      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
     require(derived.spec.next.primes.nextPrime.value <
       derived.spec.next.head.value * derived.spec.next.head.value)
     require(derived.spec.next.primes.list.nonEmpty)
@@ -183,7 +183,7 @@ case class SpecDerivedBySurvivors(
       SieveUtils.product(derived.spec.next.filterValues),
       derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -199,7 +199,7 @@ case class SpecDerivedBySurvivors(
   def assertRepeatedCycleProof(nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(1))
     require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.filterModulus)
+      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
     require(derived.spec.next.primes.nextPrime.value <
       derived.spec.next.head.value * derived.spec.next.head.value)
     require(derived.spec.next.primes.list.nonEmpty)
@@ -207,7 +207,7 @@ case class SpecDerivedBySurvivors(
       SieveUtils.product(derived.spec.next.filterValues),
       derived.spec.next.head.value) != BigInt(0))
     require(derived.spec.head.value >= 3)
-    require(derived.spec.filterModulus >= 2)
+    require(derived.spec.tailPrimorial >= 2)
 
     val h = derived.spec.head.value
     assert(derived.assertRepeatedCycleApplyMatches(h, BigInt(0)))

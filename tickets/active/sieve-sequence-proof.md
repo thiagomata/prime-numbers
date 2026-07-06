@@ -87,9 +87,9 @@ assertNextGapsWalkMatchesSpecNextGapList(nextPeriod)
 under the period anchors:
 ```
 period > 0
-spec(period) == spec.head.value + spec.filterModulus
+spec(period) == spec.head.value + spec.tailPrimorial
 nextPeriod > 0
-spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus
+spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial
 spec.primes.nextPrime.value < spec.head.value * spec.head.value
 ```
 
@@ -214,7 +214,7 @@ def collectGapsWithSpecPrefix(
   nextPeriod: BigInt
 ): List[BigInt] = {
   require(nextPeriod > BigInt(1))
-  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus)
+  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial)
   require(remaining >= BigInt(0))
   require(pos >= BigInt(1))
   require(lastPos >= BigInt(0))
@@ -327,7 +327,7 @@ emit branch.
 
 1. **Diff idiom applicability.** `assertSameDiffAfterCycle` proves `integral(pos+1)-integral(pos) == integral(pos+size+1)-integral(pos+size)`. This is a *single-period* shift. The next gap list spans `head` periods (one per value filtered by the new head). Need to confirm the diff idiom lifts cleanly across `head` periods, not just one.
 2. **Cross-instance calls are expensive (LEARNINGS 18).** Canonical calling `spec.next.gapList` and `spec.next.indexOfAccepted` is a cross-instance call. Keep the number of such calls per lemma small; isolate them.
-3. **Period anchor for the next stage.** `nextPeriod` must satisfy `spec.next(nextPeriod) == spec.next.head.value + spec.next.filterModulus`. This is the same shape as the current-stage anchor; carry it as a precondition.
+3. **Period anchor for the next stage.** `nextPeriod` must satisfy `spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial`. This is the same shape as the current-stage anchor; carry it as a precondition.
 4. **The product-not-divisible caveat** (`Calc.mod(SieveUtils.product(filterValues), head.value) != 0`) is still an open constructor obligation on `CycleSieveSequence`. Out of scope here; it is tracked in `../blocked/primorial-not-divisible-by-new-prime.md`.
 
 ## Validation
@@ -1092,7 +1092,7 @@ side — no additional cycle lemma needed.
 
 **Period sum:**
 Added `SpecDerivedCycleSieve.assertNextFilterModulusRelation()`. Proves
-`spec.next.filterModulus == cycle.head * spec.filterModulus`. When the old head
+`spec.next.tailPrimorial == cycle.head * spec.tailPrimorial`. When the old head
 becomes a filter prime, the filter modulus grows by that factor.
 16 VCs, full verify 9370 valid.
 

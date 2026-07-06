@@ -122,7 +122,7 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(position > BigInt(0))
     require(period > BigInt(0))
-    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec(period) == spec.head.value + spec.tailPrimorial)
     require(spec.head.value == cycle.head)
     require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
 
@@ -153,7 +153,7 @@ object SpecCycleSieveEquivalence {
   ): Boolean = {
     require(position >= BigInt(0))
     require(period > BigInt(0))
-    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec(period) == spec.head.value + spec.tailPrimorial)
     require(spec.head.value == cycle.head)
     require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
 
@@ -268,7 +268,7 @@ object SpecCycleSieveEquivalence {
     val nextSpec = spec.next
     val nextCycle = cycle.nextWithGapCycle(newGapCycle)
 
-    require(nextSpec(nextPeriod) == nextSpec.head.value + nextSpec.filterModulus)
+    require(nextSpec(nextPeriod) == nextSpec.head.value + nextSpec.tailPrimorial)
     require(nextSpec.specGapCycle(nextPeriod).memCycle == nextCycle.gapCycle.memCycle)
 
     assert(assertConditionalNextPrimeValuesMatch(spec, cycle, newGapCycle))
@@ -300,7 +300,7 @@ object SpecCycleSieveEquivalence {
     period: BigInt
   ): Boolean = {
     require(period > BigInt(0))
-    require(spec(period) == spec.head.value + spec.filterModulus)
+    require(spec(period) == spec.head.value + spec.tailPrimorial)
     require(spec.head.value == cycle.head)
     require(spec.specGapCycle(period).memCycle == cycle.gapCycle.memCycle)
     require(spec.primes.nextPrime.value < spec.head.value * spec.head.value)

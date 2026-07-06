@@ -69,9 +69,9 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
       s,
       Seq(
         s.head.value,
-        s.head.value + s.filterModulus,
-        s.head.value + BigInt(2) * s.filterModulus,
-        s.head.value + BigInt(3) * s.filterModulus
+        s.head.value + s.tailPrimorial,
+        s.head.value + BigInt(2) * s.tailPrimorial,
+        s.head.value + BigInt(3) * s.tailPrimorial
       )
     )
   }
@@ -151,7 +151,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
 
   it should "prove gap periodicity for S_1" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    // For S_1: head=3, filterModulus=2 → head+M=5, indexOfAccepted(5)=1
+    // For S_1: head=3, tailPrimorial=2 → head+M=5, indexOfAccepted(5)=1
     val p = BigInt(1)
     s1.assertGapPeriodic(BigInt(0), p) should be(true)
     s1.assertGapPeriodic(BigInt(1), p) should be(true)
@@ -160,16 +160,16 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
 
   it should "prove gap periodicity for S_2" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
-    // For S_2: head=5, filterModulus=6 → head+M=11, indexOfAccepted(11)=2
+    // For S_2: head=5, tailPrimorial=6 → head+M=11, indexOfAccepted(11)=2
     val p = BigInt(2)
     s2.assertGapPeriodic(BigInt(0), p) should be(true)
     s2.assertGapPeriodic(BigInt(1), p) should be(true)
     s2.assertGapPeriodic(BigInt(5), p) should be(true)
   }
 
-  it should "prove sum of one period equals filterModulus" taggedAs(SlowLemmaTest) in {
+  it should "prove sum of one period equals tailPrimes" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    // For S_1: head=3, filterModulus=2, p=1, sumGap(0,p)=2 which equals filterModulus
+    // For S_1: head=3, tailPrimes=2, p=1, sumGap(0,p)=2 which equals tailPrimorial
     val p = BigInt(1)
     s1.assertGapSum(p) should be(true)
   }

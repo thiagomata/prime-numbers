@@ -22,6 +22,8 @@ We present a formally verified proof of Euclid's Theorem — that there are infi
 | 1 | Primorial-plus-one modulo any prime | $\text{primorial}(L) + 1 \not\equiv 0 \pmod p$ for every $p \in L$ | [Verified] | Appendix A.1 |
 | 2 | New prime from Euclid's construction | $\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies \exists\ \text{prime}\ p \notin \text{primes}$ | [Verified] | Appendix A.2 |
 | 3 | Euclid's theorem | $\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies \exists\ p \notin \text{primes} : \text{isPrime}(p)$ | [Verified] | Appendix A.3 |
+| 4 | Composite has divisor below n | $\neg \text{isPrime}(n) \implies \exists\, d < n : d \mid n$ | [Verified] | §3.5 |
+| 5 | Smallest divisor at most sqrt(n) | $\neg \text{isPrime}(n) \implies d² \leq n$ where $d = \text{findSmallestDivisor}(n, 2)$ | [Verified] | §3.5 |
 
 Status key: `[Verified]` = Stainless `.holds` code exists and passes verification.
 
@@ -203,6 +205,73 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 
 The postcondition `.holds` asserts that `euclidTheorem` always returns `true` — i.e., given any non-empty list of primes, there exists a prime not in that list.
 
+### 3.5 Primality Testing: Sqrt-Bound and Composite Detection
+
+The primality test used in Euclid's proof relies on `findSmallestDivisor(n, 2)`,
+which scans candidates from 2 upward until it finds the smallest divisor of `n`.
+Two lemmas characterize why this scan is both correct and efficient.
+
+**Composite has a divisor below n.** If `n` is composite and `d` is its smallest
+non-trivial divisor, then `d < n`. This is immediate from the definition of
+composite — there exists a proper divisor — but must be proved against the
+`findSmallestDivisor` algorithm, which scans upward until a divisor is found
+or `n` itself is reached.
+
+```math
+\begin{aligned}
+n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
+\exists\, d = \text{findSmallestDivisor}(n, 2) &: 2 \leq d < n \;\land\; \text{Calc.mod}(n, d) = 0
+  &&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Smallest divisor is at most sqrt(n).** When `n` is composite with smallest
+divisor `d`, the factor `q = n / d` satisfies `q ≥ d`. Then `d · d ≤ d · q = n`,
+so `d² ≤ n`. This means the scan only needs to check divisors up to `sqrt(n)`
+— any divisor beyond that would have a co-factor below `d`, violating
+minimality.
+
+```math
+\begin{aligned}
+n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
+d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n
+  &&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Proof.** From the composite assumption, `assertCompositeHasDivisorStrictlyBelowN(n)`
+gives `d < n` with `mod(n, d) = 0`. Let `q = n / d`, so `q · d = n`. If `q < d`,
+then `q` is a divisor of `n` smaller than `d`, contradicting `d` being the
+smallest divisor. Therefore `q ≥ d`, and `d · d ≤ d · q = n`.
+
+### Stainless Verification
+
+```scala
+def assertSmallestDivisorAtMostSqrt(n: BigInt): Boolean = {
+  require(n > 1)
+  require(!Prime.isPrime(n))
+  val d = findSmallestDivisor(n, 2)
+  d * d <= n
+}.holds
+
+private def assertCompositeHasDivisorStrictlyBelowN(n: BigInt): Boolean = {
+  require(n > 1)
+  require(!Prime.isPrime(n))
+  val d = findSmallestDivisor(n, 2)
+  d < n
+}.holds
+```
+
+These properties are verified in the [
+  PrimeProperties::assertSmallestDivisorAtMostSqrt
+](
+  ../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+) and [
+  PrimeProperties::assertCompositeHasDivisorStrictlyBelowN
+](
+  ../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+).
+
 ## 4. The `.holds` Caching Insight
 
 A key methodological discovery during this verification was the `.holds` caching mechanism. When a function is annotated with `.holds`, Stainless verifies it returns `true` and caches all internal assertions. These cached facts are then available at every call site without additional postcondition work.
@@ -260,19 +329,19 @@ This formalization opens several directions for future work:
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/modulo.md)
+Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral.md)
+Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Lists*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/cycle.md)
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Lists*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
-Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/integral-cycle.md)
+Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md)
 
 ---
 

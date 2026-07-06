@@ -54,10 +54,10 @@ ending with `.holds`, proved by Stainless.
 
 ### Core objects
 
-| Object | Purpose |
-|--------|---------|
-| `DivMod` | Euclidean division: $a = b \cdot q + r$, $0 \le r < b$ |
-| `Calc` | Wrappers `Calc.div(a,b)`, `Calc.mod(a,b)` — only approved way (`%` is blocked) |
+| Object   | Purpose                                                                        |
+|----------|--------------------------------------------------------------------------------|
+| `DivMod` | Euclidean division: $a = b \cdot q + r$, $0 \le r < b$                         |
+| `Calc`   | Wrappers `Calc.div(a,b)`, `Calc.mod(a,b)` — only approved way (`%` is blocked) |
 
 ### Key properties verified
 
@@ -78,12 +78,12 @@ operations, list positioning, and cycle indexing.
 
 ### Core objects
 
-| Object | Purpose |
-|--------|---------|
-| `ListUtils` | Sum, append, slice, split, rotate |
-| `SortedList` | Sorted list (ascending), `fromUnsorted` via insertion sort |
-| `Integral` | Finite prefix-sum of a list |
-| `ListRepeatProperties` | `repeat(L, n) = L ++ \dots ++ L$ (n times) |
+| Object                 | Purpose                                                    |
+|------------------------|------------------------------------------------------------|
+| `ListUtils`            | Sum, append, slice, split, rotate                          |
+| `SortedList`           | Sorted list (ascending), `fromUnsorted` via insertion sort |
+| `Integral`             | Finite prefix-sum of a list                                |
+| `ListRepeatProperties` | `repeat(L, n) = L ++ ... ++ L` (n times)                   |
 
 ### Key properties verified
 
@@ -93,10 +93,10 @@ operations, list positioning, and cycle indexing.
 - **Sortedness**: `SortedList.isAscending` implies every element ≤ next
 - **Filter preserves order**: `filterList(list, d)` keeps relative order
 - **ListRepeatProperties**:
-  - `repeat(L, n) == L ++ repeat(L, n-1)` — structural induction
-  - `repeat(L, n)(k) == L(Calc.mod(k, |L|))` — index access
-  - `sum(repeat(L, n)) == sum(L) \* n` — sum under repetition
-  - Positivity preserved: if `allGreaterThan(L, v)`, then `allGreaterThan(repeat(L, n), v)`
+    - `repeat(L, n) == L ++ repeat(L, n-1)` — structural induction
+    - `repeat(L, n)(k) == L(Calc.mod(k, |L|))` — index access
+    - `sum(repeat(L, n)) == sum(L) \* n` — sum under repetition
+    - Positivity preserved: if `allGreaterThan(L, v)`, then `allGreaterThan(repeat(L, n), v)`
 
 ### Role in the stack
 
@@ -113,30 +113,31 @@ underpins the pipeline's expansion step: `nextExpanded` repeats the residue list
 
 ### Core objects
 
-| Object | Purpose |
-|--------|---------|
-| `ModCycle` | `values(k mod |values|)$ — modulo-indexed cycle |
-| `MemCycle` | Wraps ModCycle with built-in caching |
-| `GapCycle` | Cycle of strictly positive gaps, provides `memCycle` and `integral` |
-| `CycleIntegral` | Recursive prefix-sum: $CI(k) = CI(k-1) + cycle(k)$ |
-| `ModCycleIntegral` | Closed-form: $CI(k) = (k \text{ div } n) \cdot sum + \text{prefix}$ |
+| Object             | Purpose                                                              |
+|--------------------|----------------------------------------------------------------------|
+| `ModCycle`         | `values(k mod                                                        |values|)` — modulo-indexed cycle |
+| `MemCycle`         | Wraps ModCycle with built-in caching                                 |
+| `GapCycle`         | Cycle of strictly positive gaps — provides `memCycle` and `integral` |
+| `CycleIntegral`    | Recursive prefix-sum: $CI(k) = CI(k-1) + cycle(k)$                   |
+| `ModCycleIntegral` | Closed-form: $CI(k) = (k \text{ div } n) \cdot sum + \text{prefix}$  |
 
 ### Key properties verified
 
 - **Cycle access**: `cycle(k) == cycle.values(Calc.mod(k, cycle.size))`
-- **Cycle periodicity**: `cycle(k + n) == cycle(k)$ where n = cycle.size`
+- **Cycle periodicity**: `cycle(k + n) == cycle(k)` where $n =$ `cycle.size`
 - **Recurrence**: $CI(k+1) - CI(k) = cycle(k+1)$
 - **Three integral equivalence**: Recursive ≡ Classic ≡ ModCycleIntegral
-- **Replicated cycles**: `assertReplicatedCycleValueEqual` — repeating gaps $t$ times preserves cycle values at each position
+- **Replicated cycles**: `assertReplicatedCycleValueEqual` — repeating gaps $t$ times preserves cycle values at each
+  position
 
 ### CycleIntegralFilterProperties (survivor layer)
 
 Extends cycles with the survivor-based gap derivation:
 
-| Lemma | Statement |
-|-------|-----------|
-| `assertSurvivorAtNotMultiple` | Every survivor is NOT divisible by filter value $f$ |
-| `assertGapsFromValuesAtIndex` | $gaps(L)[i] = L[i+1] - L[i]$ |
+| Lemma                          | Statement                                                        |
+|--------------------------------|------------------------------------------------------------------|
+| `assertSurvivorAtNotMultiple`  | Every survivor is NOT divisible by filter value $f$              |
+| `assertGapsFromValuesAtIndex`  | $gaps(L)[i] = L[i+1] - L[i]$                                     |
 | `assertFilterMergeComposition` | New CI from survivors has no multiples of $f$ (full composition) |
 
 ---
@@ -147,19 +148,19 @@ Extends cycles with the survivor-based gap derivation:
 
 ### Core objects
 
-| Object | Purpose |
-|--------|---------|
-| `Prime` | Wrapper requiring `isPrime(value)`, provides `noDivisorInRange` |
-| `SortedPrimeList` | Descending-sorted prime list with verified insert/remove |
-| `AllPrimesSoFarList` | Complete-prime-prefix: contains every prime up to its head |
-| `PrimeUtils` | `primorial`, `biggerPrime`, `primeValues` |
+| Object               | Purpose                                                         |
+|----------------------|-----------------------------------------------------------------|
+| `Prime`              | Wrapper requiring `isPrime(value)`, provides `noDivisorInRange` |
+| `SortedPrimeList`    | Descending-sorted prime list with verified insert/remove        |
+| `AllPrimesSoFarList` | Complete-prime-prefix: contains every prime up to its head      |
+| `PrimeUtils`         | `primorial`, `biggerPrime`, `primeValues`                       |
 
 ### Key properties verified
 
 - **Euclid's theorem**: $primorial(P) + 1$ is coprime to all primes in $P$ — primes are infinite
 - **Distinct primes coprime**: $p \neq q \land isPrime(p) \land isPrime(q) \implies q \bmod p \neq 0$
 - **Filter preserves primes**: Filtering by $p$ does not remove any other prime $q$
-- **Primorial-product bridge**: `primorial(L) == product(primeValues(L))$ for non-empty $L$
+- **Primorial-product bridge**: `primorial(L) == product(primeValues(L))` for non-empty $L$
 
 ---
 
@@ -212,14 +213,14 @@ The mathematically transparent reference model. A linear scan starting from
 The canonical bridge. Constructs a `CycleSieveSequence` from the Spec's own data and
 proves the cycle matches the Spec element-for-element.
 
-| Lemma | Statement |
-|-------|-----------|
-| `assertApplyMatches(k)$ | `cycle(k) == spec(k)$ — same-stage equivalence |
-| `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value$ |
-| `assertNextCycleGapsMatchSpecNext(nP)` | Canonical next gaps == `spec.next.gapList` |
-| `assertSurvivorGapEqualsSpecNextGap(nP, k)` | Survivor gap$_k$ == spec.next gap$_k$ |
-| `repeatedCycle(times)$ | Repeating gap period preserves apply |
-| `assertRepeatedCycleApplyMatches(times, k)$ | `repeatedCycle(times).apply(k) == cycle.apply(k)$ |
+| Lemma                                       | Statement                                         |
+|---------------------------------------------|---------------------------------------------------|
+| `assertApplyMatches(k)`                     | `cycle(k) == spec(k)` — same-stage equivalence    |
+| `assertNextHeadMatches()`                   | `cycle(1) == spec.next.head.value`                |
+| `assertNextCycleGapsMatchSpecNext(nP)`      | Canonical next gaps == `spec.next.gapList`        |
+| `assertSurvivorGapEqualsSpecNextGap(nP, k)` | Survivor gap$_k$ == spec.next gap$_k$             |
+| `repeatedCycle(times)`                      | Repeating gap period preserves apply              |
+| `assertRepeatedCycleApplyMatches(times, k)` | `repeatedCycle(times).apply(k) == cycle.apply(k)` |
 
 All 12 methods listed in `OBJECTS.md` §6.6.
 
@@ -228,73 +229,76 @@ All 12 methods listed in `OBJECTS.md` §6.6.
 Value-level companion to the canonical bridge. Wraps `SpecDerivedSieveSequence` and adds
 the rotation anchor, modulus identity, and the merged composition lemma.
 
-| Lemma | Statement |
-|-------|-----------|
-| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes$ |
-| `assertNextHeadResidueIsSpecNextHead()` | `mod(cycle(1), head \* modulus) == spec.next.head.value$ |
-| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head \* modulus == spec.next.filterModulus$ |
-| `assertCanonicalCycleNextMatchSpecNext(nP)$ | Merged: canonical gaps = gapList + rotation + modulus + head+gap identity |
-| `assertSpecCanonicalCycleNextMatch(nP)$ | Composes the above — Spec = Canonical = Cycle for next stage |
-| `assertCycleNextApplyEqualsSpecNext(nP, k)$ | **Returns** `cNext.apply(k) == spec.next(k)$ for any $k$ |
-| `assertBNextApplyEqualsCNextApply(nP, k)$ | **Returns** `cNext.apply(k) == nextCanonical.cycle.apply(k)$ — explicit Canonical.next = Cycle.next |
-| `assertRepeatedCycleProof(nP)$ | Side proof via `repeatedCycle$ infrastructure |
+| Lemma                                            | Statement                                                                                           |
+|--------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `assertSpecNextFilterEqCyclePrimes()`            | `spec.next.filterValues == cyclePrimes`                                                             |
+| `assertNextHeadResidueIsSpecNextHead()`          | `mod(cycle(1), head * modulus) == spec.next.head.value`                                             |
+| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head * modulus == spec.next.tailPrimorial`                                                         |
+| `assertCanonicalCycleNextMatchSpecNext(nP)`      | Merged: canonical gaps = gapList + rotation + modulus + head+gap identity                           |
+| `assertSpecCanonicalCycleNextMatch(nP)`          | Composes the above — Spec = Canonical = Cycle for next stage                                        |
+| `assertCycleNextApplyEqualsSpecNext(nP, k)`      | **Returns** `cNext.apply(k) == spec.next(k)` for any $k$                                            |
+| `assertBNextApplyEqualsCNextApply(nP, k)`        | **Returns** `cNext.apply(k) == nextCanonical.cycle.apply(k)` — explicit Canonical.next = Cycle.next |
+| `assertRepeatedCycleProof(nP)`                   | Side proof via `repeatedCycle` infrastructure                                                       |
 
 #### `CycleSieveSequence`
 
-The efficient implementation. Stores `primes$ + `gapCycle$, generates candidates
-through `CycleIntegral(head, gapCycle.memCycle)$. No reference to the Spec.
+The independent, efficient implementation. Stores `primes` + `gapCycle`, generates
+candidates through `CycleIntegral(head, gapCycle.memCycle)`. No reference to the
+Spec — the whole point is proving the next stage can be computed using only the
+Cycle's own structural data (head, modulus, gapCycle).
 
-- `apply(0) = head$, $apply(k) = integral(k-1)$ for $k > 0$
-- `nextWithGapCycle(newGapCycle)$ — takes a pre-computed gap cycle (the
+- `apply(0) = head`, $apply(k) = integral(k-1)$ for $k > 0$
+- `nextWithGapCycle(newGapCycle)` — takes a pre-computed gap cycle (the
   constructive path). The proof verifies that the Cycle built from the Canonical
-  gap cycle has the same `apply(k)$ as `Spec.next(k)$ for every $k$.
+  gap cycle has the same `apply(k)` as `Spec.next(k)` for every $k$.
 
 ### The proof chain
 
 ```
-Canonical.next.gaps == Spec.next.gapList      [assertNextCycleGapsMatchSpecNext]
+Cycle pipeline gaps == Spec.next.gapList      [filter → repeat → rotate, independent]
+Cycle.next(k)       == Spec.next(k)           [assertCycleNextApplyEqualsSpecNext]
 Canonical.next(k)   == Spec.next(k)           [nextCanonical.assertApplyMatches(k)]
-Cycle.next          == Canonical.next.gapCycle [same GapCycle, same primes.next]
-Cycle.next(k)       == Canonical.next(k)      [same head + same gaps → same integral]
-Cycle.next(k)       == Spec.next(k)           [transitivity via assertCycleNextApplyEqualsSpecNext]
-                                                     and assertBNextApplyEqualsCNextApply]
 ```
 
+The Cycle computes its next stage using only its own data
+(`head`, `modulus`, `gapCycle`) via the pipeline
+(filter → repeat → rotate, in `SieveSequenceNextLevel`).
+The membership bridge proves the pipeline survivors match Spec.next values.
 The final equality is explicitly returned by
-`assertCycleNextApplyEqualsSpecNext(nextPeriod, k)$ — **for any $k$**.
+`assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` — **for any $k$**.
 
-### What the pipeline computes (filter → repeat → rotate)
+### The pipeline — independence proof
 
 The pipeline (`SieveSequenceNextLevel`) computes the next stage from the Cycle's
-data without accessing the Spec or the Canonical bridge:
+own data (`head`, `modulus`, `gapCycle`) without accessing the Spec. This is the
+independence proof: the Cycle does not need the Spec to compute its next stage.
 
-1. **Filter**: `nextFiltered(cycle)$ = values coprime to all primes, not divisible
+1. **Filter**: `nextFiltered(cycle)` = values coprime to all primes, not divisible
    by `head`, within $[0, head \cdot modulus)$
-2. **Repeat**: `calculateGaps(survivors, head \cdot modulus)$ = adjacent
+2. **Repeat**: `calculateGaps(survivors, head \cdot modulus)` = adjacent
    differences of survivors with a wraparound gap
-3. **Rotate**: `rotateAt(gaps, nextHeadResidueIndex)$ = align to
+3. **Rotate**: `rotateAt(gaps, nextHeadResidueIndex)` = align to
    `spec.next.head.value`
 
 The membership bridge (proven in `SpecCycleSieveEquivalence`) shows that the
-filtered values are exactly the cycle-integral survivors reduced modulo
-$head \cdot modulus$. The rotation is proven correct by
-`assertNextHeadResidueIsSpecNextHead`. The gaps then follow from
-`assertNextCycleGapsMatchSpecNext`.
+filtered values match the Spec.next values modulo $head \cdot modulus$.
+The rotation is proven correct by `assertNextHeadResidueIsSpecNextHead`.
+The gaps then follow from `assertNextCycleGapsMatchSpecNext`.
 
 ### Dead code (preserved per `never-destroy` rule)
 
-| File | Reason |
-|------|--------|
+| File                         | Reason                                                        |
+|------------------------------|---------------------------------------------------------------|
 | `SieveCycleAfterProof.scala` | Entirely commented out. Bad agent's unfinished proof attempt. |
 
 ---
 
 ## Summary: What each layer contributes
 
-| Layer | Gives the next layer |
-|-------|---------------------|
-| **ch2: Div/Mod** | Modular arithmetic — index operations, modulo indexing for cycles |
-| **ch3: Lists** | Sum/append/slice/rotate properties, list repeat for pipeline expansion |
-| **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), survivor filtering |
-| **ch5: Primes** | Prime theory, Euclid's theorem, filter preservation |
-| **ch6: Sieve** | Three representations (Spec, Canonical, Cycle) proved equivalent for current and next stages via the constructive path (`nextWithGapCycle`). The walk path (`CycleSieveSequence.next()`) remains unverified but is uncalled in the current codebase. |
+| Layer            | Gives the next layer                                                                                                                                                                                                                                 |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ch2: Div/Mod** | Modular arithmetic — index operations, modulo indexing for cycles                                                                                                                                                                                    |
+| **ch3: Lists**   | Sum/append/slice/rotate properties, list repeat for pipeline expansion                                                                                                                                                                               |
+| **ch4: Cycles**  | Unbounded sequences, cycle integrals (prefix sums), survivor filtering                                                                                                                                                                               |
+| **ch5: Primes**  | Prime theory, Euclid's theorem, filter preservation                                                                                                                                                                                                  |
+| **ch6: Sieve**   | Three representations (Spec, Canonical, Cycle) proved equivalent for current and next stages via the constructive path (`nextWithGapCycle`). The walk path (`CycleSieveSequence.next()`) remains unverified but is uncalled in the current codebase. |

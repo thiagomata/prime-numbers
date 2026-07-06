@@ -242,3 +242,25 @@ When writing a new article or adding new proofs:
 - Add `assert()` to help the solver
 - Use `stainless.lang BooleanDecorations` for `.holds`
 - Run `just verify` after each change
+
+## Formatting Conventions
+
+### List Concatenation
+
+Use `\mathbin{+\!+}` for list concatenation in LaTeX math blocks. Bare `++` in
+LaTeX produces an oversized gap between the plus signs in MathJax / GitHub Pages.
+The `\mathbin` wrapper treats the pair as a single binary operator, and the
+`\!` negative thin space tightens the visual gap to look like a cohesive operator.
+
+```math
+\begin{aligned}
+A \mathbin{+\!+} B
+\end{aligned}
+```
+
+In prose, code blocks, and bullet-summary lines, plain `++` is acceptable since
+it renders as monospace text, not LaTeX math.
+
+```scala
+sum(A ++ B) == sum(A) + sum(B)
+```

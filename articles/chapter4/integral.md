@@ -47,7 +47,7 @@ and let $init \in \mathbb{Z}$ be an initial value.
 
 We reuse several basic list operations and their verified properties from a companion article on recursive list 
 construction &mdash; [Using Formal Verification to Prove Properties of Lists Recursively Defined](
-https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md
+https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md
 ) [[1]](#ref1).  
 These include the following functions:
 
@@ -228,8 +228,8 @@ $$
 
 $$
 \begin{aligned}
-L &= x_0 ⧺ \text{tail}(L)                                                                  & \qquad \text{[List decomposition]} \\
-I &= v_0 ⧺ \text{tail}(L)                                                                  & \qquad \text{[Integral decomposition]} \\
+L &= x_0 \mathbin{+\!+} \text{tail}(L)                                                                  & \qquad \text{[List decomposition]} \\
+I &= v_0 \mathbin{+\!+} \text{tail}(L)                                                                  & \qquad \text{[Integral decomposition]} \\
 I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
 I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
 I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
@@ -295,7 +295,7 @@ $$
 acc(L, init) =
 \begin{cases}
 L_e & \text{if } L = L_e \\
-\text{head}(L) + init ⧺ acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
+\text{head}(L) + init \mathbin{+\!+} acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
 \end{cases}
 $$
 
@@ -310,7 +310,7 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
   }
   def acc: List[BigInt] = {
     decreases(list.size)
-    if (list.isEmpty) list else List(this.head) ++ Integral(list.tail, this.head).acc
+    if (list.isEmpty) list else List(this.head) \mathbin{+\!+} Integral(list.tail, this.head).acc
   }
   def head: BigInt = {
     require(list.nonEmpty)
@@ -510,7 +510,7 @@ This property is verified in the [
 ## 6. Limitations
 
 This article builds upon the foundational assumptions and constraints established in the earlier work
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md) [[1]](#ref1).
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md) [[1]](#ref1).
 
 Specifically:
 
@@ -545,7 +545,7 @@ All properties were formally verified in Scala using the Stainless verification 
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/list.md)
+Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 ## Appendix A: Scala Verification Code
 
@@ -600,7 +600,7 @@ def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
     assert(integral.apply(position) == integral.init + prevSum + integral.list(position))
     assert(ListUtilsProperties.listSumAddValue(integral.list, integral.list(position)))
     assert(ListUtilsProperties.assertAppendToSlice(integral.list, 0, position))
-    assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) ++ List(integral.list(position)))
+    assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) \mathbin{+\!+} List(integral.list(position)))
     assert(integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
   }
   integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
@@ -675,7 +675,7 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
     assert(next.last == integral.init + integral.list.head + ListUtils.sum(next.list))
     assert(integral.last == integral.init + integral.list.head + ListUtils.sum(next.list))
     assert(ListUtilsProperties.listSumAddValue(next.list, integral.list.head))
-    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) ++ integral.list.tail))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) \mathbin{+\!+} integral.list.tail))
     assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(integral.list))
     assert(integral.last == integral.init + ListUtils.sum(integral.list))
   }
@@ -711,7 +711,7 @@ def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
     assert(integral.tail == next.acc)
 
     assert(integral.apply(position) == next.apply(position - 1))
-    assert(integral.acc == List(integral.head) ++ next.acc)
+    assert(integral.acc == List(integral.head) \mathbin{+\!+} next.acc)
     assert(integral.acc.tail == next.acc)
 
     assert(integral.acc.nonEmpty)
@@ -791,7 +791,7 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 
     assertSizeAccEqualsSizeList(next.list, next.init)
     assert(next.acc.size == next.list.size)
-    assert(current.acc == List(current.head) ++ next.acc)
+    assert(current.acc == List(current.head) \mathbin{+\!+} next.acc)
     assert(current.acc.size == 1 + next.acc.size)
     assert(1 + list.tail.size == list.size)
   }

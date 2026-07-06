@@ -440,7 +440,7 @@ should mostly contain transfer lemmas and composition lemmas. In practice:
    The wrap gap needs the period endpoint equality:
 
    ```math
-   spec.next(nextPeriod) = spec.next.head.value + spec.next.filterModulus
+   spec.next(nextPeriod) = spec.next.head.value + spec.next.tailPrimorial
    ```
 
 10. **Rotation anchor equality**

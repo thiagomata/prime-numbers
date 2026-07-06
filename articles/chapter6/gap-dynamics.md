@@ -35,7 +35,7 @@ The `SieveSequence.next` pipeline first expands the current residues, then filte
 
 ### Cross-Reference
 
-This article builds on the [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md), which records failed approaches and the current boundary map.
+This article builds on the [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md), which records failed approaches and the current boundary map.
 
 ---
 
@@ -157,7 +157,7 @@ If yes, the sieve lacks the capacity to destroy all local 2-gaps, and twin prime
 
 ### Status
 
-This question remains **open** in the formal verification sense. It is equivalent to the Twin Prime Conjecture in this framework. See [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md) Sections 10, 16, and 18 for detailed analysis.
+This question remains **open** in the formal verification sense. It is equivalent to the Twin Prime Conjecture in this framework. See [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 10, 16, and 18 for detailed analysis.
 
 ### Empirical Evidence
 
@@ -190,10 +190,10 @@ A publication-ready proof must either verify a local-density invariant directly 
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Learnings: Capacity Argument for Twin Prime Persistence*. Available at: [articles/learnings/learnings-capacity-argument.md](../articles/learnings/learnings-capacity-argument.md)
+Mata, T. H. (2026). *Learnings: Capacity Argument for Twin Prime Persistence*. Available at: [articles/learnings/learnings-capacity-argument.md](../learnings/learnings-capacity-argument.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). *Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences*. Available at: [articles/draft/draft-empirical-g-local-analysis.md](../articles/draft/draft-empirical-g-local-analysis.md)
+Mata, T. H. (2026). *Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences*. Available at: [articles/draft/draft-empirical-g-local-analysis.md](../draft/draft-empirical-g-local-analysis.md)
 
 ---
 

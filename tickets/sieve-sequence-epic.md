@@ -10,7 +10,8 @@ active sieve-sequence proof ticket). Historical Leg-2 notes live in
 > This document is the coordination point. Individual legs live in their own
 > tickets; this file explains how they fit together and what is proven today.
 
-**Current verification:** `12138 valid: 12138 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow, +1042 from P2 full, +756 from value-level survivor proofs).
+**Current verification:** `12138 valid: 12138 invalid: 0 unknown: 0` (was 9373 at creation, +14 from P2/nextFromWindow,
++1042 from P2 full, +756 from value-level survivor proofs).
 
 ---
 
@@ -19,11 +20,11 @@ active sieve-sequence proof ticket). Historical Leg-2 notes live in
 The project models one sieve stage in three ways. They differ in *how* they
 generate the stream of survivor values, not in *which* values they generate.
 
-| Representation | File | Generates values by |
-|---|---|---|
-| **Spec** (`SpecSieveSequence`) | `v1/chapter6/seq/sieve/SpecSieveSequence.scala` | **Linear scan** of consecutive naturals, keeping those coprime to the tail primes. The mathematical source of truth. |
+| Representation                          | File                                                | Generates values by                                                                                                                                                                                                       |
+|-----------------------------------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Spec** (`SpecSieveSequence`)          | `v1/chapter6/seq/sieve/SpecSieveSequence.scala`     | **Linear scan** of consecutive naturals, keeping those coprime to the tail primes. The mathematical source of truth.                                                                                                      |
 | **Canonical** (`SpecDerivedCycleSieve`) | `v1/chapter6/seq/sieve/SpecDerivedCycleSieve.scala` | An *intermediate representation*. Built **from** a Spec stage; extracts Spec's certified prime list and gap cycle into a `CycleSieveSequence`. Owns all Spec↔Cycle correspondence lemmas. **Allowed to use Spec freely.** |
-| **Cycle** (`CycleSieveSequence`) | `v1/chapter6/seq/sieve/CycleSieveSequence.scala` | **Cycle arithmetic** — a stored `GapCycle` replayed through `CycleIntegral`. The optimized implementation. Carries only its own structural invariants; **no link to Spec**. |
+| **Cycle** (`CycleSieveSequence`)        | `v1/chapter6/seq/sieve/CycleSieveSequence.scala`    | **Cycle arithmetic** — a stored `GapCycle` replayed through `CycleIntegral`. The optimized implementation. Carries only its own structural invariants; **no link to Spec**.                                               |
 
 ### Why three, not two
 
@@ -100,48 +101,56 @@ instead, and surface the gap to the user rather than burning attempts.
    CycleSieveSequence (correct by transitivity, no Spec link)
 ```
 
-| Leg | Statement | Status | Owner |
-|---|---|---|---|
-| 1 | Spec is correct | ✅ Done | `SpecSieveSequence` |
-| 2 | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k | ✅ Done | `SpecDerivedCycleSieve.assertApplyMatches` |
-| 3 | The canonical next cycle built from `spec.next` matches `spec.next` | ✅ Done | `SpecDerivedCycleSieve` (see §4) |
-| 4a | Survivor-derived next gaps = spec.next gaps (per-index, walk-free) | ✅ Done | `assertSurvivorGapEqualsSpecNextGap`, `assertSpecNextIsKthSurvivor`, `assertFirstSurvivorEqualsSpecNext0` |
-| 4b | `CycleSieveSequence.nextFromWindow()` — verified method using transparent window + requires | ✅ Done (14/14) | `CycleSieveSequence.nextFromWindow()` + P2 lemmas |
-| 5 | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec) | Future | (future ticket) |
+| Leg | Statement                                                                                   | Status         | Owner                                                                                                     |
+|-----|---------------------------------------------------------------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------|
+| 1   | Spec is correct                                                                             | ✅ Done         | `SpecSieveSequence`                                                                                       |
+| 2   | Canonical ≡ Spec (current stage): `cycle(k) == spec(k)` ∀k                                  | ✅ Done         | `SpecDerivedCycleSieve.assertApplyMatches`                                                                |
+| 3   | The canonical next cycle built from `spec.next` matches `spec.next`                         | ✅ Done         | `SpecDerivedCycleSieve` (see §4)                                                                          |
+| 4a  | Survivor-derived next gaps = spec.next gaps (per-index, walk-free)                          | ✅ Done         | `assertSurvivorGapEqualsSpecNextGap`, `assertSpecNextIsKthSurvivor`, `assertFirstSurvivorEqualsSpecNext0` |
+| 4b  | `CycleSieveSequence.nextFromWindow()` — verified method using transparent window + requires | ✅ Done (14/14) | `CycleSieveSequence.nextFromWindow()` + P2 lemmas                                                         |
+| 5   | `CycleSieveSequence` ≡ Canonical, using **only** Cycle's structural rules (no Spec)         | Future         | (future ticket)                                                                                           |
 
 ### P2 Breakthrough + Verified Next (2026-06-27/29)
 
-Three verified lemmas that close Leg 4a — the gap equality between cycle survivors and spec.next — **without unfolding the walk**:
+Three verified lemmas that close Leg 4a — the gap equality between cycle survivors and spec.next — **without unfolding
+the walk**:
 
-| Lemma | VCs | What it proves |
-|-------|-----|----------------|
-| `assertFirstSurvivorEqualsSpecNext0` | 7/7 | `cycle.integral(0) == spec.next(0)` — head match |
+| Lemma                                               | VCs   | What it proves                                                                       |
+|-----------------------------------------------------|-------|--------------------------------------------------------------------------------------|
+| `assertFirstSurvivorEqualsSpecNext0`                | 7/7   | `cycle.integral(0) == spec.next(0)` — head match                                     |
 | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` | 53/53 | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` — gap match per index |
-| `assertSpecNextIsKthSurvivor(nextPeriod, k)` | 29/29 | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` — survivor position match |
+| `assertSpecNextIsKthSurvivor(nextPeriod, k)`        | 29/29 | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` — survivor position match     |
 
-These proofs avoid `survivorValues`, `specGapCycle`, and `nextGapsWalk` entirely. They work through **position-based lemmas** (`indexOfAccepted`, `assertApplyMatches`, `assertNextGapEqualsCurrentGapSum`), which are lightweight and cached.
+These proofs avoid `survivorValues`, `specGapCycle`, and `nextGapsWalk` entirely. They work through **position-based
+lemmas** (`indexOfAccepted`, `assertApplyMatches`, `assertNextGapEqualsCurrentGapSum`), which are lightweight and
+cached.
 
 Two additional structural additions:
 
-| Lemma | VCs | What it proves |
-|-------|-----|----------------|
-| `assertFilterMergeComposition` | 34/34 | A `CycleIntegral` built from survivors has no multiples of the filter prime |
+| Lemma                                  | VCs   | What it proves                                                                    |
+|----------------------------------------|-------|-----------------------------------------------------------------------------------|
+| `assertFilterMergeComposition`         | 34/34 | A `CycleIntegral` built from survivors has no multiples of the filter prime       |
 | `assertFullEquivalence(nextPeriod, k)` | 13/13 | `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value` — top-level packaged theorem |
 
 ### Transparent Window Helpers
 
-Two list-based helpers that expose the cycle's data as plain `List[BigInt]`, enabling list-induction proofs instead of cycle reasoning:
+Two list-based helpers that expose the cycle's data as plain `List[BigInt]`, enabling list-induction proofs instead of
+cycle reasoning:
 
-| Helper | Purpose |
-|--------|---------|
-| `currentWindow(steps)` | `List[BigInt]` of `cycle.integral(0..steps-1)` — transparent recursion (6/6) |
-| `survivorWindow(steps)` | Filtered window (non-multiples of head) |
+| Helper                  | Purpose                                                                      |
+|-------------------------|------------------------------------------------------------------------------|
+| `currentWindow(steps)`  | `List[BigInt]` of `cycle.integral(0..steps-1)` — transparent recursion (6/6) |
+| `survivorWindow(steps)` | Filtered window (non-multiples of head)                                      |
 
-These provide a proof-friendly middle representation: instead of reasoning through `MemCycle`/`CycleIntegral` opacity, lemmas can induct over the plain `List[BigInt]`. Future Leg-4b work could use `survivorWindow` to prove the walk matches the survivor list element-by-element.
+These provide a proof-friendly middle representation: instead of reasoning through `MemCycle`/`CycleIntegral` opacity,
+lemmas can induct over the plain `List[BigInt]`. Future Leg-4b work could use `survivorWindow` to prove the walk matches
+the survivor list element-by-element.
 
 ### ⚠️ Remaining open: the walk itself
 
-The `nextGapsWalk` function is still opaque. Three prior direct attempts timed out (see §5 legacy notes). The P2 lemmas provide a **certified alternative**: the survivor computation produces the correct gaps. The walk correctness is now a bridge between the walk and the certified survivor computation, not a proof from scratch.
+The `nextGapsWalk` function is still opaque. Three prior direct attempts timed out (see §5 legacy notes). The P2 lemmas
+provide a **certified alternative**: the survivor computation produces the correct gaps. The walk correctness is now a
+bridge between the walk and the certified survivor computation, not a proof from scratch.
 
 ### New: Value-level survivor proofs (`SpecDerivedBySurvivors`)
 
@@ -149,13 +158,13 @@ A new class `SpecDerivedBySurvivors` wraps `SpecDerivedSieveSequence` and provid
 alternative value-level proof chain that avoids the index-based `nextAcceptedOldIndex`
 machinery. It proves (2026-07-04):
 
-| Lemma | VCs | Statement | Approach |
-|-------|-----|-----------|----------|
-| `assertCycleSurvivorPassesSpecNextFilter(pos)` | 8 | Survivor `integral(pos)` passes `spec.next.passesFilter` | Coprimality chain, no `>=` precondition |
-| `assertSurvivorAcceptedBySpecNext(pos)` | 12 | Survivor accepted by `spec.next.accepts` | `passesFilter` + monotonicity bridge |
-| `assertIntegralGeIntegral0(pos)` | 20 | `integral(pos) >= integral(0)` | Induction via `assertCycleValuePositive` |
-| `assertNextHeadLessThanNewModulus()` | 9 | `cycle(1) < head * modulus` | `spec.apply.ensuring` + Z3 arithmetic |
-| `assertNextHeadLessThanHeadSquared()` | 3 | `cycle(1) < head^2` | Constructor require + `assertNextHeadMatches` |
+| Lemma                                          | VCs | Statement                                                | Approach                                      |
+|------------------------------------------------|-----|----------------------------------------------------------|-----------------------------------------------|
+| `assertCycleSurvivorPassesSpecNextFilter(pos)` | 8   | Survivor `integral(pos)` passes `spec.next.passesFilter` | Coprimality chain, no `>=` precondition       |
+| `assertSurvivorAcceptedBySpecNext(pos)`        | 12  | Survivor accepted by `spec.next.accepts`                 | `passesFilter` + monotonicity bridge          |
+| `assertIntegralGeIntegral0(pos)`               | 20  | `integral(pos) >= integral(0)`                           | Induction via `assertCycleValuePositive`      |
+| `assertNextHeadLessThanNewModulus()`           | 9   | `cycle(1) < head * modulus`                              | `spec.apply.ensuring` + Z3 arithmetic         |
+| `assertNextHeadLessThanHeadSquared()`          | 3   | `cycle(1) < head^2`                                      | Constructor require + `assertNextHeadMatches` |
 
 12 lemmas total (all verified). The F5 timeout wall (integral monotonicity) was climbed
 by using existing `CycleIntegralProperties.assertCycleValuePositive` +
@@ -183,12 +192,12 @@ from either class transfer to the other.
 The project has accumulated several distinct verified patterns for reasoning
 about cycles. Leg 3 deliberately reused these rather than inventing new ones.
 
-| Idiom | Source | When it applies |
-|---|---|---|
-| **Transfer through equivalence** | `assertApplyMatches` + a Spec lemma | When Canonical needs a fact Spec already proved. Call the Spec lemma, rewrite `spec.apply(i)` → `cycle(i)` at the relevant positions. **This is the workhorse of Leg 3.** |
-| **Diff-based induction** | `ClassicCycleIntegralProperties.assertDiffEqualsCycleValue`, `assertSameDiffAfterCycle` | Reasoning about `integral(k+1) - integral(k) == cycle(k+1)`; periodic via `MemCycleProperties.valueMatchAfterManyLoopsInBoth`. |
-| **`indexOfAccepted` substitution** | `SpecSieveSequence.indexOfAccepted` (with `.ensuring`) | Avoiding positional scans; cached postconditions give `spec(res) == value` directly. Used by `assertNextGapEqualsCurrentGapSum`. |
-| **Walk / `collectGaps`** | `SieveSequenceNextLevel.nextGapsWalk` | ❌ **Avoid.** Timed out 3× — diff depends on `lastSurvivor` (all previous positions), so Stainless treats the walk as opaque from outside `.holds`. |
+| Idiom                              | Source                                                                                  | When it applies                                                                                                                                                           |
+|------------------------------------|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Transfer through equivalence**   | `assertApplyMatches` + a Spec lemma                                                     | When Canonical needs a fact Spec already proved. Call the Spec lemma, rewrite `spec.apply(i)` → `cycle(i)` at the relevant positions. **This is the workhorse of Leg 3.** |
+| **Diff-based induction**           | `ClassicCycleIntegralProperties.assertDiffEqualsCycleValue`, `assertSameDiffAfterCycle` | Reasoning about `integral(k+1) - integral(k) == cycle(k+1)`; periodic via `MemCycleProperties.valueMatchAfterManyLoopsInBoth`.                                            |
+| **`indexOfAccepted` substitution** | `SpecSieveSequence.indexOfAccepted` (with `.ensuring`)                                  | Avoiding positional scans; cached postconditions give `spec(res) == value` directly. Used by `assertNextGapEqualsCurrentGapSum`.                                          |
+| **Walk / `collectGaps`**           | `SieveSequenceNextLevel.nextGapsWalk`                                                   | ❌ **Avoid.** Timed out 3× — diff depends on `lastSurvivor` (all previous positions), so Stainless treats the walk as opaque from outside `.holds`.                        |
 
 ---
 
@@ -206,30 +215,30 @@ is excluded from the rule list.
 
 ### Verified rules (all green, `10572 valid` as of 2026-06-29)
 
-| Rule | Lemma | Statement over `cycle` |
-|---|---|---|
-| **Next head** | `assertNextHeadMatches` | `cycle(1) == spec.next.head.value` |
-| **Gap positivity** | `assertGapPositiveMatchesSpec` | `cycle(k+1) - cycle(k) > 0` |
-| **Gap periodicity** | `assertGapPeriodicMatchesSpec` | `cycle(period+k+1) - cycle(period+k) == cycle(k+1) - cycle(k)` |
-| **Period sum** | `assertNextFilterModulusRelation` | `spec.next.filterModulus == cycle.head * spec.filterModulus` |
-| **Copy rule** | `assertCopyGapMatchesSpec` | if `cycle(k)`, `cycle(k+1)` both not multiples of `cycle.head` → next gap = `cycle(k+1) - cycle(k)` |
-| **Merge rule (accept)** | `assertCurrentNonMultipleAcceptedByNext` + `assertNextGapEqualsCurrentGapSum` | non-multiple of `cycle.head` → value accepted by next; merged gap = sum of current gaps |
-| **Merge rule (reject)** | `assertCurrentMultipleRejectedByNext` | multiple of `cycle.head` → value rejected by next |
-| **Gap list equality** | `nextGapList` + `assertNextGapListMatchesSpecNext` | `nextGapList(from, count) == spec.next.gapList(from, count)` |
-| **Per-position gap** | `assertNextGapAtMatchesSpecNext` | `spec.next(i+1) - spec.next(i) == spec.next.gapList(0, nextPeriod).apply(i)` |
-| **Ordering** | `assertCurrentValueAtOrAboveNextHead` | `k >= 1` ⇒ `spec(k) >= spec.next.head.value` |
+| Rule                    | Lemma                                                                         | Statement over `cycle`                                                                              |
+|-------------------------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| **Next head**           | `assertNextHeadMatches`                                                       | `cycle(1) == spec.next.head.value`                                                                  |
+| **Gap positivity**      | `assertGapPositiveMatchesSpec`                                                | `cycle(k+1) - cycle(k) > 0`                                                                         |
+| **Gap periodicity**     | `assertGapPeriodicMatchesSpec`                                                | `cycle(period+k+1) - cycle(period+k) == cycle(k+1) - cycle(k)`                                      |
+| **Period sum**          | `assertNextFilterModulusRelation`                                             | `spec.next.tailPrimorial == cycle.head * spec.tailPrimorial`                                        |
+| **Copy rule**           | `assertCopyGapMatchesSpec`                                                    | if `cycle(k)`, `cycle(k+1)` both not multiples of `cycle.head` → next gap = `cycle(k+1) - cycle(k)` |
+| **Merge rule (accept)** | `assertCurrentNonMultipleAcceptedByNext` + `assertNextGapEqualsCurrentGapSum` | non-multiple of `cycle.head` → value accepted by next; merged gap = sum of current gaps             |
+| **Merge rule (reject)** | `assertCurrentMultipleRejectedByNext`                                         | multiple of `cycle.head` → value rejected by next                                                   |
+| **Gap list equality**   | `nextGapList` + `assertNextGapListMatchesSpecNext`                            | `nextGapList(from, count) == spec.next.gapList(from, count)`                                        |
+| **Per-position gap**    | `assertNextGapAtMatchesSpecNext`                                              | `spec.next(i+1) - spec.next(i) == spec.next.gapList(0, nextPeriod).apply(i)`                        |
+| **Ordering**            | `assertCurrentValueAtOrAboveNextHead`                                         | `k >= 1` ⇒ `spec(k) >= spec.next.head.value`                                                        |
 
 ### P2 rules added in 2026-06-27
 
-| Rule | Lemma | Statement over `cycle` |
-|---|---|---|
-| **Survivor head match** | `assertFirstSurvivorEqualsSpecNext0` | `cycle.integral(0) == spec.next(0)` |
-| **Survivor gap match** | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` where `pos_i = indexOfAccepted(spec.next(i))` |
-| **Survivor position match** | `assertSpecNextIsKthSurvivor(nextPeriod, k)` | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))` |
-| **Filter composition** | `assertFilterMergeComposition` | New CI from `survivors` has no multiples of `cycle.head` |
-| **Full equivalence** | `assertFullEquivalence(nextPeriod, k)` | `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value` |
-| **Transparent window** | `currentWindow(steps)` | `List[BigInt]` of `cycle.integral(0..steps-1)` |
-| **Transparent survivor** | `survivorWindow(steps)` | `currentWindow(steps).filter(v ⇒ v mod head ≠ 0)` |
+| Rule                        | Lemma                                               | Statement over `cycle`                                                                                       |
+|-----------------------------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| **Survivor head match**     | `assertFirstSurvivorEqualsSpecNext0`                | `cycle.integral(0) == spec.next(0)`                                                                          |
+| **Survivor gap match**      | `assertSurvivorGapEqualsSpecNextGap(nextPeriod, i)` | `spec.next(i+1)-spec.next(i) == cycle(pos_{i+1})-cycle(pos_i)` where `pos_i = indexOfAccepted(spec.next(i))` |
+| **Survivor position match** | `assertSpecNextIsKthSurvivor(nextPeriod, k)`        | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`                                                       |
+| **Filter composition**      | `assertFilterMergeComposition`                      | New CI from `survivors` has no multiples of `cycle.head`                                                     |
+| **Full equivalence**        | `assertFullEquivalence(nextPeriod, k)`              | `cycle(k)==spec(k) ∧ cycle(1)==spec.next.head.value`                                                         |
+| **Transparent window**      | `currentWindow(steps)`                              | `List[BigInt]` of `cycle.integral(0..steps-1)`                                                               |
+| **Transparent survivor**    | `survivorWindow(steps)`                             | `currentWindow(steps).filter(v ⇒ v mod head ≠ 0)`                                                            |
 
 ### Hard-won lessons from Leg 3 (candidates for `LEARNINGS.md`)
 
@@ -255,18 +264,19 @@ is excluded from the rule list.
 
 **Goal:** prove `cycle(k) == spec(k)` for all `k >= 0`.
 
-| Lemma | Statement | Status |
-|---|---|---|
-| `cycle` (constructor) | Extracts `PrimeUtils.primeValues(spec.primes)` + `spec.specGapCycle(period)` | ✅ |
-| `assertApplyMatches(k)` | `cycle(k) == spec(k)` ∀k | ✅ |
-| `assertHeadMatches` / `assertPrimesMatch` / `assertGapCycleMatches` | structural aliases | ✅ |
-| `assertNextAcceptsMatches(value)` | `spec.next.accepts(v) == isCoprime(v, cycle.primes)` | ✅ |
-| `assertNextPrimesMatch` | next prime list correspondence | ✅ |
-| `assertWalkDecisionMatchesNextAccept(k)` | walk keep/skip == next acceptance | ✅ |
-| `assertNextValueMatchesCyclePosition(k)` | value-level next-stage correspondence | ✅ |
-| **Lemma 5** (walk equality `nextGapsWalk == spec.next.gapList`) | — | ❌ Deferred (3 timeouts); superseded by Leg 3's transfer approach |
+| Lemma                                                               | Statement                                                                    | Status                                                           |
+|---------------------------------------------------------------------|------------------------------------------------------------------------------|------------------------------------------------------------------|
+| `cycle` (constructor)                                               | Extracts `PrimeUtils.primeValues(spec.primes)` + `spec.specGapCycle(period)` | ✅                                                                |
+| `assertApplyMatches(k)`                                             | `cycle(k) == spec(k)` ∀k                                                     | ✅                                                                |
+| `assertHeadMatches` / `assertPrimesMatch` / `assertGapCycleMatches` | structural aliases                                                           | ✅                                                                |
+| `assertNextAcceptsMatches(value)`                                   | `spec.next.accepts(v) == isCoprime(v, cycle.primes)`                         | ✅                                                                |
+| `assertNextPrimesMatch`                                             | next prime list correspondence                                               | ✅                                                                |
+| `assertWalkDecisionMatchesNextAccept(k)`                            | walk keep/skip == next acceptance                                            | ✅                                                                |
+| `assertNextValueMatchesCyclePosition(k)`                            | value-level next-stage correspondence                                        | ✅                                                                |
+| **Lemma 5** (walk equality `nextGapsWalk == spec.next.gapList`)     | —                                                                            | ❌ Deferred (3 timeouts); superseded by Leg 3's transfer approach |
 
 **Constructor caveats still carried explicitly:**
+
 - `spec.primes.nextPrime.value < spec.head.value * spec.head.value` (the
   "prime before p²" wall, tracked in `prove-apply1-is-prime.md`).
 - `Calc.mod(SieveUtils.product(filterValues), head.value) != 0` (tracked in
@@ -286,6 +296,7 @@ closed, and `CycleSieveSequence` can be trusted without re-proving anything
 against the linear scan.
 
 **No ticket exists yet.** Open scoping questions:
+
 - Which of `CycleSieveSequence`'s constructor `require`s are sufficient to
   carry the Leg-4 proof?
 - Does Leg 5 need the Leg-3 cycle rules (positivity, periodicity, copy, merge)
@@ -296,15 +307,15 @@ against the linear scan.
 
 ## 7. Out-of-Scope / Tracked Elsewhere
 
-| Item | Where |
-|---|---|
-| "Prime between p and p²" (Bertrand-style) | `blocked/prove-apply1-is-prime.md` — undischarged wall (LEARNINGS 10.1) |
-| Product not divisible by head | `blocked/primorial-not-divisible-by-new-prime.md` — Euclid's lemma wall (LEARNINGS 10.2) |
-| Gap property landscape (24+ properties) | `active/sieve-property-landscape.md` — catalogues proved, provable, and open twin-gap properties |
-| Forbidden states / dead configurations | `active/sieve-property-landscape.md` §"Forbidden States" — monotonic exclusion theorem |
-| Old `CycleSieveSequence.next` / walk framing | `superseded/remove-extern-from-next.md` |
-| Old Spec/Cycle equivalence plan | `superseded/v0-v2-apply-equivalence.md` |
-| Failed walk-based pipeline (do not revive) | `superseded/walk-based-pipeline.md` |
+| Item                                         | Where                                                                                            |
+|----------------------------------------------|--------------------------------------------------------------------------------------------------|
+| "Prime between p and p²" (Bertrand-style)    | `blocked/prove-apply1-is-prime.md` — undischarged wall (LEARNINGS 10.1)                          |
+| Product not divisible by head                | `blocked/primorial-not-divisible-by-new-prime.md` — Euclid's lemma wall (LEARNINGS 10.2)         |
+| Gap property landscape (24+ properties)      | `active/sieve-property-landscape.md` — catalogues proved, provable, and open twin-gap properties |
+| Forbidden states / dead configurations       | `active/sieve-property-landscape.md` §"Forbidden States" — monotonic exclusion theorem           |
+| Old `CycleSieveSequence.next` / walk framing | `superseded/remove-extern-from-next.md`                                                          |
+| Old Spec/Cycle equivalence plan              | `superseded/v0-v2-apply-equivalence.md`                                                          |
+| Failed walk-based pipeline (do not revive)   | `superseded/walk-based-pipeline.md`                                                              |
 
 ---
 
@@ -332,6 +343,7 @@ design:
 ## Update Log
 
 ### 2026-06-24 — Document created
+
 Bird's-eye design doc consolidating the 3-way Spec/Canonical/Cycle
 architecture. Reflects the verified state as of Leg 3 completion (`9373 valid`).
 Traces the EPIC (§2) down to per-lemma status (§4, §5) and records the
@@ -339,7 +351,9 @@ load-bearing proof idioms (§3) and lessons (§4) accumulated across Legs 2–3.
 Leg 5 is documented as future work with open scoping questions.
 
 ### 2026-06-29 — P2 breakthrough, transparent window, property landscape
+
 Major updates:
+
 - **Verification count**: `9373 → 10572` (+1199)
 - **Leg 4a (survivor gaps)**: ✅ DONE via P2 lemmas:
   `assertSurvivorGapEqualsSpecNextGap` (53/53),
@@ -354,10 +368,16 @@ Major updates:
   provide a certified alternative path that bypasses the walk
 
 ### 2026-07-04 — Value-level survivor proofs, F5 timeout climbed
+
 Major additions:
+
 - **Verification count**: `10572 → 12114` (+1542)
-- **New class**: `SpecDerivedBySurvivors` — wraps `SpecDerivedSieveSequence`, proves survivor filter-passing and acceptance via value-level coprimality chains (10 lemmas, all verified)
-- **F5 timeout climbed**: `assertIntegralIncreasingForCount` (14/14 in 11.53s) by using existing `assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive` as intermediate lemmas (3 attempts: naive induction timed out, intermediate lemma timed out, existing-lemmas succeeded)
-- **Architectural update**: `passesFilter` → `accepts` bridge now proven — survivors satisfy `>= head.value` precondition via monotonicity induction, connecting value-level proofs to index-based lemmas
+- **New class**: `SpecDerivedBySurvivors` — wraps `SpecDerivedSieveSequence`, proves survivor filter-passing and
+  acceptance via value-level coprimality chains (10 lemmas, all verified)
+- **F5 timeout climbed**: `assertIntegralIncreasingForCount` (14/14 in 11.53s) by using existing
+  `assertCycleValuePositive` + `GapCycle.assertMemCycleValuesPositive` as intermediate lemmas (3 attempts: naive
+  induction timed out, intermediate lemma timed out, existing-lemmas succeeded)
+- **Architectural update**: `passesFilter` → `accepts` bridge now proven — survivors satisfy `>= head.value`
+  precondition via monotonicity induction, connecting value-level proofs to index-based lemmas
 - New ticket: `active/spec-derived-by-survivors.md`
 - OBJECTS.md §6.9: new section with 10 lemmas, ch6 count updated

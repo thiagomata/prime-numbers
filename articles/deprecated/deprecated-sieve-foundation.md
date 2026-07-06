@@ -96,9 +96,9 @@ consecutive integers:
 \text{CycleIntegral}(\text{MemCycle}([1]), init)_i = init + i + 1
 ```
 
-**Intuition:** Each step adds exactly 1, so we get consecutive integers starting from `init + 1`.
+Each step adds exactly 1, so we get consecutive integers starting from `init + 1`.
 
-**Why This Matters:** The sieve uses `nextCandidates` to generate all natural numbers from 2 onward. This lemma proves that the cycle integral mechanism correctly implements this counter.
+The sieve uses `nextCandidates` to generate all natural numbers from 2 onward. This lemma proves that the cycle integral mechanism correctly implements this counter.
 
 #### Mathematical Proof
 
@@ -156,9 +156,9 @@ The second property establishes that the unit cycle is strictly increasing:
 b > a \implies \text{CycleIntegral}(\text{MemCycle}([1]), init)_b > \text{CycleIntegral}(\text{MemCycle}([1]), init)_a
 ```
 
-**Intuition:** If you start later, you end up with a larger number.
+If you start later, you end up with a larger number.
 
-**Why This Matters:** This ensures that larger candidate numbers come after smaller ones, which is essential for the sieving process.
+This ensures that larger candidate numbers come after smaller ones, which is essential for the sieving process.
 
 #### Mathematical Proof
 
@@ -200,7 +200,7 @@ The third property establishes that if $q$ and $p$ are distinct primes, then $p$
 \text{isPrime}(q) \land \text{isPrime}(p) \land q \neq p \implies q \bmod p \neq 0
 ```
 
-**Intuition:** Two different primes share no common factors other than 1.
+Two different primes share no common factors other than 1.
 
 **Key Insight:** This required a helper lemma because Stainless's SMT solver couldn't automatically connect the abstract `noDivisorInRange` property to concrete prime relationships.
 
@@ -276,9 +276,9 @@ The fourth property establishes that when filtering a list by a prime $p$, any p
 \text{isPrime}(q) \land q \neq \text{filterPrime} \implies q \bmod \text{filterPrime} \neq 0
 ```
 
-**Intuition:** Primes don't divide each other unless they're equal.
+Primes don't divide each other unless they're equal.
 
-**Why This Matters:** This is the core of the sieve: we remove multiples of small primes but keep all primes themselves.
+This is the core of the sieve: we remove multiples of small primes but keep all primes themselves.
 
 #### Mathematical Proof
 
@@ -318,9 +318,9 @@ The fifth property establishes that if a prime $q$ is in the original list and $
 q \in \text{originalPrimes} \land \text{isPrime}(q) \land q \neq \text{filterPrime} \implies q \in \text{filteredPrimes}
 ```
 
-**Intuition:** The filter only removes non-primes and multiples of the filter prime. All other primes survive.
+The filter only removes non-primes and multiples of the filter prime. All other primes survive.
 
-**Why This Matters:** This proves the sieve is sound: we never lose primes we need to keep.
+This proves the sieve is sound: we never lose primes we need to keep.
 
 #### Mathematical Proof
 
