@@ -2,7 +2,22 @@
 
 ## Overview
 
-The project is a zero-prior-knowledge formal verification of the Sieve of Eratosthenes, built in **6 layers**. Each layer defines its own data structures and proves their key properties, which the next layer uses as primitives.
+The project formally verifies that three representations of a sieve stage produce
+identical streams: the **Spec** (`SpecSieveSequence`, linear scan, source of truth),
+the **Canonical bridge** (`SpecDerivedSieveSequence`, constructed from the Spec),
+and the **Cycle** (`CycleSieveSequence`, efficient gap-driven, no reference to the Spec).
+
+**Theorems proved:**
+
+```math
+\begin{aligned}
+&\text{Current stage:} \quad \text{Spec}(k) = \text{Canonical}(k) = \text{Cycle}(k) \quad \forall k && \text{[assertApplyMatches]} \\
+&\text{Next stage:} \quad \text{Spec.next}(k) = \text{Canonical.next}(k) = \text{Cycle.next}(k) \quad \forall k && \text{[assertCycleNextApplyEqualsSpecNext]}
+\end{aligned}
+```
+
+The proof stack is built in **6 layers**. Each layer defines its own data structures
+and verifies key properties, which the next layer uses as primitives.
 
 ```mermaid
 flowchart BT
@@ -16,8 +31,8 @@ flowchart BT
     ch1 --> ch2
     ch2 --> ch3
     ch3 --> ch4
-    ch4 --> ch5
     ch4 --> ch6
+    ch3 --> ch5
     ch5 --> ch6
 ```
 
@@ -27,136 +42,108 @@ flowchart BT
 
 **File:** `src/main/scala/v1/chapter1/verification/Helper.scala`
 
-Generic assertion infrastructure (`assert`, `equals` up to 9-ary). All higher layers use these to write `.holds` lemmas.
-
-**Key contribution to the stack:** The `.holds` pattern — every verified property in the project is a Boolean function ending with `.holds`, proved by Stainless.
+Generic assertion infrastructure (`assert`, `equals` up to 9-ary). Provides the
+`.holds` pattern — every verified property in the project is a Boolean function
+ending with `.holds`, proved by Stainless.
 
 ---
 
 ## Layer 2: Euclidean Division
 
-**Files:** `src/main/scala/v1/chapter2/div/{DivMod, Calc, ModIdempotence, ...}`
+**Files:** `src/main/scala/v1/chapter2/div/`
 
 ### Core objects
 
 | Object | Purpose |
 |--------|---------|
-| `DivMod` | Euclidean division case class (a = b·q + r, 0 ≤ r < b) |
-| `Calc` | Wrapper: `Calc.div(a, b)`, `Calc.mod(a, b)` — only approved way to compute div/mod (the `%` operator is blocked) |
+| `DivMod` | Euclidean division: $a = b \cdot q + r$, $0 \le r < b$ |
+| `Calc` | Wrappers `Calc.div(a,b)`, `Calc.mod(a,b)` — only approved way (`%` is blocked) |
 
 ### Key properties verified
 
 - **Mod idempotence**: `Calc.mod(Calc.mod(a, b), b) == Calc.mod(a, b)`
 - **Mod addition**: `Calc.mod(a + c, b) == Calc.mod(Calc.mod(a, b) + Calc.mod(c, b), b)`
-- **Mod multiplication**: `Calc.mod(a * c, b) == Calc.mod(Calc.mod(a, b) * Calc.mod(c, b), b)`
-- **Mod zero**: `Calc.mod(a, b) == 0` iff `b` divides `a`
-- **Small dividend**: If `a < b`, then `Calc.mod(a, b) == a` and `Calc.div(a, b) == 0`
+- **Mod multiplication**: `Calc.mod(a \* c, b) == Calc.mod(Calc.mod(a, b) \* Calc.mod(c, b), b)`
+- **Small dividend**: If $a < b$, then `Calc.mod(a, b) == a` and `Calc.div(a, b) == 0`
+- **Bounded modulo**: If $m \le v < 2m$, then `Calc.mod(v, m) == v - m`
 
-### What the next layer needs
+All subsequent layers depend on these modular arithmetic facts for index
+operations, list positioning, and cycle indexing.
 
-Cycle definitions (chapter 4) use lists as their value store, list bounds for gap cycles, and the sum/access lemmas for the integral-cycle connection. The sieve pipeline (chapter 6) uses `repeat(L, n)` for the expansion step: expanding residues `head` times with modulus shift.
+---
 
-### ListRepeatProperties
+## Layer 3: Lists and Finite Integrals
 
-Three verified properties of `repeat(L, n)`:
+**Files:** `src/main/scala/v1/chapter3/list/`
 
-- **Structural recursion**: `repeat(L, n) == L ++ repeat(L, n-1)` — building block for induction proofs
-- **Sum preservation**: `sum(repeat(L, n)) == sum(L) * n`
-- **Index access**: `repeat(L, n)(k) == L(Calc.mod(k, |L|))` — used by `assertRepeatedIndex` for cycle replication proofs
-- **Positivity preservation**: If `L` has all-positive values, `repeat(L, n)` also does
+### Core objects
 
-These properties underpin the **repeat** step of the pipeline's filter→repeat→rotate process: `nextExpanded` repeats the residue list `head` times, and `ListRepeatProperties` provides the structural lemmas for reasoning about the expanded list.
+| Object | Purpose |
+|--------|---------|
+| `ListUtils` | Sum, append, slice, split, rotate |
+| `SortedList` | Sorted list (ascending), `fromUnsorted` via insertion sort |
+| `Integral` | Finite prefix-sum of a list |
+| `ListRepeatProperties` | `repeat(L, n) = L ++ \dots ++ L$ (n times) |
 
-### What the next layer needs
+### Key properties verified
 
-Cycle definitions (chapter 4) use lists as their value store, list bounds for gap cycles, and the sum/access lemmas for the integral-cycle connection.
+- **Sum over append**: `sum(A ++ B) == sum(A) + sum(B)`
+- **Split + recombine**: `splitAt(list, i)._1 ++ splitAt(list, i)._2 == list`
+- **Rotate preserves size**: `rotateAt(list, i).size == list.size`
+- **Sortedness**: `SortedList.isAscending` implies every element ≤ next
+- **Filter preserves order**: `filterList(list, d)` keeps relative order
+- **ListRepeatProperties**:
+  - `repeat(L, n) == L ++ repeat(L, n-1)` — structural induction
+  - `repeat(L, n)(k) == L(Calc.mod(k, |L|))` — index access
+  - `sum(repeat(L, n)) == sum(L) \* n` — sum under repetition
+  - Positivity preserved: if `allGreaterThan(L, v)`, then `allGreaterThan(repeat(L, n), v)`
+
+### Role in the stack
+
+Lists are the universal store for cycles (gap values), integrals (cumulative sums),
+and the pipeline (expanded residues, survivors, gaps). The `repeat` foundation
+underpins the pipeline's expansion step: `nextExpanded` repeats the residue list
+`head` times.
 
 ---
 
 ## Layer 4: Cycles and Cycle Integrals
 
-**Files:** `src/main/scala/v1/chapter4/cycle/{mod, memory, recursive, gap, integral/*}`
+**Files:** `src/main/scala/v1/chapter4/cycle/`
 
 ### Core objects
 
-```mermaid
-flowchart LR
-    L["List[BigInt]"] --> MC["ModCycle\nvalues(k mod |values|)"]
-    L --> MemC["MemCycle\n(caches mod facts)"]
-    MC --> MemC
-    MC --> RC["RecursiveCycle\n(proved equivalent)"]
-    MC --> GapC["GapCycle\n(positive values)"]
-    GapC --> CI["CycleIntegral\nCumulative sum"]
-    RC --> CI
-    MemC --> CI
-    CI --> CCI["ClassicCycleIntegral\n(proved equivalent)"]
-    CI --> MCI["ModCycleIntegral\n(proved equivalent)"]
-```
-
 | Object | Purpose |
 |--------|---------|
-| `ModCycle` | `values(k mod |values|)` — modulo-indexed cycle |
-| `MemCycle` | Wraps ModCycle with caching (private constructor via `MemCycle.apply`) |
-| `RecursiveCycle` | Recursively defined cycle, proved equivalent to ModCycle |
-| `GapCycle` | Cycle of positive gaps (wraps MinBoundList), provides `memCycle` and `integral` |
-| `CycleIntegral` | Recursive prefix-sum: `CI(k) = CI(k-1) + cycle(k)` |
-| `ModCycleIntegral` | Closed-form: `CI(k) = (k div n)·sum + integral(k mod n) + init` |
+| `ModCycle` | `values(k mod |values|)$ — modulo-indexed cycle |
+| `MemCycle` | Wraps ModCycle with built-in caching |
+| `GapCycle` | Cycle of strictly positive gaps, provides `memCycle` and `integral` |
+| `CycleIntegral` | Recursive prefix-sum: $CI(k) = CI(k-1) + cycle(k)$ |
+| `ModCycleIntegral` | Closed-form: $CI(k) = (k \text{ div } n) \cdot sum + \text{prefix}$ |
 
 ### Key properties verified
 
-- **Cycle access**: `cycle(k) == cycle.values(Calc.mod(k, cycle.size))` (`findValueInCycle`)
-- **Cycle after loop**: `cycle(k + n) == cycle(k)` where `n = cycle.size` (`valueMatchAfterManyLoops`)
-- **ModCycle ≡ RecursiveCycle**: Both produce identical values (`propagateModFromValueToCycle`)
-- **CycleIntegral recurrence**:
-  - `CI(k+1) - CI(k) == cycle(k+1)` (`assertDiffEqualsCycleValue`)
-  - `CI(k + n) - CI(k) == CI(k') - CI(k)` for same modulo position (`assertSameDiffAfterCycle`)
-- **CycleIntegral increasing**: If all cycle values are positive, CI is strictly increasing
-- **Three integral equivalence**: Recursive ≡ Classic ≡ ModCycleIntegral (`assertModCycleEqualsCycleIntegral`)
-- **Bridge**: `ModCycle(k) == MemCycle(k)` when both wrap the same values (`assertModCycleEqualsMemCycle`)
+- **Cycle access**: `cycle(k) == cycle.values(Calc.mod(k, cycle.size))`
+- **Cycle periodicity**: `cycle(k + n) == cycle(k)$ where n = cycle.size`
+- **Recurrence**: $CI(k+1) - CI(k) = cycle(k+1)$
+- **Three integral equivalence**: Recursive ≡ Classic ≡ ModCycleIntegral
+- **Replicated cycles**: `assertReplicatedCycleValueEqual` — repeating gaps $t$ times preserves cycle values at each position
 
 ### CycleIntegralFilterProperties (survivor layer)
 
-This file adds the survivor-based gap derivation that powers the sieve progression:
+Extends cycles with the survivor-based gap derivation:
 
-```mermaid
-flowchart LR
-    subgraph Input
-        CI["CycleIntegral"]
-        f["filterValue"]
-    end
-    subgraph Process
-        SV["survivorValues\n(values not divisible by f)"]
-        GV["gapsFromValues\n(consecutive differences)"]
-    end
-    subgraph Output
-        CI2["New CycleIntegral\n(no multiples of f)"]
-    end
-    CI --> SV
-    f --> SV
-    SV --> GV
-    GV --> CI2
-```
-
-| Property | Statement |
-|----------|-----------|
-| `assertSurvivorAtNotMultiple` | Every value in `survivorValues` is NOT divisible by `f` |
-| `assertGapsFromValuesAtIndex` | `gapsFromValues(L)[i] == L[i+1] - L[i]` |
-| `assertGapsFromValuesSize` | `|gapsFromValues(L)| == |L| - 1` |
-| `assertFirstSurvivorHead` | `survivorValues(ci, f, start, 1).head == ci(start)` when `ci(start) mod f != 0` |
-| `assertNewCIMatchesSurvivors` | `newCI(k) == survivors(k+1)` when gaps match |
-| `assertFilterMergeComposition` | `newCI(k) mod f != 0` for all `k` — the full composition theorem |
-
-### What the next layer needs
-
-Cycle integrals are the engine of the sieve: `CycleSieveSequence` stores a `CycleIntegral` that generates the candidate stream. The survivor filter properties (above) are what prove the next-stage correctness — they show that filtering and re-gapping produces a valid new cycle.
-
-**Replicated cycles** (`assertReplicatedCycleValueEqual`): If a replicated integral has factor× more gaps (same head, repeated gap pattern), every position matches the original integral's modulo-wrapped cycle value. This is the bridge between the pipeline's **repeat** step (expanding residues `head` times) and the cycle integral representation: the expanded list is the residue list repeated `head` times, and the replicated cycle integral matches the original's local properties.
+| Lemma | Statement |
+|-------|-----------|
+| `assertSurvivorAtNotMultiple` | Every survivor is NOT divisible by filter value $f$ |
+| `assertGapsFromValuesAtIndex` | $gaps(L)[i] = L[i+1] - L[i]$ |
+| `assertFilterMergeComposition` | New CI from survivors has no multiples of $f$ (full composition) |
 
 ---
 
 ## Layer 5: Primes and Euclid
 
-**Files:** `src/main/scala/v1/chapter5/prime/{Prime, PrimeUtils, AllPrimesSoFarList, PrimeProperties, ...}`
+**Files:** `src/main/scala/v1/chapter5/prime/`
 
 ### Core objects
 
@@ -165,27 +152,32 @@ Cycle integrals are the engine of the sieve: `CycleSieveSequence` stores a `Cycl
 | `Prime` | Wrapper requiring `isPrime(value)`, provides `noDivisorInRange` |
 | `SortedPrimeList` | Descending-sorted prime list with verified insert/remove |
 | `AllPrimesSoFarList` | Complete-prime-prefix: contains every prime up to its head |
-| `PrimeUtils` | `primorial`, `biggerPrime`, `isMultiple`, `primeValues` |
+| `PrimeUtils` | `primorial`, `biggerPrime`, `primeValues` |
 
 ### Key properties verified
 
-- **Euclid's theorem**: `primorial(P) + 1` is coprime to all primes in `P` — proves infinite primes
-- **Next prime from Euclid**: `AllPrimesSoFarList.nextPrime` constructs a larger prime
-- **Smallest divisor**: If `n` is composite, it has a prime divisor ≤ sqrt(n)
-- **Distinct primes coprime**: `p ≠ q ∧ isPrime(p) ∧ isPrime(q) ⇒ q mod p ≠ 0`
-- **Filter preserves primes**: Filtering by prime `p` does not remove any other prime `q`
-
-### What the next layer needs
-
-The `SpecSieveSequence` (chapter 6) uses `AllPrimesSoFarList` as its prime source. The filter-preserves-primes property ensures that the sieve never incorrectly removes a candidate.
+- **Euclid's theorem**: $primorial(P) + 1$ is coprime to all primes in $P$ — primes are infinite
+- **Distinct primes coprime**: $p \neq q \land isPrime(p) \land isPrime(q) \implies q \bmod p \neq 0$
+- **Filter preserves primes**: Filtering by $p$ does not remove any other prime $q$
+- **Primorial-product bridge**: `primorial(L) == product(primeValues(L))$ for non-empty $L$
 
 ---
 
 ## Layer 6: Sieve Sequences
 
-**Files:** `src/main/scala/v1/chapter6/seq/sieve/{SpecSieveSequence, CycleSieveSequence, SpecDerivedSieveSequence, SpecDerivedBySurvivors, SpecDerivedEquivalence, SieveSequenceNextLevel, SpecCycleSieveEquivalence, ...}`
+**Files:** `src/main/scala/v1/chapter6/seq/sieve/`
 
-### Six-object architecture
+### Goal
+
+Prove that all three representations of a sieve stage produce identical streams
+at both the current and next stages:
+
+```math
+\text{Spec}(k) = \text{Canonical}(k) = \text{Cycle}(k) \quad \forall k, \qquad
+\text{Spec.next}(k) = \text{Canonical.next}(k) = \text{Cycle.next}(k) \quad \forall k
+```
+
+### The three representations
 
 ```mermaid
 flowchart TB
@@ -193,221 +185,116 @@ flowchart TB
         SS["SpecSieveSequence\n(linear scan, source of truth)"]
     end
     subgraph Bridges
-        SDS["SpecDerivedSieveSequence\n(canonical bridge)\n54 lemmas, index-based"]
-        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n7 lemmas, A=B=C proof spine"]
-        SDE["SpecDerivedEquivalence\n(formal bridge)\n4 lemmas, same cycle"]
+        SDS["SpecDerivedSieveSequence\n(canonical bridge)\n12 lemmas, index-based"]
+        SDBS["SpecDerivedBySurvivors\n(value-level bridge)\n7 lemmas, Spec=Canonical=Cycle"]
     end
-    subgraph Cycle
+    subgraph Direct
         CS["CycleSieveSequence\n(efficient gap-driven)"]
     end
-    subgraph Pipeline
-        SNL["SieveSequenceNextLevel\nnextResidues → expanded →\nfiltered → sorted → gaps → rotated"]
-        SCE["SpecCycleSieveEquivalence\nexpansion bridge + membership\nassertNextFilteredContainsCoprime\nassertModPreservesCoprime"]
-    end
 
-    SS --> SDS
-    SDS --> CS
+    SS ---> SDS
     SDS ---> SDBS
-    SDBS ---> SDE
-    SDE ---> CS
-    CS ---> SNL
-    SNL ---> SCE
-    SCE -. "assertCanonicalCycleNextMatchSpecNext ✅\n+ assertCycleNextApplyEqualsSpecNext(k) ✅\n= A.next = B.next = C.next" .-> SS
+    SDBS -. "assertCycleNextApplyEqualsSpecNext(k)\n= Spec.next = Canonical.next = Cycle.next" .-> SS
+    SDS -. "provides gap cycle\n(same primes.next)" .-> CS
 ```
 
-### `SpecSieveSequence` — the mathematical spec
+#### `SpecSieveSequence`
 
-- **Apply**: `apply(0) = head`, `apply(k) = next accepted value after apply(k-1)`
-- **Gaps**: `gapList(from, count)` = differences between consecutive apply values
-- **Spec gap cycle**: `specGapCycle(period)` returns a `GapCycle` certified to produce the correct gap list
-- **Next**: `next` constructs the next stage (new head + old primes as filters)
-- **Key theorem**: `assertSpecGapCycleIntegralMatchesApply` — the gap cycle integral reconstructs the spec's apply values
+The mathematically transparent reference model. A linear scan starting from
+`head`, emitting every value that passes the active tail filters.
 
-### `CycleSieveSequence` — the efficient implementation
+- **Apply**: $apply(0) = head$, $apply(k+1) > apply(k)$ (strictly increasing)
+- **Gaps**: $gapList(from, count)$ = adjacent differences of apply
+- **Gap cycle**: $specGapCycle(period)$ certifies a GapCycle matching the gap list
 
-- **State**: `primes: List[BigInt]` + `gapCycle: GapCycle`
-- **Integral**: `CycleIntegral(head, gapCycle.memCycle)` generates the candidate stream
-- **Apply**: `apply(0) = head`, `apply(k) = integral(k-1)` for `k > 0`
-- **Next**: two approaches:
-  - `next()` — the **walk** (scans positions, collects survivors, derives gaps). Hard to verify.
-  - `nextWithGapCycle(newGapCycle)` — takes a pre-computed gap cycle, used by the constructive path
-- **No reference to `SpecSieveSequence`** — fully independent data structure
+#### `SpecDerivedSieveSequence` (12 methods)
 
-### `SpecDerivedSieveSequence` — the canonical bridge
+The canonical bridge. Constructs a `CycleSieveSequence` from the Spec's own data and
+proves the cycle matches the Spec element-for-element.
 
-**Construction:** Takes a `SpecSieveSequence` + `period`, builds a `CycleSieveSequence` from the spec's own data.
+| Lemma | Statement |
+|-------|-----------|
+| `assertApplyMatches(k)$ | `cycle(k) == spec(k)$ — same-stage equivalence |
+| `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value$ |
+| `assertNextCycleGapsMatchSpecNext(nP)` | Canonical next gaps == `spec.next.gapList` |
+| `assertSurvivorGapEqualsSpecNextGap(nP, k)` | Survivor gap$_k$ == spec.next gap$_k$ |
+| `repeatedCycle(times)$ | Repeating gap period preserves apply |
+| `assertRepeatedCycleApplyMatches(times, k)$ | `repeatedCycle(times).apply(k) == cycle.apply(k)$ |
 
-| Lemma | What it proves |
-|-------|----------------|
-| `assertApplyMatches(k)` | `cycle(k) == spec(k)` — same-stage equivalence |
-| `assertNextHeadMatches()` | `cycle(1) == spec.next.head.value` — next head matches |
-| `assertNextCycleGapsMatchSpecNext` | Constructive next gaps == spec.next gap list |
-| `assertNextCycleApplyMatchesSpecNext` | Constructive next cycle matches spec.next in apply |
-| `assertSurvivorGapEqualsSpecNextGap` | Survivor gap(i) == spec.next gap(i) — P2 |
-| `assertSpecNextIsKthSurvivor` | `spec.next(k) == cycle(pos)` — per-position survivor equivalence |
-| `assertFilterMergeComposition` | New CI from survivors has no multiples of the filter prime |
-| `currentWindow(steps)` | Transparent `List[BigInt]` of `cycle.integral(0..steps-1)` |
-| `survivorWindow(steps)` | Filtered window (non-multiples of head) |
-| `assertFullEquivalence` | Top-level: same-stage + next-stage head (13/13) |
+All 12 methods listed in `OBJECTS.md` §6.6.
 
-### Survivor-based next-stage derivation
+#### `SpecDerivedBySurvivors` (7 methods)
 
-```mermaid
-flowchart LR
-    subgraph Current stage
-        CI["CycleIntegral(h, G)"]
-        spec["SpecSieveSequence"]
-    end
-    subgraph Survivor filter
-        SV["survivorValues(CI, h, 0, h·|G|)"]
-        GAPS["gapsFromValues(survivors)"]
-    end
-    subgraph Next stage
-        CI2["CycleIntegral(survivors.head, MemCycle(gaps))"]
-        spec2["spec.next"]
-    end
-    CI --> SV
-    h["filter = head"] --> SV
-    SV --> GAPS
-    GAPS --> CI2
-    spec --> spec2
-    CI2 -. "assertSurvivorGapEqualsSpecNextGap\nassertSpecNextIsKthSurvivor" .-> spec2
+Value-level companion to the canonical bridge. Wraps `SpecDerivedSieveSequence` and adds
+the rotation anchor, modulus identity, and the merged composition lemma.
+
+| Lemma | Statement |
+|-------|-----------|
+| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes$ |
+| `assertNextHeadResidueIsSpecNextHead()` | `mod(cycle(1), head \* modulus) == spec.next.head.value$ |
+| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head \* modulus == spec.next.filterModulus$ |
+| `assertCanonicalCycleNextMatchSpecNext(nP)$ | Merged: canonical gaps = gapList + rotation + modulus + head+gap identity |
+| `assertSpecCanonicalCycleNextMatch(nP)$ | Composes the above — Spec = Canonical = Cycle for next stage |
+| `assertCycleNextApplyEqualsSpecNext(nP, k)$ | **Returns** `cNext.apply(k) == spec.next(k)$ for any $k$ |
+| `assertBNextApplyEqualsCNextApply(nP, k)$ | **Returns** `cNext.apply(k) == nextCanonical.cycle.apply(k)$ — explicit Canonical.next = Cycle.next |
+| `assertRepeatedCycleProof(nP)$ | Side proof via `repeatedCycle$ infrastructure |
+
+#### `CycleSieveSequence`
+
+The efficient implementation. Stores `primes$ + `gapCycle$, generates candidates
+through `CycleIntegral(head, gapCycle.memCycle)$. No reference to the Spec.
+
+- `apply(0) = head$, $apply(k) = integral(k-1)$ for $k > 0$
+- `nextWithGapCycle(newGapCycle)$ — takes a pre-computed gap cycle (the
+  constructive path). The proof verifies that the Cycle built from the Canonical
+  gap cycle has the same `apply(k)$ as `Spec.next(k)$ for every $k$.
+
+### The proof chain
+
+```
+Canonical.next.gaps == Spec.next.gapList      [assertNextCycleGapsMatchSpecNext]
+Canonical.next(k)   == Spec.next(k)           [nextCanonical.assertApplyMatches(k)]
+Cycle.next          == Canonical.next.gapCycle [same GapCycle, same primes.next]
+Cycle.next(k)       == Canonical.next(k)      [same head + same gaps → same integral]
+Cycle.next(k)       == Spec.next(k)           [transitivity via assertCycleNextApplyEqualsSpecNext]
+                                                     and assertBNextApplyEqualsCNextApply]
 ```
 
-The key verified fact: the survivor-based gaps equal `spec.next`'s gaps at every index, and the first survivor head equals `spec.next(0)`. This proves the survivor derivation produces the correct next stage — no walk unfolding needed.
+The final equality is explicitly returned by
+`assertCycleNextApplyEqualsSpecNext(nextPeriod, k)$ — **for any $k$**.
 
-### `SpecDerivedBySurvivors` — the value-level bridge
+### What the pipeline computes (filter → repeat → rotate)
 
-**Construction:** Wraps a `SpecDerivedSieveSequence`, proves A = B = C for current and next stages through 7 lemmas.
+The pipeline (`SieveSequenceNextLevel`) computes the next stage from the Cycle's
+data without accessing the Spec or the Canonical bridge:
 
-Key lemmas:
+1. **Filter**: `nextFiltered(cycle)$ = values coprime to all primes, not divisible
+   by `head`, within $[0, head \cdot modulus)$
+2. **Repeat**: `calculateGaps(survivors, head \cdot modulus)$ = adjacent
+   differences of survivors with a wraparound gap
+3. **Rotate**: `rotateAt(gaps, nextHeadResidueIndex)$ = align to
+   `spec.next.head.value`
 
-| Lemma | Proves |
-|-------|--------|
-| `assertSpecNextFilterEqCyclePrimes()` | `spec.next.filterValues == cyclePrimes` |
-| `assertNextHeadResidueIsSpecNextHead()` | Rotation points to `spec.next.head.value` |
-| `assertHeadModulusEqualsSpecNextFilterModulus()` | `head*modulus == spec.next.filterModulus` |
-| `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` | Merged lemma: canonical gaps = `spec.next.gapList` + rotation + modulus + same-head + same-gaps |
-| `assertSpecCanonicalCycleNextMatch(nextPeriod)` | Composes the above — Spec = Canonical = Cycle for next stage |
-| `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` | **Returns** `cNext.apply(k) == spec.next(k)` **for any k** |
-| `assertRepeatedCycleProof(nextPeriod)` | Side proof using `repeatedCycle` + lower-chapter lemmas |
+The membership bridge (proven in `SpecCycleSieveEquivalence`) shows that the
+filtered values are exactly the cycle-integral survivors reduced modulo
+$head \cdot modulus$. The rotation is proven correct by
+`assertNextHeadResidueIsSpecNextHead`. The gaps then follow from
+`assertNextCycleGapsMatchSpecNext`.
 
-Previously contained 20 expansion bridge methods. All removed in 2026-07-05 cleanup — not called from the spine.
-
-### `SpecDerivedEquivalence` — the formal bridge
-
-**Construction:** Takes a `SpecDerivedSieveSequence`, wraps it AND a `SpecDerivedBySurvivors` from the same data. 4 lemmas proving both classes share the same `cycle`, `apply(k)`, `gapCycle`, and head/modulus. Certifies that proofs from either class transfer to the other.
-
-### Pipeline objects
-
-Two objects implement the pipeline that computes the next stage from a `CycleSieveSequence`:
-
-| Object | Role |
-|--------|------|
-| `SieveSequenceNextLevel` | Pipeline steps: `nextResidues → nextExpanded → nextFiltered → nextSorted → nextGaps → nextHeadResidueIndex → nextRotatedGaps` |
-| `SpecCycleSieveEquivalence` | Equivalence lemmas between pipeline and Spec: `assertExpandedResiduesRepresentPeriod`, `assertNextFilteredContainsCoprime`, `assertModPreservesCoprime` (3 lemmas, made public 2026-07-05) |
-
-### M3 status — A.next = B.next = C.next (fully verified)
-
-**Goal:** `spec.next(k) == canonical.next(k) == cycle.next(k)` for all k.
-
-**Proven by direct construction:**
-
-| Component | Status | Lemma |
-|-----------|--------|-------|
-| Current stage: `cycle(k) == spec(k)` ∀k | ✅ | `assertApplyMatches(k)` in SDSS — returns equality directly |
-| Canonical next gaps = spec.next gapList | ✅ | `assertNextCycleGapsMatchSpecNext(nextPeriod)` |
-| Rotation + modulus identity | ✅ | `assertNextHeadResidueIsSpecNextHead` + `assertHeadModulusEqualsSpecNextFilterModulus` |
-| Cycle from canonical gap cycle = spec.next | ✅ | `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` — merged lemma |
-| **Next stage: `cNext.apply(k) == spec.next(k)` ∀k** | ✅ | **`assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` — returns equality directly** |
-
-All three representations produce identical streams at every position. The cycle uses the canonical next's gap cycle directly (same `primes.next`, same `GapCycle` → same `integral` → same `apply`).
-
-### Dead code
+### Dead code (preserved per `never-destroy` rule)
 
 | File | Reason |
 |------|--------|
-| `SieveCycleAfterProof.scala` | Entirely commented out. Bad agent's unfinished attempt at the value-level chain. All 5 lemmas now correctly verified in `SpecDerivedBySurvivors`. Preserved per the `never-destroy` rule.
+| `SieveCycleAfterProof.scala` | Entirely commented out. Bad agent's unfinished proof attempt. |
 
 ---
 
-## Summary: What each layer contributes to the next
+## Summary: What each layer contributes
 
 | Layer | Gives the next layer |
 |-------|---------------------|
-| **ch2: Div/Mod** | Modular arithmetic — index operations, list product divisibility, cycle indexing |
-| **ch3: Lists** | Sum/append/access properties, finite integrals, list repeat — the building blocks for cycle definitions |
-| **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), gap cycles, survivor filtering — the sieve's computational engine |
-| **ch5: Primes** | Prime definitions, Euclid's theorem, filter preservation — the mathematical guarantee that the sieve works |
-| **ch6: Sieve** | Spec + Cycle + pipelines — source-of-truth spec, efficient gap-driven cycle, canonical bridge (index-based), value-level bridge (coprimality chains), formal equivalence between bridges, pipeline computation of next stage. **A.next = B.next = C.next fully verified.** |
-
----
-
-## Dependency Map
-
-### Cross-chapter import graph
-
-```
-ch1(Verification) → ch2(Div/Mod) → ch3(Lists) → ch4(Cycles) → ch5(Primes) → ch6(Sieve)
-                                                              ↑              |
-                                                              |  (SieveUtils) |
-                                                              +--------------+
-```
-
-The dependency graph is a strict DAG with **one backward edge**: `ch5` imports `SieveUtils` (a `filterList`/`isCoprime` utility) from `ch6`. This is used by 4 files in `ch5`:
-
-| Chapter 5 file | Imports from chapter 6 |
-|---|---|
-| `PrimeUtils.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
-| `PrimeProperties.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
-| `FilterPreservesPrimesProperties.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
-| `PrimeSieveBridge.scala` | `v1.chapter6.seq.sieve.SieveUtils` |
-
-### File counts per chapter
-
-| Chapter | Production files | Property files | Total |
-|---------|:-:|:-:|:-:|
-| ch1: Verification | 1 | 0 | 1 |
-| ch2: Div/Mod | 3 | 9 | 12 |
-| ch3: Lists | 8 | 6 | 15 (1 excluded: `old/RepeatedList`) |
-| ch4: Cycles | 7 | 9 | 16 |
-| ch5: Primes | 4 | 3 | 7 |
-| ch6: Sieve | 14 | 0 | 14 |
-
-### Isolated files (zero internal `v1.*` imports)
-
-These files import only from `stainless.lang`, `stainless.collection`, or standard library — they form the bottom of the dependency stack:
-
-| File | Package |
-|---|---|
-| `Helper.scala` | `v1.chapter1.verification` |
-| `DivMain.scala` | `v1.chapter2.div` |
-| `ListBuilder.scala` | `v1.chapter3.list` |
-| `SortedList.scala` | `v1.chapter3.list` |
-| `Integral.scala` | `v1.chapter3.list.integral` |
-| `SortedPrimeList.scala` | `v1.chapter5.prime` |
-| `CycleUtils.scala` | `v1.chapter6.seq.sieve` |
-| `CsvWriter.scala` | `v1.chapter6.seq.sieve.empirical` |
-| `EmpiricalRunner.scala` | `v1.chapter6.seq.sieve.empirical` |
-| `GapAnalyzer.scala` | `v1.chapter6.seq.sieve.empirical` |
-| `SegmentedSieve.scala` | `v1.chapter6.seq.sieve.empirical` |
-| `Types.scala` | `v1.chapter6.seq.sieve.empirical` |
-
-Note: the `empirical/` files are `@extern` — not verified by Stainless.
-
-### Heaviest importers (by count of distinct internal packages imported)
-
-| File | Imports from |
-|---|---|
-| `SpecSieveSequence.scala` (ch6) | ch2(Calc, +3 properties), ch3(2 files), ch4(4 files), ch5(4 files) |
-| `CycleSieveSequence.scala` (ch6) | ch2(Calc), ch3(3 files), ch4(4 files), ch5(4 files) |
-| `CycleIntegralFilterProperties.scala` (ch4) | ch1(Helper), ch2(Calc, +2 properties), ch3(4 files), ch4(3 files) |
-| `CycleIntegralProperties.scala` (ch4) | ch1(Helper), ch2(Calc), ch3(3 files), ch4(3 files) |
-| `SpecCycleSieveEquivalence.scala` (ch6) | ch2(Calc,DivMod,+2 properties), ch3(3 files), ch4(2 files), ch5(2 files) |
-
-### Key structural notes
-
-- **`SieveUtils`** (ch6) is the single most imported module across the project — used by 4 ch5 files and 2 ch6 files
-- **`Helper.assert`** (ch1) is imported by every property file across all chapters
-- **`Calc`** (ch2) is the cross-cutting dependency — imported by every chapter from ch2 through ch6
-- The old `Seq` case class (`v1.chapter6.seq.Seq`) and its `SeqProperties` were removed — they had zero production dependents
+| **ch2: Div/Mod** | Modular arithmetic — index operations, modulo indexing for cycles |
+| **ch3: Lists** | Sum/append/slice/rotate properties, list repeat for pipeline expansion |
+| **ch4: Cycles** | Unbounded sequences, cycle integrals (prefix sums), survivor filtering |
+| **ch5: Primes** | Prime theory, Euclid's theorem, filter preservation |
+| **ch6: Sieve** | Three representations (Spec, Canonical, Cycle) proved equivalent for current and next stages via the constructive path (`nextWithGapCycle`). The walk path (`CycleSieveSequence.next()`) remains unverified but is uncalled in the current codebase. |
