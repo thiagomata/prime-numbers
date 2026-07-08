@@ -13,18 +13,6 @@ This article studies gap dynamics as the behavior induced by the Sieve Sequence 
 
 ---
 
-## Boundary Index
-
-| # | Claim | Statement | Status |
-|---|-------|-----------|--------|
-| 1 | Neighbor-merge evolution | Filtering changes gaps only by preserving them or merging adjacent gaps | [Draft — verification pending] |
-| 2 | Local density question | $G_{\text{local}}(p) > p$ for all sufficiently large $p$ | [Open] |
-| 3 | Empirical support | $G_{\text{local}}(p) > p$ for tested $37 \le p \le 997$ | [Empirical] |
-
-Status key: `[Draft — verification pending]` = mathematically stated here, but not yet backed by a dedicated Stainless `.holds` proof. `[Open]` = not proven. `[Empirical]` = supported by computation, not a proof.
-
----
-
 ## 1. Introduction
 
 The Sieve of Eratosthenes filters composite numbers by iteratively removing multiples of each prime. In this project, the Sieve Sequence makes that process finite and constructive: one finite survivor list generates the next finite survivor list, and the chain of such lists generates the primes. The gaps between consecutive survivors encode the structure of each finite state. A gap of size 2 (a "2-gap") corresponds to a pair of consecutive survivors $(r, r+2)$, which is exactly the form of twin prime candidates.
@@ -36,6 +24,11 @@ The `SieveSequence.next` pipeline first expands the current residues, then filte
 ### Cross-Reference
 
 This article builds on the [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md), which records failed approaches and the current boundary map.
+
+This article covers:
+
+- Neighbor-merge evolution — §2
+- Local density question and empirical support — §3
 
 ---
 
@@ -181,6 +174,14 @@ However, empirical evidence is not a formal proof. The local density question re
 The article's result is a boundary statement, not a proof of persistence. The neighbor-merge rule explains the limited ways gaps can change under filtering, and the local-density inequality $G_{\text{local}}(p) > p$ is the central open question. Empirical data supports the local-density inequality for the tested range.
 
 A publication-ready proof must either verify a local-density invariant directly or prove a weaker invariant that still forces 2-gap survival inside the safe zone.
+
+## 5. Future Work
+
+Formalizing the twin-prime persistence boundary and the G-local crossover point
+would require either a verified local-density inequality or a constructive
+upper bound on how far a gap can grow before the neighbor-merge rule guarantees
+a 2-gap survives. This remains open and is equivalent to the Twin Prime
+Conjecture in this framework.
 
 ---
 

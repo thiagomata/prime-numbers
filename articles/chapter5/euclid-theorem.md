@@ -1,7 +1,5 @@
 # Formal Verification of Euclid's Theorem on the Infinitude of Primes
 
-**[Draft]** — This article is in draft status. It is kept in the `articles/draft/` directory pending final formatting review.
-
 **Author:** Mata, T. H.  
 Independent Researcher  
 **Email:** [thiago.mata@email.com](mailto:thiago.mata@email.com)  
@@ -15,20 +13,6 @@ We present a formally verified proof of Euclid's Theorem — that there are infi
 
 ---
 
-## Property Index
-
-| # | Property | Statement | Verifier | Source |
-|---|----------|-----------|----------|--------|
-| 1 | Primorial-plus-one modulo any prime | $\text{primorial}(L) + 1 \not\equiv 0 \pmod p$ for every $p \in L$ | [Verified] | Appendix A.1 |
-| 2 | New prime from Euclid's construction | $\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies \exists\ \text{prime}\ p \notin \text{primes}$ | [Verified] | Appendix A.2 |
-| 3 | Euclid's theorem | $\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies \exists\ p \notin \text{primes} : \text{isPrime}(p)$ | [Verified] | Appendix A.3 |
-| 4 | Composite has divisor below n | $\neg \text{isPrime}(n) \implies \exists\, d < n : d \mid n$ | [Verified] | §3.5 |
-| 5 | Smallest divisor at most sqrt(n) | $\neg \text{isPrime}(n) \implies d² \leq n$ where $d = \text{findSmallestDivisor}(n, 2)$ | [Verified] | §3.5 |
-
-Status key: `[Verified]` = Stainless `.holds` code exists and passes verification.
-
----
-
 ## 1. Introduction
 
 Euclid's theorem — first proved in Euclid's *Elements* (c. 300 BC) — states that there are infinitely many prime numbers. The proof is elegantly simple:
@@ -38,6 +22,15 @@ Euclid's theorem — first proved in Euclid's *Elements* (c. 300 BC) — states 
 > In either case, a new prime is found, proving the list cannot contain all primes.
 
 In this article, we formalize and verify this proof using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1), a verification framework for pure Scala programs. Our approach follows the zero-prior-knowledge methodology established in earlier articles: modular arithmetic [[2]](#ref2), lists [[3]](#ref3), and prime utilities are all defined from scratch and verified independently.
+
+This article verifies:
+
+- Primorial-plus-one coprime to all list primes — §3.1
+- New prime found via the Euclid construction — §3.2
+- The new prime is not in the original list — §3.3
+- Euclid's theorem: primes are infinite — §3.4
+- Primality testing: sqrt-bound and composite detection — §3.5
+- `.holds` caching eliminates explicit postcondition enrichment — §4
 
 ## 2. Preliminaries
 
@@ -69,6 +62,12 @@ Euclid's theorem is formalized as the following lemma:
 ```
 
 In the code, this is expressed as the function `euclidTheorem` (shown in full in Section 3.4).
+
+- Stage 1: `primorial + 1` is coprime to every prime in the list (§3.1)
+- Stage 2: find a prime divisor of `primorial + 1` via `findSmallestDivisor` (§3.2)
+- Stage 3: the new prime is not in the original list (§3.3)
+- Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
+- Primality testing: sqrt-bound and composite detection (§3.5)
 
 The proof proceeds in three stages:
 

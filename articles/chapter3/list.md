@@ -608,7 +608,7 @@ The sum of two concatenated lists equals the sum of each list added together.
   A \mathbin{+\!+} B & = L_e \mathbin{+\!+} B & \text{[A is empty list]} \\
         & = B & \text{[By definition of concatenation]} \\
   \text{sum}(A) & = 0 & \text{[By definition of sum]} \\
-  \text{sum}(A \mathbin{+\!+} B) & = \text{sum}(B) & \text{[Since A \mathbin{+\!+} B equals B]} \\
+  \text{sum}(A \mathbin{+\!+} B) & = \text{sum}(B) & \text{[Since A} \mathbin{+\!+} \text{B equals B]} \\
                     & = 0 + \text{sum}(B) \\
                     & = \text{sum}(A) + \text{sum}(B) & \text{[Since sum(A) is zero]} \\
 \end{aligned}
@@ -1343,7 +1343,14 @@ i < |L| - 1,\, |L| > 1 &\implies \text{tail}(L)_i &=~ &L_{i+1} \\
 
 All properties are verified in the Stainless system. The full verification code is available in Appendix A.
 
-## 13. Limitations
+## 13. Future Work
+
+Extending lists via integration (cumulative sums) and derivation (gap extraction)
+would formalize two dual operations that map between a list and its accumulated
+or decomposed form. These operations connect the finite list algebra presented
+here to the theory of discrete sequences and differences.
+
+## 14. Limitations
 
 This article restricts the implementation and verification to immutable,
  finite lists of integers represented using the `stainless.collection.List` data type. 
@@ -1351,23 +1358,23 @@ The focus is on **correctness**, not on performance or scalability. Our summatio
  accumulation models follow a **recursive definition**, aligned with mathematical formalism.
 However, this approach may introduce performance limitations in practical applications involving large lists.
 
-### 11.1 Overflow and Memory Limits Are Out of Scope
+### 14.1 Overflow and Memory Limits Are Out of Scope
 
 By using `BigInt` and immutable lists, the model assumes unbounded integer arithmetic and infinite list capacity. 
 This choice avoids overflow and out-of-memory errors, but it does not reflect the constraints of fixed-size integer
  types or limited system memory in real-world environments.
 
-### 11.2 Side Effects Are Excluded
+### 14.2 Side Effects Are Excluded
 
 All list operations are pure and referentially transparent. Mutation, I/O, and performance overhead are outside the 
  scope of this model.
 
-### 11.3 No Parallelism or Laziness
+### 14.3 No Parallelism or Laziness
 
 Unlike streaming libraries or lazy sequences, this model is strictly eager and sequential, without support for parallel 
  computation or lazy evaluation.
 
-### 11.4 Limitations Imposed by Stainless Verification Tool
+### 14.4 Limitations Imposed by Stainless Verification Tool
 
 Due to current limitations in the Scala Stainless verifier (version 0.9.8.8), formal proofs must often rely on concrete
  numeric types such as `BigInt`.
@@ -1379,7 +1386,7 @@ required algebraic laws, practical verification is constrained to `BigInt`.
 Overcoming these tool limitations is an important direction for future enhancements, enabling broader generality 
 and more flexible formal verification.
 
-### 11.5 Scope of Correctness
+### 14.5 Scope of Correctness
 
 This article emphasizes the **mathematical correctness** of recursive definitions and verified properties,
  rather than runtime behavior or system-level efficiency.
@@ -1395,7 +1402,7 @@ Future work may include developing alternative implementations of these data str
 real-world constraints, such as bounded memory and side effects, alongside formal proofs establishing their equivalence
 with the current, mathematically rigorous model.
 
-## 14. References
+## 15. References
 
 <a name="ref0" id="ref0" href="#ref0">[1]</a>  
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.  

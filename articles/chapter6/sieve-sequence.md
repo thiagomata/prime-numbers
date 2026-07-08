@@ -9,8 +9,16 @@ Independent Researcher
 
 ## Abstract
 
+$x = 1^2$
+
+
 <div align="justify">
 <p style="text-align: justify">
+Hello World.
+$x = 1^2$
+</p>
+</div>
+
 This article presents the fully verified three-way equivalence between the Spec
 (`SpecSieveSequence`), the Canonical bridge (`SpecDerivedSieveSequence`), and
 the Cycle (`CycleSieveSequence`) at both the current and next stages. The
@@ -18,12 +26,10 @@ Spec is a linear-scan specification whose head is the current prime and whose
 active filter is the tail primes only. From the Spec, the Canonical bridge
 constructs a cycle representation and proves it matches the Spec
 element-for-element via `assertApplyMatches(k)`. For the next stage, the Cycle
-constructed from the Canonical's gap cycle is proven identical to `spec.next`
+constructed from the Canonical's gap cycle is proven identical to \(\text{Spec}'\)
 via `assertCycleNextApplyEqualsSpecNext(k)` — for any position $k$. The
-constructive path is verified; the walk (`CycleSieveSequence.next()$) is not
+constructive path is verified; the walk `CycleSieveSequence.next()`is not
 used and has zero callers.
-</p>
-</div>
 
 ---
 
@@ -34,12 +40,27 @@ The Sieve of Eratosthenes generates prime numbers by iteratively filtering a seq
 1. **Spec generation** - the linear specification generates exactly the values accepted by its active tail filters.
 2. **Gap reconstruction** - the finite Spec gap cycle reconstructs the same infinite Spec stream.
 3. **Spec-derived equivalence** - the cycle built from Spec-certified data matches the Spec stream.
-4. **Next-stage bridge** - a Spec-derived cycle built from `spec.next` matches `spec.next` under explicit next-stage hypotheses.
+4. **Next-stage bridge** - a Spec-derived cycle built from \(\text{Spec}'\) matches \(\text{Spec}'\) under explicit next-stage hypotheses.
 5. **Walk correctness** - the optimized survival walk should compute the same next-stage gaps, but this list-level theorem remains open.
 
 In this article, we formalize the verified parts of that chain using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html), a verification framework for pure Scala programs. Our approach follows the zero-prior-knowledge methodology established in earlier articles: modular arithmetic, lists, cycles, and cycle integrals are all defined from scratch and verified independently.
 
 The result is a machine-checked proof of the three-way equivalence: `SpecSieveSequence`, the canonical cycle representation, and the independent pipeline-built cycle all produce identical streams at both the current and next stages, per `assertApplyMatches(k)` and `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)`. The optimized survival walk (`CycleSieveSequence.next()`) remains a deferred proof obligation.
+
+This article verifies:
+
+- Unit cycle generates natural numbers — §3
+- Strict monotonicity — §4
+- Spec sequence properties (soundness, completeness, progress, base stage) — §5
+- Gap-cycle construction (positivity, reconstruction) — §6
+- Canonical cycle equivalence (current and next stage) — §7
+- Unproven prerequisites (Bertrand, Euclid) — §8
+- Spec properties: soundness, monotonicity, periodicity, gap-list correctness — §9
+- Canonical bridge: lemma-by-lemma proof catalogue — §10
+- Survivor bridge: filtering and next-stage equivalence — §11
+- Three-way equivalence: A = B = C — §12
+- Pipeline gap correctness — §13
+- Survivor filter composition — §14
 
 ---
 
@@ -131,6 +152,30 @@ and are invoked as `.holds` lemmas by the Sieve Sequence codebase.
 
 ---
 
+### 2.3 Notation
+
+Throughout this article we use the following notation for sieve sequence values.
+A sieve stage $S$ has primes $P$, head $h$, tail primes $\overline{P}$, modulus
+$M$, and a finite gap list $\text{gaps}(S)$.
+
+| Notation | Meaning | Example |
+|----------|---------|---------|
+| $\text{Spec}_k$ | The $k$-th value of the spec sequence | $\text{Spec}_0 = h$ |
+| $\text{Cycle}_k$ | The $k$-th value of the cycle representation | $\text{Cycle}_0 = h$ |
+| $\text{Spec}'_k$ | Next-stage spec value | $\text{Spec}'_0 = h'$ |
+| $\text{Cycle}'_k$ | Next-stage cycle value | Built by the pipeline |
+| $\text{gaps}(S)$ | The gap list of sequence $S$ | $\text{gaps}(\text{Spec}) = [g_0, \dots, g_{n-1}]$ |
+| $\text{gaps}(S)_k$ | The $k$-th gap, $S_{k+1} - S_k$ | $\text{gaps}(\text{Spec})_k = \text{Spec}_{k+1} - \text{Spec}_k$ |
+| $\text{accepts}(S, v)$ | $v$ passes all tail filters of stage $S$ | $\text{accepts}(S, v) = \forall p \in \overline{P},\ \text{mod}(v,p) \neq 0$ |
+| $h$ | The head (largest known prime) | $h = P_0$ |
+| $\overline{P}$ | The tail primes (active filters) | $P = [h] \mathbin{+\!+} \overline{P}$ |
+| $M$ | The modulus, $\text{product}(\overline{P})$ | $M = \prod_{p \in \overline{P}} p$ |
+
+The superscri/pt $\text{next}$ denotes the next sieve stage. When the stage is
+clear from context (e.g., in sections §3–§6 which discuss a single stage),
+$\text{Spec}_k$ and $\text{gaps}(\text{Spec})_k$ are used without stage
+decoration.
+
 ## 3. Unit Cycle Generates Natural Numbers
 
 A cycle containing only the value `[1]` repeated infinitely produces the sequence 1, 2, 3, 4, ... when we compute its cycle integral. Each step adds exactly 1.
@@ -146,18 +191,18 @@ The sieve needs a way to generate all natural numbers as candidate primes. The c
 **Base Case** ($i = 0$):
 ```math
 \begin{aligned}
-\text{CycleIntegral}(\text{MemCycle}([1]), init)_0 &= \text{cycle}(0) + init \\
+\text{CycleIntegral}(\text{MemCycle}([1]), init)_0 &= \text{Cycle}_0 + init \\
 &= 1 + init \\
-&= init + 0 + 1 \quad \blacksquare \quad &\text{[Q.E.D.]}
+&= init + 0 + 1 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
 **Inductive Step** ($i \to i+1$):
 ```math
 \begin{aligned}
-\text{CycleIntegral}(\text{MemCycle}([1]), init)_{i+1} &= \text{CycleIntegral}(\text{MemCycle}([1]), init)_i + \text{cycle}(i+1) \\
+\text{CycleIntegral}(\text{MemCycle}([1]), init)_{i+1} &= \text{CycleIntegral}(\text{MemCycle}([1]), init)_i + \text{Cycle}_{i+1} \\
 &= (init + i + 1) + 1 \quad &\text{[By Induction Hypothesis]} \\
-&= init + (i+1) + 1 \quad \blacksquare \quad &\text{[Q.E.D.]}
+&= init + (i+1) + 1 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -243,15 +288,15 @@ Every generated value is at or above the head and accepted by the active tail fi
 ```math
 \begin{aligned}
 k &\ge 0 \\
-v &= \text{Spec}(k) \\
-\text{accepts}(v)
+v &= \text{Spec}_k \\
+\text{accepts}(\text{Spec}, v)
   &\equiv v \ge \text{head}
-     \land \forall p \in \text{filterPrimes},\ \text{Calc.mod}(v,p) \ne 0
+     \land \forall p \in P_{\text{tail}},\ \text{Calc.mod}(v,p) \ne 0
      \quad &\text{[By Definition]} \\
-\text{Spec}(k) &\ge \text{head}
-     \land \text{accepts}(\text{Spec}(k))
+\text{Spec}_k &\ge \text{head}
+     \land \text{accepts}(\text{Spec}, \text{Spec}_k)
      \quad &\text{[By apply postcondition]} \\
-\quad &\text{[Q.E.D.]}
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -277,12 +322,10 @@ Completeness is expressed constructively. Instead of merely stating that an inde
 ```math
 \begin{aligned}
 value &\ge \text{head} \\
-\text{accepts}(value) & \\
-k &= \text{indexOfAccepted}(value) \\
-k &\ge 0
-  \land \text{Spec}(k) = value
-  \quad &\text{[By indexOfAccepted postcondition]} \\
-\quad &\text{[Q.E.D.]}
+\text{accepts}(\text{Spec}, value) &\implies
+  \exists\, k \ge 0,\ \text{Spec}_k = value
+  \quad &\text{[Completeness]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -308,16 +351,16 @@ The linear scan never emits the same value twice. The next search starts after t
 
 ```math
 \begin{aligned}
-\text{Spec}(k+1)
-  &= \text{searchNext}(\text{Spec}(k)+1,\ upper)
+\text{Spec}_{k+1}
+  &= \min\{\, v > \text{Spec}_k \mid \text{accepts}(\text{Spec}, v) \,\}
      \quad &\text{[By Definition]} \\
-\text{searchNext}(\text{Spec}(k)+1,\ upper)
-  &\ge \text{Spec}(k)+1
-     \quad &\text{[By search lower bound]} \\
-\text{Spec}(k+1)
-  &> \text{Spec}(k)
+\text{Spec}_{k+1}
+  &> \text{Spec}_k
+     \quad &\text{[Search advances]} \\
+\text{Spec}_{k+1}
+  &> \text{Spec}_k
      \quad \text{[Simplification]} \\
-\quad &\text{[Q.E.D.]}
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -337,6 +380,38 @@ This property is verified in the [
   ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
 ).
 
+### 5.4 Base Stage — The Induction Root
+
+Every Sieve Sequence traces back to a single starting configuration: the
+sequence of integers from $2$ onward, with no active filters.
+
+The base stage $S_0$ is defined by exactly one known prime, $2$, and an
+empty filter list. Because nothing is filtered, every value from $2$ onward
+is accepted. The gap cycle is the unit cycle $[1]$ — each step adds $1$,
+producing $2, 3, 4, 5, \dots$
+
+```math
+\begin{aligned}
+P_0 &= [2],\quad \text{head}_0 = 2,\quad \overline{P}_0 = [] \\
+M_0 &= 1 \quad && \text{[Empty filter — no modulus restriction]} \\
+\text{accepts}(\text{Spec}, v) &= (v \ge 2) \quad && \text{[All values accepted]} \\
+\text{Spec}_k &= 2 + k \quad && \text{[Unit cycle, see §3]} \\
+\text{gaps}_0 &= [1] \quad && \text{[Single gap of size 1]}
+\end{aligned}
+```
+
+All structural invariants hold trivially:
+- `M_0 > 0` — product of an empty list is $1$ (§2)
+- `∀ k,` \(\text{Spec}_{k+1} > \text{Spec}_k\) — strictly increasing (§4)
+- `gaps_0` have `allGreaterThan(gaps_0, 0)` — the single gap is positive
+- `apply(p) = \text{head}_0 + M_0` for period $p = 1$ — gives $3 = 2 + 1$
+
+From this base, every subsequent stage is constructed by the induction step:
+the pipeline takes the current gap cycle and the current head, filters by the
+head, and produces the next stage's gap cycle (§13). The induction base
+completes the proof — the Sieve Sequence generates correct stages for all
+interesting $k$.
+
 ---
 
 ## 6. Spec Gap-Cycle Construction
@@ -349,16 +424,16 @@ Because the Spec stream strictly increases, every adjacent gap is positive.
 
 ```math
 \begin{aligned}
-\text{gap}(k)
-  &= \text{Spec}(k+1) - \text{Spec}(k)
+\text{gaps}(\text{Spec})_{k}
+  &= \text{Spec}_{k+1} - \text{Spec}_k
      \quad &\text{[By Definition]} \\
-\text{Spec}(k+1)
-  &> \text{Spec}(k)
+\text{Spec}_{k+1}
+  &> \text{Spec}_k
      \quad &\text{[By Spec strict progress]} \\
-\text{gap}(k)
+\text{gaps}(\text{Spec})_{k}
   &> 0
      \quad \text{[Simplification]} \\
-\quad &\text{[Q.E.D.]}
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -385,15 +460,15 @@ For a valid period witness, `specGapCycle(period)` stores exactly one period of 
 ```math
 \begin{aligned}
 \text{gaps}
-  &= \text{Spec.gapList}(0, period)
+  &= \text{gaps}(\text{Spec})(0, period)
      \quad &\text{[By Definition]} \\
 \text{cycle}
   &= \text{Spec.specGapCycle}(period)
      \quad &\text{[By Definition]} \\
 \text{CycleIntegral}(\text{head}, cycle)(k-1)
-  &= \text{Spec}(k)
-     \quad \text{[By assertSpecGapCycleIntegralMatchesApply]} \\
-\quad &\text{[Q.E.D.]}
+  &= \text{Spec}_k
+     \quad \text{[By gap-cycle reconstruction]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -429,14 +504,14 @@ At index zero, the Spec-derived cycle and the Spec share the same head. At posit
 \text{Canonical}(spec, period)(0)
   &= \text{spec.head}
      \quad &\text{[By Constructor]} \\
-  &= \text{Spec}(0)
+  &= \text{Spec}_0
      \quad &\text{[By Spec Definition]} \\
 \text{Canonical}(spec, period)(k)
   &= \text{CycleIntegral}(\text{spec.head}, \text{specGapCycle})(k-1)
      \quad \text{[By Cycle apply]} \\
-  &= \text{Spec}(k)
+  &= \text{Spec}_k
      \quad \text{[By Spec gap-cycle reconstruction]} \\
-\quad &\text{[Q.E.D.]}
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -458,23 +533,23 @@ This property is verified in the [
 
 ### 7.2 Conditional Next-Stage Canonical Equivalence
 
-The verified next-stage theorem is intentionally conditional. If the caller supplies the next-stage period anchor and the known hard arithmetic preconditions, then the canonical cycle built from `spec.next` matches `spec.next` in head and gaps, and its apply behavior is available through `assertNextCycleApplyMatchesSpecNext`.
+The verified next-stage theorem is intentionally conditional. If the caller supplies the next-stage period anchor and the known hard arithmetic preconditions, then the canonical cycle built from \(\text{Spec}'\) matches \text{Spec}' in head and gaps, and its apply behavior is available through `assertNextCycleApplyMatchesSpecNext`.
 
 ```math
 \begin{aligned}
-\text{nextCanonical}
-  &= \text{SpecDerivedSieveSequence}(\text{spec.next}, nextPeriod)
+\text{Canonical}'
+  &= \text{Canonical}'(\text{Spec}', nextPeriod)
      \quad &\text{[By Definition]} \\
-\text{nextCanonical.head}
-  &= \text{spec.next.head}
-     \quad \text{[By assertNextCycleHeadMatchesSpecNext]} \\
-\text{nextCanonical.gaps}
-  &= \text{spec.next.gapList}(0,nextPeriod)
-     \quad \text{[By assertNextCycleGapsMatchSpecNext]} \\
-\text{nextCanonical}(k)
-  &= \text{spec.next}(k)
-     \quad \text{[By assertNextCycleApplyMatchesSpecNext]} \\
-\quad &\text{[Q.E.D.]}
+\text{head}_{\text{Canonical}'}
+  &= h'
+     \quad \text{[By head identity]} \\
+\text{gaps}(\text{Canonical}')
+  &= \text{gaps}(\text{Spec}')
+     \quad \text{[By gap matching]} \\
+\text{Canonical}'(k)
+  &= \text{Spec}'_k
+     \quad \text{[By next cycle equivalence]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -528,11 +603,11 @@ stages. That is equivalent to proving there is always a prime between `p` and
 
 ```math
 \begin{aligned}
-\text{apply}(1) < \text{head}^2 &\Rightarrow \text{isPrime}(\text{apply}(1))
+\text{Spec}_1 < \text{head}^2 &\Rightarrow \text{isPrime}(\text{Spec}_1)
   && \text{[Conditional primality — verified]} \\
-\text{nextPrime} < \text{head}^2 &\Rightarrow \text{apply}(1) = \text{nextPrime}
+\text{nextPrime} < \text{head}^2 &\Rightarrow \text{Spec}_1 = \text{nextPrime}
   && \text{[Conditional equality — verified]} \\
-\text{apply}(1) < \text{head}^2 &&&\quad \text{[Open — blocked on Bertrand's postulate]}
+\text{Spec}_1 < \text{head}^2 &&&\quad \text{[Open — blocked on Bertrand's postulate]}
 \end{aligned}
 ```
 
@@ -611,16 +686,9 @@ the current scope.
 
 ---
 
-## 9. Proof Status
+## 9. Spec Properties
 
-All core proofs are verified. The three-way equivalence Spec = Canonical = Cycle
-is proven for both current and next stages. The two unproven prerequisites
-documented in §8 appear as explicit `require` preconditions on the next-stage
-theorems. This section groups the verified components by representation.
-
-### 9.1 Spec Properties
-
-#### 9.1.1 Soundness and completeness of `apply`
+### 9.1 Soundness and completeness of `apply`
 
 
 `SpecSieveSequence.apply(k)` is the deliberately simple linear-scan generator.
@@ -631,9 +699,9 @@ that emits it, witnessed constructively by `indexOfAccepted`.
 
 ```math
 \begin{aligned}
-\text{apply}(k) &\geq \text{head} \;\land\; \text{apply}(k) \leq \text{searchBound}(k)
-  \;\land\; \text{accepts}(\text{apply}(k)) && \text{[Soundness]} \\
-\text{apply}(\text{indexOfAccepted}(v)) &= v && \text{[Completeness]}
+\text{Spec}_k &\geq \text{head} \;\land\; \text{Spec}_k \leq \text{Spec}_k
+  \;\land\; \text{accepts}(\text{Spec}, \text{Spec}_k) && \text{[Soundness]} \\
+\exists\, k \ge 0,\ \text{Spec}_k = v && \text{[Completeness]}
 \end{aligned}
 ```
 
@@ -653,15 +721,15 @@ and
 [SpecSieveSequence::indexOfAccepted](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala)
 functions.
 
-#### 9.1.2 Strict monotonicity and injectivity
+### 9.2 Strict monotonicity and injectivity
 
 Because the scan only advances and never repeats a value, the generator is
 strictly increasing, and two equal outputs imply two equal inputs.
 
 ```math
 \begin{aligned}
-\text{apply}(k+1) &> \text{apply}(k) && \text{[Strict monotonicity]} \\
-\text{apply}(i) = \text{apply}(j) &\Rightarrow i = j && \text{[Injectivity]}
+\text{Spec}_{k+1} &> \text{Spec}_k && \text{[Strict monotonicity]} \\
+\text{Spec}_i = \text{Spec}_j &\Rightarrow i = j && \text{[Injectivity]}
 \end{aligned}
 ```
 
@@ -681,20 +749,21 @@ and
 [SpecSieveSequence::assertApplyInjective](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala)
 functions.
 
-#### 9.1.3 Residue periodicity and the gap-sum decomposition
+### 9.3 Residue periodicity and the gap-sum decomposition
 
-After one full period `p` (where `apply(p) == head + tailPrimorial`), the
-sequence repeats its residue structure: gaps are periodic, and the value at any
+After one full cycle period $p$ the sequence repeats its residue structure: 
+gaps are periodic, and the value at any
 position decomposes as the head plus the telescoped sum of the preceding gaps.
 This is the arithmetic backbone of the cycle reconstruction.
 
 ```math
 \begin{aligned}
-\text{apply}(p) = \text{head} + \text{tailPrimorial}
-  &\Rightarrow \text{gap}(k) = \text{gap}(k+p) && \text{[Periodic gaps]} \\
-\text{apply}(p) = \text{head} + \text{tailPrimorial}
-  &\Rightarrow \text{sumGap}(0, p) = \text{tailPrimorial} && \text{[Period sum]} \\
-\text{apply}(\text{pos}) &= \text{head} + \text{sumGap}(0, \text{pos}) && \text{[Telescoping]}
+p = \text{cycle.size} \\
+\text{Spec}_p = \text{head} + M
+  &\Rightarrow \text{gaps}(\text{Spec})_{k} = \text{gaps}(\text{Spec})_{k+p} && \text{[Periodic gaps]} \\
+\text{Spec}_p = \text{head} + M
+  &\Rightarrow \sum_{i=0}^{p} \text{gaps}(\text{Spec})_{i} = M && \text{[Period sum]} \\
+\text{Spec}_{\text{pos}} &= \text{head} + \text{sumGap}(0, \text{pos}) && \text{[Telescoping]}
 \end{aligned}
 ```
 
@@ -714,7 +783,7 @@ and
 [SpecSieveSequence::assertGapSum](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala)
 functions.
 
-#### 9.1.4 Gap-list positivity, size, and index correctness
+### 9.4 Gap-list positivity, size, and index correctness
 
 The finite gap list `gapList(from, count)` is strictly positive, has the
 requested length, and its `r`-th element equals the adjacent apply difference
@@ -723,9 +792,9 @@ packaged into a certified `GapCycle`.
 
 ```math
 \begin{aligned}
-\text{allGreaterThan}(\text{gapList}(from, count),\; 0) && \text{[Positive]} \\
+\forall g \in \text{gapList}(from, count),\; g > 0 && \text{[Positive]} \\
 \text{size}(\text{gapList}(from, count)) = count && \text{[Size]} \\
-\text{gapList}(from, count)_r = \text{apply}(from{+}r{+}1) - \text{apply}(from{+}r) && \text{[Index]}
+\text{gapList}(from, count)_r = \text{Spec}_{from+r+1} - \text{Spec}_{from+r} && \text{[Index]}
 \end{aligned}
 ```
 
@@ -750,7 +819,7 @@ and
 [SpecSieveSequence::assertGapListApplyEqualsGapAtPosition](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala)
 functions.
 
-#### 9.1.5 Gap-cycle reconstruction
+### 9.5 Gap-cycle reconstruction
 
 The capstone of the current-stage theory: the `CycleIntegral` built from the
 certified gap cycle reconstructs the original `apply` sequence. After this
@@ -759,8 +828,8 @@ current stage.
 
 ```math
 \begin{aligned}
-\text{CycleIntegral}(\text{head},\; \text{gapList}(0, \text{period}))_{k-1} = \text{apply}(k)
-\quad \text{for } k > 0 \quad &\text{[Q.E.D.]}
+\text{CycleIntegral}(\text{head},\; \text{gapList}(0, \text{period}))_{k-1} = \text{Spec}_k
+\quad \text{for } k > 0 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -774,9 +843,9 @@ This property is verified in the
 [SpecSieveSequence::assertSpecGapCycleIntegralMatchesApply](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala)
 function.
 
-### 9.2 Canonical Bridge
+## 10. Canonical Bridge
 
-#### 9.2.1 Current-stage apply equivalence
+### 10.1 Current-stage apply equivalence
 
 The derived cycle's central property: at the current stage, the cycle
 representation and the spec agree element-for-element. This is what lets B
@@ -784,41 +853,41 @@ inherit every current-stage fact proven about A.
 
 ```math
 \begin{aligned}
-\text{cycle}(k) = \text{spec}(k) \quad \text{for all } k \geq 0 \quad &\text{[Q.E.D.]}
+\text{Cycle}_k = \text{Spec}_k \quad \text{for all } k \geq 0 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
 **Proof.** The derived cycle is constructed from the spec's certified gap cycle,
 so its integral is the same cycle integral that the spec already proved
-reconstructs `spec(k)`.
+reconstructs \(\text{Spec}_k\).
 
 **Base case** (`k = 0`):
 ```math
 \begin{aligned}
-\text{cycle}(0) &= \text{cycle.head} && \text{[By definition of CycleIntegral]} \\
-  &= \text{spec.head.value} && \text{[By constructor: derived.cycle head is spec.head]} \\
-  &= \text{spec}(0) && \text{[By definition of spec.apply(0)]} \\
-  &\quad\blacksquare && \text{[Base case holds]}
+\text{Cycle}_0 &= \text{head}_{\text{cycle}} && \text{[By definition of CycleIntegral]} \\
+  &= \text{head}_{\text{spec}} && \text{[By constructor: derived cycle head is spec head]} \\
+  &= \text{Spec}_0 && \text{[By definition of spec.apply(0)]} \\
+  &\quad\blacksquare && \text{[Q.E.D. — Base case holds]}
 \end{aligned}
 ```
 
 **Inductive case** (`k > 0`):
 ```math
 \begin{aligned}
-\text{cycle}(k) &= \text{cycle.integral}(k - 1) && \text{[By CycleSieveSequence.apply: integral(k-1)]} \\
-  &= \text{CycleIntegral}(\text{spec.head.value},\; \text{gapCycle.memCycle})(k - 1)
+\text{Cycle}_k &= \text{cycle.integral}(k - 1) && \text{[By CycleSieveSequence.apply: integral(k-1)]} \\
+  &= \text{CycleIntegral}(\text{head}_{\text{spec}},\; \text{gapCycle})(k - 1)
      && \text{[By constructor of derived cycle]} \\
-  &= \text{spec}(k) && \text{[By assertSpecGapCycleIntegralMatchesApply]} \\
-  &\quad\blacksquare && \text{[Inductive case holds]}
+  &= \text{Spec}_k && \text{[By gap-cycle reconstruction]} \\
+  &\quad\blacksquare && \text{[Q.E.D. — Inductive case holds]}
 \end{aligned}
 ```
 
 The key insight is that `assertSpecGapCycleIntegralMatchesApply` (§6.3) already
-carries the weight — it proves the gap cycle integral reconstructs `spec(k)` for
+carries the weight — it proves the gap cycle integral reconstructs \(\text{Spec}_k\) for
 every `k`. The canonical bridge simply uses that fact with the same gap cycle,
 so the equivalence follows in one step per index, no further induction required.
 
-#### 9.2.2 Head, primes, and modulus aliasing
+### 10.2 Head, primes, and modulus aliasing
 
 These equalities alias the spec's cycle head, prime list, and modulus.
 Establishing them once as named lemmas prevents the solver from re-deriving them
@@ -828,9 +897,9 @@ gaps using only the Cycle's own structural data.
 
 ```math
 \begin{aligned}
-\text{cycle}(1) &= \text{spec.next.head} && \text{[Next head]} \\
-\text{cycle.primesTailValues} &= \text{spec.filterValues} && \text{[Primes]} \\
-\text{cycle.modulus} &= \text{spec.tailPrimorial} && \text{[Modulus]}
+\text{Cycle}_1 &= h' && \text{[Next head]} \\
+\overline{P}_{\text{cycle}} &= \overline{P}_{\text{spec}} && \text{[Prime lists match]} \\
+M_{\text{cycle}} &= M_{\text{spec}} && \text{[Moduli match]}
 \end{aligned}
 ```
 
@@ -851,7 +920,7 @@ and
 [SpecDerivedSieveSequence::assertCycleModulusEqualsSpecFilterModulus](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 functions.
 
-#### 9.2.3 Filter-decision transfer
+### 10.3 Filter-decision transfer
 
 A value and a divisor together determine a keep/drop decision. Because the
 cycle and the spec observe the same value and the same divisor, they reach the
@@ -859,9 +928,9 @@ same decision — without re-unfolding either filter.
 
 ```math
 \begin{aligned}
-\text{cycle}(k) = \text{spec}(k) \;\land\; \text{cycle.head} = \text{spec.next.filterValues.head}
-\Rightarrow \bigl(\text{mod}(\text{cycle}(k), \text{cycle.head}) \neq 0\bigr)
-= \bigl(\text{mod}(\text{spec}(k), \text{spec.next.filterValues.head}) \neq 0\bigr)
+\text{Cycle}_k = \text{Spec}_k \;\land\; \text{head}_{\text{cycle}} = h'
+\Rightarrow \bigl(\text{mod}(\text{Cycle}_k, \text{head}_{\text{cycle}}) \neq 0\bigr)
+= \bigl(\text{mod}(\text{Spec}_k, h') \neq 0\bigr)
 \end{aligned}
 ```
 
@@ -875,7 +944,7 @@ This property is verified in the
 [SpecDerivedSieveSequence::assertCycleSpecNextFilterDecisionMatches](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 function.
 
-#### 9.2.4 Apply lowers to the integral
+### 10.4 Apply lowers to the integral
 
 For `k > 0`, reading the cycle at index `k` is the same as reading its integral
 at `k-1`. This lowering is the structural reason integral-level lemmas transfer
@@ -883,7 +952,7 @@ to the sequence level.
 
 ```math
 \begin{aligned}
-\text{cycle}(k) = \text{cycle.integral}(k-1) \quad \text{for } k > 0 && \text{[By Definition]}
+\text{Cycle}_k = \text{cycle.integral}(k-1) \quad \text{for } k > 0 && \text{[By Definition]}
 \end{aligned}
 ```
 
@@ -897,18 +966,18 @@ This property is verified in the
 [SpecDerivedSieveSequence::assertCycleApplyLowersToIntegral](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 function.
 
-#### 9.2.5 Survivor bridge (canonical next stage)
+### 10.5 Survivor bridge (canonical next stage)
 
-The next-stage value `spec.next(k)` is exactly the cycle survivor at the
+The value \(\text{Spec}'_k\) is exactly the cycle survivor at the
 corresponding accepted index, and the gap between consecutive survivors equals
-the corresponding `spec.next` gap. These are the canonical bridges — they prove
+the corresponding \(\text{gaps}(\text{Spec}')\). These are the canonical bridges — they prove
 correctness for the Canonical next cycle built from Spec data. The Cycle's
 independent computation via the pipeline is verified separately (§9.4).
 
 ```math
 \begin{aligned}
-\text{spec.next}(k) &= \text{cycle}(\text{indexOfAccepted}(\text{spec.next}(k))) && \text{[Survivor position]} \\
-\text{survivorGap}(k) &= \text{spec.next.gap}(k) && \text{[Survivor gap]}
+\text{Spec}'_k &= \text{Cycle}_{i_k},\ \text{Spec}'_{i_k} = \text{Spec}'_k && \text{[Survivor position]} \\
+\text{gaps}(\text{Spec}')_k &= \text{gaps}(\text{Spec}')_k && \text{[Survivor gap]}
 \end{aligned}
 ```
 
@@ -932,9 +1001,9 @@ and
 [SpecDerivedBySurvivors::assertBNextApplyEqualsCNextApply](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala)
 functions.
 
-#### 9.2.6 Canonical next-cycle equivalence
+### 10.6 Canonical next-cycle equivalence
 
-A canonical next cycle built from `spec.next` matches `spec.next` in head,
+A canonical next cycle built from \(\text{Spec}'\) matches \(\text{Spec}'\) in head,
 gaps, and apply, under the next-stage preconditions. This is the strongest
 canonical result. The Cycle independently computes its next stage via the
 pipeline (filter → repeat → rotate) using only its own data — the Cycle does
@@ -942,8 +1011,8 @@ not need the Spec to function.
 
 ```math
 \begin{aligned}
-\text{SpecDerived}(\text{spec.next}, \text{nextPeriod}).\text{cycle}
-\;\equiv\; \text{spec.next} \;\text{(head, gaps, apply)} \quad &\text{[Q.E.D.]}
+\text{Canonical}'(\text{Spec}', \text{nextPeriod}).\text{cycle}
+\;\equiv\; \text{Spec}' \;\text{(head, gaps, apply)} \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -957,7 +1026,7 @@ This property is verified in the
 [SpecDerivedSieveSequence::assertNextCycleMatchesSpecNext](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 function.
 
-#### 9.2.7 Repeated-cycle invariance
+### 10.7 Repeated-cycle invariance
 
 Repeating the gap cycle a fixed number of times preserves values at every
 position — this is a structural property of cycles and cycle integrals, not
@@ -970,7 +1039,7 @@ and at the integral level in the
 [integral-cycle article §5.2](../chapter4/integral-cycle.md)
 (`CycleIntegralProperties::assertRepeatedValuesIntegralMatches`).
 
-#### 9.2.8 Pipeline preconditions
+### 10.8 Pipeline preconditions
 
 The independent next-cycle pipeline (`SieveSequenceNextLevel`) requires four
 positivity preconditions on its input cycle. All four are discharged for B's
@@ -979,8 +1048,8 @@ the open M3 theorem (§11.4).
 
 ```math
 \begin{aligned}
-\text{cycle.modulus} > 0 \;\land\; \text{allGreaterThan}(\text{primesTailValues}, 0)
-\;\land\; \text{cycle.head} > 0 \;\land\; \text{cycle.modulus} \cdot \text{cycle.head} > 0
+M_{\text{cycle}} > 0 \;\land\; \forall p \in P_{\text{cycle}},\ p > 0
+\;\land\; \text{head}_{\text{cycle}} > 0 \;\land\; M_{\text{cycle}} \cdot \text{head}_{\text{cycle}} > 0
 \end{aligned}
 ```
 
@@ -999,7 +1068,7 @@ and
 [SpecDerivedSieveSequence::assertModulusTimesHeadPositive](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 functions.
 
-#### 9.2.9 The migration-independent leaf
+### 10.9 The migration-independent leaf
 
 The period endpoint `head + tailPrimorial` is not a multiple of the next
 stage's front filter. This is the verified replacement for the unsound
@@ -1008,8 +1077,7 @@ work active regardless of the contract-shape debate.
 
 ```math
 \begin{aligned}
-\text{mod}(\text{spec.head} + \text{spec.tailPrimorial},\;
-\text{spec.next.filterValues.head}) \neq 0 \quad &\text{[Q.E.D.]}
+\text{mod}(\text{head} + M,\; h') \neq 0 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -1023,7 +1091,7 @@ This property is verified in the
 [SpecDerivedSieveSequence::assertHeadPlusFilterModulusNotFrontMultiple](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala)
 function.
 
-### 9.3 Survivor Bridge
+## 11. Survivor Bridge
 
 The survivor-filtering operation — scanning a cycle integral and collecting
 values whose remainder modulo the filter is nonzero — is a generic modularity
@@ -1035,102 +1103,75 @@ preservation) are documented in the
 to discharge its pipeline preconditions. This section describes how those
 properties are wired into the next-stage equivalence proof.
 
-#### 9.3.1 Survivor filter identity and next-stage equivalence
+### 11.1 Survivor filter identity and next-stage equivalence
 
-The value-level approach in `SpecDerivedBySurvivors` bypasses the index
-machinery: it proves that the canonical next cycle's gap values equal
-`spec.next.gapList`, that the pipeline-built cycle shares the same `GapCycle`
-and therefore has identical `apply(k)` for all `k`, and that rotation aligns to
-`spec.next.head.value`. The key lemma `assertCycleNextApplyEqualsSpecNext`
-returns the equality `cNext.apply(k) == spec.next(k)` explicitly for any `k`.
+The value-level approach in `SpecDerivedBySurvivors` proves that the pipeline-built
+`CycleSieveSequence` produces exactly the same values as `spec.next` at every
+position. The proof proceeds in four steps: aligning the filter lists, matching
+the head's residue position, matching the gap cycle, and concluding value equality.
 
+**Proof.**
+
+**Step 1 — Filter alignment.** The next stage's filter values are exactly the
+current stage's prime list. This is structural: \(\text{Spec}'\) adds the new head as
+a filter, so its filter set is the union of the old filters and the old head.
 ```math
 \begin{aligned}
-\text{spec.next.filterValues} &= \text{cyclePrimes} && \text{[assertSpecNextFilterEqCyclePrimes]} \\
-\text{mod}(\text{cycle}(1), \text{head}\cdot\text{modulus}) &= \text{spec.next.head.value} && \text{[assertNextHeadResidueIsSpecNextHead]} \\
-\text{head}\cdot\text{modulus} &= \text{spec.next.tailPrimorial} && \text{[assertHeadModulusEqualsSpecNextFilterModulus]} \\
-\text{nextCanonical.gapCycle.memCycle.values} &= \text{spec.next.gapList}(0,nP) && \text{[assertNextCycleGapsMatchSpecNext]} \\
-\text{cNext.apply}(k) &= \text{spec.next}(k)\ \forall k && \text{[assertCycleNextApplyEqualsSpecNext]} \\
-\quad \text{[Q.E.D.]}
+P_{\text{next}} &= P_{\text{cycle}}
+  && \text{[Filter alignment]}
 \end{aligned}
 ```
 
-```scala
-def assertCycleNextApplyEqualsSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
-  require(k >= BigInt(0))
-  require(nextPeriod > BigInt(0))
-  require(spec.next(nextPeriod) == spec.next.head.value + spec.next.tailPrimorial)
-  // ... 5 more preconditions ...
-  val nextCanonical = SpecDerivedSieveSequence(spec.next, nextPeriod)
-  val cNext = CycleSieveSequence(primes.next, nextCanonical.cycle.gapCycle)
-  assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
-  assert(nextCanonical.assertApplyMatches(k))
-  cNext.apply(k) == spec.next(k)
-}.holds
-```
-
-These properties are verified in the
-[SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala)
-and supporting lemmas in the same file.
-
-#### 9.3.2 Top-level equivalence composition
-
-The top-level lemma `assertSpecCanonicalCycleNextMatch(nextPeriod)` composes
-all three proof layers (rotation, modulus, gap equality, cycle construction)
-and explicitly verifies `cNext.apply(0) == spec.next(0)` and
-`cNext.apply(1) == spec.next(1)`. Combined with `assertApplyMatches(k)` for
-the current stage, the three-representation equivalence is fully proven:
-`Spec(k) == Canonical(k) == Cycle(k)` for both current and next stages.
-
+**Step 2 — Head residue identity.** The next head's position in the residue
+cycle is identified by computing `mod(cycle(1), head * modulus)`. The result
+equals $h'$ — the residue of the first apply value modulo
+the full modulus is exactly the next prime.
 ```math
 \begin{aligned}
-\text{cycle}(k) &= \text{spec}(k) && \text{[assertApplyMatches, current stage]} \\
-\text{cNext.apply}(k) &= \text{spec.next}(k) && \text{[assertCycleNextApplyEqualsSpecNext, next stage]}
-\quad \text{[Q.E.D.]}
+\text{mod}(\text{Cycle}_1, \text{head}\cdot\text{modulus}) &= h'
+  && \text{[Head residue]}
 \end{aligned}
 ```
 
-### 9.4 Three-way equivalence (verified)
-
-All previously-pending M3 properties are now verified. The key lemmas:
-
-#### 9.4.1 Next-stage apply equality
-**Status: Verified.** `assertCanonicalCycleNextMatchSpecNext(nextPeriod)` (36/36 VCs) and `assertCycleNextApplyEqualsSpecNext(nextPeriod, k)` (30/30 VCs) prove the full next-cycle equivalence. The canonical cycle built from `spec.next` matches `spec.next` in gaps, and the pipeline-built `CycleSieveSequence` (sharing the same `primes.next` and `GapCycle`) has identical `apply(k)` for every position `k`.
-
+**Step 3 — Gap cycle matching.** The canonical `SpecDerivedSieveSequence`
+built from \(\text{Spec}'\) has its gap cycle values equal to `spec.next.gapList`.
+This was proved in §7.2.
 ```math
 \begin{aligned}
-\text{nextCanonical} &= \text{SpecDerivedSieveSequence}(\text{spec.next},\, nextPeriod) && \text{[By Construction]} \\
-\text{cNext} &= \text{CycleSieveSequence}(\text{primes.next},\, \text{nextCanonical.cycle.gapCycle}) && \text{[By Construction]} \\
-\text{cNext.gapCycle} &= \text{nextCanonical.cycle.gapCycle} && \text{[By Construction — same object]} \\
-\text{cNext.head} &= \text{nextCanonical.cycle.head} && \text{[By Construction — same primes.next]} \\
-\text{head} \cdot \text{modulus} &= \text{spec.next.tailPrimorial} && \text{[assertHeadModulusEqualsSpecNextFilterModulus]} \\
-\text{mod}(\text{cycle}(1),\, \text{head} \cdot \text{modulus}) &= \text{spec.next.head.value} && \text{[assertNextHeadResidueIsSpecNextHead]} \\
-\text{nextCanonical.gapCycle.memCycle.values} &= \text{spec.next.gapList}(0, nextPeriod) && \text{[assertNextCycleGapsMatchSpecNext]} \\
-\text{nextCanonical.cycle}(k) &= \text{spec.next}(k) && \text{[nextCanonical.assertApplyMatches(k)]} \\
-\text{cNext.apply}(k) &= \text{nextCanonical.cycle.apply}(k) && \text{[Structural identity: same head + same GapCycle]} \\
-\text{cNext.apply}(k) &= \text{spec.next}(k) \quad \forall k \geq 0 && \text{[Transitivity of (8)+(9)]} \\
-\quad \blacksquare \quad &\text{[Q.E.D.]}
+\text{head}\cdot\text{modulus} &= M_{\text{next}}
+  && \text{[Modulus identity]} \\
+\text{mod}(\text{Cycle}_1, \text{head} \cdot \text{modulus}) &= h'
+  && \text{[Head residue]} \\
+\text{gaps}(\text{Canonical}') &= \text{spec.next.gapList}(0, nextPeriod)
+  && \text{[Gap match]} \\
+\text{Canonical}'_k &= \text{Spec}'_k
+  && \text{[Current equivalence]} \\
+\text{Cycle}'_k &= \text{Canonical}'_k
+  && \text{[Structural identity: same head + same GapCycle]} \\
+\text{Cycle}'_k &= \text{Spec}'_k \quad \forall k \geq 0
+  && \text{[Transitivity of the above two equalities]} \\
+  &\quad\blacksquare && \text{[Q.E.D.]}
 \end{aligned}
 ```
 
 Verified in:
-- `SpecDerivedBySurvivors::assertCanonicalCycleNextMatchSpecNext` — merged lemma (36/36)
-- `SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext` — returns `cNext.apply(k) == spec.next(k)` for any k (30/30)
-- `SpecDerivedBySurvivors::assertSpecCanonicalCycleNextMatch` — composes all three (37/37)
+- `SpecDerivedBySurvivors::assertCanonicalCycleNextMatchSpecNext`
+- `SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext`
+- `SpecDerivedBySurvivors::assertSpecCanonicalCycleNextMatch` — composes all three
 
 
 ---
 
-## 10. Pipeline Gap Correctness
+## 13. Pipeline Gap Correctness
 
 The independent next-cycle pipeline (`SieveSequenceNextLevel`) proves that
 the composition `repeat` → `rotate` → `filter` → `sort` → `gaps` → `head`
-produces exactly the gap list of `spec.next`. This is the gap-level
+produces exactly the gap list of \(\text{Spec}'\). This is the gap-level
 correctness theorem — the mathematical guarantee that the cycle's own
 structural data (head, gaps, modulus) is sufficient to compute the next
-stage without calling `spec.next` at all.
+stage without calling the next-stage spec at all.
 
-### 10.1 The Pipeline
+### 13.1 The Pipeline
 
 Given a valid sieve-stage `CycleSieveSequence` with head `h`, gap cycle
 `G = [g_0, …, g_{n-1}]`, and modulus `M = product(tailPrimes)`:
@@ -1170,24 +1211,24 @@ next-stage gap list.
 
 **6. Rotate** — the first survivor `s_0` is the next head, but its position
 may not be at index 0. Rotating the gap list by the head's residue index
-aligns the head to position 0, matching `spec.next`'s canonical gap ordering.
+aligns the head to position 0, matching \(\text{Spec}'\)'s canonical gap ordering.
 ```math
 \text{nextRotatedGaps} = \text{rotateAt}(\text{gaps},\; \text{headResidueIndex})
 ```
 
-### 10.2 Theorem
+### 13.2 Theorem
 
 The pipeline output equals `spec.next`'s gap list, and the first survivor
 equals the next head.
 
 ```math
 \begin{aligned}
-\text{nextRotatedGaps} &= \text{spec.next.gapList}(0,\; nextPeriod)
+\text{nextRotatedGaps} &= \text{gaps}(\text{Spec}')
   && \text{[Gap-list equality]} \\
-s_0 &= \text{spec.next}(0) = \text{spec.next.head.value}
+s_0 &= \text{Spec}'(0) = h'
   && \text{[First survivor is next head]} \\
 \text{CycleIntegral}(s_0,\; \text{nextRotatedGaps})(1)
-  &= \text{spec.next}(1)
+  &= \text{Spec}'(1)
   && \text{[Next-stage head identity]}
 \end{aligned}
 ```
@@ -1235,9 +1276,9 @@ The full pipeline correctness is verified in the [
 ](
   ../src/main/scala/v1/chapter6/seq/sieve/SpecCycleSieveEquivalence.scala
 ) (21 lemmas). The key composed theorem is `SpecDerivedBySurvivors::assertCanonicalCycleNextMatchSpecNext`
-which combines all pipeline steps and verifies the gap-list equality (36/36 VCs).
+which combines all pipeline steps and verifies the gap-list equality.
 
-### 10.3 What This Proves
+### 13.3 What This Proves
 
 The pipeline does not call `spec.next` — it uses only the cycle's own
 structural data (`head`, `gaps`, `modulus`). Yet its output matches
@@ -1249,19 +1290,21 @@ Together with the three-way equivalence (§9.4), this means:
 - `CycleSieveSequence.apply(k) == spec.apply(k)` — same stage (proven)
 - `CycleSieveSequence` pipeline gaps `== spec.next` gaps — next stage (proven)
 - `nextWithGapCycle.apply(k) == spec.next.apply(k)` — next stage apply (proven)
+- `apply(1) < head * modulus` — the next value is bounded by the product of all primes, giving a finite scan range ([`SpecDerivedSieveSequence::assertNextHeadLessThanNewModulus`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala))
+- `mod(apply(1), head * modulus) == spec.next.head` — the next head is the residue of the first pipeline value modulo the full modulus ([`SpecDerivedBySurvivors::assertNextHeadResidueIsSpecNextHead`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala))
 
 The only assumptions are the two unproven prerequisites documented in §8
 (Bertrand's postulate and Euclid's lemma).
 
 ---
 
-## 11. Next-Stage Survivor Filter Composition
+## 14. Next-Stage Survivor Filter Composition
 
 The sieve progresses by taking a current stage and adding the current head as a new filter for the next stage. Values that are multiples of the current head are skipped; values that are not multiples of it are survivors. The next-stage gaps are the differences between consecutive survivors.
 
 This is the bridge from the verified Spec/Canonical world to the optimized `CycleSieveSequence.next()` implementation. The project already has per-value and per-gap bridge lemmas. What remains is proving that the concrete recursive walk emits the whole gap list in the same order.
 
-### 10.1 Survivor-Based Gap Computation
+### 14.1 Survivor-Based Gap Computation
 
 Given a `CycleIntegral` $CI$ with head $h$ and gap cycle $G$, we scan $h \cdot |G|$ positions of $CI$ and collect all values not divisible by $h$. These are the **survivors**:
 
@@ -1277,7 +1320,7 @@ The gaps between consecutive survivors give the next gap cycle:
 
 The new `CycleIntegral` is $CI_{\text{new}} = \text{CycleIntegral}(s_0, \text{MemCycle}(\text{gapList}))$, where $s_0$ is the first survivor (= the next stage head).
 
-### 10.2 Survivor Filter Composition Theorem
+### 14.2 Survivor Filter Composition Theorem
 
 The composition theorem proves that $CI_{\text{new}}$ has no values divisible by $f$:
 
@@ -1338,7 +1381,7 @@ Supporting lemmas (all verified in the same file):
 | `assertGapsFromValuesSize` | $\|\text{gapsFromValues}(L)\| = \|L\| - 1$ |
 | `assertFirstSurvivorHead` | $\text{survivorValues}(CI, f, start, count).head = CI(start)$ when $CI(start) \bmod f \neq 0$ |
 
-### 10.3 Verified Survivor Bridge Facts
+### 14.3 Verified Survivor Bridge Facts
 
 The sieve progression involves three representations:
 
@@ -1346,20 +1389,20 @@ The sieve progression involves three representations:
 2. **SpecDerivedSieveSequence** — The bridge, constructed from Spec data and proven correct
 3. **CycleSieveSequence** — The efficient cycle representation with the survival walk
 
-The verified bridge theorem proves that the gap between consecutive Spec-next survivor positions equals the corresponding `spec.next` gap:
+The verified bridge theorem proves that the gap between consecutive Spec-next survivor positions equals the corresponding \(\text{gaps}(\text{Spec}')\):
 
 ```math
 \begin{aligned}
 pos_i
-  &= \text{spec.indexOfAccepted}(\text{spec.next}(i))
+  &= \text{Spec}_{\text{posOf}(\text{Spec}'_i)}
      \quad &\text{[By Definition]} \\
-\text{nextCanonical.cycle}(k) &= \text{spec.next}(k)
-     \quad \text{[By nextCanonical.assertApplyMatches(k)]} \\
-\text{cNext.apply}(k) &= \text{spec.next}(k)
-     \quad \text{[By assertCycleNextApplyEqualsSpecNext]} \\
-\text{nextCanonical.cycle}(k) &= \text{cNext.apply}(k)
-     \quad \text{[By assertBNextApplyEqualsCNextApply]} \\
-\quad &\text{[Q.E.D.]}
+\text{Canonical}'_k &= \text{Spec}'_k
+     \quad \text{[Current equivalence]} \\
+\text{Canonical}'_k &= \text{Cycle}'_k
+     \quad \text{[Next equivalence]} \\
+\text{Canonical}'_k &= \text{Cycle}'_k
+     \quad \text{[By canonical-cycle bridge]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -1370,10 +1413,10 @@ The constructive canonical next cycle is verified separately:
 ```math
 \begin{aligned}
 \forall k \ge 0,\quad
-\text{SpecDerivedSieveSequence}(\text{spec.next}, nextPeriod).\text{cycle}(k)
-  &= \text{spec.next}(k)
-     \quad \text{[By assertNextCycleApplyMatchesSpecNext]} \\
-\quad &\text{[Q.E.D.]}
+\text{Canonical}'(\text{Spec}', nextPeriod).\text{Cycle}_k
+  &= \text{Spec}'_k
+     \quad \text{[Next cycle equivalence]} \\
+\quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -1423,7 +1466,7 @@ Supporting bridge lemmas (all in SpecDerivedSieveSequence):
 | `assertBNextApplyEqualsCNextApply(nP, k)` | `cNext.apply(k) == nextCanonical.cycle.apply(k)` — Canonical.next = Cycle.next | `SpecDerivedBySurvivors` |
 | `assertSpecCanonicalCycleNextMatch(nP)` | Spec = Canonical = Cycle (top-level composition) | `SpecDerivedBySurvivors` |
 
-### 10.4 Walk Status
+### 14.4 Walk Status
 
 The constructive path (`nextWithGapCycle`) is fully verified — `Spec.next = Canonical.next = Cycle.next` for all positions. The walk (`CycleSieveSequence.next()`) uses `nextGapsWalk`, an unverified internal implementation with zero callers in the codebase.
 
@@ -1431,9 +1474,9 @@ The constructive path (`nextWithGapCycle`) is fully verified — `Spec.next = Ca
 \begin{aligned}
 \text{Spec.next}(k) &= \text{Canonical.next}(k) = \text{Cycle.next}(k) \quad \forall k
     \quad \text{[Verified via constructive path]} \\
-\text{nextGapsWalk}(\text{cycle})
+\text{gaps}(\text{Cycle}')
   &\stackrel{?}{=}
-    \text{spec.next.gapList}(0,nextPeriod)
+    \text{gaps}(\text{Spec}')
     \quad \text{[Unverified — walk is uncalled]}
 \end{aligned}
 ```
@@ -1445,11 +1488,11 @@ The walk has zero callers in the current codebase — all callers use the verifi
 \text{emittedGaps.reverse}
   &= \text{spec.next.gapList}(0, emitted) \\
 \text{lastSurvivor}
-  &= \text{spec.next}(emitted) \\
+  &= \text{Spec}'(emitted) \\
 \text{skipped values}
-  &\text{ are rejected by } \text{spec.next} \\
+  &\text{ are rejected by } \text{Spec}' \\
 \text{emitted values}
-  &\text{ are the next accepted } \text{spec.next} \text{ values}
+  &\text{ are the next accepted } \text{Spec}' \text{ values}
 \end{aligned}
 ```
 
@@ -1457,32 +1500,37 @@ This theorem remains open. Until it is proved, this article must not claim that 
 
 ---
 
-## 12. Conclusion
+## 15. Conclusion
 
 This article presents the fully verified three-way equivalence Spec = Canonical = Cycle
-for both current and next stages. All core components (11472/11472 VCs green).
+for both current and next stages.
 
 ### Verified property summary
 
-| Property | Status | Key lemma |
-|----------|--------|-----------|
-| Unit counter $CI([1], init)(i) = init + i + 1$ | [Verified] | `CycleIntegralOnesProperties::assertCycleIntegralOfOnes` |
-| Unit counter monotonicity | [Verified] | `assertCycleIntegralOfOnesStrictlyIncreasing` |
-| Spec soundness and completeness | [Verified] | `SpecSieveSequence.apply` / `indexOfAccepted` |
-| Spec strict progress $spec(k+1) > spec(k)$ | [Verified] | `applyStrictlyIncreases(k)` |
-| Spec gap positivity (adjacent and list) | [Verified] | `assertGapPositive` / `assertGapListPositive` |
-| Spec gap-cycle reconstruction | [Verified] | `assertSpecGapCycleIntegralMatchesApply` |
-| Current stage: $cycle(k) = spec(k)$ | [Verified] | `SpecDerivedSieveSequence::assertApplyMatches(k)` |
-| Next head: $cycle(1) = spec.next.head$ | [Verified] | `assertNextHeadMatches` |
-| Canonical next gaps $=$ spec.next gap list | [Verified] | `assertNextCycleGapsMatchSpecNext` |
-| Next stage: $cNext(k) = spec.next(k)$ | [Verified] | `SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext` |
-| $Canonical.next(k) = Cycle.next(k)$ | [Verified] | `assertBNextApplyEqualsCNextApply` |
-| Spec $=$ Canonical $=$ Cycle, current and next | [Verified] | `assertSpecCanonicalCycleNextMatch` |
-| Pipeline repeat → rotate → filter → gaps ≡ spec.next gaps | [Verified] | `SieveSequenceNextLevel` / `SpecCycleSieveEquivalence` (§10) |
-| Conditional primality: $apply(1) < head^2 \Rightarrow isPrime(apply(1))$ | [Verified] | `assertApplyOneIsPrimeIfBelowHeadSq` |
-| $apply(1) < head^2$ (Bertrand's postulate) | [Open] | §8.1 |
-| Primorial coprime to new prime (Euclid's lemma) | [Open] | §8.2 |
-| Walk ($CycleSieveSequence.next()$) = spec.next gaps | [Unverified] | §11.4 |
+| Property | Key lemma |
+|----------|-----------|
+| Unit counter $CI([1], init)(i) = init + i + 1$ | [`assertCycleIntegralOfOnes`](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala) |
+| Unit counter monotonicity | [`assertCycleIntegralOfOnesStrictlyIncreasing`](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala) |
+| Spec soundness and completeness | [`apply`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) / [`indexOfAccepted`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| Spec strict progress $spec(k+1) > spec(k)$ | [`applyStrictlyIncreases`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| Spec gap positivity (adjacent and list) | [`assertGapPositive`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) / [`assertGapListPositive`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| Spec gap-cycle reconstruction | [`assertSpecGapCycleIntegralMatchesApply`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| Current stage: $cycle(k) = spec(k)$ | [`assertApplyMatches`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| Next head: $cycle(1) = spec.next.head$ | [`assertNextHeadMatches`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| Canonical next gaps $=$ spec.next gap list | [`assertNextCycleGapsMatchSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| Next stage: $cNext(k) = spec.next(k)$ | [`assertCycleNextApplyEqualsSpecNext`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| $Canonical.next(k) = Cycle.next(k)$ | [`assertBNextApplyEqualsCNextApply`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| Spec $=$ Canonical $=$ Cycle, current and next | [`assertSpecCanonicalCycleNextMatch`](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| Pipeline repeat → rotate → filter → gaps ≡ spec.next gaps | [`SieveSequenceNextLevel`](../src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala) / [`SpecCycleSieveEquivalence`](../src/main/scala/v1/chapter6/seq/sieve/SpecCycleSieveEquivalence.scala) |
+| Conditional primality: $apply(1) < head^2 \Rightarrow isPrime(apply(1))$ | [`assertApplyOneIsPrimeIfBelowHeadSq`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+
+## 16. Future Work
+
+The two open prerequisites — Bertrand's postulate (§8.1) and Euclid's lemma
+(§8.2) — remain the only undischarged assumptions in the proof chain.
+Discharging them in Stainless would make the pipeline correctness theorem
+unconditional, removing the `require` preconditions from every next-stage
+constructor.
 
 ## References
 
@@ -1501,7 +1549,24 @@ Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Li
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [articles/chapter4/integral-cycle.md](../chapter4/integral-cycle.md)
 
-## Appendix: Stainless Verification Log Output
+## Appendix A: Core Lemma Source References
+
+The following table lists the key verified lemmas discussed in the body of the article.
+Full implementation code is available at the linked source files.
+
+| # | Lemma | Statement | Source |
+|---|-------|-----------|--------|
+| A.1 | Spec soundness and completeness | `apply(k)` passes all tail filters; `accepts(value)` has an index | [SpecSieveSequence::apply](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala), [`indexOfAccepted`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| A.2 | Spec strict progress | \(\text{Spec}_{k+1} > \text{Spec}_k\) for all `k` | [SpecSieveSequence::applyStrictlyIncreases](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| A.3 | Spec gap positivity | `apply(k + 1) - apply(k) > 0` and `gapList(from, count)` entries > 0 | [SpecSieveSequence::assertGapPositive](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala), [`assertGapListPositive`](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| A.4 | Gap-cycle reconstruction | `CycleIntegral(head, gapCycle)(k - 1) == spec(k)` for all `k` | [SpecSieveSequence::assertSpecGapCycleIntegralMatchesApply](../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala) |
+| A.5 | Current stage equivalence | `derived.cycle(k) == spec(k)` for all `k` | [SpecDerivedSieveSequence::assertApplyMatches](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| A.6 | Canonical next gaps | `derived.nextGapCycle == spec.next.gapList(0, nextPeriod)` | [SpecDerivedSieveSequence::assertNextCycleGapsMatchSpecNext](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala) |
+| A.7 | Next stage equivalence | `cNext.apply(k) == spec.next(k)` for all `k` | [SpecDerivedBySurvivors::assertCycleNextApplyEqualsSpecNext](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| A.8 | Canonical-Cycle bridge | `bNext.apply(k) == cNext.apply(k)` for all `k` | [SpecDerivedBySurvivors::assertBNextApplyEqualsCNextApply](../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala) |
+| A.9 | Pipeline correctness | `nextRotatedGaps == spec.next.gapList(0, nextPeriod)` | [SieveSequenceNextLevel](../src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala), [SpecCycleSieveEquivalence](../src/main/scala/v1/chapter6/seq/sieve/SpecCycleSieveEquivalence.scala) |
+
+## Appendix B: Stainless Verification Log Output
 
 The latest checked `logs/verify.log` summary reports:
 

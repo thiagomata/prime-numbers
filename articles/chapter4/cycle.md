@@ -27,19 +27,6 @@ offering a self-contained, verifiable approach of modular arithmetic.
  </p>
 </div>
 
-## Properties Index
-
-| # | Property | Statement | Verifier |
-|---|----------|-----------|----------|
-| 4.1 | Cycle Equivalence (base) | `position < size → ModCycle(pos) == RecCycle(pos)` | [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](#A1) |
-| 4.2 | Cycle Equivalence (all) | `ModCycle(pos) == RecCycle(pos) ∀ pos ≥ 0` | [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](#A2) |
-| 5.1 | Element Access | `cycle(key) == cycle.values(mod(key, size))` | [CycleProperties::findValueInCycle](#A3) |
-| 5.2 | Small Value in Cycle | `key < size → cycle(key) == cycle.values(key)` | [CycleProperties::smallValueInCycle](#A4) |
-| 5.3 | Value After Many Loops | `cycle(key) == cycle(key + size·m)` | [CycleProperties::valueMatchAfterManyLoops](#A5) |
-| 5.4 | Two Multiples | `cycle(key + size·m₁) == cycle(key + size·m₂)` | [CycleProperties::valueMatchAfterManyLoopsInBoth](#A6) |
-| 5.5 | Mod Propagation | `cycle(key) % d == cycle.values(mod(key,size)) % d` | [CycleProperties::propagateModFromValueToCycle](#A7) |
-| 5.6 | Repeated-Cycle Invariance | `repeat(values, x)(pos) == cycle(pos) ∀ x > 0` | [MemCycleProperties::assertRepeatedValuesCycleMatches](#A8) |
-
 ## 1. Introduction
 
 Unbounded lists in cycles, are a fundamental concept in computer science and mathematics, often used to model
@@ -51,12 +38,23 @@ L = [x_0, x_1, x_2, \ldots, x_{n-1}]  \mid x_n \in 𝕊, L \in 𝕃\\
 ```
 
 In this article, we present discrete definition of Cycle
-operations over finite integer lists, defined recursively and verified some of 
+operations over finite integer lists, defined recursively and verified some of
 its properties using the Stainless system.
-Our approach follows a zero-prior-knowledge philosophy, building on a previously 
+Our approach follows a zero-prior-knowledge philosophy, building on a previously
 verified foundation for recursive list structure.
 The result is a verified, from-scratch implementation of cycle operations,
 suitable as a foundation for higher-level numeric reasoning over unbounded lists.
+
+This article verifies:
+
+- Cycle definitions: recursive, modulo, and memory — §3
+- Equivalence: recursive and modulo produce identical values at every position — §4
+- Element access: modular indexing, small-position direct lookup — §5
+- Periodic invariance: value unchanged by adding cycle-size multiples — §5
+- Mod propagation: remainder computed from base-cycle values — §5
+- Repeated-cycle invariance: repeating the base list preserves all lookups — §5
+- Cycle value positivity: all values ≥ 0 at every position — §5
+- Cycle rotation: rotates base list, shifts index — §5
 
 ## 2. Preliminaries
 
@@ -70,7 +68,7 @@ and are treated here as foundational primitives.
 ### List Definitions and Properties
 
 For any list $L$ of numeric values $x_i \in 𝕊$ where $𝕊$ is a set of all numeric values,
-$𝕃$ is the the set of all lists, 
+$𝕃$ is the the set of all lists,
 and $n$ is the size of the list, we define:
 
 ```math
@@ -170,6 +168,34 @@ Building on the definitions and properties of lists, we now define Cycles.
 A Cycle is an unbounded list that repeats a finite sequence of elements from a bounded list.
 In this study, we restrict our universe of values $𝕊$ to be the set of non-negative integers, i.e., $𝕊 = ℕ_0$.
 
+- Recursive: values at $i$ where $i < n$ come from the base list, otherwise recurse on $i - n$ — the definitional spec
+- Modulo: values come directly from the base list at position $i \bmod n$ — efficient access
+- Memory: wraps ModCycle, adds classification tracking via `checkMod(d)` — remembers which divisors produce all-zero, some-zero, or none-zero residue patterns
+
+```mermaid
+classDiagram
+    class MemCycle {
+        cycle: ModCycle
+        modIsZeroForAllValues: List[BigInt]
+        modIsZeroForNoneValues: List[BigInt]
+        modIsZeroForSomeValues: List[BigInt]
+        apply(BigInt) BigInt
+        checkMod(BigInt) MemCycle
+    }
+    class RecursiveCycle {
+        values: List[BigInt]
+        size: BigInt
+        apply(BigInt) BigInt
+    }
+    class ModCycle {
+        values: List[BigInt]
+        size: BigInt
+        apply(BigInt) BigInt
+    }
+    RecursiveCycle --> ModCycle : "≡ by induction (§4.1-4.2)"
+    MemCycle --> ModCycle : "wraps, ≡ by delegation (§3.3)"
+```
+
 ### 3.1 Recursive Cycle
 
 ```math
@@ -244,9 +270,43 @@ case class ModCycle(values: List[BigInt]) {
 }
 ```
 
+### 3.3 Memory Cycle
+
+The third representation, `MemCycle`, wraps a `ModCycle` and adds
+classification state: three lists tracking which divisors produce all-zero,
+some-zero, or none-zero residue patterns across the cycle's values.
+
+Like ModCycle, positional lookup uses modular indexing; value access delegates
+directly to the wrapped ModCycle. Positional equivalence between the two is
+immediate by construction — MemCycle's `apply` calls `cycle.apply`.
+
+The cycle is immutable. Calling `checkMod(d)` returns a *new* `MemCycle` with
+`d` added to the appropriate classification list. The original is unchanged.
+Values are never modified; classification is metadata accumulated across calls.
+
+```scala
+case class MemCycle private (
+  cycle: ModCycle,
+  modIsZeroForAllValues: List[BigInt] = List.empty,
+  modIsZeroForNoneValues: List[BigInt] = List.empty,
+  modIsZeroForSomeValues: List[BigInt] = List.empty,
+) {
+  def apply(position: BigInt): BigInt = cycle(position)
+  def values: List[BigInt] = cycle.values
+  def size: BigInt = cycle.size
+  def checkMod(dividend: BigInt): MemCycle = { /* returns new MemCycle */ }
+}
+```
+
+The memory cycle is defined at [MemCycle](../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
+[CycleCheckMod](../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
+
 ## 4. Cycle Equivalence
 
-Both definitions of a cycle produce the same sequence of values. We prove this by induction on the position $i$.
+Both definitions produce the same sequence of values. We prove this by induction on the position $i$.
+
+- Base case ($i < n$): both definitions consult the base list directly at the same position
+- Inductive step ($i \geq n$): the recursive definition reduces to $i - n$, wrapping to the same modulo position
 
 ```math
 \begin{aligned}
@@ -279,10 +339,8 @@ i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text
 The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#trivial-case) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
-  RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
-](
-  ../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala
-). The full Scala verification code is in Appendix A.1.
+RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
+](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
 
 ### 4.2 Inductive Step ($i \geq n$)
 
@@ -306,14 +364,19 @@ i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\t
 The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#quotient-invariance-under-linear-shift) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
-  RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
-](
-  ../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala
-). The full Scala verification code is in Appendix A.2.
+RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
+](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
 
 ## 5. Cycle Properties
 
 In this section, we prove and verify key properties of Cycles. Each property is stated mathematically, then shown to hold via a corresponding verified lemma in Scala using the Stainless system.
+
+- Element access: `cycle(key) == cycle.values(mod(key, size))` — §5.1
+- Small-value direct lookup: `key < size ⇒ cycle(key) == cycle.values(key)` — §5.2
+- Periodicity: `cycle(key) == cycle(key + size·m)` for any number of loops — §5.3
+- Multi-loop consistency: value at $key$ is independent of which multiple of size is added — §5.4
+- Mod propagation: remainder modulo $d$ at any position equals remainder at the base position — §5.5
+- Repeated-cycle invariance: repeating the base list preserves all lookups — §5.6
 
 ### 5.1 Cycle Element Access
 
@@ -335,10 +398,8 @@ n &= |L| \\
 The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified in Section 4.
 
 This property is verified in the [
-  CycleProperties::findValueInCycle
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.3.
+CycleProperties::findValueInCycle
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
 
 ### 5.2 Small Value in Cycle
 
@@ -360,10 +421,8 @@ i < n \implies \text{Cycle}_i &= L_i  \quad  \blacksquare \quad &\text{[Q.E.D]} 
 The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified in Section 4.
 
 This property is verified in the [
-  CycleProperties::smallValueInCycle
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.4.
+CycleProperties::smallValueInCycle
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
 
 ### 5.3 Value Match After Many Loops
 
@@ -387,10 +446,8 @@ n &= |L| \\
 The lemma [Quotient Invariance Under Linear Shift](../chapter2/modulo.md#quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Proving Properties of Division and Modulo using Formal Verification](../chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
-  CycleProperties::valueMatchAfterManyLoops
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.5.
+CycleProperties::valueMatchAfterManyLoops
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
 
 ### 5.4 Two Multiples of Cycle Size
 
@@ -411,10 +468,8 @@ n &= |L| \\
 ```
 
 This property is verified in the [
-  CycleProperties::valueMatchAfterManyLoopsInBoth
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.6.
+CycleProperties::valueMatchAfterManyLoopsInBoth
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
 
 ### 5.5 Propagate Modulo from Value to Cycle
 
@@ -439,14 +494,10 @@ L[(i \text{ mod } n) \text{ mod } n] &= L[i \text{ mod } n] \quad &\text{[By Mod
 ```
 
 This property is verified in the [
-  CycleProperties::propagateModFromValueToCycle
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-) and [
-  CycleProperties::assertCycleOfPosEqualsCycleOfModPos
-](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.7.
+CycleProperties::propagateModFromValueToCycle
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [
+CycleProperties::assertCycleOfPosEqualsCycleOfModPos
+](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
 
 ### 5.6 Repeated-Cycle Invariance
 
@@ -456,16 +507,10 @@ is structurally a concatenation of $x$ copies of the original list; the extra
 length is invisible at any index because modular indexing composes correctly
 across the nested periods.
 
-When a cycle's base list needs to be replicated to
-cover a longer interval, the repeated version must produce the same values
-at the same positions — otherwise the extension breaks the existing
-lookup semantics. This lemma guarantees that structural repetition does
-not alter any value read from the cycle.
-
 ```math
 \begin{aligned}
 C &\text{ — original MemCycle}, \quad V = C.\text{values}, \quad n = |V| \\
-C_t &\text{ — repeated cycle}, \quad C_t.\text{values} = \text{repeat}(V, t) 
+C_t &\text{ — repeated cycle}, \quad C_t.\text{values} = \text{repeat}(V, t)
   \quad\text{with } t > 0 \\
 \text{period} &= t \cdot n
 \end{aligned}
@@ -510,23 +555,75 @@ def assertRepeatedValuesCycleMatches(
 ```
 
 This property is verified in the [
-  MemCycleProperties::assertRepeatedValuesCycleMatches
-](
-  ../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala
-).
+MemCycleProperties::assertRepeatedValuesCycleMatches
+](../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
 The corresponding CycleIntegral invariant (repeating the gap list preserves
 the integral at every position) is verified in [
-  CycleIntegralProperties::assertRepeatedValuesIntegralMatches
+CycleIntegralProperties::assertRepeatedValuesIntegralMatches
+](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) and documented in the integral-cycle article [[5]](integral-cycle.md).
+
+### 5.7 Cycle Value Positivity
+
+When every value in the base list is non-negative, every position in the cycle
+returns a non-negative value. This guarantees that cycle lookups never produce
+negative numbers, which is essential for integral and gap reasoning.
+
+```math
+\begin{aligned}
+(\forall x \in L,\ x \geq 0) \;\land\; |L| > 0 \;\implies\; \text{cycle}(\text{pos}) \geq 0
+  \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+### Stainless Verification
+
+```scala
+def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
+  require(pos >= 0); require(cycle.size > 0)
+  require(CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, Calc.mod(pos, cycle.size)))
+  cycle(pos) >= 0
+}.holds
+```
+
+This property is verified in the [
+  CycleProperties::cycleValuePositiveOrZero
 ](
-  ../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala
-) and documented in the integral-cycle article [[5]](integral-cycle.md).
+  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
+).
+
+### 5.8 Cycle Rotation
+
+Rotating a cycle's base list by $k$ positions and then accessing index $i$
+gives the same value as accessing the original cycle at index $i + k$. This
+connects cycle structure directly to the list rotation concept from chapter 3.
+
+```math
+\begin{aligned}
+\text{cycle.rotateAt}(k)(i) = \text{cycle}(i + k) \quad
+\text{for } k \geq 0,\ i \geq 0 \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+### Stainless Verification
+
+```scala
+def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
+  require(k >= 0); require(i >= 0); require(cycle.size > 0)
+  val rotatedCycle = cycle.rotateAt(k)
+  rotatedCycle(i) == cycle(k + i)
+}.holds
+```
+
+This property is verified in the [
+  CycleProperties::rotateAtValue
+](
+  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
+).
 
 ## 6. Conclusion
 
-This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified six core properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-size multiples, consistency across distinct multiples, and modulo propagation from values to cycle access.
-
-The scope of this article is limited to cycle definition, equivalence, and basic access properties. Applications of cycles to sieve sequences, cycle integrals, and gap dynamics are handled in separate companion articles.
+This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eight properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-size multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, and rotation invariance.
 
 ```math
 \begin{aligned}
@@ -534,10 +631,22 @@ The scope of this article is limited to cycle definition, equivalence, and basic
 L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n, |L| > 0 \\
 Cycle &:= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 n &= |L| \\
-\text{ModCycle}_i &= \text{RecCycle}_i = \text{Cycle}_i \quad &\text{[Cycle Equivalence]} \\
-\text{ModCycle}_{(i + n \cdot m_1)} &= L  [i \text{ mod } n] \quad &\text{[Value Match After Many Loops]} \\
-\text{ModCycle}_{(i + n \cdot m_2)} &= L  [i \text{ mod } n] \quad &\text{[Value Match After Many Loops]} \\
-\text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} = L  [i \text{ mod } n] \quad &\text{[Propagate Modulo from Value to Cycle]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\text{RecCycle}_i = \text{ModCycle}_i = \text{MemCycle}_i \quad &\text{[Three-Way Equivalence]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\text{Cycle}_{(i + n \cdot m)} &= L [i \bmod n] \quad &\text{[Value Match After Many Loops]} \\
+\text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} \quad &\text{[Two Multiples]} \\
+\text{Cycle}_{i} \bmod d &= \text{Cycle}_{(i \bmod n)} \bmod d \quad &\text{[Mod Propagation]} \\
+\text{key} < n &\implies \text{Cycle}_\text{key} = L_\text{key} \quad &\text{[Small Value Direct Lookup]} \\
+(\forall x \in L,\ x \geq 0) &\implies \text{Cycle}(\text{pos}) \geq 0 \quad &\text{[Cycle Value Positivity]} \\
+\text{repeat}(V, x)(\text{pos}) &= \text{Cycle}_\text{pos} \quad \forall x > 0 \quad &\text{[Repeated-Cycle Invariance]} \\
+\text{cycle.rotateAt}(k)(i) &= \text{cycle}(i + k) \quad &\text{[Rotation Invariance]} \\
 \end{aligned}
 ```
 
@@ -549,16 +658,16 @@ Future work may include exploring more complex properties of Cycles, such as the
 
 ## References
 
-<a name="ref1" id="ref1" href="#ref1">[1]</a> 
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
+<a name="ref1" id="ref1" href="#ref1">[1]</a>
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Unpublished manuscript.  
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal Verification*. Unpublished manuscript.  
+Mata, T. H. (2026). _Proving Properties of Division and Modulo using Formal Verification_. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 ## Appendix A: Scala Verification Code

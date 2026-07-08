@@ -16,19 +16,6 @@ assumptions &mdash; extending that foundation to list-based accumulation.
 The result is a verified and mathematically rigorous definition of discrete integration with static correctness guarantees.
 </p>
 
-## Properties Index
-
-| # | Property | Statement | Verifier |
-|---|----------|-----------|----------|
-| 4.1 | Head Value Matches Definition | `I_0 = x_0 + init` | [IntegralProperties::assertHeadValueMatchDefinition](#A1) |
-| 4.2 | Integral Equals Sum Until Position | `I_k = init + sum(L[0..k])` | [IntegralProperties::assertIntegralEqualsSum](#A2) |
-| 4.3 | Incremental Change Matches List | `I_{p+1} - I_p = L_{p+1}` | [IntegralProperties::assertAccDiffMatchesList](#A3) |
-| 4.4 | Final Element Equals Full Sum | `I_{n-1} = init + sum(L)` | [IntegralProperties::assertLastEqualsSum](#A4) |
-| 5.2 | Element Consistency | `I_k = acc_k` | [IntegralProperties::assertAccMatchesApply](#A5) |
-| 5.3 | Acc Delta Consistency | `acc_{p+1} - acc_p = L_{p+1}` | [IntegralProperties::assertAccDiffMatchesList](#A6) |
-| 5.4 | Last Element Agreement | `last(I) = acc_{n-1} = I_{n-1}` | [IntegralProperties::assertLast](#A7) |
-| 5.5 | Size Agreement | `|acc| = |L|` | [IntegralProperties::assertSizeAccEqualsSizeList](#A8) |
-
 ## 1. Introduction
 
 Accumulation is a central operation in mathematics and computing &mdash; from prefix sums in algorithms to integral 
@@ -39,6 +26,11 @@ In this article, we present a discrete integral operation over finite integer li
 some of its properties using the Stainless system. Our approach follows a zero-prior-knowledge philosophy, building on 
 a previously verified foundation for recursive list structures and summation. The result is a verified, from-scratch 
 implementation of discrete integration, suitable as a foundation for higher-level numeric reasoning over lists.
+
+This article verifies:
+
+- Core integral properties: head value, cumulative sum, incremental change, final sum, strictly increasing, gaps positivity — §4
+- Implementation consistency: element/acc/delta/last/size agreement between the recursive and accumulated representations — §5
 
 ## 2. Preliminaries and Notation
 
@@ -54,7 +46,7 @@ These include the following functions:
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
 - $\text{head}(L)$: returns the first element of a non-empty list.
 - $\text{tail}(L)$: returns the list without its first element.
-- $A$ &#x29FA; $B$: concatenates two lists $A$ and $B$.
+- $A \mathbin{+\!+} B$: concatenates two lists $A$ and $B$.
 
 These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), 
 and are treated here as foundational primitives.
@@ -63,6 +55,11 @@ Proofs in this article are written in Scala and verified using the Stainless sys
 unbounded integers.
 
 ## 3. Definition of Discrete Integral
+
+The discrete integral accumulates list values into partial sums from a given initial value. Two representations are equivalent.
+
+- Mathematical: $I_k = init + \sum_{i=0}^k L_i$ — the specification
+- Recursive: $I_0 = L_0 + init$, $I_{k+1} = I_k + L_{k+1}$ — the implementation
 
 ### 3.1 Mathematical Definition
 
@@ -114,7 +111,10 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
 ## 4. Core Integral Properties
 
-We formally verify the following mathematical properties of the discrete integral.
+- Head value: $I_0 = L_0 + init$ — §4.1
+- Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ — §4.2
+- Incremental change: $I_{p+1} - I_p = L_{p+1}$ — §4.3
+- Final sum: $I_{n-1} = init + \text{sum}(L)$ — §4.4
 
 ### 4.1 Head Value Matches Definition
 
@@ -270,11 +270,81 @@ This property is verified in the [
   ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
 ). The full Scala verification code is in Appendix A.4.
 
+### 4.5 Strictly Increasing Integral
+
+When every value in the list is positive, the integral is strictly increasing:
+a later position always produces a larger value. This is the monotonicity
+theorem — the integral grows with every step.
+
+```math
+\begin{aligned}
+(\forall x \in L,\ x > 0) \;\land\; b > a \;\implies\; I_b > I_a
+  \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Proof.** By induction on $b - a$. Base case $b = a + 1$: §4.3 gives
+$I_{a+1} - I_a = L_{a+1} > 0$. Inductive step: $I_b > I_{b-1} > I_a$ by
+transitivity.
+
+### Stainless Verification
+
+```scala
+def assertIntegralStrictlyIncreasing(
+  integral: Integral, a: BigInt, b: BigInt
+): Boolean = {
+  require(a >= 0); require(b > a); require(b < integral.list.size)
+  require(ListBoundUtils.allGreaterThan(integral.list, BigInt(0)))
+  integral.apply(b) > integral.apply(a)
+}.holds
+```
+
+This property is verified in the [
+  IntegralProperties::assertIntegralStrictlyIncreasing
+](
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
+).
+
+### 4.6 Gaps Positivity
+
+If the integral increases between consecutive positions, the corresponding
+list element is positive. The gap (difference between adjacent integral values)
+has the same sign as the underlying list element.
+
+```math
+\begin{aligned}
+I_{p+1} > I_p \;\implies\; L_{p+1} > 0
+  \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Proof.** By §4.3, $I_{p+1} - I_p = L_{p+1}$. If $I_{p+1} > I_p$, the
+difference is strictly positive, so $L_{p+1} > 0$.
+
+### Stainless Verification
+
+```scala
+def assertGapsPositive(integral: Integral, pos: BigInt): Boolean = {
+  require(pos >= 0); require(pos + 1 < integral.list.size)
+  require(integral.apply(pos + 1) > integral.apply(pos))
+  integral.list(pos + 1) > BigInt(0)
+}.holds
+```
+
+This property is verified in the [
+  IntegralProperties::assertGapsPositive
+](
+  ../src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala
+).
+
 ## 5. Implementation Consistency Lemmas
 
-Although the above defines the mathematical behaviour of the discrete Integral, we also prove the internal consistency 
-of different Scala representations. These lemmas do not introduce new mathematical insights but are essential for 
-formal consistency within verified software.
+These lemmas verify that the recursive implementation and its accumulated representation agree internally. They do not introduce new mathematical properties but are essential for formal software consistency.
+
+- Element consistency: $I_k = acc_k$ — §5.2
+- Accumulated delta consistency: $acc_{p+1} - acc_p = L_{p+1}$ — §5.3
+- Last element agreement: $\text{last}(I) = acc_{n-1} = I_{n-1}$ — §5.4
+- Size agreement: $|acc| = |L|$ — §5.5
 
 ### 5.1 Accumulated List Definition
 
@@ -534,14 +604,21 @@ I_k &= acc_k & \text{[Element Consistency]} \\
 \text{last}(I) &= acc_{n-1} = I_{n-1} & \text{[Last Element Agreement]} \\
 acc_{p+1} - acc_p &= x_{p+1} & \text{[Accumulated Delta Consistency]} \\
 |acc| &= |L| & \text{[Size Agreement]} \\
+(\forall x \in L,\ x > 0) \;\land\; b > a &\implies I_b > I_a & \text{[Strictly Increasing]} \\
+I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Gaps Positivity]} \\
 \end{aligned}
 ```
 
-These results establish that the recursive discrete integral exactly corresponds to the cumulative sum of list elements plus the given initial value. The construction preserves list length, and the differences between consecutive integral elements recover the original list entries, confirming the correctness of the accumulation process.
+These results establish that the recursive discrete integral exactly corresponds to the cumulative sum of list elements plus the given initial value. The integral is strictly increasing when the list values are positive, and a positive gap between consecutive integral values implies the underlying list element is positive. The construction preserves list length, and the differences between consecutive integral elements recover the original list entries, confirming the correctness of the accumulation process.
 
 All properties were formally verified in Scala using the Stainless verification system. The full verification code is in Appendix A.
 
-## 8. References
+## 8. Future Work
+
+Extending the finite integral to repeating sequences of values would capture the relationship between modular arithmetic and 
+gap-period decomposition — the foundation for reasoning about cumulative sums over cyclic structures.
+
+## 9. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
