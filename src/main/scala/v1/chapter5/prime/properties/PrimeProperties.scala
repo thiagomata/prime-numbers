@@ -634,7 +634,7 @@ object PrimeProperties {
     assert(d < n)
     assert(d * d <= n)
     d
-}.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n)
+  }.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n)
 }
 //
 //  /**

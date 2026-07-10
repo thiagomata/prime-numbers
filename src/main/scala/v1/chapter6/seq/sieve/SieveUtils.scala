@@ -666,6 +666,97 @@ object SieveUtils {
     }
   }.holds
 
+  /**
+   * addOffset preserves list size.
+   *
+   * Math:
+   *   addOffset(list, offset).size == list.size
+   *
+   * Structural induction on list: addOffset conses one element per input
+   * element, so the output length equals the input length. No precondition
+   * on offset or the list contents is needed.
+   */
+  def assertAddOffsetSize(list: List[BigInt], offset: BigInt): Boolean = {
+    decreases(list.size)
+    if (list.isEmpty) {
+      addOffset(list, offset).size == list.size
+    } else {
+      assert(assertAddOffsetSize(list.tail, offset))
+      addOffset(list, offset).size == list.size
+    }
+  }.holds
+
+  /**
+   * Append preserves list size.
+   *
+   * Math:
+   *   (left ++ right).size == left.size + right.size
+   *
+   * Structural induction on left. Each cons of left contributes exactly one
+   * element to the front of (left ++ right), so the total length is the sum.
+   * No precondition on the list contents is needed.
+   */
+  def assertAppendSize(left: List[BigInt], right: List[BigInt]): Boolean = {
+    decreases(left.size)
+    if (left.isEmpty) {
+      (left ++ right).size == left.size + right.size
+    } else {
+      assert(assertAppendSize(left.tail, right))
+      (left ++ right).size == left.size + right.size
+    }
+  }.holds
+
+  /**
+   * Size of the expanded residue list.
+   *
+   * Math:
+   *   expandSingleResidue(residues, mod, p, i).size == residues.size * (p - i)
+   *
+   * By induction on (p - i). The expansion lays down one addOffset block of
+   * size residues.size per remaining index, from i up to p-1 inclusive, giving
+   * (p - i) blocks. The base case (i == p-1) is a single addOffset block; the
+   * inductive case appends the current block (size residues.size, by
+   * assertAddOffsetSize) to the rest (size residues.size * (p - i - 1), by the
+   * induction hypothesis), and assertAppendSize sums them to
+   * residues.size * (p - i).
+   */
+  def assertExpandSingleResidueSize(
+    residues: List[BigInt], mod: BigInt, p: BigInt, i: BigInt
+  ): Boolean = {
+    require(i >= 0 && i < p)
+    require(p > 0)
+    decreases(p - i)
+    val currentSet = addOffset(residues, i * mod)
+    assert(assertAddOffsetSize(residues, i * mod))
+    if (i + 1 >= p) {
+      currentSet.size == residues.size * (p - i)
+    } else {
+      assert(assertExpandSingleResidueSize(residues, mod, p, i + 1))
+      val rest = expandSingleResidue(residues, mod, p, i + 1)
+      assert(assertAppendSize(currentSet, rest))
+      (currentSet ++ rest).size == residues.size * (p - i)
+    }
+  }.holds
+
+  /**
+   * Size of the top-level expanded residue list.
+   *
+   * Math:
+   *   expandResidues(residues, mod, p).size == residues.size * p
+   *
+   * Direct corollary of assertExpandSingleResidueSize at i == 0, since
+   * expandResidues delegates to expandSingleResidue(residues, mod, p, 0) and
+   * p - 0 == p.
+   */
+  def assertExpandResiduesSize(
+    residues: List[BigInt], mod: BigInt, p: BigInt
+  ): Boolean = {
+    require(mod > 0)
+    require(p > 0)
+    assert(assertExpandSingleResidueSize(residues, mod, p, BigInt(0)))
+    expandResidues(residues, mod, p).size == residues.size * p
+  }.holds
+
   def assertExpandSingleRange(residues: List[BigInt], mod: BigInt, p: BigInt, i: BigInt): Boolean = {
     require(CycleUtils.checkNonNegative(residues))
     require(CycleUtils.allLessThan(residues, mod))
