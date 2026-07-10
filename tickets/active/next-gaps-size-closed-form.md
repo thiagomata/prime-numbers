@@ -2,7 +2,8 @@
 
 **Created:** 2026-07-09
 **Updated:** 2026-07-09
-**Status:** Plan phase
+**Status:** Blocked — product-composition lemma at 27/30 VCs
+**Tag:** `euclid-bezout-banked-20260709` — [view at this commit](https://github.com/thiagomata/prime-numbers/tree/euclid-bezout-banked-20260709)
 **Depends on:** `fix-ch6-timeout-file-by-file.md` (complete, green baseline), `sieve-sequence-proof.md` (active, P2 open)
 
 ## Related Tickets
@@ -531,6 +532,41 @@ return value). The contrapositive itself is no longer the blocker.
 2. Accept the contrapositive deliverable (B8 verified); treat stage 1 / A2 as the next session's
    work with the wall now removed. Update the article: Euclid + contrapositive verified, closed form
    pending on the (now-ordinary) stage-1 composition.
-3. Bypass stage 1: A2 may not strictly need product-non-divisibility -- it needs the per-prime
+ 3. Bypass stage 1: A2 may not strictly need product-non-divisibility -- it needs the per-prime
+
+## 2026-07-09 Session 2 (continuation)
+
+### A3 (product composition via findSmallestDivisor decomposition) — BLOCKED at 27/30 VCs
+
+Attempted a fundamentally different strategy: instead of proving `mod(product(primes), head) != 0`
+via Euclid's lemma, recursively decompose the product into its prime factors using
+`findSmallestDivisor` and check that `head` is not among them. This avoids Euclid's
+lemma entirely.
+
+Four attempts in `PrimeProperties.scala`:
+1. Direct decomposition (timeout, 300s) — too many VCs
+2. Restructured with `d == n` case (invalid: `require(isPrime)` order) — fixed
+3. Proper case split `d == n` vs `d < n` (timeout, 27/30 VCs passed) — **closest yet**
+4. (reverted after 3 timeouts + 1 invalid = stop-and-ask)
+
+The decomposition lemma was **27/30** — 3 VCs remain, all on recursive IH propagation
+after `assert(assertHeadNotDivideProduct(nReduced, head))`. The IH conclusion
+`mod(nReduced, head) != 0` needs to be visible at the parent level to discharge
+the parent's postcondition. This is a composition/visibility issue (LEARNINGS §1.2
+family), not a math error.
+
+**Tagged:** `euclid-bezout-banked-20260709`
+
+### Banked (green, this session):
+- EuclidLemma: assertTwoFactorsProductNotDiv (18/18 — verified earlier). `assertProductNotDivisibleByPrime`
+  reverted after 3 timeout attempts.
+- PrimeProperties: assertHeadNotDivideProduct reverted (27/30, close to green).
+
+### Open gaps:
+- **Product-composition lemma** (3 remaining VCs): `mod(product(primes), head) != 0`.
+  Closest approach: findSmallestDivisor decomposition (27/30). Likely fixable by
+  restructuring the IH into a separate helper lemma (e.g. `def recurseOnReduced`).
+- **A2 closed form**: `|G'| = |G|·(h-1)` — depends on product composition + CRT bijection.
+- **Article §7.3**: size formula noted as pending on product composition.
    contrapositive (B8 directly), not the product form. Re-examine whether A2 can use B8 per-prime
    instead of via the product.
