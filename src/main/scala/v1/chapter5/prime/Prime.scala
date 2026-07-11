@@ -45,6 +45,41 @@ object Prime {
     }
   }.holds
 
+  final def findSmallestDivisor(n: BigInt, from: BigInt): BigInt = {
+    require(n > 1 && from >= 2 && from <= n)
+    decreases(n - from)
+    if (from >= n) n
+    else if (Calc.mod(n, from) == BigInt(0)) from
+    else findSmallestDivisor(n, from + 1)
+  }.ensuring(res => res >= from && res <= n && Calc.mod(n, res) == BigInt(0))
+
+  def assertFindSmallestDivisorMinimality(n: BigInt, from: BigInt): Boolean = {
+    require(n > 1 && from >= 2 && from <= n)
+    decreases(n - from)
+    if (from >= n) true
+    else if (Calc.mod(n, from) == BigInt(0)) {
+      val res = findSmallestDivisor(n, from)
+      if (res > from) noDivisorInRange(n, from, res - 1)
+      else true
+    } else {
+      assertFindSmallestDivisorMinimality(n, from + 1)
+      val res = findSmallestDivisor(n, from)
+      if (res > from) noDivisorInRange(n, from, res - 1)
+      else true
+    }
+  }.holds
+
+  def assertFindSmallestDivisorEquivNoDivisorInRange(n: BigInt, from: BigInt): Boolean = {
+    require(n > 1 && from >= 2 && from <= n)
+    decreases(n - from)
+    if (from >= n)
+      (findSmallestDivisor(n, from) == n) == noDivisorInRange(n, from, n)
+    else if (Calc.mod(n, from) == BigInt(0))
+      (findSmallestDivisor(n, from) == n) == noDivisorInRange(n, from, n)
+    else
+      assertFindSmallestDivisorEquivNoDivisorInRange(n, from + 1)
+  }.holds
+
   def isPrime(value: BigInt): Boolean = {
     require(value >= 0)
     if (value <= 1) {

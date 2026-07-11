@@ -7,35 +7,10 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication.ATimesBSameMod
 import v1.chapter2.div.properties.{AdditionAndMultiplication, ModOperations, ModSmallDividend}
 import v1.chapter3.list.ListUtils
+import v1.chapter5.prime.Prime.findSmallestDivisor
 import v1.chapter5.prime.{Prime, PrimeUtils, SortedPrimeList, CoprimeUtils, PrimeListUtils}
 
 object PrimeProperties {
-
-  /**
-   * Find the smallest divisor of n in the range [from, n).
-   *
-   * Walks upward from `from` checking each integer. If it finds one that
-   * divides n evenly, that's the answer. If it reaches n without finding
-   * any divisor, it returns n — meaning n itself is prime (since no smaller
-   * number divides it).
-   *
-   * This is the computational core of the Euclid proof:
-   * we need to find a prime divisor of primorial + 1.
-   *
-   * findSmallestDivisor(n, from) = smallest d ∈ [from, n) such that mod(n, d) == 0,
-   *                                or n if no such d exists.
-   *
-   * @param n    BigInt the number to factor (must be > 1)
-   * @param from BigInt where to start looking (must be >= 2, <= n)
-   * @return BigInt the smallest divisor, or n if n is prime
-   */
-  private def findSmallestDivisor(n: BigInt, from: BigInt): BigInt = {
-    require(n > 1 && from >= 2 && from <= n)
-    decreases(n - from)
-    if (from >= n) n
-    else if (Calc.mod(n, from) == BigInt(0)) from
-    else findSmallestDivisor(n, from + 1)
-  }.ensuring(res => res >= from && res <= n)
 
   /**
    * Lemma: what findSmallestDivisor returns matches the conditions.
@@ -221,7 +196,7 @@ object PrimeProperties {
    * @param d BigInt the smallest divisor found (d >= 2, d < n)
    * @return Boolean true if d is prime
    */
-  private def assertSmallestDivisorIsPrime(n: BigInt, d: BigInt): Boolean = {
+  def assertSmallestDivisorIsPrime(n: BigInt, d: BigInt): Boolean = {
     require(n > 1 && d >= 2 && d < n)
     require(findSmallestDivisor(n, 2) == d)
     findSmallestDivisorResultModZero(n, d)
@@ -634,7 +609,7 @@ object PrimeProperties {
     assert(d < n)
     assert(d * d <= n)
     d
-  }.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n)
+  }.ensuring(res => res >= 2 && res < n && Prime.isPrime(res) && res * res <= n && Calc.mod(n, res) == BigInt(0))
 }
 //
 //  /**

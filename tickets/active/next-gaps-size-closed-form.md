@@ -2,8 +2,13 @@
 
 **Created:** 2026-07-09
 **Updated:** 2026-07-09
-**Status:** Blocked — product-composition lemma at 27/30 VCs
+**Status:** Clean baseline — user removed reverted lemma attempts; markdown preserved
 **Tag:** `euclid-bezout-banked-20260709` — [view at this commit](https://github.com/thiagomata/prime-numbers/tree/euclid-bezout-banked-20260709)
+
+**Note (2026-07-09):** All reverted `.scala` lemma attempts (assertProductNotDivisibleByPrime,
+assertHeadNotDivideProduct) have been removed by the user. The banked green code
+(BezoutUtils, EuclidLemma, SieveUtils A1) from the previous session is preserved.
+The markdown files (article, ticket) are kept as-is.
 **Depends on:** `fix-ch6-timeout-file-by-file.md` (complete, green baseline), `sieve-sequence-proof.md` (active, P2 open)
 
 ## Related Tickets
