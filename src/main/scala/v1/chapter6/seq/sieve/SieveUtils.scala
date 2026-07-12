@@ -307,6 +307,44 @@ object SieveUtils {
     }
   }.ensuring(res => res >= BigInt(0) && res <= p - i)
 
+  def countOffsetHits(list: List[BigInt], step: BigInt, p: BigInt, i: BigInt): BigInt = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0)
+    decreases(list.size)
+    if (list.isEmpty) BigInt(0)
+    else {
+      val rest = countOffsetHits(list.tail, step, p, i)
+      assert(rest >= BigInt(0))
+      assert(rest <= list.tail.size)
+      if (Calc.mod(list.head + i * step, p) == BigInt(0)) {
+        assert(rest + BigInt(1) <= list.size)
+        rest + BigInt(1)
+      } else {
+        assert(rest <= list.size)
+        rest
+      }
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= list.size)
+
+  def countExpandedOffsetHits(list: List[BigInt], step: BigInt, p: BigInt, i: BigInt): BigInt = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0 && i <= p)
+    decreases(p - i)
+    if (i == p) BigInt(0)
+    else {
+      val current = countOffsetHits(list, step, p, i)
+      val rest = countExpandedOffsetHits(list, step, p, i + BigInt(1))
+      assert(current >= BigInt(0))
+      assert(current <= list.size)
+      assert(rest >= BigInt(0))
+      assert(rest <= list.size * (p - (i + BigInt(1))))
+      assert(current + rest <= list.size * (p - i))
+      current + rest
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= list.size * (p - i))
+
   def assertCountZeroOffsetsFromWitness(
     r: BigInt,
     step: BigInt,
@@ -411,6 +449,225 @@ object SieveUtils {
       countMultiples(expandSingleResidue(singleton, step, p, i), p) ==
         countZeroOffsets(r, step, p, i)
     }
+  }.holds
+
+  def assertCountMultiplesExpandSingletonOne(r: BigInt, step: BigInt, p: BigInt): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+
+    assert(assertCountMultiplesExpandSingleton(r, step, p, BigInt(0)))
+    assert(countMultiples(expandSingleResidue(List(r), step, p, BigInt(0)), p) ==
+      countZeroOffsets(r, step, p, BigInt(0)))
+    assert(assertCountZeroOffsetsOne(r, step, p))
+    countMultiples(expandSingleResidue(List(r), step, p, BigInt(0)), p) == BigInt(1)
+  }.holds
+
+  def assertCountMultiplesAddOffset(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0)
+    decreases(list.size)
+    if (list.isEmpty) {
+      countMultiples(addOffset(list, i * step), p) ==
+        countOffsetHits(list, step, p, i)
+    } else {
+      val restOffset = addOffset(list.tail, i * step)
+      val restHits = countOffsetHits(list.tail, step, p, i)
+      assert(assertCountMultiplesAddOffset(list.tail, step, p, i))
+      assert(countMultiples(restOffset, p) == restHits)
+      if (Calc.mod(list.head + i * step, p) == BigInt(0)) {
+        assert(countMultiples(addOffset(list, i * step), p) ==
+          countMultiples(restOffset, p) + BigInt(1))
+        assert(countOffsetHits(list, step, p, i) == restHits + BigInt(1))
+        countMultiples(addOffset(list, i * step), p) ==
+          countOffsetHits(list, step, p, i)
+      } else {
+        assert(countMultiples(addOffset(list, i * step), p) ==
+          countMultiples(restOffset, p))
+        assert(countOffsetHits(list, step, p, i) == restHits)
+        countMultiples(addOffset(list, i * step), p) ==
+          countOffsetHits(list, step, p, i)
+      }
+    }
+  }.holds
+
+  def assertCountMultiplesExpandByOffsetHits(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0 && i < p)
+    decreases(p - i)
+
+    val currentSet = addOffset(list, i * step)
+    if (i + BigInt(1) >= p) {
+      assert(i + BigInt(1) == p)
+      assert(assertCountMultiplesAddOffset(list, step, p, i))
+      assert(countMultiples(currentSet, p) == countOffsetHits(list, step, p, i))
+      assert(countExpandedOffsetHits(list, step, p, i) == countOffsetHits(list, step, p, i))
+      countMultiples(expandSingleResidue(list, step, p, i), p) ==
+        countExpandedOffsetHits(list, step, p, i)
+    } else {
+      val rest = expandSingleResidue(list, step, p, i + BigInt(1))
+      assert(assertCountMultiplesExpandByOffsetHits(list, step, p, i + BigInt(1)))
+      assert(countMultiples(rest, p) == countExpandedOffsetHits(list, step, p, i + BigInt(1)))
+      assert(assertCountMultiplesAppend(currentSet, rest, p))
+      assert(assertCountMultiplesAddOffset(list, step, p, i))
+      assert(countMultiples(currentSet, p) == countOffsetHits(list, step, p, i))
+      assert(countMultiples(currentSet ++ rest, p) ==
+        countMultiples(currentSet, p) + countMultiples(rest, p))
+      assert(countExpandedOffsetHits(list, step, p, i) ==
+        countOffsetHits(list, step, p, i) + countExpandedOffsetHits(list, step, p, i + BigInt(1)))
+      countMultiples(expandSingleResidue(list, step, p, i), p) ==
+        countExpandedOffsetHits(list, step, p, i)
+    }
+  }.holds
+
+  def assertCountExpandedOffsetHitsCons(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(!list.isEmpty)
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0 && i <= p)
+    decreases(p - i)
+
+    if (i == p) {
+      assert(countZeroOffsets(list.head, step, p, i) == BigInt(0))
+      assert(countExpandedOffsetHits(list, step, p, i) == BigInt(0))
+      assert(countExpandedOffsetHits(list.tail, step, p, i) == BigInt(0))
+      countExpandedOffsetHits(list, step, p, i) ==
+        countZeroOffsets(list.head, step, p, i) +
+          countExpandedOffsetHits(list.tail, step, p, i)
+    } else {
+      val tailHits = countOffsetHits(list.tail, step, p, i)
+      assert(assertCountExpandedOffsetHitsCons(list, step, p, i + BigInt(1)))
+      assert(countExpandedOffsetHits(list, step, p, i + BigInt(1)) ==
+        countZeroOffsets(list.head, step, p, i + BigInt(1)) +
+          countExpandedOffsetHits(list.tail, step, p, i + BigInt(1)))
+      assert(countExpandedOffsetHits(list, step, p, i) ==
+        countOffsetHits(list, step, p, i) +
+          countExpandedOffsetHits(list, step, p, i + BigInt(1)))
+      assert(countExpandedOffsetHits(list.tail, step, p, i) ==
+        tailHits + countExpandedOffsetHits(list.tail, step, p, i + BigInt(1)))
+
+      if (Calc.mod(list.head + i * step, p) == BigInt(0)) {
+        assert(countOffsetHits(list, step, p, i) == tailHits + BigInt(1))
+        assert(countZeroOffsets(list.head, step, p, i) ==
+          countZeroOffsets(list.head, step, p, i + BigInt(1)) + BigInt(1))
+        countExpandedOffsetHits(list, step, p, i) ==
+          countZeroOffsets(list.head, step, p, i) +
+            countExpandedOffsetHits(list.tail, step, p, i)
+      } else {
+        assert(countOffsetHits(list, step, p, i) == tailHits)
+        assert(countZeroOffsets(list.head, step, p, i) ==
+          countZeroOffsets(list.head, step, p, i + BigInt(1)))
+        countExpandedOffsetHits(list, step, p, i) ==
+          countZeroOffsets(list.head, step, p, i) +
+            countExpandedOffsetHits(list.tail, step, p, i)
+      }
+    }
+  }.holds
+
+  def assertCountExpandedOffsetHitsOnePerResidue(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(CycleUtils.checkNonNegative(list))
+    decreases(list.size)
+
+    if (list.isEmpty) {
+      countExpandedOffsetHits(list, step, p, BigInt(0)) == list.size
+    } else {
+      assert(list.head >= BigInt(0))
+      assert(CycleUtils.checkNonNegative(list.tail))
+      assert(assertCountExpandedOffsetHitsCons(list, step, p, BigInt(0)))
+      assert(countExpandedOffsetHits(list, step, p, BigInt(0)) ==
+        countZeroOffsets(list.head, step, p, BigInt(0)) +
+          countExpandedOffsetHits(list.tail, step, p, BigInt(0)))
+      assert(assertCountZeroOffsetsOne(list.head, step, p))
+      assert(countZeroOffsets(list.head, step, p, BigInt(0)) == BigInt(1))
+      assert(assertCountExpandedOffsetHitsOnePerResidue(list.tail, step, p))
+      assert(countExpandedOffsetHits(list.tail, step, p, BigInt(0)) == list.tail.size)
+      assert(list.size == list.tail.size + BigInt(1))
+      countExpandedOffsetHits(list, step, p, BigInt(0)) == list.size
+    }
+  }.holds
+
+  def assertCountMultiplesExpandOnePerResidue(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(CycleUtils.checkNonNegative(list))
+
+    assert(assertCountMultiplesExpandByOffsetHits(list, step, p, BigInt(0)))
+    assert(countMultiples(expandSingleResidue(list, step, p, BigInt(0)), p) ==
+      countExpandedOffsetHits(list, step, p, BigInt(0)))
+    assert(assertCountExpandedOffsetHitsOnePerResidue(list, step, p))
+    assert(countExpandedOffsetHits(list, step, p, BigInt(0)) == list.size)
+    countMultiples(expandSingleResidue(list, step, p, BigInt(0)), p) == list.size
+  }.holds
+
+  def assertFilterExpandSingleResidueSizeByDensity(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(CycleUtils.checkNonNegative(list))
+
+    val expanded = expandSingleResidue(list, step, p, BigInt(0))
+    assert(assertFilterListSizeByCount(expanded, p))
+    assert(filterList(expanded, p).size == expanded.size - countMultiples(expanded, p))
+    assert(assertCountMultiplesExpandOnePerResidue(list, step, p))
+    assert(countMultiples(expanded, p) == list.size)
+    assert(assertExpandSingleResidueSize(list, step, p, BigInt(0)))
+    assert(expanded.size == list.size * p)
+    assert(filterList(expanded, p).size == list.size * p - list.size)
+    assert(list.size * p - list.size == list.size * (p - BigInt(1)))
+    filterList(expanded, p).size == list.size * (p - BigInt(1))
+  }.holds
+
+  def assertFilterExpandResiduesSizeByDensity(
+    list: List[BigInt],
+    step: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step > 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(CycleUtils.checkNonNegative(list))
+
+    assert(assertFilterExpandSingleResidueSizeByDensity(list, step, p))
+    filterList(expandResidues(list, step, p), p).size == list.size * (p - BigInt(1))
   }.holds
 
   def assertFilterListSizeByCount(list: List[BigInt], divisor: BigInt): Boolean = {
