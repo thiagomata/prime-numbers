@@ -604,6 +604,13 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertAllRExpandedCoprimeRec(r,modulus,p,primes)**              | Recursive helper                                                       |
 | **assertDivTransitive(c,b,a)**                                    | `mod(c,b)==0 && mod(b,a)==0 => mod(c,a)==0`                            |
 | **assertFilterNonEmpty(list,divisor)**                            | Filter preserves non-emptiness                                         |
+| **countMultiples(list,divisor)**                                  | Counts values divisible by `divisor`, bounded by list size             |
+| **countZeroOffsets(r,step,p,i)**                                  | Counts zero residues in stepped offsets `i..p-1`, bounded by `p - i`   |
+| **assertCountZeroOffsetsFromWitness(r,step,p,i,witness)**         | If `witness` is the zero offset, count from `i` is `1` iff `i <= witness` |
+| **assertCountZeroOffsetsOne(r,step,p)**                           | `countZeroOffsets(r,step,p,0) == 1` for prime `p` and coprime step     |
+| **assertCountMultiplesExpandSingleton(r,step,p,i)**               | Singleton expansion multiple count equals `countZeroOffsets(r,step,p,i)` |
+| **assertFilterListSizeByCount(list,divisor)**                     | `filterList(list,divisor).size == list.size - countMultiples(list,divisor)` |
+| **assertCountMultiplesAppend(left,right,divisor)**                | `countMultiples(left ++ right,divisor) == countMultiples(left,divisor) + countMultiples(right,divisor)` |
 | **assertIsCoprimeForAll(n,primes)**                               | `isCoprime(n,primes) => mod(n, p) != 0` for all `p`                    |
 | **assertPrimeFactorDivides(n,primes)**                            | Found prime factor divides `n`                                         |
 | **assertNoDivisorByFactorList(n,d,primes)**                       | Coprime + d has factor => `mod(n,d) != 0`                              |

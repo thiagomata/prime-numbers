@@ -6,7 +6,7 @@ import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.AdditionAndMultiplication
 import v1.chapter3.list.{ListBoundUtils, ListUtils, SortedList}
 import v1.chapter3.list.properties.{ListUtilsProperties, RotationProperties}
-import v1.chapter5.prime.CoprimeUtils
+import v1.chapter5.prime.{BezoutUtils, CoprimeUtils, Prime}
 import scala.annotation.tailrec
 
 object SieveUtils {
@@ -268,6 +268,208 @@ object SieveUtils {
       else rest
     }
   }
+
+  def countMultiples(list: List[BigInt], divisor: BigInt): BigInt = {
+    require(divisor > 0)
+    decreases(list.size)
+    if (list.isEmpty) BigInt(0)
+    else {
+      val rest = countMultiples(list.tail, divisor)
+      assert(rest >= BigInt(0))
+      assert(rest <= list.tail.size)
+      if (Calc.mod(list.head, divisor) == BigInt(0)) {
+        assert(rest + BigInt(1) <= list.size)
+        rest + BigInt(1)
+      } else {
+        assert(rest <= list.size)
+        rest
+      }
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= list.size)
+
+  def countZeroOffsets(r: BigInt, step: BigInt, p: BigInt, i: BigInt): BigInt = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0 && i <= p)
+    decreases(p - i)
+    if (i == p) BigInt(0)
+    else {
+      val rest = countZeroOffsets(r, step, p, i + BigInt(1))
+      assert(rest >= BigInt(0))
+      assert(rest <= p - (i + BigInt(1)))
+      if (Calc.mod(r + i * step, p) == BigInt(0)) {
+        assert(rest + BigInt(1) <= p - i)
+        rest + BigInt(1)
+      } else {
+        assert(rest <= p - i)
+        rest
+      }
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= p - i)
+
+  def assertCountZeroOffsetsFromWitness(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    witness: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(i >= 0 && i <= p)
+    require(witness >= 0 && witness < p)
+    require(Calc.mod(r + witness * step, p) == BigInt(0))
+    decreases(p - i)
+
+    if (i == p) {
+      assert(i > witness)
+      assert(countZeroOffsets(r, step, p, i) == BigInt(0))
+      countZeroOffsets(r, step, p, i) ==
+        (if (i <= witness) BigInt(1) else BigInt(0))
+    } else {
+      val rest = countZeroOffsets(r, step, p, i + BigInt(1))
+      assert(assertCountZeroOffsetsFromWitness(r, step, p, i + BigInt(1), witness))
+      assert(rest == (if (i + BigInt(1) <= witness) BigInt(1) else BigInt(0)))
+
+      if (Calc.mod(r + i * step, p) == BigInt(0)) {
+        BezoutUtils.assertCoprimeStepAtMostOneZero(r, step, p, i, witness)
+        assert(i == witness)
+        assert(i + BigInt(1) > witness)
+        assert(rest == BigInt(0))
+        assert(countZeroOffsets(r, step, p, i) == rest + BigInt(1))
+        countZeroOffsets(r, step, p, i) ==
+          (if (i <= witness) BigInt(1) else BigInt(0))
+      } else {
+        if (i == witness) {
+          assert(r + i * step == r + witness * step)
+          assert(Calc.mod(r + i * step, p) == BigInt(0))
+        }
+        assert(i != witness)
+        if (i < witness) {
+          assert(i + BigInt(1) <= witness)
+          assert(rest == BigInt(1))
+          assert(countZeroOffsets(r, step, p, i) == rest)
+          countZeroOffsets(r, step, p, i) ==
+            (if (i <= witness) BigInt(1) else BigInt(0))
+        } else {
+          assert(i > witness)
+          assert(i + BigInt(1) > witness)
+          assert(rest == BigInt(0))
+          assert(countZeroOffsets(r, step, p, i) == rest)
+          countZeroOffsets(r, step, p, i) ==
+            (if (i <= witness) BigInt(1) else BigInt(0))
+        }
+      }
+    }
+  }.holds
+
+  def assertCountZeroOffsetsOne(r: BigInt, step: BigInt, p: BigInt): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+
+    val witness = BezoutUtils.coprimeStepZeroOffset(r, step, p)
+    assert(witness >= BigInt(0))
+    assert(witness < p)
+    assert(Calc.mod(r + witness * step, p) == BigInt(0))
+    assert(assertCountZeroOffsetsFromWitness(r, step, p, BigInt(0), witness))
+    assert(BigInt(0) <= witness)
+    countZeroOffsets(r, step, p, BigInt(0)) == BigInt(1)
+  }.holds
+
+  def assertCountMultiplesExpandSingleton(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(step >= 0)
+    require(p > 0)
+    require(i >= 0 && i < p)
+    decreases(p - i)
+
+    val singleton = List(r)
+    val currentSet = addOffset(singleton, i * step)
+    if (i + BigInt(1) >= p) {
+      assert(countMultiples(currentSet, p) == countZeroOffsets(r, step, p, i))
+      countMultiples(expandSingleResidue(singleton, step, p, i), p) ==
+        countZeroOffsets(r, step, p, i)
+    } else {
+      val rest = expandSingleResidue(singleton, step, p, i + BigInt(1))
+      assert(assertCountMultiplesExpandSingleton(r, step, p, i + BigInt(1)))
+      assert(countMultiples(rest, p) == countZeroOffsets(r, step, p, i + BigInt(1)))
+      assert(assertCountMultiplesAppend(currentSet, rest, p))
+      assert(countMultiples(currentSet ++ rest, p) ==
+        countMultiples(currentSet, p) + countMultiples(rest, p))
+      assert(countMultiples(currentSet, p) ==
+        (if (Calc.mod(r + i * step, p) == BigInt(0)) BigInt(1) else BigInt(0)))
+      countMultiples(expandSingleResidue(singleton, step, p, i), p) ==
+        countZeroOffsets(r, step, p, i)
+    }
+  }.holds
+
+  def assertFilterListSizeByCount(list: List[BigInt], divisor: BigInt): Boolean = {
+    require(divisor > 0)
+    decreases(list.size)
+    if (list.isEmpty) {
+      filterList(list, divisor).size == list.size - countMultiples(list, divisor)
+    } else {
+      val restFiltered = filterList(list.tail, divisor)
+      val restCount = countMultiples(list.tail, divisor)
+      assert(restCount >= BigInt(0))
+      assert(restCount <= list.tail.size)
+      assert(assertFilterListSizeByCount(list.tail, divisor))
+      assert(restFiltered.size == list.tail.size - restCount)
+
+      if (Calc.mod(list.head, divisor) != BigInt(0)) {
+        assert(countMultiples(list, divisor) == restCount)
+        assert(filterList(list, divisor).size == restFiltered.size + BigInt(1))
+        assert(list.size == list.tail.size + BigInt(1))
+        filterList(list, divisor).size == list.size - countMultiples(list, divisor)
+      } else {
+        assert(countMultiples(list, divisor) == restCount + BigInt(1))
+        assert(filterList(list, divisor).size == restFiltered.size)
+        assert(list.size == list.tail.size + BigInt(1))
+        filterList(list, divisor).size == list.size - countMultiples(list, divisor)
+      }
+    }
+  }.holds
+
+  def assertCountMultiplesAppend(
+    left: List[BigInt],
+    right: List[BigInt],
+    divisor: BigInt
+  ): Boolean = {
+    require(divisor > 0)
+    decreases(left.size)
+    if (left.isEmpty) {
+      countMultiples(left ++ right, divisor) ==
+        countMultiples(left, divisor) + countMultiples(right, divisor)
+    } else {
+      val tailAppend = left.tail ++ right
+      val tailCount = countMultiples(left.tail, divisor)
+      val rightCount = countMultiples(right, divisor)
+      assert(assertCountMultiplesAppend(left.tail, right, divisor))
+      assert(countMultiples(tailAppend, divisor) == tailCount + rightCount)
+
+      if (Calc.mod(left.head, divisor) == BigInt(0)) {
+        assert(countMultiples(left, divisor) == tailCount + BigInt(1))
+        assert(countMultiples(left ++ right, divisor) == countMultiples(tailAppend, divisor) + BigInt(1))
+        countMultiples(left ++ right, divisor) ==
+          countMultiples(left, divisor) + countMultiples(right, divisor)
+      } else {
+        assert(countMultiples(left, divisor) == tailCount)
+        assert(countMultiples(left ++ right, divisor) == countMultiples(tailAppend, divisor))
+        countMultiples(left ++ right, divisor) ==
+          countMultiples(left, divisor) + countMultiples(right, divisor)
+      }
+    }
+  }.holds
 
   def assertFilterNonEmpty(list: List[BigInt], divisor: BigInt): Boolean = {
     require(divisor > 0)
