@@ -1,7 +1,7 @@
 # Objects and Properties Catalog
 
 Complete inventory of all verified `.holds` lemmas across the codebase.
-Last updated: 2026-07-05
+Last updated: 2026-07-11
 
 **Total: 307 verified lemmas** across 6 chapters.
 
@@ -457,13 +457,39 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertHasPrimeFactorImpliesNotCoprime(n,d,primes)** | Prime factor => not coprime                           |
 | **assertNoDivisorByFactorList(n,d,primes)**           | Coprime to primes + d has factor => mod(n,d) != 0     |
 
-## 5.2 Prime (`v1.chapter5.prime.Prime`)
+## 5.2 BezoutUtils (`v1.chapter5.prime.BezoutUtils`)
+
+| Lemma                                                             | Statement                                                                                     |
+|-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| **assertBezoutIdentity(a,b)**                                     | Extended GCD exposes a positive Bezout linear combination                                     |
+| **assertGcdDividesBoth(a,b)**                                     | Extended GCD result divides both inputs                                                       |
+| **assertCoprimeGcdOne(h,p)**                                      | Positive `h < p` and `mod(h,p) != 0` imply `gcd(h,p) == 1` for prime `p`                      |
+| **assertCoprimeLinearCombinationOne(h,p)**                        | Coprime `h` and prime `p` admit a Bezout combination equal to 1                               |
+| **assertDivTimesAnyIsDiv(m,c,p)**                                 | Divisibility by `p` is preserved when multiplying by any integer `c`                          |
+| **assertPrimeDivProductImpliesDivFactor(k,h,p)**                  | If prime `p` divides `k*h` and `0 < h < p`, then `p` divides `k`                              |
+| **assertPrimeDivKhImpliesDivK(k,h,p)**                            | If prime `p` divides `k*h` and `mod(h,p) != 0`, then `p` divides `k`                          |
+| **assertPrimeProductNotDivisible(k,h,p)**                         | If neither factor is divisible by prime `p`, then `k*h` is not divisible by `p`               |
+| **assertCoprimeStepNonzeroAfterZero(a,step,p,d)**                 | A nonzero coprime step cannot hit two multiples of prime `p` within `0 < d < p`               |
+| **assertCoprimeStepOrderedNonzeroAfterZero(r,step,p,i,j)**        | Once `r + i*step` is divisible by `p`, no later offset `j < p` is divisible                   |
+| **assertCoprimeStepAtMostOneZero(r,step,p,i,j)**                  | At most one offset in `[0,p)` makes `r + offset*step` divisible by prime `p`                  |
+| **assertSameResidueOffsetPreservesZero(r,step,p,i,k)**            | Same-residue nonnegative stepped offsets preserve divisibility by `p`                         |
+| **assertSameSteppedResiduePreservesZero(r,step,p,i,j)**           | Equal stepped residues transport divisibility from offset `i` to offset `j`                   |
+| **assertCoprimeStepOrderedResiduesDistinct(step,p,i,j)**          | Ordered offsets in `[0,p)` have distinct stepped residues when `step` is coprime to prime `p` |
+| **assertCoprimeStepResiduesEqualImpliesOffsetsEqual(step,p,i,j)** | Equal stepped residues in `[0,p)` imply equal offsets when `step` is coprime to prime `p`     |
+| **assertModRepresentativePreservesScaledResidue(raw,scale,p)**    | Replacing `raw` by `mod(raw,p)` preserves the residue of `raw*scale` modulo `p`               |
+| **coprimeStepResidueOffset(step,p,target)**                       | Returns an offset in `[0,p)` whose stepped residue is the target modulo prime `p`             |
+| **assertCoprimeStepHitsResidue(step,p,target)**                   | A nonzero coprime step hits any target residue modulo prime `p` from some offset in `[0,p)`   |
+| **assertSteppedOffsetFromOrdinaryZeroOffset(r,step,p,i)**         | A stepped offset matching `findZeroOffset(r,p)` modulo `p` makes `r+i*step` divisible         |
+| **coprimeStepZeroOffset(r,step,p)**                               | Returns an offset in `[0,p)` that makes `r+offset*step` divisible by prime `p`                |
+| **assertCoprimeStepZeroOffsetUnique(r,step,p,i)**                 | Any zero-hitting offset in `[0,p)` equals `coprimeStepZeroOffset(r,step,p)`                   |
+
+## 5.3 Prime (`v1.chapter5.prime.Prime`)
 
 | Lemma                                              | Statement                                          |
 |----------------------------------------------------|----------------------------------------------------|
 | **noDivisorInRangeExcludesValue(n,from,to,value)** | `noDivisorInRange(n,from,to) => mod(n,value) != 0` |
 
-## 5.3 PrimeUtils (`v1.chapter5.prime.PrimeUtils`)
+## 5.4 PrimeUtils (`v1.chapter5.prime.PrimeUtils`)
 
 | Lemma                                       | Statement                                      |
 |---------------------------------------------|------------------------------------------------|
@@ -472,7 +498,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **primorialPositive(primes)**               | `primorial(primes) > 0`                        |
 | **primeIsCoprimeWithSmallerList(v,primes)** | Prime larger than head is coprime to list      |
 
-## 5.4 SortedPrimeList (`v1.chapter5.prime.SortedPrimeList`)
+## 5.5 SortedPrimeList (`v1.chapter5.prime.SortedPrimeList`)
 
 | Lemma                                       | Statement                           |
 |---------------------------------------------|-------------------------------------|
@@ -481,7 +507,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertTailDescending(list)**              | Tail of descending is descending    |
 | **assertRemoveKeepsDescending(list,index)** | `removeAt` preserves descending     |
 
-## 5.5 FilterPreservesPrimesProperties (`v1.chapter5.prime.properties.FilterPreservesPrimesProperties`)
+## 5.6 FilterPreservesPrimesProperties (`v1.chapter5.prime.properties.FilterPreservesPrimesProperties`)
 
 | Lemma                                                             | Statement                                      |
 |-------------------------------------------------------------------|------------------------------------------------|
@@ -490,7 +516,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertFilterPreservesAllPrimes(q,filterPrime)**                 | Prime not removed by filtering different prime |
 | **assertFilteredContainsAllPrimes(originalPrimes,filterPrime,q)** | All primes != filterPrime survive              |
 
-## 5.6 PrimeProperties (`v1.chapter5.prime.properties.PrimeProperties`)
+## 5.7 PrimeProperties (`v1.chapter5.prime.properties.PrimeProperties`)
 
 | Lemma                                                      | Statement                                        |
 |------------------------------------------------------------|--------------------------------------------------|

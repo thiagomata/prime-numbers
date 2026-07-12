@@ -179,12 +179,12 @@ spec sequence.
 \end{aligned}
 ```
 
-**Proof.** The linear scan starts at $h$ and advances by at most
-$h \cdot M$ positions before finding a survivor. Within the range
-$[h, h \cdot M)$, the consecutive-integers density lemma guarantees
-a survivor exists: among any block of $M$ consecutive integers,
-exactly the non-multiples survive filtering by the primes in
-$\overline{P}$. The scan terminates when it reaches the survivor.
+**Proof.** The linear scan starts at $h$ and advances until it reaches
+the next survivor. Over the current period $[h, h + M)$, the gap list
+represents exactly the values that survive filtering by the primes in
+$\overline{P}$. Periodicity then repeats this survivor pattern every
+$M$ positions, so every accepted value is eventually reached by the
+scan. The scan terminates when it reaches that survivor.
 
 This property is verified in the [
   SpecSieveSequence::indexOfAccepted
@@ -360,10 +360,12 @@ one gap period:
 \end{aligned}
 ```
 
-**2. Expand.** Repeat the residues $h$ times to cover the scan range:
+**2. Expand.** Lift the current-period residues through the next
+period of length $h \cdot M$:
 ```math
 \begin{aligned}
-\text{expanded} = \text{repeat}(\text{residues},\ h)
+\text{expanded} =
+  [\, r + iM \mid r \in \text{residues},\ 0 \le i < h \,]
 \end{aligned}
 ```
 
@@ -484,7 +486,7 @@ The head bound is verified in [
   ../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedBySurvivors.scala
 ).
 
-The pipeline also determines the next-stage gap count exactly:
+The pipeline is expected to determine the next-stage gap count exactly:
 
 ```math
 \begin{aligned}
@@ -492,18 +494,26 @@ The pipeline also determines the next-stage gap count exactly:
 \end{aligned}
 ```
 
-Filtering by $h$ removes every $h$-th value from the expanded list of
-$h \cdot |G|$ candidates (by the consecutive-integers density lemma,
-§4 of the modulo article). Exactly $|G|$ values are eliminated — one
-per block of $h$. The survivors count is $|G| \cdot (h - 1)$, and
-$\text{assertNextGapsSize}$ proves the gap count equals the survivor
-count. The explicit closed form $|G'| = |G| \cdot (h - 1)$ follows by
-composition of these lemmas; a standalone `.holds` proof is pending.
+The intended proof is an exact finite count over the lifted residues,
+not an asymptotic density argument. For each current survivor residue
+$r$, the $h$ lifted values
+$r,\ r + M,\ \dots,\ r + (h - 1)M$ should cover every residue class
+modulo $h$ when $M$ is coprime to $h$. Exactly one lift is then
+divisible by $h$ and removed. Summed over the current survivors, this
+would remove $|G|$ values from the $h \cdot |G|$ expanded candidates,
+leaving $|G| \cdot (h - 1)$ survivors.
+
+This closed-form count is therefore best read as
+**Draft - mathematically motivated, Stainless verification pending**.
+The verified pipeline proves the construction and its local structural
+facts above; the standalone `.holds` proof for the explicit count still
+needs the modular uniqueness lemma and the corresponding list/count
+bridge.
 
 ## 8. Unproven Axioms
 
-The next-stage construction carries exactly one external number-theoretic
-precondition, accepted as an axiom:
+The next-stage construction currently carries Bertrand's postulate as
+an external number-theoretic precondition:
 
 ```math
 \begin{aligned}
@@ -523,9 +533,12 @@ The conditional form is verified in [
   ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
 ).
 
-The individual coprime property — $h$ is coprime to every tail prime —
-is verified via the definition of $\text{isPrime}$. No Euclid's
-lemma requirement remains in the proof chain.
+The individual coprime property - $h$ is coprime to every tail prime -
+is verified via the definition of $\text{isPrime}$. The closed-form
+size theorem discussed in Section 7.3 still needs additional
+Stainless work: in particular, it must establish the relevant
+coprimality of $M$ and $h$ and connect the exact lifted-residue count
+to the pipeline's lists.
 
 ## 9. Conclusion
 
@@ -542,10 +555,11 @@ mathematical object: each stage carries enough structural information
 to compute the next stage without linear search, and the chain of
 stages generates the primes.
 
-The proof chain is fully verified through Stainless. The only
-undischarged number-theoretic assumption is Bertrand's postulate
-(§8), which appears as an explicit precondition on every next-stage
-construction.
+The core construction proofs described above are verified through
+Stainless, with Bertrand's postulate (§8) appearing as an explicit
+precondition where primality of the next head is needed. The explicit
+closed-form size theorem in Section 7.3 remains pending until its
+modular-counting and list-counting obligations are verified.
 
 Computationally, the Sieve Sequence is a static state machine: once the
 gap cycle is built, generating the next accepted value requires only a

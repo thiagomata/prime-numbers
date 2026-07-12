@@ -3,7 +3,8 @@ package v1.chapter5.prime
 import stainless.lang.{BigInt, decreases}
 import stainless.lang.BooleanDecorations
 import v1.chapter2.div.Calc
-import v1.chapter2.div.properties.{AdditionAndMultiplication, ModOperations}
+import v1.chapter2.div.DivMod
+import v1.chapter2.div.properties.{AdditionAndMultiplication, ConsecutiveIntegers, ModOperations, ModSmallDividend}
 import v1.chapter5.prime.properties.EuclidLemma
 
 /**
@@ -391,4 +392,504 @@ object BezoutUtils {
       true
     }
   }.ensuring(_ => Calc.mod(k * h, p) != BigInt(0))
+
+  /**
+   * If a is divisible by prime p, then adding a nonzero multiple of a
+   * p-coprime step cannot remain divisible by p.
+   *
+   * Math:
+   *   isPrime(p) && mod(a, p) == 0 && mod(step, p) != 0 && 0 < d < p
+   *     ==> mod(a + d * step, p) != 0
+   */
+  def assertCoprimeStepNonzeroAfterZero(
+    a: BigInt,
+    step: BigInt,
+    p: BigInt,
+    d: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(a >= 0)
+    require(step >= 0)
+    require(d > 0)
+    require(d < p)
+    require(Calc.mod(a, p) == BigInt(0))
+    require(Calc.mod(step, p) != BigInt(0))
+
+    assert(ModSmallDividend.modSmallDividend(d, p))
+    assert(Calc.mod(d, p) == d)
+    assert(Calc.mod(d, p) != BigInt(0))
+    assertPrimeProductNotDivisible(d, step, p)
+    assert(Calc.mod(d * step, p) != BigInt(0))
+    assert(ModOperations.modZeroPlusC(a, p, d * step))
+    assert(Calc.mod(a + d * step, p) == Calc.mod(d * step, p))
+    Calc.mod(a + d * step, p) != BigInt(0)
+  }.holds
+
+  /**
+   * Ordered lift uniqueness step: once r + i*step is divisible by prime p,
+   * no later offset j in the same p-window can also be divisible.
+   *
+   * Math:
+   *   isPrime(p) && mod(step, p) != 0 && 0 <= i < j < p
+   *     && mod(r + i*step, p) == 0
+   *     ==> mod(r + j*step, p) != 0
+   */
+  def assertCoprimeStepOrderedNonzeroAfterZero(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    j: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(i >= 0)
+    require(i < j)
+    require(j < p)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(Calc.mod(r + i * step, p) == BigInt(0))
+
+    val d = j - i
+    assert(d > 0)
+    assert(d < p)
+    assert(r + j * step == (r + i * step) + d * step)
+    assertCoprimeStepNonzeroAfterZero(r + i * step, step, p, d)
+    assert(Calc.mod((r + i * step) + d * step, p) != BigInt(0))
+    Calc.mod(r + j * step, p) != BigInt(0)
+  }.holds
+
+  /**
+   * At most one offset in a p-window can make r + offset*step divisible by
+   * prime p when step is coprime to p.
+   *
+   * Math:
+   *   isPrime(p) && mod(step, p) != 0 && 0 <= i,j < p
+   *     && mod(r + i*step, p) == 0 && mod(r + j*step, p) == 0
+   *     ==> i == j
+   */
+  def assertCoprimeStepAtMostOneZero(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    j: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(i >= 0)
+    require(i < p)
+    require(j >= 0)
+    require(j < p)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(Calc.mod(r + i * step, p) == BigInt(0))
+    require(Calc.mod(r + j * step, p) == BigInt(0))
+
+    if (i < j) {
+      assertCoprimeStepOrderedNonzeroAfterZero(r, step, p, i, j)
+      assert(Calc.mod(r + j * step, p) != BigInt(0))
+    } else if (j < i) {
+      assertCoprimeStepOrderedNonzeroAfterZero(r, step, p, j, i)
+      assert(Calc.mod(r + i * step, p) != BigInt(0))
+    }
+    i == j
+  }.holds
+
+  /**
+   * If a stepped offset has the same residue as a known zero-making ordinary
+   * offset, then the stepped offset also makes a zero.
+   *
+   * Math:
+   *   mod(i*step, p) == k && mod(r + k, p) == 0 && 0 <= k < p
+   *     ==> mod(r + i*step, p) == 0
+   */
+  def assertSameResidueOffsetPreservesZero(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(p > 0)
+    require(r >= 0)
+    require(step >= 0)
+    require(i >= 0)
+    require(k >= 0)
+    require(k < p)
+    require(Calc.mod(i * step, p) == k)
+    require(Calc.mod(r + k, p) == BigInt(0))
+
+    assert(ModSmallDividend.modSmallDividend(k, p))
+    assert(Calc.mod(k, p) == k)
+    assert(ModOperations.modAdd(r, p, k))
+    assert(Calc.mod(r + k, p) == Calc.mod(Calc.mod(r, p) + Calc.mod(k, p), p))
+    assert(Calc.mod(Calc.mod(r, p) + k, p) == BigInt(0))
+    assert(ModOperations.modAdd(r, p, i * step))
+    assert(Calc.mod(r + i * step, p) == Calc.mod(Calc.mod(r, p) + Calc.mod(i * step, p), p))
+    assert(Calc.mod(r + i * step, p) == Calc.mod(Calc.mod(r, p) + k, p))
+    Calc.mod(r + i * step, p) == BigInt(0)
+  }.holds
+
+  /**
+   * If two stepped offsets have the same residue modulo p, divisibility at the
+   * first offset transports to the second offset.
+   *
+   * Math:
+   *   mod(i*step, p) == mod(j*step, p) && mod(r + i*step, p) == 0
+   *     ==> mod(r + j*step, p) == 0
+   */
+  def assertSameSteppedResiduePreservesZero(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    j: BigInt
+  ): Boolean = {
+    require(p > 0)
+    require(r >= 0)
+    require(step >= 0)
+    require(i >= 0)
+    require(j >= 0)
+    require(Calc.mod(i * step, p) == Calc.mod(j * step, p))
+    require(Calc.mod(r + i * step, p) == BigInt(0))
+
+    val k = Calc.mod(i * step, p)
+    assert(k >= BigInt(0))
+    assert(k < p)
+    assert(ModSmallDividend.modSmallDividend(k, p))
+    assert(Calc.mod(k, p) == k)
+    assert(ModOperations.modAdd(r, p, i * step))
+    assert(Calc.mod(r + i * step, p) == Calc.mod(Calc.mod(r, p) + Calc.mod(i * step, p), p))
+    assert(Calc.mod(Calc.mod(r, p) + k, p) == BigInt(0))
+    assert(ModOperations.modAdd(r, p, k))
+    assert(Calc.mod(r + k, p) == Calc.mod(Calc.mod(r, p) + Calc.mod(k, p), p))
+    assert(Calc.mod(r + k, p) == BigInt(0))
+    assert(Calc.mod(j * step, p) == k)
+    assertSameResidueOffsetPreservesZero(r, step, p, j, k)
+    Calc.mod(r + j * step, p) == BigInt(0)
+  }.holds
+
+  /**
+   * Ordered stepped residues are distinct modulo p when step is coprime to p.
+   *
+   * Math:
+   *   isPrime(p) && mod(step, p) != 0 && 0 <= i < j < p
+   *     ==> mod(i*step, p) != mod(j*step, p)
+   */
+  def assertCoprimeStepOrderedResiduesDistinct(
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    j: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(i >= 0)
+    require(i < j)
+    require(j < p)
+    require(Calc.mod(step, p) != BigInt(0))
+
+    val r = ConsecutiveIntegers.findZeroOffset(i * step, p)
+    assert(Calc.mod(i * step + r, p) == BigInt(0))
+    assert(r + i * step == i * step + r)
+    assert(Calc.mod(r + i * step, p) == BigInt(0))
+
+    if (Calc.mod(i * step, p) == Calc.mod(j * step, p)) {
+      assertSameSteppedResiduePreservesZero(r, step, p, i, j)
+      assert(Calc.mod(r + j * step, p) == BigInt(0))
+      assertCoprimeStepAtMostOneZero(r, step, p, i, j)
+      assert(i == j)
+    }
+    Calc.mod(i * step, p) != Calc.mod(j * step, p)
+  }.holds
+
+  /**
+   * Equal stepped residues come from equal offsets in [0,p) when step is
+   * coprime to prime p.
+   *
+   * Math:
+   *   isPrime(p) && mod(step, p) != 0 && 0 <= i,j < p
+   *   && mod(i*step, p) == mod(j*step, p)
+   *     ==> i == j
+   */
+  def assertCoprimeStepResiduesEqualImpliesOffsetsEqual(
+    step: BigInt,
+    p: BigInt,
+    i: BigInt,
+    j: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(i >= 0)
+    require(i < p)
+    require(j >= 0)
+    require(j < p)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(Calc.mod(i * step, p) == Calc.mod(j * step, p))
+
+    if (i < j) {
+      assertCoprimeStepOrderedResiduesDistinct(step, p, i, j)
+    } else if (j < i) {
+      assertCoprimeStepOrderedResiduesDistinct(step, p, j, i)
+    }
+    i == j
+  }.holds
+
+  /**
+   * Replacing a value by its modulo-p representative preserves the residue of
+   * any scaled value.
+   *
+   * Math:
+   *   mod(mod(raw,p) * scale, p) == mod(raw * scale, p)
+   */
+  def assertModRepresentativePreservesScaledResidue(
+    raw: BigInt,
+    scale: BigInt,
+    p: BigInt
+  ): Boolean = {
+    require(p > 0)
+    require(scale >= 0)
+
+    val record = DivMod(raw, p, BigInt(0), raw)
+    val solved = record.solve
+    assert(solved.a == raw)
+    assert(solved.b == p)
+    assert(solved.isValid)
+    assert(solved.div == Calc.div(raw, p))
+    assert(solved.mod == Calc.mod(raw, p))
+    assert(Calc.div(raw, p) * p + Calc.mod(raw, p) == raw)
+
+    val rawMod = Calc.mod(raw, p)
+    val rawDiv = Calc.div(raw, p)
+    assert(raw == rawDiv * p + rawMod)
+    assert(raw * scale == (rawDiv * p + rawMod) * scale)
+    assert(raw * scale == rawMod * scale + p * (rawDiv * scale))
+    assert(AdditionAndMultiplication.ATimesBSameMod(rawMod * scale, p, rawDiv * scale))
+    assert(Calc.mod(rawMod * scale, p) == Calc.mod(rawMod * scale + p * (rawDiv * scale), p))
+    assert(Calc.mod(raw * scale, p) == Calc.mod(rawMod * scale + p * (rawDiv * scale), p))
+    Calc.mod(rawMod * scale, p) == Calc.mod(raw * scale, p)
+  }.holds
+
+  /**
+   * Returns an offset in [0,p) whose stepped residue is target modulo prime p.
+   *
+   * Math:
+   *   isPrime(p) && mod(step,p) != 0 && 0 <= target < p
+   *     ==> mod(coprimeStepResidueOffset(step,p,target) * step, p) == target
+   */
+  def coprimeStepResidueOffset(
+    step: BigInt,
+    p: BigInt,
+    target: BigInt
+  ): BigInt = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(target >= 0)
+    require(target < p)
+
+    val stepMod = Calc.mod(step, p)
+    assert(stepMod >= BigInt(0))
+    assert(stepMod < p)
+    assert(stepMod != BigInt(0))
+    assert(stepMod > BigInt(0))
+    assert(ModSmallDividend.modSmallDividend(stepMod, p))
+    assert(Calc.mod(stepMod, p) == stepMod)
+
+    assertCoprimeLinearCombinationOne(stepMod, p)
+    val bez = extendedGcd(stepMod, p)
+    assert(stepMod * bez.x + p * bez.y == BigInt(1))
+
+    val raw = target * bez.x
+    val offset = Calc.mod(raw, p)
+    assert(offset >= BigInt(0))
+    assert(offset < p)
+
+    assert(raw * stepMod == target * bez.x * stepMod)
+    assert(raw * stepMod == target * (stepMod * bez.x))
+    assert(target * (stepMod * bez.x + p * bez.y) == target)
+    assert(target * stepMod * bez.x + target * p * bez.y == target)
+    assert(target * (stepMod * bez.x) + target * p * bez.y == target)
+    assert(raw * stepMod + p * (target * bez.y) == target)
+    assert(raw * stepMod == target + p * (-(target * bez.y)))
+
+    assert(AdditionAndMultiplication.ATimesBSameMod(target, p, -(target * bez.y)))
+    assert(Calc.mod(target, p) == Calc.mod(target + p * (-(target * bez.y)), p))
+    assert(ModSmallDividend.modSmallDividend(target, p))
+    assert(Calc.mod(target, p) == target)
+    assert(Calc.mod(raw * stepMod, p) == target)
+
+    assertModRepresentativePreservesScaledResidue(raw, stepMod, p)
+    assert(Calc.mod(offset * stepMod, p) == target)
+
+    assertModRepresentativePreservesScaledResidue(step, offset, p)
+    assert(Calc.mod(stepMod * offset, p) == Calc.mod(step * offset, p))
+    assert(stepMod * offset == offset * stepMod)
+    assert(step * offset == offset * step)
+    assert(Calc.mod(offset * step, p) == target)
+    offset
+  }.ensuring(offset => offset >= BigInt(0) && offset < p && Calc.mod(offset * step, p) == target)
+
+  /**
+   * A coprime nonnegative step hits any target residue modulo prime p.
+   *
+   * Math:
+   *   isPrime(p) && mod(step,p) != 0 && 0 <= target < p
+   *     ==> exists offset in [0,p) with mod(offset*step,p) == target
+   *
+   * The witness is offset = mod(target*x, p), where x is the Bezout inverse of
+   * mod(step,p) modulo p.
+   */
+  def assertCoprimeStepHitsResidue(
+    step: BigInt,
+    p: BigInt,
+    target: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(target >= 0)
+    require(target < p)
+
+    val stepMod = Calc.mod(step, p)
+    assert(stepMod >= BigInt(0))
+    assert(stepMod < p)
+    assert(stepMod != BigInt(0))
+    assert(stepMod > BigInt(0))
+    assert(ModSmallDividend.modSmallDividend(stepMod, p))
+    assert(Calc.mod(stepMod, p) == stepMod)
+
+    assertCoprimeLinearCombinationOne(stepMod, p)
+    val bez = extendedGcd(stepMod, p)
+    assert(stepMod * bez.x + p * bez.y == BigInt(1))
+
+    val raw = target * bez.x
+    val offset = Calc.mod(raw, p)
+    assert(offset >= BigInt(0))
+    assert(offset < p)
+
+    assert(raw * stepMod == target * bez.x * stepMod)
+    assert(raw * stepMod == target * (stepMod * bez.x))
+    assert(target * (stepMod * bez.x + p * bez.y) == target)
+    assert(target * stepMod * bez.x + target * p * bez.y == target)
+    assert(target * (stepMod * bez.x) + target * p * bez.y == target)
+    assert(raw * stepMod + p * (target * bez.y) == target)
+    assert(raw * stepMod == target + p * (-(target * bez.y)))
+
+    assert(AdditionAndMultiplication.ATimesBSameMod(target, p, -(target * bez.y)))
+    assert(Calc.mod(target, p) == Calc.mod(target + p * (-(target * bez.y)), p))
+    assert(ModSmallDividend.modSmallDividend(target, p))
+    assert(Calc.mod(target, p) == target)
+    assert(Calc.mod(raw * stepMod, p) == target)
+
+    assertModRepresentativePreservesScaledResidue(raw, stepMod, p)
+    assert(Calc.mod(offset * stepMod, p) == target)
+
+    assertModRepresentativePreservesScaledResidue(step, offset, p)
+    assert(Calc.mod(stepMod * offset, p) == Calc.mod(step * offset, p))
+    assert(stepMod * offset == offset * stepMod)
+    assert(step * offset == offset * step)
+    assert(Calc.mod(offset * step, p) == target)
+    offset >= BigInt(0) && offset < p && Calc.mod(offset * step, p) == target
+  }.holds
+
+  /**
+   * If a stepped offset has the same residue as the ordinary zero offset of r,
+   * then it makes the stepped value divisible by p.
+   *
+   * Math:
+   *   k = findZeroOffset(r, p)
+   *   mod(i*step, p) == k
+   *     ==> mod(r + i*step, p) == 0
+   */
+  def assertSteppedOffsetFromOrdinaryZeroOffset(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(p > 1)
+    require(r >= 0)
+    require(step >= 0)
+    require(i >= 0)
+    require(Calc.mod(i * step, p) == ConsecutiveIntegers.findZeroOffset(r, p))
+
+    val k = ConsecutiveIntegers.findZeroOffset(r, p)
+    assert(k >= BigInt(0))
+    assert(k < p)
+    assert(Calc.mod(r + k, p) == BigInt(0))
+    assertSameResidueOffsetPreservesZero(r, step, p, i, k)
+    Calc.mod(r + i * step, p) == BigInt(0)
+  }.holds
+
+  /**
+   * Returns the unique candidate offset in [0,p) that makes r + offset*step
+   * divisible by p when step is coprime to prime p.
+   *
+   * Math:
+   *   target = findZeroOffset(r,p)
+   *   offset = coprimeStepResidueOffset(step,p,target)
+   *     ==> mod(r + offset*step,p) == 0
+   */
+  def coprimeStepZeroOffset(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt
+  ): BigInt = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+
+    val target = ConsecutiveIntegers.findZeroOffset(r, p)
+    assert(target >= BigInt(0))
+    assert(target < p)
+    assert(Calc.mod(r + target, p) == BigInt(0))
+
+    val offset = coprimeStepResidueOffset(step, p, target)
+    assert(offset >= BigInt(0))
+    assert(offset < p)
+    assert(Calc.mod(offset * step, p) == target)
+    assertSteppedOffsetFromOrdinaryZeroOffset(r, step, p, offset)
+    assert(Calc.mod(r + offset * step, p) == BigInt(0))
+    offset
+  }.ensuring(offset =>
+    offset >= BigInt(0) && offset < p && Calc.mod(r + offset * step, p) == BigInt(0)
+  )
+
+  /**
+   * Any offset in [0,p) that makes r + i*step divisible by p is the zero
+   * offset returned by coprimeStepZeroOffset.
+   */
+  def assertCoprimeStepZeroOffsetUnique(
+    r: BigInt,
+    step: BigInt,
+    p: BigInt,
+    i: BigInt
+  ): Boolean = {
+    require(p >= 2)
+    require(Prime.isPrime(p))
+    require(r >= 0)
+    require(step >= 0)
+    require(Calc.mod(step, p) != BigInt(0))
+    require(i >= 0)
+    require(i < p)
+    require(Calc.mod(r + i * step, p) == BigInt(0))
+
+    val offset = coprimeStepZeroOffset(r, step, p)
+    assert(offset >= BigInt(0))
+    assert(offset < p)
+    assert(Calc.mod(r + offset * step, p) == BigInt(0))
+    assertCoprimeStepAtMostOneZero(r, step, p, i, offset)
+    i == offset
+  }.holds
 }
