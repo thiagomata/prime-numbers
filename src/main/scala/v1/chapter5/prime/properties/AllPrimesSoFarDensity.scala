@@ -1,15 +1,81 @@
 package v1.chapter5.prime.properties
 
+import stainless.collection.List
 import stainless.lang.*
 import v1.chapter2.div.Calc
-import v1.chapter2.div.properties.{AdditionAndMultiplication, ConsecutiveIntegers}
+import v1.chapter2.div.properties.{AdditionAndMultiplication, ConsecutiveIntegers, ModSmallDividend}
 import v1.chapter2.div.properties.ModNativeCompatibility
 import v1.chapter5.prime.CoprimeUtils
 import v1.chapter3.list.ListBoundUtils
 import v1.chapter3.list.properties.{ListProduct, ListProductDiv}
-import v1.chapter5.prime.{AllPrimesSoFarList, PrimeUtils}
+import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
 object AllPrimesSoFarDensity {
+
+  private def assertPrimeValuesLessThan(
+    primes: List[Prime],
+    bound: BigInt
+  ): Boolean = {
+    require(SortedPrimeList.isDescending(primes))
+    require(primes.isEmpty || primes.head.value < bound)
+    decreases(primes.size)
+
+    val values = PrimeUtils.primeValues(primes)
+
+    if (primes.isEmpty) {
+      ListBoundUtils.allLessThan(values, bound)
+    } else {
+      assert(values.head == primes.head.value)
+      assert(values.head < bound)
+      SortedPrimeList.assertTailDescending(primes)
+
+      if (primes.tail.nonEmpty) {
+        assert(primes.head.value > primes.tail.head.value)
+        assert(primes.tail.head.value < bound)
+      }
+
+      assertPrimeValuesLessThan(primes.tail, bound)
+      assert(values.tail == PrimeUtils.primeValues(primes.tail))
+      assert(ListBoundUtils.allLessThan(values.tail, bound))
+      ListBoundUtils.allLessThan(values, bound)
+    }
+  }.ensuring(res =>
+    res && ListBoundUtils.allLessThan(PrimeUtils.primeValues(primes), bound)
+  )
+
+  private def assertNoMultipleOfHeadForPrimeValues(
+    head: BigInt,
+    primes: List[Prime]
+  ): Boolean = {
+    require(head > BigInt(1))
+    require(ListBoundUtils.allGreaterThan(PrimeUtils.primeValues(primes), BigInt(0)))
+    require(ListBoundUtils.allLessThan(PrimeUtils.primeValues(primes), head))
+    decreases(primes.size)
+
+    val values = PrimeUtils.primeValues(primes)
+
+    if (values.isEmpty) {
+      ConsecutiveIntegers.noMultipleOfHead(head, values)
+    } else {
+      val q = values.head
+
+      assert(q > BigInt(0))
+      assert(q < head)
+      ModSmallDividend.modSmallDividend(q, head)
+      ModNativeCompatibility.percentEqualsCalcMod(q, head)
+      assert(q % head == q)
+      assert(q % head != BigInt(0))
+
+      assert(values.tail == PrimeUtils.primeValues(primes.tail))
+      assert(ListBoundUtils.allGreaterThan(values.tail, BigInt(0)))
+      assert(ListBoundUtils.allLessThan(values.tail, head))
+      assertNoMultipleOfHeadForPrimeValues(head, primes.tail)
+      assert(ConsecutiveIntegers.noMultipleOfHead(head, values.tail))
+      ConsecutiveIntegers.noMultipleOfHead(head, values)
+    }
+  }.ensuring(res =>
+    res && ConsecutiveIntegers.noMultipleOfHead(head, PrimeUtils.primeValues(primes))
+  )
 
   private def assertModZeroPreservedByNonNegativeMultiplier(
     value: BigInt,
@@ -112,6 +178,61 @@ object AllPrimesSoFarDensity {
     require(ConsecutiveIntegers.allPrimesDivideM(values, modulus))
 
     ConsecutiveIntegers.densityForPrimeList(start, values, modulus, blocks)
+  }.holds
+
+  /**
+   * Prime values extracted from all-primes-so-far are non-redundant filters.
+   */
+  def assertPrimeValuesNoMultiplesInAllPrimesSoFar(
+    primes: AllPrimesSoFarList
+  ): Boolean = {
+    decreases(primes.size)
+
+    val primeList = primes.list.list
+    val values = PrimeUtils.primeValues(primeList)
+
+    if (values.isEmpty || values.tail.isEmpty) {
+      ConsecutiveIntegers.noMultiplesInList(values)
+    } else {
+      assert(SortedPrimeList.isDescending(primeList))
+      assert(values.head == primeList.head.value)
+      assert(values.head > BigInt(1))
+      assert(values.tail == PrimeUtils.primeValues(primeList.tail))
+
+      SortedPrimeList.assertTailDescending(primeList)
+      assert(primeList.head.value > primeList.tail.head.value)
+      assertPrimeValuesLessThan(primeList.tail, values.head)
+      assert(ListBoundUtils.allLessThan(values.tail, values.head))
+      assertNoMultipleOfHeadForPrimeValues(values.head, primeList.tail)
+      assert(ConsecutiveIntegers.noMultipleOfHead(values.head, values.tail))
+
+      assertPrimeValuesNoMultiplesInAllPrimesSoFar(primes.tail)
+      assert(ConsecutiveIntegers.noMultiplesInList(values.tail))
+      ConsecutiveIntegers.noMultiplesInList(values)
+    }
+  }.holds
+
+  /**
+   * The Chapter 2 density theorem applies to the exact prime values carried by
+   * all-primes-so-far.
+   */
+  def assertDensityForAllPrimesSoFar(
+    primes: AllPrimesSoFarList,
+    start: BigInt,
+    blocks: BigInt
+  ): Boolean = {
+    require(start >= BigInt(0))
+    require(blocks >= BigInt(1))
+
+    val primeList = primes.list.list
+    val values = PrimeUtils.primeValues(primeList)
+    val modulus = PrimeUtils.primorial(primeList)
+
+    assertPrimeValuesNoMultiplesInAllPrimesSoFar(primes)
+    assert(ConsecutiveIntegers.noMultiplesInList(values))
+    assertPrimeValuesDividePrimorial(primes)
+    assert(ConsecutiveIntegers.allPrimesDivideM(values, modulus))
+    assertDensityForAllPrimesSoFarConditional(primes, start, blocks)
   }.holds
 
   /**
