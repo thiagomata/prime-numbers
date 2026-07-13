@@ -66,7 +66,13 @@ Last updated: 2026-07-11
 | **assertDivModWithMoreDivAndLessModSameSolution** | `DivMod(a,b, div+1, mod-b).solve == DivMod(a,b, div, mod).solve`           |
 | **assertDivModWithLessDivAndMoreModSameSolution** | `DivMod(a,b, div-1, mod+b).solve == DivMod(a,b, div, mod).solve`           |
 
-## 2.6 ModOperations (`v1.chapter2.div.properties.ModOperations`)
+## 2.6 ModNativeCompatibility (`v1.chapter2.div.properties.ModNativeCompatibility`)
+
+| Lemma                           | Statement                                      |
+|---------------------------------|------------------------------------------------|
+| **percentEqualsCalcMod(a,b)**   | For `a >= 0`, `b > 0`: `a % b == Calc.mod(a,b)` |
+
+## 2.7 ModOperations (`v1.chapter2.div.properties.ModOperations`)
 
 | Lemma                                           | Statement                                     |
 |-------------------------------------------------|-----------------------------------------------|
@@ -541,6 +547,13 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertSmallestDivisorAtMostSqrt(n)**                     | `d*d <= n` for smallest divisor d                |
 | **assertDivisibleByFactorListNotCoprime(n,d,primes)**      | Divisible by non-coprime => not coprime          |
 | **assertDivisorBelowHead(d,head)**                         | `d*d < head*head => d < head`                    |
+
+## 5.8 AllPrimesSoFarDensity (`v1.chapter5.prime.properties.AllPrimesSoFarDensity`)
+
+| Lemma                                                    | Statement                                                              |
+|----------------------------------------------------------|------------------------------------------------------------------------|
+| **assertDensityForAllPrimesSoFarConditional(primes,start,blocks)** | Conditional bridge from `AllPrimesSoFarList` to `densityForPrimeList` |
+| **assertPrimeValuesDividePrimorial(primes)**             | Prime values from `AllPrimesSoFarList` all divide their primorial      |
 
 ---
 

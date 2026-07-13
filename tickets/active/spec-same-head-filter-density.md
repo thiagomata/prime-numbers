@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-13
 **Updated:** 2026-07-13
-**Status:** Plan phase
+**Status:** In progress
 **Depends on:** `next-gaps-size-closed-form.md` (active, density/counting background), `m-interval-density-and-sieve-sequence-v2.md` (active, article framing), `sieve-sequence-proof.md` (active, spec proof context)
 
 ## Related Tickets
@@ -235,9 +235,10 @@ directly instead of introducing a disconnected product/residue theorem.
 
 ## Draft Lemma Plan
 
-**Status:** Draft only. Do not treat any code in this section as verified. The
-current `logs/verify.log` is red, so no Scala proof work should start until the
-baseline is green again.
+**Status:** First wrapper and primorial-divisibility bridge implemented. Treat
+`assertDensityForAllPrimesSoFarConditional` and
+`assertPrimeValuesDividePrimorial` as verified; the remaining code in this
+section is still draft.
 
 ### Proposed Location
 
@@ -810,10 +811,11 @@ grep "total:" logs/verify.log
    first helper signature. The route may start with a conditional raw-list lemma,
    but it must already name how `seq.primes.list.tail.list` will discharge those
    conditions.
-6. Start with Track B2. Draft the first code micro-goal as exactly one lemma:
-   a list-recursive wrapper showing that the density of a tracked prime is
-   preserved after filtering by a list of distinct previous primes. Submit it
-   through the Worker/Critic/Monitor protocol before editing.
+6. Continue Track B2 from the verified conditional wrapper:
+   `AllPrimesSoFarDensity.assertDensityForAllPrimesSoFarConditional`.
+7. Next code micro-goal should discharge exactly one structural precondition
+   needed by that wrapper from `AllPrimesSoFarList`, preferably starting with
+   the smallest reusable fact. Do not jump to the full spec-size theorem yet.
 
 ## Learning Log
 
@@ -824,3 +826,8 @@ grep "total:" logs/verify.log
 | 2026-07-13 | Read-only check found `ConsecutiveIntegers.densityPreservedAfterFiltering` already proves the two-prime local step, and `BezoutUtils.assertPrimeProductNotDivisible` now provides the Euclid contrapositive needed for distinct-prime product non-divisibility. Current `logs/verify.log` is red (`23 valid, 1 unknown`), so no Scala proof change can start under green-to-green. | First future code step: after green baseline is restored, add only a conditional list-recursive density-preservation wrapper over previous primes. |
 | 2026-07-13 | User emphasized that the proof should stay anchored to `AllPrimesSoFarList`, not only arbitrary lists: it guarantees no repeated prime values, no missing earlier primes, and direct correspondence with the `SpecSieveSequence` object that must consume the theorem. | Keep an `AllPrimesSoFarList` / `SpecSieveSequence` wrapper in scope for Track B2. |
 | 2026-07-13 | Added a ticket-specific Critic gate: every Worker proposal must name its track, load-bearing consumer, and no-go check. The Critic must reject proposals that violate the ticket no-go list, even if the local lemma seems plausible. | Future implementation must pass the no-go gate before editing. |
+| 2026-07-13 | Added and focused-verified `AllPrimesSoFarDensity.assertDensityForAllPrimesSoFarConditional`: a conditional Chapter 5 bridge from `AllPrimesSoFarList` to `ConsecutiveIntegers.densityForPrimeList`. It does not discharge `noMultiplesInList` or `allPrimesDivideM`; those remain the next structural obligations. | Next Track B2 step: prove one structural precondition from `AllPrimesSoFarList`, then verify before adding the other. |
+| 2026-07-13 | Full Stainless verification after the new wrapper is green: `13171 valid, 0 invalid, 0 unknown`. `just test` still reports the existing two `MainTest` CLI help-text failures also present in older `logs/test.log`; do not treat those as a density-proof regression. | Continue proof work from the green Stainless baseline; keep the unrelated test drift out of this ticket unless the user explicitly redirects. |
+| 2026-07-13 | Failed micro-attempt: direct `assertPrimeValuesDividePrimorial` using `ListProductDiv.allElementsDivideProduct(values)` did not prove `ConsecutiveIntegers.allPrimesDivideM(values, primorial)`. Focused verify ended with `1 valid, 2 unknown/cancelled`, stuck on the `%`-shaped `allPrimesDivideM` bridge. The failed lemma was reverted and the surviving wrapper re-verified green (`7 valid, 0 unknown`). | Do not repeat the direct product-divisibility bridge. Next attempt should either add a tiny Chapter 2 `Calc.mod`-shaped companion for `allPrimesDivideM`, or prove the required density through a predicate whose surface already uses `Calc.mod`. |
+| 2026-07-13 | Verified `ModNativeCompatibility.percentEqualsCalcMod`: for `a >= 0` and `b > 0`, native `a % b` equals `Calc.mod(a,b)`, using `ModIdempotence.modUnique` over the native quotient/remainder witness and the `Calc`/`DivMod.solve` witness. Focused verification passed (`28 valid`, `0 unknown`). | This can bridge legacy `%` predicates when arguments are known nonnegative/positive. Use it as a narrow compatibility lemma, not as permission to add new `%`-based APIs broadly. |
+| 2026-07-13 | Verified `AllPrimesSoFarDensity.assertPrimeValuesDividePrimorial`. The key fix was not a new constructor lemma: `ConsecutiveIntegers.allPrimesDivideM` needs `values.head > 1`, while product helpers still need `allGreaterThan(values, 0)`. The recursive helper therefore carries both bounds, both supplied by `PrimeUtils.primeValues`. Focused verifies passed for the helper (`41 valid, 0 unknown`) and public lemma (`43 valid, 0 unknown`); full `just verify` passed (`13298 valid, 0 unknown`). | Next structural obligation is `noMultiplesInList(values)` from the same `AllPrimesSoFarList` domain. Preserve the dual-bound lesson when adding recursive helpers: carry the exact domain fact and the helper preconditions explicitly. |
