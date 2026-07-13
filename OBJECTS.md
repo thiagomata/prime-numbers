@@ -552,6 +552,8 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 | Lemma                                                    | Statement                                                              |
 |----------------------------------------------------------|------------------------------------------------------------------------|
+| **assertHeadDensityPreservedAfterPreviousFiltersConditional(start,head,previous,blocks)** | Conditional Track B2 bridge: repeated two-prime density preservation over previous filters |
+| **assertHeadDensityPreservedAfterAllPreviousFilters(primes,start,blocks)** | `AllPrimesSoFarList` wrapper discharging previous-prime positivity and `< head` bounds for the Track B2 bridge |
 | **assertDensityForAllPrimesSoFarConditional(primes,start,blocks)** | Conditional bridge from `AllPrimesSoFarList` to `densityForPrimeList` |
 | **assertPrimeValuesDividePrimorial(primes)**             | Prime values from `AllPrimesSoFarList` all divide their primorial      |
 

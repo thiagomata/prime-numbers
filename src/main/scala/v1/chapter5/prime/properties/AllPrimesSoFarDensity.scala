@@ -12,6 +12,101 @@ import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList
 
 object AllPrimesSoFarDensity {
 
+  private def previousFilterScale(filters: List[BigInt]): BigInt = {
+    decreases(filters.size)
+    if (filters.isEmpty) BigInt(1)
+    else (filters.head - BigInt(1)) * previousFilterScale(filters.tail)
+  }
+
+  private def assertPreviousFilterScalePositive(
+    filters: List[BigInt]
+  ): Boolean = {
+    require(ListBoundUtils.allGreaterThan(filters, BigInt(1)))
+    decreases(filters.size)
+
+    if (filters.isEmpty) {
+      previousFilterScale(filters) >= BigInt(1)
+    } else {
+      assert(filters.head > BigInt(1))
+      assert(filters.head - BigInt(1) >= BigInt(1))
+      assert(ListBoundUtils.allGreaterThan(filters.tail, BigInt(1)))
+      assertPreviousFilterScalePositive(filters.tail)
+      assert(previousFilterScale(filters.tail) >= BigInt(1))
+      previousFilterScale(filters) >= BigInt(1)
+    }
+  }.ensuring(res => res && previousFilterScale(filters) >= BigInt(1))
+
+  def assertHeadDensityPreservedAfterPreviousFiltersConditional(
+    start: BigInt,
+    head: BigInt,
+    previous: List[BigInt],
+    blocks: BigInt
+  ): Boolean = {
+    require(start >= BigInt(0))
+    require(head > BigInt(1))
+    require(blocks >= BigInt(1))
+    require(ListBoundUtils.allGreaterThan(previous, BigInt(1)))
+    require(ListBoundUtils.allLessThan(previous, head))
+    decreases(previous.size)
+
+    val scale = previousFilterScale(previous)
+
+    if (previous.isEmpty) {
+      assert(scale == BigInt(1))
+    } else {
+      val p = previous.head
+      val tail = previous.tail
+      val tailScale = previousFilterScale(tail)
+      val localBlocks = blocks * tailScale
+
+      assert(p > BigInt(1))
+      assert(p < head)
+      assert(p != head)
+      assert(ListBoundUtils.allGreaterThan(tail, BigInt(1)))
+      assert(ListBoundUtils.allLessThan(tail, head))
+      assertPreviousFilterScalePositive(tail)
+      assert(tailScale >= BigInt(1))
+      assert(localBlocks >= BigInt(1))
+      ConsecutiveIntegers.densityPreservedAfterFiltering(start, p, head, localBlocks)
+      assertHeadDensityPreservedAfterPreviousFiltersConditional(start, head, tail, blocks)
+      assert(scale == (p - BigInt(1)) * tailScale)
+    }
+
+    (blocks * scale) * head == blocks * head * scale
+  }.ensuring(res =>
+    res && (blocks * previousFilterScale(previous)) * head ==
+      blocks * head * previousFilterScale(previous)
+  )
+
+  def assertHeadDensityPreservedAfterAllPreviousFilters(
+    primes: AllPrimesSoFarList,
+    start: BigInt,
+    blocks: BigInt
+  ): Boolean = {
+    require(!primes.isEmpty)
+    require(start >= BigInt(0))
+    require(blocks >= BigInt(1))
+
+    val primeList = primes.list.list
+    val head = primes.head.value
+    val previousPrimes = primeList.tail
+    val previous = PrimeUtils.primeValues(previousPrimes)
+
+    assert(SortedPrimeList.isDescending(primeList))
+    SortedPrimeList.assertTailDescending(primeList)
+    assert(SortedPrimeList.isDescending(previousPrimes))
+
+    if (previousPrimes.nonEmpty) {
+      assert(primeList.head.value > previousPrimes.head.value)
+      assert(previousPrimes.head.value < head)
+    }
+
+    assertPrimeValuesLessThan(previousPrimes, head)
+    assert(ListBoundUtils.allLessThan(previous, head))
+    assert(ListBoundUtils.allGreaterThan(previous, BigInt(1)))
+    assertHeadDensityPreservedAfterPreviousFiltersConditional(start, head, previous, blocks)
+  }.holds
+
   private def assertPrimeValuesLessThan(
     primes: List[Prime],
     bound: BigInt
