@@ -895,6 +895,25 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.ensuring(res => res >= BigInt(0) && res <= until - from)
 
+  private def countGeneratedHeadMultiplesPrefix(k: BigInt): BigInt = {
+    require(k >= BigInt(0))
+    decreases(k)
+
+    if (k == BigInt(0)) {
+      BigInt(0)
+    } else {
+      val previous = k - BigInt(1)
+      val rest = countGeneratedHeadMultiplesPrefix(previous)
+
+      assert(head.value != BigInt(0))
+      if (Calc.mod(apply(previous), head.value) == BigInt(0)) {
+        rest + BigInt(1)
+      } else {
+        rest
+      }
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= k)
+
   private def countNoAcceptedBetween(from: BigInt, until: BigInt): Boolean = {
     require(from >= head.value)
     require(from <= until)
@@ -908,6 +927,22 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(noAcceptedBetween(from + BigInt(1), until))
       assert(countNoAcceptedBetween(from + BigInt(1), until))
       countAcceptedBetween(from, until) == BigInt(0)
+    }
+  }.holds
+
+  private def countNoAcceptedHeadMultiplesBetween(from: BigInt, until: BigInt): Boolean = {
+    require(from >= head.value)
+    require(from <= until)
+    require(noAcceptedBetween(from, until))
+    decreases(until - from)
+
+    if (from == until) {
+      countAcceptedHeadMultiplesBetween(from, until) == BigInt(0)
+    } else {
+      assert(!accepts(from))
+      assert(noAcceptedBetween(from + BigInt(1), until))
+      assert(countNoAcceptedHeadMultiplesBetween(from + BigInt(1), until))
+      countAcceptedHeadMultiplesBetween(from, until) == BigInt(0)
     }
   }.holds
 
@@ -966,6 +1001,30 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  private def assertCountAcceptedHeadMultiplesBetweenAppend(
+    from: BigInt,
+    middle: BigInt,
+    until: BigInt
+  ): Boolean = {
+    require(from >= head.value)
+    require(from <= middle)
+    require(middle <= until)
+    decreases(middle - from)
+
+    if (from == middle) {
+      countAcceptedHeadMultiplesBetween(from, until) ==
+        countAcceptedHeadMultiplesBetween(from, middle) +
+          countAcceptedHeadMultiplesBetween(middle, until)
+    } else {
+      assert(from < middle)
+      assert(from + BigInt(1) <= middle)
+      assert(assertCountAcceptedHeadMultiplesBetweenAppend(from + BigInt(1), middle, until))
+      countAcceptedHeadMultiplesBetween(from, until) ==
+        countAcceptedHeadMultiplesBetween(from, middle) +
+          countAcceptedHeadMultiplesBetween(middle, until)
+    }
+  }.holds
+
   def assertGeneratedPrefixCount(k: BigInt): Boolean = {
     require(k >= BigInt(0))
     decreases(k)
@@ -991,6 +1050,47 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(countAcceptedBetween(previous, current) == BigInt(1))
       assert(assertCountAcceptedBetweenAppend(head.value, previous, current))
       countAcceptedBetween(head.value, current) == k
+    }
+  }.holds
+
+  def assertGeneratedHeadMultiplePrefixCount(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    decreases(k)
+
+    if (k == BigInt(0)) {
+      assert(apply(BigInt(0)) == head.value)
+      countAcceptedHeadMultiplesBetween(head.value, apply(k)) ==
+        countGeneratedHeadMultiplesPrefix(k)
+    } else {
+      val previousIndex = k - BigInt(1)
+      val previous = apply(previousIndex)
+      val current = apply(k)
+
+      assertGeneratedHeadMultiplePrefixCount(previousIndex)
+      assert(countAcceptedHeadMultiplesBetween(head.value, previous) ==
+        countGeneratedHeadMultiplesPrefix(previousIndex))
+      assert(applyStrictlyIncreases(previousIndex))
+      assert(previous < current)
+      assert(previous + BigInt(1) <= current)
+      assert(applySkipsNoAcceptedBetween(k))
+      assert(noAcceptedBetween(previous + BigInt(1), current))
+      assert(countNoAcceptedHeadMultiplesBetween(previous + BigInt(1), current))
+      assert(countAcceptedHeadMultiplesBetween(previous + BigInt(1), current) == BigInt(0))
+      assert(accepts(previous))
+
+      if (Calc.mod(previous, head.value) == BigInt(0)) {
+        assert(countAcceptedHeadMultiplesBetween(previous, current) == BigInt(1))
+        assert(countGeneratedHeadMultiplesPrefix(k) ==
+          countGeneratedHeadMultiplesPrefix(previousIndex) + BigInt(1))
+      } else {
+        assert(countAcceptedHeadMultiplesBetween(previous, current) == BigInt(0))
+        assert(countGeneratedHeadMultiplesPrefix(k) ==
+          countGeneratedHeadMultiplesPrefix(previousIndex))
+      }
+
+      assert(assertCountAcceptedHeadMultiplesBetweenAppend(head.value, previous, current))
+      countAcceptedHeadMultiplesBetween(head.value, current) ==
+        countGeneratedHeadMultiplesPrefix(k)
     }
   }.holds
 

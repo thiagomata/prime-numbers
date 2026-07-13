@@ -702,6 +702,10 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**                 | Private: new-head multiple is rejected by next                        |
 | **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
 | **assertGeneratedPrefixCount(k)**                                            | Count of accepted integers in `[head, apply(k))` is `k`               |
+| **countGeneratedHeadMultiplesPrefix(k)**                                     | Private: count generated values in `[0, k)` divisible by `head`       |
+| **countNoAcceptedHeadMultiplesBetween(from,until)**                          | Private: no accepted values in an interval means zero head-multiple removals |
+| **assertCountAcceptedHeadMultiplesBetweenAppend(from,middle,until)**         | Private: head-multiple removed-count is additive over adjacent intervals |
+| **assertGeneratedHeadMultiplePrefixCount(k)**                                | Removed-count in `[head, apply(k))` equals the generated-prefix head-multiple count |
 | **assertExpandedOldAcceptedCount(period)**                                   | Old accepted count in `[head, head + head*M)` is `period * head`      |
 | **assertSameHeadExtendedFilterCountFromRemovedCount(period)**                | If removed head-multiple count is `period`, same-head survivor count is `period * (head - 1)` |
 | **assertFilterPreservesNextGap(nextSeq,k)**                                  | Gap copy when old value accepted by next                              |
