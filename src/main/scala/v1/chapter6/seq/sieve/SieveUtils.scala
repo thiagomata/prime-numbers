@@ -751,6 +751,39 @@ object SieveUtils {
     }
   }.holds
 
+  /**
+   * The value 1 is coprime to every list of primes strictly greater than 1.
+   *
+   * Plain math:
+   *   For each p > 1, mod(1, p) == 1 != 0, so the recursive coprimality
+   *   predicate never short-circuits to false. By induction on the list,
+   *   isCoprime(1, primes) holds for every such list.
+   *
+   * This is an isolated inductive helper: proving the recursive predicate
+   * isCoprime(1, primes) directly at a call site times out, but a cached
+   * same-class lemma with the ModSmallDividend hint discharges each step.
+   * Both allGreaterThan(primes, 1) (for the math) and checkAllPositive(primes)
+   * (for isCoprime's contract) are required, avoiding a recursive predicate
+   * bridge between the two.
+   */
+  def assertIsCoprimeOne(primes: List[BigInt]): Boolean = {
+    require(ListBoundUtils.allGreaterThan(primes, BigInt(1)))
+    require(ListUtils.checkAllPositive(primes))
+    decreases(primes.size)
+    if (primes.isEmpty) {
+      CoprimeUtils.isCoprime(BigInt(1), primes)
+    } else {
+      assert(primes.head > BigInt(1))
+      assert(v1.chapter2.div.properties.ModSmallDividend.modSmallDividend(BigInt(1), primes.head))
+      assert(Calc.mod(BigInt(1), primes.head) == BigInt(1))
+      assert(Calc.mod(BigInt(1), primes.head) != BigInt(0))
+      assert(ListBoundUtils.allGreaterThan(primes.tail, BigInt(1)))
+      assert(ListUtils.checkAllPositive(primes.tail))
+      assert(assertIsCoprimeOne(primes.tail))
+      CoprimeUtils.isCoprime(BigInt(1), primes)
+    }
+  }.holds
+
   def findPrimeFactorInList(n: BigInt, primes: List[BigInt]): BigInt = {
     require(ListUtils.checkAllPositive(primes))
     require(!isCoprime(n, primes))
@@ -1471,6 +1504,30 @@ object SieveUtils {
     require(modulus > 0)
     require(ListUtils.checkAllPositive(primes))
     assertResiduesCompleteRec(BigInt(0), modulus, primes)
+  }.holds
+
+  /**
+   * The residues list is non-empty whenever modulus >= 2 and every listed
+   * prime is strictly greater than 1.
+   *
+   * Plain math:
+   *   For modulus >= 2, the value 1 lies in [0, modulus). Since every prime
+   *   p > 1 satisfies mod(1, p) == 1 != 0, the value 1 is coprime to the list
+   *   (assertIsCoprimeOne). By the completeness lemma, residues(modulus, primes)
+   *   contains 1, hence is non-empty.
+   *
+   * This discharges the nextResidues(seq).nonEmpty precondition of the
+   * filtered-size density theorem for real sieve states whose tail primes
+   * come from PrimeUtils.primeValues (which ensures allGreaterThan(_, 1)).
+   */
+  def assertResiduesNonEmpty(modulus: BigInt, primes: List[BigInt]): Boolean = {
+    require(modulus >= BigInt(2))
+    require(ListBoundUtils.allGreaterThan(primes, BigInt(1)))
+    require(ListUtils.checkAllPositive(primes))
+    assert(assertIsCoprimeOne(primes))
+    assert(CoprimeUtils.isCoprime(BigInt(1), primes))
+    assert(assertGenerateResiduesContainsCoprime(BigInt(1), BigInt(0), modulus, primes))
+    residues(modulus, primes).nonEmpty
   }.holds
 
   def assertResiduesCompleteRec(

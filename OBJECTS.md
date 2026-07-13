@@ -232,6 +232,7 @@ Last updated: 2026-07-11
 | **assertTailAscending(list)**              | Tail of ascending is ascending                         |
 | **assertRemoveKeepsAscending(list,index)** | `removeAt` preserves ascending                         |
 | **assertIsAscendingAtIndex(list,i)**       | `isAscending(list) => list(i+1) > list(i)` for valid i |
+| **assertSortFilteredNonEmpty(list)**       | `list.nonEmpty => sortFiltered(list).nonEmpty`        |
 
 ## 3.10 MinBoundList (`v1.chapter3.list.MinBoundList`)
 
@@ -578,6 +579,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertResiduesCoprime(seq)**                             | `all r in residues(seq): isCoprime(r, tailPrimes)`                                  |
 | **assertNextFilteredSizeByDensity(seq)**                   | `nextFiltered(seq).size == nextResidues(seq).size * (seq.head - 1)` under density preconditions |
 | **assertNextFilteredSizeGreaterThanResiduesByDensity(seq)** | `nextFiltered(seq).size > nextResidues(seq).size` under density, `head > 2`, and nonempty residues |
+| **assertNextResiduesNonEmpty(seq)**                        | `nextResidues(seq).nonEmpty` for `modulus >= 2`, discharging the density theorem's nonempty precondition |
 | **assertNextGapsNonEmpty(seq)**                            | `nextGaps(seq).nonEmpty`                                                            |
 | **assertNextGapsSize(seq)**                                | `nextGaps(seq).size == nextSorted(seq).list.size`                                   |
 | **assertNextSortedStrictlyAscending(seq,i)**               | `nextSorted(seq).list(i+1) > nextSorted(seq).list(i)`                               |
@@ -624,6 +626,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertFilterListSizeByCount(list,divisor)**                     | `filterList(list,divisor).size == list.size - countMultiples(list,divisor)` |
 | **assertCountMultiplesAppend(left,right,divisor)**                | `countMultiples(left ++ right,divisor) == countMultiples(left,divisor) + countMultiples(right,divisor)` |
 | **assertIsCoprimeForAll(n,primes)**                               | `isCoprime(n,primes) => mod(n, p) != 0` for all `p`                    |
+| **assertIsCoprimeOne(primes)**                                    | `isCoprime(1, primes)` for `allGreaterThan(primes, 1)` (inductive helper) |
 | **assertPrimeFactorDivides(n,primes)**                            | Found prime factor divides `n`                                         |
 | **assertNoDivisorByFactorList(n,d,primes)**                       | Coprime + d has factor => `mod(n,d) != 0`                              |
 | **assertCalculateGapsSize(sorted,modulus)**                       | `calculateGaps(sorted,modulus).size == sorted.size`                    |
@@ -656,6 +659,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertGenerateResiduesContainsCoprime(v,i,modulus,primes)**     | Completeness: every coprime `v` in range appears                       |
 | **assertResiduesComplete(modulus,primes)**                        | `residues` contains every coprime in `[0,modulus)`                     |
 | **assertResiduesCompleteRec(i,modulus,primes)**                   | Recursive helper                                                       |
+| **assertResiduesNonEmpty(modulus,primes)**                        | `residues(modulus,primes).nonEmpty` for `modulus >= 2`, `allGreaterThan(primes,1)` |
 | **assertNoDivisorInRangeHelper(n,primes,from,to)**                | Coprime => no divisor in range                                         |
 
 ## 6.5 SpecSieveSequence (`v1.chapter6.seq.sieve.SpecSieveSequence`)
@@ -695,6 +699,13 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 54 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key
 public lemmas:
+
+> **Design note:** Several lemmas in this section overlap with lower-level
+> repeated-cycle, survivor, and spec/cycle equivalence facts. Treat duplicate
+> proof surfaces as an anti-pattern unless a caller consumes the exact statement
+> as part of the core proof spine. Prefer one canonical lemma per property; any
+> parallel lemma should document why the existing canonical surface cannot be
+> used directly.
 
 | Lemma                                                                             | Statement                                                                     |
 |-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
@@ -803,6 +814,12 @@ public lemmas:
 ## 6.9 SpecDerivedBySurvivors (`v1.chapter6.seq.sieve.SpecDerivedBySurvivors`)
 
 7 verified lemmas (A = B = C next-stage proof spine). Wraps `SpecDerivedSieveSequence`.
+
+> **Design note:** This wrapper should compose already canonical facts, not
+> create a second proof universe. If a lemma here duplicates a statement already
+> available from `SpecDerivedSieveSequence`, `SpecCycleSieveEquivalence`, or the
+> pipeline objects, it should remain only when it is the exact load-bearing form
+> required by the next-stage proof spine.
 
 | Lemma                                               | Statement                                                                                                                       |
 |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|

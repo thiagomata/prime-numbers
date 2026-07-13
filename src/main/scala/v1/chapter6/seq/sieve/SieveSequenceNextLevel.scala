@@ -287,6 +287,27 @@ object SieveSequenceNextLevel {
     nextFiltered(seq).size > residues.size
   }.holds
 
+  /**
+   * The next-stage residue list is non-empty.
+   *
+   * Plain math:
+   *   seq.primesTailValues comes from PrimeUtils.primeValues, whose contract
+   *   guarantees allGreaterThan(_, 1). With seq.modulus >= 2, the value 1 lies
+   *   in [0, modulus) and is coprime to every tail prime, so by the residues
+   *   completeness lemma the residue list contains 1 and is non-empty.
+   *
+   * This discharges the nextResidues(seq).nonEmpty precondition carried by
+   * assertNextFilteredSizeGreaterThanResiduesByDensity, for every real sieve
+   * state with head >= 3 (whose tail primorial modulus is at least 2).
+   */
+  def assertNextResiduesNonEmpty(seq: CycleSieveSequence): Boolean = {
+    require(seq.modulus >= BigInt(2))
+    require(ListUtils.checkAllPositive(seq.primesTailValues))
+    assert(ListBoundUtils.allGreaterThan(seq.primesTailValues, BigInt(1)))
+    assert(SieveUtils.assertResiduesNonEmpty(seq.modulus, seq.primesTailValues))
+    nextResidues(seq).nonEmpty
+  }.holds
+
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
     require(seq.head > BigInt(0))
     require(seq.modulus > BigInt(0))

@@ -100,6 +100,22 @@ object SortedList {
     }
   }.holds
 
+  /**
+   * Sorting a non-empty list always yields a non-empty list.
+   *
+   * Math:
+   *   list.nonEmpty ==> sortFiltered(list).nonEmpty
+   *
+   * The recursive sort is insertSorted(list.head, sortFiltered(list.tail)),
+   * and insertSorted(x, _) always returns a list whose head is x (or contains
+   * x), so it is non-empty regardless of the tail argument. No induction
+   * hypothesis is needed beyond the structural shape of insertSorted.
+   */
+  def assertSortFilteredNonEmpty(list: List[BigInt]): Boolean = {
+    require(list.nonEmpty)
+    sortFiltered(list).nonEmpty
+  }.holds
+
   def assertInsertSortedAscending(x: BigInt, list: List[BigInt]): Boolean = {
     require(isAscending(list))
     decreases(list.size)
