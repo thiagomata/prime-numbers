@@ -853,6 +853,180 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }
 
+  private def countAcceptedBetween(from: BigInt, until: BigInt): BigInt = {
+    require(from >= head.value)
+    require(from <= until)
+    decreases(until - from)
+
+    if (from == until) {
+      BigInt(0)
+    } else if (accepts(from)) {
+      BigInt(1) + countAcceptedBetween(from + BigInt(1), until)
+    } else {
+      countAcceptedBetween(from + BigInt(1), until)
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= until - from)
+
+  private def countAcceptedHeadMultiplesBetween(from: BigInt, until: BigInt): BigInt = {
+    require(from >= head.value)
+    require(from <= until)
+    decreases(until - from)
+
+    if (from == until) {
+      BigInt(0)
+    } else if (accepts(from) && Calc.mod(from, head.value) == BigInt(0)) {
+      BigInt(1) + countAcceptedHeadMultiplesBetween(from + BigInt(1), until)
+    } else {
+      countAcceptedHeadMultiplesBetween(from + BigInt(1), until)
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= until - from)
+
+  private def countAcceptedHeadNonMultiplesBetween(from: BigInt, until: BigInt): BigInt = {
+    require(from >= head.value)
+    require(from <= until)
+    decreases(until - from)
+
+    if (from == until) {
+      BigInt(0)
+    } else if (accepts(from) && Calc.mod(from, head.value) != BigInt(0)) {
+      BigInt(1) + countAcceptedHeadNonMultiplesBetween(from + BigInt(1), until)
+    } else {
+      countAcceptedHeadNonMultiplesBetween(from + BigInt(1), until)
+    }
+  }.ensuring(res => res >= BigInt(0) && res <= until - from)
+
+  private def countNoAcceptedBetween(from: BigInt, until: BigInt): Boolean = {
+    require(from >= head.value)
+    require(from <= until)
+    require(noAcceptedBetween(from, until))
+    decreases(until - from)
+
+    if (from == until) {
+      countAcceptedBetween(from, until) == BigInt(0)
+    } else {
+      assert(!accepts(from))
+      assert(noAcceptedBetween(from + BigInt(1), until))
+      assert(countNoAcceptedBetween(from + BigInt(1), until))
+      countAcceptedBetween(from, until) == BigInt(0)
+    }
+  }.holds
+
+  private def assertAcceptedCountSplitByHead(
+    from: BigInt,
+    until: BigInt
+  ): Boolean = {
+    require(from >= head.value)
+    require(from <= until)
+    decreases(until - from)
+
+    if (from == until) {
+      countAcceptedBetween(from, until) ==
+        countAcceptedHeadMultiplesBetween(from, until) +
+          countAcceptedHeadNonMultiplesBetween(from, until)
+    } else {
+      val next = from + BigInt(1)
+
+      assert(assertAcceptedCountSplitByHead(next, until))
+
+      if (accepts(from)) {
+        val remainder = Calc.mod(from, head.value)
+
+        if (remainder == BigInt(0)) {
+          assert(Calc.mod(from, head.value) == BigInt(0))
+        } else {
+          assert(Calc.mod(from, head.value) != BigInt(0))
+        }
+      }
+
+      countAcceptedBetween(from, until) ==
+        countAcceptedHeadMultiplesBetween(from, until) +
+          countAcceptedHeadNonMultiplesBetween(from, until)
+    }
+  }.holds
+
+  private def assertCountAcceptedBetweenAppend(
+    from: BigInt,
+    middle: BigInt,
+    until: BigInt
+  ): Boolean = {
+    require(from >= head.value)
+    require(from <= middle)
+    require(middle <= until)
+    decreases(middle - from)
+
+    if (from == middle) {
+      countAcceptedBetween(from, until) ==
+        countAcceptedBetween(from, middle) + countAcceptedBetween(middle, until)
+    } else {
+      assert(from < middle)
+      assert(from + BigInt(1) <= middle)
+      assert(assertCountAcceptedBetweenAppend(from + BigInt(1), middle, until))
+      countAcceptedBetween(from, until) ==
+        countAcceptedBetween(from, middle) + countAcceptedBetween(middle, until)
+    }
+  }.holds
+
+  def assertGeneratedPrefixCount(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    decreases(k)
+
+    if (k == BigInt(0)) {
+      assert(apply(BigInt(0)) == head.value)
+      countAcceptedBetween(head.value, apply(k)) == k
+    } else {
+      val previousIndex = k - BigInt(1)
+      val previous = apply(previousIndex)
+      val current = apply(k)
+
+      assertGeneratedPrefixCount(previousIndex)
+      assert(countAcceptedBetween(head.value, previous) == previousIndex)
+      assert(applyStrictlyIncreases(previousIndex))
+      assert(previous < current)
+      assert(previous + BigInt(1) <= current)
+      assert(applySkipsNoAcceptedBetween(k))
+      assert(noAcceptedBetween(previous + BigInt(1), current))
+      assert(countNoAcceptedBetween(previous + BigInt(1), current))
+      assert(countAcceptedBetween(previous + BigInt(1), current) == BigInt(0))
+      assert(accepts(previous))
+      assert(countAcceptedBetween(previous, current) == BigInt(1))
+      assert(assertCountAcceptedBetweenAppend(head.value, previous, current))
+      countAcceptedBetween(head.value, current) == k
+    }
+  }.holds
+
+  def assertExpandedOldAcceptedCount(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+
+    val expandedIndex = period * head.value
+    val expandedEnd = head.value + head.value * tailPrimorial
+
+    assert(head.value > BigInt(1))
+    assert(expandedIndex >= BigInt(0))
+    assert(assertBlockShiftMultiple(BigInt(0), head.value, period))
+    assert(apply(expandedIndex) == expandedEnd)
+    assert(assertGeneratedPrefixCount(expandedIndex))
+    countAcceptedBetween(head.value, expandedEnd) == expandedIndex
+  }.holds
+
+  def assertSameHeadExtendedFilterCountFromRemovedCount(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+
+    val expandedEnd = head.value + head.value * tailPrimorial
+
+    require(countAcceptedHeadMultiplesBetween(head.value, expandedEnd) == period)
+
+    assert(assertExpandedOldAcceptedCount(period))
+    assert(countAcceptedBetween(head.value, expandedEnd) == period * head.value)
+    assert(assertAcceptedCountSplitByHead(head.value, expandedEnd))
+    assert(countAcceptedBetween(head.value, expandedEnd) ==
+      countAcceptedHeadMultiplesBetween(head.value, expandedEnd) +
+        countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd))
+    countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd) ==
+      period * (head.value - BigInt(1))
+  }.holds
+
   /**
    * Extracts the rejection fact for one value inside a skipped interval.
    *

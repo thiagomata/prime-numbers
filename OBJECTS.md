@@ -679,7 +679,7 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 
 ## 6.5 SpecSieveSequence (`v1.chapter6.seq.sieve.SpecSieveSequence`)
 
-65 lemmas (20 public, 45 private). Key public lemmas:
+74 lemmas (23 public, 51 private). Key public lemmas:
 
 | Lemma                                                                        | Statement                                                             |
 |------------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -701,6 +701,9 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple   |
 | **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**                 | Private: new-head multiple is rejected by next                        |
 | **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
+| **assertGeneratedPrefixCount(k)**                                            | Count of accepted integers in `[head, apply(k))` is `k`               |
+| **assertExpandedOldAcceptedCount(period)**                                   | Old accepted count in `[head, head + head*M)` is `period * head`      |
+| **assertSameHeadExtendedFilterCountFromRemovedCount(period)**                | If removed head-multiple count is `period`, same-head survivor count is `period * (head - 1)` |
 | **assertFilterPreservesNextGap(nextSeq,k)**                                  | Gap copy when old value accepted by next                              |
 | **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**                   | Consecutive old values accepted => gap copied                         |
 | **nextAcceptedOldIndex(nextSeq,k,period)**                                   | Next emitted `nextSeq` value as an old-stream index                   |
