@@ -129,3 +129,32 @@ verified and easier to trust.
   scan window that will feed the head filter. Focused verification passed:
   `6 valid`, `0 invalid`, `0 unknown`. Full verification passed:
   `14126 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-14: Added
+  `SpecDerivedSieveSequence.assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count)`.
+  This is the first filter-decision bridge for the side-by-side path. It walks
+  the first expanded integral window, starting at `integral(0) == cycle(1)` so
+  the raw current head is not part of the comparison, and proves each repeated
+  value is accepted by `spec.next` iff it survives the current head filter.
+  Focused verification passed: `56 valid`, `0 invalid`, `0 unknown`. Full
+  verification passed: `14182 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-14: Added
+  `SpecDerivedSieveSequence.assertRepeatedCycleNextAcceptsMatchesHeadFilterFullFirstExpandedPeriod()`
+  as the caller-facing full-window wrapper for the bounded filter-decision
+  bridge. It instantiates the count as `period * head`, matching the first
+  expanded scan window. Focused verification passed: `6 valid`, `0 invalid`,
+  `0 unknown`. Full verification passed: `14188 valid`, `0 invalid`,
+  `0 unknown`.
+- 2026-07-14: Added
+  `SpecDerivedSieveSequence.assertRepeatedCycleFullFirstExpandedEndpointRejected()`.
+  This closes the off-by-one alignment for the first expanded integral window:
+  the window ends at `head + head * tailPrimorial`, a head multiple, so the
+  endpoint replacing the raw lower head is also rejected by `spec.next`.
+  Focused verification passed: `42 valid`, `0 invalid`, `0 unknown`. Full
+  verification passed: `14230 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-14: Added
+  `SpecDerivedSieveSequence.assertSpecHeadRejectedByHeadFilter()`. This is the
+  lower-endpoint companion to the expanded endpoint lemma: the raw `head` is
+  outside the next-spec domain, so the useful fact is that the current head
+  filter rejects it by `mod(head, head) == 0`. Focused verification passed:
+  `7 valid`, `0 invalid`, `0 unknown`. Full verification passed:
+  `14237 valid`, `0 invalid`, `0 unknown`.

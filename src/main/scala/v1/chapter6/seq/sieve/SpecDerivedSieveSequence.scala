@@ -4,6 +4,7 @@ import stainless.collection.List
 import stainless.lang.BooleanDecorations
 import stainless.lang.decreases
 import v1.chapter2.div.Calc
+import v1.chapter2.div.properties.AdditionAndMultiplication
 import v1.chapter2.div.properties.ModOperations
 import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListRepeatProperties
@@ -494,6 +495,88 @@ case class SpecDerivedSieveSequence(
     assert(assertRepeatedCycleMatchesSpecPrefix(spec.head.value, count))
 
     repeatedCycleMatchesSpecFirstExpandedPeriod()
+  }.holds
+
+  def assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count: BigInt): Boolean = {
+    require(count >= BigInt(0))
+    require(count <= period * spec.head.value)
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      true
+    } else {
+      val index = count - BigInt(1)
+      val specIndex = index + BigInt(1)
+      val repeated = repeatedCycle(spec.head.value)
+      val value = repeated.integral(index)
+
+      assert(index >= BigInt(0))
+      assert(specIndex >= BigInt(1))
+      assert(assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(index))
+      assert(assertRepeatedCycleApplyMatches(spec.head.value, specIndex))
+      assert(assertApplyMatches(specIndex))
+      assert(repeated(specIndex) == repeated.integral(index))
+      assert(repeated(specIndex) == cycle(specIndex))
+      assert(cycle(specIndex) == spec(specIndex))
+      assert(value == spec(specIndex))
+      assert(assertNextHeadMatches())
+      assert(assertApplyMatches(BigInt(1)))
+      assert(cycle(BigInt(1)) == spec.next.head.value)
+      assert(cycle(BigInt(1)) == spec(BigInt(1)))
+      assert(spec(BigInt(1)) == spec.next.head.value)
+      assert(spec.assertApplyMonotonic(BigInt(1), specIndex))
+      assert(spec(BigInt(1)) <= spec(specIndex))
+      assert(value >= spec.next.head.value)
+      assert(spec.accepts(value))
+      assert(spec.assertNextAcceptsMatchesHeadFilterForAcceptedValue(value))
+
+      spec.next.accepts(value) == (Calc.mod(value, spec.head.value) != BigInt(0))
+    }
+  }.holds
+
+  def assertRepeatedCycleNextAcceptsMatchesHeadFilterFullFirstExpandedPeriod(): Boolean = {
+    val count = period * spec.head.value
+
+    assert(spec.head.value > BigInt(0))
+    assert(count >= BigInt(0))
+    assert(assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count))
+
+    true
+  }.holds
+
+  def assertSpecHeadRejectedByHeadFilter(): Boolean = {
+    assert(spec.head.value > BigInt(0))
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), spec.head.value, BigInt(1)))
+    assert(Calc.mod(spec.head.value, spec.head.value) == BigInt(0))
+
+    Calc.mod(spec.head.value, spec.head.value) == BigInt(0)
+  }.holds
+
+  def assertRepeatedCycleFullFirstExpandedEndpointRejected(): Boolean = {
+    val count = period * spec.head.value
+    val index = count - BigInt(1)
+    val repeated = repeatedCycle(spec.head.value)
+    val value = repeated.integral(index)
+
+    assert(spec.head.value > BigInt(0))
+    assert(count > BigInt(0))
+    assert(index >= BigInt(0))
+    assert(spec.assertBlockShiftMultiple(BigInt(0), spec.head.value, period))
+    assert(spec(count) == spec.head.value + spec.head.value * spec.tailPrimorial)
+    assert(assertRepeatedCycleNextAcceptsMatchesHeadFilterFullFirstExpandedPeriod())
+    assert(assertRepeatedCycleApplyMatches(spec.head.value, count))
+    assert(assertApplyMatches(count))
+    assert(repeated(count) == repeated.integral(index))
+    assert(repeated(count) == cycle(count))
+    assert(cycle(count) == spec(count))
+    assert(value == spec.head.value + spec.head.value * spec.tailPrimorial)
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), spec.head.value, BigInt(1) + spec.tailPrimorial))
+    assert(Calc.mod(spec.head.value * (BigInt(1) + spec.tailPrimorial), spec.head.value) == BigInt(0))
+    assert(value == spec.head.value * (BigInt(1) + spec.tailPrimorial))
+    assert(Calc.mod(value, spec.head.value) == BigInt(0))
+    assert(spec.next.accepts(value) == (Calc.mod(value, spec.head.value) != BigInt(0)))
+
+    !spec.next.accepts(value)
   }.holds
 
   def assertNextHeadLessThanNewModulus(): Boolean = {

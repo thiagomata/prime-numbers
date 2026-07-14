@@ -732,7 +732,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-57 lemmas (53 public, 2 private), plus 5 public predicates and 1 public survivor-gap prefix producer. Key
+61 lemmas (57 public, 2 private), plus 5 public predicates and 1 public survivor-gap prefix producer. Key
 public lemmas:
 
 > **Design note:** Several lemmas in this section overlap with lower-level
@@ -808,6 +808,10 @@ public lemmas:
 | **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos |
 | **assertRepeatedCycleMatchesSpecPrefix(times,count)**  | `repeatedCycle(times)(i) == spec(i)` for all `i` in `[0,count)` |
 | **assertRepeatedCycleMatchesSpecFirstExpandedPeriod()** | `repeatedCycle(head)` matches `spec` across the first `period * head` values |
+| **assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count)** | On the first expanded integral window, `spec.next.accepts(v)` iff `mod(v, head) != 0` |
+| **assertRepeatedCycleNextAcceptsMatchesHeadFilterFullFirstExpandedPeriod()** | Full-window wrapper for the repeated-cycle/spec-next filter bridge |
+| **assertSpecHeadRejectedByHeadFilter()**             | Proves the raw lower head is rejected by the current head filter |
+| **assertRepeatedCycleFullFirstExpandedEndpointRejected()** | Proves the final value of the first expanded scan window is a rejected head multiple |
 | **assertSpecNextIsKthSurvivor(nextPeriod,k)**          | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`      |
 | **assertNextHeadLessThanNewModulus()**                 | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`   |
 | **assertNextHeadLessThanHeadSquared()**                |
