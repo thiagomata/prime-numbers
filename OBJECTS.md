@@ -703,11 +703,32 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
 | **assertGeneratedPrefixCount(k)**                                            | Count of accepted integers in `[head, apply(k))` is `k`               |
 | **countGeneratedHeadMultiplesPrefix(k)**                                     | Private: count generated values in `[0, k)` divisible by `head`       |
+| **countGeneratedHeadMultiplesRange(from,count)**                             | Private: count generated values in index range `[from, from+count)` divisible by `head` |
+| **assertGeneratedHeadMultiplesRangeFront(from,count)**                       | Private: front-split for generated range counts                       |
+| **assertGeneratedHeadMultiplesRangeAppend(from,left,right)**                 | Private: generated range count is additive over adjacent index ranges |
+| **countGeneratedHeadMultiplesStrideFrom(offset,i,period)**                   | Private: count generated values `apply(offset + j*period)` divisible by `head` for `j` in `[i, head)` |
+| **countGeneratedHeadMultiplesStrideUntil(offset,i,limit,period)**            | Private: bounded-height strided generated head-multiple count         |
+| **assertGeneratedHeadMultiplesStrideUntilStep(offset,i,limit,period)**       | Private: increasing bounded stride height by one adds exactly one generated indicator |
+| **assertGeneratedHeadMultiplesStrideFromMatchesUntil(offset,i,period)**      | Private: fixed-head stride equals bounded stride at `limit == head`   |
+| **assertGeneratedHeadMultiplesStrideMatchesZeroOffsets(offset,i,period)**    | Private: strided generated count equals `SieveUtils.countZeroOffsets(apply(offset), M, head, i)` |
+| **assertGeneratedHeadMultiplesStrideOne(offset,period)**                     | Private: if `mod(M, head) != 0`, one strided column removes exactly one generated value |
+| **countGeneratedHeadMultiplesByStrideOffsets(offset,period)**                | Private: column-major sum of strided head-multiple counts over offsets |
+| **countGeneratedHeadMultiplesByStrideOffsetsUntil(offset,limit,period)**     | Private: bounded-height column-major generated head-multiple count    |
+| **assertGeneratedHeadMultiplesByStrideOffsetsMatchesUntil(offset,period)**   | Private: fixed column-major count equals bounded column count at `limit == head` |
+| **assertGeneratedHeadMultiplesByStrideOffsetsUntilStep(offset,limit,period)** | Private: increasing bounded column count height by one adds the corresponding row suffix |
+| **assertGeneratedHeadMultiplesByStrideOffsetsUntilZero(offset,period)**      | Private: bounded column-major count at height zero is zero            |
+| **assertGeneratedHeadMultiplesByStrideOffsetsCount(offset,period)**          | Private: if `mod(M, head) != 0`, column-major removed count from `offset` is `period - offset` |
+| **assertGeneratedHeadMultiplesRangeMatchesStrideOffsetsUntil(limit,period)** | Private: bounded row-major/column-major transpose by induction on height |
+| **assertGeneratedHeadMultiplesRangeMatchesStrideOffsets(period)**            | Private: row-major range count equals column-major count for the expanded window |
+| **assertGeneratedHeadMultiplesPrefixExpandedCount(period)**                  | Private: generated prefix of length `period * head` contains exactly `period` head-multiples |
+| **assertGeneratedHeadMultiplesPrefixMatchesRange(k)**                        | Private: prefix counter equals range counter from index `0`           |
 | **countNoAcceptedHeadMultiplesBetween(from,until)**                          | Private: no accepted values in an interval means zero head-multiple removals |
 | **assertCountAcceptedHeadMultiplesBetweenAppend(from,middle,until)**         | Private: head-multiple removed-count is additive over adjacent intervals |
 | **assertGeneratedHeadMultiplePrefixCount(k)**                                | Removed-count in `[head, apply(k))` equals the generated-prefix head-multiple count |
 | **assertExpandedOldAcceptedCount(period)**                                   | Old accepted count in `[head, head + head*M)` is `period * head`      |
+| **assertExpandedHeadMultipleCountFromGeneratedCount(period)**                | If the generated prefix removes `period` head-multiples, interval removed-count is `period` |
 | **assertSameHeadExtendedFilterCountFromRemovedCount(period)**                | If removed head-multiple count is `period`, same-head survivor count is `period * (head - 1)` |
+| **assertSameHeadExtendedFilterCount(period)**                                | Final same-head expanded filter size: survivor count is `period * (head - 1)` when `mod(M, head) != 0` |
 | **assertFilterPreservesNextGap(nextSeq,k)**                                  | Gap copy when old value accepted by next                              |
 | **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**                   | Consecutive old values accepted => gap copied                         |
 | **nextAcceptedOldIndex(nextSeq,k,period)**                                   | Next emitted `nextSeq` value as an old-stream index                   |
