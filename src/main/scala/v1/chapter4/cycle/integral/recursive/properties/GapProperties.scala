@@ -51,6 +51,44 @@ object GapProperties {
     ShiftedList.assertShiftedApplyIsOriginalPlusOne(origHead, gaps, i)
   }.holds
 
+  /**
+   * Rotating the backing cycle by one position and advancing the initial value
+   * by the original first gap shifts the recursive cycle integral by one
+   * position within the stored period.
+   */
+  def assertRotateOneCycleIntegralShiftsByOne(
+    originalCI: CycleIntegral,
+    shiftedCI: CycleIntegral,
+    i: BigInt
+  ): Boolean = {
+    require(i >= 0)
+    require(i + 1 < originalCI.period)
+    require(shiftedCI.initialValue == originalCI.initialValue + originalCI.cycle(0))
+    require(shiftedCI.cycle.values == ListUtils.rotateAt(originalCI.cycle.values, BigInt(1)))
+    decreases(i)
+
+    assert(originalCI.cycle.values.nonEmpty)
+    assert(RotationProperties.assertRotateSameSize(originalCI.cycle.values, BigInt(1)))
+    assert(shiftedCI.period == originalCI.period)
+    assert(RotationProperties.assertRotatedAtIndexPlusOne(originalCI.cycle.values, i))
+    assert(shiftedCI.cycle(i) == originalCI.cycle(i + 1))
+
+    if (i == BigInt(0)) {
+      assert(shiftedCI(i) == shiftedCI.initialValue + shiftedCI.cycle(0))
+      assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+      assert(originalCI(i) == originalCI.initialValue + originalCI.cycle(0))
+      assert(shiftedCI(i) == originalCI(i + 1))
+    } else {
+      assert(assertRotateOneCycleIntegralShiftsByOne(originalCI, shiftedCI, i - BigInt(1)))
+      assert(shiftedCI(i - BigInt(1)) == originalCI(i))
+      assert(shiftedCI(i) == shiftedCI(i - BigInt(1)) + shiftedCI.cycle(i))
+      assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+      assert(shiftedCI(i) == originalCI(i + 1))
+    }
+
+    shiftedCI(i) == originalCI(i + 1)
+  }.holds
+
   def shiftK(
     origHead: BigInt,
     gaps: List[BigInt],

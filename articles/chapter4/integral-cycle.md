@@ -336,18 +336,18 @@ CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
 
 ## 5. Extended Properties
 
-Properties 5.1, 5.3, and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.2 and properties 5.5-5.10 are fully verified.
+Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.1, property 5.2, and properties 5.5-5.10 are fully verified.
 
-- Modulo invariance: remainder depends only on a single cycle period — §5.1
+- Modulo invariance: finite-period classification lifts to all positions — §5.1 [Verified]
 - x-fold cycle expansion: physical period changes while the represented stream is preserved — §5.2 [Verified]
 - Index shifts: right and left — §5.3-5.4
 - Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — §5.5-5.8
 - Survivor filtering: exactness and structure — §5.9
 - Residue classification: all-zero, some-zero, none-zero — §5.10
 
-### 5.1 Modulo Invariance Property [Draft]
+### 5.1 Modulo Invariance Property
 
-Let $v \in \mathbb{N}$ with $v > 0$, such that the total cycle sum is a multiple of $v$. Then the remainder of any Cycle Integral value depends only on the corresponding partial sum within the first cycle.
+Let $v \in \mathbb{N}$ with $v > 0$, such that the total cycle sum is a multiple of $v$. Then the remainder of any Cycle Integral value depends only on the corresponding partial sum within the first cycle. In the implementation, modulo behavior is handled by two verified layers: `MemCycle` remembers finite-period zero classifications for stored cycle values, and `GapProperties::assertModIsPeriodic` proves the corresponding period lift for accumulated Cycle Integral values.
 
 ```math
 \begin{aligned}
@@ -390,7 +390,65 @@ I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
 \end{aligned}
 ```
 
-**Status**: Mathematically proven. Stainless verification pending.
+### Stainless Verification
+
+The finite-period classification is stored by `MemCycle`:
+
+```scala
+case class MemCycle private (
+    cycle: ModCycle,
+    modIsZeroForAllValues: List[BigInt] = List.empty,
+    modIsZeroForNoneValues: List[BigInt] = List.empty,
+    modIsZeroForSomeValues: List[BigInt] = List.empty,
+) {
+  require(CycleUtils.isValid(
+    cycle.values,
+    modIsZeroForAllValues,
+    modIsZeroForSomeValues,
+    modIsZeroForNoneValues
+  ))
+}
+```
+
+The cached classification is synchronized with the actual finite-period zero
+count by `CycleCheckMod::afterMethodListAndZeroModCountAreOnSync`:
+
+```scala
+def afterMethodListAndZeroModCountAreOnSync(
+  cycle: MemCycle,
+  dividend: BigInt
+): Boolean = {
+  require(dividend > 0)
+  val cycleAfterCheck = cycle.checkMod(dividend)
+  // all/none/some cached class matches countModZero(values, dividend)
+}.holds
+```
+
+The unbounded lift is verified by `GapProperties::assertModIsPeriodic`:
+
+```scala
+def assertModIsPeriodic(ci: CycleIntegral, m: BigInt, pos: BigInt): Boolean = {
+  require(ci.period > 0)
+  require(m > 0)
+  require(pos >= 0)
+  require(Calc.mod(ci.sum, m) == BigInt(0))
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  // Calc.mod(ci(pos), m) == Calc.mod(ci(Calc.mod(pos, ci.period)), m)
+}.holds
+```
+
+Together, these verified facts establish the same finite-period discipline at
+both levels used by the sieve: stored cycles carry verified all/none/some
+modulo classifications, and accumulated Cycle Integral residues repeat from
+one period to all positions whenever the cycle sum is zero modulo the divisor.
+
+These properties are verified in [
+MemCycle
+](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala), [
+CycleCheckMod::afterMethodListAndZeroModCountAreOnSync
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala), and [
+GapProperties::assertModIsPeriodic
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
 
 ### 5.2 x-fold Cycle Expansion
 
@@ -509,7 +567,7 @@ This property is verified in the [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
 ](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
-### 5.3 Right Index Shift [Draft]
+### 5.3 Right Index Shift [Finite-Period Verified]
 
 Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by one position, and $init' := init + L_0$ be the shifted initial value. Then the CycleIntegral of $L'$ with $init'$ reproduces the CycleIntegral of $L$ with $init$, shifted by one position.
 
@@ -556,7 +614,37 @@ B_i &= B_{i-1} + L'_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L, init)_{i+1} = \text{CycleIntegral}(L', init')_{i} \quad \blacksquare
 ```
 
-**Status**: Mathematically proven. Stainless verification pending.
+### Stainless Verification
+
+The one-period `CycleIntegral` wrapper is verified directly. If the shifted
+cycle uses the one-step rotation of the original backing values and the shifted
+initial value is advanced by the original first gap, then the shifted integral
+at position `i` equals the original integral at position `i + 1` for every
+stored-period index with `i + 1 < period`.
+
+```scala
+def assertRotateOneCycleIntegralShiftsByOne(
+  originalCI: CycleIntegral,
+  shiftedCI: CycleIntegral,
+  i: BigInt
+): Boolean = {
+  require(i >= 0)
+  require(i + 1 < originalCI.period)
+  require(shiftedCI.initialValue ==
+    originalCI.initialValue + originalCI.cycle(0))
+  require(shiftedCI.cycle.values ==
+    ListUtils.rotateAt(originalCI.cycle.values, BigInt(1)))
+  // shiftedCI(i) == originalCI(i + 1)
+}.holds
+```
+
+This property is verified in [
+GapProperties::assertRotateOneCycleIntegralShiftsByOne
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+
+The article's mathematical statement above is the all-position version. The
+verified lemma proves the stored-period core; packaging the universal
+all-position wrapper only needs the already verified full-cycle shift law.
 
 ### 5.4 Left Index Shift [Draft]
 
@@ -918,8 +1006,7 @@ shifts advance the integral by the cycle sum; rotating a gap cycle with the
 corresponding head adjustment shifts the represented integral by one position;
 survivor scans retain exactly the non-multiples needed for filtering; and
 cycle residue classification is correct, exclusive, and exhaustive. The
-remaining draft extensions are the index-shift laws and the stronger modulo
-invariance statement in Section 5.1.
+remaining draft extensions are the index-shift laws in Sections 5.3 and 5.4.
 
 The main established properties are:
 
@@ -942,7 +1029,7 @@ accumulations using finite list structures and machine-checked Scala code.
 Future work may include:
 
 - Formal verification of the remaining draft extended properties in Section 5
-  (index shifts and modulo invariance)
+  (index shifts)
 - Applications to prime number detection and distribution analysis
 - Extensions to multi-dimensional cycles and integrals
 - Integration with other mathematical structures like polynomials or matrices

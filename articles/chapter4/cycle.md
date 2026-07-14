@@ -212,7 +212,7 @@ RecCycle &= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 \end{aligned}
 ```
 
-The recursive cycle is defined at [RecursiveCycle](../src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
+The recursive cycle is defined at [RecursiveCycle](../../src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
 
 ```scala
 case class RecursiveCycle(values: List[BigInt]) {
@@ -249,7 +249,7 @@ n &= |L| \\
 \end{aligned}
 ```
 
-The modulo cycle is defined at [ModCycle](../src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
+The modulo cycle is defined at [ModCycle](../../src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
 
 ```scala
 case class ModCycle(values: List[BigInt]) {
@@ -298,8 +298,8 @@ case class MemCycle private (
 }
 ```
 
-The memory cycle is defined at [MemCycle](../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
-[CycleCheckMod](../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
+The memory cycle is defined at [MemCycle](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
+[CycleCheckMod](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
 
 ## 4. Cycle Equivalence
 
@@ -340,7 +340,7 @@ The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-n
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
-](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
+](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
 
 ### 4.2 Inductive Step ($i \geq n$)
 
@@ -365,7 +365,7 @@ The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
-](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
+](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
 
 ## 5. Cycle Properties
 
@@ -399,7 +399,7 @@ The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified i
 
 This property is verified in the [
 CycleProperties::findValueInCycle
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
 
 ### 5.2 Small Value in Cycle
 
@@ -422,7 +422,7 @@ The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified i
 
 This property is verified in the [
 CycleProperties::smallValueInCycle
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
 
 ### 5.3 Value Match After Many Loops
 
@@ -447,7 +447,7 @@ The lemma [Quotient Invariance Under Linear Shift](../chapter2/modulo.md#quotien
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoops
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
 
 ### 5.4 Two Multiples of Cycle Size
 
@@ -469,7 +469,7 @@ n &= |L| \\
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoopsInBoth
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
 
 ### 5.5 Propagate Modulo from Value to Cycle
 
@@ -495,9 +495,9 @@ L[(i \text{ mod } n) \text{ mod } n] &= L[i \text{ mod } n] \quad &\text{[By Mod
 
 This property is verified in the [
 CycleProperties::propagateModFromValueToCycle
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [
 CycleProperties::assertCycleOfPosEqualsCycleOfModPos
-](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
 
 ### 5.6 Repeated-Cycle Invariance
 
@@ -556,12 +556,12 @@ def assertRepeatedValuesCycleMatches(
 
 This property is verified in the [
 MemCycleProperties::assertRepeatedValuesCycleMatches
-](../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
 The corresponding CycleIntegral invariant (repeating the gap list preserves
 the integral at every position) is verified in [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) and documented in the integral-cycle article [[5]](integral-cycle.md).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) and documented in the integral-cycle article [[5]](integral-cycle.md).
 
 ### 5.7 Cycle Value Positivity
 
@@ -589,7 +589,7 @@ def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
 This property is verified in the [
   CycleProperties::cycleValuePositiveOrZero
 ](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
+  ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
 ).
 
 ### 5.8 Cycle Rotation
@@ -618,7 +618,7 @@ def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
 This property is verified in the [
   CycleProperties::rotateAtValue
 ](
-  ../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
+  ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
 ).
 
 ## 6. Conclusion
@@ -674,7 +674,7 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 
 ### A.1 Cycle Equivalence — Base Case
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForSmallValues(
@@ -699,7 +699,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmall
 
 ### A.2 Cycle Equivalence — Inductive Step
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForAnyValues(
@@ -732,7 +732,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyVa
 
 ### A.3 Cycle Element Access — findValueInCycle
 
-Source: [CycleProperties::findValueInCycle](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::findValueInCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -744,7 +744,7 @@ Source: [CycleProperties::findValueInCycle](../src/main/scala/v1/chapter4/cycle/
 
 ### A.4 Small Value in Cycle — smallValueInCycle
 
-Source: [CycleProperties::smallValueInCycle](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::smallValueInCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -757,7 +757,7 @@ Source: [CycleProperties::smallValueInCycle](../src/main/scala/v1/chapter4/cycle
 
 ### A.5 Value Match After Many Loops — valueMatchAfterManyLoops
 
-Source: [CycleProperties::valueMatchAfterManyLoops](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::valueMatchAfterManyLoops](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
@@ -771,7 +771,7 @@ Source: [CycleProperties::valueMatchAfterManyLoops](../src/main/scala/v1/chapter
 
 ### A.6 Two Multiples of Cycle Size — valueMatchAfterManyLoopsInBoth
 
-Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
@@ -796,7 +796,7 @@ Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../src/main/scala/v1/c
 
 ### A.7 Propagate Modulo — propagateModFromValueToCycle / assertCycleOfPosEqualsCycleOfModPos
 
-Source: [CycleProperties::propagateModFromValueToCycle](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::propagateModFromValueToCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
@@ -824,7 +824,7 @@ Source: [CycleProperties::propagateModFromValueToCycle](../src/main/scala/v1/cha
 
 ### A.8 Repeated-Cycle Invariance — assertRepeatedValuesCycleMatches
 
-Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
+Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
 
 ```scala
   def assertRepeatedValuesCycleMatches(

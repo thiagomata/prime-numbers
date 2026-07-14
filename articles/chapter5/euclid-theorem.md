@@ -264,11 +264,11 @@ private def assertCompositeHasDivisorStrictlyBelowN(n: BigInt): Boolean = {
 These properties are verified in the [
   PrimeProperties::assertSmallestDivisorAtMostSqrt
 ](
-  ../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
 ) and [
   PrimeProperties::assertCompositeHasDivisorStrictlyBelowN
 ](
-  ../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
 ).
 
 ## 4. The `.holds` Caching Insight

@@ -158,7 +158,7 @@ Last updated: 2026-07-11
 | **assertSumPositive(list)**                        | `allGreaterThan(list,0) && nonEmpty => sum(list) > 0`             |
 | **assertAppendApplyRight(left,right,k)**           | `(left ++ right)(k) == right(k - left.size)` for `k >= left.size` |
 
-## 3.4 GapList (`v1.chapter3.list.GapList`)
+## 3.4 ShiftedList (`v1.chapter3.list.ShiftedList`)
 
 | Lemma                                                    | Statement                                                                |
 |----------------------------------------------------------|--------------------------------------------------------------------------|
@@ -422,6 +422,7 @@ operate on the canonical `CycleIntegral` class; use
 | Lemma                                                                        | Statement                                                                       |
 |------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
 | **assertRotateOneShiftsIntegralByOne(head,gaps,i)**                          | Rotation-by-1 + head shift = integral shift by 1                                |
+| **assertRotateOneCycleIntegralShiftsByOne(originalCI,shiftedCI,i)**          | Rotated backing cycle + shifted initial value shifts CI by 1 within one period  |
 | **assertRepeatedGapsPreservesIntegral(ci,repeatedCI,times,pos)**             | Repeated gaps preserve integral at bounded pos                                  |
 | **assertTwoGapSumEqualsDiff(ci,k)**                                          | 2-gap telescoping sum                                                           |
 | **assertMergedGapPositive(ci,fv,from,to)**                                   | Merged survivor gap > 0                                                         |
@@ -577,6 +578,8 @@ operate on the canonical `CycleIntegral` class; use
 | Lemma                             | Statement         |
 |-----------------------------------|-------------------|
 | **assertNextHeadGreaterThanHead** | `apply(1) > head` |
+| **repeatedCycle(times)**          | Side-by-side helper: physically repeat current gap storage without changing primes |
+| **assertRepeatedCycleApplyMatches(times,position)** | Repeated physical storage emits the same sequence value before filtering |
 
 ## 6.3 SieveSequenceNextLevel (`v1.chapter6.seq.sieve.SieveSequenceNextLevel`)
 
@@ -665,7 +668,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.5 SpecSieveSequence (`v1.chapter6.seq.sieve.SpecSieveSequence`)
 
-74 lemmas (23 public, 51 private). Key public lemmas:
+76 lemmas (25 public, 51 private). Key public lemmas:
 
 | Lemma                                                                        | Statement                                                             |
 |------------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -683,12 +686,15 @@ operate on the canonical `CycleIntegral` class; use
 | **assertMemCycleGapMatch(i,period)**                                         | `memCycle(i) == apply(i+1) - apply(i)`                                |
 | **assertSpecGapCycleIntegralMatchesApply(period,k)**                         | `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`              |
 | **assertNextValueAcceptedByThis(k)**                                         | `mod(next(k), head) != 0`                                             |
+| **assertSingletonFilterDecision(value,p)**                                   | One-prime `filterValues == List(p)` means `passesFilter(value) == mod(value,p) != 0` |
+| **assertNextAcceptsMatchesHeadFilterForAcceptedValue(v)**                    | Old accepted transition-window value is accepted by `next` iff it is not a head multiple |
 | **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq,value)**  | Private: old accepted + new-head non-multiple => accepted by next     |
 | **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple   |
 | **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**                 | Private: new-head multiple is rejected by next                        |
 | **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
 | **assertGeneratedPrefixCount(k)**                                            | Count of accepted integers in `[head, apply(k))` is `k`               |
 | **countGeneratedHeadMultiplesPrefix(k)**                                     | Private: count generated values in `[0, k)` divisible by `head`       |
+| **assertExpandedGeneratedHeadMultipleCount(period)**                         | Expanded generated prefix of length `period * head` has exactly `period` head-multiples |
 | **countGeneratedHeadMultiplesRange(from,count)**                             | Private: count generated values in index range `[from, from+count)` divisible by `head` |
 | **assertGeneratedHeadMultiplesRangeFront(from,count)**                       | Private: front-split for generated range counts                       |
 | **assertGeneratedHeadMultiplesRangeAppend(from,left,right)**                 | Private: generated range count is additive over adjacent index ranges |
@@ -726,7 +732,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-54 lemmas (50 public, 2 private), plus 3 public coverage predicates and 1 public survivor-gap prefix producer. Key
+57 lemmas (53 public, 2 private), plus 5 public predicates and 1 public survivor-gap prefix producer. Key
 public lemmas:
 
 > **Design note:** Several lemmas in this section overlap with lower-level
@@ -744,6 +750,7 @@ public lemmas:
 | **assertCycleHeadMatchesSpecHead()**                                              | `cycle.head == spec.head.value`                                               |
 | **assertCyclePrimesTailEqualsSpecFilterValues()**                                 | `cycle.primesTailValues == spec.filterValues`                                 |
 | **assertCycleModulusEqualsSpecFilterModulus()**                                   | `cycle.modulus == spec.tailPrimorial`                                         |
+| **assertNextPeriodMatchesExpandedFilterCount()**                                  | `nextPeriod() == period * (spec.head.value - 1)` after consuming expanded head-multiple count |
 | **assertNextPipelineGapsIsNextRotatedGaps()**                                     | `nextPipelineGaps(cycle) == nextRotatedGaps(cycle)`                           |
 | **assertCycleGapCycleEqualsSpecGapCycle()**                                       | `cycle.gapCycle == spec.specGapCycle(period)`                                 |
 | **assertCycleSpecNextFilterDecisionMatches(k)**                                   | `cycle(k)` and `spec(k)` have the same next-filter decision                   |
@@ -799,6 +806,8 @@ public lemmas:
 | **assertRepeatedGapListIndexMatches(times,index)**     | `repeatedGapList(times)(index) == gapList(mod(index,size))` |
 | **assertRepeatedCycleApplyMatches(times,k)**           | `repeatedCycle(times)(k) == cycle(k)`                       |
 | **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos |
+| **assertRepeatedCycleMatchesSpecPrefix(times,count)**  | `repeatedCycle(times)(i) == spec(i)` for all `i` in `[0,count)` |
+| **assertRepeatedCycleMatchesSpecFirstExpandedPeriod()** | `repeatedCycle(head)` matches `spec` across the first `period * head` values |
 | **assertSpecNextIsKthSurvivor(nextPeriod,k)**          | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`      |
 | **assertNextHeadLessThanNewModulus()**                 | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`   |
 | **assertNextHeadLessThanHeadSquared()**                |

@@ -2,11 +2,11 @@
 
 **Created:** 2026-07-14
 **Status:** Active
-**Scope:** Review `articles/integral-cycle.md` from an examiner/publication perspective.
+**Scope:** Review `articles/chapter4/integral-cycle.md` from an examiner/publication perspective.
 
 ## Goal
 
-Evaluate whether `articles/integral-cycle.md` is publication-ready under the
+Evaluate whether `articles/chapter4/integral-cycle.md` is publication-ready under the
 project's article standards: accurate theorem framing, current source-backed
 verification claims, no overclaiming beyond proved artifacts, and clear
 distinction between verified code and mathematical exposition.
@@ -94,3 +94,16 @@ Produce a concise examiner-style assessment with:
   article now presents only the canonical recursive `CycleIntegral` and the
   closed-form `ModCycleIntegral`, with Appendix A.1/A.2 quoting the recursive
   property source directly.
+- Follow-up after the `MemCycle` reminder: §5.1 modulo invariance is no longer
+  a pending draft in the intended architecture. The article now cites the
+  verified finite-period classification layer (`MemCycle` / `CycleCheckMod`)
+  and the unbounded accumulated-integral periodicity lemma
+  (`GapProperties.assertModIsPeriodic`). Cleaned the conclusion, Future Work,
+  and `TODO.md` so only §5.3 and §5.4 remain as draft extended properties.
+- Follow-up after re-checking `ShiftedList`: added and verified
+  `GapProperties.assertRotateOneCycleIntegralShiftsByOne`, a direct
+  `CycleIntegral` wrapper for the one-period right index shift. Focused
+  verification passed (`50 valid`, `0 invalid`, `0 unknown`) and the full
+  project verification passed (`14000 valid`, `0 invalid`, `0 unknown`).
+  Section 5.3 now cites this verified stored-period core; the remaining §5.3
+  review item is only the all-position wrapper over full-cycle shifts.

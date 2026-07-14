@@ -22,6 +22,8 @@ moved to `tickets/trash/` — do not use them as a source of current strategy.
 - `blocked/` — real open problems that are not current work because they need
   substantial new mathematics or a new solver strategy.
 - `done/` — completed tickets with useful final state or implementation notes.
+- `future/` — low-priority tickets, reference documents, and deferred work.
+  Not blocking current progress; revisit when priorities shift.
 - `trash/` — superseded approaches, old planning records, and article reviews.
   Kept for historical reference only; do NOT drive new work from them.
 

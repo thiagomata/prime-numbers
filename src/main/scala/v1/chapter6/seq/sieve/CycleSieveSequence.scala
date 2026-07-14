@@ -7,7 +7,10 @@ import v1.chapter3.list.{ListBoundUtils, ListUtils}
 import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
-import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralFilterProperties
+import v1.chapter4.cycle.integral.recursive.properties.{
+  CycleIntegralFilterProperties,
+  CycleIntegralProperties
+}
 import v1.chapter4.cycle.memory.MemCycle
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
@@ -92,6 +95,47 @@ case class CycleSieveSequence(
 
     nextWithGapCycle(newGapCycle)
   }
+
+  def repeatedCycle(times: BigInt): CycleSieveSequence = {
+    require(times > BigInt(0))
+
+    val gaps = gapCycle.memCycle.values
+    val repeatedGaps = ListRepeatProperties.repeat(gaps, times)
+
+    assert(GapCycle.assertMemCycleValuesPositive(gapCycle))
+    assert(ListRepeatProperties.assertRepeatAllGreaterThan(gaps, times, BigInt(0)))
+    assert(ListRepeatProperties.assertRepeatSize(gaps, times))
+    assert(repeatedGaps.size == gaps.size * times)
+    assert(gaps.nonEmpty)
+    assert(repeatedGaps.nonEmpty)
+    assert(ListBoundUtils.allGreaterThan(repeatedGaps, BigInt(0)))
+
+    CycleSieveSequence(primes, GapCycle(repeatedGaps))
+  }
+
+  def assertRepeatedCycleApplyMatches(times: BigInt, position: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+
+    val repeated = repeatedCycle(times)
+    if (position == BigInt(0)) {
+      assert(repeated.head == head)
+      repeated(position) == apply(position)
+    } else {
+      val integralPosition = position - BigInt(1)
+      assert(integralPosition >= BigInt(0))
+      assert(repeated.integral.initialValue == integral.initialValue)
+      assert(repeated.integral.cycle.values ==
+        ListRepeatProperties.repeat(integral.cycle.values, times))
+      assert(CycleIntegralProperties.assertRepeatedValuesIntegralMatches(
+        integral,
+        repeated.integral,
+        times,
+        integralPosition
+      ))
+      repeated(position) == apply(position)
+    }
+  }.holds
 }
 
 object CycleSieveSequence {

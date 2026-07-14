@@ -139,6 +139,16 @@ case class SpecDerivedSieveSequence(
     count == period * (spec.head.value - BigInt(1))
   })
 
+  def assertNextPeriodMatchesExpandedFilterCount(): Boolean = {
+    assert(primorialMatchesProduct(spec.primes.list.tail))
+    assert(Calc.mod(spec.tailPrimorial, spec.head.value) != BigInt(0))
+    assert(spec.assertExpandedGeneratedHeadMultipleCount(period))
+
+    val count = nextPeriod()
+
+    count == period * (spec.head.value - BigInt(1))
+  }.holds
+
   /**
    * The gap cycle stores exactly `period` gaps, matching the spec's
    * canonical period.
@@ -433,6 +443,57 @@ case class SpecDerivedSieveSequence(
 
       repeated(k) == cycle(k)
     }
+  }.holds
+
+  def repeatedCycleMatchesSpecPrefix(times: BigInt, count: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      true
+    } else {
+      val index = count - BigInt(1)
+      repeatedCycleMatchesSpecPrefix(times, index) &&
+        repeatedCycle(times)(index) == spec(index)
+    }
+  }
+
+  def assertRepeatedCycleMatchesSpecPrefix(times: BigInt, count: BigInt): Boolean = {
+    require(times > BigInt(0))
+    require(count >= BigInt(0))
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      repeatedCycleMatchesSpecPrefix(times, count)
+    } else {
+      val index = count - BigInt(1)
+      assert(index >= BigInt(0))
+      assert(assertRepeatedCycleMatchesSpecPrefix(times, index))
+      assert(repeatedCycleMatchesSpecPrefix(times, index))
+      assert(assertRepeatedCycleApplyMatches(times, index))
+      assert(assertApplyMatches(index))
+      assert(repeatedCycle(times)(index) == cycle(index))
+      assert(cycle(index) == spec(index))
+      assert(repeatedCycle(times)(index) == spec(index))
+
+      repeatedCycleMatchesSpecPrefix(times, count)
+    }
+  }.holds
+
+  def repeatedCycleMatchesSpecFirstExpandedPeriod(): Boolean = {
+    val count = period * spec.head.value
+    repeatedCycleMatchesSpecPrefix(spec.head.value, count)
+  }
+
+  def assertRepeatedCycleMatchesSpecFirstExpandedPeriod(): Boolean = {
+    val count = period * spec.head.value
+
+    assert(spec.head.value > BigInt(0))
+    assert(count >= BigInt(0))
+    assert(assertRepeatedCycleMatchesSpecPrefix(spec.head.value, count))
+
+    repeatedCycleMatchesSpecFirstExpandedPeriod()
   }.holds
 
   def assertNextHeadLessThanNewModulus(): Boolean = {

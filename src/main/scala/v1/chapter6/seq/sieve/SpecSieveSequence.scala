@@ -764,6 +764,29 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     nextSeq.passesFilter(v)
   }.holds
 
+  def assertNextAcceptsMatchesHeadFilterForAcceptedValue(v: BigInt): Boolean = {
+    require(primes.nextPrime.value < head.value * head.value)
+    require(v >= next.head.value)
+    require(accepts(v))
+
+    val nextSeq = next
+    assert(nextSeq.filterValues.head == head.value)
+    assert(nextSeq.filterValues.tail == filterValues)
+
+    if (Calc.mod(v, head.value) == BigInt(0)) {
+      assert(Calc.mod(v, nextSeq.filterValues.head) == BigInt(0))
+      assert(!CoprimeUtils.isCoprime(v, nextSeq.filterValues))
+      assert(!nextSeq.passesFilter(v))
+      assert(!nextSeq.accepts(v))
+    } else {
+      assert(assertSurvivorAcceptedByNext(v))
+      assert(nextSeq.passesFilter(v))
+      assert(nextSeq.accepts(v))
+    }
+
+    nextSeq.accepts(v) == (Calc.mod(v, head.value) != BigInt(0))
+  }.holds
+
   // APPROACH 2: prove via count of next-accepted values in [head, nextBoundary).
   //
   // The counting lemma proves `expected` survivors in [head, head+h*M).
@@ -1679,6 +1702,17 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     countGeneratedHeadMultiplesPrefix(expandedIndex) == period
   }.holds
 
+  def assertExpandedGeneratedHeadMultipleCount(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(tailPrimorial, head.value) != BigInt(0))
+
+    val expandedIndex = period * head.value
+
+    assert(assertGeneratedHeadMultiplesPrefixExpandedCount(period))
+    countGeneratedHeadMultiplesPrefix(expandedIndex) == period
+  }.holds
+
   private def assertGeneratedHeadMultiplesPrefixMatchesRange(k: BigInt): Boolean = {
     require(k >= BigInt(0))
     decreases(k)
@@ -1994,6 +2028,13 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   /** True when `value` is coprime with every active filter prime. */
   def passesFilter(value: BigInt): Boolean =
     CoprimeUtils.isCoprime(value, PrimeUtils.primeValues(filterPrimes))
+
+  def assertSingletonFilterDecision(value: BigInt, p: BigInt): Boolean = {
+    require(p > BigInt(0))
+    require(filterValues == List(p))
+
+    passesFilter(value) == (Calc.mod(value, p) != BigInt(0))
+  }.holds
 
   /**
    * Lifts acceptance from this sequence to a sequence with one extra front filter.

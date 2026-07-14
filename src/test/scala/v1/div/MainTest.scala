@@ -50,7 +50,7 @@ class MainTest extends FlatSpec {
     Console.withOut(stream) {
       Main.main(Array("hello"))
     }
-    assert(stream.toString() == "Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'\n")
+    assert(stream.toString() == "Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'\n       just show <steps> <count>\n")
   }
 
   "main with too many args" should "say error" in {
@@ -58,7 +58,7 @@ class MainTest extends FlatSpec {
     Console.withOut(stream) {
       Main.main(Array("all","these","moments","will","be","lost","in","time"))
     }
-    assert(stream.toString() == "Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'\n")
+    assert(stream.toString() == "Usage: sbt 'runMain v1.DivMain <a> <b> [<div> <mod>]'\n       just show <steps> <count>\n")
   }
 
   "invalid 1 of 2 numbers" should "should fail" in {
