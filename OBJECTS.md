@@ -592,8 +592,6 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertNextExpandedCoprime(seq)**                         | Expanded residues remain coprime to tail primes                                     |
 | **assertNextFilteredCoprime(seq)**                         | Filtered residues remain coprime to tail primes                                     |
 | **assertResiduesCoprime(seq)**                             | `all r in residues(seq): isCoprime(r, tailPrimes)`                                  |
-| **assertNextFilteredSizeByDensity(seq)**                   | `nextFiltered(seq).size == nextResidues(seq).size * (seq.head - 1)` under density preconditions |
-| **assertNextFilteredSizeGreaterThanResiduesByDensity(seq)** | `nextFiltered(seq).size > nextResidues(seq).size` under density, `head > 2`, and nonempty residues |
 | **assertNextResiduesNonEmpty(seq)**                        | `nextResidues(seq).nonEmpty` for `modulus >= 2`, discharging the density theorem's nonempty precondition |
 | **assertNextGapsNonEmpty(seq)**                            | `nextGaps(seq).nonEmpty`                                                            |
 | **assertNextGapsSize(seq)**                                | `nextGaps(seq).size == nextSorted(seq).list.size`                                   |
@@ -623,23 +621,9 @@ Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral
 | **assertAllRExpandedCoprimeRec(r,modulus,p,primes)**              | Recursive helper                                                       |
 | **assertDivTransitive(c,b,a)**                                    | `mod(c,b)==0 && mod(b,a)==0 => mod(c,a)==0`                            |
 | **assertFilterNonEmpty(list,divisor)**                            | Filter preserves non-emptiness                                         |
-| **countMultiples(list,divisor)**                                  | Counts values divisible by `divisor`, bounded by list size             |
 | **countZeroOffsets(r,step,p,i)**                                  | Counts zero residues in stepped offsets `i..p-1`, bounded by `p - i`   |
-| **countOffsetHits(list,step,p,i)**                                | Counts residues whose `r + i*step` is divisible by `p`                 |
-| **countExpandedOffsetHits(list,step,p,i)**                        | Sums `countOffsetHits` over offsets `i..p-1`, bounded by `list.size * (p - i)` |
 | **assertCountZeroOffsetsFromWitness(r,step,p,i,witness)**         | If `witness` is the zero offset, count from `i` is `1` iff `i <= witness` |
 | **assertCountZeroOffsetsOne(r,step,p)**                           | `countZeroOffsets(r,step,p,0) == 1` for prime `p` and coprime step     |
-| **assertCountMultiplesExpandSingleton(r,step,p,i)**               | Singleton expansion multiple count equals `countZeroOffsets(r,step,p,i)` |
-| **assertCountMultiplesExpandSingletonOne(r,step,p)**              | Singleton expansion has exactly one multiple of `p`                    |
-| **assertCountMultiplesAddOffset(list,step,p,i)**                  | `countMultiples(addOffset(list,i*step),p) == countOffsetHits(list,step,p,i)` |
-| **assertCountMultiplesExpandByOffsetHits(list,step,p,i)**         | `countMultiples(expandSingleResidue(list,step,p,i),p) == countExpandedOffsetHits(list,step,p,i)` |
-| **assertCountExpandedOffsetHitsCons(list,step,p,i)**              | Splits `countExpandedOffsetHits` into head `countZeroOffsets` plus tail hits |
-| **assertCountExpandedOffsetHitsOnePerResidue(list,step,p)**       | `countExpandedOffsetHits(list,step,p,0) == list.size` for nonnegative residues and coprime prime step |
-| **assertCountMultiplesExpandOnePerResidue(list,step,p)**          | `countMultiples(expandSingleResidue(list,step,p,0),p) == list.size` |
-| **assertFilterExpandSingleResidueSizeByDensity(list,step,p)**     | `filterList(expandSingleResidue(list,step,p,0),p).size == list.size * (p - 1)` |
-| **assertFilterExpandResiduesSizeByDensity(list,step,p)**          | `filterList(expandResidues(list,step,p),p).size == list.size * (p - 1)` |
-| **assertFilterListSizeByCount(list,divisor)**                     | `filterList(list,divisor).size == list.size - countMultiples(list,divisor)` |
-| **assertCountMultiplesAppend(left,right,divisor)**                | `countMultiples(left ++ right,divisor) == countMultiples(left,divisor) + countMultiples(right,divisor)` |
 | **assertIsCoprimeForAll(n,primes)**                               | `isCoprime(n,primes) => mod(n, p) != 0` for all `p`                    |
 | **assertIsCoprimeOne(primes)**                                    | `isCoprime(1, primes)` for `allGreaterThan(primes, 1)` (inductive helper) |
 | **assertPrimeFactorDivides(n,primes)**                            | Found prime factor divides `n`                                         |

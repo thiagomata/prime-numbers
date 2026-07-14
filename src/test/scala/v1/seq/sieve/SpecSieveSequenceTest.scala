@@ -4,7 +4,7 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection.List
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
-import v1.chapter6.seq.sieve.SpecSieveSequence
+import v1.chapter6.seq.sieve.{SpecDerivedSieveSequence, SpecSieveSequence}
 import v1.tags.SlowLemmaTest
 
 class SpecSieveSequenceTest extends FlatSpec with Matchers  {
@@ -172,6 +172,56 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     // For S_1: head=3, tailPrimes=2, p=1, sumGap(0,p)=2 which equals tailPrimorial
     val p = BigInt(1)
     s1.assertGapSum(p) should be(true)
+  }
+
+  // === Same-head extended filter size theorem tests ===
+
+  it should "prove same-head filter size for S_1 [3,2]" taggedAs(SlowLemmaTest) in {
+    val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
+    // head=3, tailPrimorial=2, M=2, period=1
+    // mod(M, head) = mod(2,3) = 2 != 0 ✓
+    // ─── The theorem ───
+    // countAcceptedHeadNonMultiplesBetween(3, 9) == 1 * (3-1) == 2
+    s1.assertSameHeadExtendedFilterCount(BigInt(1)) should be(true)
+  }
+
+  it should "prove same-head filter size for S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
+    val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
+    // head=5, tailPrimorial=6, M=6, period=2
+    // mod(M, head) = mod(6,5) = 1 != 0 ✓
+    // ─── The theorem ───
+    // countAcceptedHeadNonMultiplesBetween(5, 35) == 2 * (5-1) == 8
+    s2.assertSameHeadExtendedFilterCount(BigInt(2)) should be(true)
+  }
+
+  // === Same-head survivor count (body computes actual count) ===
+
+  it should "compute same-head survivor count for S_1 [3,2]" taggedAs(SlowLemmaTest) in {
+    val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
+    // head=3, M=2, period=1 → survivors in [3,9): 5,7 → count=2
+    s1.sameHeadSurvivorCount(BigInt(1)) should be(BigInt(2))
+  }
+
+  it should "compute same-head survivor count for S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
+    val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
+    // head=5, M=6, period=2 → survivors in [5,35): 7,11,13,17,19,23,29,31 → count=8
+    s2.sameHeadSurvivorCount(BigInt(2)) should be(BigInt(8))
+  }
+
+  // === Next cycle size via SpecDerivedSieveSequence ===
+
+  it should "compute nextCycleSize for derived S_1 [3,2]" taggedAs(SlowLemmaTest) in {
+    val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
+    val d1 = SpecDerivedSieveSequence(s1, BigInt(1))
+    // period=1, head=3 → nextCycleSize == 1 * (3-1) == 2
+    d1.nextCycleSize() should be(BigInt(2))
+  }
+
+  it should "compute nextCycleSize for derived S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
+    val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
+    val d2 = SpecDerivedSieveSequence(s2, BigInt(2))
+    // period=2, head=5 → nextCycleSize == 2 * (5-1) == 8
+    d2.nextCycleSize() should be(BigInt(8))
   }
 
 }

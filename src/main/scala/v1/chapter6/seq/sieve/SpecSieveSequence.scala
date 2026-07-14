@@ -243,6 +243,67 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.ensuring(res => res >= BigInt(0) && apply(res) == value)
 
   /**
+   * Discharges the `accepts` precondition needed by `size()`.
+   *
+   * The class invariant gives `isCoprime(head.value, filterValues)`.
+   * Since `tailPrimorial = Primorial(filterPrimes)`, every filter prime
+   * divides the tail primorial. Adding a multiple of `p` preserves the
+   * remainder: `mod(head + tailPrimorial, p) == mod(head, p) != 0`.
+   * Therefore `isCoprime` and consequently `accepts` hold.
+   */
+  def assertHeadPlusTailPrimorialAccepted(): Boolean = {
+    primorialMatchesSieveProduct(filterPrimes)
+    assert(tailPrimorial == SieveUtils.product(filterValues))
+    assert(assertHeadPlusTailCoprimeWalk(filterPrimes, BigInt(1)))
+    accepts(head.value + tailPrimorial)
+  }.holds
+
+  private def assertHeadPlusTailCoprimeWalk(
+    primes: List[Prime],
+    prefixProd: BigInt
+  ): Boolean = {
+    require(!primes.isEmpty)
+    require(prefixProd >= BigInt(0))
+    require(tailPrimorial == prefixProd * SieveUtils.product(PrimeUtils.primeValues(primes)))
+    require(CoprimeUtils.isCoprime(head.value, PrimeUtils.primeValues(primes)))
+    decreases(primes.size)
+
+    val p = primes.head.value
+    val suffixValues = PrimeUtils.primeValues(primes.tail)
+    if (primes.tail.isEmpty) {
+      CoprimeUtils.assertMultipleModZero(prefixProd, p)
+      ModOperations.modZeroPlusC(tailPrimorial, p, head.value)
+      CoprimeUtils.isCoprime(head.value + tailPrimorial, PrimeUtils.primeValues(primes))
+    } else {
+      val suffixProduct = SieveUtils.product(suffixValues)
+      val factor = prefixProd * suffixProduct
+      SieveUtils.assertProductNonNegative(List(factor))
+      CoprimeUtils.assertMultipleModZero(factor, p)
+      ModOperations.modZeroPlusC(tailPrimorial, p, head.value)
+      assert(SieveUtils.product(PrimeUtils.primeValues(primes)) == p * suffixProduct)
+      assert(assertHeadPlusTailCoprimeWalk(primes.tail, prefixProd * p))
+      CoprimeUtils.isCoprime(head.value + tailPrimorial, PrimeUtils.primeValues(primes))
+    }
+  }.holds
+
+  /**
+   * Returns the number of accepted values in one filter period.
+   *
+   * The period boundary is `head.value + tailPrimorial` — the first accepted
+   * value after stepping through a full residue cycle. This is the canonical
+   * gap-cycle size for the current stage.
+   *
+   * Requires `accepts(head.value + tailPrimorial)` as a precondition.
+   * The `SpecDerivedSieveSequence` constructor discharges this via
+   * `apply(period) == head + tailPrimorial` together with `apply`'s
+   * postcondition `accepts(result)`.
+   */
+  def size(): BigInt = {
+    assert(assertHeadPlusTailPrimorialAccepted())
+    indexOfAccepted(head.value + tailPrimorial)
+  }.ensuring(s => s > BigInt(0) && apply(s) == head.value + tailPrimorial)
+
+  /**
    * Proves that the residue of apply(k) modulo tail primorial is coprime
    * with all filter primes. This establishes the fundamental connection
    * between V0's linear-scan generator and the residue cycle: every
@@ -1805,6 +1866,22 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd) ==
       period * (head.value - BigInt(1))
   }.holds
+
+  /**
+   * Computes the actual count of accepted values in [head, head + head*M)
+   * that are NOT multiples of the head, then proves it equals the closed form.
+   */
+  def sameHeadSurvivorCount(period: BigInt): BigInt = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(tailPrimorial, head.value) != BigInt(0))
+
+    val expandedEnd = head.value + head.value * tailPrimorial
+    countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd)
+  }.ensuring(count => {
+    assertSameHeadExtendedFilterCount(period)
+    count == period * (head.value - BigInt(1))
+  })
 
   /**
    * Extracts the rejection fact for one value inside a skipped interval.

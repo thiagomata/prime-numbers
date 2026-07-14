@@ -235,6 +235,75 @@ This property is verified in the [
 )
 function.
 
+### 4.5 Same-Head Filter Size
+
+The spec sequence has a canonical size: the number of accepted values
+between the head and the first repeat of the residue pattern. This
+period is computed as the index where the generator reaches
+$h + M$:
+
+```math
+\begin{aligned}
+\text{size}(\text{Spec}) = \text{indexOfAccepted}(h + M)
+\quad \blacksquare \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+The boundary value $h + M$ itself must be accepted by the tail
+filters. The class invariant guarantees $h$ is coprime to every
+tail prime. Since $M$ is the product of all tail prime values,
+each tail prime divides $M$, and adding a multiple of $p$ preserves
+the remainder:
+
+```math
+\begin{aligned}
+\text{mod}(h + M, p) = \text{mod}(h, p) \neq 0
+\quad \blacksquare \quad \text{[By Class Invariant + modZeroPlusC]}
+\end{aligned}
+```
+
+The period boundary acceptance is verified in [
+  SpecSieveSequence::assertHeadPlusTailPrimorialAccepted
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+)
+and the size computation in [
+  SpecSieveSequence::size
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+).
+
+When the spec advances to the next filter stage, the survivors after
+applying the head filter to one expanded residue period can be
+counted exactly. For each accepted value in the current period,
+expanding by $h$ copies and filtering out values divisible by $h$
+leaves $h - 1$ survivors per residue. Over one full period of $|G|$
+residues:
+
+```math
+\begin{aligned}
+|\text{survivors}| = |G| \cdot (h - 1)
+\quad \blacksquare \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+The counting lemma is verified in [
+  SpecSieveSequence::assertSameHeadExtendedFilterCount
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+)
+and its computational wrapper (the body scans the actual interval,
+and the ensuring proves the formula) in [
+  SpecSieveSequence::sameHeadSurvivorCount
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+).
+
+The closed-form size theorem is therefore verified at the spec level
+for the same-head filter step. The bridge to $|\text{Spec}'.\text{size}|$
+— proving that the survivors counted here are exactly the next
+spec's first period — remains the next milestone.
+
 ## 5. Gap-Cycle Reconstruction
 
 ### 5.1 Periodic Structure
@@ -343,6 +412,48 @@ This property is verified in the [
   ../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala
 )
 function.
+
+From equivalence, two structural properties transfer directly to the
+cycle side without re-proving the spec's arithmetic:
+
+**Cycle size.** The gap cycle stores exactly $|G|$ gaps, matching the
+spec's canonical period:
+
+```math
+\begin{aligned}
+\text{Cycle}.\text{gapCycle}.\text{size} = |G|
+\quad \blacksquare \quad \text{[By Constructor]}
+\end{aligned}
+```
+
+The gap cycle is built from $\text{specGapCycle}(|G|)$ which
+internally asserts $\text{gaps}.\text{size} = |G|$ via
+$\text{assertGapListSize}$. The inherited size is verified in [
+  SpecDerivedSieveSequence::assertCycleSizeEqualsPeriod
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala
+).
+
+**Next-cycle survivor count.** The same-head filter lemma (§4.5) is
+lifted to the derived sequence. The body calls the spec's survivor
+counting method, and the ensuring proves the closed form:
+
+```math
+\begin{aligned}
+\text{nextCycleSize}() = |G| \cdot (h - 1)
+\quad \blacksquare \quad \text{[Q.E.D.]}
+\end{aligned}
+```
+
+This is verified in [
+  SpecDerivedSieveSequence::nextCycleSize
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala
+). The bridge from this survivor count to the next stage's gap cycle
+size — that is, proving
+$|\text{Spec}'.\text{size}| = |G| \cdot (h - 1)$ — still requires
+connecting $\text{countAcceptedHeadNonMultiplesBetween}$ to
+$\text{Spec}'.\text{size}$.
 
 ## 7. Next-Stage Construction
 
@@ -503,12 +614,27 @@ divisible by $h$ and removed. Summed over the current survivors, this
 would remove $|G|$ values from the $h \cdot |G|$ expanded candidates,
 leaving $|G| \cdot (h - 1)$ survivors.
 
-This closed-form count is therefore best read as
-**Draft - mathematically motivated, Stainless verification pending**.
-The verified pipeline proves the construction and its local structural
-facts above; the standalone `.holds` proof for the explicit count still
-needs the modular uniqueness lemma and the corresponding list/count
-bridge.
+The same-head filter counting lemma — that the number of survivors
+in the expanded interval $[h, h + h \cdot M)$ equals $|G| \cdot (h - 1)$ —
+is **verified** in [
+  SpecSieveSequence::assertSameHeadExtendedFilterCount
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+)
+and its computed counterpart in [
+  SpecSieveSequence::sameHeadSurvivorCount
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+). The bridge from this survivor count to $|\text{Spec}'.\text{size}|$
+— proving that the survivors counted in the expanded interval are
+exactly the next spec's first period — remains the next milestone.
+
+The period boundary $h + M$ is proven accepted by the tail filters
+in [
+  SpecSieveSequence::assertHeadPlusTailPrimorialAccepted
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+), enabling the canonical size computation $|\text{Spec}| = \text{indexOfAccepted}(h + M)$.
 
 ## 8. Unproven Axioms
 
@@ -533,12 +659,21 @@ The conditional form is verified in [
   ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
 ).
 
-The individual coprime property - $h$ is coprime to every tail prime -
-is verified via the definition of $\text{isPrime}$. The closed-form
-size theorem discussed in Section 7.3 still needs additional
-Stainless work: in particular, it must establish the relevant
-coprimality of $M$ and $h$ and connect the exact lifted-residue count
-to the pipeline's lists.
+The individual coprime property — $h$ is coprime to every tail prime —
+is guaranteed by the class invariant
+$\text{isCoprime}(h, \overline{P})$. The same-head filter counting lemma
+(Section 7.3) is verified; see [
+  SpecSieveSequence::assertSameHeadExtendedFilterCount
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecSieveSequence.scala
+) for the proof and [
+  SpecDerivedSieveSequence::nextCycleSize
+](
+  ../src/main/scala/v1/chapter6/seq/sieve/SpecDerivedSieveSequence.scala
+) for its consumer. Remaining open items: the bridge from the
+survivor count to $\text{Spec}'.\text{size}$ and the closed-form
+gap cycle size $|G'| = |G| \cdot (h - 1)$ on the cycle side
+(which follows once the spec bridge is complete).
 
 ## 9. Conclusion
 
@@ -557,9 +692,12 @@ stages generates the primes.
 
 The core construction proofs described above are verified through
 Stainless, with Bertrand's postulate (§8) appearing as an explicit
-precondition where primality of the next head is needed. The explicit
-closed-form size theorem in Section 7.3 remains pending until its
-modular-counting and list-counting obligations are verified.
+precondition where primality of the next head is needed. The
+same-head filter counting lemma
+($|G| \cdot (h - 1)$ survivors in the expanded interval)
+is verified in §4.5; the remaining step — bridging the survivor
+count to $|\text{Spec}'.\text{size}|$ — is the next milestone for
+the full closed-form gap cycle size theorem.
 
 Computationally, the Sieve Sequence is a static state machine: once the
 gap cycle is built, generating the next accepted value requires only a

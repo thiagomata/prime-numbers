@@ -254,39 +254,6 @@ object SieveSequenceNextLevel {
     result
   }.ensuring(res => CycleUtils.allLessThan(res, seq.modulus * seq.head))
 
-  def assertNextFilteredSizeByDensity(seq: CycleSieveSequence): Boolean = {
-    require(seq.modulus > 0)
-    require(ListUtils.checkAllPositive(seq.primesTailValues))
-    require(seq.head >= 2)
-    require(Calc.mod(seq.modulus, seq.head) != BigInt(0))
-
-    val residues = nextResidues(seq)
-    assert(CycleUtils.checkNonNegative(residues))
-    assert(seq.head == seq.primes.head.value)
-    assert(v1.chapter5.prime.Prime.isPrime(seq.primes.head.value))
-    assert(v1.chapter5.prime.Prime.isPrime(seq.head))
-    assert(SieveUtils.assertFilterExpandResiduesSizeByDensity(residues, seq.modulus, seq.head))
-    nextFiltered(seq).size == residues.size * (seq.head - BigInt(1))
-  }.holds
-
-  def assertNextFilteredSizeGreaterThanResiduesByDensity(seq: CycleSieveSequence): Boolean = {
-    require(seq.modulus > 0)
-    require(ListUtils.checkAllPositive(seq.primesTailValues))
-    require(seq.head > 2)
-    require(Calc.mod(seq.modulus, seq.head) != BigInt(0))
-    require(nextResidues(seq).nonEmpty)
-
-    val residues = nextResidues(seq)
-    assert(residues.size > 0)
-    assert(seq.head - BigInt(1) > BigInt(1))
-    assert(seq.head - BigInt(2) > BigInt(0))
-    assert(residues.size * (seq.head - BigInt(1)) == residues.size + residues.size * (seq.head - BigInt(2)))
-    assert(residues.size * (seq.head - BigInt(2)) > BigInt(0))
-    assert(residues.size * (seq.head - BigInt(1)) > residues.size)
-    assert(assertNextFilteredSizeByDensity(seq))
-    nextFiltered(seq).size > residues.size
-  }.holds
-
   /**
    * The next-stage residue list is non-empty.
    *
