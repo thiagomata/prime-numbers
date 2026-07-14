@@ -79,7 +79,7 @@ object GapProperties {
   ): Boolean = {
     require(times > BigInt(0))
     require(pos >= BigInt(0))
-    require(originalCI.cycle.size > BigInt(0))
+    require(originalCI.cycle.period > BigInt(0))
     require(repeatedCI.initialValue == originalCI.initialValue)
     require(repeatedCI.cycle.values ==
       ListRepeatProperties.repeat(originalCI.cycle.values, times))
@@ -100,7 +100,7 @@ object GapProperties {
     k: BigInt
   ): Boolean = {
     require(k >= BigInt(1))
-    require(ci.cycle.size > k + BigInt(1))
+    require(ci.cycle.period > k + BigInt(1))
     require(ci.cycle.values.nonEmpty)
     CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff(ci, k)
   }.holds
@@ -586,7 +586,7 @@ object GapProperties {
     ci: CycleIntegral,
     pos: BigInt
   ): Boolean = {
-    require(ci.size > 0)
+    require(ci.period > 0)
     require(pos >= 0)
     CycleIntegralProperties.assertCycleIntegralEqualsSumOfModValuesAsList(ci, pos)
   }.holds
@@ -603,25 +603,25 @@ object GapProperties {
     filterValue: BigInt
   ): Boolean = {
     require(filterValue > 0)
-    require(ci.size > 0)
-    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(ci.period > 0)
+    require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
     require(Calc.mod(ci(BigInt(0)), filterValue) != BigInt(0))
-    require(Calc.mod(ci(ci.size), filterValue) != BigInt(0))
+    require(Calc.mod(ci(ci.period), filterValue) != BigInt(0))
 
-    val totalPositions = ci.size + BigInt(1)
+    val totalPositions = ci.period + BigInt(1)
 
     val survivors = CycleIntegralFilterProperties.survivorValues(
       ci, filterValue, BigInt(0), totalPositions
     )
 
-    assert(assertCIModDivFormula(ci, ci.size))
-    assert(ci(ci.size) == ci(BigInt(0)) + ci.sum)
+    assert(assertCIModDivFormula(ci, ci.period))
+    assert(ci(ci.period) == ci(BigInt(0)) + ci.sum)
 
     assert(assertFirstSurvivorIsHead(ci, filterValue, BigInt(0), totalPositions))
     assert(survivors.head == ci(BigInt(0)))
 
     assert(assertLastSurvivorIsLastScanned(ci, filterValue, BigInt(0), totalPositions))
-    assert(survivors.last == ci(ci.size))
+    assert(survivors.last == ci(ci.period))
 
     survivors.last - survivors.head == ci.sum
   }.holds
@@ -663,14 +663,14 @@ object GapProperties {
     m: BigInt,
     pos: BigInt
   ): Boolean = {
-    require(ci.size > 0)
+    require(ci.period > 0)
     require(m > 0)
     require(pos >= 0)
     require(Calc.mod(ci.sum, m) == BigInt(0))
-    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
     decreases(pos)
 
-    val size = ci.size
+    val size = ci.period
     val r = Calc.mod(pos, size)
 
     if (pos < size) {
@@ -718,9 +718,9 @@ object GapProperties {
     ci: CycleIntegral,
     k: BigInt
   ): Boolean = {
-    require(ci.size > 0)
+    require(ci.period > 0)
     require(k >= 0)
-    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
     CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, k)
   }.holds
 
@@ -738,9 +738,9 @@ object GapProperties {
     ci: CycleIntegral,
     pos: BigInt
   ): Boolean = {
-    require(ci.size > 0)
+    require(ci.period > 0)
     require(pos >= 0)
-    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
     CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, pos)
   }.holds
 
@@ -756,13 +756,13 @@ object GapProperties {
     pos: BigInt,
     m: BigInt
   ): Boolean = {
-    require(ci.size > 0)
+    require(ci.period > 0)
     require(pos >= 0)
     require(m >= 0)
-    require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
+    require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
     decreases(m)
 
-    val period = ci.size
+    val period = ci.period
     val totalGaps = ci.sum
 
     if (m == BigInt(0)) {

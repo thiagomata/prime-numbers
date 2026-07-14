@@ -50,7 +50,7 @@ This article verifies:
 - Cycle definitions: recursive, modulo, and memory — §3
 - Equivalence: recursive and modulo produce identical values at every position — §4
 - Element access: modular indexing, small-position direct lookup — §5
-- Periodic invariance: value unchanged by adding cycle-size multiples — §5
+- Periodic invariance: value unchanged by adding cycle-period multiples — §5
 - Mod propagation: remainder computed from base-cycle values — §5
 - Repeated-cycle invariance: repeating the base list preserves all lookups — §5
 - Cycle value positivity: all values ≥ 0 at every position — §5
@@ -184,12 +184,12 @@ classDiagram
     }
     class RecursiveCycle {
         values: List[BigInt]
-        size: BigInt
+        period: BigInt
         apply(BigInt) BigInt
     }
     class ModCycle {
         values: List[BigInt]
-        size: BigInt
+        period: BigInt
         apply(BigInt) BigInt
     }
     RecursiveCycle --> ModCycle : "≡ by induction (§4.1-4.2)"
@@ -219,13 +219,13 @@ case class RecursiveCycle(values: List[BigInt]) {
   require(values.nonEmpty)
   require(CycleUtils.checkPositiveOrZero(values))
 
-  def size: BigInt = values.size
+  def period: BigInt = values.size
 
   def apply(position: BigInt): BigInt = {
     decreases(position)
     require(position >= 0)
 
-    if (position < size) {
+    if (position < period) {
       values(position)
     } else {
       apply(position - values.size)
@@ -264,7 +264,7 @@ case class ModCycle(values: List[BigInt]) {
     values(index)
   }
 
-  def size: BigInt = values.size
+  def period: BigInt = values.size
 
   def sum(): BigInt = ListUtils.sum(values)
 }
@@ -293,7 +293,7 @@ case class MemCycle private (
 ) {
   def apply(position: BigInt): BigInt = cycle(position)
   def values: List[BigInt] = cycle.values
-  def size: BigInt = cycle.size
+  def period: BigInt = cycle.period
   def checkMod(dividend: BigInt): MemCycle = { /* returns new MemCycle */ }
 }
 ```
@@ -344,7 +344,7 @@ RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
 
 ### 4.2 Inductive Step ($i \geq n$)
 
-For positions beyond the first cycle, both definitions reduce the position by the cycle size and rely on the inductive hypothesis.
+For positions beyond the first cycle, both definitions reduce the position by the cycle period and rely on the inductive hypothesis.
 
 ```math
 \begin{aligned}
@@ -371,16 +371,16 @@ RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
 
 In this section, we prove and verify key properties of Cycles. Each property is stated mathematically, then shown to hold via a corresponding verified lemma in Scala using the Stainless system.
 
-- Element access: `cycle(key) == cycle.values(mod(key, size))` — §5.1
-- Small-value direct lookup: `key < size ⇒ cycle(key) == cycle.values(key)` — §5.2
-- Periodicity: `cycle(key) == cycle(key + size·m)` for any number of loops — §5.3
-- Multi-loop consistency: value at $key$ is independent of which multiple of size is added — §5.4
+- Element access: `cycle(key) == cycle.values(mod(key, period))` — §5.1
+- Small-value direct lookup: `key < period ⇒ cycle(key) == cycle.values(key)` — §5.2
+- Periodicity: `cycle(key) == cycle(key + period·m)` for any number of loops — §5.3
+- Multi-loop consistency: value at $key$ is independent of which multiple of period is added — §5.4
 - Mod propagation: remainder modulo $d$ at any position equals remainder at the base position — §5.5
 - Repeated-cycle invariance: repeating the base list preserves all lookups — §5.6
 
 ### 5.1 Cycle Element Access
 
-The value of any element in a cycle equals the value of the underlying list at the position modulo the cycle size.
+The value of any element in a cycle equals the value of the underlying list at the position modulo the cycle period.
 
 ```math
 \begin{aligned}
@@ -403,7 +403,7 @@ CycleProperties::findValueInCycle
 
 ### 5.2 Small Value in Cycle
 
-For positions smaller than the cycle size, the cycle value equals the list value at that position directly.
+For positions smaller than the cycle period, the cycle value equals the list value at that position directly.
 
 ```math
 \begin{aligned}
@@ -426,7 +426,7 @@ CycleProperties::smallValueInCycle
 
 ### 5.3 Value Match After Many Loops
 
-Cycle values remain invariant when adding any multiple of the cycle size to the access key.
+Cycle values remain invariant when adding any multiple of the cycle period to the access key.
 
 ```math
 \begin{aligned}
@@ -451,7 +451,7 @@ CycleProperties::valueMatchAfterManyLoops
 
 ### 5.4 Two Multiples of Cycle Size
 
-When two different multiples of the cycle size are added to the key, the cycle value remains consistent between both.
+When two different multiples of the cycle period are added to the key, the cycle value remains consistent between both.
 
 ```math
 \begin{aligned}
@@ -547,7 +547,7 @@ def assertRepeatedValuesCycleMatches(
 ): Boolean = {
   require(times > BigInt(0))
   require(position >= BigInt(0))
-  require(cycle.size > BigInt(0))
+  require(cycle.period > BigInt(0))
   require(repeatedCycle.values == ListRepeatProperties.repeat(cycle.values, times))
   // ... inductive proof via mod composition ...
   repeatedCycle(position) == cycle(position)
@@ -580,8 +580,8 @@ negative numbers, which is essential for integral and gap reasoning.
 
 ```scala
 def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
-  require(pos >= 0); require(cycle.size > 0)
-  require(CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, Calc.mod(pos, cycle.size)))
+  require(pos >= 0); require(cycle.period > 0)
+  require(CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, Calc.mod(pos, cycle.period)))
   cycle(pos) >= 0
 }.holds
 ```
@@ -609,7 +609,7 @@ connects cycle structure directly to the list rotation concept from chapter 3.
 
 ```scala
 def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
-  require(k >= 0); require(i >= 0); require(cycle.size > 0)
+  require(k >= 0); require(i >= 0); require(cycle.period > 0)
   val rotatedCycle = cycle.rotateAt(k)
   rotatedCycle(i) == cycle(k + i)
 }.holds
@@ -623,7 +623,7 @@ This property is verified in the [
 
 ## 6. Conclusion
 
-This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eight properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-size multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, and rotation invariance.
+This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eight properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-period multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, and rotation invariance.
 
 ```math
 \begin{aligned}
@@ -689,7 +689,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmall
     val recursiveCycle = RecursiveCycle(list)
     assert(position >= 0)
     assert(position < list.size)
-    assert(list.size == cycle.size)
+    assert(list.size == cycle.period)
     assert(list.size == recursiveCycle.size)
     assert(ModSmallDividend.modSmallDividend(position, list.size))
     assert(Calc.mod(position, list.size) == position)
@@ -737,8 +737,8 @@ Source: [CycleProperties::findValueInCycle](../src/main/scala/v1/chapter4/cycle/
 ```scala
   def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
     require(key >= 0)
-    require(cycle.size > 0)
-    cycle(key) == cycle.values(Calc.mod(key, cycle.size))
+    require(cycle.period > 0)
+    cycle(key) == cycle.values(Calc.mod(key, cycle.period))
   }.holds
 ```
 
@@ -749,8 +749,8 @@ Source: [CycleProperties::smallValueInCycle](../src/main/scala/v1/chapter4/cycle
 ```scala
   def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
     require(key >= 0)
-    require(key < cycle.size)
-    require(cycle.size > 0)
+    require(key < cycle.period)
+    require(cycle.period > 0)
     cycle(key) == cycle.values(key)
   }.holds
 ```
@@ -762,10 +762,10 @@ Source: [CycleProperties::valueMatchAfterManyLoops](../src/main/scala/v1/chapter
 ```scala
   def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
     require(key >= 0)
-    require(cycle.size > 0)
+    require(cycle.period > 0)
     require(m >= 0)
-    AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m)
-    cycle(key) == cycle(key + cycle.size * m)
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m)
+    cycle(key) == cycle(key + cycle.period * m)
   }.holds
 ```
 
@@ -776,21 +776,21 @@ Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../src/main/scala/v1/c
 ```scala
   def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
     require(key >= 0)
-    require(cycle.size > 0)
+    require(cycle.period > 0)
     require(m1 >= 0)
     require(m2 >= 0)
-    AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m1)
-    AdditionAndMultiplication.ATimesBSameMod(key, cycle.size, m2)
-    assert(cycle(key) == cycle(key + cycle.size * m1))
-    assert(cycle(key) == cycle(key + cycle.size * m2))
-    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.size, m1)
-    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.size, m2)
-    assert(Calc.mod(key, cycle.size) == Calc.mod(key + cycle.size * m1, cycle.size))
-    assert(Calc.mod(key, cycle.size) == Calc.mod(key + cycle.size * m2, cycle.size))
-    assert(cycle(key + cycle.size * m1) == cycle(key))
-    assert(cycle(key + cycle.size * m2) == cycle(key))
-    assert(cycle(key + cycle.size * m2) == cycle(Calc.mod(key,cycle.size)))
-    assert(cycle(key + cycle.size * m1) == cycle(key + cycle.size * m2))
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m1)
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m2)
+    assert(cycle(key) == cycle(key + cycle.period * m1))
+    assert(cycle(key) == cycle(key + cycle.period * m2))
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.period, m1)
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.period, m2)
+    assert(Calc.mod(key, cycle.period) == Calc.mod(key + cycle.period * m1, cycle.period))
+    assert(Calc.mod(key, cycle.period) == Calc.mod(key + cycle.period * m2, cycle.period))
+    assert(cycle(key + cycle.period * m1) == cycle(key))
+    assert(cycle(key + cycle.period * m2) == cycle(key))
+    assert(cycle(key + cycle.period * m2) == cycle(Calc.mod(key,cycle.period)))
+    assert(cycle(key + cycle.period * m1) == cycle(key + cycle.period * m2))
   }.holds
 ```
 
@@ -802,16 +802,16 @@ Source: [CycleProperties::propagateModFromValueToCycle](../src/main/scala/v1/cha
   def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
     require(key >= 0)
     require(dividend > 0)
-    require(cycle.size > 0)
-    val modKeySize = Calc.mod(key, cycle.size)
+    require(cycle.period > 0)
+    val modKeySize = Calc.mod(key, cycle.period)
     Calc.mod(cycle(key),dividend) == Calc.mod(cycle.values(modKeySize),dividend)
   }.holds
 
   def assertCycleOfPosEqualsCycleOfModPos(cycle: ModCycle, position: BigInt): Boolean = {
     require(position >= 0)
-    require(cycle.size > 0)
+    require(cycle.period > 0)
 
-    val size = cycle.size
+    val period = cycle.period
 
     assert(cycle(position) == cycle.apply(position))
     assert(cycle(position) == cycle.values(Calc.mod(position, size)))
@@ -835,13 +835,13 @@ Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../src/main/scala
   ): Boolean = {
     require(times > BigInt(0))
     require(position >= BigInt(0))
-    require(cycle.size > BigInt(0))
+    require(cycle.period > BigInt(0))
     require(repeatedCycle.values == ListRepeatProperties.repeat(cycle.values, times))
     val values = cycle.values
     val repeatedIndex = Calc.mod(position, values.size * times)
     val originalIndex = Calc.mod(position, values.size)
     assert(ListRepeatProperties.assertRepeatSize(values, times))
-    assert(repeatedCycle.size == values.size * times)
+    assert(repeatedCycle.period == values.size * times)
     assert(findValueInCycle(repeatedCycle, position))
     assert(repeatedCycle(position) == repeatedCycle.values(repeatedIndex))
     assert(ListRepeatProperties.assertRepeatedIndex(values, times, repeatedIndex))

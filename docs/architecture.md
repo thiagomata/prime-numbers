@@ -126,7 +126,7 @@ underpins the pipeline's expansion step: `nextExpanded` repeats the residue list
 - **Cycle access**: `cycle(k) == cycle.values(Calc.mod(k, cycle.size))`
 - **Cycle periodicity**: `cycle(k + n) == cycle(k)` where $n =$ `cycle.size`
 - **Recurrence**: $CI(k+1) - CI(k) = cycle(k+1)$
-- **Three integral equivalence**: Recursive ≡ Classic ≡ ModCycleIntegral
+- **Integral equivalence**: recursive `CycleIntegral` ≡ closed-form `ModCycleIntegral`
 - **Replicated cycles**: `assertReplicatedCycleValueEqual` — repeating gaps $t$ times preserves cycle values at each
   position
 

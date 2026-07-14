@@ -379,7 +379,9 @@ Last updated: 2026-07-11
 
 ## 4.9 ClassicCycleIntegralProperties (`v1.chapter4.cycle.integral.classic.properties.ClassicCycleIntegralProperties`)
 
-Same 10 properties as CycleIntegralProperties (§4.8), for `ClassicCycleIntegral`. See source for full listing.
+Compatibility property surface for the original classic package. The lemmas now
+operate on the canonical `CycleIntegral` class; use
+`CycleIntegralProperties` (§4.8) for new proof work.
 
 ## 4.10 CycleIntegralOnesProperties (`v1.chapter4.cycle.integral.recursive.properties.CycleIntegralOnesProperties`)
 

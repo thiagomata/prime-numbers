@@ -32,7 +32,7 @@ case class CycleIntegral(
     }
   }
 
-  def size: BigInt = cycle.size
+  def period: BigInt = cycle.period
 
   def sum: BigInt = cycle.sum()
 }

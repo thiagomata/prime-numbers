@@ -1,12 +1,22 @@
 package v1.chapter4.cycle.integral.classic
 
-import stainless.lang.decreases
+import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.memory.MemCycle
 
+/**
+ * Compatibility surface for the original cycle-integral name.
+ *
+ * The canonical implementation is CycleIntegral. This wrapper remains so older
+ * proof notes and tests can keep compiling while the codebase converges on the
+ * canonical name.
+ */
 case class ClassicCycleIntegral(
   initialValue: BigInt,
   cycle: MemCycle
 ) {
+
+  def toCycleIntegral: CycleIntegral =
+    CycleIntegral(initialValue, cycle)
 
   /**
    * The integral of the cycle is defined as
@@ -23,16 +33,12 @@ case class ClassicCycleIntegral(
    */
   def apply(position: BigInt): BigInt = {
     require(position >= 0)
-    decreases(position)
-
-    if (position == 0 ) {
-      cycle(0) + initialValue
-    } else {
-      cycle(position) + apply(position - 1)
-    }
+    toCycleIntegral(position)
   }
 
-  def size: BigInt = cycle.size
+  def period: BigInt =
+    toCycleIntegral.period
 
-  def sum: BigInt = cycle.sum()
+  def sum: BigInt =
+    toCycleIntegral.sum
 }

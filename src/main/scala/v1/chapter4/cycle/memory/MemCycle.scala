@@ -42,7 +42,7 @@ case class MemCycle private (
 
   def values: List[BigInt] = cycle.values
 
-  def size: BigInt = cycle.size
+  def period: BigInt = cycle.period
 
   def sum(): BigInt = cycle.sum()
 
@@ -55,7 +55,7 @@ case class MemCycle private (
     } else {
       val totalModZero = CycleUtils.countModZero(cycle.values, dividend)
 
-      if (totalModZero == cycle.size) {
+      if (totalModZero == cycle.period) {
         assert(this.countModZero(dividend) == cycle.values.size)
         appendForAll(dividend)
       }
@@ -65,7 +65,7 @@ case class MemCycle private (
       }
       else {
         assert(this.countModZero(dividend) != 0)
-        assert(this.countModZero(dividend) != cycle.size)
+        assert(this.countModZero(dividend) != cycle.period)
         appendForSome(dividend)
       }
     }
@@ -73,7 +73,7 @@ case class MemCycle private (
 
   def allModValuesAreZero(dividend: BigInt): Boolean = {
     require(dividend > 0)
-    this.countModZero(dividend) == cycle.size
+    this.countModZero(dividend) == cycle.period
   }
 
   def noModValuesAreZero(dividend: BigInt): Boolean = {
@@ -84,7 +84,7 @@ case class MemCycle private (
   def someModValuesAreZero(dividend: BigInt): Boolean = {
     require(dividend > 0)
     this.countModZero(dividend) != 0 &&
-      this.countModZero(dividend) != cycle.size
+      this.countModZero(dividend) != cycle.period
   }
 
   def evaluated(dividend: BigInt): Boolean = {

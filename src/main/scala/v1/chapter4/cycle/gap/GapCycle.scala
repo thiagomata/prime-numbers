@@ -28,7 +28,7 @@ case class GapCycle private (values: MinBoundList) {
     integral(index)
   }
 
-  def size: BigInt = values.size
+  def period: BigInt = values.size
   def sum: BigInt = memCycle.sum()
 }
 

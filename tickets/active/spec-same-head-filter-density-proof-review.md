@@ -1109,6 +1109,27 @@ p*(h - 1)
 This proof is enough to review the same-head filter-size property. It is not yet
 the complete next-sequence theorem.
 
+## Progress Updates (2026-07-14)
+
+### Verified additions
+- `assertHeadPlusTailPrimorialAccepted()` — proves `accepts(h + M)` (discharges `size()`'s former require)
+- `size()` — require-free, returns `indexOfAccepted(h + M)` as canonical period
+- `sameHeadSurvivorCount(period)` — body scans expanded interval, ensuring proves `= p*(h-1)` via the counting lemma
+- `nextCycleSize()` on SpecDerivedSieveSequence — wraps counting method with lemma in ensuring
+- `assertCycleSizeEqualsPeriod()` on SpecDerivedSieveSequence — gap cycle size = period
+- `assertSurvivorAcceptedByNext(v)` — acceptance bridge: `accepts(v) && mod(v,h) != 0` ⇒ `next.passesFilter(v)` (verified)
+- Removed 16 redundant `expandResidues` density lemmas from SieveUtils + SieveSequenceNextLevel
+
+### Attempted but stuck
+- `assertNextSizeFormula()` — `next.size() == p*(h-1)`. Postcondition times out because `size()` expands to `indexOfAccepted()` which recursively scans — SMT can't reduce it.
+  - Requires proving `next.apply(p*(h-1)) == next.head + h*M` without using `indexOfAccepted`.
+  - Needs lemma: `apply(1) == nextPrime.value` (first survivor = next head) — the existing `assertApplyOneIsPrimeIfBelowHeadSq` is private but proves `apply(1)` IS prime; it doesn't directly assert equality with `nextPrime.value`.
+  - Once that lemma exists, the interval gap can be closed by block-shift reasoning, and the survivor count directly implies `next.size() == p*(h-1)`.
+
+### Architecture note
+- The cycle-side size theorem (`|G'| = |G|*(h-1)`) follows mechanically once the spec bridge is done — no new counting needed on the cycle side.
+- `SpecDerivedSieveSequence(spec.next, p*(h-1))` only needs the construction require `spec.next.apply(p*(h-1)) == spec.next.head + spec.next.tailPrimorial` to be valid, which is exactly the same lemma as above.
+
 Still pending for later work:
 
 - Connect the same-head non-multiple interval count to the concrete real
@@ -1127,3 +1148,77 @@ survivors = p*(h - 1)
 ```
 
 The current Stainless result says yes for the spec-local same-head theorem.
+
+## Next-Period Formula — Gap-Preservation Approach (promising, untried)
+
+**Goal:** Prove `next.period() == period() * (head.value - 1)` on `SpecSieveSequence`.
+
+**Key insight:** The value and order correspondence between `this.apply` and `next.apply` is already fully proven. The gap lemma `assertConsecutiveAcceptedByNextPreservesGap` (public, line 2712) proves that consecutive survivor gaps are identical in both sequences. Combined with:
+
+1. **Starting point** — `assertApplyOneEqualsNextPrime`: `apply(1) == next.head` = `next.apply(0)` = first survivor
+2. **Gap preservation** — `assertConsecutiveAcceptedByNextPreservesGap`: each gap between consecutive survivors is copied from `this.apply` to `next.apply`
+3. **Count** — `sameHeadSurvivorCount(p) == expected`: exactly `expected` survivors
+4. **Monotonicity** — `applyStrictlyIncreases`: both sequences are strictly increasing
+
+By induction over all survivor pairs, `next.apply(k)` = k-th survivor for k = 0..expected-1. The `expected`-th position lands on the boundary `next.head + h*M`. Since `next.apply(next.period()) == next.head + next.tailPrimorial` (postcondition of `period()`), and `next.apply` is injective, `next.period() == expected`.
+
+**What to try:**
+- Uncomment `assertNextPeriodEqualsExpected`
+- Replace the stuck `assert(next.apply(expected) == nextBoundary)` with an induction using `assertConsecutiveAcceptedByNextPreservesGap` chained from k=0 to k=expected-2
+- The induction base uses `assertApplyOneEqualsNextPrime` for the starting point
+- The induction step uses the gap lemma for each survivor pair
+
+**What already works (verified):**
+- `assertBlockShift` — public (line 2466)
+- `assertBlockShiftMultiple` — public (line 2759)
+- `assertSurvivorAcceptedByNext` — public (line 755)
+- `assertNextValueAcceptedByThis` — public (line 724)
+- `assertConsecutiveAcceptedByNextPreservesGap` — public (line 2712)
+- `assertApplyOneEqualsNextPrime` — public (line 3996)
+- `sameHeadSurvivorCount` — public (line ~1830)
+
+**Status:** Method exists (commented out at line ~782). All required lemmas are public. No new lemmas needed — just composition of existing verified lemmas.
+
+## Gap-Preservation Attempt — Results (2026-07-14)
+
+All 33 body assertions pass. The proof logic is COMPLETE:
+
+```text
+Block shift:         apply(h*period) == head+h*M
+Block shift:         apply(h*period+1) == next.head+h*M == nextBoundary
+Gap:                 nextDoesNotPassAcceptedValue(h*period, nextBoundary)
+Boundary:            next.apply(next.period()) == nextBoundary
+Counting:            sameHeadSurvivorCount(p) == expected
+```
+
+**STUCK:** Stainless/Z3 cannot derive `nextSeq.period() == expected` from
+these assembled facts. Root cause: `indexOfAccepted`'s postcondition is
+`apply(res) == value` — it does not express minimality (`forall k < res,
+apply(k) < value`). Without minimality, Stainless can't connect "expected
+values below boundary" to "indexOfAccepted returns expected".
+
+**Fix options (in order of feasibility):**
+
+1. **Add minimality postcondition to `indexOfAccepted`/`findIndexForAcceptedFrom`**
+   at line 2342, change:
+   ```
+   .ensuring(res => res >= k && apply(res) == value)
+   ```
+   to:
+   ```
+   .ensuring(res => res >= k && apply(res) == value && (forall j: BigInt). j >= 0 && j < res ==> apply(j) < value)
+   ```
+   This is the smallest change that closes the gap. The quantifier is
+   supported by Stainless/Z3 and the recursive structure of
+   `findIndexForAcceptedFrom` should make it easy to prove internally.
+
+2. **Prove a count-to-index bridge lemma** — "if `countBelow(target) == n`
+   and `apply(n) == target`, then `indexOfAccepted(target) == n`". Requires
+   a new lemma that connects a counting function to `indexOfAccepted`.
+
+3. **Prove `next.apply(expected) == nextBoundary` directly** — needs a
+   bridge between `this.apply` and `next.apply` scan positions (the full
+   gap-preservation induction using `assertConsecutiveAcceptedByNextPreservesGap`).
+   Most complex option.
+
+Option 1 is the most promising next step.

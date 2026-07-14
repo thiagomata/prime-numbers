@@ -46,7 +46,7 @@ object ModCycleIntegralProperties {
   def assertSimplifiedDiffValuesMatchCycle(modCycleIntegral: ModCycleIntegral, position: BigInt): Boolean = {
     require( position >= 0)
 
-    assert(modCycleIntegral.integralValues.size == modCycleIntegral.mCycle.size)
+    assert(modCycleIntegral.integralValues.size == modCycleIntegral.mCycle.period)
     ModOperations.addOne(position, modCycleIntegral.integralValues.size)
 
     if (Calc.mod(position, modCycleIntegral.integralValues.size) == modCycleIntegral.integralValues.size - 1) {
@@ -266,12 +266,12 @@ object ModCycleIntegralProperties {
     require(modCycleIntegral.mCycle.values.nonEmpty)
     require(cycleIntegral.cycle.values.nonEmpty)
     require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
-    require(modCycleIntegral.mCycle.size   == cycleIntegral.cycle.size)
+    require(modCycleIntegral.mCycle.period   == cycleIntegral.cycle.period)
     require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
     decreases(position)
 
-    assert(modCycleIntegral.mCycle.size == cycleIntegral.cycle.size)
-    val size = modCycleIntegral.mCycle.size
+    assert(modCycleIntegral.mCycle.period == cycleIntegral.cycle.period)
+    val size = modCycleIntegral.mCycle.period
 
     if (position == 0) {
 
@@ -352,7 +352,7 @@ object ModCycleIntegralProperties {
     require(modCycleIntegral.mCycle.values.nonEmpty)
     require(cycleIntegral.cycle.values.nonEmpty)
     require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
-    require(modCycleIntegral.mCycle.size   == cycleIntegral.cycle.size)
+    require(modCycleIntegral.mCycle.period   == cycleIntegral.cycle.period)
     require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
     decreases(position)
 
@@ -361,7 +361,7 @@ object ModCycleIntegralProperties {
       cycleIntegral,
       position
     )
-    val size = modCycleIntegral.mCycle.size
+    val size = modCycleIntegral.mCycle.period
     
     assert(modCycleIntegral(position) == cycleIntegral(position))
     assert(

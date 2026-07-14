@@ -73,12 +73,12 @@ class CycleSieveSequenceTest extends FlatSpec with Matchers {
   "nextGapCycle" should "produce GapCycle for S_0" in {
     val gc = SieveSequenceNextLevel.nextGapCycle(CycleSieveSequence.S_0())
     gc.memCycle.values should be(List(BigInt(2)))
-    gc.size should be(BigInt(1))
+    gc.period should be(BigInt(1))
   }
 
   it should "produce GapCycle for S_1" in {
     val gc = SieveSequenceNextLevel.nextGapCycle(CycleSieveSequence.S_1())
     gc.memCycle.values should be(List(BigInt(2), BigInt(4)))
-    gc.size should be(BigInt(2))
+    gc.period should be(BigInt(2))
   }
 }

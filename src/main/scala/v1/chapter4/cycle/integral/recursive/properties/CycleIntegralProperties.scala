@@ -51,7 +51,7 @@ object CycleIntegralProperties {
   ): Boolean = {
     require(times > BigInt(0))
     require(position >= BigInt(0))
-    require(cycleIntegral.cycle.size > BigInt(0))
+    require(cycleIntegral.cycle.period > BigInt(0))
     require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
     require(repeatedCycleIntegral.cycle.values ==
       ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
@@ -108,7 +108,7 @@ object CycleIntegralProperties {
     require(ci.initialValue >= BigInt(0))
     require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
     require(ci.cycle.values.nonEmpty)
-    require(ci.cycle.size > 0)
+    require(ci.cycle.period > 0)
     decreases(b - a)
     if (a + 1 == b) {
       assert(assertDiffEqualsCycleValue(ci, a))
@@ -154,7 +154,7 @@ object CycleIntegralProperties {
    * @return true if holds
    */
   def assertCycleIntegralEqualsSumSmallPositions(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
-    require(position < cycleIntegral.size)
+    require(position < cycleIntegral.period)
     require(position > 0)
     require(ListUtils.sum(getFirstValuesAsSlice(cycleIntegral, position - 1)) == cycleIntegral(position - 1))
 
@@ -199,7 +199,7 @@ object CycleIntegralProperties {
    * @return true if holds
    */
   def assertCycleIntegralEqualsSliceSum(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
-    require(position < cycleIntegral.size)
+    require(position < cycleIntegral.period)
     require(position >= 0)
     decreases(position)
 
@@ -253,8 +253,8 @@ object CycleIntegralProperties {
 
     val a = position
     val b = position + 1
-    val c = a + iCycle.size
-    val d = b + iCycle.size
+    val c = a + iCycle.period
+    val d = b + iCycle.period
 
     assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = a)
     assert(iCycle(b) - iCycle(a) == iCycle.cycle(b))
@@ -272,8 +272,8 @@ object CycleIntegralProperties {
   }.holds
 
   def assertLastElementBeforeLoop(iCycle: CycleIntegral): Boolean = {
-    assertCycleIntegralEqualsSliceSum(iCycle, iCycle.size - 1)
-    iCycle(iCycle.size - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.size - 1))
+    assertCycleIntegralEqualsSliceSum(iCycle, iCycle.period - 1)
+    iCycle(iCycle.period - 1) == ListUtils.sum(getFirstValuesAsSlice(iCycle, iCycle.period - 1))
   }.holds
 
   /**
@@ -301,12 +301,12 @@ object CycleIntegralProperties {
       iCycle(position) == iCycle.cycle(0) + iCycle.initialValue &&
         iCycle(position) == ListUtils.sum(getModValuesAsList(iCycle, position))
     } else {
-      if (position > iCycle.size ) {
-        assertSameDiffAfterCycle(iCycle, position - iCycle.size)
-        assert(iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position) - iCycle(position - 1))
-        assert(iCycle(position - 1) + iCycle(position - iCycle.size) - iCycle(position - iCycle.size - 1) == iCycle(position))
-        assert(iCycle(position - 1) + iCycle.cycle(position - iCycle.size) == iCycle(position))
-        assert(MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.size, 0, 1))
+      if (position > iCycle.period ) {
+        assertSameDiffAfterCycle(iCycle, position - iCycle.period)
+        assert(iCycle(position - iCycle.period) - iCycle(position - iCycle.period - 1) == iCycle(position) - iCycle(position - 1))
+        assert(iCycle(position - 1) + iCycle(position - iCycle.period) - iCycle(position - iCycle.period - 1) == iCycle(position))
+        assert(iCycle(position - 1) + iCycle.cycle(position - iCycle.period) == iCycle(position))
+        assert(MemCycleProperties.valueMatchAfterManyLoopsInBoth(iCycle.cycle, position - iCycle.period, 0, 1))
       }
       assertSumModValueAsListEqualsCycleIntegralLoop(iCycle, position - 1)
       assert(iCycle(position - 1) == ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
@@ -339,7 +339,7 @@ object CycleIntegralProperties {
 
   def getFirstValuesAsSlice(cycleIntegral: CycleIntegral, position: BigInt): List[BigInt] = {
     require(position >= 0)
-    require(position < cycleIntegral.size)
+    require(position < cycleIntegral.period)
     decreases(position)
 
     ListUtils.listAddValueTail(cycleIntegral.cycle.values, cycleIntegral.initialValue)
@@ -379,7 +379,7 @@ object CycleIntegralProperties {
     require(position >= 0)
     decreases(position)
 
-    if (position < cycleIntegral.size) {
+    if (position < cycleIntegral.period) {
       MemCycleProperties.smallValueInCycle(cycle = cycleIntegral.cycle, key = position)
     }
 
@@ -403,7 +403,7 @@ object CycleIntegralProperties {
    */
   def assertFirstValuesAsSliceEqualsModValuesAsList(cycleIntegral: CycleIntegral, position: BigInt): Boolean = {
     require(position >= 0)
-    require(position < cycleIntegral.size)
+    require(position < cycleIntegral.period)
     decreases(position)
 
     val valuesAsList = getModValuesAsList(cycleIntegral,position)
@@ -437,8 +437,8 @@ object CycleIntegralProperties {
     require(pos >= 0)
     require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
     require(ci.cycle.values.nonEmpty)
-    require(ci.cycle.size > 0)
-    val size = ci.cycle.size
+    require(ci.cycle.period > 0)
+    val size = ci.cycle.period
     val idx = Calc.mod(pos, size)
     assert(idx >= 0)
     assert(idx < size)
@@ -452,7 +452,7 @@ object CycleIntegralProperties {
     require(ci.initialValue >= BigInt(0))
     require(ListBoundUtils.allGreaterThan(ci.cycle.values, BigInt(0)))
     require(ci.cycle.values.nonEmpty)
-    require(ci.cycle.size > 0)
+    require(ci.cycle.period > 0)
     decreases(pos)
     if (pos == 0) {
       assert(assertCycleValuePositive(ci, pos))
@@ -490,7 +490,7 @@ object CycleIntegralProperties {
     k: BigInt
   ): Boolean = {
     require(k >= BigInt(1))
-    require(ci.cycle.size > k + BigInt(1))
+    require(ci.cycle.period > k + BigInt(1))
     require(ci.cycle.values.nonEmpty)
 
     assert(assertDiffEqualsCycleValue(ci, k - BigInt(1)))

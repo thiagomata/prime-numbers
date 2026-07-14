@@ -208,20 +208,20 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     s2.sameHeadSurvivorCount(BigInt(2)) should be(BigInt(8))
   }
 
-  // === Next cycle size via SpecDerivedSieveSequence ===
+  // === Next period via SpecDerivedSieveSequence ===
 
-  it should "compute nextCycleSize for derived S_1 [3,2]" taggedAs(SlowLemmaTest) in {
+  it should "compute nextPeriod for derived S_1 [3,2]" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     val d1 = SpecDerivedSieveSequence(s1, BigInt(1))
-    // period=1, head=3 → nextCycleSize == 1 * (3-1) == 2
-    d1.nextCycleSize() should be(BigInt(2))
+    // period=1, head=3 → nextPeriod == 1 * (3-1) == 2
+    d1.nextPeriod() should be(BigInt(2))
   }
 
-  it should "compute nextCycleSize for derived S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
+  it should "compute nextPeriod for derived S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     val d2 = SpecDerivedSieveSequence(s2, BigInt(2))
-    // period=2, head=5 → nextCycleSize == 2 * (5-1) == 8
-    d2.nextCycleSize() should be(BigInt(8))
+    // period=2, head=5 → nextPeriod == 2 * (5-1) == 8
+    d2.nextPeriod() should be(BigInt(8))
   }
 
 }

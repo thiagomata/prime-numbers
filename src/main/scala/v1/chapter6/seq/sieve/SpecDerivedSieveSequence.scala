@@ -129,10 +129,10 @@ case class SpecDerivedSieveSequence(
    * The body calls `spec.sameHeadSurvivorCount` which actually scans
    * the interval [head, head + head*tailPrimorial) and counts every
    * accepted value not divisible by the head. The ensuring proves
-   * this count equals `period * (head - 1)`, the expected size of
-   * the next stage's gap cycle.
+    * this count equals `period * (head - 1)`, the expected period of
+    * the next stage's gap cycle.
    */
-  def nextCycleSize(): BigInt = {
+  def nextPeriod(): BigInt = {
     assert(primorialMatchesProduct(spec.primes.list.tail))
     spec.sameHeadSurvivorCount(period)
   }.ensuring(count => {
@@ -140,14 +140,12 @@ case class SpecDerivedSieveSequence(
   })
 
   /**
-   * The gap cycle size equals the spec's canonical period.
-   *
-   * Delegates to the spec's `assertGapListSize`; the gap cycle was built
-   * from `specGapCycle(period)` which stores exactly `period` gaps.
+   * The gap cycle stores exactly `period` gaps, matching the spec's
+   * canonical period.
    */
-  def assertCycleSizeEqualsPeriod(): Boolean = {
+  def assertCyclePeriod(): Boolean = {
     assert(spec.assertGapListSize(BigInt(0), period))
-    cycle.gapCycle.size == period
+    cycle.gapCycle.period == period
   }.holds
 
   /**
@@ -319,7 +317,7 @@ case class SpecDerivedSieveSequence(
     assert(ListRepeatProperties.assertRepeatSize(gaps, times))
     assert(repeatedGaps.size == gaps.size * times)
     assert(repeated.gapCycle.memCycle.values == repeatedGaps)
-    assert(repeated.gapCycle.memCycle.size == gaps.size * times)
+    assert(repeated.gapCycle.memCycle.period == gaps.size * times)
 
     assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
       cycle.gapCycle.memCycle,

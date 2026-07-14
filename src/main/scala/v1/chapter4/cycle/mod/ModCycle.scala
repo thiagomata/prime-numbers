@@ -43,7 +43,7 @@ case class ModCycle(values: List[BigInt]) {
     res
   }
 
-  def size: BigInt = values.size
+  def period: BigInt = values.size
 
   def sum(): BigInt = ListUtils.sum(values)
 
@@ -51,7 +51,7 @@ case class ModCycle(values: List[BigInt]) {
     require(index >= 0)
     if (index == BigInt(0)) this
     else {
-      val rotated = CycleUtils.collectRotated(values, index, size)
+      val rotated = CycleUtils.collectRotated(values, index, period)
       ModCycle(rotated)
     }
   }

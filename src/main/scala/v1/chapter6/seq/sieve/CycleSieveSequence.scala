@@ -78,7 +78,7 @@ case class CycleSieveSequence(
   }
 
   def nextFromWindow(): CycleSieveSequence = {
-    val steps = head * gapCycle.size
+    val steps = head * gapCycle.period
     val window = SieveSequenceNextLevel.currentWindow(integral, steps)
     val survivors = window.filter(v => Calc.mod(v, head) != BigInt(0))
     require(!survivors.isEmpty)

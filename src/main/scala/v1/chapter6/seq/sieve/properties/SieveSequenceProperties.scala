@@ -14,7 +14,7 @@ object SieveSequenceProperties {
     require(k >= 0)
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
     require(seq.integral.cycle.values.nonEmpty)
-    require(seq.integral.cycle.size > 0)
+    require(seq.integral.cycle.period > 0)
     require(seq.integral.initialValue >= BigInt(0))
     if (k >= 1) {
       assert(CycleIntegralProperties.assertCycleIntegralIncreasing(seq.integral, k - 1, k))
@@ -29,7 +29,7 @@ object SieveSequenceProperties {
     require(k >= 0)
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
     require(seq.integral.cycle.values.nonEmpty)
-    require(seq.integral.cycle.size > 0)
+    require(seq.integral.cycle.period > 0)
     require(seq.integral.initialValue >= BigInt(0))
     decreases(k)
     if (k == 0) {
@@ -46,7 +46,7 @@ object SieveSequenceProperties {
     require(seq.head > BigInt(0))
     require(ListBoundUtils.allGreaterThan(seq.integral.cycle.values, BigInt(0)))
     require(seq.integral.cycle.values.nonEmpty)
-    require(seq.integral.cycle.size > 0)
+    require(seq.integral.cycle.period > 0)
     require(seq.integral.initialValue >= BigInt(0))
     if (k == 0) {
       seq.apply(k) > BigInt(0)

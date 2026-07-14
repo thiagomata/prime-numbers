@@ -9,7 +9,7 @@ class GapCycleTest extends FlatSpec with Matchers {
 
   "GapCycle" should "construct from a single positive value" in {
     val gc = GapCycle.apply(List(BigInt(2)))
-    gc.size should be(BigInt(1))
+    gc.period should be(BigInt(1))
     gc.sum should be(BigInt(2))
   }
 
@@ -47,7 +47,7 @@ class GapCycleTest extends FlatSpec with Matchers {
   it should "handle S_3 gaps" in {
     val gaps = List(BigInt(6), BigInt(4), BigInt(2), BigInt(4), BigInt(2), BigInt(4), BigInt(6), BigInt(2))
     val gc = GapCycle.apply(gaps)
-    gc.size should be(BigInt(8))
+    gc.period should be(BigInt(8))
     gc.sum should be(BigInt(30))
     gc.cumulativeSum(0) should be(BigInt(6))
     gc.cumulativeSum(7) should be(BigInt(30))

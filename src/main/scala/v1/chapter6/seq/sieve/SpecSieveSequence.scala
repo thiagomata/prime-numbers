@@ -240,7 +240,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assert(apply(BigInt(0)) == head.value)
     assert(apply(BigInt(0)) <= value)
     findIndexForAcceptedFrom(value, BigInt(0))
-  }.ensuring(res => res >= BigInt(0) && apply(res) == value)
+  }.ensuring(res => res >= BigInt(0) && apply(res) == value && (res > BigInt(0) ==> apply(res - BigInt(1)) < value))
 
   /**
    * Discharges the `accepts` precondition needed by `size()`.
@@ -298,7 +298,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * `apply(period) == head + tailPrimorial` together with `apply`'s
    * postcondition `accepts(result)`.
    */
-  def size(): BigInt = {
+  def period(): BigInt = {
     assert(assertHeadPlusTailPrimorialAccepted())
     indexOfAccepted(head.value + tailPrimorial)
   }.ensuring(s => s > BigInt(0) && apply(s) == head.value + tailPrimorial)
@@ -628,8 +628,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     val mem = gapCycle.memCycle
 
     assert(assertGapListSize(BigInt(0), period))
-    assert(mem.size == period)
-    assert(mem.size > BigInt(0))
+    assert(mem.period == period)
+    assert(mem.period > BigInt(0))
     assert(mem.values == gapList(BigInt(0), period))
 
     if (i < period) {
@@ -743,6 +743,83 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assert(CoprimeUtils.isCoprime(value, filterValues))
     accepts(value)
   }.holds
+
+  /**
+   * Reverse direction: a value accepted by the current filters and not
+   * divisible by the head is accepted by the next stage.
+   *
+   * The next stage's filter is `head :: filterValues`. Since
+   * `isCoprime(v, p :: rest) = mod(v, p) != 0 && isCoprime(v, rest)`,
+   * this follows directly from the definition.
+   */
+  def assertSurvivorAcceptedByNext(v: BigInt): Boolean = {
+    require(v >= head.value)
+    require(accepts(v))
+    require(Calc.mod(v, head.value) != BigInt(0))
+    require(primes.nextPrime.value < head.value * head.value)
+
+    val nextSeq = next
+    assert(nextSeq.filterValues.head == head.value)
+    assert(nextSeq.filterValues.tail == filterValues)
+    nextSeq.passesFilter(v)
+  }.holds
+
+  // APPROACH 2: prove via count of next-accepted values in [head, nextBoundary).
+  //
+  // The counting lemma proves `expected` survivors in [head, head+h*M).
+  // The gap argument (block shift + no-accepted-between) proves 0 survivors
+  // in [head+h*M, nextBoundary).
+  // Total next-accepted values in [head, nextBoundary) = expected.
+  // Since next.apply is 0-indexed and strictly increasing,
+  // indexOfAccepted(nextBoundary) == expected.
+  //
+  // Key bridge: "no next-accepted values in [head+h*M, nextBoundary)"
+  // follows from:
+  //   apply(h*period) == head+h*M (block shift)
+  //   apply(h*period+1) == nextBoundary (block shift + apply(1)==next.head)
+  //   noAcceptedBetween(apply(h*period)+1, apply(h*period+1)) (by nextDoesNotPassAcceptedValue)
+  //   head+h*M is head-multiple → not next-accepted
+  //
+  // STUCK: the minimality postcondition on indexOfAccepted (apply(k) < value for k < result)
+  // was added and verified. All 34 body assertions pass (block shift, gap, counting, coprimality).
+  // But the postcondition `next.period() == expected` still times out because Stainless
+  // cannot connect "count of survivors = expected" to "indexOfAccepted returns expected".
+  // The minimality postcondition helps Stainless reason about indexOfAccepted but is not
+  // sufficient to close the gap without the circular `next.apply(expected) == nextBoundary`.
+  //
+  // What was tried:
+  //   1. Direct assertion of next.apply(expected) == nextBoundary → times out (SMT can't bridge this.apply to next.apply)
+  //   2. Minimality postcondition on indexOfAccepted → verified but insufficient alone
+  //   3. assertApplyInjective(period, expected) → circular (requires the very fact being proved)
+  //   4. Coprimality + gap + block shift → all verified, but SMT can't compose them into the postcondition
+  //
+  // Remaining options:
+  //   A. Add a quantified postcondition to indexOfAccepted (forall k < res, apply(k) < value)
+  //   B. Prove next.apply(expected) == nextBoundary via gap-preservation induction
+  //   C. Add a dedicated count-index bridge lemma
+  //
+  // def assertNextPeriodEqualsExpected(): Boolean = {
+  //   require(Calc.mod(tailPrimorial, head.value) != BigInt(0))
+  //   require(primes.nextPrime.value < head.value * head.value)
+  //   val p = period()
+  //   val h = head.value
+  //   val expected = p * (h - BigInt(1))
+  //   val M = tailPrimorial
+  //   val nextSeq = next
+  //   val nextBoundary = nextSeq.head.value + nextSeq.tailPrimorial
+  //   assert(nextSeq.tailPrimorial == h * M)
+  //   assert(assertApplyOneEqualsNextPrime())
+  //   assert(nextSeq.head.value == apply(BigInt(1)))
+  //   assert(sameHeadSurvivorCount(p) == expected)
+  //   assert(assertBlockShiftMultiple(BigInt(0), h, p))
+  //   assert(apply(h * p) == head.value + h * M)
+  //   assert(assertBlockShiftMultiple(BigInt(1), h, p))
+  //   assert(apply(h * p + BigInt(1)) == nextBoundary)
+  //   assert(nextDoesNotPassAcceptedValue(h * p, nextBoundary))
+  //   assert(nextSeq.apply(nextSeq.period()) == nextBoundary)
+  //   assert(nextSeq.passesFilter(nextBoundary))
+  //   nextSeq.period() == expected
+  // }.holds
 
   /**
    * The first value of this generator.
@@ -2083,7 +2160,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * passes the tail filter, this lemma gives the easy half of the conditional
    * bridge `apply(1) <= nextPrime`.
    */
-  private def assertApplyOneAtOrBeforeAccepted(value: BigInt): Boolean = {
+   def assertApplyOneAtOrBeforeAccepted(value: BigInt): Boolean = {
     require(value > head.value)
     require(accepts(value))
 
@@ -2108,7 +2185,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * (`SpecSieveSequence`). It supplies the `accepts` fact needed by later lemmas
    * such as `assertApplyOneAtOrBeforeAccepted` and the conditional equality.
    */
-  private def assertNextPrimePassesV0Filter(primes: AllPrimesSoFarList): Boolean = {
+   def assertNextPrimePassesV0Filter(primes: AllPrimesSoFarList): Boolean = {
     require(!primes.isEmpty)
     require(primes.size > 1)
     require(AllPrimesSoFarList.allPrimesSoFar(primes.list))
@@ -2282,7 +2359,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(apply(result) == value)
       result
     }
-  }.ensuring(res => res >= k && apply(res) == value)
+  }.ensuring(res => res >= k && apply(res) == value && (res > k ==> apply(res - BigInt(1)) < value))
 
   /**
    * Recursive helper for assertApplyModIsCoprime.
@@ -2422,7 +2499,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    *      any accepted value between apply(k)+M and apply(k+1)+M would
    *      give a contradiction with nextDoesNotPassAcceptedValue)
    */
-  private def assertBlockShift(k: BigInt, p: BigInt): Boolean = {
+  def assertBlockShift(k: BigInt, p: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(p >= BigInt(0))
     require(apply(p) == head.value + tailPrimorial)
@@ -2715,7 +2792,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * Induction on n: base `n=0` is trivial, step uses `assertBlockShift(k + (n-1)*period, period)`
    * to propagate the shift equality one period at a time.
    */
-  private def assertBlockShiftMultiple(k: BigInt, n: BigInt, period: BigInt): Boolean = {
+  def assertBlockShiftMultiple(k: BigInt, n: BigInt, period: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(n >= BigInt(0))
     require(period > BigInt(0))
@@ -3776,7 +3853,7 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
    * `accepts(apply(1))`. The precondition `apply(1) < head²` is not
    * universally dischargeable — tracked in `tickets/active/prove-apply1-is-prime.md`.
    */
-  private def assertApplyOneIsPrimeIfBelowHeadSq(): Boolean = {
+  def assertApplyOneIsPrimeIfBelowHeadSq(): Boolean = {
     require(apply(BigInt(1)) < head.value * head.value)
 
     val v1 = apply(BigInt(1))

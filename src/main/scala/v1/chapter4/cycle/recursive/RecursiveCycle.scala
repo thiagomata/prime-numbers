@@ -20,7 +20,7 @@ case class RecursiveCycle(values: List[BigInt]) {
   require(values.nonEmpty)
   require(CycleUtils.checkPositiveOrZero(values))
 
-  def size: BigInt = values.size
+  def period: BigInt = values.size
 
   /**
     * Applies the recursive cycle to the given position.
@@ -40,7 +40,7 @@ case class RecursiveCycle(values: List[BigInt]) {
     decreases(position)
     require(position >= 0)
 
-    if (position < size) {
+    if (position < period) {
       values(position)
     } else {
       apply(position - values.size)
@@ -54,10 +54,10 @@ case class RecursiveCycle(values: List[BigInt]) {
   def applyStructure(pos: BigInt): Boolean = {
     require(pos >= 0)
     decreases(pos)
-    if (pos < size) {
+    if (pos < period) {
       apply(pos) == values(pos)
     } else {
-      apply(pos) == apply(pos - size)
+      apply(pos) == apply(pos - period)
     }
   }.holds
 
@@ -65,7 +65,7 @@ case class RecursiveCycle(values: List[BigInt]) {
     require(index >= 0)
     if (index == BigInt(0)) this
     else {
-      val rotated = CycleUtils.collectRotated(values, index, size)
+      val rotated = CycleUtils.collectRotated(values, index, period)
       RecursiveCycle(rotated)
     }
   }
@@ -73,12 +73,12 @@ case class RecursiveCycle(values: List[BigInt]) {
   def cycleValuePositiveOrZero(pos: BigInt): Boolean = {
     require(pos >= 0)
     decreases(pos)
-    if (pos < size) {
+    if (pos < period) {
       CycleUtils.checkPositiveOrZeroAtIndex(values, pos)
       apply(pos) >= BigInt(0)
     } else {
       assert(applyStructure(pos))
-      assert(cycleValuePositiveOrZero(pos - size))
+      assert(cycleValuePositiveOrZero(pos - period))
       apply(pos) >= BigInt(0)
     }
   }.holds
@@ -91,12 +91,12 @@ case class RecursiveCycle(values: List[BigInt]) {
     require(ListUtils.checkAllBiggerThanValue(values, x))
     require(pos >= 0)
     decreases(pos)
-    if (pos < size) {
+    if (pos < period) {
       ListUtilsProperties.checkAllBiggerThanValueAtIndex(values, x, pos)
       apply(pos) > x
     } else {
       assert(applyStructure(pos))
-      assert(cycleValueBiggerThan(pos - size, x))
+      assert(cycleValueBiggerThan(pos - period, x))
       apply(pos) > x
     }
   }.holds
@@ -106,7 +106,7 @@ case class RecursiveCycle(values: List[BigInt]) {
     require(i >= 0)
 
     val modCycle = ModCycle(values)
-    val rotated = CycleUtils.collectRotated(values, k, size)
+    val rotated = CycleUtils.collectRotated(values, k, period)
     val rotatedModCycle = ModCycle(rotated)
 
     CycleProperties.rotateAtValue(modCycle, k, i)

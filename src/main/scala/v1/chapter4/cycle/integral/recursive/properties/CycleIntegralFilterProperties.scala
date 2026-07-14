@@ -129,51 +129,51 @@ object CycleIntegralFilterProperties {
     cycleIntegral: CycleIntegral,
     position: BigInt
   ): Boolean = {
-    require(cycleIntegral.size > 0)
+    require(cycleIntegral.period > 0)
     require(position >= 0)
-    require(cycleIntegral(cycleIntegral.size) - cycleIntegral(0) ==
+    require(cycleIntegral(cycleIntegral.period) - cycleIntegral(0) ==
       cycleIntegral.sum)
     decreases(position)
     if (position == 0) true
     else {
       assertCIShiftEqualsSum(cycleIntegral, position - 1)
-      assert(cycleIntegral(position - 1 + cycleIntegral.size) -
+      assert(cycleIntegral(position - 1 + cycleIntegral.period) -
         cycleIntegral(position - 1) == cycleIntegral.sum)
       MemCycleProperties.valueMatchAfterManyLoopsInBoth(
         cycleIntegral.cycle, position, BigInt(0), BigInt(1))
-      assert(cycleIntegral.cycle(position + cycleIntegral.size) ==
+      assert(cycleIntegral.cycle(position + cycleIntegral.period) ==
         cycleIntegral.cycle(position))
       CycleIntegralProperties.assertDiffEqualsCycleValue(
-        cycleIntegral, position + cycleIntegral.size - 1)
-      assert(cycleIntegral(position + cycleIntegral.size) ==
-        cycleIntegral.cycle(position + cycleIntegral.size) +
-          cycleIntegral(position + cycleIntegral.size - 1))
-      assert(cycleIntegral(position + cycleIntegral.size) ==
+        cycleIntegral, position + cycleIntegral.period - 1)
+      assert(cycleIntegral(position + cycleIntegral.period) ==
+        cycleIntegral.cycle(position + cycleIntegral.period) +
+          cycleIntegral(position + cycleIntegral.period - 1))
+      assert(cycleIntegral(position + cycleIntegral.period) ==
         cycleIntegral.cycle(position) +
-          cycleIntegral(position - 1 + cycleIntegral.size))
+          cycleIntegral(position - 1 + cycleIntegral.period))
       CycleIntegralProperties.assertDiffEqualsCycleValue(
         cycleIntegral, position - 1)
       assert(cycleIntegral(position) - cycleIntegral(position - 1) ==
         cycleIntegral.cycle(position))
-      assert(cycleIntegral(position - 1 + cycleIntegral.size) -
+      assert(cycleIntegral(position - 1 + cycleIntegral.period) -
         cycleIntegral(position) ==
-        (cycleIntegral(position - 1 + cycleIntegral.size) -
+        (cycleIntegral(position - 1 + cycleIntegral.period) -
           cycleIntegral(position - 1)) +
           (cycleIntegral(position - 1) - cycleIntegral(position)))
-      assert(cycleIntegral(position - 1 + cycleIntegral.size) -
+      assert(cycleIntegral(position - 1 + cycleIntegral.period) -
         cycleIntegral(position) ==
         cycleIntegral.sum - cycleIntegral.cycle(position))
-      assert(cycleIntegral(position + cycleIntegral.size) -
+      assert(cycleIntegral(position + cycleIntegral.period) -
         cycleIntegral(position) ==
         cycleIntegral.cycle(position) +
-          (cycleIntegral(position - 1 + cycleIntegral.size) -
+          (cycleIntegral(position - 1 + cycleIntegral.period) -
             cycleIntegral(position)))
-      assert(cycleIntegral(position + cycleIntegral.size) -
+      assert(cycleIntegral(position + cycleIntegral.period) -
         cycleIntegral(position) ==
         cycleIntegral.cycle(position) +
           cycleIntegral.sum - cycleIntegral.cycle(position))
     }
-    cycleIntegral(position + cycleIntegral.size) -
+    cycleIntegral(position + cycleIntegral.period) -
       cycleIntegral(position) == cycleIntegral.sum
   }.holds
 
@@ -198,12 +198,12 @@ object CycleIntegralFilterProperties {
     require(fromPosition >= 0)
     require(count >= 0)
     require(filterValue > 0)
-    require(cycleIntegral.size > 0)
+    require(cycleIntegral.period > 0)
     decreases(count)
     if (count == 0) List.empty[BigInt]
     else {
       val nextSurvivor = findNextSurvivor(
-        cycleIntegral, filterValue, fromPosition, cycleIntegral.size)
+        cycleIntegral, filterValue, fromPosition, cycleIntegral.period)
       assert(nextSurvivor >= fromPosition)
       assert(nextSurvivor >= 0)
       val gap = cycleIntegral(nextSurvivor) -
@@ -438,7 +438,7 @@ object CycleIntegralFilterProperties {
     position: BigInt
   ): Boolean = {
     require(survivorList.size > position + 1)
-    require(filteredIntegral.size > position)
+    require(filteredIntegral.period > position)
     require(position >= 0)
     require(filteredIntegral.initialValue == survivorList.head)
     require(allGapsMatch(filteredIntegral, survivorList, position))
@@ -472,10 +472,10 @@ object CycleIntegralFilterProperties {
     require(!survivors.isEmpty)
     require(survivors.size > position + 1)
     require(position >= 0)
-    require(position < newCI.size)
+    require(position < newCI.period)
     require(newCI.cycle.values == gapsFromValues(survivors))
     require(newCI.initialValue == survivors.head)
-    require(newCI.size > 0)
+    require(newCI.period > 0)
     assertGapsFromSurvivorsMatchCI(survivors, newCI, position)
     assert(allGapsMatch(newCI, survivors, position))
     assertNewCIGeneratesFiltered(newCI, survivors, position)
@@ -505,7 +505,7 @@ object CycleIntegralFilterProperties {
   ): Boolean = {
     require(mergeIndex >= 0)
     require(until >= mergeIndex)
-    require(until < newIntegral.size)
+    require(until < newIntegral.period)
     decreases(until - mergeIndex + 1)
     if (until <= mergeIndex) true
     else newIntegral.cycle(until) ==
@@ -521,8 +521,8 @@ object CycleIntegralFilterProperties {
     position: BigInt
   ): Boolean = {
     require(mergeIndex >= 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(mergeIndex + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(position >= 0)
     require(position < mergeIndex)
@@ -550,8 +550,8 @@ object CycleIntegralFilterProperties {
     mergeIndex: BigInt
   ): Boolean = {
     require(mergeIndex >= 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(mergeIndex + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(newIntegral.cycle(mergeIndex) ==
       oldIntegral.cycle(mergeIndex) +
@@ -591,11 +591,11 @@ object CycleIntegralFilterProperties {
     position: BigInt
   ): Boolean = {
     require(mergeIndex >= 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(mergeIndex + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(position > mergeIndex)
-    require(position < newIntegral.size)
+    require(position < newIntegral.period)
     require(newIntegral.cycle(position) ==
       oldIntegral.cycle(position + 1))
     require(allGapsMatchAfterMerge(
@@ -653,8 +653,8 @@ object CycleIntegralFilterProperties {
   ): Boolean = {
     require(filterValue > 0)
     require(multiplePosition > 0)
-    require(multiplePosition + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(multiplePosition + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(Calc.mod(oldIntegral(multiplePosition), filterValue) ==
       BigInt(0))
@@ -688,14 +688,14 @@ object CycleIntegralFilterProperties {
     scanPosition: BigInt
   ): BigInt = {
     require(scanPosition >= 1)
-    require(scanPosition <= cycleIntegral.size)
+    require(scanPosition <= cycleIntegral.period)
     require(filterValue > 0)
-    decreases(cycleIntegral.size - scanPosition)
-    if (scanPosition == cycleIntegral.size) scanPosition
+    decreases(cycleIntegral.period - scanPosition)
+    if (scanPosition == cycleIntegral.period) scanPosition
     else if (Calc.mod(cycleIntegral(scanPosition), filterValue) ==
       BigInt(0)) scanPosition
     else findFirstMultiple(cycleIntegral, filterValue, scanPosition + 1)
-  }.ensuring(res => res >= scanPosition && res <= cycleIntegral.size)
+  }.ensuring(res => res >= scanPosition && res <= cycleIntegral.period)
 
   /**
    * If `findFirstMultiple` returns a position before `size`, the value
@@ -708,12 +708,12 @@ object CycleIntegralFilterProperties {
     scanPosition: BigInt
   ): Boolean = {
     require(scanPosition >= 1)
-    require(scanPosition <= cycleIntegral.size)
+    require(scanPosition <= cycleIntegral.period)
     require(filterValue > 0)
-    decreases(cycleIntegral.size - scanPosition)
+    decreases(cycleIntegral.period - scanPosition)
     val found = findFirstMultiple(cycleIntegral, filterValue, scanPosition)
-    if (scanPosition == cycleIntegral.size) {
-      assert(found == cycleIntegral.size)
+    if (scanPosition == cycleIntegral.period) {
+      assert(found == cycleIntegral.period)
     } else if (Calc.mod(cycleIntegral(scanPosition), filterValue) ==
       BigInt(0)) {
       assert(found == scanPosition)
@@ -721,7 +721,7 @@ object CycleIntegralFilterProperties {
       assertFindFirstMultipleCorrect(
         cycleIntegral, filterValue, scanPosition + 1)
     }
-    found == cycleIntegral.size ||
+    found == cycleIntegral.period ||
     Calc.mod(cycleIntegral(found), filterValue) == BigInt(0)
   }.holds
 
@@ -788,20 +788,20 @@ object CycleIntegralFilterProperties {
     position: BigInt
   ): Boolean = {
     require(factor > 0)
-    require(originalIntegral.size > 0)
-    require(replicatedIntegral.size == originalIntegral.size * factor)
+    require(originalIntegral.period > 0)
+    require(replicatedIntegral.period == originalIntegral.period * factor)
     require(position >= 0)
     require(replicatedIntegral.initialValue == originalIntegral.initialValue)
     require(
-      (position < originalIntegral.cycle.size &&
+      (position < originalIntegral.cycle.period &&
         replicatedIntegral.cycle(position) ==
           originalIntegral.cycle(position)) ||
-      (position >= originalIntegral.cycle.size &&
+      (position >= originalIntegral.cycle.period &&
         replicatedIntegral.cycle(position) ==
           originalIntegral.cycle(
-            Calc.mod(position, originalIntegral.cycle.size))))
+            Calc.mod(position, originalIntegral.cycle.period))))
 
-    val originalSize = originalIntegral.cycle.size
+    val originalSize = originalIntegral.cycle.period
     if (position < originalSize) true
     else {
       MemCycleProperties.findValueInCycle(
@@ -830,8 +830,8 @@ object CycleIntegralFilterProperties {
   ): Boolean = {
     require(filterValue > 0)
     require(mergeIndex >= 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(mergeIndex + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(newIntegral.cycle(mergeIndex) ==
       oldIntegral.cycle(mergeIndex) +
@@ -849,8 +849,8 @@ object CycleIntegralFilterProperties {
     newIntegral: CycleIntegral
   ): Boolean = {
     require(newIntegral.cycle(0) == oldIntegral.cycle(0))
-    val oldSize = oldIntegral.size
-    val newSize = newIntegral.size
+    val oldSize = oldIntegral.period
+    val newSize = newIntegral.period
     MemCycleProperties.valueMatchAfterManyLoopsInBoth(
       newIntegral.cycle, BigInt(0), BigInt(0), BigInt(1))
     MemCycleProperties.valueMatchAfterManyLoopsInBoth(
@@ -864,8 +864,8 @@ object CycleIntegralFilterProperties {
     mergeIndex: BigInt
   ): Boolean = {
     require(mergeIndex > 0)
-    require(mergeIndex + 1 < oldIntegral.size)
-    require(newIntegral.size == oldIntegral.size - 1)
+    require(mergeIndex + 1 < oldIntegral.period)
+    require(newIntegral.period == oldIntegral.period - 1)
     require(oldIntegral.initialValue == newIntegral.initialValue)
     require(newIntegral.cycle(mergeIndex) ==
       oldIntegral.cycle(mergeIndex) +
@@ -876,10 +876,10 @@ object CycleIntegralFilterProperties {
       oldIntegral, newIntegral, mergeIndex,
       newIntegral.cycle.values.size - 1))
     require(newIntegral.cycle(0) == oldIntegral.cycle(0))
-    require(newIntegral.size > mergeIndex)
+    require(newIntegral.period > mergeIndex)
 
-    val oldSize = oldIntegral.size
-    val newSize = newIntegral.size
+    val oldSize = oldIntegral.period
+    val newSize = newIntegral.period
 
     CycleIntegralProperties.assertDiffEqualsCycleValue(
       newIntegral, newSize - 1)
@@ -913,8 +913,8 @@ object CycleIntegralFilterProperties {
     maxIndex: BigInt
   ): Boolean = {
     require(maxIndex >= -1)
-    require(maxIndex < newCI.size)
-    require(newCI.size > 0)
+    require(maxIndex < newCI.period)
+    require(newCI.period > 0)
     require(!survivors.isEmpty)
     require(survivors.size > maxIndex + 1)
     require(newCI.cycle.values == gapsFromValues(survivors))
@@ -950,21 +950,21 @@ object CycleIntegralFilterProperties {
     maxIndex: BigInt
   ): Boolean = {
     require(filterValue > 0)
-    require(originalCI.size > 0)
+    require(originalCI.period > 0)
     require(Calc.mod(originalCI(0), filterValue) != BigInt(0))
     require(survivors == survivorValues(originalCI, filterValue,
-      BigInt(0), originalCI.size))
+      BigInt(0), originalCI.period))
     require(!survivors.isEmpty)
     require(newCI.initialValue == survivors.head)
     require(newCI.cycle.values == gapsFromValues(survivors))
     require(maxIndex >= 0)
-    require(maxIndex < newCI.size)
+    require(maxIndex < newCI.period)
     require(survivors.size > maxIndex + 1)
     decreases(maxIndex + 1)
 
     assertNewCIMatchesSurvivors(survivors, newCI, maxIndex)
     assertSurvivorAtNotMultiple(originalCI, filterValue,
-      BigInt(0), originalCI.size, maxIndex + 1)
+      BigInt(0), originalCI.period, maxIndex + 1)
 
     if (maxIndex > 0) {
       assertFilterMergeComposition(originalCI, newCI,
@@ -986,15 +986,15 @@ object CycleIntegralFilterProperties {
     position: BigInt
   ): Boolean = {
     require(filterValue > 0)
-    require(ci.size > 0)
-    require(steps <= ci.size)
+    require(ci.period > 0)
+    require(steps <= ci.period)
     require(steps >= 0)
     require(!survivors.isEmpty)
     require(survivors == survivorValues(ci, filterValue, BigInt(0), steps))
     require(newCI.cycle.values == gapsFromValues(survivors))
     require(newCI.initialValue == survivors.head)
     require(position >= 0)
-    require(position < newCI.size)
+    require(position < newCI.period)
     require(survivors.size > position + 1)
 
     assertNewCIMatchesSurvivors(survivors, newCI, position)

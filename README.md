@@ -233,9 +233,8 @@ From these definitions, it mathematically proves and formally verifies the follo
 
 ```math
 \begin{aligned}
-\text{ClassicCycleIntegral}(L, init)_i
-&= \text{RecursiveCycleIntegral}(L, init)_i
-= \text{ModuloCycleIntegral}(L, init)_i
+\text{CycleIntegral}(L, init)_i
+&= \text{ModuloCycleIntegral}(L, init)_i
 \quad &\text{[Equivalence of Definitions]} \\
 \text{CycleIntegral}(L^{(x)}, init)_i
 &= \text{CycleIntegral}(L, init)_i

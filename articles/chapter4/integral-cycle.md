@@ -13,13 +13,15 @@ In previous articles, we defined bounded Lists, Integrals of Lists, and unbounde
 from scratch, relying only on core type constructs and recursion, 
 with no prior knowledge of Scala's collections required.
 From that, we proved and formally verified some properties related to them.
-This article uses that as a foundation to define Integral of Cycles
-using three equivalent variants: a <b>Classic</b> recursive definition, a <b>Recursive</b> cycle-based definition,
-and a <b>Modulo</b> closed-form definition.
-For each variant, we formally verify the sum property (integral equals cumulative cycle sum)
-and the step property (difference between consecutive values equals the corresponding cycle element)
-using the Stainless verification system.
-We also prove equivalence of all three definitions.
+This article uses that as a foundation to define Integral of Cycles using two
+presentations: the canonical recursive `CycleIntegral` definition and a
+`ModCycleIntegral` closed-form definition.
+For both presentations, we formally verify the sum property (integral equals
+cumulative cycle sum) and the step property (difference between consecutive
+values equals the corresponding cycle element) using the Stainless verification
+system.
+We also prove that the recursive and modulo definitions are extensionally
+equivalent.
 All properties are expressed and proved within a minimal framework using only elementary arithmetic,
 recursion, and pure Scala code.
 This work bridges mathematical foundations and executable verification, 
@@ -55,7 +57,7 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 
 This article verifies:
 
-- Three equivalent definitions: classic, recursive, and modulo-based — §3
+- Two equivalent definitions: recursive and modulo-based — §3
 - Core properties: next position, same difference after cycle, sum of mod values — §4
 - Extended properties: modulo periodicity, cycle-period shifts, gap telescoping, rotation, survivor filtering, residue classification — §5
 
@@ -81,21 +83,20 @@ The following diagram shows how verified lemmas from the companion articles supp
          v                  v                   v
     [Integral Properties]  -->  [Cycle Integral Properties]
                                        |
-                          +-----------+-----------+
-                          |           |           |
-                          v           v           v
-                     Classic      Recursive     Modulo
-                    CycleIntegral CycleIntegral CycleIntegral
+                          +------------+------------+
+                          |                         |
+                          v                         v
+                    Recursive                   Modulo
+                  CycleIntegral              CycleIntegral
 ```
 
 ## 3. Cycle Integral Definitions
 
-The cycle integral extends the finite integral to unbounded repeating sequences. Three equivalent definitions are proven.
+The cycle integral extends the finite integral to unbounded repeating sequences. Two equivalent definitions are proven.
 
-- Classic: recurrence on the cycle position — §3.1
-- Recursive: delegates to the underlying cycle's recursive definition — §3.2
-- Modulo: closed-form using `div` and `mod` — §3.3
-- All three are equivalent — §3.4
+- Recursive: recurrence on the cycle position — §3.1
+- Modulo: closed-form using `div` and `mod` — §3.2
+- The two definitions are extensionally equivalent — §3.3
 
 ```math
 \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃, n = |L| \\
@@ -110,83 +111,7 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-### 3.1 Classic Cycle Integral
-
-```math
-\begin{aligned}
-\text{Cycle}(L)_i &= L_{(i \text{ mod } n)} \\
-\text{ClassicCycleIntegral}(L, init)_k &= \sum_{i=0}^k \text{Cycle}(L)_i + init
-\end{aligned}
-```
-
-As defined at [ClassicCycleIntegral.scala](../src/main/scala/v1/chapter4/cycle/integral/classic/ClassicCycleIntegral.scala):
-
-```scala
-case class ClassicCycleIntegral(
-  initialValue: BigInt,
-  cycle: MemCycle
-) {
-  def apply(position: BigInt): BigInt = {
-    require(position >= 0)
-    decreases(position)
-    if (position == 0) {
-      cycle(0) + initialValue
-    } else {
-      cycle(position) + apply(position - 1)
-    }
-  }
-  def size: BigInt = cycle.size
-  def sum: BigInt = cycle.sum()
-}
-```
-
-#### Sum Property
-
-```math
-\begin{aligned}
-i < n \implies Cycle(L)_i &= L_i \\
-i < n \implies ClassicCycleIntegral(L, init)_i &= \sum_{j=0}^i Cycle(L)_i + init \quad &\text{[By Definition]}\\
- &= \sum_{j=0}^i L_j + init \quad &\text{[Substitution]}\\
-\end{aligned}
-```
-
-```math
-\begin{aligned}
-\therefore \forall \ i < n, \quad ClassicCycleIntegral(L, init)_i &= \sum_{j=0}^i L_j + init  \quad &\text{[Q.E.D.]} \\
-\end{aligned}
-```
-
-This property is verified in the [
-ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
-](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala). The full Scala verification code is in Appendix A.1.
-
-#### Step Property
-
-```math
-\forall \ i \in ℕ_0,\ init \in ℕ_0, L \in 𝕃
-```
-
-```math
-\begin{aligned}
-&w_i &= ClassicCycleIntegral(L, init)_i \quad &\text{[By Definition]} \\
-&w_{i-1} &= ClassicCycleIntegral(L, init)_{i-1} \quad &\text{[By Definition]} \\
-&w_i - w_{i-1} &= \left(\sum_{j=0}^i L_j + init\right) - \left(\sum_{j=0}^{i-1} L_j + init\right)  \quad &\text{[By Definition]} \\
-&&= \sum_{j=0}^i L_j + init - \sum_{j=0}^{i-1} L_j - init \quad &\text{[Association]} \\
-&&= \sum_{j=0}^i L_j - \sum_{j=0}^{i-1} L_j \quad &\text{[Canceling init]} \\
-&&= L_i \quad &\text{[Simplification]} \\
-&&= L_{(i \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
-\end{aligned}
-```
-
-```math
-\therefore \ w_i - w_{i-1} = \text{Cycle}(L)_i = L_{(i \text{ mod } n)} \quad \text{[Q.E.D.]}
-```
-
-This property is verified in the [
-ClassicCycleIntegralProperties::assertDiffEqualsCycleValue
-](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala). The full Scala verification code is in Appendix A.2.
-
-### 3.2 Recursive Cycle Integral
+### 3.1 Recursive Cycle Integral
 
 ```math
 \begin{aligned}
@@ -237,7 +162,7 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 
 This property is verified in the [
 CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.1 (same property structure as the Classic variant).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.1; the complete proof is linked in the source reference.
 
 **Step Property**:
 
@@ -251,9 +176,9 @@ w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 
 This property is verified in the [
 CycleIntegralProperties::assertDiffEqualsCycleValue
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.2 (same property structure as the Classic variant).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.2; the complete proof is linked in the source reference.
 
-### 3.3 Modulo Cycle Integral
+### 3.2 Modulo Cycle Integral
 
 ```math
 \begin{aligned}
@@ -290,7 +215,7 @@ w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
 
 This property is verified in the [
 ModCycleIntegralProperties::assertFirstValuesMatchIntegral
-](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). The full Scala verification code is in Appendix A.3.
+](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.3; the complete proof is linked in the source reference.
 
 #### Step Property
 
@@ -344,16 +269,16 @@ w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.
 
 This property is verified in the [
 ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle
-](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). The full Scala verification code is in Appendix A.4.
+](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.4; the complete proof is linked in the source reference.
 
-### 3.4 Equivalence of Definitions
+### 3.3 Equivalence of Definitions
 
-Since all definitions of Cycle Integral satisfy the same sum and step properties, they are equivalent. The Cycle Integral can be defined using any of the three approaches: Classic, Recursive, or Modulo.
+The nontrivial equivalence proved here is between the recursive `CycleIntegral`
+definition and the closed-form `ModCycleIntegral` definition.
 
 ```math
 \begin{aligned}
-\text{CycleIntegral}(L, init) &= \text{ClassicCycleIntegral}(L, init) \\
-&= \text{RecCycleIntegral}(L, init) \\
+\text{CycleIntegral}(L, init)
 &= \text{ModCycleIntegral}(L, init) \\
 &= [w_0, w_1, w_2, \ldots] \mid w_i =& \sum_{j=0}^i L_{(j \text{ mod } n)} + init \ \blacksquare
 \end{aligned}
@@ -361,7 +286,7 @@ Since all definitions of Cycle Integral satisfy the same sum and step properties
 
 This property is verified in the [
 ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
-](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). The full Scala verification code is in Appendix A.5.
+](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.5; the complete proof is linked in the source reference.
 
 ## 4. Core Verified Properties
 
@@ -379,11 +304,11 @@ For any positive position, the cycle integral at that position equals the previo
 \forall \ i > 0: \ CI(L, init)_i = CI(L, init)_{i-1} + Cycle(L)_i
 ```
 
-This follows directly from the recursive definitions of both the Classic and Recursive Cycle Integral variants.
+This follows directly from the recursive definition of `CycleIntegral`.
 
 This property is verified in the [
 CycleIntegralProperties::assertNextPosition
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) and the equivalent lemma in ClassicCycleIntegralProperties.
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
 ### 4.2 Same Difference After Full Cycle
 
@@ -395,7 +320,7 @@ The difference between consecutive values is invariant under adding a full cycle
 
 This property is verified in the [
 CycleIntegralProperties::assertSameDiffAfterCycle
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.6.
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.6; the complete proof is linked in the source reference.
 
 ### 4.3 Sum of Mod Values as List
 
@@ -407,14 +332,14 @@ The cycle integral at any position equals the sum of a constructed list containi
 
 This property is verified in the [
 CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.7.
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.7; the complete proof is linked in the source reference.
 
 ## 5. Extended Properties
 
-Properties 5.1-5.4 have mathematical proofs but are not yet Stainless-verified. Properties 5.5-5.10 are fully verified.
+Properties 5.1, 5.3, and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.2 and properties 5.5-5.10 are fully verified.
 
 - Modulo invariance: remainder depends only on a single cycle period — §5.1
-- Repeated-cycle invariance: repeating the base cycle preserves the integral — §5.2
+- x-fold cycle expansion: physical period changes while the represented stream is preserved — §5.2 [Verified]
 - Index shifts: right and left — §5.3-5.4
 - Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — §5.5-5.8
 - Survivor filtering: exactness and structure — §5.9
@@ -467,9 +392,37 @@ I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
 
 **Status**: Mathematically proven. Stainless verification pending.
 
-### 5.2 Invariance by x-fold Concatenation [Draft]
+### 5.2 x-fold Cycle Expansion
 
-Let $L^{(x)}$ be the $x$-fold concatenation of a list $L \in 𝕃$. Then the CycleIntegral of $L^{(x)}$ with initial value $init$ reproduces exactly the CycleIntegral of $L$ with initial value $init$.
+Let $L^{(x)}$ be the $x$-fold concatenation of a list $L \in 𝕃$. This
+operation changes the physical backing cycle, but it does not change the
+unbounded stream represented by the cycle.
+
+The values that change are the finite storage properties:
+
+```math
+\begin{aligned}
+|L^{(x)}| &= x \cdot |L|
+  \quad &&\text{[Expanded physical period]} \\
+\sum L^{(x)} &= x \cdot \sum L
+  \quad &&\text{[Expanded physical sum]}
+\end{aligned}
+```
+
+The values that do not change are the semantic stream properties:
+
+```math
+\begin{aligned}
+L^{(x)}_i &= L_{(i \text{ mod } |L|)}
+  \quad &&\text{[Same cycle lookup]} \\
+\text{CycleIntegral}(L^{(x)}, init)_i
+  &= \text{CycleIntegral}(L, init)_i
+  \quad &&\text{[Same integral stream]}
+\end{aligned}
+```
+
+So the expansion is not an invariance of the finite cycle object itself. It is
+an invariance of the infinite stream that the cycle object represents.
 
 ```math
 \begin{aligned}
@@ -484,6 +437,25 @@ T &:= \sum_{j=0}^{n-1} v_j
   &&\text{[Original cycle sum]} \\
 \end{aligned}
 ```
+
+The list-level repetition is defined by applying the original list at the original index modulo $n$:
+
+```math
+\begin{aligned}
+L^{(x)}_i &= L_{(i \text{ mod } n)}
+  \quad &&\text{for } 0 \le i < x \cdot n \\
+\sum L^{(x)} &= x \cdot \sum L
+  \quad &&\text{[Repeated sum]}
+\end{aligned}
+```
+
+These list-level properties are verified by `RepeatedList` and `ListRepeatProperties`: the repeated list size is $x \cdot n$, the repeated value at index $i$ is the original value at $i \text{ mod } n$, and the repeated sum is $x$ times the original sum. See [
+RepeatedList
+](../../src/main/scala/v1/chapter3/list/RepeatedList.scala), [
+RepeatedListProperties::assertSumMultiplier
+](../../src/main/scala/v1/chapter3/list/properties/RepeatedListProperties.scala), and [
+ListRepeatProperties::assertRepeatedIndex
+](../../src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala).
 
 ```math
 \begin{aligned}
@@ -514,7 +486,7 @@ def assertRepeatedValuesIntegralMatches(
 ): Boolean = {
   require(times > BigInt(0))
   require(position >= BigInt(0))
-  require(cycleIntegral.cycle.size > BigInt(0))
+  require(cycleIntegral.cycle.period > BigInt(0))
   require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
   require(repeatedCycleIntegral.cycle.values ==
     ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
@@ -535,7 +507,7 @@ def assertRepeatedValuesIntegralMatches(
 
 This property is verified in the [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
 ### 5.3 Right Index Shift [Draft]
 
@@ -660,7 +632,7 @@ def assertTwoGapSumEqualsDiff(ci: CycleIntegral, k: BigInt): Boolean = {
 
 This property is verified in the [
 GapProperties::assertTwoGapSumEqualsDiff
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The proof delegates to `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff`.
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The proof delegates to `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff`.
 
 ### 5.6 Modulo Periodicity
 
@@ -700,7 +672,7 @@ def assertModIsPeriodic(ci: CycleIntegral, m: BigInt, pos: BigInt): Boolean = {
 
 This property is verified in the [
 GapProperties::assertModIsPeriodic
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
 
 The companion div/mod decomposition `ci(pos) == ci(pos % size) + (pos / size) * ci.sum`
 is verified in `GapProperties::assertCIModDivFormula`.
@@ -741,7 +713,7 @@ def assertMultiCycleShift(ci: CycleIntegral, pos: BigInt, m: BigInt): Boolean = 
 
 These properties are verified in [
 GapProperties::assertPeriodicShift
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
 `assertFullCycleShift`, and `assertMultiCycleShift`.
 
 ### 5.8 Gap Rotation with Head Adjustment
@@ -773,7 +745,7 @@ def assertRotateOneShiftsIntegralByOne(
 
 This property is verified in [
 GapProperties::assertRotateOneShiftsIntegralByOne
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
 
 ### 5.9 Modularity and Survivor Filtering
 
@@ -824,7 +796,7 @@ def assertSurvivorValuesContainsNonMultipleAtPosition(
 
 These properties are verified in [
 GapProperties::assertSurvivorValuesContainsOnlyNonMultiples
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) and [`assertSurvivorValuesContainsNonMultipleAtPosition`](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The exclusion corollary (`assertSurvivorValuesExcludesMultipleAtPosition`)
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) and [`assertSurvivorValuesContainsNonMultipleAtPosition`](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The exclusion corollary (`assertSurvivorValuesExcludesMultipleAtPosition`)
 and the type-level non-emptiness guarantee (`assertSurvivorsNonEmpty`) follow
 directly.
 
@@ -879,7 +851,7 @@ two consecutive survivors (after filtering out multiples) is strictly positive
 
 All survivor-structure properties are verified in [
 GapProperties::assertFirstSurvivorIsHead
-](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and the eight companion lemmas in the same module.
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and the eight companion lemmas in the same module.
 
 ### 5.10 Cycle Residue Classification
 
@@ -921,7 +893,7 @@ def ifInSomeModSome(cycle: MemCycle, dividend: BigInt): Boolean = {
 
 These properties are verified in the [
 CycleCheckMod
-](../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
 
 ## 6. Conclusion
 
@@ -931,13 +903,23 @@ Cycle Integrals. Starting from a finite non-empty list, the construction treats
 the list as a repeating cycle and describes the accumulated value at any
 non-negative index using the cycle sum, modular position, and initial value.
 
-We defined three equivalent variants of Cycle Integral:
+We defined two equivalent presentations of Cycle Integral:
 
-1. **ClassicCycleIntegral** — recursive sum over cycle elements (Section 3.1)
-2. **RecursiveCycleIntegral** — recursive cycle with cycle-based indexing (Section 3.2)
-3. **ModCycleIntegral** — closed-form using division and modulo (Section 3.3)
+1. **CycleIntegral** — recursive accumulation over a memory-backed cycle (Section 3.1)
+2. **ModCycleIntegral** — closed-form using division and modulo (Section 3.2)
 
-For each variant, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of all three definitions.
+For both presentations, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of the recursive and modulo definitions.
+
+Beyond these core definitions, the article verifies several reusable
+cycle-integral laws: repeating a backing cycle preserves the represented
+integral stream; adjacent gaps telescope into integral differences; residues
+are periodic when the cycle sum is zero modulo the chosen modulus; full-cycle
+shifts advance the integral by the cycle sum; rotating a gap cycle with the
+corresponding head adjustment shifts the represented integral by one position;
+survivor scans retain exactly the non-multiples needed for filtering; and
+cycle residue classification is correct, exclusive, and exhaustive. The
+remaining draft extensions are the index-shift laws and the stronger modulo
+invariance statement in Section 5.1.
 
 The main established properties are:
 
@@ -959,7 +941,8 @@ accumulations using finite list structures and machine-checked Scala code.
 
 Future work may include:
 
-- Formal verification of the extended properties in Section 5 (index shifts, x-fold concatenation, modulo invariance)
+- Formal verification of the remaining draft extended properties in Section 5
+  (index shifts and modulo invariance)
 - Applications to prime number detection and distribution analysis
 - Extensions to multi-dimensional cycles and integrals
 - Integration with other mathematical structures like polynomials or matrices
@@ -989,69 +972,65 @@ Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ 
 
 ### A.1 Sum Property for Small Positions — assertCycleIntegralEqualsSumSmallPositions
 
-Source: [ClassicCycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
-
-The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
+Source: [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralEqualsSumSmallPositions(
-  classicCycleIntegral: ClassicCycleIntegral,
+  cycleIntegral: CycleIntegral,
   position: BigInt
 ): Boolean = {
-  require(position < classicCycleIntegral.size)
+  require(position < cycleIntegral.period)
   require(position > 0)
   require(ListUtils.sum(getFirstValuesAsSlice(
-    classicCycleIntegral, position - 1)) == classicCycleIntegral(position - 1))
+    cycleIntegral, position - 1)) == cycleIntegral(position - 1))
 
-  assert(assertNextPosition(classicCycleIntegral, position))
-  assert(classicCycleIntegral(position) ==
-    classicCycleIntegral.cycle(position) + classicCycleIntegral(position - 1))
+  assert(assertNextPosition(cycleIntegral, position))
+  assert(cycleIntegral(position) ==
+    cycleIntegral.cycle(position) + cycleIntegral(position - 1))
   assert(MemCycleProperties.smallValueInCycle(
-    classicCycleIntegral.cycle, position))
-  assert(classicCycleIntegral.cycle(position) ==
-    classicCycleIntegral.cycle.values(position))
+    cycleIntegral.cycle, position))
+  assert(cycleIntegral.cycle(position) ==
+    cycleIntegral.cycle.values(position))
   assert(ListUtils.sum(getFirstValuesAsSlice(
-    classicCycleIntegral, position - 1)) == classicCycleIntegral(position - 1))
+    cycleIntegral, position - 1)) == cycleIntegral(position - 1))
 
-  val prev = getFirstValuesAsSlice(classicCycleIntegral, position - 1)
+  val prev = getFirstValuesAsSlice(cycleIntegral, position - 1)
   val prevSum = ListUtils.sum(prev)
-  assert(prevSum == classicCycleIntegral(position - 1))
+  assert(prevSum == cycleIntegral(position - 1))
 
-  val currentList = List(classicCycleIntegral.cycle.values(position)) \mathbin{+\!+} prev
-  val currentValue = classicCycleIntegral.cycle(position)
+  val currentList = List(cycleIntegral.cycle.values(position)) ++ prev
+  val currentValue = cycleIntegral.cycle(position)
   val currentSum = ListUtils.sum(prev) + currentValue
   assert(ListUtilsProperties.listAddValueTail(prev, currentValue))
   assert(ListUtils.sum(prev) + currentValue == ListUtils.sum(currentList))
   assert(assertNextPosition(
-    classicCycleIntegral = classicCycleIntegral, position = position))
+    cycleIntegral = cycleIntegral, position = position))
 
   ListUtils.sum(getFirstValuesAsSlice(
-    classicCycleIntegral, position)) == classicCycleIntegral(position)
+    cycleIntegral, position)) == cycleIntegral(position)
 }.holds
 ```
 
 ### A.2 Step Property — assertDiffEqualsCycleValue
 
-Source: [ClassicCycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/chapter4/cycle/integral/classic/properties/ClassicCycleIntegralProperties.scala)
-
-The recursive `CycleIntegralProperties` variant at [CycleIntegralProperties::assertDiffEqualsCycleValue](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) follows the same structure.
+Source: [CycleIntegralProperties::assertDiffEqualsCycleValue](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertDiffEqualsCycleValue(
-  classicCycleIntegral: ClassicCycleIntegral,
+  cycleIntegral: CycleIntegral,
   position: BigInt
 ): Boolean = {
   require(position >= 0)
-  assert(classicCycleIntegral(position + 1) ==
-    classicCycleIntegral(position) + classicCycleIntegral.cycle(position + 1))
-  classicCycleIntegral(position + 1) - classicCycleIntegral(position) ==
-    classicCycleIntegral.cycle(position + 1)
+  assert(cycleIntegral(position + 1) ==
+    cycleIntegral(position) + cycleIntegral.cycle(position + 1))
+  cycleIntegral(position + 1) - cycleIntegral(position) ==
+    cycleIntegral.cycle(position + 1)
 }.holds
 ```
 
 ### A.3 Mod First Values Match Integral — assertFirstValuesMatchIntegral
 
-Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertFirstValuesMatchIntegral(
@@ -1074,7 +1053,7 @@ def assertFirstValuesMatchIntegral(
 
 ### A.4 Mod Step Diff — assertSimplifiedDiffValuesMatchCycle
 
-Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertSimplifiedDiffValuesMatchCycle(
@@ -1105,7 +1084,7 @@ def assertSimplifiedDiffValuesMatchCycle(
 
 ### A.5 Equivalence of Definitions — assertCycleIntegralMatchModCycleDef
 
-Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralMatchModCycleDef(
@@ -1142,7 +1121,7 @@ def assertCycleIntegralMatchModCycleDef(
 
 ### A.6 Same Difference After Full Cycle — assertSameDiffAfterCycle
 
-Source: [CycleIntegralProperties::assertSameDiffAfterCycle](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSameDiffAfterCycle](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSameDiffAfterCycle(
@@ -1176,7 +1155,7 @@ def assertSameDiffAfterCycle(
 
 ### A.7 Sum of Mod Values as List — assertSumModValueAsListEqualsCycleIntegralLoop
 
-Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSumModValueAsListEqualsCycleIntegralLoop(

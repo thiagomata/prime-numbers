@@ -139,7 +139,7 @@ object SieveSequenceNextLevel {
   }.holds
 
   def nextGapsWalk(seq: CycleSieveSequence): List[BigInt] = {
-    val steps = seq.head * seq.gapCycle.size
+    val steps = seq.head * seq.gapCycle.period
     val newHead = seq.apply(BigInt(1))
     assert(assertCollectGapsAllPositive(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt]))
     collectGaps(seq, newHead, BigInt(0), BigInt(1), steps, List.empty[BigInt])
