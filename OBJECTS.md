@@ -668,7 +668,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.5 SpecSieveSequence (`v1.chapter6.seq.sieve.SpecSieveSequence`)
 
-76 lemmas (25 public, 51 private). Key public lemmas:
+85 lemmas (33 public, 52 private). Key public lemmas:
 
 | Lemma                                                                        | Statement                                                             |
 |------------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -687,11 +687,17 @@ operate on the canonical `CycleIntegral` class; use
 | **assertSpecGapCycleIntegralMatchesApply(period,k)**                         | `CycleIntegral(head, gaps)(k-1) == apply(k)` for `k > 0`              |
 | **assertNextValueAcceptedByThis(k)**                                         | `mod(next(k), head) != 0`                                             |
 | **assertSingletonFilterDecision(value,p)**                                   | One-prime `filterValues == List(p)` means `passesFilter(value) == mod(value,p) != 0` |
+| **assertOldAcceptedHeadNonMultipleAcceptedByNext(v)**                        | Old accepted value at/after `next.head` and not divisible by old head is accepted by `next` |
+| **assertOldAcceptedRejectedByNextIsHeadMultiple(v)**                         | Old accepted value at/after `next.head` but rejected by `next` is divisible by old head |
+| **assertOldGeneratedValueBetweenNextValuesIsHeadMultiple(k,oldIndex)**       | Old generated values strictly between `next(k)` and `next(k + 1)` are current-head multiples |
 | **assertNextAcceptsMatchesHeadFilterForAcceptedValue(v)**                    | Old accepted transition-window value is accepted by `next` iff it is not a head multiple |
 | **assertAcceptedByNextWhenOldAcceptedAndNewHeadNonMultiple(nextSeq,value)**  | Private: old accepted + new-head non-multiple => accepted by next     |
 | **assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(nextSeq,value)** | Private: accepted by next => old accepted and new-head non-multiple   |
 | **assertRejectedByNextWhenNewHeadMultiple(nextSeq,value,p)**                 | Private: new-head multiple is rejected by next                        |
 | **assertApplyMonotonic(from,until)**                                         | `from <= until => apply(from) <= apply(until)`                        |
+| **assertApplyStrictlyIncreasesBetween(from,until)**                          | `from < until => apply(from) < apply(until)`                          |
+| **assertIndexOfAcceptedAtMost(value,bound)**                                 | Accepted value bounded by `apply(bound)` has generated index at most `bound` |
+| **assertIndexOfAcceptedStrictlyIncreasesForAcceptedValues(lowerValue,upperValue)** | Accepted values preserve strict order through `indexOfAccepted` |
 | **assertGeneratedPrefixCount(k)**                                            | Count of accepted integers in `[head, apply(k))` is `k`               |
 | **countGeneratedHeadMultiplesPrefix(k)**                                     | Private: count generated values in `[0, k)` divisible by `head`       |
 | **assertExpandedGeneratedHeadMultipleCount(period)**                         | Expanded generated prefix of length `period * head` has exactly `period` head-multiples |
@@ -716,11 +722,14 @@ operate on the canonical `CycleIntegral` class; use
 | **assertGeneratedHeadMultiplesPrefixMatchesRange(k)**                        | Private: prefix counter equals range counter from index `0`           |
 | **countNoAcceptedHeadMultiplesBetween(from,until)**                          | Private: no accepted values in an interval means zero head-multiple removals |
 | **assertCountAcceptedHeadMultiplesBetweenAppend(from,middle,until)**         | Private: head-multiple removed-count is additive over adjacent intervals |
+| **assertCountAcceptedHeadNonMultiplesBetweenAppend(from,middle,until)**      | Private: accepted non-head-multiple count is additive over adjacent intervals |
 | **assertGeneratedHeadMultiplePrefixCount(k)**                                | Removed-count in `[head, apply(k))` equals the generated-prefix head-multiple count |
 | **assertExpandedOldAcceptedCount(period)**                                   | Old accepted count in `[head, head + head*M)` is `period * head`      |
 | **assertExpandedHeadMultipleCountFromGeneratedCount(period)**                | If the generated prefix removes `period` head-multiples, interval removed-count is `period` |
 | **assertSameHeadExtendedFilterCountFromRemovedCount(period)**                | If removed head-multiple count is `period`, same-head survivor count is `period * (head - 1)` |
 | **assertSameHeadExtendedFilterCount(period)**                                | Final same-head expanded filter size: survivor count is `period * (head - 1)` when `mod(M, head) != 0` |
+| **assertSameHeadShiftedWindowCount(period)**                                 | Shifted scan interval `(head, head + head*M]` has the same survivor count `period * (head - 1)` |
+| **assertNoAcceptedValueBetweenGeneratedValues(k,value)**                     | No accepted value lies strictly between consecutive generated values  |
 | **assertFilterPreservesNextGap(nextSeq,k)**                                  | Gap copy when old value accepted by next                              |
 | **assertConsecutiveAcceptedByNextPreservesGap(nextSeq,k)**                   | Consecutive old values accepted => gap copied                         |
 | **nextAcceptedOldIndex(nextSeq,k,period)**                                   | Next emitted `nextSeq` value as an old-stream index                   |
@@ -732,7 +741,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-61 lemmas (57 public, 2 private), plus 5 public predicates and 1 public survivor-gap prefix producer. Key
+77 lemmas (73 public, 2 private), plus 6 public predicates and 1 public survivor-gap prefix producer. Key
 public lemmas:
 
 > **Design note:** Several lemmas in this section overlap with lower-level
@@ -751,6 +760,7 @@ public lemmas:
 | **assertCyclePrimesTailEqualsSpecFilterValues()**                                 | `cycle.primesTailValues == spec.filterValues`                                 |
 | **assertCycleModulusEqualsSpecFilterModulus()**                                   | `cycle.modulus == spec.tailPrimorial`                                         |
 | **assertNextPeriodMatchesExpandedFilterCount()**                                  | `nextPeriod() == period * (spec.head.value - 1)` after consuming expanded head-multiple count |
+| **assertNextPeriodMatchesShiftedWindowCount()**                                   | `nextPeriod() == period * (spec.head.value - 1)` after consuming shifted first-window count |
 | **assertNextPipelineGapsIsNextRotatedGaps()**                                     | `nextPipelineGaps(cycle) == nextRotatedGaps(cycle)`                           |
 | **assertCycleGapCycleEqualsSpecGapCycle()**                                       | `cycle.gapCycle == spec.specGapCycle(period)`                                 |
 | **assertCycleSpecNextFilterDecisionMatches(k)**                                   | `cycle(k)` and `spec(k)` have the same next-filter decision                   |
@@ -808,8 +818,24 @@ public lemmas:
 | **assertRepeatedCycleIntegralMatches(times,pos)**      | `repeatedCI(pos) == originalCI(pos)` for small pos |
 | **assertRepeatedCycleMatchesSpecPrefix(times,count)**  | `repeatedCycle(times)(i) == spec(i)` for all `i` in `[0,count)` |
 | **assertRepeatedCycleMatchesSpecFirstExpandedPeriod()** | `repeatedCycle(head)` matches `spec` across the first `period * head` values |
+| **assertRepeatedIntegralMatchesShiftedSpec(index)** | `repeatedCycle(head).integral(index) == spec(index + 1)` |
 | **assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count)** | On the first expanded integral window, `spec.next.accepts(v)` iff `mod(v, head) != 0` |
 | **assertRepeatedCycleNextAcceptsMatchesHeadFilterFullFirstExpandedPeriod()** | Full-window wrapper for the repeated-cycle/spec-next filter bridge |
+| **assertRepeatedFirstWindowStartsAtSpecNextHead()** | Repeated first integral scan starts at `spec.next(0)` and survives the head filter |
+| **assertRepeatedFirstWindowSurvivorsHeadMatchesSpecNext()** | First survivor of the repeated first-window filter equals `spec.next(0)` |
+| **assertRepeatedExtendedWindowSurvivorsHeadMatchesSpecNext()** | First survivor of the extended gap-reconstruction window equals `spec.next(0)` |
+| **assertRepeatedFirstWindowFilteredCIMatchesSurvivors(newCI,position)** | A CI built from repeated first-window survivor gaps reconstructs survivor values |
+| **assertRepeatedExtendedWindowFilteredCIMatchesSurvivors(newCI,position)** | A CI built from extended-window survivor gaps reconstructs survivor values |
+| **assertRepeatedExtendedWindowGapMatchesSpecNextGapAt(index)** | If adjacent extended survivors match `spec.next`, their generated gap matches `spec.next` gap |
+| **assertRepeatedExtendedWindowNextValueFromGapAt(index)** | If survivor `index` and gap `index` match `spec.next`, survivor `index + 1` matches |
+| **repeatedExtendedWindowGapsMatchSpecNextPrefix(count)** | Predicate: extended survivor gaps match `spec.next` gaps for the prefix ending before `count` |
+| **assertRepeatedExtendedWindowValuesMatchSpecNextFromGapPrefix(count)** | Matching gap prefix implies extended survivor value `count` matches `spec.next(count)` |
+| **assertRepeatedExtendedWindowFilteredCIMatchesSpecNextFromGapPrefix(newCI,position)** | CI rebuilt from extended survivors matches `spec.next(position + 1)` under matching gap prefix |
+| **assertSpecNextValueAppearsInRepeatedExtendedWindowSurvivors(k)** | If `spec.next(k)` old index is in the scan, then that value appears in extended survivors |
+| **assertSpecNextValueAppearsInRepeatedExtendedWindowSurvivorsFromValueBound(k)** | If `spec.next(k)` is bounded by the extended scan endpoint, then it appears in extended survivors |
+| **assertRepeatedIntegralSkippedRangeBetweenSpecNextValuesAllMultiples(k,fromPos,untilPos)** | Repeated integral positions skipped between consecutive `spec.next` values are current-head multiples |
+| **assertRepeatedExtendedWindowTailHeadMatchesSpecNextSuccessor(k)** | The filtered repeated-integral tail after `spec.next(k)` starts at `spec.next(k + 1)` |
+| **assertRepeatedExtendedWindowTailHeadMatchesSpecNextSuccessorFromValueBound(k)** | Value bound by the extended endpoint gives the filtered repeated-integral tail head |
 | **assertSpecHeadRejectedByHeadFilter()**             | Proves the raw lower head is rejected by the current head filter |
 | **assertRepeatedCycleFullFirstExpandedEndpointRejected()** | Proves the final value of the first expanded scan window is a rejected head multiple |
 | **assertSpecNextIsKthSurvivor(nextPeriod,k)**          | `spec.next(k) == cycle(indexOfAccepted(spec.next(k)))`      |

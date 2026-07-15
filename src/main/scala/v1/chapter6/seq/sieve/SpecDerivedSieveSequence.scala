@@ -150,6 +150,16 @@ case class SpecDerivedSieveSequence(
     count == period * (spec.head.value - BigInt(1))
   }.holds
 
+  def assertNextPeriodMatchesShiftedWindowCount(): Boolean = {
+    assert(primorialMatchesProduct(spec.primes.list.tail))
+    assert(Calc.mod(spec.tailPrimorial, spec.head.value) != BigInt(0))
+    assert(spec.assertSameHeadShiftedWindowCount(period))
+
+    val count = nextPeriod()
+
+    count == period * (spec.head.value - BigInt(1))
+  }.holds
+
   /**
    * The gap cycle stores exactly `period` gaps, matching the spec's
    * canonical period.
@@ -497,6 +507,23 @@ case class SpecDerivedSieveSequence(
     repeatedCycleMatchesSpecFirstExpandedPeriod()
   }.holds
 
+  def assertRepeatedIntegralMatchesShiftedSpec(index: BigInt): Boolean = {
+    require(index >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val specIndex = index + BigInt(1)
+
+    assert(spec.head.value > BigInt(0))
+    assert(specIndex >= BigInt(1))
+    assert(assertRepeatedCycleApplyMatches(spec.head.value, specIndex))
+    assert(assertApplyMatches(specIndex))
+    assert(repeated(specIndex) == repeated.integral(index))
+    assert(repeated(specIndex) == cycle(specIndex))
+    assert(cycle(specIndex) == spec(specIndex))
+
+    repeated.integral(index) == spec(index + BigInt(1))
+  }.holds
+
   def assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count: BigInt): Boolean = {
     require(count >= BigInt(0))
     require(count <= period * spec.head.value)
@@ -542,6 +569,585 @@ case class SpecDerivedSieveSequence(
     assert(assertRepeatedCycleNextAcceptsMatchesHeadFilterFirstExpandedPeriod(count))
 
     true
+  }.holds
+
+  def assertRepeatedFirstWindowStartsAtSpecNextHead(): Boolean = {
+    val repeated = repeatedCycle(spec.head.value)
+    val value = repeated.integral(BigInt(0))
+
+    assert(spec.head.value > BigInt(0))
+    assert(assertRepeatedCycleApplyMatches(spec.head.value, BigInt(1)))
+    assert(assertNextHeadMatches())
+    assert(repeated(BigInt(1)) == repeated.integral(BigInt(0)))
+    assert(repeated(BigInt(1)) == cycle(BigInt(1)))
+    assert(cycle(BigInt(1)) == spec.next.head.value)
+    assert(spec.next(BigInt(0)) == spec.next.head.value)
+    assert(value == spec.next(BigInt(0)))
+    assert(spec.assertNextValueAcceptedByThis(BigInt(0)))
+
+    value == spec.next(BigInt(0)) &&
+      Calc.mod(value, spec.head.value) != BigInt(0)
+  }.holds
+
+  def assertRepeatedFirstWindowSurvivorsHeadMatchesSpecNext(): Boolean = {
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    assert(spec.head.value > BigInt(0))
+    assert(period > BigInt(0))
+    assert(steps > BigInt(0))
+    assert(assertRepeatedFirstWindowStartsAtSpecNextHead())
+    assert(Calc.mod(repeated.integral(BigInt(0)), spec.head.value) != BigInt(0))
+    assert(GapProperties.assertFirstSurvivorIsHead(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    ))
+    assert(survivors.head == repeated.integral(BigInt(0)))
+    assert(repeated.integral(BigInt(0)) == spec.next(BigInt(0)))
+
+    survivors.head == spec.next(BigInt(0))
+  }.holds
+
+  def assertRepeatedExtendedWindowSurvivorsHeadMatchesSpecNext(): Boolean = {
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    assert(spec.head.value > BigInt(0))
+    assert(period > BigInt(0))
+    assert(steps > BigInt(0))
+    assert(assertRepeatedFirstWindowStartsAtSpecNextHead())
+    assert(Calc.mod(repeated.integral(BigInt(0)), spec.head.value) != BigInt(0))
+    assert(GapProperties.assertFirstSurvivorIsHead(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    ))
+    assert(survivors.head == repeated.integral(BigInt(0)))
+    assert(repeated.integral(BigInt(0)) == spec.next(BigInt(0)))
+
+    survivors.head == spec.next(BigInt(0))
+  }.holds
+
+  def assertRepeatedFirstWindowFilteredCIMatchesSurvivors(
+    newCI: CycleIntegral,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(survivors.size > position + BigInt(1))
+    require(position < newCI.period)
+    require(newCI.period > BigInt(0))
+    require(newCI.initialValue == survivors.head)
+    require(newCI.cycle.values == CycleIntegralFilterProperties.gapsFromValues(survivors))
+
+    assert(CycleIntegralFilterProperties.assertNewCIMatchesSurvivors(
+      survivors,
+      newCI,
+      position
+    ))
+
+    newCI(position) == survivors(position + BigInt(1))
+  }.holds
+
+  def assertRepeatedExtendedWindowFilteredCIMatchesSurvivors(
+    newCI: CycleIntegral,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(survivors.size > position + BigInt(1))
+    require(position < newCI.period)
+    require(newCI.period > BigInt(0))
+    require(newCI.initialValue == survivors.head)
+    require(newCI.cycle.values == CycleIntegralFilterProperties.gapsFromValues(survivors))
+
+    assert(CycleIntegralFilterProperties.assertNewCIMatchesSurvivors(
+      survivors,
+      newCI,
+      position
+    ))
+
+    newCI(position) == survivors(position + BigInt(1))
+  }.holds
+
+  def assertRepeatedExtendedWindowGapMatchesSpecNextGapAt(index: BigInt): Boolean = {
+    require(index >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(index + BigInt(1) < survivors.size)
+    require(survivors(index) == spec.next(index))
+    require(survivors(index + BigInt(1)) == spec.next(index + BigInt(1)))
+
+    val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
+    val specGaps = spec.next.gapList(BigInt(0), index + BigInt(1))
+
+    assert(CycleIntegralFilterProperties.assertGapsFromValuesAtIndex(
+      survivors,
+      index
+    ))
+    assert(spec.next.assertGapListApplyEqualsGapAtPosition(
+      BigInt(0),
+      index + BigInt(1),
+      index
+    ))
+    assert(gaps(index) == survivors(index + BigInt(1)) - survivors(index))
+    assert(specGaps(index) == spec.next(index + BigInt(1)) - spec.next(index))
+
+    gaps(index) == specGaps(index)
+  }.holds
+
+  def assertRepeatedExtendedWindowNextValueFromGapAt(index: BigInt): Boolean = {
+    require(index >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(index + BigInt(1) < survivors.size)
+    require(survivors(index) == spec.next(index))
+
+    val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
+    val specGaps = spec.next.gapList(BigInt(0), index + BigInt(1))
+
+    require(index < gaps.size)
+    require(index < specGaps.size)
+    require(gaps(index) == specGaps(index))
+
+    assert(CycleIntegralFilterProperties.assertGapsFromValuesAtIndex(
+      survivors,
+      index
+    ))
+    assert(spec.next.assertGapListApplyEqualsGapAtPosition(
+      BigInt(0),
+      index + BigInt(1),
+      index
+    ))
+    assert(gaps(index) == survivors(index + BigInt(1)) - survivors(index))
+    assert(specGaps(index) == spec.next(index + BigInt(1)) - spec.next(index))
+    assert(survivors(index) == spec.next(index))
+
+    survivors(index + BigInt(1)) == spec.next(index + BigInt(1))
+  }.holds
+
+  def repeatedExtendedWindowGapsMatchSpecNextPrefix(count: BigInt): Boolean = {
+    require(count >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(count < survivors.size)
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      true
+    } else {
+      val index = count - BigInt(1)
+      val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
+      val specGaps = spec.next.gapList(BigInt(0), count)
+
+      assert(index >= BigInt(0))
+      assert(index < count)
+      assert(index < survivors.size)
+
+      repeatedExtendedWindowGapsMatchSpecNextPrefix(index) &&
+        gaps(index) == specGaps(index)
+    }
+  }
+
+  def assertRepeatedExtendedWindowValuesMatchSpecNextFromGapPrefix(count: BigInt): Boolean = {
+    require(count >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+
+    require(!survivors.isEmpty)
+    require(count < survivors.size)
+    require(repeatedExtendedWindowGapsMatchSpecNextPrefix(count))
+    decreases(count)
+
+    if (count == BigInt(0)) {
+      assert(assertRepeatedExtendedWindowSurvivorsHeadMatchesSpecNext())
+      assert(survivors.head == spec.next(BigInt(0)))
+      assert(survivors(BigInt(0)) == survivors.head)
+
+      survivors(count) == spec.next(count)
+    } else {
+      val index = count - BigInt(1)
+      val gaps = CycleIntegralFilterProperties.gapsFromValues(survivors)
+      val specGaps = spec.next.gapList(BigInt(0), count)
+
+      assert(index >= BigInt(0))
+      assert(index < count)
+      assert(index + BigInt(1) == count)
+      assert(index + BigInt(1) < survivors.size)
+      assert(repeatedExtendedWindowGapsMatchSpecNextPrefix(index))
+      assert(assertRepeatedExtendedWindowValuesMatchSpecNextFromGapPrefix(index))
+      assert(survivors(index) == spec.next(index))
+      assert(index < gaps.size)
+      assert(index < specGaps.size)
+      assert(gaps(index) == specGaps(index))
+      assert(assertRepeatedExtendedWindowNextValueFromGapAt(index))
+
+      survivors(count) == spec.next(count)
+    }
+  }.holds
+
+  def assertRepeatedExtendedWindowFilteredCIMatchesSpecNextFromGapPrefix(
+    newCI: CycleIntegral,
+    position: BigInt
+  ): Boolean = {
+    require(position >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+    val count = position + BigInt(1)
+
+    require(!survivors.isEmpty)
+    require(survivors.size > count)
+    require(position < newCI.period)
+    require(newCI.period > BigInt(0))
+    require(newCI.initialValue == survivors.head)
+    require(newCI.cycle.values == CycleIntegralFilterProperties.gapsFromValues(survivors))
+    require(repeatedExtendedWindowGapsMatchSpecNextPrefix(count))
+
+    assert(assertRepeatedExtendedWindowFilteredCIMatchesSurvivors(
+      newCI,
+      position
+    ))
+    assert(newCI(position) == survivors(count))
+    assert(assertRepeatedExtendedWindowValuesMatchSpecNextFromGapPrefix(count))
+    assert(survivors(count) == spec.next(count))
+
+    newCI(position) == spec.next(position + BigInt(1))
+  }.holds
+
+  def assertSpecNextValueAppearsInRepeatedExtendedWindowSurvivors(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+    val value = spec.next(k)
+    val oldIndex = spec.indexOfAccepted(value)
+
+    require(oldIndex > BigInt(0))
+    require(oldIndex <= steps)
+
+    val position = oldIndex - BigInt(1)
+
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.accepts(value))
+    assert(spec(oldIndex) == value)
+    assert(position >= BigInt(0))
+    assert(position < steps)
+    assert(assertRepeatedIntegralMatchesShiftedSpec(position))
+    assert(repeated.integral(position) == spec(position + BigInt(1)))
+    assert(position + BigInt(1) == oldIndex)
+    assert(repeated.integral(position) == value)
+    assert(spec.next.accepts(value))
+    assert(value >= spec.next.head.value)
+    assert(spec.assertNextAcceptsMatchesHeadFilterForAcceptedValue(value))
+    assert(Calc.mod(value, spec.head.value) != BigInt(0))
+    assert(Calc.mod(repeated.integral(position), spec.head.value) != BigInt(0))
+    assert(GapProperties.assertSurvivorValuesContainsNonMultipleAtPosition(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps,
+      position
+    ))
+
+    survivors.contains(value)
+  }.holds
+
+  def assertSpecNextValueAppearsInRepeatedExtendedWindowSurvivorsFromValueBound(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      BigInt(0),
+      steps
+    )
+    val value = spec.next(k)
+
+    require(value <= spec(steps))
+
+    val oldIndex = spec.indexOfAccepted(value)
+
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.accepts(value))
+    assert(spec.assertIndexOfAcceptedAtMost(value, steps))
+    assert(oldIndex <= steps)
+    assert(value >= spec.next.head.value)
+    assert(spec.next.head.value > spec.head.value)
+    assert(value > spec.head.value)
+    if (oldIndex == BigInt(0)) {
+      assert(spec(oldIndex) == spec.head.value)
+      assert(spec(oldIndex) == value)
+      assert(value == spec.head.value)
+      assert(false)
+    }
+    assert(oldIndex > BigInt(0))
+    assert(assertSpecNextValueAppearsInRepeatedExtendedWindowSurvivors(k))
+
+    survivors.contains(value)
+  }.holds
+
+  def assertRepeatedIntegralSkippedRangeBetweenSpecNextValuesAllMultiples(
+    k: BigInt,
+    fromPos: BigInt,
+    untilPos: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(fromPos >= BigInt(0))
+    require(untilPos >= fromPos)
+
+    val repeated = repeatedCycle(spec.head.value)
+    val currentValue = spec.next(k)
+    val nextValue = spec.next(k + BigInt(1))
+    val currentOldIndex = spec.indexOfAccepted(currentValue)
+    val nextOldIndex = spec.indexOfAccepted(nextValue)
+
+    require(nextOldIndex > currentOldIndex)
+    require(fromPos >= currentOldIndex)
+    require(untilPos <= nextOldIndex - BigInt(1))
+    decreases(untilPos - fromPos)
+
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
+
+    if (fromPos == untilPos) {
+      GapProperties.allMultiplesInRange(
+        repeated.integral,
+        spec.head.value,
+        fromPos,
+        untilPos
+      )
+    } else {
+      val oldIndex = fromPos + BigInt(1)
+
+      assert(fromPos < untilPos)
+      assert(fromPos <= untilPos - BigInt(1))
+      assert(untilPos - BigInt(1) <= nextOldIndex - BigInt(2))
+      assert(fromPos <= nextOldIndex - BigInt(2))
+      assert(oldIndex < nextOldIndex)
+      assert(oldIndex > currentOldIndex)
+      assert(spec(currentOldIndex) == currentValue)
+      assert(spec(nextOldIndex) == nextValue)
+      assert(spec.assertApplyStrictlyIncreasesBetween(currentOldIndex, oldIndex))
+      assert(spec(currentOldIndex) < spec(oldIndex))
+      assert(spec.assertApplyStrictlyIncreasesBetween(oldIndex, nextOldIndex))
+      assert(spec(oldIndex) < spec(nextOldIndex))
+      assert(spec.assertOldGeneratedValueBetweenNextValuesIsHeadMultiple(k, oldIndex))
+      assert(Calc.mod(spec(oldIndex), spec.head.value) == BigInt(0))
+      assert(assertRepeatedIntegralMatchesShiftedSpec(fromPos))
+      assert(repeated.integral(fromPos) == spec(oldIndex))
+      assert(Calc.mod(repeated.integral(fromPos), spec.head.value) == BigInt(0))
+      assert(assertRepeatedIntegralSkippedRangeBetweenSpecNextValuesAllMultiples(
+        k,
+        fromPos + BigInt(1),
+        untilPos
+      ))
+      assert(GapProperties.allMultiplesInRange(
+        repeated.integral,
+        spec.head.value,
+        fromPos + BigInt(1),
+        untilPos
+      ))
+
+      GapProperties.allMultiplesInRange(
+        repeated.integral,
+        spec.head.value,
+        fromPos,
+        untilPos
+      )
+    }
+  }.holds
+
+  def assertRepeatedExtendedWindowTailHeadMatchesSpecNextSuccessor(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val currentValue = spec.next(k)
+    val nextValue = spec.next(k + BigInt(1))
+    val currentOldIndex = spec.indexOfAccepted(currentValue)
+    val nextOldIndex = spec.indexOfAccepted(nextValue)
+
+    require(nextOldIndex <= steps)
+
+    assert(spec.next.applyStrictlyIncreases(k))
+    assert(currentValue < nextValue)
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
+    assert(spec.accepts(currentValue))
+    assert(spec.accepts(nextValue))
+    assert(spec.assertIndexOfAcceptedStrictlyIncreasesForAcceptedValues(
+      currentValue,
+      nextValue
+    ))
+    assert(nextOldIndex > currentOldIndex)
+
+    val count = steps - currentOldIndex
+    val position = nextOldIndex - BigInt(1)
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      currentOldIndex,
+      count
+    )
+
+    assert(spec.head.value > BigInt(0))
+    assert(count > BigInt(0))
+    assert(position >= currentOldIndex)
+    assert(position < currentOldIndex + count)
+    assert(assertRepeatedIntegralSkippedRangeBetweenSpecNextValuesAllMultiples(
+      k,
+      currentOldIndex,
+      position
+    ))
+    assert(GapProperties.allMultiplesInRange(
+      repeated.integral,
+      spec.head.value,
+      currentOldIndex,
+      position
+    ))
+    assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
+    assert(spec.accepts(nextValue))
+    assert(spec(nextOldIndex) == nextValue)
+    assert(assertRepeatedIntegralMatchesShiftedSpec(position))
+    assert(repeated.integral(position) == spec(position + BigInt(1)))
+    assert(position + BigInt(1) == nextOldIndex)
+    assert(repeated.integral(position) == nextValue)
+    assert(spec.next.accepts(nextValue))
+    assert(nextValue >= spec.next.head.value)
+    assert(spec.assertNextAcceptsMatchesHeadFilterForAcceptedValue(nextValue))
+    assert(spec.next.accepts(nextValue) ==
+      (Calc.mod(nextValue, spec.head.value) != BigInt(0)))
+    assert(Calc.mod(nextValue, spec.head.value) != BigInt(0))
+    assert(Calc.mod(repeated.integral(position), spec.head.value) != BigInt(0))
+    assert(GapProperties.assertFirstSurvivorAtPosition(
+      repeated.integral,
+      spec.head.value,
+      currentOldIndex,
+      count,
+      position
+    ))
+
+    survivors.head == spec.next(k + BigInt(1))
+  }.holds
+
+  def assertRepeatedExtendedWindowTailHeadMatchesSpecNextSuccessorFromValueBound(k: BigInt): Boolean = {
+    require(k >= BigInt(0))
+
+    val repeated = repeatedCycle(spec.head.value)
+    val steps = period * spec.head.value + BigInt(1)
+    val currentValue = spec.next(k)
+    val nextValue = spec.next(k + BigInt(1))
+    val currentOldIndex = spec.indexOfAccepted(currentValue)
+    val nextOldIndex = spec.indexOfAccepted(nextValue)
+
+    require(nextValue <= spec(steps))
+
+    assert(spec.next.applyStrictlyIncreases(k))
+    assert(currentValue < nextValue)
+    assert(currentValue <= spec(steps))
+    assert(spec.assertNextValueAcceptedByThis(k))
+    assert(spec.assertNextValueAcceptedByThis(k + BigInt(1)))
+    assert(spec.accepts(currentValue))
+    assert(spec.accepts(nextValue))
+    assert(spec.assertIndexOfAcceptedAtMost(currentValue, steps))
+    assert(spec.assertIndexOfAcceptedAtMost(nextValue, steps))
+    assert(currentOldIndex <= steps)
+    assert(nextOldIndex <= steps)
+    assert(assertRepeatedExtendedWindowTailHeadMatchesSpecNextSuccessor(k))
+
+    val count = steps - currentOldIndex
+    val survivors = CycleIntegralFilterProperties.survivorValues(
+      repeated.integral,
+      spec.head.value,
+      currentOldIndex,
+      count
+    )
+
+    survivors.head == spec.next(k + BigInt(1))
   }.holds
 
   def assertSpecHeadRejectedByHeadFilter(): Boolean = {

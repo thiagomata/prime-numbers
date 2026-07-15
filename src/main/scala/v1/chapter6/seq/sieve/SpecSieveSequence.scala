@@ -764,6 +764,58 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     nextSeq.passesFilter(v)
   }.holds
 
+  def assertOldAcceptedHeadNonMultipleAcceptedByNext(v: BigInt): Boolean = {
+    require(primes.nextPrime.value < head.value * head.value)
+    require(v >= next.head.value)
+    require(accepts(v))
+    require(Calc.mod(v, head.value) != BigInt(0))
+
+    val nextSeq = next
+
+    assert(v >= head.value)
+    assert(assertSurvivorAcceptedByNext(v))
+    assert(nextSeq.passesFilter(v))
+
+    nextSeq.accepts(v)
+  }.holds
+
+  def assertOldAcceptedRejectedByNextIsHeadMultiple(v: BigInt): Boolean = {
+    require(primes.nextPrime.value < head.value * head.value)
+    require(v >= next.head.value)
+    require(accepts(v))
+    require(!next.accepts(v))
+
+    val nextSeq = next
+
+    assert(assertNextAcceptsMatchesHeadFilterForAcceptedValue(v))
+    assert(nextSeq.accepts(v) == (Calc.mod(v, head.value) != BigInt(0)))
+    assert(!(Calc.mod(v, head.value) != BigInt(0)))
+
+    Calc.mod(v, head.value) == BigInt(0)
+  }.holds
+
+  def assertOldGeneratedValueBetweenNextValuesIsHeadMultiple(k: BigInt, oldIndex: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(oldIndex >= BigInt(0))
+    require(primes.nextPrime.value < head.value * head.value)
+    require(apply(oldIndex) > next(k))
+    require(apply(oldIndex) < next(k + BigInt(1)))
+
+    val nextSeq = next
+    val value = apply(oldIndex)
+
+    assert(nextSeq.assertApplyMonotonic(BigInt(0), k))
+    assert(nextSeq(BigInt(0)) == nextSeq.head.value)
+    assert(nextSeq.head.value <= nextSeq(k))
+    assert(value >= nextSeq.head.value)
+    assert(accepts(value))
+    assert(nextSeq.assertNoAcceptedValueBetweenGeneratedValues(k, value))
+    assert(!nextSeq.accepts(value))
+    assert(assertOldAcceptedRejectedByNextIsHeadMultiple(value))
+
+    Calc.mod(value, head.value) == BigInt(0)
+  }.holds
+
   def assertNextAcceptsMatchesHeadFilterForAcceptedValue(v: BigInt): Boolean = {
     require(primes.nextPrime.value < head.value * head.value)
     require(v >= next.head.value)
@@ -1840,6 +1892,30 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  private def assertCountAcceptedHeadNonMultiplesBetweenAppend(
+    from: BigInt,
+    middle: BigInt,
+    until: BigInt
+  ): Boolean = {
+    require(from >= head.value)
+    require(from <= middle)
+    require(middle <= until)
+    decreases(middle - from)
+
+    if (from == middle) {
+      countAcceptedHeadNonMultiplesBetween(from, until) ==
+        countAcceptedHeadNonMultiplesBetween(from, middle) +
+          countAcceptedHeadNonMultiplesBetween(middle, until)
+    } else {
+      assert(from < middle)
+      assert(from + BigInt(1) <= middle)
+      assert(assertCountAcceptedHeadNonMultiplesBetweenAppend(from + BigInt(1), middle, until))
+      countAcceptedHeadNonMultiplesBetween(from, until) ==
+        countAcceptedHeadNonMultiplesBetween(from, middle) +
+          countAcceptedHeadNonMultiplesBetween(middle, until)
+    }
+  }.holds
+
   def assertGeneratedPrefixCount(k: BigInt): Boolean = {
     require(k >= BigInt(0))
     decreases(k)
@@ -1993,6 +2069,43 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     assertSameHeadExtendedFilterCount(period)
     count == period * (head.value - BigInt(1))
   })
+
+  def assertSameHeadShiftedWindowCount(period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(apply(period) == head.value + tailPrimorial)
+    require(Calc.mod(tailPrimorial, head.value) != BigInt(0))
+
+    val expandedEnd = head.value + head.value * tailPrimorial
+    val shiftedStart = head.value + BigInt(1)
+    val shiftedUntil = expandedEnd + BigInt(1)
+
+    assert(head.value > BigInt(1))
+    assert(tailPrimorial > BigInt(0))
+    assert(head.value < expandedEnd)
+    assert(shiftedStart <= expandedEnd)
+    assert(expandedEnd <= shiftedUntil)
+    assert(assertSameHeadExtendedFilterCount(period))
+    assert(countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd) ==
+      period * (head.value - BigInt(1)))
+
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), head.value, BigInt(1)))
+    assert(Calc.mod(head.value, head.value) == BigInt(0))
+    assert(countAcceptedHeadNonMultiplesBetween(head.value, expandedEnd) ==
+      countAcceptedHeadNonMultiplesBetween(shiftedStart, expandedEnd))
+
+    assert(assertBlockShiftMultiple(BigInt(0), head.value, period))
+    assert(apply(period * head.value) == expandedEnd)
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), head.value, BigInt(1) + tailPrimorial))
+    assert(Calc.mod(expandedEnd, head.value) == BigInt(0))
+    assert(countAcceptedHeadNonMultiplesBetween(expandedEnd, shiftedUntil) == BigInt(0))
+    assert(assertCountAcceptedHeadNonMultiplesBetweenAppend(shiftedStart, expandedEnd, shiftedUntil))
+    assert(countAcceptedHeadNonMultiplesBetween(shiftedStart, shiftedUntil) ==
+      countAcceptedHeadNonMultiplesBetween(shiftedStart, expandedEnd) +
+        countAcceptedHeadNonMultiplesBetween(expandedEnd, shiftedUntil))
+
+    countAcceptedHeadNonMultiplesBetween(shiftedStart, shiftedUntil) ==
+      period * (head.value - BigInt(1))
+  }.holds
 
   /**
    * Extracts the rejection fact for one value inside a skipped interval.
@@ -2190,6 +2303,24 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  def assertNoAcceptedValueBetweenGeneratedValues(k: BigInt, value: BigInt): Boolean = {
+    require(k >= BigInt(0))
+    require(value >= head.value)
+    require(apply(k) < value)
+    require(value < apply(k + BigInt(1)))
+
+    val previous = apply(k)
+    val nextValue = apply(k + BigInt(1))
+
+    assert(value >= previous + BigInt(1))
+    assert(previous + BigInt(1) <= nextValue)
+    assert(applySkipsNoAcceptedBetween(k + BigInt(1)))
+    assert(noAcceptedBetween(previous + BigInt(1), nextValue))
+    assert(noAcceptedBetweenRejects(previous + BigInt(1), nextValue, value))
+
+    !accepts(value)
+  }.holds
+
   /**
    * Public first-step completeness wrapper.
    *
@@ -2330,6 +2461,15 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
+  def assertApplyStrictlyIncreasesBetween(from: BigInt, until: BigInt): Boolean = {
+    require(from >= BigInt(0))
+    require(until > from)
+
+    assert(applyIndexStrictlyPreservesValues(from, until))
+
+    apply(from) < apply(until)
+  }.holds
+
   /**
    * Converts a generated-value bound back into an index bound.
    *
@@ -2360,6 +2500,48 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
       assert(apply(bound) < apply(index))
       index <= bound
     }
+  }.holds
+
+  def assertIndexOfAcceptedAtMost(value: BigInt, bound: BigInt): Boolean = {
+    require(value >= head.value)
+    require(accepts(value))
+    require(bound >= BigInt(0))
+    require(value <= apply(bound))
+
+    val index = indexOfAccepted(value)
+
+    assert(index >= BigInt(0))
+    assert(apply(index) == value)
+    assert(apply(index) <= apply(bound))
+    assert(valueBoundImpliesIndexBound(index, bound))
+
+    index <= bound
+  }.holds
+
+  def assertIndexOfAcceptedStrictlyIncreasesForAcceptedValues(
+    lowerValue: BigInt,
+    upperValue: BigInt
+  ): Boolean = {
+    require(lowerValue >= head.value)
+    require(upperValue >= head.value)
+    require(accepts(lowerValue))
+    require(accepts(upperValue))
+    require(lowerValue < upperValue)
+
+    val lowerIndex = indexOfAccepted(lowerValue)
+    val upperIndex = indexOfAccepted(upperValue)
+
+    assert(apply(upperIndex) == upperValue)
+    assert(lowerValue <= apply(upperIndex))
+    assert(assertIndexOfAcceptedAtMost(lowerValue, upperIndex))
+    assert(lowerIndex <= upperIndex)
+    if (lowerIndex == upperIndex) {
+      assert(apply(lowerIndex) == lowerValue)
+      assert(apply(upperIndex) == upperValue)
+      assert(lowerValue == upperValue)
+    }
+
+    lowerIndex < upperIndex
   }.holds
 
   /**
