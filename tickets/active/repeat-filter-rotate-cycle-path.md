@@ -134,6 +134,10 @@ until the collector/gaps equivalence is proved.
 
 ## Learning Log
 
+- 2026-07-15: Structural cleanup requested: keep new case classes small and
+  move assertion lemmas into static companion objects, following the
+  `AllPrimesSoFarList` style. Target scope is the new spec-derived wrapper
+  classes only; no proof strategy changes.
 - 2026-07-14: Ticket created after user directed that the current path should not
   be updated. New path must be built side-by-side, with old machinery removed
   only later.

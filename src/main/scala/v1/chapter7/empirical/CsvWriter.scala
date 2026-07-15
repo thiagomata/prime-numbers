@@ -1,4 +1,4 @@
-package v1.chapter6.seq.sieve.empirical
+package v1.chapter7.empirical
 
 import stainless.annotation.extern
 import java.io.FileWriter

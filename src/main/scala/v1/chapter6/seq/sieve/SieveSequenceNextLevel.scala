@@ -11,6 +11,32 @@ import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
 import v1.chapter6.seq.sieve.properties.SieveSequenceProperties
 
+/**
+ * Helper functions and lemmas for constructing a next-stage gap cycle.
+ *
+ * This object is not a fourth sieve-sequence representation. It is a collection
+ * of transition helpers around `CycleSieveSequence`. The prominent `next*`
+ * methods form the residue pipeline:
+ *
+ *   nextResidues -> nextExpanded -> nextFiltered -> nextSorted ->
+ *   nextGaps -> nextHeadResidueIndex -> nextRotatedGaps
+ *
+ * That pipeline works with finite residue representatives: enumerate current
+ * tail-filter residues, lift them across the `head * modulus` window, remove
+ * multiples of the current head, calculate wrap-around gaps, and rotate the
+ * result so the next head is the cycle origin.
+ *
+ * The same object also contains walk/window helpers such as `collectGaps`,
+ * `nextGapsWalk`, `currentWindow`, and `survivorWindow`. Those helpers scan the
+ * current cycle's generated values directly. Tickets record that proving the
+ * walk equivalent to the canonical next spec has been difficult, so the code
+ * keeps these lanes explicit instead of hiding them behind a single vague
+ * `next` abstraction.
+ *
+ * For global counting or period theorems, prefer `SpecSieveSequence` first.
+ * This object is the right place for local pipeline facts: range, non-emptiness,
+ * positivity, sortedness, size preservation, and precondition discharge.
+ */
 object SieveSequenceNextLevel {
 
   def nextResidues(seq: CycleSieveSequence): List[BigInt] = {

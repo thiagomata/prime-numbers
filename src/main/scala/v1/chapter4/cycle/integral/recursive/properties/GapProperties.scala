@@ -107,7 +107,7 @@ object GapProperties {
    * Repeating a gap cycle `times` times does not change the integral at
    * positions within the original period.
    *
-   * [Verified] in `CycleIntegralProperties.assertRepeatedValuesIntegralMatches`.
+   * Delegates to `RepeatedGapIntegralProperties.assertRepeatedGapsPreservesIntegral`.
    */
   def assertRepeatedGapsPreservesIntegral(
     originalCI: CycleIntegral,
@@ -121,7 +121,7 @@ object GapProperties {
     require(repeatedCI.initialValue == originalCI.initialValue)
     require(repeatedCI.cycle.values ==
       ListRepeatProperties.repeat(originalCI.cycle.values, times))
-    CycleIntegralProperties.assertRepeatedValuesIntegralMatches(
+    RepeatedGapIntegralProperties.assertRepeatedGapsPreservesIntegral(
       originalCI, repeatedCI, times, pos
     )
   }.holds

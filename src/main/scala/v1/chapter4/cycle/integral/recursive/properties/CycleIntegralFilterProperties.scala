@@ -791,22 +791,7 @@ object CycleIntegralFilterProperties {
    * Replication invariance: the cycle value at any position is unchanged
    * when the underlying gap list is replicated `factor` times.
    *
-   * Uses `findValueInCycle` to express cycle values as list access
-   * modulo size, then the mod-nesting property
-   * `Calc.mod(Calc.mod(pos, f*n), n) == Calc.mod(pos, n)` (via
-   * `ATimesBSameMod`) to prove equality without constructing the
-   * replicated list.
-   *
-   * @param originalIntegral    the original cycle integral
-   * @param replicatedIntegral  the integral with f-times replicated gaps
-   * @param factor              replication factor, factor > 0
-   * @param position            the position to check
-   * @return cycle values are equal
-    *
-    *   Cycle_f(pos) = Values_f(pos % (f*n))
-    *                = Values_1((pos % (f*n)) % n)
-    *                = Values_1(pos % n)
-    *                = Cycle_1(pos)
+   * Delegates to `RepeatedGapIntegralProperties.assertReplicatedCycleValueEqual`.
    */
   def assertReplicatedCycleValueEqual(
     originalIntegral: CycleIntegral,
@@ -828,17 +813,9 @@ object CycleIntegralFilterProperties {
           originalIntegral.cycle(
             Calc.mod(position, originalIntegral.cycle.period))))
 
-    val originalSize = originalIntegral.cycle.period
-    if (position < originalSize) true
-    else {
-      MemCycleProperties.findValueInCycle(
-        originalIntegral.cycle, position)
-      assert(originalIntegral.cycle(position) ==
-        originalIntegral.cycle(
-          Calc.mod(position, originalSize)))
-    }
-    replicatedIntegral.cycle(position) ==
-      originalIntegral.cycle(position)
+    RepeatedGapIntegralProperties.assertReplicatedCycleValueEqual(
+      originalIntegral, replicatedIntegral, factor, position
+    )
   }.holds
 
   /**

@@ -8,10 +8,32 @@ import v1.chapter6.seq.sieve.properties.{
   SpecDerivedRepeatedCycleProperties
 }
 
+/**
+ * Value-level survivor proof lane over a canonical derived cycle.
+ *
+ * This class deliberately wraps `SpecDerivedSieveSequence` instead of defining
+ * a new sieve sequence. Its purpose is to prove next-stage facts by following
+ * survivor values through the head filter, using coprimality and modulus facts,
+ * rather than by relying on the older index-heavy `nextAcceptedOldIndex` route.
+ *
+ * The wrapper exists because some next-stage obligations are clearer as
+ * statements about values that survive filtering: a cycle survivor passes the
+ * next spec filter, its reduced residue appears in the pipeline list, and the
+ * rotation anchor is the next spec head. Those facts support the bridge between
+ * the canonical spec-derived cycle and the concrete transition helpers.
+ *
+ * It is different from `SpecDerivedSieveSequence` only in proof strategy. The
+ * underlying spec, cycle, head, modulus, and gap cycle are the same; that
+ * sameness is recorded by `SpecDerivedEquivalence`.
+ */
 case class SpecDerivedBySurvivors(
   derived: SpecDerivedSieveSequence
-) {
-  def assertSpecNextFilterEqCyclePrimes(): Boolean = {
+)
+
+object SpecDerivedBySurvivors {
+  def assertSpecNextFilterEqCyclePrimes(bySurvivors: SpecDerivedBySurvivors): Boolean = {
+    val derived = bySurvivors.derived
+
     assert(SpecDerivedCoreProperties.assertPrimesMatch(derived))
     assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
     derived.spec.next.filterValues == derived.cyclePrimes
@@ -31,9 +53,11 @@ case class SpecDerivedBySurvivors(
    * `cycle(1) = 3 > 2 = head*modulus`, so the reduction wraps. S_0 does not
    * need the pipeline equivalence (it is defined directly).
    */
-  def assertNextHeadResidueIsSpecNextHead(): Boolean = {
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+  def assertNextHeadResidueIsSpecNextHead(bySurvivors: SpecDerivedBySurvivors): Boolean = {
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     assert(SpecDerivedCoreProperties.assertNextHeadMatches(derived))
     assert(SpecDerivedCoreProperties.assertNextHeadLessThanNewModulus(derived))
@@ -57,7 +81,9 @@ case class SpecDerivedBySurvivors(
    *
    * Confirmed load-bearing by the S_2 hand-analysis: `5 * 6 = 30 = primorial([5,3,2])`.
    */
-  def assertHeadModulusEqualsSpecNextTailPrimorial(): Boolean = {
+  def assertHeadModulusEqualsSpecNextTailPrimorial(bySurvivors: SpecDerivedBySurvivors): Boolean = {
+    val derived = bySurvivors.derived
+
     assert(SpecDerivedCoreProperties.assertCycleModulusEqualsSpecTailPrimorial(derived))
     assert(derived.spec.filterPrimes == derived.spec.primes.list.tail.list)
     assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
@@ -65,29 +91,31 @@ case class SpecDerivedBySurvivors(
     derived.cycle.head * derived.cycle.modulus == derived.spec.next.tailPrimorial
   }.holds
 
-  def assertCanonicalCycleNextMatchSpecNext(nextPeriod: BigInt): Boolean = {
+  def assertCanonicalCycleNextMatchSpecNext(bySurvivors: SpecDerivedBySurvivors, nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
-    require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
-    require(derived.spec.next.primes.nextPrime.value <
-      derived.spec.next.head.value * derived.spec.next.head.value)
-    require(derived.spec.next.primes.list.nonEmpty)
+    require(bySurvivors.derived.spec.next(nextPeriod) ==
+      bySurvivors.derived.spec.next.head.value + bySurvivors.derived.spec.next.tailPrimorial)
+    require(bySurvivors.derived.spec.next.primes.nextPrime.value <
+      bySurvivors.derived.spec.next.head.value * bySurvivors.derived.spec.next.head.value)
+    require(bySurvivors.derived.spec.next.primes.list.nonEmpty)
     require(Calc.mod(
-      SieveUtils.product(derived.spec.next.filterValues),
-      derived.spec.next.head.value) != BigInt(0))
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+      SieveUtils.product(bySurvivors.derived.spec.next.filterValues),
+      bySurvivors.derived.spec.next.head.value) != BigInt(0))
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
 
-    assert(assertNextHeadResidueIsSpecNextHead())
-    assert(assertHeadModulusEqualsSpecNextTailPrimorial())
+    assert(assertNextHeadResidueIsSpecNextHead(bySurvivors))
+    assert(assertHeadModulusEqualsSpecNextTailPrimorial(bySurvivors))
     assert(SpecDerivedCoreProperties.assertNextCycleGapsMatchSpecNext(derived, nextPeriod))
     assert(nextCanonical.cycle.gapCycle.memCycle.values ==
       derived.spec.next.gapList(BigInt(0), nextPeriod))
 
-    assert(assertSpecNextFilterEqCyclePrimes())
+    assert(assertSpecNextFilterEqCyclePrimes(bySurvivors))
     val cNext = CycleSieveSequence(
       derived.spec.primes.next,
       nextCanonical.cycle.gapCycle)
@@ -104,18 +132,20 @@ case class SpecDerivedBySurvivors(
    * and GapCycle as the canonical next, so their apply values are identical for
    * all k. This lemma pins the first two positions explicitly.
    */
-  def assertSpecCanonicalCycleNextMatch(nextPeriod: BigInt): Boolean = {
+  def assertSpecCanonicalCycleNextMatch(bySurvivors: SpecDerivedBySurvivors, nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(0))
-    require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
-    require(derived.spec.next.primes.nextPrime.value <
-      derived.spec.next.head.value * derived.spec.next.head.value)
-    require(derived.spec.next.primes.list.nonEmpty)
+    require(bySurvivors.derived.spec.next(nextPeriod) ==
+      bySurvivors.derived.spec.next.head.value + bySurvivors.derived.spec.next.tailPrimorial)
+    require(bySurvivors.derived.spec.next.primes.nextPrime.value <
+      bySurvivors.derived.spec.next.head.value * bySurvivors.derived.spec.next.head.value)
+    require(bySurvivors.derived.spec.next.primes.list.nonEmpty)
     require(Calc.mod(
-      SieveUtils.product(derived.spec.next.filterValues),
-      derived.spec.next.head.value) != BigInt(0))
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+      SieveUtils.product(bySurvivors.derived.spec.next.filterValues),
+      bySurvivors.derived.spec.next.head.value) != BigInt(0))
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -123,7 +153,7 @@ case class SpecDerivedBySurvivors(
       derived.spec.primes.next,
       nextCanonical.cycle.gapCycle)
 
-    assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+    assert(assertCanonicalCycleNextMatchSpecNext(bySurvivors, nextPeriod))
     assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, BigInt(0)))
     assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, BigInt(1)))
 
@@ -142,19 +172,21 @@ case class SpecDerivedBySurvivors(
    * Since cNext shares the same primes.next and same GapCycle as
    * nextCanonical.cycle, their .apply(k) is identical for all k.
    */
-  def assertCycleNextApplyEqualsSpecNext(nextPeriod: BigInt, k: BigInt): Boolean = {
+  def assertCycleNextApplyEqualsSpecNext(bySurvivors: SpecDerivedBySurvivors, nextPeriod: BigInt, k: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(nextPeriod > BigInt(0))
-    require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
-    require(derived.spec.next.primes.nextPrime.value <
-      derived.spec.next.head.value * derived.spec.next.head.value)
-    require(derived.spec.next.primes.list.nonEmpty)
+    require(bySurvivors.derived.spec.next(nextPeriod) ==
+      bySurvivors.derived.spec.next.head.value + bySurvivors.derived.spec.next.tailPrimorial)
+    require(bySurvivors.derived.spec.next.primes.nextPrime.value <
+      bySurvivors.derived.spec.next.head.value * bySurvivors.derived.spec.next.head.value)
+    require(bySurvivors.derived.spec.next.primes.list.nonEmpty)
     require(Calc.mod(
-      SieveUtils.product(derived.spec.next.filterValues),
-      derived.spec.next.head.value) != BigInt(0))
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+      SieveUtils.product(bySurvivors.derived.spec.next.filterValues),
+      bySurvivors.derived.spec.next.head.value) != BigInt(0))
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -162,7 +194,7 @@ case class SpecDerivedBySurvivors(
       derived.spec.primes.next,
       nextCanonical.cycle.gapCycle)
 
-    assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+    assert(assertCanonicalCycleNextMatchSpecNext(bySurvivors, nextPeriod))
     assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k))
     cNext.apply(k) == derived.spec.next(k)
   }.holds
@@ -175,19 +207,21 @@ case class SpecDerivedBySurvivors(
    *   SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k)                 — Canonical.next(k) == Spec.next(k)
    * Therefore Canonical.next(k) == Cycle.next(k) by transitivity.
    */
-  def assertBNextApplyEqualsCNextApply(nextPeriod: BigInt, k: BigInt): Boolean = {
+  def assertBNextApplyEqualsCNextApply(bySurvivors: SpecDerivedBySurvivors, nextPeriod: BigInt, k: BigInt): Boolean = {
     require(k >= BigInt(0))
     require(nextPeriod > BigInt(0))
-    require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
-    require(derived.spec.next.primes.nextPrime.value <
-      derived.spec.next.head.value * derived.spec.next.head.value)
-    require(derived.spec.next.primes.list.nonEmpty)
+    require(bySurvivors.derived.spec.next(nextPeriod) ==
+      bySurvivors.derived.spec.next.head.value + bySurvivors.derived.spec.next.tailPrimorial)
+    require(bySurvivors.derived.spec.next.primes.nextPrime.value <
+      bySurvivors.derived.spec.next.head.value * bySurvivors.derived.spec.next.head.value)
+    require(bySurvivors.derived.spec.next.primes.list.nonEmpty)
     require(Calc.mod(
-      SieveUtils.product(derived.spec.next.filterValues),
-      derived.spec.next.head.value) != BigInt(0))
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+      SieveUtils.product(bySurvivors.derived.spec.next.filterValues),
+      bySurvivors.derived.spec.next.head.value) != BigInt(0))
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     val nextCanonical = SpecDerivedSieveSequence(
       derived.spec.next, nextPeriod)
@@ -195,28 +229,30 @@ case class SpecDerivedBySurvivors(
       derived.spec.primes.next,
       nextCanonical.cycle.gapCycle)
 
-    assert(assertCycleNextApplyEqualsSpecNext(nextPeriod, k))
+    assert(assertCycleNextApplyEqualsSpecNext(bySurvivors, nextPeriod, k))
     assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k))
     cNext.apply(k) == nextCanonical.cycle.apply(k)
   }.holds
 
-  def assertRepeatedCycleProof(nextPeriod: BigInt): Boolean = {
+  def assertRepeatedCycleProof(bySurvivors: SpecDerivedBySurvivors, nextPeriod: BigInt): Boolean = {
     require(nextPeriod > BigInt(1))
-    require(derived.spec.next(nextPeriod) ==
-      derived.spec.next.head.value + derived.spec.next.tailPrimorial)
-    require(derived.spec.next.primes.nextPrime.value <
-      derived.spec.next.head.value * derived.spec.next.head.value)
-    require(derived.spec.next.primes.list.nonEmpty)
+    require(bySurvivors.derived.spec.next(nextPeriod) ==
+      bySurvivors.derived.spec.next.head.value + bySurvivors.derived.spec.next.tailPrimorial)
+    require(bySurvivors.derived.spec.next.primes.nextPrime.value <
+      bySurvivors.derived.spec.next.head.value * bySurvivors.derived.spec.next.head.value)
+    require(bySurvivors.derived.spec.next.primes.list.nonEmpty)
     require(Calc.mod(
-      SieveUtils.product(derived.spec.next.filterValues),
-      derived.spec.next.head.value) != BigInt(0))
-    require(derived.spec.head.value >= 3)
-    require(derived.spec.tailPrimorial >= 2)
+      SieveUtils.product(bySurvivors.derived.spec.next.filterValues),
+      bySurvivors.derived.spec.next.head.value) != BigInt(0))
+    require(bySurvivors.derived.spec.head.value >= 3)
+    require(bySurvivors.derived.spec.tailPrimorial >= 2)
+
+    val derived = bySurvivors.derived
 
     val h = derived.spec.head.value
     assert(SpecDerivedRepeatedCycleProperties.assertRepeatedCycleApplyMatches(derived, h, BigInt(0)))
     assert(SpecDerivedCoreProperties.assertSurvivorGapEqualsSpecNextGap(derived, nextPeriod, BigInt(0)))
-    assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
+    assert(assertCanonicalCycleNextMatchSpecNext(bySurvivors, nextPeriod))
     true
   }.holds
 }

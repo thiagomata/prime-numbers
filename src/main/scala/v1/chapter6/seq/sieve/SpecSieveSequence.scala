@@ -16,13 +16,22 @@ import v1.chapter5.prime.properties.PrimeProperties
 import scala.annotation.tailrec
 
 /**
- * The intentionally simple sieve-sequence model.
+ * Linear-scan specification for one sieve-sequence stage.
  *
- * `SpecSieveSequence` is not trying to prove that every generated value is prime.
- * It models one stage of a sieve as an infinite generator of natural numbers.
- * The first prime in `primes` is the starting point of that generator. The tail
- * primes are the active filters. A value is accepted exactly when it is not a
- * multiple of any tail prime.
+ * This is the mathematical source of truth for the package. It models one stage
+ * as an infinite stream of natural numbers starting at the current head. The
+ * tail primes are the active filters, and a value is accepted exactly when it is
+ * not a multiple of any tail prime.
+ *
+ * This class is intentionally not the operational gap-cycle representation.
+ * There is no stored `GapCycle`, no residue sorting, and no rotated finite
+ * history. The point is to make the semantics plain enough to prove stream
+ * facts such as soundness, completeness, strict monotonicity, period, gap
+ * positivity, and spec-level counting theorems.
+ *
+ * `CycleSieveSequence` is the concrete replay representation. It should match
+ * this spec, but it does not define the meaning of acceptance. The bridge from
+ * this spec to a trusted cycle lives in `SpecDerivedSieveSequence`.
  *
  * For example, with `[3, 2]`, the head is `3` and the only filter is `2`, so
  * the generator should produce `3, 5, 7, 9, 11, ...`. The value `9` is accepted
@@ -34,11 +43,9 @@ import scala.annotation.tailrec
  * accepted because it is not divisible by `3` or `2`; the head `5` is not part
  * of the active filter.
  *
- * This deliberately boring representation gives us a baseline for proving the
- * three generator properties before returning to the gap-cycle implementation:
- * soundness, completeness, and strict monotonicity. The future `apply(k)` should
- * be a bounded linear scan over consecutive natural numbers, using `accepts` as
- * the only gate for emitted values.
+ * The class is also not claiming that every emitted value is prime. A single
+ * stage filters only by previous primes. Prime generation comes from the chain
+ * of stage heads, not from treating every value emitted by one stage as prime.
  */
 case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   require(!primes.isEmpty)

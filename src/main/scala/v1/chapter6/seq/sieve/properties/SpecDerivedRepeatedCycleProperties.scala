@@ -4,7 +4,7 @@ import stainless.lang.{BigInt, BooleanDecorations, decreases}
 import v1.chapter2.div.Calc
 import v1.chapter3.list.properties.ListRepeatProperties
 import v1.chapter4.cycle.gap.GapCycle
-import v1.chapter4.cycle.integral.recursive.properties.{CycleIntegralFilterProperties, CycleIntegralProperties, GapProperties}
+import v1.chapter4.cycle.integral.recursive.properties.{CycleIntegralFilterProperties, CycleIntegralProperties, GapProperties, RepeatedGapIntegralProperties}
 import v1.chapter4.cycle.memory.properties.MemCycleProperties
 import v1.chapter6.seq.sieve.SpecDerivedSieveSequence
 
@@ -154,7 +154,7 @@ object SpecDerivedRepeatedCycleProperties {
     assert(ListRepeatProperties.assertRepeatSize(gaps, times))
     assert(repeated.gapCycle.memCycle.values == repeatedGaps)
     assert(repeated.integral.initialValue == cycle.integral.initialValue)
-    assert(CycleIntegralProperties.assertRepeatedValuesIntegralMatches(
+    assert(RepeatedGapIntegralProperties.assertRepeatedValuesIntegralMatches(
       cycle.integral,
       repeated.integral,
       times,

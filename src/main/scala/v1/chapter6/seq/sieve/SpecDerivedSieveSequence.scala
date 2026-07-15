@@ -10,18 +10,22 @@ import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter5.prime.{AllPrimesSoFarList, PrimeUtils}
 
 /**
- * A `SpecDerivedCycleSieve` variant that stores `primes` as `AllPrimesSoFarList`
- * instead of `List[BigInt]`. This exposes the richer prime-type API for lemma
- * proofs — `nextPrime`, `noDivisorInRange`, primorial, etc. — all verified in
- * the prime chapter.
+ * Canonical bridge from the linear spec to the concrete cycle representation.
  *
- * The `cycle` field is a standard `CycleSieveSequence` (with `List[BigInt]`
- * primes, converted via `PrimeUtils.primeValues`). The APSFL version of the
- * prime list is available as `primesAPSFL` for proof use.
+ * Construct this only when a `SpecSieveSequence` has a certified positive
+ * period: `spec(period) == spec.head.value + spec.tailPrimorial`. The class
+ * derives the spec gap cycle for that period, packages it as a
+ * `CycleSieveSequence`, and hosts the lemmas proving that the derived cycle
+ * emits the same values as the spec.
  *
- * Usage: construct from a `SpecSieveSequence` + `period`, then use the lemma
- * methods to discharge `nextFromWindow()` requires. Convert to `CycleSieveSequence`
- * via `cycle` when a concrete sequence is needed.
+ * This is not another independent definition of a sieve sequence. It is the
+ * "trusted cycle because it was built from the spec" object. It is allowed to
+ * use spec facts freely, unlike a raw `CycleSieveSequence`, whose eventual goal
+ * is to stand on cycle-side structural facts.
+ *
+ * `SpecDerivedBySurvivors` wraps this class for a value-level survivor proof
+ * lane. `SpecDerivedEquivalence` exists only to transfer facts between that
+ * survivor lane and this canonical bridge.
  */
 case class SpecDerivedSieveSequence(
   spec: SpecSieveSequence,

@@ -8,6 +8,18 @@ import v1.chapter5.prime.{Prime, CoprimeUtils}
 import v1.chapter5.prime.properties.PrimeProperties
 import v1.chapter6.seq.sieve.CycleSieveSequence
 
+/**
+ * Generic structural facts about `CycleSieveSequence`.
+ *
+ * These lemmas do not define a new sieve sequence and do not prove that an
+ * arbitrary cycle is the canonical spec-derived cycle. They prove reusable
+ * properties that follow from a concrete cycle sequence's local invariants:
+ * generated values increase, the head is a lower bound, generated values are
+ * positive, and the stored head is prime under the required prime-list facts.
+ *
+ * Use `SpecDerivedSieveSequence` for spec/cycle correspondence. Use this object
+ * for facts that should hold for any locally well-formed `CycleSieveSequence`.
+ */
 object SieveSequenceProperties {
 
   /**

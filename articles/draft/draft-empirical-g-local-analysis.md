@@ -67,7 +67,7 @@ def survivorsInRange(lo: BigInt, hi: BigInt, primes: Array[BigInt]): List[BigInt
 This function is implemented in the [
   SegmentedSieve::survivorsInRange
 ](
-  ../../src/main/scala/v1/chapter6/seq/sieve/empirical/SegmentedSieve.scala
+  ../../src/main/scala/v1/chapter7/empirical/SegmentedSieve.scala
 ) as an `@extern` function (not Stainless-verified).
 
 ### 2.2 2-Gap Counting
@@ -83,7 +83,7 @@ def countTwoGaps(survivors: List[BigInt]): BigInt
 This function is implemented in the [
   GapAnalyzer::countTwoGaps
 ](
-  ../../src/main/scala/v1/chapter6/seq/sieve/empirical/GapAnalyzer.scala
+  ../../src/main/scala/v1/chapter7/empirical/GapAnalyzer.scala
 ) as an `@extern` function (not Stainless-verified).
 
 ### 2.3 Output Metrics

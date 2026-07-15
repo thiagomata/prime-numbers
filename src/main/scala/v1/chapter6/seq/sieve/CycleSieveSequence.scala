@@ -9,11 +9,32 @@ import v1.chapter4.cycle.gap.GapCycle
 import v1.chapter4.cycle.integral.recursive.CycleIntegral
 import v1.chapter4.cycle.integral.recursive.properties.{
   CycleIntegralFilterProperties,
-  CycleIntegralProperties
+  CycleIntegralProperties,
+  RepeatedGapIntegralProperties
 }
 import v1.chapter4.cycle.memory.MemCycle
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, PrimeUtils, SortedPrimeList}
 
+/**
+ * Concrete gap-cycle representation of one sieve-sequence stage.
+ *
+ * A `CycleSieveSequence` stores the current prime-list stage and a positive
+ * `GapCycle`. It generates values by replaying that finite gap cycle through a
+ * `CycleIntegral`: index `0` is the head, and later indexes are produced by
+ * adding the stored gaps cyclically.
+ *
+ * This is the implementation-shaped representation. It is useful for computing
+ * and replaying a finite sieve stage, but its constructor can only enforce
+ * local structural facts such as non-empty primes, positive tail primorial, and
+ * positive gaps through `GapCycle`. It does not, by itself, prove that the gap
+ * cycle is the canonical sieve gap cycle for the stored primes.
+ *
+ * `SpecSieveSequence` defines the semantic linear scan. `SpecDerivedSieveSequence`
+ * is the canonical bridge that builds a trusted `CycleSieveSequence` from spec
+ * gaps and proves the correspondence. The `next()` method here still follows
+ * the legacy walk-backed path; `nextFromWindow()` and `repeatedCycle` are
+ * side-by-side transition helpers used by newer proof lanes.
+ */
 case class CycleSieveSequence(
   primes: AllPrimesSoFarList,
   gapCycle: GapCycle
@@ -127,7 +148,7 @@ case class CycleSieveSequence(
       assert(repeated.integral.initialValue == integral.initialValue)
       assert(repeated.integral.cycle.values ==
         ListRepeatProperties.repeat(integral.cycle.values, times))
-      assert(CycleIntegralProperties.assertRepeatedValuesIntegralMatches(
+      assert(RepeatedGapIntegralProperties.assertRepeatedValuesIntegralMatches(
         integral,
         repeated.integral,
         times,
