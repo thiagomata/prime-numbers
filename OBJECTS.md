@@ -354,6 +354,7 @@ Last updated: 2026-07-11
 | Lemma                                                    | Statement                                             |
 |----------------------------------------------------------|-------------------------------------------------------|
 | **assertMemCycleValuesPositive(gc)**                     | All memCycle.values > 0                               |
+| **assertMemCyclePeriodPositive(gc)**                     | `gc.memCycle.period > 0`                              |
 | **assertCumulativeSumPositive(gc,pos)**                  | `cumulativeSum(pos) > 0`                              |
 | **assertAllGreaterThanImpliesCheckPositiveOrZero(list)** | `allGreaterThan(list,0) => checkPositiveOrZero(list)` |
 
@@ -398,6 +399,8 @@ operate on the canonical `CycleIntegral` class; use
 | **assertSurvivorAtNotMultiple**             | `mod(survivors(index), fv) != 0` for all survivors                                 |
 | **assertCIShiftEqualsSum**                  | `ci(pos + size) - ci(pos) == ci.sum`                                               |
 | **assertMergedGapIsCITelescope**            | `ci(to) - ci(from) > 0` for consecutive survivors                                  |
+| **assertGapsFromValuesTail**                | `gapsFromValues(list).tail == gapsFromValues(list.tail)`                           |
+| **assertGapsFromValuesTailAtIndex**         | `gapsFromValues(list)(index + 1) == gapsFromValues(list.tail)(index)`              |
 | **assertGapsFromValuesAtIndex**             | `gapsFromValues(list)(index) == list(index+1) - list(index)`                       |
 | **assertGapsFromValuesSize**                | `gapsFromValues(list).size + 1 == list.size`                                       |
 | **assertFirstSurvivorHead**                 | `survivorValues(ci,fv,start,count).head == ci(start)`                              |
@@ -741,7 +744,7 @@ operate on the canonical `CycleIntegral` class; use
 
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
-77 lemmas (73 public, 2 private), plus 6 public predicates and 1 public survivor-gap prefix producer. Key
+90 lemmas (86 public, 2 private), plus 6 public predicates and 1 public survivor-gap prefix producer. Key
 public lemmas:
 
 > **Design note:** Several lemmas in this section overlap with lower-level
@@ -842,6 +845,33 @@ public lemmas:
 | **assertNextHeadLessThanNewModulus()**                 | `cycle(1) < head * modulus` for `head >= 3, modulus >= 2`   |
 | **assertNextHeadLessThanHeadSquared()**                |
 `cycle(1) < head^2`                                          |
+
+## 6.6.1 SpecDerivedExtendedWindowProperties (`v1.chapter6.seq.sieve.properties.SpecDerivedExtendedWindowProperties`)
+
+Context-specific lemmas for the repeated extended-window survivor scan.
+
+| Lemma | Statement |
+|-------|-----------|
+| **assertSpecNextHeadOldIndexIsOne(derived)** | `derived.spec.indexOfAccepted(derived.spec.next(0)) == 1` |
+| **assertRepeatedExtendedWindowSurvivorsSplitAtSpecNextHead(derived)** | Extended survivor list splits as `spec.next(0) :: firstTail` |
+| **assertRepeatedExtendedWindowSurvivorsTailIsFirstTail(derived)** | Extended survivor tail equals the first tail scan |
+| **assertRepeatedExtendedWindowTailSplitsAtSpecNextSuccessorFromValueBound(derived,k)** | Bounded filtered tail scan splits as `spec.next(k + 1) :: nextTail` |
+| **assertTailValueFollowsConsSplit(tailSurvivors,nextValue,afterNext,index)** | If `tailSurvivors == nextValue :: afterNext`, then `tailSurvivors(index + 1) == afterNext(index)` |
+| **assertRepeatedExtendedWindowTailValueFollowsSplitFromValueBound(derived,k,index)** | In-range filtered tail values follow the peeled successor split |
+| **assertRepeatedExtendedWindowSurvivorOneMatchesSpecNextFromValueBound(derived)** | Under the extended endpoint bound, extended survivor index `1` equals `spec.next(1)` |
+| **assertRepeatedExtendedWindowFirstGapMatchesSpecNextFromValueBound(derived)** | Under the extended endpoint bound, extended survivor gap index `0` equals the first `spec.next` gap |
+| **assertRepeatedExtendedWindowFirstGapPrefixFromValueBound(derived)** | Under the extended endpoint bound, the recursive gap-prefix predicate holds for `count == 1` |
+| **assertRepeatedExtendedWindowValueOneFromGapPrefixFromValueBound(derived)** | Under the extended endpoint bound, the existing gap-prefix-to-value lemma recovers `extendedSurvivors(1) == spec.next(1)` |
+
+## 6.6.2 SpecDerivedRebuiltCycleProperties (`v1.chapter6.seq.sieve.properties.SpecDerivedRebuiltCycleProperties`)
+
+Context-specific lemmas for rebuilding a cycle from the extended-window survivor gaps.
+
+| Lemma | Statement |
+|-------|-----------|
+| **assertRepeatedExtendedWindowFilteredCIPositionZeroMatchesSpecNextFromValueBound(derived,newCI)** | Under the endpoint bound and rebuilt-CI contract, the rebuilt integral at position `0` equals `spec.next(1)` |
+| **assertRepeatedExtendedWindowGapCycleIntegralPositionZeroMatchesSpecNextFromValueBound(derived,newGapCycle)** | A supplied gap cycle whose values are the extended survivor gaps has integral position `0` equal to `spec.next(1)` |
+| **assertRepeatedExtendedWindowCyclePositionOneMatchesSpecNextFromValueBound(derived,newGapCycle)** | A next cycle built from supplied extended survivor gaps satisfies `nextCycle(1) == spec.next(1)` |
 
 ## 6.7 SpecCycleSieveEquivalence (`v1.chapter6.seq.sieve.SpecCycleSieveEquivalence`)
 

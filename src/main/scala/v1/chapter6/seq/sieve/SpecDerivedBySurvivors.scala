@@ -3,12 +3,16 @@ package v1.chapter6.seq.sieve
 import stainless.lang.BooleanDecorations
 import v1.chapter2.div.Calc
 import v1.chapter5.prime.PrimeUtils
+import v1.chapter6.seq.sieve.properties.{
+  SpecDerivedCoreProperties,
+  SpecDerivedRepeatedCycleProperties
+}
 
 case class SpecDerivedBySurvivors(
   derived: SpecDerivedSieveSequence
 ) {
   def assertSpecNextFilterEqCyclePrimes(): Boolean = {
-    assert(derived.assertPrimesMatch())
+    assert(SpecDerivedCoreProperties.assertPrimesMatch(derived))
     assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
     derived.spec.next.filterValues == derived.cyclePrimes
   }.holds
@@ -31,9 +35,9 @@ case class SpecDerivedBySurvivors(
     require(derived.spec.head.value >= 3)
     require(derived.spec.tailPrimorial >= 2)
 
-    assert(derived.assertNextHeadMatches())
-    assert(derived.assertNextHeadLessThanNewModulus())
-    assert(derived.assertCycleModulusEqualsSpecTailPrimorial())
+    assert(SpecDerivedCoreProperties.assertNextHeadMatches(derived))
+    assert(SpecDerivedCoreProperties.assertNextHeadLessThanNewModulus(derived))
+    assert(SpecDerivedCoreProperties.assertCycleModulusEqualsSpecTailPrimorial(derived))
     Calc.mod(derived.cycle(BigInt(1)),
              derived.cycle.head * derived.cycle.modulus) ==
       derived.spec.next.head.value
@@ -54,7 +58,7 @@ case class SpecDerivedBySurvivors(
    * Confirmed load-bearing by the S_2 hand-analysis: `5 * 6 = 30 = primorial([5,3,2])`.
    */
   def assertHeadModulusEqualsSpecNextTailPrimorial(): Boolean = {
-    assert(derived.assertCycleModulusEqualsSpecTailPrimorial())
+    assert(SpecDerivedCoreProperties.assertCycleModulusEqualsSpecTailPrimorial(derived))
     assert(derived.spec.filterPrimes == derived.spec.primes.list.tail.list)
     assert(derived.spec.next.filterPrimes == derived.spec.primes.list.list)
     assert(PrimeUtils.primorialUnfold(derived.spec.primes.list.list))
@@ -79,7 +83,7 @@ case class SpecDerivedBySurvivors(
 
     assert(assertNextHeadResidueIsSpecNextHead())
     assert(assertHeadModulusEqualsSpecNextTailPrimorial())
-    assert(derived.assertNextCycleGapsMatchSpecNext(nextPeriod))
+    assert(SpecDerivedCoreProperties.assertNextCycleGapsMatchSpecNext(derived, nextPeriod))
     assert(nextCanonical.cycle.gapCycle.memCycle.values ==
       derived.spec.next.gapList(BigInt(0), nextPeriod))
 
@@ -120,8 +124,8 @@ case class SpecDerivedBySurvivors(
       nextCanonical.cycle.gapCycle)
 
     assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
-    assert(nextCanonical.assertApplyMatches(BigInt(0)))
-    assert(nextCanonical.assertApplyMatches(BigInt(1)))
+    assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, BigInt(0)))
+    assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, BigInt(1)))
 
     assert(cNext.apply(BigInt(0)) == derived.spec.next(BigInt(0)))
     assert(cNext.apply(BigInt(1)) == derived.spec.next(BigInt(1)))
@@ -133,7 +137,7 @@ case class SpecDerivedBySurvivors(
    *
    * Prerequisites (all called before the final equality):
    *   assertCanonicalCycleNextMatchSpecNext — rotation, modulus, gap equality
-   *   nextCanonical.assertApplyMatches(k)   — canonical.cycle(k) == spec.next(k)
+   *   SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k)   — canonical.cycle(k) == spec.next(k)
    *
    * Since cNext shares the same primes.next and same GapCycle as
    * nextCanonical.cycle, their .apply(k) is identical for all k.
@@ -159,7 +163,7 @@ case class SpecDerivedBySurvivors(
       nextCanonical.cycle.gapCycle)
 
     assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
-    assert(nextCanonical.assertApplyMatches(k))
+    assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k))
     cNext.apply(k) == derived.spec.next(k)
   }.holds
 
@@ -168,7 +172,7 @@ case class SpecDerivedBySurvivors(
    *
    * From:
    *   assertCycleNextApplyEqualsSpecNext(nextPeriod, k)  — Cycle.next(k) == Spec.next(k)
-   *   nextCanonical.assertApplyMatches(k)                 — Canonical.next(k) == Spec.next(k)
+   *   SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k)                 — Canonical.next(k) == Spec.next(k)
    * Therefore Canonical.next(k) == Cycle.next(k) by transitivity.
    */
   def assertBNextApplyEqualsCNextApply(nextPeriod: BigInt, k: BigInt): Boolean = {
@@ -192,7 +196,7 @@ case class SpecDerivedBySurvivors(
       nextCanonical.cycle.gapCycle)
 
     assert(assertCycleNextApplyEqualsSpecNext(nextPeriod, k))
-    assert(nextCanonical.assertApplyMatches(k))
+    assert(SpecDerivedCoreProperties.assertApplyMatches(nextCanonical, k))
     cNext.apply(k) == nextCanonical.cycle.apply(k)
   }.holds
 
@@ -210,8 +214,8 @@ case class SpecDerivedBySurvivors(
     require(derived.spec.tailPrimorial >= 2)
 
     val h = derived.spec.head.value
-    assert(derived.assertRepeatedCycleApplyMatches(h, BigInt(0)))
-    assert(derived.assertSurvivorGapEqualsSpecNextGap(nextPeriod, BigInt(0)))
+    assert(SpecDerivedRepeatedCycleProperties.assertRepeatedCycleApplyMatches(derived, h, BigInt(0)))
+    assert(SpecDerivedCoreProperties.assertSurvivorGapEqualsSpecNextGap(derived, nextPeriod, BigInt(0)))
     assert(assertCanonicalCycleNextMatchSpecNext(nextPeriod))
     true
   }.holds

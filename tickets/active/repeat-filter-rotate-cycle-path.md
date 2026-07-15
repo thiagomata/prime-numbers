@@ -68,6 +68,57 @@ verified and easier to trust.
 4. Add proof checkpoints one by one: repeat equality, filter equality, then
    rotate/start alignment.
 
+## Remaining Equality Plan
+
+Current proof frontier correction (2026-07-15): the real blocker is not apply
+equality. The real blocker is proving that the operational streaming gap
+collector emits exactly the same gap list as "filter generated values first,
+then take pairwise gaps".
+
+The central missing equality is:
+
+```scala
+SieveSequenceNextLevel.nextGapsWalk(cycle) ==
+  CycleIntegralFilterProperties.gapsFromValues(
+    CycleIntegralFilterProperties.survivorValues(
+      cycle.integral,
+      cycle.head,
+      BigInt(0),
+      cycle.head * cycle.gapCycle.period + BigInt(1)
+    )
+  )
+```
+
+Lemmas that only consume the precondition
+`newGapCycle.memCycle.values == gapsFromValues(survivors)` are downstream
+consequences. They are not progress on this blocker and should not be extended
+until the collector/gaps equivalence is proved.
+
+1. Prove a generic `collectGaps` correctness theorem, with no spec dependency:
+   streaming collection equals `gapsFromValues(survivorValues(...))` for the
+   same scan window and initial survivor.
+2. Instantiate that theorem for `nextGapsWalk(cycle)`.
+3. Only after that, prove a bounded survivor-value prefix theorem:
+   `extendedSurvivors(k) == spec.next(k)` for each `k` in the next-period
+   window. Avoid the failed shape that recursively reconstructs
+   `survivorValues` from scratch; instead, peel through the verified split and
+   reuse `assertTailValueFollowsConsSplit`.
+4. Prove the corresponding survivor-gap prefix theorem:
+   `gapsFromValues(extendedSurvivors)(k) == spec.next.gapList(0,nextPeriod)(k)`.
+   Use `assertGapsFromValuesTail` and `assertGapsFromValuesTailAtIndex` to keep
+   the gap tail aligned with the value tail after each peel.
+5. Connect the count theorem to the exact list bounds needed by the final
+   equality: enough survivors for `nextPeriod` gaps, ideally
+   `extendedSurvivors.size == nextPeriod + 1` or an equivalent bound accepted by
+   Stainless.
+6. Lift indexed gap equality to list equality for the full next period:
+   filtered repeated survivor gaps equal `spec.next.gapList(0,nextPeriod)`.
+7. Package the result into the side-by-side next-cycle construction:
+   the repeated/filter-built gap cycle has the same stored gap values as the
+   canonical `SpecDerivedSieveSequence(spec.next,nextPeriod)` cycle.
+8. Finish the apply-level equality for the rebuilt next cycle by reusing the
+   existing canonical spec-derived apply lemmas.
+
 ## Risks
 
 - Reusing `nextFromWindow()` blindly may hide whether the repeat step is part of
@@ -402,3 +453,150 @@ verified and easier to trust.
   strengthened tail-head lemma. Focused verification passed: `48 valid`,
   `0 invalid`, `0 unknown`. Full verification intentionally deferred until the
   end of the micro-goal / step.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowTailSplitsAtSpecNextSuccessorFromValueBound(k)`.
+  This is the list-level version of the tail-head bridge: under the same
+  extended-endpoint value bound, the filtered tail scan after `spec.next(k)`
+  splits as `spec.next(k + 1) :: nextTail`. It consumes
+  `GapProperties.assertSurvivorValuesSplitAtFirstPosition`, so the upcoming
+  prefix induction can peel survivor lists instead of reasoning only about
+  `.head`. Focused verification passed: `94 valid`, `0 invalid`, `0 unknown`.
+  Full verification intentionally deferred until the end of the micro-goal /
+  step.
+- 2026-07-15: Tried the direct recursive tail-prefix predicate
+  `repeatedExtendedWindowTailValuesMatchSpecNextPrefixFromValueBound(k,count)`.
+  This shape is not worth pursuing as-is: it produced a timeout chain with
+  repeated 300s waits around packaging `currentOldIndex <= steps`,
+  `nextOldIndex <= steps`, the split-wrapper precondition, and finally an
+  `unknown` on the recursive call. The unverified predicate was removed, and
+  the verified split lemma was rechecked successfully: `94 valid`, `0 invalid`,
+  `0 unknown`. Next attempt should avoid one recursive lemma that repeatedly
+  reconstructs `survivorValues`; use smaller one-step/list-index helpers or a
+  different existing list-prefix abstraction.
+- 2026-07-15: Added `SpecDerivedSieveSequence.assertTailValueFollowsConsSplit`
+  as the pure list-index peel from an existing cons split:
+  `tailSurvivors == nextValue :: afterNext` implies
+  `tailSurvivors(index + 1) == afterNext(index)`. This deliberately uses the
+  existing `ListUtilsProperties.accessTailShiftRight` lemma instead of creating
+  new generic list machinery. Focused verification passed: `9 valid`,
+  `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowTailValueFollowsSplitFromValueBound(k,index)`.
+  This construction-level wrapper consumes the verified split and the pure list
+  peel to show that, when `index` is inside the peeled `afterNext` tail, the
+  original tail-survivor scan at `index + 1` equals `afterNext(index)`. A first
+  version put `index < afterNext.size` in a precondition that constructed
+  `survivorValues` too early; Stainless returned `60 valid`, `1 unknown`.
+  Moving the bound into an internal conditional avoided that premature
+  precondition obligation. Focused verification passed: `55 valid`,
+  `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `CycleIntegralFilterProperties.assertGapsFromValuesTail(sourceList)`.
+  This is the gap-side sibling of the cons value peel:
+  `gapsFromValues(sourceList).tail == gapsFromValues(sourceList.tail)`.
+  Focused verification passed: `6 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `CycleIntegralFilterProperties.assertGapsFromValuesTailAtIndex(sourceList,index)`.
+  This exposes the usable indexed form:
+  `gapsFromValues(sourceList)(index + 1) == gapsFromValues(sourceList.tail)(index)`.
+  The proof composes `assertGapsFromValuesTail` with the existing
+  `ListUtilsProperties.accessTailShiftRight`. Focused verification passed:
+  `18 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertSpecNextHeadOldIndexIsOne()`. This anchors
+  the full extended survivor list to the old generated stream:
+  `spec.indexOfAccepted(spec.next(0)) == 1`. The proof uses
+  `spec.assertApplyOneEqualsNextPrime()` and `spec.assertApplyInjective` rather
+  than a custom monotonic branch. Focused verification passed: `33 valid`,
+  `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowSurvivorsSplitAtSpecNextHead()`.
+  This bridges the full extended survivor list to the tail-scan lemmas:
+  `extendedSurvivors == spec.next(0) :: firstTail`, where `firstTail` is the
+  survivor scan beginning at old index `1`. The first attempt constructed that
+  tail with `oldIndex` too early and returned `39 valid`, `1 unknown`; moving
+  the construction after `assertSpecNextHeadOldIndexIsOne()` fixed the
+  premature precondition. Focused verification passed: `40 valid`, `0 invalid`,
+  `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowSurvivorsTailIsFirstTail()`.
+  This exposes the suffix consequence of the first full-window split:
+  `extendedSurvivors.tail == firstTail`. The first attempt got stuck because
+  the split lemma exposed a tail built through local `oldIndex`; changing the
+  split lemma to expose the literal scan from old index `1` made the suffix
+  proof small. Focused verification passed: `13 valid`, `0 invalid`,
+  `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowSurvivorOneMatchesSpecNextFromValueBound()`.
+  This is the first concrete indexed prefix checkpoint after the head:
+  under `spec.next(1) <= spec(steps)`, the full extended survivor list satisfies
+  `extendedSurvivors(1) == spec.next(1)`. The first formulation called
+  `firstTail.head` directly after the tail-head lemma and produced a slow
+  `29 total, 27 valid, 2 unknown` result around the `head(firstTail)`
+  precondition/equality. The successful version uses the verified cons split at
+  `k = 0`, and constructs `tailSurvivors`/`afterNext` only after proving
+  `currentOldIndex == 1` and `nextOldIndex <= steps`. Focused verification
+  passed: `60 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowFirstGapMatchesSpecNextFromValueBound()`.
+  This turns the first two survivor-value equalities into the first concrete gap
+  equality:
+  `gapsFromValues(extendedSurvivors)(0) == spec.next.gapList(0,1)(0)`.
+  The first attempt constructed `gapsFromValues(survivors)` before Stainless saw
+  `survivors` was non-empty and returned `32 total, 30 valid, 2 unknown`.
+  Moving the gap construction after `1 < survivors.size` fixed the precondition.
+  Focused verification passed: `32 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Cleaned up the value-bound lemmas so their caller-facing
+  `require(...)` clauses appear at the top instead of after local aliases. The
+  important proof-order lesson is that `indexOfAccepted` witnesses should be
+  constructed only after `spec.accepts(...)` has been asserted for the value.
+  Also replaced one standalone `assert(assertTailValueFollowsConsSplit(...))`
+  with returning that helper equality directly, avoiding an extra slow body
+  assertion VC. Focused checks after the cleanup passed for the first-gap,
+  tail-value, tail-split, and tail-head wrappers.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowFirstGapPrefixFromValueBound()`.
+  This packages the first concrete gap equality into the existing recursive
+  predicate `repeatedExtendedWindowGapsMatchSpecNextPrefix(1)`, so downstream
+  lemmas can consume the older gap-prefix API instead of special-casing index
+  `0`. Focused verification passed: `26 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowValueOneFromGapPrefixFromValueBound()`.
+  This proves the first non-head survivor value through the existing
+  gap-prefix-to-value bridge rather than through the direct split path:
+  under the extended endpoint bound, the packaged prefix fact at `count == 1`
+  recovers `extendedSurvivors(1) == spec.next(1)`. Focused verification
+  passed: `24 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowFilteredCIPositionZeroMatchesSpecNextFromValueBound(newCI)`.
+  This is the first rebuilt-integral consumer of the base gap prefix: under the
+  endpoint bound plus the standard rebuilt-CI contract
+  (`initialValue == survivors.head`, `cycle.values == gapsFromValues(survivors)`),
+  `newCI(0) == spec.next(1)`. Focused verification passed: `29 valid`,
+  `0 invalid`, `0 unknown`.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowGapCycleIntegralPositionZeroMatchesSpecNextFromValueBound(newGapCycle)`.
+  This instantiates the rebuilt-CI base case with a supplied `GapCycle` whose
+  `memCycle.values` are exactly the extended survivor gaps. It proves
+  `CycleIntegral(spec.next.head.value, newGapCycle.memCycle)(0) == spec.next(1)`.
+  The first focused verification passed but exposed a slow period-positivity
+  assertion (~149s), so `GapCycle.assertMemCyclePeriodPositive(gc)` was added
+  and consumed by this wrapper. After that extraction, focused verification
+  passed: `30 valid`, `0 invalid`, `0 unknown`, with solver time down to
+  ~18s for the wrapper.
+- 2026-07-15: Added
+  `SpecDerivedSieveSequence.assertRepeatedExtendedWindowCyclePositionOneMatchesSpecNextFromValueBound(newGapCycle)`.
+  This lifts the base rebuilt-integral fact to the concrete next-cycle
+  representation: if the supplied `newGapCycle` has values equal to the
+  extended survivor gaps, then
+  `CycleSieveSequence(spec.primes.next, newGapCycle)(1) == spec.next(1)`.
+  Focused verification passed: `34 valid`, `0 invalid`, `0 unknown`.
+- 2026-07-15: Moved the recent extended-window helper lemmas out of
+  `SpecDerivedSieveSequence` into context-specific property objects:
+  `SpecDerivedExtendedWindowProperties` for survivor-scan/value/gap-prefix
+  facts, and `SpecDerivedRebuiltCycleProperties` for rebuilt integral/cycle
+  facts. No new proof direction was added in this cleanup.
+- 2026-07-15: Added plain-ASCII Scaladoc to every method in the chapter 6
+  sieve property classes, including the moved spec-derived property objects.
+  This was documentation-only; chapter 6 verification passed afterward:
+  `7423 valid`, `0 invalid`, `0 unknown`.

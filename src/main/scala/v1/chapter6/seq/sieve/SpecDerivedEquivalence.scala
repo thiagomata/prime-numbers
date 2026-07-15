@@ -1,6 +1,7 @@
 package v1.chapter6.seq.sieve
 
 import stainless.lang.BooleanDecorations
+import v1.chapter6.seq.sieve.properties.SpecDerivedCoreProperties
 
 case class SpecDerivedEquivalence(
   derived: SpecDerivedSieveSequence
@@ -16,7 +17,7 @@ case class SpecDerivedEquivalence(
 
   def assertApplyMatches(k: BigInt): Boolean = {
     require(k >= BigInt(0))
-    assert(derived.assertApplyMatches(k))
+    assert(SpecDerivedCoreProperties.assertApplyMatches(derived, k))
     derived.cycle(k) == bySurvivors.derived.cycle(k)
   }.holds
 
@@ -27,8 +28,8 @@ case class SpecDerivedEquivalence(
   }.holds
 
   def assertNextHeadNewModulusMatch(): Boolean = {
-    assert(derived.assertNextHeadLessThanNewModulus())
-    assert(derived.assertNextHeadLessThanNewModulus())
+    assert(SpecDerivedCoreProperties.assertNextHeadLessThanNewModulus(derived))
+    assert(SpecDerivedCoreProperties.assertNextHeadLessThanNewModulus(derived))
     true
   }.holds
 }

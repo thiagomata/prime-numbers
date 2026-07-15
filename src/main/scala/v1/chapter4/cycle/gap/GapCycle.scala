@@ -47,6 +47,12 @@ object GapCycle {
       ListBoundUtils.allGreaterThan(gc.memCycle.values, BigInt(0))
   }.holds
 
+  def assertMemCyclePeriodPositive(gc: GapCycle): Boolean = {
+    assert(gc.memCycle.values == gc.values.list)
+    assert(gc.values.list.nonEmpty)
+    gc.memCycle.period > BigInt(0)
+  }.holds
+
   def assertCumulativeSumPositive(gc: GapCycle, pos: BigInt): Boolean = {
     require(pos >= 0)
     assert(CycleIntegralProperties.assertCycleIntegralPositive(gc.integral, pos))

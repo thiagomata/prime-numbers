@@ -326,6 +326,33 @@ object CycleIntegralFilterProperties {
       gapsFromValues(valuesList.tail)
   }
 
+  def assertGapsFromValuesTail(sourceList: List[BigInt]): Boolean = {
+    require(!sourceList.isEmpty)
+    require(!sourceList.tail.isEmpty)
+
+    gapsFromValues(sourceList).tail == gapsFromValues(sourceList.tail)
+  }.holds
+
+  def assertGapsFromValuesTailAtIndex(
+    sourceList: List[BigInt],
+    index: BigInt
+  ): Boolean = {
+    require(!sourceList.isEmpty)
+    require(!sourceList.tail.isEmpty)
+    require(index >= BigInt(0))
+    require(index < gapsFromValues(sourceList.tail).size)
+
+    val gaps = gapsFromValues(sourceList)
+    val tailGaps = gapsFromValues(sourceList.tail)
+
+    assert(assertGapsFromValuesTail(sourceList))
+    assert(gaps.tail == tailGaps)
+    assert(index < gaps.tail.size)
+    assert(ListUtilsProperties.accessTailShiftRight(gaps, index))
+
+    gaps(index + BigInt(1)) == tailGaps(index)
+  }.holds
+
   /**
    * Correctness of `gapsFromValues`.
    *
