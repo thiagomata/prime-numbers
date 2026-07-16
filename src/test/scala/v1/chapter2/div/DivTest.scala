@@ -1,9 +1,8 @@
-package v1
+package v1.chapter2.div
 
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.chapter2.div.DivMod
 
 case class SolveTestCase(
                           name: String,

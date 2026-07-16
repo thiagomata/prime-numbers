@@ -27,8 +27,13 @@ pitfall avoidance, and timeout resolution strategies.
   <clean-logs>just clean-logs</clean-logs>
 </commands>
 
+Use `just verify-ch 1`, `just verify-ch 2`, ... as the preferred regression
+path. Full `just verify` can time out on the combined project even when the
+chapter-by-chapter runs are green; do not treat that aggregate timeout as the
+canonical validation result without checking the chapter logs.
+`just verify-ch N` writes chapter-specific logs under `logs/verify-ch-*.log`.
 `just verify` writes its output to `logs/verify.log` (and `logs/verify-error.log` for errors).
-`just verify functionName` compiles the full source tree but asks Stainless to verify only that function via `--functions=functionName`; use it for fast proof iteration only, not as a replacement for final full validation.
+`just verify functionName` compiles the full source tree but asks Stainless to verify only that function via `--functions=functionName`; use it for fast proof iteration only, not as a replacement for the chapter-by-chapter regression sequence.
 To check the latest result WITHOUT re-running, use `<verify-log />` to read the log.
 Do NOT run `just verify` twice in a row — check `logs/verify.log` first.
 Only re-run `just verify` after making a code change.

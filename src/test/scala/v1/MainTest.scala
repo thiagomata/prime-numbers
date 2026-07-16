@@ -1,7 +1,6 @@
-package v1.div
+package v1
 
 import org.scalatest.flatspec.FlatSpec
-import v1.Main
 
 class MainTest extends FlatSpec {
 

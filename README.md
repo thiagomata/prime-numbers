@@ -313,9 +313,30 @@ q \in \text{originalPrimes} \land \text{isPrime}(q) \land q \neq \text{filterPri
 - Java 21
 - Stainless 0.9.8
 
+The recommended project-wide verification workflow is chapter-by-chapter:
+
+```bash
+just verify-ch 1
+just verify-ch 2
+just verify-ch 3
+just verify-ch 4
+just verify-ch 5
+just verify-ch 6
+```
+
+`just verify-ch N` loads source files up to chapter `N`, then verifies only
+the highest requested chapter with `--functions=v1.chapterN._`. This keeps each
+Stainless batch small enough to finish while still compiling the chapter's
+dependencies.
+
+The older all-at-once command is still available, but it is not the preferred
+regression command because the combined VC set can time out even when each
+chapter verifies successfully on its own:
+
 ```bash
 just verify
 ```
+
 ### Running on Docker
 
 - Just 0.5.7

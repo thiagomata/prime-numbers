@@ -1,8 +1,7 @@
-package verification
+package v1.chapter1.verification
 
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
-import v1.chapter1.verification.Helper
 
 class HelperTest extends FlatSpec with Matchers {
 

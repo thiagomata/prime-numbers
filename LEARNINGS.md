@@ -370,12 +370,36 @@ Each direction is proved independently, then combined with `assert(==)`.
 ### 8.1 Always run tests after verification
 
 Verification proves the lemmas; tests prove the runtime behavior matches.
-Run `just test` after `just verify` succeeds.
+Run `just test` after the chapter-by-chapter verification sequence succeeds.
 
-### 8.2 Check logs/verify.log
+### 8.2 Check verification logs
 
-`just verify` writes to `logs/verify.log`. Check `grep "total:" logs/verify.log` for
-the summary. Timeouts appear as "unknown" in the valid/invalid/unknown count.
+`just verify-ch N` writes to chapter-specific files under `logs/verify-ch-*.log`.
+Check the `total:` summary in each chapter log. Timeouts appear as "unknown" in
+the valid/invalid/unknown count.
+
+`just verify` still writes to `logs/verify.log`, but the aggregate run is not
+the preferred regression signal because it can time out on the combined VC set.
+
+### 8.3 Prefer chapter-by-chapter regression for full-project validation
+
+The all-at-once `just verify` command can time out on the combined project VC
+set even when the codebase is healthy. For regression validation, run the
+chapter-scoped sequence instead:
+
+```bash
+just verify-ch 1
+just verify-ch 2
+just verify-ch 3
+just verify-ch 4
+just verify-ch 5
+just verify-ch 6
+```
+
+Each `just verify-ch N` run loads chapters up to `N` but auto-focuses Stainless
+on `v1.chapterN._`, so dependencies are present without asking the solver to
+reprove the whole repository in one batch. Treat a full `just verify` timeout
+as an aggregate-batch limitation until the chapter logs say otherwise.
 
 ## 9. Common Pitfalls
 
