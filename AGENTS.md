@@ -7,6 +7,13 @@ Pipeline: nextResidues → nextExpanded → nextFiltered → nextSorted →
 Each step calls ONE SieveUtils helper + ONE pre-verified function.
 next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
 
+Chapter60 properties:
+  SpecSieveSequence — data model + cornerstone proofs. No delegation.
+  SpecSieveSeqHeadIsPrime — object, seq as arg. Headline: assertApplyOneEqualsNextPrime.
+  SpecSieveSeqPeriodProperties — object, seq as arg. Headline: period, assertBlockShift.
+  SpecSieveSeqNextProperties — object, seq as arg. Headline: nextAcceptedOldIndex.
+  SpecSieveSeqSurvivorCountProperties — object, seq as arg. Headline: sameHeadSurvivorCount.
+
 Lessons learned across all tickets are consolidated in `LEARNINGS.md`.
 Check it when starting new work — it contains verified techniques,
 pitfall avoidance, and timeout resolution strategies.
@@ -222,6 +229,18 @@ Only re-run `just verify` after making a code change.
        red) is forbidden.
     4. Once reverted to green, a new approach for a different scope
        must start from green.
+  </rule>
+  <rule id="proof-class-structure" priority="high">
+    Property/proof classes follow this structure:
+    - **Objects**, not `case class` wrappers. NO `import seq.*` or similar
+      unqualified member access. Each method receives its domain object
+      as an explicit first parameter (e.g. `seq: SpecSieveSequence`).
+    - **Method ordering**: headline theorems (the ones articles link to) at the
+      TOP of each object. Supporting lemmas below. Private helpers at the END.
+      When a reader clicks through from an article to the source file, they
+      should see the headline theorem within the first screenful.
+    - **One direction**: properties call INTO the data model, never the reverse.
+      The spec/data model never calls INTO property objects.
   </rule>
 </rules>
 
