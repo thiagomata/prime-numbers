@@ -58,3 +58,42 @@ assembly / assemblyExcludedJars := {
 artifactName in (Compile, packageBin) := { (sv: ScalaVersion, module: ModuleID, artifact: Artifact) =>
   s"${module.name}-${module.revision}.jar"
 }
+
+lazy val spark = (project in file("spark"))
+  .settings(
+    name := "prime-numbers-spark",
+    scalaVersion := "2.13.15",
+    libraryDependencies ++= Seq(
+      "org.apache.spark" %% "spark-core" % "3.5.1",
+      "org.apache.spark" %% "spark-sql"  % "3.5.1",
+      "org.scalatest"    %% "scalatest"  % "3.2.18" % Test
+    ),
+    assembly / mainClass := Some("v1.chapter8.SparkSieveRunner"),
+    run / fork := true,
+    run / javaOptions ++= Seq(
+      "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.io=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.base/sun.security.action=ALL-UNNAMED"
+    ),
+    Test / fork := true,
+    Test / javaOptions ++= Seq(
+      "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang=ALL-UNNAMED",
+      "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+      "--add-opens=java.base/java.io=ALL-UNNAMED",
+      "--add-opens=java.base/java.net=ALL-UNNAMED",
+      "--add-opens=java.base/java.nio=ALL-UNNAMED",
+      "--add-opens=java.base/java.util=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
+      "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+      "--add-opens=java.base/sun.security.action=ALL-UNNAMED"
+    ),
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
+  )

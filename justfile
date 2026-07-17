@@ -199,3 +199,19 @@ show steps count: jar
     source "{{justfile_directory()}}/scripts/just-log.sh"
     just_log show "{{justfile_directory()}}" "steps={{steps}} count={{count}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  show {{steps}} {{count}}
+
+spark-run numStages="10":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log spark-run "{{justfile_directory()}}" "numStages={{numStages}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk use java 21.0.7-zulu
+    sbt "spark/runMain v1.chapter8.SparkSieveRunner {{numStages}}"
+
+spark-test:
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log spark-test "{{justfile_directory()}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk use java 21.0.7-zulu
+    sbt "spark/test"
