@@ -301,6 +301,15 @@ object SieveSequenceNextLevel {
     nextResidues(seq).nonEmpty
   }.holds
 
+  /**
+   * The next stage gap cycle is non-empty.
+   *
+   * This property is verified in the [
+     SieveSequenceNextLevel::assertNextGapsNonEmpty
+   ](
+     ../src/main/scala/v1/chapter6/seq/sieve/SieveSequenceNextLevel.scala
+   ).
+   */
   def assertNextGapsNonEmpty(seq: CycleSieveSequence): Boolean = {
     require(seq.head > BigInt(0))
     require(seq.modulus > BigInt(0))

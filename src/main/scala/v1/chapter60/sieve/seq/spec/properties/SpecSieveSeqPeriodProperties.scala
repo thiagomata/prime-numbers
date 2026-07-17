@@ -184,6 +184,36 @@ object SpecSieveSeqPeriodProperties {
     GapCycle(gaps)
   }.ensuring(result => result.memCycle.values == gapList(seq, BigInt(0), period))
 
+  /**
+   * The gap cycle built from the spec has exactly the spec's own gap list.
+   *
+   * This is called out as its own lemma (rather than left as
+   * `specGapCycle`'s `.ensuring` clause) because later work builds a
+   * side-by-side spec/cycle equivalence chain that needs to cite this fact
+   * directly by name.
+   */
+  def assertSpecGapCycleGapsMatchSpec(seq: SpecSieveSequence, period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
+
+    val gapCycle = specGapCycle(seq, period)
+    gapCycle.memCycle.values == gapList(seq, BigInt(0), period)
+  }.holds
+
+  /**
+   * The gap cycle built from the spec has exactly the spec's own period.
+   */
+  def assertSpecGapCyclePeriodMatchesSpec(seq: SpecSieveSequence, period: BigInt): Boolean = {
+    require(period > BigInt(0))
+    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
+
+    val gapCycle = specGapCycle(seq, period)
+    assert(assertSpecGapCycleGapsMatchSpec(seq, period))
+    assert(GapCycle.assertMemCycleValuesPositive(gapCycle))
+    assert(assertGapListSize(seq, BigInt(0), period))
+    gapCycle.period == period
+  }.holds
+
   def assertSpecGapPeriodPositive(seq: SpecSieveSequence, period: BigInt): Boolean = {
     require(period > BigInt(0))
     require(seq.apply(period) == seq.head.value + seq.tailPrimorial)

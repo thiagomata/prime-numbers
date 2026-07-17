@@ -72,9 +72,19 @@ case class CycleSieveSequence(
   def nextPrime: BigInt = head
   def nextHead: BigInt = apply(BigInt(1))
 
-  def assertNextHeadGreaterThanHead(): Boolean = {
-    apply(BigInt(1)) > head
-  }.holds
+   def assertNextHeadGreaterThanHead(): Boolean = {
+     apply(BigInt(1)) > head
+   }.holds
+
+   /**
+    * The next head value is greater than the current head.
+    *
+    * This property is verified in the [
+      CycleSieveSequence::assertNextHeadGreaterThanHead
+    ](
+      ../src/main/scala/v1/chapter6/seq/sieve/CycleSieveSequence.scala
+    ).
+    */
 
   def nextWithGapCycle(newGapCycle: GapCycle): CycleSieveSequence = {
     val newHead = apply(BigInt(1))
