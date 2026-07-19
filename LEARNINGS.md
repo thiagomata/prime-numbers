@@ -314,7 +314,60 @@ persists with an external lemma, rewrite it as a private lemma in the same class
 - Split large proofs into smaller `.holds` lemmas
 - Use `decreases` on structural parameters (list size, modulus - i, k)
 
-### 6.4 When timeout repeats 3 times, stop
+### 6.4 Direct return from if/else eliminates thin-fork `.ensuring` timeouts
+
+**Problem:** A thin fork function with a complex `.ensuring` block (containing `val` defs that re-compute `specGapCycle → CycleIntegral → survivorValues → nextSeq`) times out in its postcondition VC when the body uses `assert(subLemma(...)); ...; true`:
+
+```scala
+// TIMEOUT: VC combines all assert contexts + 50+ congruence terms simultaneously
+if (cond) {
+  assert(assertBase_LT(seq, period, nextPeriod, i))
+  assert(nextSeq.apply(i) == survivors(i))
+} else {
+  assert(assertBase_GEQ(seq, period, nextPeriod, i))
+  assert(nextSeq.apply(i) == survivors(i))
+}
+true
+```
+
+**Fix:** Make the if/else the DIRECT RETURN EXPRESSION — no `assert()` wrappers, no trailing `true`:
+
+```scala
+// WORKS: Stainless WP calculus generates per-path postcondition VCs
+// each with ~20 terms, not a combined 50+ term VC
+if (cond) {
+  assertBase_LT(seq, period, nextPeriod, i)
+} else {
+  assertBase_GEQ(seq, period, nextPeriod, i)
+}
+```
+
+**Why it works:** With the if/else as the return expression, Stainless's WP calculus generates INDEPENDENT postcondition VCs per branch. Z3 gets: `pre ∧ branch_cond ⊢ subLemma(args) ∧ ensuring_equality`. The sub-lemma's postcondition axiom supplies `nextSeq.apply(i) == survivors(i)` for the ACTUAL symbolic terms. The ensuring block's fresh `val` defs (copies of the body defs) are unified via 5-6 EUF congruence steps — tractable in seconds.
+
+With `assert(...); true`, the VC is NOT split per branch. Z3 must work through 4 copies of each symbolic term simultaneously (body vars, ensuring vars, sub-lemma body vars, sub-lemma ensuring vars) → 60+ congruence steps → TIMEOUT.
+
+**Validated:** `assertSurvivorMatchesNextSeqApply_Base` (51/51, 39s), `assertSurvivorMatchesNextSeqApply_Step` (similar), `assertSurvivorAtIndexMatchesNextSeqApply` (similar). Previously timed out at 109/110, 43/44, 52/53 with `assert+true` pattern.
+
+**Prerequisite:** Sub-lemmas must have `.ensuring(res => { val gapCycle = ...; val baseCI = ...; val survivors = ...; val nextSeq = ...; res && nextSeq.apply(i) == survivors(i) })` with the SAME computation shape as the caller's ensuring. Without `.ensuring`, the axiom is missing.
+
+**Source:** `tickets/active/chapter60-goal-driven-audit.md`, Step 5c proof.
+
+### 6.5 `verify-debug --functions=X` crashes for mutually-recursive X
+
+**Problem:** `just verify-debug "X"` uses `--batched --debug=verification,full-vc,solver --functions=X --debug-objects=X`. When `X` is part of a mutual recursion group (X calls Y which calls X), Stainless's TypeChecker throws a fatal error:
+```
+FatalError: Call to function Y is not allowed here, because it is mutually recursive with the current function X
+```
+
+**Why:** `--batched --debug-objects=X` restricts the TypeChecker's visibility graph. It rejects calls from X to Y when Y is in X's SCC (strongly connected component of the call graph), treating it as an illegal cross-boundary call.
+
+**Fix:** Verify the entire mutual recursion group together. Use `verify-debug "package.ClassName._"` to focus on all functions in the class, which includes the whole SCC. Alternatively run `just verify-ch N`.
+
+**Pattern in ch60 Step 5c:** `assertSurvivorMatchesNextSeqApply_Step` calls `assertSurvivorAtIndexMatchesNextSeqApply` (IH), and `assertSurvivorAtIndexMatchesNextSeqApply` calls `assertSurvivorMatchesNextSeqApply_Step`. They are mutually recursive and BOTH need `decreases(nextPeriod - i)` for Stainless to accept the SCC. Without `decreases` on Step, any attempt to verify Step or the whole class crashes with this FatalError even when the class-level `._` focus is used.
+
+**Source:** Step 5c proof, ch60, 2026-07-18.
+
+### 6.6 When timeout repeats 3 times, stop
 
 After 3 failed attempts on the same VC, stop and ask for help. Do NOT try
 variations. Document the error and the attempted fixes.
@@ -574,6 +627,172 @@ Articles focus on what's verified. Unverified math goes in learnings docs.
 Published output vs internal helpers. Use source code links instead.
 
 **Source:** `article-review-comparison-2026-06-17.md`
+
+## 15. Structural Index Lemmas (ch60, Step 5c)
+
+### 15.1 Body `val`s are not in scope in `.ensuring` blocks
+
+In Stainless, `.ensuring(res => ...)` is a closure that only captures function
+PARAMETERS — not local `val`s defined in the body. Writing:
+
+```scala
+val survivors = computeSurvivors(...)
+survivors(index) <= baseCI(end)
+}.ensuring(res => res && survivors(index) <= baseCI(end))
+// ERROR: 'survivors' is not found in the ensuring scope
+```
+
+**Fix:** Recompute inside the ensuring block using the same function parameters:
+
+```scala
+}.ensuring(res => {
+  val gapCycle2  = SpecSieveSeqPeriodProperties.specGapCycle(seq, period)
+  val baseCI2    = CycleIntegral(seq.head.value, gapCycle2.memCycle)
+  val survivors2 = CycleIntegralFilterProperties.survivorValues(baseCI2, seq.head.value, startPos, count)
+  res == (survivors2(index) <= baseCI2(startPos + count - BigInt(1)))
+})
+```
+
+Z3 proves `survivors == survivors2` via 3-step EUF (same function, same args).
+This is the SAME-SHAPE recomputation: 3 congruence steps, NOT the 4-chain
+EUF problem from section 6.4. The key distinction: here BOTH the body and
+ensuring compute the same 3 val-chain from the same parameters → Z3 unifies
+them trivially. The original EUF timeout (section 6.4) happened when the
+ensuring recomputed the chain INDEPENDENTLY of the body's locals, with no
+structural helper to align them.
+
+### 15.2 Structural index lemmas for `survivorValues`
+
+Z3 cannot automatically derive how `survivorValues(ci, fv, sp, count)(k)`
+relates to `survivorValues(ci, fv, sp+1, count-1)(k')` because:
+- `survivorValues` is a recursive function returning an OPAQUE list term
+- Z3 needs to case-split on the ADT constructor + unfold `apply` — 2 quantifier
+  instantiation steps that compose poorly under the 300s timeout
+- When the PRECONDITION check for a recursive call also requires this structural
+  fact (e.g., `index-1 < survivorsTail.size`), the timeout is even more likely
+
+**Solution:** Add explicit STRUCTURAL LEMMAS to `CycleIntegralFilterProperties`:
+
+```scala
+// When Calc.mod(ci(sp), fv) != 0:
+def assertSurvivorApplyZeroWhenNonMultiple(ci, fv, sp, count):
+  // survivors(0) == ci(sp)   [first element IS ci at startPos]
+
+def assertSurvivorApplyKPlusOneWhenNonMultiple(ci, fv, sp, count, k):
+  // survivors(k+1) == survivorsTail(k)   [shift-by-one when head included]
+
+def assertSurvivorSizeNonMultiple(ci, fv, sp, count):
+  // survivors.size == 1 + survivorsTail.size   [head increases size by 1]
+
+// When Calc.mod(ci(sp), fv) == 0:
+def assertSurvivorApplyKWhenMultiple(ci, fv, sp, count, k):
+  // survivors(k) == survivorsTail(k)   [identity when head skipped]
+
+def assertSurvivorSizeMultiple(ci, fv, sp, count):
+  // survivors.size == survivorsTail.size   [skip preserves size]
+```
+
+Each lemma is TRIVIALLY PROVED (one unfolding of `survivorValues` definition).
+Use them as explicit bridge assertions BEFORE the goal assertion:
+
+```scala
+// Non-multiple, index > 0 case in assertSurvivorLEQEndCI:
+assert(CycleIntegralFilterProperties.assertSurvivorSizeNonMultiple(baseCI, head, sp, count))
+assert(survivors.size == BigInt(1) + survivorsTail.size)
+assert(index - BigInt(1) < survivorsTail.size)            // now provable
+assert(assertSurvivorLEQEndCI(seq, period, sp+1, c-1, index-1))   // precondition satisfied
+assert(survivorsTail(index-1) <= baseCI(sp+c-1))          // from .ensuring
+assert(CycleIntegralFilterProperties.assertSurvivorApplyKPlusOneWhenNonMultiple(baseCI, head, sp, count, index-1))
+assert(survivors(index) == survivorsTail(index-1))         // bridge
+// Now Z3 derives survivors(index) <= baseCI(sp+c-1) trivially
+```
+
+**Why bridge assertions work:** After adding these, the goal VC context has only
+2-3 simple equalities and one inequality — all immediate Z3 arithmetic steps.
+
+### 15.3 Lexicographic `decreases` for mutual recursion
+
+When two functions call each other (mutual recursion), `decreases(k)` on BOTH
+causes the termination VC to check `k < k` (false!):
+
+- `topLevel` calls `step` at SAME `k` → `decreases(n-i)` → must check `n-i < n-i` → UNKNOWN
+
+**Fix:** Use LEXICOGRAPHIC measure `decreases(k, rank)` where rank differs:
+- `step`: `decreases(nextPeriod - i, BigInt(0))` (lower rank)
+- `topLevel`: `decreases(nextPeriod - i, BigInt(1))` (higher rank)
+
+Now:
+- `topLevel(i) → step(i)`: `(n-i, 1) → (n-i, 0)` → lex decrease ✓
+- `step(i) → topLevel(i+1)`: `(n-i, 0) → (n-i-1, 1)` → lex decrease ✓
+
+**Source:** ch60 Step 5c proof, 2026-07-19.
+
+### 15.4 `.ensuring(res => res == expression)` gives callers direct semantic access
+
+When a recursive function has a complex body (with if-else and asserts) and
+returns a BOOLEAN expression, callers can't easily extract the semantic fact
+from `f(args) == true` without unfolding the body.
+
+**Fix:** Add `.ensuring(res => res == theReturnExpression)` with inline recompute:
+
+```scala
+survivors(index) <= baseCI(startPos + count - BigInt(1))
+}.ensuring(res => {
+  val gapCycle2  = ...   // same computation as body
+  val survivors2 = ...
+  res == (survivors2(index) <= baseCI2(startPos + count - BigInt(1)))
+})
+```
+
+Callers of `assertSurvivorLEQEndCI(seq, period, sp+1, c-1, index-1)` then get:
+`true = (survivorsTail(index-1) <= baseCI(sp+c-1))` → direct semantic fact.
+
+This is CRUCIAL for recursive calls where the IH must be usable in the BODY:
+without `.ensuring`, the caller must unfold the callee body to get the semantic
+fact — which requires Z3 to process the if-else branches, failing at 300s.
+
+**Source:** ch60 `assertSurvivorLEQEndCI`, `assertSurvivorStrictlyIncreases`, 2026-07-19.
+
+### 15.5 Richer postconditions cause regressions via cache invalidation
+
+**Problem:** Adding `.ensuring(res => res == expr)` to an existing function `f`
+that previously had `.holds` causes ALL callers to have their caches invalidated
+AND makes their SMT formulas harder: the axiom `f(args) == expr` is added to
+the call-site formula, increasing complexity. Borderline VCs that previously
+passed within 300s may now timeout.
+
+**Root cause:** With just `.holds`, the call-site VC `assert(f(k, v))` is:
+"prove f(k, v) == true" — Z3 checks preconditions and the body logic (fast).
+With the richer `.ensuring(res => res == (apply(k+1) <= v))`, the axiom
+`f(k, v) == (apply(k+1) <= v)` is injected. Now Z3 must prove
+`(apply(k+1) <= v) == true`, i.e., unfold the sequence — potentially hard.
+
+**Fix:** Use a SEPARATE new function with the richer postcondition, called ONLY
+where needed. Keep the original function with `.holds`:
+
+```scala
+// Original — keep as .holds (no change)
+def nextDoesNotPassAcceptedValue(k: BigInt, v: BigInt): Boolean = {
+  ...
+}.holds   // callers unaffected, cache stays valid
+
+// NEW: explicitly proves the upper bound
+def nextApplyUpperBound(k: BigInt, v: BigInt): Boolean = {
+  require(...)
+  val next = apply(k + BigInt(1))
+  if (next > v) { assert(...); assert(false) }  // contradiction branch
+  apply(k + BigInt(1)) <= v
+}.ensuring(res => res && apply(k + BigInt(1)) <= v)
+```
+
+Step 5c callers use `nextApplyUpperBound` (gets the fact directly), while
+existing callers keep using `nextDoesNotPassAcceptedValue` (no regression).
+
+**Key insight:** Cache entries for callers of the ORIGINAL function remain valid
+after the revert. Adding a NEW function doesn't invalidate any existing cache.
+Only functions that CALL `nextApplyUpperBound` (Step 5c, new) need new VCs.
+
+**Source:** ch60 Step 5c (2026-07-19). Three existing callers in SpecSieveSeqHeadIsPrime.scala:91 and SpecSieveSeqNextProperties.scala:117,121 timed out after the richer postcondition was added.
 
 ### 14.4 Three-form presentation
 

@@ -200,13 +200,66 @@ show steps count: jar
     just_log show "{{justfile_directory()}}" "steps={{steps}} count={{count}}"
     java -jar target/scala-3.5.0/prime-numbers-assembly-0.0.0.jar  show {{steps}} {{count}}
 
+verify-bg focus="":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-bg "{{justfile_directory()}}" "focus={{focus}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java 21.0.7-zulu
+    sdk use java 21.0.7-zulu
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
+    cd "{{justfile_directory()}}"
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify.log
+    Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
+    function_filter=()
+    if [[ -n "{{focus}}" ]]; then
+      function_filter=(--functions="{{focus}}")
+    fi
+    DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
+    JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
+    ./stainless-dotty-standalone-*/stainless --timeout=300 "${function_filter[@]}" $(./scripts/find-src.sh) >> logs/verify.log 2>&1 &
+    echo "Started in background. PID=$! — watch: tail -f logs/verify.log"
+
+verify-debug-bg focus="":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log verify-debug-bg "{{justfile_directory()}}" "focus={{focus}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java 21.0.7-zulu
+    sdk use java 21.0.7-zulu
+    bash "{{justfile_directory()}}/scripts/verify-stop.sh"
+    cd "{{justfile_directory()}}"
+    mkdir -p logs
+    rm -f logs/verify-error.log
+    rm -f logs/verify-debug.log
+    Z3_LIB="/opt/homebrew/Cellar/z3/4.16.0/lib"
+    function_filter=()
+    if [[ -n "{{focus}}" ]]; then
+      function_filter=(--functions="{{focus}}" --debug-objects="{{focus}}")
+    fi
+    DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
+    JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
+    ./stainless-dotty-standalone-*/stainless --batched --timeout=300 --debug=verification,full-vc,solver "${function_filter[@]}" $(./scripts/find-src.sh) >> logs/verify-debug.log 2>&1 &
+    echo "Started in background. PID=$! — watch: tail -f logs/verify-debug.log"
+
 spark-run numStages="10":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
     just_log spark-run "{{justfile_directory()}}" "numStages={{numStages}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
-    sbt "spark/runMain v1.chapter8.SparkSieveRunner {{numStages}}"
+    sbt "spark/runMain v1.chapter8.Runner2 {{numStages}}"
+
+spark-generate numStages="10":
+    #!/usr/bin/env bash
+    source "{{justfile_directory()}}/scripts/just-log.sh"
+    just_log spark-generate "{{justfile_directory()}}" "numStages={{numStages}}"
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk use java 21.0.7-zulu
+    rm -rf spark/data/sieve-df/
+    sbt "spark/runMain v1.chapter8.Runner2 {{numStages}}"
 
 spark-test:
     #!/usr/bin/env bash
@@ -215,3 +268,31 @@ spark-test:
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     sbt "spark/test"
+
+spark-cat stage="1" file="gaps":
+    #!/usr/bin/env bash
+    base="{{justfile_directory()}}/spark/data/sieve-df"
+    dir="$base/stage_$(printf '%03d' {{stage}})/{{file}}"
+    if [[ -f "$dir.csv.gz" ]]; then
+      # Single gzip file (e.g. values.csv.gz, gaps-2.csv.gz)
+      gunzip -c "$dir.csv.gz" | column -t -s,
+      exit 0
+    fi
+    if [[ ! -d "$dir" ]]; then
+      echo "Not found: $dir or $dir.csv.gz" >&2
+      exit 1
+    fi
+    # Partitioned CSV directory (e.g. gaps/)
+    parts=("$dir"/part-*.csv.gz)
+    if [[ ${#parts[@]} -eq 0 ]]; then
+      echo "No part files in $dir" >&2
+      exit 1
+    fi
+    gunzip -c "${parts[0]}" | head -1 | column -t -s,
+    for f in "${parts[@]}"; do
+      gunzip -c "$f" | tail -n +2
+    done | column -t -s,
+    gunzip -c "${parts[0]}" | head -1 | column -t -s,
+    for f in "${parts[@]}"; do
+      gunzip -c "$f" | tail -n +2
+    done | column -t -s,
