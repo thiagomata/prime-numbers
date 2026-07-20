@@ -416,6 +416,87 @@ object CycleIntegralFilterProperties {
       ci(startPosition)
   }.holds
 
+  /** Structural: when position is a non-multiple, survivors(0) == ci(startPosition). */
+  def assertSurvivorApplyZeroWhenNonMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(Calc.mod(ci(startPosition), filterValue) != BigInt(0))
+    survivorValues(ci, filterValue, startPosition, count)(BigInt(0)) ==
+      ci(startPosition)
+  }.holds
+
+  /** Structural: when position is a non-multiple, survivors(k+1) == tail_survivors(k). */
+  def assertSurvivorApplyKPlusOneWhenNonMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(k >= 0)
+    require(Calc.mod(ci(startPosition), filterValue) != BigInt(0))
+    require(k + BigInt(1) < survivorValues(ci, filterValue, startPosition, count).size)
+    survivorValues(ci, filterValue, startPosition, count)(k + BigInt(1)) ==
+      survivorValues(ci, filterValue, startPosition + BigInt(1), count - BigInt(1))(k)
+  }.holds
+
+  /** Structural: when position is a multiple, survivors(k) == tail_survivors(k). */
+  def assertSurvivorApplyKWhenMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt,
+    k: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(k >= 0)
+    require(Calc.mod(ci(startPosition), filterValue) == BigInt(0))
+    require(k < survivorValues(ci, filterValue, startPosition, count).size)
+    survivorValues(ci, filterValue, startPosition, count)(k) ==
+      survivorValues(ci, filterValue, startPosition + BigInt(1), count - BigInt(1))(k)
+  }.holds
+
+  /** Structural: when position is a non-multiple, size = 1 + tail size. */
+  def assertSurvivorSizeNonMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(Calc.mod(ci(startPosition), filterValue) != BigInt(0))
+    survivorValues(ci, filterValue, startPosition, count).size ==
+      BigInt(1) + survivorValues(ci, filterValue, startPosition + BigInt(1), count - BigInt(1)).size
+  }.holds
+
+  /** Structural: when position is a multiple, size == tail size. */
+  def assertSurvivorSizeMultiple(
+    ci: CycleIntegral,
+    filterValue: BigInt,
+    startPosition: BigInt,
+    count: BigInt
+  ): Boolean = {
+    require(filterValue > 0)
+    require(startPosition >= 0)
+    require(count > 0)
+    require(Calc.mod(ci(startPosition), filterValue) == BigInt(0))
+    survivorValues(ci, filterValue, startPosition, count).size ==
+      survivorValues(ci, filterValue, startPosition + BigInt(1), count - BigInt(1)).size
+  }.holds
+
   /**
    * Predicate: the new cycle's gaps match the differences between
     * consecutive survivor values, for all positions `0` through `maxIndex`.

@@ -47,9 +47,9 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     val nextHV = current.head + current.gaps(0)
     val R = rotation(h, m, residues, nextHV)
 
-    val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-    val walked = SievePipelineDF.phase2Walk(expanded)
-    val patched = SievePipelineDF.phase3Carry(walked, h, m, T, residues, gaps)
+    val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+    val walked = SievePipelineDF.walkAndMerge(expanded)
+    val patched = SievePipelineDF.applyCarryChain(walked, h, m, T, residues, gaps)
     val collected = SievePipelineDF.collectGaps(patched, R)
 
     val newTail = Array(current.head) ++ current.tailPrimes
@@ -116,9 +116,9 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     outDir.mkdirs()
 
     try {
-      val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-      val walked = SievePipelineDF.phase2Walk(expanded)
-      val patched = SievePipelineDF.phase3Carry(walked, h, m, T, residues, gaps)
+      val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+      val walked = SievePipelineDF.walkAndMerge(expanded)
+      val patched = SievePipelineDF.applyCarryChain(walked, h, m, T, residues, gaps)
       val info = SievePipelineDF.writeRotatedCsv(patched, R, outDir.getAbsolutePath, 1, h, nextHV, m, Array(h) ++ pS2.tailPrimes)
 
       // Request all values that we have gaps for (period = number of gaps)
@@ -135,7 +135,7 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     }
   }
 
-  test("countTwoGaps: S3 has 3 two-gaps") {
+  test("countTwos: S3 has 3 two-gaps") {
     val (pS1, _) = SieveStage.base.nextStage()
     val (pS2, _) = pS1.nextStage()
 
@@ -150,12 +150,12 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     outDir.mkdirs()
 
     try {
-      val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-      val walked = SievePipelineDF.phase2Walk(expanded)
-      val patched = SievePipelineDF.phase3Carry(walked, h, m, T, residues, gaps)
+      val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+      val walked = SievePipelineDF.walkAndMerge(expanded)
+      val patched = SievePipelineDF.applyCarryChain(walked, h, m, T, residues, gaps)
       val info = SievePipelineDF.writeRotatedCsv(patched, R, outDir.getAbsolutePath, 1, h, nextHV, m, Array(h) ++ pS2.tailPrimes)
 
-      val twoCount = SievePipelineDF.countTwoGaps(info.path)
+      val twoCount = SievePipelineDF.countTwos(info.path)
       assert(twoCount === 3, s"S3 should have 3 two-gaps, got $twoCount")
     } finally {
       outDir.listFiles().foreach { f =>
@@ -183,19 +183,19 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     }
   }
 
-  // ─── compressAround2 tests ───
+  // ─── compressAroundTwos tests ───
 
-  test("compressAround2: empty output not created") {
+  test("compressAroundTwos: empty output not created") {
     val outDir = tempDir()
     try {
       val tmpFile = new java.io.File(outDir, "out.csv.gz")
       // No part files in dir — nothing to compress
-      SievePipelineDF.compressAround2(outDir.getAbsolutePath, tmpFile.getAbsolutePath)
+      SievePipelineDF.compressAroundTwos(outDir.getAbsolutePath, tmpFile.getAbsolutePath)
       // No part files → no header written, file should not exist
     } finally { deleteAll(outDir) }
   }
 
-  test("compressAround2: S3 compresses correctly") {
+  test("compressAroundTwos: S3 compresses correctly") {
     val outDir = tempDir()
     try {
       val (pS1, _) = SieveStage.base.nextStage()
@@ -207,13 +207,13 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
       val nextHV = pS2.head + pS2.gaps(0)
       val R = rotation(h, m, residues, nextHV)
 
-      val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-      val walked = SievePipelineDF.phase2Walk(expanded)
-      val patched = SievePipelineDF.phase3Carry(walked, h, m, T, residues, gaps)
+      val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+      val walked = SievePipelineDF.walkAndMerge(expanded)
+      val patched = SievePipelineDF.applyCarryChain(walked, h, m, T, residues, gaps)
       val info = SievePipelineDF.writeRotatedCsv(patched, R, outDir.getAbsolutePath, 1, h, nextHV, m, Array(h) ++ pS2.tailPrimes)
 
       val outFile = new java.io.File(outDir, "compressed.csv.gz")
-      SievePipelineDF.compressAround2(info.path, outFile.getAbsolutePath)
+      SievePipelineDF.compressAroundTwos(info.path, outFile.getAbsolutePath)
 
       // Read back and verify
       val is = new java.util.zip.GZIPInputStream(new java.io.FileInputStream(outFile))
@@ -251,9 +251,9 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
       val nextHV = pS1.head + pS1.gaps(0)
       val R = rotation(h, m, residues, nextHV)
 
-      val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-      val walked = SievePipelineDF.phase2Walk(expanded)
-      val patched = SievePipelineDF.phase3Carry(walked, h, m, residues.length, residues, gaps)
+      val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+      val walked = SievePipelineDF.walkAndMerge(expanded)
+      val patched = SievePipelineDF.applyCarryChain(walked, h, m, residues.length, residues, gaps)
       val info = SievePipelineDF.writeRotatedCsv(patched, R, outDir.getAbsolutePath, 1, h, nextHV, m, Array(h))
 
       // Read first part file header — should include mergeCount
@@ -277,9 +277,9 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
       val nextHV = pS2.head + pS2.gaps(0)
       val R = rotation(h, m, residues, nextHV)
 
-      val expanded = SievePipelineDF.phase1Expand(spark, h, m, residues, gaps)
-      val walked = SievePipelineDF.phase2Walk(expanded)
-      val patched = SievePipelineDF.phase3Carry(walked, h, m, residues.length, residues, gaps)
+      val expanded = SievePipelineDF.expandBlocks(spark, h, m, residues, gaps)
+      val walked = SievePipelineDF.walkAndMerge(expanded)
+      val patched = SievePipelineDF.applyCarryChain(walked, h, m, residues.length, residues, gaps)
       val info = SievePipelineDF.writeRotatedCsv(patched, R, outDir.getAbsolutePath, 1, h, nextHV, m, Array(h) ++ pS2.tailPrimes)
 
       // Read all part files, collect (gap, origin, mergeCount)

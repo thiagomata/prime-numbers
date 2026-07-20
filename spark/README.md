@@ -7,21 +7,21 @@ Distributed sieve sequence computation using Apache Spark DataFrames. Generates 
 ```mermaid
 flowchart LR
     subgraph Driver["Driver (Metadata Only)"]
-        CP[Carry Pre-compute<br/><small>O(h) from residues</small>]
-        RT[Rotation Index<br/><small>count survivors<br/>before nextHead</small>]
-        GI[GapsInfo<br/><small>head, modulus, period,<br/>firstGap, path</small>]
+        CP["Carry Pre-compute O(h)"]
+        RT["Rotation Index: count survivors"]
+        GI["GapsInfo: head, modulus, period"]
     end
 
     subgraph Workers["Workers (Distributed Data)"]
-        P1[Phase 1: Expand<br/><small>flatMap → DataFrame<br/>(k, i, gap, nextFiltered)</small>]
-        P2[Phase 2: Walk<br/><small>accumulate + emit<br/>(k, gap, origin)</small>]
-        P3[Phase 3: Carry Patch<br/><small>mapPartitions + broadcast<br/>(k, gap, origin)</small>]
-        P4[Phase 4: Write<br/><small>DataFrame.write.csv<br/>partitioned gzip</small>]
+        P1["Phase 1: Expand blocks"]
+        P2["Phase 2: Walk and merge"]
+        P3["Phase 3: Apply carry chain"]
+        P4["Phase 4: Write gzip CSV"]
     end
 
     subgraph Output["Output (Filesystem)"]
-        CSV[stage_NNN/gaps/<br/><small>part-*.csv.gz</small>]
-        VAL[stage_NNN/values.csv.gz<br/><small>first 1000 values</small>]
+        CSV["stage_NNN/gaps/ part-*.csv.gz"]
+        VAL["stage_NNN/values.csv.gz"]
     end
 
     SieveStage --> P1
@@ -32,9 +32,9 @@ flowchart LR
 
     P1 --> P2 --> P3 --> P4 --> CSV
     P4 --> GI
-    GI -.-> |nextHead,<br/>firstGap,<br/>period| SieveStage
+    GI -.-> |nextHead, firstGap, period| SieveStage
 
-    CSV -.-> |streaming read<br/>first gap| GI
+    CSV -.-> |read first gap| GI
 ```
 
 ## Data Flow
@@ -192,12 +192,10 @@ gidx  gap  origin
 ```
 spark/
   src/main/scala/v1/chapter8/
-    SievePipelineDF.scala   — DataFrame pipeline (phases 1-5)
-    Runner2.scala            — Main entry point
+    SievePipelineDF.scala   — DataFrame pipeline
+    SieveGenerator.scala     — Main entry point
     SieveStage.scala         — Pure reference (unit tests only)
-    BlockProcessing.scala    — RDD-based block iteration (deprecated)
-    GapLineage.scala         — Gap lineage tracking
-    SievePipeline.scala      — RDD pipeline (deprecated)
+    GapLineage.scala         — Gap utilities (compressAroundTwos, stats)
   src/test/scala/v1/chapter8/
     SievePipelineDFSpec.scala — DataFrame pipeline tests
     SieveStageSpec.scala     — Pure reference tests

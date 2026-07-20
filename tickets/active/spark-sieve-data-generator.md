@@ -1,8 +1,8 @@
 # Spark Sieve Sequence Data Generator
 
 **Created:** 2026-07-17
-**Updated:** 2026-07-17
-**Status:** Plan phase (awaiting user additions before implementation)
+**Updated:** 2026-07-19
+**Status:** Working — 32/32 tests pass, DataFrame-native pipeline
 **Verification:** Not required (this is a data-generation sub-project, not a proof project)
 **Testing:** Unit tests required — ScalaTest in `spark/src/test/scala/`
 

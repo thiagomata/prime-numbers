@@ -70,10 +70,8 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   def passesFilter(value: BigInt): Boolean =
     CoprimeUtils.isCoprime(value, PrimeUtils.primeValues(filterPrimes))
 
-  def accepts(value: BigInt): Boolean = {
-    require(value >= head.value)
-    passesFilter(value)
-  }
+  def accepts(value: BigInt): Boolean =
+    value >= head.value && passesFilter(value)
 
   def apply(k: BigInt): BigInt = {
     require(k >= BigInt(0))
@@ -261,17 +259,17 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
   }.holds
 
   def indexOfAccepted(value: BigInt): BigInt = {
-    require(value >= head.value)
     require(accepts(value))
 
+    assert(value >= head.value)
     assert(apply(BigInt(0)) == head.value)
     assert(apply(BigInt(0)) <= value)
     findIndexForAcceptedFrom(value, BigInt(0))
   }.ensuring(res => res >= BigInt(0) && apply(res) == value && (res > BigInt(0) ==> apply(res - BigInt(1)) < value))
 
   private def findIndexForAcceptedFrom(value: BigInt, k: BigInt): BigInt = {
-    require(value >= head.value)
     require(accepts(value))
+    require(value >= head.value)
     require(k >= BigInt(0))
     require(apply(k) <= value)
     decreases(value - apply(k))

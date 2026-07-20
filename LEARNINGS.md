@@ -350,7 +350,7 @@ With `assert(...); true`, the VC is NOT split per branch. Z3 must work through 4
 
 **Prerequisite:** Sub-lemmas must have `.ensuring(res => { val gapCycle = ...; val baseCI = ...; val survivors = ...; val nextSeq = ...; res && nextSeq.apply(i) == survivors(i) })` with the SAME computation shape as the caller's ensuring. Without `.ensuring`, the axiom is missing.
 
-**Source:** `tickets/active/chapter60-goal-driven-audit.md`, Step 5c proof.
+**Source:** `tickets/active/chapter60-goal-driven-audit.md`, abandoned indexed bijection attempt (2026-07-18).
 
 ### 6.5 `verify-debug --functions=X` crashes for mutually-recursive X
 
@@ -363,9 +363,9 @@ FatalError: Call to function Y is not allowed here, because it is mutually recur
 
 **Fix:** Verify the entire mutual recursion group together. Use `verify-debug "package.ClassName._"` to focus on all functions in the class, which includes the whole SCC. Alternatively run `just verify-ch N`.
 
-**Pattern in ch60 Step 5c:** `assertSurvivorMatchesNextSeqApply_Step` calls `assertSurvivorAtIndexMatchesNextSeqApply` (IH), and `assertSurvivorAtIndexMatchesNextSeqApply` calls `assertSurvivorMatchesNextSeqApply_Step`. They are mutually recursive and BOTH need `decreases(nextPeriod - i)` for Stainless to accept the SCC. Without `decreases` on Step, any attempt to verify Step or the whole class crashes with this FatalError even when the class-level `._` focus is used.
+**Pattern in ch60 abandoned indexed bijection (2026-07-18):** `assertSurvivorMatchesNextSeqApply_Step` calls `assertSurvivorAtIndexMatchesNextSeqApply` (IH), and `assertSurvivorAtIndexMatchesNextSeqApply` calls `assertSurvivorMatchesNextSeqApply_Step`. They are mutually recursive and BOTH need `decreases(nextPeriod - i)` for Stainless to accept the SCC. Without `decreases` on Step, any attempt to verify Step or the whole class crashes with this FatalError even when the class-level `._` focus is used.
 
-**Source:** Step 5c proof, ch60, 2026-07-18.
+**Source:** ch60 abandoned indexed bijection, 2026-07-18.
 
 ### 6.6 When timeout repeats 3 times, stop
 
@@ -453,6 +453,30 @@ Each `just verify-ch N` run loads chapters up to `N` but auto-focuses Stainless
 on `v1.chapterN._`, so dependencies are present without asking the solver to
 reprove the whole repository in one batch. Treat a full `just verify` timeout
 as an aggregate-batch limitation until the chapter logs say otherwise.
+
+### 8.4 `just verify <name>` matches across ALL chapters, not just the target chapter
+
+`just verify functionName` passes `--functions=functionName` to Stainless. Stainless
+matches this against functions in ALL loaded source files. If chapter 6 has a function
+with the same name (e.g. `assertFirstSurvivorAtOrBeforeNextValue` in `SpecSieveSequence.scala`),
+it will be verified — from cache — while the chapter 60 version in `SpecSieveSeqNextProperties.scala`
+may not be checked at all (or shows as "3 functions" instead of the expected chapter-60 count).
+
+**Symptoms:** output says "Generating VCs for N functions" where N is suspiciously small;
+all results are `valid from cache`; file paths in the output point to `chapter6/` not `chapter60/`.
+
+**Fix:** For chapter-specific verification, always use `just verify-ch 60` (or whichever
+chapter). Never rely on `just verify <name>` to exercise chapter 60 code unless you confirm
+the paths in the log output.
+
+**Source:** `assertFirstSurvivorAtOrBeforeNextValue` targeted run, 2026-07-20.
+
+### 8.5 Do not run multiple verify instances in parallel
+
+Each `just verify` call begins with `bash verify-stop.sh`, which kills any running
+Stainless/Z3 processes. Running two `just verify` commands concurrently means each
+will kill the other's solver, producing no useful output. Run one at a time and wait
+for it to finish before starting the next.
 
 ## 9. Common Pitfalls
 
@@ -628,7 +652,7 @@ Published output vs internal helpers. Use source code links instead.
 
 **Source:** `article-review-comparison-2026-06-17.md`
 
-## 15. Structural Index Lemmas (ch60, Step 5c)
+## 15. Structural Index Lemmas (ch60, abandoned indexed bijection)
 
 ### 15.1 Body `val`s are not in scope in `.ensuring` blocks
 
@@ -725,7 +749,7 @@ Now:
 - `topLevel(i) → step(i)`: `(n-i, 1) → (n-i, 0)` → lex decrease ✓
 - `step(i) → topLevel(i+1)`: `(n-i, 0) → (n-i-1, 1)` → lex decrease ✓
 
-**Source:** ch60 Step 5c proof, 2026-07-19.
+**Source:** ch60 abandoned indexed bijection, 2026-07-19.
 
 ### 15.4 `.ensuring(res => res == expression)` gives callers direct semantic access
 
@@ -785,14 +809,14 @@ def nextApplyUpperBound(k: BigInt, v: BigInt): Boolean = {
 }.ensuring(res => res && apply(k + BigInt(1)) <= v)
 ```
 
-Step 5c callers use `nextApplyUpperBound` (gets the fact directly), while
+Callers of the indexed bijection attempt use `nextApplyUpperBound` (gets the fact directly), while
 existing callers keep using `nextDoesNotPassAcceptedValue` (no regression).
 
 **Key insight:** Cache entries for callers of the ORIGINAL function remain valid
 after the revert. Adding a NEW function doesn't invalidate any existing cache.
-Only functions that CALL `nextApplyUpperBound` (Step 5c, new) need new VCs.
+Only functions that CALL `nextApplyUpperBound` need new VCs.
 
-**Source:** ch60 Step 5c (2026-07-19). Three existing callers in SpecSieveSeqHeadIsPrime.scala:91 and SpecSieveSeqNextProperties.scala:117,121 timed out after the richer postcondition was added.
+**Source:** ch60 abandoned indexed bijection (2026-07-19). Three existing callers in SpecSieveSeqHeadIsPrime.scala:91 and SpecSieveSeqNextProperties.scala:117,121 timed out after the richer postcondition was added.
 
 ### 14.4 Three-form presentation
 
@@ -1231,3 +1255,185 @@ absolute path in `libz3java.dylib`.
 | 19.1 Reuse the expensive construction, not the `.holds` | `lean-ch6-proof-spine.md` | Lemma composition |
 | 20.1 Avoid circular imports between chapters | `verify-timeout-root-cause.md` | Dependency management |
 | 20.2 macOS DYLD_LIBRARY_PATH stripping | `verify-timeout-root-cause.md` | Tooling |
+| 21.1 Indexed bijection via mutual induction always times out — use Step 9 bridge instead | See below | Goal 3 bridge |
+| 21.2 `assert(false)` branch causes Stainless to combine all VCs — use `if` guard instead | See below | VC structure |
+| 21.3 `res == expr` ensuring clause forces call sites to re-prove `expr` — use `.holds` or `res && expr` | See below | Ensuring clauses |
+| 21.4 `mergedGapPrefix` walk must start at k=1, not k=0, for seq.next | See below | Bridge / seq.next |
+| 21.5 `nextSeq.head.value == seq.head.value` is impossible for seq.next — use `<=` | See below | Preconditions / seq.next |
+| 21.6 Make predicate functions total to eliminate precondition VCs at call sites | See below | Predicate design |
+| 21.7 `indexOfAccepted(z)` must be called AFTER `accepts(z)` is established | See below | Call ordering |
+| 21.8 Strict-monotonicity bridge for propagating lower bounds through index gaps | See below | Bridge patterns |
+| 8.4 `just verify <name>` matches across ALL chapters — use `verify-ch N` for chapter-specific work | See above | Workflow |
+| 8.5 Do not run multiple verify instances in parallel | See above | Workflow |
+
+## 21. Chapter 60 Goal 3 — bridge patterns and the abandoned indexed bijection
+
+### 21.1 Indexed bijection via mutual induction always times out — DELETE the code
+
+Every session gets drawn back to trying `survivors(i) == nextSeq.apply(i)` by mutual induction
+(the abandoned indexed bijection approach).
+It always fails: the postcondition VC for the inductive step times out because Z3 cannot unify
+the `specGapCycle → CycleIntegral → survivorValues` chain for both sides independently in 300s.
+
+**Rule:** Do NOT write any `assertSurvivorMatchesNextSeqApply*` or `assertEqualityViaContradiction`
+or `assertEqualityFromBounds` functions. They will time out.
+
+**The correct approach (Step 9):** Bridge via `mergedGapPrefix` (chapter 6's strategy):
+```
+gapsFromValues(survivors) == mergedGapPrefix(seq, nextSeq, 1, nextPeriod, period)
+                          == nextSeq.gapList(0, nextPeriod)
+```
+This avoids proving indexed value equality entirely.
+
+**Danger signal:** If you see functions with names containing "SurvivorMatches", "EqualityVia",
+"SurvivorAtIndex" — DELETE them. They are indexed bijection mutual induction in disguise.
+
+### 21.2 `assert(false)` branch causes combined VC
+
+When a branch ends with `assert(false)` (to mark it unreachable), Stainless creates ONE combined
+VC for the entire function instead of separate per-assert VCs. This means a single complex VC
+that always times out.
+
+**Fix:** Use an explicit `if` guard:
+```scala
+// BAD:
+val result = someComputation
+assert(result <= end)
+if (result > end) { assert(false); BigInt(0) }
+else result
+
+// GOOD:
+val result = someComputation
+if (result <= end) result
+else result  // unreachable — the <= condition in the ensuring handles it
+```
+
+Or use `nextDoesNotPassAcceptedValue` pattern that returns `false` through the unreachable path
+without `assert(false)`.
+
+### 21.3 `res == expr` ensuring clause forces call sites to re-prove `expr`
+
+When you write `.ensuring(res => res == someExpression)`, the call site must re-prove
+`someExpression` independently. This times out if `someExpression` is complex.
+
+**Fix:** Use `.holds` (returning the equality as the body) or `res && someExpression` in ensuring:
+```scala
+// BAD:
+def foo(...) = someComplexComputation
+}.ensuring(res => res == theResult)  // call site must re-prove theResult
+
+// GOOD:
+def foo(...) = {
+  ...
+  theResult
+}.holds  // or .ensuring(res => res && theResult)
+```
+
+### 21.4 `mergedGapPrefix` walk must start at k=1 for seq.next
+
+`seq.apply(0) = seq.head.value` is rejected by `seq.next` because:
+- `seq.next.filterValues.head = seq.head.value`  
+- `seq.head.value % seq.head.value = 0` → rejected
+
+The correct starting point is `k=1` where:
+- `seq.apply(1) = seq.next.head.value = seq.next.apply(0)`
+- `seq.next.accepts(seq.apply(1))` is true (next prime is coprime to all filter values including itself)
+
+**In `assertPipelineOutputMatchesNextGapList`:** call with `BigInt(1)` not `BigInt(0)`, and
+require `nextSeq(BigInt(0)) == seq.apply(BigInt(1))` explicitly.
+
+### 21.5 `nextSeq.head.value == seq.head.value` is impossible for seq.next
+
+`seq.next.head.value` is the NEXT LARGER prime (`seq.apply(1) > seq.head.value`), never equal.
+Using this equality as a precondition makes any lemma vacuously satisfied by seq.next (the
+preconditions can never ALL hold simultaneously).
+
+**Fix:** Replace `require(nextSeq.head.value == seq.head.value)` with
+`require(seq.head.value <= nextSeq.head.value)` throughout `mergedGapPrefix` machinery (~22
+occurrences). Add bridge assertions for places that deduced lower bounds from the equality:
+```scala
+assert(seq.apply(k) >= nextSeq.head.value)  // from nextSeq.accepts(seq.apply(k))
+assert(seq.applyStrictlyIncreases(k))
+assert(seq.apply(k + 1) >= nextSeq.head.value)
+```
+
+### 21.6 Make predicate functions total to eliminate precondition VCs at call sites
+
+**Problem:** `accepts` was a PARTIAL function:
+```scala
+def accepts(value: BigInt): Boolean = {
+  require(value >= head.value)
+  passesFilter(value)
+}
+```
+Every call `nextSeq.accepts(seq.apply(k))` generated a VC: prove `seq.apply(k) >= nextSeq.head.value`.
+After replacing `require(nextSeq.head.value == seq.head.value)` with `<=`, these 21+ VCs could no
+longer be discharged trivially — they all timed out.
+
+**Fix:** Make `accepts` a TOTAL predicate:
+```scala
+def accepts(value: BigInt): Boolean =
+  value >= head.value && passesFilter(value)
+```
+
+**Effect:** All 21 precondition VCs disappear. AND the implication now flows the other direction for
+free: `accepts(v) == true` → by Stainless body-unfolding → `v >= head.value`. So a `require(accepts(v))`
+anywhere gives you `v >= head.value` as a derivable fact without any extra assertion.
+
+**Rule:** When a predicate naturally embeds a lower-bound check (`value >= head.value`), fold it INTO
+the boolean expression instead of making it a `require`. This way:
+- callers get acceptance checking without discharging a precondition VC
+- the lower-bound fact is recoverable by Stainless unfolding wherever `accepts(v)` is known true
+
+**Source:** ch60 `SpecSieveSequence.accepts` refactor, 2026-07-20. Reduced VC count from 4995 to 4893
+and eliminated all 21 timeout-inducing precondition obligations in `SpecSieveSeqNextProperties`.
+
+### 21.7 `indexOfAccepted(z)` must be called AFTER `accepts(z)` is established
+
+`indexOfAccepted` has `require(accepts(value))`. If you bind `val zIdx = seq.indexOfAccepted(z)` before
+establishing `seq.accepts(z)`, Stainless generates an unprovable precondition VC.
+
+The correct order when `z` comes from `nextSeq(vIdx + 1)` (which ensures `z >= nextSeq.head.value`
+and `nextSeq.accepts(z)`, but NOT `seq.accepts(z)`):
+```scala
+val z = nextSeq(vIdx + BigInt(1))
+assert(z >= nextSeq.head.value)          // from nextSeq.apply.ensuring
+assert(nextSeq.accepts(z))               // from nextSeq.apply.ensuring
+assert(assertNextAcceptedImpliesOldAcceptedAndNewHeadNonMultiple(seq, nextSeq, z))
+assert(seq.accepts(z))                   // NOW established via bridge lemma
+val zIdx = seq.indexOfAccepted(z)        // safe: require satisfied
+```
+
+**Rule:** Always establish `accepts(z)` (via the appropriate bridge) BEFORE binding the result of
+`indexOfAccepted(z)`. Declaring the `val` before the bridge puts the precondition VC in a context
+where `accepts` cannot yet be derived.
+
+**Source:** `assertNextSuccessorOldIndexWithinBound` and `assertFirstSurvivorAtOrBeforeNextValue` in
+`SpecSieveSeqNextProperties.scala`, ordering fix 2026-07-20.
+
+### 21.8 Strict-monotonicity bridge for propagating lower bounds through index gaps
+
+**Problem:** Need to prove `seq.apply(m) >= nextSeq.head.value` when only `seq.apply(k) >= nextSeq.head.value`
+(derived from `nextSeq.accepts(seq.apply(k))` unfolding) and `m > k` are available.
+
+**Pattern (3-step bridge):**
+```scala
+assert(seq.apply(k) >= nextSeq.head.value)       // from accepts unfolding
+assert(seq.applyIndexStrictlyPreservesValues(k, m))  // strict monotonicity lemma
+assert(seq.apply(m) > seq.apply(k))              // from strictly-preserves ensuring
+assert(seq.apply(m) >= nextSeq.head.value)        // arithmetic: a > b >= c => a >= c
+```
+
+Z3 closes this in one step once the three bridge assertions are present.
+
+**Also used for derived-index lower bounds** (when `idx` comes from a `findFirstNonMultipleAfter` call
+and `idx > k`):
+```scala
+require(seq.apply(k) >= nextSeq.head.value)
+assert(seq.applyIndexStrictlyPreservesValues(k, idx))
+assert(seq.apply(idx) > seq.apply(k))
+assert(seq.apply(idx) >= nextSeq.head.value)
+```
+
+**Source:** `assertSkippedOldValueRejectedByNext`, `assertNextValueAtOrBeforeFirstSurvivor` in
+`SpecSieveSeqNextProperties.scala`, 2026-07-20.

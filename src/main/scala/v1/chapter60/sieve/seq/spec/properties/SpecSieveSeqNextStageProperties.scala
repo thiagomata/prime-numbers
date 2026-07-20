@@ -128,12 +128,14 @@ object SpecSieveSeqNextStageProperties {
     require(nextSeq.filterValues.nonEmpty)
     require(nextSeq.filterValues.head == seq.head.value)
     require(nextSeq.filterValues.tail == seq.filterValues)
-    require(nextSeq.head.value == seq.head.value)
-    require(nextSeq.accepts(seq.apply(BigInt(0))))
+    require(nextSeq.head.value == seq.apply(BigInt(1)))
+    require(seq.head.value < nextSeq.head.value)
+    require(nextSeq.accepts(seq.apply(BigInt(1))))
+    require(nextSeq(BigInt(0)) == seq.apply(BigInt(1)))
     require(Calc.mod(seq.head.value + seq.tailPrimorial, seq.head.value) != BigInt(0))
 
     SpecSieveSeqNextProperties.assertMergedGapPrefixMatchesNext(
-      seq, nextSeq, BigInt(0), BigInt(0), nextPeriod, period
+      seq, nextSeq, BigInt(1), BigInt(0), nextPeriod, period
     )
   }.holds
 

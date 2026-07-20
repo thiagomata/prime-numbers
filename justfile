@@ -250,7 +250,7 @@ spark-run numStages="10":
     just_log spark-run "{{justfile_directory()}}" "numStages={{numStages}}"
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
-    sbt "spark/runMain v1.chapter8.Runner2 {{numStages}}"
+    sbt "spark/runMain v1.chapter8.SieveGenerator {{numStages}}"
 
 spark-generate numStages="10":
     #!/usr/bin/env bash
@@ -259,7 +259,7 @@ spark-generate numStages="10":
     source "$HOME/.sdkman/bin/sdkman-init.sh"
     sdk use java 21.0.7-zulu
     rm -rf spark/data/sieve-df/
-    sbt "spark/runMain v1.chapter8.Runner2 {{numStages}}"
+    sbt "spark/runMain v1.chapter8.SieveGenerator {{numStages}}"
 
 spark-test:
     #!/usr/bin/env bash

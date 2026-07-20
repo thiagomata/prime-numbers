@@ -177,30 +177,119 @@ position-based counting (as `sameHeadSurvivorCount` already does) — each step
 above should follow that same shape: prove the step as its own small lemma
 against already-verified facts, never by unfolding a recursive walk.
 
-**Status:** Steps 1–5b done. Step 5c (full bijection) is the next hard unit of work.
+**Status:** Steps 1–8 done. Step 9 (survivor gaps bridge) is the next unit of work.
 
 | Step | Lemma | File | Status |
 |------|-------|------|--------|
 | 1 | `spec == cycle` (`assertSpecGapCycleIntegralMatchesApply`) | PeriodProperties | Done |
-| 2a | `specRepeatedCycleIntegral` (constructor) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
-| 2b | `assertSpecRepeatedCyclePeriodIsHeadTimesPeriod` | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4823 valid) |
-| 2c | `assertSpecRepeatedCycleIntegralMatchesBase` | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
-| 3 | `assertSpecBaseAndRepeatedSurvivorValuesMatch` (filter equality) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
-| 4 | `assertSpecBaseAndRepeatedGapListMatch` (gap list equality) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4896 valid) |
-| 5a | `assertBaseCIEqualsSeqApplyShifted` (baseCI(k) == seq.apply(k+1)) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4955 valid) |
-| 5b | `assertFirstSurvivorMatchesNextSeqHead` (survivors.head == nextSeq.apply(0)) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
-| 5c | `survivors(i) == nextSeq.apply(i)` (full bijection) | SpecDerivedRepeatedCycleProperties | **Open** — requires helpers below |
-| 6 | `gapsFromValues(survivors) == nextSeq.gapList(0, nextPeriod)` | TBD | Not started |
-| 7 | `newCI = CycleIntegral(survivors.head, MemCycle(gapsFromValues(survivors)))` matches `nextSeq` | TBD | Not started |
+| 2 | `specRepeatedCycleIntegral` (constructor) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
+| 3 | `assertSpecRepeatedCyclePeriodIsHeadTimesPeriod` | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4823 valid) |
+| 4 | `assertSpecRepeatedCycleIntegralMatchesBase` | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
+| 5 | `assertSpecBaseAndRepeatedSurvivorValuesMatch` (filter equality) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
+| 6 | `assertSpecBaseAndRepeatedGapListMatch` (gap list equality) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4896 valid) |
+| 7 | `assertBaseCIEqualsSeqApplyShifted` (baseCI(k) == seq.apply(k+1)) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17, ch60: 4955 valid) |
+| 8 | `assertFirstSurvivorMatchesNextSeqHead` (survivors.head == nextSeq.apply(0)) | SpecDerivedRepeatedCycleProperties | Done (verified 2026-07-17) |
+| 9 | `assertSurvivorGapsEqualsMergedGapPrefix` | SpecDerivedRepeatedCycleProperties | **Open — to write** |
+| 10 | `gapsFromValues(survivors) == nextSeq.gapList(0, nextPeriod)` | SpecDerivedRepeatedCycleProperties | Not started (follows from Step 9 + existing pipeline) |
+| 11 | `newCI = CycleIntegral(survivors.head, MemCycle(gapsFromValues(survivors)))` matches `nextSeq` | SpecDerivedRepeatedCycleProperties | Not started (follows from Steps 8 + 10 + Goal 2) |
 
-**Step 5c requires these helpers (in order):**
-1. `assertAcceptedByNextGivenStructure(seq, nextSeq, v)`: `seq.accepts(v) ∧ v % head ≠ 0 ∧ v ≥ nextSeq.head.value → nextSeq.accepts(v)` — from structural requires alone (no `seq.next` needed)
-2. `assertSurvivorIsSeqApply(seq, period, ciPos)`: `survivorValues(baseCI, head, 0, count)` values are exactly the seq.apply-shifted non-head-multiples, i.e., the intermediate CI positions between consecutive survivors all have head-multiple values
-3. The double-inequality proof for the inductive step:
-   - Lower bound: `survivors(i+1) ≤ nextSeq.apply(i+1)` — by minimality of survivors (scans in order)
-   - Upper bound: `nextSeq.apply(i+1) ≤ survivors(i+1)` — by `assertNoAcceptedValueBetweenGeneratedValues` on nextSeq (if `nextSeq.apply(i+1) < survivors(i+1)` then nextSeq accepted a value between its own consecutive generated values, contradiction)
+**Abandoned approach for Step 9 — indexed bijection via mutual induction:**
+A direct proof of `survivors(i) == nextSeq.apply(i)` was attempted (2026-07-18) but always times out.
+The helpers it would have needed:
+1. `assertAcceptedByNextGivenStructure(seq, nextSeq, v)`: `seq.accepts(v) ∧ v % head ≠ 0 ∧ v ≥ nextSeq.head.value → nextSeq.accepts(v)`
+2. `assertSurvivorIsSeqApply(seq, period, ciPos)`: the intermediate CI positions between consecutive survivors all have head-multiple values
+3. A double-inequality inductive step (lower bound from minimality; upper bound from `assertNoAcceptedValueBetweenGeneratedValues`)
 
-Key tool for helper 1: `CoprimeUtils.isCoprime(v, head :: filterValues) = v % head ≠ 0 ∧ isCoprime(v, filterValues)` — this decomposition should exist in chapter2/chapter5.
+Do NOT attempt this approach. The EUF mismatch causes the postcondition VC to time out at 300s regardless of how the helpers are structured. Use Step 9's gap-equality bridge instead.
+
+## Goal 3 revision (2026-07-19): Chapter 6 bridge approach — PREFERRED PLAN
+
+**Context:** The indexed bijection approach via backward mutual induction (written 2026-07-18) times out at the
+postcondition VC for `assertSurvivorAtIndexMatchesNextSeqApply` (line 940, class-level run:
+847/856 valid, 9 unknown — 1 new at :940, 8 pre-existing borderline VCs). The user's question
+"what's the problem with copying chapter 6's strategy?" revealed a better path.
+
+**Key discovery:** Chapter 60 already has the chapter 6 pipeline in `SpecSieveSeqNextProperties`:
+- `mergedGapPrefix(seq, nextSeq, k, remaining, period)` — walks seq's apply values, merges
+  consecutive gaps where intermediate values are rejected by nextSeq (= head-multiples)
+- `assertMergedGapPrefixMatchesNext(...)` — proves `mergedGapPrefix == gapList(nextSeq, seqIndex, remaining)`
+- `assertPipelineOutputMatchesNextGapList(...)` — wraps the above: merged gap prefix from
+  walking seq equals `nextSeq.gapList(0, nextPeriod)` (DONE, verified 2026-07-16)
+
+**What chapter 6 actually does vs. what the abandoned indexed bijection was doing:**
+- Chapter 6 proves `nextCycle.apply(k) == spec.next(k)` by CONSTRUCTION: nextCycle IS built from
+  `spec.next.gapList`, so they trivially share the same CycleIntegral. No indexed bijection needed.
+- The abandoned approach was trying to prove `survivors(i) == nextSeq.apply(i)` by mutual induction —
+  harder because survivors come from CI filtering, not from construction.
+- Chapter 6's REAL contribution for this step is `mergedGapPrefix` + `assertMergedGapPrefixMatchesNext`,
+  which proves gap equality without any indexed bijection.
+
+**Current step table (Steps 1–8 done, Steps 9–11 open):**
+
+See the step table above. Steps 1–8 are all verified. Step 9 is the key new lemma:
+
+**Step 9 — `assertSurvivorGapsEqualsMergedGapPrefix`:**
+
+```scala
+def assertSurvivorGapsEqualsMergedGapPrefix(
+  seq: SpecSieveSequence,
+  nextSeq: SpecSieveSequence,
+  period: BigInt,
+  nextPeriod: BigInt
+): Boolean = {
+  // requires: standard preconditions
+  val gapCycle  = specGapCycle(seq, period)
+  val baseCI    = CycleIntegral(seq.head.value, gapCycle.memCycle)
+  val count     = period * seq.head.value
+  val survivors = survivorValues(baseCI, seq.head.value, BigInt(0), count)
+  gapsFromValues(survivors) == mergedGapPrefix(seq, nextSeq, BigInt(1), nextPeriod, period)
+}.holds
+```
+
+NOTE: walk starts at `k=1` not `k=0`. `seq.apply(0) = seq.head.value` is rejected by `nextSeq`
+because `nextSeq.filterValues.head == seq.head.value` — it is a multiple of itself.
+`seq.apply(1) = nextSeq.head.value = nextSeq.apply(0)` is the correct starting point.
+
+**SIZE NOTE:** `gapsFromValues(n-element list)` has `n-1` elements. `survivors` has `nextPeriod`
+elements, so `gapsFromValues(survivors)` has `nextPeriod - 1` elements. But `gapList(nextSeq, 0,
+nextPeriod)` has `nextPeriod` elements. Therefore the bridge uses `remaining = nextPeriod - 1`:
+```
+gapsFromValues(survivors) == mergedGapPrefix(seq, nextSeq, BigInt(1), nextPeriod - BigInt(1), period)
+```
+The final gap (from `survivors.last` to `nextSeq(nextPeriod)`) is the "wraparound" gap proved
+separately as `nextSeq(nextPeriod) - nextSeq(nextPeriod - 1)`.
+
+**Proof shape:** induction on `nextPeriod - 1` (number of survivor gaps):
+- Each survivor `survivors(i)` = `baseCI(pos_i)` = `seq.apply(pos_i + 1)` (Step 7, 0-indexed base CI).
+- The old-seq index for survivor i is `pos_i + 1` (1-indexed in seq, since baseCI(k) = seq.apply(k+1)).
+- `mergedGapPrefix` walks from old index `pos_i + 1` to the next nextSeq-accepted old index.
+- `gapsFromValues(survivors)(i)` = `survivors(i+1) - survivors(i)` = sum of seq gaps between consecutive survivors.
+- The two computations are equal by Step 7 + definition of `sumGap`.
+
+**Step 10:** Once `assertSurvivorGapsEqualsMergedGapPrefix` (Step 9) is proved:
+```
+gapsFromValues(survivors)
+  == mergedGapPrefix(seq, nextSeq, 1, nextPeriod - 1, period)      [Step 9]
+  == gapList(nextSeq, 0, nextPeriod - 1)                           [assertMergedGapPrefixMatchesNext]
+```
+Combined with the final wraparound gap lemma → full `gapList(nextSeq, 0, nextPeriod)` equality.
+
+**Step 11:** Build `newCI = CycleIntegral(survivors.head, MemCycle(nextSeq.specGapCycle(nextPeriod).memCycle))`:
+- `newCI.initialValue == nextSeq.head.value` — from Step 8.
+- `newCI.memCycle.values == nextSeq.specGapCycle(nextPeriod).memCycle.values` — from Step 10 +
+  `assertSpecGapCycleGapsMatchSpec(nextSeq, nextPeriod)` (Goal 2, already done for current seq;
+  apply the SAME lemma to nextSeq).
+- `newCI.apply(k) == nextSeq.apply(k+1)` — from `assertSpecGapCycleIntegralMatchesApply(nextSeq, nextPeriod, k+1)`.
+
+**Indexed bijection code deleted (2026-07-20):** All mutual-induction code permanently removed
+from `SpecDerivedRepeatedCycleProperties.scala`. File now contains only Steps 1–8 (verified).
+Do NOT re-add any indexed bijection mutual-induction code — it always times out and distracts from the
+Step 9 bridge approach.
+
+**Precondition fix (2026-07-20):** `mergedGapPrefix` and its 20+ helpers previously required
+`nextSeq.head.value == seq.head.value` — IMPOSSIBLE for `seq.next`. Fixed globally to
+`seq.head.value <= nextSeq.head.value`. `assertPipelineOutputMatchesNextGapList` now starts
+walk at `k=1`, passes `nextSeq(0) == seq.apply(1)` as explicit precondition.
 
 ## Noise in chapter60 (not needed for the 3 goals)
 
@@ -250,4 +339,7 @@ should use the newer chapter4 properties.
 | 2026-07-17 | Cowork session: toolchain blocker. | Added `assertSpecGapCycleGapsMatchSpec` to `SpecSieveSeqPeriodProperties.scala` but could not verify — Cowork's Linux sandbox lacks `just`/sbt/sdkman-Java/Z3 (justfile is macOS/homebrew-specific: `/opt/homebrew/Cellar/z3/...`, `DYLD_LIBRARY_PATH`). User confirmed the CLI Claude session has toolchain access and should take over from here. See HANDOFF block at top of ticket for exact next steps. Do NOT trust the "Done" status on unverified lemmas above — verify first. |
 | 2026-07-17 | CLI session: Goal 2 fully verified. | Ran `just verify` (all green, 20411 valid) confirming `assertSpecGapCycleGapsMatchSpec`. Added `assertSpecGapCyclePeriodMatchesSpec` using `assertSpecGapCycleGapsMatchSpec` + `GapCycle.assertMemCycleValuesPositive` + `assertGapListSize` to chain `gapCycle.memCycle.values == gapList(seq,0,period)` → `gapCycle.values.list.size == period` → `gapCycle.period == period`. Both lemmas verified. Ch60: 4787 valid, 0 invalid, 0 unknown (was 4770). Next: Goal 3 step 2 — `repeated(cycle, head)` via `RepeatedGapIntegralProperties`. |
 | 2026-07-17 | Goal 3 step 2: repeated-cycle period lemma. | Created `SpecDerivedRepeatedCycleProperties` (no chapter6 imports, stateless, one-direction). `specRepeatedCycleIntegral` constructs `CycleIntegral(head, MemCycle(repeat(gapCycle.memCycle.values, head)))` and exports `cycle.values == repeat(...)` in ensuring clause. `assertSpecRepeatedCyclePeriodIsHeadTimesPeriod` proves `repeatedCI.period == period * head` using `assertGapListSize` + `assertRepeatSize` before any filter step — this anchors the filter-window size for `sameHeadSurvivorCount`. Ch60: 4823 valid, 0 invalid, 0 unknown (was 4787, +36 new VCs). |
-| 2026-07-17 | Goal 3 steps 2c–5b complete. | Added to `SpecDerivedRepeatedCycleProperties`: (2c) `assertSpecRepeatedCycleIntegralMatchesBase` — repeated CI and base CI agree pointwise via `assertRepeatedValuesIntegralMatches`; (3) `assertSpecBaseAndRepeatedSurvivorValuesMatch` — inductive equality of survivor lists; (4) `assertSpecBaseAndRepeatedGapListMatch` — trivial corollary of step 3; (5a) `assertBaseCIEqualsSeqApplyShifted` — baseCI(k) = seq.apply(k+1), direct from `assertSpecGapCycleIntegralMatchesApply`; (5b) `assertFirstSurvivorMatchesNextSeqHead` — first survivor = nextSeq.head.value, using `assertApplyOneEqualsNextPrime` + `assertPrimeNotDivisibleByDistinctPrime` from ch5. Ch60: 4955 valid, 0 invalid, 0 unknown (was 4823). Step 5c (full bijection `survivors(i) == nextSeq.apply(i)`) is now the blocking hard step — requires `assertAcceptedByNextGivenStructure` + "minimality of survivors" helper + double-inequality argument via `assertNoAcceptedValueBetweenGeneratedValues`. |
+| 2026-07-17 | Goal 3 Steps 4–8 complete. | Added to `SpecDerivedRepeatedCycleProperties`: Step 4 `assertSpecRepeatedCycleIntegralMatchesBase` — repeated CI and base CI agree pointwise via `assertRepeatedValuesIntegralMatches`; Step 5 `assertSpecBaseAndRepeatedSurvivorValuesMatch` — inductive equality of survivor lists; Step 6 `assertSpecBaseAndRepeatedGapListMatch` — trivial corollary of Step 5; Step 7 `assertBaseCIEqualsSeqApplyShifted` — baseCI(k) = seq.apply(k+1), direct from `assertSpecGapCycleIntegralMatchesApply`; Step 8 `assertFirstSurvivorMatchesNextSeqHead` — first survivor = nextSeq.head.value, using `assertApplyOneEqualsNextPrime` + `assertPrimeNotDivisibleByDistinctPrime` from ch5. Ch60: 4955 valid, 0 invalid, 0 unknown (was 4823). Step 9 (survivor gaps bridge) is now the blocking unit of work. |
+| 2026-07-18 | Abandoned: indexed bijection via backward mutual induction. | Attempted `survivors(i) == nextSeq.apply(i)` as Step 9 via mutual induction: wrote `assertSurvivorMatchesNextSeqApply_Base_LT/GEQ/Base/Step` + `assertSurvivorAtIndexMatchesNextSeqApply` (lines 707–952). Base ✓ (51/51, 39s). Step+TopLevel → class-level run 847/856 valid, 9 unknown. Root cause: EUF mismatch — both ensuring blocks re-compute 4-val chain `specGapCycle→CycleIntegral→survivorValues` independently; Z3 can't unify in 300s. Also: `decreases(nextPeriod - i)` required on both functions to avoid TypeChecker FatalError (mutual recursion). This approach is permanently abandoned. Added `verify-bg` + `verify-debug-bg` to justfile. |
+| 2026-07-19 | Switched to chapter 6 bridge approach for Step 9. | Chapter 6 NEVER proves `survivors(i) == spec.next(i)` directly — it proves gap equality via `mergedGapPrefix` + `assertMergedGapPrefixMatchesNext`. Chapter 60 already has this pipeline in `SpecSieveSeqNextProperties` (`assertPipelineOutputMatchesNextGapList` DONE). New plan: Step 9 = `assertSurvivorGapsEqualsMergedGapPrefix` (bridge between CI filtering and spec walking, using Step 7 as key ingredient). Step 10 = transitivity. Step 11 = `assertSpecGapCycleIntegralMatchesApply` applied to nextSeq. See "Goal 3 revision (2026-07-19)" section above. |
+| 2026-07-20 | Abandoned bijection code deleted; mergedGapPrefix precondition fixed. | Recurring pattern: abandoned indexed bijection code acts as temptation bait causing every session to re-attempt mutual induction (always times out). Decision: permanently delete ALL such code from `SpecDerivedRepeatedCycleProperties.scala`. File now contains only Steps 1–8 (verified). Also discovered: `assertPipelineOutputMatchesNextGapList` required `nextSeq.head.value == seq.head.value` — IMPOSSIBLE for `seq.next` (next head is strictly larger). Root cause: `mergedGapPrefix` and all its helpers had equality precondition instead of `<=`. Fixed: replaced `require(nextSeq.head.value == seq.head.value)` with `require(seq.head.value <= nextSeq.head.value)` throughout (22 occurrences), added bridge assertions for lower bounds, updated `assertPipelineOutputMatchesNextGapList` to start walk at k=1 (where `seq.apply(1) = nextSeq.head.value`). Also changed `accepts` from partial function (with `require(value >= head.value)`) to total predicate (`value >= head.value && passesFilter(value)`) — eliminating 21 timeout-inducing VC obligations; all bridges now derive lower bounds by unfolding `accepts`. Ch60: **4893 valid, 0 invalid, 0 unknown** (58.9s). |
