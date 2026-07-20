@@ -4,7 +4,7 @@
 
 **Author:** Mata, T. H.  
 Independent Researcher  
-**Email:** thiago.mata@email.com  
+**Email:** thiago.henrique.mata@gmail.com  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ---

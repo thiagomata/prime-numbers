@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.
 Independent Researcher  
-**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract

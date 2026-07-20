@@ -4,7 +4,7 @@
 
 **Author:** Mata, T. H.  
 Independent Researcher  
-**Email:** [thiago.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
@@ -519,7 +519,7 @@ that should be considered candidates for future formalization.
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Formal Verification of the Sieve Sequence*. Available
-at: [../chapter6/sieve-sequence-v2.md](../chapter6/sieve-sequence-v2.md)
+at: [../chapter6/sieve-sequence-v2.md](../chapter6/sieve-sequence)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Gap Dynamics and Twin Prime Candidates in Sieve
