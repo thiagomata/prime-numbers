@@ -179,13 +179,13 @@ object MemCycleProperties {
     require(position >= 0)
     require(cycle.period > 0)
 
-    val size = cycle.period
+    val period = cycle.period
 
     assert(cycle(position) == cycle.apply(position))
-    assert(cycle(position) == cycle.values(Calc.mod(position, size)))
+    assert(cycle(position) == cycle.values(Calc.mod(position, period)))
 
-    assert(ModIdempotence.modIdempotence(position, size))
-    assert(Calc.mod(Calc.mod(position, size),size) == Calc.mod(position, size))
-    assert(cycle(position) == cycle(Calc.mod(position, size)))
+    assert(ModIdempotence.modIdempotence(position, period))
+    assert(Calc.mod(Calc.mod(position, period),period) == Calc.mod(position, period))
+    assert(cycle(position) == cycle(Calc.mod(position, period)))
   }.holds
 }

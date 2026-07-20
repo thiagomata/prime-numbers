@@ -5,7 +5,7 @@
 - [x] `src/main/scala/v1/chapter4/cycle/integral/classic/ClassicCycleIntegral.scala`: retired duplicate classic cycle-integral logic by delegating to canonical `CycleIntegral`; `ClassicCycleIntegralProperties` now points to `CycleIntegral`.
 - [x] `articles/chapter4/integral-cycle.md`: retired the §5.1 modulo invariance draft marker by citing the verified `MemCycle` finite-period classification layer and `GapProperties.assertModIsPeriodic`.
 - [ ] `articles/chapter4/integral-cycle.md`: package the §5.3 right index shift as an all-position wrapper; the stored-period `CycleIntegral` core is verified by `GapProperties.assertRotateOneCycleIntegralShiftsByOne`.
-- [ ] `articles/chapter4/integral-cycle.md`: verify or retire the §5.4 left index shift draft.
+- [ ] `articles/chapter4/integral-cycle.md`: add a Stainless lemma for the §5.4 left index shift, mirroring `GapProperties.assertRotateOneCycleIntegralShiftsByOne` (§5.3) but for the reverse rotation, with `init'' := init - L(n-1)`.
 - [ ] `articles/chapter6/gap-dynamics.md`: replace the draft verification target for gap-copy / gap-merge behavior with a verified `.holds` lemma or keep it explicitly marked as pending.
 - [ ] `articles/chapter6/sieve-sequence-v2.md`: connect the verified same-head filter count through the next sieve spec and constructed-cycle wrappers instead of supplying the next-period boundary to the cycle-level proof.
 - [ ] `articles/chapter6/sieve-sequence-v2.md`: formalize Bertrand's postulate or keep the next-head primality proof explicitly conditional on the square-bound precondition.

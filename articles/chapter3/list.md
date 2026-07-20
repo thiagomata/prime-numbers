@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.
 Independent Researcher  
-**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
@@ -259,6 +259,34 @@ This property is verified in the [
 ](
   ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.2.
+
+### 3.3 Indexed Access Under Concatenation
+
+Accessing a concatenated list at a given index routes to the matching side:
+an index inside the left list's range reads from the left list at that same
+index, and an index at or past the left list's size reads from the right
+list, offset by the left list's size.
+
+```math
+\begin{aligned}
+0 \leq k < |A| &\implies (A \mathbin{+\!+} B)_k = A_k \\
+|A| \leq k < |A| + |B| &\implies (A \mathbin{+\!+} B)_k = B_{(k - |A|)}
+\end{aligned}
+```
+
+Both directions are proved by induction on $k$: the left case peels one head
+element at a time until $k$ reaches $0$; the right case peels elements off
+$A$ until it is exhausted, then indexes directly into $B$.
+
+This property is verified in the [
+  ListUtilsProperties::assertAppendApplyLeft
+](
+  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
+) and [
+  ListUtilsProperties::assertAppendApplyRight
+](
+  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
+).
 
 ## 4. Slice Properties
 
@@ -588,9 +616,9 @@ A & = [x] \mathbin{+\!+} L  & \qquad \text{[Concatenation]} \\
 ```
 
 This property is verified in the [
-  ListUtilsProperties::listSumAddValue
+  ListUtils::listSumAddValue
 ](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
+  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
 ). The full Scala verification code is in Appendix A.8.
 
 ### 5.3 Sum over Concatenation
@@ -639,9 +667,9 @@ A \mathbin{+\!+} B & = [\text{head}(A)] \mathbin{+\!+} (\text{tail}(A) \mathbin{
 ```
 
 This property is verified in the [
-  ListUtilsProperties::listCombine
+  ListUtils::listCombine
 ](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
+  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
 ). The full Scala verification code is in Appendix A.9.
 
 ### 5.4 Commutativity of Sum over Concatenation
@@ -663,10 +691,31 @@ Since:
 ```
 
 This property is verified in the [
-  ListUtilsProperties::listSwap
+  ListUtils::listSwap
+](
+  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
+). The full Scala verification code is in Appendix A.10.
+
+### 5.5 Sum Positivity
+
+If every element of a non-empty list is greater than zero, the sum of the
+list is greater than zero.
+
+```math
+\begin{aligned}
+\text{allGreaterThan}(L, 0) \wedge L \neq L_e \implies \text{sum}(L) > 0
+\end{aligned}
+```
+
+The base case is the singleton list, where the sum is just the one positive
+element. The inductive step adds a positive head to a tail whose sum is
+already known to be positive by the inductive hypothesis.
+
+This property is verified in the [
+  ListUtilsProperties::assertSumPositive
 ](
   ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The full Scala verification code is in Appendix A.10.
+).
 
 ## 6. Product Properties
 
@@ -975,6 +1024,64 @@ This property is verified in the [
 ](
   ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
 ). The full Scala verification code is in Appendix A.23.
+
+### 8.6 Split Preserves All Greater Than
+
+Splitting a lower-bounded list at any valid index preserves the bound on
+both halves.
+
+```math
+\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ 0 \leq index \leq |list| \\
+\text{allGreaterThan}(list, value) \implies \text{allGreaterThan}(front, value) \wedge \text{allGreaterThan}(back, value) \\
+\text{where } (front, back) = \text{splitAt}(list, index)
+```
+
+This property is verified in the [
+  ListBoundUtils::assertSplitAtPreservesAllGreaterThan
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
+).
+
+### 8.7 The All Less Than Family
+
+`allLessThan` is the upper-bound mirror of `allGreaterThan`, and it satisfies
+the same shape of properties: append preservation, split preservation, and
+transitivity across a looser bound.
+
+```math
+\begin{aligned}
+\text{allLessThan}(listA, bound) \wedge \text{allLessThan}(listB, bound)
+  &\implies \text{allLessThan}(listA \mathbin{+\!+} listB, bound)
+  &&\text{[Append]} \\
+\text{allLessThan}(list, bound) \wedge 0 \leq index \leq |list|
+  &\implies \text{allLessThan}(front, bound) \wedge \text{allLessThan}(back, bound)
+  &&\text{[Split]} \\
+\text{allLessThan}(list, bound) \wedge bound \leq bound_2
+  &\implies \text{allLessThan}(list, bound_2)
+  &&\text{[Transitivity]} \\
+\text{allLessThan}(list, bound) \wedge 0 \leq pos < |list|
+  &\implies list(pos) < bound
+  &&\text{[At Index]}
+\end{aligned}
+```
+
+These properties are verified in the [
+  ListBoundUtils::assertAppendLessThan
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
+), [
+  ListBoundUtils::assertSplitAtPreservesAllLessThan
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
+), [
+  ListBoundUtils::assertTransitiveLessThan
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
+), and [
+  ListBoundUtils::assertLessThanAtIndex
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
+).
 
 ## 9. Equivalence Properties
 
@@ -1432,7 +1539,7 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
     if (position == 0 ) {
       list(position) == list.head
     } else {
-      assert( list == List(list.head) \mathbin{+\!+} list.tail )
+      assert( list == List(list.head) ++ list.tail )
       assert( list(position) == list.apply(position) )
       assert(assertTailShiftLeft(list.tail, position - 1))
       assert(list.apply(position) == list.tail.apply(position - 1))
@@ -1474,7 +1581,7 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
     } else {
       val prev = slice(list, from, to - 1)
       ListUtilsProperties.listAddValueTail(prev, current)
-      prev \mathbin{+\!+} List(current)
+      prev ++ List(current)
     }
   }
 ```
@@ -1512,7 +1619,7 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
     listSumAddValue(list, list(to))
     
     ListUtils.slice(list, from, to) ==
-      ListUtils.slice(list, from, to - 1) \mathbin{+\!+} List(list(to))
+      ListUtils.slice(list, from, to - 1) ++ List(list(to))
   }.holds
 ```
 
@@ -1532,7 +1639,7 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ```scala
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
-    ListUtils.sum(List(value) \mathbin{+\!+} list) == value + ListUtils.sum(list)
+    ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
   }.holds
 ```
 
@@ -1546,14 +1653,14 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
       assert(ListUtils.sum(listA) == BigInt(0))
       assert(ListUtils.sum(listB) == BigInt(0) + ListUtils.sum(listB))
       assert(ListUtils.sum(listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
-      assert(listA \mathbin{+\!+} listB == listB)
+      assert(listA ++ listB == listB)
     } else {
       listCombine(listA.tail, listB)
-      val bigList = listA \mathbin{+\!+} listB
-      assert(bigList == List(listA.head) \mathbin{+\!+} listA.tail \mathbin{+\!+} listB)
-      listSumAddValue(listA.tail \mathbin{+\!+} listB, listA.head)
+      val bigList = listA ++ listB
+      assert(bigList == List(listA.head) ++ listA.tail ++ listB)
+      listSumAddValue(listA.tail ++ listB, listA.head)
     }
-    ListUtils.sum(listA \mathbin{+\!+} listB) == ListUtils.sum(listA) + ListUtils.sum(listB)
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB)
   }.holds
 ```
 
@@ -1563,10 +1670,10 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     listCombine(listA, listB)
     listCombine(listB, listA)
-    assert(ListUtils.sum(listA \mathbin{+\!+} listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
-    assert(ListUtils.sum(listB \mathbin{+\!+} listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    assert(ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+    assert(ListUtils.sum(listB ++ listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
     assert(ListUtils.sum(listA) + ListUtils.sum(listB) == ListUtils.sum(listB) + ListUtils.sum(listA))
-    ListUtils.sum(listA \mathbin{+\!+} listB) == ListUtils.sum(listB \mathbin{+\!+} listA)
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listB ++ listA)
   }.holds
 ```
 
@@ -1588,11 +1695,11 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     decreases(listA.size)
 
     if (listA.isEmpty) {
-      product(List(e) \mathbin{+\!+} listB) == e * product(listB)
+      product(List(e) ++ listB) == e * product(listB)
     } else {
       productPullOutElement(listA.tail, e, listB)
-      product(listA \mathbin{+\!+} List(e) \mathbin{+\!+} listB) ==
-        e * product(listA \mathbin{+\!+} listB)
+      product(listA ++ List(e) ++ listB) ==
+        e * product(listA ++ listB)
     }
   }.holds
 ```
@@ -1609,24 +1716,24 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     if (listA.isEmpty) {
       assert(product(listA) == BigInt(1))
       assert(product(listB) == product(listA) * product(listB))
-      assert(listA \mathbin{+\!+} listB == listB)
+      assert(listA ++ listB == listB)
     } else {
       productConcatLemma(listA.tail, listB)
 
-      val concatenated = listA \mathbin{+\!+} listB
+      val concatenated = listA ++ listB
 
       assert(
         concatenated ==
-          List(listA.head) \mathbin{+\!+} listA.tail \mathbin{+\!+} listB
+          List(listA.head) ++ listA.tail ++ listB
       )
 
       assert(
         product(concatenated) ==
-          listA.head * product(listA.tail \mathbin{+\!+} listB)
+          listA.head * product(listA.tail ++ listB)
       )
     }
 
-    product(listA \mathbin{+\!+} listB) ==
+    product(listA ++ listB) ==
       product(listA) * product(listB)
   }.holds
 ```
@@ -1643,12 +1750,12 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     productConcatLemma(listB, listA)
 
     assert(
-      product(listA \mathbin{+\!+} listB) ==
+      product(listA ++ listB) ==
         product(listA) * product(listB)
     )
 
     assert(
-      product(listB \mathbin{+\!+} listA) ==
+      product(listB ++ listA) ==
         product(listB) * product(listA)
     )
 
@@ -1657,8 +1764,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
         product(listB) * product(listA)
     )
 
-    product(listA \mathbin{+\!+} listB) ==
-      product(listB \mathbin{+\!+} listA)
+    product(listA ++ listB) ==
+      product(listB ++ listA)
   }.holds
 ```
 
@@ -1781,10 +1888,10 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
     assert(
       ListProduct.product(
-        prefix \mathbin{+\!+} List(e) \mathbin{+\!+} suffix
+        prefix ++ List(e) ++ suffix
       ) ==
         e * ListProduct.product(
-          prefix \mathbin{+\!+} suffix
+          prefix ++ suffix
         )
     )
 
@@ -1794,13 +1901,13 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
       ATimesBSameMod(
         BigInt(0),
         e,
-        ListProduct.product(prefix \mathbin{+\!+} suffix)
+        ListProduct.product(prefix ++ suffix)
       )
     )
 
     Calc.mod(
       ListProduct.product(
-        prefix \mathbin{+\!+} List(e) \mathbin{+\!+} suffix
+        prefix ++ List(e) ++ suffix
       ),
       e
     ) == BigInt(0)
@@ -1832,12 +1939,12 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     require(allGreaterThan(listB, value))
     decreases(listA.size)
     if (listA.isEmpty) {
-      allGreaterThan(listA \mathbin{+\!+} listB, value)
+      allGreaterThan(listA ++ listB, value)
     } else {
       assert(assertAppendGreaterThan(listA.tail, listB, value))
-      assert(allGreaterThan(listA.tail \mathbin{+\!+} listB, value))
+      assert(allGreaterThan(listA.tail ++ listB, value))
       assert(listA.head > value)
-      allGreaterThan(listA \mathbin{+\!+} listB, value)
+      allGreaterThan(listA ++ listB, value)
     }
   }.holds
 ```
@@ -1890,7 +1997,7 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     } else {
       assert(tailHeadAndIndexRangeSlicesAreEqual(list, from, to - 1))
       assert(tailHeadAndIndexRangeSlicesAreEqual(list, from + 1, to))
-      val reconstructedTail = ListUtils.slice(list, from, to - 1) \mathbin{+\!+} List(list(to))
+      val reconstructedTail = ListUtils.slice(list, from, to - 1) ++ List(list(to))
       assert(tailSlice == reconstructedTail)
       assert(tailSlice == indexSlice)
       assert(headSlice == indexSlice)
@@ -1906,5 +2013,5 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
 

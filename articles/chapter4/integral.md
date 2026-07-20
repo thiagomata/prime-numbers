@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.
 Independent Researcher  
-**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
@@ -380,7 +380,7 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
   }
   def acc: List[BigInt] = {
     decreases(list.size)
-    if (list.isEmpty) list else List(this.head) \mathbin{+\!+} Integral(list.tail, this.head).acc
+    if (list.isEmpty) list else List(this.head) ++ Integral(list.tail, this.head).acc
   }
   def head: BigInt = {
     require(list.nonEmpty)
@@ -675,9 +675,9 @@ def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
     assert(integral.apply(position - 1) == integral.init + prevSum)
     assert(integral.apply(position) == integral.apply(position - 1) + integral.list(position))
     assert(integral.apply(position) == integral.init + prevSum + integral.list(position))
-    assert(ListUtilsProperties.listSumAddValue(integral.list, integral.list(position)))
+    assert(ListUtils.listSumAddValue(integral.list, integral.list(position)))
     assert(ListUtilsProperties.assertAppendToSlice(integral.list, 0, position))
-    assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) \mathbin{+\!+} List(integral.list(position)))
+    assert(ListUtils.slice(integral.list, 0, position) == ListUtils.slice(integral.list, 0, position - 1) ++ List(integral.list(position)))
     assert(integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position)))
   }
   integral.apply(position) == integral.init + ListUtils.sum(ListUtils.slice(integral.list, 0, position))
@@ -751,8 +751,8 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
     assert(next.last == next.init + ListUtils.sum(next.list))
     assert(next.last == integral.init + integral.list.head + ListUtils.sum(next.list))
     assert(integral.last == integral.init + integral.list.head + ListUtils.sum(next.list))
-    assert(ListUtilsProperties.listSumAddValue(next.list, integral.list.head))
-    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) \mathbin{+\!+} integral.list.tail))
+    assert(ListUtils.listSumAddValue(next.list, integral.list.head))
+    assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(List(integral.list.head) ++ integral.list.tail))
     assert(integral.list.head + ListUtils.sum(next.list) == ListUtils.sum(integral.list))
     assert(integral.last == integral.init + ListUtils.sum(integral.list))
   }
@@ -788,13 +788,13 @@ def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
     assert(integral.tail == next.acc)
 
     assert(integral.apply(position) == next.apply(position - 1))
-    assert(integral.acc == List(integral.head) \mathbin{+\!+} next.acc)
+    assert(integral.acc == List(integral.head) ++ next.acc)
     assert(integral.acc.tail == next.acc)
 
     assert(integral.acc.nonEmpty)
     assert(integral.list.size == integral.acc.size)
     assert(position < integral.acc.size)
-    assert(ListUtilsProperties.assertTailShiftLeft(integral.acc, position))
+    assert(ListBoundUtils.assertTailShiftLeft(integral.acc, position))
     assert(integral.acc.tail(position - 1) == integral.acc(position))
     assert(integral.acc(position) == integral.acc.tail(position - 1))
     assert(integral.acc.tail(position - 1) == next.acc(position - 1))
@@ -868,7 +868,7 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 
     assertSizeAccEqualsSizeList(next.list, next.init)
     assert(next.acc.size == next.list.size)
-    assert(current.acc == List(current.head) \mathbin{+\!+} next.acc)
+    assert(current.acc == List(current.head) ++ next.acc)
     assert(current.acc.size == 1 + next.acc.size)
     assert(1 + list.tail.size == list.size)
   }
@@ -878,4 +878,4 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)

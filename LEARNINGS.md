@@ -350,7 +350,7 @@ With `assert(...); true`, the VC is NOT split per branch. Z3 must work through 4
 
 **Prerequisite:** Sub-lemmas must have `.ensuring(res => { val gapCycle = ...; val baseCI = ...; val survivors = ...; val nextSeq = ...; res && nextSeq.apply(i) == survivors(i) })` with the SAME computation shape as the caller's ensuring. Without `.ensuring`, the axiom is missing.
 
-**Source:** `tickets/active/chapter60-goal-driven-audit.md`, abandoned indexed bijection attempt (2026-07-18).
+**Source:** `tickets/active/chapter6-goal-driven-audit.md`, abandoned indexed bijection attempt (2026-07-18).
 
 ### 6.5 `verify-debug --functions=X` crashes for mutually-recursive X
 
@@ -457,19 +457,18 @@ as an aggregate-batch limitation until the chapter logs say otherwise.
 ### 8.4 `just verify <name>` matches across ALL chapters, not just the target chapter
 
 `just verify functionName` passes `--functions=functionName` to Stainless. Stainless
-matches this against functions in ALL loaded source files. If chapter 6 has a function
-with the same name (e.g. `assertFirstSurvivorAtOrBeforeNextValue` in `SpecSieveSequence.scala`),
-it will be verified — from cache — while the chapter 60 version in `SpecSieveSeqNextProperties.scala`
-may not be checked at all (or shows as "3 functions" instead of the expected chapter-60 count).
+matches this against functions in ALL loaded source files. If two chapters define a function
+with the same name, the wrong chapter's version may be verified from cache while the intended
+chapter is skipped entirely.
 
 **Symptoms:** output says "Generating VCs for N functions" where N is suspiciously small;
-all results are `valid from cache`; file paths in the output point to `chapter6/` not `chapter60/`.
+all results are `valid from cache`; file paths in the output point to the wrong chapter.
 
-**Fix:** For chapter-specific verification, always use `just verify-ch 60` (or whichever
-chapter). Never rely on `just verify <name>` to exercise chapter 60 code unless you confirm
-the paths in the log output.
+**Fix:** For chapter-specific verification, always use `just verify-ch N`. Never rely on
+`just verify <name>` unless you confirm the paths in the log output match the intended chapter.
 
-**Source:** `assertFirstSurvivorAtOrBeforeNextValue` targeted run, 2026-07-20.
+**Source:** `assertFirstSurvivorAtOrBeforeNextValue` targeted run, 2026-07-20. No longer
+applicable after old chapter6 was removed and chapter60 became chapter6 (2026-07-20).
 
 ### 8.5 Do not run multiple verify instances in parallel
 

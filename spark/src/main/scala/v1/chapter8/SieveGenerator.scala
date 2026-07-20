@@ -12,6 +12,8 @@ object SieveGenerator {
   def main(args: Array[String]): Unit = {
     val numStages = args.headOption.map(_.toInt).getOrElse(10)
     val outputDir = if (args.length > 1) args(1) else "data/sieve-df"
+    val sampleDir = if (args.length > 2) args(2) else "samples/sieve-df"
+    val sampleRows = 1000
     val baseDir = new File(outputDir)
     baseDir.mkdirs()
 
@@ -29,13 +31,15 @@ object SieveGenerator {
       var currentTailPrimes = SieveStage.base.tailPrimes
       var currentFirstGap = SieveStage.base.gaps(0)
 
-      println(s"Sieve Sequence (DataFrame)  Stages: $numStages  Output: $outputDir")
+      println(s"Sieve Sequence (DataFrame)  Stages: $numStages  Output: $outputDir  Samples: $sampleDir")
       println()
 
       // Stage 0: defined by construction
       val stage0Dir = new File(baseDir, "stage_000")
       stage0Dir.mkdirs()
-      writeValuesCsv(new File(stage0Dir, "values.csv.gz"), 2L, Array(2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L))
+      val stage0Values = Array(2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L)
+      writeValuesCsv(new File(stage0Dir, "values.csv.gz"), 2L, stage0Values)
+      writeValuesCsv(new File(sampleDir, "stage_000/values.csv.gz"), 2L, stage0Values)
       println(f"Stage   0: head=     2  period=       1  modulus=                   1  gaps=       1  twos=       0")
 
       for (i <- 1 to numStages) {
@@ -61,9 +65,12 @@ object SieveGenerator {
 
         val values = SievePipelineDF.readFirstValues(info.path, info.nextHeadValue, 1000, info.rotationIndex)
         writeValuesCsv(new File(outputDir, f"stage_$i%03d/values.csv.gz"), info.nextHeadValue, values)
+        writeValuesCsv(new File(sampleDir, f"stage_$i%03d/values.csv.gz"), info.nextHeadValue, values)
+        SievePipelineDF.writePartitionedCsvSample(info.path, new File(sampleDir, f"stage_$i%03d/gaps.sample.csv").getAbsolutePath, sampleRows)
 
         val twoCompressedPath = new File(outputDir, f"stage_$i%03d/gaps-2.csv.gz").getAbsolutePath
         SievePipelineDF.compressAroundTwos(info.path, twoCompressedPath)
+        SievePipelineDF.writeGzipCsvSample(twoCompressedPath, new File(sampleDir, f"stage_$i%03d/gaps-2.sample.csv").getAbsolutePath, sampleRows)
 
         currentHead = info.nextHeadValue
         currentModulus = nextModulus
@@ -124,6 +131,7 @@ object SieveGenerator {
 
   private def writeValuesCsv(file: java.io.File, head: Long, values: Array[Long]): Unit = {
     import java.util.zip.GZIPOutputStream
+    file.getParentFile.mkdirs()
     val pw = new java.io.PrintWriter(new GZIPOutputStream(new java.io.FileOutputStream(file)))
     try {
       pw.println("index,value")

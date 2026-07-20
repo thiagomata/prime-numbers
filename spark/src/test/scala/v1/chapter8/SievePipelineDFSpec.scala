@@ -183,6 +183,40 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
     }
   }
 
+  test("sample writers keep header and limit rows") {
+    val outDir = tempDir()
+    try {
+      val partDir = new java.io.File(outDir, "gaps")
+      partDir.mkdirs()
+      writeGzipLines(new java.io.File(partDir, "part-00000.csv.gz"), Seq(
+        "gidx,gap,origin,mergeCount",
+        "0,6,merge,1",
+        "1,4,copy,0"
+      ))
+      writeGzipLines(new java.io.File(partDir, "part-00001.csv.gz"), Seq(
+        "gidx,gap,origin,mergeCount",
+        "2,2,copy,0"
+      ))
+
+      val gapsSample = new java.io.File(outDir, "samples/gaps.sample.csv")
+      SievePipelineDF.writePartitionedCsvSample(partDir.getAbsolutePath, gapsSample.getAbsolutePath, 2)
+      assert(scala.io.Source.fromFile(gapsSample).getLines().toSeq === Seq(
+        "gidx,gap,origin,mergeCount",
+        "0,6,merge,1",
+        "1,4,copy,0"
+      ))
+
+      val compressed = new java.io.File(outDir, "gaps-2.csv.gz")
+      writeGzipLines(compressed, Seq("index,gap,originalSpan", "0,10,2", "1,2,1"))
+      val compressedSample = new java.io.File(outDir, "samples/gaps-2.sample.csv")
+      SievePipelineDF.writeGzipCsvSample(compressed.getAbsolutePath, compressedSample.getAbsolutePath, 1)
+      assert(scala.io.Source.fromFile(compressedSample).getLines().toSeq === Seq(
+        "index,gap,originalSpan",
+        "0,10,2"
+      ))
+    } finally { deleteAll(outDir) }
+  }
+
   // ─── compressAroundTwos tests ───
 
   test("compressAroundTwos: empty output not created") {
@@ -320,5 +354,11 @@ class SievePipelineDFSpec extends AnyFunSuite with BeforeAndAfterAll {
   private def deleteAll(f: java.io.File): Unit = {
     if (f.isDirectory) f.listFiles().foreach(deleteAll)
     f.delete()
+  }
+
+  private def writeGzipLines(file: java.io.File, lines: Seq[String]): Unit = {
+    val pw = new java.io.PrintWriter(new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(file)))
+    try lines.foreach(pw.println)
+    finally pw.close()
   }
 }

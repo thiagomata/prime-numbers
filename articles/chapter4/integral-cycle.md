@@ -467,6 +467,10 @@ The values that change are the finite storage properties:
 \end{aligned}
 ```
 
+The period equation is verified in [
+RepeatedGapIntegralProperties::assertRepeatedPeriodIsMultiplied
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
+
 The values that do not change are the semantic stream properties:
 
 ```math
@@ -478,6 +482,10 @@ L^{(x)}_i &= L_{(i \text{ mod } |L|)}
   \quad &&\text{[Same integral stream]}
 \end{aligned}
 ```
+
+The cycle lookup equation is verified in [
+RepeatedGapIntegralProperties::assertReplicatedCycleValueEqual
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
 
 So the expansion is not an invariance of the finite cycle object itself. It is
 an invariance of the infinite stream that the cycle object represents.
@@ -646,7 +654,7 @@ The article's mathematical statement above is the all-position version. The
 verified lemma proves the stored-period core; packaging the universal
 all-position wrapper only needs the already verified full-cycle shift law.
 
-### 5.4 Left Index Shift [Draft]
+### 5.4 Left Index Shift
 
 Let $L'' \in 𝕃$ be the left shift of $L \in 𝕃$ by one position ($|L| > 1$), and $init'' := init + L_0 - L_{n-1}$ be the shifted initial value. Then the CycleIntegral of $L''$ with $init''$ reproduces the CycleIntegral of $L$ with $init$, shifted by one position in the opposite direction.
 
@@ -1006,7 +1014,7 @@ shifts advance the integral by the cycle sum; rotating a gap cycle with the
 corresponding head adjustment shifts the represented integral by one position;
 survivor scans retain exactly the non-multiples needed for filtering; and
 cycle residue classification is correct, exclusive, and exhaustive. The
-remaining draft extensions are the index-shift laws in Sections 5.3 and 5.4.
+open extension points are the index-shift laws in Sections 5.3 and 5.4.
 
 The main established properties are:
 
@@ -1028,8 +1036,7 @@ accumulations using finite list structures and machine-checked Scala code.
 
 Future work may include:
 
-- Formal verification of the remaining draft extended properties in Section 5
-  (index shifts)
+- Formal verification of the index-shift properties in Section 5
 - Applications to prime number detection and distribution analysis
 - Extensions to multi-dimensional cycles and integrals
 - Integration with other mathematical structures like polynomials or matrices

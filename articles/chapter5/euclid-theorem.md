@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.  
 Independent Researcher  
-**Email:** [thiago.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ---
@@ -29,7 +29,8 @@ This article verifies:
 - New prime found via the Euclid construction — §3.2
 - The new prime is not in the original list — §3.3
 - Euclid's theorem: primes are infinite — §3.4
-- Primality testing: sqrt-bound and composite detection — §3.5
+- Downstream consequences: locating the next prime — §3.5
+- Primality testing: sqrt-bound and composite detection — §3.6
 - `.holds` caching eliminates explicit postcondition enrichment — §4
 
 ## 2. Preliminaries
@@ -67,7 +68,8 @@ In the code, this is expressed as the function `euclidTheorem` (shown in full in
 - Stage 2: find a prime divisor of `primorial + 1` via `findSmallestDivisor` (§3.2)
 - Stage 3: the new prime is not in the original list (§3.3)
 - Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
-- Primality testing: sqrt-bound and composite detection (§3.5)
+- Downstream consequences: locating the next prime (§3.5)
+- Primality testing: sqrt-bound and composite detection (§3.6)
 
 The proof proceeds in three stages:
 
@@ -204,7 +206,53 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 
 The postcondition `.holds` asserts that `euclidTheorem` always returns `true` — i.e., given any non-empty list of primes, there exists a prime not in that list.
 
-### 3.5 Primality Testing: Sqrt-Bound and Composite Detection
+### 3.5 Downstream Consequences: Locating the Next Prime
+
+Stage 3 (§3.3) proves the new prime is not in the original `List[Prime]`. Three
+further lemmas turn that fact into what the sieve construction elsewhere in
+the codebase actually needs: a prime strictly greater than the current head,
+suitable as a search upper bound.
+
+**Restating non-membership as a cached fact.** `newPrimeNotInList` re-derives
+`newPrimeFromEuclid`'s result together with `euclidTheorem`, linking the two
+internal computations of the smallest divisor so that the non-membership
+fact is available as a cached `.holds` result to callers, rather than
+requiring them to redo the Euclid construction themselves.
+
+**Bridging to `SortedPrimeList`.** The Euclid construction works over a plain
+`List[Prime]`, but the sieve's running prime list is a `SortedPrimeList`.
+`notContainsFromValueNotMatchesAny` proves the two membership predicates agree
+by structural induction: since both recurse over the same sequence of prime
+values in the same order, `valueNotMatchesAny` on the list implies
+`!contains` on the sorted list.
+
+**The strict inequality.** `euclidPrimeGreaterThanHead` combines the above
+with `PrimeListUtils.primeAtOrBelowHeadIsContained` (any prime at or below the
+list's head must already be contained in a complete `allPrimesSoFar` list):
+since the Euclid-constructed prime is *not* contained, it cannot be at or
+below the head, so it must be strictly greater.
+
+```math
+\begin{aligned}
+\text{sortedList.nonEmpty} \;\land\; \text{allPrimesSoFar}(\text{sortedList})
+  &\implies d > \text{sortedList.head.value}
+  &&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+where $d$ is the value of `newPrimeFromEuclid(sortedList.list)`. This is the
+exact inequality that makes the Euclid-constructed prime usable as the upper
+bound in `searchNextPrimeUpTo`.
+
+These properties are verified in the [
+  PrimeProperties::newPrimeNotInList
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
+  PrimeProperties::notContainsFromValueNotMatchesAny
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), and [
+  PrimeProperties::euclidPrimeGreaterThanHead
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
+
+### 3.6 Primality Testing: Sqrt-Bound and Composite Detection
 
 The primality test used in Euclid's proof relies on `findSmallestDivisor(n, 2)`,
 which scans candidates from 2 upward until it finds the smallest divisor of `n`.
@@ -348,7 +396,7 @@ Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First
 
 ### A.1 `primorialPlusOneModAny`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:249`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
 
 Full Scala verification code for Stage 1 (Section 3.1):
 
@@ -364,7 +412,7 @@ This lemma proves that $\text{primorial}(\text{primes}) + 1$ is not divisible by
 
 ### A.2 `newPrimeFromEuclid`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:302`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
 
 Full Scala verification code for Stage 2 (Section 3.2):
 
@@ -392,7 +440,7 @@ This function constructs a new `Prime` value by finding the smallest divisor of 
 
 ### A.3 `euclidTheorem`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala:361`
+**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
 
 Full Scala verification code for the main theorem (Section 3.4):
 
@@ -424,4 +472,4 @@ The `.holds` postcondition asserts: given any non-empty list of primes, there ex
 
 ## Appendix B: Stainless Verification Status and Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)

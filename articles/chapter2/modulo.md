@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.
 Independent Researcher  
-**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
@@ -130,8 +130,8 @@ DivMod(a, b, div - 1, mod + b).solve & = DivMod(a, b, div, mod).solve \\
 ```
 
 As proved in the [proof for positive shift](
-  ../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#assertDivModWithMoreDivAndLessModeSameSolution
-) and [proof for negative shift](../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#assertDivModWithLessDivAndMoreModSameSolution).
+  ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution
+) and [proof for negative shift](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
 ### Creating the Division and Modulo Operations
@@ -336,13 +336,16 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
 ( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
 ( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
-( a +  c) \text{ mod } b & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
+( a +  c) \text{ mod } b & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
 \end{aligned}
 ```
 
 As the scala [distribution over addition proof](
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd
-) can be verified.
+) can be verified. The third identity, isolating the multiple of $b$ subtracted
+out, is proved directly in [ModIdempotence.scala#modModPlus](
+../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus
+).
 
 ### Distribution over Subtraction
 
@@ -353,13 +356,16 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
 ( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
 ( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
-( a - c ) \text{ mod } b & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+( a - c ) \text{ mod } b & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 \end{aligned}
 ```
 
 As the scala [distribution over subtraction proof](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd
-) can be verified.
+../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess
+) can be verified. The third identity, isolating the multiple of $b$ subtracted
+out, is proved directly in [ModIdempotence.scala#modModMinus](
+../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus
+).
 
 ### Modular Shift Invariance under Divisible Base
 
@@ -535,8 +541,8 @@ b \text{ div } b                   & = 1 \\
 (a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 (a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
 (a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
-(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 \end{aligned}
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
@@ -580,4 +586,4 @@ Hardy, G. H. & Wright, E. M. (1979). *An Introduction to the Theory of Numbers* 
 
 ### Scala Stainless Verification Status
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)

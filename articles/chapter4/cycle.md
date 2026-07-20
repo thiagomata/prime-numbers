@@ -2,7 +2,7 @@
 
 **Author:** Mata, T. H.
 Independent Researcher  
-**Email:** [thiago.henrique.mata@email.com](mailto:thiago.mata@email.com)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
@@ -101,7 +101,7 @@ L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 ```math
 \begin{aligned}
 & &\text{size}(L) &:= \begin{cases}
-0 & \text{ if } L = L_{e} \\\
+0 & \text{ if } L = L_{e} \\
 1 + \text{size}(tail(L)) & \text{otherwise} \\
 \end{cases} \\
 & &sum(L) &:= \begin{cases}
@@ -278,7 +278,12 @@ some-zero, or none-zero residue patterns across the cycle's values.
 
 Like ModCycle, positional lookup uses modular indexing; value access delegates
 directly to the wrapped ModCycle. Positional equivalence between the two is
-immediate by construction — MemCycle's `apply` calls `cycle.apply`.
+immediate by construction — MemCycle's `apply` calls `cycle.apply` — and is
+verified directly in [
+  CycleProperties::assertModCycleEqualsMemCycle
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala):
+for a `ModCycle` and a `MemCycle` sharing the same values and period, the two
+agree at every position.
 
 The cycle is immutable. Calling `checkMod(d)` returns a *new* `MemCycle` with
 `d` added to the appropriate classification list. The original is unchanged.
@@ -621,6 +626,47 @@ This property is verified in the [
   ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
 ).
 
+### 5.9 MemCycle-Level Restatement
+
+Sections 5.1-5.5 state element access, small-value lookup, periodic
+invariance, multi-loop consistency, and mod propagation for `ModCycle`.
+Since `MemCycle` is the representation actually used elsewhere in the
+codebase (it is the one that carries residue-classification metadata), each
+of those five properties is independently re-proved directly against
+`MemCycle` rather than derived from the `ModCycle` result by delegation:
+
+```math
+\begin{aligned}
+\text{cycle}(key) &= \text{cycle.values}(key \bmod \text{cycle.period})
+  &&\text{[Element Access]} \\
+key < \text{cycle.period} &\implies \text{cycle}(key) = \text{cycle.values}(key)
+  &&\text{[Small Value Lookup]} \\
+\text{cycle}(key) &= \text{cycle}(key + \text{cycle.period} \cdot m)
+  &&\text{[Periodic Invariance]} \\
+\text{cycle}(key + \text{cycle.period} \cdot m_1) &= \text{cycle}(key + \text{cycle.period} \cdot m_2)
+  &&\text{[Multi-Loop Consistency]} \\
+(\text{cycle}(key) \bmod d) &= (\text{cycle.values}(key \bmod \text{cycle.period}) \bmod d)
+  &&\text{[Mod Propagation]}
+\end{aligned}
+```
+
+These are verified in the [
+  MemCycleProperties::findValueInCycle
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+  MemCycleProperties::smallValueInCycle
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+  MemCycleProperties::valueMatchAfterManyLoops
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+  MemCycleProperties::valueMatchAfterManyLoopsInBoth
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), and [
+  MemCycleProperties::propagateModFromValueToCycle
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+
+The mod-idempotence identity from §5.5's proof (that `Cycle_i` equals
+`Cycle_{(i mod n) mod n}`) has its own `MemCycle` restatement in [
+  MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+
 ## 6. Conclusion
 
 This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eight properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-period multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, and rotation invariance.
@@ -690,7 +736,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmall
     assert(position >= 0)
     assert(position < list.size)
     assert(list.size == cycle.period)
-    assert(list.size == recursiveCycle.size)
+    assert(list.size == recursiveCycle.period)
     assert(ModSmallDividend.modSmallDividend(position, list.size))
     assert(Calc.mod(position, list.size) == position)
     cycle(position) == recursiveCycle(position)
@@ -814,11 +860,11 @@ Source: [CycleProperties::propagateModFromValueToCycle](../../src/main/scala/v1/
     val period = cycle.period
 
     assert(cycle(position) == cycle.apply(position))
-    assert(cycle(position) == cycle.values(Calc.mod(position, size)))
+    assert(cycle(position) == cycle.values(Calc.mod(position, period)))
 
-    assert(ModIdempotence.modIdempotence(position, size))
-    assert(Calc.mod(Calc.mod(position, size),size) == Calc.mod(position, size))
-    assert(cycle(position) == cycle(Calc.mod(position, size)))
+    assert(ModIdempotence.modIdempotence(position, period))
+    assert(Calc.mod(Calc.mod(position, period),period) == Calc.mod(position, period))
+    assert(cycle(position) == cycle(Calc.mod(position, period)))
   }.holds
 ```
 
@@ -857,4 +903,4 @@ Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../../src/main/sc
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)

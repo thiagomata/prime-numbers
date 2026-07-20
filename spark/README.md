@@ -22,6 +22,7 @@ flowchart LR
     subgraph Output["Output (Filesystem)"]
         CSV["stage_NNN/gaps/ part-*.csv.gz"]
         VAL["stage_NNN/values.csv.gz"]
+        SAMPLE["../samples/sieve-df/stage_NNN/*.sample.csv"]
     end
 
     SieveStage --> P1
@@ -122,6 +123,7 @@ Rotation shifts the cycle start by R positions. Implemented by assigning a globa
 The gap cycle is written to gzip CSV via `DataFrame.write.csv()`. Multiple part files, no coalescing. Each stage writes:
 - `stage_NNN/gaps/part-*.csv.gz` — gap cycle with global index and origin
 - `stage_NNN/values.csv.gz` — first 1000 sequence values (streaming read from gaps CSV)
+- `spark/samples/sieve-df/stage_NNN/` — commit-friendly samples extracted from each generated layer
 
 ### No Pure Version in Pipeline
 
@@ -157,6 +159,7 @@ just spark-cat 3 gaps-2  # stage 3 2-gap compressed view
 ```
 
 Output directory: `spark/data/sieve-df/`
+Sample directory: `spark/samples/sieve-df/`
 
 ```
 spark/data/sieve-df/
@@ -171,6 +174,18 @@ spark/data/sieve-df/
     gaps/
     values.csv.gz
   ...
+```
+
+Generated data under `spark/data/` is ignored by Git. The generator also writes
+small sample files under `spark/samples/sieve-df/` so representative stage
+outputs can be committed without storing the full Spark datasets.
+
+```
+spark/samples/sieve-df/
+  stage_001/
+    gaps.sample.csv       # first 1000 rows from the partitioned gaps layer
+    gaps-2.sample.csv     # first 1000 rows from the 2-gap focused layer
+    values.csv.gz         # first 1000 sequence values
 ```
 
 **Example:**

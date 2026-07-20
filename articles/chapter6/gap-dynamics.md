@@ -9,7 +9,17 @@ Independent Researcher
 
 ## Abstract
 
-This article studies gap dynamics as the behavior induced by the Sieve Sequence transition. Each sequence state is a finite list of survivors that can generate the next state; across all states, this construction generates the prime sequence. The gap cycle is the compressed form of that finite transition, so conclusions about gaps come from how filtering determines the next gaps. We derive general structural properties — the copy-or-merge rule, the non-generation of absent gap values, full-period survival via CRT, and the boundary between global and local survival — then specialize to 2-gaps (twin prime candidates). After these structural foundations, the remaining open question is whether the local safe zone $[p, p^2]$ always contains enough 2-gaps to survive the next filter. Empirical data supports this local-density inequality up to $p=997$, but no formal proof is claimed here.
+This article studies gap dynamics as the behavior induced by the Sieve Sequence
+transition. Each sequence state is a finite list of survivors that can generate
+the next state; across all states, this construction generates the prime
+sequence. The gap cycle is the compressed form of that finite transition, so
+conclusions about gaps come from how filtering determines the next gaps. We
+derive general structural properties - the copy-or-merge rule, the
+non-generation of absent gap values, full-period survival via CRT, and the
+boundary between global and local survival - then specialize to 2-gaps (twin
+prime candidates). After these structural foundations, the remaining open
+question is whether the local safe zone $[p, p^2]$ always contains enough
+2-gaps to survive the next filter.
 
 ---
 
@@ -322,23 +332,6 @@ If yes, the sieve lacks the capacity to destroy all local 2-gaps, and twin prime
 
 This question remains **open** in the formal verification sense. It is equivalent to the Twin Prime Conjecture in this framework.
 
-### Empirical Evidence
-
-The inequality $G_{\text{local}} > p$ holds for all tested primes $p \ge 37$ up to $p = 997$. The ratio $G_{\text{local}}/p$ grows monotonically from 1.14 to 8.09, suggesting the inequality is structural, not coincidental.
-
-| $p$ | $G_{\text{local}}$ | $\delta = G_{\text{local}} - p$ | $G/p$ |
-|-----|-------------------|----------------------------------|-------|
-| 37 | 42 | +5 | 1.14 |
-| 71 | 122 | +51 | 1.72 |
-| 173 | 456 | +283 | 2.64 |
-| 353 | 1484 | +1125 | 4.20 |
-| 607 | 3590 | +2977 | 5.91 |
-| 997 | 8016 | +7025 | 8.09 |
-
-However, empirical evidence is not a formal proof. The local density question remains open. Full data from $p=3$ to $p=997$ is available in the companion [Empirical Analysis](../draft/draft-empirical-g-local-analysis.md).
-
----
-
 ## 7. Conclusion
 
 The article proves several structural facts about gap evolution under sieve transitions:
@@ -348,7 +341,8 @@ The article proves several structural facts about gap evolution under sieve tran
 3. **Full-period survival**: each d-gap has exactly $h-2$ surviving descendants over a full expanded period (§4).
 4. **Global-local boundary**: full-period survival does not imply safe-window survival, because the period grows primorially while the safe window grows quadratically (§5).
 
-The remaining open question is positional: whether enough 2-gaps fall inside $[p, p^2]$ at each stage to survive the next filter. Empirical data supports the inequality $G_{\text{local}}(p) > p$ for all tested primes $p \ge 37$ up to $p=997$, but this is not a formal proof.
+The remaining open question is positional: whether enough 2-gaps fall inside
+$[p, p^2]$ at each stage to survive the next filter.
 
 ---
 
@@ -362,11 +356,6 @@ Formalizing the twin-prime persistence boundary and the G-local crossover point 
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
-
-<a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences*. Available at: [articles/draft/draft-empirical-g-local-analysis.md](../draft/draft-empirical-g-local-analysis.md)
-
----
 
 ## Appendix A: Verification Status
 

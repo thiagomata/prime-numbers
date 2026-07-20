@@ -221,6 +221,45 @@ object SievePipelineDF {
     } finally pw.close()
   }
 
+  /** Write the first maxRows rows from a partitioned gzip CSV directory. */
+  def writePartitionedCsvSample(inputDir: String, outputPath: String, maxRows: Int): Unit = {
+    val dir = new java.io.File(inputDir)
+    val parts = dir.listFiles().filter(_.getName.startsWith("part-")).sortBy(_.getName)
+    writeCsvSample(parts, outputPath, maxRows)
+  }
+
+  /** Write the first maxRows rows from a single gzip CSV file. */
+  def writeGzipCsvSample(inputPath: String, outputPath: String, maxRows: Int): Unit = {
+    writeCsvSample(Array(new java.io.File(inputPath)), outputPath, maxRows)
+  }
+
+  private def writeCsvSample(parts: Array[java.io.File], outputPath: String, maxRows: Int): Unit = {
+    val outFile = new java.io.File(outputPath)
+    outFile.getParentFile.mkdirs()
+    val pw = new java.io.PrintWriter(outFile)
+    var wroteHeader = false
+    var rowsWritten = 0
+    try {
+      for (part <- parts if rowsWritten < maxRows) {
+        val is = new GZIPInputStream(new FileInputStream(part))
+        val reader = new BufferedReader(new InputStreamReader(is))
+        try {
+          val header = reader.readLine()
+          if (!wroteHeader && header != null) {
+            pw.println(header)
+            wroteHeader = true
+          }
+          var line = reader.readLine()
+          while (line != null && rowsWritten < maxRows) {
+            pw.println(line)
+            rowsWritten += 1
+            line = reader.readLine()
+          }
+        } finally reader.close()
+      }
+    } finally pw.close()
+  }
+
   /** Count gaps equal to 2 (streaming). */
   def countTwos(gapsDir: String): Int = {
     val dir = new java.io.File(gapsDir)
