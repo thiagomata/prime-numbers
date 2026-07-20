@@ -230,6 +230,33 @@ $$O\left(\sum_{p \le 1000} \frac{p^2}{\ln p}\right)$$
 
 For extending to $p=10^5$, a block-segmented sieve would be necessary to avoid allocating arrays of size $O(p^2)$.
 
+### 4.6 Cross-Validation Against the Spark Sieve-Sequence Dataset
+
+A separate, independently generated dataset — the project's Spark-based sieve pipeline (`spark/data/sieve-df/`, produced by `SievePipelineDF.scala`) — provides a second empirical check, using different metrics (raw gap cycles rather than segmented $[p,p^2]$ survivor counts) for the ten stages $h=3$ through $h=31$.
+
+**Exact formula verification.** The exact CRT product $G_2(p) = \prod_{3 \le r < p}(r-2)$ predicts $G_2(31) = 214{,}708{,}725$. Counting directly over the real, materialized 429,417,450-row gap cycle for $h=31$ gives **exactly 214,708,725** 2-gaps — an exact match, not an approximation, confirming the formula against the largest concretely generated dataset in the project.
+
+**Window-share shrinkage.** Comparing the safe-window size $h^2$ against the full cycle length $M$ at each of the ten stages:
+
+| $h$ | $M$ | $h^2$ | $h^2/M$ |
+|---|---|---|---|
+| 3 | 2 | 9 | 4.5 |
+| 5 | 6 | 25 | 4.17 |
+| 7 | 30 | 49 | 1.63 |
+| 11 | 210 | 121 | 0.576 |
+| 13 | 2,310 | 169 | 0.073 |
+| 17 | 30,030 | 289 | 0.0096 |
+| 19 | 510,510 | 361 | 0.00071 |
+| 23 | 9,699,690 | 529 | 0.0000545 |
+| 29 | 223,092,870 | 841 | 0.00000377 |
+| 31 | 6,469,693,230 | 961 | 0.000000149 |
+
+The window's share of the full cycle drops by roughly an order of magnitude per stage — direct numerical confirmation of the "quadratic window vs. primorial cycle" asymmetry that motivates the local-density question (Section 4.2 above).
+
+**Consistent with the uniform-density estimate in Section 4.3.** Multiplying the exact global count by the window-share ratio gives an expected count under naive uniformity of $214{,}708{,}725 \times 0.000000149 \approx 32$ for $h=31$ — comfortably above the 1 needed, and the same order of magnitude as the $G_{\text{local}}=30$ value already recorded at the neighboring prime $p=29$ in Section 3.1. This is a second, independently generated dataset landing in the same range as Section 4.3's estimate, not a new argument.
+
+See [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 19-21 for the related max-gap and cascade-merge analysis on this same dataset.
+
 ---
 
 ## 5. Conclusions
@@ -289,3 +316,4 @@ All files use `BigInt` arithmetic for arbitrary-precision coordinate handling.
 1. Mata, T. H. (2026). Gap Dynamics and Twin Prime Candidates in Sieve Sequences. `articles/gap-dynamics.md`
 2. Mata, T. H. (2026). Learnings: Capacity Argument for Twin Prime Persistence. `articles/learnings/learnings-capacity-argument.md`
 3. Mata, T. H. (2026). Empirical Runner and Results. `src/main/scala/v1/chapter6/seq/sieve/empirical/EmpiricalRunner.scala`
+4. Mata, T. H. (2026). Spark Sieve Pipeline and Gap Data. `spark/src/main/scala/v1/chapter8/SievePipelineDF.scala`, data at `spark/data/sieve-df/`.

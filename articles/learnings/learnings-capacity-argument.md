@@ -456,3 +456,54 @@ The `gap-dynamics.md` article now treats the local-density inequality as the mai
 | Safe-zone stability | Failed attempted proof | The lower-bound step from `r < p^2` to safe-zone persistence does not follow; this remains a failed approach, not a property. |
 
 These claims can return to a publication article only after they satisfy the article standard directly, or after they are explicitly framed as draft work with a tracking ticket and all required caveats.
+
+## 19. The Chain/Cascade Characterization (New, Partially Checked)
+
+**Claim:** A merge cascades beyond a simple pairwise fusion (two old gaps combining into one) only when two *consecutive* old gaps are both divisible by the incoming filter $h$.
+
+**Derivation:** installing filter $h$ assigns each base-cycle position $r$ (for $0 \le r < T$) to a unique copy index $i(r) \equiv -\ell_r \cdot M^{-1} \pmod h$ — the one copy where that residue's lift is a multiple of $h$ and gets removed. Two adjacent positions $r, r+1$ land in the *same* copy — and thus their removal fuses three old gaps into one instead of two separate pairwise merges — exactly when:
+
+$$i(r+1) = i(r) \iff g_r \equiv 0 \pmod h$$
+
+Since post-2-stage gaps are even and $h$ is an odd prime $\ge 5$, the smallest gap satisfying this is $2h$. So: **while every gap in the current cycle stays below $2h$, this layer's merges are all simple pairwise fusions**, giving a clean bound $\text{maxGap}_{\text{after}} \le 2 \cdot \text{maxGap}_{\text{before}}$.
+
+**Empirical status: fails almost immediately.** Checked against the real Spark-generated cycles (`spark/data/sieve-df/`), the no-cascade precondition ($\text{maxGap} < 2h$) already breaks at $h=11$ (the 4th nontrivial stage): $\text{maxGap}=28 > 2h=22$. So while the derivation itself is correct, it does not extend into a usable bound past the first few stages — cascades of length $\ge 3$ become arithmetically possible almost immediately, and a general worst-case bound would need to handle arbitrarily long chains, reintroducing the same equidistribution difficulty (see Section 13, Jacobsthal Function Approach).
+
+| $h$ | maxGap | $2h$ | no-cascade holds? |
+|---|---|---|---|
+| 3 | 2 | 6 | yes |
+| 5 | 4 | 10 | yes |
+| 7 | 10 | 14 | yes |
+| 11 | 28 | 22 | **no** |
+| 13 | 40 | 26 | no |
+| 17 | 64 | 34 | no |
+| 19 | 106 | 38 | no |
+| 23 | 148 | 46 | no |
+| 29 | 202 | 58 | no |
+| 31 | 256 | 62 | no |
+
+Data source: `spark/data/sieve-df/stage_000` through `stage_010`, computed via the project's own Spark pipeline (`SievePipelineDF.scala`).
+
+## 20. Why Gentle Per-Step Density Loss Does Not Imply Stabilization
+
+A recurring intuition: each new filter only removes a $1/p$ fraction of survivors, so gap statistics (average, max, spread) should "settle down" as $p$ grows, since each individual step's disruption becomes small.
+
+**This is false for the average gap, provably.** The average gap is exactly $M_k/T_k$, and Mertens' Third Theorem gives:
+
+$$T_k/M_k = \prod_{p<h}\left(1-\frac1p\right) \sim \frac{e^{-\gamma}}{\ln h}$$
+
+so the average gap $M_k/T_k \sim e^{\gamma}\ln h \to \infty$ — it diverges, without bound, forever. This is a rigorously proven asymptotic (not a conjecture), and it is a clean counterexample to "small step ⇒ stable statistics": the disruption per step really is $O(1/p)$, and the cumulative product of many $(1-1/p)$ factors still drifts toward zero density (equivalently, an unboundedly growing average gap) rather than converging.
+
+**Max gap does the same, empirically.** Checked against the real Spark cycles (same dataset as Section 19), $\text{maxGap}/h$ is *increasing* at every one of the ten stages checked ($h=3$ to $31$): $0.67, 0.8, 1.4, 2.5, 3.1, 3.8, 5.6, 6.4, 7.0, 8.3$. No sign of stabilization over this range.
+
+**Lesson:** "each step is gentle" is true, and it is exactly why the *count* of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT product, and the formal exact count in `gap-dynamics-v2.md` §5.2). It is not, by itself, evidence that any statistic *stabilizes* — Mertens' theorem is the standing proof that it doesn't, for the one statistic (average gap) where the asymptotic is fully known.
+
+## 21. Worst-Case Adversarial Merge Bounds Size, Not Position (Open — Needs Large-Scale Data)
+
+A tempting proof strategy: construct a deliberately pessimistic ("fake") merge process — one that always fuses whichever gaps are biggest, rather than following the actual $h$-driven arithmetic — and show that even this adversarial worst case keeps gaps comfortably small. If the pessimistic model provably dominates the real process, and the pessimistic model still looks safe, the real process is safe too.
+
+**Where this is valid:** as a bound on *magnitude* (how big can the single largest gap in the cycle get), a fully free adversarial choice of which points to remove (subject to the real constraint of exactly $T$ removals, one per residue class) is a legitimate upper bound, since the real process's actual choice is just one point in that same space of possibilities.
+
+**Where this breaks:** as a bound on *position*. The danger window $[p, p^2)$ only overlaps one specific copy ("copy 0") of the $h$-fold expansion. A freely adversarial model — unconstrained by which copy each residue's removal actually lands in — could simply choose to dump all its damage into copy 0 specifically, since nothing stops it from doing so. That would make the pessimistic model "prove" local extinction is possible, which contradicts the empirical reality (survival is always observed) — meaning a fully free adversary is *too* pessimistic to say anything useful about *where* damage lands. The real process's rigidity (each residue's target copy is a fixed affine function of its value mod $h$, not a free choice) is exactly the structure a valid positional bound would need to exploit — the same equidistribution difficulty as everywhere else in this file.
+
+**Status:** the *size*-bound direction (Section 19's chain characterization) is checked against real data and found to break down quickly. The *position* question here has not been checked at all beyond the existing $p \le 997$ / $h \le 31$ ranges. **Open item:** extend the Spark empirical run to much larger primes (the current dataset tops out at $h=31$, 429M gaps) and track max gap, average gap, and 2-gap count together, to see whether the "gentle per-step, but still growing" pattern in Sections 19-20 continues to hold, weakens, or reverses at scale far beyond what's been checked so far. Nothing here changes the open-problem status — it is a possible empirical extension, not a new argument.
