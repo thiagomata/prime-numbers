@@ -16,6 +16,9 @@ __pycache__/
 *.log
 logs/*.log
 
+# ignore generated Spark datasets
+spark/data/
+
 # ignore macOS files
 .DS_Store
 **/.DS_Store

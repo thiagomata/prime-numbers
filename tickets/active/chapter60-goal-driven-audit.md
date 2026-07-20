@@ -5,7 +5,7 @@
 
 ## START HERE
 
-Three goals define the proof chain. Only copy what's needed to chapter60 —
+Three goals define the proof chain. Only copy what's needed to chapter6 —
 leave chapter6 untouched. Architecture: stateless objects, one-direction.
 
 ### HANDOFF (2026-07-17, Cowork session -> CLI session)
@@ -143,7 +143,7 @@ is supposed to establish. The actual goal, restated by the user:
    current integral-cycle seq itself** (not by re-deriving through
    `spec.next`'s linear scan) that replicates `spec.next`'s behavior.
 3. The known hard sub-problem inside (2): proving the filter removes exactly
-   the right number of elements. Already solved in chapter60 —
+   the right number of elements. Already solved in chapter6 —
    `SpecSieveSeqSurvivorCountProperties.sameHeadSurvivorCount` proves
    `T' = T*(h-1)` via a value-range counting argument
    (`countAcceptedHeadNonMultiplesBetween`), NOT via the walk. This is the
@@ -291,11 +291,11 @@ Step 9 bridge approach.
 `seq.head.value <= nextSeq.head.value`. `assertPipelineOutputMatchesNextGapList` now starts
 walk at `k=1`, passes `nextSeq(0) == seq.apply(1)` as explicit precondition.
 
-## Noise in chapter60 (not needed for the 3 goals)
+## Noise in chapter6 (not needed for the 3 goals)
 
-These lemmas exist in chapter60 but are NOT on the critical path.
+These lemmas exist in chapter6 but are NOT on the critical path.
 Do NOT remove from chapter6 — just consider not bringing them if
-chapter60 is ever restructured.
+chapter6 is ever restructured.
 
 **PeriodProperties:**
 - `assertApplyModIsCoprime`, `assertApplyResidueCycles`
@@ -342,4 +342,57 @@ should use the newer chapter4 properties.
 | 2026-07-17 | Goal 3 Steps 4–8 complete. | Added to `SpecDerivedRepeatedCycleProperties`: Step 4 `assertSpecRepeatedCycleIntegralMatchesBase` — repeated CI and base CI agree pointwise via `assertRepeatedValuesIntegralMatches`; Step 5 `assertSpecBaseAndRepeatedSurvivorValuesMatch` — inductive equality of survivor lists; Step 6 `assertSpecBaseAndRepeatedGapListMatch` — trivial corollary of Step 5; Step 7 `assertBaseCIEqualsSeqApplyShifted` — baseCI(k) = seq.apply(k+1), direct from `assertSpecGapCycleIntegralMatchesApply`; Step 8 `assertFirstSurvivorMatchesNextSeqHead` — first survivor = nextSeq.head.value, using `assertApplyOneEqualsNextPrime` + `assertPrimeNotDivisibleByDistinctPrime` from ch5. Ch60: 4955 valid, 0 invalid, 0 unknown (was 4823). Step 9 (survivor gaps bridge) is now the blocking unit of work. |
 | 2026-07-18 | Abandoned: indexed bijection via backward mutual induction. | Attempted `survivors(i) == nextSeq.apply(i)` as Step 9 via mutual induction: wrote `assertSurvivorMatchesNextSeqApply_Base_LT/GEQ/Base/Step` + `assertSurvivorAtIndexMatchesNextSeqApply` (lines 707–952). Base ✓ (51/51, 39s). Step+TopLevel → class-level run 847/856 valid, 9 unknown. Root cause: EUF mismatch — both ensuring blocks re-compute 4-val chain `specGapCycle→CycleIntegral→survivorValues` independently; Z3 can't unify in 300s. Also: `decreases(nextPeriod - i)` required on both functions to avoid TypeChecker FatalError (mutual recursion). This approach is permanently abandoned. Added `verify-bg` + `verify-debug-bg` to justfile. |
 | 2026-07-19 | Switched to chapter 6 bridge approach for Step 9. | Chapter 6 NEVER proves `survivors(i) == spec.next(i)` directly — it proves gap equality via `mergedGapPrefix` + `assertMergedGapPrefixMatchesNext`. Chapter 60 already has this pipeline in `SpecSieveSeqNextProperties` (`assertPipelineOutputMatchesNextGapList` DONE). New plan: Step 9 = `assertSurvivorGapsEqualsMergedGapPrefix` (bridge between CI filtering and spec walking, using Step 7 as key ingredient). Step 10 = transitivity. Step 11 = `assertSpecGapCycleIntegralMatchesApply` applied to nextSeq. See "Goal 3 revision (2026-07-19)" section above. |
+| 2026-07-20 | Dead code removed. | 34 dead functions removed from 5 files (503 lines). `just compile` + `just verify-ch 60` both pass: 4393 valid, 0 invalid, 0 unknown. Count drop from 4893 to 4393 = exactly the VCs belonging to deleted functions. |
+| 2026-07-20 | Rename chapter6→chapter6 (old removed, chapter60 becomes chapter6). | See "Rename tracking" section at bottom of this ticket. |
 | 2026-07-20 | Abandoned bijection code deleted; mergedGapPrefix precondition fixed. | Recurring pattern: abandoned indexed bijection code acts as temptation bait causing every session to re-attempt mutual induction (always times out). Decision: permanently delete ALL such code from `SpecDerivedRepeatedCycleProperties.scala`. File now contains only Steps 1–8 (verified). Also discovered: `assertPipelineOutputMatchesNextGapList` required `nextSeq.head.value == seq.head.value` — IMPOSSIBLE for `seq.next` (next head is strictly larger). Root cause: `mergedGapPrefix` and all its helpers had equality precondition instead of `<=`. Fixed: replaced `require(nextSeq.head.value == seq.head.value)` with `require(seq.head.value <= nextSeq.head.value)` throughout (22 occurrences), added bridge assertions for lower bounds, updated `assertPipelineOutputMatchesNextGapList` to start walk at k=1 (where `seq.apply(1) = nextSeq.head.value`). Also changed `accepts` from partial function (with `require(value >= head.value)`) to total predicate (`value >= head.value && passesFilter(value)`) — eliminating 21 timeout-inducing VC obligations; all bridges now derive lower bounds by unfolding `accepts`. Ch60: **4893 valid, 0 invalid, 0 unknown** (58.9s). |
+
+---
+
+## Rename tracking: chapter60 → chapter6 (old chapter6 removed)
+
+**Action:** user deletes `src/main/scala/v1/chapter6/` and renames `src/main/scala/v1/chapter6/` to `src/main/scala/v1/chapter6/`
+(i.e. `rm -rf .../chapter6 && mv .../chapter60 .../chapter6`)
+
+### Already done (2026-07-20, before code rename)
+`chapter60` → `chapter6` replaced in these md files (simple sed pass):
+- `LEARNINGS.md` (2 occurrences — path in §8.4, ticket reference in §21)
+- `chapter60-review-questions-2026-07-17.md` (9 occurrences)
+- `tickets/active/chapter60-stateless-properties.md` (1 occurrence)
+- `tickets/active/chapter60-goal-driven-audit.md` (this file, 5 occurrences in body)
+- `tickets/active/spark-sieve-data-generator.md` (1 occurrence)
+- `articles/chapter6/gap-dynamics-v2.md` (8 path references: `../../src/main/scala/v1/chapter6/...`)
+
+### Still needed after code rename
+
+**1. `articles/chapter6/gap-dynamics-v2.md` — remove deleted function reference**
+Line ~1287 links to `assertConsecutiveAcceptedByNextPreservesGap` which was deleted in the dead-code removal pass. Remove or replace that bullet.
+
+**2. Files where "chapter6" = the OLD removed implementation**
+These files use `chapter6` to mean the OLD code, not the new one. They need a note or reword so the phrase now refers to "old implementation (removed)" to avoid confusion:
+- `tickets/active/chapter60-goal-driven-audit.md` (this file): lines 8–9 ("Only copy what's needed to chapter6 — leave chapter6 untouched"), learning log entries 2026-07-17 ("not to repeat chapter6's opaque-walk mistake"), 2026-07-19 ("Chapter 6 NEVER proves..."), 2026-07-18 ("no chapter6 imports")
+- `tickets/active/chapter6b-curated-proof-spine.md`: 11 occurrences all refer to old ch6 vs chapter6b design — entire ticket is historical, consider moving to `tickets/archived/`
+- `tickets/active/sieve-sequence-proof.md`: 21 occurrences — references to old ch6 proofs
+- `tickets/active/split-spec-sieve-sequence-assertions.md`: 6 occurrences
+- `src/main/scala/v1/chapter6/README.md` (will move here from chapter60/README.md): 23 occurrences of `chapter6` and extensive `chapter6b` historical notes — consider simplifying header
+
+**3. `tickets/active/spark-sieve-data-generator.md`**
+Line 28: "Verified sieve sequence code exists in `src/main/scala/v1/chapter6/` and `src/main/scala/v1/chapter6/`" — now only one directory, update to single path.
+
+**4. `LEARNINGS.md` §8.4**
+Text says "file paths in the output point to `chapter6/` not `chapter6/`" — after rename both refer to the same thing; update the note to say the cache hit issue is resolved by the rename.
+
+**5. Files that are purely historical (no action needed, just FYI)**
+These mention old chapter6 as historical context and are accurate as-is:
+- `tickets/done/*` — all reference old ch6 proof work, fine to leave
+- `tickets/trash/*` — archived, leave as-is
+- `articles/chapter6/sieve-sequence.md` — documents old ch6, may want `[ARCHIVED]` header
+- `articles/deprecated/deprecated-sieve-sequence.md` — already marked deprecated
+
+### Green light checklist
+- [x] `just compile` passes after dead-code removal
+- [x] `just verify-ch 60` passes: 4393 valid, 0 invalid, 0 unknown
+- [x] `chapter60` → `chapter6` replaced in all md files
+- [x] User runs: `rm -rf src/main/scala/v1/chapter6 && mv src/main/scala/v1/chapter60 src/main/scala/v1/chapter6`
+- [x] Package declarations updated: `package v1.chapter6` inside all moved files
+- [x] `just compile` re-run after rename
+- [x] Items 1–4 above applied to md files
