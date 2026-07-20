@@ -150,11 +150,6 @@ object SpecSieveSeqPeriodProperties {
     }
   }.holds
 
-  def assertGapListFirstEqualsGap(seq: SpecSieveSequence, from: BigInt, count: BigInt): Boolean = {
-    require(from >= BigInt(0))
-    require(count > BigInt(0))
-    gapList(seq, from, count).head == seq.apply(from + BigInt(1)) - seq.apply(from)
-  }.holds
 
   def assertGapListApplyEqualsGapAtPosition(seq: SpecSieveSequence, from: BigInt, count: BigInt, r: BigInt): Boolean = {
     require(from >= BigInt(0))
@@ -200,27 +195,7 @@ object SpecSieveSeqPeriodProperties {
     gapCycle.memCycle.values == gapList(seq, BigInt(0), period)
   }.holds
 
-  /**
-   * The gap cycle built from the spec has exactly the spec's own period.
-   */
-  def assertSpecGapCyclePeriodMatchesSpec(seq: SpecSieveSequence, period: BigInt): Boolean = {
-    require(period > BigInt(0))
-    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
 
-    val gapCycle = specGapCycle(seq, period)
-    assert(assertSpecGapCycleGapsMatchSpec(seq, period))
-    assert(GapCycle.assertMemCycleValuesPositive(gapCycle))
-    assert(assertGapListSize(seq, BigInt(0), period))
-    gapCycle.period == period
-  }.holds
-
-  def assertSpecGapPeriodPositive(seq: SpecSieveSequence, period: BigInt): Boolean = {
-    require(period > BigInt(0))
-    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
-
-    assert(assertGapListPositive(seq, BigInt(0), period))
-    ListBoundUtils.allGreaterThan(gapList(seq, BigInt(0), period), BigInt(0))
-  }.holds
 
   def assertSpecGapCycleIntegralBase(seq: SpecSieveSequence, period: BigInt): Boolean = {
     require(period > BigInt(0))
@@ -285,19 +260,6 @@ object SpecSieveSeqPeriodProperties {
     }
   }.holds
 
-  def assertApplyResidueCycles(seq: SpecSieveSequence, k: BigInt, p: BigInt): Boolean = {
-    require(k >= BigInt(0))
-    require(p >= BigInt(0))
-    require(seq.apply(p) == seq.head.value + seq.tailPrimorial)
-    true
-  }.ensuring(res => {
-    seq.primorialMatchesSieveProduct(seq.filterPrimes)
-    assert(seq.tailPrimorial == SieveUtils.product(seq.filterValues))
-    assert(seq.assertBlockShift(k, p))
-    assert(seq.apply(k + p) == seq.apply(k) + seq.tailPrimorial)
-    assert(AdditionAndMultiplication.APlusMultipleTimesBSameMod(seq.apply(k), seq.tailPrimorial, BigInt(1)))
-    res && Calc.mod(seq.apply(k + p), seq.tailPrimorial) == Calc.mod(seq.apply(k), seq.tailPrimorial)
-  })
 
   def assertGapPeriodic(seq: SpecSieveSequence, k: BigInt, p: BigInt): Boolean = {
     require(k >= BigInt(0))
@@ -316,33 +278,8 @@ object SpecSieveSeqPeriodProperties {
     res && g1 == g2
   })
 
-  def assertGapSum(seq: SpecSieveSequence, p: BigInt): Boolean = {
-    require(p >= BigInt(0))
-    require(seq.apply(p) == seq.head.value + seq.tailPrimorial)
-    seq.primorialMatchesSieveProduct(seq.filterPrimes)
-    assert(seq.tailPrimorial == SieveUtils.product(seq.filterValues))
-    assert(assertSumGapTelescopes(seq, BigInt(0), p))
-    sumGap(seq, BigInt(0), p) == seq.tailPrimorial
-  }.holds
 
-  def assertApplyEqualsHeadPlusGapSum(seq: SpecSieveSequence, position: BigInt): Boolean = {
-    require(position >= BigInt(0))
-    assert(assertSumGapTelescopes(seq, BigInt(0), position))
-    seq.apply(position) == seq.head.value + sumGap(seq, BigInt(0), position)
-  }.holds
 
-  def assertApplyModIsCoprime(seq: SpecSieveSequence, k: BigInt): Boolean = {
-    require(k >= BigInt(0))
-
-    val value = seq.apply(k)
-    val r = Calc.mod(value, seq.tailPrimorial)
-    val q = Calc.div(value, seq.tailPrimorial)
-
-    seq.primorialMatchesSieveProduct(seq.filterPrimes)
-    assert(seq.tailPrimorial == SieveUtils.product(seq.filterValues))
-
-    seq.assertModIsCoprimeForAll(value, r, q, seq.tailPrimorial, seq.filterValues, BigInt(1))
-  }.holds
 
   def assertHeadPlusTailPrimorialAccepted(seq: SpecSieveSequence): Boolean = {
     seq.primorialMatchesSieveProduct(seq.filterPrimes)

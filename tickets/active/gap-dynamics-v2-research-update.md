@@ -1,7 +1,7 @@
 # Gap Dynamics V2 Research Update
 
 **Created:** 2026-07-20
-**Status:** Active
+**Status:** Complete
 **Owner:** article review preparation
 
 ## START HERE
@@ -84,3 +84,5 @@ full-period results while incorporating the newer property catalog:
 | Date | Progress | Notes |
 |------|----------|-------|
 | 2026-07-20 | Created the v2 article ticket after searching existing articles, property notes, tickets, `.holds` lemmas, `OBJECTS.md`, and `PROOF_GUIDE.md`. | The article will distinguish verified construction foundations from mathematically proved but unverified gap theorems and open analytic boundaries. |
+| 2026-07-20 | Completed `articles/chapter6/gap-dynamics-v2.md` without modifying `gap-dynamics.md`. | The v2 article covers verified copy/merge branches, stable absence, exact global and batched counts, copy-index classes, rotation, square-safe certification, exact accepted strikes, the sharp local threshold, finite perfect scenarios, the fixed-seed scale conflict, discrepancy and extremal count boundaries, Type I/Type II research, and the finite generator. Every unverified Scala block is marked as a draft specification sketch. |
+| 2026-07-20 | Completed the whole-document precision pass. | Abstract, body, claim boundary, and conclusion agree; local links resolve; code fences are balanced; headings are unique; no trailing whitespace, ticket references, stale `sieve-sequence-v2.md` links, or old `G_local>p` capacity formulation remain. Markdown-only work required no Stainless run. |

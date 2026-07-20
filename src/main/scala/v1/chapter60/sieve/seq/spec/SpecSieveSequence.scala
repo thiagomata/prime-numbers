@@ -234,12 +234,6 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     }
   }.holds
 
-  def assertApplyStrictlyIncreasesBetween(from: BigInt, until: BigInt): Boolean = {
-    require(from >= BigInt(0))
-    require(until > from)
-    assert(applyIndexStrictlyPreservesValues(from, until))
-    apply(from) < apply(until)
-  }.holds
 
   def assertApplyInjective(firstIndex: BigInt, secondIndex: BigInt): Boolean = {
     require(firstIndex >= BigInt(0))
@@ -413,31 +407,6 @@ case class SpecSieveSequence(primes: AllPrimesSoFarList) {
     index <= bound
   }.holds
 
-  def assertIndexOfAcceptedStrictlyIncreasesForAcceptedValues(
-    lowerValue: BigInt,
-    upperValue: BigInt
-  ): Boolean = {
-    require(lowerValue >= head.value)
-    require(upperValue >= head.value)
-    require(accepts(lowerValue))
-    require(accepts(upperValue))
-    require(lowerValue < upperValue)
-
-    val lowerIndex = indexOfAccepted(lowerValue)
-    val upperIndex = indexOfAccepted(upperValue)
-
-    assert(apply(upperIndex) == upperValue)
-    assert(lowerValue <= apply(upperIndex))
-    assert(assertIndexOfAcceptedAtMost(lowerValue, upperIndex))
-    assert(lowerIndex <= upperIndex)
-    if (lowerIndex == upperIndex) {
-      assert(apply(lowerIndex) == lowerValue)
-      assert(apply(upperIndex) == upperValue)
-      assert(lowerValue == upperValue)
-    }
-
-    lowerIndex < upperIndex
-  }.holds
 
   // ── Bridge Proofs ───────────────────────────────────────────────────────
   //

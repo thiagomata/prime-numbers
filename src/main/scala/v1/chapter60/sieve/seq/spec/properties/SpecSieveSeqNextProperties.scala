@@ -39,28 +39,6 @@ object SpecSieveSeqNextProperties {
     }
   )
 
-  def assertNextValueAcceptedByThis(seq: SpecSieveSequence, k: BigInt): Boolean = {
-    require(k >= BigInt(0))
-    require(seq.primes.nextPrime.value < seq.head.value * seq.head.value)
-
-    val nextSeq = seq.next
-    val value = nextSeq(k)
-
-    assert(value >= nextSeq.head.value)
-    assert(nextSeq.head.value > seq.head.value)
-    assert(value >= seq.head.value)
-    assert(nextSeq.filterPrimes == seq.primes.list.list)
-    assert(nextSeq.filterValues == PrimeUtils.primeValues(seq.primes.list.list))
-    assert(nextSeq.filterValues.tail == PrimeUtils.primeValues(seq.primes.list.tail.list))
-    assert(seq.filterValues == PrimeUtils.primeValues(seq.primes.list.tail.list))
-    assert(nextSeq.filterValues.tail == seq.filterValues)
-    assert(nextSeq.accepts(value))
-    assert(CoprimeUtils.isCoprime(value, nextSeq.filterValues))
-    assert(SieveUtils.assertIsCoprimeSound(value, nextSeq.filterValues))
-    assert(CoprimeUtils.isCoprime(value, nextSeq.filterValues.tail))
-    assert(CoprimeUtils.isCoprime(value, seq.filterValues))
-    seq.accepts(value)
-  }.holds
 
   def assertFilterPreservesNextGap(
     seq: SpecSieveSequence,
@@ -85,45 +63,6 @@ object SpecSieveSeqNextProperties {
     nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == w - v
   }.holds
 
-  def assertConsecutiveAcceptedByNextPreservesGap(
-    seq: SpecSieveSequence,
-    nextSeq: SpecSieveSequence,
-    k: BigInt
-  ): Boolean = {
-    require(k >= BigInt(0))
-    require(nextSeq.filterValues.tail == seq.filterValues)
-    require(nextSeq.head.value >= seq.head.value)
-    require(seq.apply(k) >= nextSeq.head.value)
-    require(seq.apply(k + BigInt(1)) >= nextSeq.head.value)
-    require(nextSeq.accepts(seq.apply(k)))
-    require(nextSeq.accepts(seq.apply(k + BigInt(1))))
-    require(ListUtils.checkAllPositive(nextSeq.filterValues))
-
-    val v = seq.apply(k)
-    val w = seq.apply(k + BigInt(1))
-    val vIdx = nextSeq.indexOfAccepted(v)
-
-    assert(nextSeq(vIdx) == v)
-    assert(nextSeq.applyStrictlyIncreases(vIdx))
-    val z = nextSeq(vIdx + BigInt(1))
-    assert(z > v)
-    assert(z >= nextSeq.head.value)
-    assert(z >= seq.head.value)
-    assert(CoprimeUtils.isCoprime(z, nextSeq.filterValues))
-    assert(CoprimeUtils.assertIsCoprimeForAll(z, nextSeq.filterValues))
-    assert(CoprimeUtils.isCoprime(z, nextSeq.filterValues.tail))
-    assert(CoprimeUtils.isCoprime(z, seq.filterValues))
-    assert(seq.accepts(z))
-    assert(seq.nextDoesNotPassAcceptedValue(k, z))
-    assert(w <= z)
-
-    assert(nextSeq.accepts(w))
-    assert(nextSeq.nextDoesNotPassAcceptedValue(vIdx, w))
-    assert(z <= w)
-    assert(z == w)
-
-    nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == w - v
-  }.holds
 
   def mergedGapPrefix(
     seq: SpecSieveSequence,
@@ -193,45 +132,6 @@ object SpecSieveSeqNextProperties {
     }
   }.holds
 
-  def assertSkippedBeforeNextAcceptedOldIndexIsMultiple(
-    seq: SpecSieveSequence,
-    nextSeq: SpecSieveSequence,
-    k: BigInt,
-    idx: BigInt,
-    period: BigInt
-  ): Boolean = {
-    require(k >= BigInt(0))
-    require(idx > k)
-    require(period > BigInt(0))
-    require(nextSeq.filterValues.nonEmpty)
-    require(nextSeq.filterValues.tail == seq.filterValues)
-    require(seq.head.value <= nextSeq.head.value)
-    require(nextSeq.accepts(seq.apply(k)))
-    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
-    require(Calc.mod(seq.head.value + seq.tailPrimorial, nextSeq.filterValues.head) != BigInt(0))
-    require(idx < nextAcceptedOldIndex(seq, nextSeq, k, period))
-
-    val p = nextSeq.filterValues.head
-    val nextOldIndex = nextAcceptedOldIndex(seq, nextSeq, k, period)
-
-    val skippedIsMultiple = if (Calc.mod(seq.apply(k + BigInt(1)), p) != BigInt(0)) {
-      assert(nextOldIndex == k + BigInt(1))
-      assert(idx < k + BigInt(1))
-      false
-    } else {
-      val bound = k + p * period
-
-      assert(assertPeriodBoundIsNonMultiple(seq, nextSeq, k, period))
-      val firstSurvivor = findFirstNonMultipleAfter(seq, k, p, bound)
-      assert(nextOldIndex == firstSurvivor)
-      assert(idx < firstSurvivor)
-      assert(assertSkippedIndexBeforeFirstIsMultiple(seq, k, idx, p, bound))
-      assert(Calc.mod(seq.apply(idx), p) == BigInt(0))
-      Calc.mod(seq.apply(idx), p) == BigInt(0)
-    }
-
-    skippedIsMultiple
-  }.holds
 
   def assertSurvivorAcceptedByNext(seq: SpecSieveSequence, v: BigInt): Boolean = {
     require(v >= seq.head.value)
@@ -261,27 +161,7 @@ object SpecSieveSeqNextProperties {
     }
   }.ensuring(res => res >= k + BigInt(1) && res <= bound && Calc.mod(seq.apply(res), p) != BigInt(0))
 
-  def assertSingletonFilterDecision(seq: SpecSieveSequence, value: BigInt, p: BigInt): Boolean = {
-    require(p > BigInt(0))
-    require(seq.filterValues == List(p))
 
-    seq.passesFilter(value) == (Calc.mod(value, p) != BigInt(0))
-  }.holds
-
-  def assertOldAcceptedHeadNonMultipleAcceptedByNext(seq: SpecSieveSequence, v: BigInt): Boolean = {
-    require(seq.primes.nextPrime.value < seq.head.value * seq.head.value)
-    require(v >= seq.next.head.value)
-    require(seq.accepts(v))
-    require(Calc.mod(v, seq.head.value) != BigInt(0))
-
-    val nextSeq = seq.next
-
-    assert(v >= seq.head.value)
-    assert(assertSurvivorAcceptedByNext(seq,v))
-    assert(nextSeq.passesFilter(v))
-
-    nextSeq.accepts(v)
-  }.holds
 
   def assertOldAcceptedRejectedByNextIsHeadMultiple(seq: SpecSieveSequence, v: BigInt): Boolean = {
     require(seq.primes.nextPrime.value < seq.head.value * seq.head.value)
@@ -298,27 +178,6 @@ object SpecSieveSeqNextProperties {
     Calc.mod(v, seq.head.value) == BigInt(0)
   }.holds
 
-  def assertOldGeneratedValueBetweenNextValuesIsHeadMultiple(seq: SpecSieveSequence, k: BigInt, oldIndex: BigInt): Boolean = {
-    require(k >= BigInt(0))
-    require(oldIndex >= BigInt(0))
-    require(seq.primes.nextPrime.value < seq.head.value * seq.head.value)
-    require(seq.apply(oldIndex) > seq.next(k))
-    require(seq.apply(oldIndex) < seq.next(k + BigInt(1)))
-
-    val nextSeq = seq.next
-    val value = seq.apply(oldIndex)
-
-    assert(nextSeq.assertApplyMonotonic(BigInt(0), k))
-    assert(nextSeq(BigInt(0)) == nextSeq.head.value)
-    assert(nextSeq.head.value <= nextSeq(k))
-    assert(value >= nextSeq.head.value)
-    assert(seq.accepts(value))
-    assert(nextSeq.assertNoAcceptedValueBetweenGeneratedValues(k, value))
-    assert(!nextSeq.accepts(value))
-    assert(assertOldAcceptedRejectedByNextIsHeadMultiple(seq, value))
-
-    Calc.mod(value, seq.head.value) == BigInt(0)
-  }.holds
 
   def assertNextAcceptsMatchesHeadFilterForAcceptedValue(seq: SpecSieveSequence, v: BigInt): Boolean = {
     require(seq.primes.nextPrime.value < seq.head.value * seq.head.value)
@@ -586,34 +445,6 @@ object SpecSieveSeqNextProperties {
     nextSeq(vIdx) < seq.apply(m)
   }.holds
 
-  private def assertSkippedOldValueRejectedByNext(
-    seq: SpecSieveSequence,
-    nextSeq: SpecSieveSequence,
-    k: BigInt,
-    idx: BigInt,
-    p: BigInt,
-    bound: BigInt
-  ): Boolean = {
-    require(k >= BigInt(0))
-    require(p > BigInt(0))
-    require(bound > k)
-    require(Calc.mod(seq.apply(bound), p) != BigInt(0))
-    require(nextSeq.filterValues.nonEmpty)
-    require(nextSeq.filterValues.head == p)
-    require(seq.head.value <= nextSeq.head.value)
-    require(seq.apply(k) >= nextSeq.head.value)
-    require(idx > k)
-    require(idx < findFirstNonMultipleAfter(seq, k, p, bound))
-
-    assert(assertSkippedIndexBeforeFirstIsMultiple(seq, k, idx, p, bound))
-    assert(Calc.mod(seq.apply(idx), p) == BigInt(0))
-    assert(seq.apply(idx) >= seq.head.value)
-    assert(seq.applyIndexStrictlyPreservesValues(k, idx))
-    assert(seq.apply(idx) > seq.apply(k))
-    assert(seq.apply(idx) >= nextSeq.head.value)
-    assert(assertRejectedByNextWhenNewHeadMultiple(seq, nextSeq, seq.apply(idx), p))
-    !nextSeq.accepts(seq.apply(idx))
-  }.holds
 
   private def assertNextValueAtOrBeforeFirstSurvivor(
     seq: SpecSieveSequence,

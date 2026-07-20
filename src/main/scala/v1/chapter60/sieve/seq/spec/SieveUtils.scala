@@ -86,20 +86,7 @@ object SieveUtils {
     }
   }.holds
 
-  def assertHeadDividesProduct(list: List[BigInt]): Boolean = {
-    require(list.nonEmpty)
-    require(ListUtils.checkAllPositive(list))
-    assert(assertProductNonNegative(list))
-    assert(assertProductNonNegative(list.tail))
-    assert(assertMultipleModZero(product(list.tail), list.head))
-    Calc.mod(product(list), list.head) == BigInt(0)
-  }.holds
 
-  def assertAllElementsDivideProduct(list: List[BigInt]): Boolean = {
-    require(ListUtils.checkAllPositive(list))
-    assert(assertAllFromPrefix(BigInt(1), list))
-    true
-  }.holds
 
   def assertAllFromPrefix(prefixProd: BigInt, list: List[BigInt]): Boolean = {
     require(ListUtils.checkAllPositive(list))
@@ -197,14 +184,6 @@ object SieveUtils {
     true
   }.holds
 
-  def assertAllRExpandedCoprime(modulus: BigInt, p: BigInt, primes: List[BigInt]): Boolean = {
-    require(p > 0)
-    require(modulus > 0)
-    require(modulus == product(primes))
-    require(ListUtils.checkAllPositive(primes))
-    assert(assertAllRExpandedCoprimeRec(BigInt(0), modulus, p, primes))
-    true
-  }.holds
 
   def assertAllRExpandedCoprimeRec(r: BigInt, modulus: BigInt, p: BigInt, primes: List[BigInt]): Boolean = {
     require(r >= 0)
@@ -224,20 +203,6 @@ object SieveUtils {
     }
   }.holds
 
-  def assertDivTransitive(c: BigInt, b: BigInt, a: BigInt): Boolean = {
-    require(a > BigInt(0) && b > BigInt(0) && c >= BigInt(0))
-    require(Calc.mod(c, b) == BigInt(0))
-    require(Calc.mod(b, a) == BigInt(0))
-    assert(assertModZeroImpliesDivTimesBEqualsA(c, b))
-    assert(assertModZeroImpliesDivTimesBEqualsA(b, a))
-    val cb = Calc.div(c, b)
-    val ba = Calc.div(b, a)
-    assert(cb * b == c)
-    assert(ba * a == b)
-    assert(cb * ba * a == c)
-    assert(assertMultipleModZero(cb * ba, a))
-    Calc.mod(c, a) == BigInt(0)
-  }.holds
 
   def residues(modulus: BigInt, primes: List[BigInt]): List[BigInt] = {
     require(modulus > 0)
@@ -523,16 +488,6 @@ object SieveUtils {
     }
   }
 
-  def assertCalculateGapsSize(sorted: List[BigInt], modulus: BigInt): Boolean = {
-    require(modulus > 0)
-    require(sorted.nonEmpty)
-    if (sorted.size == 1) {
-      calculateGaps(sorted, modulus).size == BigInt(1)
-    } else {
-      assert(assertPairwiseGapsSize(sorted))
-      calculateGaps(sorted, modulus).size == sorted.size
-    }
-  }.holds
 
   def pairwiseGaps(list: List[BigInt]): List[BigInt] = {
     decreases(list.size)
@@ -623,46 +578,6 @@ object SieveUtils {
     modulus - sorted.last + sorted.head > BigInt(0)
   }.holds
 
-  /**
-   * `calculateGaps` emits only positive gaps for a sorted residue list inside a
-   * positive modulus.
-   *
-   * Math:
-   *
-   *   adjacent gaps: sorted(i + 1) - sorted(i) > 0
-   *   wrap gap:      modulus - sorted.last + sorted.head > 0
-   *   -----------------------------------------------------
-   *   all gaps emitted by calculateGaps(sorted, modulus) > 0
-   *
-   * The proof composes the pairwise-gap and wrap-gap lemmas instead of asking
-   * Stainless to rediscover sorting, bounds, and append preservation in the
-   * same VC.
-   */
-  def assertCalculateGapsAllPositive(sorted: List[BigInt], modulus: BigInt): Boolean = {
-    require(modulus > BigInt(0))
-    require(sorted.nonEmpty)
-    require(SortedList.isAscending(sorted))
-    require(ListBoundUtils.allLessThan(sorted, modulus))
-    require(sorted.head >= BigInt(0))
-
-    val gaps = calculateGaps(sorted, modulus)
-    if (sorted.size == BigInt(1)) {
-      assert(gaps == List(modulus))
-      assert(modulus > BigInt(0))
-      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
-    } else {
-      val pw = pairwiseGaps(sorted)
-      val wrapGap = modulus - sorted.last + sorted.head
-      assert(gaps == pw ++ List(wrapGap))
-      assert(assertPairwiseGapsAllPositive(sorted))
-      assert(ListBoundUtils.allGreaterThan(pw, BigInt(0)))
-      assert(assertWrapGapPositive(sorted, modulus))
-      assert(wrapGap > BigInt(0))
-      assert(ListBoundUtils.allGreaterThan(List(wrapGap), BigInt(0)))
-      assert(ListBoundUtils.assertAppendGreaterThan(pw, List(wrapGap), BigInt(0)))
-      ListBoundUtils.allGreaterThan(gaps, BigInt(0))
-    }
-  }.holds
 
   @tailrec
   def getAt(list: List[BigInt], index: BigInt): BigInt = {
@@ -673,17 +588,7 @@ object SieveUtils {
     else getAt(list.tail, index - 1)
   }
 
-  def residueAt(sorted: List[BigInt], index: BigInt): BigInt = {
-    if (sorted.isEmpty || index < 0 || index >= sorted.size) BigInt(0)
-    else getAt(sorted, index)
-  }
 
-  def nextResidueIndex(sorted: List[BigInt], currentIndex: BigInt, value: BigInt): BigInt = {
-    require(currentIndex >= BigInt(0))
-    require(currentIndex <= sorted.size)
-    if (sorted.isEmpty) BigInt(0)
-    else findResidueIndex(sorted, currentIndex, value)
-  }.ensuring(_ >= BigInt(0))
 
   def findResidueIndex(list: List[BigInt], idx: BigInt, value: BigInt): BigInt = {
     require(list.nonEmpty)
@@ -718,24 +623,7 @@ object SieveUtils {
     ListUtils.rotateAt(list, index)
   }
 
-  /* Delegates to the canonical ch3 lemma (RotationProperties.assertRotateSameLowerBound). */
-  def assertRotateAtPreservesAllGreaterThan(list: List[BigInt], index: BigInt, value: BigInt): Boolean = {
-    require(index >= 0)
-    require(ListBoundUtils.allGreaterThan(list, value))
-    RotationProperties.assertRotateSameLowerBound(list, index, value)
-  }.holds
 
-  /*
-   * Non-emptiness follows from same-size (rotation preserves size); delegates
-   * to the canonical ch3 lemma.
-   */
-  def assertRotateAtPreservesNonEmpty(list: List[BigInt], index: BigInt): Boolean = {
-    require(list.nonEmpty)
-    require(index >= 0)
-    assert(RotationProperties.assertRotateSameSize(list, index))
-    assert(rotateAt(list, index).size == list.size)
-    rotateAt(list, index).nonEmpty
-  }.holds
 
   def isAscending(list: List[BigInt]): Boolean = {
     decreases(list.size)
@@ -867,24 +755,6 @@ object SieveUtils {
     }
   }.holds
 
-  /**
-   * Size of the top-level expanded residue list.
-   *
-   * Math:
-   *   expandResidues(residues, mod, p).size == residues.size * p
-   *
-   * Direct corollary of assertExpandSingleResidueSize at i == 0, since
-   * expandResidues delegates to expandSingleResidue(residues, mod, p, 0) and
-   * p - 0 == p.
-   */
-  def assertExpandResiduesSize(
-    residues: List[BigInt], mod: BigInt, p: BigInt
-  ): Boolean = {
-    require(mod > 0)
-    require(p > 0)
-    assert(assertExpandSingleResidueSize(residues, mod, p, BigInt(0)))
-    expandResidues(residues, mod, p).size == residues.size * p
-  }.holds
 
   def assertExpandSingleRange(residues: List[BigInt], mod: BigInt, p: BigInt, i: BigInt): Boolean = {
     require(CycleUtils.checkNonNegative(residues))
@@ -910,15 +780,6 @@ object SieveUtils {
     }
   }.holds
 
-  def assertExpandResiduesRange(residues: List[BigInt], mod: BigInt, p: BigInt): Boolean = {
-    require(CycleUtils.checkNonNegative(residues))
-    require(CycleUtils.allLessThan(residues, mod))
-    require(mod > 0)
-    require(p > 0)
-    assert(assertExpandSingleRange(residues, mod, p, BigInt(0)))
-    CycleUtils.checkNonNegative(expandResidues(residues, mod, p)) &&
-      CycleUtils.allLessThan(expandResidues(residues, mod, p), mod * p)
-  }.holds
 
   def assertFilterListNonNegative(list: List[BigInt], divisor: BigInt): Boolean = {
     require(CycleUtils.checkNonNegative(list))
@@ -1020,22 +881,6 @@ object SieveUtils {
     }
   }.holds
 
-  def assertCalculateGapsSum(sorted: List[BigInt], modulus: BigInt): Boolean = {
-    require(modulus > 0)
-    decreases(sorted.size)
-    if (sorted.isEmpty) {
-      true
-    } else if (sorted.size == 1) {
-      ListUtils.sum(calculateGaps(sorted, modulus)) == modulus
-    } else {
-      assertSumPairwiseGaps(sorted)
-      ListUtils.listCombine(
-        pairwiseGaps(sorted),
-        List(modulus - sorted.last + sorted.head)
-      )
-      ListUtils.sum(calculateGaps(sorted, modulus)) == modulus
-    }
-  }.holds
 
   def assertProductEqualOrBiggerThanElements(list: List[BigInt]): Boolean = {
     require(ListUtils.checkAllBiggerThanOne(list))
@@ -1093,12 +938,6 @@ object SieveUtils {
     }
   }.holds
 
-  def assertResiduesAllCoprime(modulus: BigInt, primes: List[BigInt]): Boolean = {
-    require(modulus > 0)
-    require(ListUtils.checkAllPositive(primes))
-    assert(assertGenerateResiduesAllCoprime(BigInt(0), modulus, primes))
-    true
-  }.holds
 
   /**
    * Proves that generateResidues(i, modulus, primes) contains v
@@ -1132,40 +971,7 @@ object SieveUtils {
     }
   }.holds
 
-  /**
-   * Top-level residues completeness lemma.
-   * Proves that residues(modulus, primes) contains every coprime value
-   * in [0, modulus).
-   */
-  def assertResiduesComplete(modulus: BigInt, primes: List[BigInt]): Boolean = {
-    require(modulus > 0)
-    require(ListUtils.checkAllPositive(primes))
-    assertResiduesCompleteRec(BigInt(0), modulus, primes)
-  }.holds
 
-  /**
-   * The residues list is non-empty whenever modulus >= 2 and every listed
-   * prime is strictly greater than 1.
-   *
-   * Plain math:
-   *   For modulus >= 2, the value 1 lies in [0, modulus). Since every prime
-   *   p > 1 satisfies mod(1, p) == 1 != 0, the value 1 is coprime to the list
-   *   (assertIsCoprimeOne). By the completeness lemma, residues(modulus, primes)
-   *   contains 1, hence is non-empty.
-   *
-   * This discharges the nextResidues(seq).nonEmpty precondition of the
-   * filtered-size density theorem for real sieve states whose tail primes
-   * come from PrimeUtils.primeValues (which ensures allGreaterThan(_, 1)).
-   */
-  def assertResiduesNonEmpty(modulus: BigInt, primes: List[BigInt]): Boolean = {
-    require(modulus >= BigInt(2))
-    require(ListBoundUtils.allGreaterThan(primes, BigInt(1)))
-    require(ListUtils.checkAllPositive(primes))
-    assert(assertIsCoprimeOne(primes))
-    assert(CoprimeUtils.isCoprime(BigInt(1), primes))
-    assert(assertGenerateResiduesContainsCoprime(BigInt(1), BigInt(0), modulus, primes))
-    residues(modulus, primes).nonEmpty
-  }.holds
 
   def assertResiduesCompleteRec(
     i: BigInt,

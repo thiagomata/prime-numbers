@@ -848,6 +848,10 @@ One certificate proves one twin-prime pair. Infinitely many pairs require an
 unbounded family of certificates. Success at every head, positive density, and
 survival of one immortal seed are all stronger than necessary.
 
+The proposed infinitude statement and its independent review checklist are
+given in [Candidate Property: Infinitely Many Perfect Sieve
+Scenarios](../../properties/sieve-sequence/infinite-perfect-scenario-property.md).
+
 ---
 
 ## 10. The Fixed-Seed Scale Conflict

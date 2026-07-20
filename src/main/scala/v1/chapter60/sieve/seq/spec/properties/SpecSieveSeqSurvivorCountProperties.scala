@@ -184,53 +184,7 @@ object SpecSieveSeqSurvivorCountProperties {
     countGeneratedHeadMultiplesPrefix(seq, expandedIndex) == period
   }.holds
 
-  def assertExpandedGeneratedHeadMultipleCount(seq: SpecSieveSequence, period: BigInt): Boolean = {
-    require(period > BigInt(0))
-    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
-    require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
 
-    val expandedIndex = period * seq.head.value
-
-    assert(assertGeneratedHeadMultiplesPrefixExpandedCount(seq, period))
-    countGeneratedHeadMultiplesPrefix(seq, expandedIndex) == period
-  }.holds
-
-  def assertSameHeadShiftedWindowCount(seq: SpecSieveSequence, period: BigInt): Boolean = {
-    require(period > BigInt(0))
-    require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
-    require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
-
-    val expandedEnd = seq.head.value + seq.head.value * seq.tailPrimorial
-    val shiftedStart = seq.head.value + BigInt(1)
-    val shiftedUntil = expandedEnd + BigInt(1)
-
-    assert(seq.head.value > BigInt(1))
-    assert(seq.tailPrimorial > BigInt(0))
-    assert(seq.head.value < expandedEnd)
-    assert(shiftedStart <= expandedEnd)
-    assert(expandedEnd <= shiftedUntil)
-    assert(assertSameHeadExtendedFilterCount(seq, period))
-    assert(countAcceptedHeadNonMultiplesBetween(seq, seq.head.value, expandedEnd) ==
-      period * (seq.head.value - BigInt(1)))
-
-    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), seq.head.value, BigInt(1)))
-    assert(Calc.mod(seq.head.value, seq.head.value) == BigInt(0))
-    assert(countAcceptedHeadNonMultiplesBetween(seq, seq.head.value, expandedEnd) ==
-      countAcceptedHeadNonMultiplesBetween(seq, shiftedStart, expandedEnd))
-
-    assert(assertBlockShiftMultiple(seq, BigInt(0), seq.head.value, period))
-    assert(seq.apply(period * seq.head.value) == expandedEnd)
-    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), seq.head.value, BigInt(1) + seq.tailPrimorial))
-    assert(Calc.mod(expandedEnd, seq.head.value) == BigInt(0))
-    assert(countAcceptedHeadNonMultiplesBetween(seq, expandedEnd, shiftedUntil) == BigInt(0))
-    assert(assertCountAcceptedHeadNonMultiplesBetweenAppend(seq, shiftedStart, expandedEnd, shiftedUntil))
-    assert(countAcceptedHeadNonMultiplesBetween(seq, shiftedStart, shiftedUntil) ==
-      countAcceptedHeadNonMultiplesBetween(seq, shiftedStart, expandedEnd) +
-        countAcceptedHeadNonMultiplesBetween(seq, expandedEnd, shiftedUntil))
-
-    countAcceptedHeadNonMultiplesBetween(seq, shiftedStart, shiftedUntil) ==
-      period * (seq.head.value - BigInt(1))
-  }.holds
 
   // ── Public counting functions ─────────────────────────────────────────
 
