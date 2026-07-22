@@ -173,7 +173,7 @@ g'_i
 && [\text{By Definition}]\\
 &=g_i.
 && [\text{Substitution}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -191,7 +191,7 @@ g'_{i,j}
 && [\text{Telescoping}]\\
 &=\sum_{k=i}^{j-1}g_k.
 && [\text{Substitution}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -246,7 +246,7 @@ G_2(p)
 &=\prod_{\substack{3\le r<p\\r\text{ prime}}}
 \left(r-2\right).
 && [\text{By CRT}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -304,7 +304,7 @@ class occurs at most $\lceil N/r\rceil$ times, giving
 D_r(N)
 &\le2\left\lceil\frac Nr\right\rceil.
 && [\text{Two Residue Classes}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -327,7 +327,7 @@ classes in one complete batch period is
 S(\mathcal R)
 &=\prod_{r\in\mathcal R}(r-2).
 && [\text{By CRT}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -377,7 +377,7 @@ value $d$, its cyclic multiplicity is unchanged:
 \#\{i:g_i=d\}
 &=\#\{i:\text{rot}_j(G)_i=d\}
 && [\text{Rotation Is A Bijection}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -415,7 +415,7 @@ n\text{ composite}
 && [\text{Small Prime Divisor}]\\
 &\Longrightarrow
 r<q
-&& [n<q^2]\\
+&& [\text{Square Bound}]\\
 &\Longrightarrow
 r\mid P_q
 && [\text{By Definition}]\\
@@ -486,7 +486,7 @@ and their number is $A(p,q)$.
 &=\#\{k:p\le k\le K,\ k\text{ prime}\}
 && [\text{Accepted Multiplier Characterization}]\\
 &=\pi(K)-\pi(p-1)
-&& [\text{By Definition Of }\pi]\\
+&& [\text{Prime-Counting Definition}]\\
 &=A(p,q).
 && [\text{Q.E.D.}]
 \end{aligned}
@@ -506,7 +506,7 @@ x,x+2,x+4\not\equiv0\pmod3
 && [\text{Acceptance}]\\
 &\Longrightarrow
 \bot,
-&& [\text{One Of Three Is }0\pmod3]\\
+&& [\text{One Multiple Of Three}]\\
 \therefore\quad
 \text{one removed value destroys at most one 2-gap}.
 && [\text{Q.E.D.}]
@@ -528,7 +528,7 @@ G_{\mathrm{local}}(p,q)>A(p,q)
 &\Longrightarrow
 G_{\mathrm{surviving}}(p,q)>0.
 && [\text{Integer Positivity}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -605,7 +605,7 @@ x,x+2\text{ are prime}
 &\Longrightarrow
 \text{the stage beginning at }x\text{ begins with gap }2.
 && [\text{Consecutive Prime Starts}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -649,9 +649,9 @@ Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
 \frac{M_p}{Q^2}
 &>\frac{\exp((1+o(1))p)}{p^4}
 \longrightarrow\infty,
-&& [p\longrightarrow\infty]\\
+&& [\text{Asymptotic Limit}]\\
 \therefore\quad M_p&>Q^2
-&& [\text{For All Sufficiently Large }p].
+&& [\text{Eventually}].
 \end{aligned}
 ```
 
@@ -787,7 +787,7 @@ G_{\mathrm{local}}(p,q)>A(p,q)
 &\Longrightarrow
 G_{\mathrm{surviving}}(p,q)>0.
 && [\text{Sharp Local Threshold}]\\
-&&& [\text{Q.E.D.}]
+&& [\text{Q.E.D.}]
 \end{aligned}
 ```
 

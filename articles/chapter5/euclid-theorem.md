@@ -46,7 +46,9 @@ Let $L = [p_1, p_2, \dots, p_k] \in \mathbb{N}^k$ be a non-empty list of primes,
 We define the **primorial** of a list of primes as the product of all primes in the list:
 
 ```math
+\begin{aligned}
 \text{primorial}(L) = \prod_{i=1}^{k} p_i
+\end{aligned}
 ```
 
 A number $n$ is **prime** if it is greater than 1 and has no positive divisors other than 1 and itself.
@@ -56,8 +58,10 @@ A number $n$ is **prime** if it is greater than 1 and has no positive divisors o
 Euclid's theorem is formalized as the following lemma:
 
 ```math
+\begin{aligned}
 \forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies
 \exists\ p \notin \text{primes} : \text{isPrime}(p)
+\end{aligned}
 ```
 
 In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
