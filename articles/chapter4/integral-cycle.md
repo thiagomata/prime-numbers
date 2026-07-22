@@ -73,23 +73,6 @@ We also reuse some modulo properties previously defined and verified in the arti
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
 
-### Dependency Map
-
-The following diagram shows how verified lemmas from the companion articles support the properties in this article:
-
-```
-[Modulo Properties]  [List Properties]  [Cycle Properties]
-         |                  |                   |
-         v                  v                   v
-    [Integral Properties]  -->  [Cycle Integral Properties]
-                                       |
-                          +------------+------------+
-                          |                         |
-                          v                         v
-                    Recursive                   Modulo
-                  CycleIntegral              CycleIntegral
-```
-
 ## 3. Cycle Integral Definitions
 
 The cycle integral extends the finite integral to unbounded repeating sequences. Two equivalent definitions are proven.
@@ -347,7 +330,7 @@ Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verifi
 
 ### 5.1 Modulo Invariance Property
 
-Let $v \in \mathbb{N}$ with $v > 0$, such that the total cycle sum is a multiple of $v$. Then the remainder of any Cycle Integral value depends only on the corresponding partial sum within the first cycle. In the implementation, modulo behavior is handled by two verified layers: `MemCycle` remembers finite-period zero classifications for stored cycle values, and `GapProperties::assertModIsPeriodic` proves the corresponding period lift for accumulated Cycle Integral values.
+Let $v \in \mathbb{N}$ with $v > 0$, such that the total cycle sum is a multiple of $v$. Then the remainder of any Cycle Integral value depends only on the corresponding partial sum within the first cycle. In the implementation, `MemCycle` bookkeeps finite-period zero classifications for stored cycle values, with classification-correctness lemmas verified in `CycleCheckMod` (e.g. `ifInAllModAll`, `ifInSomeModSome`, `ifInNoneModNone`), and `GapProperties::assertModIsPeriodic` proves the corresponding period lift for accumulated Cycle Integral values.
 
 ```math
 \begin{aligned}
@@ -392,63 +375,22 @@ I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
 
 ### Stainless Verification
 
-The finite-period classification is stored by `MemCycle`:
+Together, the classification lemmas and the unbounded periodicity proof
+establish the same finite-period discipline at both levels used by the sieve:
+stored cycles carry all/none/some modulo classifications, and accumulated
+Cycle Integral residues repeat from one period to all positions whenever the
+cycle sum is zero modulo the divisor.
 
-```scala
-case class MemCycle private (
-    cycle: ModCycle,
-    modIsZeroForAllValues: List[BigInt] = List.empty,
-    modIsZeroForNoneValues: List[BigInt] = List.empty,
-    modIsZeroForSomeValues: List[BigInt] = List.empty,
-) {
-  require(CycleUtils.isValid(
-    cycle.values,
-    modIsZeroForAllValues,
-    modIsZeroForSomeValues,
-    modIsZeroForNoneValues
-  ))
-}
-```
-
-The cached classification is synchronized with the actual finite-period zero
-count by `CycleCheckMod::afterMethodListAndZeroModCountAreOnSync`:
-
-```scala
-def afterMethodListAndZeroModCountAreOnSync(
-  cycle: MemCycle,
-  dividend: BigInt
-): Boolean = {
-  require(dividend > 0)
-  val cycleAfterCheck = cycle.checkMod(dividend)
-  // all/none/some cached class matches countModZero(values, dividend)
-}.holds
-```
-
-The unbounded lift is verified by `GapProperties::assertModIsPeriodic`:
-
-```scala
-def assertModIsPeriodic(ci: CycleIntegral, m: BigInt, pos: BigInt): Boolean = {
-  require(ci.period > 0)
-  require(m > 0)
-  require(pos >= 0)
-  require(Calc.mod(ci.sum, m) == BigInt(0))
-  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
-  // Calc.mod(ci(pos), m) == Calc.mod(ci(Calc.mod(pos, ci.period)), m)
-}.holds
-```
-
-Together, these verified facts establish the same finite-period discipline at
-both levels used by the sieve: stored cycles carry verified all/none/some
-modulo classifications, and accumulated Cycle Integral residues repeat from
-one period to all positions whenever the cycle sum is zero modulo the divisor.
-
-These properties are verified in [
+The finite classification data structure is [
 MemCycle
-](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala), [
-CycleCheckMod::afterMethodListAndZeroModCountAreOnSync
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala), and [
+](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala), and its
+per-call classification correctness is verified by [
+CycleCheckMod
+](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala)
+(`ifInAllModAll`, `ifInSomeModSome`, `ifInNoneModNone`). The unbounded periodic
+lift is verified in [
 GapProperties::assertModIsPeriodic
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The core Scala verification code for the periodic lift is in Appendix A.11.
 
 ### 5.2 x-fold Cycle Expansion
 
@@ -495,7 +437,7 @@ an invariance of the infinite stream that the cycle object represents.
 n &= |L|, \quad L = [v_0, \dots, v_{n-1}]
   &&\text{[Length of original cycle]} \\
 L^{(x)}
-&:= \underbrace{L :: \dots :: L}_{x \text{ copies}}
+&:= \underbrace{L \mathbin{\texttt{++}} \dots \mathbin{\texttt{++}} L}_{x \text{ copies}}
   &&\text{[Concatenate $x$ copies]} \\
 m &:= |L^{(x)}| = x \cdot n
   &&\text{[Length of new cycle]} \\
@@ -543,37 +485,9 @@ ListRepeatProperties::assertRepeatedIndex
 
 ### Stainless Verification
 
-```scala
-def assertRepeatedValuesIntegralMatches(
-  cycleIntegral: CycleIntegral,
-  repeatedCycleIntegral: CycleIntegral,
-  times: BigInt,
-  position: BigInt
-): Boolean = {
-  require(times > BigInt(0))
-  require(position >= BigInt(0))
-  require(cycleIntegral.cycle.period > BigInt(0))
-  require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
-  require(repeatedCycleIntegral.cycle.values ==
-    ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
-  decreases(position)
-  if (position == BigInt(0)) {
-    assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
-      cycleIntegral.cycle, repeatedCycleIntegral.cycle, times, BigInt(0)))
-    repeatedCycleIntegral(position) == cycleIntegral(position)
-  } else {
-    assert(assertRepeatedValuesIntegralMatches(
-      cycleIntegral, repeatedCycleIntegral, times, position - BigInt(1)))
-    assert(MemCycleProperties.assertRepeatedValuesCycleMatches(
-      cycleIntegral.cycle, repeatedCycleIntegral.cycle, times, position))
-    repeatedCycleIntegral(position) == cycleIntegral(position)
-  }
-}.holds
-```
-
 This property is verified in the [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.8.
 
 ### 5.3 Right Index Shift [Finite-Period Verified]
 
@@ -630,25 +544,9 @@ initial value is advanced by the original first gap, then the shifted integral
 at position `i` equals the original integral at position `i + 1` for every
 stored-period index with `i + 1 < period`.
 
-```scala
-def assertRotateOneCycleIntegralShiftsByOne(
-  originalCI: CycleIntegral,
-  shiftedCI: CycleIntegral,
-  i: BigInt
-): Boolean = {
-  require(i >= 0)
-  require(i + 1 < originalCI.period)
-  require(shiftedCI.initialValue ==
-    originalCI.initialValue + originalCI.cycle(0))
-  require(shiftedCI.cycle.values ==
-    ListUtils.rotateAt(originalCI.cycle.values, BigInt(1)))
-  // shiftedCI(i) == originalCI(i + 1)
-}.holds
-```
-
 This property is verified in [
 GapProperties::assertRotateOneCycleIntegralShiftsByOne
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.9.
 
 The article's mathematical statement above is the all-position version. The
 verified lemma proves the stored-period core; packaging the universal
@@ -703,32 +601,23 @@ C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 
 ### 5.5 Gap Telescoping
 
-Two consecutive gaps telescope to the integral difference across both steps:
-the sum of gaps at positions `k - 1` and `k` equals the integral difference
-`ci(k + 1) - ci(k - 1)`. This is the step-lemma that underlies merging
-arbitrary gap ranges.
+Two consecutive gaps telescope to the integral difference across both steps.
+By applying the one-step difference lemma twice, the gap values at positions
+`k` and `k + 1` add up to the integral span from `k - 1` to `k + 1`. This is
+the step-lemma that underlies merging adjacent gap ranges.
 
 ```math
 \begin{aligned}
-\text{ci}(k + 1) - \text{ci}(k - 1) = \text{gaps}(k - 1) + \text{gaps}(k)
+\text{ci}(k + 1) - \text{ci}(k - 1) = \text{cycle}(k) + \text{cycle}(k + 1)
 \quad \text{for } k \geq 1 \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
 
 ### Stainless Verification
 
-```scala
-def assertTwoGapSumEqualsDiff(ci: CycleIntegral, k: BigInt): Boolean = {
-  require(k >= BigInt(1))
-  require(ci.cycle.size > k + BigInt(1))
-  require(ci.cycle.values.nonEmpty)
-  // ci(k + 1) - ci(k - 1) == ci.cycle.values(k - 1) + ci.cycle.values(k)
-}.holds
-```
-
 This property is verified in the [
-GapProperties::assertTwoGapSumEqualsDiff
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The proof delegates to `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff`.
+CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.10.
 
 ### 5.6 Modulo Periodicity
 
@@ -754,21 +643,9 @@ terminates.
 
 ### Stainless Verification
 
-```scala
-def assertModIsPeriodic(ci: CycleIntegral, m: BigInt, pos: BigInt): Boolean = {
-  require(ci.size > 0)
-  require(m > 0)
-  require(pos >= 0)
-  require(Calc.mod(ci.sum, m) == BigInt(0))
-  require(ci(ci.size) - ci(BigInt(0)) == ci.sum)
-  decreases(pos)
-  // Calc.mod(ci(pos), m) == Calc.mod(ci(Calc.mod(pos, ci.size)), m)
-}.holds
-```
-
 This property is verified in the [
 GapProperties::assertModIsPeriodic
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.11.
 
 The companion div/mod decomposition `ci(pos) == ci(pos % size) + (pos / size) * ci.sum`
 is verified in `GapProperties::assertCIModDivFormula`.
@@ -793,24 +670,10 @@ amount.
 
 ### Stainless Verification
 
-```scala
-def assertPeriodicShift(ci: CycleIntegral, k: BigInt): Boolean = {
-  // ci(k + ci.size) - ci(k) == ci.sum
-}.holds
-
-def assertFullCycleShift(ci: CycleIntegral, pos: BigInt): Boolean = {
-  // ci(pos + ci.size) == ci(pos) + ci.sum
-}.holds
-
-def assertMultiCycleShift(ci: CycleIntegral, pos: BigInt, m: BigInt): Boolean = {
-  // ci(pos + ci.size * m) == ci(pos) + m * ci.sum
-}.holds
-```
-
 These properties are verified in [
 GapProperties::assertPeriodicShift
 ](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
-`assertFullCycleShift`, and `assertMultiCycleShift`.
+`assertFullCycleShift`, and `assertMultiCycleShift`. The core Scala verification code is in Appendix A.12.
 
 ### 5.8 Gap Rotation with Head Adjustment
 
@@ -828,20 +691,9 @@ entire integral by one position.
 
 ### Stainless Verification
 
-```scala
-def assertRotateOneShiftsIntegralByOne(
-  origHead: BigInt, gaps: List[BigInt], i: BigInt
-): Boolean = {
-  require(gaps.nonEmpty)
-  require(i >= 0)
-  require(i + 1 < gaps.size)
-  // GapList.assertShiftedApplyIsOriginalPlusOne(origHead, gaps, i)
-}.holds
-```
-
 This property is verified in [
 GapProperties::assertRotateOneShiftsIntegralByOne
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
+](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). It delegates to the verified `ShiftedList.assertShiftedApplyIsOriginalPlusOne`; the full source is linked there rather than repeated inline.
 
 ### 5.9 Modularity and Survivor Filtering
 
@@ -872,23 +724,6 @@ completeness says every scanned value with `mod != 0` appears in the result.
 
 Together these form the exactness statement: the survivor list is precisely the
 sub-sequence of scanned values that are coprime to the filter.
-
-```scala
-def assertSurvivorValuesContainsOnlyNonMultiples(
-  ci: CycleIntegral, filterValue: BigInt, startPos: BigInt, count: BigInt, value: BigInt
-): Boolean = {
-  require(/* value in survivor list */)
-  // Calc.mod(value, filterValue) != BigInt(0)
-}.holds
-
-def assertSurvivorValuesContainsNonMultipleAtPosition(
-  ci: CycleIntegral, filterValue: BigInt, startPos: BigInt, count: BigInt, pos: BigInt
-): Boolean = {
-  require(pos >= startPos); require(pos < startPos + count)
-  require(Calc.mod(ci(pos), filterValue) != BigInt(0))
-  // ci(pos) is in survivorValues(...)
-}.holds
-```
 
 These properties are verified in [
 GapProperties::assertSurvivorValuesContainsOnlyNonMultiples
@@ -923,23 +758,6 @@ guarantees `survivors.last - survivors.head == ci(last) - ci(first)`, and
 `assertFilteredSumEqualsOriginalSum` proves that filtering one full period
 preserves the total gap sum — `survivors.last - survivors.head == ci.sum`.
 
-```scala
-def assertFirstSurvivorIsHead(
-  ci: CycleIntegral, filterValue: BigInt, startPos: BigInt, count: BigInt
-): Boolean = {
-  require(Calc.mod(ci(startPos), filterValue) != BigInt(0))
-  // survivorValues(...).head == ci(startPos)
-}.holds
-
-def assertFilteredSumEqualsOriginalSum(
-  ci: CycleIntegral, filterValue: BigInt
-): Boolean = {
-  require(Calc.mod(ci(0), filterValue) != BigInt(0))
-  require(Calc.mod(ci(ci.size), filterValue) != BigInt(0))
-  // survivorValues.last - survivorValues.head == ci.sum
-}.holds
-```
-
 The structural theorem `assertMergedGapPositive` proves that the gap between
 two consecutive survivors (after filtering out multiples) is strictly positive
 — this is the gap-level guarantee that underpins the `GapCycle` type invariant
@@ -971,21 +789,6 @@ These three states are detected by `MemCycle.checkMod(d)` and stored in lists
 The evaluation is idempotent — the cycle's values list never changes, only the
 classification metadata is updated. Ten lemmas in `CycleCheckMod.scala` prove
 the classification is correct, mutually exclusive, and exhaustive.
-
-```scala
-def forAnyCheckModValuesRemains(cycle: MemCycle, dividend: BigInt): Boolean = {
-  // checkMod(dividend).values == values
-}.holds
-
-def ifInAllModAll(cycle: MemCycle, dividend: BigInt): Boolean = {
-  // modIsZeroForAllValues => count == values.size
-}.holds
-
-def ifInSomeModSome(cycle: MemCycle, dividend: BigInt): Boolean = {
-  // modIsZeroForSomeValues => 0 < count < values.size
-}.holds
-// ... (7 more exclusivity/idempotence lemmas)
-```
 
 These properties are verified in the [
 CycleCheckMod
@@ -1023,9 +826,54 @@ The main established properties are:
 &\forall \ L \in 𝕃,\quad \forall \ init \in \mathbb{N}_0,\quad \forall \ i \in \mathbb{N}_0 \\
 L &= [v_0, v_1, \dots, v_{n-1}], \quad n = |L|,\quad n > 0 \\
 T &= \sum_{j=0}^{n-1} v_j \\
+\end{aligned}
+```
+
+```math
+\begin{aligned}
 \text{CycleIntegral}(L, init)_i
-&= (i \ \text{div}\ n) \cdot T + I_{i \text{ mod } n} + init
+&= \left(i \ \operatorname{div}\ n\right) \cdot T
+ + \text{CycleIntegral}(L, init)_{i \operatorname{mod} n}
 \quad &\text{[Modulo Cycle Integral]} \\
+\text{CycleIntegral}(L, init)_i
+&= \text{ModCycleIntegral}(L, init)_i
+\quad &\text{[Definition Equivalence]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&- \text{CycleIntegral}(L, init)_i
+= \text{Cycle}(L)_i
+\quad &\text{[Step Property]} \\
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+\text{CycleIntegral}(L^{\langle x\rangle}, init)_i
+&= \text{CycleIntegral}(L, init)_i
+\quad &\text{[Repeated-Cycle Invariance]} \\
+\text{CycleIntegral}(G,h)_{k+1}
+&- \text{CycleIntegral}(G,h)_{k-1}
+= G_{k-1} + G_k
+\quad &\text{[Two-Gap Telescoping]} \\
+T \equiv 0 \pmod m
+&\implies
+\text{CycleIntegral}(L, init)_{i+n}
+\equiv \text{CycleIntegral}(L, init)_i \pmod m
+\quad &\text{[Modulo Periodicity]} \\
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+\text{rotateAt}(G,1)\text{ with head }h+G_0
+&\implies
+I'_{i}=I_{i+1}
+\quad &\text{[Rotation Shift]} \\
+\text{survivors}(I,m)
+&= \{ I_i \mid I_i \not\equiv 0 \pmod m \}
+\quad &\text{[Survivor Exactness]} \\
+\text{classify}(I_i,m)
+&\in \{\text{zero},\text{nonzero}\}
+\quad &\text{[Residue Classification]} \\
 \end{aligned}
 ```
 
@@ -1034,12 +882,17 @@ accumulations using finite list structures and machine-checked Scala code.
 
 ## 7. Future Work
 
-Future work may include:
+The nearest continuation is to close the remaining index-shift properties in
+Section 5. Those statements already have mathematical derivations in the
+article, but they still sit at the boundary between the verified cycle-integral
+library and the stronger shift reasoning needed for later sieve arguments.
 
-- Formal verification of the index-shift properties in Section 5
-- Applications to prime number detection and distribution analysis
-- Extensions to multi-dimensional cycles and integrals
-- Integration with other mathematical structures like polynomials or matrices
+After that, the same finite-period machinery can support more specialized
+prime-sieve properties: detecting accepted residues, tracking gap evolution
+across filters, and relating local survivor windows to complete-cycle
+structure. More distant extensions, such as multi-dimensional cycles or
+integration over richer algebraic structures, would require new definitions
+rather than a direct continuation of the present proof.
 
 ## References
 
@@ -1279,6 +1132,198 @@ def assertSumModValueAsListEqualsCycleIntegralLoop(
     iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
       iCycle(position) ==
         ListUtils.sum(getModValuesAsList(iCycle, position))
+  }
+}.holds
+```
+
+### A.8 x-fold Cycle Expansion — assertRepeatedValuesIntegralMatches
+
+Source: [CycleIntegralProperties::assertRepeatedValuesIntegralMatches](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+
+```scala
+def assertRepeatedValuesIntegralMatches(
+  cycleIntegral: CycleIntegral,
+  repeatedCycleIntegral: CycleIntegral,
+  times: BigInt,
+  position: BigInt
+): Boolean = {
+  require(times > BigInt(0))
+  require(position >= BigInt(0))
+  require(cycleIntegral.cycle.period > BigInt(0))
+  require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
+  require(repeatedCycleIntegral.cycle.values ==
+    ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
+  RepeatedGapIntegralProperties.assertRepeatedValuesIntegralMatches(
+    cycleIntegral, repeatedCycleIntegral, times, position
+  )
+}.holds
+```
+
+### A.9 Right Index Shift Core — assertRotateOneCycleIntegralShiftsByOne
+
+Source: [GapProperties::assertRotateOneCycleIntegralShiftsByOne](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+
+```scala
+def assertRotateOneCycleIntegralShiftsByOne(
+  originalCI: CycleIntegral,
+  shiftedCI: CycleIntegral,
+  i: BigInt
+): Boolean = {
+  require(i >= 0)
+  require(i + 1 < originalCI.period)
+  require(shiftedCI.initialValue == originalCI.initialValue + originalCI.cycle(0))
+  require(shiftedCI.cycle.values == ListUtils.rotateAt(originalCI.cycle.values, BigInt(1)))
+  decreases(i)
+
+  assert(originalCI.cycle.values.nonEmpty)
+  assert(RotationProperties.assertRotateSameSize(originalCI.cycle.values, BigInt(1)))
+  assert(shiftedCI.period == originalCI.period)
+  assert(RotationProperties.assertRotatedAtIndexPlusOne(originalCI.cycle.values, i))
+  assert(shiftedCI.cycle(i) == originalCI.cycle(i + 1))
+
+  if (i == BigInt(0)) {
+    assert(shiftedCI(i) == shiftedCI.initialValue + shiftedCI.cycle(0))
+    assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+    assert(originalCI(i) == originalCI.initialValue + originalCI.cycle(0))
+    assert(shiftedCI(i) == originalCI(i + 1))
+  } else {
+    assert(assertRotateOneCycleIntegralShiftsByOne(originalCI, shiftedCI, i - BigInt(1)))
+    assert(shiftedCI(i - BigInt(1)) == originalCI(i))
+    assert(shiftedCI(i) == shiftedCI(i - BigInt(1)) + shiftedCI.cycle(i))
+    assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+    assert(shiftedCI(i) == originalCI(i + 1))
+  }
+
+  shiftedCI(i) == originalCI(i + 1)
+}.holds
+```
+
+### A.10 Gap Telescoping — assertConsecutiveGapSumEqualsDiff
+
+Source: [CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+
+```scala
+def assertConsecutiveGapSumEqualsDiff(
+  ci: CycleIntegral,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(1))
+  require(ci.cycle.period > k + BigInt(1))
+  require(ci.cycle.values.nonEmpty)
+
+  assert(assertDiffEqualsCycleValue(ci, k - BigInt(1)))
+  assert(assertDiffEqualsCycleValue(ci, k))
+
+  ci(k + BigInt(1)) - ci(k - BigInt(1)) ==
+    ci.cycle(k) + ci.cycle(k + BigInt(1))
+}.holds
+```
+
+### A.11 Modulo Periodicity — assertModIsPeriodic
+
+Source: [GapProperties::assertModIsPeriodic](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+
+```scala
+def assertModIsPeriodic(
+  ci: CycleIntegral,
+  m: BigInt,
+  pos: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(m > 0)
+  require(pos >= 0)
+  require(Calc.mod(ci.sum, m) == BigInt(0))
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  decreases(pos)
+
+  val size = ci.period
+  val r = Calc.mod(pos, size)
+
+  if (pos < size) {
+    assert(ModSmallDividend.modSmallDividend(pos, size))
+    assert(r == pos)
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+  } else {
+    val previous = pos - size
+    val previousR = Calc.mod(previous, size)
+
+    assert(previous >= BigInt(0))
+    assert(previous < pos)
+    assert(previous + size == pos)
+    assert(AdditionAndMultiplication.APlusBSameModPlusDiv(previous, size))
+    assert(Calc.mod(previous + size, size) == Calc.mod(previous, size))
+    assert(r == previousR)
+
+    assert(assertModIsPeriodic(ci, m, previous))
+    assert(Calc.mod(ci(previous), m) == Calc.mod(ci(previousR), m))
+
+    assert(CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, previous))
+    assert(ci(previous + size) - ci(previous) == ci.sum)
+    assert(ci(pos) - ci(previous) == ci.sum)
+    assert(ci(pos) == ci(previous) + ci.sum)
+
+    assert(assertAddZeroModValuePreservesMod(ci(previous), ci.sum, m))
+    assert(Calc.mod(ci(previous) + ci.sum, m) == Calc.mod(ci(previous), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previous), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previousR), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+  }
+
+  Calc.mod(ci(pos), m) == Calc.mod(ci(r), m)
+}.holds
+```
+
+### A.12 Cycle-Period Shifts — assertPeriodicShift, assertFullCycleShift, assertMultiCycleShift
+
+Source: [GapProperties cycle-period shift lemmas](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+
+```scala
+def assertPeriodicShift(
+  ci: CycleIntegral,
+  k: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(k >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, k)
+}.holds
+
+def assertFullCycleShift(
+  ci: CycleIntegral,
+  pos: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(pos >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, pos)
+}.holds
+
+def assertMultiCycleShift(
+  ci: CycleIntegral,
+  pos: BigInt,
+  m: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(pos >= 0)
+  require(m >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  decreases(m)
+
+  val period = ci.period
+  val totalGaps = ci.sum
+
+  if (m == BigInt(0)) {
+    ci(pos) == ci(pos) + totalGaps * BigInt(0)
+  } else {
+    assert(assertFullCycleShift(ci, pos + period * (m - BigInt(1))))
+    assert(ci(pos + period * (m - BigInt(1)) + period) ==
+      ci(pos + period * (m - BigInt(1))) + totalGaps)
+
+    assert(assertMultiCycleShift(ci, pos, m - BigInt(1)))
+    assert(ci(pos + period * (m - BigInt(1))) ==
+      ci(pos) + totalGaps * (m - BigInt(1)))
+
+    ci(pos + period * m) == ci(pos) + totalGaps * m
   }
 }.holds
 ```

@@ -9,7 +9,7 @@ Independent Researcher
 
 ## Abstract
 
-We present a formally verified proof of Euclid's Theorem — that there are infinitely many primes — using the Stainless verification system. The proof follows Euclid's classic construction: given any finite list of primes, compute their primorial (product) plus one, and show that this number has a prime divisor not in the original list. The formalization builds on a zero-prior-knowledge foundation of modular arithmetic and list operations, all previously verified from first principles. A key methodological insight is the `.holds` caching mechanism: assertions inside `.holds` lemmas are cached by Stainless and become available to callers, eliminating the need to enrich postconditions explicitly. The described theorem and supporting lemmas are machine-checked using a minimal, self-contained framework.
+We present a formally verified proof of Euclid's Theorem — that there are infinitely many primes — using the Stainless verification system. The proof follows Euclid's classic construction: given any finite list of primes, compute their primorial (product) plus one, and show that this number has a prime divisor not in the original list. The formalization builds on a zero-prior-knowledge foundation of modular arithmetic and list operations, all previously verified from first principles. The described theorem and supporting lemmas are machine-checked using a minimal, self-contained framework.
 
 ---
 
@@ -29,11 +29,7 @@ This article verifies:
 - New prime found via the Euclid construction — §3.2
 - The new prime is not in the original list — §3.3
 - Euclid's theorem: primes are infinite — §3.4
-- Downstream consequences: locating the next prime — §3.5
-- Primality testing: sqrt-bound and composite detection — §3.6
-- Head primality from prior filters — §3.7
-- Bézout and prime-product lemmas — §3.8
-- `.holds` caching eliminates explicit postcondition enrichment — §4
+- Supporting verified prime lemmas — §4
 
 ## 2. Preliminaries
 
@@ -64,16 +60,13 @@ Euclid's theorem is formalized as the following lemma:
 \exists\ p \notin \text{primes} : \text{isPrime}(p)
 ```
 
-In the code, this is expressed as the function `euclidTheorem` (shown in full in Section 3.4).
+In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
+verification reference is given in §3.4 and Appendix A.3.
 
-- Stage 1: `primorial + 1` is coprime to every prime in the list (§3.1)
-- Stage 2: find a prime divisor of `primorial + 1` via `findSmallestDivisor` (§3.2)
+- Stage 1: $\operatorname{primorial}(L)+1$ is coprime to every prime in the list (§3.1)
+- Stage 2: find a prime divisor of $\operatorname{primorial}(L)+1$ via `findSmallestDivisor` (§3.2)
 - Stage 3: the new prime is not in the original list (§3.3)
 - Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
-- Downstream consequences: locating the next prime (§3.5)
-- Primality testing: sqrt-bound and composite detection (§3.6)
-- Head primality from prior filters (§3.7)
-- Bézout and prime-product lemmas (§3.8)
 
 The proof proceeds in three stages:
 
@@ -83,172 +76,247 @@ The proof proceeds in three stages:
 
 ### 3.1 Stage 1: Primorial-plus-one Modulo All Primes
 
-The first stage is captured by the lemma `primorialPlusOneModAny`. For any prime $p$ in the list, we prove:
+The first stage is captured by the lemma `primorialPlusOneModAny`. Let
+$L = [p_1,\dots,p_k]$ be the finite list of known primes and
+$P=\operatorname{primorial}(L)$. For each $p_i \in L$, the product $P$
+contains $p_i$ as one factor, so $P$ is divisible by $p_i$. Adding one moves
+the residue from $0$ to $1$, and because every prime is greater than $1$, that
+residue is nonzero.
 
 ```math
 \begin{aligned}
-\text{primorial}(L) &\equiv 0 \pmod p \quad &\text{[since } p \text{ divides the product]} \\
-\text{primorial}(L) + 1 &\equiv 1 \pmod p \quad &\text{[by modular shift]} \\
-1 \bmod p &= 1 \neq 0 \quad &\text{[since } p > 1] \\
-\therefore\ \text{primorial}(L) + 1 &\not\equiv 0 \pmod p
-\end{aligned}
-```
-
-The core of the proof is the helper `primorialPlusOneTailLoop`, which iterates over the list and uses three key modular lemmas:
-
-```scala
-private def primorialPlusOneTailLoop(previous: List[Prime], current: List[Prime]): Boolean = {
-  decreases(current.size)
-  if (current.isEmpty) true
-  else {
-    val p = current.head.value
-    val tailPrimorial = PrimeUtils.primorial(current.tail)
-    val previousPrimorial = PrimeUtils.primorial(previous)
-    val primorialAll = previousPrimorial * p * tailPrimorial
-    // Prove: mod(primorialAll, p) == 0
-    assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
-    AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, previousPrimorial * tailPrimorial)
-    assert(Calc.mod(primorialAll, p) == BigInt(0))
-    // Prove: mod(primorialAll + 1, p) == mod(1, p)
-    ModOperations.modZeroPlusC(primorialAll, p, BigInt(1))
-    // Prove: mod(1, p) == 1 (since p > 1)
-    assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
-    assert(Calc.mod(primorialAll + 1, p) != BigInt(0))
-    Calc.mod(primorialAll + 1, p) != BigInt(0) &&
-      primorialPlusOneTailLoop(previous :+ current.head, current.tail)
-  }
-}.holds
-```
-
-The `.holds` annotation tells Stainless to verify that this function returns `true` for all valid inputs. The three lemmas used are:
-
-1. **`ModSmallDividend.modSmallDividend(a, b)`**: If $0 \leq a < b$, then $a \bmod b = a$. Used to prove $0 \bmod p = 0$ and $1 \bmod p = 1$.
-2. **`AdditionAndMultiplication.ATimesBSameMod(a, b, m)`**: If $a \bmod b = 0$, then $a \cdot m \bmod b = 0$. Used to propagate zero-mod through multiplication.
-3. **`ModOperations.modZeroPlusC(m, b, c)`**: If $m \bmod b = 0$, then $(m + c) \bmod b = c \bmod b$. Used to add 1 after proving the primorial is divisible by $p$.
-
-### 3.2 Stage 2: Finding a New Prime
-
-Once we know $\text{primorial}(L) + 1$ is not divisible by any prime in $L$, we find its smallest divisor $d > 1$ using `findSmallestDivisor`. Two key lemmas are established:
-
-1. **`findSmallestDivisorIsNImpliesNoDivisorInRange`**: If the smallest divisor of $n$ starting from $k$ is $n$ itself, then $n$ has no divisor in $[k, n-1]$. This implies $n$ is prime.
-2. **`assertSmallestDivisorIsPrime`**: If the smallest divisor $d$ of $n$ is less than $n$, then $d$ is prime. (Proof: any divisor of $d$ would also divide $n$ and be smaller than $d$, contradicting minimality.)
-
-### 3.3 Stage 3: Proving the New Prime is Not in the List
-
-The final and most subtle step is proving that the newly found prime $d$ (or $n$ itself) is **not** in the original list. This is handled by `euclidTailLoop`:
-
-```scala
-private def euclidTailLoop(
-  primes: List[Prime],
-  v: BigInt,
-  n: BigInt,
-  primorialSoFar: BigInt
-): Boolean = {
-  require(v > 1)
-  require(n == primorialSoFar * PrimeUtils.primorial(primes) + BigInt(1))
-  require(Calc.mod(n, v) == BigInt(0))
-  decreases(primes.size)
-
-  if (primes.isEmpty) true
-  else {
-    val p = primes.head.value
-    PrimeUtils.primorialUnfold(primes)
-    val k = primorialSoFar * PrimeUtils.primorial(primes.tail)
-    assert(n == p * k + BigInt(1))
-    assert(ModSmallDividend.modSmallDividend(BigInt(0), p))
-    AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, k)
-    assert(Calc.mod(p * k, p) == BigInt(0))
-    ModOperations.modZeroPlusC(p * k, p, BigInt(1))
-    assert(ModSmallDividend.modSmallDividend(BigInt(1), p))
-    assert(Calc.mod(n, p) != BigInt(0))
-    assert(p != v)
-    p != v && euclidTailLoop(primes.tail, v, n, primorialSoFar * p)
-  }
-}.ensuring(res => res && valueNotMatchesAny(primes, v))
-```
-
-The logic is:
-
-```math
-\begin{aligned}
-n &= \text{primorial}(\text{primes}) + 1 \\
-  &= p \cdot k + 1 \quad &\text{[unfolding the primorial]} \\
-n \bmod p &= (p \cdot k + 1) \bmod p \\
-          &= (0 + 1) \bmod p \quad &\text{[since } p \cdot k \equiv 0 \pmod p] \\
-          &= 1 \neq 0 \\
-\therefore p &\neq v \quad &\text{[since } n \bmod v = 0, n \bmod p \neq 0]
-\end{aligned}
-```
-
-The `ensuring` clause captures that the result implies `valueNotMatchesAny(primes, v)` — none of the primes in the list equal the divisor $v$.
-
-### 3.4 The Main Theorem
-
-The main theorem `euclidTheorem` brings everything together:
-
-```scala
-def euclidTheorem(primes: List[Prime]): Boolean = {
-  require(primes.nonEmpty)
-
-  primorialPlusOneModAny(primes)
-  PrimeUtils.primorialPositive(primes)
-  val n = PrimeUtils.primorial(primes) + 1
-  val d = findSmallestDivisor(n, 2)
-
-  if (d == n) {
-    findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
-    assert(euclidTailLoop(primes, n, n, BigInt(1)))
-    valueNotMatchesAny(primes, n)
-  } else {
-    assertSmallestDivisorIsPrime(n, d)
-    findSmallestDivisorResultModZero(n, d)
-    assert(euclidTailLoop(primes, d, n, BigInt(1)))
-    valueNotMatchesAny(primes, d)
-  }
-}.holds
-```
-
-The postcondition `.holds` asserts that `euclidTheorem` always returns `true` — i.e., given any non-empty list of primes, there exists a prime not in that list.
-
-### 3.5 Downstream Consequences: Locating the Next Prime
-
-Stage 3 (§3.3) proves the new prime is not in the original `List[Prime]`. Three
-further lemmas turn that fact into what the sieve construction elsewhere in
-the codebase actually needs: a prime strictly greater than the current head,
-suitable as a search upper bound.
-
-**Restating non-membership as a cached fact.** `newPrimeNotInList` re-derives
-`newPrimeFromEuclid`'s result together with `euclidTheorem`, linking the two
-internal computations of the smallest divisor so that the non-membership
-fact is available as a cached `.holds` result to callers, rather than
-requiring them to redo the Euclid construction themselves.
-
-**Bridging to `SortedPrimeList`.** The Euclid construction works over a plain
-`List[Prime]`, but the sieve's running prime list is a `SortedPrimeList`.
-`notContainsFromValueNotMatchesAny` proves the two membership predicates agree
-by structural induction: since both recurse over the same sequence of prime
-values in the same order, `valueNotMatchesAny` on the list implies
-`!contains` on the sorted list.
-
-**The strict inequality.** `euclidPrimeGreaterThanHead` combines the above
-with `PrimeListUtils.primeAtOrBelowHeadIsContained` (any prime at or below the
-list's head must already be contained in a complete `allPrimesSoFar` list):
-since the Euclid-constructed prime is *not* contained, it cannot be at or
-below the head, so it must be strictly greater.
-
-```math
-\begin{aligned}
-\text{sortedList.nonEmpty} \;\land\; \text{allPrimesSoFar}(\text{sortedList})
-  &\implies d > \text{sortedList.head.value}
+\operatorname{primorial}(L)
+  &= p_i \cdot \prod_{j\ne i} p_j
+  &&\text{[By Definition]} \\
+\operatorname{mod}(\operatorname{primorial}(L), p_i)
+  &= 0
+  &&\text{[Product Contains }p_i\text{]} \\
+\operatorname{mod}(\operatorname{primorial}(L)+1, p_i)
+  &= \operatorname{mod}(1, p_i)
+  &&\text{[Modulo Shift]} \\
+  &= 1
+  &&\text{[Since }1 < p_i\text{]} \\
+  &\ne 0
   &&\text{[Q.E.D.]}
 \end{aligned}
 ```
 
-where $d$ is the value of `newPrimeFromEuclid(sortedList.list)`. This is the
-exact inequality that makes the Euclid-constructed prime usable as the upper
-bound in `searchNextPrimeUpTo`.
+The verified source proves this by induction over the list. At each step, the
+current prime is split out of the primorial product, the divisibility of the
+remaining product is preserved by multiplication, and the induction hypothesis
+continues over the tail. The loop step is built from three verified arithmetic
+properties.
 
-These properties are verified in the [
+**Small Dividend Remainder.** A nonnegative dividend smaller than the divisor is
+already its own remainder. In the Euclid step, this gives both
+$\operatorname{mod}(0,p)=0$ and $\operatorname{mod}(1,p)=1$ because $p>1$.
+
+```math
+\begin{aligned}
+0 \le a < b
+&\Rightarrow \operatorname{mod}(a,b)=a
+&&\text{[Small Dividend]} \\
+p>1
+&\Rightarrow \operatorname{mod}(0,p)=0
+\land \operatorname{mod}(1,p)=1
+&&\text{[Substitution]}
+\end{aligned}
+```
+
+This property is verified in [
+  ModSmallDividend::modSmallDividend
+](../../src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
+
+**Zero Remainder Preserved by Multiplication.** If a number is divisible by
+$b$, multiplying it by any nonnegative factor preserves divisibility by $b$.
+This is the step that turns the explicit factor $p$ in the primorial into
+$\operatorname{mod}(p\cdot k,p)=0$.
+
+```math
+\begin{aligned}
+\operatorname{mod}(a,b)=0
+&\Rightarrow \operatorname{mod}(a\cdot m,b)=0
+&&\text{[Multiplication Preserves Zero Remainder]} \\
+\operatorname{mod}(p,p)=0
+&\Rightarrow \operatorname{mod}(p\cdot k,p)=0
+&&\text{[Substitution]}
+\end{aligned}
+```
+
+This property is verified in [
+  AdditionAndMultiplication::ATimesBSameMod
+](../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala).
+
+**Adding One After a Multiple.** Once the primorial part is known to be
+divisible by $p$, adding one gives the same remainder as one itself.
+Together with the small-dividend property, this proves the Euclid number has
+nonzero remainder modulo every original prime.
+
+```math
+\begin{aligned}
+\operatorname{mod}(m,b)=0
+&\Rightarrow \operatorname{mod}(m+c,b)=\operatorname{mod}(c,b)
+&&\text{[Modulo Shift]} \\
+\operatorname{mod}(p\cdot k,p)=0
+&\Rightarrow \operatorname{mod}(p\cdot k+1,p)=\operatorname{mod}(1,p)=1
+&&\text{[Substitution]} \\
+&\Rightarrow \operatorname{mod}(p\cdot k+1,p)\ne0
+&&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+This property is verified in [
+  ModOperations::modZeroPlusC
+](../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala).
+
+This property is verified in [
+  PrimeProperties::primorialPlusOneModAny
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.1.
+
+### 3.2 Stage 2: Finding a New Prime
+
+Once we know $\operatorname{primorial}(L)+1$ is not divisible by any prime in
+$L$, let
+
+```math
+\begin{aligned}
+N &= \operatorname{primorial}(L)+1, \\
+d &= \operatorname{findSmallestDivisor}(N,2).
+\end{aligned}
+```
+
+There are two cases. If $d=N$, the divisor search found no proper divisor in
+$[2,N)$, so $N$ is prime. If $d<N$, then $d$ divides $N$ and no smaller integer
+greater than $1$ divides $N$. If $d$ were composite, it would have a non-trivial
+divisor $e$ with $1<e<d$; since $e$ divides $d$ and $d$ divides $N$, $e$ would
+divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
+
+```math
+\begin{aligned}
+d=N
+&\Rightarrow \forall e\in[2,N),\operatorname{mod}(N,e)\ne0
+&&\text{[No Proper Divisor Found]} \\
+&\Rightarrow \operatorname{isPrime}(N)
+&&\text{[Prime Definition]} \\
+d<N \land \operatorname{mod}(N,d)=0
+&\Rightarrow \operatorname{isPrime}(d)
+&&\text{[Minimal Divisor]}
+\end{aligned}
+```
+
+The construction of the new prime is verified in [
+  PrimeProperties::newPrimeFromEuclid
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.2.
+
+### 3.3 Stage 3: Proving the New Prime is Not in the List
+
+The final and most subtle step is proving that the newly found prime $d$ (or
+$N$ itself) is **not** in the original list.
+
+Let $v$ be the divisor chosen in Stage 2: either $v=N$ when $N$ is prime, or
+$v=d$ when $d$ is the smallest proper divisor of $N$. In both cases,
+$\operatorname{mod}(N,v)=0$. Now take any prime $p$ from the original list.
+Because $N=\operatorname{primorial}(L)+1$, the same argument from Stage 1 gives
+$\operatorname{mod}(N,p)=1$. If $p=v$, then $N$ would have two incompatible
+remainders modulo the same positive divisor: $0$ and $1$. Therefore no element
+of $L$ equals $v$.
+
+```math
+\begin{aligned}
+N &= \operatorname{primorial}(L) + 1
+&&\text{[Euclid Construction]} \\
+  &= p \cdot k + 1
+&&\text{[Unfold Product at }p\text{]} \\
+\operatorname{mod}(N,p)
+  &= \operatorname{mod}(p\cdot k+1,p) \\
+  &= \operatorname{mod}(1,p)
+&&\text{[Multiple of }p\text{ Drops Out]} \\
+  &= 1
+&&\text{[Since }p>1\text{]} \\
+\operatorname{mod}(N,v)
+  &= 0
+&&\text{[Chosen Divisor]} \\
+p=v
+  &\Rightarrow 1=0
+&&\text{[Contradiction]} \\
+\therefore\ p &\ne v
+&&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+This non-membership argument is verified by the private helper
+`euclidTailLoop`, which establishes `valueNotMatchesAny(primes, v)` for the
+chosen divisor $v$ in [
+  PrimeProperties
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
+
+### 3.4 The Main Theorem
+
+The main theorem combines the primorial-plus-one lemma, smallest-divisor
+primality, and non-membership argument. If $N$ is prime, then $N$ itself is
+the new prime. Otherwise, the smallest divisor $d$ of $N$ is prime and cannot
+belong to the original list.
+
+```math
+\begin{aligned}
+L &\ne [] \\
+N &= \operatorname{primorial}(L)+1 \\
+d &= \operatorname{findSmallestDivisor}(N,2) \\
+d=N
+&\Rightarrow \operatorname{isPrime}(N)\land N\notin L
+&&\text{[Stages 2 and 3]} \\
+d<N
+&\Rightarrow \operatorname{isPrime}(d)\land d\notin L
+&&\text{[Stages 2 and 3]} \\
+\therefore\ \exists p:\operatorname{isPrime}(p)\land p\notin L
+&&\text{[Case Split]}
+\end{aligned}
+```
+
+This property is verified in [
+  PrimeProperties::euclidTheorem
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). The public theorem wrapper is shown in Appendix A.3.
+
+## 4. Supporting Verified Lemmas
+
+The theorem above is the article's main result. We also record a few closely
+related lemmas that reuse the same prime and divisibility foundations.
+They are included here as supporting results, not as additional headline
+claims.
+
+### 4.1 Corollary: Greater Than a Complete Finite Prefix
+
+A direct corollary of Euclid's construction is that a complete finite prefix
+of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted finite list
+that contains every prime up to its largest element $h=p_k$. Let $q$ be the
+prime produced by the Euclid construction from $P$. Since §3 proves
+$q\notin P$, $q$ cannot be at or below $h$: every prime at or below $h$ is
+already contained in the complete prefix. Therefore $q>h$.
+
+```math
+\begin{aligned}
+P &= [p_1,\dots,p_k],\quad h=p_k
+&&\text{[Finite Prime Prefix]} \\
+\forall r,\ \operatorname{isPrime}(r)\land r\le h
+&\Rightarrow r\in P
+&&\text{[Prefix Complete Through }h\text{]} \\
+\operatorname{isPrime}(q)\land q\notin P
+&&\text{[Euclid Construction]} \\
+q\le h
+&\Rightarrow q\in P
+&&\text{[Prefix Completeness]} \\
+q\le h
+&\Rightarrow q\in P\land q\notin P
+&&\text{[Contradiction]} \\
+\therefore\ q&>h
+&&\text{[Q.E.D.]}
+\end{aligned}
+```
+
+This is the ordered-prefix form of the Euclid theorem: from any complete finite
+prefix of the primes, the construction produces a prime beyond that prefix.
+
+This corollary is verified in [
   PrimeProperties::newPrimeNotInList
 ](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
   PrimeProperties::notContainsFromValueNotMatchesAny
@@ -256,17 +324,17 @@ These properties are verified in the [
   PrimeProperties::euclidPrimeGreaterThanHead
 ](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
-### 3.6 Primality Testing: Sqrt-Bound and Composite Detection
+### 4.2 Smallest-Divisor Bounds for Composite Numbers
 
 The primality test used in Euclid's proof relies on `findSmallestDivisor(n, 2)`,
-which scans candidates from 2 upward until it finds the smallest divisor of `n`.
+which scans candidates from 2 upward until it finds the smallest divisor of $n$.
 Two lemmas characterize why this scan is both correct and efficient.
 
-**Composite has a divisor below n.** If `n` is composite and `d` is its smallest
-non-trivial divisor, then `d < n`. This is immediate from the definition of
+**Composite has a divisor below n.** If $n$ is composite and $d$ is its smallest
+non-trivial divisor, then $d < n$. This is immediate from the definition of
 composite — there exists a proper divisor — but must be proved against the
 `findSmallestDivisor` algorithm, which scans upward until a divisor is found
-or `n` itself is reached.
+or $n$ itself is reached.
 
 ```math
 \begin{aligned}
@@ -276,10 +344,10 @@ n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
 \end{aligned}
 ```
 
-**Smallest divisor is at most sqrt(n).** When `n` is composite with smallest
-divisor `d`, the factor `q = n / d` satisfies `q ≥ d`. Then `d · d ≤ d · q = n`,
-so `d² ≤ n`. This means the scan only needs to check divisors up to `sqrt(n)`
-— any divisor beyond that would have a co-factor below `d`, violating
+**Smallest divisor is at most sqrt(n).** When $n$ is composite with smallest
+divisor $d$, the factor $q = n / d$ satisfies $q \ge d$. Then $d \cdot d \le d \cdot q = n$,
+so $d^2 \le n$. This means the scan only needs to check divisors up to $\sqrt{n}$
+— any divisor beyond that would have a co-factor below $d$, violating
 minimality.
 
 ```math
@@ -291,7 +359,7 @@ d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n
 ```
 
 **Packaged composite divisor.** The wrapper `assertCompositeSmallestPrimeDivisor`
-combines the previous results into the form later prime arguments need: every
+combines the previous results into a reusable form: every
 composite number has a non-trivial prime divisor, the divisor really divides
 the number, and it lies at or below the square root bound.
 
@@ -308,40 +376,9 @@ n > 1 \;\land\; \neg \text{isPrime}(n)
 ```
 
 **Proof.** From the composite assumption, `assertCompositeHasDivisorStrictlyBelowN(n)`
-gives `d < n` with `mod(n, d) = 0`. Let `q = n / d`, so `q · d = n`. If `q < d`,
-then `q` is a divisor of `n` smaller than `d`, contradicting `d` being the
-smallest divisor. Therefore `q ≥ d`, and `d · d ≤ d · q = n`.
-
-### Stainless Contract Surface
-
-The following excerpts show the public contract surfaces; the linked source
-contains the full assertion chains used by Stainless.
-
-```scala
-def assertSmallestDivisorAtMostSqrt(n: BigInt): Boolean = {
-  require(n > 1)
-  require(!Prime.isPrime(n))
-  val d = findSmallestDivisor(n, 2)
-  d * d <= n
-}.holds
-
-private def assertCompositeHasDivisorStrictlyBelowN(n: BigInt): Boolean = {
-  require(n > 1)
-  require(!Prime.isPrime(n))
-  val d = findSmallestDivisor(n, 2)
-  d < n
-}.holds
-
-def assertCompositeSmallestPrimeDivisor(n: BigInt): BigInt = {
-  require(n > 1)
-  require(!Prime.isPrime(n))
-  val d = findSmallestDivisor(n, 2)
-  d
-}.ensuring(res =>
-  res >= 2 && res < n && Prime.isPrime(res) &&
-  res * res <= n && Calc.mod(n, res) == BigInt(0)
-)
-```
+gives $d < n$ with $\text{mod}(n, d) = 0$. Let $q = n / d$, so $q \cdot d = n$.
+If $q < d$, then $q$ is a divisor of $n$ smaller than $d$, contradicting $d$
+being the smallest divisor. Therefore $q \ge d$, and $d \cdot d \le d \cdot q = n$.
 
 These properties are verified in the [
   PrimeProperties::assertSmallestDivisorAtMostSqrt
@@ -357,16 +394,16 @@ These properties are verified in the [
   ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
 ).
 
-### 3.7 Head Primality from Prior Filters
+### 4.3 Finite-Prefix Primality Criterion
 
-The sieve-sequence construction later needs a local statement of primality:
-if a candidate head is coprime to all previously installed prime filters, and
-every integer in the range `[2, head)` has a prime factor among those filters,
-then the head itself is prime.
+The next supporting result is a local primality criterion. If a candidate
+number is coprime to all primes in a finite filter list, and every integer in
+the range $[2, head)$ has a prime factor among those filters, then the
+candidate itself is prime.
 
-This is not Euclid's infinitude theorem. It is the finite-prefix primality
-criterion that lets a sieve stage certify its current head from the filter
-information it already carries.
+This is not Euclid's infinitude theorem; it is a finite-prefix primality
+criterion. It turns coverage of all smaller possible divisors into primality
+of the candidate.
 
 ```math
 \begin{aligned}
@@ -378,26 +415,11 @@ head > 1
 \end{aligned}
 ```
 
-The proof is by contradiction over possible divisors. If a divisor `d` of
-`head` existed in `[2, head)`, the range-coverage assumption would provide a
-prime factor from the installed list dividing `d`. Divisibility would then
-propagate from that factor through `d` into `head`, contradicting that `head`
-is coprime to every installed filter.
-
-```scala
-def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
-  require(head > 1)
-  require(ListUtils.checkAllPositive(primesTail))
-  require(CoprimeUtils.isCoprime(head, primesTail))
-  require(CoprimeUtils.assertAllNotCoprimeInRange(
-    head,
-    BigInt(2),
-    primesTail
-  ))
-  assertNoDivisorInRangeFromHelper(head, primesTail, BigInt(2), head)
-  Prime.isPrime(head)
-}.holds
-```
+The proof is by contradiction over possible divisors. If a divisor $d$ of
+$head$ existed in $[2, head)$, the range-coverage assumption would provide a
+prime factor from the finite filter list dividing $d$. Divisibility would then
+propagate from that factor through $d$ into $head$, contradicting that $head$
+is coprime to every filter prime.
 
 This property is verified in [
   PrimeProperties::assertHeadIsPrime
@@ -409,16 +431,16 @@ This property is verified in [
   ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
 ).
 
-### 3.8 Bézout and Prime-Product Lemmas
+### 4.4 Bézout and Prime-Product Lemmas
 
-Several later sieve-counting arguments need a product form of primality:
-for a prime `p`, divisibility of a nonnegative product by `p` can be pushed
-onto a factor, and if neither nonnegative factor is divisible by `p`, then the
-product is not divisible by `p`. The proof in this codebase goes through
+Several arguments about prime-filtered products use a product form of
+primality: for a prime $p$, divisibility of a nonnegative product by $p$ can
+be pushed onto a factor, and if neither nonnegative factor is divisible by
+$p$, then the product is not divisible by $p$. The verified proof goes through
 Bézout's identity.
 
-First, if `0 < h < p`, `p` is prime, and `h` is not divisible by `p`, then
-`h` and `p` have greatest common divisor `1`, and the extended Euclidean
+First, if $0 < h < p$, $p$ is prime, and $h$ is not divisible by $p$, then
+$h$ and $p$ have greatest common divisor $1$, and the extended Euclidean
 algorithm exposes a linear combination:
 
 ```math
@@ -431,8 +453,8 @@ algorithm exposes a linear combination:
 \end{aligned}
 ```
 
-Multiplying that identity by `k` gives `k h x + k p y = k`. If `p` divides
-`k h`, then `p` divides both terms on the left and therefore divides `k`.
+Multiplying that identity by $k$ gives $k h x + k p y = k$. If $p$ divides
+$k h$, then $p$ divides both terms on the left and therefore divides $k$.
 
 ```math
 \begin{aligned}
@@ -458,40 +480,6 @@ The contrapositive form used by product and density arguments is:
 \end{aligned}
 ```
 
-The public contracts are:
-
-```scala
-def assertCoprimeLinearCombinationOne(h: BigInt, p: BigInt): Boolean = {
-  require(p >= 2)
-  require(Prime.isPrime(p))
-  require(h > 0)
-  require(h < p)
-  require(Calc.mod(h, p) != BigInt(0))
-  val bez = extendedGcd(h, p)
-  h * bez.x + p * bez.y == BigInt(1)
-}.holds
-
-def assertPrimeDivKhImpliesDivK(k: BigInt, h: BigInt, p: BigInt): Boolean = {
-  require(p >= 2)
-  require(Prime.isPrime(p))
-  require(k >= 0)
-  require(h >= 0)
-  require(Calc.mod(h, p) != BigInt(0))
-  require(Calc.mod(k * h, p) == BigInt(0))
-  Calc.mod(k, p) == BigInt(0)
-}.holds
-
-def assertPrimeProductNotDivisible(k: BigInt, h: BigInt, p: BigInt): Boolean = {
-  require(p >= 2)
-  require(Prime.isPrime(p))
-  require(k >= 0)
-  require(h >= 0)
-  require(Calc.mod(k, p) != BigInt(0))
-  require(Calc.mod(h, p) != BigInt(0))
-  Calc.mod(k * h, p) != BigInt(0)
-}.ensuring(_ => Calc.mod(k * h, p) != BigInt(0))
-```
-
 The full proof bodies are verified in [
   BezoutUtils::assertCoprimeLinearCombinationOne
 ](
@@ -506,23 +494,14 @@ The full proof bodies are verified in [
   ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
 ).
 
-## 4. The `.holds` Caching Insight
-
-A key methodological discovery during this verification was the `.holds` caching mechanism. When a function is annotated with `.holds`, Stainless verifies it returns `true` and caches all internal assertions. These cached facts are then available at every call site without additional postcondition work.
-
-For example, in `euclidTailLoop`:
-
-```scala
-assert(Calc.mod(n, p) != BigInt(0))
-```
-
-This assertion is verified and cached. When `euclidTheorem` calls `assert(euclidTailLoop(primes, d, n, BigInt(1)))`, the cached assertion that $\text{Calc.mod}(n, p) \neq 0$ for each $p$ is available, which is exactly what's needed to prove $p \neq d$.
-
-This means we can write modular proofs using simple `assert` statements within `.holds` lemmas, without needing to enrich `ensuring` postconditions to expose every fact. The caching system does the work for us.
-
 ## 5. Verification Status
 
-The properties described in this article are verified by Stainless through the source-linked `.holds` functions cited in the relevant sections and in Appendix A. The repository-wide verification-condition count is intentionally omitted because it changes as unrelated verified modules are added; the stable claim is that the Euclid theorem proof and its supporting prime lemmas are machine-checked in the current source.
+The properties described in this article are verified by Stainless through the
+source-linked proof functions cited in the relevant sections and in Appendix A.
+The repository-wide verification-condition count is intentionally omitted
+because it changes as unrelated verified modules are added; the stable claim is
+that the Euclid theorem proof and its supporting prime lemmas are
+machine-checked in the current source.
 
 ## 6. Related Work
 
@@ -540,23 +519,36 @@ The present article adds Euclid's theorem as a formal capstone — a classical r
 
 ## 7. Conclusion
 
-We have presented a formally verified proof of Euclid's theorem using the Stainless verification system. The proof:
+This article formalizes Euclid's theorem from the same first-principles
+foundation used throughout the preceding chapters. The proof follows the
+classical primorial-plus-one construction: from a finite list of primes it
+builds a number that is congruent to one modulo every prime in the list, then
+uses the existence of a smallest divisor to extract a prime factor outside that
+list. The contradiction is mathematical before it is computational: no member
+of the original list can divide the constructed number, while the constructed
+number must still have a prime divisor.
 
-1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
-2. Follows Euclid's classic primorial-plus-one construction
-3. Proves that the resulting number has a prime divisor not in the original list
-4. Packages related prime lemmas: next-prime bounding, composite prime divisors, head primality from filter coverage, and prime-product reasoning
-5. Achieves machine-checked verification through source-linked `.holds` functions
-
-The key methodological insight — the `.holds` caching mechanism — simplifies the proof by making internal assertions available to callers without explicit postcondition enrichment.
+The Stainless development verifies each step that the article relies on:
+small-remainder facts, zero-remainder preservation under multiplication,
+divisibility of product members, smallest-divisor primality, and the final
+non-membership theorem. The result is a source-backed formal proof of the
+infinitude of primes, with the supporting finite-prefix corollaries separated
+from the theorem spine rather than folded into the main claim.
 
 ## 8. Future Work
 
-This formalization opens several directions for future work:
+The most natural continuation is the Fundamental Theorem of Arithmetic, since
+Euclid's theorem already establishes the existence side of prime
+decomposition. A verified uniqueness proof would require a stronger library of
+divisibility and coprimality lemmas, but it would extend the present result in
+a direct and structurally compatible way.
 
-- **Fundamental Theorem of Arithmetic**: Formalize unique prime factorization
-- **Dirichlet's Theorem**: Extend to arithmetic progressions
-- **Prime Number Theorem**: Asymptotic distribution of primes
+Further work could then move from existence to distribution. Dirichlet's
+theorem would require arithmetic progressions and substantially richer modular
+reasoning, while the Prime Number Theorem would require asymptotic analysis far
+beyond the finite arithmetic developed here. Those directions are intentionally
+outside the scope of this article, but this proof supplies a verified starting
+point for them.
 
 ## References
 
@@ -584,9 +576,11 @@ Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First
 
 ### A.1 `primorialPlusOneModAny`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
+**Source**: [
+  PrimeProperties.scala
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Full Scala verification code for Stage 1 (Section 3.1):
+Short source excerpt for Stage 1 (Section 3.1):
 
 ```scala
 def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
@@ -596,13 +590,15 @@ def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-This lemma proves that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list. The `.holds` annotation triggers Stainless verification of the recursive `primorialPlusOneTailLoop` helper, which iterates over the list and applies modular arithmetic lemmas.
+This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in §3.1.
 
 ### A.2 `newPrimeFromEuclid`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
+**Source**: [
+  PrimeProperties.scala
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Full Scala verification code for Stage 2 (Section 3.2):
+Short source excerpt for Stage 2 (Section 3.2):
 
 ```scala
 def newPrimeFromEuclid(primes: List[Prime]): Prime = {
@@ -628,9 +624,11 @@ This function constructs a new `Prime` value by finding the smallest divisor of 
 
 ### A.3 `euclidTheorem`
 
-**Source**: `src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala`
+**Source**: [
+  PrimeProperties.scala
+](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Full Scala verification code for the main theorem (Section 3.4):
+Short source excerpt for the main theorem (Section 3.4):
 
 ```scala
 def euclidTheorem(primes: List[Prime]): Boolean = {
@@ -654,7 +652,8 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-The `.holds` postcondition asserts: given any non-empty list of primes, there exists a prime not in that list.
+This source proof is the machine-checked form of the main theorem: every
+non-empty finite list of primes admits a prime outside the list.
 
 ---
 

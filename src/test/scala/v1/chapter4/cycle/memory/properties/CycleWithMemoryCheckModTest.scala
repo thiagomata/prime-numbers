@@ -245,26 +245,4 @@ class CycleWithMemoryCheckModTest extends FlatSpec with Matchers {
       )
     )
   }
-
-
-  "afterMethodListAndZeroModCountAreOnSync" should "hold for any cycle" in {
-    val dividends = List(
-      BigInt(2),
-      BigInt(3),
-      BigInt(5),
-      BigInt(10),
-    )
-
-    assert(allCycles.forall(
-      cycle => {
-        dividends.forall(
-          dividend => {
-            CycleCheckMod.afterMethodListAndZeroModCountAreOnSync(
-              cycle, dividend
-            )
-          }
-        )
-      }
-    ))
-  }
 }

@@ -98,12 +98,12 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
 0 \leq f \leq t < |L| &\implies &\text{slice}(L, f, t) &:=  \begin{cases}
 [ L_j ] & \text{if } f = t \\
-\text{slice}(L, f, t - 1) ⧺ [ L_t ] & \text{if } f < t \\
+\text{slice}(L, f, t - 1) \mathbin{\texttt{++}} [ L_t ] & \text{if } f < t \\
 \end{cases}
 \forall \ f, t \in ℕ_0 \\
-& &A ⧺ B &:= \begin{cases}
+& &A \mathbin{\texttt{++}} B &:= \begin{cases}
 B & \text{if } A = L_e \\
-L_{node}(head(A), tail(A) ⧺ B) & \text{otherwise} \\
+L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise} \\
 \end{cases}
 \forall \ L, A, B \in  𝕃 \\
 \end{aligned}
@@ -135,10 +135,10 @@ From these definitions, it mathematically proves and formally verifies the follo
 \begin{aligned}
 &|L| &= &\text{size}(L)                        \quad &\text{[Size Identity]} \\
 &\sum L &= &\text{sum}(L)                      \quad &\text{[Sum matches Summation]} \\
-&\sum ([v] ⧺ L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
-&\sum (A ⧺ B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
-&\sum (A ⧺ B) &= &\sum (B ⧺ A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
-&L[f \dots t] &= &L[f \dots {(t - 1)}] ⧺ [L_t] \quad &\text{[Slice Append Consistency]} \\
+&\sum (v :: L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum (B \mathbin{\texttt{++}} A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
+&L[f \dots t] &= &L[f \dots {(t - 1)}] \mathbin{\texttt{++}} [L_t] \quad &\text{[Slice Append Consistency]} \\
 \end{aligned}
 ```
 

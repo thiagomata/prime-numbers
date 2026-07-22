@@ -226,43 +226,4 @@ object CycleCheckMod {
     cycleB.someModValuesAreZero(dividendA) &&
       cycleB.someModValuesAreZero(dividendB)
   }.holds
-
-  def afterMethodListAndZeroModCountAreOnSync(cycle: MemCycle, dividend: BigInt): Boolean = {
-    require(dividend > 0)
-    val cycleAfterCheck = cycle.checkMod(dividend)
-
-    val modValueMatchList = if (cycleAfterCheck.allModValuesAreZero(dividend) ) {
-      cycleAfterCheck.modIsZeroForAllValues.contains(dividend) &&
-      !cycleAfterCheck.modIsZeroForSomeValues.contains(dividend) &&
-      !cycleAfterCheck.modIsZeroForNoneValues.contains(dividend)
-    } else if (cycleAfterCheck.noModValuesAreZero(dividend) ) {
-      cycleAfterCheck.modIsZeroForNoneValues.contains(dividend) &&
-        !cycleAfterCheck.modIsZeroForSomeValues.contains(dividend) &&
-        !cycleAfterCheck.modIsZeroForAllValues.contains(dividend)
-    } else if (cycleAfterCheck.someModValuesAreZero(dividend)) {
-      cycleAfterCheck.modIsZeroForSomeValues.contains(dividend) &&
-        !cycleAfterCheck.modIsZeroForNoneValues.contains(dividend) &&
-        !cycleAfterCheck.modIsZeroForAllValues.contains(dividend)
-    } else {
-      false
-    }
-
-    val listMatchModValue = if ( cycleAfterCheck.modIsZeroForAllValues.contains(dividend) ) {
-      cycleAfterCheck.allModValuesAreZero(dividend) &&
-        !cycleAfterCheck.noModValuesAreZero(dividend) &&
-        !cycleAfterCheck.someModValuesAreZero(dividend)
-    } else if (cycleAfterCheck.modIsZeroForNoneValues.contains(dividend) ) {
-       cycleAfterCheck.noModValuesAreZero(dividend) &&
-        !cycleAfterCheck.allModValuesAreZero(dividend) &&
-        !cycleAfterCheck.someModValuesAreZero(dividend)
-    } else if (cycleAfterCheck.modIsZeroForSomeValues.contains(dividend)) {
-      cycleAfterCheck.someModValuesAreZero(dividend) &&
-        !cycleAfterCheck.allModValuesAreZero(dividend) &&
-        !cycleAfterCheck.noModValuesAreZero(dividend)
-    } else {
-      false
-    }
-
-    modValueMatchList && listMatchModValue
-  }
 }

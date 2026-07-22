@@ -119,7 +119,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
 |L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases}
 [ L_j ] & \text{if } f = t \\
-\text{slice}(L, f, t - 1) \mathbin{+\!+} [ L_t ] & \text{if } f < t \\
+\text{slice}(L, f, t - 1) \mathbin{\texttt{++}} [ L_t ] & \text{if } f < t \\
 \end{cases}
 \end{aligned}
 \forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
@@ -127,9 +127,9 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 
 ```math
 \begin{aligned}
-&A \mathbin{+\!+} B &:= \begin{cases}
+&A \mathbin{\texttt{++}} B &:= \begin{cases}
 B & \text{if } A = L_e \\
-L_{node}(head(A), tail(A) \mathbin{+\!+} B) & \text{otherwise} \\
+L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise} \\
 \end{cases} \\
 \end{aligned}
 ```
@@ -169,10 +169,10 @@ f > t, \quad 0 \leq i < |L|\\
 \begin{aligned}
 &|L| &= &\text{size}(L)                        \quad &\text{[Size Identity]} \\
 &\sum L &= &\text{sum}(L)                      \quad &\text{[Sum matches Summation]} \\
-&\sum ([v] \mathbin{+\!+} L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
-&\sum (A \mathbin{+\!+} B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
-&\sum (A \mathbin{+\!+} B) &= &\sum (B \mathbin{+\!+} A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
-&L[f \dots t] &= &L[f \dots {(t - 1)}] \mathbin{+\!+} [L_t] \quad &\text{[Slice Append Consistency]} \\
+&\sum (v :: L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum (B \mathbin{\texttt{++}} A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
+&L[f \dots t] &= &L[f \dots {(t - 1)}] \mathbin{\texttt{++}} [L_t] \quad &\text{[Slice Append Consistency]} \\
 \end{aligned}
 ```
 

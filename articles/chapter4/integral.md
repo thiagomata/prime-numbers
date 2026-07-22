@@ -46,7 +46,7 @@ These include the following functions:
 - $\text{sum}(L)$: recursively computes the total sum of elements in a list.
 - $\text{head}(L)$: returns the first element of a non-empty list.
 - $\text{tail}(L)$: returns the list without its first element.
-- $A \mathbin{+\!+} B$: concatenates two lists $A$ and $B$.
+- $A \mathbin{\texttt{++}} B$: concatenates two lists $A$ and $B$.
 
 These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), 
 and are treated here as foundational primitives.
@@ -228,8 +228,8 @@ $$
 
 $$
 \begin{aligned}
-L &= x_0 \mathbin{+\!+} \text{tail}(L)                                                                  & \qquad \text{[List decomposition]} \\
-I &= v_0 \mathbin{+\!+} \text{tail}(L)                                                                  & \qquad \text{[Integral decomposition]} \\
+L &= x_0 :: \text{tail}(L)                                                                                     & \qquad \text{[List decomposition]} \\
+I &= I_0 :: \text{tail}(I)                                                                                     & \qquad \text{[Integral decomposition]} \\
 I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
 I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
 I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
@@ -365,7 +365,7 @@ $$
 acc(L, init) =
 \begin{cases}
 L_e & \text{if } L = L_e \\
-\text{head}(L) + init \mathbin{+\!+} acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
+(\text{head}(L) + init) :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
 \end{cases}
 $$
 

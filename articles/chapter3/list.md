@@ -118,14 +118,14 @@ Proved in the native stainless library in `stainless.collection.List`.
 
 ### 2.6 List Append
 
-Let $A, B \in 𝕃$ over some set $S$. The append operation $A \mathbin{+\!+} B$ is defined recursively as:
+Let $A, B \in 𝕃$ over some set $S$. The append operation $A \mathbin{\texttt{++}} B$ is defined recursively as:
 
 ```math
 \begin{aligned}
-A \mathbin{+\!+} B =
+A \mathbin{\texttt{++}} B =
 \begin{cases}
 B & \text{if } A = L_e \\
-L_{node}(head(A), tail(A) \mathbin{+\!+} B) & \text{otherwise}
+L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise}
 \end{cases}
 \end{aligned}
 ```
@@ -158,7 +158,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 
 The implementation of `sum` is available in [ListUtils](
 	../../src/main/scala/v1/chapter3/list/ListUtils.scala#sum
-). The full Scala verification code is in Appendix A.1.
+). The full Scala verification code is in Appendix A.7.
 
 ### 2.9 List Product
 
@@ -180,8 +180,8 @@ The implementation of `product` is available in [ListProduct](
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): `tail(L)(i) = L(i + 1)` for `i < |tail(L)|`
-- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): `list(size - 1) = list.last`
+- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)_i = L_{i + 1}$ for $i < |\text{tail}(L)|$
+- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L_{|L|-1} = \text{last}(L)$
 
 ### 3.1 Tail Access Shift
 
@@ -196,8 +196,8 @@ Since:
 $$
 \begin{aligned}
 L &= [x_0, x_1, x_2, \dots, x_{n - 1}]                                & \qquad \text{[List definition]} \\
-L &= [x_0] \mathbin{+\!+} [x_1, x_2, \dots, x_{n - 1}]                             & \qquad \text{[Concatenation definition]} \\
-L &= \text{head}(L) \mathbin{+\!+} \text{tail}(L)                                  & \qquad \text{[Head and Tail definition]} \\
+L &= x_0 :: [x_1, x_2, \dots, x_{n - 1}]                                                  & \qquad \text{[Cons definition]} \\
+L &= \text{head}(L) :: \text{tail}(L)                                                     & \qquad \text{[Head and Tail definition]} \\
 \text{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}]                        & \qquad \text{[Tail definition]} \\
 \text{tail}(L)_i &= x_{i + 1} = L_{i + 1} \text{ } \forall \text{ }  0 \le i < |\text{tail}(L)|  \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
@@ -274,8 +274,8 @@ list, offset by the left list's size.
 
 ```math
 \begin{aligned}
-0 \leq k < |A| &\implies (A \mathbin{+\!+} B)_k = A_k \\
-|A| \leq k < |A| + |B| &\implies (A \mathbin{+\!+} B)_k = B_{(k - |A|)}
+0 \leq k < |A| &\implies (A \mathbin{\texttt{++}} B)_k = A_k \\
+|A| \leq k < |A| + |B| &\implies (A \mathbin{\texttt{++}} B)_k = B_{(k - |A|)}
 \end{aligned}
 ```
 
@@ -313,8 +313,8 @@ The tail-recursive slice builds the sublist from the end, prepending elements as
 ```math
 \text{slice}(L, i, j) := 
 \begin{cases}
-[ L_j ] & \text{if } i = j \\
-\text{slice}(L, i, j - 1) \mathbin{+\!+} [ L_j ] & \text{if } i < j
+L_j :: L_e & \text{if } i = j \\
+\text{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \text{if } i < j
 \end{cases}
 ```
 
@@ -329,7 +329,7 @@ The tail-recursive slice builds the sublist from the end, prepending elements as
 **Base case**: $j = i$
 
 ```math
-\text{slice}(L, i, i) = [ L_i ] = L[i \dots i]
+\text{slice}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
 **Inductive step**: Assume
@@ -342,9 +342,9 @@ Show:
 
 ```math
 \begin{aligned}
-\text{slice}(L, i, j)  &= \text{slice}(L, i, j - 1) \mathbin{+\!+} [L_j] & \qquad \text{[by definition of slice]} \\
-&= L[i \dots (j - 1)] \mathbin{+\!+} [L_j] & \qquad \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j - 1 ] \mathbin{+\!+} [L_j] & \qquad \text{[by Specification]} \\
+\text{slice}(L, i, j)  &= \text{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by definition of slice]} \\
+&= L[i \dots (j - 1)] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by Inductive Hypothesis]} \\
+&= [ L_k \mid i \leq k \leq j - 1 ] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by Specification]} \\
 &= [ L_k \mid i \leq k \leq j ] & \qquad \text{[by definition of Concatenation]} \\
 &= L[i \dots j] & \qquad  \text{[Q.E.D]} \\
 \end{aligned}
@@ -376,7 +376,7 @@ The head-recursive slice builds the sublist from the front, cons-ing elements as
 ```math
 \text{headRecursiveSlice}(L, i, j) :=
 \begin{cases}
-[ L_i ] & \text{if } i = j \\
+L_i :: L_e & \text{if } i = j \\
 L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
@@ -392,7 +392,7 @@ L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 **Base case**: $i = j$
 
 ```math
-\text{headRecursiveSlice}(L, i, i) = [ L_i ] = L[i \dots i]
+\text{headRecursiveSlice}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
 **Inductive step**: Assume
@@ -437,7 +437,7 @@ The index-range slice builds the sublist by direct index access, recursing forwa
 ```math
 \text{indexRangeValues}(L, i, j) :=
 \begin{cases}
-[ L_i ] & \text{if } i = j \\
+L_i :: L_e & \text{if } i = j \\
 L_i :: \text{indexRangeValues}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
@@ -453,7 +453,7 @@ L_i :: \text{indexRangeValues}(L, i + 1, j) & \text{if } i < j
 **Base case**: $i = j$
 
 ```math
-\text{indexRangeValues}(L, i, i) = [ L_i ] = L[i \dots i]
+\text{indexRangeValues}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
 **Inductive step**: Assume
@@ -494,8 +494,8 @@ This property is verified in the [
 ```math
 \begin{aligned}
 L[f \dots t] &= \text{slice}(L, f, t) \\
-             &= \text{slice}(L, f, t - 1) \mathbin{+\!+} [L_t] \\
-             &= L[f \dots t - 1] \mathbin{+\!+} [L_t]  \quad \blacksquare
+             &= \text{slice}(L, f, t - 1) \mathbin{\texttt{++}} (L_t :: L_e) \\
+             &= L[f \dots t - 1] \mathbin{\texttt{++}} (L_t :: L_e)  \quad \blacksquare
 \end{aligned}
 ```
 
@@ -509,10 +509,10 @@ This property is verified in the [
 
 The recursive `sum` matches the mathematical summation, and addition commutes over concatenation.
 
-- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(L) = Σ L[i]` for `i = 0..size-1`
-- [Left append preserves sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(x :: L) = x + sum(L)`
-- [Sum over concatenation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(A ++ B) = sum(A) + sum(B)`
-- [Commutativity of sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(A ++ B) = sum(B ++ A)`
+- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = \sum_i L_i$ for $0 \le i < |L|$
+- [Left append preserves sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
+- [Sum over concatenation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
+- [Commutativity of sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
 
 ### 5.1 Sum matches Summation
 
@@ -545,7 +545,7 @@ Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
 ```math
 \begin{aligned}
 \text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
-L = [x_0] \mathbin{+\!+} P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[by Definition of Concatenation]} \\
+L = x_0 :: P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[by Definition of Cons]} \\
 \end{aligned}
 ```
 
@@ -596,7 +596,7 @@ The sum of a list with an element prepended equals the element plus the sum of t
 ```math
 \begin{aligned}
 \forall \text{ } x \in 𝕊 \\
-\text{sum}([x] \mathbin{+\!+} L ) = x + \text{sum}(L) \\
+\text{sum}(x :: L) = x + \text{sum}(L) \\
 \end{aligned}
 ```
 
@@ -604,7 +604,7 @@ Proof:
 
 ```math
 \begin{aligned}
-A & = [x] \mathbin{+\!+} L  & \qquad \text{[Concatenation]} \\
+A & = x :: L  & \qquad \text{[Cons]} \\
 \text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A)) & \qquad \text{[By recursive definition of sum]} \\
               & = x + \text{sum}(L) & \qquad \text{[By recursive definition of head and tail]} \\
 \end{aligned}
@@ -616,7 +616,7 @@ A & = [x] \mathbin{+\!+} L  & \qquad \text{[Concatenation]} \\
 
 ```math
 \begin{aligned}
-\text{sum}([x] \mathbin{+\!+} L) & = x + \text{sum}(L)  \quad \blacksquare &  \qquad \text{[Q.E.D.]} \\
+\text{sum}(x :: L) & = x + \text{sum}(L)  \quad \blacksquare &  \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
@@ -631,17 +631,17 @@ This property is verified in the [
 The sum of two concatenated lists equals the sum of each list added together.
 
 ```math
-	sum(A \mathbin{+\!+} B) = 	sum(A) + 	sum(B)
+	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B)
 ```
 
 #### If List A is Empty
 
 ```math
 \begin{aligned}
-  A \mathbin{+\!+} B & = L_e \mathbin{+\!+} B & \text{[A is empty list]} \\
+  A \mathbin{\texttt{++}} B & = L_e \mathbin{\texttt{++}} B & \text{[A is empty list]} \\
         & = B & \text{[By definition of concatenation]} \\
   \text{sum}(A) & = 0 & \text{[By definition of sum]} \\
-  \text{sum}(A \mathbin{+\!+} B) & = \text{sum}(B) & \text{[Since A} \mathbin{+\!+} \text{B equals B]} \\
+  \text{sum}(A \mathbin{\texttt{++}} B) & = \text{sum}(B) & \text{[Since A} \mathbin{\texttt{++}} \text{B equals B]} \\
                     & = 0 + \text{sum}(B) \\
                     & = \text{sum}(A) + \text{sum}(B) & \text{[Since sum(A) is zero]} \\
 \end{aligned}
@@ -651,11 +651,11 @@ The sum of two concatenated lists equals the sum of each list added together.
 
 ```math
 \begin{aligned}
-C & = \text{tail}(A) \mathbin{+\!+} B \\
+C & = \text{tail}(A) \mathbin{\texttt{++}} B \\
 \text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A))                & \text{[By definition of sum]} \\
 \text{sum}(C) & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Inductive Step]} \\
-A \mathbin{+\!+} B & = [\text{head}(A)] \mathbin{+\!+} (\text{tail}(A) \mathbin{+\!+} B)                          & \text{[By definition of head and tail]} \\
-\text{sum}(A \mathbin{+\!+} B) & = \text{head}(A) + \text{sum}(\text{tail}(A) \mathbin{+\!+} B)      & \text{[By definition of sum]} \\
+A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt{++}} B)                          & \text{[By definition of head and tail]} \\
+\text{sum}(A \mathbin{\texttt{++}} B) & = \text{head}(A) + \text{sum}(\text{tail}(A) \mathbin{\texttt{++}} B)      & \text{[By definition of sum]} \\
                   & = head(A) + \text{sum}(\text{tail}(A)) + \text{sum}(B) & \text{[By definition of C]} \\
                   & = \text{sum}(A) + \text{sum}(B)                        & \text{[Substituting]} \\
 \end{aligned}
@@ -667,7 +667,7 @@ A \mathbin{+\!+} B & = [\text{head}(A)] \mathbin{+\!+} (\text{tail}(A) \mathbin{
 
 ```math
 \begin{aligned}
-	sum(A \mathbin{+\!+} B) = 	sum(A) + 	sum(B) & \quad \blacksquare \qquad \text{[Q.E.D.]} \\
+	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B) & \quad \blacksquare \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
@@ -682,16 +682,16 @@ This property is verified in the [
 The order of concatenation does not affect the total sum.
 
 ```math
-	sum(A \mathbin{+\!+} B) = sum(B \mathbin{+\!+} A)
+	sum(A \mathbin{\texttt{++}} B) = sum(B \mathbin{\texttt{++}} A)
 ```
 
 Since:
 ```math
 \begin{aligned}
-	sum(A \mathbin{+\!+} B) & = sum(A) + sum(B)                        & \text{[Sum over Concatenation]} \\
-	sum(B \mathbin{+\!+} A) & = sum(B) + sum(A)                        & \text{[Sum over Concatenation]} \\
+	sum(A \mathbin{\texttt{++}} B) & = sum(A) + sum(B)                        & \text{[Sum over Concatenation]} \\
+	sum(B \mathbin{\texttt{++}} A) & = sum(B) + sum(A)                        & \text{[Sum over Concatenation]} \\
 	sum(B) + sum(A) & = sum(A) + sum(B)                   & \text{[Distributive]} \\
-	sum(B \mathbin{+\!+} A) & = sum(A \mathbin{+\!+} B)  \quad \blacksquare         & \text{[Q.E.D]} \\
+	sum(B \mathbin{\texttt{++}} A) & = sum(A \mathbin{\texttt{++}} B)  \quad \blacksquare         & \text{[Q.E.D]} \\
 \end{aligned}
 ```
 
@@ -726,10 +726,10 @@ This property is verified in the [
 
 The product operation, from singleton identity through concatenation distributivity to positivity.
 
-- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product([x]) = x`
-- [Product pull-out element](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(x :: L) = x * product(L)`
-- [Product over concatenation](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(A ++ B) = product(A) * product(B)`
-- [Commutativity of product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(A ++ B) = product(B ++ A)`
+- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L_e) = x$
+- [Product pull-out element](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
+- [Product over concatenation](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
+- [Commutativity of product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
 - [Positive product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): product of all-positive list is positive
 
 ### 6.1 Singleton Product
@@ -738,13 +738,13 @@ The product of a singleton list containing $x$ is $x$.
 
 ```math
 \forall \text{ } x \in 𝕊 \\
-\text{product}([x]) = x
+\text{product}(x :: L_e) = x
 ```
 
 Proof:
 ```math
 \begin{aligned}
-\text{product}([x]) &= \text{head}([x]) \cdot \text{product}(\text{tail}([x])) & \qquad \text{[by definition of product]} \\
+\text{product}(x :: L_e) &= \text{head}(x :: L_e) \cdot \text{product}(\text{tail}(x :: L_e)) & \qquad \text{[by definition of product]} \\
 &= x \cdot \text{product}([]) & \qquad \text{[by definition of head and tail]} \\
 &= x \cdot 1 & \qquad \text{[product of empty list is 1]} \\
 &= x \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
@@ -763,7 +763,7 @@ A single element can be factored out of the product of a concatenated list.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃, \forall \text{ } e \in 𝕊 \\
-\text{product}(listA \mathbin{+\!+} [e] \mathbin{+\!+} listB) = e \cdot \text{product}(listA \mathbin{+\!+} listB)
+\text{product}(listA \mathbin{\texttt{++}} (e :: listB)) = e \cdot \text{product}(listA \mathbin{\texttt{++}} listB)
 ```
 
 **Proof by induction on $listA$**
@@ -772,9 +772,9 @@ A single element can be factored out of the product of a concatenated list.
 
 ```math
 \begin{aligned}
-\text{product}(L_e \mathbin{+\!+} [e] \mathbin{+\!+} listB) &= \text{product}([e] \mathbin{+\!+} listB) & \qquad \text{[by definition of append]} \\
+\text{product}(L_e \mathbin{\texttt{++}} (e :: listB)) &= \text{product}(e :: listB) & \qquad \text{[by definition of append and cons]} \\
 &= e \cdot \text{product}(listB) & \qquad \text{[by definition of product]} \\
-&= e \cdot \text{product}(L_e \mathbin{+\!+} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+&= e \cdot \text{product}(L_e \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
@@ -792,7 +792,7 @@ Product distributes over list concatenation.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃 \\
-\text{product}(listA \mathbin{+\!+} listB) = \text{product}(listA) \cdot \text{product}(listB)
+\text{product}(listA \mathbin{\texttt{++}} listB) = \text{product}(listA) \cdot \text{product}(listB)
 ```
 
 **Proof by induction on $listA$**
@@ -801,7 +801,7 @@ Product distributes over list concatenation.
 
 ```math
 \begin{aligned}
-\text{product}(L_e \mathbin{+\!+} listB) &= \text{product}(listB) & \qquad \text{[by definition of append]} \\
+\text{product}(L_e \mathbin{\texttt{++}} listB) &= \text{product}(listB) & \qquad \text{[by definition of append]} \\
 &= 1 \cdot \text{product}(listB) & \qquad \text{[1 is multiplicative identity]} \\
 &= \text{product}(L_e) \cdot \text{product}(listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
@@ -821,16 +821,16 @@ Product is invariant under swapping concatenated blocks.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃 \\
-\text{product}(listA \mathbin{+\!+} listB) = \text{product}(listB \mathbin{+\!+} listA)
+\text{product}(listA \mathbin{\texttt{++}} listB) = \text{product}(listB \mathbin{\texttt{++}} listA)
 ```
 
 Proof:
 ```math
 \begin{aligned}
-\text{product}(listA \mathbin{+\!+} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Product over Concatenation]} \\
-\text{product}(listB \mathbin{+\!+} listA) &= \text{product}(listB) \cdot \text{product}(listA) & \qquad \text{[Product over Concatenation]} \\
+\text{product}(listA \mathbin{\texttt{++}} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Product over Concatenation]} \\
+\text{product}(listB \mathbin{\texttt{++}} listA) &= \text{product}(listB) \cdot \text{product}(listA) & \qquad \text{[Product over Concatenation]} \\
 &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Commutativity of multiplication]} \\
-&= \text{product}(listA \mathbin{+\!+} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+&= \text{product}(listA \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
@@ -871,9 +871,9 @@ This property is verified in the [
 
 Every element of a list divides its total product.
 
-- [Head divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): `product(L) mod L.head = 0`
-- [All elements divide product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides `product(L)`
-- [Inserted element divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): `x` divides `product(x :: L)`
+- [Head divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
+- [All elements divide product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides $\text{product}(L)$
+- [Inserted element divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $x$ divides $\text{product}(x :: L)$
 
 ### 7.1 Head Divides Product
 
@@ -927,15 +927,15 @@ Inserting an element into a list guarantees that the resulting product is divisi
 ```math
 \forall \text{ } prefix, suffix \in 𝕃,\ \forall \text{ } e \in 𝕊,\ e > 0 \\
 (\forall \text{ } x \in prefix,\ x > 0),\ (\forall \text{ } x \in suffix,\ x > 0) \\
-\implies \text{product}(prefix \mathbin{+\!+} [e] \mathbin{+\!+} suffix) \bmod e = 0
+\implies \text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
 ```
 
 Proof:
 ```math
 \begin{aligned}
-\text{product}(prefix \mathbin{+\!+} [e] \mathbin{+\!+} suffix) &= e \cdot \text{product}(prefix \mathbin{+\!+} suffix) & \qquad \text{[Product Pull-Out Element]} \\
-&= e \cdot k & \qquad \text{[where k = product(prefix} ++ \text{suffix)]} \\
-\text{product}(prefix \mathbin{+\!+} [e] \mathbin{+\!+} suffix) \bmod e &= (e \cdot k) \bmod e = 0 \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) &= e \cdot \text{product}(prefix \mathbin{\texttt{++}} suffix) & \qquad \text{[Product Pull-Out Element]} \\
+&= e \cdot k & \qquad \text{[where k = product(prefix} \mathbin{\texttt{++}} \text{suffix)]} \\
+\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e &= (e \cdot k) \bmod e = 0 \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 ```
 
@@ -950,7 +950,7 @@ This property is verified in the [
 How the property $\forall x \in L,\, x > v$ propagates from a whole list to its elements and through concatenation.
 
 - [All greater than at index](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
-- [Append preserves all greater than](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{+\!+} B),\, x > v$
+- [Append preserves all greater than](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
 - [All greater than head and tail](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): the head/tail decomposition propagates the bound
 - [Index checking lemmas](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): efficient bound verification
 
@@ -976,7 +976,7 @@ If both lists have all elements greater than a value, then their concatenation a
 ```math
 \forall \text{ } listA, listB \in 𝕃,\ \forall \text{ } value \in 𝕊 \\
 (\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value) \\
-\implies \forall x \in (listA \mathbin{+\!+} listB),\, x > value
+\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x > value
 ```
 
 This property is verified in the [
@@ -1056,7 +1056,7 @@ transitivity across a looser bound.
 ```math
 \begin{aligned}
 (\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound)
-  &\implies \forall x \in (listA \mathbin{+\!+} listB),\, x < bound
+  &\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound
   &&\text{[Append]} \\
 (\forall x \in list,\, x < bound) \wedge 0 \leq index \leq |list|
   &\implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound)
@@ -1105,7 +1105,7 @@ All three slice implementations — tail-recursive, head-recursive, and index-ra
 
 **Proof by induction on $j - i$**
 
-**Base case**: $i = j$ — all three produce $[L_i]$.
+**Base case**: $i = j$ — all three produce $L_i :: L_e$.
 
 **Inductive step**: For $i < j$, each function decomposes into a head element plus a recursive call on $(i+1, j)$ or $(i, j-1)$. By the inductive hypothesis, the recursive calls produce equal sublists, and the head element is the same, so the results are equal.
 
@@ -1144,8 +1144,8 @@ recomputing the cumulative sums.
 
 ### 10.1 Same Period
 
-Shifting does not change the period — the gap list remains the same length. The
-structural property `size == gaps.size` is an invariant of the case class.
+Shifting does not change the period: the gap list remains the same length. The
+structural property $\text{size} = |\text{gaps}|$ is an invariant of the case class.
 
 ```math
 \begin{aligned}
@@ -1153,7 +1153,9 @@ structural property `size == gaps.size` is an invariant of the case class.
 \end{aligned}
 ```
 
-### Stainless Verification
+### Source Verification Excerpt
+
+Source: [ShiftedList::assertSamePeriod](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertSamePeriod(otherSize: BigInt): Boolean = {
@@ -1175,7 +1177,9 @@ value definition above.
 \end{aligned}
 ```
 
-### Stainless Verification
+### Source Verification Excerpt
+
+Source: [ShiftedList::assertAdjacentDifferenceEqualsGap](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
@@ -1188,9 +1192,9 @@ def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
 ### 10.3 Gap Translation
 
 Shifting the head and rotating the gaps by one translates the adjacent-gap
-sequence by one index: the shifted sequence's gap at `i` equals the original
-sequence's gap at `i + 1`. Both sides reduce to `gaps(i + 1)` because the
-gap list is rotated by one position.
+sequence by one index: the shifted sequence's gap at $i$ equals the original
+sequence's gap at $i + 1$. Both sides reduce to $G_{i+1}$ because the gap list
+is rotated by one position.
 
 ```math
 \begin{aligned}
@@ -1202,7 +1206,9 @@ gap list is rotated by one position.
 \end{aligned}
 ```
 
-### Stainless Verification
+### Source Verification Excerpt
+
+Source: [ShiftedList::assertGapTranslation](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertGapTranslation(
@@ -1254,7 +1260,7 @@ structural property is lost when the viewing window moves.
 
 ```math
 \begin{aligned}
-\text{rotateAt}(L,\; k) &= \text{back} \mathbin{++} \text{front}
+\text{rotateAt}(L,\; k) &= \text{back} \mathbin{\texttt{++}} \text{front}
   \quad\text{where } (\text{front},\; \text{back}) = \text{splitAt}(L, k) \\
   &= [L_k, L_{k+1}, \ldots, L_{n-1}, L_0, L_1, \ldots, L_{k-1}]
 \end{aligned}
@@ -1298,8 +1304,8 @@ Sum over `append` is additive and commutative.
 
 ### 11.2 Index Shift Under Rotation by One
 
-Rotating by one position and looking up index `k` gives the original list's
-element at index `k + 1`. This is the lemma that underlies gap translation
+Rotating by one position and looking up index $k$ gives the original list's
+element at index $k + 1$. This is the lemma that underlies gap translation
 in `ShiftedList`.
 
 ```math
@@ -1309,7 +1315,9 @@ in `ShiftedList`.
 \end{aligned}
 ```
 
-### Stainless Verification
+### Source Verification Excerpt
+
+Source: [RotationProperties](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
 
 ```scala
 def assertRotateContainsForward(
@@ -1356,106 +1364,114 @@ helpers consumed by the main rotation proofs.
 This article presents a formal framework for defining and reasoning about finite lists using a 
 recursive mathematical structure aligned with functional programming principles.
 
-These properties are:
+The core proved properties can be summarized as follows, for lists
+$L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
 
 ```math
 \begin{aligned}
-&\forall\, L, A, B \in  𝕃,\quad &\forall\, v \in 𝕊,\quad &\forall\, i, f, t \in ℕ \\
-\end{aligned}
-```
-```math
-\begin{aligned}
-0 \leq f \leq t < |L|, \quad 0 \leq i < |L|\\
-\\
-\end{aligned}
-```
-```math
-\begin{aligned}
-|L| > 0 &\implies L_{|L|-1} &=~ &\text{last}(L) \\
-i > 0 &\implies L_i &=~ &\text{tail}(L)_{i-1} \\
-i < |L| - 1,\, |L| > 1 &\implies \text{tail}(L)_i &=~ &L_{i+1} \\
-\end{aligned}
-```
-```math
-\begin{aligned}
-&\sum L &=~ &\text{sum}(L)                                   \quad &\text{[Sum matches Summation]} \\
-&\sum ([v] \mathbin{+\!+} L) &=~ &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
-&\sum (A \mathbin{+\!+} B) &=~ &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
-&\sum (A \mathbin{+\!+} B) &=~ &\sum (B \mathbin{+\!+} A)    \quad &\text{[Commutativity of Sum over Concatenation]} \\
-&L[f \dots t] &=~ &L[f \dots {(t - 1)}] \mathbin{+\!+} [L_t] \quad &\text{[Slice Append Consistency]} \\
-\end{aligned}
-```
-```math
-\begin{aligned}
-&\text{product}([x]) &=~ &x                     \quad &\text{[Singleton Product]} \\
-&\text{product}(A \mathbin{+\!+} [e] \mathbin{+\!+} B) &=~ &e \cdot \text{product}(A \mathbin{+\!+} B) \quad &\text{[Product Pull-Out Element]} \\
-&\text{product}(A \mathbin{+\!+} B) &=~ &\text{product}(A) \cdot \text{product}(B) \quad &\text{[Product over Concatenation]} \\
-&\text{product}(A \mathbin{+\!+} B) &=~ &\text{product}(B \mathbin{+\!+} A) \quad &\text{[Commutativity of Product]} \\
-&(\forall x \in L,\ x > 0) &\implies &\text{product}(L) > 0 \quad &\text{[Positive Product]} \\
-\end{aligned}
-```
-```math
-\begin{aligned}
-&\text{product}(L) \bmod \text{head}(L) &= &0  &\text{[Head Divides Product]} \\
-&\forall x \in L,\ \text{product}(L) \bmod x &=~ &0 \quad &\text{[All Elements Divide Product]} \\
-&\text{product}(P \mathbin{+\!+} [e] \mathbin{+\!+} S) \bmod e &=~ &0 \quad &\text{[Inserted Element Divides Product]} \\
+|L| > 0
+&\implies L_{|L|-1} = \operatorname{last}(L)
+&&\text{[Last Element Identity]} \\
+0 < i < |L|
+&\implies L_i = \operatorname{tail}(L)_{i-1}
+&&\text{[Tail Access Shift]} \\
+0 \leq f < t < |L|
+&\implies L[f \dots t]
+ = L[f \dots (t - 1)] \mathbin{\texttt{++}} (L_t :: L_e)
+&&\text{[Slice Append Consistency]}
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-&(\forall x \in L,\, x > v) &\implies~ &L(\text{pos}) > v \quad &\text{[Bound at Index]} \\
-&(\forall x \in L,\, x > v) &\implies~ &\forall x \in \text{rotateAt}(L, k),\, x > v \quad &\text{[Rotation Same Bounds]} \\
-&(\forall x \in A,\, x > v) \land (\forall x \in B,\, x > v)  &\implies~ &\forall x \in (A \mathbin{+\!+} B),\, x > v \quad &\text{[Bound over Concatenation]} \\
+\operatorname{sum}(L)
+&= \sum_{i=0}^{|L|-1} L_i
+&&\text{[Sum Matches Summation]} \\
+\operatorname{sum}(x :: L)
+&= x + \operatorname{sum}(L)
+&&\text{[Left Append Preserves Sum]} \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B)
+&= \operatorname{sum}(A) + \operatorname{sum}(B)
+&&\text{[Sum over Concatenation]} \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B)
+&= \operatorname{sum}(B \mathbin{\texttt{++}} A)
+&&\text{[Commutativity of Sum]}
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-
-&\text{value}_{h,G}(i + 1)
-&-~ \quad 
-&\text{value}_{h,G}(i) \quad
-&=~  \quad
-&G(i) \quad 
-&\text{[Adjacent Difference]} \\
-
-&\text{rotateAt}(L, k).\text{contains}(x)
-&\iff \quad
-&L.\text{contains}(x) \quad 
-&\quad
-&\quad
-&\text{[Rotation Same Elements]} \\
-
-&|\text{rotateAt}(L, k)|
-&=~   \quad
-&|L|, \quad
-&&&\text{[Rotation Same Size]} \\
-
-&\sum\text{rotateAt}(L, k) 
-&= \quad
-&\sum L
-&&&\text{[Rotation Same Sum]} \\
-
-&\text{value}_{\text{shift}(h,G)}(i + 1)
-&- \quad
-&\text{value}_{\text{shift}(h,G)}(i)
-&=~ \quad
-&\text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
-&\text{[Gap Translation]} \\
-
-
-&\text{slice}(L, f, t)
-&=~ \quad
-&\text{headRecursiveSlice}(L, f, t) 
-&=  \quad
-&\text{indexRangeValues}(L, f, t) \quad 
-&\text{[Slice Equivalence]} \\
+\operatorname{product}(x :: L_e)
+&= x
+&&\text{[Singleton Product]} \\
+\operatorname{product}(A \mathbin{\texttt{++}} (e :: B))
+&= e \cdot \operatorname{product}(A \mathbin{\texttt{++}} B)
+&&\text{[Product Pull-Out Element]} \\
+\operatorname{product}(A \mathbin{\texttt{++}} B)
+&= \operatorname{product}(A) \cdot \operatorname{product}(B)
+&&\text{[Product over Concatenation]} \\
+\operatorname{product}(A \mathbin{\texttt{++}} B)
+&= \operatorname{product}(B \mathbin{\texttt{++}} A)
+&&\text{[Commutativity of Product]} \\
+(\forall x \in L,\ x > 0)
+&\implies \operatorname{product}(L) > 0
+&&\text{[Positive Product]}
 \end{aligned}
 ```
 
+```math
+\begin{aligned}
+L \neq L_e \land (\forall x \in L,\ x > 0)
+&\implies \operatorname{product}(L) \bmod \operatorname{head}(L) = 0
+&&\text{[Head Divides Product]} \\
+(\forall x \in L,\ x > 0)
+&\implies \forall x \in L,\ \operatorname{product}(L) \bmod x = 0
+&&\text{[All Elements Divide Product]} \\
+e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
+&\implies \operatorname{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
+&&\text{[Inserted Element Divides Product]}
+\end{aligned}
+```
 
-All properties are verified in the Stainless system. The full verification code is available in Appendix A.
+```math
+\begin{aligned}
+(\forall x \in L,\ x > v) \land 0 \leq i < |L|
+&\implies L_i > v
+&&\text{[Bound at Index]} \\
+(\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
+&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
+&&\text{[Bound over Concatenation]} \\
+\operatorname{slice}(L,f,t)
+&= \operatorname{headRecursiveSlice}(L,f,t)
+ = \operatorname{indexRangeValues}(L,f,t)
+&&\text{[Slice Equivalence]}
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+\operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i)
+&= G_i
+&&\text{[Adjacent Difference]} \\
+\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
+ - \operatorname{value}_{\operatorname{shift}(h,G)}(i)
+&= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
+&&\text{[Gap Translation]} \\
+\operatorname{rotateAt}(L,k).\operatorname{contains}(x)
+&\iff L.\operatorname{contains}(x)
+&&\text{[Rotation Same Elements]} \\
+|\operatorname{rotateAt}(L,k)|
+&= |L|
+&&\text{[Rotation Same Size]} \\
+\operatorname{sum}(\operatorname{rotateAt}(L,k))
+&= \operatorname{sum}(L)
+&&\text{[Rotation Same Sum]}
+\end{aligned}
+```
+
+All of these properties are verified in the source references cited throughout
+the article. Appendix A collects the Scala excerpts that are useful to keep
+near the text; each excerpt links back to its maintained source file.
 
 ## 13. Future Work
 

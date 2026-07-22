@@ -198,14 +198,13 @@ cycle [[3]](#ref3), and cycle-integral [[4]](#ref4) foundations.
 
 ### 2.4 Meaning of Verification
 
-Stainless verifies a function contract for all inputs satisfying the function's
-preconditions. A `require` clause is therefore part of the theorem, not a runtime
-detail that can be ignored. An `.ensuring` clause states the verified
-postcondition; a Boolean function ending in `.holds` asks Stainless to verify
-that the returned proposition is true. The official documentation describes
-this contract and verification-condition model [[7]](#ref7); System FR provides
-formal foundations for the verifier's higher-order functional reasoning
-[[8]](#ref8).
+Stainless verifies each function under its declared preconditions, so a
+`require` clause is part of the theorem being cited, not a runtime detail that
+can be ignored. An `.ensuring` clause records the postcondition, while a
+Boolean proof function ending in `.holds` records the proposition established
+by that source function. The official documentation describes this contract
+and verification-condition model [[7]](#ref7); System FR provides formal
+foundations for the verifier's higher-order functional reasoning [[8]](#ref8).
 
 No repository-wide verification-condition total is used as evidence here.
 Those totals change when unrelated functions are added. The stable evidence is
@@ -450,7 +449,7 @@ the infinite periodic sequence represented by the cycle integral.
 ```math
 \begin{aligned}
 G^{\langle h\rangle}
-  &=\underbrace{G\mathbin{+\!+}\cdots\mathbin{+\!+}G}_{h\text{ copies}}, \\
+  &=\underbrace{G\mathbin{\texttt{++}}\cdots\mathbin{\texttt{++}}G}_{h\text{ copies}}, \\
 |G^{\langle h\rangle}|&=hT, \\
 G^{\langle h\rangle}_{k\bmod hT}
   &=G_{k\bmod T}, \\
@@ -1107,18 +1106,25 @@ finite-stage theorem from adjacent mathematical questions.
 
 ## 8. Future Work
 
-The natural next problems are:
+The next proof obligation is to connect the filtered repeated-cycle survivor
+gaps with the semantic merged-gap prefix. That equality is the missing bridge
+between the local delete-and-merge description and the concrete gap list of
+the next sieve level. Once that bridge is verified, the next `CycleIntegral`
+can be constructed directly from the current repeated and filtered cycle
+rather than being related through a separate semantic transition.
 
-1. equality between the filtered repeated-cycle survivor gaps and the semantic
-   merged-gap prefix;
-2. construction of the next `CycleIntegral` directly from the
-   current repeated and filtered cycle;
-3. derivation of the next canonical-period boundary from the exact survivor
-   count;
-4. a Stainless proof, or a different formal substitute, for the square-bound
-   dependency supplied here by Bertrand's postulate;
-5. local gap-distribution theorems distinct from these full-period construction
-   theorems.
+A second direction is to derive the next canonical-period boundary from the
+exact survivor count. The article already proves the complete-period counting
+law, but the canonical boundary requires turning that count into the precise
+finite prefix used by the next stage. The square-bound dependency currently
+supplied by Bertrand's postulate is another natural verification target:
+either a Stainless proof of the needed bound or a clearly stated formal
+substitute would make the dependency explicit inside the project.
+
+Finally, local gap-distribution theorems should be developed separately from
+the full-period construction results proven here. The full-period facts explain
+how the sieve stage is represented and transformed; they do not by themselves
+settle which gaps appear in a particular finite window.
 
 ## 9. Conclusion
 

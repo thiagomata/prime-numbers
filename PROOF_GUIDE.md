@@ -128,9 +128,67 @@ This property is verified in the [
 ).
 ```
 
-### .holds Mechanism
+The snippet should match the source shape. A `.holds` lemma is common, but it
+is not the only acceptable verification form: verified `assert` chains,
+`ensuring` postconditions, constructor invariants, and Boolean helper
+predicates consumed by verified callers can also support an article claim. The
+article standard is source-backed verification code, not "must end in `.holds`".
 
-Functions annotated with `.holds` are verified to return `true` for all valid inputs.
+For article readability, use `articles/chapter4/cycle.md` as the preferred
+embedding pattern. Main property sections should carry the English explanation,
+the mathematical proof, and a source link. Small inline Scala blocks are fine
+when they show the core idea with a good signal/noise ratio. Put longer proof
+bodies in an appendix only when they are worth keeping close to the article;
+otherwise, link to the source module directly. Any Scala excerpt kept in an
+appendix must have a nearby Markdown source link to the repository file that
+owns the maintained proof. Source excerpts kept in the main body need the same
+treatment: put a source link before or immediately after the block. When prose
+points to an appendix item, check that the appendix number still matches the
+current document.
+
+The mathematical property must lead the section. Do not organize article prose
+around source method names or code-name inventories. When a helper matters,
+give it a property name, state and prove the math, then cite the source method
+as the verification reference.
+
+Theorem articles should be math-first rather than source walkthroughs. Keep
+solver tactics, cache behavior, verification workflow, and postcondition
+strategy notes in `LEARNINGS.md` or tickets, not article bodies.
+Do not let this become understatement: formal verification is a meaningful
+achievement and should remain visible in abstracts, introductions, conclusions,
+and property references when the code has been verified. The distinction is
+between proudly reporting formal verification and teaching low-level verifier
+mechanics.
+
+Conclusion and future-work sections should be prose, not simple task lists.
+Use the conclusion to synthesize the theorem, proof strategy, verified support,
+and scope of the result. The conclusion must also bring back the core proved
+properties and proof structure in mathematical form: include a compact math
+recap of the main theorem, definitions, and supporting properties that the
+article established, following the `integral.md` and `cycle.md` pattern. Use
+future work to explain the next mathematical directions and why they extend
+the article, rather than listing project names as bullets.
+Avoid future-facing framing outside Future Work: abstracts, introductions, and
+conclusions should not justify the result by saying it will be used later,
+needed downstream, or useful for future chapters. They should state what the
+article proves and verifies now.
+
+Use `$...$` for inline mathematical expressions such as
+$d \cdot d \le d \cdot q = n$ and $\operatorname{mod}(n,d)=0$; reserve
+backticks for source identifiers and literal code.
+
+Use `:=` only for definitions, local aliases, and notation conventions. Use
+`=` for mathematical equalities, theorem statements, and proof derivation
+steps. For example, $S := \text{DivMod}(a,b,0,a).\text{solve}$ introduces
+$S$, while $a = bq + r$ states an equality.
+
+### Verification References
+
+Article prose should state what was verified, not teach the mechanics of
+Stainless annotations. Prefer wording like "This property is verified in
+`ObjectName::functionName`" or "The source proof establishes the implication
+above." Avoid phrases that make `.holds`, assertions, or solver caching the
+topic of the article.
 
 ```scala
 def myLemma(x: BigInt): Boolean = {
@@ -139,7 +197,10 @@ def myLemma(x: BigInt): Boolean = {
 }.holds
 ```
 
-**Key insight:** Internal assertions inside `.holds` functions are cached by Stainless and become available at call sites. This eliminates the need to enrich postconditions explicitly.
+Use code blocks only when the snippet helps the reader see the proof shape.
+Otherwise, link to the source. Internal proof-engine observations belong in
+`LEARNINGS.md`, where they can guide future verification work without pulling
+the article away from the mathematics.
 
 ### Helper Lemmas
 
@@ -247,20 +308,39 @@ When writing a new article or adding new proofs:
 
 ### List Concatenation
 
-Use `\mathbin{+\!+}` for list concatenation in LaTeX math blocks. Bare `++` in
-LaTeX produces an oversized gap between the plus signs in MathJax / GitHub Pages.
-The `\mathbin` wrapper treats the pair as a single binary operator, and the
-`\!` negative thin space tightens the visual gap to look like a cohesive operator.
+Use `::` for cons: an element on the left and a list on the right. Use
+`\mathbin{\texttt{++}}` for list concatenation: a list on the left and a list on
+the right. Do not write singleton-list prepends such as `[x] ++ L` in article
+math when `x :: L` expresses the same structure more directly. Likewise, avoid
+singleton-list construction such as `[x]`, `[e]`, or `[L_t]` when expressing
+cons, suffix append, or insertion in article math; prefer `x :: L_e`,
+`e :: suffix`, or `A \mathbin{\texttt{++}} (e :: B)`. Display lists such as
+`[v_0,\dots,v_{n-1}]` and set-builder/range lists remain fine.
 
 ```math
 \begin{aligned}
-A \mathbin{+\!+} B
+x :: L \\
+A \mathbin{\texttt{++}} B
 \end{aligned}
 ```
 
-In prose, code blocks, and bullet-summary lines, plain `++` is acceptable since
-it renders as monospace text, not LaTeX math.
+The `\mathbin` wrapper gives `++` binary-operator spacing, while `\texttt`
+renders the two plus signs as a cohesive operator in GitHub and VS Code math
+previews.
+
+In prose, code blocks, and bullet-summary lines, plain `++` is acceptable
+because it renders as monospace text or source code, not LaTeX math.
 
 ```scala
 sum(A ++ B) == sum(A) + sum(B)
+```
+
+For suffix and insertion cases, keep `++` only between lists and express the
+inserted singleton with cons:
+
+```math
+\begin{aligned}
+\text{slice}(L, f, t - 1) \mathbin{\texttt{++}} (L_t :: L_e) \\
+prefix \mathbin{\texttt{++}} (e :: suffix)
+\end{aligned}
 ```

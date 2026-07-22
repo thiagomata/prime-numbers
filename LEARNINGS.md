@@ -659,7 +659,170 @@ later articles, later repository state, or work completed after the article's
 narrative point. Only flag future-work wording when it is internally
 contradicted by the article itself.
 
+The same rule cuts the other way: do not add future-facing framing to abstracts,
+introductions, or conclusions. Avoid phrases like "used by later sieve proofs",
+"needed downstream", or "future chapters will use this." The article should be
+justified by the definitions, mathematical properties, and formal verification
+it contains now. Future Work can discuss mathematical extensions, but should not
+turn the article into repository sequencing.
+
 **Source:** `cycle.md` PR review discussion, 2026-07-22.
+
+### 14.5 Use cons for element-list structure, concat for list-list structure
+
+In article math, use `h :: t` when the left side is a single element and the
+right side is a list. Use `A \mathbin{\texttt{++}} B` only when both sides are
+lists. This avoids type confusion such as `head(L) ++ tail(L)` or
+`head(L) + init ++ acc(...)`, where the left side is not a list. Avoid
+singleton-list construction such as `[x]`, `[e]`, or `[L_t]` when the expression
+is really cons, suffix append, or insertion; prefer `x :: L_e`, `e :: suffix`,
+or `A \mathbin{\texttt{++}} (e :: B)`. Display lists and set-builder/range
+lists are still fine.
+
+Good:
+```math
+\begin{aligned}
+L &= \text{head}(L) :: \text{tail}(L) \\
+\text{acc}(L, init) &=
+  (\text{head}(L) + init) :: \text{acc}(\text{tail}(L), \text{head}(L) + init) \\
+\text{slice}(L, f, t) &=
+  \text{slice}(L, f, t - 1) \mathbin{\texttt{++}} (L_t :: L_e) \\
+\text{product}(A \mathbin{\texttt{++}} (e :: B)) &=
+  e \cdot \text{product}(A \mathbin{\texttt{++}} B)
+\end{aligned}
+```
+
+Avoid:
+```math
+\begin{aligned}
+L &= \text{head}(L) \mathbin{\texttt{++}} \text{tail}(L) \\
+\text{sum}([x] \mathbin{\texttt{++}} L) &= x + \text{sum}(L) \\
+\text{product}(A \mathbin{\texttt{++}} [e] \mathbin{\texttt{++}} B) &=
+  e \cdot \text{product}(A \mathbin{\texttt{++}} B)
+\end{aligned}
+```
+
+For Scala code snippets, keep real Scala syntax such as `List(x) ++ list` when
+quoting source. The notation rule applies to mathematical exposition.
+
+**Source:** `list-article-math-rendering-2026-07-22.md`.
+
+### 14.6 Three-form presentation
+
+Every property: English → LaTeX math → Stainless-backed Scala code with source
+reference. `.holds` is common, but verified assertions, `ensuring`
+postconditions, constructor invariants, and helper predicates used by verified
+proofs also count when the source supports the claim. The thing to avoid is a
+fake commented conclusion presented as proof.
+
+### 14.7 Proof-code embedding
+
+Use `articles/chapter4/cycle.md` as the preferred article-code pattern. The
+main text should stay readable: English explanation, mathematical derivation,
+and source reference. Small inline Scala blocks are fine when they show the
+core idea with a good signal/noise ratio. Move longer selected proof excerpts
+to an appendix; for routine companion lemmas, link to the source instead of
+embedding the whole body inline.
+
+Appendix excerpts still need source links. When an appendix includes Scala
+code, add a nearby Markdown link to the repository file that owns the
+maintained proof, rather than leaving the excerpt as an orphaned copy or a
+plain-text path.
+
+Main-body source excerpts need nearby source links too, preferably before the
+block. Also verify appendix item references after moving code around; stale
+"Appendix A.n" pointers are article-integrity bugs, even when the proof itself
+is correct.
+
+### 14.8 Framing integrity
+
+Abstract/intro/conclusion must match content. Use text markers:
+`[Verified]` `[Proven]` `[Open]` `[Failed]`. No emojis.
+
+### 14.9 Preliminaries instead of ASCII dependency maps
+
+Use the `cycle.md` pattern for prerequisites: a plain `## 2. Preliminaries`
+section with prose and links to foundational articles. Avoid "Prerequisite
+Structure" or "Dependency Map" ASCII arrow diagrams; they read like scaffolding
+instead of publication text.
+
+### 14.10 Keep coding strategy out of articles
+
+Published articles should focus on the mathematical result, definitions,
+verified properties, and source-backed proof code. Solver tactics such as
+`.holds` cache behavior, postcondition-enrichment strategy, timeout workarounds,
+and verification workflow belong in `LEARNINGS.md` or tickets, not as article
+sections.
+
+### 14.11 Avoid tutorial voice for verification mechanics
+
+Do not write article prose like "the `.holds` annotation tells Stainless..." or
+explain basic verifier mechanics as if teaching the tool. Prefer proof-oriented
+language: state what the lemma establishes, which mathematical facts it
+combines, and where the source-backed proof lives.
+
+### 14.12 Use math spans for inline mathematics
+
+Inline mathematical statements belong in `$...$`, not code backticks. For
+example, write $d \cdot d \le d \cdot q = n$, $d^2 \le n$, and
+$\text{mod}(n,d)=0$ as math. Reserve backticks for code identifiers, source
+expressions, and literal Scala syntax.
+
+### 14.13 Use `:=` only for definitions
+
+Use `:=` in article math when introducing a definition, notation convention, or
+local alias. Use `=` for ordinary mathematical equalities, theorem statements,
+and proof derivation steps. For example,
+$S := \text{DivMod}(a,b,0,a).\text{solve}$ defines $S$, while $a = bq + r$
+states the invariant being proved or used.
+
+### 14.14 Theorem articles are math-first, not source walkthroughs
+
+The main body of a theorem article should carry the mathematical argument and
+then cite where it is verified in source. Avoid interleaving long Scala blocks
+throughout the proof narrative. Keep code excerpts in an appendix only when
+they add high-signal context; otherwise, a source link is enough.
+
+### 14.15 Keep the article centered on its theorem
+
+Do not present every nearby helper as a peer of the theorem. The main theorem
+should be the spine of the article; adjacent corollaries and utility lemmas
+belong in a clearly secondary supporting section, with prose framed as
+mathematical context rather than repository or downstream implementation needs.
+
+### 14.16 Explain helper lemmas as properties, not inventory bullets
+
+When an article depends on helper lemmas, do not list them as code names plus a
+one-line "used to..." note. Give each important helper a property name, explain
+the mathematical statement, show the derivation in a math block, and then cite
+the source proof. This keeps the article at the same level as the other proof
+articles.
+
+### 14.17 Properties are first-class; methods are verification references
+
+Article sections should be organized around mathematical properties, not source
+method names. The source method is evidence that the property is verified; it
+should appear in the verification reference, not drive the section's narrative.
+
+### 14.18 Formal verification should stay visible
+
+Avoid tutorial prose about `.holds`, cache behavior, or solver mechanics in
+articles, but do not erase formal verification from the result. When a theorem
+or property has been formally verified, the abstract, introduction, conclusion,
+and source references should say so clearly. Formal verification is often a
+harder achievement than the paper proof alone; be proud of it while keeping the
+article focused on the mathematics.
+
+### 14.19 Conclusions and future work should be prose
+
+Do not end articles with simple bullet lists of completed tasks or possible
+next projects. A conclusion should synthesize what the proof established, how
+the main argument works, what was verified, and what the result's scope is. It
+must also bring back the core proved properties and proof structure in
+mathematical form: include a compact math recap of the main theorem,
+definitions, and supporting properties that the article established, as in
+`integral.md` and `cycle.md`. Future work should explain the next mathematical
+directions in prose and state how they extend the article's result.
 
 ## 15. Structural Index Lemmas (ch60, abandoned indexed bijection)
 
@@ -827,18 +990,9 @@ Only functions that CALL `nextApplyUpperBound` need new VCs.
 
 **Source:** ch60 abandoned indexed bijection (2026-07-19). Three existing callers in SpecSieveSeqHeadIsPrime.scala:91 and SpecSieveSeqNextProperties.scala:117,121 timed out after the richer postcondition was added.
 
-### 14.4 Three-form presentation
+## 16. Empirical Verification
 
-Every property: English → LaTeX math → Scala `.holds` with source reference.
-
-### 14.5 Framing integrity
-
-Abstract/intro/conclusion must match content. Use text markers:
-`[Verified]` `[Proven]` `[Open]` `[Failed]`. No emojis.
-
-## 15. Empirical Verification
-
-### 15.1 Runners complement SMT
+### 16.1 Runners complement SMT
 
 When SMT can't prove it, write a standalone Scala runner.
 - No Stainless dependencies
@@ -847,9 +1001,9 @@ When SMT can't prove it, write a standalone Scala runner.
 
 **Source:** `empirical-g-local-crossover.md`
 
-## 16. Path Choice Framework
+## 17. Path Choice Framework
 
-### 16.1 Analyze alternatives before building
+### 17.1 Analyze alternatives before building
 
 Map all possible paths. Evaluate each: what info does it need? Does the solver
 have it? What's the verification cost?
@@ -857,39 +1011,39 @@ have it? What's the verification cost?
 **Example:** 5 paths analyzed in `sieve-properties-step5-coprime-to-modulus.md`;
 only Path B (structural invariant) worked.
 
-### 16.2 Avoid opaque return values
+### 17.2 Avoid opaque return values
 
 The solver can't connect "the first value satisfying property X" at call sites.
 
-### 16.3 Avoid `forall` over `BigInt`
+### 17.3 Avoid `forall` over `BigInt`
 
 Induct on `k` with `decreases(k)` instead.
 
-## 17. Project Workflow
+## 18. Project Workflow
 
-### 17.1 One assertion per verify cycle
+### 18.1 One assertion per verify cycle
 
 NEVER batch `assert(a && b && c)`. One per change.
 
-### 17.2 Check `logs/verify.log` before action
+### 18.2 Check `logs/verify.log` before action
 
 `grep "total:" logs/verify.log`. Don't re-run on clean state.
 
-### 17.3 Tests after verify
+### 18.3 Tests after verify
 
 `just test` after every `just verify`.
 
-### 17.4 Ticket before long action
+### 18.4 Ticket before long action
 
 If >2 tool calls expected, create a ticket. Update after each loop.
 
-### 17.5 Search tickets for related work
+### 18.5 Search tickets for related work
 
 Before starting, search `tickets/` for similar work. Extract lessons.
 
-## 18. Cross-instance Lemma Calls [Open]
+## 19. Cross-instance Lemma Calls [Open]
 
-### 18.1 Cross-instance calls can time out even for simple lemmas
+### 19.1 Cross-instance calls can time out even for simple lemmas
 
 **Observation:** Calling a `.holds` lemma on a different instance of the same
 class (e.g. `seq.assertApplyOneGtHead()` where `seq` is a second
@@ -909,7 +1063,7 @@ each cross-instance call doubles the VC size because the solver must unfold
 `apply(k)` for the new instance. In a lemma with 3 cross-instance calls, each
 assertion's VC includes ALL 3 unfoldings.
 
-### 18.2 The solver can't derive `a > b ⇒ a ≥ b+1` in cross-instance context
+### 19.2 The solver can't derive `a > b ⇒ a ≥ b+1` in cross-instance context
 
 **Observation:** `assert(head + BigInt(1) <= v1)` in Lemma 4 consistently
 times out even though `seq.assertApplyOneGtHead()` (which returns this
@@ -924,7 +1078,7 @@ large cross-instance VC.
 - The solver doesn't use cached lemma results across assertion boundaries in
   large VCs
 
-### 18.3 Local `val` aliases block the solver from using cached lemma results [Open — workaround: directed equality lemmas]
+### 19.3 Local `val` aliases block the solver from using cached lemma results [Open — workaround: directed equality lemmas]
 
 **Problem:** `val nextSeq = spec.next` creates an opaque binding. A `.holds` lemma
 returning `spec.next.accepts(v)` caches its result, but the solver cannot connect
@@ -956,7 +1110,7 @@ to surface component equalities from structural equality.
 **Prior failures:** `val` version timed out (9 VCs, 8/9). `def` version timed out
 (same). Bare `seq1.accepts(v) == seq2.accepts(v)` without directed requires timed out.
 
-### 18.4 Put reusable recursive producer facts in `.ensuring`
+### 19.4 Put reusable recursive producer facts in `.ensuring`
 
 **Observation:** `SortedList.fromUnsorted(list)` guarantees
 `SortedList.isAscending(sorted.list)`, but asking Stainless to rediscover that
@@ -1012,7 +1166,7 @@ a shape the solver recognizes.
 `assertAcceptsEqualWhenTrue` / `assertAcceptsEqualWhenFalse` verified in
 `CanonicalCycleSieve.scala` at 9299 valid.
 
-### 18.5 Return explicit branch invariants from recursive-search wrappers
+### 19.5 Return explicit branch invariants from recursive-search wrappers
 
 **Observation:** When a public wrapper exposes a fact proved by a private
 recursive search, Stainless may time out at the final postcondition even after
@@ -1068,7 +1222,7 @@ wrapper result and a private recursive finder.
 Verified in `SpecSieveSequence.nextAcceptedOldIndex` and
 `SpecSieveSequence.assertSkippedBeforeNextAcceptedOldIndexIsMultiple`.
 
-### 18.6 Next-stage head is not the next-stage front filter
+### 19.6 Next-stage head is not the next-stage front filter
 
 **Observation:** In `SpecSieveSequence` next-stage proofs, two similarly named
 facts are easy to confuse:
@@ -1118,7 +1272,7 @@ the ONLY piece of the next-stage-filter work that is active and green.
 
 **Source:** `tickets/active/independent-next-cycle.md` (Recovery Log section).
 
-### 18.7 Recursive list lifts need explicit coverage predicates
+### 19.7 Recursive list lifts need explicit coverage predicates
 
 **Observation:** A pointwise survivor equality is not enough for a recursive
 list proof unless each recursive call can prove its own index coverage. In the
@@ -1142,7 +1296,7 @@ available. With that invariant, the proof can use same-shape recursion:
 - `assertInitialSurvivorGapListMatchesSpecNextGapList` composes that with the
   existing `nextGapList == spec.next.gapList` bridge.
 
-### 18.8 A precondition migration must move callee + ALL callers + dependents together
+### 19.8 A precondition migration must move callee + ALL callers + dependents together
 
 **Observation:** Strengthening a `require` (contract migration) is the most
 dangerous kind of edit in this codebase, because it is *backwards-incompatible*:
@@ -1198,9 +1352,9 @@ Track sections).
 
 **Source:** `tickets/active/independent-next-cycle.md`.
 
-## 19. Lemma Composition [Verified]
+## 20. Lemma Composition [Verified]
 
-### 19.1 Reuse the expensive construction, not the `.holds`
+### 20.1 Reuse the expensive construction, not the `.holds`
 
 Two independently-verified `.holds` lemmas should compose cleanly. When they don't,
 the culprit is almost always **duplicate construction of an expensive object** inside
@@ -1223,9 +1377,9 @@ cache the construction across the composition boundary.
 
 **Source:** `tickets/active/lean-ch6-proof-spine.md`, `SpecDerivedBySurvivors.scala`.
 
-## 20. Cross-Chapter Dependency Management
+## 21. Cross-Chapter Dependency Management
 
-### 20.1 Avoid circular imports between chapters
+### 21.1 Avoid circular imports between chapters
 
 If chapter 5 imports from chapter 6 and chapter 6 imports from chapter 5, the
 solver must verify ALL chapters in one batch, generating too many VCs.
@@ -1236,7 +1390,7 @@ ch6 → `CoprimeUtils` in ch5.
 
 **Source:** `verify-timeout-root-cause.md` — root cause #1.
 
-### 20.2 macOS DYLD_LIBRARY_PATH stripping
+### 21.2 macOS DYLD_LIBRARY_PATH stripping
 
 macOS strips `DYLD_LIBRARY_PATH` from subprocesses, so the Z3 dynamic library
 cannot be found by Java JNI even when the environment variable is set. Fix:
@@ -1275,9 +1429,9 @@ absolute path in `libz3java.dylib`.
 | 8.4 `just verify <name>` matches across ALL chapters — use `verify-ch N` for chapter-specific work | See above | Workflow |
 | 8.5 Do not run multiple verify instances in parallel | See above | Workflow |
 
-## 21. Chapter 60 Goal 3 — bridge patterns and the abandoned indexed bijection
+## 22. Chapter 60 Goal 3 — bridge patterns and the abandoned indexed bijection
 
-### 21.1 Indexed bijection via mutual induction always times out — DELETE the code
+### 22.1 Indexed bijection via mutual induction always times out — DELETE the code
 
 Every session gets drawn back to trying `survivors(i) == nextSeq.apply(i)` by mutual induction
 (the abandoned indexed bijection approach).
@@ -1297,7 +1451,7 @@ This avoids proving indexed value equality entirely.
 **Danger signal:** If you see functions with names containing "SurvivorMatches", "EqualityVia",
 "SurvivorAtIndex" — DELETE them. They are indexed bijection mutual induction in disguise.
 
-### 21.2 `assert(false)` branch causes combined VC
+### 22.2 `assert(false)` branch causes combined VC
 
 When a branch ends with `assert(false)` (to mark it unreachable), Stainless creates ONE combined
 VC for the entire function instead of separate per-assert VCs. This means a single complex VC
@@ -1320,7 +1474,7 @@ else result  // unreachable — the <= condition in the ensuring handles it
 Or use `nextDoesNotPassAcceptedValue` pattern that returns `false` through the unreachable path
 without `assert(false)`.
 
-### 21.3 `res == expr` ensuring clause forces call sites to re-prove `expr`
+### 22.3 `res == expr` ensuring clause forces call sites to re-prove `expr`
 
 When you write `.ensuring(res => res == someExpression)`, the call site must re-prove
 `someExpression` independently. This times out if `someExpression` is complex.
@@ -1338,7 +1492,7 @@ def foo(...) = {
 }.holds  // or .ensuring(res => res && theResult)
 ```
 
-### 21.4 `mergedGapPrefix` walk must start at k=1 for seq.next
+### 22.4 `mergedGapPrefix` walk must start at k=1 for seq.next
 
 `seq.apply(0) = seq.head.value` is rejected by `seq.next` because:
 - `seq.next.filterValues.head = seq.head.value`  
@@ -1351,7 +1505,7 @@ The correct starting point is `k=1` where:
 **In `assertPipelineOutputMatchesNextGapList`:** call with `BigInt(1)` not `BigInt(0)`, and
 require `nextSeq(BigInt(0)) == seq.apply(BigInt(1))` explicitly.
 
-### 21.5 `nextSeq.head.value == seq.head.value` is impossible for seq.next
+### 22.5 `nextSeq.head.value == seq.head.value` is impossible for seq.next
 
 `seq.next.head.value` is the NEXT LARGER prime (`seq.apply(1) > seq.head.value`), never equal.
 Using this equality as a precondition makes any lemma vacuously satisfied by seq.next (the
@@ -1366,7 +1520,7 @@ assert(seq.applyStrictlyIncreases(k))
 assert(seq.apply(k + 1) >= nextSeq.head.value)
 ```
 
-### 21.6 Make predicate functions total to eliminate precondition VCs at call sites
+### 22.6 Make predicate functions total to eliminate precondition VCs at call sites
 
 **Problem:** `accepts` was a PARTIAL function:
 ```scala
@@ -1397,7 +1551,7 @@ the boolean expression instead of making it a `require`. This way:
 **Source:** ch60 `SpecSieveSequence.accepts` refactor, 2026-07-20. Reduced VC count from 4995 to 4893
 and eliminated all 21 timeout-inducing precondition obligations in `SpecSieveSeqNextProperties`.
 
-### 21.7 `indexOfAccepted(z)` must be called AFTER `accepts(z)` is established
+### 22.7 `indexOfAccepted(z)` must be called AFTER `accepts(z)` is established
 
 `indexOfAccepted` has `require(accepts(value))`. If you bind `val zIdx = seq.indexOfAccepted(z)` before
 establishing `seq.accepts(z)`, Stainless generates an unprovable precondition VC.
@@ -1420,7 +1574,7 @@ where `accepts` cannot yet be derived.
 **Source:** `assertNextSuccessorOldIndexWithinBound` and `assertFirstSurvivorAtOrBeforeNextValue` in
 `SpecSieveSeqNextProperties.scala`, ordering fix 2026-07-20.
 
-### 21.8 Strict-monotonicity bridge for propagating lower bounds through index gaps
+### 22.8 Strict-monotonicity bridge for propagating lower bounds through index gaps
 
 **Problem:** Need to prove `seq.apply(m) >= nextSeq.head.value` when only `seq.apply(k) >= nextSeq.head.value`
 (derived from `nextSeq.accepts(seq.apply(k))` unfolding) and `m > k` are available.

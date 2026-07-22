@@ -1,4 +1,4 @@
-# Proving Properties of Division and Modulo using Formal Verification
+# Division and Modulo from Recursive Normalization
 
 **Author:** Mata, T. H.
 Independent Researcher  
@@ -12,42 +12,31 @@ Independent Researcher
 The division and modulo operations are fundamental in mathematics and computer science,
  especially in areas such as number theory, cryptography, and algorithm design. 
 In this article, we define these operations from scratch using a recursive formulation,
- without relying on built-in semantics or standard library behavior — a zero-prior-knowledge approach. 
-We formally verify key properties such as unique remainder, modulo idempotence, and distributivity
- using the Stainless verification system. 
+ without relying on built-in semantics or standard library behavior.
+We mathematically prove and formally verify key properties such as unique
+remainder, modulo idempotence, distributivity, and one-zero-per-period density.
 All properties are expressed and proved within a minimal framework using only elementary arithmetic,
- recursion, and pure Scala code.
-This work bridges mathematical foundations and executable verification, offering a self-contained, verifiable
- treatment of modular arithmetic.
+ recursion, and formally verified Scala definitions.
+The result is a self-contained, machine-checked foundation for modular arithmetic.
  </p>
 </div>
 
 ## 1. Introduction
 
 Integer division and modulo operations are central tools in discrete mathematics, number theory, and algorithms. 
-While their properties are well known, rigorous formalization and verification—particularly via recursive definitions—
+While their properties are well known, rigorous formalization and verification, particularly via recursive definitions,
 offer an interesting alternative to the traditional axiomatic model.
 
-This work formalizes these operations recursively, demonstrates fundamental properties, and uses the Scala Stainless 
-tool to ensure that these properties are formally verifiable.
+This article takes the recursive route. Instead of assuming native division and
+modulo, it defines a state $DivMod(a,b,q,r)$ where $a = bq + r$, then proves
+that normalizing the pair $(q,r)$ preserves the represented dividend and reaches
+the canonical remainder interval. The familiar operations $\text{div}$ and
+$\text{mod}$ are then projections from that normalized state.
 
-> In the context of hardware and software systems, formal verification is the act of proving or disproving 
-> the correctness of a system with respect to a certain formal specification or property, 
-> using formal methods of mathematics. 
-> [[1]](#ref1)
-> [[2]](#ref2)
-> The verification of these systems is done by ensuring the existence of a formal proof of a mathematical model of the system.
-
-In this article, we will show how to prove some properties of the division and modulo operations using formal verification.
-To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html).
-
-> The Stainless program verifier collects a list of top-level functions, and verifies the validity of their contracts. 
-> Essentially, for each function, it will (try to) prove that the postcondition always holds, assuming a given precondition does hold.
-> It attempts to prove it using a combination of an internal algorithm and external automated theorem proving.
-> Stainless will also verify for each call site that the precondition of the invoked function cannot be violated.
-> Stainless supports verification of a significant part of the Scala language, described in Pure Scala and Imperative.
-> [[3]](#ref3)
-
+The mathematical statements below are backed by Scala source verified with
+[Stainless](https://epfl-lara.github.io/stainless/intro.html). The article keeps
+the proof discussion centered on the properties; source links point to the
+maintained verification code.
 
 ## 2. Limitations
 
@@ -65,53 +54,69 @@ article, which are the main focus of this article.
 
 ## 3. Traditional Definition
 
-Given integers $dividend$ and $divisor$ where $divisor \neq 0$, the division algorithm determines integers $quotient$ and $remainder$ such that:
+Given integers $\text{dividend}$ and $\text{divisor}$ where
+$\text{divisor} \neq 0$, the division algorithm determines integers
+$\text{quotient}$ and $\text{remainder}$ such that:
 
 ```math
 \begin{aligned}
-\forall \text{ } dividend, divisor & \in \mathbb{N} : divisor\neq 0  \\
-& \exists ! \\
-\text{quotient} & = \left\lfloor \frac{\text{dividend}}{\text{divisor}} \right\rfloor \implies   \\
-dividend & = divisor \cdot quotient + \text{remainder} \\
-dividend \text{ mod } divisor & = remainder \\
-dividend \text{ div } divisor & = quotient \\
-\text { where } 0 & \leq \text{remainder} < |b|
+\forall \text{dividend},\text{divisor} \in \mathbb{Z},\;
+\text{divisor} \neq 0,\;
+\exists!\, \text{quotient},\text{remainder} &: \\
+\text{dividend} &= \text{divisor} \cdot \text{quotient} + \text{remainder} \\
+0 &\le \text{remainder} < |\text{divisor}| \\
+\text{dividend} \text{ div } \text{divisor} &:= \text{quotient} \\
+\text{dividend} \text{ mod } \text{divisor} &:= \text{remainder}
 \end{aligned}
 ```
+
+The first two lines state the division relation and the canonical remainder
+range. The final two lines introduce the operation notation: division returns
+the quotient, and modulo returns the remainder.
 
 ## 4. Recursive Definition
 
-We introduce a recursive definition of division and modulo because it is better suited to formal proof: Stainless can verify properties directly from a recursive definition in ways that are harder to express against the traditional closed-form one. In [Section 5](#5-divmod-solution-invariance-under-linear-shift) we prove this recursive definition is equivalent to the traditional definition from [Section 3](#3-traditional-definition), so any property proved on one also holds for the other.
+We introduce a recursive definition of division and modulo because the proof can
+be built from one invariant: shifting one unit of $b$ between quotient and
+remainder preserves the represented dividend. In
+[Section 5](#5-divmod-solution-invariance-under-linear-shift), that invariant
+connects the recursive normal form back to the traditional division equation
+from [Section 3](#3-traditional-definition).
 
-We define $DivMod(a, b, div, mod)$ such that:
+From here on, $a$ is the dividend, $b$ is the divisor, $q$ is the candidate
+quotient, and $r$ is the candidate remainder. The shorter names keep the
+recursive equations readable while preserving the same roles as the traditional
+definition. We reserve $\text{mod}$ for the modulo operation itself.
+
+We define $DivMod(a,b,q,r)$ such that:
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, div, mod \in \mathbb{Z} : b \neq 0, a = \text{div} \cdot b + \text{mod}
+\forall a,b,q,r \in \mathbb{Z} : b \neq 0,\; a = bq + r
 \end{aligned}
 ```
 
-The solved $DivMod$ are those where the remainder $mod$ satisfies:
+The solved $DivMod$ states are those where the remainder $r$ satisfies:
 
 ```math
 \begin{cases}
-0 \leq \text{mod} < b & \text{if } b > 0, \\
-0 \leq \text{mod} < -b & \text{if } b < 0.
+0 \leq r < b & \text{if } b > 0, \\
+0 \leq r < -b & \text{if } b < 0.
 \end{cases}
 ```
 
 ```math
 \begin{aligned}
-\text{DivMod.solve}(a, b, \text{div}, \text{mod}) =
+\text{DivMod.solve}(a,b,q,r) &:=
 \begin{cases}
-\text{DivMod}(a, b, \text{div}, \text{mod}) & \text{if } 0 \leq \text{mod} < |b|, \\
-\text{DivMod.solve}(a, b, \text{div} + \text{sign}(b), \text{mod} - |b|) & \text{if } \text{mod} \geq |b|, \\
-\text{DivMod.solve}(a, b, \text{div} - \text{sign}(b), \text{mod} + |b|) & \text{if } \text{mod} < 0. \\
+\text{DivMod}(a,b,q,r) & \text{if } 0 \leq r < |b|, \\
+\text{DivMod.solve}(a,b,q+\text{sign}(b),r-|b|) & \text{if } r \geq |b|, \\
+\text{DivMod.solve}(a,b,q-\text{sign}(b),r+|b|) & \text{if } r < 0. \\
 \end{cases} \\
 \end{aligned}
 ```
 
-The Recursive definition on Scala is available in the [DivMod.scala](
+The recursive definition is implemented in [DivMod.scala](
 ../../src/main/scala/v1/chapter2/div/DivMod.scala
 ).
 
@@ -120,29 +125,48 @@ The Recursive definition on Scala is available in the [DivMod.scala](
 
 ```math
 \begin{aligned}
-\forall a, b, div, mod \in \mathbb{Z} : a & = \text{div} \cdot b + \text{mod}, b \neq 0 \\ 
-a = div * b + mod & = (div + 1) * b + ( mod − b ) = (div - 1 ) * b + ( mod + b ) \\
-DivMod(a, b, div + 1, mod - b).solve & = DivMod(a, b, div, mod).solve \\
-DivMod(a, b, div - 1, mod + b).solve & = DivMod(a, b, div, mod).solve \\
+\forall a,b,q,r \in \mathbb{Z},\; b \neq 0,\; a &= bq + r \\
+a &= b(q+1) + (r-b) \\
+a &= b(q-1) + (r+b) \\
+\text{DivMod}(a,b,q+1,r-b).\text{solve} &= \text{DivMod}(a,b,q,r).\text{solve} \\
+\text{DivMod}(a,b,q-1,r+b).\text{solve} &= \text{DivMod}(a,b,q,r).\text{solve}
 \end{aligned}
 ```
 
-As proved in the [proof for positive shift](
+This invariant is verified for the [positive shift](
   ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution
-) and [proof for negative shift](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
+) and [negative shift](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
 ### Creating the Division and Modulo Operations
 
-Using the DivMod class we defined, in the class [Calc](
+Using the normalized `DivMod` value, [Calc.scala](
 ../../src/main/scala/v1/chapter2/div/Calc.scala
-), the division and modulo operations by extracting these properties from the solved $DivMod$.
+) defines $\text{div}$ and $\text{mod}$ as the quotient and remainder projections
+of the solved state. Starting from $DivMod(a,b,0,a)$, let:
+
+```math
+\begin{aligned}
+S &:= \text{DivMod}(a,b,0,a).\text{solve} \\
+q &:= S.\text{div} \\
+r &:= S.\text{mod} \\
+\text{div}(a,b) &:= q \\
+\text{mod}(a,b) &:= r
+\end{aligned}
+```
+
+So $\text{div}(a,b)$ names the normalized quotient, while $\text{mod}(a,b)$
+names the normalized remainder. In the source code these are the `div` and
+`mod` fields of the solved `DivMod`; in the article notation, $q$ and $r$ keep
+the quotient and remainder roles separate from the operation names.
 
 ## 6. Some Important Properties of Modulo and Division
 
 ### Trivial Case
 
-If the dividend is smaller than the divisor, the result of the modulos operation should be the dividend value and the division result should be zero.
+If the dividend is smaller than a positive divisor, the candidate state
+$DivMod(a,b,0,a)$ is already final. No subtraction of $b$ is needed, so the
+quotient is zero and the remainder is the original dividend.
 
 ```math
 \begin{aligned}
@@ -152,8 +176,9 @@ If the dividend is smaller than the divisor, the result of the modulos operation
 \end{aligned}
 ```
 
-We can check that since $DivMod(a, b, 0, a)$ is the final solution for the division operation.
-That verification is available in [mod small dvidend proof](../../src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
+This property is verified in [
+  ModSmallDividend
+](../../src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
 
 ### Identity
 
@@ -167,50 +192,16 @@ n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
-We can prove this property using the recursive definition of the division and modulo operations.
-As the following [long proof](
-../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof
-) code example:
+The proof normalizes $DivMod(n,n,0,n)$ to $DivMod(n,n,1,0)$. The latter is
+already final, so the normalized quotient is $1$ and the normalized remainder is
+$0$.
 
-```scala
-  def longProof(n: BigInt): Boolean = {
-    require(n != 0)
-    assert(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
-    assert(DivMod(a=n, b=n, div=1, mod=0).isFinal) // by definition
-
-    if (n > 0) {
-      equality(
-        DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
-        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to itself, since it is already final (asserted above)
-        DivMod(a=n, b=n, div=1, mod=0)
-      )
-    } else {
-      equality(
-        DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to itself, since it is already final (asserted above)
-        DivMod(a=n, b=n, div=1, mod=0)
-      )
-    }
-    DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
-  }.holds
-```
-
-But we don't need to manually do all these transformations.
-Scala Stainless is capable of verifying that property holds in 
-[ModIdentity](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala) 
-with no issues as follows:
-
-```scala
-  def modIdentity(a: BigInt): Boolean = {
-    require(a != 0)
-    Calc.mod(a, a) == 0
-  }.holds
-```
-
-Similarly, in the next sections, we will prove other properties of the division and modulo operations using only the amount of evidences required to Scala Stainless to verify that they hold.
+This property is verified in [
+  ModIdentity::modIdentity
+](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala). A longer
+source proof showing the normalization path is available in [
+  ModIdentity::longProof
+](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof).
 
 ### Modulo and Division by One
 
@@ -224,20 +215,15 @@ n \text{ div } 1 & = n \\
 \end{aligned}
 ```
 
-The proof of these properties is available in the [mod one proof](
-../../src/main/scala/v1/chapter2/div/properties/ModOne.scala#modOneIsZero
-) and [division by one proof](
-../../src/main/scala/v1/chapter2/div/properties/ModOne.scala#divOneIsN
-).
+Modulo by one follows because every integer is congruent to $0$ modulo $1$.
+Division by one is proved by induction over $n$, using the unit-step increment
+law for the successor case.
 
-```scala
-  def modOneIsZero(n: BigInt): Boolean = {
-    require(n >= 0)
-    assert(ModSmallDividend.modSmallDividend(BigInt(0), BigInt(1)))
-    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), BigInt(1), n))
-    Calc.mod(n, BigInt(1)) == BigInt(0)
-  }.holds
-```
+These properties are verified in [
+  ModOne::modOneIsZero
+](../../src/main/scala/v1/chapter2/div/properties/ModOne.scala) and [
+  ModOne::divOneIsN
+](../../src/main/scala/v1/chapter2/div/properties/ModOne.scala).
 
 ### Quotient Invariance Under Linear Shift
 
@@ -245,15 +231,15 @@ Adding or subtracting the divisor from the dividend changes the quotient by one 
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, div, mod \in \mathbb{Z} & : b \neq 0, a = b \cdot div + mod \\
-mod(a + b, b) & = mod(a, b) \\
-div(a + b, b) & = div(a, b) + 1 \\
-mod(a - b, b) & = mod(a, b) \\
-div(a - b, b) & = div(a, b) - 1 \\
+\forall a,b,q,r \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\text{mod}(a + b, b) & = \text{mod}(a, b) \\
+\text{div}(a + b, b) & = \text{div}(a, b) + 1 \\
+\text{mod}(a - b, b) & = \text{mod}(a, b) \\
+\text{div}(a - b, b) & = \text{div}(a, b) - 1 \\
 \end{aligned}
 ```
 
-Quotient Invariance Under Linear Shift proof is available for the [positive case](
+This property is verified for the [positive case](
 ../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv
 ) and [negative case](
 ../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv
@@ -261,21 +247,22 @@ Quotient Invariance Under Linear Shift proof is available for the [positive case
 
 ### Quotient Invariance Under Linear Shift by Multiplier
 
-Multiplying the dividend by the divisor changes the quotient but leaves the remainder unchanged.
+Adding a multiple of the divisor changes the quotient by that multiplier but
+leaves the remainder unchanged.
 
-As a directly consequence of these properties, we can also prove that:
+As a direct consequence of the one-step shift laws, we can also prove that:
 
 ```math
 \begin{aligned}
-\forall \text{ } a, b, div, mod, m \in \mathbb{Z} & : b \neq 0, a = b \cdot div + mod \\
-mod(a + m \cdot b, b) & = mod(a, b) \\
-div(a + m \cdot b, b) & = div(a, b) + m \\
-mod(a - m \cdot b, b) & = mod(a, b) \\
-div(a - m \cdot b, b) & = div(a, b) - m \\
+\forall a,b,q,r,m \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\text{mod}(a + m \cdot b, b) & = \text{mod}(a, b) \\
+\text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m \\
+\text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) \\
+\text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m \\
 \end{aligned}
 ```
 
-Quotient Invariance Under Linear Shift by Multiplier proof is available for the [positive case](
+This property is verified for the [positive case](
 ../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod
 ) and [negative case](
 ../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod
@@ -296,16 +283,20 @@ in other words, two $DivMod$ instances with the same dividend $a$ and divisor $b
 
 ```math
 \begin{aligned}
-\forall a, b,divX, modX, divY, modY & \in \mathbb{N}, \\ 
+\forall a,b,q_x,r_x,q_y,r_y & \in \mathbb{N}, \\
 \text{where } b & \neq 0 \text{, } \\
-a & = b \cdot divX + modX \text{ and } \\
-a & = b \cdot divX + modY \text{ then } \\
-DivMod(a, b, divX, modX).solve & = DivMod(a, b, divY, modY).solve \\
+a & = bq_x + r_x \text{ and } \\
+a & = bq_y + r_y \text{ then } \\
+DivMod(a,b,q_x,r_x).solve & = DivMod(a,b,q_y,r_y).solve \\
 \end{aligned}
 ```
 
-For every $a, b$ pair, with any $divX, modX, divY, modY$, there is always the same and single solution for the division operation.
-That is proved in the [proof of unique remainder property](
+For every $a,b$ pair, with any candidate quotients and remainders
+$(q_x,r_x)$ and $(q_y,r_y)$ representing the same dividend, normalization
+reaches the same solution.
+This property is verified in [
+  ModIdempotence::modUnique
+](
 ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique
 ).
 
@@ -320,7 +311,9 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 \end{aligned}
 ```
 
-The proof of the modulo idempotence property is available in the [mod idempotence proof](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence).
+This property is verified in [
+  ModIdempotence::modIdempotence
+](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence).
 
 ### Distributivity over Addition
 
@@ -335,9 +328,11 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 \end{aligned}
 ```
 
-As the scala [distribution over addition proof](
+This property is verified in [
+  ModOperations::modAdd
+](
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd
-) can be verified. The third identity, isolating the multiple of $b$ subtracted
+). The third identity, isolating the multiple of $b$ subtracted
 out, is proved directly in [ModIdempotence.scala#modModPlus](
 ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus
 ).
@@ -355,9 +350,11 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 \end{aligned}
 ```
 
-As the scala [distribution over subtraction proof](
+This property is verified in [
+  ModOperations::modLess
+](
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess
-) can be verified. The third identity, isolating the multiple of $b$ subtracted
+). The third identity, isolating the multiple of $b$ subtracted
 out, is proved directly in [ModIdempotence.scala#modModMinus](
 ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus
 ).
@@ -373,9 +370,11 @@ a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
 \end{aligned}
 ```
 
-As scala [proof of invariance](
+This property is verified in [
+  ModOperations::modZeroPlusC
+](
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC
-) can be verified.
+).
 
 ### Symmetrical Modulo Pairs
 
@@ -388,21 +387,13 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 \end{aligned}
 ```
 
-The proof of this property is available in the [symmetrical mods proof](
-../../src/main/scala/v1/chapter2/div/properties/ModSum.scala#sumSymmetricalMods
-).
+Since both $k$ and $b-k$ already lie inside the canonical remainder interval,
+their remainders are themselves. Their sum is therefore $k + (b-k) = b$.
 
-```scala
-  def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
-    require(b > 0)
-    require(step > 0)
-    require(step < b)
-    assert(Calc.mod(step, b) == step)
-    assert(Calc.mod(b - step, b) == b - step)
-    assert(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
-    Calc.mod(step, b) + Calc.mod(b - step, b) == b
-  }.holds
-```
+This property is verified in [
+  ModSum::sumSymmetricalMods
+](../../src/main/scala/v1/chapter2/div/properties/ModSum.scala). The source
+excerpt is included in [Appendix A.2](#a2-symmetrical-modulo-pairs-excerpt).
 
 ### Unit-Step Modulo-Division Increment Law
 
@@ -418,9 +409,11 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
-As the scala [proof for the unit-step increment law](
+This property is verified in [
+  ModOperations::addOne
+](
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne
-) can be verified.
+).
 
 ### Consecutive Integers: Zero Density
 
@@ -429,9 +422,9 @@ This is the basic counting form of modulo periodicity: as we advance through
 consecutive integers, the remainder modulo $p$ visits zero once per complete
 period.
 
-**At most one zero per block.** If `mod(a, p) = 0` and `0 < d < p`, then
-`mod(a + d, p) ≠ 0`. Within any block of size `p` starting from a multiple,
-no other value shares the same remainder.
+**At most one zero per block.** If $\text{mod}(a,p)=0$ and $0<d<p$, then
+$\text{mod}(a+d,p)\neq 0$. Within any block of size $p$ starting from a
+multiple, no later offset inside the same block can also be divisible by $p$.
 
 ```math
 \begin{aligned}
@@ -440,9 +433,10 @@ no other value shares the same remainder.
 \end{aligned}
 ```
 
-**At least one zero per block.** For any starting value `n` and modulus
-`p > 1`, there exists a `k` in `[0, p)` such that `mod(n + k, p) = 0`.
-The `k` is `p - mod(n, p)` when the remainder is nonzero.
+**At least one zero per block.** For any starting value $n$ and modulus
+$p>1$, there exists a $k \in [0,p)$ such that
+$\text{mod}(n+k,p)=0$. The witness is $k=0$ when $n$ is already divisible by
+$p$, and $k=p-\text{mod}(n,p)$ otherwise.
 
 ```math
 \begin{aligned}
@@ -451,40 +445,20 @@ The `k` is `p - mod(n, p)` when the remainder is nonzero.
 \end{aligned}
 ```
 
-**Exactly one zero per block.** Combining the above: among `p` consecutive
-integers starting from `n`, exactly one is divisible by `p`.
+**Exactly one zero per block.** Existence gives a zero offset, while
+uniqueness says two zero offsets in the same block must be equal. Together,
+among $p$ consecutive integers starting from $n$, exactly one is divisible by
+$p$.
 
 ```math
 \begin{aligned}
 \forall n \geq 0,\; p > 1,\;
 \exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0
-  &&\text{[exactlyOneZeroInConsecutive]}
+  &&\text{[existsZero + atMostOneZero]}
 \end{aligned}
 ```
 
-### Stainless Verification
-
-```scala
-def nonzeroAfterZero(a: BigInt, p: BigInt, d: BigInt): Boolean = {
-  require(p > 1); require(a >= 0); require(d > 0); require(d < p)
-  require(Calc.mod(a, p) == 0)
-  Calc.mod(a + d, p) != 0
-}.holds
-
-def existsZero(n: BigInt, p: BigInt): Boolean = {
-  require(p > 1); require(n >= 0)
-  val r = Calc.mod(n, p)
-  if (r == 0) Calc.mod(n, p) == 0
-  else Calc.mod(n + (p - r), p) == 0
-}.holds
-
-def exactlyOneZeroInConsecutive(n: BigInt, p: BigInt): Boolean = {
-  require(p > 1); require(n >= 0)
-  // true (the property is proven by combining nonzeroAfterZero + existsZero)
-}.holds
-```
-
-These properties are verified in the [
+These properties are verified in [
   ConsecutiveIntegers::nonzeroAfterZero
 ](
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
@@ -492,13 +466,18 @@ These properties are verified in the [
   ConsecutiveIntegers::existsZero
 ](
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), and [
+), [
   ConsecutiveIntegers::exactlyOneZeroInConsecutive
 ](
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
+), and [
+  ConsecutiveIntegers::atMostOneZero
+](
+  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
 ).
+The compact source shape is included in [Appendix A.3](#a3-consecutive-zero-density-excerpt).
 
-The density lemmas — [
+The density lemmas, [
   ConsecutiveIntegers::densityForDivisor
 ](
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
@@ -514,18 +493,20 @@ The density lemmas — [
   ConsecutiveIntegers::twoFactorsDensity
 ](
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-) — extend these facts to
+), extend these facts to
 multi-filter settings, proving that the proportion of survivors after
 filtering by a product of pairwise non-dividing factors is the product of the individual survival
-rates. All 11 lemmas are verified in `ConsecutiveIntegers.scala`.
+rates. The maintained source is [
+  ConsecutiveIntegers.scala
+](../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
 
 ## 7. Conclusion
 
 In this article, we constructed the division and modulo operations from first principles,
  using a recursive definition that avoids reliance on any built-in semantics or library
- implementations — a zero-prior-knowledge approach.
-Within this minimal foundation, we proved the following set of fundamental properties and
- identities using formal verification with Scala Stainless:
+ implementations.
+Within this minimal foundation, we mathematically proved and formally verified
+the following set of fundamental properties and identities:
 
 ```math
 \begin{aligned}
@@ -563,28 +544,107 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
-Those properties can be verified using Scala Stainless, as available in the [Summary.scala](
+Those formally verified properties are collected in [Summary.scala](
  ../../src/main/scala/v1/chapter2/div/properties/Summary.scala
-) file. The recursive formulation, combined with machine-checked proofs, ensures both correctness and
- transparency.
+) and supported by the individual proof modules linked above. The recursive
+formulation makes the proof structure transparent: normalize $(q,r)$ without
+changing $a=bq+r$, extract quotient and remainder from the final state, then
+derive the algebraic laws from that normal form.
  
 This work demonstrates how modular arithmetic can be derived, reasoned about, 
- and verified from the ground up, providing a reusable and trustworthy basis for further
- mathematical or computational development.
+ and formally verified from the ground up.
 
-## 8. References
+## 8. Appendix
 
-<a name="ref1" id="ref1" href="#ref1">[1]</a>
-[Formal Verification - Wikipedia, 2026](https://en.wikipedia.org/wiki/Formal_verification)
+### A.1 Identity Property Excerpt
 
-<a name="ref2" id="ref2" href="#ref2">[2]</a>
- Sanghavi, Alok (May 21, 2010). "What is formal verification?". EE Times Asia.
+Source: [
+  ModIdentity.scala
+](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala).
 
-<a name="ref3" id="ref3" href="#ref3">[3]</a>
-[Stainless - Program Verification, 2026](https://epfl-lara.github.io/stainless/intro.html)
+```scala
+def modIdentity(a: BigInt): Boolean = {
+  require(a != 0)
+  Calc.mod(a, a) == 0 && Calc.div(a, a) == 1
+}.holds
+```
 
-## 9. Appendices
+### A.2 Symmetrical Modulo Pairs Excerpt
 
-### Scala Stainless Verification Status
+Source: [
+  ModSum.scala
+](../../src/main/scala/v1/chapter2/div/properties/ModSum.scala).
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
+```scala
+def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
+  require(b > 0)
+  require(step > 0)
+  require(step < b)
+  assert(Calc.mod(step, b) == step)
+  assert(Calc.mod(b - step, b) == b - step)
+  assert(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
+  Calc.mod(step, b) + Calc.mod(b - step, b) == b
+}.holds
+```
+
+### A.3 Consecutive Zero Density Excerpt
+
+Source: [
+  ConsecutiveIntegers.scala
+](../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
+
+```scala
+def nonzeroAfterZero(a: BigInt, p: BigInt, d: BigInt): Boolean = {
+  require(p > 1)
+  require(a >= 0)
+  require(d > 0)
+  require(d < p)
+  require(Calc.mod(a, p) == 0)
+
+  ModOperations.modAdd(a, p, d)
+  ModIdempotence.modIdempotence(d, p)
+  ModSmallDividend.modSmallDividend(d, p)
+
+  Calc.mod(a + d, p) != 0
+}.holds
+
+def existsZero(n: BigInt, p: BigInt): Boolean = {
+  require(p > 1)
+  require(n >= 0)
+
+  val r = Calc.mod(n, p)
+
+  if (r == 0) {
+    Calc.mod(n, p) == 0
+  } else {
+    val k = p - r
+    ModOperations.modAdd(n, p, k)
+    ModSmallDividend.modSmallDividend(k, p)
+    Calc.mod(n + k, p) == 0
+  }
+}.holds
+
+def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
+  require(p > 1)
+  require(n >= 0)
+  require(i >= 0 && i < p)
+  require(j >= 0 && j < p)
+  require(Calc.mod(n + i, p) == 0)
+  require(Calc.mod(n + j, p) == 0)
+
+  val smaller = if (i <= j) i else j
+  val larger  = if (i <= j) j else i
+  val d       = larger - smaller
+  assert(d >= 0 && d < p)
+
+  if (d > 0) {
+    nonzeroAfterZero(n + smaller, p, d)
+  }
+
+  i == j
+}.holds
+```
+
+### A.4 Verification Log
+
+The project verification log is available at [logs/verify.log](../../logs/verify.log).

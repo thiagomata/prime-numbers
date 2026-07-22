@@ -59,7 +59,7 @@ This state update executes two distinct, sequential operations:
 
 The initial cycle length is expanded to the new primorial modulus $M_{k+1} = M_k \cdot p$. Mechanically, the underlying sequence of gaps $G$ is duplicated exactly $p$ times:
 
-$$\underbrace{G :: G :: \dots :: G}_{p \text{ times}}$$
+$$\underbrace{G \mathbin{\texttt{++}} G \mathbin{\texttt{++}} \dots \mathbin{\texttt{++}} G}_{p \text{ times}}$$
 
 If a given gap size $g$ has a population count of $G_k(g)$ at the initial layer, this phase creates exactly $p \cdot G_k(g)$ instances of that gap across the expanded period.
 

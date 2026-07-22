@@ -137,44 +137,123 @@ Every article must pass these checks before publication:
 4. **No ticket references** — Articles are self-contained. Never reference ticket
    files, "the companion ticket", or "ticket XYZ".
 
-5. **No forward references** — An article in chapter N may cite articles in
-   chapters < N. It may reference established mathematical concepts (Eratosthenes'
-   sieve, Chinese Remainder Theorem) but never this project's own later chapters.
+5. **No forward references or future-facing framing** — An article in chapter N
+   may cite articles in chapters < N. It may reference established mathematical
+   concepts (Eratosthenes' sieve, Chinese Remainder Theorem) but never this
+   project's own later chapters. Avoid abstract, introduction, and conclusion
+   prose that justifies the article by what it will support later, such as
+   "used by later sieve proofs" or "needed downstream." The article should stand
+   on the definitions and properties it proves now. Future Work sections are the
+   only place for future directions, and even there they should discuss
+   mathematical extensions rather than repository sequencing.
 
 6. **Conclusion completeness** — Every property from the intro group list appears
    in the conclusion math block. The prose count matches the actual number of
    verified properties. No duplicates.
 
-7. **List concatenation notation** — Use `\mathbin{+\!+}` for list concatenation
-   in LaTeX math blocks. In prose and code backticks, plain `++` is acceptable.
+7. **List cons and concatenation notation** — Use `h :: t` when the left side is
+   a single element and the right side is a list. Use
+   `A \mathbin{\texttt{++}} B` only when both sides are lists. In prose and code
+   backticks, plain `++` is acceptable for Scala list append. In article math,
+   avoid singleton-list construction such as `[x]`, `[e]`, or `[L_t]` when the
+   expression is really cons or insertion; prefer `x :: L_e`,
+   `e :: suffix`, or `A \mathbin{\texttt{++}} (e :: B)`. Display lists such as
+   `[v_0,\dots,v_{n-1}]` and set-builder/range lists remain fine.
 
 8. **Standard references** — When citing Eratosthenes' sieve or the Chinese
    Remainder Theorem, use Hardy & Wright (1979), *An Introduction to the Theory
    of Numbers* (5th ed.), §5.4 and §15.1.
 
-9. **OBJECTS.md parity** — Significant `.holds` lemmas listed in OBJECTS.md
-   should appear in the article. If a lemma is intentionally omitted, flag it
-   as a known gap.
+9. **OBJECTS.md parity** — Significant verified lemmas, helpers, and
+   properties listed in OBJECTS.md should appear in the article. If one is
+   intentionally omitted, flag it as a known gap.
 
-10. **Mermaid diagrams** — For multi-variant definitions (cycle, integral),
+10. **Proof-code embedding** — Follow the `cycle.md` pattern: article sections
+    keep prose, math, and source links. Small inline Scala blocks are fine when
+    they show the core idea with a good signal/noise ratio. Longer proof bodies
+    belong in an appendix only when they are worth keeping close to the article;
+    otherwise link to the source. Any Scala code excerpt placed in an appendix
+    must include a nearby Markdown source link to the repository file that owns
+    the maintained proof. The same applies to source excerpts kept in the main
+    body: include a nearby source link before or immediately after the block.
+    When prose points to an appendix item, verify the item number still matches
+    the current appendix.
+
+11. **Preliminaries over dependency maps** — Prefer a plain `## 2.
+    Preliminaries` section with prose and prerequisite links. Do not add ASCII
+    arrow dependency diagrams such as "Prerequisite Structure" blocks to
+    articles.
+
+12. **No coding-strategy sections** — Articles should explain the mathematics,
+    definitions, verified properties, and source-backed proof code. Solver
+    tactics, cache behavior, verification workflow, and coding-strategy
+    discoveries belong in `LEARNINGS.md` or tickets, not as article sections.
+
+13. **No tutorial voice for verification mechanics** — Do not write article
+    prose like "the `.holds` annotation tells Stainless..." or explain basic
+    verifier mechanics as if teaching the tool. State the theorem or property
+    established by the source proof. This does not mean hiding formal
+    verification: when a property has been formally verified, say so clearly in
+    the abstract, introduction, conclusion, and verification reference. Formal
+    verification is part of the result; only low-level tool mechanics should
+    stay out of the article narrative.
+
+14. **Inline math uses math spans** — Use `$...$` for mathematical prose such
+    as $d \cdot d \le d \cdot q = n$, $d^2 \le n$, and
+    $\text{mod}(n,d)=0$. Reserve backticks for code identifiers, source
+    expressions, and literal Scala syntax.
+
+15. **Definition vs equality notation** — Use `:=` in article math only when
+    introducing a definition, local alias, or notation convention, such as
+    $S := \text{DivMod}(a,b,0,a).\text{solve}$ or
+    $\text{sum}(L) := \cdots$. Use `=` for mathematical equalities, theorem
+    statements, and proof derivation steps. Do not use `:=` merely because the
+    line appears near a definition; it should mean "is defined as."
+
+16. **Math-first theorem articles** — The main body of a theorem article should
+    present the mathematical argument and then state where the property is
+    verified in source. Do not write the article as a Scala source walkthrough;
+    put code excerpts in an appendix only when they add high-signal context.
+
+17. **Helper lemmas as properties** — When helper lemmas matter to the
+    article, give them property names, mathematical statements, proof blocks,
+    and source references. Do not present them as code-name inventory bullets
+    with "used to..." descriptions.
+
+18. **Properties before methods** — Article sections are organized around
+    mathematical properties. Source methods are verification references for
+    those properties, not first-class subjects of the prose.
+
+19. **Conclusion and future work prose** — Conclusion and future-work sections
+    should close the article in prose. Avoid simple bullet lists that merely
+    restate completed tasks or name possible next projects. The conclusion
+    must synthesize what was proven and why it matters, then bring back the
+    core proved properties and proof structure in mathematical form. Include a
+    compact math recap of the main theorem, definitions, and supporting
+    properties that the article established, following the `integral.md` and
+    `cycle.md` pattern.
+    Future work should explain the next mathematical directions and their
+    relationship to the article's scope.
+
+20. **Mermaid diagrams** — For multi-variant definitions (cycle, integral),
     include a Mermaid `classDiagram` block after the intro bullets showing
     classes, key fields, and relationships with section references on the arrows.
     Use `name: Type` for fields, `method(Type) ReturnType` for methods (Mermaid
     auto-adds the `:` before return types, so omit it in source).
 
-11. **Layering** — Each article stands alone within its chapter. It may cite
+21. **Layering** — Each article stands alone within its chapter. It may cite
     earlier-chapter articles as prerequisites using relative paths (`../chapterN/file.md`).
     It must not contain forward dependencies on later chapters' code constructs.
 
-12. **AGENTS.md rules** — The `three-representations`, `framing-integrity`,
+22. **AGENTS.md rules** — The `three-representations`, `framing-integrity`,
     `property-completeness`, and `no-ticket-references` rules in AGENTS.md
     apply to all articles.
 
-13. **Section numbering** — Use standard chapter.section numbering (e.g., `3.1`,
+23. **Section numbering** — Use standard chapter.section numbering (e.g., `3.1`,
     `4.2`). Never use letter suffixes (`4.3a`). Never nest deeper than two levels
     (i.e., `## Chapter`, `### Section`; no `#### 5.2.3.1`).
 
-14. **No status columns in tables** — Property summary tables contain only
+24. **No status columns in tables** — Property summary tables contain only
     verified facts; the default assumption is verification. Do not include
     `[Verified]`, `[Open]`, or `[Unverified]` markers in table columns.
     Open or unverified items belong in Future Work or a dedicated "Unproven

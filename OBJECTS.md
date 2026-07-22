@@ -428,7 +428,7 @@ operate on the canonical `CycleIntegral` class; use
 | **assertRotateOneShiftsIntegralByOne(head,gaps,i)**                          | Rotation-by-1 + head shift = integral shift by 1                                |
 | **assertRotateOneCycleIntegralShiftsByOne(originalCI,shiftedCI,i)**          | Rotated backing cycle + shifted initial value shifts CI by 1 within one period  |
 | **assertRepeatedGapsPreservesIntegral(ci,repeatedCI,times,pos)**             | Repeated gaps preserve integral at bounded pos                                  |
-| **assertTwoGapSumEqualsDiff(ci,k)**                                          | 2-gap telescoping sum                                                           |
+| **assertTwoGapSumEqualsDiff(ci,k)**                                          | Delegate to `CycleIntegralProperties.assertConsecutiveGapSumEqualsDiff`          |
 | **assertMergedGapPositive(ci,fv,from,to)**                                   | Merged survivor gap > 0                                                         |
 | **assertFirstSurvivorIsHead(ci,fv,start,count)**                             | First survivor = CI head                                                        |
 | **assertSurvivorsNonEmpty(ci,fv,start,count)**                               | Survivors list non-empty                                                        |
