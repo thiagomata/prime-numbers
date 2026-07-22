@@ -45,8 +45,8 @@ wording, citations, and coverage of the current Chapter 6 proof surface.
 - `tickets/active/m-interval-density-and-sieve-sequence-v2.md`
 - `tickets/active/chapter6b-curated-proof-spine.md`
 - `tickets/trash/archived/article-reviews/sieve-sequence.md`
-- `editorial-review-articles-2026-07-17.md`
-- `scientific-merit-review-2026-07-17.md`
+- `tickets/trash/archived/article-reviews/editorial-review-articles-2026-07-17.md`
+- `tickets/trash/archived/article-reviews/scientific-merit-review-2026-07-17.md`
 
 ## Alternatives Considered
 
