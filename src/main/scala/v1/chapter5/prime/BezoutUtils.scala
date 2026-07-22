@@ -258,26 +258,36 @@ object BezoutUtils {
    * Trivially p | k*p*y. So p | (k*h*x + k*p*y) == k, hence mod(k, p) == 0.
    */
   /**
-   * If p divides m, then p divides m*c for ANY integer c (sign-agnostic).
+   * If a divisor evenly divides a value, it also divides that value times any other
+   * integer: multiplying a multiple of `divisor` by anything keeps it a multiple of
+   * `divisor`. Holds for any divisor greater than 0 — it does not need to be prime.
    *
    * Math:
-   *   mod(m, p) == 0  ==>  mod(m * c, p) == 0
+   *   mod(multiple, divisor) == 0  ==>  mod(multiple * multiplier, divisor) == 0
    *
-   * m = q*p (from mod==0), so m*c = q*p*c = p*(q*c), and ATimesBSameMod(0, p, q*c)
-   * gives mod(p*(q*c), p) == mod(0, p) == 0. Sign-agnostic via ATimesBSameMod.
+   * multiple == quotient*divisor (from mod == 0), so multiple*multiplier ==
+   * quotient*divisor*multiplier == divisor*(quotient*multiplier), and
+   * ATimesBSameMod(0, divisor, quotient*multiplier) gives
+   * mod(divisor*(quotient*multiplier), divisor) == mod(0, divisor) == 0.
+   * Sign-agnostic via ATimesBSameMod.
+   *
+   * @param multiple   BigInt a value already known to be a multiple of divisor
+   * @param multiplier BigInt any integer to multiply by (sign-agnostic)
+   * @param divisor    BigInt the divisor (divisor > 0; need not be prime)
+   * @return Boolean true if the property holds
    */
-  def assertDivTimesAnyIsDiv(m: BigInt, c: BigInt, p: BigInt): Boolean = {
-    require(p > 0)
-    require(Calc.mod(m, p) == BigInt(0))
-    val q = Calc.div(m, p)
-    assert(CoprimeUtils.assertModZeroImpliesDivTimesBEqualsA(m, p))
-    assert(q * p == m)
-    assert(m * c == q * p * c)
-    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), p, q * c))
-    assert(Calc.mod(BigInt(0), p) == BigInt(0))
-    assert(Calc.mod(p * (q * c), p) == BigInt(0))
-    assert(Calc.mod(m * c, p) == Calc.mod(q * p * c, p))
-    Calc.mod(m * c, p) == BigInt(0)
+  def assertDivTimesAnyIsDiv(multiple: BigInt, multiplier: BigInt, divisor: BigInt): Boolean = {
+    require(divisor > 0)
+    require(Calc.mod(multiple, divisor) == BigInt(0))
+    val quotient = Calc.div(multiple, divisor)
+    assert(CoprimeUtils.assertModZeroImpliesDivTimesBEqualsA(multiple, divisor))
+    assert(quotient * divisor == multiple)
+    assert(multiple * multiplier == quotient * divisor * multiplier)
+    assert(AdditionAndMultiplication.ATimesBSameMod(BigInt(0), divisor, quotient * multiplier))
+    assert(Calc.mod(BigInt(0), divisor) == BigInt(0))
+    assert(Calc.mod(divisor * (quotient * multiplier), divisor) == BigInt(0))
+    assert(Calc.mod(multiple * multiplier, divisor) == Calc.mod(quotient * divisor * multiplier, divisor))
+    Calc.mod(multiple * multiplier, divisor) == BigInt(0)
   }.holds
 
   def assertPrimeDivProductImpliesDivFactor(k: BigInt, h: BigInt, p: BigInt): Boolean = {

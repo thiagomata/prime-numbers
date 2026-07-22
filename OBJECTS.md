@@ -105,10 +105,10 @@ Last updated: 2026-07-11
 | **zeroRepeatsEveryP(n,p,m)**                  | Zero repeats with period p                                |
 | **zerosInMultipleBlocks(n,p,m)**              | Count of zeros in m+1 blocks is m+1                       |
 | **countModZeroEqualsM(a,p,m)**                | m multiples of p in m*p consecutive                       |
-| **twoPrimesDensity(a,p1,p2,m)**               | Density for two primes                                    |
+| **twoFactorsDensity(a,p1,p2,m)**              | Density for two factors                                   |
 | **densityForDivisor(a,modulus,divisor,m)**    | Density for divisor of modulus                            |
 | **densityPreservedAfterFiltering(a,p1,p2,m)** | Density preserved after removing p1-multiples             |
-| **densityForPrimeList(a,primes,M,m)**         | Density for a list of primes dividing M                   |
+| **densityForFactorList(a,factors,M,m)**       | Density for a list of pairwise non-dividing factors dividing M |
 
 ## 2.9 Summary (`v1.chapter2.div.properties.Summary`)
 
@@ -348,6 +348,7 @@ Last updated: 2026-07-11
 | Lemma                                              | Statement                                             |
 |----------------------------------------------------|-------------------------------------------------------|
 | **assertCycleAndRecursiveCycleMathForSmallValues** | ModCycle and RecursiveCycle agree for small positions |
+| **assertCycleAndRecursiveCycleMathForAnyValues**   | ModCycle and RecursiveCycle agree for all positions   |
 
 ## 4.7 GapCycle (`v1.chapter4.cycle.gap.GapCycle`)
 
@@ -478,7 +479,7 @@ operate on the canonical `CycleIntegral` class; use
 | **assertGcdDividesBoth(a,b)**                                     | Extended GCD result divides both inputs                                                       |
 | **assertCoprimeGcdOne(h,p)**                                      | Positive `h < p` and `mod(h,p) != 0` imply `gcd(h,p) == 1` for prime `p`                      |
 | **assertCoprimeLinearCombinationOne(h,p)**                        | Coprime `h` and prime `p` admit a Bezout combination equal to 1                               |
-| **assertDivTimesAnyIsDiv(m,c,p)**                                 | Divisibility by `p` is preserved when multiplying by any integer `c`                          |
+| **assertDivTimesAnyIsDiv(multiple,multiplier,divisor)**           | Divisibility by `divisor` is preserved when multiplying by any integer `multiplier`; `divisor` need not be prime |
 | **assertPrimeDivProductImpliesDivFactor(k,h,p)**                  | If prime `p` divides `k*h` and `0 < h < p`, then `p` divides `k`                              |
 | **assertPrimeDivKhImpliesDivK(k,h,p)**                            | If prime `p` divides `k*h` and `mod(h,p) != 0`, then `p` divides `k`                          |
 | **assertPrimeProductNotDivisible(k,h,p)**                         | If neither factor is divisible by prime `p`, then `k*h` is not divisible by `p`               |
@@ -560,7 +561,7 @@ operate on the canonical `CycleIntegral` class; use
 |----------------------------------------------------------|------------------------------------------------------------------------|
 | **assertHeadDensityPreservedAfterPreviousFiltersConditional(start,head,previous,blocks)** | Conditional Track B2 bridge: repeated two-prime density preservation over previous filters |
 | **assertHeadDensityPreservedAfterAllPreviousFilters(primes,start,blocks)** | `AllPrimesSoFarList` wrapper discharging previous-prime positivity and `< head` bounds for the Track B2 bridge |
-| **assertDensityForAllPrimesSoFarConditional(primes,start,blocks)** | Conditional bridge from `AllPrimesSoFarList` to `densityForPrimeList` |
+| **assertDensityForAllPrimesSoFarConditional(primes,start,blocks)** | Conditional bridge from `AllPrimesSoFarList` to `densityForFactorList` |
 | **assertPrimeValuesDividePrimorial(primes)**             | Prime values from `AllPrimesSoFarList` all divide their primorial      |
 
 ---

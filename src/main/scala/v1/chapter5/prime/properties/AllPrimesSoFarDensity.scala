@@ -219,7 +219,7 @@ object AllPrimesSoFarDensity {
     assert(modulus > BigInt(0))
 
     if (elements.isEmpty) {
-      ConsecutiveIntegers.allPrimesDivideM(elements, modulus)
+      ConsecutiveIntegers.allFactorsDivideM(elements, modulus)
     } else {
       val p = elements.head
       val tailProduct = ListProduct.product(elements.tail)
@@ -235,14 +235,14 @@ object AllPrimesSoFarDensity {
       assert(modulus % p == BigInt(0))
 
       assertAllElementsDivideScaledProduct(elements.tail, tailMultiplier)
-      assert(ConsecutiveIntegers.allPrimesDivideM(elements.tail, tailModulus))
+      assert(ConsecutiveIntegers.allFactorsDivideM(elements.tail, tailModulus))
       assert(product == p * tailProduct)
       assert(modulus == tailModulus)
-      assert(ConsecutiveIntegers.allPrimesDivideM(elements.tail, modulus))
-      ConsecutiveIntegers.allPrimesDivideM(elements, modulus)
+      assert(ConsecutiveIntegers.allFactorsDivideM(elements.tail, modulus))
+      ConsecutiveIntegers.allFactorsDivideM(elements, modulus)
     }
   }.ensuring(res =>
-    res && ConsecutiveIntegers.allPrimesDivideM(
+    res && ConsecutiveIntegers.allFactorsDivideM(
       elements,
       multiplier * ListProduct.product(elements)
     )
@@ -250,7 +250,7 @@ object AllPrimesSoFarDensity {
 
   /**
    * Conditional bridge from the concrete AllPrimesSoFarList stage object to the
-   * Chapter 2 prime-list density theorem.
+   * Chapter 2 factor-list density theorem.
    *
    * This lemma deliberately does not discharge the prime-list structure yet.
    * Callers must still provide the raw density preconditions for the extracted
@@ -270,9 +270,9 @@ object AllPrimesSoFarDensity {
 
     require(modulus > BigInt(0))
     require(ConsecutiveIntegers.noMultiplesInList(values))
-    require(ConsecutiveIntegers.allPrimesDivideM(values, modulus))
+    require(ConsecutiveIntegers.allFactorsDivideM(values, modulus))
 
-    ConsecutiveIntegers.densityForPrimeList(start, values, modulus, blocks)
+    ConsecutiveIntegers.densityForFactorList(start, values, modulus, blocks)
   }.holds
 
   /**
@@ -326,7 +326,7 @@ object AllPrimesSoFarDensity {
     assertPrimeValuesNoMultiplesInAllPrimesSoFar(primes)
     assert(ConsecutiveIntegers.noMultiplesInList(values))
     assertPrimeValuesDividePrimorial(primes)
-    assert(ConsecutiveIntegers.allPrimesDivideM(values, modulus))
+    assert(ConsecutiveIntegers.allFactorsDivideM(values, modulus))
     assertDensityForAllPrimesSoFarConditional(primes, start, blocks)
   }.holds
 
@@ -344,7 +344,7 @@ object AllPrimesSoFarDensity {
     assert(ListProductDiv.allElementsDivideProduct(values))
 
     if (values.isEmpty) {
-      ConsecutiveIntegers.allPrimesDivideM(values, modulus)
+      ConsecutiveIntegers.allFactorsDivideM(values, modulus)
     } else {
       assert(values.head > BigInt(1))
       assert(ListProduct.positiveProduct(values))
@@ -355,13 +355,13 @@ object AllPrimesSoFarDensity {
       assert(modulus % values.head == BigInt(0))
       assert(ListProductDiv.allElementsDivideProduct(values.tail))
       assertAllElementsDivideScaledProduct(values.tail, values.head)
-      assert(ConsecutiveIntegers.allPrimesDivideM(
+      assert(ConsecutiveIntegers.allFactorsDivideM(
         values.tail,
         values.head * ListProduct.product(values.tail)
       ))
       assert(modulus == values.head * ListProduct.product(values.tail))
-      assert(ConsecutiveIntegers.allPrimesDivideM(values.tail, modulus))
-      ConsecutiveIntegers.allPrimesDivideM(values, modulus)
+      assert(ConsecutiveIntegers.allFactorsDivideM(values.tail, modulus))
+      ConsecutiveIntegers.allFactorsDivideM(values, modulus)
     }
   }.holds
 }

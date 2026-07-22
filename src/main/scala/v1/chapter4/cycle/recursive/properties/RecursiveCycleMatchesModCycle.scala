@@ -88,6 +88,6 @@ object RecursiveCycleMatchesModCycle {
       assert(cycle(position) == cycle(position - list.size))
       assert(recCycle(position) == recCycle(position - list.size))
     }
-    assert(cycle(position) == recCycle(position))
-  }
+    cycle(position) == recCycle(position)
+  }.holds
 }

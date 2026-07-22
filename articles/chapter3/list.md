@@ -180,8 +180,8 @@ The implementation of `product` is available in [ListProduct](
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- Tail access shift: `tail(L)(i) = L(i + 1)` for `i < |tail(L)|`
-- Last element identity: `list(size - 1) = list.last`
+- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): `tail(L)(i) = L(i + 1)` for `i < |tail(L)|`
+- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): `list(size - 1) = list.last`
 
 ### 3.1 Tail Access Shift
 
@@ -199,14 +199,19 @@ L &= [x_0, x_1, x_2, \dots, x_{n - 1}]                                & \qquad \
 L &= [x_0] \mathbin{+\!+} [x_1, x_2, \dots, x_{n - 1}]                             & \qquad \text{[Concatenation definition]} \\
 L &= \text{head}(L) \mathbin{+\!+} \text{tail}(L)                                  & \qquad \text{[Head and Tail definition]} \\
 \text{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}]                        & \qquad \text{[Tail definition]} \\
-L{i} &= x_i = \text{tail}(L){(i + 1)} \text{ } \forall \text{ }  0 < i < |L|  \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{tail}(L)_i &= x_{i + 1} = L_{i + 1} \text{ } \forall \text{ }  0 \le i < |\text{tail}(L)|  \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
 $$
 
-This property is verified in the [
+This forward shift is verified in the [
   ListUtilsProperties::accessTailShiftRight
 ](
   ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
+). The reverse indexing form, $L_i = \text{tail}(L)_{i - 1}$ for $i > 0$, is
+verified in [
+  ListBoundUtils::assertTailShiftLeft
+](
+  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
 ). The full Scala verification code is in Appendix A.1.
 
 ### 3.2 Last Element Identity
@@ -292,10 +297,10 @@ This property is verified in the [
 
 Four constructions for extracting a sublist by index range — all equivalent.
 
-- Tail-recursive slice: builds from the end by prepending
-- Head-recursive slice: builds from the front
-- Index-range slice: accumulates by position within a range
-- Slice append consistency: appending a singleton preserves the slice structure
+- [Tail-recursive slice](../../src/main/scala/v1/chapter3/list/ListUtils.scala): builds from the end by prepending
+- [Head-recursive slice](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): builds from the front
+- [Index-range slice](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): accumulates by position within a range
+- [Slice append consistency](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): appending a singleton preserves the slice structure
 
 ### 4.1 Tail-Recursive Slice
 
@@ -372,7 +377,7 @@ The head-recursive slice builds the sublist from the front, cons-ing elements as
 \text{headRecursiveSlice}(L, i, j) :=
 \begin{cases}
 [ L_i ] & \text{if } i = j \\
-L_i \mathbin{+\!+} \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
+L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
 
@@ -400,8 +405,8 @@ Show:
 
 ```math
 \begin{aligned}
-\text{headRecursiveSlice}(L, i, j) &= L_i \mathbin{+\!+} \text{headRecursiveSlice}(L, i + 1, j) & \qquad \text{[by definition]} \\
-&= L_i \mathbin{+\!+} L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
+\text{headRecursiveSlice}(L, i, j) &= L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \qquad \text{[by definition]} \\
+&= L_i :: L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
 &= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
 \end{aligned}
 ```
@@ -433,7 +438,7 @@ The index-range slice builds the sublist by direct index access, recursing forwa
 \text{indexRangeValues}(L, i, j) :=
 \begin{cases}
 [ L_i ] & \text{if } i = j \\
-L_i \mathbin{+\!+} \text{indexRangeValues}(L, i + 1, j) & \text{if } i < j
+L_i :: \text{indexRangeValues}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
 
@@ -461,8 +466,8 @@ Show:
 
 ```math
 \begin{aligned}
-\text{indexRangeValues}(L, i, j) &= L_i \mathbin{+\!+} \text{indexRangeValues}(L, i + 1, j) & \qquad \text{[by definition]} \\
-&= L_i \mathbin{+\!+} L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
+\text{indexRangeValues}(L, i, j) &= L_i :: \text{indexRangeValues}(L, i + 1, j) & \qquad \text{[by definition]} \\
+&= L_i :: L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
 &= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
 \end{aligned}
 ```
@@ -504,10 +509,10 @@ This property is verified in the [
 
 The recursive `sum` matches the mathematical summation, and addition commutes over concatenation.
 
-- Sum matches summation: `sum(L) = Σ L[i]` for `i = 0..size-1`
-- Left append preserves sum: `sum(x :: L) = x + sum(L)`
-- Sum over concatenation: `sum(A ++ B) = sum(A) + sum(B)`
-- Commutativity of sum: `sum(A ++ B) = sum(B ++ A)`
+- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(L) = Σ L[i]` for `i = 0..size-1`
+- [Left append preserves sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(x :: L) = x + sum(L)`
+- [Sum over concatenation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(A ++ B) = sum(A) + sum(B)`
+- [Commutativity of sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): `sum(A ++ B) = sum(B ++ A)`
 
 ### 5.1 Sum matches Summation
 
@@ -703,7 +708,7 @@ list is greater than zero.
 
 ```math
 \begin{aligned}
-\text{allGreaterThan}(L, 0) \wedge L \neq L_e \implies \text{sum}(L) > 0
+(\forall x \in L,\, x > 0) \wedge L \neq L_e \implies \text{sum}(L) > 0
 \end{aligned}
 ```
 
@@ -721,11 +726,11 @@ This property is verified in the [
 
 The product operation, from singleton identity through concatenation distributivity to positivity.
 
-- Singleton product: `product([x]) = x`
-- Product pull-out element: `product(x :: L) = x * product(L)`
-- Product over concatenation: `product(A ++ B) = product(A) * product(B)`
-- Commutativity of product: `product(A ++ B) = product(B ++ A)`
-- Positive product: product of all-positive list is positive
+- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product([x]) = x`
+- [Product pull-out element](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(x :: L) = x * product(L)`
+- [Product over concatenation](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(A ++ B) = product(A) * product(B)`
+- [Commutativity of product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): `product(A ++ B) = product(B ++ A)`
+- [Positive product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): product of all-positive list is positive
 
 ### 6.1 Singleton Product
 
@@ -866,9 +871,9 @@ This property is verified in the [
 
 Every element of a list divides its total product.
 
-- Head divides product: `product(L) mod L.head = 0`
-- All elements divide product: every element divides `product(L)`
-- Inserted element divides product: `x` divides `product(x :: L)`
+- [Head divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): `product(L) mod L.head = 0`
+- [All elements divide product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides `product(L)`
+- [Inserted element divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): `x` divides `product(x :: L)`
 
 ### 7.1 Head Divides Product
 
@@ -907,7 +912,7 @@ Every element of a positive list divides the product of the list.
 
 **Base case**: $elements = L_e$ — vacuously true.
 
-**Inductive step**: For $\text{head}(p) :: tail$, we have $\text{product}(elements) = p \cdot \text{product}(tail)$. By modulo identity, $p$ divides the product. By the inductive hypothesis, every element of $tail$ also divides $\text{product}(tail)$, and hence divides $p \cdot \text{product}(tail) = \text{product}(elements)$.
+**Inductive step**: For $\text{head}(p) :: tail$, we have $\text{product}(elements) = p \cdot \text{product}(tail)$. By modulo identity, $p$ divides the product. By the inductive hypothesis, every element of $tail$ appears as the head of some recursive sublist and divides that sublist's product. Multiplying that sublist product by the preceding positive factors preserves divisibility, so every tail element also divides $p \cdot \text{product}(tail) = \text{product}(elements)$.
 
 This property is verified in the [
   ListProductDiv::allElementsDivideProduct
@@ -942,12 +947,12 @@ This property is verified in the [
 
 ## 8. Bound and Order Properties
 
-How the predicate `allGreaterThan` propagates from a whole list to its elements and through concatenation.
+How the property $\forall x \in L,\, x > v$ propagates from a whole list to its elements and through concatenation.
 
-- All greater than at index: `allGreaterThan(L, v) ⇒ L(pos) > v`
-- Append preserves all greater than: `allGreaterThan(A, v) ∧ allGreaterThan(B, v) ⇒ allGreaterThan(A ++ B, v)`
-- All greater than head and tail: the head/tail decomposition propagates the bound
-- Index checking lemmas: efficient bound verification
+- [All greater than at index](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
+- [Append preserves all greater than](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{+\!+} B),\, x > v$
+- [All greater than head and tail](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): the head/tail decomposition propagates the bound
+- [Index checking lemmas](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): efficient bound verification
 
 ### 8.1 All Greater Than at Index
 
@@ -955,7 +960,7 @@ For every list where all elements are greater than a value, any element at a val
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-\text{allGreaterThan}(list, value) \wedge 0 \leq pos < |list| \implies list(pos) > value
+(\forall x \in list,\, x > value) \wedge 0 \leq pos < |list| \implies list(pos) > value
 ```
 
 This property is verified in the [
@@ -970,8 +975,8 @@ If both lists have all elements greater than a value, then their concatenation a
 
 ```math
 \forall \text{ } listA, listB \in 𝕃,\ \forall \text{ } value \in 𝕊 \\
-\text{allGreaterThan}(listA, value) \wedge \text{allGreaterThan}(listB, value) \\
-\implies \text{allGreaterThan}(listA \mathbin{+\!+} listB, value)
+(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value) \\
+\implies \forall x \in (listA \mathbin{+\!+} listB),\, x > value
 ```
 
 This property is verified in the [
@@ -986,7 +991,7 @@ For a non-empty list where all elements are greater than a value, the head is gr
 
 ```math
 \forall \text{ } list \in 𝕃,\ list \neq L_e,\ \forall \text{ } value \in 𝕊 \\
-\text{allGreaterThan}(list, value) \implies list.head > value \wedge \text{allGreaterThan}(list.tail, value)
+(\forall x \in list,\, x > value) \implies list.head > value \wedge (\forall x \in list.tail,\, x > value)
 ```
 
 This property is verified in the [
@@ -1032,7 +1037,7 @@ both halves.
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ 0 \leq index \leq |list| \\
-\text{allGreaterThan}(list, value) \implies \text{allGreaterThan}(front, value) \wedge \text{allGreaterThan}(back, value) \\
+(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value) \\
 \text{where } (front, back) = \text{splitAt}(list, index)
 ```
 
@@ -1044,22 +1049,22 @@ This property is verified in the [
 
 ### 8.7 The All Less Than Family
 
-`allLessThan` is the upper-bound mirror of `allGreaterThan`, and it satisfies
-the same shape of properties: append preservation, split preservation, and
+The upper-bound mirror of the property above, $\forall x \in L,\, x < b$,
+satisfies the same shape of properties: append preservation, split preservation, and
 transitivity across a looser bound.
 
 ```math
 \begin{aligned}
-\text{allLessThan}(listA, bound) \wedge \text{allLessThan}(listB, bound)
-  &\implies \text{allLessThan}(listA \mathbin{+\!+} listB, bound)
+(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound)
+  &\implies \forall x \in (listA \mathbin{+\!+} listB),\, x < bound
   &&\text{[Append]} \\
-\text{allLessThan}(list, bound) \wedge 0 \leq index \leq |list|
-  &\implies \text{allLessThan}(front, bound) \wedge \text{allLessThan}(back, bound)
+(\forall x \in list,\, x < bound) \wedge 0 \leq index \leq |list|
+  &\implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound)
   &&\text{[Split]} \\
-\text{allLessThan}(list, bound) \wedge bound \leq bound_2
-  &\implies \text{allLessThan}(list, bound_2)
+(\forall x \in list,\, x < bound) \wedge bound \leq bound_2
+  &\implies \forall x \in list,\, x < bound_2
   &&\text{[Transitivity]} \\
-\text{allLessThan}(list, bound) \wedge 0 \leq pos < |list|
+(\forall x \in list,\, x < bound) \wedge 0 \leq pos < |list|
   &\implies list(pos) < bound
   &&\text{[At Index]}
 \end{aligned}
@@ -1087,7 +1092,7 @@ These properties are verified in the [
 
 All three slice constructions produce identical results for every valid input.
 
-- Slice equivalence: tail-recursive, head-recursive, and index-range slices are identical for all valid inputs
+- [Slice equivalence](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): tail-recursive, head-recursive, and index-range slices are identical for all valid inputs
 
 ### 9.1 Slice Equivalence Lemma
 
@@ -1114,9 +1119,9 @@ This property is verified in the [
 
 A shifted list advances the head by one gap and re-indexes positions. Three lemmas characterize this operation.
 
-- Same period: shifting does not change the period (gap list length)
-- Adjacent difference equals gap: `apply(i + 1) - apply(i) = gaps(i)`
-- Gap translation: shifting translates the gap sequence by one index
+- [Same period](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting does not change the period (gap list length)
+- [Adjacent difference equals gap](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): consecutive shifted-list values differ by the corresponding gap
+- [Gap translation](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting translates the gap sequence by one index
 
 A shifted list is a value sequence viewed one position later, with
 the head advanced by the first gap. Unlike rotation (which re-indexes without
@@ -1131,6 +1136,8 @@ recomputing the cumulative sums.
 ```math
 \begin{aligned}
 \text{ShiftedList}(h,\; [g_0,\dots,g_{n-1}]) &: \text{head} = h,\; \text{gaps} = [g_0,\dots,g_{n-1}] \\
+\text{value}_{h,G}(0) &= h \\
+\text{value}_{h,G}(i + 1) &= \text{value}_{h,G}(i) + G_i \\
 \text{shift}(h,\; [g_0,\dots,g_{n-1}]) &= \text{ShiftedList}(h + g_0,\; [g_1,\dots,g_{n-1}, g_0])
 \end{aligned}
 ```
@@ -1157,13 +1164,13 @@ def assertSamePeriod(otherSize: BigInt): Boolean = {
 
 ### 10.2 Adjacent Difference Equals Gap
 
-For any valid position, the difference between consecutive values equals the
-gap at that position. This is a direct consequence of the integral-style
-definition of `apply`.
+For any valid position, the difference between consecutive shifted-list values
+equals the gap at that position. This is a direct consequence of the cumulative
+value definition above.
 
 ```math
 \begin{aligned}
-\text{apply}(i + 1) - \text{apply}(i) = \text{gaps}(i)
+\text{value}_{h,G}(i + 1) - \text{value}_{h,G}(i) = G_i
 \quad \text{for } 0 \leq i < \text{size} - 1 \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
@@ -1187,8 +1194,8 @@ gap list is rotated by one position.
 
 ```math
 \begin{aligned}
-\text{shifted.apply}(i + 1) - \text{shifted.apply}(i)
-  &= \text{orig.apply}(i + 2) - \text{orig.apply}(i + 1)
+\text{value}_{\text{shift}(h,G)}(i + 1) - \text{value}_{\text{shift}(h,G)}(i)
+  &= \text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
   && \text{[Gap translation]} \\
   &= \text{gaps}(i + 1)
   && \text{[By adjacent-difference identity for both views]}
@@ -1229,10 +1236,10 @@ These properties are verified in the [
 
 Cyclic permutation preserves every structural invariant: the same elements, same size, same sum, and same bounds.
 
-- Same elements: `rotateAt(L, k).contains(x) ⇔ L.contains(x)`
-- Same size and sum: `|rotateAt(L, k)| = |L|`, `sum(rotateAt(L, k)) = sum(L)`
-- Bound preservation: `allGreaterThan` and `allLessThan` survive rotation
-- Index shift by one: `rotateAt(L, 1)(i) = L(i + 1)`
+- [Same elements](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
+- [Same size and sum](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $|\text{rotateAt}(L, k)| = |L|$, $\sum \text{rotateAt}(L, k) = \sum L$
+- [Bound preservation](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $(\forall x \in L,\, x > v) \implies \forall x \in \text{rotateAt}(L, k),\, x > v$, and likewise for the upper bound $\forall x \in L,\, x < b$
+- [Index shift by one](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, 1)(i) = L(i + 1)$
 
 Rotating a list at index `k` swaps the front (first `k` elements)
 and back (remaining elements) — a cyclic permutation. Rotation preserves every
@@ -1284,8 +1291,8 @@ Sum over `append` is additive and commutative.
 
 ```math
 \begin{aligned}
-\text{allGreaterThan}(L, v) &\implies \text{allGreaterThan}(\text{rotateAt}(L, k), v) \\
-\text{allLessThan}(L, b) &\implies \text{allLessThan}(\text{rotateAt}(L, k), b)
+(\forall x \in L,\, x > v) &\implies \forall x \in \text{rotateAt}(L, k),\, x > v \\
+(\forall x \in L,\, x < b) &\implies \forall x \in \text{rotateAt}(L, k),\, x < b
 \end{aligned}
 ```
 
@@ -1358,7 +1365,7 @@ These properties are:
 ```
 ```math
 \begin{aligned}
-f > t, \quad 0 \leq i < |L|\\
+0 \leq f \leq t < |L|, \quad 0 \leq i < |L|\\
 \\
 \end{aligned}
 ```
@@ -1397,18 +1404,18 @@ i < |L| - 1,\, |L| > 1 &\implies \text{tail}(L)_i &=~ &L_{i+1} \\
 
 ```math
 \begin{aligned}
-&\text{allGreaterThan}(L, v) &\implies~ &L(\text{pos}) > v \quad &\text{[Bound at Index]} \\
-&\text{allGreaterThan}(L, v) &\implies~ &\text{allGreaterThan}(\text{rotateAt}(L, k), v) \quad &\text{[Rotation Same Bounds]} \\
-&\text{allGreaterThan}(A, v) \land \text{allGreaterThan}(B, v)  &\implies~ &\text{allGreaterThan}(A \mathbin{+\!+} B, v) \quad &\text{[Bound over Concatenation]} \\
+&(\forall x \in L,\, x > v) &\implies~ &L(\text{pos}) > v \quad &\text{[Bound at Index]} \\
+&(\forall x \in L,\, x > v) &\implies~ &\forall x \in \text{rotateAt}(L, k),\, x > v \quad &\text{[Rotation Same Bounds]} \\
+&(\forall x \in A,\, x > v) \land (\forall x \in B,\, x > v)  &\implies~ &\forall x \in (A \mathbin{+\!+} B),\, x > v \quad &\text{[Bound over Concatenation]} \\
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
 
-&\text{GapList}(h, G).\text{apply}(i + 1) 
+&\text{value}_{h,G}(i + 1)
 &-~ \quad 
-&\text{GapList}(h, G).\text{apply}(i) \quad
+&\text{value}_{h,G}(i) \quad
 &=~  \quad
 &G(i) \quad 
 &\text{[Adjacent Difference]} \\
@@ -1430,11 +1437,11 @@ i < |L| - 1,\, |L| > 1 &\implies \text{tail}(L)_i &=~ &L_{i+1} \\
 &\sum L
 &&&\text{[Rotation Same Sum]} \\
 
-&\text{shift}(h, G).\text{apply}(i + 1) 
+&\text{value}_{\text{shift}(h,G)}(i + 1)
 &- \quad
-&\text{shift}(h, G).\text{apply}(i)
+&\text{value}_{\text{shift}(h,G)}(i)
 &=~ \quad
-&\text{GapList}(h, G).\text{apply}(i + 2) - \text{GapList}(h, G).\text{apply}(i + 1)
+&\text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
 &\text{[Gap Translation]} \\
 
 
@@ -1511,11 +1518,11 @@ with the current, mathematically rigorous model.
 
 ## 15. References
 
-<a name="ref0" id="ref0" href="#ref0">[1]</a>  
+<a name="ref1" id="ref1" href="#ref1">[1]</a>
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.  
 Proceedings of the ACM on Programming Languages, OOPSLA Issue. 
 
-<a name="ref1" id="ref1" href="#ref1">[2]</a>  
+<a name="ref2" id="ref2" href="#ref2">[2]</a>
 Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
 Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
 
@@ -1523,12 +1530,16 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
 
 ### A.1 Tail Access Shift — accessTailShiftRight
 
+Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+
 ```scala
   def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
     require(list.nonEmpty && position >= 0 && position < list.tail.size)
     list.tail(position) == list(position + 1)
   }.holds
 ```
+
+Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
@@ -1550,6 +1561,8 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
 
 ### A.2 Last Element Identity — assertLastEqualsLastPosition
 
+Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+
 ```scala
   def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
     require(list.nonEmpty)
@@ -1567,6 +1580,8 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
 ```
 
 ### A.3 Tail-Recursive Slice — slice
+
+Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
@@ -1588,6 +1603,8 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
 
 ### A.4 Head-Recursive Slice — headRecursiveSlice
 
+Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+
 ```scala
 def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
   require(0 <= from && from <= to && to < list.length)
@@ -1599,6 +1616,8 @@ def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ### A.5 Index-Range Slice — indexRangeValues
 
+Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+
 ```scala
 def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
   require(0 <= from && from <= to && to < list.length)
@@ -1609,6 +1628,8 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 ```
 
 ### A.6 Slice Append Consistency — assertAppendToSlice
+
+Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -1625,6 +1646,8 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ### A.7 Sum Implementation — sum
 
+Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+
 ```scala
   def sum(loopList: List[BigInt]): BigInt = {
     if (loopList.isEmpty) {
@@ -1637,6 +1660,8 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ### A.8 Left Append Preserves Sum — listSumAddValue
 
+Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+
 ```scala
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
     ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
@@ -1644,6 +1669,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.9 Sum over Concatenation — listCombine
+
+Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -1666,6 +1693,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.10 Commutativity of Sum — listSwap
 
+Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+
 ```scala
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
     listCombine(listA, listB)
@@ -1679,6 +1708,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.11 Singleton Product — singletonProduct
 
+Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+
 ```scala
   def singletonProduct(x: BigInt): Boolean = {
     product(List(x)) == x
@@ -1686,6 +1717,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.12 Product Pull-Out Element — productPullOutElement
+
+Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productPullOutElement(
@@ -1705,6 +1738,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.13 Product over Concatenation — productConcatLemma
+
+Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productConcatLemma(
@@ -1740,6 +1775,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.14 Commutativity of Product — productConcatCommutative
 
+Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+
 ```scala
   def productConcatCommutative(
                                 listA: List[BigInt],
@@ -1771,6 +1808,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.15 Positive Product — positiveProduct
 
+Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+
 ```scala
   def positiveProduct(elements: List[BigInt]): Boolean = {
     decreases(elements.size)
@@ -1788,6 +1827,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.16 Head Divides Product — ListProductDiv
+
+Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def ListProductDiv(
@@ -1823,6 +1864,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.17 All Elements Divide Product — allElementsDivideProduct
+
+Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def allElementsDivideProduct(
@@ -1868,6 +1911,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.18 Inserted Element Divides Product — insertedElementDividesProduct
+
+Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def insertedElementDividesProduct(
@@ -1916,6 +1961,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.19 All Greater Than at Index — assertGreaterThanAtIndex
 
+Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+
 ```scala
   def assertGreaterThanAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
     require(allGreaterThan(list, value))
@@ -1932,6 +1979,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.20 Append Preserves All Greater Than — assertAppendGreaterThan
+
+Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertAppendGreaterThan(listA: List[BigInt], listB: List[BigInt], value: BigInt): Boolean = {
@@ -1951,6 +2000,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.21 All Greater Than Head and Tail — assertGreaterThanHeadTail
 
+Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+
 ```scala
   def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
     require(allGreaterThan(list, value))
@@ -1960,6 +2011,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.22 Check All Bigger at Index — checkAllBiggerThanValueAtIndex
+
+Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -1971,6 +2024,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.23 Check All Bigger Head and Tail — checkAllBiggerThanValueHeadTail
 
+Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+
 ```scala
   def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
     require(ListUtils.checkAllBiggerThanValue(list, value))
@@ -1980,6 +2035,8 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ```
 
 ### A.24 Slice Equivalence — tailHeadAndIndexRangeSlicesAreEqual
+
+Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
   def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -2014,4 +2071,3 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 ## Appendix B: Stainless Verification Log Output
 
 The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
-

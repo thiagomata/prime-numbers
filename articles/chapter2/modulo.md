@@ -52,7 +52,7 @@ To do that, we will use [Scala Stainless](https://epfl-lara.github.io/stainless/
 ## 2. Limitations
 
 The implementation presented in this article is limited to the division and modulo operations for integers. 
-It goals is to make available a set of lemmas and proofs that can be verified and used as a base to prove other 
+Its goal is to make available a set of lemmas and proofs that can be verified and used as a base to prove other
 properties related to the division and modulo operations.
 Therefore, the implementation is optimized to correctness and not to performance.
 
@@ -81,9 +81,7 @@ dividend \text{ div } divisor & = quotient \\
 
 ## 4. Recursive Definition
 
-Some properties of the division and modulo can be proved using the recursive definition of the division and modulo operations.
-The recursive definition of the division and modulo operations are:
-
+We introduce a recursive definition of division and modulo because it is better suited to formal proof: Stainless can verify properties directly from a recursive definition in ways that are harder to express against the traditional closed-form one. In [Section 5](#5-divmod-solution-invariance-under-linear-shift) we prove this recursive definition is equivalent to the traditional definition from [Section 3](#3-traditional-definition), so any property proved on one also holds for the other.
 
 We define $DivMod(a, b, div, mod)$ such that:
 
@@ -138,7 +136,7 @@ As proved in the [proof for positive shift](
 
 Using the DivMod class we defined, in the class [Calc](
 ../../src/main/scala/v1/chapter2/div/Calc.scala
-), the division and module operations by extracting these properties from the solved $DivMod$.
+), the division and modulo operations by extracting these properties from the solved $DivMod$.
 
 ## 6. Some Important Properties of Modulo and Division
 
@@ -169,7 +167,7 @@ n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
-We can prove this property using the recursive definition of the division and module operations. 
+We can prove this property using the recursive definition of the division and modulo operations.
 As the following [long proof](
 ../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof
 ) code example:
@@ -178,26 +176,23 @@ As the following [long proof](
   def longProof(n: BigInt): Boolean = {
     require(n != 0)
     assert(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
+    assert(DivMod(a=n, b=n, div=1, mod=0).isFinal) // by definition
 
     if (n > 0) {
       equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
         DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
         DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
-        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
+        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to itself, since it is already final (asserted above)
         DivMod(a=n, b=n, div=1, mod=0)
       )
-      // since
-      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     } else {
       equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
         DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to itself, since it is already final (asserted above)
         DivMod(a=n, b=n, div=1, mod=0)
       )
-      // since
-      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     }
     DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
   }.holds
@@ -431,14 +426,9 @@ As the scala [proof for the unit-step increment law](
 ### Consecutive Integers: Zero Density
 
 In any block of $p$ consecutive integers, exactly one is divisible by $p$.
-This fact — simple but profound — is why Eratosthenes' sieve [[4]](#ref4) works: divisors
-occur at regular intervals, so filtering by modulo eliminates a fixed
-proportion of candidates at each step. When multiple coprime moduli are
-combined (e.g. filtering by several primes at once), the Chinese Remainder
-Theorem [[4]](#ref4) guarantees that the residue classes are independent — the proportion
-of survivors is the product of the individual survival rates, since the
-$p_i$ pairwise coprime $\implies$ residues modulo their product decompose
-into independent residues modulo each $p_i$.
+This is the basic counting form of modulo periodicity: as we advance through
+consecutive integers, the remainder modulo $p$ visits zero once per complete
+period.
 
 **At most one zero per block.** If `mod(a, p) = 0` and `0 < d < p`, then
 `mod(a + d, p) ≠ 0`. Within any block of size `p` starting from a multiple,
@@ -509,10 +499,25 @@ These properties are verified in the [
   ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
 ).
 
-The density lemmas (`densityForDivisor`, `densityForPrimeList`,
-`densityPreservedAfterFiltering`, `twoPrimesDensity`) extend these facts to
+The density lemmas — [
+  ConsecutiveIntegers::densityForDivisor
+](
+  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
+), [
+  ConsecutiveIntegers::densityForFactorList
+](
+  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
+), [
+  ConsecutiveIntegers::densityPreservedAfterFiltering
+](
+  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
+), and [
+  ConsecutiveIntegers::twoFactorsDensity
+](
+  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
+) — extend these facts to
 multi-filter settings, proving that the proportion of survivors after
-filtering by a product of primes is the product of the individual survival
+filtering by a product of pairwise non-dividing factors is the product of the individual survival
 rates. All 11 lemmas are verified in `ConsecutiveIntegers.scala`.
 
 ## 7. Conclusion
@@ -578,9 +583,6 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 [Stainless - Program Verification, 2026](https://epfl-lara.github.io/stainless/intro.html)
-
-<a name="ref4" id="ref4" href="#ref4">[4]</a>
-Hardy, G. H. & Wright, E. M. (1979). *An Introduction to the Theory of Numbers* (5th ed.). Oxford University Press. §5.4 (Chinese Remainder Theorem), §15.1 (Sieve of Eratosthenes).
 
 ## 9. Appendices
 

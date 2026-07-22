@@ -13,26 +13,23 @@ object ModIdentity {
   def longProof(n: BigInt): Boolean = {
     require(n != 0)
     assert(!DivMod(a = n, b = n, div = 0, mod = n).isFinal)
+    assert(DivMod(a=n, b=n, div=1, mod=0).isFinal) // by definition
 
     if (n > 0) {
       equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,               // is equals to
         DivMod(a=n, b=n, div=0, mod=n).reduceMod.solve,     // is equals to
         DivMod(a=n, b=n, div=0, mod=n).ModLessB.reduceMod,  // is equals to
-        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to
+        DivMod(a=n, b=n, div=1, mod=0).reduceMod,           // is equals to itself, since it is already final (asserted above)
         DivMod(a=n, b=n, div=1, mod=0)
       )
-      // since
-      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     } else {
       equality(
         DivMod(a=n, b=n, div=0, mod=n).solve,                 // is equals to
         DivMod(a=n, b=n, div=0, mod=n).increaseMod.solve,     // is equals to
-        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to
+        DivMod(a=n, b=n, div=0, mod=n).ModPlusB.increaseMod,  // is equals to itself, since it is already final (asserted above)
         DivMod(a=n, b=n, div=1, mod=0)
       )
-      // since
-      assert(DivMod(a=n, b=n, div=1, mod=0).isFinal)
     }
     DivMod(a=n, b=n, div=0, mod=n).solve == DivMod(a=n, b=n, div=1, mod=0)
   }.holds

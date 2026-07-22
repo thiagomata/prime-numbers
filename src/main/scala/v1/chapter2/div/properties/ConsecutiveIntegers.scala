@@ -184,7 +184,7 @@ object ConsecutiveIntegers {
    * - m*p1 values are divisible by p2
    * - m values are divisible by both (p1*p2)
    */
-  def twoPrimesDensity(a: BigInt, p1: BigInt, p2: BigInt, m: BigInt): Boolean = {
+  def twoFactorsDensity(a: BigInt, p1: BigInt, p2: BigInt, m: BigInt): Boolean = {
     require(p1 > 1)
     require(p2 > 1)
     require(a >= 0)
@@ -235,7 +235,7 @@ object ConsecutiveIntegers {
     require(a >= 0)
     require(m >= 1)
 
-    twoPrimesDensity(a, p1, p2, m)
+    twoFactorsDensity(a, p1, p2, m)
 
     val total = m * p1 * p2
     val p1Mults = m * p2
@@ -249,51 +249,51 @@ object ConsecutiveIntegers {
   }.holds
 
   /**
-   * Lemma: For a list of primes with modulus M = product(primes),
-   * in interval [a, a + m*M - 1], each prime p divides
-   * exactly m * M / p values.
+   * Lemma: For a list of pairwise non-dividing factors with modulus M = product(factors),
+   * in interval [a, a + m*M - 1], each factor f divides
+   * exactly m * M / f values.
    */
-  def densityForPrimeList(
+  def densityForFactorList(
     a: BigInt,
-    primes: List[BigInt],
+    factors: List[BigInt],
     M: BigInt,
     m: BigInt
   ): Boolean = {
     require(m >= 1)
     require(a >= 0)
     require(M > 0)
-    require(noMultiplesInList(primes))
-    require(allPrimesDivideM(primes, M))
-    decreases(primes.size)
+    require(noMultiplesInList(factors))
+    require(allFactorsDivideM(factors, M))
+    decreases(factors.size)
 
-    if (primes.isEmpty) true
+    if (factors.isEmpty) true
     else {
-      densityForDivisor(a, M, primes.head, m)
-      densityForPrimeList(a, primes.tail, M, m)
+      densityForDivisor(a, M, factors.head, m)
+      densityForFactorList(a, factors.tail, M, m)
     }
   }.holds
 
-  def noMultiplesInList(primes: List[BigInt]): Boolean = {
-    decreases(primes.size)
-    if (primes.isEmpty || primes.tail.isEmpty) true
+  def noMultiplesInList(factors: List[BigInt]): Boolean = {
+    decreases(factors.size)
+    if (factors.isEmpty || factors.tail.isEmpty) true
     else {
-      primes.head > 1 &&
-        noMultipleOfHead(primes.head, primes.tail) &&
-        noMultiplesInList(primes.tail)
+      factors.head > 1 &&
+        noMultipleOfHead(factors.head, factors.tail) &&
+        noMultiplesInList(factors.tail)
     }
   }
 
-  def noMultipleOfHead(head: BigInt, primes: List[BigInt]): Boolean = {
+  def noMultipleOfHead(head: BigInt, factors: List[BigInt]): Boolean = {
     require(head > 1)
-    decreases(primes.size)
-    if (primes.isEmpty) true
-    else primes.head % head != 0 && noMultipleOfHead(head, primes.tail)
+    decreases(factors.size)
+    if (factors.isEmpty) true
+    else factors.head % head != 0 && noMultipleOfHead(head, factors.tail)
   }
 
-  def allPrimesDivideM(primes: List[BigInt], M: BigInt): Boolean = {
+  def allFactorsDivideM(factors: List[BigInt], M: BigInt): Boolean = {
     require(M > 0)
-    decreases(primes.size)
-    if (primes.isEmpty) true
-    else primes.head > 1 && M % primes.head == 0 && allPrimesDivideM(primes.tail, M)
+    decreases(factors.size)
+    if (factors.isEmpty) true
+    else factors.head > 1 && M % factors.head == 0 && allFactorsDivideM(factors.tail, M)
   }
 }

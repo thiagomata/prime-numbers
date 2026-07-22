@@ -112,11 +112,9 @@ case class RecursiveCycle(values: List[BigInt]) {
     CycleProperties.rotateAtValue(modCycle, k, i)
     assert(rotatedModCycle(i) == modCycle(k + i))
 
-    RecursiveCycleMatchesModCycle.assertCycleAndRecursiveCycleMathForAnyValues(modCycle, k + i)
-    assert(modCycle(k + i) == apply(k + i))
+    assert(RecursiveCycleMatchesModCycle.assertCycleAndRecursiveCycleMathForAnyValues(modCycle, k + i))
 
-    RecursiveCycleMatchesModCycle.assertCycleAndRecursiveCycleMathForAnyValues(rotatedModCycle, i)
-    assert(rotatedModCycle(i) == rotateAt(k).apply(i))
+    assert(RecursiveCycleMatchesModCycle.assertCycleAndRecursiveCycleMathForAnyValues(rotatedModCycle, i))
 
     rotateAt(k).apply(i) == apply(k + i)
   }.holds

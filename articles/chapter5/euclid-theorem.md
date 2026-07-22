@@ -31,6 +31,8 @@ This article verifies:
 - Euclid's theorem: primes are infinite — §3.4
 - Downstream consequences: locating the next prime — §3.5
 - Primality testing: sqrt-bound and composite detection — §3.6
+- Head primality from prior filters — §3.7
+- Bézout and prime-product lemmas — §3.8
 - `.holds` caching eliminates explicit postcondition enrichment — §4
 
 ## 2. Preliminaries
@@ -70,6 +72,8 @@ In the code, this is expressed as the function `euclidTheorem` (shown in full in
 - Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
 - Downstream consequences: locating the next prime (§3.5)
 - Primality testing: sqrt-bound and composite detection (§3.6)
+- Head primality from prior filters (§3.7)
+- Bézout and prime-product lemmas (§3.8)
 
 The proof proceeds in three stages:
 
@@ -286,12 +290,32 @@ d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n
 \end{aligned}
 ```
 
+**Packaged composite divisor.** The wrapper `assertCompositeSmallestPrimeDivisor`
+combines the previous results into the form later prime arguments need: every
+composite number has a non-trivial prime divisor, the divisor really divides
+the number, and it lies at or below the square root bound.
+
+```math
+\begin{aligned}
+n > 1 \;\land\; \neg \text{isPrime}(n)
+&\Rightarrow \exists d: \\
+&2 \le d < n
+\;\land\; \text{isPrime}(d)
+\;\land\; d^2 \le n
+\;\land\; \text{Calc.mod}(n,d)=0
+  &&\text{[Composite Smallest Prime Divisor]}
+\end{aligned}
+```
+
 **Proof.** From the composite assumption, `assertCompositeHasDivisorStrictlyBelowN(n)`
 gives `d < n` with `mod(n, d) = 0`. Let `q = n / d`, so `q · d = n`. If `q < d`,
 then `q` is a divisor of `n` smaller than `d`, contradicting `d` being the
 smallest divisor. Therefore `q ≥ d`, and `d · d ≤ d · q = n`.
 
-### Stainless Verification
+### Stainless Contract Surface
+
+The following excerpts show the public contract surfaces; the linked source
+contains the full assertion chains used by Stainless.
 
 ```scala
 def assertSmallestDivisorAtMostSqrt(n: BigInt): Boolean = {
@@ -307,16 +331,179 @@ private def assertCompositeHasDivisorStrictlyBelowN(n: BigInt): Boolean = {
   val d = findSmallestDivisor(n, 2)
   d < n
 }.holds
+
+def assertCompositeSmallestPrimeDivisor(n: BigInt): BigInt = {
+  require(n > 1)
+  require(!Prime.isPrime(n))
+  val d = findSmallestDivisor(n, 2)
+  d
+}.ensuring(res =>
+  res >= 2 && res < n && Prime.isPrime(res) &&
+  res * res <= n && Calc.mod(n, res) == BigInt(0)
+)
 ```
 
 These properties are verified in the [
   PrimeProperties::assertSmallestDivisorAtMostSqrt
 ](
   ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-) and [
+), [
   PrimeProperties::assertCompositeHasDivisorStrictlyBelowN
 ](
   ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+), and [
+  PrimeProperties::assertCompositeSmallestPrimeDivisor
+](
+  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+).
+
+### 3.7 Head Primality from Prior Filters
+
+The sieve-sequence construction later needs a local statement of primality:
+if a candidate head is coprime to all previously installed prime filters, and
+every integer in the range `[2, head)` has a prime factor among those filters,
+then the head itself is prime.
+
+This is not Euclid's infinitude theorem. It is the finite-prefix primality
+criterion that lets a sieve stage certify its current head from the filter
+information it already carries.
+
+```math
+\begin{aligned}
+head > 1
+\;\land\; \operatorname{isCoprime}(head,\overline P)
+\;\land\;
+\forall d\in[2,head),\ \neg \operatorname{isCoprime}(d,\overline P)
+&\Rightarrow \operatorname{isPrime}(head).
+\end{aligned}
+```
+
+The proof is by contradiction over possible divisors. If a divisor `d` of
+`head` existed in `[2, head)`, the range-coverage assumption would provide a
+prime factor from the installed list dividing `d`. Divisibility would then
+propagate from that factor through `d` into `head`, contradicting that `head`
+is coprime to every installed filter.
+
+```scala
+def assertHeadIsPrime(head: BigInt, primesTail: List[BigInt]): Boolean = {
+  require(head > 1)
+  require(ListUtils.checkAllPositive(primesTail))
+  require(CoprimeUtils.isCoprime(head, primesTail))
+  require(CoprimeUtils.assertAllNotCoprimeInRange(
+    head,
+    BigInt(2),
+    primesTail
+  ))
+  assertNoDivisorInRangeFromHelper(head, primesTail, BigInt(2), head)
+  Prime.isPrime(head)
+}.holds
+```
+
+This property is verified in [
+  PrimeProperties::assertHeadIsPrime
+](
+  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+). Its main range helper is [
+  PrimeProperties::assertNoDivisorInRangeFromHelper
+](
+  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
+).
+
+### 3.8 Bézout and Prime-Product Lemmas
+
+Several later sieve-counting arguments need a product form of primality:
+for a prime `p`, divisibility of a nonnegative product by `p` can be pushed
+onto a factor, and if neither nonnegative factor is divisible by `p`, then the
+product is not divisible by `p`. The proof in this codebase goes through
+Bézout's identity.
+
+First, if `0 < h < p`, `p` is prime, and `h` is not divisible by `p`, then
+`h` and `p` have greatest common divisor `1`, and the extended Euclidean
+algorithm exposes a linear combination:
+
+```math
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land 0<h<p
+\land \operatorname{mod}(h,p)\ne0
+&\Rightarrow
+\exists x,y,\ h x + p y = 1.
+\end{aligned}
+```
+
+Multiplying that identity by `k` gives `k h x + k p y = k`. If `p` divides
+`k h`, then `p` divides both terms on the left and therefore divides `k`.
+
+```math
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land k\ge0
+\land h\ge0
+\land \operatorname{mod}(h,p)\ne0
+\land \operatorname{mod}(kh,p)=0
+&\Rightarrow \operatorname{mod}(k,p)=0.
+\end{aligned}
+```
+
+The contrapositive form used by product and density arguments is:
+
+```math
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land k\ge0
+\land h\ge0
+\land \operatorname{mod}(k,p)\ne0
+\land \operatorname{mod}(h,p)\ne0
+&\Rightarrow \operatorname{mod}(kh,p)\ne0.
+\end{aligned}
+```
+
+The public contracts are:
+
+```scala
+def assertCoprimeLinearCombinationOne(h: BigInt, p: BigInt): Boolean = {
+  require(p >= 2)
+  require(Prime.isPrime(p))
+  require(h > 0)
+  require(h < p)
+  require(Calc.mod(h, p) != BigInt(0))
+  val bez = extendedGcd(h, p)
+  h * bez.x + p * bez.y == BigInt(1)
+}.holds
+
+def assertPrimeDivKhImpliesDivK(k: BigInt, h: BigInt, p: BigInt): Boolean = {
+  require(p >= 2)
+  require(Prime.isPrime(p))
+  require(k >= 0)
+  require(h >= 0)
+  require(Calc.mod(h, p) != BigInt(0))
+  require(Calc.mod(k * h, p) == BigInt(0))
+  Calc.mod(k, p) == BigInt(0)
+}.holds
+
+def assertPrimeProductNotDivisible(k: BigInt, h: BigInt, p: BigInt): Boolean = {
+  require(p >= 2)
+  require(Prime.isPrime(p))
+  require(k >= 0)
+  require(h >= 0)
+  require(Calc.mod(k, p) != BigInt(0))
+  require(Calc.mod(h, p) != BigInt(0))
+  Calc.mod(k * h, p) != BigInt(0)
+}.ensuring(_ => Calc.mod(k * h, p) != BigInt(0))
+```
+
+The full proof bodies are verified in [
+  BezoutUtils::assertCoprimeLinearCombinationOne
+](
+  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
+), [
+  BezoutUtils::assertPrimeDivKhImpliesDivK
+](
+  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
+), and [
+  BezoutUtils::assertPrimeProductNotDivisible
+](
+  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
 ).
 
 ## 4. The `.holds` Caching Insight
@@ -335,7 +522,7 @@ This means we can write modular proofs using simple `assert` statements within `
 
 ## 5. Verification Status
 
-The properties described in this article are verified by Stainless through the source-linked `.holds` functions listed in Appendix A. The repository-wide verification-condition count is intentionally omitted because it changes as unrelated verified modules are added; the stable claim is that the Euclid theorem proof and its supporting lemmas are machine-checked in the current source.
+The properties described in this article are verified by Stainless through the source-linked `.holds` functions cited in the relevant sections and in Appendix A. The repository-wide verification-condition count is intentionally omitted because it changes as unrelated verified modules are added; the stable claim is that the Euclid theorem proof and its supporting prime lemmas are machine-checked in the current source.
 
 ## 6. Related Work
 
@@ -358,7 +545,8 @@ We have presented a formally verified proof of Euclid's theorem using the Stainl
 1. Builds on a zero-prior-knowledge foundation of modular arithmetic and list operations
 2. Follows Euclid's classic primorial-plus-one construction
 3. Proves that the resulting number has a prime divisor not in the original list
-4. Achieves machine-checked verification through source-linked `.holds` functions
+4. Packages related prime lemmas: next-prime bounding, composite prime divisors, head primality from filter coverage, and prime-product reasoning
+5. Achieves machine-checked verification through source-linked `.holds` functions
 
 The key methodological insight — the `.holds` caching mechanism — simplifies the proof by making internal assertions available to callers without explicit postcondition enrichment.
 
@@ -472,4 +660,7 @@ The `.holds` postcondition asserts: given any non-empty list of primes, there ex
 
 ## Appendix B: Stainless Verification Status and Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
+The stable verification claim is source-local: every property cited above links
+to its Stainless-checked source function. Repository-wide verification logs are
+not quoted here because their total condition count changes as unrelated
+modules are added.

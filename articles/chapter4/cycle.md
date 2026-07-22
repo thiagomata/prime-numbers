@@ -108,6 +108,11 @@ L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
+\end{aligned} \\
+```
+
+```math
+\begin{aligned}
 |L| > 0 &\implies &\text{last}(L) &:= \begin{cases}
 \text{head}(L) & \text{if } |L| = 1 \\
 \text{last}(\text{tail}(L)) & \text{otherwise} \\
@@ -116,11 +121,21 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) \mathbin{+\!+} [ L_t ] & \text{if } f < t \\
 \end{cases}
+\end{aligned} \\
 \forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
+```
+
+```math
+\begin{aligned}
 &A \mathbin{+\!+} B &:= \begin{cases}
 B & \text{if } A = L_e \\
 L_{node}(head(A), tail(A) \mathbin{+\!+} B) & \text{otherwise} \\
-\end{cases}
+\end{cases} \\
+\end{aligned} \\
+```
+
+```math
+\begin{aligned}
 \forall \ L, A, B \in  𝕃 \\
 \end{aligned}
 ```
@@ -278,12 +293,41 @@ some-zero, or none-zero residue patterns across the cycle's values.
 
 Like ModCycle, positional lookup uses modular indexing; value access delegates
 directly to the wrapped ModCycle. Positional equivalence between the two is
-immediate by construction — MemCycle's `apply` calls `cycle.apply` — and is
-verified directly in [
+immediate by construction: `MemCycle.apply(position)` calls the wrapped
+`cycle(position)`, and `MemCycle(values)` constructs that wrapped cycle as
+`ModCycle(values)`.
+
+```math
+\begin{aligned}
+\text{MemCycle}(L)_i
+  &= \text{MemCycle}(L).\text{cycle}_i && \text{[By MemCycle.apply]} \\
+  &= \text{ModCycle}(L)_i              && \text{[By MemCycle construction]}
+\end{aligned}
+```
+
+The bounded bridge [
   CycleProperties::assertModCycleEqualsMemCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala):
-for a `ModCycle` and a `MemCycle` sharing the same values and period, the two
-agree at every position.
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+verifies the same lookup equality over one physical period for a `ModCycle` and
+a `MemCycle` sharing the same values and period.
+
+This gives the full equality chain used throughout the article. Section 4
+proves that `RecursiveCycle(L)` and `ModCycle(L)` return the same value for
+every position. `MemCycle(L)` returns the same values as `ModCycle(L)` by
+definition: it stores `ModCycle(L)` and delegates every lookup to it. Therefore,
+for every valid position `i`,
+
+```math
+\begin{aligned}
+\text{RecCycle}(L)_i
+  &= \text{ModCycle}(L)_i && \text{[By §4]} \\
+  &= \text{MemCycle}(L)_i && \text{[By MemCycle.apply]} \\
+\therefore\quad
+\text{RecCycle}(L)_i
+  &= \text{ModCycle}(L)_i
+   = \text{MemCycle}(L)_i && \text{[Three-Way Equality]}
+\end{aligned}
+```
 
 The cycle is immutable. Calling `checkMod(d)` returns a *new* `MemCycle` with
 `d` added to the appropriate classification list. The original is unchanged.
@@ -374,14 +418,19 @@ RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
 
 ## 5. Cycle Properties
 
-In this section, we prove and verify key properties of Cycles. Each property is stated mathematically, then shown to hold via a corresponding verified lemma in Scala using the Stainless system.
+In this section, we prove and verify the main properties of Cycles. Each
+property is stated mathematically, then shown to hold via a corresponding
+verified lemma in Scala using the Stainless system.
 
 - Element access: `cycle(key) == cycle.values(mod(key, period))` — §5.1
 - Small-value direct lookup: `key < period ⇒ cycle(key) == cycle.values(key)` — §5.2
 - Periodicity: `cycle(key) == cycle(key + period·m)` for any number of loops — §5.3
-- Multi-loop consistency: value at $key$ is independent of which multiple of period is added — §5.4
-- Mod propagation: remainder modulo $d$ at any position equals remainder at the base position — §5.5
+- Multi-loop consistency: value at `key` is independent of which multiple of the period is added — §5.4
+- Mod propagation: remainder modulo `d` at any position equals remainder at the base position — §5.5
 - Repeated-cycle invariance: repeating the base list preserves all lookups — §5.6
+- Value positivity: non-negative base values guarantee non-negative cycle values — §5.7
+- Rotation: rotating the base list shifts the cycle index by the same amount — §5.8
+- MemCycle-level restatements: the key access and modulo properties are also verified directly for the memory-backed representation — §5.9
 
 ### 5.1 Cycle Element Access
 
@@ -478,29 +527,33 @@ CycleProperties::valueMatchAfterManyLoopsInBoth
 
 ### 5.5 Propagate Modulo from Value to Cycle
 
-The modulo operation applied to a cycle value can be equivalently applied to the underlying list value at the modular index.
+The modulo operation applied to a cycle value can be equivalently applied to the
+underlying list value at the modular index. Since the previous sections prove
+that the cycle representations agree at every position, we can use the modulo
+cycle definition directly: cycle lookup first reduces the position to
+`i mod n`, and taking a remainder by any positive divisor `d` preserves that
+same base-position reduction.
 
 ```math
 \begin{aligned}
-\forall \ L \in  𝕃, \quad \forall \ v \in ℕ_0, \quad \forall \ i \in ℕ \\
+\forall \ L \in  𝕃,\quad \forall \ i \in ℕ,\quad \forall \ d \in ℕ^+ \\
 L &:= [v_0, v_1, \dots, v_{n-1}] \in ℕ_0^n, |L| > 0 \\
 Cycle &:= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 n &= |L| \\
-i \text{ mod } n &= (i \text{ mod } n) \text{ mod } n \quad &\text{[Mod Idempotence]} \\
-\text{ModCycle}_i &= \text{RecCycle}_i = \text{Cycle}_i \quad &\text{[Cycle Equivalence]} \\
-\text{ModCycle}_i &= L[i \text{ mod } n] \quad &\text{[ModCycle Definition]} \\
-\text{ModCycle}_{(i \text{ mod } n)} &= L[i \text{ mod } n] \quad &\text{[By Definition]} \\
-                                     &= L[(i \text{ mod } n) \text{ mod } n] \quad &\text{[Substitution]} \\
-                                     &= \text{ModCycle}_{((i \text{ mod } n) \text{ mod } n)} \quad &\text{[By Definition]} \\
-L[(i \text{ mod } n) \text{ mod } n] &= L[i \text{ mod } n] \quad &\text{[By Mod Idempotence]} \\
+\text{Cycle}_i
+  &= \text{ModCycle}_i &&\text{[Cycle Equivalence]} \\
+  &= L_{i \bmod n} &&\text{[ModCycle Definition]} \\
 \therefore \\
-\text{Cycle}_{((i \text{ mod } n) \text{ mod } n)} &= Cycle_{(i \text{ mod } n)} = Cycle_i \quad \blacksquare \quad &\text{[Q.E.D]} \\
+\text{Cycle}_i \bmod d
+  &= L_{i \bmod n} \bmod d \quad \blacksquare &&\text{[Substitution, Q.E.D.]}
 \end{aligned}
 ```
 
 This property is verified in the [
 CycleProperties::propagateModFromValueToCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [
+](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The
+related idempotence restatement, `cycle(position) == cycle(position mod period)`,
+is verified in [
 CycleProperties::assertCycleOfPosEqualsCycleOfModPos
 ](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
 
@@ -563,10 +616,9 @@ This property is verified in the [
 MemCycleProperties::assertRepeatedValuesCycleMatches
 ](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-The corresponding CycleIntegral invariant (repeating the gap list preserves
-the integral at every position) is verified in [
-CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala) and documented in the integral-cycle article [[5]](integral-cycle.md).
+The same repeated-cycle principle is the foundation for later cycle-integral
+reasoning, where repeated gap storage should preserve the integrated values
+read from the cycle.
 
 ### 5.7 Cycle Value Positivity
 
@@ -581,21 +633,11 @@ negative numbers, which is essential for integral and gap reasoning.
 \end{aligned}
 ```
 
-### Stainless Verification
-
-```scala
-def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
-  require(pos >= 0); require(cycle.period > 0)
-  require(CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, Calc.mod(pos, cycle.period)))
-  cycle(pos) >= 0
-}.holds
-```
-
 This property is verified in the [
   CycleProperties::cycleValuePositiveOrZero
 ](
   ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-).
+). The full Scala verification code is in Appendix A.9.
 
 ### 5.8 Cycle Rotation
 
@@ -610,21 +652,11 @@ connects cycle structure directly to the list rotation concept from chapter 3.
 \end{aligned}
 ```
 
-### Stainless Verification
-
-```scala
-def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
-  require(k >= 0); require(i >= 0); require(cycle.period > 0)
-  val rotatedCycle = cycle.rotateAt(k)
-  rotatedCycle(i) == cycle(k + i)
-}.holds
-```
-
 This property is verified in the [
   CycleProperties::rotateAtValue
 ](
   ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-).
+). The full Scala verification code is in Appendix A.10.
 
 ### 5.9 MemCycle-Level Restatement
 
@@ -772,8 +804,8 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyVa
       assert(cycle(position) == cycle(position - list.size))
       assert(recCycle(position) == recCycle(position - list.size))
     }
-    assert(cycle(position) == recCycle(position))
-  }
+    cycle(position) == recCycle(position)
+  }.holds
 ```
 
 ### A.3 Cycle Element Access — findValueInCycle
@@ -898,6 +930,55 @@ Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../../src/main/sc
     assert(findValueInCycle(cycle, position))
     assert(cycle(position) == values(originalIndex))
     repeatedCycle(position) == cycle(position)
+  }.holds
+```
+
+### A.9 Cycle Value Positivity — cycleValuePositiveOrZero
+
+Source: [CycleProperties::cycleValuePositiveOrZero](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+
+```scala
+  def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
+    require(pos >= 0)
+    require(cycle.period > 0)
+    findValueInCycle(cycle, pos)
+    val idx = Calc.mod(pos, cycle.period)
+    assert(idx >= 0)
+    assert(idx < cycle.period)
+    CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, idx)
+    cycle(pos) >= 0
+  }.holds
+```
+
+### A.10 Cycle Rotation — rotateAtValue
+
+Source: [CycleProperties::rotateAtValue](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+
+```scala
+  def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
+    require(k >= 0)
+    require(i >= 0)
+    require(cycle.period > 0)
+
+    val size = cycle.period
+    val rotatedCycle = cycle.rotateAt(k)
+
+    findValueInCycle(rotatedCycle, i)
+    val modI = Calc.mod(i, size)
+    assert(rotatedCycle(i) == rotatedCycle.values(modI))
+
+    CycleUtils.collectRotatedValueAt(cycle.values, k, size, modI)
+    assert(rotatedCycle.values(modI) == cycle.values(Calc.mod(k + modI, size)))
+
+    ModIdempotence.modIdempotence(i, size)
+    ModOperations.modAdd(k, size, Calc.mod(i, size))
+    ModOperations.modAdd(k, size, i)
+    assert(Calc.mod(k + modI, size) == Calc.mod(k + i, size))
+
+    findValueInCycle(cycle, k + i)
+    assert(cycle(k + i) == cycle.values(Calc.mod(k + i, size)))
+
+    rotatedCycle(i) == cycle(k + i)
   }.holds
 ```
 
