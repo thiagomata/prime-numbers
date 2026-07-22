@@ -445,7 +445,7 @@ This is the basic counting form of modulo periodicity: as we advance through
 consecutive integers, the remainder modulo $p$ visits zero once per complete
 period.
 
-**At most one zero per block.** If $\text{mod}(a,p)=0$ and $0<d<p$, then
+**At most one zero per block.** If $\text{mod}(a,p)=0$ and $0 < d < p$, then
 $\text{mod}(a+d,p)\neq 0$. Within any block of size $p$ starting from a
 multiple, no later offset inside the same block can also be divisible by $p$.
 

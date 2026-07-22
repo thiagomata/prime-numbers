@@ -768,6 +768,10 @@ example, write $d \cdot d \le d \cdot q = n$, $d^2 \le n$, and
 $\text{mod}(n,d)=0$ as math. Reserve backticks for code identifiers, source
 expressions, and literal Scala syntax. Do not use unsupported LaTeX macros such
 as `\operatorname`; use `\text{...}` or established infix notation instead.
+For strict comparisons, avoid compact raw forms such as `a<b` or `x<N` in
+article math because `<b` or `<N` can be read as HTML-like markup by GitHub or
+VS Code. Write spaced raw comparisons such as `a < b`, or use `\lt` and `\gt`
+when spacing would make the expression awkward.
 
 ### 14.13 Use `:=` only for definitions
 

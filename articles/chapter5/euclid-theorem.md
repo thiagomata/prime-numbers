@@ -190,9 +190,9 @@ d &= \text{findSmallestDivisor}(N,2).
 ```
 
 There are two cases. If $d=N$, the divisor search found no proper divisor in
-$[2,N)$, so $N$ is prime. If $d<N$, then $d$ divides $N$ and no smaller integer
+$[2,N)$, so $N$ is prime. If $d < N$, then $d$ divides $N$ and no smaller integer
 greater than $1$ divides $N$. If $d$ were composite, it would have a non-trivial
-divisor $e$ with $1<e<d$; since $e$ divides $d$ and $d$ divides $N$, $e$ would
+divisor $e$ with $1 < e < d$; since $e$ divides $d$ and $d$ divides $N$, $e$ would
 divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
 
 ```math
@@ -200,7 +200,7 @@ divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
 d=N
 &\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0.         &&\text{[No Proper Divisor Found]} \\
 &\Rightarrow \text{isPrime}(N)                              &&\text{[Prime Definition]} \\
-&d<N \land \text{mod}(N,d)=0 \Rightarrow \text{isPrime}(d)  &&\text{[Minimal Divisor]} \\
+&d < N \land \text{mod}(N,d)=0 \Rightarrow \text{isPrime}(d)  &&\text{[Minimal Divisor]} \\
 \end{aligned}
 ```
 
@@ -265,7 +265,7 @@ d &= \text{findSmallestDivisor}(N,2) \\
 d=N
 &\Rightarrow \text{isPrime}(N)\land N\notin L
 &&\text{[Stages 2 and 3]} \\
-d<N
+d < N
 &\Rightarrow \text{isPrime}(d)\land d\notin L
 &&\text{[Stages 2 and 3]} \\
 \therefore\ \exists p:\text{isPrime}(p)\land p\notin L
@@ -291,7 +291,7 @@ of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted finite list
 that contains every prime up to its largest element $h=p_k$. Let $q$ be the
 prime produced by the Euclid construction from $P$. Since §3 proves
 $q\notin P$, $q$ cannot be at or below $h$: every prime at or below $h$ is
-already contained in the complete prefix. Therefore $q>h$.
+already contained in the complete prefix. Therefore $q > h$.
 
 ```math
 \begin{aligned}
@@ -446,7 +446,7 @@ algorithm exposes a linear combination:
 ```math
 \begin{aligned}
 \text{isPrime}(p)
-\land 0<h<p
+\land 0 < h < p
 \land \text{mod}(h,p)\ne0
 &\Rightarrow
 \exists x,y,\ h x + p y = 1.

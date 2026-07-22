@@ -98,7 +98,7 @@ selects the least later accepted value:
 \begin{aligned}
 \ell_0 &= h, \\
 \ell_{k+1}
-  &= \min\{v>\ell_k : A_S(v)\}.
+  &= \min\{v\gt\ell_k : A_S(v)\}.
 \end{aligned}
 ```
 
@@ -127,7 +127,7 @@ v\not\equiv0\pmod q \\
 \end{aligned}
 ```
 
-Let $T>0$ be the unique index satisfying
+Let $T\gt0$ be the unique index satisfying
 $\ell_T=h+M$. Define one complete gap list
 
 ```math
@@ -141,7 +141,7 @@ Every gap is positive and the gaps telescope across the period:
 
 ```math
 \begin{aligned}
-g_i &> 0, \\
+g_i &\gt 0, \\
 \sum_{i=0}^{T-1} g_i
   &= \ell_T-\ell_0 \\
   &= (h+M)-h \\
@@ -151,7 +151,7 @@ g_i &> 0, \\
 
 The cycle integral repeatedly adds the entries of $G$. With the indexing used
 by the Scala implementation, its position $k-1$ reconstructs $\ell_k$ for
-every $k>0$.
+every $k\gt0$.
 
 ### 2.3 Source Evidence Map
 
@@ -224,10 +224,10 @@ gap is positive.
 \ell_{k+1}
 &\ge \ell_k+1
   &&\text{[Search starts after previous value]} \\
-&> \ell_k
+&\gt \ell_k
   &&\text{[Integer order]} \\
 g_k
-&=\ell_{k+1}-\ell_k>0
+&=\ell_{k+1}-\ell_k\gt0
   &&\text{[Q.E.D.]}.
 \end{aligned}
 ```
@@ -349,7 +349,7 @@ window, this operation has an exact count and a deterministic effect on gaps.
 ### 5.1 Exact Survivor Count
 
 Consider the accepted values with indexes $r+iT$, where
-$0\le r<T$ and $0\le i<h$. The block-shift theorem gives
+$0\le r\lt T$ and $0\le i\lt h$. The block-shift theorem gives
 
 ```math
 \begin{aligned}
@@ -386,10 +386,10 @@ This property is verified in [
 
 ### 5.2 Copy-or-Merge Gap Dynamics
 
-Let old consecutive values be $\ell_k<\ell_{k+1}$. If both survive the new
+Let old consecutive values be $\ell_k\lt\ell_{k+1}$. If both survive the new
 filter, no new accepted value can appear between them, so their difference is
 copied unchanged. If one or more old values are removed, the next surviving
-endpoints are $\ell_k$ and $\ell_j$ for some $j>k+1$; telescoping merges the
+endpoints are $\ell_k$ and $\ell_j$ for some $j\gt k+1$; telescoping merges the
 intermediate gaps:
 
 ```math
@@ -478,12 +478,12 @@ prime under the square-bound precondition:
 
 ```math
 \begin{aligned}
-\ell_1&<h^2, \\
+\ell_1&\lt h^2, \\
 \ell_1\text{ composite}
 &\Longrightarrow
-\exists d<h,\ d\text{ prime and }d\mid \ell_1
+\exists d\lt h,\ d\text{ prime and }d\mid \ell_1
   &&\text{[Smallest prime divisor]} \\
-d<h
+d\lt h
 &\Longrightarrow d\in\overline{P}
   &&\text{[All smaller primes are filters]} \\
 d\mid\ell_1
@@ -502,10 +502,10 @@ This property is verified in [
 
 ### 6.2 The First Successor Is the Next Prime
 
-Suppose the next prime after $h$ is $p^+$ and $p^+<h^2$. The next prime
+Suppose the next prime after $h$ is $p^+$ and $p^+\lt h^2$. The next prime
 passes every smaller-prime filter, so $\ell_1\le p^+$. Conversely, if
-$\ell_1<h^2$ were composite, it would have a prime divisor at most
-$\sqrt{\ell_1}<h$. That divisor belongs to $\overline{P}$, contradicting
+$\ell_1\lt h^2$ were composite, it would have a prime divisor at most
+$\sqrt{\ell_1}\lt h$. That divisor belongs to $\overline{P}$, contradicting
 acceptance. Thus $\ell_1$ is prime. No prime lies strictly between $h$ and
 $p^+$, so $\ell_1=p^+$.
 
@@ -514,10 +514,10 @@ $p^+$, so $\ell_1=p^+$.
 A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
 \ell_1 &\le p^+
   &&\text{[Least accepted successor]} \\
-\ell_1 < h^2
+\ell_1 \lt h^2
   &\Longrightarrow \ell_1\text{ is prime}
   &&\text{[Small composite divisor]} \\
-h<\ell_1\le p^+,
+h\lt\ell_1\le p^+,
 \quad \ell_1\text{ prime}
   &\Longrightarrow \ell_1=p^+
   &&\text{[No intervening prime; Q.E.D.]}.
@@ -579,7 +579,7 @@ The verified results above do not form an unconditional operational theorem.
 This section states the boundary as part of the theorem.
 
 - **Square bound.** `SpecSieveSequence.next` and the next-head theorem require
-  $p^+<h^2$. Bertrand's postulate supplies a prime between $h$ and $2h$;
+  $p^+\lt h^2$. Bertrand's postulate supplies a prime between $h$ and $2h$;
   for prime $h\ge2$, this implies the required square bound (with $h=2$
   checked directly). Ramanujan gives a direct proof of the required postulate
   [[9]](#ref9), but
@@ -644,7 +644,7 @@ stream. The formalization verifies the following core facts:
 A_S(v)
 &\Longrightarrow \exists i\ge0,\ \ell_i=v,
   &&\text{[Complete enumeration]} \\
-\ell_{k+1}&>\ell_k,
+\ell_{k+1}&\gt\ell_k,
   &&\text{[Strict increase]} \\
 \ell_{k+nT}&=\ell_k+nM,
   &&\text{[Block shift]}.
@@ -682,7 +682,7 @@ and next-stage reconstruction properties are also verified:
 
 ```math
 \begin{aligned}
-p^+<h^2&\Longrightarrow \ell_1=p^+,
+p^+\lt h^2&\Longrightarrow \ell_1=p^+,
   &&\text{[Next head]} \\
 \text{mergedGaps}(S,S',1,T')
 &=\text{gapList}(S',0,T'),

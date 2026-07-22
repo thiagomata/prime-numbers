@@ -178,6 +178,10 @@ $d \cdot d \le d \cdot q = n$ and $\text{mod}(n,d)=0$; reserve
 backticks for source identifiers and literal code.
 Do not use unsupported LaTeX macros such as `\operatorname`; use `\text{...}`
 or established infix notation instead.
+For strict comparisons, avoid compact raw forms such as `a<b` or `x<N` in
+article math because `<b` or `<N` can be read as HTML-like markup by GitHub or
+VS Code. Write spaced raw comparisons such as `a < b`, or use `\lt` and `\gt`
+when spacing would make the expression awkward.
 
 Use `:=` only for definitions, local aliases, and notation conventions. Use
 `=` for mathematical equalities, theorem statements, and proof derivation

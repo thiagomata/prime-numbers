@@ -16,7 +16,7 @@ those smaller primes, and the adjacent differences in one period form a finite
 gap cycle that generates the whole infinite survivor sequence.
 
 Within that complete period, CRT gives an exact count of cyclic 2-gaps. After
-the filter $2$, each odd prime $r<p$ forbids exactly two residue classes for
+the filter $2$, each odd prime $r < p$ forbids exactly two residue classes for
 the start of a 2-gap, so one period contains exactly $\prod(r-2)$ cyclic
 2-gaps over those odd primes. Adding another prime filter copies a gap when
 both values around it survive and otherwise merges neighboring gaps. For each
@@ -78,7 +78,7 @@ installed filter. Define the modulus
 
 ```math
 \begin{aligned}
-M_p &= \prod_{r<p} r,
+M_p &= \prod_{r < p} r,
 && [\text{By Definition}]
 \end{aligned}
 ```
@@ -88,7 +88,7 @@ Within one period, write the ordered accepted values as
 
 ```math
 \begin{aligned}
-e_0<e_1<\cdots<e_{T-1},
+e_0 < e_1 < \cdots < e_{T-1},
 \end{aligned}
 ```
 
@@ -109,7 +109,7 @@ relevant to the next stage is
 ```math
 \begin{aligned}
 W(p,q)
-&=\{x:q\le x\text{ and }x+2<q^2\}.
+&=\{x:q\le x\text{ and }x+2 < q^2\}.
 && [\text{By Definition}]
 \end{aligned}
 ```
@@ -121,8 +121,8 @@ For a longer chain ending at a prime $Q$, write
 
 ```math
 \begin{aligned}
-P_Q &= \prod_{r<Q}r,\\
-W_Q &= \{x:Q\le x\text{ and }x+2<Q^2\}.
+P_Q &= \prod_{r < Q}r,\\
+W_Q &= \{x:Q\le x\text{ and }x+2 < Q^2\}.
 \end{aligned}
 ```
 
@@ -138,7 +138,7 @@ earlier primes:
 ```math
 \begin{aligned}
 E_p
-&=\{x\in[0,M_p):\forall r<p,\ r\text{ prime}\Longrightarrow x\not\equiv0\pmod r\}.
+&=\{x\in[0,M_p):\forall r < p,\ r\text{ prime}\Longrightarrow x\not\equiv0\pmod r\}.
 && [\text{Survivor Period}]
 \end{aligned}
 ```
@@ -232,7 +232,7 @@ positive even gaps. Neither branch can produce $2$.
 
 For one complete period modulo $M_p$, a cyclic 2-gap start $x$ must make both
 $x$ and $x+2$ coprime to every installed prime. Modulo $2$, exactly one class
-is possible. For every odd prime $r<p$, exactly two classes are forbidden:
+is possible. For every odd prime $r < p$, exactly two classes are forbidden:
 $0$ and $-2$. The remaining choices combine independently by CRT
 [[4]](#ref4).
 
@@ -240,10 +240,10 @@ $0$ and $-2$. The remaining choices combine independently by CRT
 \begin{aligned}
 G_2(p)
 &=1\cdot
-\prod_{\substack{3\le r<p\\r\text{ prime}}}
+\prod_{\substack{3\le r < p\\r\text{ prime}}}
 \left(r-2\right)
 && [\text{One Local Count Per Prime}]\\
-&=\prod_{\substack{3\le r<p\\r\text{ prime}}}
+&=\prod_{\substack{3\le r < p\\r\text{ prime}}}
 \left(r-2\right).
 && [\text{By CRT}]\\
 && [\text{Q.E.D.}]
@@ -397,13 +397,13 @@ Let $q$ be prime and suppose $n$ satisfies
 
 ```math
 \begin{aligned}
-q\le n<q^2,
+q\le n < q^2,
 \qquad
 \gcd(n,P_q)=1.
 \end{aligned}
 ```
 
-If $n$ were composite, it would have a prime divisor $r\le\sqrt n<q$. That
+If $n$ were composite, it would have a prime divisor $r\le\sqrt n < q$. That
 prime would divide $P_q$, contradicting the coprimality condition. Hence $n$
 is prime.
 
@@ -414,7 +414,7 @@ n\text{ composite}
 \exists r\text{ prime}:r\mid n\land r\le\sqrt n
 && [\text{Small Prime Divisor}]\\
 &\Longrightarrow
-r<q
+r < q
 && [\text{Square Bound}]\\
 &\Longrightarrow
 r\mid P_q
@@ -431,7 +431,7 @@ Applying the argument to both endpoints proves
 
 ```math
 \begin{aligned}
-q\le x,\quad x+2<q^2,\quad
+q\le x,\quad x+2 < q^2,\quad
 \gcd(x(x+2),P_q)=1
 \Longrightarrow
 x\text{ and }x+2\text{ are prime}.
@@ -476,7 +476,7 @@ K
 \end{aligned}
 ```
 
-If such a $k<p^2$ were composite, it would have a prime divisor below $p$.
+If such a $k < p^2$ were composite, it would have a prime divisor below $p$.
 Therefore the accepted multipliers are exactly the primes $k$ with $p\le k\le K$,
 and their number is $A(p,q)$.
 
@@ -524,7 +524,7 @@ values and each removal destroys at most one 2-gap,
 G_{\mathrm{surviving}}(p,q)
 &\ge G_{\mathrm{local}}(p,q)-A(p,q)
 && [\text{Destruction Capacity}]\\
-G_{\mathrm{local}}(p,q)>A(p,q)
+G_{\mathrm{local}}(p,q) > A(p,q)
 &\Longrightarrow
 G_{\mathrm{surviving}}(p,q)>0.
 && [\text{Integer Positivity}]\\
@@ -545,7 +545,7 @@ is enough that rare finite scenarios occur at unbounded coordinates. One old
 square-safe certification stage.
 
 Choose an initial prime $p$, its modulus $M_p$, and a cyclic seed $(a,a+2)$.
-For a later prime $Q>p$ (in the sense of §2's longer chain, not necessarily
+For a later prime $Q > p$ (in the sense of §2's longer chain, not necessarily
 the immediate successor of $p$), the copy indices whose endpoints lie in the
 safe window are
 
@@ -563,7 +563,7 @@ Let the transition batch be
 
 ```math
 \begin{aligned}
-\mathcal R(p,Q)=\{r:r\text{ prime and }p\le r<Q\}.
+\mathcal R(p,Q)=\{r:r\text{ prime and }p\le r < Q\}.
 \end{aligned}
 ```
 
@@ -626,7 +626,7 @@ initial square horizon:
 
 ```math
 \begin{aligned}
-Q<p^2.
+Q < p^2.
 \end{aligned}
 ```
 
@@ -637,12 +637,12 @@ prime number theorem in Chebyshev-theta form,
 ```math
 \begin{aligned}
 \log M_p
-&=\sum_{r<p}\log r
+&=\sum_{r < p}\log r
 \sim p.
 \end{aligned}
 ```
 
-Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
+Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q < p^2$ implies $Q^2 < p^4$. Therefore
 
 ```math
 \begin{aligned}
@@ -655,7 +655,7 @@ Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
 \end{aligned}
 ```
 
-For all sufficiently large scenarios satisfying $Q<p^2$, one fixed residue
+For all sufficiently large scenarios satisfying $Q < p^2$, one fixed residue
 class modulo $M_p$ occurs at most once in $[Q,Q^2)$. Its exact global
 repetition frequency therefore cannot force local placement.
 
@@ -685,7 +685,7 @@ CRT gives the complete-period density
 \begin{aligned}
 \delta_Q
 =\frac12
-\prod_{\substack{3\le r<Q\\r\text{ prime}}}
+\prod_{\substack{3\le r < Q\\r\text{ prime}}}
 \left(1-\frac2r\right).
 \end{aligned}
 ```
@@ -782,7 +782,7 @@ G_{\mathrm{global}}(p)
 &>\frac{M_p}{6}-C(q)+A(p,q)
 && [\text{Sufficient Global Threshold}]\\
 &\Longrightarrow
-G_{\mathrm{local}}(p,q)>A(p,q)
+G_{\mathrm{local}}(p,q) > A(p,q)
 && [\text{Substitution}]\\
 &\Longrightarrow
 G_{\mathrm{surviving}}(p,q)>0.
@@ -828,7 +828,7 @@ On primes $n$ strictly below $q^2-2$, positivity of the weighted prime sum
 
 ```math
 \begin{aligned}
-\sum_{\substack{n\text{ prime}\\q^2/2<n\le q^2-3}}A_q(n)>0
+\sum_{\substack{n\text{ prime}\\q^2/2 < n\le q^2-3}}A_q(n) > 0
 \end{aligned}
 ```
 
@@ -865,7 +865,7 @@ J_Q=\{Q,Q+1,\ldots,Q^2-3\}.
 \end{aligned}
 ```
 
-For every prime $r<Q$, remove starts in the two classes
+For every prime $r < Q$, remove starts in the two classes
 
 ```math
 \begin{aligned}
@@ -928,7 +928,7 @@ the accepted residues in one period are known, the same residues repeat in
 every period.
 
 That finite period contains many cyclic 2-gaps. CRT proves a lower bound of
-$\prod(r-2)$ over odd primes $r<p$, because each odd prime removes at most
+$\prod(r-2)$ over odd primes $r < p$, because each odd prime removes at most
 two endpoint residue classes from a possible 2-gap. This matters because
 2-gaps are not a fragile local accident of the first few terms; they are forced
 through the complete-period residue structure.

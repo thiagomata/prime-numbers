@@ -60,3 +60,8 @@ Section 6.2 and the conclusion.
 - 2026-07-23: Validation passed: 23 fenced math blocks, balanced `aligned`
   environments, no Scala or Mermaid fences, no `\operatorname`, no split
   `\text{...}` annotation labels, and `git diff --check` is clean.
+- 2026-07-23: Replaced raw strict comparison operators in article math with
+  `\lt` and `\gt`. This avoids renderer confusion where expressions such as
+  `$p^+<h^2$` or values below a bound can be mistaken for markup. The only
+  remaining raw `<` and `>` in `sieve-sequence.md` are intentional HTML tags
+  and reference anchors.
