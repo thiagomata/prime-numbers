@@ -356,7 +356,7 @@ should use the newer chapter4 properties.
 ### Already done (2026-07-20, before code rename)
 `chapter60` → `chapter6` replaced in these md files (simple sed pass):
 - `LEARNINGS.md` (2 occurrences — path in §8.4, ticket reference in §21)
-- `chapter60-review-questions-2026-07-17.md` (9 occurrences)
+- `tickets/trash/archived/chapter60-review-questions-2026-07-17.md` (9 occurrences)
 - `tickets/active/chapter60-stateless-properties.md` (1 occurrence)
 - `tickets/active/chapter60-goal-driven-audit.md` (this file, 5 occurrences in body)
 - `tickets/active/spark-sieve-data-generator.md` (1 occurrence)

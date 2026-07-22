@@ -28,11 +28,11 @@ verification unless a file explicitly says otherwise.
 9. [Candidate Property: Infinitely Many Perfect Sieve Scenarios](infinite-perfect-scenario-property.md)
    - Self-contained statement and expert checklist for the proposed infinitude property.
 10. [Global Count Threshold That Forces Local Survival](global-count-forcing-local-survival.md)
-   - Gives a rigorous but generally impractical count-only bridge.
+    - Gives a rigorous but generally impractical count-only bridge.
 11. [Rotation Preserves Cyclic Gap Counts](rotation-preserves-cyclic-gap-counts.md)
-   - Separates cyclic invariance from absolute-window placement.
+    - Separates cyclic invariance from absolute-window placement.
 12. [Absence of 2-Gaps Is Stable](absence-of-two-gaps-is-stable.md)
-   - Shows that copy-or-merge filtering cannot recreate a missing 2-gap.
+    - Shows that copy-or-merge filtering cannot recreate a missing 2-gap.
 13. [Batched Short-Window Discrepancy Boundary](batched-short-window-discrepancy-boundary.md)
     - States exactly what batching proves and what local positivity still needs.
 
