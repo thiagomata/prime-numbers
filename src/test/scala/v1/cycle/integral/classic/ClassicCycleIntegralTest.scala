@@ -2,7 +2,8 @@ package v1.cycle.integral.classic
 
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
-import v1.cycle.memory.MemCycle
+import v1.chapter4.cycle.integral.classic.ClassicCycleIntegral
+import v1.chapter4.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
 class ClassicCycleIntegralTest extends FlatSpec with Matchers {

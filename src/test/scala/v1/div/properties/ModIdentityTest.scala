@@ -2,6 +2,7 @@ package v1.div.properties
 
 import org.scalatest.flatspec.FlatSpec
 import org.scalatest.matchers.should.Matchers
+import v1.chapter2.div.properties.ModIdentity
 
 class ModIdentityTest extends FlatSpec with Matchers {
 

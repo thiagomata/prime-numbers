@@ -1,0 +1,308 @@
+package v1.chapter2.div.properties
+
+import stainless.lang.*
+import v1.chapter2.div.Calc.{div, mod}
+import ModIdempotence.modUniqueDiv
+import v1.chapter1.verification.Helper
+import Helper.{assert, equality}
+import v1.chapter2.div.{Calc, DivMod}
+
+object ModOperations {
+
+  /**
+   * Reducing a non-negative value by a positive multiple of `base`, and then
+   * reducing that result by `base`, gives the same remainder as reducing the
+   * original value by `base`.
+   *
+   * Math:
+   *
+   *   a >= 0, base > 0, times > 0
+   *   period = base * times
+   *   q      = div(a, period)
+   *   r      = mod(a, period)
+   *
+   *   a = period * q + r
+   *     = base * times * q + r
+   *     = base * (times * q) + r
+   *
+   *   Therefore `a` and `r` differ by a multiple of `base`, so:
+   *
+   *   mod(mod(a, base * times), base) = mod(r, base)
+   *                                   = mod(a, base)
+   *
+   * This is the arithmetic bridge used by repeated physical cycles: a cycle
+   * whose storage length is `base * times` has the same `base`-position as the
+   * original cycle after the outer period reduction.
+   */
+  def modByPositiveMultipleThenBase(
+    a: BigInt,
+    base: BigInt,
+    times: BigInt
+  ): Boolean = {
+    require(a >= 0)
+    require(base > 0)
+    require(times > 0)
+
+    val period = base * times
+    val periodDiv = div(a, period)
+    val periodMod = mod(a, period)
+    val solved = DivMod(a, period, 0, a).solve
+
+    assert(period > 0)
+    assert(solved.div == periodDiv)
+    assert(solved.mod == periodMod)
+    assert(a == period * periodDiv + periodMod)
+    assert(a == base * times * periodDiv + periodMod)
+    assert(a == base * (times * periodDiv) + periodMod)
+    assert(periodMod + base * (times * periodDiv) == a)
+    assert(AdditionAndMultiplication.ATimesBSameMod(periodMod, base, times * periodDiv))
+    assert(mod(periodMod, base) == mod(periodMod + base * (times * periodDiv), base))
+    assert(mod(periodMod, base) == mod(a, base))
+
+    mod(mod(a, period), base) == mod(a, base)
+  }.holds
+
+  /**
+   * mod(a + c, b) == mod(mod(a, b) + mod(c, b), b) &&
+   * div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
+   *
+   * @param a BigInt First dividend
+   * @param b BigInt Divisor
+   * @param c BigInt Second dividend
+   * @return Boolean if the properties hold
+   */
+  def modAdd(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+
+    val x = DivMod(a, b, 0, a)
+    val solvedX = x.solve
+    assert(solvedX.isFinal && solvedX.isValid)
+    assert(solvedX.mod < x.absB)
+    assert(solvedX.a == a)
+    assert(solvedX.b == b)
+    assert(solvedX.a == solvedX.b * solvedX.div + solvedX.mod)
+    assert(solvedX.a - solvedX.b * solvedX.div == solvedX.mod)
+
+    val y = DivMod(c, b, 0, c)
+    val solvedY = y.solve
+    assert(solvedY.isFinal && solvedY.isValid)
+    assert(solvedY.mod < x.absB)
+    assert(solvedY.a == c)
+    assert(solvedY.b == b)
+    assert(solvedY.a == solvedY.b * solvedY.div + solvedY.mod)
+    assert(solvedY.a - solvedY.b * solvedY.div == solvedY.mod)
+
+    val xy = DivMod(a + c, b, 0, a + c)
+    val solvedXY = xy.solve
+    assert(solvedXY.isFinal && solvedXY.isValid)
+    assert(solvedXY.mod < x.absB)
+    assert(solvedXY.a == a + c)
+    assert(solvedXY.b == b)
+    assert(solvedXY.a == solvedXY.b * solvedXY.div + solvedXY.mod)
+    assert(a + c == b * solvedXY.div + solvedXY.mod)
+
+    val z = DivMod(solvedX.mod + solvedY.mod, b, 0, solvedX.mod + solvedY.mod)
+    assert(z.a == z.b * z.div + z.mod)
+    assert(z.a == solvedX.mod + solvedY.mod)
+    assert(z.b == b)
+    assert(z.mod == solvedX.mod + solvedY.mod)
+    assert(z.div == 0)
+    assert(z.a == z.b * z.div + z.mod)
+
+    val solvedZ = z.solve
+    assert(solvedZ.isValid && solvedZ.isFinal)
+    assert(solvedZ.mod < x.absB)
+    assert(modUniqueDiv(z, solvedZ))
+    assert(z.solve.mod == solvedZ.mod)
+
+    assert(solvedX.mod + solvedY.mod == b * solvedZ.div + solvedZ.mod)
+    assert(solvedX.a - solvedX.b * solvedX.div + solvedY.a - solvedY.b * solvedY.div == b * solvedZ.div + solvedZ.mod)
+    assert(a - b * solvedX.div + c - b * solvedY.div == b * solvedZ.div + solvedZ.mod)
+    assert(a + c == b * solvedZ.div + b * solvedX.div + b * solvedY.div + solvedZ.mod)
+
+    val bigDiv = solvedZ.div + solvedX.div + solvedY.div
+    assert(a + c == b * bigDiv + solvedZ.mod)
+
+    val w = DivMod(a + c, b, bigDiv, solvedZ.mod)
+    assert(solvedZ.mod < x.absB)
+    assert(w.mod == solvedZ.mod)
+    assert(w.isFinal)
+    assert(w.solve == w)
+
+    assert(b != 0)
+    assert(AdditionAndMultiplication.ATimesBSameMod(a + c, b, bigDiv))
+    assert(mod(a + c, b) == mod(a + c + b * bigDiv, b))
+    assert(w.isValid)
+    assert(xy.isValid)
+    assert(w.a == xy.a)
+    assert(w.b == xy.b)
+    assert(modUniqueDiv(w, xy))
+    assert(w.solve == xy.solve)
+
+    equality(
+      w.solve.mod,        // is equals to
+      xy.solve.mod,       // is equals to
+      mod(a + c, b),      // is equals to
+      solvedZ.mod,        // is equals to
+      mod(mod(a, b) + mod(c, b), b)
+    )
+
+    assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+    assert(div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b))
+
+    mod(a + c, b) == mod(mod(a, b) + mod(c, b), b) &&
+      div(a + c, b) == div(a, b) + div(c, b) + div(mod(a, b) + mod(c, b), b)
+  }.holds
+
+  /**
+   * if mod(a, b) == 0 then
+   * mod(a + c, b) == mod(c, b) &&
+   * mod(a + c, b) == mod(mod(c, b), b)
+   *
+   * Holds for any integer `c`, including negative values, since it only
+   * relies on `modAdd` and `ModIdempotence.modIdempotence`, neither of which
+   * require `c >= 0`.
+   *
+   * @param a BigInt First dividend
+   * @param b BigInt Divisor
+   * @param c BigInt Second dividend
+   * @return Boolean if the properties hold
+   */
+  def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+    require(mod(a, b) == 0)
+
+    modAdd(a, b, c)
+    assert(mod(a + c, b) == mod(mod(a, b) + mod(c, b), b))
+    assert(mod(a + c, b) == mod(0 + mod(c, b), b))
+    assert(mod(a + c, b) == mod(mod(c, b), b))
+
+    assert(ModIdempotence.modIdempotence(c, b))
+    assert(mod(mod(c, b), b) == mod(c, b))
+    assert(mod(a + c, b) == mod(c, b))
+
+    mod(a + c, b) == mod(c, b) &&
+    mod(a + c, b) == mod(mod(c, b), b)
+  }.holds
+
+  /**
+   * mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
+   * div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+   *
+   * @param a BigInt First dividend
+   * @param b BigInt Divisor
+   * @param c BigInt Second dividend
+   * @return Boolean if the properties hold
+   */
+  def modLess(a: BigInt, b: BigInt, c: BigInt): Boolean = {
+    require(b != 0)
+
+    val x = a - c
+    assert(modAdd(x, b, c))
+
+    assert(x == b * div(x, b) + mod(x, b))
+    assert(a == b * div(a, b) + mod(a, b))
+    assert(c == b * div(c, b) + mod(c, b))
+
+    equality(
+      x,                                                            // is equal to
+      a - c,                                                        // is equal to
+      (a) - (c),                                                    // is equal to
+      (b * div(a, b) + mod(a, b)) - (b * div(c, b) + mod(c, b)),    // is equal to
+      b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+      b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
+      b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b),          // is equal to
+      b * div(x, b) + mod(x, b),                                    // is equal to
+      b * div(a - c, b) + mod(a - c, b)
+    )
+
+    assert(a == b * div(a, b) + mod(a, b))
+    assert(c == b * div(c, b) + mod(c, b))
+    equality(
+      a - c,                                                        // is equal to
+      b * div(a, b) + mod(a, b) - (b * div(c, b) + mod(c, b)),      // is equal to
+      b * div(a, b) + mod(a, b) - b * div(c, b) - mod(c, b),        // is equal to
+      b * div(a, b) - b * div(c, b) + mod(a, b) - mod(c, b),        // is equal to
+    )
+    assert(mod(a - c, b) == mod(b * (div(a, b) - div(c, b)) + mod(a, b) - mod(c, b), b))
+    val m = div(a, b) - div(c, b)
+    val others = mod(a, b) - mod(c, b)
+    assert(mod(a - c, b) == mod(b * m + others, b))
+    AdditionAndMultiplication.ATimesBSameMod(others, b, m)
+    assert(mod(b * m + others, b) == mod(others, b))
+    assert(mod(a - c, b) == mod(mod(a, b) - mod(c, b), b))
+
+    assert(div(x + c, b) == div(x, b) + div(c, b) + div(mod(x, b) + mod(c, b), b))
+    assert(div(a - c + c, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
+    assert(div(a, b) == div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b))
+    assert(div(a - c, b) + div(c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b))
+    assert(div(a - c, b) + div(mod(a - c, b) + mod(c, b), b) == div(a, b) - div(c, b))
+    assert(div(a - c, b) == div(a, b) - div(c, b) - div(mod(a - c, b) + mod(c, b), b))
+    assert(div(a - c, b) == div(a, b) - div(c, b) - div(mod(mod(a, b) - mod(c, b), b) + mod(c, b), b))
+
+    val absB = if (b < 0) -b else b
+    val sign = if (b < 0) BigInt(-1) else BigInt(1)
+
+    assert(ModIdempotence.modModMinus(a, b, c))
+    assert(
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) ||
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) + b ||
+      mod(mod(a, b) - mod(c, b), b) == mod(a, b) - mod(c, b) - b
+    )
+    assert(
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + mod(c, b) ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) + b + mod(c, b) ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - mod(c, b) - b + mod(c, b)
+    )
+    assert(
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) + b ||
+      mod(mod(a, b) - mod(c, b), b) + mod(c, b) == mod(a, b) - b
+    )
+
+    mod(a - c, b) == mod(mod(a, b) - mod(c, b), b) &&
+    div(a - c, b) == div(a, b) - div(c, b) + div(mod(a, b) - mod(c, b), b)
+  }.holds
+
+  /**
+   * if b == 1             then mod(a + 1, b) == mod(a,b) and div(a + 1, b) == div(a, b) + 1
+   * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
+   * otherwise             then mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
+   * alternatively
+   *
+   * if mod(a, b) == b - 1 then mod(a + 1, b) == 0        and div(a + 1, b) == div(a, b) + 1
+   * else                       mod(a + 1, b) == mod(a, b) + 1 and div(a + 1, b) == div(a, b)
+   *
+   * @param a BigInt dividend
+   * @param b BigInt divisor
+   * @return Boolean if the properties hold
+   */
+  def addOne(a: BigInt, b: BigInt): Boolean = {
+    require(b > 0)
+    require(a >= 0)
+
+    if (b == 1) {
+      assert(mod(a, b) == 0)
+      assert(mod(a + 1, b) == 0)
+      assert(mod(a + 1, b) == mod(a,b))
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return
+        mod(a + 1, b) == mod(a,b) &&
+        div(a + 1, b) == div(a, b) + 1
+    }
+
+    if (mod(a, b) == b - 1) {
+      assert(mod(a + 1, b) == 0)
+      assert(div(a + 1, b) == div(a, b) + 1)
+      return
+        mod(a + 1, b) == 0 &&
+        div(a + 1, b) == div(a, b) + 1
+    }
+
+    assert(mod(a + 1, b) == mod(a, b) + 1)
+    assert(div(a + 1, b) == div(a, b))
+    mod(a + 1, b) == mod(a, b) + 1 &&
+    div(a + 1, b) == div(a, b)
+  }.holds
+}

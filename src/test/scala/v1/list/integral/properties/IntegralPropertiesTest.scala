@@ -4,8 +4,11 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection
 import stainless.collection.List
+import v1.chapter3.list.integral.properties.IntegralProperties
 import v1.list.integral
+import v1.tags.SlowLemmaTest
 import v1.tests.ArrayUtils.{createList, createListFromInt}
+import v1.chapter3
 
 import scala.BigInt
 
@@ -22,22 +25,22 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     createListFromInt(Array(1, 10, 100, 1000))
   )
 
-  "assertAccDifferenceEqualsTailHead" should "hold for all lists" in {
+  "assertAccDifferenceEqualsTailHead" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           if (list.size > 1) IntegralProperties.assertAccDifferenceEqualsTailHead(acc) else true
         }
       )
     )
   }
 
-  "assertAccDiffMatchesList" should "hold for all lists" in {
+  "assertAccDiffMatchesList" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           (BigInt(0) until list.size - BigInt(1)).forall { position =>
             IntegralProperties.assertAccDiffMatchesList(acc, position)
           }
@@ -46,11 +49,11 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertAccMatchesApply" should "hold for all lists" in {
+  "assertAccMatchesApply" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           (BigInt(0) until list.size).forall { position =>
             IntegralProperties.assertAccMatchesApply(acc, position)
           }
@@ -59,33 +62,33 @@ class IntegralPropertiesTest extends FlatSpec with Matchers {
     )
   }
 
-  "assertLastEqualsSum" should "hold for all lists" in {
+  "assertLastEqualsSum" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           if (list.isEmpty) true else IntegralProperties.assertLastEqualsSum(acc)
         }
       )
     )
   }
 
-  "assertSizeAccEqualsSizeList" should "hold for all lists" in {
+  "assertSizeAccEqualsSizeList" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           IntegralProperties.assertSizeAccEqualsSizeList(acc.list, acc.init)
         }
       )
     )
   }
 
-  "assertLast" should "hold for all lists" in {
+  "assertLast" should "hold for all lists" taggedAs(SlowLemmaTest) in {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           if (list.isEmpty) true else IntegralProperties.assertLast(acc)
         }
       )

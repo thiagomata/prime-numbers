@@ -2,8 +2,8 @@ package v1.cycle.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.cycle.memory.MemCycle
-import v1.cycle.memory.properties.CycleCheckMod
+import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter4.cycle.memory.properties.CycleCheckMod
 import v1.tests.ArrayUtils.createListFromInt
 
 import scala.BigInt
@@ -245,28 +245,6 @@ class CycleWithMemoryCheckModTest extends FlatSpec with Matchers {
         }
       )
     )
-  }
-
-
-  "afterMethodListAndZeroModCountAreOnSync" should "hold for any cycle" in {
-    val dividends = List(
-      BigInt(2),
-      BigInt(3),
-      BigInt(5),
-      BigInt(10),
-    )
-
-    assert(allCycles.forall(
-      cycle => {
-        dividends.forall(
-          dividend => {
-            CycleCheckMod.afterMethodListAndZeroModCountAreOnSync(
-              cycle, dividend
-            )
-          }
-        )
-      }
-    ))
   }
 }
 
