@@ -194,13 +194,9 @@ divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
 ```math
 \begin{aligned}
 d=N
-&\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0
-&&\text{[No Proper Divisor Found]} \\
-&\Rightarrow \text{isPrime}(N)
-&&\text{[Prime Definition]} \\
-d<N \land \text{mod}(N,d)=0
-&\Rightarrow \text{isPrime}(d)
-&&\text{[Minimal Divisor]}
+&\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0.         &&\text{[No Proper Divisor Found]} \\
+&\Rightarrow \text{isPrime}(N)                              &&\text{[Prime Definition]} \\
+&d<N \land \text{mod}(N,d)=0 \Rightarrow \text{isPrime}(d)  &&\text{[Minimal Divisor]} \\
 \end{aligned}
 ```
 
