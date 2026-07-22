@@ -13,8 +13,9 @@ The division and modulo operations are fundamental in mathematics and computer s
  especially in areas such as number theory, cryptography, and algorithm design. 
 In this article, we define these operations from scratch using a recursive formulation,
  without relying on built-in semantics or standard library behavior.
-We mathematically prove and formally verify key properties such as unique
-remainder, modulo idempotence, distributivity, and one-zero-per-period density.
+We mathematically prove and formally verify, using Scala Stainless, key
+properties such as unique remainder, modulo idempotence, distributivity, and
+one-zero-per-period density.
 All properties are expressed and proved within a minimal framework using only elementary arithmetic,
  recursion, and formally verified Scala definitions.
 The result is a self-contained, machine-checked foundation for modular arithmetic.
