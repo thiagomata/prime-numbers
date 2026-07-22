@@ -153,62 +153,25 @@ The cycle integral repeatedly adds the entries of $G$. With the indexing used
 by the Scala implementation, its position $k-1$ reconstructs $\ell_k$ for
 every $k>0$.
 
-### 2.3 Proof Architecture
+### 2.3 Source Evidence Map
 
-```mermaid
-classDiagram
-    class SpecSieveSequence {
-      primes: AllPrimesSoFarList
-      head() Prime
-      accepts(BigInt) Boolean
-      apply(BigInt) BigInt
-      next() SpecSieveSequence
-    }
-    class SpecSieveSeqPeriodProperties {
-      period(SpecSieveSequence) BigInt
-      assertBlockShiftMultiple(...) Boolean
-      assertSpecGapCycleIntegralMatchesApply(...) Boolean
-    }
-    class SpecSieveSeqSurvivorCountProperties {
-      sameHeadSurvivorCount(...) BigInt
-      assertSameHeadExtendedFilterCount(...) Boolean
-    }
-    class SpecSieveSeqNextProperties {
-      assertFilterPreservesNextGap(...) Boolean
-      assertMergedGapPrefixMatchesNext(...) Boolean
-    }
-    class SpecSieveSeqNextStageProperties {
-      assertPipelineOutputMatchesNextGapList(...) Boolean
-      assertNextCycleReconstructsNextSpec(...) Boolean
-    }
-    class SpecSieveSeqHeadIsPrime {
-      assertApplyOneEqualsNextPrime(...) Boolean
-    }
-    SpecSieveSequence --> SpecSieveSeqPeriodProperties : "argument to proofs"
-    SpecSieveSequence --> SpecSieveSeqSurvivorCountProperties : "argument to proofs"
-    SpecSieveSequence --> SpecSieveSeqNextProperties : "argument to proofs"
-    SpecSieveSequence --> SpecSieveSeqNextStageProperties : "argument to proofs"
-    SpecSieveSequence --> SpecSieveSeqHeadIsPrime : "argument to proofs"
-```
+The proofs below use `SpecSieveSequence` as the linear mathematical model of a
+stage. Separate property objects verify the period, gap-cycle reconstruction,
+survivor count, copy-or-merge transition, next-stage agreement, and head
+primality facts. The model does not depend on those property objects; they are
+source-backed evidence for the mathematical properties stated in the article.
 
-The arrows are intentionally one-directional: property objects call into the
-data model, while the data model does not depend on property objects. The
-construction builds on the verified modulo [[1]](#ref1), list [[2]](#ref2),
+The construction builds on the verified modulo [[1]](#ref1), list [[2]](#ref2),
 cycle [[3]](#ref3), and cycle-integral [[4]](#ref4) foundations.
 
-### 2.4 Meaning of Verification
+### 2.4 Verification Evidence
 
-Stainless verifies each function under its declared preconditions, so a
-`require` clause is part of the theorem being cited, not a runtime detail that
-can be ignored. An `.ensuring` clause records the postcondition, while a
-Boolean proof function ending in `.holds` records the proposition established
-by that source function. The official documentation describes this contract
-and verification-condition model [[7]](#ref7); System FR provides formal
-foundations for the verifier's higher-order functional reasoning [[8]](#ref8).
-
-No repository-wide verification-condition total is used as evidence here.
-Those totals change when unrelated functions are added. The stable evidence is
-the exact source-linked contract shown for each theorem.
+Each verified property cited below is tied to a concrete Scala contract in the
+repository. The preconditions in those contracts are part of the theorem
+statement, and the article states them in mathematical form before linking to
+the source. This keeps the mathematical result and the Stainless evidence
+aligned without relying on repository-wide verification-condition totals, which
+change when unrelated functions are added.
 
 ## 3. Linear Stage Semantics
 
@@ -244,21 +207,6 @@ is smaller than $v$, the next generated accepted value cannot pass over $v$,
 because $v$ itself is accepted. Repeating this finite descent on
 $v-\ell_k$ reaches an index $i$ with $\ell_i=v$.
 
-```scala
-def indexOfAccepted(value: BigInt): BigInt = {
-  require(accepts(value))
-
-  assert(value >= head.value)
-  assert(apply(BigInt(0)) == head.value)
-  assert(apply(BigInt(0)) <= value)
-  findIndexForAcceptedFrom(value, BigInt(0))
-}.ensuring(res =>
-  res >= BigInt(0) &&
-  apply(res) == value &&
-  (res > BigInt(0) ==> apply(res - BigInt(1)) < value)
-)
-```
-
 This verified contract is implemented in [
   SpecSieveSequence::indexOfAccepted
 ](
@@ -275,33 +223,13 @@ gap is positive.
 \begin{aligned}
 \ell_{k+1}
 &\ge \ell_k+1
-  &&\text{[Search begins after }\ell_k\text{]} \\
+  &&\text{[Search starts after previous value]} \\
 &> \ell_k
   &&\text{[Integer order]} \\
 g_k
 &=\ell_{k+1}-\ell_k>0
   &&\text{[Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def applyStrictlyIncreases(k: BigInt): Boolean = {
-  require(k >= BigInt(0))
-
-  val previous = apply(k)
-  val upper = searchBound(k + BigInt(1))
-  val next = apply(k + BigInt(1))
-
-  assert(previous <= searchBound(k))
-  assert(tailPrimorial > BigInt(0))
-  assert(searchBound(k) < upper)
-  assert(previous + BigInt(1) <= upper)
-  assert(searchBoundPassesFilter(k + BigInt(1)))
-  assert(accepts(upper))
-  assert(next == searchNext(previous + BigInt(1), upper))
-  assert(next >= previous + BigInt(1))
-  next > previous
-}.holds
 ```
 
 This property is verified in [
@@ -334,34 +262,8 @@ A_S(v+M) &= A_S(v)
 \ell_{k+T} &= \ell_k+M
   &&\text{[Same ordered survivor]} \\
 \ell_{k+nT} &= \ell_k+nM
-  &&\text{[Induction on }n\text{; Q.E.D.]}.
+  &&\text{[Block induction; Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def assertBlockShiftMultiple(
-  seq: SpecSieveSequence,
-  k: BigInt,
-  n: BigInt,
-  period: BigInt
-): Boolean = {
-  require(k >= BigInt(0))
-  require(n >= BigInt(0))
-  require(period > BigInt(0))
-  require(seq.apply(period) == seq.head.value + seq.tailPrimorial)
-  decreases(n)
-
-  if (n == BigInt(0)) {
-    seq.apply(k + n * period) ==
-      seq.apply(k) + n * seq.tailPrimorial
-  } else {
-    val prev = n - BigInt(1)
-    assert(assertBlockShiftMultiple(seq, k, prev, period))
-    assert(assertBlockShift(seq, k + prev * period, period))
-    seq.apply(k + n * period) ==
-      seq.apply(k) + n * seq.tailPrimorial
-  }
-}.holds
 ```
 
 This property is verified in [
@@ -402,37 +304,6 @@ I_G(k)
 \end{aligned}
 ```
 
-```scala
-def assertSpecGapCycleIntegralMatchesApply(
-  seq: SpecSieveSequence,
-  period: BigInt,
-  k: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(k > BigInt(0))
-  decreases(k)
-
-  val gapCycle = specGapCycle(seq, period)
-  val mem = gapCycle.memCycle
-  val integral = CycleIntegral(seq.head.value, mem)
-
-  if (k == BigInt(1)) {
-    assert(assertSpecGapCycleIntegralBase(seq, period))
-    integral(BigInt(0)) == seq.apply(BigInt(1))
-  } else {
-    assert(CycleIntegralProperties.assertNextPosition(
-      integral, k - BigInt(1)))
-    assert(assertSpecGapCycleIntegralMatchesApply(
-      seq, period, k - BigInt(1)))
-    assert(assertMemCycleGapMatch(
-      seq, k - BigInt(1), period))
-    integral(k - BigInt(1)) == seq.apply(k)
-  }
-}.holds
-```
-
 This property is verified in [
   SpecSieveSeqPeriodProperties::assertSpecGapCycleIntegralMatchesApply
 ](
@@ -457,33 +328,6 @@ I_{G^{\langle h\rangle}}(k)
   &=I_G(k)
   \quad\text{[Equal increments and initial value; Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def assertSpecRepeatedCycleIntegralMatchesBase(
-  seq: SpecSieveSequence,
-  period: BigInt,
-  k: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(k >= BigInt(0))
-
-  val gapCycle =
-    SpecSieveSeqPeriodProperties.specGapCycle(seq, period)
-  val baseCI = CycleIntegral(seq.head.value, gapCycle.memCycle)
-  val repeatedCI = specRepeatedCycleIntegral(seq, period)
-
-  assert(GapCycle.assertMemCyclePeriodPositive(gapCycle))
-  assert(seq.head.value > BigInt(0))
-  assert(RepeatedGapIntegralProperties
-    .assertRepeatedValuesIntegralMatches(
-      baseCI, repeatedCI, seq.head.value, k
-    ))
-
-  repeatedCI(k) == baseCI(k)
-}.holds
 ```
 
 This property is verified in [
@@ -522,9 +366,9 @@ exactly $T$ old survivors are removed:
 ```math
 \begin{aligned}
 N_{\mathrm{old}} &= hT
-  &&\text{[}\,h\text{ repeated blocks]} \\
+  &&\text{[Repeated blocks]} \\
 N_{\mathrm{removed}} &= T
-  &&\text{[One zero residue for each }r\text{]} \\
+  &&\text{[One zero residue per row]} \\
 N_{\mathrm{survive}}
   &=hT-T \\
   &=T(h-1)
@@ -533,39 +377,6 @@ N_{\mathrm{survive}}
 ```
 
 This is an exact full-period theorem, not a probabilistic density estimate.
-
-```scala
-def assertSameHeadExtendedFilterCount(
-  seq: SpecSieveSequence,
-  period: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(Calc.mod(
-    seq.tailPrimorial, seq.head.value) != BigInt(0))
-
-  val expandedIndex = period * seq.head.value
-  val expandedEnd =
-    seq.head.value + seq.head.value * seq.tailPrimorial
-
-  assert(seq.head.value > BigInt(1))
-  assert(expandedIndex >= BigInt(0))
-  assert(assertGeneratedHeadMultiplesPrefixExpandedCount(
-    seq, period))
-  assert(countGeneratedHeadMultiplesPrefix(
-    seq, expandedIndex) == period)
-  assert(assertExpandedHeadMultipleCountFromGeneratedCount(
-    seq, period))
-  assert(countAcceptedHeadMultiplesBetween(
-    seq, seq.head.value, expandedEnd) == period)
-  assert(assertSameHeadExtendedFilterCountFromRemovedCount(
-    seq, period))
-  countAcceptedHeadNonMultiplesBetween(
-    seq, seq.head.value, expandedEnd) ==
-      period * (seq.head.value - BigInt(1))
-}.holds
-```
 
 This property is verified in [
   SpecSieveSeqSurvivorCountProperties::assertSameHeadExtendedFilterCount
@@ -596,37 +407,7 @@ g'_m=\ell_j-\ell_k \\
 \end{aligned}
 ```
 
-The immediate-survivor branch is verified directly:
-
-```scala
-def assertFilterPreservesNextGap(
-  seq: SpecSieveSequence,
-  nextSeq: SpecSieveSequence,
-  k: BigInt
-): Boolean = {
-  require(k >= BigInt(0))
-  require(nextSeq.filterValues.nonEmpty)
-  require(nextSeq.filterValues.tail == seq.filterValues)
-  require(seq.head.value <= nextSeq.head.value)
-  require(nextSeq.accepts(seq.apply(k)))
-  require(Calc.mod(
-    seq.apply(k + BigInt(1)),
-    nextSeq.filterValues.head
-  ) != BigInt(0))
-
-  val v = seq.apply(k)
-  val w = seq.apply(k + BigInt(1))
-  val vIdx = nextSeq.indexOfAccepted(v)
-
-  assert(nextSeq(vIdx) == v)
-  assert(assertFilterPreservesNextPosition(seq, nextSeq, k))
-  assert(nextSeq(vIdx + BigInt(1)) == w)
-
-  nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) == w - v
-}.holds
-```
-
-This property is verified in [
+The immediate-survivor branch is verified in [
   SpecSieveSeqNextProperties::assertFilterPreservesNextGap
 ](
   ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
@@ -634,118 +415,14 @@ This property is verified in [
 
 The skipped-successor branch is verified as a supporting theorem. When the
 immediate old successor is removed, the next gap is the sum of the old gaps up
-to the first later survivor:
-
-```scala
-private def assertMergeGapEqualsOldGapSum(
-  seq: SpecSieveSequence,
-  nextSeq: SpecSieveSequence,
-  k: BigInt,
-  period: BigInt
-): Boolean = {
-  require(k >= BigInt(0))
-  require(period > BigInt(0))
-  require(nextSeq.filterValues.nonEmpty)
-  require(nextSeq.filterValues.tail == seq.filterValues)
-  require(seq.head.value <= nextSeq.head.value)
-  require(nextSeq.accepts(seq.apply(k)))
-  require(Calc.mod(
-    seq.apply(k + BigInt(1)),
-    nextSeq.filterValues.head
-  ) == BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(Calc.mod(
-    seq.head.value + seq.tailPrimorial,
-    nextSeq.filterValues.head
-  ) != BigInt(0))
-
-  val p = nextSeq.filterValues.head
-  val vIdx = nextSeq.indexOfAccepted(seq.apply(k))
-  val bound = k + p * period
-
-  assert(assertPeriodBoundIsNonMultiple(
-    seq, nextSeq, k, period))
-  val m = findFirstNonMultipleAfter(seq, k, p, bound)
-  assert(m >= k)
-  assert(assertMergeLandsOnFirstSurvivor(
-    seq, nextSeq, k, period))
-  assert(nextSeq(vIdx) == seq.apply(k))
-  assert(nextSeq(vIdx + BigInt(1)) == seq.apply(m))
-  assert(SpecSieveSeqPeriodProperties
-    .assertSumGapTelescopes(seq, k, m))
-
-  nextSeq(vIdx + BigInt(1)) - nextSeq(vIdx) ==
-    SpecSieveSeqPeriodProperties.sumGap(seq, k, m)
-}.holds
-```
-
-This supporting property is verified in [
+to the first later survivor. This supporting property is verified in [
   SpecSieveSeqNextProperties::assertMergeGapEqualsOldGapSum
 ](
   ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
 ).
 
 The general merged prefix is then verified against the next specification's
-gap list:
-
-```scala
-def assertMergedGapPrefixMatchesNext(
-  seq: SpecSieveSequence,
-  nextSeq: SpecSieveSequence,
-  k: BigInt,
-  seqIndex: BigInt,
-  remaining: BigInt,
-  period: BigInt
-): Boolean = {
-  require(k >= BigInt(0))
-  require(seqIndex >= BigInt(0))
-  require(remaining >= BigInt(0))
-  require(period > BigInt(0))
-  require(nextSeq.filterValues.nonEmpty)
-  require(nextSeq.filterValues.tail == seq.filterValues)
-  require(seq.head.value <= nextSeq.head.value)
-  require(nextSeq.accepts(seq.apply(k)))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(Calc.mod(
-    seq.head.value + seq.tailPrimorial,
-    nextSeq.filterValues.head
-  ) != BigInt(0))
-  decreases(remaining)
-
-  val prefix = mergedGapPrefix(
-    seq, nextSeq, k, remaining, period)
-
-  if (remaining == BigInt(0)) {
-    prefix == SpecSieveSeqPeriodProperties.gapList(
-      nextSeq, seqIndex, BigInt(0))
-  } else {
-    val nextOldIndex = nextMergedGapOldIndex(
-      seq, nextSeq, k, period)
-    val computedSeqIndex =
-      nextSeq.indexOfAccepted(seq.apply(k))
-
-    assert(nextSeq.assertApplyInjective(
-      seqIndex, computedSeqIndex))
-    assert(assertMergedGapPrefixHeadMatchesNext(
-      seq, nextSeq, k, period))
-    assert(assertMergedGapPrefixMatchesNext(
-      seq,
-      nextSeq,
-      nextOldIndex,
-      seqIndex + BigInt(1),
-      remaining - BigInt(1),
-      period
-    ))
-
-    prefix == SpecSieveSeqPeriodProperties.gapList(
-      nextSeq, seqIndex, remaining)
-  }
-}.holds
-```
-
-This property is verified in [
+gap list. This property is verified in [
   SpecSieveSeqNextProperties::assertMergedGapPrefixMatchesNext
 ](
   ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
@@ -771,46 +448,6 @@ I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 &=\text{gaps}(\text{survivors}(I_G,h))
   &&\text{[Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def assertSpecBaseAndRepeatedGapListMatch(
-  seq: SpecSieveSequence,
-  period: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-
-  val gapCycle =
-    SpecSieveSeqPeriodProperties.specGapCycle(seq, period)
-  val baseCI = CycleIntegral(seq.head.value, gapCycle.memCycle)
-  val repeatedCI = specRepeatedCycleIntegral(seq, period)
-  val count = period * seq.head.value
-
-  assert(seq.head.value > BigInt(0))
-
-  val baseSurvivors =
-    CycleIntegralFilterProperties.survivorValues(
-      baseCI, seq.head.value, BigInt(0), count)
-  val repSurvivors =
-    CycleIntegralFilterProperties.survivorValues(
-      repeatedCI, seq.head.value, BigInt(0), count)
-
-  assert(assertSpecBaseAndRepeatedSurvivorValuesMatch(
-    seq, period, BigInt(0), count))
-  assert(baseSurvivors == repSurvivors)
-
-  if (baseSurvivors.isEmpty) {
-    baseSurvivors == repSurvivors
-  } else {
-    assert(repSurvivors.nonEmpty)
-    CycleIntegralFilterProperties.gapsFromValues(
-      baseSurvivors) ==
-    CycleIntegralFilterProperties.gapsFromValues(
-      repSurvivors)
-  }
-}.holds
 ```
 
 This property is verified in [
@@ -857,38 +494,6 @@ d\mid\ell_1
 \end{aligned}
 ```
 
-```scala
-def assertApplyOneIsPrimeIfBelowHeadSq(
-  seq: SpecSieveSequence
-): Boolean = {
-  require(seq.apply(BigInt(1)) <
-    seq.head.value * seq.head.value)
-
-  val v1 = seq.apply(BigInt(1))
-  assert(seq.applyStrictlyIncreases(0))
-
-  if (Prime.isPrime(v1)) {
-    Prime.isPrime(v1)
-  } else {
-    val d =
-      PrimeProperties.assertCompositeSmallestPrimeDivisor(v1)
-    assert(d < seq.head.value)
-    assert(Calc.mod(v1, d) == BigInt(0))
-
-    AllPrimesSoFarList.primeAtOrBelowHeadIsContained(
-      d, seq.primes.list)
-    assert(AllPrimesSoFarList.containsValue(
-      d, seq.primes.list.tail))
-    assert(assertFilterValuesContains(seq, d))
-    assert(divisorInFilterValues(v1, d, seq.filterValues))
-    assert(!SieveUtils.isCoprime(v1, seq.filterValues))
-    assert(seq.passesFilter(v1))
-    assert(false)
-    Prime.isPrime(v1)
-  }
-}.holds
-```
-
 This property is verified in [
   SpecSieveSeqHeadIsPrime::assertApplyOneIsPrimeIfBelowHeadSq
 ](
@@ -911,49 +516,12 @@ A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
   &&\text{[Least accepted successor]} \\
 \ell_1 < h^2
   &\Longrightarrow \ell_1\text{ is prime}
-  &&\text{[Composite divisor would be }<h\text{]} \\
+  &&\text{[Small composite divisor]} \\
 h<\ell_1\le p^+,
 \quad \ell_1\text{ prime}
   &\Longrightarrow \ell_1=p^+
   &&\text{[No intervening prime; Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def assertApplyOneEqualsNextPrime(
-  seq: SpecSieveSequence
-): Boolean = {
-  require(seq.primes.nextPrime.value <
-    seq.head.value * seq.head.value)
-
-  val nextP = AllPrimesSoFarList.nextPrime(seq.primes.list)
-
-  assert(nextP.value > seq.head.value)
-  assert(Prime.isPrime(nextP.value))
-  assert(AllPrimesSoFarList.noPrimesBetween(
-    seq.head.value + BigInt(1), nextP.value))
-
-  assert(assertApplyOneGtHead(seq))
-  assert(assertApplyOneAtOrBeforeOwnNextPrime(seq))
-  assert(assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq(seq))
-
-  assert(seq.apply(BigInt(1)) <= nextP.value)
-  assert(Prime.isPrime(seq.apply(BigInt(1))))
-  assert(seq.head.value + BigInt(1) <= seq.apply(BigInt(1)))
-
-  if (seq.apply(BigInt(1)) < nextP.value) {
-    assert(AllPrimesSoFarList.noPrimesBetweenExcludesValue(
-      seq.head.value + BigInt(1),
-      nextP.value,
-      seq.apply(BigInt(1))
-    ))
-    assert(!Prime.isPrime(seq.apply(BigInt(1))))
-    assert(false)
-    seq.apply(BigInt(1)) == nextP.value
-  } else {
-    seq.apply(BigInt(1)) == nextP.value
-  }
-}.holds
 ```
 
 This property is verified in [
@@ -978,41 +546,6 @@ T'&=T(h-1), \\
 \end{aligned}
 ```
 
-```scala
-def assertPipelineOutputMatchesNextGapList(
-  seq: SpecSieveSequence,
-  nextSeq: SpecSieveSequence,
-  period: BigInt,
-  nextPeriod: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(nextPeriod > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(nextPeriod ==
-    period * (seq.head.value - BigInt(1)))
-  require(Calc.mod(
-    seq.tailPrimorial, seq.head.value) != BigInt(0))
-  require(seq.primes.nextPrime.value <
-    seq.head.value * seq.head.value)
-  require(nextSeq.filterValues.nonEmpty)
-  require(nextSeq.filterValues.head == seq.head.value)
-  require(nextSeq.filterValues.tail == seq.filterValues)
-  require(nextSeq.head.value == seq.apply(BigInt(1)))
-  require(seq.head.value < nextSeq.head.value)
-  require(nextSeq.accepts(seq.apply(BigInt(1))))
-  require(nextSeq(BigInt(0)) == seq.apply(BigInt(1)))
-  require(Calc.mod(
-    seq.head.value + seq.tailPrimorial,
-    seq.head.value
-  ) != BigInt(0))
-
-  SpecSieveSeqNextProperties.assertMergedGapPrefixMatchesNext(
-    seq, nextSeq, BigInt(1), BigInt(0), nextPeriod, period
-  )
-}.holds
-```
-
 This property is verified in [
   SpecSieveSeqNextStageProperties::assertPipelineOutputMatchesNextGapList
 ](
@@ -1032,31 +565,6 @@ G'&=\text{gapList}(S',0,T') \\
 I_{G'}(k-1)&=\ell'_k
   &&\text{[Cycle reconstruction; Q.E.D.]}.
 \end{aligned}
-```
-
-```scala
-def assertNextCycleReconstructsNextSpec(
-  seq: SpecSieveSequence,
-  period: BigInt,
-  nextPeriod: BigInt,
-  k: BigInt
-): Boolean = {
-  require(period > BigInt(0))
-  require(nextPeriod > BigInt(0))
-  require(seq.apply(period) ==
-    seq.head.value + seq.tailPrimorial)
-  require(seq.primes.nextPrime.value <
-    seq.head.value * seq.head.value)
-  require(seq.next.apply(nextPeriod) ==
-    seq.next.head.value + seq.next.tailPrimorial)
-  require(k > BigInt(0))
-
-  val nextSeq = seq.next
-  SpecSieveSeqPeriodProperties
-    .assertSpecGapCycleIntegralMatchesApply(
-      nextSeq, nextPeriod, k
-    )
-}.holds
 ```
 
 This property is verified in [
@@ -1104,16 +612,16 @@ This section states the boundary as part of the theorem.
 These qualifications are part of the result: they separate the verified
 finite-stage theorem from adjacent mathematical questions.
 
-## 8. Future Work
+## 8. Open Proof Work
 
-The next proof obligation is to connect the filtered repeated-cycle survivor
+The main open proof obligation is to connect the filtered repeated-cycle survivor
 gaps with the semantic merged-gap prefix. That equality is the missing bridge
 between the local delete-and-merge description and the concrete gap list of
 the next sieve level. Once that bridge is verified, the next `CycleIntegral`
 can be constructed directly from the current repeated and filtered cycle
 rather than being related through a separate semantic transition.
 
-A second direction is to derive the next canonical-period boundary from the
+A second open obligation is to derive the next canonical-period boundary from the
 exact survivor count. The article already proves the complete-period counting
 law, but the canonical boundary requires turning that count into the precise
 finite prefix used by the next stage. The square-bound dependency currently
@@ -1121,7 +629,7 @@ supplied by Bertrand's postulate is another natural verification target:
 either a Stainless proof of the needed bound or a clearly stated formal
 substitute would make the dependency explicit inside the project.
 
-Finally, local gap-distribution theorems should be developed separately from
+Local gap-distribution theorems remain separate from
 the full-period construction results proven here. The full-period facts explain
 how the sieve stage is represented and transformed; they do not by themselves
 settle which gaps appear in a particular finite window.
@@ -1139,17 +647,41 @@ A_S(v)
 \ell_{k+1}&>\ell_k,
   &&\text{[Strict increase]} \\
 \ell_{k+nT}&=\ell_k+nM,
-  &&\text{[Block shift]} \\
+  &&\text{[Block shift]}.
+\end{aligned}
+```
+
+The finite gap cycle reconstructs the same stream and remains semantically
+unchanged when the cycle is repeated:
+
+```math
+\begin{aligned}
 I_G(k-1)&=\ell_k,
   &&\text{[Cycle reconstruction]} \\
 I_{G^{\langle h\rangle}}(k)&=I_G(k),
-  &&\text{[Repetition invariance]} \\
+  &&\text{[Repetition invariance]}.
+\end{aligned}
+```
+
+Installing the current head as a new filter has an exact complete-period count,
+and the local gap update is copy-or-merge:
+
+```math
+\begin{aligned}
 N_{\mathrm{survive}}&=T(h-1),
   &&\text{[Exact expanded filtering]} \\
 g'_m&=g_k
   \quad\text{or}\quad
   g'_m=\sum_{i=k}^{j-1}g_i,
-  &&\text{[Copy or merge]} \\
+  &&\text{[Copy or merge]}.
+\end{aligned}
+```
+
+Under the explicit square-bound and period-boundary assumptions, the next head
+and next-stage reconstruction properties are also verified:
+
+```math
+\begin{aligned}
 p^+<h^2&\Longrightarrow \ell_1=p^+,
   &&\text{[Next head]} \\
 \text{mergedGaps}(S,S',1,T')
