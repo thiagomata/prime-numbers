@@ -51,12 +51,14 @@ class ModOperationsTest extends FlatSpec with Matchers {
     )
   }
 
-  "modZeroPlusC" should "hold for any non b zero pair" in {
+  "modZeroPlusC" should "hold for any non b zero pair, including negative c" in {
     assert( nonZeroValues.forall(
       a => { nonZeroValues.forall(
         b => { nonZeroValues.forall(
           c => {
             ModOperations.modZeroPlusC(a * b,b,c.abs)
+            ModOperations.modZeroPlusC(a * b,b,c)
+            ModOperations.modZeroPlusC(a * b,b,-c.abs)
           })
         })
       })

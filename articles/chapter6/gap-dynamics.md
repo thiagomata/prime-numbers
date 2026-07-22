@@ -375,7 +375,7 @@ value $d$, its cyclic multiplicity is unchanged:
 ```math
 \begin{aligned}
 \#\{i:g_i=d\}
-&=\#\{i:\operatorname{rot}_j(G)_i=d\}
+&=\#\{i:\text{rot}_j(G)_i=d\}
 && [\text{Rotation Is A Bijection}]\\
 &&& [\text{Q.E.D.}]
 \end{aligned}
@@ -719,7 +719,7 @@ contained in $C$.
 
 ```math
 \begin{aligned}
-\operatorname{coverRun}(C)
+\text{coverRun}(C)
 =\max\{|J|:J\text{ is consecutive and }J\subseteq C\}.
 \end{aligned}
 ```

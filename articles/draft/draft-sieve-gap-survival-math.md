@@ -419,18 +419,18 @@ For a single gap value $d$, define:
 
 ```math
 \begin{aligned}
-\operatorname{Reach}_G(d)
+\text{Reach}_G(d)
   &\Longleftrightarrow
   \exists i < j,\ \sum_{r=i}^{j-1} g_{r \,\text{mod}\,T} = d.
 \end{aligned}
 ```
 
-If $\operatorname{Reach}_G(d)$ is false, then $d$ cannot appear at the next
+If $\text{Reach}_G(d)$ is false, then $d$ cannot appear at the next
 stage. For small values this can be very strong. In post-2 stages:
 
 ```math
 \begin{aligned}
-\operatorname{Reach}_G(2)
+\text{Reach}_G(2)
 \Longleftrightarrow
 2 \in G.
 \end{aligned}

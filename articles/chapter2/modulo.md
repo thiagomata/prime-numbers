@@ -161,6 +161,12 @@ names the normalized remainder. In the source code these are the `div` and
 `mod` fields of the solved `DivMod`; in the article notation, $q$ and $r$ keep
 the quotient and remainder roles separate from the operation names.
 
+The article uses both functional and infix notation for the same operations:
+$\text{div}(x,y)$ and $x \text{ div } y$ are equivalent, as are
+$\text{mod}(x,y)$ and $x \text{ mod } y$. Functional notation is useful when
+the operation is nested inside another expression; infix notation keeps simple
+algebraic identities closer to the traditional presentation.
+
 ## 6. Some Important Properties of Modulo and Division
 
 ### Trivial Case
@@ -362,7 +368,7 @@ out, is proved directly in [ModIdempotence.scala#modModMinus](
 
 ### Modular Shift Invariance under Divisible Base
 
-When a number is a multiple of the divisor (modulo equals zero), adding any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base.
+When a number is a multiple of the divisor (modulo equals zero), adding any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base. It holds for any integer `c`, including negative values.
 
 ```math
 \begin{aligned}
@@ -377,13 +383,29 @@ This property is verified in [
 ../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC
 ).
 
+Substituting `-c` for `c` gives the subtraction corollary directly, since `c`
+is unrestricted:
+
+```math
+\begin{aligned}
+\forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
+a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = ( -c ) \text{ mod } b \\
+\end{aligned}
+```
+
+This corollary is verified by the same lemma, [
+  ModOperations::modZeroPlusC
+](
+../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC
+), called with `-c` in place of `c`.
+
 ### Symmetrical Modulo Pairs
 
 The modulo of a value and the modulo of its complement relative to the base sum to the base.
 
 ```math
 \begin{aligned}
-\forall \text{ } b, k \in \mathbb{N} & : b > 0,\ 0 < k < b \\
+b &> 0,\quad 0 < k < b \\
 k \text{ mod } b + (b - k) \text{ mod } b & = b
 \end{aligned}
 ```

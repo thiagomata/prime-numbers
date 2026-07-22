@@ -174,8 +174,10 @@ needed downstream, or useful for future chapters. They should state what the
 article proves and verifies now.
 
 Use `$...$` for inline mathematical expressions such as
-$d \cdot d \le d \cdot q = n$ and $\operatorname{mod}(n,d)=0$; reserve
+$d \cdot d \le d \cdot q = n$ and $\text{mod}(n,d)=0$; reserve
 backticks for source identifiers and literal code.
+Do not use unsupported LaTeX macros such as `\operatorname`; use `\text{...}`
+or established infix notation instead.
 
 Use `:=` only for definitions, local aliases, and notation conventions. Use
 `=` for mathematical equalities, theorem statements, and proof derivation

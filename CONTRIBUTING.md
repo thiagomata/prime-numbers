@@ -201,7 +201,9 @@ Every article must pass these checks before publication:
 14. **Inline math uses math spans** — Use `$...$` for mathematical prose such
     as $d \cdot d \le d \cdot q = n$, $d^2 \le n$, and
     $\text{mod}(n,d)=0$. Reserve backticks for code identifiers, source
-    expressions, and literal Scala syntax.
+    expressions, and literal Scala syntax. Do not use unsupported LaTeX macros
+    such as `\operatorname`; use `\text{...}` or established infix notation
+    instead.
 
 15. **Definition vs equality notation** — Use `:=` in article math only when
     introducing a definition, local alias, or notation convention, such as

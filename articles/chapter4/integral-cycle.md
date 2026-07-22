@@ -832,8 +832,8 @@ T &= \sum_{j=0}^{n-1} v_j \\
 ```math
 \begin{aligned}
 \text{CycleIntegral}(L, init)_i
-&= \left(i \ \operatorname{div}\ n\right) \cdot T
- + \text{CycleIntegral}(L, init)_{i \operatorname{mod} n}
+&= \left(i \ \text{div}\ n\right) \cdot T
+ + \text{CycleIntegral}(L, init)_{i \text{mod} n}
 \quad &\text{[Modulo Cycle Integral]} \\
 \text{CycleIntegral}(L, init)_i
 &= \text{ModCycleIntegral}(L, init)_i

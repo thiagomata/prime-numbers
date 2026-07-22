@@ -155,9 +155,13 @@ object ModOperations {
   }.holds
 
   /**
-   * if mod(a, b) == 0 and c >= 0 then
+   * if mod(a, b) == 0 then
    * mod(a + c, b) == mod(c, b) &&
    * mod(a + c, b) == mod(mod(c, b), b)
+   *
+   * Holds for any integer `c`, including negative values, since it only
+   * relies on `modAdd` and `ModIdempotence.modIdempotence`, neither of which
+   * require `c >= 0`.
    *
    * @param a BigInt First dividend
    * @param b BigInt Divisor
@@ -166,7 +170,6 @@ object ModOperations {
    */
   def modZeroPlusC(a: BigInt, b: BigInt, c: BigInt): Boolean = {
     require(b != 0)
-    require(c >= 0)
     require(mod(a, b) == 0)
 
     modAdd(a, b, c)

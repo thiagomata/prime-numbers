@@ -72,3 +72,7 @@ real source proof or by prose plus a source link.
   recursive `DivMod.solve` definition and the traditional `div`/`mod` notation
   definitions to use `:=`; kept relation, theorem, invariant, and proof
   equalities as `=`.
+- Added the article-rendering standard that `\operatorname` is not allowed;
+  articles should use `\text{...}` or established infix notation instead.
+  Mechanically replaced remaining `\operatorname{...}` occurrences in article
+  Markdown and updated `CONTRIBUTING.md`, `PROOF_GUIDE.md`, and `LEARNINGS.md`.

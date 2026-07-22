@@ -48,8 +48,8 @@ For a nonnegative initial value `init`, define:
 
 ```math
 \begin{aligned}
-C &= \operatorname{MemCycle}([1]), \\
-I &= \operatorname{CycleIntegral}(init, C).
+C &= \text{MemCycle}([1]), \\
+I &= \text{CycleIntegral}(init, C).
 \end{aligned}
 ```
 
@@ -132,11 +132,11 @@ primes. If `q` and `p` are both prime and `q != p`, then `p` cannot divide
 
 ```math
 \begin{aligned}
-\operatorname{isPrime}(q)
-\land \operatorname{isPrime}(p)
+\text{isPrime}(q)
+\land \text{isPrime}(p)
 \land q \neq p
 &\Longrightarrow
-\operatorname{mod}(q,p) \neq 0.
+\text{mod}(q,p) \neq 0.
 \end{aligned}
 ```
 
@@ -175,11 +175,11 @@ is not divisible by `filterPrime`, so it survives the divisibility test.
 
 ```math
 \begin{aligned}
-\operatorname{isPrime}(q)
-\land \operatorname{isPrime}(\operatorname{filterPrime})
-\land q \neq \operatorname{filterPrime}
+\text{isPrime}(q)
+\land \text{isPrime}(\text{filterPrime})
+\land q \neq \text{filterPrime}
 &\Longrightarrow
-\operatorname{mod}(q,\operatorname{filterPrime}) \neq 0.
+\text{mod}(q,\text{filterPrime}) \neq 0.
 \end{aligned}
 ```
 
@@ -213,11 +213,11 @@ filtering.
 ```math
 \begin{aligned}
 q \in L
-\land \operatorname{isPrime}(q)
-\land \operatorname{isPrime}(p)
+\land \text{isPrime}(q)
+\land \text{isPrime}(p)
 \land q \neq p
 &\Longrightarrow
-q \in \operatorname{filterList}(L,p).
+q \in \text{filterList}(L,p).
 \end{aligned}
 ```
 
@@ -268,21 +268,21 @@ The five lemmas above give the candidate/filter foundation:
 
 ```math
 \begin{aligned}
-\operatorname{CycleIntegral}(init,[1])_i
+\text{CycleIntegral}(init,[1])_i
 &= init+i+1,
 &&\text{[candidate generation]} \\
 b>a
 &\Longrightarrow I(b)>I(a),
 &&\text{[ordered candidates]} \\
-\operatorname{isPrime}(q)
-\land \operatorname{isPrime}(p)
+\text{isPrime}(q)
+\land \text{isPrime}(p)
 \land q\neq p
-&\Longrightarrow \operatorname{mod}(q,p)\neq0,
+&\Longrightarrow \text{mod}(q,p)\neq0,
 &&\text{[distinct primes survive divisibility]} \\
 q\in L
-\land \operatorname{isPrime}(q)
+\land \text{isPrime}(q)
 \land q\neq p
-&\Longrightarrow q\in \operatorname{filterList}(L,p).
+&\Longrightarrow q\in \text{filterList}(L,p).
 &&\text{[prime-preserving filter]}
 \end{aligned}
 ```

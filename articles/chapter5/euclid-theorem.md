@@ -63,8 +63,8 @@ Euclid's theorem is formalized as the following lemma:
 In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
 verification reference is given in §3.4 and Appendix A.3.
 
-- Stage 1: $\operatorname{primorial}(L)+1$ is coprime to every prime in the list (§3.1)
-- Stage 2: find a prime divisor of $\operatorname{primorial}(L)+1$ via `findSmallestDivisor` (§3.2)
+- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list (§3.1)
+- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` (§3.2)
 - Stage 3: the new prime is not in the original list (§3.3)
 - Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
 
@@ -78,21 +78,21 @@ The proof proceeds in three stages:
 
 The first stage is captured by the lemma `primorialPlusOneModAny`. Let
 $L = [p_1,\dots,p_k]$ be the finite list of known primes and
-$P=\operatorname{primorial}(L)$. For each $p_i \in L$, the product $P$
+$P=\text{primorial}(L)$. For each $p_i \in L$, the product $P$
 contains $p_i$ as one factor, so $P$ is divisible by $p_i$. Adding one moves
 the residue from $0$ to $1$, and because every prime is greater than $1$, that
 residue is nonzero.
 
 ```math
 \begin{aligned}
-\operatorname{primorial}(L)
+\text{primorial}(L)
   &= p_i \cdot \prod_{j\ne i} p_j
   &&\text{[By Definition]} \\
-\operatorname{mod}(\operatorname{primorial}(L), p_i)
+\text{mod}(\text{primorial}(L), p_i)
   &= 0
   &&\text{[Product Contains }p_i\text{]} \\
-\operatorname{mod}(\operatorname{primorial}(L)+1, p_i)
-  &= \operatorname{mod}(1, p_i)
+\text{mod}(\text{primorial}(L)+1, p_i)
+  &= \text{mod}(1, p_i)
   &&\text{[Modulo Shift]} \\
   &= 1
   &&\text{[Since }1 < p_i\text{]} \\
@@ -109,16 +109,16 @@ properties.
 
 **Small Dividend Remainder.** A nonnegative dividend smaller than the divisor is
 already its own remainder. In the Euclid step, this gives both
-$\operatorname{mod}(0,p)=0$ and $\operatorname{mod}(1,p)=1$ because $p>1$.
+$\text{mod}(0,p)=0$ and $\text{mod}(1,p)=1$ because $p>1$.
 
 ```math
 \begin{aligned}
 0 \le a < b
-&\Rightarrow \operatorname{mod}(a,b)=a
+&\Rightarrow \text{mod}(a,b)=a
 &&\text{[Small Dividend]} \\
 p>1
-&\Rightarrow \operatorname{mod}(0,p)=0
-\land \operatorname{mod}(1,p)=1
+&\Rightarrow \text{mod}(0,p)=0
+\land \text{mod}(1,p)=1
 &&\text{[Substitution]}
 \end{aligned}
 ```
@@ -130,15 +130,15 @@ This property is verified in [
 **Zero Remainder Preserved by Multiplication.** If a number is divisible by
 $b$, multiplying it by any nonnegative factor preserves divisibility by $b$.
 This is the step that turns the explicit factor $p$ in the primorial into
-$\operatorname{mod}(p\cdot k,p)=0$.
+$\text{mod}(p\cdot k,p)=0$.
 
 ```math
 \begin{aligned}
-\operatorname{mod}(a,b)=0
-&\Rightarrow \operatorname{mod}(a\cdot m,b)=0
+\text{mod}(a,b)=0
+&\Rightarrow \text{mod}(a\cdot m,b)=0
 &&\text{[Multiplication Preserves Zero Remainder]} \\
-\operatorname{mod}(p,p)=0
-&\Rightarrow \operatorname{mod}(p\cdot k,p)=0
+\text{mod}(p,p)=0
+&\Rightarrow \text{mod}(p\cdot k,p)=0
 &&\text{[Substitution]}
 \end{aligned}
 ```
@@ -154,13 +154,13 @@ nonzero remainder modulo every original prime.
 
 ```math
 \begin{aligned}
-\operatorname{mod}(m,b)=0
-&\Rightarrow \operatorname{mod}(m+c,b)=\operatorname{mod}(c,b)
+\text{mod}(m,b)=0
+&\Rightarrow \text{mod}(m+c,b)=\text{mod}(c,b)
 &&\text{[Modulo Shift]} \\
-\operatorname{mod}(p\cdot k,p)=0
-&\Rightarrow \operatorname{mod}(p\cdot k+1,p)=\operatorname{mod}(1,p)=1
+\text{mod}(p\cdot k,p)=0
+&\Rightarrow \text{mod}(p\cdot k+1,p)=\text{mod}(1,p)=1
 &&\text{[Substitution]} \\
-&\Rightarrow \operatorname{mod}(p\cdot k+1,p)\ne0
+&\Rightarrow \text{mod}(p\cdot k+1,p)\ne0
 &&\text{[Q.E.D.]}
 \end{aligned}
 ```
@@ -175,13 +175,13 @@ This property is verified in [
 
 ### 3.2 Stage 2: Finding a New Prime
 
-Once we know $\operatorname{primorial}(L)+1$ is not divisible by any prime in
+Once we know $\text{primorial}(L)+1$ is not divisible by any prime in
 $L$, let
 
 ```math
 \begin{aligned}
-N &= \operatorname{primorial}(L)+1, \\
-d &= \operatorname{findSmallestDivisor}(N,2).
+N &= \text{primorial}(L)+1, \\
+d &= \text{findSmallestDivisor}(N,2).
 \end{aligned}
 ```
 
@@ -194,12 +194,12 @@ divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
 ```math
 \begin{aligned}
 d=N
-&\Rightarrow \forall e\in[2,N),\operatorname{mod}(N,e)\ne0
+&\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0
 &&\text{[No Proper Divisor Found]} \\
-&\Rightarrow \operatorname{isPrime}(N)
+&\Rightarrow \text{isPrime}(N)
 &&\text{[Prime Definition]} \\
-d<N \land \operatorname{mod}(N,d)=0
-&\Rightarrow \operatorname{isPrime}(d)
+d<N \land \text{mod}(N,d)=0
+&\Rightarrow \text{isPrime}(d)
 &&\text{[Minimal Divisor]}
 \end{aligned}
 ```
@@ -215,25 +215,25 @@ $N$ itself) is **not** in the original list.
 
 Let $v$ be the divisor chosen in Stage 2: either $v=N$ when $N$ is prime, or
 $v=d$ when $d$ is the smallest proper divisor of $N$. In both cases,
-$\operatorname{mod}(N,v)=0$. Now take any prime $p$ from the original list.
-Because $N=\operatorname{primorial}(L)+1$, the same argument from Stage 1 gives
-$\operatorname{mod}(N,p)=1$. If $p=v$, then $N$ would have two incompatible
+$\text{mod}(N,v)=0$. Now take any prime $p$ from the original list.
+Because $N=\text{primorial}(L)+1$, the same argument from Stage 1 gives
+$\text{mod}(N,p)=1$. If $p=v$, then $N$ would have two incompatible
 remainders modulo the same positive divisor: $0$ and $1$. Therefore no element
 of $L$ equals $v$.
 
 ```math
 \begin{aligned}
-N &= \operatorname{primorial}(L) + 1
+N &= \text{primorial}(L) + 1
 &&\text{[Euclid Construction]} \\
   &= p \cdot k + 1
 &&\text{[Unfold Product at }p\text{]} \\
-\operatorname{mod}(N,p)
-  &= \operatorname{mod}(p\cdot k+1,p) \\
-  &= \operatorname{mod}(1,p)
+\text{mod}(N,p)
+  &= \text{mod}(p\cdot k+1,p) \\
+  &= \text{mod}(1,p)
 &&\text{[Multiple of }p\text{ Drops Out]} \\
   &= 1
 &&\text{[Since }p>1\text{]} \\
-\operatorname{mod}(N,v)
+\text{mod}(N,v)
   &= 0
 &&\text{[Chosen Divisor]} \\
 p=v
@@ -260,15 +260,15 @@ belong to the original list.
 ```math
 \begin{aligned}
 L &\ne [] \\
-N &= \operatorname{primorial}(L)+1 \\
-d &= \operatorname{findSmallestDivisor}(N,2) \\
+N &= \text{primorial}(L)+1 \\
+d &= \text{findSmallestDivisor}(N,2) \\
 d=N
-&\Rightarrow \operatorname{isPrime}(N)\land N\notin L
+&\Rightarrow \text{isPrime}(N)\land N\notin L
 &&\text{[Stages 2 and 3]} \\
 d<N
-&\Rightarrow \operatorname{isPrime}(d)\land d\notin L
+&\Rightarrow \text{isPrime}(d)\land d\notin L
 &&\text{[Stages 2 and 3]} \\
-\therefore\ \exists p:\operatorname{isPrime}(p)\land p\notin L
+\therefore\ \exists p:\text{isPrime}(p)\land p\notin L
 &&\text{[Case Split]}
 \end{aligned}
 ```
@@ -297,10 +297,10 @@ already contained in the complete prefix. Therefore $q>h$.
 \begin{aligned}
 P &= [p_1,\dots,p_k],\quad h=p_k
 &&\text{[Finite Prime Prefix]} \\
-\forall r,\ \operatorname{isPrime}(r)\land r\le h
+\forall r,\ \text{isPrime}(r)\land r\le h
 &\Rightarrow r\in P
 &&\text{[Prefix Complete Through }h\text{]} \\
-\operatorname{isPrime}(q)\land q\notin P
+\text{isPrime}(q)\land q\notin P
 &&\text{[Euclid Construction]} \\
 q\le h
 &\Rightarrow q\in P
@@ -408,10 +408,10 @@ of the candidate.
 ```math
 \begin{aligned}
 head > 1
-\;\land\; \operatorname{isCoprime}(head,\overline P)
+\;\land\; \text{isCoprime}(head,\overline P)
 \;\land\;
-\forall d\in[2,head),\ \neg \operatorname{isCoprime}(d,\overline P)
-&\Rightarrow \operatorname{isPrime}(head).
+\forall d\in[2,head),\ \neg \text{isCoprime}(d,\overline P)
+&\Rightarrow \text{isPrime}(head).
 \end{aligned}
 ```
 
@@ -445,9 +445,9 @@ algorithm exposes a linear combination:
 
 ```math
 \begin{aligned}
-\operatorname{isPrime}(p)
+\text{isPrime}(p)
 \land 0<h<p
-\land \operatorname{mod}(h,p)\ne0
+\land \text{mod}(h,p)\ne0
 &\Rightarrow
 \exists x,y,\ h x + p y = 1.
 \end{aligned}
@@ -458,12 +458,12 @@ $k h$, then $p$ divides both terms on the left and therefore divides $k$.
 
 ```math
 \begin{aligned}
-\operatorname{isPrime}(p)
+\text{isPrime}(p)
 \land k\ge0
 \land h\ge0
-\land \operatorname{mod}(h,p)\ne0
-\land \operatorname{mod}(kh,p)=0
-&\Rightarrow \operatorname{mod}(k,p)=0.
+\land \text{mod}(h,p)\ne0
+\land \text{mod}(kh,p)=0
+&\Rightarrow \text{mod}(k,p)=0.
 \end{aligned}
 ```
 
@@ -471,12 +471,12 @@ The contrapositive form used by product and density arguments is:
 
 ```math
 \begin{aligned}
-\operatorname{isPrime}(p)
+\text{isPrime}(p)
 \land k\ge0
 \land h\ge0
-\land \operatorname{mod}(k,p)\ne0
-\land \operatorname{mod}(h,p)\ne0
-&\Rightarrow \operatorname{mod}(kh,p)\ne0.
+\land \text{mod}(k,p)\ne0
+\land \text{mod}(h,p)\ne0
+&\Rightarrow \text{mod}(kh,p)\ne0.
 \end{aligned}
 ```
 

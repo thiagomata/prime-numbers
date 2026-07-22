@@ -766,7 +766,8 @@ combines, and where the source-backed proof lives.
 Inline mathematical statements belong in `$...$`, not code backticks. For
 example, write $d \cdot d \le d \cdot q = n$, $d^2 \le n$, and
 $\text{mod}(n,d)=0$ as math. Reserve backticks for code identifiers, source
-expressions, and literal Scala syntax.
+expressions, and literal Scala syntax. Do not use unsupported LaTeX macros such
+as `\operatorname`; use `\text{...}` or established infix notation instead.
 
 ### 14.13 Use `:=` only for definitions
 

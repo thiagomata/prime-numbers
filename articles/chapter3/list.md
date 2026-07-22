@@ -180,7 +180,7 @@ The implementation of `product` is available in [ListProduct](
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)_i = L_{i + 1}$ for $i < |\text{tail}(L)|$
+- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\ \text{tail}(L)_i = L_{i + 1}$ for $i < |\text{tail}(L)|$
 - [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L_{|L|-1} = \text{last}(L)$
 
 ### 3.1 Tail Access Shift
@@ -568,19 +568,19 @@ Let's calculate the sum of $L$:
 ```
 
 ```math
-\therefore \\
+\therefore
 ```
 
 ```math
-\forall\text{ }  L \in 𝕃 \\
-|L| > 0 \text{ } \implies \text{ sum}(L) = \sum L  \\
+\forall\text{ }  L \in 𝕃
+|L| > 0 \text{ } \implies \text{ sum}(L) = \sum L
 ```
 
 Hence, by induction on the size of $L$:
 
 ```math
 \forall \text{ } L \text{ } \in 𝕃 \\
-\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[Q.E.D.]} \\
+\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[Q.E.D.]}
 ```
 
 This property is verified in the [
@@ -1370,10 +1370,10 @@ $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
 ```math
 \begin{aligned}
 |L| > 0
-&\implies L_{|L|-1} = \operatorname{last}(L)
+&\implies L_{|L|-1} = \text{last}(L)
 &&\text{[Last Element Identity]} \\
 0 < i < |L|
-&\implies L_i = \operatorname{tail}(L)_{i-1}
+&\implies L_i = \text{tail}(L)_{i-1}
 &&\text{[Tail Access Shift]} \\
 0 \leq f < t < |L|
 &\implies L[f \dots t]
@@ -1384,37 +1384,37 @@ $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
 
 ```math
 \begin{aligned}
-\operatorname{sum}(L)
+\text{sum}(L)
 &= \sum_{i=0}^{|L|-1} L_i
 &&\text{[Sum Matches Summation]} \\
-\operatorname{sum}(x :: L)
-&= x + \operatorname{sum}(L)
+\text{sum}(x :: L)
+&= x + \text{sum}(L)
 &&\text{[Left Append Preserves Sum]} \\
-\operatorname{sum}(A \mathbin{\texttt{++}} B)
-&= \operatorname{sum}(A) + \operatorname{sum}(B)
+\text{sum}(A \mathbin{\texttt{++}} B)
+&= \text{sum}(A) + \text{sum}(B)
 &&\text{[Sum over Concatenation]} \\
-\operatorname{sum}(A \mathbin{\texttt{++}} B)
-&= \operatorname{sum}(B \mathbin{\texttt{++}} A)
+\text{sum}(A \mathbin{\texttt{++}} B)
+&= \text{sum}(B \mathbin{\texttt{++}} A)
 &&\text{[Commutativity of Sum]}
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-\operatorname{product}(x :: L_e)
+\text{product}(x :: L_e)
 &= x
 &&\text{[Singleton Product]} \\
-\operatorname{product}(A \mathbin{\texttt{++}} (e :: B))
-&= e \cdot \operatorname{product}(A \mathbin{\texttt{++}} B)
+\text{product}(A \mathbin{\texttt{++}} (e :: B))
+&= e \cdot \text{product}(A \mathbin{\texttt{++}} B)
 &&\text{[Product Pull-Out Element]} \\
-\operatorname{product}(A \mathbin{\texttt{++}} B)
-&= \operatorname{product}(A) \cdot \operatorname{product}(B)
+\text{product}(A \mathbin{\texttt{++}} B)
+&= \text{product}(A) \cdot \text{product}(B)
 &&\text{[Product over Concatenation]} \\
-\operatorname{product}(A \mathbin{\texttt{++}} B)
-&= \operatorname{product}(B \mathbin{\texttt{++}} A)
+\text{product}(A \mathbin{\texttt{++}} B)
+&= \text{product}(B \mathbin{\texttt{++}} A)
 &&\text{[Commutativity of Product]} \\
 (\forall x \in L,\ x > 0)
-&\implies \operatorname{product}(L) > 0
+&\implies \text{product}(L) > 0
 &&\text{[Positive Product]}
 \end{aligned}
 ```
@@ -1422,13 +1422,13 @@ $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
 ```math
 \begin{aligned}
 L \neq L_e \land (\forall x \in L,\ x > 0)
-&\implies \operatorname{product}(L) \bmod \operatorname{head}(L) = 0
+&\implies \text{product}(L) \bmod \text{head}(L) = 0
 &&\text{[Head Divides Product]} \\
 (\forall x \in L,\ x > 0)
-&\implies \forall x \in L,\ \operatorname{product}(L) \bmod x = 0
+&\implies \forall x \in L,\ \text{product}(L) \bmod x = 0
 &&\text{[All Elements Divide Product]} \\
 e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
-&\implies \operatorname{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
+&\implies \text{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
 &&\text{[Inserted Element Divides Product]}
 \end{aligned}
 ```
@@ -1441,30 +1441,30 @@ e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 (\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
 &\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
 &&\text{[Bound over Concatenation]} \\
-\operatorname{slice}(L,f,t)
-&= \operatorname{headRecursiveSlice}(L,f,t)
- = \operatorname{indexRangeValues}(L,f,t)
+\text{slice}(L,f,t)
+&= \text{headRecursiveSlice}(L,f,t)
+ = \text{indexRangeValues}(L,f,t)
 &&\text{[Slice Equivalence]}
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-\operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i)
+\text{value}_{h,G}(i + 1) - \text{value}_{h,G}(i)
 &= G_i
 &&\text{[Adjacent Difference]} \\
-\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
- - \operatorname{value}_{\operatorname{shift}(h,G)}(i)
-&= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
+\text{value}_{\text{shift}(h,G)}(i + 1)
+ - \text{value}_{\text{shift}(h,G)}(i)
+&= \text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
 &&\text{[Gap Translation]} \\
-\operatorname{rotateAt}(L,k).\operatorname{contains}(x)
-&\iff L.\operatorname{contains}(x)
+\text{rotateAt}(L,k).\text{contains}(x)
+&\iff L.\text{contains}(x)
 &&\text{[Rotation Same Elements]} \\
-|\operatorname{rotateAt}(L,k)|
+|\text{rotateAt}(L,k)|
 &= |L|
 &&\text{[Rotation Same Size]} \\
-\operatorname{sum}(\operatorname{rotateAt}(L,k))
-&= \operatorname{sum}(L)
+\text{sum}(\text{rotateAt}(L,k))
+&= \text{sum}(L)
 &&\text{[Rotation Same Sum]}
 \end{aligned}
 ```

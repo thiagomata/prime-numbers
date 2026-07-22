@@ -765,10 +765,10 @@ I_{G^{\langle h\rangle}}(k)&=I_G(k)
 I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 &\Longleftrightarrow I_G(k)\not\equiv0\pmod h
   &&\text{[Substitution]} \\
-\operatorname{survivors}(I_{G^{\langle h\rangle}},h)
-&=\operatorname{survivors}(I_G,h) \\
-\operatorname{gaps}(\operatorname{survivors}(I_{G^{\langle h\rangle}},h))
-&=\operatorname{gaps}(\operatorname{survivors}(I_G,h))
+\text{survivors}(I_{G^{\langle h\rangle}},h)
+&=\text{survivors}(I_G,h) \\
+\text{gaps}(\text{survivors}(I_{G^{\langle h\rangle}},h))
+&=\text{gaps}(\text{survivors}(I_G,h))
   &&\text{[Q.E.D.]}.
 \end{aligned}
 ```
@@ -972,8 +972,8 @@ gaps of the next linear specification:
 ```math
 \begin{aligned}
 T'&=T(h-1), \\
-\operatorname{mergedGaps}(S,S',1,T')
-&=\operatorname{gapList}(S',0,T')
+\text{mergedGaps}(S,S',1,T')
+&=\text{gapList}(S',0,T')
   \quad\text{[By copy-or-merge induction; Q.E.D.]}.
 \end{aligned}
 ```
@@ -1028,7 +1028,7 @@ cycle-reconstruction theorem from Section 4.2 applies directly to that stage:
 \begin{aligned}
 \ell'_{T'} &= h'+M'
   &&\text{[Next-period boundary]} \\
-G'&=\operatorname{gapList}(S',0,T') \\
+G'&=\text{gapList}(S',0,T') \\
 I_{G'}(k-1)&=\ell'_k
   &&\text{[Cycle reconstruction; Q.E.D.]}.
 \end{aligned}
@@ -1152,8 +1152,8 @@ g'_m&=g_k
   &&\text{[Copy or merge]} \\
 p^+<h^2&\Longrightarrow \ell_1=p^+,
   &&\text{[Next head]} \\
-\operatorname{mergedGaps}(S,S',1,T')
-&=\operatorname{gapList}(S',0,T'),
+\text{mergedGaps}(S,S',1,T')
+&=\text{gapList}(S',0,T'),
   &&\text{[Semantic transition]} \\
 \ell'_{T'}=h'+M'
 &\Longrightarrow I_{G'}(k-1)=\ell'_k.
