@@ -636,6 +636,9 @@ Class invariants provided preconditions without `require`:
 ### 14.1 VC counts are brittle — omit from articles
 
 Never embed repository-wide counts. Use: "described properties are verified".
+A concise verification-log appendix is fine when it confirms the described
+properties verify and links to the log. The article should not turn log
+mechanics or VC totals into proof evidence.
 
 **Source:** `article-review-comparison-2026-06-17.md`
 

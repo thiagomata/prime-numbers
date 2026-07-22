@@ -655,11 +655,7 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 This source proof is the machine-checked form of the main theorem: every
 non-empty finite list of primes admits a prime outside the list.
 
----
+## Appendix B: Verification Log
 
-## Appendix B: Stainless Verification Status and Log Output
-
-The stable verification claim is source-local: every property cited above links
-to its Stainless-checked source function. Repository-wide verification logs are
-not quoted here because their total condition count changes as unrelated
-modules are added.
+The latest `just verify` run verifies the described properties without errors.
+The full log output is available at [logs/verify.log](../../logs/verify.log).

@@ -154,6 +154,9 @@ as the verification reference.
 Theorem articles should be math-first rather than source walkthroughs. Keep
 solver tactics, cache behavior, verification workflow, and postcondition
 strategy notes in `LEARNINGS.md` or tickets, not article bodies.
+It is fine to include a concise verification-log appendix that confirms the
+described properties verify and links to the log; do not make run-log mechanics
+part of the proof narrative.
 Do not let this become understatement: formal verification is a meaningful
 achievement and should remain visible in abstracts, introductions, conclusions,
 and property references when the code has been verified. The distinction is

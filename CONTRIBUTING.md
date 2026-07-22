@@ -264,7 +264,8 @@ Every article must pass these checks before publication:
     Open or unverified items belong in Future Work or a dedicated "Unproven
     Prerequisites" section. Never publish verification-condition counts
     (`36/36 VCs`, `11472/11472 VCs`) in articles — those belong in
-    `logs/verify.log` only.
+    `logs/verify.log` only. A concise appendix may confirm that the described
+    properties verify and link to the log for readers who want to inspect it.
 
 ## README Updates
 
