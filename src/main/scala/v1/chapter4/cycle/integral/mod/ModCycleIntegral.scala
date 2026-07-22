@@ -1,0 +1,35 @@
+package v1.chapter4.cycle.integral.mod
+
+import stainless.lang.*
+import v1.chapter1.verification.Helper.{assert, equality}
+import v1.chapter2.div.{Calc, DivMod}
+import v1.chapter2.div.properties.{ModOperations, ModSmallDividend, Summary}
+import v1.chapter3.list.integral.Integral
+import v1.chapter3.list.integral.properties.IntegralProperties
+import v1.chapter3.list.properties.ListUtilsProperties
+import v1.chapter4.cycle.memory.MemCycle
+
+case class ModCycleIntegral(
+  initialValue: BigInt,
+  mCycle:         MemCycle,
+) {
+//  require(cycle.nonEmpty)
+
+  val integralValues: Integral = Integral(
+    list = mCycle.cycle.values,
+  )
+
+  /**
+   * AccCycle(pos) = div(pos, integralValues.size) * integralValues.last + integralValues(mod(pos, integralValues.size)) + initialValue
+   * @param position BigInt position in the cycle
+   * @return BigInt value at the position in the cycle
+   */
+  def apply(position: BigInt): BigInt = {
+    require(position >= 0)
+    val divMod = DivMod(position, integralValues.size, 0, position).solve
+    assert(divMod.mod >= 0)
+    assert(divMod.div >= 0)
+    assert(position == divMod.div * integralValues.size + divMod.mod)
+    divMod.div * integralValues.last + integralValues(divMod.mod) + initialValue
+  }
+}

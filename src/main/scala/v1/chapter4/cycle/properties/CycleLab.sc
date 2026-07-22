@@ -1,0 +1,26 @@
+import v1.chapter3.list.ListBuilder.createList
+import v1.chapter4.cycle.memory.MemCycle
+import v1.chapter4.cycle.memory.properties.CycleCheckMod
+
+val cycle = MemCycle(
+  values = createList(Array(BigInt(7),BigInt(14),BigInt(21)))
+)
+
+cycle(BigInt(0))
+cycle(BigInt(1))
+cycle(BigInt(2))
+cycle(BigInt(3))
+cycle(BigInt(4))
+cycle(BigInt(5))
+
+val c7 = cycle.checkMod(7)
+c7.evaluated(7)
+c7.allModValuesAreZero(7)
+c7.modIsZeroForAllValues
+
+val c2 = c7.checkMod(2)
+c2.evaluated(2)
+c2.allModValuesAreZero(2)
+c2.someModValuesAreZero(2)
+c2.modIsZeroForSomeValues
+c2.modIsZeroForAllValues

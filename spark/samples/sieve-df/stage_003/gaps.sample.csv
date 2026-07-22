@@ -1,0 +1,9 @@
+gidx,gap,origin,mergeCount
+0,6,merge,1
+1,4,copy,0
+2,2,copy,0
+3,4,copy,0
+4,2,copy,0
+5,4,copy,0
+6,6,merge,1
+7,2,copy,0

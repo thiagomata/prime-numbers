@@ -2,9 +2,9 @@ package v1.cycle.integral.properties
 
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
-import v1.cycle.integral.recursive.CycleIntegral
-import v1.cycle.integral.recursive.properties.CycleIntegralProperties
-import v1.cycle.memory.MemCycle
+import v1.chapter4.cycle.integral.recursive.CycleIntegral
+import v1.chapter4.cycle.integral.recursive.properties.CycleIntegralProperties
+import v1.chapter4.cycle.memory.MemCycle
 import v1.tests.ArrayUtils.createListFromInt
 
 class CycleWithMemoryIntegralPropertiesTest extends FlatSpec with Matchers {
