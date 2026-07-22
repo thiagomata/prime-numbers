@@ -180,7 +180,7 @@ The implementation of `product` is available in [ListProduct](
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\ \text{tail}(L)_i = L_{i + 1}$ for $i < |\text{tail}(L)|$
+- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)_{i} = L_{i+1}$ for $i < |\text{tail}(L)|$
 - [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L_{|L|-1} = \text{last}(L)$
 
 ### 3.1 Tail Access Shift
@@ -534,8 +534,10 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 ```
 
 ```math
+\begin{aligned}
 \forall \text{ } L \in 𝕃 \\
-|L| = 0 \implies \text{sum}(L) = \sum L \\
+|L| = 0 \implies \text{sum}(L) = \sum L
+\end{aligned}
 ```
 
 #### Inductive Step: $|L| > 0$
@@ -572,15 +574,19 @@ Let's calculate the sum of $L$:
 ```
 
 ```math
-\forall\text{ }  L \in 𝕃
-|L| > 0 \text{ } \implies \text{ sum}(L) = \sum L
+\begin{aligned}
+\forall\text{ } L \in 𝕃 \\
+|L| > 0 \implies \text{sum}(L) = \sum L
+\end{aligned}
 ```
 
 Hence, by induction on the size of $L$:
 
 ```math
+\begin{aligned}
 \forall \text{ } L \text{ } \in 𝕃 \\
 \text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[Q.E.D.]}
+\end{aligned}
 ```
 
 This property is verified in the [
