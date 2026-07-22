@@ -108,7 +108,7 @@ L = [x_0, x_1, \dots, x_{n-1}] \in 𝕊^n \\
 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases} \\
-\end{aligned} \\
+\end{aligned}
 ```
 
 ```math
@@ -121,7 +121,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) \mathbin{+\!+} [ L_t ] & \text{if } f < t \\
 \end{cases}
-\end{aligned} \\
+\end{aligned}
 \forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
 ```
 
@@ -131,7 +131,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 B & \text{if } A = L_e \\
 L_{node}(head(A), tail(A) \mathbin{+\!+} B) & \text{otherwise} \\
 \end{cases} \\
-\end{aligned} \\
+\end{aligned}
 ```
 
 ```math

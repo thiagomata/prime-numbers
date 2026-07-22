@@ -545,7 +545,7 @@ Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
 ```math
 \begin{aligned}
 \text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
-L = [x_0] \mathbin{+\!+} P & = [x_0, x_1, \dots, x_n]   & \qquad \text{[by Definition of Concatenation]} \\
+L = [x_0] \mathbin{+\!+} P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[by Definition of Concatenation]} \\
 \end{aligned}
 ```
 
@@ -653,7 +653,7 @@ The sum of two concatenated lists equals the sum of each list added together.
 \begin{aligned}
 C & = \text{tail}(A) \mathbin{+\!+} B \\
 \text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A))                & \text{[By definition of sum]} \\
-C & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Inductive Step]} \\
+\text{sum}(C) & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Inductive Step]} \\
 A \mathbin{+\!+} B & = [\text{head}(A)] \mathbin{+\!+} (\text{tail}(A) \mathbin{+\!+} B)                          & \text{[By definition of head and tail]} \\
 \text{sum}(A \mathbin{+\!+} B) & = \text{head}(A) + \text{sum}(\text{tail}(A) \mathbin{+\!+} B)      & \text{[By definition of sum]} \\
                   & = head(A) + \text{sum}(\text{tail}(A)) + \text{sum}(B) & \text{[By definition of C]} \\

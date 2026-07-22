@@ -651,6 +651,16 @@ Published output vs internal helpers. Use source code links instead.
 
 **Source:** `article-review-comparison-2026-06-17.md`
 
+### 14.4 Moment-in-time articles do not need future-state references
+
+When reviewing an article, treat it as a self-contained moment in time. Do not
+complain that its Future Work, conclusion, or scope note fails to reference
+later articles, later repository state, or work completed after the article's
+narrative point. Only flag future-work wording when it is internally
+contradicted by the article itself.
+
+**Source:** `cycle.md` PR review discussion, 2026-07-22.
+
 ## 15. Structural Index Lemmas (ch60, abandoned indexed bijection)
 
 ### 15.1 Body `val`s are not in scope in `.ensuring` blocks

@@ -364,13 +364,12 @@ out, is proved directly in [ModIdempotence.scala#modModMinus](
 
 ### Modular Shift Invariance under Divisible Base
 
-When a number is a multiple of the divisor (modulo equals zero), adding or subtracting any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base.
+When a number is a multiple of the divisor (modulo equals zero), adding any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base.
 
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
 a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
-a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = c \text{ mod } b \\
 \end{aligned}
 ```
 
