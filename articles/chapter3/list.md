@@ -180,8 +180,8 @@ The implementation of `product` is available in [ListProduct](
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)_{i} = L_{i+1}$ for $i < |\text{tail}(L)|$
-- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L_{|L|-1} = \text{last}(L)$
+- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)[i] = L[i+1]$ for $i < |\text{tail}(L)|$
+- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L[|L|-1] = \text{last}(L)$
 
 ### 3.1 Tail Access Shift
 
@@ -509,7 +509,7 @@ This property is verified in the [
 
 The recursive `sum` matches the mathematical summation, and addition commutes over concatenation.
 
-- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = \sum_i L_i$ for $0 \le i < |L|$
+- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = L[0] + \cdots + L[|L|-1]$
 - [Left append preserves sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
 - [Sum over concatenation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
 - [Commutativity of sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
@@ -732,7 +732,7 @@ This property is verified in the [
 
 The product operation, from singleton identity through concatenation distributivity to positivity.
 
-- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L_e) = x$
+- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: \text{empty}) = x$
 - [Product pull-out element](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
 - [Product over concatenation](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
 - [Commutativity of product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
