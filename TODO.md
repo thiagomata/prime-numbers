@@ -1,27 +1,39 @@
 # TODO
 
-## Article Drafts and Pending Verification
+This file is a small current backlog only. Historical cleanup lists belong in
+`docs/markdown-cleanup-manifest.md`; proof execution details belong in active
+tickets.
 
-- [x] `src/main/scala/v1/chapter4/cycle/integral/classic/ClassicCycleIntegral.scala`: retired duplicate classic cycle-integral logic by delegating to canonical `CycleIntegral`; `ClassicCycleIntegralProperties` now points to `CycleIntegral`.
-- [x] `articles/chapter4/integral-cycle.md`: retired the §5.1 modulo invariance draft marker by citing the verified `MemCycle` finite-period classification layer and `GapProperties.assertModIsPeriodic`.
-- [ ] `articles/chapter4/integral-cycle.md`: package the §5.3 right index shift as an all-position wrapper; the stored-period `CycleIntegral` core is verified by `GapProperties.assertRotateOneCycleIntegralShiftsByOne`.
-- [ ] `articles/chapter4/integral-cycle.md`: add a Stainless lemma for the §5.4 left index shift, mirroring `GapProperties.assertRotateOneCycleIntegralShiftsByOne` (§5.3) but for the reverse rotation, with `init'' := init - L(n-1)`.
-- [ ] `articles/chapter6/gap-dynamics.md`: replace the draft verification target for gap-copy / gap-merge behavior with a verified `.holds` lemma or keep it explicitly marked as pending.
-- [ ] `articles/chapter6/sieve-sequence-v2.md`: connect the verified same-head filter count through the next sieve spec and constructed-cycle wrappers instead of supplying the next-period boundary to the cycle-level proof.
-- [ ] `articles/chapter6/sieve-sequence-v2.md`: formalize Bertrand's postulate or keep the next-head primality proof explicitly conditional on the square-bound precondition.
-- [ ] `articles/chapter6/sieve-sequence.md`: review the older open claims blocked on Bertrand's postulate and Euclid's lemma; either migrate current verified results from `sieve-sequence-v2.md` or mark the article as superseded.
-- [ ] `articles/draft/draft-sieve-gap-survival-math.md`: keep as mathematical exploration until the main survival claims have source-linked Stainless verification.
-- [ ] `articles/draft/draft-empirical-g-local-analysis.md`: keep empirical functions labeled as `@extern` / not Stainless-verified, or add verified replacements before promoting the article.
+## Documentation Cleanup
 
-## Active Proof Drafts
+- [ ] Review the deletion candidates in `docs/markdown-cleanup-manifest.md`.
+- [ ] Decide whether to remove `tickets/trash/` and `articles/deprecated/`.
+- [ ] Triage `tickets/done/`: keep only the referenced anchor tickets or extract
+  durable lessons into `LEARNINGS.md` / `OBJECTS.md` and remove the raw tickets.
+- [ ] Collapse or archive `tasks/` after salvaging any still-current planning
+  notes.
 
-- [ ] `tickets/active/m-interval-density-and-sieve-sequence-v2.md`: resolve which proof draft, modular permutation, structural recursion, or value-domain counting, remains relevant after the current same-head filter count work.
-- [ ] `tickets/active/spec-same-head-filter-density.md`: remove or update stale draft code blocks that are now superseded by verified same-head filter-count lemmas.
-- [ ] `tickets/active/next-gaps-size-closed-form.md`: reconcile the old "closed form pending" notes with the current verified same-head count and remaining supplied-boundary limitation.
-- [ ] `tickets/active/sieve-sequence-proof.md`: revisit the survival-walk / list-builder equality blocker after the current next-stage boundary wording is stable.
-- [ ] `tickets/active/sieve-sequence-v2-gap-filter-properties.md`: draft the requested subsection only after the relevant gap-filter properties have verified source references.
+## Article Triage
 
-## Catalog Cleanup
+- [ ] Decide whether `articles/draft/draft-sieve-foundation.md` should remain a
+  draft bridge or be folded into `articles/chapter6/sieve-sequence.md`.
+- [ ] Keep `articles/draft/draft-sieve-gap-survival-math.md` and
+  `articles/draft/exercise-local-safe-window-capacity.md` clearly scoped as
+  mathematical exploration until their claims have verified source references.
+- [ ] Keep `articles/draft/draft-empirical-g-local-analysis.md` explicitly
+  empirical / `@extern`, or merge only its limitations into
+  `articles/chapter6/gap-dynamics.md`.
+- [ ] Consider merging durable cautions from
+  `articles/learnings/reviewer-notes-gap-dynamic.md` into
+  `articles/learnings/learnings-capacity-argument.md`.
 
-- [ ] `OBJECTS.md`: audit deferred chapter-6 survivor-window lemmas and decide whether they are still deferred, superseded, or replaced by current spec/cycle wrappers.
-- [ ] `articles/learnings/learnings-capacity-argument.md`: keep open capacity and gap-dynamics claims out of publication articles unless they gain complete mathematical and Stainless verification.
+## Chapter 6 Reconciliation
+
+- [ ] Reconcile stale Chapter 6 tickets with the current source tree before
+  assuming any proof remains open.
+- [ ] Audit `OBJECTS.md` Chapter 6 entries against current source. Several
+  entries still describe old surfaces that are not present under
+  `src/main/scala/v1/chapter6/`.
+- [ ] Decide whether old tickets such as `tickets/active/sieve-sequence-proof.md`
+  and `tickets/active/repeat-filter-rotate-cycle-path.md` should move to
+  `tickets/done/`, `tickets/trash/`, or be rewritten as migration notes.
