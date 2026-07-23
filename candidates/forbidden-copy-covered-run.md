@@ -57,3 +57,17 @@ stress-test sieves `[q,q^2)` directly and does not construct the copy-index
 lattice, so the covered-run quantity `coverRun(C)` was not measured. Deferred
 to a deeper pass. (A window-proxy exists in principle but would not test the
 candidate's actual copy-index claim.)
+
+## Strategic assessment after empirical review
+
+The fixed-seed formulation has an intrinsic scale problem: once the seed
+period `M` is comparable with or larger than the length of the future square
+window, that seed may contribute at most one eligible copy. A covered-run
+bound can then have no room to force an uncovered index, regardless of the
+large complete-batch survivor count.
+
+Proof priority is low as stated. A more viable descendant would let the seed
+stage move with the target head, or aggregate many seed 2-gaps into a
+mesoscopic copy-index population. The next experiment should follow those
+copies through all intervening filters in one fixed future window and measure
+the longest genuinely covered run after conditioning.

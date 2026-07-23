@@ -155,8 +155,10 @@ Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `endpoint_bias = |(1/H) sum_D c(v) -
 (1/N) sum_V c(v)|`, the bias of the filter's hit set `D` versus the whole anchor
 population `V`, on the observable `c(v) = 1` iff `v` is an endpoint of a 2-gap.
-The candidate requires "there exists `eta_p` small enough" — existential, so no
-finite run can confirm it, only falsify it by showing the bias growing.
+This is only a partial diagnostic: the absolute value discards whether the
+filter over-samples endpoints (harmful) or under-samples them (helpful), and
+the run did not compare the error with the transition-specific survival
+margin.
 
 | range | min | median | max |
 |-------|-----|--------|-----|
@@ -167,16 +169,33 @@ Trend (log-log, n=186): exponent k = -0.011, Pearson r = -0.052 against log p �
 **no detectable trend**. The endpoint bias is flat, confined to roughly
 `[0, 0.85]`, regardless of p.
 
-### What this does and does not establish
+Those facts alone do not say whether `eta_p` is small enough. A constant error
+can fail a shrinking margin, while a large negative signed bias is harmless.
+The earlier favorable interpretation is therefore withdrawn.
 
-- **Does:** show the endpoint bias is *flat* and bounded at window scale to
-  p~19000. A flat trend is the favorable outcome for an existential tolerance
-  claim: any proof invoking #13 may assume an `eta_p` in roughly `[0, 0.85]`
-  (constant, not growing with p) without contradicting data. The candidate only
-  needs `eta_p` to exist and be small *enough* for the survival inequality; the
-  data shows a stable, finite value.
-- **Does not:** confirm the existential claim (finite data cannot), nor test
-  the *universal* statement over "a sufficiently rich observable class" — only
-  the single endpoint observable `c(v)` was measured. The survival inequality
-  itself (`H(2L/N + eta_p) < L`) was not checked end-to-end here. Window-scale
-  only; does not touch infinitude.
+### What must be measured
+
+For every transition with `H>0`, retain `N`, `H`, `L`, and the signed harmful
+bias
+
+```math
+b_+=\max\left(0,\frac KH-\frac{2L}{N}\right).
+```
+
+Then test the exact available margin
+
+```math
+b_+ < \frac LH-\frac{2L}{N},
+```
+
+which is equivalent to `H(2L/N+b_+)<L`. Report the normalized margin as well as
+failures. The `H=0` case remains an automatic success handled separately.
+
+## Strategic assessment after empirical review
+
+The current `endpoint_bias` column does **not** test the sufficient condition
+end-to-end, so the empirical status is partial and inconclusive. The candidate
+is still a strong gap-agnostic framework if a conditioned sampling theorem can
+be proved for a bounded observable class. Priority should go to the endpoint
+indicator and a few merge/cluster observables under successive future filters,
+not to a universal class before the necessary one-sided margin is understood.

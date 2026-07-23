@@ -50,3 +50,15 @@ measured (flat, max 2 — see `bounded-consecutive-destruction.md`); the second
 (#5's `D_max,old`) is whole-period and was not. So the composite quantity
 `(R_p+1) D_max,old` cannot be evaluated from window data alone. Deferred to a
 deeper (whole-period) pass.
+
+## Strategic assessment after empirical review
+
+This candidate is a clean deterministic composition, but it inherits two
+different proof burdens. The favorable window-linear data for #4 does not
+establish its cyclic deletion-run premise, while the global old-spacer factor
+from #5 is entirely unmeasured and may dominate the inequality.
+
+Proof work on #6 should therefore be deferred until at least one component is
+understood independently. If a small cyclic run bound can be proved, the more
+promising refinement is to multiply it by a **local** old-spacer bound near the
+future head rather than by the worst spacer in the entire period.

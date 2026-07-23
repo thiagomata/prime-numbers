@@ -74,11 +74,24 @@ never comes close to failing at window scale; the minimum observed margin is 4
 
 - **Does:** show that, at window scale to p~19000, the worst-case bound alone
   guarantees a surviving 2-gap in every transition, with a margin that grows
-  like `p^1.6`. Any proof invoking #2 may assume `surplus` grows at least this
-  fast at this scale without contradicting the data. This directly overturns the
-  "Fatal (unproven)" local-density verdict of the learnings doc at window scale.
-- **Does not:** prove `surplus > 0` for all p (measured to p~19000 only, still
-  small analytically), nor prove the infinitude theorem — #2 is a window-scale
-  conditional; its favorable trend is robustness evidence, not a theorem. The
-  candidates bearing on infinitude (#5, #6, #7, #9, full #14 chain) are separate
-  and unmeasured here.
+  along a fitted `p^1.6` trend over the sample. This is a conjectural target
+  scale, not an assumption available to a proof. The observations contradict a
+  claim that local surplus is already empirically failing in this range.
+- **Does not:** prove `surplus > 0` for all p or at infinitely many stages
+  (measured to p~19000 only, still small analytically). Its favorable trend is
+  robustness evidence, not an asymptotic theorem.
+
+## Strategic assessment after empirical review
+
+This is the clearest **terminal sufficient target** in the catalog. Contrary to
+the earlier synthesis, it is not irrelevant to infinitude merely because it is
+window-local: a proof of `L(p,q)>A(p,q)` at infinitely many consecutive-prime
+transitions would, by the conditional implication above, produce infinitely
+many square-safe 2-gaps. What it lacks is an explanatory mechanism for the
+lower bound on `L`.
+
+The finite 186/186 record makes #2 a high-value theorem target, but attempting
+it only through global density is likely to encounter the same local-placement
+barrier. The most promising use of the other candidates is to upper-bound
+actual harmful hits more sharply than `A(p,q)`, or to prove a hereditary local
+lower bound that closes this surplus inequality.

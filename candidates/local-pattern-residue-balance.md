@@ -146,28 +146,42 @@ max_a |N_{w,a} - N_w/p|`, the worst deviation of any residue class's 2-gap-start
 count from uniform. **Low-power measurement**: one window is a small sample of
 the whole residue distribution, so this is a weak test of the candidate.
 
-**Important — a corrected reading.** A first pass flagged `residue_max_dev` as
-*growing* with p (6 -> 43 -> 74), which looked unfavorable. That was an artifact
-of measuring an absolute count deviation without normalizing for sample size:
-counts grow with the window, so their absolute deviation grows too. Normalizing
-by the expected fluctuation scale `sqrt(G_local)` (standard for a uniform
-distribution) reverses the conclusion:
+The first interpretation of this column was not justified. It divided the
+maximum deviation by `sqrt(G_local)` and concluded that the residue
+distribution approaches uniform. With `p` residue classes, however, the
+random-reference scale for a maximum cell deviation depends on both the
+typical cell count `G_local/p` and an extreme-value factor such as `log p`
+(up to model-dependent constants). Dividing by `sqrt(G_local)` alone can shrink
+even without any improving equidistribution.
 
 | quantity | dense (p 5..991) | sparse (p ~1000..19000) | trend |
 |----------|------------------|--------------------------|-------|
 | `residue_max_dev` (absolute) | med 6.2, max 10.3 | med 43.2, max 73.7 | grows p^(+0.54), r=+0.97 |
-| `residue_max_dev / sqrt(G_local)` (normalized) | med 0.14, max 0.43 | med 0.067, max 0.096 | **shrinks** p^(-0.09), r=-0.87 |
+| `residue_max_dev / sqrt(G_local)` (insufficient normalization) | med 0.14, max 0.43 | med 0.067, max 0.096 | shrinks p^(-0.09), r=-0.87 |
 
-The *relative* deviation shrinks with p: the residue distribution gets **closer
-to uniform at scale**, not further from it. The earlier "unfavorable flag" on
-this candidate is withdrawn.
+The table remains a descriptive diagnostic, but neither “approaches uniform”
+nor an unfavorable verdict follows from it.
 
-### What this does and does not establish
+### What must be measured
 
-- **Does:** show that at window scale the residue-class distribution of 2-gap
-  starts approaches uniform as p grows (normalized deviation shrinks, r=-0.87).
-  This is consistent with — mildly supportive of — the candidate's balance
-  demand, at least for the word `(2)` and in the relative sense that matters.
-- **Does not:** test arbitrary finite words (only `w=(2)` was measured), nor
-  prove the pointwise bound for all p. The measurement is low-power by nature
-  (one window = one sample). Window-scale only; does not touch infinititude.
+The direct empirical test is the candidate's own sufficient margin:
+
+```math
+\nu_p(w)E_p(J,w)
+<
+N_w(J)\left(1-\frac{\nu_p(w)}p\right).
+```
+
+For `w=(2)`, use `nu=2`, `E=residue_max_dev`, and `N=G_local`, and report the
+signed margin at every transition. Then extend the measurement to a bounded,
+gap-agnostic word family or to the smaller collection of residue sums that
+actually controls harmful filter hits.
+
+## Strategic assessment after empirical review
+
+The present data is **inconclusive**, not favorable or unfavorable. This
+candidate nevertheless remains a promising arithmetic mechanism because it
+can explain why the filter cannot cherry-pick every locally useful pattern.
+The universal “every finite word” version is probably stronger than necessary;
+a bounded word family with an explicit margin, measured after conditioning on
+earlier filters, is the higher-priority formulation.

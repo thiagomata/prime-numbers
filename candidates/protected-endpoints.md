@@ -69,5 +69,15 @@ Zero failures.
 - **Does not:** distinguish this candidate from the others empirically —
   `surviving > 0` is the *conclusion* shared by all the survival candidates, so
   this measurement does not isolate #1's specific mechanism (endpoint
-  protection as opposed to, say, surplus). Nor does it prove the conclusion for
-  all p or advance the infinitude theorem.
+  protection as opposed to, say, surplus). Nor does the finite run prove that
+  the conclusion recurs at infinitely many stages.
+
+## Strategic assessment after empirical review
+
+This is best treated as an **outcome formulation**, not a proof mechanism.
+The measured column asks directly whether a protected 2-gap survived, so its
+perfect finite record is useful ground truth but cannot explain why the filter
+must leave one. Proof work should use #1 as the terminal statement that a more
+structural candidate—such as local surplus, bounded destruction runs, residue
+balance, or shot-spacing capacity—has to deliver. Its standalone proof priority
+is therefore low.

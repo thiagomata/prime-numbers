@@ -36,8 +36,10 @@ consecutive run among 2-gap starts.
 
 Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `max_cons_destroyed_run` = the longest
-consecutive run (in the cyclic order of 2-gap starts) of starts destroyed by
-the filter. The candidate requires "there exists a bound `R_p`" — an
+consecutive run in the **linear order of starts lying inside `W_q`** that the
+filter destroys. The implementation does not join the last local start back to
+the first, and therefore does not measure the cyclic full-period run stated in
+the hypothesis. The candidate requires "there exists a bound `R_p`" — an
 existential claim, so no finite run can *confirm* it, only falsify it by
 showing unbounded growth.
 
@@ -50,11 +52,22 @@ growing.
 ### What this does and does not establish
 
 - **Does:** show the destroyed-start run is *flat* and small at window scale to
-  p~19000. Any proof invoking #4 may assume `R_p` is a small constant (2 covers
-  every measured transition; the data supports assuming it does not grow) without
-  contradicting measurements. A flat trend is exactly the favorable outcome for
-  an existential "there exists a bound" claim.
+  p~19000 in the measured linear window. The constant 2 covers every measured
+  window-linear run and is a useful conjectural target.
 - **Does not:** confirm the bound exists for all p (existential claims can't be
-  confirmed by finite data — only falsified, which the data does not do). The
-  candidate still requires a proof discharging `R_p`. Window-scale only; does
-  not touch infinitude.
+  confirmed by finite data), test the cyclic wrap, or bound runs elsewhere in
+  the period. The candidate still requires a proof discharging `R_p`.
+
+## Strategic assessment after empirical review
+
+Among the mechanistic candidates, this is one of the sharpest and most
+falsifiable: a third consecutive destroyed start would immediately refute the
+conjectural constant `R=2` in the tested setting. Proof priority is high, but
+the next experiment must first close the measurement gap by checking cyclic
+runs on complete small periods and by tracking runs in a fixed future window
+after several consecutive filters.
+
+A proof should characterize the simultaneous congruence requirements for a
+run of three destroyed 2-gap starts. If those requirements are impossible, or
+force a local configuration incompatible with the prior sieve stages, #4
+becomes a concrete non-cherry-picking mechanism rather than an observed bound.

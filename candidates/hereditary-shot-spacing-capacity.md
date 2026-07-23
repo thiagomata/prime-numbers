@@ -212,19 +212,16 @@ whose 2-gap clusters align unusually well with the next scaled shot train.
 The open obligation is to prove that such alignment cannot exhaust every
 capacity-surplus interval through an arbitrarily long future filter chain.
 
-## Empirical Counterexample to the Per-Layer Building Block (window scale, measured)
+## Empirical proxy status (window scale, measured)
 
 The candidate stress-test (`candidates/analysis/measure_candidates.py`, 186
 transitions: dense p<=991 + sparse every-100th-prime to p~19000, full window
-`[q,q^2)`) measures the *per-layer building block* of this candidate — the
-actual number of 2-gaps destroyed by filter `p` versus the worst-case capacity
-`A(p,q)`, expressed as `waste_ratio = (A(p,q) - destroyed) / A(p,q)`. The
-multi-layer hereditary chain that is the actual content of this candidate is
-**not** tested by that run.
+`[q,q^2)`) measures only a coarse whole-window proxy: the actual number of
+2-gaps destroyed by filter `p` versus the worst-case count `A(p,q)`, expressed
+as `waste_ratio = (A(p,q) - destroyed) / A(p,q)`.
 
-At six transitions the building block's premise fails: the real filter hits its
-full worst-case capacity, so `waste_ratio = 0` (no shots wasted, no surplus from
-rigid spacing to exploit):
+At six transitions the real filter hits its full whole-window worst-case
+count, so `waste_ratio = 0`:
 
 | (p,q) | destroyed | A(p,q) | waste_ratio | twin-prime transition? |
 |-------|-----------|--------|-------------|------------------------|
@@ -235,28 +232,45 @@ rigid spacing to exploit):
 | (569,571) | 2 | 2 | 0.000 | yes |
 | (11681,11689) | 2 | 2 | 0.000 | no |
 
-Notable pattern: three of the six failures are twin-prime transitions
+Notable pattern: three of these six transitions are twin-prime transitions
 (`q - p = 2`). At such a transition the window begins with a 2-gap whose
 endpoints straddle the new head's residue, which may force the filter to operate
 near worst-case. This is a hypothesis from 3 data points, not a conclusion. The
-new failure at p=11681 (added by the large-p sparse run) confirms worst-case
-hits do **not** vanish at scale — they remain sporadic (1 in the 21
-large-p transitions) but present.
+new case at p=11681 shows that whole-window equality remains possible in the
+measured large-p sample.
 
 ### Across the full measured range (p to ~19000)
 
-The building block (`waste_ratio > 0`) holds in **180/186** transitions.
+The proxy satisfies `waste_ratio > 0` in **180/186** transitions.
 Excluding the six worst-case failures, the distribution of `waste_ratio` is
 min 0.2, median 1.0, max 1.0 (i.e. the filter frequently destroys *nothing*).
 Trend (log-log, n=180): exponent k = +0.031, r = +0.127 — **no detectable
 trend**; the favorable overall behavior and the sporadic worst-case hits neither
 improve nor worsen systematically with p.
 
-### Scope of this counterexample
+### Correction: this is not a counterexample to the candidate
 
-It shows the per-layer building block (the "filter wastes shots" premise) is not
-universally true even at one layer, and the failures persist (sporadically) at
-scale. It does **not** refute the full hereditary candidate, whose content is
-the multi-layer chain and which remains unmeasured. A hereditary proof that
-assumes `waste_ratio > 0` at every layer is refuted by these six transitions;
-one that tolerates sporadic worst-case layers is consistent with the data.
+`waste_ratio=0` says that every counted accepted shot in the whole window
+destroyed a 2-gap. The candidate does **not** require a globally wasted shot.
+It requires an interval with more relevant 2-gap capacity than the number of
+shots admitted by the actual consecutive partial sums `sigma_r(k)`. Such an
+interval may exist even when all shots hit somewhere, and `G_local>A(p,q)` can
+leave survivors even at whole-window equality. Therefore the six transitions
+do not falsify the per-layer interval premise, much less its hereditary
+composition. The earlier “counterexample,” “building-block failure,” and
+180/186 pass/fail labels are withdrawn; they describe only the proxy.
+
+## Strategic assessment after empirical review
+
+This candidate most directly captures the user's two rigid restrictions:
+filters have a fixed shot count and an arithmetically constrained distribution
+of shot spacings. It is also the candidate most explicitly concerned with the
+relationship between a current population and all future filters. Its proof
+priority is high, but its actual condition has not yet been measured.
+
+The next implementation must construct the accepted shot sequence, its
+consecutive partial sums `sigma_r(k)`, and search for the interval required by
+the candidate at each layer. It should then fix one future square window,
+condition the 2-gap population through every intervening filter, and repeat the
+capacity test. Only that lineage experiment can reveal whether successive
+filters systematically cherry-pick the remaining local clusters.

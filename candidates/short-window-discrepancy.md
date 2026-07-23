@@ -55,39 +55,37 @@ beyond total counts and per-prime residue frequencies.
 ## Empirical status (window scale, p to ~19000)
 
 Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
-p<=991 + sparse to p~19000). Quantities: `main_term = |W| * delta_q` (the
-complete-period-density expected count) and `E_q = G_local - main_term` (the
-short-window discrepancy, using the *pre-filter* 2-gap count as the observed
-count; see `candidates/analysis/README.md` for this convention). The candidate's
-one-sided sufficient condition is `E_q > -main_term`.
+p<=991 + sparse to p~19000). The run recorded `main_term = |W| delta_q`, but
+computed the reported discrepancy as
 
-The condition holds in **186/186** transitions: the discrepancy never comes
-close to cancelling the main term.
+```math
+E_{\mathrm{measured}}=G_{\mathrm{local}}-|W|\delta_q,
+```
 
-| quantity | min | median | max |
-|----------|-----|--------|-----|
-| `main_term` | 4.2 | 2,705 | 1.61e6 |
-| `E_q` | -1.79e5 | -96.5 | 12.5 |
+where `G_local` is the **pre-filter** 2-gap count. The hypothesis instead
+defines
 
-Note `E_q` is usually slightly negative (the pre-filter window count is a bit
-below the complete-period prediction) but its magnitude is far smaller than
-`main_term`. The ratio `|E_q| / main_term` has max ~0.35 in the dense range and
-shrinks at large p. **No meaningful trend exponent for `E_q` itself** — it is a
-difference of two large numbers, so a log-log fit is numerically meaningless;
-the load-bearing fact is the one-sided bound, which holds in every transition.
+```math
+E_q=|S_q\cap W_q|-|W|\delta_q
+```
 
-### No counterexample
+from the **post-filter** count. These are different quantities. Consequently,
+the earlier “pass 186/186” label and its discrepancy ratios do not test this
+candidate and are withdrawn. The recorded column may remain a pre-filter
+window diagnostic, but it cannot be interpreted as `E_q`.
 
-Zero failures of `E_q > -main_term`.
+### What must be measured
 
-### What this does and does not establish
+Recompute `E_q` as `surviving - main_term` and report both the two-sided ratio
+`|E_q|/main_term` and the one-sided margin. The one-sided inequality
+`E_q>-main_term` is algebraically equivalent to `surviving>0`, so measuring it
+only reproduces the outcome. The informative empirical stress test is the
+stronger two-sided discrepancy bound and its scaling.
 
-- **Does:** show that at window scale to p~19000 the short-window discrepancy
-  never overwhelms the main term — the complete-period density is a reliable
-  guide to the window count, within a factor that stays well under the survival
-  threshold. A proof using #10 may assume `E_q > -main_term` at this scale
-  without contradicting data.
-- **Does not:** prove the discrepancy bound for all p, nor discharge the actual
-  analytic obligation (a non-circular short-window error estimate). Note the
-  convention caveat: observed count here is pre-filter; the candidate statement
-  is about post-filter. Window-scale only; does not touch infinitude.
+## Strategic assessment after empirical review
+
+The candidate is analytically natural, but its weak one-sided form is a
+restatement of local survival. Its value lies in proving a genuinely
+non-circular two-sided or relative discrepancy estimate from the arithmetic of
+the filters. Until the post-filter discrepancy is computed, this candidate is
+**unmeasured as stated** and should not be ranked from the current column.

@@ -62,3 +62,15 @@ The window-scale stress-test sieves only `[q,q^2)` and cannot measure either
 deeper (whole-period) pass. Note the candidate's existential form ("there
 exists `C(q)`") means it could not be *confirmed* by measurement in any case —
 only falsified by showing the factor grows without bound.
+
+## Strategic assessment after empirical review
+
+The average-to-maximum step is the whole difficulty here. Exact global counts
+can make the average spacer small while allowing a rare empty arc to contain
+the distinguished head. Consequently, the universal balance factor is a much
+stronger target than the square-safe conclusion requires.
+
+Proof priority is low in this form. Small complete-period measurements can
+estimate the extreme-to-average ratio and reject implausible proposed bounds,
+but a head-conditioned quantile bound or a mesoscopic local balance theorem
+would be more relevant than controlling the maximum over every phase.

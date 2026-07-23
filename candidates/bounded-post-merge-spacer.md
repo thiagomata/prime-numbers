@@ -51,3 +51,17 @@ data. The window-scale stress-test (`candidates/analysis/measure_candidates.py`)
 sieves only `[q,q^2)` and so cannot measure `D_max`. Deferred to a deeper
 (whole-period) pass. See `candidates/analysis/FINDINGS.md` for the distinction
 between window-measurable and whole-period candidates.
+
+## Strategic assessment after empirical review
+
+This criterion is sufficient but substantially stronger than the local
+conclusion: it controls the single worst empty arc anywhere in a primorial
+period, even though survival needs only the arc containing the distinguished
+head to be short. Its extreme-value character is similar to a
+Jacobsthal-function problem and may be much harder than the original local
+placement question.
+
+Proof priority is therefore low as a direct route. Complete periods at the
+small stages should still be measured to learn the scale of `D_max(q)` and to
+test proposed bounds, but the head-specific spacer (#8) or a hereditary
+fixed-window argument is likely a better target than a universal maximum.

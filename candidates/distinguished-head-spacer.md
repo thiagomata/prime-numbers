@@ -59,10 +59,9 @@ a enormous margin at large p.
 | dense (p 5..991) | 0 | 16 | 148 | 22 (at q=7) |
 | sparse (p ~1000..19000) | 0 | ~50 | ~600 | ~10^6 (at q~1000) |
 
-Trend (log-log, n=152): `d_head ~ p^(+0.31)`, r = +0.44 — weak/noisy growth in
-absolute terms. But the candidate's bound `q^2-q-3` is *quadratic* in q, so the
-gap between `d_head` and its bound widens rapidly; the trend is irrelevant to
-whether #8 holds.
+Trend (log-log, n=152): `d_head ~ p^(+0.31)`, r = +0.44 — a weak/noisy
+finite-range fit. Through the measured range, `d_head` remains far below the
+quadratic bound. The fit does not prove subquadratic asymptotic growth.
 
 ### No counterexample
 
@@ -71,10 +70,22 @@ Zero failures.
 ### What this does and does not establish
 
 - **Does:** show that at window scale to p~19000 the first post-filter 2-gap
-  start always lies comfortably within the safe window (the condition holds
-  trivially once q is at all large, because the bound is quadratic and `d_head`
-  grows sub-quadratically).
-- **Does not:** make the condition discriminating — it holds so easily at large p
-  that it carries little information there (it is only stressed at the smallest
-  windows). The candidate's value is conceptual (isolating the head spacer), not
-  empirically distinctive. Window-scale only; does not touch infinitude.
+  start lies comfortably within the safe window in all 186 measured cases.
+- **Does not:** make the condition discriminating over this sample—the observed
+  distances are much smaller than the available quadratic bound. The
+  candidate's value is conceptual (isolating the head spacer), not empirically
+  distinctive. The finite run proves neither subquadratic growth nor recurrence
+  at infinitely many stages.
+
+## Strategic assessment after empirical review
+
+This is the correct localization of the problem, but its post-filter
+inequality is almost equivalent to asking whether the desired safe-window
+2-gap exists. The `d_head` measurement therefore records the outcome after the
+filter rather than identifying why future filters cannot keep selecting the
+head neighborhood.
+
+Use #8 as a boundary condition for stronger mechanisms, not as the first proof
+target. A useful theorem would control how the distinguished spacer changes
+from the current sequence through several future filters; that hereditary
+relationship would address the head-cherry-picking concern directly.

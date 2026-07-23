@@ -194,12 +194,27 @@ uniform-residue benchmark `2/p`, the structurally closer of the two models.)
 
 - **Does:** show that, at window scale to p~19000, the real filter is reliably
   *less* destructive than the uniform-residue random model, and the margin
-  grows like `p^0.6` (difference of the two exponents). This is empirical
-  support for the "random-like transference" intuition, conditional on the
-  window. A proof using #11 may assume `destruction_rate <= 2/p` (indeed much
-  less) at this scale without contradicting data.
+  grows like `p^0.6` (difference of the two fitted exponents). This supplies a
+  favorable benchmark and target margin; it does not show that the modular
+  filter samples local patterns randomly. A proof using #11 may target
+  `destruction_rate <= 2/p` without contradicting the measured range.
 - **Does not:** discharge the candidate's actual obligation, which is a
   *non-circular deterministic* transference bound (`epsilon_p` existing and
   being small enough). Measurement cannot confirm an existential tolerance; it
-  can only show the margin is wide and widening, which it is. Nor does it touch
-  infinitude — #11 is window-scale and conditional, like #2.
+  can only show a wide finite-sample margin. The run does not prove recurrence
+  at infinitely many stages; a deterministic bound that did recur would imply
+  infinitely many certificates through the conditional argument above.
+
+## Strategic assessment after empirical review
+
+This is a useful benchmark and should be kept in one file: the independent and
+uniform-residue models calibrate the scale a deterministic theorem would need
+to match. The observed decline in `destroyed/G_local`, however, partly reflects
+the rapid growth of the denominator and does not by itself establish
+random-like sampling or transference.
+
+Proof priority is medium as a framework and lower as a direct probabilistic
+argument. Its strongest role is to supply explicit target margins for the
+arithmetic candidates #12 and #13. Any proof must derive the error after
+conditioning on earlier filters; simply fitting the observed destruction rate
+would be circular.

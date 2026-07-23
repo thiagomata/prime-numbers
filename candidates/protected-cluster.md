@@ -65,11 +65,24 @@ does not recur at scale.
 
 ### What this does and does not establish
 
-- **Does:** show that, except at the tiniest window, protected clusters of two
-  or more endpoint-disjoint 2-gaps within width-`<p` are reliably present and
-  grow abundant at scale. A proof invoking #3 may assume a cluster exists for
-  all but the smallest transitions.
+- **Does:** show that protected clusters of two or more endpoint-disjoint
+  2-gaps within width-`<p` occur in 185/186 measured transitions and become
+  large in the sampled range. This supports, but does not establish, an
+  eventual cluster-existence conjecture.
 - **Does not:** remove the `(5,7)` counterexample — the candidate as stated is
   not universally true. A proof would need to either exclude small windows or
-  handle the singleton case via another route (as #2 does). Window-scale only;
-  does not touch infinitude.
+  handle the singleton case via another route (as #2 does). The finite
+  window-scale run does not prove that the condition holds infinitely often.
+
+## Strategic assessment after empirical review
+
+This is a genuine one-layer mechanism rather than a restatement of survival:
+it converts geometric separation of filter shots into spare local capacity.
+The sole small-stage failure is harmless for any “all sufficiently large
+stages” version, but the data does not prove that eventual statement.
+
+Proof priority is medium. A useful next lemma would generalize the two-gap
+cluster argument to `C` endpoint-disjoint starts and compare `C` with the exact
+number of accepted shots in the same interval. That formulation connects
+directly to the stronger shot-spacing candidate while avoiding a special
+dependence on 2-gaps in the statement of the filter-distribution bound.

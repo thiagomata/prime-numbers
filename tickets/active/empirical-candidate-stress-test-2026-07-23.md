@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-23
 **Updated:** 2026-07-23
-**Status:** In progress (plan complete, implementation starting)
+**Status:** Complete (external interpretation review incorporated)
 **Depends on:** none (decoupled from Stainless verification)
 
 ## Related Tickets
@@ -145,6 +145,38 @@ Deferred to a deeper pass for survivors (whole-period / `M_p`-scale):
   so `residue_max_dev` is measured but flagged low-power, not decisive.
 - Every other column is a direct test of its candidate's antecedent.
 
+## Post-Run External Review and Correction Matrix
+
+The first interpretation pass sometimes treated an outcome proxy as though it
+measured the candidate's stated mechanism. The raw measurements remain useful,
+but the following corrections supersede the earlier pass/fail labels:
+
+| Candidate | Correction | Revised evidential status |
+|---|---|---|
+| #2 Local surplus | This is a terminal sufficient condition, not merely a window diagnostic. Proving it at infinitely many relevant stages would itself imply infinitely many surviving 2-gaps; only the finite empirical run falls short of that conclusion. | Strong finite support; high-value target, mechanism still needed. |
+| #4 Bounded consecutive destruction | `max_destroyed_run` scans the linear order of starts inside `W`; it does not include the cyclic wrap required by the full-period formulation. | Strong window-linear proxy, not a direct test as stated. |
+| #10 Short-window discrepancy | The implementation computes `G_local - main_term` from the pre-filter 2-gap count. The candidate is stated with the post-filter count `|S_q intersect W_q|`. | Not tested as stated; the reported 186/186 pass must be withdrawn. |
+| #12 Local pattern-residue balance | Dividing the maximum residue deviation by `sqrt(G_local)` is too weak to establish improving equidistribution as the number of residue classes grows. The relevant test is the candidate's own margin `nu E < N(1 - nu/p)`. | Inconclusive, low-power diagnostic only. |
+| #13 Uniform local observable sampling | Absolute endpoint bias alone does not test `H(2L/N + eta) < L`. The measurement must retain `N`, `H`, and `L`, and compare the harmful one-sided excess with the available margin. | Partial diagnostic only. |
+| #14 Hereditary shot-spacing capacity | `waste_ratio = 0` says every accepted shot in the whole window hit a 2-gap endpoint. It does not falsify the existence of an interval whose shot partial sums satisfy the stated `sigma` capacity bound, and it does not test hereditary conditioning. | Proxy only; neither the per-layer interval criterion nor the hereditary claim was tested. |
+
+The remaining candidates also need their strategic roles stated explicitly.
+#1 and #8 are close reformulations of the desired outcome; #3 is a concrete
+one-layer spacing mechanism; #11 is a useful random-model benchmark rather
+than a deterministic transference theorem; #5 and #7 impose stronger
+full-period extreme-value control than the head-window conclusion needs; #6
+inherits the difficulties of #4 and #5; and #9 has a fixed-seed scale problem
+once the target window moves beyond the seed period.
+
+The next empirical priority is therefore a **multi-layer, fixed-future-window
+lineage experiment**, not a blind full-primorial expansion. Choose a future
+square window, take its 2-gap starts at an earlier stage, apply every
+intermediate filter successively, and record at each layer the surviving
+population, harmful-hit count, expected hit share, maximum destroyed run,
+one-sided observable bias, and the actual shot partial-sum/interval capacity.
+This directly tests the user's proposed non-cherry-picking relationship between
+the current sequence and its future filters.
+
 ## Assumptions
 
 - Convention (article-authoritative, `gap-dynamics.md` S9): transition `(p, q)`,
@@ -233,6 +265,8 @@ revert that single change; do not pile fixes onto other columns.
 | 2026-07-23 | User: is there any kind of TREND? Computed log-log fits (value ~ p^k) over all 186 transitions (dense+sparse). Strong clean trends (|r|>0.97): #2 surplus grows like p^1.6 (r=0.998); #11 destruction_rate shrinks like p^-1.6 (r=-0.991); #12 normalized shrinks p^-0.09 (r=-0.87). Flat/no-trend (|r|<0.1): #4 run (r=-0.09), #13 endpoint_bias (r=-0.05) -- treat as bounded/stationary. Noisy/low-r: #14 waste_ratio (r=0.14), #8 d_head (r=0.44 but bound is quadratic so irrelevant). | Added a "Trends vs p" table to FINDINGS converting distributions into scaling exponents a lemma developer can use (e.g. "a proof of #2 may assume surplus >= p^1.6 at this scale"). Key read: no trend turns unfavorable with p; the load-bearing ones (#2,#11) improve markedly. Stated honestly these are empirical exponents over p<=19000, not proven asymptotics. |
 | 2026-07-23 | User: some candidates are now better positioned than others. Synthesized a RANKING but forced a critical distinction: (A) empirical strength (what this run measured) vs (B) relevance to the infinitude theorem (what actually matters). These are DIFFERENT and conflating them misleads. | Added a Ranking section to FINDINGS. (A) Empirical ranking: #2 > #11 > #12-normalized > #4=#13 > #1/#8/#10 > #3 > #14-building-block. (B) The crucial caveat: EVERY measured candidate is window-scale and was already known sufficient conditionally; none alone advances the open problem. The candidates that bear on infinitude (#5,#6,#7,#9, full #14 hereditary chain) are precisely the UNMEASURED ones. So #2 being empirically strongest does NOT make it the priority for proof work on the actual theorem. Justified conclusions: prioritize #2/#11 for window-scale lemma work; treat #4/#13 as bounded assumptions; don't over-trust #14 from its building block; don't rank unmeasured candidates as "worse". The deeper whole-period pass is where infinitude-relevant signal would come from. |
 | 2026-07-23 | User: are you keeping the candidate files updated with the latest data? Honest answer: NO -- only #3 and #14 had empirical sections (from the early counterexample pass); the large-p check, trends, #12 normalization correction, and ranking had NOT propagated back into the individual notes. User chose: FULL writeup per candidate (self-contained, prioritizing each note being readable standalone). | Wrote an "Empirical status" section into all 14 candidate files, computed from the full 186-transition dataset (dense+sparse): #1 (pass 186/186, surviving~p^1.6), #2 (pass 186/186, surplus~p^1.6, strongest), #4 (flat, max 2), #8 (pass 186/186), #10 (pass 186/186, E_q convention caveat), #11 (pass 186/186, dest_rate~p^-1.6), #12 (low-power; RECORDED THE CORRECTION -- relative dev shrinks p^-0.09, unfavorable flag withdrawn), #13 (flat, [0,0.85]). Refreshed #3 (185/186, cluster grows to 248 at scale) and #14 (180/186, 6 failures incl new one at p=11681 confirming worst-case persists at scale). Added "not measured this pass" notes to the 4 deferred candidates (#5,#6,#7,#9) explaining why each needs whole-period data. Updated candidates/README.md index with per-candidate [measured]/[deferred] status and headline result. Gate green. Audit confirms all 14 files now carry empirical content. |
+| 2026-07-23 | External review separated direct antecedent tests from outcome and mechanism proxies. It found four material interpretation errors (#10, #12, #13, #14), a linear-versus-cyclic scope mismatch in #4, and an incorrect claim that only whole-period candidates can bear on infinitude. | Record the correction matrix here, revise every candidate's strategic assessment, reconcile the catalog and findings, then validate Markdown consistency without changing code or data. |
+| 2026-07-23 | Completed the external interpretation review across all 14 candidate notes, the catalog, analysis README, and findings. The final audit found all 14 strategic-assessment sections present and no obsolete pass/counterexample, infinitude-scope, whitespace, control-character, or diff-check errors. | Treat #2 as the terminal target; prioritize mechanisms #4, #14, and restricted conditioned forms of #12/#13; implement the fixed-future-window multi-layer lineage experiment next. |
 
 ## Conclusion
 
@@ -241,15 +275,23 @@ Window-scale candidate stress-test complete and green. Deliverables:
 `candidates/analysis/{README,FINDINGS}.md`,
 `data/candidates/window-measurements.csv` (166 transitions, p to 991).
 
-**Headline:** at the window scale to p=997, the survival question is not close
-to failing — `surplus > 0` in every clean transition and the filter wastes ~78%
-of its shot budget. This overturns the learnings doc's "Fatal (unproven)"
-local-density verdict at window scale.
+**Corrected headline:** `surplus > 0` in all 186 measured clean transitions
+(dense to p=991 and sparse to p~19000), making #2 the strongest directly
+measured terminal condition. The aggregate waste ratio is descriptive, not a
+test of #14's interval/partial-sum mechanism.
 
-**Honest scope:** this does NOT prove the infinitude theorem (the
-whole-period / hereditary candidates #5, #6, #7, #9, and the full #14 chain
-bear on that). The deeper pass for those candidates is the natural next step.
-Two scope corrections are recorded above (p>=5 bound; gaps.csv coverage).
+**Honest scope:** the finite run proves no recurrence at infinitely many
+stages. This is a finite-sample limitation, not a reason to exclude
+window-local candidates from infinitude: #2 would imply infinitely many
+certificates if proved infinitely often. #4 is only a window-linear proxy;
+#10 is unmeasured as stated; #12 and #13 are partial diagnostics; and #14's
+actual per-layer and hereditary conditions remain unmeasured.
+
+**Next step:** run a fixed-future-window, multi-layer lineage experiment that
+tracks the same candidate population through every intervening filter and
+records harmful hits, one-sided sampling margins, destroyed runs, and actual
+shot partial-sum capacity. This directly tests whether successive filters can
+cherry-pick the population near the future head.
 
 **Verification-gap finding still open (out of scope here):** the isolation
 lemma and five "established inputs" cited by the candidates are NOT
