@@ -1,0 +1,196 @@
+"""Computes the first PREFIX_LEN gaps for each of NUM_STAGES sieve stages and
+appends them to a CSV. The CSV is the *only* persisted state -- there is no
+separate progress file that could drift out of sync with it.
+
+Generation is strictly sequential: stage N+1 never starts until stage N has
+written all PREFIX_LEN of its rows. So the very last line of the CSV fully
+determines where to resume -- which stage was in progress, how many of its
+gaps are already recorded (gap_index + 1), and the exact integer to continue
+searching from (the `survivor` column, the actual value found for that gap).
+Every earlier stage is therefore guaranteed complete, with no need to scan
+or re-check them. Recovery is an O(1) read of the tail of the file, not an
+O(rows generated so far) scan.
+
+This means the process can be killed at any moment -- mid-stage, between
+rows, whenever -- and rerunning always picks up from the last row it
+actually managed to write, never recomputing finished work and never losing
+more than the single row in flight. If that very last line was a torn
+mid-write, it is truncated away entirely before anything else runs, so the
+file always starts a fresh run from the end of its last complete row.
+
+Stage k has head prime h_k; a value v > h_k survives iff it is not divisible
+by any prime below h_k. No modulus/period is ever computed -- each row is
+just a prefix of the stage's (periodic) gap sequence, found by walking
+forward from the head. That stays cheap no matter how far the stages go.
+
+Run: python3 generate_gaps.py
+Output: ./out/gaps.csv
+"""
+
+import csv
+import os
+
+OUT_DIR = os.path.join(os.path.dirname(__file__), "out")
+CSV_PATH = os.path.join(OUT_DIR, "gaps.csv")
+
+NUM_STAGES = 200
+PREFIX_LEN = 4000
+
+CSV_HEADER = ["stage_index", "head", "gap_index", "gap", "survivor"]
+
+
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    for d in range(2, int(n**0.5) + 1):
+        if n % d == 0:
+            return False
+    return True
+
+
+def first_k_primes(k: int):
+    primes = []
+    n = 2
+    while len(primes) < k:
+        if is_prime(n):
+            primes.append(n)
+        n += 1
+    return primes
+
+
+def read_tail_lines(path: str, num_lines: int = 3):
+    """Reads the last `num_lines` complete lines of a file without scanning
+    it from the start, by seeking backward from the end in growing chunks."""
+    with open(path, "rb") as f:
+        f.seek(0, os.SEEK_END)
+        file_size = f.tell()
+        block_size = 4096
+        data = b""
+        while True:
+            read_size = min(block_size, file_size)
+            f.seek(file_size - read_size)
+            data = f.read(read_size)
+            if data.count(b"\n") > num_lines or read_size >= file_size:
+                break
+            block_size *= 2
+    lines = [line.decode() for line in data.splitlines() if line.strip()]
+    return lines[-num_lines:]
+
+
+def get_resume_point(csv_path: str):
+    """Returns {"stage_index", "head", "gaps_found", "prev"} describing the
+    furthest stage with any rows written, or None if there is no data yet.
+    Tries the last tail line first, then the ones before it, in case the
+    very last line was a torn mid-write."""
+    if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+        return None
+    for line in reversed(read_tail_lines(csv_path)):
+        parts = line.strip().split(",")
+        if len(parts) != 5:
+            continue
+        try:
+            stage_index, head, gap_index, _gap, survivor = (int(p) for p in parts)
+        except ValueError:
+            continue
+        return {"stage_index": stage_index, "head": head, "gaps_found": gap_index + 1, "prev": survivor}
+    return None
+
+
+def generate_stage(writer, f, stage_index, head, tail_primes, gaps_found, prev):
+    v = prev + 1
+    while gaps_found < PREFIX_LEN:
+        if all(v % p != 0 for p in tail_primes):
+            gap = v - prev
+            writer.writerow([stage_index, head, gaps_found, gap, v])
+            f.flush()
+            prev = v
+            gaps_found += 1
+        v += 1
+    return gaps_found
+
+
+def repair_truncated_tail(path: str) -> None:
+    """If a prior run was killed mid-write, the file may end in a torn,
+    incomplete line. Leaving it in place is dangerous: it's a well-formed-looking
+    but incomplete CSV row (e.g. a missing trailing field), which get_resume_point
+    is careful enough to skip, but a simpler downstream reader (like
+    gap_heatmap.py, which only reads a couple of columns) could half-parse it as
+    a phantom extra gap. So rather than just closing it off, drop it entirely --
+    truncate the file back to the end of its last complete, newline-terminated
+    line."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return
+    with open(path, "rb") as f:
+        f.seek(0, os.SEEK_END)
+        size = f.tell()
+        f.seek(-1, os.SEEK_END)
+        if f.read(1) == b"\n":
+            return  # already ends cleanly, nothing to repair
+
+        block_size = 4096
+        pos = size
+        cut_at = 0
+        while pos > 0:
+            step = min(block_size, pos)
+            pos -= step
+            f.seek(pos)
+            chunk = f.read(step)
+            nl = chunk.rfind(b"\n")
+            if nl != -1:
+                cut_at = pos + nl + 1
+                break
+            block_size *= 2
+
+    with open(path, "r+b") as f:
+        f.truncate(cut_at)
+
+
+def main() -> None:
+    os.makedirs(OUT_DIR, exist_ok=True)
+    repair_truncated_tail(CSV_PATH)
+    resume = get_resume_point(CSV_PATH)
+    write_header = not os.path.exists(CSV_PATH) or os.path.getsize(CSV_PATH) == 0
+
+    start_stage_index = 1
+    resume_here = None
+    if resume:
+        if resume["gaps_found"] >= PREFIX_LEN:
+            start_stage_index = resume["stage_index"] + 1
+        else:
+            start_stage_index = resume["stage_index"]
+            resume_here = resume
+
+    heads = first_k_primes(NUM_STAGES + 1)[1:]  # skip 2; stages start at head=3
+    tail = [2]  # every stage head is odd (>=3), so 2 always belongs in its filter set
+    with open(CSV_PATH, "a", newline="") as f:
+        writer = csv.writer(f)
+        if write_header:
+            writer.writerow(CSV_HEADER)
+            f.flush()
+
+        for stage_index, head in enumerate(heads, start=1):
+            if stage_index < start_stage_index:
+                tail.append(head)
+                continue
+
+            if stage_index == start_stage_index and resume_here:
+                if resume_here["head"] != head:
+                    raise SystemExit(
+                        f"resume mismatch: CSV says stage {stage_index} head={resume_here['head']}, "
+                        f"but the configured stage sequence expects head={head}. "
+                        "NUM_STAGES or the prime sequence must have changed since gaps.csv was written."
+                    )
+                gaps_found, prev = resume_here["gaps_found"], resume_here["prev"]
+                print(f"stage {stage_index}/{len(heads)} head={head} resuming from gap {gaps_found}")
+            else:
+                gaps_found, prev = 0, head
+
+            gaps_found = generate_stage(writer, f, stage_index, head, tail, gaps_found, prev)
+            tail.append(head)
+            print(f"stage {stage_index}/{len(heads)} head={head} done ({gaps_found} gaps)")
+
+    print(f"all {len(heads)} stages present in {CSV_PATH}")
+
+
+if __name__ == "__main__":
+    main()
