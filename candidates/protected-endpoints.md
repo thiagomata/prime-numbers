@@ -37,3 +37,37 @@ hypothesis therefore give infinitely many twin-prime certificates.
 The implication is immediate, but the hypothesis already asks for a protected
 local candidate. Global survival does not show that one lies in `W_q` or that
 the real modular filter avoids its endpoints.
+
+## Empirical status (window scale, p to ~19000)
+
+Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+p<=991 + sparse to p~19000). Quantity: `surviving` = the count of 2-gaps among
+*post-filter* survivors in the window `[q,q^2)`. Each such 2-gap is, by the
+square-safe certification, a genuine twin-prime pair whose endpoints survived
+the filter untouched — i.e. an instance of this candidate's hypothesis.
+
+The candidate's condition holds in **186/186** transitions: `surviving > 0`
+always.
+
+| range | min surviving | median | max |
+|-------|---------------|--------|-----|
+| dense (p 5..991) | 4 | 2,600 | 8,087 |
+| sparse (p ~1000..19000) | 11,769 | 440,825 | 1,431,888 |
+
+Trend (log-log, n=186): `surviving ~ p^(+1.60)`, r = +0.998 against log p. The
+number of surviving (protected) 2-gaps grows superlinearly with p.
+
+### No counterexample
+
+Zero failures.
+
+### What this does and does not establish
+
+- **Does:** show that at window scale to p~19000 a protected 2-gap (both
+  endpoints untouched by the filter) always exists, in abundance. The count of
+  twin-prime certificates per window grows like `p^1.6`.
+- **Does not:** distinguish this candidate from the others empirically —
+  `surviving > 0` is the *conclusion* shared by all the survival candidates, so
+  this measurement does not isolate #1's specific mechanism (endpoint
+  protection as opposed to, say, surplus). Nor does it prove the conclusion for
+  all p or advance the infinitude theorem.

@@ -41,3 +41,12 @@ Both quantitative inputs are open: old spacers may already be large, and the
 modular filter may delete long consecutive runs in the 2-gap-start ordering.
 Bounding ordinary gap-merge arity is not automatically the same as bounding
 these deleted-start runs.
+
+## Empirical status: not measured this pass
+
+This candidate composes the bounded-deletion-run bound (#4) with the
+old-spacer bound (#5). The first ingredient (#4's `max_cons_destroyed_run`) was
+measured (flat, max 2 — see `bounded-consecutive-destruction.md`); the second
+(#5's `D_max,old`) is whole-period and was not. So the composite quantity
+`(R_p+1) D_max,old` cannot be evaluated from window data alone. Deferred to a
+deeper (whole-period) pass.

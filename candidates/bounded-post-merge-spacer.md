@@ -42,3 +42,12 @@ has length `q^2-q-2`. Under the strict spacer bound it contains a point of
 The global count controls the average spacer, not the maximum. Merging deleted
 starts adds adjacent spacers and can create a rare empty arc much larger than
 the average.
+
+## Empirical status: not measured this pass
+
+This candidate is **whole-period** — it bounds the maximum cyclic spacer
+`D_max(q)` over the full period modulus `M_q`, which requires primorial-scale
+data. The window-scale stress-test (`candidates/analysis/measure_candidates.py`)
+sieves only `[q,q^2)` and so cannot measure `D_max`. Deferred to a deeper
+(whole-period) pass. See `candidates/analysis/FINDINGS.md` for the distinction
+between window-measurable and whole-period candidates.

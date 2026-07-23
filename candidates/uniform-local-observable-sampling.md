@@ -148,3 +148,35 @@ amplify that alignment. Proving one observable, such as mean gap size, does not
 prove the universal statement. A viable theorem must identify a sufficiently
 rich observable class and establish an explicit error `eta_p` small enough for
 the survival inequality.
+
+## Empirical status (window scale, p to ~19000)
+
+Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+p<=991 + sparse to p~19000). Quantity: `endpoint_bias = |(1/H) sum_D c(v) -
+(1/N) sum_V c(v)|`, the bias of the filter's hit set `D` versus the whole anchor
+population `V`, on the observable `c(v) = 1` iff `v` is an endpoint of a 2-gap.
+The candidate requires "there exists `eta_p` small enough" — existential, so no
+finite run can confirm it, only falsify it by showing the bias growing.
+
+| range | min | median | max |
+|-------|-----|--------|-----|
+| dense (p 5..991) | 0.0003 | 0.22 | 0.77 |
+| sparse (p ~1000..19000) | 0.03 | 0.16 | 0.85 |
+
+Trend (log-log, n=186): exponent k = -0.011, Pearson r = -0.052 against log p —
+**no detectable trend**. The endpoint bias is flat, confined to roughly
+`[0, 0.85]`, regardless of p.
+
+### What this does and does not establish
+
+- **Does:** show the endpoint bias is *flat* and bounded at window scale to
+  p~19000. A flat trend is the favorable outcome for an existential tolerance
+  claim: any proof invoking #13 may assume an `eta_p` in roughly `[0, 0.85]`
+  (constant, not growing with p) without contradicting data. The candidate only
+  needs `eta_p` to exist and be small *enough* for the survival inequality; the
+  data shows a stable, finite value.
+- **Does not:** confirm the existential claim (finite data cannot), nor test
+  the *universal* statement over "a sufficiently rich observable class" — only
+  the single endpoint observable `c(v)` was measured. The survival inequality
+  itself (`H(2L/N + eta_p) < L`) was not checked end-to-end here. Window-scale
+  only; does not touch infinitude.

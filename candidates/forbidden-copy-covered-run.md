@@ -47,3 +47,13 @@ CRT counts allowed classes over a complete batch modulus but does not bound the
 longest partially covered run strongly enough for the eligible interval. A
 fixed seed may also have at most one eligible copy once its primorial exceeds
 the square window.
+
+## Empirical status: not measured this pass
+
+This candidate's true form operates over the *copy-index* view (a fixed seed's
+copies modulo the old period `M`, with the batch of future primes forbidding
+copy-index classes) — a whole-period / primorial-scale object. The window-scale
+stress-test sieves `[q,q^2)` directly and does not construct the copy-index
+lattice, so the covered-run quantity `coverRun(C)` was not measured. Deferred
+to a deeper pass. (A window-proxy exists in principle but would not test the
+candidate's actual copy-index claim.)

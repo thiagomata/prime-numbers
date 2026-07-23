@@ -52,3 +52,13 @@ would be sufficient asymptotically.
 An average does not bound an extreme spacer. The head may lie in a rare large
 empty arc even while almost all other spacers are small. The balance factor is
 the unproved content.
+
+## Empirical status: not measured this pass
+
+This candidate bounds an imbalance factor `C(q)` relating the maximum spacer to
+the average spacer over the full period modulus `M_q` — whole-period data.
+The window-scale stress-test sieves only `[q,q^2)` and cannot measure either
+`D_max(q)` or the period average `\overline D_q = M_q/G_q`. Deferred to a
+deeper (whole-period) pass. Note the candidate's existential form ("there
+exists `C(q)`") means it could not be *confirmed* by measurement in any case —
+only falsified by showing the factor grows without bound.

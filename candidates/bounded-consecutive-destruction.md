@@ -31,3 +31,30 @@ accepted values. Those are different orderings and cannot be substituted.
 Neither the destruction-run bound nor the required local block is currently
 proved. A global bound on the number of deletions does not bound their longest
 consecutive run among 2-gap starts.
+
+## Empirical status (window scale, p to ~19000)
+
+Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+p<=991 + sparse to p~19000). Quantity: `max_cons_destroyed_run` = the longest
+consecutive run (in the cyclic order of 2-gap starts) of starts destroyed by
+the filter. The candidate requires "there exists a bound `R_p`" — an
+existential claim, so no finite run can *confirm* it, only falsify it by
+showing unbounded growth.
+
+Distribution over 186 transitions: `{0: 95, 1: 90, 2: 1}`. Min 0, median 0,
+**max 2** (single occurrence). Over the sparse large-p sample (p~1000..19000)
+the max is 1. Trend (log-log, n=186): exponent k = -0.075, Pearson r = -0.094
+against log p — **no detectable trend**; the run is noise around 0/1, not
+growing.
+
+### What this does and does not establish
+
+- **Does:** show the destroyed-start run is *flat* and small at window scale to
+  p~19000. Any proof invoking #4 may assume `R_p` is a small constant (2 covers
+  every measured transition; the data supports assuming it does not grow) without
+  contradicting measurements. A flat trend is exactly the favorable outcome for
+  an existential "there exists a bound" claim.
+- **Does not:** confirm the bound exists for all p (existential claims can't be
+  confirmed by finite data — only falsified, which the data does not do). The
+  candidate still requires a proof discharging `R_p`. Window-scale only; does
+  not touch infinitude.

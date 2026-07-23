@@ -157,3 +157,49 @@ endpoints of one gap to be deleted, whereas a prime residue filter with
 `p > 2` does not; their destruction rates differ by `1/p^2`. The random-residue
 model fixes that one-gap mismatch but retains correlations between different
 gaps. Neither benchmark alone proves deterministic survival.
+
+## Empirical status (window scale, p to ~19000)
+
+Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+p<=991 + sparse to p~19000). Quantities: `destruction_rate = destroyed/G_local`
+(actual fraction of 2-gaps the real filter destroys) vs the uniform-residue
+benchmark `2/p`. Full data in
+`data/candidates/window-measurements{,-sparse}.csv`.
+
+The concrete sufficient condition `destruction_rate < 2/p` holds in **186/186**
+transitions — the real modular filter destroys a strictly smaller fraction of
+2-gaps than the uniform-residue benchmark predicts, in every measured window.
+
+The gap widens sharply with p:
+
+| range | destruction_rate (max) | benchmark 2/p (median) |
+|-------|------------------------|------------------------|
+| dense (p 5..991) | 0.333 (at (7,11)) | 0.004 |
+| sparse (p ~1000..19000) | 0.00008 | 0.0001 |
+
+Trend (log-log, over transitions with `destruction_rate > 0`, n=91):
+`destruction_rate ~ p^(-1.62)`, Pearson r = -0.991 against log p. The actual
+destruction rate decays superlinearly; the benchmark `2/p` decays exactly like
+`p^(-1)` (r = -1.000). So the real filter falls below the benchmark by an
+ever-growing margin — the opposite of what an adversarial "worst-case" reading
+would assume.
+
+### No counterexample
+
+Zero failures of `destruction_rate < 2/p`. (Note: the *independent*-deletion
+benchmark `2/p - 1/p^2` is even smaller; the data was checked against the
+uniform-residue benchmark `2/p`, the structurally closer of the two models.)
+
+### What this does and does not establish
+
+- **Does:** show that, at window scale to p~19000, the real filter is reliably
+  *less* destructive than the uniform-residue random model, and the margin
+  grows like `p^0.6` (difference of the two exponents). This is empirical
+  support for the "random-like transference" intuition, conditional on the
+  window. A proof using #11 may assume `destruction_rate <= 2/p` (indeed much
+  less) at this scale without contradicting data.
+- **Does not:** discharge the candidate's actual obligation, which is a
+  *non-circular deterministic* transference bound (`epsilon_p` existing and
+  being small enough). Measurement cannot confirm an existential tolerance; it
+  can only show the margin is wide and widening, which it is. Nor does it touch
+  infinitude — #11 is window-scale and conditional, like #2.

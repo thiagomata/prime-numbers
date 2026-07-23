@@ -35,3 +35,41 @@ The real open condition is recurring local cluster existence. Global 2-gap
 counts and minimum separation do not place two gaps close together inside the
 safe window, and a cluster reduced to one survivor may need reconstruction at
 the next stage.
+
+## Empirical Counterexample (window scale, measured)
+
+The candidate stress-test (`candidates/analysis/measure_candidates.py`,
+186 transitions: dense p<=991 + sparse every-100th-prime to p~19000, full window
+`[q,q^2)`) found one transition where the sufficient condition does not hold:
+
+- **(p,q) = (5,7):** the window is `[7,49)`. The pre-filter 2-gap starts
+  (coprime to `{2,3}`) are `11,17,23,29,35,41`. Consecutive differences are all
+  `6`, so no two starts lie within a sub-window of width `< p = 5`. Thus
+  `max_cluster_in_width_p = 1`: there is no protected cluster of two
+  endpoint-disjoint 2-gaps in any width-`<5` interval.
+
+This does not refute the candidate as a survival route at this transition —
+survival still holds (`surviving = 4`) via the local-surplus condition (#2,
+`surplus = 4 > 0`). It shows the candidate's *specific* sufficient condition is
+not universally satisfied even at small windows: the smallest clean transition
+is exactly the regime where evenly-spaced 2-gaps (all differences `6`, forced by
+filter `3`) defeat the width-`<p` cluster requirement.
+
+### Across the full measured range (p to ~19000)
+
+The condition `max_cluster_in_width_p >= 2` holds in **185/186** transitions;
+`(5,7)` is the sole failure. At large p the cluster size grows large — the max
+observed `max_cluster_in_width_p` is **248** — so tight clusters of many 2-gaps
+are abundant once the window is non-trivial. The single small-window failure
+does not recur at scale.
+
+### What this does and does not establish
+
+- **Does:** show that, except at the tiniest window, protected clusters of two
+  or more endpoint-disjoint 2-gaps within width-`<p` are reliably present and
+  grow abundant at scale. A proof invoking #3 may assume a cluster exists for
+  all but the smallest transitions.
+- **Does not:** remove the `(5,7)` counterexample — the candidate as stated is
+  not universally true. A proof would need to either exclude small windows or
+  handle the singleton case via another route (as #2 does). Window-scale only;
+  does not touch infinitude.

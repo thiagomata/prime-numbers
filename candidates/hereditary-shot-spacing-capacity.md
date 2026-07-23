@@ -211,3 +211,52 @@ the consecutive partial sums. Earlier filters may also leave a population
 whose 2-gap clusters align unusually well with the next scaled shot train.
 The open obligation is to prove that such alignment cannot exhaust every
 capacity-surplus interval through an arbitrarily long future filter chain.
+
+## Empirical Counterexample to the Per-Layer Building Block (window scale, measured)
+
+The candidate stress-test (`candidates/analysis/measure_candidates.py`, 186
+transitions: dense p<=991 + sparse every-100th-prime to p~19000, full window
+`[q,q^2)`) measures the *per-layer building block* of this candidate — the
+actual number of 2-gaps destroyed by filter `p` versus the worst-case capacity
+`A(p,q)`, expressed as `waste_ratio = (A(p,q) - destroyed) / A(p,q)`. The
+multi-layer hereditary chain that is the actual content of this candidate is
+**not** tested by that run.
+
+At six transitions the building block's premise fails: the real filter hits its
+full worst-case capacity, so `waste_ratio = 0` (no shots wasted, no surplus from
+rigid spacing to exploit):
+
+| (p,q) | destroyed | A(p,q) | waste_ratio | twin-prime transition? |
+|-------|-----------|--------|-------------|------------------------|
+| (5,7) | 2 | 2 | 0.000 | no |
+| (19,23) | 2 | 2 | 0.000 | no |
+| (239,241) | 2 | 2 | 0.000 | yes |
+| (313,317) | 2 | 2 | 0.000 | yes |
+| (569,571) | 2 | 2 | 0.000 | yes |
+| (11681,11689) | 2 | 2 | 0.000 | no |
+
+Notable pattern: three of the six failures are twin-prime transitions
+(`q - p = 2`). At such a transition the window begins with a 2-gap whose
+endpoints straddle the new head's residue, which may force the filter to operate
+near worst-case. This is a hypothesis from 3 data points, not a conclusion. The
+new failure at p=11681 (added by the large-p sparse run) confirms worst-case
+hits do **not** vanish at scale — they remain sporadic (1 in the 21
+large-p transitions) but present.
+
+### Across the full measured range (p to ~19000)
+
+The building block (`waste_ratio > 0`) holds in **180/186** transitions.
+Excluding the six worst-case failures, the distribution of `waste_ratio` is
+min 0.2, median 1.0, max 1.0 (i.e. the filter frequently destroys *nothing*).
+Trend (log-log, n=180): exponent k = +0.031, r = +0.127 — **no detectable
+trend**; the favorable overall behavior and the sporadic worst-case hits neither
+improve nor worsen systematically with p.
+
+### Scope of this counterexample
+
+It shows the per-layer building block (the "filter wastes shots" premise) is not
+universally true even at one layer, and the failures persist (sporadically) at
+scale. It does **not** refute the full hereditary candidate, whose content is
+the multi-layer chain and which remains unmeasured. A hereditary proof that
+assumes `waste_ratio > 0` at every layer is refuted by these six transitions;
+one that tolerates sporadic worst-case layers is consistent with the data.
