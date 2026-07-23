@@ -35,6 +35,10 @@ verification unless a file explicitly says otherwise.
     - Shows that copy-or-merge filtering cannot recreate a missing 2-gap.
 13. [Batched Short-Window Discrepancy Boundary](batched-short-window-discrepancy-boundary.md)
     - States exactly what batching proves and what local positivity still needs.
+14. [Safe-Zone Exhaustion Curve](safe-zone-exhaustion-curve.md)
+    - Bounds how many survivors populate the safe window `[p,p^2)`: a loose
+      but universal proved bound (Schroeder 2017) versus a tight but unproven
+      practical estimate, plus two documented dead ends.
 
 ## Research Notes
 
