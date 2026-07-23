@@ -1,0 +1,61 @@
+package v1.chapter3.list.integral
+
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.should.*
+import stainless.collection
+import stainless.collection.List
+import v1.tests.ArrayUtils.{createList, createListFromInt}
+
+import scala.BigInt
+
+class IntegralTest extends FlatSpec with Matchers {
+
+  "Acc" should "holds for any list" in {
+    val list = createListFromInt(Array(1, 10, 100))
+    val acc = Integral(list)
+    assert(acc.acc == createListFromInt(Array(1, 11, 111)))
+    assert(acc(0) == 1)
+    assert(acc(1) == 11)
+    assert(acc(2) == 111)
+
+    val list2 = createListFromInt(Array(1, 20, 300))
+    val acc2 = Integral(list2)
+    assert(Integral(list2).acc == createListFromInt(Array(1, 21, 321)))
+    assert(acc2(0) == 1)
+    assert(acc2(1) == 21)
+    assert(acc2(2) == 321)
+  }
+
+  val manyLists: List[collection.List[BigInt]] = List(
+    List[BigInt](),
+    createListFromInt(Array(1)),
+    createListFromInt(Array(1, 2)),
+    createListFromInt(Array(1, 2, 3)),
+    createListFromInt(Array(1, 10, 1000)),
+    createListFromInt(Array(1, 100, 1000)),
+    createListFromInt(Array(10, 100, 1000)),
+    createListFromInt(Array(1, 10, 100, 1000))
+  )
+
+  "isEmpty" should "be false for all lists" in {
+    assert(
+      manyLists.forall(
+        list => {
+          val acc = Integral(list)
+          acc.isEmpty == list.isEmpty
+        }
+      )
+    )
+  }
+
+  "nonEmpty" should "be true for all lists" in {
+    assert(
+      manyLists.forall(
+        list => {
+          val acc = Integral(list)
+          acc.nonEmpty == list.nonEmpty
+        }
+      )
+    )
+  }
+}

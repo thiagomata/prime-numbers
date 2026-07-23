@@ -3,6 +3,7 @@ package v1.cycle.mod
 import org.scalatest.Inspectors.forAll
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
+import v1.chapter4.cycle.mod.ModCycle
 import v1.tests.ArrayUtils.createList
 
 case class CycleTestCase(

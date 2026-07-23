@@ -6,6 +6,7 @@ import stainless.collection
 import stainless.collection.List
 import v1.list.integral
 import v1.tests.ArrayUtils.{createList, createListFromInt}
+import v1.chapter3
 
 import scala.BigInt
 
@@ -13,15 +14,15 @@ class IntegralTest extends FlatSpec with Matchers {
 
   "Acc" should "holds for any list" in {
     val list = createListFromInt(Array(1, 10, 100))
-    val acc = integral.Integral(list)
+    val acc = chapter3.list.integral.Integral(list)
     assert(acc.acc == createListFromInt(Array(1, 11, 111)))
     assert(acc(0) == 1)
     assert(acc(1) == 11)
     assert(acc(2) == 111)
 
     val list2 = createListFromInt(Array(1, 20, 300))
-    val acc2 = integral.Integral(list2)
-    assert(integral.Integral(list2).acc == createListFromInt(Array(1, 21, 321)))
+    val acc2 = chapter3.list.integral.Integral(list2)
+    assert(chapter3.list.integral.Integral(list2).acc == createListFromInt(Array(1, 21, 321)))
     assert(acc2(0) == 1)
     assert(acc2(1) == 21)
     assert(acc2(2) == 321)
@@ -42,7 +43,7 @@ class IntegralTest extends FlatSpec with Matchers {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           acc.isEmpty == list.isEmpty
         }
       )
@@ -53,7 +54,7 @@ class IntegralTest extends FlatSpec with Matchers {
     assert(
       manyLists.forall(
         list => {
-          val acc = integral.Integral(list)
+          val acc = chapter3.list.integral.Integral(list)
           acc.nonEmpty == list.nonEmpty
         }
       )

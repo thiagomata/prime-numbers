@@ -11,6 +11,13 @@ target
 .vscode
 .bsp
 .bsp/**
+__pycache__/
+*.pyc
+*.log
+logs/*.log
+
+# ignore generated Spark datasets
+spark/data/
 
 # ignore macOS files
 .DS_Store
@@ -22,3 +29,7 @@ stainless
 sbt-stainless.zip
 project
 stainless-dotty-standalone-*
+
+# ignore bloop
+.bloop
+.bloop/**
