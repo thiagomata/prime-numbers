@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** REINFORCED — `d_head <= q^2-q-3` in 186/186 window-pass transitions; the bound is quadratic so this holds trivially at large p. See "Empirical status" section.
+
 ## Candidate Hypothesis
 
 Let `S_q` be the bi-infinite periodic set of post-filter 2-gap starts. Define

@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** DEFERRED (UNMEASURED) — copy-index view (covered run over the batch modulus); not touched. See "Empirical status: not measured this pass".
+
 ## Candidate Hypothesis
 
 Fix an old 2-gap `(a,a+2)` with period `M`. Take the complete finite batch

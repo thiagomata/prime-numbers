@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** DEFERRED (UNMEASURED) — whole-period quantity (`D_max`); not touched by window or lineage passes. See "Empirical status: not measured this pass".
+
 ## Candidate Hypothesis
 
 Let `S_q` be the nonempty post-filter 2-gap starts in their bi-infinite

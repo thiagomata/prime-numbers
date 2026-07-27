@@ -6,6 +6,14 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** REINFORCED AT FINITE SCALE — exact `k=2` certificates
+hold at 4/4 defined Q=17 layers, 23/23 defined Q=101 layers, and 1,837/1,837
+defined layers across an expanded exact 53-head sweep through Q997. The
+runner's selected `k\le10` witness fields are now exact under the proved
+admissible-diameter profile. See [the empirical #14 note](
+../empirical/sieve-sequence/hereditary-shot-spacing.md
+).
+
 ## Purpose
 
 An incoming prime cannot choose arbitrary accepted values to remove. Its shot
@@ -260,17 +268,184 @@ do not falsify the per-layer interval premise, much less its hereditary
 composition. The earlier “counterexample,” “building-block failure,” and
 180/186 pass/fail labels are withdrawn; they describe only the proxy.
 
+## Empirical status (per-layer interval premise, lineage experiment)
+
+The candidate's ACTUAL per-layer premise — exists `J_r\subseteq[q,q^2)` and
+`k_r` with `G_r(J_r)\ge k_r` and `len(J_r) < \sigma_r(k_r)` — was measured for
+the first time by the fixed-future-window lineage experiment
+(`candidates/analysis/run_lineage.py`), which tracks one window's 2-gap
+population through every intermediate filter layer by layer (Reading A).
+
+**Q=101, 24 layers (primes 3,5,...,97):** the stored output reports the
+per-layer interval premise at **23/23 defined layers** (layer 0 is undefined).
+An independent nearest-pair check gives an enclosing length of `8` at all 23
+layers. Because exact `sigma_r(2)=2r>=10`, every layer therefore has an exact
+finite `k=2` certificate. The runner's chosen `k=10` fields at the later 16
+layers are also exact under the proved `D(10)=32` profile. The separately
+tracked population leaves **202 2-gaps after all 24 filters** in
+`[101,10201)`.
+
+**Expanded exact `k=2` sweep (53 heads, 1,837 defined layers):** a later
+read-only in-memory sweep tested every prime head `17<=Q<=251`, together with
+`307,401,503,701,997`. No layer failed. At every defined layer, the exact
+closest-pair enclosure had length at most `8`, hence remained strictly below
+the exact capacity `sigma_r(2)=2r`. The worst observed ratio was `8/(2*5)=0.8`.
+
+This is qualitatively different from the window-pass proxy above: it tests the
+candidate's real mechanism (interval vs shot partial sums), not a whole-window
+averaged ratio, and it does so across a long hereditary chain rather than
+single transitions.
+
+### Finite small-`k` spacing evidence and the exact-profile boundary
+
+The per-layer `\sigma_r(k)` is a whole-period quantity, so naive scaling hits a
+primorial wall for full enumeration. What is now proved is stronger than the
+earlier monotonicity-only boundary: sufficiently deep complete wheels satisfy
+`s_P(k)=D(k)`, and the exact admissible-diameter profile
+`D(2..10)=(2,6,8,12,16,20,26,30,32)` is established. Therefore every selected
+lineage field with `k<=10` is exact without period materialization.
+
+The supplied 100,000-gap prefixes still matter as location evidence, not as
+proof. They repeatedly display the same small-span words, while for `k=10`
+the visible prefix minimum changes from `32` to `34` at later stages. Since
+`D(10)=32` is now proved, that change means only that a 32-span witness moved
+outside the recorded prefix; it does not weaken the full-period theorem.
+
+The finite witnesses, scope, and falsifiers are recorded in
+[the empirical #14 note](
+../empirical/sieve-sequence/hereditary-shot-spacing.md
+).
+
+### Honest scope
+
+- Exact finite `k=2` certificates now cover Q17, Q101, and an expanded sweep
+  of 53 heads / 1,837 defined layers. This still does not prove that the
+  premise holds for all `Q`.
+- The hereditary COMPOSITION (the candidate's full content) is tested only in
+  the sense that the chain ran layer-by-layer with Reading-A conditioning; a
+  finite family of chains succeeding does not prove the composition holds
+  universally.
+
 ## Strategic assessment after empirical review
 
 This candidate most directly captures the user's two rigid restrictions:
 filters have a fixed shot count and an arithmetically constrained distribution
 of shot spacings. It is also the candidate most explicitly concerned with the
 relationship between a current population and all future filters. Its proof
-priority is high, but its actual condition has not yet been measured.
+priority is high.
 
-The next implementation must construct the accepted shot sequence, its
-consecutive partial sums `sigma_r(k)`, and search for the interval required by
-the candidate at each layer. It should then fix one future square window,
-condition the 2-gap population through every intervening filter, and repeat the
-capacity test. Only that lineage experiment can reveal whether successive
-filters systematically cherry-pick the remaining local clusters.
+The per-layer interval premise (`exists J_r, k_r with G_r(J_r) >= k_r` and
+`len(J_r) < sigma_r(k_r)`) holds exactly in the finite Q17 and Q101 checks and
+through the expanded 53-head / 1,837-layer sweep via `k=2`. The runner's later
+preference for `k=10` is also exact because `sigma_r(10)=32r` at those stages.
+
+What remains unproved is the **hereditary composition** — that the interval
+premise holds for some layer in *every* sufficiently long chain, and across
+unboundedly many layers / windows. The 53-head sweep materially strengthens
+the finite case, but it still does not establish that universal statement. The
+natural next steps are: (a) seek a copy-index or conditioned-density theorem
+that forces the needed close pair in a future square window; and (b) seek a
+uniform conditioned-window population bound.
+
+### Partial proof result (per-layer `k=2` premise)
+
+A proof attempt isolated a valid bounded-separation lemma, recorded as
+[interval-premise-from-pair-existence](../properties/sieve-sequence/interval-premise-from-pair-existence.md):
+
+> At a post-filter-3 layer `r`, if two complete 2-gaps have an enclosing
+> interval of length less than `2r`, then the `k=2` interval premise holds.
+
+The exact identity `sigma_r(2)=2r` discharges the shot-separation calculation
+for this implication. It does not prove that an adequately close pair exists:
+the post-filter-3 congruence gives a lower separation bound of `6`, whereas the
+lemma needs an upper separation bound below `2r`. Both close-pair existence
+and its hereditary persistence remain open.
+
+A follow-up ordered-point theorem,
+[local-count-forces-k2-shot-capacity](
+../properties/sieve-sequence/local-count-forces-k2-shot-capacity.md
+), supplies an explicit sufficient condition for that upper bound:
+
+```math
+G_r(W_Q)\ge
+\left\lfloor
+\frac{Q^2-Q-3}{2r-2}
+\right\rfloor+2
+```
+
+forces two consecutive complete 2-gaps whose enclosure is shorter than `2r`,
+and hence forces the `k=2` premise. This replaces qualitative close-pair
+existence by a sharp finite count threshold, but it does not prove that the
+conditioned local count meets that threshold in every required layer.
+
+### Bounded chain-population investigation
+
+A follow-up investigation tested whether the copy-index frequency alone gives
+a recurrence that carries the 2-gap population through the full chain. Let
+`N=G_r(W_Q)`, let `D` be the number of starts destroyed by filter `r`, and let
+`N'=N-D`. The naive complete-block proportion would suggest
+
+```math
+N'\ge
+\left\lceil N\left(1-\frac2r\right)\right\rceil.
+```
+
+That inequality is false after conditioning on earlier filters. It fails in
+8 of the 24 Q=101 layers, with a largest deficit of 5. Across selected future
+heads through Q=997, the harmful-hit excess
+
+```math
+D-\frac{2N}{r}
+```
+
+continues to grow, reaching about `41.740`. Thus neither the exact
+multiplicative recurrence nor a constant correction calibrated from one chain
+is a viable proof target.
+
+The finite data instead isolates a square-root discrepancy scale. Let
+`N_a` count the starts in residue class `a modulo r`, and define the
+candidate-#12 deviation
+
+```math
+E=
+\max_{0\le a<r}
+\left|N_a-\frac Nr\right|.
+```
+
+The two endpoint classes that destroy a 2-gap give the following conditional
+derivation:
+
+```math
+\begin{aligned}
+D
+&\le
+2\left(\frac Nr+E\right)
+\quad\text{[By the two forbidden residue classes]},\\
+N'
+&=N-D
+\quad\text{[By Definition]},\\
+&\ge
+N\left(1-\frac2r\right)-2E
+\quad\text{[Substitution]},\\
+&\ge
+N\left(1-\frac2r\right)-\sqrt N
+\quad\text{[If }2E\le\sqrt N\text{]}.
+\end{aligned}
+```
+
+Over every layer of 16 selected heads from Q=17 through Q=997, the direct
+harmful excess divided by `sqrt(N)` is at most about `0.360`, while the
+conservative candidate-#12 quantity `2E/sqrt(N)` is at most about `0.834`.
+Iterating the unit-square-root recurrence stays positive in these measured
+chains. This is reinforcement of a quantitative target, not a proof.
+
+The load-bearing premise `2E <= sqrt(N)` is unproved, and Stainless
+verification is not claimed for it. Existing verified count lemmas concern
+complete periods; they do not transfer residue balance to the conditioned
+short window. A uniform proof through the entire chain would force a positive
+fully filtered population in `[Q,Q^2)` and therefore remains
+twin-prime-strength. The investigation sharpens #14's boundary: exact
+`k=2` shot separation is available, but close-pair existence and hereditary
+local residue balance remain unproved. Fixed-`k` stabilization is now proved,
+but the exact numerical stable values for `k>2` still require sharp
+admissible-diameter proofs.

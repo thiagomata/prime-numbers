@@ -17,6 +17,10 @@ Chapter60 properties:
 Lessons learned across all tickets are consolidated in `LEARNINGS.md`.
 Check it when starting new work — it contains verified techniques,
 pitfall avoidance, and timeout resolution strategies.
+Ticket discipline (persistent-memory form: Goal / Strategy / Current State /
+What is Learned / Failed Paths / Open Concerns / Next Action / Learning Log,
+updated continuously) is defined in `TICKET_DISCIPLINE.md`. Apply it to every
+long-running ticket.
 </context>
 
 <commands>
@@ -92,10 +96,22 @@ Only re-run `just verify` after making a code change.
     2. Search tickets/ for similar tickets. Link them. Update your ticket with their info.
     3. After each interaction loop, update the ticket with:
        - Lessons learned, progress made, assumptions (still valid or changed)
+    A ticket is the PERSISTENT MEMORY of the work — it must remain usable by
+    anyone picking it up cold. Follow `TICKET_DISCIPLINE.md`: maintain the
+    Goal / Strategy / Current State / What is Learned / Failed Paths / Open
+    Concerns / Next Action / Learning Log sections, update them continuously
+    (not at the end), and record every failed approach WITH THE REASON so it
+    is not retried. A ticket missing Failed Paths or Current State is not in
+    persistent-memory form.
   </rule>
   <rule id="stay-on-track" priority="critical">
-    If execution diverges from the original plan → 
+    If execution diverges from the original plan →
     STOP and ASK FOR HELP. Do NOT improvise a new plan.
+    "Diverges" means the path needs strong reconsideration, progress was
+    overestimated, or there is no clear path to the goal. It does NOT mean
+    every fork: if the next step is clear and the ticket is progressing toward
+    the goal, keep going — act on a clear recommendation, record the decision
+    in the ticket, and continue. See `TICKET_DISCIPLINE.md` §5.
   </rule>
   <rule id="no-mod-operator" priority="critical">
     NEVER use the `%` (modulo) operator. Always use `Calc.div(a, b)` for division
@@ -275,9 +291,9 @@ Only re-run `just verify` after making a code change.
   <item>If the verify timed out → STOP. Do NOT try a different approach.</item>
   <item>If stuck for 3+ attempts → STOP and ASK FOR HELP.</item>
   <item>Is execution still on track with the original plan? (If not → STOP and ASK)</item>
-  <item>If this was part of a ticket → update the ticket (progress, lessons, assumptions)</item>
+  <item>If this was part of a ticket → update the ticket per `TICKET_DISCIPLINE.md` (Current State, What is Learned, Failed Paths for anything that failed WITH THE REASON, Next Action, and a Learning Log row — not just a conclusion at the end)</item>
   <item>Did I update OBJECTS.md with new lemmas, methods, or objects?</item>
-  <item>Did I update the ticket with the conclusion (outcome, lessons, what's next)?</item>
+  <item>Did I promote durable results out of the ticket into `properties/`, `OBJECTS.md`, or `LEARNINGS.md`? (A result that lives only in a ticket is invisible to the rest of the project.)</item>
   <item>Are there articles in `articles/` that should be updated? If so, list them and ask the user.</item>
 </checklist-after>
 

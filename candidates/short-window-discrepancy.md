@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** INCONCLUSIVE — post-filter `E_q` now computed (lineage, one-sided holds 24/24), but the load-bearing two-sided bound `|E_q| < main_term` is still pending. See "Empirical status (post-filter E_q, lineage experiment)".
+
 ## Candidate Hypothesis
 
 Let the exact complete-period density of post-filter 2-gap starts be
@@ -89,3 +91,24 @@ restatement of local survival. Its value lies in proving a genuinely
 non-circular two-sided or relative discrepancy estimate from the arithmetic of
 the filters. Until the post-filter discrepancy is computed, this candidate is
 **unmeasured as stated** and should not be ranked from the current column.
+
+## Empirical status (post-filter `E_q`, lineage experiment)
+
+The post-filter discrepancy `E_q = surviving - main_term` (using the
+POST-filter count, correcting the window pass's pre/post error) is now
+computed per layer by the lineage experiment
+(`candidates/analysis/run_lineage.py`).
+
+**Q=101, 24 layers:** `E_q` ranges over `[+8.60, +1489.60]` — positive at
+every layer (the post-filter surviving count exceeds the complete-period main
+term). The one-sided sufficient condition `E_q > -main_term` therefore holds
+trivially at all 24 layers (as the note's review observed, this is
+algebraically equivalent to `surviving > 0`).
+
+The two-sided bound `|E_q| < main_term` — the genuinely informative form that
+the review identified as the real test — is **not yet evaluated** end-to-end
+at scale: the lineage records `E_q` and `main_term` but does not currently
+emit the two-sided ratio. That is a small extension to the runner; flagged
+here as the next measurement for this candidate. Honest scope: one window,
+one chain; the one-sided form holds everywhere but is a restatement of
+survival, and the load-bearing two-sided form is still pending.

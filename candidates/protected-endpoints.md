@@ -4,6 +4,8 @@
 
 **Conditional implication:** Proved below.
 
+**Empirical status:** REINFORCED — `surviving > 0` in 186/186 window-pass transitions (p to ~19000); see "Empirical status" section.
+
 ## Candidate Hypothesis
 
 For infinitely many transitions installing `p` with next head `q`, some

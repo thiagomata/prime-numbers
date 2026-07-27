@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** REINFORCED — `surplus > 0` in 186/186 window-pass transitions (p to ~19000), growing like `p^1.6`; the terminal sufficient target. See "Empirical status" section.
+
 ## Candidate Hypothesis
 
 Let `L(p,q)` be the number of pre-filter 2-gaps wholly contained in `W_q`.

@@ -4,6 +4,11 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** INCONCLUSIVE — window-pass deviation was low-power; the
+exact stated margin `νE < N(1−ν/r)` is positive in all 1,890 measured lineage
+layers across 53 heads, but the candidate still asks for a proof rather than
+finite agreement. See "Empirical status (stated margin, lineage experiment)".
+
 ## Candidate Hypothesis
 
 Fix an incoming prime `p`, a local window `J`, and a finite gap word
@@ -185,3 +190,28 @@ can explain why the filter cannot cherry-pick every locally useful pattern.
 The universal “every finite word” version is probably stronger than necessary;
 a bounded word family with an explicit margin, measured after conditioning on
 earlier filters, is the higher-priority formulation.
+
+## Empirical status (stated margin, lineage experiment)
+
+The candidate's OWN sufficient margin `nu E < N(1 - nu/r)` (for the word
+`(2)`, with `nu=2` forbidden classes and `E` the worst residue-class excess)
+was measured per layer by the fixed-future-window lineage experiment
+(`candidates/analysis/run_lineage.py`), replacing the earlier `sqrt(G_local)`
+normalization that was flagged as insufficient.
+
+**Q=101, 24 layers:** the margin `N(1 - nu/r) - nu E` is **positive at 24/24
+layers**, ranging from `+192` (final layer, r=97) to `+1683` (layer 0). It
+shrinks across the chain but stays well clear of zero. No layer failed.
+
+**Expanded exact sweep (53 heads, 1,890 layers):** using the same exact
+lineage library in-memory on every prime head `17<=Q<=251`, together with
+`307,401,503,701,997`, the margin stayed positive at **1,890/1,890** measured
+layers. The smallest observed margin was `+12`, at `Q=17`, `r=13`, with
+`G_r(W_Q)=18`. No exact layer failure was found.
+
+This is a stronger statement than the window-pass single-transition
+measurement: it tests the candidate's stated condition (not a proxy
+normalization) and does so after conditioning on every preceding filter. Honest
+scope: 53 finite heads still do not prove the margin holds for all `Q`. What
+remains open is a proof or a sharper bounded-word reformulation, not whether
+the Q101 chain was exceptional.

@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved from the stated ordering.
 
+**Empirical status:** INCONCLUSIVE — window-linear run flat (max 2); cyclic run unmeasurable at scale (period-scale, no shortcut). See "Empirical status (lineage experiment)".
+
 ## Candidate Hypothesis
 
 Order the pre-filter 2-gap starts cyclically. Suppose the transition destroys
@@ -71,3 +73,26 @@ A proof should characterize the simultaneous congruence requirements for a
 run of three destroyed 2-gap starts. If those requirements are impossible, or
 force a local configuration incompatible with the prior sieve stages, #4
 becomes a concrete non-cherry-picking mechanism rather than an observed bound.
+
+## Empirical status (lineage experiment): cyclic run unmeasurable at scale
+
+The lineage experiment (`candidates/analysis/run_lineage.py`) computes the
+cyclic destroyed run for the layers where the period modulus `M_r` is small
+enough to materialize. Unlike #14's `sigma_r` (which has a stable-wheel form
+making it `O(1)` at any scale), the **cyclic destroyed run genuinely requires
+the full period**: it is defined over the cyclic ordering of all `T_r = phi(M_r)`
+2-gap starts mod `M_r`, and there is no small-`k` stable shortcut for it. At
+Q=101, layers 0-7 (r = 3..23) report the cyclic run exactly; layers 8+
+(r = 29..97) report `None` (unmeasured), with `M_r` past tractability.
+
+Across the measured early layers the cyclic run stays small (0-3), consistent
+with — but not confirming — the conjectural `R=2`. The window-linear run is
+reported alongside and differs (confirming the cyclic and linear orderings are
+not interchangeable, as the note states).
+
+**Honest scope:** the cyclic run at scale is the one quantity in this whole
+empirical effort that does NOT have a cheap path. Unlike #14, #12, #13 (whose
+stated conditions have now been measured at long chains via the lineage
+experiment), #4's stated condition remains measurable only for small `M_r`.
+Closing it for large `M_r` needs either a structural bound on the run (proof)
+or an algorithmic shortcut that has not been found.

@@ -7,6 +7,8 @@ unproved and potentially false.
 
 **Conditional implication:** Mathematically proved from the stated error bound.
 
+**Empirical status:** REINFORCED — `destruction_rate < 2/p` in 186/186 window-pass transitions, shrinking like `p^-1.6` (real filter ever further below the benchmark); deterministic transference still unproved. See "Empirical status" section.
+
 ## Purpose
 
 The random calculation and the deterministic candidate belong together. The

@@ -4,6 +4,12 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** INCONCLUSIVE — absolute-bias diagnostic was window-flat;
+the exact one-sided margin `H(2L/N+b₊) < L` is positive in all 1,890 measured
+lineage layers across 53 heads, but the candidate still asks for a proof
+rather than finite agreement. See "Empirical status (one-sided margin, lineage
+experiment)".
+
 ## Candidate Hypothesis
 
 Fix an incoming prime `p` and a local window. Let `V` be the `N > 0` old
@@ -199,3 +205,28 @@ is still a strong gap-agnostic framework if a conditioned sampling theorem can
 be proved for a bounded observable class. Priority should go to the endpoint
 indicator and a few merge/cluster observables under successive future filters,
 not to a universal class before the necessary one-sided margin is understood.
+
+## Empirical status (one-sided margin, lineage experiment)
+
+The candidate's OWN sufficient condition `H(2L/N + b_+) < L` (where `b_+` is
+the harmful one-sided bias, retaining the sign that actually hurts) was
+measured per layer by the fixed-future-window lineage experiment
+(`candidates/analysis/run_lineage.py`), replacing the earlier absolute-bias
+diagnostic that discarded the sign.
+
+**Q=101, 24 layers:** the margin `L - H(2L/N + b_+)` is **positive at 24/24
+layers**, ranging from `+201` (final layer, r=97) to `+1683.7` (layer 0). Like
+#12 it shrinks across the chain but stays well clear of zero. No layer failed.
+
+**Expanded exact sweep (53 heads, 1,890 layers):** using the same exact
+lineage library in-memory on every prime head `17<=Q<=251`, together with
+`307,401,503,701,997`, the one-sided margin stayed positive at
+**1,890/1,890** measured layers. The smallest observed margin was about
+`+15.9851`, at `Q=19`, `r=17`, with `G_r(W_Q)=17`. No exact layer failure was
+found.
+
+This tests the candidate's stated condition (not the absolute-bias proxy) and
+does so after conditioning on every preceding filter. Honest scope: 53 finite
+heads still do not prove the margin holds for all `Q`. What remains open is a
+proof or a narrower observable class with a demonstrable deterministic sampling
+bound.

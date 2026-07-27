@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** SMALL-PRIME CAVEAT — fails only at (5,7) (1/186); clusters grow to 248 at scale. Likely fine at big primes; not refuted. See "Empirical Counterexample" section.
+
 ## Candidate Hypothesis
 
 For infinitely many transitions installing `p`, there is an integer-coordinate

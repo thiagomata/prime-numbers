@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved.
 
+**Empirical status:** DEFERRED (UNMEASURED) — whole-period (`D_max` vs average; imbalance factor `C(q)`); not touched. See "Empirical status: not measured this pass".
+
 ## Candidate Hypothesis
 
 Let `S_q` be nonempty after filtering, let `M_q` be its period modulus, and let
@@ -52,6 +54,31 @@ would be sufficient asymptotically.
 An average does not bound an extreme spacer. The head may lie in a rare large
 empty arc even while almost all other spacers are small. The balance factor is
 the unproved content.
+
+## Local Compressed Separators Do Not Measure This Candidate
+
+Inside one fixed window, let `R_i` be the sum of the non-2 gaps between
+consecutive 2-gap starts. The corresponding start spacer is
+
+```math
+x_{i+1}-x_i=R_i+2.
+```
+
+Local distributions, quantiles, and maxima of `R_i` are useful for
+[Redundant Close-Pair Capacity](redundant-close-pair-capacity.md), because
+`R_i<2r-4` is exactly its qualifying-pair condition. They do not measure the
+present candidate's `D_max(q)`, which is the maximum over the complete cyclic
+period, including the wrap spacer and phases outside the sampled window.
+
+This distinction also applies to fixed-length stage prefixes. A prefix must
+first be shown to cover the required value interval, and even a fully covered
+local interval cannot determine the maximum elsewhere in the period.
+
+The presentation branch's current “cluster-size” line chart is not a
+compressed-separator measurement: its implementation averages individual
+non-2 gaps. Its numerical trend must not be used for `R_i`, `D_max(q)`, or the
+imbalance factor `C(q)` unless it is recomputed from the actual compressed
+runs.
 
 ## Empirical status: not measured this pass
 

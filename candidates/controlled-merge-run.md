@@ -4,6 +4,8 @@
 
 **Conditional implication:** Mathematically proved under the stated projection.
 
+**Empirical status:** DEFERRED (UNMEASURED) — composite; one ingredient (#4 window-linear) measured, the other (#5 `D_max,old`) is whole-period. See "Empirical status: not measured this pass".
+
 ## Candidate Hypothesis
 
 Project the expanded old stage to its cyclic 2-gap starts. Assume:

@@ -18,16 +18,47 @@ verification compile tax; iteration is instant.
 
 ## Run
 
+There are two experiments in this directory:
+
+### A. Single-transition window stress-test (`measure_candidates.py`)
+
+Sieves `[q,q^2)` per transition and measures the window-measurable candidates.
+
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python test_measure.py            # green gate; run before & after any change
 .venv/bin/python measure_candidates.py 1000 # writes data/candidates/window-measurements.csv
+.venv/bin/python measure_candidates.py --sparse 100 20000  # large-p drift check
 ```
 
-`test_measure.py` is the empirical analog of `green-to-green`: stdlib `assert`
-+ exit code, in the style of the presentation repo's `verify.py`. Every number
-cited anywhere must come from a run that passed it.
+### B. Fixed-future-window lineage experiment (`run_lineage.py`)
+
+Fixes a window `W_Q=[Q,Q^2)` and tracks its 2-gap population through every
+intermediate filter `r<Q` layer by layer (Reading A). Measures the ACTUAL
+STATED condition of #4, #10, #12, #13, #14 — correcting the proxies the
+single-transition pass used. Per-layer `sigma_r` and the cyclic destroyed run
+require the full period `M_r`, so they are exact only while `M_r` is tractable
+(the "exact-coverage frontier"). The cyclic run reports `unmeasured` beyond
+that frontier. The current `sigma_r` implementation instead substitutes a
+finite small-`k` table. The admissible-diameter theorem now proves every entry
+for `2\le k\le10`, so those substituted values are exact without full-period
+materialization. Any future entry beyond the proved profile must remain gated
+or explicitly heuristic.
+
+```bash
+.venv/bin/python test_lineage.py             # green gate for the lineage library
+.venv/bin/python run_lineage.py 17           # pilot; writes data/candidates/lineage-Q17.csv
+```
+
+See `FINDINGS_lineage.md` for the pilot results and the two general findings
+(the `sigma_r` machinery starts at layer 1; `sigma_r(T)=r*(M-max_gap)`, not
+`r*M`).
+
+`test_measure.py` and `test_lineage.py` are the empirical analog of
+`green-to-green`: stdlib `assert` + exit code, in the style of the presentation
+repo's `verify.py`. Every number cited anywhere must come from a run that
+passed the relevant gate.
 
 ## Test coverage (honest)
 
