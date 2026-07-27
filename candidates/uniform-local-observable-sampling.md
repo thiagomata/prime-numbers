@@ -90,6 +90,99 @@ K
 H\left(\frac{2L}{N}+\eta_p\right).
 ```
 
+## Signed Endpoint-Imbalance Corollary
+
+The weighted collision program also needs to distinguish left-endpoint hits
+from right-endpoint hits. Let `K_L` and `K_R` be those two destruction counts,
+so
+
+```math
+K=K_L+K_R,
+\qquad
+\Delta=K_L-K_R.
+```
+
+Define the signed bounded observable
+
+```math
+c_-(v)=
+\begin{cases}
++1,&v\text{ is the left endpoint of a counted 2-gap},\\
+-1,&v\text{ is the right endpoint of a counted 2-gap},\\
+0,&\text{otherwise}.
+\end{cases}
+```
+
+Every counted 2-gap contributes one left and one right endpoint to `V`.
+Post-3 endpoint isolation therefore gives
+
+```math
+\sum_{v\in V}c_-(v)=0,
+\qquad
+\|c_-\|_\infty=1.
+```
+
+The hit sum is exactly
+
+```math
+\sum_{v\in D}c_-(v)=\Delta.
+```
+
+Applying the candidate to `c_-` proves
+
+```math
+\boxed{
+|\Delta|\le H\eta_p.
+}
+```
+
+Thus the unsigned and signed endpoint observables control two different
+errors: total destruction and left/right harmful-class imbalance.
+
+## Exact Bridge To Strike Density
+
+Define the signed unsigned-endpoint sampling bias
+
+```math
+\beta
+=
+\frac KH-\frac{2L}{N}
+```
+
+and the accepted-strike density discrepancy
+
+```math
+\varepsilon
+=
+\frac HN-\frac1p.
+```
+
+The harmful excess used by candidate #21 is
+
+```math
+b
+=
+K-\frac{2L}{p}.
+```
+
+Direct substitution gives
+
+```math
+\boxed{
+b
+=
+H\beta+2L\varepsilon.
+}
+```
+
+Candidate #13 bounds `beta` and `Delta`. Candidate #23 must separately bound
+the accepted-strike density error `epsilon`. Candidate #10 does not supply that
+theorem: it concerns post-filter safe-window count discrepancy, not the ratio
+`H/N` of accepted anchors hit. Together, endpoint sampling and a future
+strike-density theorem would control the two scalar square errors in the
+orthogonal residue-energy decomposition. They do not control dispersion among
+the `p-2` harmless survivor classes; that is candidate #22.
+
 ## Why The Candidate Is Sufficient
 
 The explicit survival condition is
@@ -144,6 +237,9 @@ set directly with the whole deterministic local population.
 
 - [2-gap endpoint isolation](../properties/sieve-sequence/two-gap-isolation-after-filter-three.md)
 - [Exact accepted local strikes](../properties/sieve-sequence/exact-accepted-local-filter-strikes.md)
+- [Two endpoint observables separate harmful excess and imbalance](
+  ../properties/sieve-sequence/two-endpoint-observables-separate-harmful-excess-and-imbalance.md
+  )
 - [Square-safe certification](../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md)
 
 ## Limitation
@@ -151,9 +247,10 @@ set directly with the whole deterministic local population.
 Correct total hit density does not imply representative local sampling. The
 modular filter may correlate with particular gap words, and a short window can
 amplify that alignment. Proving one observable, such as mean gap size, does not
-prove the universal statement. A viable theorem must identify a sufficiently
-rich observable class and establish an explicit error `eta_p` small enough for
-the survival inequality.
+prove the universal statement. For the current collision-energy program, the
+minimal known useful class contains both unsigned and signed endpoint
+observables. Even proving those two leaves candidate #23 accepted-strike
+density and candidate #22 harmless-class dispersion as separate obligations.
 
 ## Empirical status (window scale, p to ~19000)
 

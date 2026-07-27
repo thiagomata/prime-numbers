@@ -189,7 +189,7 @@ After the last filter below `Q`, a surviving complete 2-gap in `[Q,Q^2)` is
 square-safe. Infinitely many successful heads would therefore give infinitely
 many twin-prime certificates.
 
-## Relation To Candidates #12, #14, And #19
+## Relation To Candidates #12, #14, #19, And #22
 
 - **#12, pointwise residue balance:** asks for `L-infinity` control of residue
   counts. Candidate #20 asks for an `L2`-type pair count and tolerates some
@@ -201,10 +201,29 @@ many twin-prime certificates.
   proved absolute destruction cap, but needs order `Q^2/r` gaps. Candidate #20
   needs only `6`, `4`, or `3` gaps, at the price of an unproved relative
   four-point correlation bound.
+- **#22, harmless-class collision energy:** removes the two harmful classes,
+  recenters on the `r-2` survivor classes, and asks only for their energy
+  `U_r`. The exact relation is
+
+  ```math
+  V_r
+  =
+  U_r
+  +
+  \frac{r}{2(r-2)}b_r^2
+  +
+  \frac12\Delta_r^2.
+  ```
+
+  Thus #20 controls all three components at once, while #22 separates the
+  remaining distributional term from total harmful excess and left/right
+  imbalance.
 
 These are real tradeoffs. Candidate #20 should not be called stronger merely
 because its population floor is smaller; its collision premise contains the
-new difficulty.
+new difficulty. For current proof work, #20 is a useful pointwise testbed, but
+#22's harmless energy and candidate #21's weighted aggregate are the more
+precise primary targets.
 
 ## Algebraic Proof Program
 
@@ -252,6 +271,9 @@ argument is meant to prove.
 
 - [Two-class survival from residue collision energy](
   ../properties/sieve-sequence/two-class-survival-from-collision-energy.md
+  )
+- [Orthogonal residue-energy decomposition after a two-class filter](
+  ../properties/sieve-sequence/orthogonal-residue-energy-decomposition-after-two-class-filter.md
   )
 - [Harmful residue capacity after filter three](
   ../properties/sieve-sequence/harmful-residue-capacity-after-filter-three.md

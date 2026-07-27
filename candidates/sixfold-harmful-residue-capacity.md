@@ -134,6 +134,12 @@ such certificates.
 - **#14, hereditary shot-spacing capacity:** forces a locally crowded pair of
   2-gaps. The present candidate directly forces one-layer survival and does
   not imply that a close pair exists.
+- **#22, harmless-class collision energy:** asks how the post-filter survivors
+  distribute among the `r-2` harmless classes. The present candidate supplies
+  an absolute capacity for every class, but applying that same capacity
+  symmetrically to harmful and harmless classes recovers only the direct
+  whole-histogram bound. It remains an unconditional fallback, not a proof of
+  #22's relative collision scale.
 - **#2, local surplus:** compares local 2-gaps with the exact number of
   accepted filter strikes. The present capacity can be smaller than counting
   all accepted strikes because only two start phases can be harmful.

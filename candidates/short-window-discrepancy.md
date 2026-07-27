@@ -54,6 +54,31 @@ The complete-period CRT formula determines the main term but supplies no such
 short-window error bound. Proving the candidate requires distributional input
 beyond total counts and per-prime residue frequencies.
 
+## Relation To The Collision-Energy Program
+
+This candidate's discrepancy `E_q` compares the final post-filter safe-window
+2-gap count with a complete-period density main term. It does not directly
+control the accepted-anchor strike-density error
+
+```math
+\varepsilon
+=
+\frac HN-\frac1p
+```
+
+that appears in the exact harmful-excess identity
+
+```math
+b=H\beta+2L\varepsilon.
+```
+
+Therefore candidate #10 is not presently one of the scalar inputs to the
+#13/#22/#21 orthogonal energy chain. Candidate #23 is the separate
+accepted-strike-density theorem required there. Any future reduction from
+`E_q` to `epsilon` must be
+proved explicitly rather than inferred from their similar discrepancy
+language.
+
 ## Empirical status (window scale, p to ~19000)
 
 Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense

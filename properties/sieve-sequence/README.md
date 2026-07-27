@@ -79,6 +79,103 @@ verification unless a file explicitly says otherwise.
     - Unrolls the one-layer energy loss through a complete conditioned chain,
       embeds changing populations as nested weights on one initial set, and
       reduces cumulative energy to stopped centered prime-divisor sums.
+25. [Weighted Deletion Conservation Law](weighted-deletion-conservation-law.md)
+    - Proves that weighted signed harmful excess is exactly the multiplicative
+      main term minus the final survivor count, so using it alone is circular.
+26. [Two-Gap Pair Local Factor By Separation](two-gap-pair-local-factor-by-separation.md)
+    - Classifies the four endpoint residues for two separated 2-gaps and gives
+      the exact CRT factor according as a prime divides `d`, `d-2`, or `d+2`.
+27. [Complete-Period Two-Gap Pair-Correlation Average](complete-period-two-gap-pair-correlation-average.md)
+    - Proves exact uniformity after averaging correlation over one complete
+      quotient difference period and records the short-prefix boundary.
+28. [Fourier Bound For Two-Gap Correlation Prefixes](fourier-two-gap-correlation-prefix-bound.md)
+    - Factors the complete CRT spectrum, computes exact conductor moments, and
+      bounds complete-origin correlation prefixes.
+29. [Localized Two-Gap Correlation: Fourier Boundary](localized-two-gap-correlation-fourier-boundary.md)
+    - Derives the square-window rectangle formula and proves that generic Young
+      convolution bounds retain the unusable complete-period population.
+30. [Short-Interval Localization Destroys Prime Conductor Decay](short-interval-localization-destroys-prime-conductor-decay.md)
+    - Shows that a sufficiently short interval moves exactly the fraction
+      `1-1/p` of localized energy into characters nontrivial at `p`, rather
+      than preserving the complete-set fraction `2/p`.
+31. [Black-Box Large Sieve Does Not Fit The Weighted Collision Budget](black-box-large-sieve-does-not-fit-weighted-collision-budget.md)
+    - Proves that even the optimistic fixed-set large-sieve scale is too large
+      to certify candidate #21 after inserting the exact survival weights.
+32. [First-Deletion Pair Terminal Energy](first-deletion-pair-terminal-energy.md)
+    - Splits weighted collision energy by first deletion, isolates a negative
+      balanced terminal term, and solves the sharp harmless-class variance
+      envelope while recording the symmetric-capacity loop.
+33. [Two Endpoint Observables Separate Harmful Excess And Imbalance](two-endpoint-observables-separate-harmful-excess-and-imbalance.md)
+    - Uses unsigned and signed endpoint observables to separate total harmful
+      excess from left/right imbalance; candidate #13 controls endpoint
+      sampling, while candidate #23 supplies the separate accepted-strike
+      density target needed by #21.
+34. [Orthogonal Residue-Energy Decomposition After A Two-Class Filter](orthogonal-residue-energy-decomposition-after-two-class-filter.md)
+    - Splits full collision energy exactly into harmless-class dispersion,
+      squared total harmful excess, and squared left/right imbalance, with no
+      linear cross terms, isolating candidate #22's role.
+35. [Accepted-Strike Density As A Möbius Boundary Sum](accepted-strike-density-boundary-decomposition.md)
+    - Maps accepted strikes to a scaled coprime interval and decomposes their
+      centered density exactly into two signed boundary sums. The
+      triangle-inequality bound grows like `2^omega(P)`, isolating weighted
+      boundary cancellation as candidate #23's missing theorem.
+36. [Endpoint Density Contracts Accepted-Strike Discrepancy](endpoint-density-contracts-strike-discrepancy.md)
+    - Uses post-3 endpoint isolation to prove `2N<=A`, removes the
+      endpoint-to-anchor ratio from candidate #23, and separates the #13 and
+      #23 harmful-excess errors through Young's inequality.
+37. [Weighted Composition Of Endpoint And Strike-Density Errors](weighted-scalar-error-composition.md)
+    - Uses weighted Minkowski to combine #13 and #23 into the sharp aggregate
+      scalar budget `(sqrt(E_beta)+sqrt(E_D))^2+E_Delta`, leaving candidate
+      #22 the exact remaining allowance required by #21.
+38. [Accepted-Strike Error Is A Positive Quadratic Variation](accepted-strike-quadratic-variation.md)
+    - Expands candidate #23's weighted squared boundary recurrence into
+      adjacent variation, terminal mass, and strictly positive interior mass,
+      proving that the linear strike telescope cannot supply the needed upper
+      bound after squaring.
+39. [Prime-Square Window Boundary Residue Formula](prime-square-window-boundary-residue-formula.md)
+    - Rewrites each boundary summand as
+      `mu(d)([Q]_d-[Q^2]_d)/d`, identifies the terms killed by `d|(Q-1)`, and
+      gives an exact `Q=19` sign-change counterexample to universal sign or
+      sign preservation under later filters.
+40. [Harmless Energy As A Fixed-Set Pair Correlation](harmless-energy-fixed-set-pair-form.md)
+    - Rewrites candidate #22 as a post-deletion ordered-pair kernel on `S_0`,
+      proves `U_i=V_{r_i}(S_{i+1})-2M_i^2/(r_i(r_i-2))`, and exposes the
+      additional negative centering beyond candidate #21's existing
+      telescope.
+41. [Complete-Period Uniformity Of Harmless 2-Gap Classes](complete-period-harmless-class-uniformity.md)
+    - Proves that every harmless class has the same CRT count and hence
+      complete-period harmless energy is zero; complete blocks cancel exactly,
+      leaving candidate #22 entirely as a short-prefix localization problem.
+42. [Harmless Energy As Spectral Excess Above The Two-Class Floor](harmless-energy-spectral-excess.md)
+    - Expresses `U_i` as nontrivial Fourier mass minus the sharp floor forced
+      by the two empty harmful classes, and shows why subtracting that local
+      floor does not repair the known generic Fourier localization scale.
+43. [Harmless-Class Counts As Translated CRT Fibers](harmless-class-crt-translated-fibers.md)
+    - Expresses every harmless residue count as an interval sum of one common
+      prior-filter CRT word at an inverse-modulus phase, proves those phases
+      are spaced on the order of `P/r`, and isolates why generic Parseval or
+      large-sieve sampling still retains the complete-period scale.
+44. [Centered Inverse-Phase Gram Matrix](centered-inverse-phase-gram-matrix.md)
+    - Evaluates the harmless-class mean projection on every inverse-phase
+      Fourier mode, gives a closed geometric formula for its phase sum, and
+      exposes the exact cross-frequency Gram kernel that a centered spectral
+      proof of candidate #22 must control.
+45. [Centered Phase Operator Norm Boundary](centered-phase-operator-norm-boundary.md)
+    - Proves the inverse phases have orthogonal full-Fourier rows and that
+      harmless-class centering leaves sharp operator norm `sqrt(P)`, so a
+      black-box norm estimate returns exactly to full-shift Parseval scale.
+46. [Exact-Conductor Phase-Block Operator Bound](exact-conductor-phase-block-operator-bound.md)
+    - Replaces the full period norm inside conductor `q` by the phase
+      multiplicity bound `q mu_q<r+2q`, then shows that triangle recombination
+      loses this gain through an oversized square-root divisor sum.
+47. [Centered Ramanujan Cross-Conductor Geometry](centered-ramanujan-cross-conductor-geometry.md)
+    - Expresses primitive conductor blocks through Ramanujan row kernels and
+      gives their exact centered cross-block trace; an exact `P=30,r=7`
+      example refutes orthogonality and uniformly small unweighted coherence.
+48. [Accepted-Strike Divisor Activation Kernel](accepted-strike-divisor-activation-kernel.md)
+    - Collapses candidate #23's exponential divisor-pair quadratic form to
+      `m+1` signed activation-shell sums and gives the exact nonnegative
+      positive-semidefinite kernel induced by the chain weights.
 
 ## Research Notes
 

@@ -6,9 +6,11 @@
 
 **Conditional implication:** Mathematically proved.
 
-**Empirical status:** NOT EVALUATED — this is the primary algebra-first
-candidate. The next step is to prove or obstruct its aggregate divisor-kernel
-bound, not to extend the existing data.
+**Empirical status:** NOT EVALUATED — this is the primary algebraic composition
+framework, not the primary missing theorem. The next theorem is a weighted
+aggregate bound for candidate #22's harmless-class energy, together with
+candidate #13's endpoint-sampling and candidate #23's accepted-strike error
+budgets. Extending the existing data is not the current step.
 
 ## Purpose
 
@@ -163,10 +165,17 @@ w_if_i(x)f_i(y)
 ```
 
 Define `tau(x)` as the first layer that hits `x` or `x+2`, with `tau(x)=m`
-for a final survivor. For `d=x-y`, the inner sum stops at
+for a final survivor, and define the energy stopping index
 
 ```math
-t(x,y)=\min(\tau(x),\tau(y)):
+s(x)=\min(\tau(x)+1,m).
+```
+
+A start hit at layer `tau(x)<m` is still present immediately before that
+filter, so `f_i(x)=1` exactly when `i<s(x)`. For `d=x-y`, the pair sum stops at
+
+```math
+t(x,y)=\min(s(x),s(y)):
 ```
 
 ```math
@@ -217,32 +226,80 @@ when `t(x,y)>=1`, and is zero when `t(x,y)=0`. A pair difference with no
 relevant prime divisor contributes nonpositively. The proof target should
 retain this negative term rather than bounding only the positive divisor sum.
 
+## First-Deletion Audit
+
+Grouping ordered pairs by their corrected common energy stop gives an exact
+layer decomposition. If `k_{i,0}` and `k_{i,-2}` are the two harmful class
+sizes, then the terminal pair contribution at layer `i` is
+
+```math
+T_i
+=
+w_i
+\left[
+k_{i,0}^2+k_{i,-2}^2
+-
+\frac{N_i^2-N_{i+1}^2}{r_i}
+\right].
+```
+
+The complete energy is
+
+```math
+\boxed{
+\sum_iw_iV_i
+=
+\sum_iT_i
++
+\sum_iw_iV_{r_i}(S_{i+1}).
+}
+```
+
+The first sum has a negative balanced main term plus errors in total harmful
+excess and left/right endpoint imbalance. The second sum is the same-prime
+variance of the post-filter survivors among the `r_i-2` harmless classes.
+
+This split identifies the missing asymmetric theorem, but three black-box
+routes do not prove it:
+
+- earlier pair histories telescope exactly to the displayed post-filter
+  variances;
+- harmful count and endpoint imbalance do not restrict concentration among
+  harmless classes;
+- applying the same sixfold class capacity to both harmful and harmless
+  classes recombines to the direct bound
+
+  ```math
+  V_i
+  \le
+  B_iN_i-\frac{N_i^2}{r_i},
+  \qquad
+  B_i=\left\lfloor\frac{L}{6r_i}\right\rfloor+1.
+  ```
+
+Thus symmetric capacity loses the terminal cancellation.
+
 ## Practical Proof Program
 
 The next proof should proceed through small lemmas:
 
-1. **Diagonal/off-diagonal split.** Calculate the contribution of `x=y`
-   exactly and isolate the sum over nonzero differences.
-2. **Stopped divisor budget.** For `0<|d|<Q^2`, bound
+1. **Endpoint asymmetry.** Use unsigned and signed endpoint observables to
+   control total harmful excess `b_i` and endpoint imbalance `Delta_i`.
+2. **Strike density.** Combine endpoint sampling with candidate #23; the exact
+   bridge is
 
    ```math
-   \sum_{i<t}
-   w_i
-   \left(
-   \mathbf 1_{r_i\mid d}-\frac1{r_i}
-   \right)
+   b_i=H_i\beta_i+2N_i\varepsilon_i.
    ```
 
-   using the product constraint on the prime divisors of `d`.
-3. **Aggregate before maximizing.** Sum by differences or divisor incidence.
-   Do not replace every pair by the worst possible `d` unless that bound still
-   fits the final budget.
-4. **Use nesting.** Exploit `f_{i+1}(x)<=f_i(x)` or the deletion times; treating
-   the coefficient sequence at each prime as unrelated discards the new
-   structure.
-5. **Constant audit.** Insert the resulting bound into the exact second-moment
-   inequality. Main term and cumulative square-root error may have the same
-   asymptotic scale, so constants are load-bearing.
+3. **Harmless dispersion.** State an upper bound for
+   `V_{r_i}(S_{i+1})` normalized by the actual survivor population. Check that
+   it is not merely candidate #20 on the smaller harmless alphabet.
+4. **Asymmetric composition.** Insert the endpoint and harmless bounds into
+   the exact terminal decomposition without replacing both sides by the same
+   class capacity.
+5. **Constant audit.** Test the resulting weighted sum against the exact
+   second-moment budget. Constants remain load-bearing.
 
 This is a precise dispersion-style problem on a fixed finite set, not an
 appeal to probabilistic independence.
@@ -257,6 +314,13 @@ appeal to probabilistic independence.
 - **#20:** proposes the pointwise benchmark `V_i<=N_i`. Candidate #21 permits
   some layers to violate that scale if the complete weighted budget remains
   small.
+- **#10:** controls a post-filter safe-window count discrepancy. It does not
+  directly control `epsilon_i=H_i/A_i-1/r_i`; candidate #23 is the separate
+  accepted-strike-density theorem.
+- **#13:** the unsigned endpoint observable controls total destruction; adding
+  the signed left-minus-right observable controls `Delta_i`. Together with
+  candidate #23 it bounds both terminal errors, but not harmless-class
+  dispersion.
 - **#14:** supplies a different capacity mechanism once a suitable local
   cluster exists. Candidate #21 directly controls total conditioned survival
   and can be used independently of close-pair placement.
@@ -289,6 +353,12 @@ the mathematical aggregate bound is established.
   )
 - [Two-class survival from residue collision energy](
   ../properties/sieve-sequence/two-class-survival-from-collision-energy.md
+  )
+- [First-deletion pair terminal energy](
+  ../properties/sieve-sequence/first-deletion-pair-terminal-energy.md
+  )
+- [Two endpoint observables separate harmful excess and imbalance](
+  ../properties/sieve-sequence/two-endpoint-observables-separate-harmful-excess-and-imbalance.md
   )
 - [Absence of 2-gaps is stable](
   ../properties/sieve-sequence/absence-of-two-gaps-is-stable.md

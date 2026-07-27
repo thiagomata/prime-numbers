@@ -329,13 +329,23 @@ For `x in S_0`, define its deletion time
 and set `tau(x)=m` when no layer hits either endpoint. Then
 
 ```math
-f_i(x)=\mathbf 1_{i<\tau(x)}.
+s(x)
+=
+\min(\tau(x)+1,m)
+```
+
+is the energy stopping index. A start first hit at layer `tau(x)<m` is still
+present immediately before that filter, while a final survivor is present
+before every layer. Therefore
+
+```math
+f_i(x)=\mathbf 1_{i<s(x)}.
 ```
 
 For a pair `(x,y)`, let
 
 ```math
-t(x,y)=\min(\tau(x),\tau(y)).
+t(x,y)=\min(s(x),s(y)).
 ```
 
 The coefficient product becomes
@@ -430,6 +440,160 @@ are zero.
 In particular, if no `r_i` with `i<t` divides `d`, the pair contribution is
 nonpositive. Positive off-diagonal energy can come only from differences
 having at least one prime divisor from the pair's common survival interval.
+
+## Diagonal And Difference-Grouped Decomposition
+
+For any integer difference `d` and stopping index `0<=t<=m`, define
+
+```math
+\kappa_d(t)
+=
+\sum_{i=0}^{t-1}
+w_i
+\left(
+\mathbf 1_{r_i\mid d}-\frac1{r_i}
+\right).
+```
+
+For `t>=1`, the telescoped form is
+
+```math
+\kappa_d(t)
+=
+\sum_{\substack{0\le i<t\\r_i\mid d}}w_i
+-
+\frac{w_{t-1}-A_{0,m}}2,
+```
+
+while `kappa_d(0)=0`.
+
+Every start in `S_0` is `5 modulo 6`. Thus every nonzero difference between
+two starts is `6h` for some nonzero integer `h`. Let
+
+```math
+H
+=
+\left\lfloor
+\frac{\max S_0-\min S_0}{6}
+\right\rfloor.
+```
+
+The fixed-set bilinear form decomposes exactly as
+
+```math
+\boxed{
+\begin{aligned}
+\sum_{i=0}^{m-1}w_iV_i
+&=
+\sum_{x\in S_0}
+\kappa_0(s(x))\\
+&\quad+
+2\sum_{h=1}^{H}
+\sum_{\substack{x\in S_0\\x+6h\in S_0}}
+\kappa_{6h}
+\left(
+\min(s(x),s(x+6h))
+\right).
+\end{aligned}
+}
+```
+
+### Proof
+
+The fixed-set bilinear form sums one kernel over every ordered pair `(x,y)`.
+When `x=y`, the difference is `0`, the stopping index is `s(x)`, and the
+first displayed sum contains that diagonal term.
+
+When `x!=y`, exactly one orientation has `y=x+6h` for a unique positive
+integer `h`. Both orientations have the same difference divisibility and the
+same stopping index, so they have equal kernels. Grouping the two orientations
+produces the factor `2`. Every ordered pair is included exactly once in either
+the diagonal or off-diagonal contribution. `[Q.E.D.]`
+
+This decomposition is the correct place to apply divisor-incidence
+information. Maximizing `kappa_d(t)` separately for every pair discards the
+distribution of differences and may be much too coarse.
+
+## Aggregate Divisor-Incidence Swap
+
+The positive off-diagonal divisor terms can be summed by layer. Because
+`gcd(6,r_i)=1`,
+
+```math
+r_i\mid6h
+\quad\Longleftrightarrow\quad
+r_i\mid h.
+```
+
+At layer `i`, the pairs whose common stopping time exceeds `i` are exactly the
+pairs of starts still present in `S_i`. The number of ordered distinct pairs
+in `S_i` whose difference is divisible by `r_i` is
+
+```math
+C_i-N_i,
+```
+
+where
+
+```math
+C_i
+=
+\#\{(x,y)\in S_i^2:r_i\mid(x-y)\}.
+```
+
+Therefore swapping the difference and layer sums gives the exact positive
+off-diagonal incidence
+
+```math
+\boxed{
+\sum_{i=0}^{m-1}w_i(C_i-N_i).
+}
+```
+
+For the centered negative part, layer `i` sees all `N_i(N_i-1)` ordered
+distinct pairs, each with contribution `-w_i/r_i`. Hence the negative
+off-diagonal total is
+
+```math
+\boxed{
+-\sum_{i=0}^{m-1}
+w_i\frac{N_i(N_i-1)}{r_i}.
+}
+```
+
+The diagonal contribution is
+
+```math
+\boxed{
+\sum_{i=0}^{m-1}
+w_iN_i\left(1-\frac1{r_i}\right).
+}
+```
+
+Adding the three terms at each layer gives
+
+```math
+\begin{aligned}
+&(C_i-N_i)
+-\frac{N_i(N_i-1)}{r_i}
++N_i\left(1-\frac1{r_i}\right)\\
+&=
+C_i-\frac{N_i^2}{r_i}\\
+&=
+V_i.
+\end{aligned}
+```
+
+Thus the aggregate divisor-incidence swap closes exactly back to
+
+```math
+\sum_iw_iV_i.
+```
+
+This is a consistency identity, not a new upper bound. Progress requires an
+estimate that uses additional structure—such as deletion-time nesting,
+correlation across layers, or cancellation in the centered kernels—before the
+sums are collapsed into the original per-layer collision counts.
 
 ## Why This Is Different From A Pointwise Error Bound
 

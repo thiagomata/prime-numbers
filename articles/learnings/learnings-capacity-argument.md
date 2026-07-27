@@ -377,7 +377,7 @@ The safe zone probes a tiny fraction of the cycle (≈ p²/M_k), and this fracti
 | Does a 2-gap always exist at gap-position < p²? | Density conjecture (≈ Jacobsthal) |
 | Does S_k always intersect [p, p²]? | Same density conjecture, rephrased |
 | Can an inductive invariant link S_k to S_{k-1}? | Unknown — no such invariant found |
-| Can the safe zone guarantee be reduced to a weaker claim than TPC? | Unknown — all current reductions land at the same wall |
+| Can the safe zone guarantee be reduced to a weaker claim than TPC? | Partially decomposed — harmless-class energy `U_i` is a noncircular component and may vanish with the final population, but no independently proved weighted bound yet fits the complete survival budget |
 
 ## 17. Structural Impossibility: The Inter-Prime Window Cannot Host a Surviving 2-Gap
 

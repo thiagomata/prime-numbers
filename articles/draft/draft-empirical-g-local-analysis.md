@@ -40,7 +40,7 @@ $$G_{\text{local}}(p) \le p - 1$$
 
 If this inequality fails permanently from some layer onward, the filter is structurally incapable of extinguishing the local 2-gap population, and twin prime candidates persist indefinitely.
 
-This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](../articles/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
+This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
 
 ---
 
@@ -280,7 +280,7 @@ The empirical data supports the capacity argument for twin prime persistence:
 - The inequality $G_{\text{local}} > p$ holds for all $p \ge 37$ up to $p=997$
 - The ratio $G/p$ grows monotonically, suggesting the inequality is structural
 
-**Crucially, this is empirical evidence, not a formal proof.** The local density question ($G_{\text{local}} > p$) remains open in the formal verification sense. See [Gap Dynamics in Sieve Sequences](../articles/gap-dynamics.md) Section 6 and [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md) Sections 10 and 16 for the formal boundary.
+**Crucially, this is empirical evidence, not a formal proof.** The local density question ($G_{\text{local}} > p$) remains open in the formal verification sense. See [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) Section 6 and [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 10 and 16 for the formal boundary.
 
 The computational functions used (`SegmentedSieve.survivorsInRange` and `GapAnalyzer.countTwoGaps`) are marked `@extern` and are **not** Stainless-verified. They are standard Scala implementations used for empirical computation, not formal verification.
 

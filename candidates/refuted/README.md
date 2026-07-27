@@ -31,6 +31,12 @@ unless the same counterexample defeats those formulations too.
 1. [Monotone separator reconstruction](monotone-separator-reconstruction.md)
    — stronger transition laws around candidate #18 that fail already at
    `Q=17`, `r=5 -> 7`.
+2. [Accepted-strike boundary sign laws](accepted-strike-boundary-sign-laws.md)
+   — stronger sign and sign-preservation laws around candidate #23 that fail
+   exactly in the fixed window `[19,19^2)` when filter `13` is installed.
+3. [Centered conductor-block orthogonality](centered-conductor-block-orthogonality.md)
+   — the distinct- and coprime-conductor orthogonality shortcuts around
+   candidate #22 fail exactly at `P=30`, `r=7`, `q=2`, `q'=3`.
 
 ## Scope Boundary
 

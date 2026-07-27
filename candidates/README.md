@@ -23,7 +23,7 @@ The taxonomy (and the question you asked that produced it):
 | **SMALL-PRIME CAVEAT** | fails for small primes but likely changes for big primes (recovers at scale) | #3 |
 | **INCONCLUSIVE** | data neither contributes to the thesis nor refutes it (proxy-only, unmeasured-as-stated, or low-power) | #4, #10, #12, #13 |
 | **DEFERRED (UNMEASURED)** | whole-period or expanded-zone quantity; not touched by the window or lineage passes | #5, #6, #7, #9, #16 |
-| **ALGEBRA-FIRST (UNMEASURED)** | derived from a proved algebraic bound after the empirical program; next action is proof, not measurement | #19, #20, #21 |
+| **ALGEBRA-FIRST (UNMEASURED)** | derived from a proved algebraic bound after the empirical program; next action is proof, not measurement | #19, #20, #21, #22, #23 |
 | **REFUTED** | exact proposed statements defeated by a valid counterexample | [refuted subclaims catalog](refuted/README.md) |
 
 **No numbered candidate note has been fully refuted.** Zero negative margins anywhere (`surplus`
@@ -88,7 +88,9 @@ cross-candidate synthesis.
 18. [Redundant close-pair capacity](redundant-close-pair-capacity.md) — **[density conversion and attrition bounds proved; finite redundancy reinforced]** `P` is exactly the short compressed-separator count; sharp bounds `P_new>=P_old-2H` and `D_new>=D_old-H` are proved, while monotone `P` and `D` are empirically refuted.
 19. [Sixfold harmful-residue capacity](sixfold-harmful-residue-capacity.md) — **[algebra-first; unmeasured separately]** the one-layer destruction bound `K_r(W_Q)<=2(floor((Q^2-Q-3)/(6r))+1)` is proved from the common `5 modulo 6` phase; the open hereditary population floor is asymptotically `G_r(W_Q)>Q^2/(3r)`.
 20. [Conditioned residue-collision energy](conditioned-residue-collision-energy.md) — **[algebra-first; unmeasured]** the collision reduction is proved; the candidate bound `C_r<=N_r+N_r^2/r` reduces the needed population to `6` gaps at `r=5`, `4` at `r=7`, and `3` at every `r>=11`, but the relative four-point correlation estimate is open.
-21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[primary algebra-first target; unmeasured]** the chain recurrence and fixed-set bilinear reduction are proved; the open theorem is a weighted aggregate bound for stopped centered prime-divisor kernels, which permits uneven individual layers.
+21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[primary composition framework; unmeasured]** the chain recurrence, corrected stopping index, first-deletion split, and orthogonal energy reduction are proved; it consumes weighted harmless dispersion plus the two scalar endpoint errors.
+22. [Conditioned harmless-class collision energy](conditioned-harmless-class-collision-energy.md) — **[primary missing distribution theorem; unmeasured]** asks for `U_i<=N_{i+1}` after the two harmful classes are removed, with a weaker weighted aggregate preferred; together with #13 endpoint sampling, #23 accepted-strike density, and the proved orthogonal decomposition, it supplies the components needed by #21.
+23. [Accepted-anchor strike density](accepted-anchor-strike-density.md) — **[primary missing scalar theorem; unmeasured]** isolates `epsilon_i=H_i/A_i-1/r_i`, gives the exact bridge `b_i=H_i beta_i+2N_i epsilon_i`, and asks for a weighted strike-error bound normalized by the initial main term rather than by an unknown final population.
 
 ## Established Background
 
@@ -111,17 +113,24 @@ stated lemma, but extending the empirical range is not itself a next step.
 The main dependency chain is now:
 
 ```text
-conditioned local population or two-class energy
-    -> one-layer capacity (#19/#20)
-    -> cumulative weighted collision budget (#21)
+#23 accepted-strike density + #13 unsigned/signed endpoint sampling
+    -> total harmful excess b_i and endpoint imbalance Delta_i
+#22 harmless-class collision energy
+    -> harmless dispersion U_i
+orthogonal decomposition
+    -> full residue energy V_i
+#21 cumulative weighted collision budget
     -> hereditary survival
     -> local surplus / square-safe certificate (#2)
 ```
 
-The first algebraic objective is to prove a lower envelope for the actual
-conditioned population, or to derive a two-class error bound strictly weaker
-than full short-window equidistribution. Any proposed theorem must be audited
-against the final-layer parity barrier before it is counted as progress.
+The first algebraic objective is the weakest weighted aggregate bound on
+`sum_i w_i U_i` that fits #21 after symbolic endpoint-sampling and
+accepted-strike error budgets are subtracted. Pointwise
+`U_i<=N_{i+1}` is candidate #22's convenient benchmark, not a mandatory
+per-layer premise. Any derivation must be audited against the final-layer
+parity barrier: it must not assume a positive final population or normalize by
+an unproved lower bound for it.
 
 ### REINFORCED — next step is proof, not measurement
 
@@ -172,13 +181,27 @@ to add as much as a proof attempt would.
   `C_r<=N_r+N_r^2/r`. An absolute upper-bound-sieve estimate is insufficient
   until its normalization by `N_r` is justified independently.
 - **#21 Cumulative weighted collision budget.** This is the primary algebraic
-  target. The proved chain formula reduces final survival to one weighted
-  energy budget, and nested deletion indicators rewrite it on the fixed
-  initial population. Next: split diagonal/off-diagonal terms and bound the
-  aggregate stopped kernel
-  `sum_{i<t} w_i(1_{r_i|d}-1/r_i)`. Use the exact telescope
-  `sum_{i<t}w_i/r_i=(w_{t-1}-A_{0,m})/2`; a worst-pair bound multiplied by
-  `N_0^2` is not sufficient unless its constants fit the final budget.
+  composition framework. The proved identity
+  `V_i=U_i+r_i b_i^2/(2(r_i-2))+Delta_i^2/2` replaces the earlier opaque
+  stopped-kernel target. Next: combine #23 accepted-strike density with #13
+  unsigned/signed endpoint sampling to bound `b_i,Delta_i`, then
+  combine #22 or an aggregate harmless-dispersion theorem to bound `U_i`.
+  Candidate #10 does not directly supply the strike-density estimate. Generic
+  Fourier, black-box large-sieve, worst-difference, and symmetric
+  class-capacity routes have already failed their algebraic audits.
+- **#22 Conditioned harmless-class collision energy.** This is the primary
+  missing distribution theorem. Prove or obstruct the weakest weighted
+  aggregate that fits #21; the stronger pointwise benchmark is
+  `U_i<=N_{i+1}`, equivalently
+  `sum_{a notin {0,-2}}c_{i,a}^2<=N_{i+1}+N_{i+1}^2/(r_i-2)`.
+  This is candidate #20's relative-collision scale on the smaller harmless
+  alphabet. A weighted aggregate bound may suffice even if the pointwise
+  version fails.
+- **#23 Accepted-anchor strike density.** This is the primary missing scalar
+  theorem. Bound `epsilon_i=H_i/A_i-1/r_i` in the weighted form consumed by
+  #21. The exact target is obtained after inserting #13's endpoint error into
+  `b_i=H_i beta_i+2N_i epsilon_i`; do not normalize by a positive final or
+  late-layer 2-gap population.
 - **#11 Random-like.** The real destruction rate is `~ p^-1.6`, well below the
   `2/p` benchmark. Next: a *deterministic* transference bound deriving
   `destruction_rate <= 2/p` (or stronger) from the modular arithmetic, not from
@@ -213,9 +236,11 @@ to add as much as a proof attempt would.
   #19 shows that phase rigidity alone already supplies an absolute two-class
   cap; the open question is whether a smaller conditioned bound is provable.
 - **#13 Uniform-local-observable-sampling.** The exact one-sided margin is now
-  positive on the completed finite sweep. Restrict the algebra to the endpoint
-  indicator and derive its one-sided bias from exact residue or collision
-  identities; do not seek a universal observable class first.
+  positive on the completed finite sweep. Restrict the algebra to the minimal
+  unsigned endpoint indicator and signed left-minus-right endpoint observable.
+  They control endpoint bias and `Delta_i`; candidate #23 supplies the
+  separately required accepted-strike-density target for `b_i`. Do not seek a
+  universal observable class first.
 
 ### DEFERRED (UNMEASURED) — next step is to scope each before any measurement
 
