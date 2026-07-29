@@ -116,6 +116,269 @@ If `J` is square-safe, the surviving occurrence certifies a twin-prime pair.
 The candidate itself, however, applies uniformly to arbitrary finite gap
 words.
 
+## Minimal Two-Harmful-Class Form
+
+For the current collision-energy program, pointwise control of every residue
+class is stronger than necessary. Let
+
+```math
+G=N_{(2)}(J),
+```
+
+and define only the two harmful deviations
+
+```math
+\delta_0
+=
+N_{(2),0}(J)-\frac Gp,
+\qquad
+\delta_{-2}
+=
+N_{(2),-2}(J)-\frac Gp.
+```
+
+Property #58 proves that candidate #21's harmful excess and signed endpoint
+imbalance are exactly
+
+```math
+b=\delta_0+\delta_{-2},
+\qquad
+\Delta=\delta_0-\delta_{-2}.
+```
+
+Consequently, its complete scalar cost is
+
+```math
+\boxed{
+\frac{p}{2(p-2)}
+\left(
+\delta_0+\delta_{-2}
+\right)^2
++
+\frac12
+\left(
+\delta_0-\delta_{-2}
+\right)^2.
+}
+```
+
+A direct weighted aggregate bound for this expression is the most economical
+restricted form of candidate #12 that reproduces candidate #21's full harmful
+scalar term. It preserves correlation between the two harmful classes and can
+replace the separate candidate #13 endpoint-sampling and candidate #23
+strike-density estimates. It does not ask for uniformity in the other `p-2`
+classes or for arbitrary gap words.
+
+Its proof role is nevertheless terminal, not independently noncircular.
+Property #66 proves that the weighted `b_i^2` component alone being below
+candidate #21's complete global allowance already forces a positive final
+2-gap-start population. Thus this formulation is a clean theorem target, but
+proving it at the required scale would already prove conditioned-chain
+survival.
+
+Candidate #24 is leaner still. It keeps only
+
+```math
+b_i=\delta_{i,0}+\delta_{i,-2}
+```
+
+and asks for
+
+```math
+\boxed{
+\sum_iw_i
+\frac{p_i}{2(p_i-2)}
+b_i^2
+<
+\frac{T^2}{2W_-}.
+}
+```
+
+It discards the imbalance square and uses the larger natural allowance
+because `W_-<W`. Therefore use candidate #24 as the minimal quadratic survival
+target; use the full direct norm here only when the joint two-class geometry
+provides additional arithmetic leverage.
+
+Property #59 proves that the candidate's existing pointwise survival margin
+does not automatically supply this stronger quadratic bound. For every prime
+`p>=5`, it constructs an integral residue histogram satisfying
+
+```math
+\max_a
+\left|
+N_{(2),a}(J)-\frac Gp
+\right|
+\le E
+```
+
+and
+
+```math
+2E<G\left(1-\frac2p\right),
+```
+
+while its same-sign harmful deviations lie outside candidate #21's scalar
+ellipse. Thus the current margin remains sufficient for surviving one filter,
+but not for the cumulative second-moment proof.
+
+The stronger direct target is
+
+```math
+\boxed{
+\sum_iw_i
+\left[
+\frac{p_i}{2(p_i-2)}
+(\delta_{i,0}+\delta_{i,-2})^2
++
+\frac12(\delta_{i,0}-\delta_{i,-2})^2
+\right]
+\le
+\mathcal B_{\mathrm{harm}}(Q),
+}
+```
+
+with `mathcal B_harm(Q)` small enough to fit candidate #21 after harmless
+dispersion is inserted. Because this bound contains the harmful-excess square,
+property #66 shows that it is already terminal whenever
+`mathcal B_harm(Q)<T^2/(2W)`.
+
+Property #60 computes the sharp conversion from the original pointwise
+deviation language to this ellipse. If
+
+```math
+|\delta_0|,|\delta_{-2}|\le E,
+```
+
+then
+
+```math
+\boxed{
+\frac{p}{2(p-2)}
+(\delta_0+\delta_{-2})^2
++
+\frac12(\delta_0-\delta_{-2})^2
+\le
+\frac{2p}{p-2}E^2.
+}
+```
+
+For a one-layer main term
+
+```math
+T=G\left(1-\frac2p\right),
+```
+
+the largest symmetric pointwise box strictly inside candidate #21's ellipse
+is exactly
+
+```math
+\boxed{
+E<
+\frac T2\sqrt{\frac{p-2}{p}}.
+}
+```
+
+The candidate's existing survival margin is `E<T/2`; the additional square
+root factor is the exact price of controlling the same-sign harmful
+direction in the second-moment argument.
+
+Property #61 gives a deterministic alternative that does not assume a
+deviation bound. If every residue class has the sixfold capacity
+
+```math
+B
+=
+\left\lfloor
+\frac{Q^2-Q-3}{6p}
+\right\rfloor+1,
+```
+
+put
+
+```math
+\ell=\max(0,G-(p-2)B),
+\qquad
+u=\min(G,2B).
+```
+
+Then the sharp harmful scalar maximum allowed by the total population and
+these class capacities is
+
+```math
+\boxed{
+\max_{s\in\mathcal S}
+\left[
+\frac{p}{2(p-2)}
+\left(
+s-\frac{2G}{p}
+\right)^2
++
+\frac12\min(s,2B-s)^2
+\right],
+}
+```
+
+where
+
+```math
+\mathcal S
+=
+\{\ell,u\}
+\cup
+\left(
+\{B\}\text{ if }\ell\le B\le u
+\right).
+```
+
+This controls the scalar ellipse exactly when the displayed maximum is below
+`G^2(1-2/p)^2/2`. Property #62 solves that comparison. Define
+
+```math
+\rho_*(p)
+=
+\frac{2p\sqrt p}{2\sqrt p+(p-2)^{3/2}}.
+```
+
+Then the capacity envelope fits the scalar ellipse exactly when
+
+```math
+\boxed{G>\rho_*(p)B.}
+```
+
+For every `p>=5`,
+
+```math
+2<\rho_*(p)<3,
+\qquad
+\lim_{p\to\infty}\rho_*(p)=2.
+```
+
+Thus the missing population theorem is now quantitative: ordinary
+two-harmful-class survival asks for `G>2B`, while the collision budget asks
+for the slightly stronger sharp ratio above at one layer.
+
+Property #65 proves that meeting this ratio at every layer does not
+automatically fit candidate #21's global weighted allowance. The cumulative
+target can still be stated as the direct aggregate theorem
+
+```math
+\sum_iw_i
+\left[
+\frac{p_i}{2(p_i-2)}
+(\delta_{i,0}+\delta_{i,-2})^2
++
+\frac12(\delta_{i,0}-\delta_{i,-2})^2
+\right]
+<
+\mathcal B_{\mathrm{harm}}(Q).
+```
+
+Thus the ratio theorem classifies local capacity. A proof of the aggregate
+bound would need new weighted cross-layer information, but property #66 shows
+that such a proof is already a terminal survival theorem rather than one
+independent component to be combined later. Candidate #24 supplies the weaker
+global target when control of left/right imbalance is unnecessary.
+
 ## Relation To Other Candidates
 
 This is a deterministic, phase-sensitive equidistribution condition. It asks
@@ -132,6 +395,30 @@ a probabilistic model.
 
 - [Copy-index filter frequency](../properties/sieve-sequence/copy-index-filter-frequency.md)
 - [Stable absence and copy-or-merge](../properties/sieve-sequence/absence-of-two-gaps-is-stable.md)
+- [Endpoint sampling and strike density recombine into harmful residues](
+  ../properties/sieve-sequence/endpoint-sampling-strike-density-harmful-residue-bridge.md
+  )
+- [Pointwise two-class margin does not imply the collision budget](
+  ../properties/sieve-sequence/pointwise-two-class-margin-does-not-imply-collision-budget.md
+  )
+- [Sharp harmful-residue box inside the collision ellipse](
+  ../properties/sieve-sequence/sharp-harmful-residue-box-inside-collision-ellipse.md
+  )
+- [Sharp sixfold-capacity harmful-energy envelope](
+  ../properties/sieve-sequence/sharp-sixfold-capacity-harmful-energy-envelope.md
+  )
+- [Sharp sixfold-capacity population-ratio threshold](
+  ../properties/sieve-sequence/sharp-sixfold-capacity-population-ratio-threshold.md
+  )
+- [One-layer harmful ellipses do not compose](
+  ../properties/sieve-sequence/one-layer-harmful-ellipses-do-not-compose.md
+  )
+- [Weighted harmful-excess energy is already terminal](
+  ../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md
+  )
+- [Weighted harmful-excess quadratic survival](
+  weighted-harmful-excess-quadratic-survival.md
+  )
 - [Square-safe certification](../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md)
 
 ## Limitation

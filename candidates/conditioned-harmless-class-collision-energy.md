@@ -7,9 +7,11 @@
 **Empirical status:** BOUNDED FALSIFIER INCONCLUSIVE — the exact pointwise
 inequality `U_i<=M_i` has no violation in the 1,035 layers with prime heads
 `5<=Q<224`. This finite agreement is not evidence for the theorem and says
-nothing decisive about infinitely many heads. The preferred theorem remains
-the weighted aggregate bound for `sum_i w_i U_i`; pointwise `U_i<=M_i` is
-only a convenient stronger benchmark.
+nothing decisive about infinitely many heads. The weakest standalone
+distribution target remains a weighted aggregate bound for
+`sum_i w_i U_i`; pointwise `U_i<=M_i` is only a convenient stronger
+benchmark. Property #66 shows that this harmless target is no longer the
+primary missing survival theorem.
 
 ## Purpose
 
@@ -20,6 +22,12 @@ among the classes that survive.
 The first two effects have exact endpoint-observable interpretations. This
 candidate isolates the third effect and asks only for relative collision
 control among the `r-2` harmless classes.
+
+This remains a well-defined noncircular distribution problem: `U_i=0` when
+the actual harmless survivor population is zero. Its role in the survival
+program is now diagnostic rather than decisive. Property #66 proves that the
+separate harmful-excess square is already terminal at candidate #21's global
+allowance.
 
 ## Setup
 
@@ -43,6 +51,10 @@ N_{i+1}
 ```
 
 be the survivor population after the filter.
+
+This note uses `M_i` only for the actual post-filter survivor population
+`N_{i+1}`. It must not be confused with notes that use `M_i=a_iN_i` for a
+one-step multiplicative main term.
 
 Define the harmless-class energy
 
@@ -133,8 +145,8 @@ Define the remaining harmless-energy allowance
 }
 ```
 
-The preferred candidate hypothesis is that, for infinitely many future heads
-`Q`,
+The original combined candidate hypothesis is that, for infinitely many
+future heads `Q`,
 
 ```math
 \boxed{
@@ -144,8 +156,29 @@ The preferred candidate hypothesis is that, for infinitely many future heads
 }
 ```
 
-This is exactly the strength consumed by candidate #21. It permits individual
-layers to violate the natural linear benchmark.
+This is exactly the harmless allowance left by the orthogonal candidate #21
+decomposition. It permits individual layers to violate the natural linear
+benchmark.
+
+Property #66 changes its survival interpretation. The first condition
+`mathcal U_*(Q)>0` says that the proved scalar upper bound is already strictly
+below `T^2/(2W)`. Since that upper bound contains the actual harmful-excess
+energy `E_b`, property #66 already gives
+
+```math
+N_m>0.
+```
+
+Therefore the second condition
+
+```math
+\sum_iw_iU_i<\mathcal U_*(Q)
+```
+
+is redundant for final survival in this separated composition. It remains a
+legitimate standalone theorem about conditioned harmless-class distribution,
+but it is not the missing step after the scalar feasibility condition has
+been proved.
 
 A convenient stronger pointwise hypothesis is that every layer in the
 conditioned chain satisfies
@@ -192,7 +225,8 @@ M_i+R_i-\frac{M_i^2}{r_i-2}.
 }
 ```
 
-Therefore the preferred aggregate hypothesis is exactly equivalent to
+Therefore the displayed standalone aggregate hypothesis is exactly equivalent
+to
 
 ```math
 \boxed{
@@ -487,7 +521,9 @@ M_i
 ```
 
 When this inequality holds, candidate #21's proved implication gives a final
-2-gap survivor.
+2-gap survivor. Property #66 gives a sharper interpretation: if the scalar
+terms alone are already bounded strictly below the complete allowance, they
+force a final survivor without requiring the additional `M_i` contribution.
 
 ## Relation To Candidate #20
 
@@ -511,8 +547,9 @@ Any of the following would suffice:
 3. a four-point correlation bound restricted to differences divisible by
    `r_i`, normalized by the actual survivor population;
 4. a stronger weighted aggregate bound for `sum_iw_iU_i`, even if some
-   individual layers violate `U_i<=M_i`; the sharp required right-hand side is
-   the displayed `mathcal U_*(Q)`.
+   individual layers violate `U_i<=M_i`. This would prove the standalone
+   distribution statement, but property #66 shows it is not needed for
+   survival once the scalar allowance is positive.
 
 ## Limitation
 
@@ -523,11 +560,13 @@ quantitatively too weak for candidate #21. Candidate #10's post-filter count
 discrepancy is not the accepted-strike density estimate needed to control
 `b_i`; that separate theorem is candidate #23.
 
-This candidate is useful because it is the smallest distributional component
-left by the exact algebra, not because the parity barrier has been removed.
-The aggregate form also has a scalar feasibility precondition:
-`mathcal U_*(Q)>0`. If the #13 and #23 errors exhaust the second-moment
-allowance, no harmless-dispersion estimate can rescue this particular #21
+This candidate is useful because it is the smallest independently noncircular
+distributional component left by the exact algebra, not because the parity
+barrier has been removed. It is no longer a top survival target in the current
+separated framework. The aggregate form has a scalar feasibility precondition
+`mathcal U_*(Q)>0`, and property #66 proves that satisfying that precondition
+with valid scalar bounds already forces survival. If the scalar errors exhaust
+the allowance, no harmless-dispersion estimate can rescue this particular #21
 budget.
 
 ## Established Inputs
@@ -546,6 +585,9 @@ budget.
   )
 - [Weighted composition of endpoint and strike-density errors](
   ../properties/sieve-sequence/weighted-scalar-error-composition.md
+  )
+- [Weighted harmful-excess energy is already terminal](
+  ../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md
   )
 - [Harmless energy as a fixed-set pair correlation](
   ../properties/sieve-sequence/harmless-energy-fixed-set-pair-form.md

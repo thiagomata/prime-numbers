@@ -209,6 +209,12 @@ sums of the actual shot-gap word at every conditioned future layer.
 - [Exact accepted local strikes](../properties/sieve-sequence/exact-accepted-local-filter-strikes.md)
 - [Copy-index filter frequency](../properties/sieve-sequence/copy-index-filter-frequency.md)
 - [2-gap endpoint isolation](../properties/sieve-sequence/two-gap-isolation-after-filter-three.md)
+- [Capacity population-threshold hierarchy](
+  ../properties/sieve-sequence/capacity-population-threshold-hierarchy.md
+  )
+- [One-layer harmful ellipses do not compose](
+  ../properties/sieve-sequence/one-layer-harmful-ellipses-do-not-compose.md
+  )
 - [Square-safe certification](../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md)
 
 ## Limitation
@@ -377,6 +383,25 @@ forces two consecutive complete 2-gaps whose enclosure is shorter than `2r`,
 and hence forces the `k=2` premise. This replaces qualitative close-pair
 existence by a sharp finite count threshold, but it does not prove that the
 conditioned local count meets that threshold in every required layer.
+
+Property #63 also proves that this same count floor is strictly above
+property #62's sharp harmful scalar threshold
+
+```math
+G_r(W_Q)>\rho_*(r)
+\left(
+\left\lfloor\frac{Q^2-Q-3}{6r}\right\rfloor+1
+\right).
+```
+
+Thus any proof of the displayed #14 population floor would automatically
+place that layer's two harmful scalar terms inside their local ellipse as well
+as force the `k=2` interval premise. The converse is false at the threshold
+level: the scalar route requires strictly less population.
+
+Property #65 proves that local ellipse membership does not compose into
+candidate #21's global weighted allowance. This consequence therefore
+compares one-layer strengths; it is not a cumulative proof of #21.
 
 ### Bounded chain-population investigation
 

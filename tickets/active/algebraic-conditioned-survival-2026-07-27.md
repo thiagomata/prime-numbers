@@ -805,10 +805,13 @@ strictly weaker than the final existence claim or merely restates it.
 - The consistency edits are now complete across the #19-#22 escape-wall
   ticket, candidate #10, #13, #19, #20, #21, and #22 notes, both catalogs,
   the #14 cross-scope note, the future research landscape, the two-endpoint
-  property, and the internal capacity learnings summary. The current chain is:
-  #13 endpoint sampling plus a separate accepted-strike density theorem
-  control the scalar errors; #22 controls harmless dispersion; #21 consumes
-  the weighted sum. Candidate #10 is not the strike-density theorem.
+  property, and the internal capacity learnings summary.
+- Property #66 is the later controlling result. Restricted #12, or the
+  fallback #13+#23 representation, targets a harmful scalar theorem that is
+  already terminal at candidate #21's global allowance. Candidate #22 remains
+  an independently noncircular harmless-distribution problem but is not an
+  additional survival obligation after scalar feasibility. Candidate #10 is
+  not the strike-density theorem.
 
 ## Expected State
 
@@ -1023,16 +1026,17 @@ strictly weaker than the final existence claim or merely restates it.
   the first; the second remains a separate open theorem and is not candidate
   #10 as currently stated.
 - Even perfect control of both terminal errors leaves the post-filter
-  harmless-class variance open. The missing asymmetric theorem is now sharply
-  localized to dispersion of surviving 2-gap starts among `r_i-2` harmless
-  classes.
+  harmless-class variance algebraically open. Property #66 later proves that
+  this harmless variance is not an additional survival obligation once the
+  assembled harmful scalar energy is below candidate #21's global allowance.
 - The orthogonal identity removes the earlier terminal-history complexity:
   full energy is exactly harmless dispersion plus two scalar squared errors.
   There are no hidden linear terms.
 - The two #13 endpoint observables address endpoint bias and `Delta_i`; a
   separate accepted-strike density theorem completes the bound for `b_i`.
-  A smaller-alphabet collision theorem for `U_i` is the remaining
-  distributional component.
+  A smaller-alphabet collision theorem for `U_i` is an independently
+  noncircular distributional component, not the remaining survival theorem
+  after scalar feasibility.
 - The benchmark `U_i<=N_{i+1}` is not automatically easier than candidate
   #20; it is candidate #20's relative-collision scale restricted to the
   harmless survivors. Its advantage is precision: it does not charge
@@ -1050,24 +1054,23 @@ strictly weaker than the final existence claim or merely restates it.
   exactly the direct whole-histogram estimate
   `sum_a c_{i,a}^2<=B_iN_i`. The negative terminal term survives only if the
   harmful and harmless sides receive asymmetric information.
-- Algebraic route ranking:
-  1. **#22 weighted harmless-class energy:** primary missing distribution
-     theorem; seek an aggregate `sum_i w_i U_i` bound rather than requiring
-     every pointwise benchmark.
-  2. **#13 endpoint sampling plus accepted-strike density:** primary scalar
-     error program for `Delta_i` and `b_i`. The strike-density theorem is not
-     currently candidate #10.
-  3. **#21 cumulative weighted energy:** terminal consumer that composes the
-     three orthogonal components and permits uneven individual layers.
-  4. **#19 absolute harmful-class capacity:** strongest unconditional
-     one-layer result; keep as the fallback if a population lower envelope can
-     be proved.
-  5. **#20 pointwise relative collision:** useful local testbed and source of
-     the energy recurrence, but requiring its benchmark at every layer is more
-     rigid than a cumulative budget.
-  6. **#12/#14:** retain as alternative pointwise/capacity consumers, not the
-     primary missing harmless-dispersion theorem.
-     algebraic estimate.
+- Corrected algebraic route classification after property #66:
+  1. **Restricted #12 weighted harmful norm:** the cleanest scalar
+     representation, but already a terminal conditioned-chain theorem at
+     candidate #21's global allowance.
+  2. **#13 endpoint sampling plus #23 accepted-strike density:** a fallback
+     representation whose individual components are noncircular; their
+     assembled scalar theorem is terminal.
+  3. **#21 cumulative weighted energy:** a valid terminal composition
+     framework. Further algebraic rearrangement does not make its required
+     arithmetic estimate preparatory.
+  4. **#22 weighted harmless-class energy:** an independently noncircular
+     distribution diagnostic, but redundant for survival after scalar
+     feasibility in the separated composition.
+  5. **#19/#20:** useful one-layer capacity and relative-collision testbeds;
+     their existing open population or normalization steps remain.
+  6. **#14:** a distinct capacity consumer whose close-pair existence theorem
+     remains open.
 
 ## Failed Paths
 
@@ -1156,6 +1159,11 @@ strictly weaker than the final existence claim or merely restates it.
   with asymmetric information: a stronger endpoint-class imbalance bound, a
   stronger harmless-dispersion bound, or a cross-layer covariance joining
   them.
+- **Treating #22 as the primary missing survival theorem.** Property #66
+  proves that the harmful-excess square alone being below candidate #21's
+  global allowance already forces `N_m>0`. Retry #22 for independent
+  distributional value or only after a new composition gives it a
+  nonredundant role.
 - **Attributing accepted-strike density to candidate #10.** Candidate #10
   controls post-filter safe-window count discrepancy, not
   `epsilon_i=H_i/A_i-1/r_i`. Similar discrepancy language caused the mistaken
@@ -1199,22 +1207,18 @@ strictly weaker than the final existence claim or merely restates it.
 
 ## Next Action
 
-Run repository-wide stale-claim, target-existence, local-link, ticket-section,
-and Markdown checks. If clean, derive the weakest weighted aggregate
-replacement for candidate #22:
+Stop checkpoint. Property #66 classifies the current scalar route as terminal
+and removes #22 as an additional survival obligation after scalar feasibility.
 
-```math
-\sum_iw_iU_i
-\le
-\mathcal U(Q).
-```
+Resume this ticket only with one of two genuinely new inputs:
 
-Insert it together with symbolic #13 endpoint-sampling and separate
-accepted-strike density budgets into the exact orthogonal identity and solve
-algebraically for the maximum admissible `mathcal U(Q)`. Candidate #10 does
-not currently supply the strike-density estimate. This will state the
-harmless-dispersion theorem at precisely the strength #21 consumes, without
-unnecessarily requiring `U_i<=N_{i+1}` at every layer.
+1. a terminal arithmetic estimate for restricted #12's weighted harmful norm,
+   explicitly accepted as strong enough to prove final survival; or
+2. a different composition framework that uses new signed or cross-layer
+   arithmetic not already exhausted by the exact conservation law.
+
+Do not resume generic #22/#23 algebra, do not return to local-ellipse
+composition, and do not collect additional empirical evidence.
 
 ## Learning Log
 
@@ -1252,3 +1256,4 @@ unnecessarily requiring `U_i<=N_{i+1}` at every layer.
 | 2026-07-27 | Correction: candidate #10 is a post-filter safe-window count discrepancy and does not directly control accepted-anchor strike density `H/A-1/r`. | Removed #10 from the scalar-error dependency chain. The current chain is #13 endpoint sampling plus a separate accepted-strike density theorem, together with #22 harmless dispersion, feeding #21. |
 | 2026-07-27 | Completed the user-requested consistency pass across all current #19-#22 candidates, catalogs, properties, active strategy tickets, the future landscape, and the internal learnings summary. The escape-wall audit now includes #22 and distinguishes noncircular components from terminal consumers. | Recorded the mistaken #10 attribution as a failed path and moved the immediate action to repository-wide integrity validation before resuming weighted harmless-energy algebra. |
 | 2026-07-27 | Repository-wide stale-claim, stopping-index, ticket-section, relative-link, and Markdown checks pass. Two unrelated legacy link patterns found by the audit were repaired; the staged giant CSV remains untouched. | Closed the understanding-sync pass. The next mathematical action is again the exact weighted `U_i` allowance, using #13 endpoint errors plus a separate accepted-strike density theorem. |
+| 2026-07-29 | Property #66 proves `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`; hence the harmful-excess square below candidate #21's allowance already forces `N_m>0`. | Reclassified restricted #12 and the assembled #13+#23 scalar theorem as terminal, demoted #22 to an independent diagnostic, and stopped the exhausted algebraic decomposition route. |

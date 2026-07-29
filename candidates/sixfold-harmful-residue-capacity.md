@@ -159,6 +159,66 @@ whereas the order-only `k=2` threshold used by #14 is
 The factor `2/3` improvement is a genuine consequence of the common
 `5 modulo 6` phase of 2-gap starts.
 
+## Relation To The Harmful Scalar Budget
+
+Put
+
+```math
+B=\left\lfloor\frac{L_Q}{6r}\right\rfloor+1.
+```
+
+This candidate's population floor is `G>=2B+1`. Properties #62 and #63 prove
+that the same floor also places candidate #21's two harmful scalar terms
+inside their one-layer collision allowance exactly when
+
+```math
+B<
+\frac1{\rho_*(r)-2},
+\qquad
+\rho_*(r)
+=
+\frac{2r\sqrt r}{2\sqrt r+(r-2)^{3/2}}.
+```
+
+The cutoff is asymptotic to `r/2`. Outside this range, the stated `2B+1`
+floor still proves one-layer survival, but it does not by itself prove the
+stronger quadratic scalar bound. The actual population may, of course, lie
+above the candidate floor.
+
+Property #64 makes the favorable range explicit. If
+
+```math
+Q^2-Q-3<3r(r-1),
+```
+
+then `B<(rho_*(r)-2)^(-1)` automatically. In particular,
+`r>=Q/sqrt(3)+1` is sufficient. Therefore this candidate's existing floor,
+if proved, needs no strengthening to control the harmful scalar energy in
+those late layers. The possible strengthening is confined to earlier and
+middle layers at the one-layer level.
+
+Property #65 proves that these local ellipse comparisons do not compose into
+candidate #21's global weighted allowance. Candidate #19 therefore supplies
+a sharp local capacity input, not the missing cumulative scalar theorem.
+
+Properties #69 and #70 now insert that same capacity into candidate #24's
+leaner b-only energy. Property #69 converts a capacity violation by the
+Cauchy minimizing deletion profile into an explicit extinction stability gap.
+Property #70 supplies the sharp separate-layer upper envelope for the actual
+b-energy.
+
+This does not weaken the local population obligation. Property #70 proves
+that its b-only envelope fits the one-layer allowance exactly when
+
+```math
+\frac{G}{B}>\rho_*(r)>2,
+```
+
+the same threshold as property #62 and strictly stronger than this
+candidate's ordinary survival condition `G>2B`. Therefore #19's capacities
+can still support a genuinely cross-layer #24 argument, but another
+separate-layer capacity optimization cannot improve the local route.
+
 ## Algebraic Proof Target
 
 The remaining theorem is now an integer lower bound, not a distributional
@@ -221,6 +281,21 @@ cannot establish the hereditary floor for all large `Q`.
   )
 - [Isolation of 2-gaps after filtering by 3](
   ../properties/sieve-sequence/two-gap-isolation-after-filter-three.md
+  )
+- [Capacity population-threshold hierarchy](
+  ../properties/sieve-sequence/capacity-population-threshold-hierarchy.md
+  )
+- [Late-layer sixfold floor controls harmful energy](
+  ../properties/sieve-sequence/late-layer-sixfold-floor-controls-harmful-energy.md
+  )
+- [One-layer harmful ellipses do not compose](
+  ../properties/sieve-sequence/one-layer-harmful-ellipses-do-not-compose.md
+  )
+- [Harmful capacity separates the energy minimizer](
+  ../properties/sieve-sequence/harmful-capacity-separates-energy-minimizer.md
+  )
+- [Sharp harmful-capacity excess envelope](
+  ../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md
   )
 - [Square-safe certification](
   ../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md

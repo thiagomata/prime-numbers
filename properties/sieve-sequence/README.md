@@ -176,6 +176,126 @@ verification unless a file explicitly says otherwise.
     - Collapses candidate #23's exponential divisor-pair quadratic form to
       `m+1` signed activation-shell sums and gives the exact nonnegative
       positive-semidefinite kernel induced by the chain weights.
+49. [Accepted-Strike CRT Lift-Index Transform](accepted-strike-crt-lift-index-transform.md)
+    - Splits each newly activated residue by its bounded CRT lift index,
+      cancels the complete old boundary error, and rewrites candidate #23's
+      budget as a weighted mean square of explicit Möbius transforms.
+50. [Accepted-Strike Summatory Coprime Remainder](accepted-strike-summatory-coprime-remainder.md)
+    - Identifies the lift-index transform exactly as a dilation remainder of
+      the finite-sieve summatory coprime count, classifying the remaining #23
+      estimate as new weighted analytic distribution input.
+51. [Accepted-Strike Cross-Layer CRT Orthogonality](accepted-strike-cross-layer-crt-orthogonality.md)
+    - Proves exact complete-period orthogonality and norms for the centered
+      layer strike observables, then shows that their Bessel bound retains the
+      full final-period normalization rather than the local-window scale.
+52. [Accepted-Strike Localized Layer Gram Matrix](accepted-strike-localized-layer-gram-matrix.md)
+    - Computes every local Gram entry from accepted counts and strike
+      discrepancies, reducing #23 to a finite spectral problem and showing
+      that the generic trace bound is only per-layer Cauchy in matrix form.
+53. [Accepted-Strike First-Deletion Variance Identity](accepted-strike-first-deletion-variance-identity.md)
+    - Factors the local Gram matrix by first-deletion class and identifies the
+      exact negative weighted variance lost by generic population and trace
+      bounds.
+54. [Accepted-Strike Active Two-Class Variance Identity](accepted-strike-active-two-class-variance-identity.md)
+    - Proves `D_i^2=A_i G_(ii)-H_i A_(i+1)` and shows that retaining only the
+      compulsory first-deletion separation rearranges the strike energy
+      instead of upper-bounding it.
+55. [Accepted-Strike First-Deletion Coordinate Reindexing](accepted-strike-first-deletion-coordinate-reindexing.md)
+    - Reindexes the complete deletion-vector variance by layer and proves that
+      the entire first-deletion spectral identity collapses exactly to the
+      original weighted strike energy without new arithmetic input.
+56. [Endpoint-Observable Joint Capacity Envelope](endpoint-observable-joint-capacity-envelope.md)
+    - Solves the exact finite-population maximum for candidate #13's unsigned
+      endpoint bias and signed imbalance, showing that capacity alone permits
+      extremal concentration in one endpoint orientation.
+57. [Endpoint Capacity Cannot Certify The Collision Budget](endpoint-capacity-cannot-certify-collision-budget.md)
+    - Gives a one-layer capacity-admissible configuration whose signed
+      endpoint imbalance alone exceeds candidate #21's complete one-layer
+      allowance,
+      proving that representative residue sampling is essential.
+58. [Endpoint Sampling And Strike Density Recombine Into Harmful Residues](endpoint-sampling-strike-density-harmful-residue-bridge.md)
+    - Proves that #13's endpoint bias and #23's strike-density error recombine
+      exactly into the sum and difference of the two harmful start-residue
+      deviations, exposing restricted candidate #12 as the direct scalar
+      target.
+59. [Pointwise Two-Class Margin Does Not Imply The Collision Budget](pointwise-two-class-margin-does-not-imply-collision-budget.md)
+    - Constructs integral residue histograms satisfying candidate #12's full
+      pointwise survival margin while violating #21's one-layer scalar
+      ellipse, proving that the required local joint quadratic theorem is
+      strictly stronger.
+60. [Sharp Harmful-Residue Box Inside The Collision Ellipse](sharp-harmful-residue-box-inside-collision-ellipse.md)
+    - Proves that the harmful scalar energy is at most
+      `2r E^2/(r-2)` under coordinate bounds `|delta_0|,|delta_(-2)|<=E`,
+      yielding the sharp stricter one-layer threshold.
+61. [Sharp Sixfold-Capacity Harmful-Energy Envelope](sharp-sixfold-capacity-harmful-energy-envelope.md)
+    - Combines the exact `6r` one-class capacity with the total local
+      population and reduces the sharp harmful scalar maximum to at most three
+      feasible endpoint totals.
+62. [Sharp Sixfold-Capacity Population-Ratio Threshold](sharp-sixfold-capacity-population-ratio-threshold.md)
+    - Solves the capacity envelope exactly: it fits the one-layer harmful
+      scalar budget precisely when `G/B > rho_*(r)`, where
+      `2 < rho_*(r) < 3` and `rho_*(r)` tends to `2`.
+63. [Capacity Population-Threshold Hierarchy](capacity-population-threshold-hierarchy.md)
+    - Places the one-layer harmful scalar threshold strictly between #19's
+      ordinary capacity level and #14's close-pair count level, and gives the
+      exact range `B < 1/(rho_*(r)-2)` where #19's floor is locally sufficient.
+64. [Late-Layer Sixfold Floor Controls Harmful Energy](late-layer-sixfold-floor-controls-harmful-energy.md)
+    - Proves that #19's ordinary floor already clears the one-layer harmful
+      scalar threshold when `Q^2-Q-3 < 3r(r-1)`, in particular throughout
+      the explicit range `r >= Q/sqrt(3)+1`.
+65. [One-Layer Harmful Ellipses Do Not Compose](one-layer-harmful-ellipses-do-not-compose.md)
+    - Proves that strict success against every one-layer scalar allowance does
+      not imply #21's smaller global weighted allowance, isolating a genuinely
+      aggregate harmful-energy theorem as the missing input.
+66. [Weighted Harmful-Excess Energy Is Already Terminal](weighted-harmful-excess-energy-is-terminal.md)
+    - Proves the conditioned-chain lower bound
+      `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`, so the harmful-excess component
+      alone being below candidate #21's global allowance already forces
+      `N_m>0`. It also identifies `E_b` exactly as a weighted quadratic
+      variation of the normalized realized population.
+67. [Integral Population Profiles Attain the Harmful-Energy Threshold](integral-population-profiles-attain-harmful-energy-threshold.md)
+    - Constructs, for every fixed prime chain, arbitrarily scaled integral
+      strictly decreasing extinction profiles attaining
+      `E_b=T^2/(2W_-)`. Therefore integrality, monotonicity, and the exact
+      population recurrence cannot improve candidate #24 without genuine CRT
+      deletion geometry.
+68. [Harmful-Excess Energy Has an Exact Stability Decomposition](harmful-excess-energy-exact-stability-decomposition.md)
+    - Completes the weighted square around the unique endpoint-constrained
+      minimizer. The excess above `(T-N_m)^2/(2W_-)` is exactly a positive
+      weighted distance from that profile, isolating the possible CRT
+      stability-gap interface without claiming an upper bound for `E_b`.
+69. [Harmful Capacity Separates the Energy Minimizer](harmful-capacity-separates-energy-minimizer.md)
+    - Computes the Cauchy minimizer's exact deletion masses and converts every
+      violated proved harmful-class capacity into the explicit extinction gap
+      `(K_i^star-C_i)_+^2/D_i`. This enlarges the possible #24 certificate but
+      remains a lower bound, not an upper estimate for actual `E_b`.
+70. [Sharp Harmful-Capacity Excess Envelope](sharp-harmful-capacity-excess-envelope.md)
+    - Projects property #61's exact capacity interval onto `b_i^2`, giving the
+      sharp one-layer endpoint maximum and the valid aggregate upper bound
+      `E_b<=U_cap`. Combined with #69, `U_cap<T^2/(2W_-)+Gamma_cap` forces
+      survival, but proving that terminal inequality remains open. Its local
+      threshold is still `N_i/B_i>rho_*(r_i)>2`, so improvement over #19 must
+      be genuinely cross-layer.
+71. [Paired Harmful-Excess CRT Orthogonality Has Primorial Scale](paired-harmful-excess-crt-orthogonality-has-primorial-scale.md)
+    - Proves exact complete-block cancellation, pairwise cross-layer
+      orthogonality, and norm `Rd_i(2/r_i)(1-2/r_i)` for candidate #24's
+      paired harmful-excess observables. Direct Bessel gives
+      `E_b<=LRd_m/(r_0-2)`, retaining the primorial-scale final class count;
+      progress therefore requires localized interval correlations or
+      coefficient-sensitive cancellation.
+72. [Native-Period Bessel and Capacity Give a Sharp Hybrid Envelope](native-period-bessel-capacity-hybrid-envelope.md)
+    - Applies Bessel to a prefix over its intermediate native CRT period and
+      intersects that joint budget sharply with property #70's coordinate
+      capacities by an explicit greedy linear program. The optimized envelope
+      always improves or matches `U_cap`, with an exact normalized-capacity
+      criterion for strict gain, but universal clearance of the extinction
+      threshold remains open.
+73. [Native-Period Capacity Overflow Quantifies the Hybrid Gain](native-period-capacity-overflow-quantifies-hybrid-gain.md)
+    - Defines the normalized prefix-capacity overflow `e_k`, proves it is the
+      exact mass rejected by native-period Bessel, and bounds the resulting
+      gain between the smallest and largest prefix energy coefficients times
+      `e_k`. This gives a simpler sufficient survival comparison while leaving
+      a lower bound for the overflow at the required scale open.
 
 ## Research Notes
 
@@ -191,6 +311,10 @@ verification unless a file explicitly says otherwise.
     unbounded success explicitly open.
 
 ## Status Vocabulary
+
+The complete cross-repository taxonomy is defined in the
+[Research Vocabulary](../../VOCABULARY.md). The labels below are the subset
+used most often by this property catalog.
 
 - **Mathematically proved:** the file contains a complete mathematical proof.
 - **Proved conditional implication:** the implication is proved, but its

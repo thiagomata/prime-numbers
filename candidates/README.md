@@ -20,22 +20,28 @@ The taxonomy (and the question you asked that produced it):
 | Status | Meaning | Candidates |
 |--------|---------|------------|
 | **REINFORCED** | data seems to reinforce the current belief (stated condition holds across measurements) | #1, #2, #8, #11, #14, #15, #17, #18 |
-| **SMALL-PRIME CAVEAT** | fails for small primes but likely changes for big primes (recovers at scale) | #3 |
+| **SMALL-PRIME CAVEAT** | has a counterexample to the all-transitions strengthening, while its stated infinitely-many hypothesis remains open | #3 |
 | **INCONCLUSIVE** | data neither contributes to the thesis nor refutes it (proxy-only, unmeasured-as-stated, or low-power) | #4, #10, #12, #13 |
 | **DEFERRED (UNMEASURED)** | whole-period or expanded-zone quantity; not touched by the window or lineage passes | #5, #6, #7, #9, #16 |
-| **ALGEBRA-FIRST (UNMEASURED)** | derived from a proved algebraic bound after the empirical program; next action is proof, not measurement | #19, #20, #21, #22, #23 |
-| **REFUTED** | exact proposed statements defeated by a valid counterexample | [refuted subclaims catalog](refuted/README.md) |
+| **ALGEBRA-FIRST (UNMEASURED)** | derived from a proved algebraic bound after the empirical program; next action is proof, not measurement | #19, #20, #21, #22, #23, #24 |
+| **REFUTED AUXILIARY STATEMENT** | exact stronger statement defeated by a valid counterexample without defeating its associated numbered candidate's main hypothesis | [3 refuted statement families](refuted/README.md) |
 
-**No numbered candidate note has been fully refuted.** Zero negative margins anywhere (`surplus`
-min +4, `c12_margin` min +12, `c13_margin` min +15.9851); no stated condition
-failed at scale. The one small-prime failure (#3 at (5,7)) recovers at scale
-(clusters grow to 248). The honest frontier is therefore: reinforced where
-measured, inconclusive where the mechanism is period-scale, deferred for the
-whole-period candidates, and open everywhere for "does it hold for *all* Q".
-Some stronger auxiliary formulations have been falsified and are now recorded
-under [refuted subclaims](refuted/README.md); for example, candidate #18's
-monotone separator-reconstruction laws fail even though candidate #18 itself
-remains open.
+**Four negative results are documented, with different quantifier scopes.**
+Candidate #3's protected-cluster condition fails at the transition `(5,7)`.
+This refutes the all-transitions strengthening, but candidate #3's stated main
+hypothesis asks only for success at infinitely many transitions and therefore
+remains open. Separately, the [refuted-statements catalog](refuted/README.md)
+contains three auxiliary statement families around candidates #18, #23, and
+#22. Those exact auxiliary laws are false, but their counterexamples do not
+refute the associated numbered candidates' main hypotheses.
+
+Thus no numbered candidate's **main stated hypothesis** is currently refuted.
+This is a quantifier classification, not a claim that every proposed
+strengthening survived. The measured margins for other direct conditions
+remain positive (`surplus` minimum `+4`, `c12_margin` minimum `+12`, and
+`c13_margin` minimum `+15.9851`). Candidate #3's measured cluster size
+recovers after `(5,7)` and reaches `248`, but finite recovery does not prove
+its infinitely-many hypothesis.
 For #14 specifically, exact finite `k=2` certificates now cover 53 heads and
 1,837 defined layers through Q997, and the runner's selected `k\le10` spacing
 fields are exact under the proved admissible-diameter profile.
@@ -44,6 +50,11 @@ every capacity minimum occurs at `r=7`, and neither the disjoint nor canonical
 block certificate count vanishes.
 
 ## Common Notation
+
+The repository-wide meanings of populations, windows, filter scope,
+quantifiers, and evidence status are defined in the
+[Research Vocabulary](../VOCABULARY.md). The `p,q` symbols below are this
+catalog's local mapping of the canonical filter-prime and future-head roles.
 
 Let `p` be the prime installed by a transition and `q` the next prime head. The
 eligible 2-gap-start window is
@@ -79,7 +90,7 @@ cross-candidate synthesis.
 9. [Forbidden-copy covered runs](forbidden-copy-covered-run.md) — **[deferred]** copy-index / whole-period
 10. [Short-window discrepancy](short-window-discrepancy.md) — **[post-filter E_q measured]** one-sided form holds 24/24 lineage layers; two-sided bound still pending
 11. [Random-like merge survival](random-like-merge-survival.md) — **[benchmark measured]** favorable rate; deterministic transference unmeasured
-12. [Local pattern-residue balance](local-pattern-residue-balance.md) — **[stated margin measured]** `νE<N(1−ν/r)` holds in 1,890/1,890 exact lineage layers across 53 heads
+12. [Local pattern-residue balance](local-pattern-residue-balance.md) — **[stated margin measured; aggregate role classified]** `νE<N(1−ν/r)` holds in 1,890/1,890 exact lineage layers across 53 heads; property #66 shows that its restricted weighted harmful norm is already terminal at candidate #21's global scale.
 13. [Uniform local observable sampling](uniform-local-observable-sampling.md) — **[one-sided margin measured]** `H(2L/N+b₊)<L` holds in 1,890/1,890 exact lineage layers across 53 heads
 14. [Hereditary shot-spacing capacity](hereditary-shot-spacing-capacity.md) — **[finite exact checks reinforced]** exact interval certificates hold at 4/4 defined Q17 layers and 23/23 defined Q101 layers, with proved spacing inputs through `k=10`; universal close-pair existence and population control remain open.
 15. [Sharp admissible shot-spacing profile](sharp-admissible-shot-spacing-profile.md) — **[proved through k=14; recurrence program open]** fixed-`k` stabilization and exact `D(2)..D(14)=(2,6,8,12,16,20,26,30,32,36,42,48,50)` are proved by explicit witnesses and finite residue-cover certificates. Recurrence inequalities, scalable bounds, and extremal classification beyond `k=14` remain open.
@@ -88,9 +99,11 @@ cross-candidate synthesis.
 18. [Redundant close-pair capacity](redundant-close-pair-capacity.md) — **[density conversion and attrition bounds proved; finite redundancy reinforced]** `P` is exactly the short compressed-separator count; sharp bounds `P_new>=P_old-2H` and `D_new>=D_old-H` are proved, while monotone `P` and `D` are empirically refuted.
 19. [Sixfold harmful-residue capacity](sixfold-harmful-residue-capacity.md) — **[algebra-first; unmeasured separately]** the one-layer destruction bound `K_r(W_Q)<=2(floor((Q^2-Q-3)/(6r))+1)` is proved from the common `5 modulo 6` phase; the open hereditary population floor is asymptotically `G_r(W_Q)>Q^2/(3r)`.
 20. [Conditioned residue-collision energy](conditioned-residue-collision-energy.md) — **[algebra-first; unmeasured]** the collision reduction is proved; the candidate bound `C_r<=N_r+N_r^2/r` reduces the needed population to `6` gaps at `r=5`, `4` at `r=7`, and `3` at every `r>=11`, but the relative four-point correlation estimate is open.
-21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[primary composition framework; unmeasured]** the chain recurrence, corrected stopping index, first-deletion split, and orthogonal energy reduction are proved; it consumes weighted harmless dispersion plus the two scalar endpoint errors.
-22. [Conditioned harmless-class collision energy](conditioned-harmless-class-collision-energy.md) — **[primary missing distribution theorem; unmeasured]** asks for `U_i<=N_{i+1}` after the two harmful classes are removed, with a weaker weighted aggregate preferred; together with #13 endpoint sampling, #23 accepted-strike density, and the proved orthogonal decomposition, it supplies the components needed by #21.
-23. [Accepted-anchor strike density](accepted-anchor-strike-density.md) — **[primary missing scalar theorem; unmeasured]** isolates `epsilon_i=H_i/A_i-1/r_i`, gives the exact bridge `b_i=H_i beta_i+2N_i epsilon_i`, and asks for a weighted strike-error bound normalized by the initial main term rather than by an unknown final population.
+21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[stronger terminal composition framework; unmeasured]** the chain recurrence, corrected stopping index, first-deletion split, and orthogonal energy reduction are proved; property #65 blocks local-ellipse composition, while property #66 and candidate #24 show that full collision energy is stronger than survival needs.
+22. [Conditioned harmless-class collision energy](conditioned-harmless-class-collision-energy.md) — **[independent distribution diagnostic; unmeasured]** asks for `U_i<=N_{i+1}` after the two harmful classes are removed, with a weaker weighted aggregate preferred. It remains noncircular, but property #66 shows that it is redundant for survival once the separated scalar feasibility condition is proved.
+23. [Accepted-anchor strike density](accepted-anchor-strike-density.md) — **[fallback terminal-scalar representation; algebraically classified]** isolates `epsilon_i=H_i/A_i-1/r_i` and the exact bridge `b_i=H_i beta_i+2N_i epsilon_i`; properties #48--#55 classify its weighted budget through activation, CRT, summatory, Gram, and first-deletion forms, while properties #58 and #66 show that direct restricted #12 can bypass the decomposition and that the resulting aggregate scalar target is terminal.
+24. [Weighted harmful-excess quadratic survival](weighted-harmful-excess-quadratic-survival.md) — **[top quadratic survival target; unmeasured]** asks only for `E_b<T^2/(2W_-)`; properties #66--#70 give the sharp extinction and capacity interfaces. Property #71 proves exact cross-layer CRT orthogonality but shows that final-period Bessel retains the primorial factor. Property #72 combines intermediate native-period Bessel constraints sharply with capacity, giving `E_b<=U_hyb<=U_cap`; property #73 quantifies its gain by normalized capacity overflow `e_k`. It is strictly weaker than #21; the missing theorem is an unbounded-family threshold comparison, with a sufficiently large lower bound for some `e_k` as the simplest current input.
+25. [Chen-type almost-prime survivor](chen-type-almost-prime-survivor.md) — **[WEAKER TARGET, NOT A 2-GAP CONDITION]** relaxes the *conclusion* instead of strengthening a hypothesis: a certified-prime survivor `p` whose `p+2` has at most two prime factors (prime-or-semiprime). Does NOT force a twin-prime pair. The natural fallback prime-producing milestone (deep-dive Stage 5) if the twin-prime-strength wall every 2-gap candidate hits is absolute; classical precedent is Chen's theorem (1966).
 
 ## Established Background
 
@@ -110,27 +123,34 @@ stated lemma, but extending the empirical range is not itself a next step.
 
 ### Cross-cutting algebraic priority
 
-The main dependency chain is now:
+Property #66 replaces the earlier parallel-component dependency chain:
 
 ```text
-#23 accepted-strike density + #13 unsigned/signed endpoint sampling
-    -> total harmful excess b_i and endpoint imbalance Delta_i
-#22 harmless-class collision energy
-    -> harmless dispersion U_i
-orthogonal decomposition
-    -> full residue energy V_i
-#21 cumulative weighted collision budget
-    -> hereditary survival
-    -> local surplus / square-safe certificate (#2)
+exact signed conservation (property #25)
+    -> harmful-excess quadratic lower bound (property #66)
+    -> candidate #24 natural quadratic budget
+    -> hereditary survival / square-safe certificate
+
+restricted #12 or fallback #13+#23
+    -> possible arithmetic estimates for candidate #24's E_b
+
+#21 full collision-energy budget
+    -> implies candidate #24
+    -> is stronger than survival requires
+
+#22 harmless-class energy
+    -> independently noncircular distribution diagnostic
+    -> not required by candidate #24
 ```
 
-The first algebraic objective is the weakest weighted aggregate bound on
-`sum_i w_i U_i` that fits #21 after symbolic endpoint-sampling and
-accepted-strike error budgets are subtracted. Pointwise
-`U_i<=N_{i+1}` is candidate #22's convenient benchmark, not a mandatory
-per-layer premise. Any derivation must be audited against the final-layer
-parity barrier: it must not assume a positive final population or normalize by
-an unproved lower bound for it.
+The former scalar and harmless objectives are not parallel preparatory steps.
+Property #65 proves that the sharp one-layer thresholds #62--#64 do not
+compose. Property #66 supplies the sharp conservation-only threshold used by
+candidate #24, and candidate #21 implies that leaner condition. Candidate #22
+remains a clean noncircular distribution problem, but solving it is not
+required by #24. Any new derivation must state whether it is a one-layer fact,
+an independent diagnostic, or a terminal theorem, and must not normalize by
+an unproved positive final population.
 
 ### REINFORCED — next step is proof, not measurement
 
@@ -180,28 +200,67 @@ to add as much as a proof attempt would.
   correlation sum relative to the actual `N_r`, with the target
   `C_r<=N_r+N_r^2/r`. An absolute upper-bound-sieve estimate is insufficient
   until its normalization by `N_r` is justified independently.
-- **#21 Cumulative weighted collision budget.** This is the primary algebraic
+- **#24 Weighted harmful-excess quadratic survival.** This is the top
+  quadratic survival target. Prove
+  `E_b<T^2/(2W_-)` for infinitely many future heads, equivalently bound the
+  weighted quadratic variation
+  `sum_i A_(0,i)(z_i-z_(i+1))^2`. Property #66 proves the implication and
+  shows the threshold is sharp using only conservation plus `E_b`. Property
+  #67 strengthens that boundary by constructing scaled integral monotone
+  extinction profiles at equality. Property #68 identifies the exact
+  nonnegative distance from that profile; a positive CRT distance can enlarge
+  the certificate threshold. Property #69 now obtains the explicit enlargement
+  `Gamma_cap=max_i (K_i^star-C_i)_+^2/D_i` from the proved harmful capacities.
+  Property #70 supplies the sharp separate-layer capacity upper envelope
+  `E_b<=U_cap`. Its exact local threshold remains
+  `N_i/B_i>rho_*(r_i)>2`, strictly stronger than #19, so separate-layer
+  capacity optimization is exhausted. Property #71 proves that the centered
+  paired observables are exactly orthogonal across layers, but black-box
+  Bessel gives only `E_b<=LRd_m/(r_0-2)` and retains the full primorial-scale
+  class count. Property #72 avoids forcing that final period: at each
+  intermediate cut it intersects native-period prefix Bessel with the
+  coordinate capacities by an exact greedy linear program. Optimizing the cut
+  gives `E_b<=U_hyb<=U_cap`, with strict gain exactly when the normalized
+  prefix capacity box exceeds the interval remainder. The current explicit
+  target is
+  `U_hyb<T^2/(2W_-)+Gamma_cap` for an unbounded family of actual chains.
+  Property #73 defines the normalized overflow `e_k`, proves that the gain at
+  cut `k` is at least `M_k d_m e_k/(r_(k-1)-2)`, and gives the simpler
+  sufficient comparison obtained by subtracting the largest such guaranteed
+  gain from `U_cap`. This is terminal; the next independent input is a lower
+  bound for some `e_k` at the extinction-deficit scale, or localized interval
+  correlations beyond the Bessel budget—not more data, another
+  complete-period identity, or population integrality alone.
+- **#21 Cumulative weighted collision budget.** This is a stronger terminal
   composition framework. The proved identity
   `V_i=U_i+r_i b_i^2/(2(r_i-2))+Delta_i^2/2` replaces the earlier opaque
-  stopped-kernel target. Next: combine #23 accepted-strike density with #13
-  unsigned/signed endpoint sampling to bound `b_i,Delta_i`, then
-  combine #22 or an aggregate harmless-dispersion theorem to bound `U_i`.
-  Candidate #10 does not directly supply the strike-density estimate. Generic
-  Fourier, black-box large-sieve, worst-difference, and symmetric
-  class-capacity routes have already failed their algebraic audits.
-- **#22 Conditioned harmless-class collision energy.** This is the primary
-  missing distribution theorem. Prove or obstruct the weakest weighted
-  aggregate that fits #21; the stronger pointwise benchmark is
+  stopped-kernel target. Property #58 recombines #13 and #23 exactly into the
+  direct two-harmful-residue norm, while property #65 proves that one-layer
+  ellipse membership does not imply the required global weighted bound.
+  Property #66 further proves that the `b_i^2` component being below that
+  allowance already forces final survival. Candidate #24 removes #21's
+  unnecessary imbalance and harmless terms and uses the larger natural
+  allowance, so pursue #21 only if its full-energy structure enables an
+  estimate unavailable for #24.
+  Generic Fourier, black-box large-sieve, worst-difference, symmetric
+  class-capacity, local-ellipse composition, and algebraic conservation
+  rearrangements have already failed their audits.
+- **#22 Conditioned harmless-class collision energy.** This is an independent
+  noncircular distribution diagnostic, not the current missing survival
+  theorem. Its stronger pointwise benchmark is
   `U_i<=N_{i+1}`, equivalently
   `sum_{a notin {0,-2}}c_{i,a}^2<=N_{i+1}+N_{i+1}^2/(r_i-2)`.
   This is candidate #20's relative-collision scale on the smaller harmless
-  alphabet. A weighted aggregate bound may suffice even if the pointwise
-  version fails.
-- **#23 Accepted-anchor strike density.** This is the primary missing scalar
-  theorem. Bound `epsilon_i=H_i/A_i-1/r_i` in the weighted form consumed by
-  #21. The exact target is obtained after inserting #13's endpoint error into
+  alphabet. Prove it only for its independent distribution value or if a new
+  composition gives it a nonredundant survival role; in the current separated
+  framework, scalar feasibility already forces survival.
+- **#23 Accepted-anchor strike density.** This is a valid fallback scalar
+  representation, not the primary route after property #58. If pursued, bound
+  `epsilon_i=H_i/A_i-1/r_i` in the weighted form consumed by #21 after
+  inserting #13's endpoint error into
   `b_i=H_i beta_i+2N_i epsilon_i`; do not normalize by a positive final or
-  late-layer 2-gap population.
+  late-layer 2-gap population. Property #66 shows that success at the required
+  aggregate scale is itself a terminal survival theorem.
 - **#11 Random-like.** The real destruction rate is `~ p^-1.6`, well below the
   `2/p` benchmark. Next: a *deterministic* transference bound deriving
   `destruction_rate <= 2/p` (or stronger) from the modular arithmetic, not from

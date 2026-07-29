@@ -4,7 +4,10 @@
 
 **Conditional implication:** Mathematically proved.
 
-**Empirical status:** SMALL-PRIME CAVEAT — fails only at (5,7) (1/186); clusters grow to 248 at scale. Likely fine at big primes; not refuted. See "Empirical Counterexample" section.
+**Empirical status:** COUNTEREXAMPLE TO THE ALL-TRANSITIONS STRENGTHENING —
+the condition fails at `(5,7)` in 1 of 186 measured transitions. The stated
+infinitely-many hypothesis remains open; measured clusters later grow to
+`248`. See “Empirical Counterexample.”
 
 ## Candidate Hypothesis
 
@@ -50,12 +53,13 @@ The candidate stress-test (`candidates/analysis/measure_candidates.py`,
   `max_cluster_in_width_p = 1`: there is no protected cluster of two
   endpoint-disjoint 2-gaps in any width-`<5` interval.
 
-This does not refute the candidate as a survival route at this transition —
-survival still holds (`surviving = 4`) via the local-surplus condition (#2,
-`surplus = 4 > 0`). It shows the candidate's *specific* sufficient condition is
-not universally satisfied even at small windows: the smallest clean transition
-is exactly the regime where evenly-spaced 2-gaps (all differences `6`, forced by
-filter `3`) defeat the width-`<p` cluster requirement.
+This refutes the stronger claim that candidate #3's condition holds at every
+transition. It does not refute the stated main hypothesis, which asks only for
+success at infinitely many transitions. It also does not imply that survival
+fails at `(5,7)`: survival still holds (`surviving = 4`) via the local-surplus
+condition (#2, `surplus = 4 > 0`). The smallest clean transition is exactly
+the regime where evenly spaced 2-gaps (all differences `6`, forced by filter
+`3`) defeat the width-`<p` cluster requirement.
 
 ### Across the full measured range (p to ~19000)
 
@@ -71,10 +75,11 @@ does not recur at scale.
   2-gaps within width-`<p` occur in 185/186 measured transitions and become
   large in the sampled range. This supports, but does not establish, an
   eventual cluster-existence conjecture.
-- **Does not:** remove the `(5,7)` counterexample — the candidate as stated is
-  not universally true. A proof would need to either exclude small windows or
-  handle the singleton case via another route (as #2 does). The finite
-  window-scale run does not prove that the condition holds infinitely often.
+- **Does not:** remove the `(5,7)` counterexample—the all-transitions
+  strengthening is false. Handling that transition by candidate #2 proves
+  survival there but does not prove candidate #3. The finite window-scale run
+  also does not prove that protected clusters occur infinitely often, which
+  is candidate #3's actual main hypothesis.
 
 ## Strategic assessment after empirical review
 

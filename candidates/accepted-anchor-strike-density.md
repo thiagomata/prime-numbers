@@ -5,8 +5,8 @@
 **Algebraic role:** Exact.
 
 **Empirical status:** NOT EVALUATED AS STATED — this candidate isolates the
-accepted-anchor density error required by candidates #13 and #21. Candidate
-#10 measures a different, post-filter safe-window discrepancy.
+accepted-anchor density error used by the fallback #13+#23 decomposition for
+#21. Candidate #10 measures a different, post-filter safe-window discrepancy.
 
 ## Purpose
 
@@ -15,10 +15,17 @@ all eligible neighborhoods. That comparison controls which struck anchors are
 2-gap endpoints, but it does not control how many accepted anchors the filter
 strikes.
 
-This candidate supplies that missing scalar input. It asks whether the
-accepted anchors in the local window meet the incoming residue class with
-density close enough to `1/r` in the exact weighted sense required by the
-collision budget.
+This candidate supplies one exact scalar component for the separate #13+#23
+route. It asks whether the accepted anchors in the local window meet the
+incoming residue class with density close enough to `1/r` in the exact
+weighted sense required by the collision budget.
+
+Property #58 shows that restricted candidate #12's direct weighted
+two-harmful-residue norm can bypass this decomposition and is the preferred
+scalar interface. Candidate #23 remains a valid fallback if its boundary
+arithmetic admits estimates unavailable for the direct route. Property #66
+shows that either assembled aggregate scalar route is terminal at candidate
+#21's global allowance.
 
 ## Setup
 
@@ -72,9 +79,11 @@ nonnegative bounds `xi_i` such that
 }
 ```
 
-and the resulting weighted strike-error contribution fits inside candidate
-#21 after the independently obtained harmless-dispersion and endpoint-sampling
-budgets are inserted.
+and the resulting weighted strike-error contribution combines with candidate
+#13's endpoint-sampling budget to place the actual harmful scalar energy below
+candidate #21's global allowance. Property #66 then forces final survival;
+candidate #22's harmless-dispersion budget is not an additional premise for
+that implication.
 
 The preferred theorem is an aggregate bound on the actual errors, rather than
 a pointwise discrepancy requirement:
@@ -240,6 +249,22 @@ Equivalently, candidate #22 receives the exact remaining allowance
 ```
 
 This is the precise interface between candidates #13, #22, #23, and #21.
+Property #66 sharpens its role: once the scalar expression
+
+```math
+\left(
+\sqrt{\mathcal E_\beta}
++
+\sqrt{\mathcal E_D}
+\right)^2
++
+\mathcal E_\Delta
+```
+
+is strictly below `T^2/(2W)`, its bound on the actual harmful-excess energy
+already forces `N_m>0`. Thus `mathcal U_*(Q)>0` is itself terminal when backed
+by valid #13 and #23 estimates; the additional #22 inequality is unnecessary
+for survival in this separated composition.
 
 ## Why This Is Not Candidate #10
 
@@ -257,7 +282,9 @@ The density error is defined even if no 2-gap survives the complete chain. It
 does not assume `N_m>0`, and the aggregate statement can be normalized by the
 initial main term `T`, not by the unknown final population.
 
-This makes the candidate noncircular as a component. It may nevertheless be
+This makes the strike-density estimate noncircular as a component. The
+assembled scalar theorem is different: property #66 proves that it is
+terminal at the required global scale. The component may nevertheless be
 parity-hard. In particular, a proof that first divides by a positive lower
 bound for a late conditioned 2-gap population would reintroduce the same wall
 that blocked the hereditary forms of candidates #14 and #19.
@@ -468,17 +495,270 @@ norm of `m+1` signed activation-shell sums. The chain weights do not create
 kernel sign cancellation; the remaining arithmetic is cancellation inside
 the `Z_t`, or a direct bound for their vector in the `mathcal K` norm.
 
+Property #49 splits every newly activated residue by a bounded CRT lift index
+and cancels the complete old boundary error. Define
+
+```math
+\mathcal M_i(Q)
+=
+\sum_{e\mid P_i}\mu(e)
+\left(
+t_{Q,r_i}(e)-t_{Q^2,r_i}(e)
+\right),
+```
+
+where
+
+```math
+t_{x,r_i}(e)
+=
+\left[
+\left\lfloor\frac{x-1}{e}\right\rfloor
+\right]_{r_i}^{(0)}.
+```
+
+Then
+
+```math
+\boxed{
+D_i=\frac{\mathcal M_i(Q)}{r_i},
+\qquad
+\mathcal E_D
+=
+\sum_i
+\frac{w_i}{2r_i(r_i-2)}
+\mathcal M_i(Q)^2.
+}
+```
+
+This is the sharpest current statement of candidate #23's missing theorem.
+It requires a weighted mean-square estimate for explicit bounded-index
+Möbius transforms; neither bulk density nor the old boundary error remains.
+
+Property #50 identifies that transform exactly with a finite-sieve summatory
+remainder. If
+
+```math
+F_P(X)
+=
+\#\{1\le n\le X:\gcd(n,P)=1\}
+```
+
+and
+
+```math
+T_{P,r}(x)
+=
+F_P(x-1)
+-
+rF_P\left(\left\lfloor\frac{x-1}{r}\right\rfloor\right),
+```
+
+then
+
+```math
+\boxed{
+\mathcal M_i(Q)
+=
+T_{P_i,r_i}(Q)-T_{P_i,r_i}(Q^2).
+}
+```
+
+Therefore the exact denominator-free budget is
+
+```math
+\boxed{
+\mathcal E_D
+=
+\sum_i
+\frac{w_i}{2r_i(r_i-2)}
+\left(
+T_{P_i,r_i}(Q)-T_{P_i,r_i}(Q^2)
+\right)^2.
+}
+```
+
+This classification is important: the lift-index formula does not reveal an
+additional elementary cancellation. It is an exact coordinate rewrite of
+the original dilation discrepancy. The remaining theorem is a weighted
+mean-square bound for these dilation remainders at the two prime-square
+endpoints, with both the modulus and the dilation prime changing by layer.
+
+Property #51 proves that the centered layer strike observables are pairwise
+orthogonal on the complete final CRT period `R=P_m`. In particular,
+
+```math
+\boxed{
+\sum_i
+\frac{r_i^2}{
+\frac{\varphi(P_i)}{P_i}(r_i-1)
+}
+D_i^2
+\le
+|I|R
+}
+```
+
+when the interval `I` has length at most `R`. This is a genuine cross-layer
+mean-square theorem, but it has the wrong normalization for the safe-window
+problem: the right side contains the full final primorial. Thus ordinary
+Bessel composition of the complete-period CRT orthogonality does not prove
+candidate #23. A useful theorem must localize this orthogonality or add a new
+averaging variable.
+
+Property #52 performs that localization exactly. On the actual interval, the
+layer Gram matrix is
+
+```math
+\boxed{
+G_{ii}
+=
+A_i\frac{r_i-1}{r_i^2}
++
+\left(1-\frac2{r_i}\right)D_i,
+}
+```
+
+```math
+\boxed{
+G_{ij}
+=
+-\frac{D_{\max(i,j)}}{r_{\min(i,j)}}
+\qquad(i\ne j).
+}
+```
+
+If `C=diag(c_i)` with
+`c_i=w_i r_i/(2(r_i-2))`, then
+
+```math
+\boxed{
+\mathcal E_D
+\le
+|I|\lambda_{\max}\left(C^{1/2}GC^{1/2}\right).
+}
+```
+
+This removes the final-primorial normalization and turns the remaining
+problem into a local finite spectral estimate. However, bounding the largest
+eigenvalue by the trace is exactly the sum of the separate per-layer Cauchy
+bounds. Progress now requires signed spectral cancellation in the explicit
+off-diagonal discrepancies, not generic positive-semidefinite matrix algebra.
+
+Property #53 partitions the initial accepted anchors by their first deleting
+layer. If `n_k` is the size of class `k`, including `n_m=A_m` for final
+survivors, and `v_k` is its centered strike vector, then
+
+```math
+\boxed{
+D=\sum_kn_kv_k,
+\qquad
+G=\sum_kn_kv_kv_k^T.
+}
+```
+
+For the candidate weights `C=diag(c_i)`, this yields the exact variance
+identity
+
+```math
+\boxed{
+\mathcal E_D
+=
+A_0\operatorname{tr}(CG)
+-
+\sum_{k<\ell}
+n_kn_\ell
+\left\lVert C^{1/2}(v_k-v_\ell)\right\rVert^2.
+}
+```
+
+Thus deletion-time dispersion is an exact negative correction to generic
+Cauchy. But if only `n_k>=0` and `sum n_k=A_0` are known, the sharp abstract
+envelope is
+
+```math
+\boxed{
+\mathcal E_D
+\le
+A_0^2\max_k\left\lVert C^{1/2}v_k\right\rVert^2,
+}
+```
+
+attained in the abstract model by concentrating all mass in one deletion
+class. First-deletion geometry therefore helps only if new arithmetic proves
+that the actual local class counts are dispersed.
+
+Property #54 strength-tests the compulsory part of that dispersion. At every
+layer,
+
+```math
+\boxed{
+D_i^2
+=
+A_iG_{ii}
+-
+H_iA_{i+1}.
+}
+```
+
+Thus the guaranteed separation between class `i` and all later deletion
+classes contributes `H_iA_(i+1)`, but retaining only this term exactly
+rearranges the unknown `D_i^2`. It is not an independent estimate. A useful
+first-deletion argument must retain the additional intermediate-coordinate
+distances from property #53 or establish arithmetic bounds for the actual
+class masses.
+
+Property #55 reindexes all of those additional distances and closes the pure
+first-deletion algebra. The complete deletion-vector variance is
+
+```math
+\boxed{
+\sum_i c_i
+\left[
+H_iA_{i+1}
++
+(A_0-A_i)G_{ii}
+\right].
+}
+```
+
+Substitution into property #53, followed by property #54, returns exactly
+`sum_i c_iD_i^2`. Therefore neither the compulsory distance nor the full
+triangular distance matrix supplies an independent upper bound. The
+first-deletion representation becomes useful only after adding arithmetic
+constraints on the actual class counts or an external averaging theorem.
+
+Property #58 supplies an alternative to proving #23 separately. If
+`delta_0` and `delta_(-2)` are the two harmful 2-gap-start residue deviations,
+then
+
+```math
+b=\delta_0+\delta_{-2},
+\qquad
+\Delta=\delta_0-\delta_{-2}.
+```
+
+The decomposition `b=H beta+2N epsilon` is exactly a split of this same
+two-class residue error into candidate #13 sampling and candidate #23 strike
+density. A direct joint bound for `delta_0,delta_(-2)` can therefore bypass
+the separate #23 budget and retain correlation lost by Minkowski. This is the
+preferred restricted form of candidate #12. Property #66 proves that success
+for either representation at candidate #21's global allowance already forces
+final survival.
+
 ## What Would Prove It
 
 Any of the following could supply the required input:
 
-1. a quadratic-variation bound for the exact adjacent boundary-error
+1. a sharp upper bound for the largest eigenvalue of property #52's localized
+   Gram matrix that improves substantially on its trace;
+2. a quadratic-variation bound for the exact adjacent boundary-error
    recurrence;
-2. a discrepancy estimate for accepted anchors against the single incoming
+3. a discrepancy estimate for accepted anchors against the single incoming
    residue class, normalized by `A_i` rather than by a final survivor count;
-3. a weighted covariance bound between earlier acceptance and the incoming
+4. a weighted covariance bound between earlier acceptance and the incoming
    divisibility indicator;
-4. a direct aggregate estimate for
+5. a direct aggregate estimate for
    `sum_i w_i N_i^2 epsilon_i^2` that fits the displayed allowance, even when
    no useful pointwise bound holds.
 
@@ -495,8 +775,11 @@ arithmetic structure, but it does not automatically extend to every later
 layer of a conditioned chain. Complete-period uniformity also does not imply
 local-window strike density.
 
-The candidate isolates the missing scalar theorem; it does not establish that
-the theorem is easier than harmless-class dispersion.
+The candidate isolates a noncircular fallback component of a terminal scalar
+theorem; it does not establish that the component is easier to bound than the
+direct restricted #12 norm. Candidate #22's harmless-class dispersion is a
+separate distribution question, but it is not required for survival after the
+assembled scalar allowance is positive.
 The general recurrence, its squared summation by parts, and the simplest
 prime-square endpoint sign mechanisms have now been exhausted. Continuing
 requires a new mean-square or Möbius-residue cancellation theorem.
@@ -509,6 +792,9 @@ requires a new mean-square or Möbius-residue cancellation theorem.
 - [Weighted composition of endpoint and strike-density errors](
   ../properties/sieve-sequence/weighted-scalar-error-composition.md
   )
+- [Weighted harmful-excess energy is already terminal](
+  ../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md
+  )
 - [Accepted-strike error is a positive quadratic variation](
   ../properties/sieve-sequence/accepted-strike-quadratic-variation.md
   )
@@ -517,6 +803,30 @@ requires a new mean-square or Möbius-residue cancellation theorem.
   )
 - [Accepted-strike divisor activation kernel](
   ../properties/sieve-sequence/accepted-strike-divisor-activation-kernel.md
+  )
+- [Accepted-strike CRT lift-index transform](
+  ../properties/sieve-sequence/accepted-strike-crt-lift-index-transform.md
+  )
+- [Accepted-strike summatory coprime remainder](
+  ../properties/sieve-sequence/accepted-strike-summatory-coprime-remainder.md
+  )
+- [Accepted-strike cross-layer CRT orthogonality](
+  ../properties/sieve-sequence/accepted-strike-cross-layer-crt-orthogonality.md
+  )
+- [Accepted-strike localized layer Gram matrix](
+  ../properties/sieve-sequence/accepted-strike-localized-layer-gram-matrix.md
+  )
+- [Accepted-strike first-deletion variance identity](
+  ../properties/sieve-sequence/accepted-strike-first-deletion-variance-identity.md
+  )
+- [Accepted-strike active two-class variance identity](
+  ../properties/sieve-sequence/accepted-strike-active-two-class-variance-identity.md
+  )
+- [Accepted-strike first-deletion coordinate reindexing](
+  ../properties/sieve-sequence/accepted-strike-first-deletion-coordinate-reindexing.md
+  )
+- [Endpoint sampling and strike density recombine into harmful residues](
+  ../properties/sieve-sequence/endpoint-sampling-strike-density-harmful-residue-bridge.md
   )
 - [Accepted-strike density as a Möbius boundary sum](
   ../properties/sieve-sequence/accepted-strike-density-boundary-decomposition.md

@@ -1,4 +1,4 @@
-# Refuted Candidate Statements
+# Refuted Research Statements
 
 This folder records research statements that are now known to be false by an
 explicit valid counterexample.
@@ -37,6 +37,20 @@ unless the same counterexample defeats those formulations too.
 3. [Centered conductor-block orthogonality](centered-conductor-block-orthogonality.md)
    — the distinct- and coprime-conductor orthogonality shortcuts around
    candidate #22 fail exactly at `P=30`, `r=7`, `q=2`, `q'=3`.
+
+## Relationship To The Four Documented Negative Results
+
+This index contains **three** refuted auxiliary statement families. A fourth
+negative result is documented in
+[candidate #3, Protected Cluster](../protected-cluster.md): its condition
+fails at `(p,q)=(5,7)`.
+
+Candidate #3 is not a fourth entry in this index because its main hypothesis
+asks for protected clusters at infinitely many transitions. The single
+failure refutes the stronger all-transitions formulation, not that
+infinitely-many statement. Thus the repository documents four negative
+results while this catalog correctly contains three refuted auxiliary
+families.
 
 ## Scope Boundary
 
