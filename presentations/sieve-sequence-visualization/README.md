@@ -34,3 +34,21 @@ merge grammar feels right, reuse it inside the film and the interactive atlas.
 For articles, start with the copy-or-merge strip and safe-zone boundary
 diagrams from `06-article-diagram-ideas.md`. Those two figures explain the most
 with the least visual machinery.
+
+## Already Built
+
+Several of these proposals already have working, real-data implementations in
+[`figures/`](figures/README.md) -- not mockups, actual generated SVGs built
+from the sieve-sequence data:
+
+- The gap heatmap series (including 2-focused compression, age/lineage
+  tracking, and merge-count views) implements much of
+  `06-article-diagram-ideas.md`'s diagram set, plus a few line charts (2-gap
+  frequency and cluster-size trends) that grew out of it.
+- `figures/hit_miss_heatmap.py` and `figures/stage_transition_diagram.py` are
+  small, focused figures (hit/miss matrices per stage; repeat-rotate-filter
+  step-by-step diagrams) that only need a small committed data sample, or no
+  data file at all.
+
+See [`figures/README.md`](figures/README.md) for the full pipeline, output
+file reference, and known limitations.

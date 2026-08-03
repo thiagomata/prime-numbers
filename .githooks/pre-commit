@@ -1,0 +1,24 @@
+#!/bin/sh
+# Rejects the commit if any staged file exceeds MAX_SIZE_BYTES. Checked
+# generically against whatever is actually staged -- no per-file list to
+# maintain, so it catches large files by size alone, not by name/path.
+#
+# Setup (once per clone): git config core.hooksPath .githooks
+
+MAX_SIZE_BYTES=$((7 * 1024 * 1024))
+
+too_big=""
+while IFS= read -r -d '' file; do
+    [ -f "$file" ] || continue
+    size=$(wc -c < "$file" | tr -d ' ')
+    if [ "$size" -gt "$MAX_SIZE_BYTES" ]; then
+        too_big="$too_big$file ($((size / 1024 / 1024))MB)\n"
+    fi
+done < <(git diff --cached --name-only --diff-filter=ACM -z)
+
+if [ -n "$too_big" ]; then
+    echo "commit rejected -- staged file(s) exceed the 7MB limit:" >&2
+    printf "%b" "$too_big" >&2
+    echo "unstage them (git restore --staged <file>) or add to .gitignore." >&2
+    exit 1
+fi

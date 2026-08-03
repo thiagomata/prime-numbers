@@ -93,6 +93,14 @@ MERGE_ACCENT_RAMP = ["#fbdcc9", "#f3ac7c", "#eb6834", "#c14f1e", "#8a3712"]
 # ramp instead, same equalization approach as the base heatmap.
 TWO_GAP_COLOR = "#0ca30c"
 
+# 2-gap frequency/cluster-size line charts: categorical slot 1 (blue) for the
+# single-series frequency line and the "average" series; categorical slot 8
+# (orange, same hex as MERGE_ACCENT_RAMP's midpoint) for the "max" series --
+# validated pair (references/palette.md), floor-band CVD separation legal
+# here since both lines carry a text-labeled legend (secondary encoding).
+LINE_COLOR_PRIMARY = "#2a78d6"
+LINE_COLOR_SECONDARY = "#eb6834"
+
 
 def compress_around_two(gaps):
     """06-article-diagram-ideas.md, Diagram 7: keep every 2-gap as-is, sum
@@ -114,6 +122,31 @@ def compress_around_two(gaps):
     if run:
         out.append(run)
     return out
+
+
+def compress_around_two_with_anchor(gaps):
+    """Like compress_around_two, but also returns, for each compressed
+    output value, the index into `gaps` of the LAST raw gap that produced
+    it -- the position whose lineage state (age, see compute_ages_per_row)
+    a compressed unit inherits, since that's the same closing boundary
+    lineage_walk anchors a run's merge/copy status on."""
+    out = []
+    anchors = []
+    run = 0
+    for i, g in enumerate(gaps):
+        if g == 2:
+            if run:
+                out.append(run)
+                anchors.append(i - 1)
+                run = 0
+            out.append(2)
+            anchors.append(i)
+        else:
+            run += g
+    if run:
+        out.append(run)
+        anchors.append(len(gaps) - 1)
+    return out, anchors
 
 
 def load_stages():
@@ -891,6 +924,237 @@ def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_s
     return c
 
 
+def build_age_2focused_grid_png(stages, compressed_per_row, ages_2focused_per_row, color_by_age, width, stagger=0):
+    """Rows are truncated to `width`. A standalone 2-gap always renders as
+    TWO_GAP_COLOR (fixed, reserved -- same convention as
+    build_compressed_grid_png), regardless of its own age; only runs
+    (compressed value != 2) use the age color ramp. Without this split, a
+    2-gap and a similarly-young run land at nearly the same ramp position
+    and become visually indistinguishable, defeating the point of a combined
+    view -- the whole point here is making the (rare, interesting) runs'
+    age stand out, not diluting the ramp with the (common, expected) 2s."""
+    full_width = width + stagger * (len(stages) - 1)
+    two_gap_rgb = hex_to_rgb(TWO_GAP_COLOR)
+    rows_rgb = []
+    for row_idx, (compressed, ages) in enumerate(zip(compressed_per_row, ages_2focused_per_row)):
+        offset = stagger * row_idx
+        row = bytearray(b"\xff\xff\xff" * full_width)
+        for i in range(min(width, len(compressed))):
+            if compressed[i] == 2:
+                rgb = two_gap_rgb
+            else:
+                age = ages[i]
+                if age is None:
+                    continue
+                rgb = color_by_age[age]
+            pos = offset + i
+            row[pos * 3:pos * 3 + 3] = bytes(rgb)
+        rows_rgb.append(bytes(row))
+    return full_width, len(stages), rows_rgb
+
+
+def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused-age.png", title_suffix="") -> Canvas:
+    """Combines the other two views: x-axis is 2-focused compression (every
+    2-gap its own unit, runs between consecutive 2-gaps collapsed into one).
+    2-gaps render in a fixed reserved color (TWO_GAP_COLOR); only runs are
+    colored by age -- not of the compressed unit itself (a summed run isn't
+    a single gap with one lineage), but of the raw gap that CLOSES it
+    (compress_around_two_with_anchor's anchor index), the same closing
+    boundary compute_ages_per_row's lineage_walk already anchors merge/copy
+    status on for the next stage."""
+    ages_per_row = compute_ages_per_row(stages)
+    compressed_per_row = []
+    ages_2focused_per_row = []
+    for row, s in enumerate(stages):
+        compressed, anchors = compress_around_two_with_anchor(s["gaps"])
+        row_ages = ages_per_row[row]
+        ages_2focused = [row_ages[a] if a < len(row_ages) else None for a in anchors]
+        compressed_per_row.append(compressed)
+        ages_2focused_per_row.append(ages_2focused)
+
+    # Ramp is calibrated on run ages only -- 2-gaps don't use it at all, so
+    # including their (numerous) ages here would just waste ramp resolution.
+    all_ages = [
+        age
+        for compressed, ages in zip(compressed_per_row, ages_2focused_per_row)
+        for v, age in zip(compressed, ages)
+        if v != 2 and age is not None
+    ]
+    color_by_age = build_equalized_color_map(all_ages, ramp=AGE_RAMP)
+    distinct_ages = sorted(color_by_age)
+    legend_values = (
+        distinct_ages if len(distinct_ages) <= 24
+        else sorted({*distinct_ages[::max(1, len(distinct_ages) // 24)], distinct_ages[0], distinct_ages[-1]})
+    )
+
+    target_width = min(choose_age_width(ages_2focused_per_row), MAX_DISPLAY_WIDTH)
+    grid_w_px, grid_h_px, rows_rgb = build_age_2focused_grid_png(
+        stages, compressed_per_row, ages_2focused_per_row, color_by_age, target_width, stagger=stagger)
+    png_path = os.path.join(OUT_DIR, png_name)
+    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
+    with open(png_path, "rb") as f:
+        png_b64 = base64.b64encode(f.read()).decode("ascii")
+
+    cell_w_display = max(1, 2000 // target_width) or 1
+    cell_h_display = max(2, min(20, 900 // len(stages)))
+    label_w = 90
+    legend_h = 122
+    top_margin = 50
+
+    grid_w = grid_w_px * cell_w_display
+    grid_h = len(stages) * cell_h_display
+    canvas_w = max(label_w + grid_w + 20, label_w + (len(legend_values) + 1) * 32)
+    canvas_h = top_margin + grid_h + legend_h
+
+    c = Canvas(canvas_w, canvas_h)
+    c.text(canvas_w / 2, 28,
+           f"2-focused age heatmap: age of the gap anchoring each compressed unit, "
+           f"{target_width} units x {len(stages)} stages{title_suffix}",
+           size=16, weight="bold")
+
+    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+
+    label_every = max(1, len(stages) // 40)
+    for row, s in enumerate(stages):
+        if row % label_every == 0:
+            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
+            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+
+    legend_y = top_margin + grid_h + 30
+    legend_x0 = label_w
+    swatch_w = 26
+    c.text(legend_x0, legend_y - 10,
+           "x-axis: 2-focused compression (2-gaps standalone, runs between them collapsed); "
+           "green = a 2-gap (fixed color, age not shown); ramp = a run's closing gap's age (1 = just merged/new)",
+           size=12, fill="#555", anchor="start")
+    c.rect(legend_x0, legend_y, swatch_w, 20, fill=TWO_GAP_COLOR, stroke="#999", width=1)
+    c.text(legend_x0 + swatch_w / 2, legend_y + 34, "2", size=10)
+    for i, a in enumerate(legend_values):
+        x = legend_x0 + (i + 1) * (swatch_w + 4)
+        r, g, b = color_by_age[a]
+        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
+        c.text(x + swatch_w / 2, legend_y + 34, str(a), size=10)
+
+    return c
+
+
+def draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max, n_gridlines, y_fmt=str):
+    """Recessive horizontal gridlines + a y-axis label at each, plus the
+    x-axis baseline -- the shared scaffolding both line charts below draw
+    their series on top of."""
+    for i in range(n_gridlines + 1):
+        frac_y = i / n_gridlines
+        y = top + plot_h - frac_y * plot_h
+        c.line(left, y, left + plot_w, y, stroke="#e1e0d9", width=1)
+        c.text(left - 10, y + 4, y_fmt(frac_y * y_max), size=10, anchor="end", fill="#898781")
+    c.line(left, top + plot_h, left + plot_w, top + plot_h, stroke="#c3c2b7", width=1)
+
+
+def draw_line_series(c, stages, values, left, top, plot_w, plot_h, y_max, color, width=2):
+    n = len(stages)
+    points = []
+    for i, v in enumerate(values):
+        x = left + (i / (n - 1)) * plot_w if n > 1 else left
+        y = top + plot_h - min(v, y_max) / y_max * plot_h
+        points.append((x, y))
+    c.polyline(points, stroke=color, width=width)
+
+
+def draw_x_axis_labels(c, stages, left, top, plot_w, plot_h, label_every=None):
+    n = len(stages)
+    label_every = label_every or max(1, n // 12)
+    for i, s in enumerate(stages):
+        if i % label_every == 0 or i == n - 1:
+            x = left + (i / (n - 1)) * plot_w if n > 1 else left
+            c.text(x, top + plot_h + 18, f"h={s['head']}", size=9, anchor="middle", fill="#555")
+
+
+def build_two_gap_frequency_chart(stages) -> Canvas:
+    """Answers one half of "why does the 2-focused age view look like solid
+    green with occasional colored streaks": what fraction of a stage's own
+    gaps are exactly 2 (i.e. render green in that view) vs everything else.
+    A single series -- per the dataviz convention, needs no legend box, the
+    title names it. Declines from 100% (stage 1, head=3, every gap is a
+    2 -- consecutive odd numbers) toward roughly 10% by head~1200, computed
+    directly from this dataset's own prefix, not a theoretical asymptote."""
+    frac = [sum(1 for g in s["gaps"] if g == 2) / len(s["gaps"]) for s in stages]
+
+    canvas_w, canvas_h = 1100, 480
+    left, right, top, bottom = 70, 30, 60, 60
+    plot_w, plot_h = canvas_w - left - right, canvas_h - top - bottom
+
+    c = Canvas(canvas_w, canvas_h)
+    c.text(canvas_w / 2, 28,
+           f"2-gap frequency: fraction of gaps equal to 2, per stage ({len(stages)} stages)",
+           size=16, weight="bold")
+
+    draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max=1.0, n_gridlines=5,
+                           y_fmt=lambda v: f"{round(v * 100)}%")
+    draw_line_series(c, stages, frac, left, top, plot_w, plot_h, y_max=1.0, color=LINE_COLOR_PRIMARY)
+    draw_x_axis_labels(c, stages, left, top, plot_w, plot_h)
+
+    return c
+
+
+def build_two_gap_run_size_chart(stages) -> Canvas:
+    """The other half of the story: when consecutive 2-gaps aren't adjacent
+    (a "run" in the 2-focused view -- see compress_around_two), how far
+    apart are they? This is the SUM of the non-2 gaps between one 2-gap and
+    the next, not each individual non-2 gap on its own -- a run of e.g.
+    [4, 6] between two 2-gaps is one distance of 10, not two separate values
+    4 and 6. Using compress_around_two (the same function the 2-focused
+    heatmap itself uses) instead of a plain per-gap filter is what makes this
+    the right statistic: an earlier version of this chart filtered individual
+    gaps directly, silently reporting "average non-2 gap size" instead of
+    "average distance between consecutive 2-gaps" -- numerically very
+    different once runs start spanning more than one raw gap (which becomes
+    common quickly: by head=17, most runs already combine multiple gaps).
+
+    Two series sharing one y-axis (same unit, gap-distance -- never split
+    into dual axes for this): the average run distance and the max run
+    distance. The average grows steadily (4 -> 100+); the max grows much
+    faster still (4 -> 1000+), diverging further from the average as head
+    increases. The average's floor is always exactly 4, never lower: once
+    the filter includes 3 (stage 2 onward), three consecutive survivors
+    spaced 2 apart is impossible (they would cover all three residues mod 3,
+    so one is always a multiple of 3) -- the smallest possible non-2 gap,
+    and therefore the smallest possible run, is thus 4, the classic
+    prime-quadruplet spacing [2,4,2]."""
+    avg_run, max_run = [], []
+    for s in stages:
+        runs = [v for v in compress_around_two(s["gaps"]) if v != 2]
+        avg_run.append(sum(runs) / len(runs) if runs else 0)
+        max_run.append(max(runs) if runs else 0)
+
+    canvas_w, canvas_h = 1100, 480
+    left, right, top, bottom = 70, 30, 60, 90
+    plot_w, plot_h = canvas_w - left - right, canvas_h - top - bottom
+    y_max = max(max_run) * 1.05 if max(max_run) > 0 else 1
+
+    c = Canvas(canvas_w, canvas_h)
+    c.text(canvas_w / 2, 28,
+           f"2-gap cluster size: typical (avg) and largest (max) distance between consecutive "
+           f"2-gaps, per stage ({len(stages)} stages)",
+           size=16, weight="bold")
+
+    draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max=y_max, n_gridlines=5,
+                           y_fmt=lambda v: str(round(v)))
+    draw_line_series(c, stages, max_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_SECONDARY)
+    draw_line_series(c, stages, avg_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_PRIMARY)
+    draw_x_axis_labels(c, stages, left, top, plot_w, plot_h)
+
+    legend_y = top + plot_h + 40
+    legend_x0 = left
+    swatch = 16
+    c.rect(legend_x0, legend_y, swatch, 3, fill=LINE_COLOR_PRIMARY, stroke="none", width=0)
+    c.text(legend_x0 + swatch + 8, legend_y + 5, "average run value", size=11, anchor="start", fill="#555")
+    c.rect(legend_x0 + 200, legend_y, swatch, 3, fill=LINE_COLOR_SECONDARY, stroke="none", width=0)
+    c.text(legend_x0 + 200 + swatch + 8, legend_y + 5, "max run value", size=11, anchor="start", fill="#555")
+
+    return c
+
+
 def main() -> None:
     if not os.path.exists(CSV_PATH):
         raise SystemExit(f"{CSV_PATH} not found -- run generate_gaps.py first")
@@ -958,6 +1222,29 @@ def main() -> None:
     compressed_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-2focused-staggered.svg")
     save(compressed_staggered, compressed_staggered_path)
     print(f"wrote {compressed_staggered_path}")
+
+    age_2focused_canvas = build_age_2focused_heatmap(stages)
+    age_2focused_path = os.path.join(OUT_DIR, "gap-heatmap-2focused-age.svg")
+    save(age_2focused_canvas, age_2focused_path)
+    print(f"wrote {age_2focused_path}")
+
+    age_2focused_staggered = build_age_2focused_heatmap(
+        stages, stagger=1, png_name="gap-heatmap-2focused-age-staggered.png",
+        title_suffix=" (each row shifted 1px right)",
+    )
+    age_2focused_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-2focused-age-staggered.svg")
+    save(age_2focused_staggered, age_2focused_staggered_path)
+    print(f"wrote {age_2focused_staggered_path}")
+
+    freq_canvas = build_two_gap_frequency_chart(stages)
+    freq_path = os.path.join(OUT_DIR, "gap-two-frequency.svg")
+    save(freq_canvas, freq_path)
+    print(f"wrote {freq_path}")
+
+    run_size_canvas = build_two_gap_run_size_chart(stages)
+    run_size_path = os.path.join(OUT_DIR, "gap-two-cluster-size.svg")
+    save(run_size_canvas, run_size_path)
+    print(f"wrote {run_size_path}")
 
 
 if __name__ == "__main__":

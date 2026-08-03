@@ -7,6 +7,16 @@ grew out of, and
 [`properties/sieve-sequence/safe-zone-exhaustion-curve.md`](../../../properties/sieve-sequence/safe-zone-exhaustion-curve.md)
 for the math behind the boundary curves drawn on several of these charts.
 
+Three independent pieces live here, split by how much data they need:
+
+1. **`gap_heatmap.py`** -- the full-dataset heatmaps and line charts, reading
+   the large generated (gitignored) CSV. Everything in "Pipeline" and most of
+   "Output Files" below is this.
+2. **`hit_miss_heatmap.py`** -- a small, committed-data figure (see
+   "Small public-sample figures" below).
+3. **`stage_transition_diagram.py`** -- a pure-computation figure with no data
+   dependency at all (see the same section).
+
 ## Pipeline
 
 Three scripts, run in this order:
@@ -21,6 +31,11 @@ python3 verify.py          # re-checks every proven claim against data/sieve-seq
 current settings it's several hundred MB, well past what's reasonable to
 check in. Run `generate_gaps.py` to produce it locally; everything else in
 the pipeline reads from that file, not from anything committed.
+
+A small, committed sample of the same data --
+[`data/sieve-sequence/first_gaps_per_seq.sample.csv`](../../../data/sieve-sequence/first_gaps_per_seq.sample.csv)
+(100 stages x 100 gaps each, ~190KB) -- exists separately for figures that
+don't need the full dataset; see "Small public-sample figures" below.
 
 `generate_gaps.py` is resumable: it can be killed at any point (mid-row, even
 mid-write) and rerunning picks up exactly where it left off, by re-deriving
@@ -66,28 +81,53 @@ rerunning `gap_heatmap.py`, and copying `out/*` into `giant/`.
 
 ## Output Files
 
-### The real data series (`out/gap-heatmap*.{svg,png}`)
+### The real data series (`out/gap-heatmap*.{svg,png}`, `out/gap-two-*.svg`)
 
-Each `.svg` embeds a matching `.png` (the actual pixel grid, one pixel per
-gap) as a base64 `<image>`, with row labels, legends, and (where relevant)
-boundary curves added as ordinary SVG text/lines on top. Regenerating
-`gap_heatmap.py` overwrites all of these together.
+Each grid `.svg` embeds a matching `.png` (the actual pixel grid, one pixel
+per gap) as a base64 `<image>`, with row labels, legends, and (where
+relevant) boundary curves added as ordinary SVG text/lines on top. The two
+`gap-two-*.svg` line charts are plain SVG (no embedded raster -- one line per
+series, not one mark per data point). Regenerating `gap_heatmap.py`
+overwrites all of these together.
 
 | File | What it shows |
 |---|---|
 | `gap-heatmap.svg` | One row per stage, one pixel per gap. Color = gap value, sequential ramp, histogram-equalized (not linear -- gap values are heavily right-skewed). Red pixel = the first survivor in that row that isn't actually prime (always exactly `head^2`, see the properties file). |
 | `gap-heatmap-staggered.svg` | Same data, each row shifted 1px further right than the last. Purely cosmetic (breaks up diagonal moire), no data meaning. |
 | `gap-heatmap-diff.svg` | Row-to-row diff using the *true* copy-or-merge lineage (not same-column index, which points at unrelated regions of the number line between rows starting at different heads). Renders as flat gray almost everywhere -- that's the expected result: the copy-or-merge theorem forces the diff to be exactly 0 wherever it can be computed. See `verify.py`'s `check_copy_or_merge_theorem_is_exact`. |
-| `gap-heatmap-diff-simple-shift.svg` | The naive version of the above: one constant per-row offset, no merge tracking. Matches the rigorous version until a row's first real merge, then reads as a persistent mismatch for the rest of the row -- which only happens where a merge is possible within the window at all, making the colored region a direct visual trace of the `head^2` boundary. |
+| `gap-heatmap-diff-staggered.svg` | Staggered variant of the diff view. |
+| `gap-heatmap-diff-simple-shift.svg` | The naive version of the diff view: one constant per-row offset, no merge tracking. Matches the rigorous version until a row's first real merge, then reads as a persistent mismatch for the rest of the row -- which only happens where a merge is possible within the window at all, making the colored region a direct visual trace of the `head^2` boundary. |
 | `gap-heatmap-merges.svg` | Per-cell: how many old gaps fed into this one (1 = copied unchanged, 2+ = merged). Mostly uniform background with rare accent-colored merge cells, concentrated in the early (small-head) rows where merges are relatively frequent. |
 | `gap-heatmap-age.svg` | Per-cell: how many consecutive stages a gap has survived without being merged (resets to 1 on merge). Implements the concept documented but not yet wired up in the Scala codebase (`GapLineage.scala`'s `age` field is currently hardcoded to 1 everywhere). Row width is capped to the *shortest* row's real (non-`None`) data, not padded -- age is chained across every prior stage, so once any row's lineage runs out anywhere, every later row inherits that gap and white space would otherwise cascade and widen going down the rows. |
+| `gap-heatmap-age-staggered.svg` | Staggered variant of the age view. |
 | `gap-heatmap-2focused.svg` | 06-article-diagram-ideas.md's "2-Focused Compression": every 2-gap kept as its own cell (green), runs of non-2-gaps between consecutive 2-gaps collapsed into one summed cell (blue ramp). Row width is capped to the shortest row's compressed length, not padded, for the same no-white-space reason as the age view. |
+| `gap-heatmap-2focused-staggered.svg` | Staggered variant of the 2-focused view. |
+| `gap-heatmap-2focused-age.svg` | Combines the two views above: x-axis is the 2-focused compression, but color is age, not magnitude. A standalone 2-gap always renders as the same fixed green (its own age is not shown); only merged runs are colored via the age ramp (equalized over run-ages only, not diluted by the far more numerous 2-gap ages). Without this split, a 2-gap and a similarly-young run land at nearly the same ramp position and become indistinguishable -- the whole point of a combined view is making the rare, interesting runs' age stand out. |
+| `gap-heatmap-2focused-age-staggered.svg` | Staggered variant of the 2-focused age view. |
+| `gap-two-frequency.svg` | Line chart, one point per stage: what fraction of that stage's gaps are exactly 2. Declines sharply from 100% (stage 1, head=3 -- every gap between consecutive odd numbers is 2) toward roughly 10% by head~1200, computed directly from this dataset's own prefix. |
+| `gap-two-cluster-size.svg` | Line chart, two series sharing one y-axis (same unit, gap-distance): the average and max *distance between consecutive 2-gaps*, per stage -- i.e. the average/max value of `compress_around_two`'s summed runs (the same function the 2-focused heatmap itself uses), not each individual non-2 gap on its own (a run of `[4, 6]` between two 2-gaps is one distance of 10, not two separate values 4 and 6 -- an earlier version of this chart used individual gaps directly, under-reporting both series once runs started spanning more than one raw gap, which happens quickly). The average grows steadily (4 -> ~125); the max grows much faster still (4 -> ~1450), diverging further from the average as head increases. The average's floor is always exactly 4, never lower: once the filter includes 3 (stage 2 onward), three consecutive survivors spaced 2 apart is impossible (they'd cover all three residues mod 3, so one is always a multiple of 3) -- the smallest possible non-2 gap, and therefore the smallest possible run, is the classic prime-quadruplet spacing `[2,4,2]`. A companion fact this dataset also confirms: a *raw* run of two-or-more consecutive 2-gaps is impossible for the same reason, so this file doesn't chart "2-gap cluster length" literally -- it's always exactly 1 (except the trivial stage 1, where every gap is 2). |
 
 `gap-heatmap.svg`, `gap-heatmap-merges.svg`, `gap-heatmap-age.svg`, and
 `gap-heatmap-diff-simple-shift.svg` all draw two overlay curves where
 applicable: a dashed unproven-but-tight estimate, and a solid proven-but-loose
 safe lower bound (citation link included on the chart itself). Full
 derivation of both in the properties file linked above.
+
+### Small public-sample figures (`out/hit-miss-matrices.svg`, `out/stage-transition-repeat-filter-rotate.svg`)
+
+Two more figures live alongside the full-dataset ones above but don't depend
+on the large generated CSV:
+
+| Script | Output | Depends on | What it shows |
+|---|---|---|---|
+| `hit_miss_heatmap.py` | `out/hit-miss-matrices.svg` | `data/sieve-sequence/first_gaps_per_seq.sample.csv` (the small, committed sample) | Six 10x10 grids (stage 0, head=2 through stage 5, head=13), one per early stage, each cell showing a survivor's own value: green if actually prime, red (struck) if the finite filter accepted a composite. Row 1 is plain odd numbers (no filter beyond "not even") -- the natural hit/miss baseline every later stage thins out from. Each panel is captioned with its exact flagged fraction and periodic gap cycle. |
+| `stage_transition_diagram.py` | `out/stage-transition-repeat-filter-rotate.svg` | nothing -- pure computation via `generate_gaps.py`'s `compute_full_period` | Renders one or more stage transitions (`TRANSITIONS` list, default `[1, 2]`) as eight literal steps each: Gaps -> Generated numbers -> Repeat -> Rotate -> Candidate values -> Filter -> Gaps -> Generated numbers. Every step shows exactly what its own operation produces, nothing padded "for clarity" -- e.g. the Repeat step tiles the base gap cycle exactly `new_prime` times, never more. Rotate (shifting the tiled cycle left by exactly one position, since the new stage's head is always exactly one gap-step past the old one) is what lets Candidate Values walk forward from the *new* head directly, with no separate reframing step needed afterward -- invisible for a period-1 base unit ([2,2,2] rotated is still [2,2,2]), visibly non-trivial for period-2+ ones (stage 2->3's `[2,4,2,4,...]` rotates to `[4,2,4,2,...]`). |
+
+Run either script directly (`python3 hit_miss_heatmap.py` /
+`python3 stage_transition_diagram.py`) -- neither needs `generate_gaps.py` to
+have been run first for the full dataset; `hit_miss_heatmap.py` only needs
+the committed sample CSV, and `stage_transition_diagram.py` needs nothing at
+all beyond this directory's own `generate_gaps.py` import.
 
 ### Early placeholder diagrams (`out/01-*.svg` through `10-*.svg`)
 

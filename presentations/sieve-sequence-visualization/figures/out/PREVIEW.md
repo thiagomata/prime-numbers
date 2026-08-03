@@ -73,3 +73,50 @@ ramp).
 Staggered variant of the 2-focused view.
 
 ![gap-heatmap-2focused-staggered](gap-heatmap-2focused-staggered.svg)
+
+## `gap-heatmap-2focused-age.svg`
+
+Combines the two views above: x-axis is the 2-focused compression, color is
+age. A standalone 2-gap always renders as the same fixed green (age not
+shown); only merged runs use the age ramp — otherwise a 2-gap and a
+similarly-young run become indistinguishable.
+
+![gap-heatmap-2focused-age](gap-heatmap-2focused-age.svg)
+
+## `gap-heatmap-2focused-age-staggered.svg`
+
+Staggered variant of the 2-focused age view.
+
+![gap-heatmap-2focused-age-staggered](gap-heatmap-2focused-age-staggered.svg)
+
+## `gap-two-frequency.svg`
+
+Line chart: fraction of gaps equal to 2, per stage. Declines sharply from
+100% (stage 1) toward roughly 10%.
+
+![gap-two-frequency](gap-two-frequency.svg)
+
+## `gap-two-cluster-size.svg`
+
+Line chart: average and max *distance* between consecutive 2-gaps (summed
+runs, via `compress_around_two`, not individual gaps), per stage. Average
+grows steadily (4 → ~125); max grows much faster still (4 → ~1450).
+
+![gap-two-cluster-size](gap-two-cluster-size.svg)
+
+## `hit-miss-matrices.svg`
+
+From `hit_miss_heatmap.py` (reads the small committed sample CSV, not the
+full dataset): six 10×10 grids, one per early stage, each cell green (prime)
+or red (composite the filter let through).
+
+![hit-miss-matrices](hit-miss-matrices.svg)
+
+## `stage-transition-repeat-filter-rotate.svg`
+
+From `stage_transition_diagram.py` (pure computation, no data file at all):
+one or more stage transitions as eight literal steps — Gaps → Generated
+numbers → Repeat → Rotate → Candidate values → Filter → Gaps → Generated
+numbers.
+
+![stage-transition-repeat-filter-rotate](stage-transition-repeat-filter-rotate.svg)
