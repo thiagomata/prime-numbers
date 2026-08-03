@@ -54,6 +54,8 @@ CSV_HEADER = ["stage_index", "head", "gap_index", "gap", "survivor"]
 
 
 def is_prime(n: int) -> bool:
+    """Trial division primality test, only ever called on small n (building
+    the initial list of stage heads), so no sieve is needed here."""
     if n < 2:
         return False
     for d in range(2, int(n**0.5) + 1):
@@ -63,6 +65,7 @@ def is_prime(n: int) -> bool:
 
 
 def first_k_primes(k: int):
+    """The first k primes in increasing order, found by trial division from 2 up."""
     primes = []
     n = 2
     while len(primes) < k:
@@ -75,15 +78,15 @@ def first_k_primes(k: int):
 def read_tail_lines(path: str, num_lines: int = 3):
     """Reads the last `num_lines` complete lines of a file without scanning
     it from the start, by seeking backward from the end in growing chunks."""
-    with open(path, "rb") as f:
-        f.seek(0, os.SEEK_END)
-        file_size = f.tell()
+    with open(path, "rb") as file_handle:
+        file_handle.seek(0, os.SEEK_END)
+        file_size = file_handle.tell()
         block_size = 4096
         data = b""
         while True:
             read_size = min(block_size, file_size)
-            f.seek(file_size - read_size)
-            data = f.read(read_size)
+            file_handle.seek(file_size - read_size)
+            data = file_handle.read(read_size)
             if data.count(b"\n") > num_lines or read_size >= file_size:
                 break
             block_size *= 2
@@ -111,10 +114,11 @@ def get_resume_point(csv_path: str):
 
 
 def modulus_of(tail_primes) -> int:
-    m = 1
+    """Product of tail_primes -- the period length M of the stage's gap cycle."""
+    modulus = 1
     for p in tail_primes:
-        m *= p
-    return m
+        modulus *= p
+    return modulus
 
 
 def compute_full_period(head: int, tail_primes):
@@ -126,7 +130,8 @@ def compute_full_period(head: int, tail_primes):
     enumerate directly. (Matches the independent verification against known
     S1-S4 values done earlier in this project's history.)"""
     modulus = modulus_of(tail_primes)
-    survivors = [v for v in range(head, head + modulus) if all(v % p != 0 for p in tail_primes)]
+    survivors = [candidate for candidate in range(head, head + modulus)
+                 if all(candidate % p != 0 for p in tail_primes)]
     gaps = [survivors[i + 1] - survivors[i] for i in range(len(survivors) - 1)]
     gaps.append(head + modulus - survivors[-1])
     return gaps
@@ -143,7 +148,12 @@ def period_count_of(tail_primes) -> int:
     return count
 
 
-def generate_stage(writer, f, stage_index, head, tail_primes, gaps_found, prev):
+def generate_stage(writer, csv_file, stage_index, head, tail_primes, gaps_found, prev):
+    """Appends gaps [gaps_found, PREFIX_LEN) for this stage to `writer`,
+    flushing `csv_file` after every row so a kill mid-stage loses at most one
+    row. Uses the exact tiled period when it's cheap enough (see
+    MAX_PERIOD_FOR_TILING), otherwise falls back to walking forward by trial
+    division. Returns the final gaps_found (always PREFIX_LEN on success)."""
     modulus = modulus_of(tail_primes)
     # Tiling only pays off once PREFIX_LEN needs more than one full period --
     # sieving the whole modulus to serve a request smaller than one period is
@@ -153,22 +163,22 @@ def generate_stage(writer, f, stage_index, head, tail_primes, gaps_found, prev):
         period_len = len(period)
         while gaps_found < PREFIX_LEN:
             gap = period[gaps_found % period_len]
-            v = prev + gap
-            writer.writerow([stage_index, head, gaps_found, gap, v])
-            f.flush()
-            prev = v
+            candidate = prev + gap
+            writer.writerow([stage_index, head, gaps_found, gap, candidate])
+            csv_file.flush()
+            prev = candidate
             gaps_found += 1
         return gaps_found
 
-    v = prev + 1
+    candidate = prev + 1
     while gaps_found < PREFIX_LEN:
-        if all(v % p != 0 for p in tail_primes):
-            gap = v - prev
-            writer.writerow([stage_index, head, gaps_found, gap, v])
-            f.flush()
-            prev = v
+        if all(candidate % p != 0 for p in tail_primes):
+            gap = candidate - prev
+            writer.writerow([stage_index, head, gaps_found, gap, candidate])
+            csv_file.flush()
+            prev = candidate
             gaps_found += 1
-        v += 1
+        candidate += 1
     return gaps_found
 
 
@@ -183,11 +193,11 @@ def repair_truncated_tail(path: str) -> None:
     line."""
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         return
-    with open(path, "rb") as f:
-        f.seek(0, os.SEEK_END)
-        size = f.tell()
-        f.seek(-1, os.SEEK_END)
-        if f.read(1) == b"\n":
+    with open(path, "rb") as file_handle:
+        file_handle.seek(0, os.SEEK_END)
+        size = file_handle.tell()
+        file_handle.seek(-1, os.SEEK_END)
+        if file_handle.read(1) == b"\n":
             return  # already ends cleanly, nothing to repair
 
         block_size = 4096
@@ -196,19 +206,21 @@ def repair_truncated_tail(path: str) -> None:
         while pos > 0:
             step = min(block_size, pos)
             pos -= step
-            f.seek(pos)
-            chunk = f.read(step)
+            file_handle.seek(pos)
+            chunk = file_handle.read(step)
             nl = chunk.rfind(b"\n")
             if nl != -1:
                 cut_at = pos + nl + 1
                 break
             block_size *= 2
 
-    with open(path, "r+b") as f:
-        f.truncate(cut_at)
+    with open(path, "r+b") as file_handle:
+        file_handle.truncate(cut_at)
 
 
 def main() -> None:
+    """Resume (or start) generation of all NUM_STAGES stages' first PREFIX_LEN
+    gaps each, appending rows to CSV_PATH as described in the module docstring."""
     os.makedirs(DATA_DIR, exist_ok=True)
     repair_truncated_tail(CSV_PATH)
     resume = get_resume_point(CSV_PATH)
@@ -225,11 +237,11 @@ def main() -> None:
 
     heads = first_k_primes(NUM_STAGES + 1)[1:]  # skip 2; stages start at head=3
     tail = [2]  # every stage head is odd (>=3), so 2 always belongs in its filter set
-    with open(CSV_PATH, "a", newline="") as f:
-        writer = csv.writer(f)
+    with open(CSV_PATH, "a", newline="") as csv_file:
+        writer = csv.writer(csv_file)
         if write_header:
             writer.writerow(CSV_HEADER)
-            f.flush()
+            csv_file.flush()
 
         for stage_index, head in enumerate(heads, start=1):
             if stage_index < start_stage_index:
@@ -248,7 +260,7 @@ def main() -> None:
             else:
                 gaps_found, prev = 0, head
 
-            gaps_found = generate_stage(writer, f, stage_index, head, tail, gaps_found, prev)
+            gaps_found = generate_stage(writer, csv_file, stage_index, head, tail, gaps_found, prev)
             tail.append(head)
             print(f"stage {stage_index}/{len(heads)} head={head} done ({gaps_found} gaps)")
 

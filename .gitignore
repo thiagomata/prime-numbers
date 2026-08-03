@@ -38,3 +38,7 @@ stainless-dotty-standalone-*
 # ignore bloop
 .bloop
 .bloop/**
+
+# ignore Python virtualenvs (e.g. presentations/.../figures/.venv)
+.venv/
+.pytest_cache/

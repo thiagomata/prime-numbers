@@ -31,15 +31,15 @@ def check_known_small_stages(stages):
     """Stages 1-3 have hand-verified gap cycles (see the conversation history
     and articles/chapter6/sieve-sequence.md) independent of any code here."""
     ok = True
-    by_head = {s["head"]: s for s in stages}
+    by_head = {stage["head"]: stage for stage in stages}
 
     s3 = by_head.get(3)
-    if s3 is None or any(g != 2 for g in s3["gaps"]):
+    if s3 is None or any(gap != 2 for gap in s3["gaps"]):
         print("FAIL: stage head=3 should have every gap equal to 2 (odd numbers, 2 apart)")
         ok = False
 
     s5 = by_head.get(5)
-    if s5 is None or any(g != (2 if i % 2 == 0 else 4) for i, g in enumerate(s5["gaps"])):
+    if s5 is None or any(gap != (2 if i % 2 == 0 else 4) for i, gap in enumerate(s5["gaps"])):
         print("FAIL: stage head=5 should alternate gaps 2, 4, 2, 4, ...")
         ok = False
 
@@ -60,13 +60,13 @@ def check_first_composite_is_head_squared(stages):
     generated window reaches far enough to observe it at all."""
     ok = True
     checked = 0
-    for s in stages:
-        idx = first_composite_index(s["survivors"])
+    for stage in stages:
+        idx = first_composite_index(stage["survivors"])
         if idx is None:
             continue
         checked += 1
-        head = s["head"]
-        value = s["survivors"][idx]
+        head = stage["head"]
+        value = stage["survivors"][idx]
         if value != head * head:
             print(f"FAIL: head={head} first composite survivor is {value}, expected {head * head}")
             ok = False
@@ -100,15 +100,15 @@ def check_schroeder_bound_never_violated(stages):
     ok = True
     checked = 0
     proven = proven_safe_boundary_indices(stages)
-    for s, bound in zip(stages, proven):
+    for stage, bound in zip(stages, proven):
         if bound is None:
             continue
-        idx = first_composite_index(s["survivors"])
+        idx = first_composite_index(stage["survivors"])
         if idx is None:
             continue
         checked += 1
         if bound > idx:
-            print(f"FAIL: head={s['head']} proven bound {bound} exceeds actual {idx} -- Property 2 violated")
+            print(f"FAIL: head={stage['head']} proven bound {bound} exceeds actual {idx} -- Property 2 violated")
             ok = False
     if ok:
         print(f"PASS: Schroeder (2017) proven safe bound never violated, across {checked} checkable stages")
@@ -121,18 +121,20 @@ def report_estimated_bound_fit(stages):
     estimated = estimated_boundary_indices(stages)
     violations = []
     checked = 0
-    for s, est in zip(stages, estimated):
-        idx = first_composite_index(s["survivors"])
+    for stage, est in zip(stages, estimated):
+        idx = first_composite_index(stage["survivors"])
         if idx is None:
             continue
         checked += 1
         if est > idx:
-            violations.append((s["head"], est, idx))
+            violations.append((stage["head"], est, idx))
     print(f"INFO: estimated (unproven) boundary checked against {checked} stages, "
           f"{len(violations)} violation(s): {violations if violations else 'none'}")
 
 
 def main() -> int:
+    """Runs every proven-claim check plus the informational estimate report,
+    printing PASS/FAIL/INFO lines and returning 0 iff every proven claim held."""
     stages = load_stages()
     checks = [
         check_known_small_stages,

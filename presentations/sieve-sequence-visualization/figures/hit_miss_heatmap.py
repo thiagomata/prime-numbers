@@ -74,8 +74,8 @@ def load_stages(path, n):
     generate_gaps.py never generates it, stages 1..n-1 read from the CSV."""
     stages = [{"head": 2, "survivors": list(range(2, 2 + GRID_N * GRID_N))}]
     by_index = {}
-    with open(path, newline="") as f:
-        for row in csv.DictReader(f):
+    with open(path, newline="") as csv_file:
+        for row in csv.DictReader(csv_file):
             idx = int(row["stage_index"])
             if idx > n - 1:
                 continue
@@ -93,14 +93,14 @@ def stage_captions(stages):
     compute_full_period(2, []) come out to the constant gap cycle [1]."""
     captions = {}
     tail = []
-    for i, s in enumerate(stages):
-        head = s["head"]
+    for i, stage in enumerate(stages):
+        head = stage["head"]
         period = compute_full_period(head, tail)
         density = Fraction(1, 1)
         for p in tail:
             density *= Fraction(p - 1, p)
         period_str = (
-            "gaps repeat: [" + ",".join(str(g) for g in period) + "]"
+            "gaps repeat: [" + ",".join(str(gap) for gap in period) + "]"
             if len(period) <= MAX_PRINTED_PERIOD
             else f"period length {len(period)} (too long to print)"
         )
@@ -109,22 +109,24 @@ def stage_captions(stages):
     return captions
 
 
-def build_panel(c, x0, y0, stage_index, head, survivors, flagged_str, period_str):
-    c.text(x0 + GRID_N * CELL / 2, y0, f"Stage {stage_index} (head={head})", size=14, weight="bold")
-    c.text(x0 + GRID_N * CELL / 2, y0 + 18, flagged_str, size=11, fill="#555")
-    c.text(x0 + GRID_N * CELL / 2, y0 + 33, period_str, size=11, fill="#555")
+def build_panel(canvas, x0, y0, stage_index, head, survivors, flagged_str, period_str):
+    """Draws one stage's title, captions, and GRID_N x GRID_N hit/miss grid onto `canvas`."""
+    canvas.text(x0 + GRID_N * CELL / 2, y0, f"Stage {stage_index} (head={head})", size=14, weight="bold")
+    canvas.text(x0 + GRID_N * CELL / 2, y0 + 18, flagged_str, size=11, fill="#555")
+    canvas.text(x0 + GRID_N * CELL / 2, y0 + 33, period_str, size=11, fill="#555")
 
     grid_y0 = y0 + 46
-    for i, v in enumerate(survivors[:GRID_N * GRID_N]):
+    for i, value in enumerate(survivors[:GRID_N * GRID_N]):
         row, col = divmod(i, GRID_N)
         x = x0 + col * CELL
         y = grid_y0 + row * CELL
-        color = HIT_COLOR if is_prime(v) else MISS_COLOR
-        c.rect(x, y, FILL, FILL, fill=color, stroke="none", width=0)
-        c.text(x + FILL / 2, y + FILL / 2 + 4, str(v), size=10, fill=CELL_TEXT_COLOR)
+        color = HIT_COLOR if is_prime(value) else MISS_COLOR
+        canvas.rect(x, y, FILL, FILL, fill=color, stroke="none", width=0)
+        canvas.text(x + FILL / 2, y + FILL / 2 + 4, str(value), size=10, fill=CELL_TEXT_COLOR)
 
 
 def build_figure(stages) -> Canvas:
+    """Lays out all stages' panels in a PANELS_PER_ROW-wide grid plus a bottom legend."""
     captions = stage_captions(stages)
     panel_w = GRID_N * CELL
     panel_h = 46 + GRID_N * CELL
@@ -140,33 +142,34 @@ def build_figure(stages) -> Canvas:
     canvas_w = side_margin * 2 + n_cols * panel_w + (n_cols - 1) * col_gutter
     canvas_h = top_margin + n_rows * panel_h + (n_rows - 1) * row_gutter + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 24,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 24,
            "Hit/miss matrices: sieve survivors that are actually prime, first 100 of each stage (sample)",
            size=16, weight="bold")
 
-    for i, s in enumerate(stages):
+    for i, stage in enumerate(stages):
         stage_index = i
         row, col = divmod(i, PANELS_PER_ROW)
         x0 = side_margin + col * (panel_w + col_gutter)
         y0 = top_margin + row * (panel_h + row_gutter)
         flagged_str, period_str = captions[stage_index]
-        build_panel(c, x0, y0, stage_index, s["head"], s["survivors"], flagged_str, period_str)
+        build_panel(canvas, x0, y0, stage_index, stage["head"], stage["survivors"], flagged_str, period_str)
 
     legend_y = top_margin + n_rows * panel_h + (n_rows - 1) * row_gutter + 24
     legend_x0 = side_margin
     swatch = 18
-    c.rect(legend_x0, legend_y, swatch, swatch, fill=HIT_COLOR, stroke="#999", width=1)
-    c.text(legend_x0 + swatch + 8, legend_y + 14,
+    canvas.rect(legend_x0, legend_y, swatch, swatch, fill=HIT_COLOR, stroke="#999", width=1)
+    canvas.text(legend_x0 + swatch + 8, legend_y + 14,
            "hit -- actually prime", size=12, anchor="start", fill="#555")
-    c.rect(legend_x0 + 220, legend_y, swatch, swatch, fill=MISS_COLOR, stroke="#999", width=1)
-    c.text(legend_x0 + 220 + swatch + 8, legend_y + 14,
+    canvas.rect(legend_x0 + 220, legend_y, swatch, swatch, fill=MISS_COLOR, stroke="#999", width=1)
+    canvas.text(legend_x0 + 220 + swatch + 8, legend_y + 14,
            "miss -- filter accepted a composite", size=12, anchor="start", fill="#555")
 
-    return c
+    return canvas
 
 
 def main() -> None:
+    """Loads NUM_MATRICES stages from the sample CSV and writes the hit/miss figure."""
     if not os.path.exists(SAMPLE_CSV_PATH):
         raise SystemExit(f"{SAMPLE_CSV_PATH} not found")
     os.makedirs(OUT_DIR, exist_ok=True)

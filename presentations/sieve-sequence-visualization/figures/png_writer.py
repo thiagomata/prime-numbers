@@ -10,6 +10,7 @@ import zlib
 
 
 def _chunk(tag: bytes, data: bytes) -> bytes:
+    """One length-prefixed, CRC-suffixed PNG chunk, per the PNG spec."""
     return (
         struct.pack(">I", len(data)) + tag + data
         + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
@@ -28,5 +29,6 @@ def encode_png(width: int, height: int, rows_rgb) -> bytes:
 
 
 def save_png(path: str, width: int, height: int, rows_rgb) -> None:
-    with open(path, "wb") as f:
-        f.write(encode_png(width, height, rows_rgb))
+    """Encode rows_rgb as a PNG (see encode_png) and write it to path."""
+    with open(path, "wb") as png_file:
+        png_file.write(encode_png(width, height, rows_rgb))

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="280" viewBox="0 0 820 280">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="820" height="280" fill="white" />
+  <text x="410" y="30" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Old period</text>
+  <rect x="340" y="46" width="140" height="46" fill="#eef2ff" stroke="#222" stroke-width="2" rx="0" />
+  <text x="410" y="74" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="normal" fill="#111" text-anchor="middle">S<tspan font-size="10" dy="5">k</tspan></text>
+  <text x="410" y="128" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="normal" font-style="italic" fill="#111" text-anchor="middle">expanded by new head h</text>
+  <rect x="69.0" y="150" width="160" height="46" fill="#f7f7f7" stroke="#222" stroke-width="2" rx="0" />
+  <text x="149.0" y="178" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#111" text-anchor="middle">copy 0</text>
+  <line x1="133.0" y1="142" x2="133.0" y2="204" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,3" />
+  <rect x="243.0" y="150" width="160" height="46" fill="#f7f7f7" stroke="#222" stroke-width="2" rx="0" />
+  <text x="323.0" y="178" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#111" text-anchor="middle">copy 1</text>
+  <line x1="307.0" y1="142" x2="307.0" y2="204" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,3" />
+  <rect x="417.0" y="150" width="160" height="46" fill="#f7f7f7" stroke="#222" stroke-width="2" rx="0" />
+  <text x="497.0" y="178" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#111" text-anchor="middle">...</text>
+  <rect x="591.0" y="150" width="160" height="46" fill="#f7f7f7" stroke="#222" stroke-width="2" rx="0" />
+  <text x="671.0" y="178" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#111" text-anchor="middle">copy h-1</text>
+  <line x1="655.0" y1="142" x2="655.0" y2="204" stroke="#c0392b" stroke-width="2" stroke-dasharray="4,3" />
+  <text x="410" y="234" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">dashed ticks: the new filter removes one fixed</text>
+  <text x="410" y="252" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">congruence class across every copy</text>
+</svg>

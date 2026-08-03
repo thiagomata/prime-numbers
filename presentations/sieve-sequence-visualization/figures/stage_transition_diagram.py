@@ -108,6 +108,8 @@ BLOCK_GUTTER = 26
 
 
 def build_transition(stage_before):
+    """The head/tail/modulus facts describing the transition from stage
+    `stage_before` to stage `stage_before + 1`."""
     if stage_before == 0:
         tail_before, head_before, head_after = [], 2, 3
     else:
@@ -143,10 +145,12 @@ def generate_numbers_window(head, base_unit, count):
     return numbers, gaps
 
 
-def compute_steps(t):
-    tail_before, tail_after = t["tail_before"], t["tail_after"]
-    head_before, head_after = t["head_before"], t["head_after"]
-    new_prime = t["new_prime"]
+def compute_steps(transition):
+    """Derives every intermediate value the 8-step diagram draws (steps 1-8's
+    gap cycles, generated numbers, repeat/rotate/filter results) from `transition`."""
+    tail_before, tail_after = transition["tail_before"], transition["tail_after"]
+    head_before, head_after = transition["head_before"], transition["head_after"]
+    new_prime = transition["new_prime"]
 
     base_unit = compute_full_period(head_before, tail_before)
     numbers1, gaps1 = generate_numbers_window(head_before, base_unit, NUMBERS_SAMPLES)
@@ -163,12 +167,12 @@ def compute_steps(t):
 
     values = [head_after]
     running = head_after
-    for g in rotated_unit:
-        running += g
+    for gap in rotated_unit:
+        running += gap
         values.append(running)
     value_gaps = [values[i + 1] - values[i] for i in range(len(values) - 1)]
 
-    kept = [v for v in values if v % new_prime != 0]
+    kept = [value for value in values if value % new_prime != 0]
     kept_gaps = [kept[i + 1] - kept[i] for i in range(len(kept) - 1)]
 
     new_base_unit = compute_full_period(head_after, tail_after)
@@ -183,26 +187,30 @@ def compute_steps(t):
     }
 
 
-def draw_chip(c, x, y, label, fill, w=CHIP_W, h=CHIP_H, text_size=17,
+def draw_chip(canvas, x, y, label, fill, w=CHIP_W, h=CHIP_H, text_size=17,
               rx=8, text_color="#ffffff", strike=False):
-    c.rect(x, y, w, h, fill=fill, stroke="none", width=0, rx=rx)
-    c.text(x + w / 2, y + h / 2 + text_size * 0.32, str(label), size=text_size,
+    """A single rounded-rect number/gap chip at (x, y), optionally struck
+    through (for candidates the filter rejects)."""
+    canvas.rect(x, y, w, h, fill=fill, stroke="none", width=0, rx=rx)
+    canvas.text(x + w / 2, y + h / 2 + text_size * 0.32, str(label), size=text_size,
             weight="bold", fill=text_color)
     if strike:
-        c.line(x + w * 0.12, y + h * 0.18, x + w * 0.88, y + h * 0.82, stroke="#5c1414", width=2.5)
-        c.line(x + w * 0.12, y + h * 0.82, x + w * 0.88, y + h * 0.18, stroke="#5c1414", width=2.5)
+        canvas.line(x + w * 0.12, y + h * 0.18, x + w * 0.88, y + h * 0.82, stroke="#5c1414", width=2.5)
+        canvas.line(x + w * 0.12, y + h * 0.82, x + w * 0.88, y + h * 0.18, stroke="#5c1414", width=2.5)
 
 
-def draw_gap_pill(c, x, y, value, fill=GAP_PILL_FILL, text_color=GAP_PILL_TEXT):
-    draw_chip(c, x, y, f"+{value}", fill, w=GAP_PILL_W, h=GAP_PILL_H,
+def draw_gap_pill(canvas, x, y, value, fill=GAP_PILL_FILL, text_color=GAP_PILL_TEXT):
+    """A small pill-shaped chip annotating a gap (drawn as "+value")."""
+    draw_chip(canvas, x, y, f"+{value}", fill, w=GAP_PILL_W, h=GAP_PILL_H,
               text_size=10, rx=GAP_PILL_H / 2, text_color=text_color)
 
 
 def row_width(n_chips, w=CHIP_W, gap=CHIP_GAP):
+    """Total pixel width of a row of n_chips chips of width w, separated by gap."""
     return n_chips * w + max(0, n_chips - 1) * gap
 
 
-def draw_interleaved_row(c, x0, y, numbers, gaps, colors, strikes=None, ellipsis=False):
+def draw_interleaved_row(canvas, x0, y, numbers, gaps, colors, strikes=None, ellipsis=False):
     """Alternates number chips and small gap pills on the connecting
     segment between them, so each gap is drawn directly beside the two
     numbers it was computed from -- the literal "numbers next to their
@@ -211,121 +219,122 @@ def draw_interleaved_row(c, x0, y, numbers, gaps, colors, strikes=None, ellipsis
     genuinely infinite sequence rather than the row's complete content."""
     pill_y = y + (CHIP_H - GAP_PILL_H) / 2
     x = x0
-    for i, v in enumerate(numbers):
+    for i, number in enumerate(numbers):
         color = colors[i] if isinstance(colors, list) else colors
         strike = strikes[i] if strikes else False
-        draw_chip(c, x, y, v, color, strike=strike)
+        draw_chip(canvas, x, y, number, color, strike=strike)
         x += CHIP_W
         if i < len(numbers) - 1:
-            c.line(x, y + CHIP_H / 2, x + CHIP_GAP, y + CHIP_H / 2, stroke="#ccc", width=1.5)
+            canvas.line(x, y + CHIP_H / 2, x + CHIP_GAP, y + CHIP_H / 2, stroke="#ccc", width=1.5)
             pill_x = x + (CHIP_GAP - GAP_PILL_W) / 2
-            draw_gap_pill(c, pill_x, pill_y, gaps[i])
+            draw_gap_pill(canvas, pill_x, pill_y, gaps[i])
             x += CHIP_GAP
     if ellipsis:
-        c.text(x + 14, y + CHIP_H / 2 + 7, "...", size=22, weight="bold", fill="#999", anchor="start")
+        canvas.text(x + 14, y + CHIP_H / 2 + 7, "...", size=22, weight="bold", fill="#999", anchor="start")
 
 
-def draw_gap_value_row(c, x0, y, gaps):
+def draw_gap_value_row(canvas, x0, y, gaps):
     """The gap cycle itself as the row's primary content (steps 1, 3, 4, 7)
     -- bigger emphasis-colored chips, not small annotation pills."""
     w = CHIP_W - 10
     conn_gap = 22
     x = x0
-    for i, g in enumerate(gaps):
-        draw_chip(c, x, y, g, GAP_EMPHASIS_COLOR, w=w, text_size=15)
+    for i, gap in enumerate(gaps):
+        draw_chip(canvas, x, y, gap, GAP_EMPHASIS_COLOR, w=w, text_size=15)
         x += w
         if i < len(gaps) - 1:
-            c.line(x, y + CHIP_H / 2, x + conn_gap, y + CHIP_H / 2, stroke="#ccc", width=1.5)
+            canvas.line(x, y + CHIP_H / 2, x + conn_gap, y + CHIP_H / 2, stroke="#ccc", width=1.5)
             x += conn_gap
 
 
-def draw_block(c, x0, y0, t, s) -> float:
+def draw_block(canvas, x0, y0, transition, steps) -> float:
     """Draws one transition's full 8-step pipeline starting at y0. Returns
     the y position immediately below the block (before any inter-block
     gutter is added)."""
-    head_before, head_after, new_prime = t["head_before"], t["head_after"], t["new_prime"]
-    modulus_before, modulus_after = t["modulus_before"], t["modulus_after"]
-    base_unit, new_base_unit = s["base_unit"], s["new_base_unit"]
-    stage_before = t["stage_before"]
+    head_before, head_after, new_prime = transition["head_before"], transition["head_after"], transition["new_prime"]
+    modulus_before, modulus_after = transition["modulus_before"], transition["modulus_after"]
+    base_unit, new_base_unit = steps["base_unit"], steps["new_base_unit"]
+    stage_before = transition["stage_before"]
 
-    c.text(x0, y0 + 16, f"Stage {stage_before} (head={head_before}) becoming stage {stage_before + 1} (head={head_after})",
+    canvas.text(x0, y0 + 16, f"Stage {stage_before} (head={head_before}) becoming stage {stage_before + 1} (head={head_after})",
            size=15, weight="bold", anchor="start")
     y = y0 + BLOCK_HEADING_H
 
     def step_label(title, desc):
-        c.text(x0, y + 8, title, size=14, weight="bold", anchor="start")
+        """Draws a bold step title at the current y, with desc word-wrapped below it."""
+        canvas.text(x0, y + 8, title, size=14, weight="bold", anchor="start")
         lines = textwrap.wrap(desc, width=LABEL_WRAP_CHARS)
         for i, line in enumerate(lines[:4]):
-            c.text(x0, y + 26 + i * 13, line, size=10, fill="#555", anchor="start")
+            canvas.text(x0, y + 26 + i * 13, line, size=10, fill="#555", anchor="start")
 
     x1 = x0 + LABEL_W
 
     # Step 1: Gaps
     step_label("1. Gaps", f"stage {stage_before}'s own minimal proven periodic gap cycle (period {len(base_unit)})")
-    draw_gap_value_row(c, x1, y, base_unit)
+    draw_gap_value_row(canvas, x1, y, base_unit)
     y += STEP_H
 
     # Step 2: Generated numbers
     step_label("2. Generated numbers",
                 f"walking that cycle forward from head={head_before} -- genuine, infinite sequence members")
-    draw_interleaved_row(c, x1, y, s["numbers1"], s["gaps1"], NUMBER_COLOR, ellipsis=True)
+    draw_interleaved_row(canvas, x1, y, steps["numbers1"], steps["gaps1"], NUMBER_COLOR, ellipsis=True)
     y += STEP_H
 
     # Step 3: Repeat
     step_label("3. Repeat",
                 f"cycle repeated exactly ×{new_prime} (stage {stage_before}'s head) -- spans exactly one "
                 f"new modulus ({modulus_before}×{new_prime}={modulus_after}), no more")
-    draw_gap_value_row(c, x1, y, s["repeat_unit"])
+    draw_gap_value_row(canvas, x1, y, steps["repeat_unit"])
     y += STEP_H
 
     # Step 4: Rotate
     step_label("4. Rotate",
                 f"shift left by 1 -- head={head_after} is always one step past head={head_before}, "
                 f"already anchored, no reframe needed")
-    draw_gap_value_row(c, x1, y, s["rotated_unit"])
+    draw_gap_value_row(canvas, x1, y, steps["rotated_unit"])
     y += STEP_H
 
     # Step 5: Candidate values
     step_label("5. Candidate values",
                 f"walk the rotated list forward from stage {stage_before + 1}'s own head ({head_after}) "
                 f"-- unfiltered, not yet confirmed")
-    draw_interleaved_row(c, x1, y, s["values"], s["value_gaps"], NUMBER_COLOR)
+    draw_interleaved_row(canvas, x1, y, steps["values"], steps["value_gaps"], NUMBER_COLOR)
     y += STEP_H
 
     # Step 6: Filter
     step_label("6. Filter", f"drop candidates divisible by {new_prime} (stage {stage_before}'s own head)")
-    colors = [KEPT_COLOR if v % new_prime != 0 else REMOVED_COLOR for v in s["values"]]
-    strikes = [v % new_prime == 0 for v in s["values"]]
-    draw_interleaved_row(c, x1, y, s["values"], s["value_gaps"], colors, strikes=strikes)
+    colors = [KEPT_COLOR if value % new_prime != 0 else REMOVED_COLOR for value in steps["values"]]
+    strikes = [value % new_prime == 0 for value in steps["values"]]
+    draw_interleaved_row(canvas, x1, y, steps["values"], steps["value_gaps"], colors, strikes=strikes)
     y += STEP_H
 
     # Step 7: Gaps (closes the loop)
     step_label("7. Gaps",
                 f"stage {stage_before + 1}'s TRUE periodic gap cycle (period {len(new_base_unit)}) -- "
                 f"exactly what filtering the kept survivors above already gives")
-    draw_gap_value_row(c, x1, y, new_base_unit)
+    draw_gap_value_row(canvas, x1, y, new_base_unit)
     y += STEP_H
 
     # Step 8: Generated numbers (the new sequence, mirrors step 2)
     step_label("8. Generated numbers",
                 f"walking stage {stage_before + 1}'s own new cycle forward from head={head_after} -- the new "
                 f"sequence's genuine, infinite members")
-    draw_interleaved_row(c, x1, y, s["new_numbers"], s["new_gaps"], NUMBER_COLOR, ellipsis=True)
+    draw_interleaved_row(canvas, x1, y, steps["new_numbers"], steps["new_gaps"], NUMBER_COLOR, ellipsis=True)
     y += STEP_H
 
     return y
 
 
 def build_diagram(blocks) -> Canvas:
-    """`blocks` is a list of (t, s) pairs, one per transition, rendered
-    stacked top to bottom, each as its own independent, fully-labeled
-    8-step pipeline."""
+    """`blocks` is a list of (transition, steps) pairs, one per transition,
+    rendered stacked top to bottom, each as its own independent,
+    fully-labeled 8-step pipeline."""
     title = "Gaps -> generated numbers -> repeat -> rotate -> candidate values -> filter -> gaps -> generated numbers"
 
     max_chips = max(
-        max(len(s["numbers1"]), len(s["repeat_unit"]), len(s["rotated_unit"]),
-            len(s["values"]), len(s["new_numbers"]))
-        for _, s in blocks
+        max(len(steps["numbers1"]), len(steps["repeat_unit"]), len(steps["rotated_unit"]),
+            len(steps["values"]), len(steps["new_numbers"]))
+        for _, steps in blocks
     )
     content_w = row_width(max_chips) + 80  # extra room for the trailing "..." on infinite rows
     side_margin = 30
@@ -336,24 +345,25 @@ def build_diagram(blocks) -> Canvas:
     block_h = BLOCK_HEADING_H + STEP_H * 8
     canvas_h = top_margin + len(blocks) * block_h + (len(blocks) - 1) * BLOCK_GUTTER + 20
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 26, title, size=15, weight="bold")
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 26, title, size=15, weight="bold")
 
     y = top_margin
-    for t, s in blocks:
-        y = draw_block(c, side_margin, y, t, s)
+    for transition, steps in blocks:
+        y = draw_block(canvas, side_margin, y, transition, steps)
         y += BLOCK_GUTTER
 
-    return c
+    return canvas
 
 
 def main() -> None:
+    """Builds every transition in TRANSITIONS and writes the stacked diagram to OUT_DIR."""
     os.makedirs(OUT_DIR, exist_ok=True)
     blocks = []
     for stage_before in TRANSITIONS:
-        t = build_transition(stage_before)
-        s = compute_steps(t)
-        blocks.append((t, s))
+        transition = build_transition(stage_before)
+        steps = compute_steps(transition)
+        blocks.append((transition, steps))
     canvas = build_diagram(blocks)
     path = os.path.join(OUT_DIR, "stage-transition-repeat-filter-rotate.svg")
     save(canvas, path)

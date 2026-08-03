@@ -302,3 +302,53 @@ From these definitions, it mathematically proves and formally verifies the follo
 
 For detailed guidance on writing mathematical proofs with Stainless verification, 
 see [PROOF_GUIDE.md](./PROOF_GUIDE.md).
+
+## Testing and Verification Policy
+
+Every piece of code in this repository — Scala or otherwise — must be **tested
+or verified**. Writing the code is not enough; one of the two must actually
+pass before the work counts as done.
+
+1. **Lemmas and properties** (anything with a `.holds` target under
+   `src/main/scala/`) must be **verified**, not merely written. A lemma only
+   counts once `just verify` (or `just verify functionName`) passes green for
+   it — see `AGENTS.md`'s `green-to-green` rule. If Stainless verification for
+   a lemma is impractical (known timeout, cross-instance call blowup per
+   `LEARNINGS.md` §19), fall back to an empirical Scala runner (`LEARNINGS.md`
+   §16.1) or mark it explicitly as unverified per `property-completeness` rule
+   8 — do not leave it silently unchecked either way.
+2. **Everything else** — Scala helpers with no `.holds` target, and all
+   non-Scala code (Python figure/data scripts, shell scripts, etc.) — must
+   have **unit tests**. A script that checks generated output against expected
+   values (e.g. `figures/verify.py`) verifies the *data*, not the *code*; it is
+   not a substitute for unit tests of the code's own logic (rendering,
+   encoding, parsing, helper functions). Both are needed where both apply.
+3. Code with neither a passing verification nor a passing test is not done.
+   Do not merge or publish it as if it were.
+
+Both rules below apply to **touched code**: any method or variable you add or
+modify must comply, even if the surrounding file predates the rule and is not
+yet compliant elsewhere. Do not use "the rest of the file already looks like
+this" as a reason to add a new violation; do not go out of your way to fix
+unrelated pre-existing violations in the same change either — bring only what
+you touch into compliance.
+
+1. **Javadoc on every method** — Every method, `def`, and lemma in
+   `src/main/scala/` must have a javadoc comment stating what it does (and,
+   for lemmas, what property it establishes). Use plain ASCII math notation
+   per `AGENTS.md`'s `javadoc-math` rule — no LaTeX. A method with only a
+   name and no javadoc is not done; add the comment in the same change that
+   introduces the method, not as follow-up cleanup.
+2. **No one-letter variable names** — except conventional loop/math indices
+   (`i`, `j`, `k` for loop counters; `n`, `p`, `q`, `d`, `a`, `b` for the
+   mathematical quantities they conventionally denote — count, prime,
+   quotient, divisor, and the two operands of a binary operation such as
+   `gcd(a, b)` or `mod(a, b)`), plus `x`, `y`, `w`, `h`, `r` in graphics/SVG
+   code for the coordinate, width/height, and radius they conventionally
+   denote. Anything else — accumulators, intermediate results, function
+   parameters, collected lists — needs a name that says what it holds
+   (`survivors`, not `s`; `gapCycle`, not `g`). A letter reused for a
+   different meaning than its conventional one (e.g. `r` for a row index
+   rather than a radius) does not qualify for the exception and should be
+   spelled out. This applies to Scala, Python, and any other code in the
+   repository.

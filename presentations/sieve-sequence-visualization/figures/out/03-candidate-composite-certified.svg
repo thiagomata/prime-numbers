@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="320" viewBox="0 0 700 320">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="700" height="320" fill="white" />
+  <text x="370" y="30" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">stage k</text>
+  <rect x="70" y="76" width="300" height="68" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5" rx="6" />
+  <text x="220" y="64" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" font-style="normal" fill="#1e8449" text-anchor="middle">safe zone</text>
+  <circle cx="90" cy="110" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="170" cy="110" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="250" cy="110" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="330" cy="110" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="410" cy="110" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <circle cx="490" cy="110" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <circle cx="570" cy="110" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <circle cx="650" cy="110" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <text x="370" y="210" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">later stage</text>
+  <rect x="70" y="226" width="300" height="68" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5" rx="6" />
+  <circle cx="90" cy="260" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="170" cy="260" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="250" cy="260" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="330" cy="260" r="8" fill="#27ae60" stroke="#27ae60" stroke-width="2" />
+  <circle cx="410" cy="260" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <circle cx="490" cy="260" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <line x1="481" y1="251" x2="499" y2="269" stroke="#c0392b" stroke-width="2.5" />
+  <line x1="481" y1="269" x2="499" y2="251" stroke="#c0392b" stroke-width="2.5" />
+  <circle cx="570" cy="260" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <circle cx="650" cy="260" r="8" fill="white" stroke="#333" stroke-width="2" />
+  <text x="490" y="294" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#c0392b" text-anchor="middle">rejected by p_j</text>
+</svg>

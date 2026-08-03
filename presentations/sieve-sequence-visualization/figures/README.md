@@ -160,6 +160,30 @@ so a mismatch there is informational, not a bug.
 Run it after regenerating data, and before citing any number from these
 figures in an article.
 
+## Unit Tests
+
+`verify.py` checks the generated *data* against this project's mathematical
+claims; it does not exercise the rendering/plumbing code itself (`svg_kit.py`,
+`png_writer.py`, `gap_heatmap.py`'s helpers, etc.). `tests/` covers that code
+directly with plain `unittest`-style tests run via `pytest`, per
+[CONTRIBUTING.md](../../../CONTRIBUTING.md)'s testing policy.
+
+This directory's scripts are deliberately stdlib-only, so `pytest` is a
+dev-only dependency, isolated in a local virtualenv rather than installed
+system-wide:
+
+```
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m pytest tests/
+```
+
+Tests run in well under a second: they exercise pure functions directly
+(`compress_around_two`, `lineage_walk`, `hex_to_rgb`, the PNG/SVG encoders,
+`compute_full_period`, ...) using small hand-checked or `_walk_stage`-derived
+fixtures, plus the small committed sample CSV -- never the full (gitignored,
+multi-hundred-MB) dataset.
+
 ## Known Limitations
 
 - Even at `PREFIX_LEN=100000`, most stages' data never reaches far enough to

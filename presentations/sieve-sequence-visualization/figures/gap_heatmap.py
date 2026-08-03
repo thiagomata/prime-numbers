@@ -111,14 +111,14 @@ def compress_around_two(gaps):
     wrapped together."""
     out = []
     run = 0
-    for g in gaps:
-        if g == 2:
+    for gap in gaps:
+        if gap == 2:
             if run:
                 out.append(run)
                 run = 0
             out.append(2)
         else:
-            run += g
+            run += gap
     if run:
         out.append(run)
     return out
@@ -133,8 +133,8 @@ def compress_around_two_with_anchor(gaps):
     out = []
     anchors = []
     run = 0
-    for i, g in enumerate(gaps):
-        if g == 2:
+    for i, gap in enumerate(gaps):
+        if gap == 2:
             if run:
                 out.append(run)
                 anchors.append(i - 1)
@@ -142,7 +142,7 @@ def compress_around_two_with_anchor(gaps):
             out.append(2)
             anchors.append(i)
         else:
-            run += g
+            run += gap
     if run:
         out.append(run)
         anchors.append(len(gaps) - 1)
@@ -152,8 +152,8 @@ def compress_around_two_with_anchor(gaps):
 def load_stages():
     """Returns a list of {"head", "gaps": [...], "survivors": [...]} in stage_index order."""
     by_index = {}
-    with open(CSV_PATH, newline="") as f:
-        for row in csv.DictReader(f):
+    with open(CSV_PATH, newline="") as csv_file:
+        for row in csv.DictReader(csv_file):
             idx = int(row["stage_index"])
             entry = by_index.setdefault(idx, {"head": int(row["head"]), "gaps": [], "survivors": []})
             entry["gaps"].append(int(row["gap"]))
@@ -166,8 +166,8 @@ def first_composite_index(survivors):
     not actually prime -- the point where "current acceptance" and "certified
     prime" first diverge for this stage (see 06-article-diagram-ideas.md,
     Diagram 3). Returns None if every survivor in the prefix is genuinely prime."""
-    for i, v in enumerate(survivors):
-        if not is_prime(v):
+    for i, survivor in enumerate(survivors):
+        if not is_prime(survivor):
             return i
     return None
 
@@ -182,8 +182,8 @@ def estimated_boundary_indices(stages):
     always computed (never None)."""
     indices = []
     density = 1.0 - 1.0 / 2  # every stage's head is odd, so 2 is always in its filter set
-    for s in stages:
-        p = s["head"]
+    for stage in stages:
+        p = stage["head"]
         indices.append(density * (p * p - p))
         density *= (1 - 1.0 / p)
     return indices
@@ -215,8 +215,8 @@ def proven_safe_boundary_indices(stages):
     short interval, and closing that gap needs more than this repo attempted).
     Returns None for p < 11, outside the theorem's proven range."""
     indices = []
-    for s in stages:
-        p = s["head"]
+    for stage in stages:
+        p = stage["head"]
         if p < 11:
             indices.append(None)
             continue
@@ -225,47 +225,49 @@ def proven_safe_boundary_indices(stages):
     return indices
 
 
-def draw_boundary_curves(c, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, prefix_len, legend_y):
+def draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, prefix_len, legend_y):
     """Draws both chaos-to-order boundary curves and cites their sources
     directly on the chart. See properties/sieve-sequence/safe-zone-exhaustion-curve.md
     for the full derivation of both, including why an earlier attempted proof
     (Rosser & Schoenfeld's density bound applied naively to a short interval)
     was withdrawn as unjustified."""
     def to_xy(row, idx):
+        """Converts a (row, column-index) pair into canvas (x, y) pixel coordinates for this grid."""
         col = min(idx, prefix_len)
         x = label_w + stagger * row + col * cell_w_display
         y = top_margin + row * cell_h_display + cell_h_display / 2
         return (x, y)
 
-    estimated_points = [to_xy(r, v) for r, v in enumerate(estimated_boundary_indices(stages))]
-    c.polyline(estimated_points, stroke="#000000", width=1.5, dash="6,4")
+    estimated_points = [to_xy(row, boundary_idx) for row, boundary_idx in enumerate(estimated_boundary_indices(stages))]
+    canvas.polyline(estimated_points, stroke="#000000", width=1.5, dash="6,4")
 
     run = []
-    for row, v in enumerate(proven_safe_boundary_indices(stages)):
-        if v is None:
+    for row, boundary_idx in enumerate(proven_safe_boundary_indices(stages)):
+        if boundary_idx is None:
             if len(run) > 1:
-                c.polyline(run, stroke="#000000", width=3)
+                canvas.polyline(run, stroke="#000000", width=3)
             run = []
         else:
-            run.append(to_xy(row, v))
+            run.append(to_xy(row, boundary_idx))
     if len(run) > 1:
-        c.polyline(run, stroke="#000000", width=3)
+        canvas.polyline(run, stroke="#000000", width=3)
 
-    c.text(label_w, legend_y, "- - - estimated boundary (good fit, not proven)", size=11, anchor="start", fill="#555")
-    c.link_text(label_w, legend_y + 16,
+    canvas.text(label_w, legend_y, "- - - estimated boundary (good fit, not proven)", size=11, anchor="start", fill="#555")
+    canvas.link_text(label_w, legend_y + 16,
                 "— proven safe boundary, any prime p≥11 (Schroeder 2017, arXiv:1705.04831)",
                 "https://arxiv.org/abs/1705.04831", size=11, anchor="start")
 
 
 def hex_to_rgb(hex_color: str):
+    """Converts a "#rrggbb" hex color string into an (r, g, b) integer tuple."""
     hex_color = hex_color.lstrip("#")
     return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def ramp_color(t: float, ramp=SEQUENTIAL_BLUE):
-    """Continuous interpolation across the ramp anchors, t in [0, 1]."""
+def ramp_color(position: float, ramp=SEQUENTIAL_BLUE):
+    """Continuous interpolation across the ramp anchors, position in [0, 1]."""
     n = len(ramp)
-    pos = min(max(t, 0.0), 1.0) * (n - 1)
+    pos = min(max(position, 0.0), 1.0) * (n - 1)
     i0 = int(pos)
     i1 = min(i0 + 1, n - 1)
     frac = pos - i0
@@ -282,14 +284,15 @@ def build_equalized_color_map(all_values, ramp=SEQUENTIAL_BLUE):
     color_by_value = {}
     cum = 0
     for value in sorted(counts):
-        t = (cum + counts[value] / 2) / total
-        color_by_value[value] = ramp_color(t, ramp)
+        position = (cum + counts[value] / 2) / total
+        color_by_value[value] = ramp_color(position, ramp)
         cum += counts[value]
     return color_by_value
 
 
-def lerp_rgb(c0, c1, t: float):
-    return tuple(round(c0[k] + (c1[k] - c0[k]) * t) for k in range(3))
+def lerp_rgb(c0, c1, frac: float):
+    """Linearly interpolates between two (r, g, b) tuples at the given fraction."""
+    return tuple(round(c0[k] + (c1[k] - c0[k]) * frac) for k in range(3))
 
 
 def build_diverging_color_map(all_diffs):
@@ -302,21 +305,23 @@ def build_diverging_color_map(all_diffs):
     blue_pole = hex_to_rgb(DIVERGING_BLUE_POLE)
     red_pole = hex_to_rgb(DIVERGING_RED_POLE)
 
-    def equalized_t(magnitudes):
+    def equalized_position(magnitudes):
+        """Maps each distinct magnitude to its empirical cumulative-frequency
+        position in [0, 1] (same equalization approach as build_equalized_color_map)."""
         counts = Counter(magnitudes)
         total = sum(counts.values())
-        t_by_value = {}
+        position_by_magnitude = {}
         cum = 0
-        for v in sorted(counts):
-            t_by_value[v] = (cum + counts[v] / 2) / total
-            cum += counts[v]
-        return t_by_value
+        for magnitude in sorted(counts):
+            position_by_magnitude[magnitude] = (cum + counts[magnitude] / 2) / total
+            cum += counts[magnitude]
+        return position_by_magnitude
 
     color_by_diff = {0: gray}
-    for v, t in equalized_t([d for d in all_diffs if d > 0]).items():
-        color_by_diff[v] = lerp_rgb(gray, blue_pole, t)
-    for v, t in equalized_t([-d for d in all_diffs if d < 0]).items():
-        color_by_diff[-v] = lerp_rgb(gray, red_pole, t)
+    for magnitude, position in equalized_position([diff for diff in all_diffs if diff > 0]).items():
+        color_by_diff[magnitude] = lerp_rgb(gray, blue_pole, position)
+    for magnitude, position in equalized_position([-diff for diff in all_diffs if diff < 0]).items():
+        color_by_diff[-magnitude] = lerp_rgb(gray, red_pole, position)
     return color_by_diff
 
 
@@ -424,10 +429,10 @@ def build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, sta
     for row_idx, row_diffs in enumerate(diffs_per_row):
         offset = stagger * row_idx
         row = bytearray(b"\xff\xff\xff" * width)
-        for i, d in enumerate(row_diffs[:display_width]):
-            r, gr, b = color_by_diff[d]
+        for i, diff in enumerate(row_diffs[:display_width]):
+            red, green, blue = color_by_diff[diff]
             pos = offset + i
-            row[pos * 3:pos * 3 + 3] = bytes((r, gr, b))
+            row[pos * 3:pos * 3 + 3] = bytes((red, green, blue))
         rows_rgb.append(bytes(row))
     return width, len(stages), rows_rgb
 
@@ -443,14 +448,14 @@ def build_grid_png(stages, color_by_value, display_width, stagger=0):
     width = display_width + stagger * (len(stages) - 1)
     not_prime_rgb = hex_to_rgb(NOT_PRIME_MARK)
     rows_rgb = []
-    for row_idx, s in enumerate(stages):
+    for row_idx, stage in enumerate(stages):
         offset = stagger * row_idx
         row = bytearray(b"\xff\xff\xff" * width)
-        for i, g in enumerate(s["gaps"][:display_width]):
-            r, gr, b = color_by_value[g]
+        for i, gap in enumerate(stage["gaps"][:display_width]):
+            red, green, blue = color_by_value[gap]
             pos = offset + i
-            row[pos * 3:pos * 3 + 3] = bytes((r, gr, b))
-        composite_at = first_composite_index(s["survivors"])
+            row[pos * 3:pos * 3 + 3] = bytes((red, green, blue))
+        composite_at = first_composite_index(stage["survivors"])
         if composite_at is not None and composite_at < display_width:
             pos = offset + composite_at
             row[pos * 3:pos * 3 + 3] = bytes(not_prime_rgb)
@@ -459,17 +464,19 @@ def build_grid_png(stages, color_by_value, display_width, stagger=0):
 
 
 def build_heatmap(stages, stagger=0, png_name="gap-heatmap.png", title_suffix="") -> Canvas:
+    """Builds the base gap-value heatmap: raster grid, row head labels, both
+    boundary curves, and a frequency-equalized legend."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    all_values = [g for s in stages for g in s["gaps"][:display_width]]
+    all_values = [gap for stage in stages for gap in stage["gaps"][:display_width]]
     color_by_value = build_equalized_color_map(all_values)
     distinct_values = sorted(color_by_value)
 
     grid_w_px, grid_h_px, rows_rgb = build_grid_png(stages, color_by_value, display_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // display_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -482,40 +489,40 @@ def build_heatmap(stages, stagger=0, png_name="gap-heatmap.png", title_suffix=""
     canvas_w = max(label_w + grid_w + 20, label_w + len(distinct_values) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"Gap heatmap: first {display_width} of {prefix_len} generated gaps across {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
-    draw_boundary_curves(c, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
+    draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
 
     legend_y = top_margin + grid_h + 62
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "gap value (color spread by frequency, not raw magnitude)",
            size=12, fill="#555", anchor="start")
-    for i, v in enumerate(distinct_values):
+    for i, value in enumerate(distinct_values):
         x = legend_x0 + i * (swatch_w + 4)
-        r, g, b = color_by_value[v]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, str(v), size=10)
+        red, green, blue = color_by_value[value]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, str(value), size=10)
 
     mark_x = legend_x0 + len(distinct_values) * (swatch_w + 4) + 20
-    c.rect(mark_x, legend_y, swatch_w, 20, fill=NOT_PRIME_MARK, stroke="#999", width=1)
-    c.text(mark_x + swatch_w + 8, legend_y + 15, "first survivor that isn't actually prime", size=12, anchor="start", fill="#555")
+    canvas.rect(mark_x, legend_y, swatch_w, 20, fill=NOT_PRIME_MARK, stroke="#999", width=1)
+    canvas.text(mark_x + swatch_w + 8, legend_y + 15, "first survivor that isn't actually prime", size=12, anchor="start", fill="#555")
 
-    return c
+    return canvas
 
 
 def choose_compressed_width(compressed_per_row, percentile=0):
@@ -543,8 +550,8 @@ def build_compressed_grid_png(stages, compressed_per_row, color_by_value, width,
     for row_idx, compressed in enumerate(compressed_per_row):
         offset = stagger * row_idx
         row = bytearray(b"\xff\xff\xff" * full_width)
-        for i, v in enumerate(compressed[:width]):
-            rgb = two_gap_rgb if v == 2 else color_by_value[v]
+        for i, value in enumerate(compressed[:width]):
+            rgb = two_gap_rgb if value == 2 else color_by_value[value]
             pos = offset + i
             row[pos * 3:pos * 3 + 3] = bytes(rgb)
         rows_rgb.append(bytes(row))
@@ -552,8 +559,11 @@ def build_compressed_grid_png(stages, compressed_per_row, color_by_value, width,
 
 
 def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.png", title_suffix="") -> Canvas:
-    compressed_per_row = [compress_around_two(s["gaps"]) for s in stages]
-    non_two_values = [v for row in compressed_per_row for v in row if v != 2]
+    """Builds the 2-focused compression heatmap: 2-gaps rendered standalone in
+    a fixed color, runs between consecutive 2-gaps collapsed and colored by
+    the equalized sequential ramp."""
+    compressed_per_row = [compress_around_two(stage["gaps"]) for stage in stages]
+    non_two_values = [value for row in compressed_per_row for value in row if value != 2]
     color_by_value = build_equalized_color_map(non_two_values)
     distinct_values = sorted(color_by_value)
     legend_values = (
@@ -566,8 +576,8 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
         stages, compressed_per_row, color_by_value, target_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // target_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -580,43 +590,46 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
     canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"2-focused compression heatmap: {len(stages)} stages, {target_width} units per row (shortest row, longer rows truncated){title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "green = a 2-gap; blue = distance between consecutive 2-gaps (color spread by frequency)",
            size=12, fill="#555", anchor="start")
-    c.rect(legend_x0, legend_y, swatch_w, 20, fill=TWO_GAP_COLOR, stroke="#999", width=1)
-    c.text(legend_x0 + swatch_w / 2, legend_y + 34, "2", size=10)
-    for i, v in enumerate(legend_values):
+    canvas.rect(legend_x0, legend_y, swatch_w, 20, fill=TWO_GAP_COLOR, stroke="#999", width=1)
+    canvas.text(legend_x0 + swatch_w / 2, legend_y + 34, "2", size=10)
+    for i, value in enumerate(legend_values):
         x = legend_x0 + (i + 1) * (swatch_w + 4)
-        r, g, b = color_by_value[v]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, str(v), size=10)
+        red, green, blue = color_by_value[value]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, str(value), size=10)
 
-    return c
+    return canvas
 
 
 def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title_suffix="") -> Canvas:
+    """Builds the rigorous copy-or-merge diff heatmap: each cell is a gap's
+    change vs the previous stage per lineage_walk, colored on the diverging
+    ramp (see build_diverging_color_map)."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    diffs_per_row = [[d for d, _, _ in walk] for walk in walks_per_row]
-    all_diffs = [d for row_diffs in diffs_per_row for d in row_diffs[:display_width]]
+    diffs_per_row = [[diff for diff, _merge_count, _anchor_idx in walk] for walk in walks_per_row]
+    all_diffs = [diff for row_diffs in diffs_per_row for diff in row_diffs[:display_width]]
     color_by_diff = build_diverging_color_map(all_diffs)
     distinct_diffs = sorted(color_by_diff)
     legend_values = (
@@ -627,8 +640,8 @@ def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title
     grid_w_px, grid_h_px, rows_rgb = build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // display_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -641,34 +654,34 @@ def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title
     canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"Gap diff heatmap: change vs previous stage, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "true copy-or-merge lineage vs previous stage (gray = exact match, blue = grew, red = shrank, "
            "white = ran out of previous-stage data to check)",
            size=12, fill="#555", anchor="start")
-    for i, v in enumerate(legend_values):
+    for i, diff in enumerate(legend_values):
         x = legend_x0 + i * (swatch_w + 4)
-        r, g, b = color_by_diff[v]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, ("+" if v > 0 else "") + str(v), size=10)
+        red, green, blue = color_by_diff[diff]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, ("+" if diff > 0 else "") + str(diff), size=10)
 
-    return c
+    return canvas
 
 
 def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff-simple-shift.png", title_suffix="") -> Canvas:
@@ -682,7 +695,7 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     diffs_per_row = [[]] + [simple_shift_row_diff(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    all_diffs = [d for row_diffs in diffs_per_row for d in row_diffs[:display_width]]
+    all_diffs = [diff for row_diffs in diffs_per_row for diff in row_diffs[:display_width]]
     color_by_diff = build_diverging_color_map(all_diffs)
     distinct_diffs = sorted(color_by_diff)
     legend_values = (
@@ -693,8 +706,8 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
     grid_w_px, grid_h_px, rows_rgb = build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // display_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -707,40 +720,42 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
     canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"Gap diff heatmap (simple constant shift, no merge tracking): {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
-    draw_boundary_curves(c, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
+    draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
 
     legend_y = top_margin + grid_h + 62
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "constant-offset diff vs previous stage (gray = matches so far, color = one step behind "
            "after the row's first real merge, white = ran out of data)",
            size=12, fill="#555", anchor="start")
-    for i, v in enumerate(legend_values):
+    for i, diff in enumerate(legend_values):
         x = legend_x0 + i * (swatch_w + 4)
-        r, g, b = color_by_diff[v]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, ("+" if v > 0 else "") + str(v), size=10)
+        red, green, blue = color_by_diff[diff]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, ("+" if diff > 0 else "") + str(diff), size=10)
 
-    return c
+    return canvas
 
 
 def color_for_merge_count(n: int):
+    """COPY_COLOR for a plain copy (n <= 1); otherwise a step along
+    MERGE_ACCENT_RAMP, clamped to its last entry once n exceeds the ramp's length."""
     if n <= 1:
         return hex_to_rgb(COPY_COLOR)
     return hex_to_rgb(MERGE_ACCENT_RAMP[min(n - 2, len(MERGE_ACCENT_RAMP) - 1)])
@@ -760,24 +775,26 @@ def build_merge_grid_png(stages, walks_per_row, display_width, stagger=0):
         offset = stagger * row_idx
         row = bytearray(b"\xff\xff\xff" * width)
         for i, (_diff, merge_count, _anchor_idx) in enumerate(walk[:display_width]):
-            r, g, b = color_for_merge_count(merge_count)
+            red, green, blue = color_for_merge_count(merge_count)
             pos = offset + i
-            row[pos * 3:pos * 3 + 3] = bytes((r, g, b))
+            row[pos * 3:pos * 3 + 3] = bytes((red, green, blue))
         rows_rgb.append(bytes(row))
     return width, len(stages), rows_rgb
 
 
 def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", title_suffix="") -> Canvas:
+    """Builds the merge-count heatmap: each cell colored by how many previous-stage
+    gaps fed into it (see color_for_merge_count), mostly a copy (1) with rare merges."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    max_merge = max((mc for walk in walks_per_row for _, mc, _ in walk[:display_width]), default=1)
+    max_merge = max((merge_count for walk in walks_per_row for _diff, merge_count, _anchor_idx in walk[:display_width]), default=1)
 
     grid_w_px, grid_h_px, rows_rgb = build_merge_grid_png(stages, walks_per_row, display_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // display_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -790,44 +807,44 @@ def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", ti
     canvas_w = label_w + grid_w + 20
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"Merge-count heatmap: how many old gaps fed each new one, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
-    draw_boundary_curves(c, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
+    draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
 
     legend_y = top_margin + grid_h + 62
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "old gaps merged into this one (1 = copied unchanged; white = ran out of data to check)",
            size=12, fill="#555", anchor="start")
     for n in range(1, max_merge + 1):
         x = legend_x0 + (n - 1) * (swatch_w + 4)
-        r, g, b = color_for_merge_count(n)
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, str(n), size=10)
+        red, green, blue = color_for_merge_count(n)
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, str(n), size=10)
 
-    return c
+    return canvas
 
 
 def known_prefix_len(ages):
     """How many leading positions of a row are real (non-None) data -- the
     point where age=None (unknown) first appears, or the full row length if
     it never does."""
-    for i, a in enumerate(ages):
-        if a is None:
+    for i, age in enumerate(ages):
+        if age is None:
             return i
     return len(ages)
 
@@ -857,16 +874,18 @@ def build_age_grid_png(stages, ages_per_row, color_by_age, width, stagger=0):
         for i, age in enumerate(ages[:width]):
             if age is None:
                 continue
-            r, g, b = color_by_age[age]
+            red, green, blue = color_by_age[age]
             pos = offset + i
-            row[pos * 3:pos * 3 + 3] = bytes((r, g, b))
+            row[pos * 3:pos * 3 + 3] = bytes((red, green, blue))
         rows_rgb.append(bytes(row))
     return full_width, len(stages), rows_rgb
 
 
 def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_suffix="") -> Canvas:
+    """Builds the gap-age heatmap: each cell colored by how many consecutive
+    stages its lineage survived without merging (see compute_ages_per_row)."""
     ages_per_row = compute_ages_per_row(stages)
-    all_ages = [a for row in ages_per_row for a in row if a is not None]
+    all_ages = [age for row in ages_per_row for age in row if age is not None]
     color_by_age = build_equalized_color_map(all_ages, ramp=AGE_RAMP)
     distinct_ages = sorted(color_by_age)
     legend_values = (
@@ -878,8 +897,8 @@ def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_s
     grid_w_px, grid_h_px, rows_rgb = build_age_grid_png(stages, ages_per_row, color_by_age, target_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // target_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -892,36 +911,36 @@ def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_s
     canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"Gap age heatmap: consecutive stages survived without merging, {target_width} known gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
-    draw_boundary_curves(c, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, target_width,
+    draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, target_width,
                           legend_y=top_margin + grid_h + 20)
 
     legend_y = top_margin + grid_h + 62
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "gap age: stages survived since last merge (1 = just merged/new; white = ran out of data to check)",
            size=12, fill="#555", anchor="start")
-    for i, a in enumerate(legend_values):
+    for i, age in enumerate(legend_values):
         x = legend_x0 + i * (swatch_w + 4)
-        r, g, b = color_by_age[a]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, str(a), size=10)
+        red, green, blue = color_by_age[age]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, str(age), size=10)
 
-    return c
+    return canvas
 
 
 def build_age_2focused_grid_png(stages, compressed_per_row, ages_2focused_per_row, color_by_age, width, stagger=0):
@@ -965,10 +984,10 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
     ages_per_row = compute_ages_per_row(stages)
     compressed_per_row = []
     ages_2focused_per_row = []
-    for row, s in enumerate(stages):
-        compressed, anchors = compress_around_two_with_anchor(s["gaps"])
+    for row, stage in enumerate(stages):
+        compressed, anchors = compress_around_two_with_anchor(stage["gaps"])
         row_ages = ages_per_row[row]
-        ages_2focused = [row_ages[a] if a < len(row_ages) else None for a in anchors]
+        ages_2focused = [row_ages[anchor_idx] if anchor_idx < len(row_ages) else None for anchor_idx in anchors]
         compressed_per_row.append(compressed)
         ages_2focused_per_row.append(ages_2focused)
 
@@ -977,8 +996,8 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
     all_ages = [
         age
         for compressed, ages in zip(compressed_per_row, ages_2focused_per_row)
-        for v, age in zip(compressed, ages)
-        if v != 2 and age is not None
+        for value, age in zip(compressed, ages)
+        if value != 2 and age is not None
     ]
     color_by_age = build_equalized_color_map(all_ages, ramp=AGE_RAMP)
     distinct_ages = sorted(color_by_age)
@@ -992,8 +1011,8 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
         stages, compressed_per_row, ages_2focused_per_row, color_by_age, target_width, stagger=stagger)
     png_path = os.path.join(OUT_DIR, png_name)
     save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as f:
-        png_b64 = base64.b64encode(f.read()).decode("ascii")
+    with open(png_path, "rb") as png_file:
+        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
 
     cell_w_display = max(1, 2000 // target_width) or 1
     cell_h_display = max(2, min(20, 900 // len(stages)))
@@ -1006,68 +1025,73 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
     canvas_w = max(label_w + grid_w + 20, label_w + (len(legend_values) + 1) * 32)
     canvas_h = top_margin + grid_h + legend_h
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"2-focused age heatmap: age of the gap anchoring each compressed unit, "
            f"{target_width} units x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    c.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
-    c.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
+    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
     label_every = max(1, len(stages) // 40)
-    for row, s in enumerate(stages):
+    for row, stage in enumerate(stages):
         if row % label_every == 0:
             y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            c.text(label_w - 12, y, f"h={s['head']}", size=11, anchor="end")
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
     swatch_w = 26
-    c.text(legend_x0, legend_y - 10,
+    canvas.text(legend_x0, legend_y - 10,
            "x-axis: 2-focused compression (2-gaps standalone, runs between them collapsed); "
            "green = a 2-gap (fixed color, age not shown); ramp = a run's closing gap's age (1 = just merged/new)",
            size=12, fill="#555", anchor="start")
-    c.rect(legend_x0, legend_y, swatch_w, 20, fill=TWO_GAP_COLOR, stroke="#999", width=1)
-    c.text(legend_x0 + swatch_w / 2, legend_y + 34, "2", size=10)
-    for i, a in enumerate(legend_values):
+    canvas.rect(legend_x0, legend_y, swatch_w, 20, fill=TWO_GAP_COLOR, stroke="#999", width=1)
+    canvas.text(legend_x0 + swatch_w / 2, legend_y + 34, "2", size=10)
+    for i, age in enumerate(legend_values):
         x = legend_x0 + (i + 1) * (swatch_w + 4)
-        r, g, b = color_by_age[a]
-        c.rect(x, legend_y, swatch_w, 20, fill=f"rgb({r},{g},{b})", stroke="#999", width=1)
-        c.text(x + swatch_w / 2, legend_y + 34, str(a), size=10)
+        red, green, blue = color_by_age[age]
+        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
+        canvas.text(x + swatch_w / 2, legend_y + 34, str(age), size=10)
 
-    return c
+    return canvas
 
 
-def draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max, n_gridlines, y_fmt=str):
+def draw_line_chart_frame(canvas, left, top, plot_w, plot_h, y_max, n_gridlines, y_fmt=str):
     """Recessive horizontal gridlines + a y-axis label at each, plus the
     x-axis baseline -- the shared scaffolding both line charts below draw
     their series on top of."""
     for i in range(n_gridlines + 1):
         frac_y = i / n_gridlines
         y = top + plot_h - frac_y * plot_h
-        c.line(left, y, left + plot_w, y, stroke="#e1e0d9", width=1)
-        c.text(left - 10, y + 4, y_fmt(frac_y * y_max), size=10, anchor="end", fill="#898781")
-    c.line(left, top + plot_h, left + plot_w, top + plot_h, stroke="#c3c2b7", width=1)
+        canvas.line(left, y, left + plot_w, y, stroke="#e1e0d9", width=1)
+        canvas.text(left - 10, y + 4, y_fmt(frac_y * y_max), size=10, anchor="end", fill="#898781")
+    canvas.line(left, top + plot_h, left + plot_w, top + plot_h, stroke="#c3c2b7", width=1)
 
 
-def draw_line_series(c, stages, values, left, top, plot_w, plot_h, y_max, color, width=2):
+def draw_line_series(canvas, stages, values, left, top, plot_w, plot_h, y_max, color, width=2):
+    """Draws one polyline series across the plot area, one point per stage,
+    x evenly spaced and y clamped to y_max."""
     n = len(stages)
     points = []
-    for i, v in enumerate(values):
+    for i, value in enumerate(values):
         x = left + (i / (n - 1)) * plot_w if n > 1 else left
-        y = top + plot_h - min(v, y_max) / y_max * plot_h
+        y = top + plot_h - min(value, y_max) / y_max * plot_h
         points.append((x, y))
-    c.polyline(points, stroke=color, width=width)
+    canvas.polyline(points, stroke=color, width=width)
 
 
-def draw_x_axis_labels(c, stages, left, top, plot_w, plot_h, label_every=None):
+def draw_x_axis_labels(canvas, stages, left, top, plot_w, plot_h, label_every=None):
+    """Draws sparse x-axis "h=<head>" labels below the plot area, roughly
+    every label_every-th stage (default: about 12 across the whole width),
+    always including the last stage."""
     n = len(stages)
     label_every = label_every or max(1, n // 12)
-    for i, s in enumerate(stages):
+    for i, stage in enumerate(stages):
         if i % label_every == 0 or i == n - 1:
             x = left + (i / (n - 1)) * plot_w if n > 1 else left
-            c.text(x, top + plot_h + 18, f"h={s['head']}", size=9, anchor="middle", fill="#555")
+            canvas.text(x, top + plot_h + 18, f"h={stage['head']}", size=9, anchor="middle", fill="#555")
 
 
 def build_two_gap_frequency_chart(stages) -> Canvas:
@@ -1078,23 +1102,23 @@ def build_two_gap_frequency_chart(stages) -> Canvas:
     title names it. Declines from 100% (stage 1, head=3, every gap is a
     2 -- consecutive odd numbers) toward roughly 10% by head~1200, computed
     directly from this dataset's own prefix, not a theoretical asymptote."""
-    frac = [sum(1 for g in s["gaps"] if g == 2) / len(s["gaps"]) for s in stages]
+    frac = [sum(1 for gap in stage["gaps"] if gap == 2) / len(stage["gaps"]) for stage in stages]
 
     canvas_w, canvas_h = 1100, 480
     left, right, top, bottom = 70, 30, 60, 60
     plot_w, plot_h = canvas_w - left - right, canvas_h - top - bottom
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"2-gap frequency: fraction of gaps equal to 2, per stage ({len(stages)} stages)",
            size=16, weight="bold")
 
-    draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max=1.0, n_gridlines=5,
-                           y_fmt=lambda v: f"{round(v * 100)}%")
-    draw_line_series(c, stages, frac, left, top, plot_w, plot_h, y_max=1.0, color=LINE_COLOR_PRIMARY)
-    draw_x_axis_labels(c, stages, left, top, plot_w, plot_h)
+    draw_line_chart_frame(canvas, left, top, plot_w, plot_h, y_max=1.0, n_gridlines=5,
+                           y_fmt=lambda value: f"{round(value * 100)}%")
+    draw_line_series(canvas, stages, frac, left, top, plot_w, plot_h, y_max=1.0, color=LINE_COLOR_PRIMARY)
+    draw_x_axis_labels(canvas, stages, left, top, plot_w, plot_h)
 
-    return c
+    return canvas
 
 
 def build_two_gap_run_size_chart(stages) -> Canvas:
@@ -1122,8 +1146,8 @@ def build_two_gap_run_size_chart(stages) -> Canvas:
     and therefore the smallest possible run, is thus 4, the classic
     prime-quadruplet spacing [2,4,2]."""
     avg_run, max_run = [], []
-    for s in stages:
-        runs = [v for v in compress_around_two(s["gaps"]) if v != 2]
+    for stage in stages:
+        runs = [value for value in compress_around_two(stage["gaps"]) if value != 2]
         avg_run.append(sum(runs) / len(runs) if runs else 0)
         max_run.append(max(runs) if runs else 0)
 
@@ -1132,30 +1156,32 @@ def build_two_gap_run_size_chart(stages) -> Canvas:
     plot_w, plot_h = canvas_w - left - right, canvas_h - top - bottom
     y_max = max(max_run) * 1.05 if max(max_run) > 0 else 1
 
-    c = Canvas(canvas_w, canvas_h)
-    c.text(canvas_w / 2, 28,
+    canvas = Canvas(canvas_w, canvas_h)
+    canvas.text(canvas_w / 2, 28,
            f"2-gap cluster size: typical (avg) and largest (max) distance between consecutive "
            f"2-gaps, per stage ({len(stages)} stages)",
            size=16, weight="bold")
 
-    draw_line_chart_frame(c, left, top, plot_w, plot_h, y_max=y_max, n_gridlines=5,
-                           y_fmt=lambda v: str(round(v)))
-    draw_line_series(c, stages, max_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_SECONDARY)
-    draw_line_series(c, stages, avg_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_PRIMARY)
-    draw_x_axis_labels(c, stages, left, top, plot_w, plot_h)
+    draw_line_chart_frame(canvas, left, top, plot_w, plot_h, y_max=y_max, n_gridlines=5,
+                           y_fmt=lambda value: str(round(value)))
+    draw_line_series(canvas, stages, max_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_SECONDARY)
+    draw_line_series(canvas, stages, avg_run, left, top, plot_w, plot_h, y_max, color=LINE_COLOR_PRIMARY)
+    draw_x_axis_labels(canvas, stages, left, top, plot_w, plot_h)
 
     legend_y = top + plot_h + 40
     legend_x0 = left
     swatch = 16
-    c.rect(legend_x0, legend_y, swatch, 3, fill=LINE_COLOR_PRIMARY, stroke="none", width=0)
-    c.text(legend_x0 + swatch + 8, legend_y + 5, "average run value", size=11, anchor="start", fill="#555")
-    c.rect(legend_x0 + 200, legend_y, swatch, 3, fill=LINE_COLOR_SECONDARY, stroke="none", width=0)
-    c.text(legend_x0 + 200 + swatch + 8, legend_y + 5, "max run value", size=11, anchor="start", fill="#555")
+    canvas.rect(legend_x0, legend_y, swatch, 3, fill=LINE_COLOR_PRIMARY, stroke="none", width=0)
+    canvas.text(legend_x0 + swatch + 8, legend_y + 5, "average run value", size=11, anchor="start", fill="#555")
+    canvas.rect(legend_x0 + 200, legend_y, swatch, 3, fill=LINE_COLOR_SECONDARY, stroke="none", width=0)
+    canvas.text(legend_x0 + 200 + swatch + 8, legend_y + 5, "max run value", size=11, anchor="start", fill="#555")
 
-    return c
+    return canvas
 
 
 def main() -> None:
+    """Loads the generated stages and writes every heatmap and line-chart
+    figure this module produces to OUT_DIR."""
     if not os.path.exists(CSV_PATH):
         raise SystemExit(f"{CSV_PATH} not found -- run generate_gaps.py first")
     os.makedirs(OUT_DIR, exist_ok=True)
