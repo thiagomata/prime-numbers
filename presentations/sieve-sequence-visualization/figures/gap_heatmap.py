@@ -161,6 +161,45 @@ def load_stages():
     return [by_index[i] for i in sorted(by_index)]
 
 
+def validate_stages(stages) -> None:
+    """Structural sanity checks on loaded stage data, run once right after
+    load_stages() and before anything draws or verifies with it. Catches a
+    truncated or misaligned CSV (e.g. generate_gaps.py killed mid-row and
+    not properly repaired) as one clear error instead of a silently wrong
+    heatmap or a confusing crash deep inside a build_*_heatmap function.
+    Only checks the structural invariants every stage dict must satisfy
+    (matching survivors/gaps, strictly increasing survivors) -- proving the
+    generated numbers are mathematically correct is verify.py's job, not
+    this cheap pre-render check's."""
+    if not stages:
+        raise ValueError("no stages to validate")
+    for stage in stages:
+        head = stage["head"]
+        survivors = stage["survivors"]
+        if head < 2:
+            raise ValueError(f"stage head={head} is not a valid prime head (< 2)")
+        if not survivors:
+            raise ValueError(f"stage head={head} has no survivors")
+        if any(later <= earlier for earlier, later in zip(survivors, survivors[1:])):
+            raise ValueError(f"stage head={head} survivors are not strictly increasing")
+
+        gaps = stage.get("gaps")
+        if gaps is None:
+            continue
+        if len(gaps) != len(survivors):
+            raise ValueError(
+                f"stage head={head} has {len(gaps)} gaps but {len(survivors)} survivors -- must match 1:1"
+            )
+        previous = head
+        for row, (gap, survivor) in enumerate(zip(gaps, survivors)):
+            if previous + gap != survivor:
+                raise ValueError(
+                    f"stage head={head} row {row}: gap {gap} does not connect "
+                    f"{previous} to survivor {survivor}"
+                )
+            previous = survivor
+
+
 def first_composite_index(survivors):
     """Index of the first survivor that passed the finite sieve filter but is
     not actually prime -- the point where "current acceptance" and "certified
@@ -1224,6 +1263,10 @@ def main() -> None:
             f"{CSV_PATH} exists but has no stage rows -- generate_gaps.py may have "
             "been interrupted before finishing its first stage; rerun it"
         )
+    try:
+        validate_stages(stages)
+    except ValueError as error:
+        raise SystemExit(f"{CSV_PATH} failed validation: {error}")
 
     # Computed once and shared across every consumer below instead of each
     # independently re-walking the same O(stages x prefix_len) lineage.

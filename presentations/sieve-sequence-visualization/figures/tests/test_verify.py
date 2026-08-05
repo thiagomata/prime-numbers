@@ -114,3 +114,16 @@ def test_main_raises_a_clear_error_when_the_csv_has_no_stage_rows(tmp_path, monk
     monkeypatch.setattr(gap_heatmap, "CSV_PATH", str(csv_path))
     with pytest.raises(SystemExit, match="no stage rows"):
         verify.main()
+
+
+def test_main_raises_a_clear_error_when_a_stage_row_is_corrupted(tmp_path, monkeypatch):
+    csv_path = tmp_path / "corrupt.csv"
+    csv_path.write_text(
+        "stage_index,head,gap_index,gap,survivor\n"
+        "1,3,0,2,5\n"
+        "1,3,1,99,9\n"  # gap 99 does not connect survivor 5 to survivor 9
+    )
+    monkeypatch.setattr(verify, "CSV_PATH", str(csv_path))
+    monkeypatch.setattr(gap_heatmap, "CSV_PATH", str(csv_path))
+    with pytest.raises(SystemExit, match="failed validation"):
+        verify.main()

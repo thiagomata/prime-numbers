@@ -46,6 +46,7 @@ import csv
 import os
 from fractions import Fraction
 
+from gap_heatmap import validate_stages
 from generate_gaps import compute_full_period, is_prime
 from svg_kit import Canvas, save
 
@@ -174,6 +175,10 @@ def main() -> None:
         raise SystemExit(f"{SAMPLE_CSV_PATH} not found")
     os.makedirs(OUT_DIR, exist_ok=True)
     stages = load_stages(SAMPLE_CSV_PATH, NUM_MATRICES)
+    try:
+        validate_stages(stages)
+    except ValueError as error:
+        raise SystemExit(f"{SAMPLE_CSV_PATH} failed validation: {error}")
     canvas = build_figure(stages)
     path = os.path.join(OUT_DIR, "hit-miss-matrices.svg")
     save(canvas, path)

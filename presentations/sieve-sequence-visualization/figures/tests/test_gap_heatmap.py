@@ -524,6 +524,58 @@ def test_every_heatmap_builder_renders_a_well_formed_svg(tmp_path, monkeypatch):
         assert canvas.width > 0 and canvas.height > 0, build.__name__
 
 
+# --- validate_stages: structural sanity checks on loaded stage data --------
+
+def test_validate_stages_accepts_real_well_formed_stages():
+    gh.validate_stages(_small_stages())  # must not raise
+
+
+def test_validate_stages_rejects_an_empty_stage_list():
+    with pytest.raises(ValueError, match="no stages"):
+        gh.validate_stages([])
+
+
+def test_validate_stages_rejects_a_head_below_two():
+    stages = _small_stages()
+    stages[0]["head"] = 1
+    with pytest.raises(ValueError, match="not a valid prime head"):
+        gh.validate_stages(stages)
+
+
+def test_validate_stages_rejects_a_stage_with_no_survivors():
+    stages = _small_stages()
+    stages[0]["survivors"] = []
+    with pytest.raises(ValueError, match="no survivors"):
+        gh.validate_stages(stages)
+
+
+def test_validate_stages_rejects_survivors_that_are_not_strictly_increasing():
+    stages = _small_stages()
+    stages[0]["survivors"][2] = stages[0]["survivors"][1]  # duplicate, not increasing
+    with pytest.raises(ValueError, match="strictly increasing"):
+        gh.validate_stages(stages)
+
+
+def test_validate_stages_rejects_gaps_and_survivors_of_mismatched_length():
+    stages = _small_stages()
+    stages[0]["gaps"].pop()
+    with pytest.raises(ValueError, match="must match 1:1"):
+        gh.validate_stages(stages)
+
+
+def test_validate_stages_rejects_a_gap_that_does_not_connect_to_its_survivor():
+    stages = _small_stages()
+    stages[0]["gaps"][2] += 1  # now disagrees with the recorded survivor
+    with pytest.raises(ValueError, match="does not connect"):
+        gh.validate_stages(stages)
+
+
+def test_validate_stages_skips_the_gap_consistency_check_when_gaps_are_absent():
+    # hit_miss_heatmap.py's synthesized stage 0 has survivors but no "gaps"
+    # key at all -- validate_stages must still accept it.
+    gh.validate_stages([{"head": 2, "survivors": [2, 3, 4, 5]}])
+
+
 # --- main(): empty/missing-CSV guard --------------------------------------
 
 def test_main_raises_a_clear_error_when_the_csv_is_missing(tmp_path, monkeypatch):
@@ -542,4 +594,20 @@ def test_main_raises_a_clear_error_when_the_csv_has_no_stage_rows(tmp_path, monk
     monkeypatch.setattr(gh, "CSV_PATH", str(csv_path))
     monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path / "out"))
     with pytest.raises(SystemExit, match="no stage rows"):
+        gh.main()
+
+
+def test_main_raises_a_clear_error_when_a_stage_row_is_corrupted(tmp_path, monkeypatch):
+    # A gap column that doesn't connect its own row's survivors is exactly
+    # what a misaligned or partially-overwritten CSV row looks like -- must
+    # fail loudly before any heatmap is built, not draw a wrong picture.
+    csv_path = tmp_path / "corrupt.csv"
+    csv_path.write_text(
+        "stage_index,head,gap_index,gap,survivor\n"
+        "1,3,0,2,5\n"
+        "1,3,1,99,9\n"  # gap 99 does not connect survivor 5 to survivor 9
+    )
+    monkeypatch.setattr(gh, "CSV_PATH", str(csv_path))
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path / "out"))
+    with pytest.raises(SystemExit, match="failed validation"):
         gh.main()

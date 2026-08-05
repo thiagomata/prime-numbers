@@ -15,6 +15,10 @@ def escape(text: str) -> str:
 
 @dataclass
 class Canvas:
+    """An SVG document under construction: a fixed width/height plus an
+    ordered list of element strings, appended to by the draw methods below
+    and flattened into a single document by `render`."""
+
     width: int
     height: int
     font_family: str = "Helvetica, Arial, sans-serif"

@@ -2,7 +2,10 @@ import os
 from fractions import Fraction
 from functools import lru_cache
 
+import pytest
+
 import hit_miss_heatmap as hmh
+from svg_kit import Canvas
 
 SAMPLE_CSV = hmh.SAMPLE_CSV_PATH
 
@@ -60,3 +63,24 @@ def test_stage_captions_prints_short_periods_in_full():
     captions = hmh.stage_captions(stages)
     # stage 2 (head=5): period [2, 4]
     assert captions[2][1] == "gaps repeat: [2,4]"
+
+
+def test_build_figure_renders_a_well_formed_svg_with_one_panel_per_stage():
+    stages = _load_stages_cached(3)
+    canvas = hmh.build_figure(stages)
+    assert isinstance(canvas, Canvas)
+    svg = canvas.render()
+    assert svg.startswith("<svg "), svg[:80]
+    assert svg.rstrip().endswith("</svg>")
+    # One "Stage N (head=..." title per panel.
+    assert sum(f"Stage {i} (head=" in svg for i in range(len(stages))) == len(stages)
+
+
+def test_main_raises_a_clear_error_when_a_stage_is_corrupted(tmp_path, monkeypatch):
+    # Regression: main() loaded stages and built the figure straight from
+    # them with no structural sanity check at all -- a truncated/misaligned
+    # sample CSV would silently draw a wrong picture instead of failing loudly.
+    monkeypatch.setattr(hmh, "load_stages", lambda path, n: [{"head": 1, "survivors": [1, 2]}])
+    monkeypatch.setattr(hmh, "OUT_DIR", str(tmp_path / "out"))
+    with pytest.raises(SystemExit, match="failed validation"):
+        hmh.main()

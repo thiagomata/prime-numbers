@@ -1,4 +1,5 @@
 import stage_transition_diagram as std
+from svg_kit import Canvas
 
 
 def test_build_transition_stage_zero_is_the_synthesized_no_filter_case():
@@ -96,3 +97,30 @@ def test_row_width_accounts_for_gaps_between_chips():
 
 def test_row_width_zero_chips_is_zero():
     assert std.row_width(0) == 0
+
+
+def _blocks_for(stages_before):
+    return [(std.build_transition(s), std.compute_steps(std.build_transition(s))) for s in stages_before]
+
+
+def test_build_diagram_renders_a_well_formed_svg_for_the_default_transitions():
+    canvas = std.build_diagram(_blocks_for(std.TRANSITIONS))
+    assert isinstance(canvas, Canvas)
+    svg = canvas.render()
+    assert svg.startswith("<svg "), svg[:80]
+    assert svg.rstrip().endswith("</svg>")
+
+
+def test_build_diagram_draws_one_heading_per_block():
+    blocks = _blocks_for([0, 1, 2])
+    canvas = std.build_diagram(blocks)
+    svg = canvas.render()
+    for transition, _steps in blocks:
+        heading = f"Stage {transition['stage_before']} (head={transition['head_before']}) becoming"
+        assert heading in svg
+
+
+def test_build_diagram_stacks_blocks_taller_than_a_single_block():
+    one_block_h = std.build_diagram(_blocks_for([1])).height
+    two_block_h = std.build_diagram(_blocks_for([1, 2])).height
+    assert two_block_h > one_block_h

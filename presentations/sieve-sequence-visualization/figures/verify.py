@@ -20,6 +20,7 @@ from gap_heatmap import (
     lineage_walk,
     load_stages,
     proven_safe_boundary_indices,
+    validate_stages,
 )
 
 KNOWN_SMALL_STAGE_GAPS = {
@@ -147,6 +148,10 @@ def main() -> int:
             f"{CSV_PATH} exists but has no stage rows -- generate_gaps.py may have "
             "been interrupted before finishing its first stage; rerun it"
         )
+    try:
+        validate_stages(stages)
+    except ValueError as error:
+        raise SystemExit(f"{CSV_PATH} failed validation: {error}")
     checks = [
         check_known_small_stages,
         check_first_composite_is_head_squared,
