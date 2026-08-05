@@ -10,9 +10,11 @@ it's explicitly a conjecture, not a guarantee, and treating a violation of it
 as a bug would misrepresent what's actually been proven.
 """
 
+import os
 import sys
 
 from gap_heatmap import (
+    CSV_PATH,
     estimated_boundary_indices,
     first_composite_index,
     lineage_walk,
@@ -34,13 +36,15 @@ def check_known_small_stages(stages):
     by_head = {stage["head"]: stage for stage in stages}
 
     s3 = by_head.get(3)
-    if s3 is None or any(gap != 2 for gap in s3["gaps"]):
-        print("FAIL: stage head=3 should have every gap equal to 2 (odd numbers, 2 apart)")
+    all_equal = KNOWN_SMALL_STAGE_GAPS[3]["all_equal"]
+    if s3 is None or any(gap != all_equal for gap in s3["gaps"]):
+        print(f"FAIL: stage head=3 should have every gap equal to {all_equal} (odd numbers, {all_equal} apart)")
         ok = False
 
     s5 = by_head.get(5)
-    if s5 is None or any(gap != (2 if i % 2 == 0 else 4) for i, gap in enumerate(s5["gaps"])):
-        print("FAIL: stage head=5 should alternate gaps 2, 4, 2, 4, ...")
+    alternates = KNOWN_SMALL_STAGE_GAPS[5]["alternates"]
+    if s5 is None or any(gap != alternates[i % len(alternates)] for i, gap in enumerate(s5["gaps"])):
+        print(f"FAIL: stage head=5 should alternate gaps {alternates}")
         ok = False
 
     s7 = by_head.get(7)
@@ -135,7 +139,14 @@ def report_estimated_bound_fit(stages):
 def main() -> int:
     """Runs every proven-claim check plus the informational estimate report,
     printing PASS/FAIL/INFO lines and returning 0 iff every proven claim held."""
+    if not os.path.exists(CSV_PATH):
+        raise SystemExit(f"{CSV_PATH} not found -- run generate_gaps.py first")
     stages = load_stages()
+    if not stages:
+        raise SystemExit(
+            f"{CSV_PATH} exists but has no stage rows -- generate_gaps.py may have "
+            "been interrupted before finishing its first stage; rerun it"
+        )
     checks = [
         check_known_small_stages,
         check_first_composite_is_head_squared,

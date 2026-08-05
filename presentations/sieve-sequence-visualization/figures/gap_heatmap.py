@@ -34,7 +34,7 @@ import os
 from collections import Counter
 
 from generate_gaps import is_prime
-from png_writer import save_png
+from png_writer import encode_png
 from svg_kit import Canvas, save
 
 OUT_DIR = os.path.join(os.path.dirname(__file__), "out")
@@ -267,10 +267,10 @@ def hex_to_rgb(hex_color: str):
 def ramp_color(position: float, ramp=SEQUENTIAL_BLUE):
     """Continuous interpolation across the ramp anchors, position in [0, 1]."""
     n = len(ramp)
-    pos = min(max(position, 0.0), 1.0) * (n - 1)
-    i0 = int(pos)
+    scaled = min(max(position, 0.0), 1.0) * (n - 1)
+    i0 = int(scaled)
     i1 = min(i0 + 1, n - 1)
-    frac = pos - i0
+    frac = scaled - i0
     c0, c1 = hex_to_rgb(ramp[i0]), hex_to_rgb(ramp[i1])
     return tuple(round(c0[k] + (c1[k] - c0[k]) * frac) for k in range(3))
 
@@ -393,7 +393,7 @@ def simple_shift_row_diff(prev, cur):
     return [cur["gaps"][i] - prev["gaps"][i + shift] for i in range(n)]
 
 
-def compute_ages_per_row(stages):
+def compute_ages_per_row(stages, walks_per_row=None):
     """Cumulative gap age, per the intent documented in the project's own
     GapLineage.scala ("consecutive stages persisted; resets to 1 on merge") --
     not yet actually wired up there (SieveStage.scala's trackLineage hardcodes
@@ -401,11 +401,16 @@ def compute_ages_per_row(stages):
     stages: age=1 right after a merge, age=(ancestor's age)+1 for a plain
     copy. Row 0 has no prior lineage, so every one of its gaps starts at
     age=1. A position with unknown age (the lineage_walk window ran out
-    before reaching it, or its ancestor's age was itself unknown) is None."""
+    before reaching it, or its ancestor's age was itself unknown) is None.
+
+    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
+    for each row >= 1 (row 0 unused) -- pass this in when the caller already
+    computed it (see build_diff_heatmap/build_merge_heatmap in main()) so the
+    same O(stages x prefix_len) lineage isn't walked a second time."""
     ages_per_row = [[1] * len(stages[0]["gaps"])]
     for row in range(1, len(stages)):
         prev_ages = ages_per_row[-1]
-        walk = lineage_walk(stages[row - 1], stages[row])
+        walk = walks_per_row[row] if walks_per_row is not None else lineage_walk(stages[row - 1], stages[row])
         new_ages = [None] * len(stages[row]["gaps"])
         for i, (_diff, merge_count, anchor_idx) in enumerate(walk):
             if merge_count > 1:
@@ -463,30 +468,104 @@ def build_grid_png(stages, color_by_value, display_width, stagger=0):
     return width, len(stages), rows_rgb
 
 
+def calibration_values(rows, target_width, exclude=None):
+    """Flattened values from the first `target_width` entries of each row --
+    exactly what the matching build_*_grid_png actually draws for that row.
+    The frequency-equalized color ramp must be calibrated on this same slice,
+    not on the full (possibly much longer) row data, or its ramp positions
+    stop matching what's actually on screen (see MAX_DISPLAY_WIDTH). `exclude`,
+    if given, is a value skipped everywhere (e.g. TWO_GAP_COLOR's fixed 2,
+    which never uses the ramp); None entries (unknown/not-yet-computed) are
+    always skipped."""
+    return [
+        value for row in rows for value in row[:target_width]
+        if value is not None and value != exclude
+    ]
+
+
+def run_ages_for_calibration(compressed_per_row, ages_2focused_per_row, target_width):
+    """Like calibration_values, but for the 2-focused age view specifically:
+    only non-2-gap runs use the age ramp (see build_age_2focused_grid_png),
+    so calibration must walk `compressed_per_row` and `ages_2focused_per_row`
+    together, in lockstep, both sliced to target_width."""
+    return [
+        age
+        for compressed, ages in zip(compressed_per_row, ages_2focused_per_row)
+        for value, age in zip(compressed[:target_width], ages[:target_width])
+        if value != 2 and age is not None
+    ]
+
+
+def sample_for_legend(distinct_values, cap=24, keep=()):
+    """Caps a legend to at most `cap` swatches: every distinct value if there
+    are few enough to fit, otherwise a stride through them, always keeping
+    `keep` (e.g. 0 for a diverging legend) plus the first and last values."""
+    distinct_values = list(distinct_values)
+    if len(distinct_values) <= cap:
+        return distinct_values
+    stride = max(1, len(distinct_values) // cap)
+    return sorted({*distinct_values[::stride], *keep, distinct_values[0], distinct_values[-1]})
+
+
+def heatmap_cell_size(display_width, num_stages):
+    """Shared cell sizing for every heatmap view: the grid is scaled toward
+    roughly 2000 x 900 real pixels, with a floor so cells never round down to
+    nothing and a ceiling so a small number of stages doesn't produce huge rows."""
+    cell_w_display = max(1, 2000 // display_width)
+    cell_h_display = max(2, min(20, 900 // num_stages))
+    return cell_w_display, cell_h_display
+
+
+def heatmap_canvas_width(label_w, grid_w, legend_slot_count, legend_slot_w=32, extra=20):
+    """Canvas must be wide enough for the grid AND for however many legend
+    swatches get laid out left-to-right -- whichever is wider. Every heatmap
+    view must apply this safeguard: a view that skipped it clipped its own
+    legend off the right edge whenever legend_slot_count grew past what the
+    grid alone would need."""
+    return max(label_w + grid_w + extra, label_w + legend_slot_count * legend_slot_w)
+
+
+def draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display):
+    """Sparse 'h=<head>' labels down the left edge, roughly one per 40 rows,
+    shared by every heatmap view."""
+    label_every = max(1, len(stages) // 40)
+    for row, stage in enumerate(stages):
+        if row % label_every == 0:
+            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
+            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+
+
+def render_grid_png(png_path, width_px, height_px, rows_rgb) -> str:
+    """Encodes the grid once, writes it to png_path (the committed .png
+    alongside each .svg), and returns those same bytes as a base64 data: URI
+    ready to embed in the SVG -- avoids writing the file and then reopening it
+    just to get bytes already sitting in memory."""
+    png_bytes = encode_png(width_px, height_px, rows_rgb)
+    with open(png_path, "wb") as png_file:
+        png_file.write(png_bytes)
+    return f"data:image/png;base64,{base64.b64encode(png_bytes).decode('ascii')}"
+
+
 def build_heatmap(stages, stagger=0, png_name="gap-heatmap.png", title_suffix="") -> Canvas:
     """Builds the base gap-value heatmap: raster grid, row head labels, both
     boundary curves, and a frequency-equalized legend."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    all_values = [gap for stage in stages for gap in stage["gaps"][:display_width]]
+    all_values = calibration_values([stage["gaps"] for stage in stages], display_width)
     color_by_value = build_equalized_color_map(all_values)
     distinct_values = sorted(color_by_value)
 
     grid_w_px, grid_h_px, rows_rgb = build_grid_png(stages, color_by_value, display_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // display_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
     label_w = 90
     legend_h = 122
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + len(distinct_values) * 32)
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(distinct_values))
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -494,14 +573,10 @@ def build_heatmap(stages, stagger=0, png_name="gap-heatmap.png", title_suffix=""
            f"Gap heatmap: first {display_width} of {prefix_len} generated gaps across {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
@@ -563,31 +638,26 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
     a fixed color, runs between consecutive 2-gaps collapsed and colored by
     the equalized sequential ramp."""
     compressed_per_row = [compress_around_two(stage["gaps"]) for stage in stages]
-    non_two_values = [value for row in compressed_per_row for value in row if value != 2]
+    target_width = min(choose_compressed_width(compressed_per_row), MAX_DISPLAY_WIDTH)
+    non_two_values = calibration_values(compressed_per_row, target_width, exclude=2)
     color_by_value = build_equalized_color_map(non_two_values)
     distinct_values = sorted(color_by_value)
-    legend_values = (
-        distinct_values if len(distinct_values) <= 24
-        else sorted({*distinct_values[::max(1, len(distinct_values) // 24)], distinct_values[0], distinct_values[-1]})
-    )
+    legend_values = sample_for_legend(distinct_values)
 
-    target_width = min(choose_compressed_width(compressed_per_row), MAX_DISPLAY_WIDTH)
     grid_w_px, grid_h_px, rows_rgb = build_compressed_grid_png(
         stages, compressed_per_row, color_by_value, target_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // target_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(target_width, len(stages))
     label_w = 90
     legend_h = 90
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
+    # +1 legend slot: the fixed "2" swatch drawn before the loop occupies one
+    # slot of its own (see the loop's (i + 1) offset below).
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values) + 1)
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -595,14 +665,10 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
            f"2-focused compression heatmap: {len(stages)} stages, {target_width} units per row (shortest row, longer rows truncated){title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
@@ -621,37 +687,37 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
     return canvas
 
 
-def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title_suffix="") -> Canvas:
+def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title_suffix="", walks_per_row=None) -> Canvas:
     """Builds the rigorous copy-or-merge diff heatmap: each cell is a gap's
     change vs the previous stage per lineage_walk, colored on the diverging
-    ramp (see build_diverging_color_map)."""
+    ramp (see build_diverging_color_map).
+
+    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
+    for each row >= 1 (row 0 unused) -- pass this in when the caller already
+    computed it (see main(), which shares one pass across this and
+    build_merge_heatmap) instead of walking the same lineage twice."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    walks_per_row = walks_per_row if walks_per_row is not None else (
+        [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    )
     diffs_per_row = [[diff for diff, _merge_count, _anchor_idx in walk] for walk in walks_per_row]
-    all_diffs = [diff for row_diffs in diffs_per_row for diff in row_diffs[:display_width]]
+    all_diffs = calibration_values(diffs_per_row, display_width)
     color_by_diff = build_diverging_color_map(all_diffs)
     distinct_diffs = sorted(color_by_diff)
-    legend_values = (
-        distinct_diffs if len(distinct_diffs) <= 24
-        else sorted({0, *distinct_diffs[::max(1, len(distinct_diffs) // 24)], distinct_diffs[0], distinct_diffs[-1]})
-    )
+    legend_values = sample_for_legend(distinct_diffs, keep=(0,))
 
     grid_w_px, grid_h_px, rows_rgb = build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // display_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
     label_w = 90
     legend_h = 90
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values))
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -659,14 +725,10 @@ def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title
            f"Gap diff heatmap: change vs previous stage, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
@@ -695,29 +757,22 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     diffs_per_row = [[]] + [simple_shift_row_diff(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    all_diffs = [diff for row_diffs in diffs_per_row for diff in row_diffs[:display_width]]
+    all_diffs = calibration_values(diffs_per_row, display_width)
     color_by_diff = build_diverging_color_map(all_diffs)
     distinct_diffs = sorted(color_by_diff)
-    legend_values = (
-        distinct_diffs if len(distinct_diffs) <= 24
-        else sorted({0, *distinct_diffs[::max(1, len(distinct_diffs) // 24)], distinct_diffs[0], distinct_diffs[-1]})
-    )
+    legend_values = sample_for_legend(distinct_diffs, keep=(0,))
 
     grid_w_px, grid_h_px, rows_rgb = build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // display_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
     label_w = 90
     legend_h = 122
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values))
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -725,14 +780,10 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
            f"Gap diff heatmap (simple constant shift, no merge tracking): {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
@@ -782,29 +833,29 @@ def build_merge_grid_png(stages, walks_per_row, display_width, stagger=0):
     return width, len(stages), rows_rgb
 
 
-def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", title_suffix="") -> Canvas:
+def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", title_suffix="", walks_per_row=None) -> Canvas:
     """Builds the merge-count heatmap: each cell colored by how many previous-stage
-    gaps fed into it (see color_for_merge_count), mostly a copy (1) with rare merges."""
+    gaps fed into it (see color_for_merge_count), mostly a copy (1) with rare merges.
+
+    walks_per_row: see build_diff_heatmap."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    walks_per_row = walks_per_row if walks_per_row is not None else (
+        [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    )
     max_merge = max((merge_count for walk in walks_per_row for _diff, merge_count, _anchor_idx in walk[:display_width]), default=1)
 
     grid_w_px, grid_h_px, rows_rgb = build_merge_grid_png(stages, walks_per_row, display_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // display_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
     label_w = 90
     legend_h = 122
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = label_w + grid_w + 20
+    canvas_w = heatmap_canvas_width(label_w, grid_w, max_merge)
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -812,14 +863,10 @@ def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", ti
            f"Merge-count heatmap: how many old gaps fed each new one, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
                           legend_y=top_margin + grid_h + 20)
@@ -881,34 +928,32 @@ def build_age_grid_png(stages, ages_per_row, color_by_age, width, stagger=0):
     return full_width, len(stages), rows_rgb
 
 
-def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_suffix="") -> Canvas:
+def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_suffix="", ages_per_row=None) -> Canvas:
     """Builds the gap-age heatmap: each cell colored by how many consecutive
-    stages its lineage survived without merging (see compute_ages_per_row)."""
-    ages_per_row = compute_ages_per_row(stages)
-    all_ages = [age for row in ages_per_row for age in row if age is not None]
+    stages its lineage survived without merging (see compute_ages_per_row).
+
+    ages_per_row, if given, must be compute_ages_per_row(stages) -- pass this
+    in when the caller already computed it (see main(), which shares one pass
+    across this and build_age_2focused_heatmap) instead of recomputing the
+    same full-data lineage walk again."""
+    ages_per_row = ages_per_row if ages_per_row is not None else compute_ages_per_row(stages)
+    target_width = min(choose_age_width(ages_per_row), MAX_DISPLAY_WIDTH)
+    all_ages = calibration_values(ages_per_row, target_width)
     color_by_age = build_equalized_color_map(all_ages, ramp=AGE_RAMP)
     distinct_ages = sorted(color_by_age)
-    legend_values = (
-        distinct_ages if len(distinct_ages) <= 24
-        else sorted({*distinct_ages[::max(1, len(distinct_ages) // 24)], distinct_ages[0], distinct_ages[-1]})
-    )
+    legend_values = sample_for_legend(distinct_ages)
 
-    target_width = min(choose_age_width(ages_per_row), MAX_DISPLAY_WIDTH)
     grid_w_px, grid_h_px, rows_rgb = build_age_grid_png(stages, ages_per_row, color_by_age, target_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // target_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(target_width, len(stages))
     label_w = 90
     legend_h = 122
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + len(legend_values) * 32)
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values))
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -916,14 +961,10 @@ def build_age_heatmap(stages, stagger=0, png_name="gap-heatmap-age.png", title_s
            f"Gap age heatmap: consecutive stages survived without merging, {target_width} known gaps x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, target_width,
                           legend_y=top_margin + grid_h + 20)
@@ -972,7 +1013,7 @@ def build_age_2focused_grid_png(stages, compressed_per_row, ages_2focused_per_ro
     return full_width, len(stages), rows_rgb
 
 
-def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused-age.png", title_suffix="") -> Canvas:
+def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused-age.png", title_suffix="", ages_per_row=None) -> Canvas:
     """Combines the other two views: x-axis is 2-focused compression (every
     2-gap its own unit, runs between consecutive 2-gaps collapsed into one).
     2-gaps render in a fixed reserved color (TWO_GAP_COLOR); only runs are
@@ -980,8 +1021,10 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
     a single gap with one lineage), but of the raw gap that CLOSES it
     (compress_around_two_with_anchor's anchor index), the same closing
     boundary compute_ages_per_row's lineage_walk already anchors merge/copy
-    status on for the next stage."""
-    ages_per_row = compute_ages_per_row(stages)
+    status on for the next stage.
+
+    ages_per_row: see build_age_heatmap."""
+    ages_per_row = ages_per_row if ages_per_row is not None else compute_ages_per_row(stages)
     compressed_per_row = []
     ages_2focused_per_row = []
     for row, stage in enumerate(stages):
@@ -991,38 +1034,32 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
         compressed_per_row.append(compressed)
         ages_2focused_per_row.append(ages_2focused)
 
+    target_width = min(choose_age_width(ages_2focused_per_row), MAX_DISPLAY_WIDTH)
     # Ramp is calibrated on run ages only -- 2-gaps don't use it at all, so
     # including their (numerous) ages here would just waste ramp resolution.
-    all_ages = [
-        age
-        for compressed, ages in zip(compressed_per_row, ages_2focused_per_row)
-        for value, age in zip(compressed, ages)
-        if value != 2 and age is not None
-    ]
+    all_ages = run_ages_for_calibration(compressed_per_row, ages_2focused_per_row, target_width)
     color_by_age = build_equalized_color_map(all_ages, ramp=AGE_RAMP)
     distinct_ages = sorted(color_by_age)
-    legend_values = (
-        distinct_ages if len(distinct_ages) <= 24
-        else sorted({*distinct_ages[::max(1, len(distinct_ages) // 24)], distinct_ages[0], distinct_ages[-1]})
-    )
+    legend_values = sample_for_legend(distinct_ages)
 
-    target_width = min(choose_age_width(ages_2focused_per_row), MAX_DISPLAY_WIDTH)
     grid_w_px, grid_h_px, rows_rgb = build_age_2focused_grid_png(
         stages, compressed_per_row, ages_2focused_per_row, color_by_age, target_width, stagger=stagger)
-    png_path = os.path.join(OUT_DIR, png_name)
-    save_png(png_path, grid_w_px, grid_h_px, rows_rgb)
-    with open(png_path, "rb") as png_file:
-        png_b64 = base64.b64encode(png_file.read()).decode("ascii")
+    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
 
-    cell_w_display = max(1, 2000 // target_width) or 1
-    cell_h_display = max(2, min(20, 900 // len(stages)))
+    cell_w_display, cell_h_display = heatmap_cell_size(target_width, len(stages))
     label_w = 90
-    legend_h = 122
+    # No boundary-curve caption in this view (unlike build_age_heatmap) --
+    # this view's x-axis is 2-focused compression, not raw gap index, so the
+    # boundary curves' indices wouldn't line up with it. Same legend_h as
+    # build_compressed_heatmap, its true sibling on that x-axis.
+    legend_h = 90
     top_margin = 50
 
     grid_w = grid_w_px * cell_w_display
     grid_h = len(stages) * cell_h_display
-    canvas_w = max(label_w + grid_w + 20, label_w + (len(legend_values) + 1) * 32)
+    # +1 legend slot: the fixed "2" swatch drawn before the loop occupies one
+    # slot of its own (see the loop's (i + 1) offset below).
+    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values) + 1)
     canvas_h = top_margin + grid_h + legend_h
 
     canvas = Canvas(canvas_w, canvas_h)
@@ -1031,14 +1068,10 @@ def build_age_2focused_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused
            f"{target_width} units x {len(stages)} stages{title_suffix}",
            size=16, weight="bold")
 
-    canvas.image(label_w, top_margin, grid_w, grid_h, f"data:image/png;base64,{png_b64}")
+    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
     canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
 
-    label_every = max(1, len(stages) // 40)
-    for row, stage in enumerate(stages):
-        if row % label_every == 0:
-            y = top_margin + row * cell_h_display + cell_h_display / 2 + 4
-            canvas.text(label_w - 12, y, f"h={stage['head']}", size=11, anchor="end")
+    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
 
     legend_y = top_margin + grid_h + 30
     legend_x0 = label_w
@@ -1186,6 +1219,16 @@ def main() -> None:
         raise SystemExit(f"{CSV_PATH} not found -- run generate_gaps.py first")
     os.makedirs(OUT_DIR, exist_ok=True)
     stages = load_stages()
+    if not stages:
+        raise SystemExit(
+            f"{CSV_PATH} exists but has no stage rows -- generate_gaps.py may have "
+            "been interrupted before finishing its first stage; rerun it"
+        )
+
+    # Computed once and shared across every consumer below instead of each
+    # independently re-walking the same O(stages x prefix_len) lineage.
+    walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    ages_per_row = compute_ages_per_row(stages, walks_per_row=walks_per_row)
 
     canvas = build_heatmap(stages)
     path = os.path.join(OUT_DIR, "gap-heatmap.svg")
@@ -1200,14 +1243,14 @@ def main() -> None:
     save(staggered, staggered_path)
     print(f"wrote {staggered_path}")
 
-    diff_canvas = build_diff_heatmap(stages)
+    diff_canvas = build_diff_heatmap(stages, walks_per_row=walks_per_row)
     diff_path = os.path.join(OUT_DIR, "gap-heatmap-diff.svg")
     save(diff_canvas, diff_path)
     print(f"wrote {diff_path}")
 
     diff_staggered = build_diff_heatmap(
         stages, stagger=1, png_name="gap-heatmap-diff-staggered.png",
-        title_suffix=" (each row shifted 1px right)",
+        title_suffix=" (each row shifted 1px right)", walks_per_row=walks_per_row,
     )
     diff_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-diff-staggered.svg")
     save(diff_staggered, diff_staggered_path)
@@ -1218,19 +1261,19 @@ def main() -> None:
     save(simple_diff_canvas, simple_diff_path)
     print(f"wrote {simple_diff_path}")
 
-    merge_canvas = build_merge_heatmap(stages)
+    merge_canvas = build_merge_heatmap(stages, walks_per_row=walks_per_row)
     merge_path = os.path.join(OUT_DIR, "gap-heatmap-merges.svg")
     save(merge_canvas, merge_path)
     print(f"wrote {merge_path}")
 
-    age_canvas = build_age_heatmap(stages)
+    age_canvas = build_age_heatmap(stages, ages_per_row=ages_per_row)
     age_path = os.path.join(OUT_DIR, "gap-heatmap-age.svg")
     save(age_canvas, age_path)
     print(f"wrote {age_path}")
 
     age_staggered = build_age_heatmap(
         stages, stagger=1, png_name="gap-heatmap-age-staggered.png",
-        title_suffix=" (each row shifted 1px right)",
+        title_suffix=" (each row shifted 1px right)", ages_per_row=ages_per_row,
     )
     age_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-age-staggered.svg")
     save(age_staggered, age_staggered_path)
@@ -1249,14 +1292,14 @@ def main() -> None:
     save(compressed_staggered, compressed_staggered_path)
     print(f"wrote {compressed_staggered_path}")
 
-    age_2focused_canvas = build_age_2focused_heatmap(stages)
+    age_2focused_canvas = build_age_2focused_heatmap(stages, ages_per_row=ages_per_row)
     age_2focused_path = os.path.join(OUT_DIR, "gap-heatmap-2focused-age.svg")
     save(age_2focused_canvas, age_2focused_path)
     print(f"wrote {age_2focused_path}")
 
     age_2focused_staggered = build_age_2focused_heatmap(
         stages, stagger=1, png_name="gap-heatmap-2focused-age-staggered.png",
-        title_suffix=" (each row shifted 1px right)",
+        title_suffix=" (each row shifted 1px right)", ages_per_row=ages_per_row,
     )
     age_2focused_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-2focused-age-staggered.svg")
     save(age_2focused_staggered, age_2focused_staggered_path)

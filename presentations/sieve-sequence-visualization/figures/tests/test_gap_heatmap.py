@@ -1,4 +1,20 @@
+import base64
+
+import pytest
+
 import gap_heatmap as gh
+from conftest import walk_stage as _walk_stage
+
+
+def _small_stages():
+    """Three real, small stages (heads 3, 5, 7) -- enough for a heatmap
+    builder to run end to end without touching the real (large, gitignored)
+    dataset."""
+    return [
+        _walk_stage(3, [2], 30),
+        _walk_stage(5, [2, 3], 20),
+        _walk_stage(7, [2, 3, 5], 15),
+    ]
 
 
 def test_compress_around_two_keeps_twos_and_sums_runs_between_them():
@@ -119,25 +135,8 @@ def test_build_equalized_color_map_is_monotonic_in_value_order():
     ramp = ["#000000", "#808080", "#ffffff"]
     color_by_value = gh.build_equalized_color_map([2, 2, 2, 2, 4, 6, 8], ramp=ramp)
     values_in_order = sorted(color_by_value)
-    brightness = [sum(color_by_value[v]) for v in values_in_order]
+    brightness = [sum(color_by_value[value]) for value in values_in_order]
     assert brightness == sorted(brightness)
-
-
-def _walk_stage(head, tail_primes, count):
-    """Mirrors generate_gaps.py's trial-division walk: `count` survivors of
-    `head`'s stage (coprime to every prime in tail_primes), with their gaps."""
-    survivors = []
-    candidate = head + 1
-    while len(survivors) < count:
-        if all(candidate % p != 0 for p in tail_primes):
-            survivors.append(candidate)
-        candidate += 1
-    gaps = []
-    previous_value = head
-    for survivor in survivors:
-        gaps.append(survivor - previous_value)
-        previous_value = survivor
-    return {"head": head, "gaps": gaps, "survivors": survivors}
 
 
 def test_lineage_walk_diff_is_zero_across_a_real_stage_transition():
@@ -176,3 +175,371 @@ def test_lineage_walk_stops_early_when_prev_runs_out_of_gaps():
     cur = _walk_stage(5, [2, 3], 8)
     walk = gh.lineage_walk(prev, cur)
     assert len(walk) < len(cur["gaps"])
+
+
+def test_simple_shift_row_diff_matches_lineage_walk_before_the_first_merge():
+    # Before any merge, a constant offset IS the true one, so both approaches
+    # must agree exactly (see simple_shift_row_diff's own docstring).
+    prev = _walk_stage(3, [2], 20)
+    cur = _walk_stage(5, [2, 3], 8)
+    walk = gh.lineage_walk(prev, cur)
+    shift_diffs = gh.simple_shift_row_diff(prev, cur)
+    first_merge = next(i for i, (_diff, merge_count, _anchor) in enumerate(walk) if merge_count > 1)
+    assert shift_diffs[:first_merge] == [0] * first_merge
+
+
+def test_simple_shift_row_diff_drifts_after_the_first_merge():
+    prev = _walk_stage(3, [2], 20)
+    cur = _walk_stage(5, [2, 3], 8)
+    shift_diffs = gh.simple_shift_row_diff(prev, cur)
+    # Since prev's own gaps are all constant (2), the fixed-offset comparison
+    # still lands on a "2" every other position by coincidence even after the
+    # merge -- so the reliable signal isn't "every position now differs", it's
+    # that this stops matching lineage_walk's true (always-0) diff, which
+    # simple_shift_row_diff's docstring explains is expected past the row's
+    # first real merge.
+    assert shift_diffs == [0, 2, 0, 2, 0, 2, 0, 2]
+    lineage_diffs = [diff for diff, _merge_count, _anchor in gh.lineage_walk(prev, cur)]
+    assert lineage_diffs == [0] * len(lineage_diffs)
+    assert shift_diffs != lineage_diffs
+
+
+def test_compute_ages_per_row_first_row_starts_at_age_one():
+    stages = [_walk_stage(3, [2], 8), _walk_stage(5, [2, 3], 4)]
+    ages_per_row = gh.compute_ages_per_row(stages)
+    assert ages_per_row[0] == [1] * len(stages[0]["gaps"])
+
+
+def test_compute_ages_per_row_resets_to_one_on_merge_else_increments():
+    stages = [_walk_stage(3, [2], 20), _walk_stage(5, [2, 3], 8)]
+    ages_per_row = gh.compute_ages_per_row(stages)
+    # Known cycle: merge_count alternates 1, 2, 1, 2, ... (see the lineage_walk
+    # test above) -- a merge (index 1, 3, 5, 7) resets age to 1; a copy
+    # (index 0, 2, 4, 6) increments the row-0 ancestor's age (1) to 2.
+    assert ages_per_row[1] == [2, 1, 2, 1, 2, 1, 2, 1]
+
+
+def test_choose_compressed_width_defaults_to_the_shortest_row():
+    assert gh.choose_compressed_width([[1, 2, 3], [1, 2], [1, 2, 3, 4]]) == 2
+
+
+def test_choose_compressed_width_percentile_100_is_the_longest_row():
+    assert gh.choose_compressed_width([[1, 2, 3], [1, 2], [1, 2, 3, 4]], percentile=100) == 4
+
+
+def test_color_for_merge_count_plain_copy_is_copy_color():
+    assert gh.color_for_merge_count(1) == gh.hex_to_rgb(gh.COPY_COLOR)
+    assert gh.color_for_merge_count(0) == gh.hex_to_rgb(gh.COPY_COLOR)
+
+
+def test_color_for_merge_count_merge_uses_the_accent_ramp():
+    assert gh.color_for_merge_count(2) == gh.hex_to_rgb(gh.MERGE_ACCENT_RAMP[0])
+
+
+def test_color_for_merge_count_clamps_to_the_ramps_last_entry():
+    huge_count = len(gh.MERGE_ACCENT_RAMP) + 50
+    assert gh.color_for_merge_count(huge_count) == gh.hex_to_rgb(gh.MERGE_ACCENT_RAMP[-1])
+
+
+def test_known_prefix_len_stops_at_the_first_none():
+    assert gh.known_prefix_len([1, 2, 3, None, 5]) == 3
+
+
+def test_known_prefix_len_is_full_length_when_nothing_is_unknown():
+    assert gh.known_prefix_len([1, 2, 3]) == 3
+
+
+def test_choose_age_width_defaults_to_the_shortest_known_prefix():
+    ages_per_row = [[1, 2, 3], [1, None, None], [1, 2, 3, 4]]
+    assert gh.choose_age_width(ages_per_row) == 1
+
+
+# --- calibration_values / run_ages_for_calibration ---------------------
+# These back the fix for build_compressed_heatmap / build_age_heatmap /
+# build_age_2focused_heatmap calibrating their color ramp on the full,
+# untruncated row data while only rendering a truncated target_width of
+# columns -- the ramp's colors no longer matched what was actually on screen.
+
+def test_calibration_values_truncates_to_target_width():
+    rows = [[1, 2, 3, 4], [5, 6, 7, 8]]
+    assert gh.calibration_values(rows, target_width=2) == [1, 2, 5, 6]
+
+
+def test_calibration_values_ignores_data_beyond_target_width():
+    # The core regression: a distinct value that only appears beyond
+    # target_width must never leak into the calibration set.
+    rows = [[1, 1, 1, 999]]
+    assert 999 not in gh.calibration_values(rows, target_width=3)
+
+
+def test_calibration_values_excludes_the_given_value():
+    rows = [[2, 4, 2, 6]]
+    assert gh.calibration_values(rows, target_width=4, exclude=2) == [4, 6]
+
+
+def test_calibration_values_skips_none_entries():
+    rows = [[1, None, 3]]
+    assert gh.calibration_values(rows, target_width=3) == [1, 3]
+
+
+def test_run_ages_for_calibration_excludes_two_gaps_and_none_ages():
+    compressed_per_row = [[2, 10, 2, 4]]
+    ages_2focused_per_row = [[None, 3, None, 1]]
+    assert gh.run_ages_for_calibration(compressed_per_row, ages_2focused_per_row, target_width=4) == [3, 1]
+
+
+def test_run_ages_for_calibration_ignores_data_beyond_target_width():
+    compressed_per_row = [[10, 2, 999]]
+    ages_2focused_per_row = [[5, None, 7]]
+    assert gh.run_ages_for_calibration(compressed_per_row, ages_2focused_per_row, target_width=2) == [5]
+
+
+# --- sample_for_legend ---------------------------------------------------
+
+def test_sample_for_legend_returns_everything_under_the_cap():
+    assert gh.sample_for_legend([1, 2, 3], cap=24) == [1, 2, 3]
+
+
+def test_sample_for_legend_always_keeps_first_and_last_over_the_cap():
+    sampled = gh.sample_for_legend(list(range(100)), cap=10)
+    assert sampled[0] == 0
+    assert sampled[-1] == 99
+
+
+def test_sample_for_legend_keeps_requested_values_even_over_the_cap():
+    sampled = gh.sample_for_legend(list(range(1, 100)), cap=10, keep=(0,))
+    assert 0 in sampled
+
+
+# --- heatmap_cell_size / heatmap_canvas_width / draw_row_head_labels ----
+
+def test_heatmap_cell_size_has_a_floor_of_one_pixel_wide():
+    cell_w, _cell_h = gh.heatmap_cell_size(display_width=4000, num_stages=1000)
+    assert cell_w == 1
+
+
+def test_heatmap_cell_size_has_a_floor_of_two_pixels_tall():
+    _cell_w, cell_h = gh.heatmap_cell_size(display_width=4000, num_stages=1000)
+    assert cell_h == 2
+
+
+def test_heatmap_cell_size_caps_height_at_twenty_pixels():
+    _cell_w, cell_h = gh.heatmap_cell_size(display_width=10, num_stages=2)
+    assert cell_h == 20  # uncapped this would be 900 // 2 == 450
+
+
+def test_heatmap_canvas_width_fits_the_grid_when_the_legend_is_narrow():
+    assert gh.heatmap_canvas_width(label_w=90, grid_w=500, legend_slot_count=2) == 90 + 500 + 20
+
+
+def test_heatmap_canvas_width_widens_for_a_legend_wider_than_the_grid():
+    # Regression: build_merge_heatmap used to compute canvas_w without this
+    # safeguard, so a legend needing more room than the grid got clipped.
+    canvas_w = gh.heatmap_canvas_width(label_w=90, grid_w=50, legend_slot_count=20)
+    assert canvas_w == 90 + 20 * 32
+    assert canvas_w > 90 + 50 + 20
+
+
+def test_draw_row_head_labels_labels_every_row_when_there_are_few():
+    canvas = gh.Canvas(200, 200)
+    stages = [{"head": 3}, {"head": 5}, {"head": 7}]
+    gh.draw_row_head_labels(canvas, stages, label_w=90, top_margin=50, cell_h_display=10)
+    labels = [el for el in canvas.elements if "h=" in el]
+    assert len(labels) == 3
+    assert "h=3" in labels[0]
+    assert "h=7" in labels[-1]
+
+
+def test_draw_row_head_labels_thins_out_for_many_rows():
+    canvas = gh.Canvas(200, 200)
+    stages = [{"head": h} for h in range(200)]
+    gh.draw_row_head_labels(canvas, stages, label_w=90, top_margin=50, cell_h_display=2)
+    labels = [el for el in canvas.elements if "h=" in el]
+    assert len(labels) == 40  # label_every = max(1, 200 // 40) = 5 -> rows 0, 5, ..., 195 (40 of them)
+
+
+# --- render_grid_png -----------------------------------------------------
+
+def test_render_grid_png_writes_the_same_bytes_it_returns_as_a_data_uri(tmp_path):
+    rows_rgb = [bytes((255, 0, 0) * 2), bytes((0, 255, 0) * 2)]
+    png_path = str(tmp_path / "grid.png")
+    uri = gh.render_grid_png(png_path, width_px=2, height_px=2, rows_rgb=rows_rgb)
+
+    assert uri.startswith("data:image/png;base64,")
+    with open(png_path, "rb") as png_file:
+        file_bytes = png_file.read()
+    assert base64.b64decode(uri.split(",", 1)[1]) == file_bytes
+
+
+# --- compute_ages_per_row / walks_per_row caching -------------------------
+# main() now computes lineage_walk once and shares it with every consumer
+# instead of each view independently re-walking the same full-data lineage.
+
+def test_compute_ages_per_row_accepts_a_precomputed_walks_per_row():
+    stages = [_walk_stage(3, [2], 20), _walk_stage(5, [2, 3], 8)]
+    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+    assert gh.compute_ages_per_row(stages, walks_per_row=walks_per_row) == gh.compute_ages_per_row(stages)
+
+
+# --- build_*_heatmap: bug-fix regressions and caching equivalence --------
+
+def test_build_merge_heatmap_uses_the_shared_canvas_width_safeguard(tmp_path, monkeypatch):
+    # Regression: build_merge_heatmap used to size its canvas as
+    # `label_w + grid_w + 20`, with no check that the legend (one swatch per
+    # merge count, up to max_merge) actually fit -- unlike every sibling
+    # heatmap builder. Assert it now goes through heatmap_canvas_width.
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    calls = []
+    original = gh.heatmap_canvas_width
+
+    def spy(label_w, grid_w, legend_slot_count, **kwargs):
+        calls.append(legend_slot_count)
+        return original(label_w, grid_w, legend_slot_count, **kwargs)
+
+    monkeypatch.setattr(gh, "heatmap_canvas_width", spy)
+    gh.build_merge_heatmap(_small_stages())
+    assert len(calls) == 1
+
+
+def test_build_age_2focused_heatmap_reserves_no_unused_boundary_curve_space(tmp_path, monkeypatch):
+    # Regression: this view never calls draw_boundary_curves (its x-axis is
+    # 2-focused compression, not raw gap index, so the curves' indices
+    # wouldn't line up), but it used to reserve legend_h=122 anyway -- copied
+    # from build_age_heatmap, which needs that space for its boundary-curve
+    # caption. That left ~32px of unexplained blank space at the bottom.
+    # It must reserve the same legend_h (90) as its true sibling,
+    # build_compressed_heatmap.
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    cell_sizes = []
+    original = gh.heatmap_cell_size
+
+    def spy(display_width, num_stages):
+        result = original(display_width, num_stages)
+        cell_sizes.append(result)
+        return result
+
+    monkeypatch.setattr(gh, "heatmap_cell_size", spy)
+    stages = _small_stages()
+    canvas = gh.build_age_2focused_heatmap(stages)
+
+    _cell_w, cell_h = cell_sizes[0]
+    grid_h = len(stages) * cell_h
+    legend_h = canvas.height - 50 - grid_h  # top_margin is always 50
+    assert legend_h == 90
+
+
+def test_build_compressed_heatmap_calibrates_on_the_rendered_target_width(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    seen_widths = []
+    original = gh.calibration_values
+
+    def spy(rows, target_width, **kwargs):
+        seen_widths.append(target_width)
+        return original(rows, target_width, **kwargs)
+
+    monkeypatch.setattr(gh, "calibration_values", spy)
+    stages = _small_stages()
+    compressed_per_row = [gh.compress_around_two(stage["gaps"]) for stage in stages]
+    expected = min(gh.choose_compressed_width(compressed_per_row), gh.MAX_DISPLAY_WIDTH)
+
+    gh.build_compressed_heatmap(stages)
+    assert seen_widths == [expected]
+
+
+def test_build_age_heatmap_calibrates_on_the_rendered_target_width(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    seen_widths = []
+    original = gh.calibration_values
+
+    def spy(rows, target_width, **kwargs):
+        seen_widths.append(target_width)
+        return original(rows, target_width, **kwargs)
+
+    monkeypatch.setattr(gh, "calibration_values", spy)
+    stages = _small_stages()
+    ages_per_row = gh.compute_ages_per_row(stages)
+    expected = min(gh.choose_age_width(ages_per_row), gh.MAX_DISPLAY_WIDTH)
+
+    gh.build_age_heatmap(stages)
+    assert seen_widths == [expected]
+
+
+def test_build_age_2focused_heatmap_calibrates_on_the_rendered_target_width(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    calls = []
+    original = gh.run_ages_for_calibration
+
+    def spy(compressed_per_row, ages_2focused_per_row, target_width):
+        calls.append(target_width)
+        return original(compressed_per_row, ages_2focused_per_row, target_width)
+
+    monkeypatch.setattr(gh, "run_ages_for_calibration", spy)
+    gh.build_age_2focused_heatmap(_small_stages())
+    assert len(calls) == 1
+
+
+def test_build_diff_heatmap_matches_whether_walks_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    stages = _small_stages()
+    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+
+    default = gh.build_diff_heatmap(stages, png_name="a.png")
+    precomputed = gh.build_diff_heatmap(stages, png_name="b.png", walks_per_row=walks_per_row)
+    assert default.render() == precomputed.render()
+
+
+def test_build_merge_heatmap_matches_whether_walks_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    stages = _small_stages()
+    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
+
+    default = gh.build_merge_heatmap(stages, png_name="a.png")
+    precomputed = gh.build_merge_heatmap(stages, png_name="b.png", walks_per_row=walks_per_row)
+    assert default.render() == precomputed.render()
+
+
+def test_build_age_heatmap_matches_whether_ages_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    stages = _small_stages()
+    ages_per_row = gh.compute_ages_per_row(stages)
+
+    default = gh.build_age_heatmap(stages, png_name="a.png")
+    precomputed = gh.build_age_heatmap(stages, png_name="b.png", ages_per_row=ages_per_row)
+    assert default.render() == precomputed.render()
+
+
+def test_every_heatmap_builder_renders_a_well_formed_svg(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
+    stages = _small_stages()
+    builders = [
+        gh.build_heatmap, gh.build_compressed_heatmap, gh.build_diff_heatmap,
+        gh.build_simple_shift_diff_heatmap, gh.build_merge_heatmap,
+        gh.build_age_heatmap, gh.build_age_2focused_heatmap,
+    ]
+    for build in builders:
+        canvas = build(stages)
+        svg = canvas.render()
+        assert svg.startswith("<svg "), build.__name__
+        assert svg.rstrip().endswith("</svg>"), build.__name__
+        assert canvas.width > 0 and canvas.height > 0, build.__name__
+
+
+# --- main(): empty/missing-CSV guard --------------------------------------
+
+def test_main_raises_a_clear_error_when_the_csv_is_missing(tmp_path, monkeypatch):
+    monkeypatch.setattr(gh, "CSV_PATH", str(tmp_path / "missing.csv"))
+    with pytest.raises(SystemExit, match="not found"):
+        gh.main()
+
+
+def test_main_raises_a_clear_error_when_the_csv_has_no_stage_rows(tmp_path, monkeypatch):
+    # Regression: main() used to only check that the CSV file existed, not
+    # that it had any data rows. If generate_gaps.py was killed right after
+    # writing the header, load_stages() returned [] and build_heatmap crashed
+    # with a bare IndexError on stages[0] instead of a clear message.
+    csv_path = tmp_path / "empty.csv"
+    csv_path.write_text("stage_index,head,gap,survivor\n")
+    monkeypatch.setattr(gh, "CSV_PATH", str(csv_path))
+    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path / "out"))
+    with pytest.raises(SystemExit, match="no stage rows"):
+        gh.main()

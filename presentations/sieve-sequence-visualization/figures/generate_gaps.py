@@ -163,10 +163,10 @@ def generate_stage(writer, csv_file, stage_index, head, tail_primes, gaps_found,
         period_len = len(period)
         while gaps_found < PREFIX_LEN:
             gap = period[gaps_found % period_len]
-            candidate = prev + gap
-            writer.writerow([stage_index, head, gaps_found, gap, candidate])
+            survivor = prev + gap
+            writer.writerow([stage_index, head, gaps_found, gap, survivor])
             csv_file.flush()
-            prev = candidate
+            prev = survivor
             gaps_found += 1
         return gaps_found
 
