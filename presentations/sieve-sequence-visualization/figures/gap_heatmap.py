@@ -444,8 +444,8 @@ def compute_ages_per_row(stages, walks_per_row=None):
 
     walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
     for each row >= 1 (row 0 unused) -- pass this in when the caller already
-    computed it (see build_diff_heatmap/build_merge_heatmap in main()) so the
-    same O(stages x prefix_len) lineage isn't walked a second time."""
+    computed it (see build_merge_heatmap in main()) so the same
+    O(stages x prefix_len) lineage isn't walked a second time."""
     ages_per_row = [[1] * len(stages[0]["gaps"])]
     for row in range(1, len(stages)):
         prev_ages = ages_per_row[-1]
@@ -726,73 +726,17 @@ def build_compressed_heatmap(stages, stagger=0, png_name="gap-heatmap-2focused.p
     return canvas
 
 
-def build_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff.png", title_suffix="", walks_per_row=None) -> Canvas:
-    """Builds the rigorous copy-or-merge diff heatmap: each cell is a gap's
-    change vs the previous stage per lineage_walk, colored on the diverging
-    ramp (see build_diverging_color_map).
-
-    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
-    for each row >= 1 (row 0 unused) -- pass this in when the caller already
-    computed it (see main(), which shares one pass across this and
-    build_merge_heatmap) instead of walking the same lineage twice."""
-    prefix_len = len(stages[0]["gaps"])
-    display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    walks_per_row = walks_per_row if walks_per_row is not None else (
-        [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    )
-    diffs_per_row = [[diff for diff, _merge_count, _anchor_idx in walk] for walk in walks_per_row]
-    all_diffs = calibration_values(diffs_per_row, display_width)
-    color_by_diff = build_diverging_color_map(all_diffs)
-    distinct_diffs = sorted(color_by_diff)
-    legend_values = sample_for_legend(distinct_diffs, keep=(0,))
-
-    grid_w_px, grid_h_px, rows_rgb = build_diff_grid_png(stages, color_by_diff, diffs_per_row, display_width, stagger=stagger)
-    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
-
-    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
-    label_w = 90
-    legend_h = 90
-    top_margin = 50
-
-    grid_w = grid_w_px * cell_w_display
-    grid_h = len(stages) * cell_h_display
-    canvas_w = heatmap_canvas_width(label_w, grid_w, len(legend_values))
-    canvas_h = top_margin + grid_h + legend_h
-
-    canvas = Canvas(canvas_w, canvas_h)
-    canvas.text(canvas_w / 2, 28,
-           f"Gap diff heatmap: change vs previous stage, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
-           size=16, weight="bold")
-
-    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
-    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
-
-    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
-
-    legend_y = top_margin + grid_h + 30
-    legend_x0 = label_w
-    swatch_w = 26
-    canvas.text(legend_x0, legend_y - 10,
-           "true copy-or-merge lineage vs previous stage (gray = exact match, blue = grew, red = shrank, "
-           "white = ran out of previous-stage data to check)",
-           size=12, fill="#555", anchor="start")
-    for i, diff in enumerate(legend_values):
-        x = legend_x0 + i * (swatch_w + 4)
-        red, green, blue = color_by_diff[diff]
-        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
-        canvas.text(x + swatch_w / 2, legend_y + 34, ("+" if diff > 0 else "") + str(diff), size=10)
-
-    return canvas
-
-
 def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-diff-simple-shift.png", title_suffix="") -> Canvas:
-    """Same rendering as build_diff_heatmap, but using simple_shift_row_diff
-    (one constant offset per row, no merge tracking) instead of lineage_walk.
-    Matches the rigorous version exactly up to each row's first real merge;
-    every position after that reads as a mismatch, not because the gap values
+    """Diff heatmap using simple_shift_row_diff (one constant offset per row,
+    no merge tracking) instead of the true copy-or-merge lineage. Matches the
+    lineage-based diff exactly up to each row's first real merge; every
+    position after that reads as a mismatch, not because the gap values
     actually diverge (they don't -- see simple_shift_row_diff's docstring) but
     because the naive constant offset falls one step behind at that point and
-    stays behind for the rest of the row."""
+    stays behind for the rest of the row. Unlike the true lineage diff (cut --
+    it renders as flat gray almost everywhere, since the copy-or-merge theorem
+    forces that diff to exactly 0), this naive version's mismatch region is a
+    visible, informative trace of the head^2 boundary."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     diffs_per_row = [[]] + [simple_shift_row_diff(stages[row - 1], stages[row]) for row in range(1, len(stages))]
@@ -876,7 +820,9 @@ def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", ti
     """Builds the merge-count heatmap: each cell colored by how many previous-stage
     gaps fed into it (see color_for_merge_count), mostly a copy (1) with rare merges.
 
-    walks_per_row: see build_diff_heatmap."""
+    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
+    for each row >= 1 (row 0 unused) -- pass this in when the caller already
+    computed it (see main()) instead of walking the same lineage twice."""
     prefix_len = len(stages[0]["gaps"])
     display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
     walks_per_row = walks_per_row if walks_per_row is not None else (
@@ -1285,19 +1231,6 @@ def main() -> None:
     staggered_path = os.path.join(OUT_DIR, "gap-heatmap-staggered.svg")
     save(staggered, staggered_path)
     print(f"wrote {staggered_path}")
-
-    diff_canvas = build_diff_heatmap(stages, walks_per_row=walks_per_row)
-    diff_path = os.path.join(OUT_DIR, "gap-heatmap-diff.svg")
-    save(diff_canvas, diff_path)
-    print(f"wrote {diff_path}")
-
-    diff_staggered = build_diff_heatmap(
-        stages, stagger=1, png_name="gap-heatmap-diff-staggered.png",
-        title_suffix=" (each row shifted 1px right)", walks_per_row=walks_per_row,
-    )
-    diff_staggered_path = os.path.join(OUT_DIR, "gap-heatmap-diff-staggered.svg")
-    save(diff_staggered, diff_staggered_path)
-    print(f"wrote {diff_staggered_path}")
 
     simple_diff_canvas = build_simple_shift_diff_heatmap(stages)
     simple_diff_path = os.path.join(OUT_DIR, "gap-heatmap-diff-simple-shift.svg")

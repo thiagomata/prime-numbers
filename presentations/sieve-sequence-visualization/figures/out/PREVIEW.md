@@ -20,25 +20,11 @@ Same data, each row shifted 1px further right than the last (cosmetic only).
 
 ![gap-heatmap-staggered](gap-heatmap-staggered.svg)
 
-## `gap-heatmap-diff.svg`
-
-Row-to-row diff using the true copy-or-merge lineage. Flat gray almost
-everywhere — the copy-or-merge theorem forces the diff to be exactly 0
-wherever it can be computed.
-
-![gap-heatmap-diff](gap-heatmap-diff.svg)
-
 ## `gap-heatmap-diff-simple-shift.svg`
 
 Naive version: one constant per-row offset, no merge tracking.
 
 ![gap-heatmap-diff-simple-shift](gap-heatmap-diff-simple-shift.svg)
-
-## `gap-heatmap-diff-staggered.svg`
-
-Staggered variant of the diff view.
-
-![gap-heatmap-diff-staggered](gap-heatmap-diff-staggered.svg)
 
 ## `gap-heatmap-merges.svg`
 

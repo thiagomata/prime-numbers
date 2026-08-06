@@ -478,16 +478,6 @@ def test_build_age_2focused_heatmap_calibrates_on_the_rendered_target_width(tmp_
     assert len(calls) == 1
 
 
-def test_build_diff_heatmap_matches_whether_walks_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
-    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
-    stages = _small_stages()
-    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-
-    default = gh.build_diff_heatmap(stages, png_name="a.png")
-    precomputed = gh.build_diff_heatmap(stages, png_name="b.png", walks_per_row=walks_per_row)
-    assert default.render() == precomputed.render()
-
-
 def test_build_merge_heatmap_matches_whether_walks_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
     monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
     stages = _small_stages()
@@ -512,7 +502,7 @@ def test_every_heatmap_builder_renders_a_well_formed_svg(tmp_path, monkeypatch):
     monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
     stages = _small_stages()
     builders = [
-        gh.build_heatmap, gh.build_compressed_heatmap, gh.build_diff_heatmap,
+        gh.build_heatmap, gh.build_compressed_heatmap,
         gh.build_simple_shift_diff_heatmap, gh.build_merge_heatmap,
         gh.build_age_heatmap, gh.build_age_2focused_heatmap,
     ]

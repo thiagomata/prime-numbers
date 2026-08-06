@@ -94,8 +94,6 @@ overwrites all of these together.
 |---|---|
 | `gap-heatmap.svg` | One row per stage, one pixel per gap. Color = gap value, sequential ramp, histogram-equalized (not linear -- gap values are heavily right-skewed). Red pixel = the first survivor in that row that isn't actually prime (always exactly `head^2`, see the properties file). |
 | `gap-heatmap-staggered.svg` | Same data, each row shifted 1px further right than the last. Purely cosmetic (breaks up diagonal moire), no data meaning. |
-| `gap-heatmap-diff.svg` | Row-to-row diff using the *true* copy-or-merge lineage (not same-column index, which points at unrelated regions of the number line between rows starting at different heads). Renders as flat gray almost everywhere -- that's the expected result: the copy-or-merge theorem forces the diff to be exactly 0 wherever it can be computed. See `verify.py`'s `check_copy_or_merge_theorem_is_exact`. |
-| `gap-heatmap-diff-staggered.svg` | Staggered variant of the diff view. |
 | `gap-heatmap-diff-simple-shift.svg` | The naive version of the diff view: one constant per-row offset, no merge tracking. Matches the rigorous version until a row's first real merge, then reads as a persistent mismatch for the rest of the row -- which only happens where a merge is possible within the window at all, making the colored region a direct visual trace of the `head^2` boundary. |
 | `gap-heatmap-merges.svg` | Per-cell: how many old gaps fed into this one (1 = copied unchanged, 2+ = merged). Mostly uniform background with rare accent-colored merge cells, concentrated in the early (small-head) rows where merges are relatively frequent. |
 | `gap-heatmap-age.svg` | Per-cell: how many consecutive stages a gap has survived without being merged (resets to 1 on merge). Implements the concept documented but not yet wired up in the Scala codebase (`GapLineage.scala`'s `age` field is currently hardcoded to 1 everywhere). Row width is capped to the *shortest* row's real (non-`None`) data, not padded -- age is chained across every prior stage, so once any row's lineage runs out anywhere, every later row inherits that gap and white space would otherwise cascade and widen going down the rows. |
@@ -128,15 +126,6 @@ Run either script directly (`python3 hit_miss_heatmap.py` /
 have been run first for the full dataset; `hit_miss_heatmap.py` only needs
 the committed sample CSV, and `stage_transition_diagram.py` needs nothing at
 all beyond this directory's own `generate_gaps.py` import.
-
-### Early placeholder diagrams (`out/01-*.svg` through `10-*.svg`)
-
-These predate the real-data heatmap series and use illustrative/synthetic
-numbers, not generated data -- built from `render_diagrams.py`, a separate,
-smaller script for the original ten article-figure concepts (copy-or-merge
-strip, safe-zone boundary, etc.) in `06-article-diagram-ideas.md`. Useful as
-concept sketches; **do not cite numeric values from these** -- they aren't
-computed from real sieve-sequence data.
 
 ## Verification
 
