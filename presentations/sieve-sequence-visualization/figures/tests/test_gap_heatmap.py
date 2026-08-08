@@ -227,20 +227,6 @@ def test_choose_compressed_width_percentile_100_is_the_longest_row():
     assert gh.choose_compressed_width([[1, 2, 3], [1, 2], [1, 2, 3, 4]], percentile=100) == 4
 
 
-def test_color_for_merge_count_plain_copy_is_copy_color():
-    assert gh.color_for_merge_count(1) == gh.hex_to_rgb(gh.COPY_COLOR)
-    assert gh.color_for_merge_count(0) == gh.hex_to_rgb(gh.COPY_COLOR)
-
-
-def test_color_for_merge_count_merge_uses_the_accent_ramp():
-    assert gh.color_for_merge_count(2) == gh.hex_to_rgb(gh.MERGE_ACCENT_RAMP[0])
-
-
-def test_color_for_merge_count_clamps_to_the_ramps_last_entry():
-    huge_count = len(gh.MERGE_ACCENT_RAMP) + 50
-    assert gh.color_for_merge_count(huge_count) == gh.hex_to_rgb(gh.MERGE_ACCENT_RAMP[-1])
-
-
 def test_known_prefix_len_stops_at_the_first_none():
     assert gh.known_prefix_len([1, 2, 3, None, 5]) == 3
 
@@ -333,8 +319,8 @@ def test_heatmap_canvas_width_fits_the_grid_when_the_legend_is_narrow():
 
 
 def test_heatmap_canvas_width_widens_for_a_legend_wider_than_the_grid():
-    # Regression: build_merge_heatmap used to compute canvas_w without this
-    # safeguard, so a legend needing more room than the grid got clipped.
+    # Regression: an earlier heatmap builder used to compute canvas_w without
+    # this safeguard, so a legend needing more room than the grid got clipped.
     canvas_w = gh.heatmap_canvas_width(label_w=90, grid_w=50, legend_slot_count=20)
     assert canvas_w == 90 + 20 * 32
     assert canvas_w > 90 + 50 + 20
@@ -371,35 +357,7 @@ def test_render_grid_png_writes_the_same_bytes_it_returns_as_a_data_uri(tmp_path
     assert base64.b64decode(uri.split(",", 1)[1]) == file_bytes
 
 
-# --- compute_ages_per_row / walks_per_row caching -------------------------
-# main() now computes lineage_walk once and shares it with every consumer
-# instead of each view independently re-walking the same full-data lineage.
-
-def test_compute_ages_per_row_accepts_a_precomputed_walks_per_row():
-    stages = [_walk_stage(3, [2], 20), _walk_stage(5, [2, 3], 8)]
-    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    assert gh.compute_ages_per_row(stages, walks_per_row=walks_per_row) == gh.compute_ages_per_row(stages)
-
-
 # --- build_*_heatmap: bug-fix regressions and caching equivalence --------
-
-def test_build_merge_heatmap_uses_the_shared_canvas_width_safeguard(tmp_path, monkeypatch):
-    # Regression: build_merge_heatmap used to size its canvas as
-    # `label_w + grid_w + 20`, with no check that the legend (one swatch per
-    # merge count, up to max_merge) actually fit -- unlike every sibling
-    # heatmap builder. Assert it now goes through heatmap_canvas_width.
-    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
-    calls = []
-    original = gh.heatmap_canvas_width
-
-    def spy(label_w, grid_w, legend_slot_count, **kwargs):
-        calls.append(legend_slot_count)
-        return original(label_w, grid_w, legend_slot_count, **kwargs)
-
-    monkeypatch.setattr(gh, "heatmap_canvas_width", spy)
-    gh.build_merge_heatmap(_small_stages())
-    assert len(calls) == 1
-
 
 def test_build_age_2focused_heatmap_reserves_no_unused_boundary_curve_space(tmp_path, monkeypatch):
     # Regression: this view never calls draw_boundary_curves (its x-axis is
@@ -478,16 +436,6 @@ def test_build_age_2focused_heatmap_calibrates_on_the_rendered_target_width(tmp_
     assert len(calls) == 1
 
 
-def test_build_merge_heatmap_matches_whether_walks_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
-    monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
-    stages = _small_stages()
-    walks_per_row = [[]] + [gh.lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-
-    default = gh.build_merge_heatmap(stages, png_name="a.png")
-    precomputed = gh.build_merge_heatmap(stages, png_name="b.png", walks_per_row=walks_per_row)
-    assert default.render() == precomputed.render()
-
-
 def test_build_age_heatmap_matches_whether_ages_per_row_is_precomputed_or_not(tmp_path, monkeypatch):
     monkeypatch.setattr(gh, "OUT_DIR", str(tmp_path))
     stages = _small_stages()
@@ -503,7 +451,7 @@ def test_every_heatmap_builder_renders_a_well_formed_svg(tmp_path, monkeypatch):
     stages = _small_stages()
     builders = [
         gh.build_heatmap, gh.build_compressed_heatmap,
-        gh.build_simple_shift_diff_heatmap, gh.build_merge_heatmap,
+        gh.build_simple_shift_diff_heatmap,
         gh.build_age_heatmap, gh.build_age_2focused_heatmap,
     ]
     for build in builders:

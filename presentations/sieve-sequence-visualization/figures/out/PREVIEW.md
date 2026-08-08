@@ -26,13 +26,6 @@ Naive version: one constant per-row offset, no merge tracking.
 
 ![gap-heatmap-diff-simple-shift](gap-heatmap-diff-simple-shift.svg)
 
-## `gap-heatmap-merges.svg`
-
-Per-cell: how many old gaps fed into this one (1 = copied unchanged, 2+ =
-merged).
-
-![gap-heatmap-merges](gap-heatmap-merges.svg)
-
 ## `gap-heatmap-age.svg`
 
 Per-cell: how many consecutive stages a gap has survived without being

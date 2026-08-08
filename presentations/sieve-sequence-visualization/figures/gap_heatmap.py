@@ -79,13 +79,6 @@ DIVERGING_GRAY = "#c3c2b7"
 DIVERGING_BLUE_POLE = "#0d366b"
 DIVERGING_RED_POLE = "#6a130c"
 
-# Merge-count view: mostly "copied" (light neutral background), rare "merged"
-# cells picked out in orange (categorical slot 8, references/palette.md) -- a
-# short light->dark ramp in case a run ever merges 3+ old gaps, though in this
-# dataset every merge observed is exactly a pair (count 2).
-COPY_COLOR = "#dedcd5"
-MERGE_ACCENT_RAMP = ["#fbdcc9", "#f3ac7c", "#eb6834", "#c14f1e", "#8a3712"]
-
 # 2-focused compression view: every 2-gap keeps this fixed reserved color (the
 # whole point of the view is to make 2-gaps immediately identifiable, so they
 # get their own color, not a slot on the sequential ramp); everything between
@@ -95,9 +88,9 @@ TWO_GAP_COLOR = "#0ca30c"
 
 # 2-gap frequency/cluster-size line charts: categorical slot 1 (blue) for the
 # single-series frequency line and the "average" series; categorical slot 8
-# (orange, same hex as MERGE_ACCENT_RAMP's midpoint) for the "max" series --
-# validated pair (references/palette.md), floor-band CVD separation legal
-# here since both lines carry a text-labeled legend (secondary encoding).
+# (orange) for the "max" series -- validated pair (references/palette.md),
+# floor-band CVD separation legal here since both lines carry a text-labeled
+# legend (secondary encoding).
 LINE_COLOR_PRIMARY = "#2a78d6"
 LINE_COLOR_SECONDARY = "#eb6834"
 
@@ -432,7 +425,7 @@ def simple_shift_row_diff(prev, cur):
     return [cur["gaps"][i] - prev["gaps"][i + shift] for i in range(n)]
 
 
-def compute_ages_per_row(stages, walks_per_row=None):
+def compute_ages_per_row(stages):
     """Cumulative gap age, per the intent documented in the project's own
     GapLineage.scala ("consecutive stages persisted; resets to 1 on merge") --
     not yet actually wired up there (SieveStage.scala's trackLineage hardcodes
@@ -440,16 +433,11 @@ def compute_ages_per_row(stages, walks_per_row=None):
     stages: age=1 right after a merge, age=(ancestor's age)+1 for a plain
     copy. Row 0 has no prior lineage, so every one of its gaps starts at
     age=1. A position with unknown age (the lineage_walk window ran out
-    before reaching it, or its ancestor's age was itself unknown) is None.
-
-    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
-    for each row >= 1 (row 0 unused) -- pass this in when the caller already
-    computed it (see build_merge_heatmap in main()) so the same
-    O(stages x prefix_len) lineage isn't walked a second time."""
+    before reaching it, or its ancestor's age was itself unknown) is None."""
     ages_per_row = [[1] * len(stages[0]["gaps"])]
     for row in range(1, len(stages)):
         prev_ages = ages_per_row[-1]
-        walk = walks_per_row[row] if walks_per_row is not None else lineage_walk(stages[row - 1], stages[row])
+        walk = lineage_walk(stages[row - 1], stages[row])
         new_ages = [None] * len(stages[row]["gaps"])
         for i, (_diff, merge_count, anchor_idx) in enumerate(walk):
             if merge_count > 1:
@@ -783,90 +771,6 @@ def build_simple_shift_diff_heatmap(stages, stagger=0, png_name="gap-heatmap-dif
         red, green, blue = color_by_diff[diff]
         canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
         canvas.text(x + swatch_w / 2, legend_y + 34, ("+" if diff > 0 else "") + str(diff), size=10)
-
-    return canvas
-
-
-def color_for_merge_count(n: int):
-    """COPY_COLOR for a plain copy (n <= 1); otherwise a step along
-    MERGE_ACCENT_RAMP, clamped to its last entry once n exceeds the ramp's length."""
-    if n <= 1:
-        return hex_to_rgb(COPY_COLOR)
-    return hex_to_rgb(MERGE_ACCENT_RAMP[min(n - 2, len(MERGE_ACCENT_RAMP) - 1)])
-
-
-def build_merge_grid_png(stages, walks_per_row, display_width, stagger=0):
-    """Row 0 has no previous row and is left blank (white). Every other row
-    is mostly COPY_COLOR (a merge_count of 1 -- the overwhelming majority),
-    with rare accent-colored cells wherever the new stage's filter actually
-    merged two or more of the previous stage's gaps into one. Blank past the
-    point the comparison window ran out of previous-row data to check. Rows
-    are truncated to `display_width` regardless of how much underlying data
-    exists -- see MAX_DISPLAY_WIDTH."""
-    width = display_width + stagger * (len(stages) - 1)
-    rows_rgb = []
-    for row_idx, walk in enumerate(walks_per_row):
-        offset = stagger * row_idx
-        row = bytearray(b"\xff\xff\xff" * width)
-        for i, (_diff, merge_count, _anchor_idx) in enumerate(walk[:display_width]):
-            red, green, blue = color_for_merge_count(merge_count)
-            pos = offset + i
-            row[pos * 3:pos * 3 + 3] = bytes((red, green, blue))
-        rows_rgb.append(bytes(row))
-    return width, len(stages), rows_rgb
-
-
-def build_merge_heatmap(stages, stagger=0, png_name="gap-heatmap-merges.png", title_suffix="", walks_per_row=None) -> Canvas:
-    """Builds the merge-count heatmap: each cell colored by how many previous-stage
-    gaps fed into it (see color_for_merge_count), mostly a copy (1) with rare merges.
-
-    walks_per_row, if given, must be lineage_walk(stages[row-1], stages[row])
-    for each row >= 1 (row 0 unused) -- pass this in when the caller already
-    computed it (see main()) instead of walking the same lineage twice."""
-    prefix_len = len(stages[0]["gaps"])
-    display_width = min(prefix_len, MAX_DISPLAY_WIDTH)
-    walks_per_row = walks_per_row if walks_per_row is not None else (
-        [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    )
-    max_merge = max((merge_count for walk in walks_per_row for _diff, merge_count, _anchor_idx in walk[:display_width]), default=1)
-
-    grid_w_px, grid_h_px, rows_rgb = build_merge_grid_png(stages, walks_per_row, display_width, stagger=stagger)
-    image_uri = render_grid_png(os.path.join(OUT_DIR, png_name), grid_w_px, grid_h_px, rows_rgb)
-
-    cell_w_display, cell_h_display = heatmap_cell_size(display_width, len(stages))
-    label_w = 90
-    legend_h = 122
-    top_margin = 50
-
-    grid_w = grid_w_px * cell_w_display
-    grid_h = len(stages) * cell_h_display
-    canvas_w = heatmap_canvas_width(label_w, grid_w, max_merge)
-    canvas_h = top_margin + grid_h + legend_h
-
-    canvas = Canvas(canvas_w, canvas_h)
-    canvas.text(canvas_w / 2, 28,
-           f"Merge-count heatmap: how many old gaps fed each new one, {display_width} of {prefix_len} gaps x {len(stages)} stages{title_suffix}",
-           size=16, weight="bold")
-
-    canvas.image(label_w, top_margin, grid_w, grid_h, image_uri)
-    canvas.rect(label_w, top_margin, grid_w, grid_h, fill="none", stroke="#ccc", width=1)
-
-    draw_row_head_labels(canvas, stages, label_w, top_margin, cell_h_display)
-
-    draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, cell_h_display, stagger, display_width,
-                          legend_y=top_margin + grid_h + 20)
-
-    legend_y = top_margin + grid_h + 62
-    legend_x0 = label_w
-    swatch_w = 26
-    canvas.text(legend_x0, legend_y - 10,
-           "old gaps merged into this one (1 = copied unchanged; white = ran out of data to check)",
-           size=12, fill="#555", anchor="start")
-    for n in range(1, max_merge + 1):
-        x = legend_x0 + (n - 1) * (swatch_w + 4)
-        red, green, blue = color_for_merge_count(n)
-        canvas.rect(x, legend_y, swatch_w, 20, fill=f"rgb({red},{green},{blue})", stroke="#999", width=1)
-        canvas.text(x + swatch_w / 2, legend_y + 34, str(n), size=10)
 
     return canvas
 
@@ -1214,10 +1118,7 @@ def main() -> None:
     except ValueError as error:
         raise SystemExit(f"{CSV_PATH} failed validation: {error}")
 
-    # Computed once and shared across every consumer below instead of each
-    # independently re-walking the same O(stages x prefix_len) lineage.
-    walks_per_row = [[]] + [lineage_walk(stages[row - 1], stages[row]) for row in range(1, len(stages))]
-    ages_per_row = compute_ages_per_row(stages, walks_per_row=walks_per_row)
+    ages_per_row = compute_ages_per_row(stages)
 
     canvas = build_heatmap(stages)
     path = os.path.join(OUT_DIR, "gap-heatmap.svg")
@@ -1236,11 +1137,6 @@ def main() -> None:
     simple_diff_path = os.path.join(OUT_DIR, "gap-heatmap-diff-simple-shift.svg")
     save(simple_diff_canvas, simple_diff_path)
     print(f"wrote {simple_diff_path}")
-
-    merge_canvas = build_merge_heatmap(stages, walks_per_row=walks_per_row)
-    merge_path = os.path.join(OUT_DIR, "gap-heatmap-merges.svg")
-    save(merge_canvas, merge_path)
-    print(f"wrote {merge_path}")
 
     age_canvas = build_age_heatmap(stages, ages_per_row=ages_per_row)
     age_path = os.path.join(OUT_DIR, "gap-heatmap-age.svg")
