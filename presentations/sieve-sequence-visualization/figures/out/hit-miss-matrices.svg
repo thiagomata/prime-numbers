@@ -1,0 +1,1231 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1340" height="1032" viewBox="0 0 1340 1032">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1340" height="1032" fill="white" />
+  <text x="670.0" y="24" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Hit/miss matrices: sieve survivors that are actually prime, first 100 of each stage (sample)</text>
+  <text x="230.0" y="50" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 0 (head=2)</text>
+  <text x="230.0" y="68" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 1</text>
+  <text x="230.0" y="83" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">gaps repeat: [1]</text>
+  <rect x="30" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">2</text>
+  <rect x="70" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">3</text>
+  <rect x="110" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">4</text>
+  <rect x="150" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">5</text>
+  <rect x="190" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">6</text>
+  <rect x="230" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">7</text>
+  <rect x="270" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">8</text>
+  <rect x="310" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">9</text>
+  <rect x="350" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">10</text>
+  <rect x="390" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">11</text>
+  <rect x="30" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">12</text>
+  <rect x="70" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">13</text>
+  <rect x="110" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">14</text>
+  <rect x="150" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">15</text>
+  <rect x="190" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">16</text>
+  <rect x="230" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="270" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">18</text>
+  <rect x="310" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="350" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">20</text>
+  <rect x="390" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">21</text>
+  <rect x="30" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">22</text>
+  <rect x="70" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="110" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">24</text>
+  <rect x="150" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">25</text>
+  <rect x="190" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">26</text>
+  <rect x="230" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">27</text>
+  <rect x="270" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">28</text>
+  <rect x="310" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="350" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">30</text>
+  <rect x="390" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="30" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">32</text>
+  <rect x="70" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">33</text>
+  <rect x="110" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">34</text>
+  <rect x="150" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">35</text>
+  <rect x="190" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">36</text>
+  <rect x="230" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="270" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">38</text>
+  <rect x="310" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">39</text>
+  <rect x="350" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">40</text>
+  <rect x="390" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="30" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">42</text>
+  <rect x="70" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="110" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">44</text>
+  <rect x="150" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">45</text>
+  <rect x="190" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">46</text>
+  <rect x="230" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="270" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">48</text>
+  <rect x="310" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">49</text>
+  <rect x="350" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">50</text>
+  <rect x="390" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">51</text>
+  <rect x="30" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">52</text>
+  <rect x="70" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="110" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">54</text>
+  <rect x="150" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">55</text>
+  <rect x="190" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">56</text>
+  <rect x="230" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">57</text>
+  <rect x="270" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">58</text>
+  <rect x="310" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="350" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">60</text>
+  <rect x="390" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="30" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">62</text>
+  <rect x="70" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">63</text>
+  <rect x="110" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">64</text>
+  <rect x="150" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">65</text>
+  <rect x="190" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">66</text>
+  <rect x="230" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="270" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">68</text>
+  <rect x="310" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">69</text>
+  <rect x="350" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">70</text>
+  <rect x="390" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="30" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">72</text>
+  <rect x="70" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="110" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">74</text>
+  <rect x="150" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">75</text>
+  <rect x="190" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">76</text>
+  <rect x="230" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">77</text>
+  <rect x="270" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">78</text>
+  <rect x="310" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="350" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">80</text>
+  <rect x="390" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">81</text>
+  <rect x="30" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">82</text>
+  <rect x="70" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="110" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">84</text>
+  <rect x="150" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">85</text>
+  <rect x="190" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">86</text>
+  <rect x="230" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">87</text>
+  <rect x="270" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">88</text>
+  <rect x="310" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="350" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">90</text>
+  <rect x="390" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">91</text>
+  <rect x="30" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">92</text>
+  <rect x="70" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">93</text>
+  <rect x="110" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">94</text>
+  <rect x="150" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">95</text>
+  <rect x="190" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">96</text>
+  <rect x="230" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="270" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">98</text>
+  <rect x="310" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">99</text>
+  <rect x="350" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">100</text>
+  <rect x="390" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <text x="670.0" y="50" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 1 (head=3)</text>
+  <text x="670.0" y="68" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 1/2</text>
+  <text x="670.0" y="83" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">gaps repeat: [2]</text>
+  <rect x="470" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">5</text>
+  <rect x="510" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">7</text>
+  <rect x="550" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">9</text>
+  <rect x="590" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">11</text>
+  <rect x="630" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">13</text>
+  <rect x="670" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">15</text>
+  <rect x="710" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="750" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="790" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">21</text>
+  <rect x="830" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="470" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">25</text>
+  <rect x="510" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">27</text>
+  <rect x="550" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="590" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="630" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">33</text>
+  <rect x="670" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">35</text>
+  <rect x="710" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="750" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">39</text>
+  <rect x="790" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="830" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="470" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">45</text>
+  <rect x="510" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="550" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">49</text>
+  <rect x="590" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">51</text>
+  <rect x="630" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="670" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">55</text>
+  <rect x="710" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">57</text>
+  <rect x="750" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="790" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="830" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">63</text>
+  <rect x="470" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">65</text>
+  <rect x="510" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="550" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">69</text>
+  <rect x="590" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="630" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="670" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">75</text>
+  <rect x="710" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">77</text>
+  <rect x="750" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="790" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">81</text>
+  <rect x="830" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="470" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">85</text>
+  <rect x="510" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">87</text>
+  <rect x="550" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="590" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">91</text>
+  <rect x="630" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">93</text>
+  <rect x="670" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">95</text>
+  <rect x="710" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="750" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">99</text>
+  <rect x="790" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <rect x="830" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">103</text>
+  <rect x="470" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">105</text>
+  <rect x="510" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">107</text>
+  <rect x="550" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">109</text>
+  <rect x="590" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">111</text>
+  <rect x="630" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">113</text>
+  <rect x="670" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">115</text>
+  <rect x="710" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">117</text>
+  <rect x="750" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">119</text>
+  <rect x="790" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">121</text>
+  <rect x="830" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">123</text>
+  <rect x="470" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">125</text>
+  <rect x="510" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">127</text>
+  <rect x="550" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">129</text>
+  <rect x="590" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">131</text>
+  <rect x="630" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">133</text>
+  <rect x="670" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">135</text>
+  <rect x="710" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">137</text>
+  <rect x="750" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">139</text>
+  <rect x="790" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">141</text>
+  <rect x="830" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">143</text>
+  <rect x="470" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">145</text>
+  <rect x="510" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">147</text>
+  <rect x="550" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">149</text>
+  <rect x="590" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">151</text>
+  <rect x="630" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">153</text>
+  <rect x="670" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">155</text>
+  <rect x="710" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">157</text>
+  <rect x="750" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">159</text>
+  <rect x="790" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">161</text>
+  <rect x="830" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">163</text>
+  <rect x="470" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">165</text>
+  <rect x="510" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">167</text>
+  <rect x="550" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">169</text>
+  <rect x="590" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">171</text>
+  <rect x="630" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">173</text>
+  <rect x="670" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">175</text>
+  <rect x="710" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">177</text>
+  <rect x="750" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">179</text>
+  <rect x="790" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">181</text>
+  <rect x="830" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">183</text>
+  <rect x="470" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">185</text>
+  <rect x="510" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">187</text>
+  <rect x="550" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">189</text>
+  <rect x="590" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">191</text>
+  <rect x="630" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">193</text>
+  <rect x="670" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">195</text>
+  <rect x="710" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">197</text>
+  <rect x="750" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">199</text>
+  <rect x="790" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">201</text>
+  <rect x="830" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">203</text>
+  <text x="1110.0" y="50" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 2 (head=5)</text>
+  <text x="1110.0" y="68" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 1/3</text>
+  <text x="1110.0" y="83" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">gaps repeat: [2,4]</text>
+  <rect x="910" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">7</text>
+  <rect x="950" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">11</text>
+  <rect x="990" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">13</text>
+  <rect x="1030" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="1070" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="1110" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="1150" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">25</text>
+  <rect x="1190" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="1230" y="96" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="1270" y="96" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="118.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">35</text>
+  <rect x="910" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="950" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="990" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="1030" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="1070" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">49</text>
+  <rect x="1110" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="1150" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">55</text>
+  <rect x="1190" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="1230" y="136" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="1270" y="136" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="158.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">65</text>
+  <rect x="910" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="950" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="990" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="1030" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">77</text>
+  <rect x="1070" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="1110" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="1150" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">85</text>
+  <rect x="1190" y="176" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="1230" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">91</text>
+  <rect x="1270" y="176" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="198.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">95</text>
+  <rect x="910" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="950" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <rect x="990" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">103</text>
+  <rect x="1030" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">107</text>
+  <rect x="1070" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">109</text>
+  <rect x="1110" y="216" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">113</text>
+  <rect x="1150" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">115</text>
+  <rect x="1190" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">119</text>
+  <rect x="1230" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">121</text>
+  <rect x="1270" y="216" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="238.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">125</text>
+  <rect x="910" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">127</text>
+  <rect x="950" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">131</text>
+  <rect x="990" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">133</text>
+  <rect x="1030" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">137</text>
+  <rect x="1070" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">139</text>
+  <rect x="1110" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">143</text>
+  <rect x="1150" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">145</text>
+  <rect x="1190" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">149</text>
+  <rect x="1230" y="256" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">151</text>
+  <rect x="1270" y="256" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="278.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">155</text>
+  <rect x="910" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">157</text>
+  <rect x="950" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">161</text>
+  <rect x="990" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">163</text>
+  <rect x="1030" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">167</text>
+  <rect x="1070" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">169</text>
+  <rect x="1110" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">173</text>
+  <rect x="1150" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">175</text>
+  <rect x="1190" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">179</text>
+  <rect x="1230" y="296" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">181</text>
+  <rect x="1270" y="296" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="318.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">185</text>
+  <rect x="910" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">187</text>
+  <rect x="950" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">191</text>
+  <rect x="990" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">193</text>
+  <rect x="1030" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">197</text>
+  <rect x="1070" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">199</text>
+  <rect x="1110" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">203</text>
+  <rect x="1150" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">205</text>
+  <rect x="1190" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">209</text>
+  <rect x="1230" y="336" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">211</text>
+  <rect x="1270" y="336" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="358.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">215</text>
+  <rect x="910" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">217</text>
+  <rect x="950" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">221</text>
+  <rect x="990" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">223</text>
+  <rect x="1030" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">227</text>
+  <rect x="1070" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">229</text>
+  <rect x="1110" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">233</text>
+  <rect x="1150" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">235</text>
+  <rect x="1190" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">239</text>
+  <rect x="1230" y="376" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">241</text>
+  <rect x="1270" y="376" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="398.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">245</text>
+  <rect x="910" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">247</text>
+  <rect x="950" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">251</text>
+  <rect x="990" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">253</text>
+  <rect x="1030" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">257</text>
+  <rect x="1070" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">259</text>
+  <rect x="1110" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">263</text>
+  <rect x="1150" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">265</text>
+  <rect x="1190" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">269</text>
+  <rect x="1230" y="416" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">271</text>
+  <rect x="1270" y="416" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="438.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">275</text>
+  <rect x="910" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">277</text>
+  <rect x="950" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">281</text>
+  <rect x="990" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">283</text>
+  <rect x="1030" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">287</text>
+  <rect x="1070" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">289</text>
+  <rect x="1110" y="456" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">293</text>
+  <rect x="1150" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">295</text>
+  <rect x="1190" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">299</text>
+  <rect x="1230" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">301</text>
+  <rect x="1270" y="456" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="478.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">305</text>
+  <text x="230.0" y="526" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 3 (head=7)</text>
+  <text x="230.0" y="544" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 4/15</text>
+  <text x="230.0" y="559" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">gaps repeat: [4,2,4,2,4,6,2,6]</text>
+  <rect x="30" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">11</text>
+  <rect x="70" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">13</text>
+  <rect x="110" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="150" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="190" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="230" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="270" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="310" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="350" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="390" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="30" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="70" y="612" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">49</text>
+  <rect x="110" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="150" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="190" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="230" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="270" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="310" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="350" y="612" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">77</text>
+  <rect x="390" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="30" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="70" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="110" y="652" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">91</text>
+  <rect x="150" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="190" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <rect x="230" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">103</text>
+  <rect x="270" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">107</text>
+  <rect x="310" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">109</text>
+  <rect x="350" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">113</text>
+  <rect x="390" y="652" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">119</text>
+  <rect x="30" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">121</text>
+  <rect x="70" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">127</text>
+  <rect x="110" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">131</text>
+  <rect x="150" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">133</text>
+  <rect x="190" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">137</text>
+  <rect x="230" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">139</text>
+  <rect x="270" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">143</text>
+  <rect x="310" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">149</text>
+  <rect x="350" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">151</text>
+  <rect x="390" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">157</text>
+  <rect x="30" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">161</text>
+  <rect x="70" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">163</text>
+  <rect x="110" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">167</text>
+  <rect x="150" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">169</text>
+  <rect x="190" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">173</text>
+  <rect x="230" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">179</text>
+  <rect x="270" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">181</text>
+  <rect x="310" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">187</text>
+  <rect x="350" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">191</text>
+  <rect x="390" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">193</text>
+  <rect x="30" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">197</text>
+  <rect x="70" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">199</text>
+  <rect x="110" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">203</text>
+  <rect x="150" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">209</text>
+  <rect x="190" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">211</text>
+  <rect x="230" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">217</text>
+  <rect x="270" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">221</text>
+  <rect x="310" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">223</text>
+  <rect x="350" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">227</text>
+  <rect x="390" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">229</text>
+  <rect x="30" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">233</text>
+  <rect x="70" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">239</text>
+  <rect x="110" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">241</text>
+  <rect x="150" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">247</text>
+  <rect x="190" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">251</text>
+  <rect x="230" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">253</text>
+  <rect x="270" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">257</text>
+  <rect x="310" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">259</text>
+  <rect x="350" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">263</text>
+  <rect x="390" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">269</text>
+  <rect x="30" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">271</text>
+  <rect x="70" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">277</text>
+  <rect x="110" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">281</text>
+  <rect x="150" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">283</text>
+  <rect x="190" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">287</text>
+  <rect x="230" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">289</text>
+  <rect x="270" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">293</text>
+  <rect x="310" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">299</text>
+  <rect x="350" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">301</text>
+  <rect x="390" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">307</text>
+  <rect x="30" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">311</text>
+  <rect x="70" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">313</text>
+  <rect x="110" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">317</text>
+  <rect x="150" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">319</text>
+  <rect x="190" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">323</text>
+  <rect x="230" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">329</text>
+  <rect x="270" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">331</text>
+  <rect x="310" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">337</text>
+  <rect x="350" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">341</text>
+  <rect x="390" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">343</text>
+  <rect x="30" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="48.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">347</text>
+  <rect x="70" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="88.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">349</text>
+  <rect x="110" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="128.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">353</text>
+  <rect x="150" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="168.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">359</text>
+  <rect x="190" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="208.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">361</text>
+  <rect x="230" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="248.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">367</text>
+  <rect x="270" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="288.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">371</text>
+  <rect x="310" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="328.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">373</text>
+  <rect x="350" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="368.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">377</text>
+  <rect x="390" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="408.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">379</text>
+  <text x="670.0" y="526" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 4 (head=11)</text>
+  <text x="670.0" y="544" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 8/35</text>
+  <text x="670.0" y="559" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">period length 48 (too long to print)</text>
+  <rect x="470" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">13</text>
+  <rect x="510" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="550" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="590" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="630" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="670" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="710" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="750" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="790" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="830" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="470" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="510" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="550" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="590" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="630" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="670" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="710" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="750" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="790" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="830" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="470" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <rect x="510" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">103</text>
+  <rect x="550" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">107</text>
+  <rect x="590" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">109</text>
+  <rect x="630" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">113</text>
+  <rect x="670" y="652" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">121</text>
+  <rect x="710" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">127</text>
+  <rect x="750" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">131</text>
+  <rect x="790" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">137</text>
+  <rect x="830" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">139</text>
+  <rect x="470" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">143</text>
+  <rect x="510" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">149</text>
+  <rect x="550" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">151</text>
+  <rect x="590" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">157</text>
+  <rect x="630" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">163</text>
+  <rect x="670" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">167</text>
+  <rect x="710" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">169</text>
+  <rect x="750" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">173</text>
+  <rect x="790" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">179</text>
+  <rect x="830" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">181</text>
+  <rect x="470" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">187</text>
+  <rect x="510" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">191</text>
+  <rect x="550" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">193</text>
+  <rect x="590" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">197</text>
+  <rect x="630" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">199</text>
+  <rect x="670" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">209</text>
+  <rect x="710" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">211</text>
+  <rect x="750" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">221</text>
+  <rect x="790" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">223</text>
+  <rect x="830" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">227</text>
+  <rect x="470" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">229</text>
+  <rect x="510" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">233</text>
+  <rect x="550" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">239</text>
+  <rect x="590" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">241</text>
+  <rect x="630" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">247</text>
+  <rect x="670" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">251</text>
+  <rect x="710" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">253</text>
+  <rect x="750" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">257</text>
+  <rect x="790" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">263</text>
+  <rect x="830" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">269</text>
+  <rect x="470" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">271</text>
+  <rect x="510" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">277</text>
+  <rect x="550" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">281</text>
+  <rect x="590" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">283</text>
+  <rect x="630" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">289</text>
+  <rect x="670" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">293</text>
+  <rect x="710" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">299</text>
+  <rect x="750" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">307</text>
+  <rect x="790" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">311</text>
+  <rect x="830" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">313</text>
+  <rect x="470" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">317</text>
+  <rect x="510" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">319</text>
+  <rect x="550" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">323</text>
+  <rect x="590" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">331</text>
+  <rect x="630" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">337</text>
+  <rect x="670" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">341</text>
+  <rect x="710" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">347</text>
+  <rect x="750" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">349</text>
+  <rect x="790" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">353</text>
+  <rect x="830" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">359</text>
+  <rect x="470" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">361</text>
+  <rect x="510" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">367</text>
+  <rect x="550" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">373</text>
+  <rect x="590" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">377</text>
+  <rect x="630" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">379</text>
+  <rect x="670" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">383</text>
+  <rect x="710" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">389</text>
+  <rect x="750" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">391</text>
+  <rect x="790" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">397</text>
+  <rect x="830" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">401</text>
+  <rect x="470" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="488.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">403</text>
+  <rect x="510" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="528.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">407</text>
+  <rect x="550" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="568.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">409</text>
+  <rect x="590" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="608.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">419</text>
+  <rect x="630" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="648.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">421</text>
+  <rect x="670" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="688.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">431</text>
+  <rect x="710" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="728.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">433</text>
+  <rect x="750" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="768.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">437</text>
+  <rect x="790" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="808.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">439</text>
+  <rect x="830" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="848.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">443</text>
+  <text x="1110.0" y="526" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" font-style="normal" fill="#111" text-anchor="middle">Stage 5 (head=13)</text>
+  <text x="1110.0" y="544" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">flagged fraction: 16/77</text>
+  <text x="1110.0" y="559" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555" text-anchor="middle">period length 480 (too long to print)</text>
+  <rect x="910" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">17</text>
+  <rect x="950" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">19</text>
+  <rect x="990" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">23</text>
+  <rect x="1030" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">29</text>
+  <rect x="1070" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">31</text>
+  <rect x="1110" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">37</text>
+  <rect x="1150" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">41</text>
+  <rect x="1190" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">43</text>
+  <rect x="1230" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">47</text>
+  <rect x="1270" y="572" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="594.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">53</text>
+  <rect x="910" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">59</text>
+  <rect x="950" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">61</text>
+  <rect x="990" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">67</text>
+  <rect x="1030" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">71</text>
+  <rect x="1070" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">73</text>
+  <rect x="1110" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">79</text>
+  <rect x="1150" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">83</text>
+  <rect x="1190" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">89</text>
+  <rect x="1230" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">97</text>
+  <rect x="1270" y="612" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="634.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">101</text>
+  <rect x="910" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">103</text>
+  <rect x="950" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">107</text>
+  <rect x="990" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">109</text>
+  <rect x="1030" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">113</text>
+  <rect x="1070" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">127</text>
+  <rect x="1110" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">131</text>
+  <rect x="1150" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">137</text>
+  <rect x="1190" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">139</text>
+  <rect x="1230" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">149</text>
+  <rect x="1270" y="652" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="674.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">151</text>
+  <rect x="910" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">157</text>
+  <rect x="950" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">163</text>
+  <rect x="990" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">167</text>
+  <rect x="1030" y="692" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">169</text>
+  <rect x="1070" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">173</text>
+  <rect x="1110" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">179</text>
+  <rect x="1150" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">181</text>
+  <rect x="1190" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">191</text>
+  <rect x="1230" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">193</text>
+  <rect x="1270" y="692" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="714.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">197</text>
+  <rect x="910" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">199</text>
+  <rect x="950" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">211</text>
+  <rect x="990" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">221</text>
+  <rect x="1030" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">223</text>
+  <rect x="1070" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">227</text>
+  <rect x="1110" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">229</text>
+  <rect x="1150" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">233</text>
+  <rect x="1190" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">239</text>
+  <rect x="1230" y="732" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">241</text>
+  <rect x="1270" y="732" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="754.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">247</text>
+  <rect x="910" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">251</text>
+  <rect x="950" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">257</text>
+  <rect x="990" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">263</text>
+  <rect x="1030" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">269</text>
+  <rect x="1070" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">271</text>
+  <rect x="1110" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">277</text>
+  <rect x="1150" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">281</text>
+  <rect x="1190" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">283</text>
+  <rect x="1230" y="772" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">289</text>
+  <rect x="1270" y="772" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="794.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">293</text>
+  <rect x="910" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">299</text>
+  <rect x="950" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">307</text>
+  <rect x="990" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">311</text>
+  <rect x="1030" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">313</text>
+  <rect x="1070" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">317</text>
+  <rect x="1110" y="812" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">323</text>
+  <rect x="1150" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">331</text>
+  <rect x="1190" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">337</text>
+  <rect x="1230" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">347</text>
+  <rect x="1270" y="812" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="834.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">349</text>
+  <rect x="910" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">353</text>
+  <rect x="950" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">359</text>
+  <rect x="990" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">361</text>
+  <rect x="1030" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">367</text>
+  <rect x="1070" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">373</text>
+  <rect x="1110" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">377</text>
+  <rect x="1150" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">379</text>
+  <rect x="1190" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">383</text>
+  <rect x="1230" y="852" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">389</text>
+  <rect x="1270" y="852" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="874.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">391</text>
+  <rect x="910" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">397</text>
+  <rect x="950" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">401</text>
+  <rect x="990" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">403</text>
+  <rect x="1030" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">409</text>
+  <rect x="1070" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">419</text>
+  <rect x="1110" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">421</text>
+  <rect x="1150" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">431</text>
+  <rect x="1190" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">433</text>
+  <rect x="1230" y="892" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">437</text>
+  <rect x="1270" y="892" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="914.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">439</text>
+  <rect x="910" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="928.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">443</text>
+  <rect x="950" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="968.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">449</text>
+  <rect x="990" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1008.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">457</text>
+  <rect x="1030" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1048.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">461</text>
+  <rect x="1070" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1088.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">463</text>
+  <rect x="1110" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1128.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">467</text>
+  <rect x="1150" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1168.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">479</text>
+  <rect x="1190" y="932" width="37" height="37" fill="#d03b3b" stroke="none" stroke-width="0" rx="0" />
+  <text x="1208.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">481</text>
+  <rect x="1230" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1248.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">487</text>
+  <rect x="1270" y="932" width="37" height="37" fill="#0ca30c" stroke="none" stroke-width="0" rx="0" />
+  <text x="1288.5" y="954.5" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#ffffff" text-anchor="middle">491</text>
+  <rect x="30" y="996" width="18" height="18" fill="#0ca30c" stroke="#999" stroke-width="1" rx="0" />
+  <text x="56" y="1010" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555" text-anchor="start">hit -- actually prime</text>
+  <rect x="250" y="996" width="18" height="18" fill="#d03b3b" stroke="#999" stroke-width="1" rx="0" />
+  <text x="276" y="1010" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555" text-anchor="start">miss -- filter accepted a composite</text>
+</svg>

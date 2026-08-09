@@ -21,6 +21,11 @@ logs/*.log
 # ignore generated Spark datasets
 spark/data/
 
+# ignore generated sieve-sequence gap data (regenerate via generate_gaps.py --
+# hundreds of MB at the prefix lengths used for the fuller charts, well past
+# what's reasonable to commit)
+data/sieve-sequence/first_gaps_per_seq.csv
+
 # ignore macOS files
 .DS_Store
 **/.DS_Store
@@ -35,3 +40,7 @@ stainless-dotty-standalone-*
 # ignore bloop
 .bloop
 .bloop/**
+
+# ignore Python virtualenvs (e.g. presentations/.../figures/.venv)
+.venv/
+.pytest_cache/
