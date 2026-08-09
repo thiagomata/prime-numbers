@@ -296,6 +296,132 @@ verification unless a file explicitly says otherwise.
       gain between the smallest and largest prefix energy coefficients times
       `e_k`. This gives a simpler sufficient survival comparison while leaving
       a lower bound for the overflow at the required scale open.
+74. [Capacity-Envelope Width Floor Needs Population Slack](capacity-envelope-width-floor-needs-population-slack.md)
+    - Proves the feasible harmful-count width
+      `min(N,2B,rB-N)`, the envelope floor
+      `X>=min(N,2B,rB-N)^2/4`, and the resulting explicit lower bound for
+      property #73's overflow. The envelope vanishes at both `N=0` and
+      `N=rB`, so no positive population-independent floor follows from
+      `r,B` alone.
+75. [Seven-Layer Density Floor Maximizes Capacity Width](seven-layer-density-floor-maximizes-capacity-width.md)
+    - Proves that candidate #17's local-count threshold, together with the
+      installed filter `5`, places every `r>=7` population in
+      `2B<=N<=(r-2)B`. Hence property #74 has maximal slack `sigma=2B` and
+      width floor `X>=B^2`; whether its normalized sum exceeds property #73's
+      remainder budget remains open.
+76. [Seven-Layer Floor Forces Native Overflow](seven-layer-floor-forces-native-overflow.md)
+    - At the native cut after filter `7`, proves `q_(1,2)=30/7` and
+      `e_2>=(7B_7^2/30-s_2)_+>=1` for every integer `Q>=36`. Thus the hybrid
+      envelope strictly improves the all-capacity envelope for every future
+      prime head `Q>=37`, with gain at least `42d_m e_2`; clearance of the
+      extinction deficit remains open.
+77. [Fixed Seven Cut Cannot Clear The Original Threshold](fixed-seven-cut-cannot-clear-original-threshold.md)
+    - Under candidate #17 at the first untouched filter `11`, proves that a
+      chain with `Q>=17` and `m>=37` has
+      `U_2^hyb>T^2/(2W_-)`. Thus the positive filter-`7` overflow cannot make
+      the fixed early cut certify #24's original threshold; later cuts, the
+      capacity-relaxed threshold, and localized suffix control remain open.
+78. [Every Fixed Native Cut Fails The Original Threshold](every-fixed-native-cut-fails-original-threshold.md)
+    - Under candidate #17 at the first suffix layer, proves that cut `k` fails
+      whenever `m>P_k(r_k-2)^2(1+6/D)^2`. Hence every fixed cut eventually
+      fails on unbounded chains, and any potentially successful cut must have
+      `r_k>=2+sqrt(7m/3)/(1+6/D)`. Moving cuts, the capacity-relaxed threshold,
+      and localized suffix control remain open.
+79. [Moving Cut Loses Complete Native Blocks](moving-cut-loses-complete-native-blocks.md)
+    - Under a finite `theta(x)>=cx` bound and Bertrand, proves that a
+      threshold-clearing cut with `M_k<=H` forces
+      `m<(3/7)(1+6/D)^2(2log(H)/c-2)^2`. Using PNT explicitly as an external
+      dependency, the actual chain eventually violates this bound, so every
+      sufficiently large potentially successful cut has `M_k>H` and
+      `s_k=H`. Property #80 subsequently proves that the incomplete-block
+      overflow vanishes at this moving-prime scale.
+80. [Incomplete-Block Bessel Excludes No Capacity](incomplete-block-bessel-excludes-no-capacity.md)
+    - Proves the finite bound
+      `sum_(i<k)X_i/q_(i,k)<=3kD^2r_k^2/(25M_kP_k(r_k-2))` and the resulting
+      criterion for `e_k=0`. Using PNT explicitly outside Stainless, the
+      criterion holds at every sufficiently large moving cut forced by #78.
+      Combined with #77--#79, the capacity-plus-native-Bessel envelope cannot
+      certify #24's original threshold under full #17. Property #81 next
+      closes the separate-envelope `Gamma_cap` route; localized actual-energy
+      bounds remain open.
+81. [Capacity Stability Gap Cannot Rescue the Capacity Envelope](capacity-stability-gap-cannot-rescue-capacity-envelope.md)
+    - Proves the finite post-`5` minimizer-capacity bound
+      `K_i^star-C_i<=N_0/S-(2D-18)/(15r_i)` and, once those coordinates fit,
+      `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`. Candidate #17 at filter `7`
+      simultaneously forces `U_cap>=P_mD^2/1080`. Prime Mertens and PNT show
+      that the stability gap is eventually positive but negligible relative
+      to this envelope floor, so the capacity-relaxed threshold cannot rescue
+      the separate capacity envelope on an unbounded family. Property #82
+      next supplies a localized bound at filter `7`; scaling it remains open.
+82. [Filter-Seven Harmful Excess Is Boundary-Sized](filter-seven-harmful-excess-is-boundary-sized.md)
+    - Enumerates the 21 admissible residues modulo `210` and proves that their
+      centered integer-weight cumulative sums range from `-8` to `10`. Hence
+      every interval has the sharp bound `|b_7|<=18/7`, and the actual
+      filter-`7` energy is at most `54P_m/5`, replacing property #81's
+      separate capacity charge `>=P_mD^2/1080`. This removes one fixed-layer
+      artifact. Scaling the argument is exactly candidate #23's signed
+      accepted-boundary cancellation problem; native-period enumeration and
+      generic inclusion--exclusion do not suffice.
+83. [Copy-Block Harmful Excess Is Controlled By Residue Energy](copy-block-harmful-excess-controlled-by-residue-energy.md)
+    - For one incoming prime, proves that the centered harmful excess in old-
+      period copy block `j` is exactly `B_j=d_t+d_(t-2)` for a permuted pair
+      of centered residue-histogram entries. Consequently
+      `sum_j B_j^2=2V_r+2sum_t d_t d_(t-2)<=4V_r`, and any `k` consecutive
+      complete blocks have squared discrepancy at most `4kV_r`. This composes
+      candidate #20's residue energy with candidate #24's localized harmful
+      excess while leaving two partial old-period boundary fragments open.
+84. [Relaxed Almost-Prime Weight Has An Exact Divisor Local Factor](relaxed-almost-prime-divisor-local-factor.md)
+    - For the asymmetric weight `gcd(n,W)=gcd(n+2,Z)=1` with `m|n`, proves
+      the exact divisor-dependent local residue table, complete-period CRT
+      density, and arbitrary-interval formula `N_m=rho(m)ell_m+E_m`. In the
+      candidate-#25 range `1/3<alpha<1/2`, `Z=P(Q^(2alpha))` divides
+      `W=P(Q)`, so coprime divisors share the explicit dimension-two/then-one
+      density while wheel-sharing divisors vanish. The bound `|E_m|<=R-1`
+      is only a periodic boundary bound; cancellation of its divisor average
+      remains the first genuine Type-I obligation.
+85. [Relaxed Almost-Prime Bilinear Remainder Has A Character Obstruction](relaxed-almost-prime-bilinear-character-obstruction.md)
+    - In the nested-wheel range, expands the scalar-centered relaxed weight
+      exactly into inverse-residue brackets
+      `1_(n=-2m^(-1) mod d)-1/phi(d)` and then into nonprincipal bilinear
+      character modes `chi(m)chi(n)`. On the complete reduced wheel, bounded
+      quadratic-character coefficients modulo `3` correlate with the full
+      relaxed survivor count while the scalar comparison has zero
+      correlation. This blocks the naive scalar-density Type-II route but
+      does not refute candidate #25's positivity target or a locally adapted
+      comparison theorem on its short hyperbolic domain.
+86. [Relaxed Cofactor Divisor Sum Is A Prime-Progression Discrepancy](relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md)
+    - For every odd squarefree `d|W`, proves the exact complete-wheel factor
+      `A_d=A_1/phi(d)` for the shifted count `d|n+2` and writes every interval
+      error as one zero-mean periodic boundary remainder. In the square-safe
+      window with `W=P(Q)`, this remainder is exactly
+      `pi(I;d,-2)-pi(I)/phi(d)`. Thus candidate #25's natural accumulated
+      Type-I input is an averaged prime arithmetic-progression theorem; CRT
+      supplies its comparison factor but not its required cancellation.
+87. [Incremental Danger-Annulus Decomposition](incremental-danger-annulus-decomposition.md)
+    - For consecutive primes `p<q` with `p>=5`, separates the full square-safe
+      window from the accepted-value annulus `V(p,q)=[p^2,q^2)` and the
+      geometric width-`h` start interval `D_h(p,q)=[p^2-h,q^2-h)`. After
+      filters `2` and `3`, it identifies the phase-compatible coordinate set
+      `X_D(p,q)={x: p^2+4<=x<q^2-2, x congruent to 5 modulo 6}`; membership in
+      this set does not assert an actual gap, while `L_D(p,q)` counts actual
+      pre-filter 2-gaps starting there. It proves equality of full-window and
+      annular accepted-strike counts, the raw capacity
+      `R_V=2(q-p)+ceil((q-p)^2/p)`, and
+      `K_D<=A(p,q)-1<=R_V-1`, but no positive lower bound for `L_D`.
+88. [Realized Filter Adversariality Score](realized-filter-adversariality-score.md)
+    - For prime `p>2` and a nonempty typed population `L>0`, declares a
+      continuous monotone normalization of realized destruction with anchors
+      `0` for no destroyed gaps, `1/2` for the random-residue/complete-copy
+      benchmark `2/p`, and `1` for local extinction. It proves the exact
+      survival limit `C_p<1`, the integer excess allowance
+      `x_max=ceil((1-2/p)L)-1`, and the capacity ceiling
+      `C_p(K/L)<=C_p(min(1,H/L))`. The concrete full-window instance uses
+      `H=A` only for `p>=5`; the annular instance uses `H=A-1` for consecutive
+      primes `p<q` with `p>=5` and `L_D>0`. Across 186 audited full-window
+      populations, every observed score is below `1/2` and every corresponding
+      proved capacity ceiling is below `1`. These are finite-population
+      observations and bounds, not a deterministic-randomness theorem or an
+      annular population result.
 
 ## Research Notes
 

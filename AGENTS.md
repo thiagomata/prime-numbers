@@ -5,7 +5,9 @@ SieveSequence: primes: List[BigInt], integral: CycleIntegral. head = primes.head
 Pipeline: nextResidues → nextExpanded → nextFiltered → nextSorted → 
            nextGaps → nextHeadResidueIndex → nextRotatedGaps
 Each step calls ONE SieveUtils helper + ONE pre-verified function.
-next() uses @extern (MemCycle bottleneck). Run tests first, verify second.
+`SpecSieveSequence.next` is verified and has no `@extern`. Outside the
+retirement-pending Chapter 7 empirical helpers, `@extern` is confined to
+`Main`; those helpers are not part of the sieve-sequence implementation.
 
 Chapter60 properties:
   SpecSieveSequence — data model + cornerstone proofs. No delegation.
@@ -66,14 +68,23 @@ Only re-run `just verify` after making a code change.
 
 <rules>
   <rule id="green-to-green" priority="critical">
-    Run <verify /> before ANY code change. Run <verify /> after ANY code change.
-    Run <verify /> after ANY change to non-markdown files.
-    Stainless timeout IS failure. NEVER proceed from red state.
-    Exception: Changes limited to markdown files (*.md) do NOT require verification.
-    If a change modifies both code AND markdown files, verification IS required.
+    Select validation gates by the ecosystem each change actually affects:
+    - Scala source, Scala tests, or Scala build behavior: establish a green
+      baseline with Scala tests and the applicable chapter-by-chapter Stainless
+      checks, then repeat those gates after the change.
+    - Python source, Python tests, Python package metadata, or Python-only
+      recipes: establish and repeat the relevant Python import, unit, and CLI
+      gates. Do NOT run Scala tests or Stainless for a Python-only change.
+    - Mixed-language or shared orchestration changes: run every gate for each
+      affected ecosystem.
+    - Markdown-only changes: no runtime validation unless they alter executable
+      instructions, in which case run the gates for the affected ecosystem.
+    A failure or timeout in any selected gate is a non-green state. NEVER
+    proceed from a non-green state.
   </rule>
   <rule id="small-changes" priority="critical">
-    ONE assertion/require/lemma per change. Verify between each.
+    ONE assertion/require/lemma per change. Run the applicable language-scoped
+    validation between each.
     Do NOT add 3 assertions at once. If `a && b && c`, split into 3 changes.
   </rule>
   <rule id="stop-and-ask" priority="critical">
@@ -232,14 +243,15 @@ Only re-run `just verify` after making a code change.
     docs (`articles/learnings/`) are exempt.
   </rule>
   <rule id="red-cascade" priority="critical">
-    After a change produces a **non-green state** (any invalid/unknown/timeout):
+    After a change produces a **non-green state** in any applicable gate
+    (failure/invalid/unknown/timeout):
     1. Do NOT cascade — do NOT modify additional functions, add comments,
        restore lemmas, or create new files while still in the red.
     2. Allowed actions from a non-green state:
        a. **Revert** the specific change that caused the red state
           (to the last green baseline).
-       b. **Retry** only the single failing function with a different
-          proof approach — no other files touched.
+       b. **Retry** only the single failing target with a corrected approach —
+          no other files touched.
        c. **Ask for help**.
     3. Cascading (adding changes to other functions while still in the
        red) is forbidden.
@@ -274,7 +286,7 @@ Only re-run `just verify` after making a code change.
 <checklist-before>
   Before EVERY tool call, answer silently:
   <item>Is this exactly ONE small change? (If no → split it)</item>
-  <item>Did `just verify` pass on the current state? (Check logs/verify.log via <verify-log />, do NOT re-run)</item>
+  <item>For a modifying action, are the applicable language-scoped gates green? (For Stainless, check the relevant logs before re-running.)</item>
   <item>Am I about to run a denied command (git checkout, rm, --force)?</item>
   <item>Have I tried this same assertion 3+ times? (If yes → STOP and ASK)</item>
   <item>Am I plan mode or build mode? (Plan = no edits allowed)</item>
@@ -286,9 +298,9 @@ Only re-run `just verify` after making a code change.
 <checklist-after>
   After EVERY tool call, answer silently:
   <item>Did it succeed? (If error → read the error, do NOT retry blindly)</item>
-  <item>Did `just verify` pass? (Check logs/verify.log via <verify-log />, do NOT re-run)</item>
-  <item>Is the total valid count the same or higher than before?</item>
-  <item>If the verify timed out → STOP. Do NOT try a different approach.</item>
+  <item>Did every applicable validation gate pass, or was validation correctly not required?</item>
+  <item>If Stainless ran, is the total valid count the same or higher than before?</item>
+  <item>If any applicable gate failed or timed out → STOP. Do NOT try a different target.</item>
   <item>If stuck for 3+ attempts → STOP and ASK FOR HELP.</item>
   <item>Is execution still on track with the original plan? (If not → STOP and ASK)</item>
   <item>If this was part of a ticket → update the ticket per `TICKET_DISCIPLINE.md` (Current State, What is Learned, Failed Paths for anything that failed WITH THE REASON, Next Action, and a Learning Log row — not just a conclusion at the end)</item>
@@ -394,7 +406,7 @@ Only re-run `just verify` after making a code change.
     </pre-execution>
     <post-execution>
       1. Validate result against EVERY item in <checklist-after/>.
-      2. If verify failed/timed out → enforce <rule id="red-cascade"/>.
+      2. If any applicable validation failed/timed out → enforce <rule id="red-cascade"/>.
       3. Output a visible verdict.
       4. If 3 total attempts on the same micro-goal have failed across Critic
          and Monitor gates → enforce <rule id="stop-and-ask"/>.
@@ -407,7 +419,7 @@ Only re-run `just verify` after making a code change.
 
       ## Monitor Verdict (Post-Execution)
       - **Verdict:** PASS | FAIL
-      - **verify result:** X valid, X invalid, X unknown
+      - **validation result:** <applicable gate results, or Not required>
       - **checklist-after:** <all items passed, or first item that failed>
       - **Next action:** <proceed to next step / revise / stop-and-ask / done>
     </output-format>
@@ -421,7 +433,7 @@ Only re-run `just verify` after making a code change.
     - **Micro-goal:** <one-sentence from ticket>
     - **Target:** <file.scala>:<function>
     - **Change:** <the exact change — old text → new text>
-    - **Verify:** <just verify command, e.g. just verify FunctionName>
+    - **Validate:** <applicable commands and expected result, or Not required>
     - **Dependencies:** <lemmas/facts/preconditions relied on, with source file + line refs>
   </proposal-format>
 

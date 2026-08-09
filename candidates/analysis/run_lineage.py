@@ -7,12 +7,12 @@ population through every intermediate prime filter r < Q, layer by layer
 (Reading A: actual accepted set per layer). At each layer records the ACTUAL
 STATED CONDITION of candidates #4, #10, #12, #13, #14 -- not proxies.
 
-For #14 it performs the per-layer interval search the candidate actually
-requires: does there exist a half-open interval J_r subset [Q,Q^2) and an
-integer k_r in [2, T_r] such that  G_r(J_r) >= k_r  AND  len(J_r) < sigma_r(k_r)?
-sigma_r is computed EXACTLY from the full period M_r; the search respects the
-exact-coverage frontier (M_r <= 5e7) -- layers beyond it skip sigma and report
-the premise as unmeasured, never as a proxy.
+For #14 it performs the required per-layer interval search. Small k uses the
+proved exact stable table once {2,3,5,7} are installed, while early stages
+enumerate their tractable periods, so the small-k premise remains exact beyond
+the materialization frontier. Full-period diagnostics such as T_r, sigma_r_T,
+and the cyclic destroyed run remain unmeasured when M_r exceeds the guard; no
+proxy is substituted.
 
 All measurement logic is in lib_lineage.py (pure, unit-tested by
 test_lineage.py). This file only parses args, sequences layers, and writes CSV.

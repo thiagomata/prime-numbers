@@ -25,11 +25,14 @@
 > The candidate catalog is otherwise complete for *2-gap* conditions; this
 > entry is the one relaxation of the *goal*.
 
-**Candidate hypothesis:** Unproved and potentially false.
+**Existence status:** Externally established by Chen's theorem together with
+Bertrand's postulate; it is not an open existence conjecture of this project.
 
-**Conditional implication:** Mathematically proved (a certified-prime `p` with
-`p+2` an almost-prime is a Chen-type pair; the implication is "this count is
-positive at infinitely many heads").
+**Project-specific candidate hypothesis:** Unproved and potentially false for
+the sieve-sequence/relaxed-weight mechanism stated below.
+
+**Conditional implication:** Mathematically proved (positivity of the stated
+relaxed weight gives a certified-prime `p` with `p+2` an almost-prime).
 
 **Empirical status:** NOT EVALUATED — this is a target/milestone candidate
 derived from the analytic deep-dive, not from an empirical sweep. No new data
@@ -38,9 +41,10 @@ collection is proposed.
 ## Scope and Expectation
 
 - **What this is:** a research milestone, not a 2-gap sufficient condition.
-  Success means the sieve-sequence weights provably support *some* genuine
-  prime production (a prime `p` whose `p+2` is prime-or-semiprime), which
-  would be the project's first positive prime-producing result.
+  Success means the sieve-sequence weights themselves prove positive
+  production of a prime `p` whose `p+2` is prime-or-semiprime. The objects are
+  already known to exist by Chen's theorem; the open contribution is deriving
+  them from this project's mechanism.
 - **What this is not:** a twin-prime theorem. A successful proof does not
   certify any twin-prime pair, because `p+2` is allowed to be a semiprime.
   Do not read a positive result here as progress toward twin primes by
@@ -78,20 +82,37 @@ be prime. The Chen-type target relaxes this to:
 where `\Omega(n)` counts prime factors with multiplicity. Equivalently, `p+2`
 is either prime or the product of two primes (a semiprime).
 
-## Candidate Hypothesis
+## Externally Established Existence Statement
 
 For infinitely many prime heads `Q`, there exists a certified-prime survivor
 `p\in[Q,Q^2)` such that `p+2` has at most two prime factors.
 
-A stronger, stage-parameterized form (matching the deep-dive's ladder) is:
+This follows from classical results. Chen's theorem supplies infinitely many
+primes `p` for which `Omega(p+2)<=2`. For each sufficiently large such `p`,
+Bertrand's postulate supplies a prime
 
 ```math
-\forall\,\alpha>1/3,\quad
-\text{the relaxed weight } A_{q,z}(n)=\mathbf 1_{\gcd(n(n+2),P(z))=1}
-\text{ with } z=X^\alpha,\ X=q^2,
+\sqrt p<Q<2\lceil\sqrt p\rceil<p.
 ```
 
-detects a prime `n=p` with `\Omega(p+2)\le 2` for infinitely many `q`.
+Consequently `p\in[Q,Q^2)`. Because `p` is prime, it survives every filter
+below `Q`. Hence bare existence is not the open candidate.
+
+## Project-Specific Candidate Hypothesis
+
+Let `S_Q` be the integers in `[Q,Q^2)` surviving every prime filter below `Q`,
+and let `P(z)` be the product of the primes below `z`. The open candidate is
+that there exists a fixed `\alpha>1/3` such that, for infinitely many prime
+heads `Q`,
+
+```math
+\sum_{n\in S_Q}
+\mathbf 1_{\gcd(n+2,P(Q^{2\alpha}))=1}
+>0.
+```
+
+This is a statement about what the sieve-sequence/relaxed weights can prove,
+not merely about whether Chen pairs exist.
 
 ## Why The Relaxation Escapes The Twin-Prime Wall
 
@@ -110,29 +131,155 @@ linear-sieve + bilinear estimates that are known to escape the parity barrier
 at the almost-prime level. The project's existing four-point correlation
 machinery (`two-class-survival-from-collision-energy`,
 `fourier-two-gap-correlation-prefix-bound`) is upper-bound machinery and is
-therefore of the right type for this target, even though it could not
-certify the (lower-bound) twin-prime target.
+therefore potentially relevant to this target, even though no theorem yet
+transfers it to the required relaxed-weight lower bound.
 
 ## Conditional Implication (proved)
 
-If the candidate holds, then for infinitely many `Q` there exists a prime
-`p\in[Q,Q^2)` with `\Omega(p+2)\le 2`. This is a Chen-type pair. It is not a
-twin-prime pair unless `p+2` happens to be prime, which the candidate does not
-require.
+Every `p\in S_Q` is prime by square-safe certification. Put `X=Q^2` and
+`z=X^\alpha`. For fixed `\alpha>1/3`, three prime factors of `p+2`, all at
+least `z`, would have product at least
 
-The implication "candidate holds `=>` infinitely many Chen-type pairs" is
-immediate from the definitions; no additional theorem is needed.
+```math
+z^3=X^{3\alpha}>X+1\ge p+2
+```
+
+for all sufficiently large `Q`, a contradiction. Therefore positivity of the
+candidate sum gives `\Omega(p+2)\le2`. This is a Chen-type pair, not
+necessarily a twin-prime pair.
+
+The implication uses only square-safe certification and the elementary
+factor-size comparison above.
+
+## Established Algebraic Advance: Exact Divisor Local Factor
+
+Property #84 derives the comparison sequence that a project-specific Type-I
+argument must use. Put
+
+```math
+X=Q^2,
+\qquad
+z=X^\alpha,
+\qquad
+\frac13<\alpha<\frac12.
+```
+
+Then `P(z)` divides `P(Q)`. For an interval `I subset [Q,Q^2)`, let
+`N_m(I)` count the candidate's relaxed-weight integers `n in I` with `m|n`.
+The exact one-divisor formula is
+
+```math
+\boxed{
+N_m(I)
+=
+\mathbf1_{\gcd(m,P(Q))=1}\rho_{Q,z}\ell_m+E_m(I),
+}
+```
+
+where `ell_m` is the number of multiples represented after writing `n=mk`,
+and
+
+```math
+\boxed{
+\rho_{Q,z}
+=
+\frac12
+\prod_{2<p<z}\left(1-\frac2p\right)
+\prod_{z\le p<Q}\left(1-\frac1p\right).
+}
+```
+
+Thus wheel-sharing divisors contribute zero, while every divisor coprime to
+the installed wheel has the same explicit local density. The first product
+has sieve dimension two and the second has sieve dimension one.
+
+The remainder `E_m(I)` is exactly the discrepancy of the one incomplete CRT
+period. Property #84 proves only the trivial pointwise bound by the complete
+primorial modulus. It therefore does **not** prove a Type-I estimate. The first
+honest accumulated obligation is cancellation in
+
+```math
+\sum_{m\le M}\alpha_mE_m(I)
+```
+
+for the coefficient class and divisor range needed by the relaxed sieve.
+Complete-period density by itself cannot supply that cancellation.
+
+## Established Bilinear Reduction And A Refuted Shortcut
+
+Property #85 factors the final relaxed indicator at `x=mn`. After both factor
+variables are restricted to be coprime to `P(Q)`, centering by the conditional
+scalar density gives the exact pointwise remainder
+
+```math
+\sum_{d\mid P(z)/2}
+\mu(d)
+\left(
+\mathbf1_{n\equiv-2m^{-1}\ (\mathrm{mod}\ d)}
+-\frac1{\varphi(d)}
+\right).
+```
+
+Each bracket is exactly a sum of nonprincipal character products
+`chi(m)chi(n)`. This is the first genuine bilinear family exposed by the
+relaxed weight.
+
+It also refutes one tempting formulation. On a complete reduced wheel,
+choosing both coefficient sequences to be the nonprincipal character modulo
+`3` makes the centered correlation equal the entire relaxed survivor count.
+Thus subtracting only the scalar density does **not** make the final sifted
+indicator pseudorandom against arbitrary product coefficients.
+
+This does not refute the candidate or every short-domain bilinear estimate.
+It blocks the route that applies a black-box arbitrary-coefficient Type-II
+bound directly to the scalar-centered final indicator. A viable sieve
+formulation should instead begin before the last relaxed filtering step, with
+
+```math
+\mathcal A_Q
+=
+\{n+2:n\in S_Q\},
+```
+
+and study its shifted divisor counts
+
+```math
+A_d(I)
+=
+\#\{n\in S_Q\cap I:d\mid n+2\}.
+```
+
+The next Type-I question is whether these counts have the expected reduced-
+residue factor `1/phi(d)` on average over squarefree `d|P(z)`. Any later
+bilinear theorem must be formulated for the remainders of this pre-sieved
+base sequence, or use a comparison that already contains the fixed local
+character modes.
+
+Property #86 proves the exact reduction
+
+```math
+\boxed{
+A_d(I)-\frac{A_1(I)}{\varphi(d)}
+=
+\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}
+}
+```
+
+for odd `d|P(z)` in the square-safe window. Thus the remaining Type-I input is
+an averaged theorem for primes in the progression `-2 modulo d`. This is the
+specific new arithmetic information the project must obtain or import;
+complete-period sieve algebra determines the main factor but cannot supply
+the average cancellation.
 
 ## Proof Target And Open Estimate
 
-Concretely, the target is to prove, for some `\alpha>1/3` and infinitely many
-`q`,
+Concretely, the target is to prove, for some fixed `\alpha>1/3` and infinitely
+many prime heads `Q`,
 
 ```math
-\sum_{\substack{n\in[Q,Q^2)\\ n\text{ prime}\\ \Omega(n+2)\le 2}}
-A_{q,z}(n)
->0,
-\qquad z=Q^{2\alpha}.
+\sum_{n\in S_Q}
+\mathbf 1_{\gcd(n+2,P(Q^{2\alpha}))=1}
+>0.
 ```
 
 This is a Type-I-plus-bilinear problem in the sense of the deep-dive, but at
@@ -151,8 +298,9 @@ weights support genuine prime production.
 - The candidate is unproved. Stating it does not advance the proof; it
   identifies the target.
 - It is strictly weaker than the twin-prime goal. A successful proof would be
-  the project's first prime-producing result, but it would not resolve the
-  twin-prime conjecture or any 2-gap candidate.
+  the project's first derivation of prime production from these particular
+  weights, but the underlying existence theorem is already classical. It
+  would not resolve the twin-prime conjecture or any 2-gap candidate.
 - It is possible that even the almost-prime target is out of reach for the
   sieve-sequence weights specifically, in which case the candidate fails as a
   fallback. That failure would itself be informative: it would say the
@@ -161,6 +309,22 @@ weights support genuine prime production.
 
 ## Established Inputs
 
+- [Relaxed cofactor divisor sum is a prime-progression discrepancy](
+  ../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md)
+  — proves the exact shifted-divisor comparison and identifies its accumulated
+  remainder as the missing prime arithmetic-progression estimate.
+- [Relaxed almost-prime bilinear remainder has a character obstruction](
+  ../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md)
+  — gives the exact inverse-residue/character family and proves the complete-
+  wheel scalar-comparison obstruction.
+- [Refuted scalar-density Type-II orthogonality](
+  refuted/relaxed-weight-scalar-density-type-ii.md)
+  — preserves the exact auxiliary route that must not be retried; it does not
+  refute this candidate.
+- [Relaxed almost-prime weight has an exact divisor local factor](
+  ../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md)
+  — supplies the exact divisor-dependent comparison density and isolates the
+  signed incomplete-period remainder that the first Type-I theorem must sum.
 - [Square-safe certification](../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md)
   — supplies "survivor in `[Q,Q^2)` is prime."
 - [Two-class survival from residue collision energy](
@@ -188,9 +352,9 @@ weights support genuine prime production.
 
 ## Success and Failure Criteria
 
-- **Success:** a proved lower bound on Chen-type pairs produced by the
-  sieve-sequence weights, for infinitely many heads. Validates prime
-  production.
+- **Success:** a proved positive relaxed-weight sum for infinitely many heads,
+  deriving Chen-type pairs from the sieve-sequence weights.
 - **Partial success:** the same for `\Omega(p+2)\le C`, `C>2` constant.
-- **Failure:** a proof that the weights cannot produce Chen-type pairs
-  infinitely often — a sharp negative boundary on the program.
+- **Failure:** a proof that this relaxed-weight positivity statement cannot
+  hold infinitely often. This would refute the proposed mechanism, not the
+  externally established existence of Chen-type pairs.

@@ -48,7 +48,7 @@ rotation invariance currently provide no bound on its phase relative to `q`.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `d_head` = forward distance from head
 `q` to the first post-filter 2-gap start `s >= q`. The candidate's concrete
 sufficient condition is `d_head <= q^2 - q - 3`.

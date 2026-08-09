@@ -35,6 +35,57 @@ G_{surviving}(p,q)\ge L(p,q)-A(p,q)>0.
 
 Every surviving member of `W_q` is a twin-prime certificate.
 
+## Incremental Annular Form
+
+The [incremental danger-annulus decomposition](../properties/sieve-sequence/incremental-danger-annulus-decomposition.md)
+defines `L_D(p,q)` as the number of actual pre-filter 2-gaps whose starts lie
+in the refined newly exposed coordinate set, and `K_D(p,q)` as the number of
+those gaps destroyed by filter `p`.
+
+The sharper incremental candidate is that, for infinitely many consecutive
+primes `p<q`,
+
+```math
+L_D(p,q)>A(p,q)-1.
+```
+
+The established effective destruction bound gives
+
+```math
+\begin{aligned}
+G_{D,surviving}(p,q)
+&\ge L_D(p,q)-K_D(p,q),\\
+&\ge L_D(p,q)-(A(p,q)-1),\\
+&>0.
+\end{aligned}
+```
+
+Every such survivor starts above `p^2` and has upper endpoint below `q^2`, so
+it is a newly exposed square-safe twin-prime certificate. Success at infinitely
+many transitions gives distinct pairs because consecutive square annuli do not
+overlap.
+
+For a condition expressed only through the consecutive-prime gap `d=q-p`, the
+simpler but weaker raw sufficient form is
+
+```math
+L_D(p,q)
+>
+R_V(p,q)-1
+=
+2d+\left\lceil\frac{d^2}{p}\right\rceil-1.
+```
+
+Since `A(p,q)<=R_V(p,q)`, this implies the exact accepted-strike condition.
+The original full-window hypothesis `L(p,q)>A(p,q)` remains valid as a
+square-safe survival condition; the annular form asks specifically for newly
+exposed survival.
+
+The existing 186-transition measurements below count the full window `W_q`.
+They do not measure `L_D(p,q)` and therefore are not empirical evidence that
+either annular inequality holds. The missing ingredient is still a recurring
+lower bound for the actual annular population.
+
 ## Established Inputs
 
 - [Exact accepted local strikes](../properties/sieve-sequence/exact-accepted-local-filter-strikes.md)
@@ -48,10 +99,10 @@ local lower bound `L(p,q)>A(p,q)`. Complete-period counts do not prove it.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `candidates/analysis/measure_candidates.py` (dense p<=991, 165 clean
+Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py` (dense p<=991, 165 clean
 transitions) + `--sparse` (every 100th prime to p~19000, 21 more). Full data in
 `data/candidates/window-measurements{,-sparse}.csv`. See
-`candidates/analysis/FINDINGS.md` for the cross-candidate synthesis.
+`empirical/sieve-sequence/FINDINGS.md` for the cross-candidate synthesis.
 
 The candidate's concrete sufficient condition `surplus = G_local - A(p,q) > 0`
 holds in **186/186** measured transitions. It is the strongest signal in the

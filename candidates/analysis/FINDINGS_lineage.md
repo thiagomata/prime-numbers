@@ -50,14 +50,15 @@ measurements show at this one tiny Q; they are not candidate verdicts.
   that.
 - **The favorable readings (all margins positive, #14 premise holds) are at one
   tiny Q.** They are consistent with the candidates but prove nothing about
-  their general truth. Scaling Q is the next step, bounded by the exact-coverage
-  frontier.
-- **The exact-coverage frontier is the hard limit.** `σ_r` and the full-period
-  cyclic run require materializing `M_r`. At Q=17 the largest `M_r` is 2310
-  (layer 4). Beyond roughly Q=29 the period at the last layers exceeds the
-  5e7 tractability bound and those quantities become unmeasurable exactly. The
-  pilot does NOT substitute a proxy when that happens — it reports
-  `unmeasured`, by design.
+  their general truth. They motivate scaling Q: exact stable-small-`k` #14 and
+  #12/#13 measurements can continue beyond the diagnostic materialization
+  frontier, while full-period diagnostic fields may become unavailable.
+- **The exact-coverage frontier limits the current full-period diagnostics.**
+  The current implementation materializes the full-period gap cycle to report
+  `T_r`, `sigma_r_T`, and the cyclic destroyed run, so those diagnostic fields
+  become unmeasured beyond the `5e7` guard. The proved stable table keeps
+  small-`k` `sigma_r(k)`, and therefore the #14 small-`k` interval search, exact
+  beyond that frontier; no proxy is substituted.
 
 ## Two findings that are general (not Q-specific)
 
@@ -72,18 +73,21 @@ measurements show at this one tiny Q; they are not candidate verdicts.
 
 ## Next step
 
-Scale Q within the exact-coverage frontier (next tractable targets: Q=19, 23,
-29 — checking where `M_r` at the final layer crosses 5e7). The question to
-answer by scaling: do the #14 interval premise and the #12/#13 margins stay
-positive as the number of layers grows, or does any layer fail? A failure at
-some layer would be far more informative than continued success — it would
-localize where the candidate breaks.
+Scale Q beyond the pilot while continuing the exact stable-small-`k` #14 search
+and #12/#13 margin measurements. Record full-period diagnostics where the
+current materialization guard allows them and leave those fields unmeasured
+otherwise. The scaling question is whether the #14 interval premise and
+#12/#13 margins stay positive as layers grow, or whether some layer fails; a
+failure would localize where a candidate breaks.
 
-## Reassessment: the exact-coverage wall remains for exact `sigma_r`
+## Reassessment: the stable small-k table is exact
 
-An earlier revision concluded that a small-`k` stable-table shortcut removed
-the exact-coverage wall. The shortcut makes the computation inexpensive, but
-its arbitrary-stage use is not mathematically justified:
+An earlier revision correctly observed that monotonicity and finite-wheel
+agreement alone did not justify arbitrary-stage use of the shortcut. The
+admissible-pattern CRT theorem now supplies the missing upper bound, so the
+tabulated values for `2 <= k <= 10` are exact at every primorial stage with
+`{2,3,5,7}` installed; earlier stages use direct small-period enumeration. The
+distinctions below explain why the original concern mattered:
 
 1. `M` (the primorial) is always known -- it is computed directly, never
    searched for. The wall was about *materializing a size-M array*, not about
@@ -103,13 +107,13 @@ on full-period minima, so this does not by itself prove that the full-period
 minimum changed; it does show that a particular short-prefix witness did not
 persist.
 
-The implementation currently uses the finite table directly
-(`sigma_r_stable`) beyond the enumerated frontier. Results depending on those
-values are heuristic extrapolations until a persistent witness is proved or
-the relevant period is enumerated. Detailed finite evidence is in
-[the empirical #14 note](
-../../empirical/sieve-sequence/hereditary-shot-spacing.md
-).
+The implementation uses the exact table directly (`sigma_r_stable`) beyond the
+enumerated frontier. For `2 <= k <= 10`, exactness follows from the
+stable-small-k theorem: filtering gives the monotone lower bound and an
+admissible pattern translated by CRT gives the matching upper bound. The finite
+wheel and prefix measurements are regression evidence for the implementation,
+not the proof. Detailed finite evidence is in [the empirical #14 note](
+../../empirical/sieve-sequence/hereditary-shot-spacing.md).
 
 What the wall DOES still block: #4's full-period **cyclic destroyed run**,
 which genuinely needs the period (it is defined over the cyclic start ordering

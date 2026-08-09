@@ -8,9 +8,11 @@ layer measures the ACTUAL STATED CONDITION of candidates #4, #10, #12, #13, #14
 Design decisions (see tickets/active/lineage-experiment-2026-07-23.md):
   - Reading A: each layer's population is the actual accepted set of the stage
     (integers in [Q,Q^2) coprime to all primes < r), updated as filters install.
-  - sigma_r(k) is a WHOLE-PERIOD quantity (modulus M_r, all T_r cofactor
-    residues). It is computed EXACTLY here, which is only feasible while M_r is
-    small -- hence the small-Q pilot. No whole-window proxy is substituted.
+  - sigma_r(k) is defined from the whole-period gap cycle. For 2 <= k <= 10
+    once {2,3,5,7} are installed, the proved exact stable table avoids
+    materializing M_r; earlier stages enumerate their small periods exactly.
+    Full-period diagnostics such as T_r, sigma_r_T, and the cyclic destroyed
+    run remain gated by M_r.
   - #4 cyclic destroyed run is over the FULL PERIOD M_r (per the candidate
     note "Order the pre-filter 2-gap starts cyclically"), computed exactly at
     the pilot. The window-linear run is also reported for comparison.
@@ -123,9 +125,11 @@ def sigma_r_for_layer(
       - If {2,3,5,7} are all installed, use the PROVEN STABLE small-k values
         (see sigma_r_stable). These are exact, O(1), and independent of M -- so
         there is no primorial wall for the small k that #14's interval premise
-        needs. (Stabilization is monotone: folding a prime p inserts gaps >= p,
-        never smaller than existing small gaps, so the min small-k window sum is
-        non-decreasing and stable once {2,3,5,7} are in.)
+        needs. The proof is not finite wheel agreement: the exact {2,3,5,7}
+        wheel realizes D(k), filtering monotonicity makes the minimum span
+        non-decreasing, and an admissible pattern of diameter D(k), translated
+        by CRT, supplies the matching upper bound for every larger wheel. Finite
+        later-wheel comparisons are regression evidence only.
       - Otherwise (an early stage missing one of {2,3,5,7}), compute exactly
         from the full period, which is small at those early stages.
     """
@@ -152,20 +156,21 @@ def sigma_r_for_layer(
     return r * min_span_cofactor, M
 
 
-# Proven stable values of sigma_r(k)/r for primorial stages with {2,3,5,7}
-# installed. Computed exactly from the {2,3,5,7} sub-wheel and verified identical
-# at {2,3,5,7,11,13,17,19}; valid for ALL larger primorials by monotone
-# stabilization (folding more primes only inserts gaps >= the new prime, which
-# cannot reduce a small-k window sum). NOTE: do NOT extrapolate the pattern --
-# k=7..10 were computed, not guessed (an earlier guess was wrong).
+# Exact stable values of sigma_r(k)/r for 2 <= k <= 10. The {2,3,5,7}
+# wheel realizes D(k). Filtering monotonicity preserves D(k) as a lower bound,
+# while an admissible pattern of diameter D(k), translated by CRT, gives the
+# matching upper bound for every larger primorial wheel. Equality observed in
+# later finite wheels is regression evidence for the implementation, not the
+# proof. Do not extrapolate beyond the proved table.
 _SIGMA_STABLE = {2: 2, 3: 6, 4: 8, 5: 12, 6: 16, 7: 20, 8: 26, 9: 30, 10: 32}
 
 
 def sigma_r_stable(k: int):
-    """The proven stable sigma_r(k)/r for stages with {2,3,5,7} installed, or
-    None if k is beyond the tabulated range (caller falls back to exact or
-    refuses). Tabulated values were verified monotone-stable across all
-    primorials from {2,3,5,7} through {2,3,5,7,11,13,17,19}."""
+    """The exact stable sigma_r(k)/r for 2 <= k <= 10 once {2,3,5,7} are
+    installed, or None beyond the proved table. Exactness follows from D(k):
+    filtering supplies the lower bound and an admissible-pattern CRT witness
+    supplies the matching upper bound. Finite later-wheel comparisons are
+    regression evidence only."""
     return _SIGMA_STABLE.get(k)
 
 

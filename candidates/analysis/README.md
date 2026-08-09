@@ -37,14 +37,14 @@ python3 -m venv .venv
 Fixes a window `W_Q=[Q,Q^2)` and tracks its 2-gap population through every
 intermediate filter `r<Q` layer by layer (Reading A). Measures the ACTUAL
 STATED condition of #4, #10, #12, #13, #14 — correcting the proxies the
-single-transition pass used. Per-layer `sigma_r` and the cyclic destroyed run
-require the full period `M_r`, so they are exact only while `M_r` is tractable
-(the "exact-coverage frontier"). The cyclic run reports `unmeasured` beyond
-that frontier. The current `sigma_r` implementation instead substitutes a
-finite small-`k` table. The admissible-diameter theorem now proves every entry
-for `2\le k\le10`, so those substituted values are exact without full-period
-materialization. Any future entry beyond the proved profile must remain gated
-or explicitly heuristic.
+single-transition pass used. Small-`k` `sigma_r(k)` is exact: early stages
+enumerate their tractable periods, while stages with `{2,3,5,7}` installed use
+the proved stable table for `2\le k\le10` without full-period materialization.
+The current full-period diagnostics (`T_r`, `sigma_r_T`, and the cyclic
+destroyed run) materialize the gap cycle and report `unmeasured` beyond the
+guard. Values beyond the proved stable profile remain gated: they are computed
+exactly when full-period enumeration is tractable and otherwise left
+unmeasured.
 
 ```bash
 .venv/bin/python test_lineage.py             # green gate for the lineage library

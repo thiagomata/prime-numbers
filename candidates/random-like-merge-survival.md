@@ -112,6 +112,78 @@ The error bound gives
 Hence `K < L`, so `L - K > 0`. At least one square-safe 2-gap survives whenever
 the deterministic error remains inside the selected model's positive margin.
 
+## Realized 0-to-1 Destruction Diagnostic
+
+The [realized filter adversariality score](../properties/sieve-sequence/realized-filter-adversariality-score.md)
+uses this candidate's structurally closer uniform-random-residue benchmark
+
+```math
+d_p=\frac2p
+```
+
+to calibrate a realized destruction fraction `f=K/L` through the anchors
+
+```math
+C_p(0)=0,
+\qquad
+C_p(d_p)=\frac12,
+\qquad
+C_p(1)=1.
+```
+
+Score `0` means no gap in the typed population was destroyed, `1/2` is the
+random-residue/complete-copy benchmark anchor, and `1` is local extinction.
+The midpoint is a normalization point, not evidence that a deterministic
+filter behaved randomly.
+
+For observed full-window counts,
+
+```math
+C_{obs}=C_p(K/L)
+```
+
+is the realized score. For consecutive primes `p<q` with `p>=5`, let `A(p,q)`
+be the exact accepted-strike count, not the raw multiple count. Then
+
+```math
+C_{cap}
+=
+C_p\!\left(
+\min\!\left(1,\frac{A(p,q)}{L(p,q)}\right)
+\right)
+```
+
+is a proved full-window capacity ceiling. Neither quantity is a probability or
+a proof of deterministic transference.
+
+The independent-deletion benchmark `2/p-1/p^2` remains valid for its own model,
+but it would define a different midpoint calibration. Property #88 intentionally
+uses the uniform-residue rate because one modular filter selects one residue
+class globally.
+
+Across the 186 audited unique clean full-window transitions:
+
+- `C_obs` has median `0`, unweighted finite-transition mean
+  `0.044177363545902307`, and maximum `21/44`; all 186 observations are below
+  `1/2`;
+- `C_cap` has median `0.1285745802948713`, unweighted finite-transition mean
+  `0.16908125524560394`, and maximum `61/110`; all 186 capacity ceilings are
+  below `1`.
+
+At `(p,q)=(7,11)`, the closest observed benchmark ratio is
+
+```math
+\frac{K/L}{2/p}=\frac{21}{22},
+\qquad
+C_{obs}=\frac{21}{44}.
+```
+
+These are finite full-window outcomes and finite-instance capacity bounds. The
+current data contains neither `L_D` nor `K_D`, so it supplies no observed
+annular score or numeric annular capacity ceiling. Candidate #11's hypothesis
+remains the same deterministic discrepancy/transference statement and is not
+discharged by the calibration or the measurements.
+
 ## Gap-Agnostic Transference Form
 
 A more reusable hypothesis can range over every finite local gap word `A`, not
@@ -162,7 +234,7 @@ gaps. Neither benchmark alone proves deterministic survival.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantities: `destruction_rate = destroyed/G_local`
 (actual fraction of 2-gaps the real filter destroys) vs the uniform-residue
 benchmark `2/p`. Full data in
@@ -176,7 +248,7 @@ The gap widens sharply with p:
 
 | range | destruction_rate (max) | benchmark 2/p (median) |
 |-------|------------------------|------------------------|
-| dense (p 5..991) | 0.333 (at (7,11)) | 0.004 |
+| dense (p 5..991) | 0.333 (at (5,7)) | 0.004 |
 | sparse (p ~1000..19000) | 0.00008 | 0.0001 |
 
 Trend (log-log, over transitions with `destruction_rate > 0`, n=91):

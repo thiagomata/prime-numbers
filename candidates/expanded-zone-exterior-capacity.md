@@ -10,17 +10,16 @@ future heads.
 
 ## Purpose
 
-Complete lifted copy orbits have exact survivor counts, while the real
-prime-certifying danger zone is only a short partial-period interval. This
-candidate asks whether one can enlarge the real zone just enough to recover
-exact counting, then prove that the added exterior cannot contain every
-survivor.
+Complete lifted copy orbits have exact survivor counts, while the square-safe
+prime-certifying target is only a short partial-period interval. This candidate
+asks whether one can enlarge that target just enough to recover exact counting,
+then prove that the added exterior cannot contain every survivor.
 
 It also records an alternative selection formulation: follow one safe branch
 through the copy-index tree and keep its numerical growth below a later square
 certification horizon.
 
-## Real and Expanded Zones
+## Square-Safe Target and Expanded Zones
 
 For a future prime head `q`, let
 
@@ -28,7 +27,8 @@ For a future prime head `q`, let
 W_q=[q,q^2)
 ```
 
-be the real danger zone. Count complete 2-gaps by their starts, so define
+be the square-safe target window. Count complete 2-gaps by their starts, so
+define the square-safe target start interval
 
 ```math
 W_q^{(2)}=[q,q^2-2).
@@ -72,7 +72,7 @@ is not required.
 
 ## Why It Is Sufficient
 
-The expanded region is the disjoint union of its real-zone part and its
+The expanded region is the disjoint union of its square-safe-target part and its
 exterior part. Therefore
 
 ```math
@@ -130,7 +130,7 @@ copies. Exact copy-index filtering leaves
 (r-2)G
 ```
 
-surviving copies. If one component is designated as the real zone, the other
+surviving copies. If one component is designated as the square-safe target, the other
 `r-1` components can hold as many as
 
 ```math
@@ -206,11 +206,88 @@ old copy. Repetition reproduces an empty relative slice just as exactly as it
 reproduces a populated one. The candidate therefore does not assume that a
 global density transfers to `[q,q^2)`.
 
+## Incremental Danger-Annulus Alternative
+
+The full-window post-filter argument above remains valid. A separate
+pre-filter formulation can target only the newly exposed population defined in
+the [incremental danger-annulus decomposition](../properties/sieve-sequence/incremental-danger-annulus-decomposition.md).
+For consecutive primes `p<q` with `p>=5`, reuse the phase-compatible coordinate set
+
+```math
+X_D(p,q)=
+\left\{
+x\in\mathbb Z:
+p^2+4\le x<q^2-2,
+\quad x\equiv5\pmod6
+\right\}.
+```
+
+Define a distinct pre-filter counting function
+
+```math
+S_{<p}(X)
+=
+\#\{\text{actual 2-gap starts in }X
+\text{ after filters below }p\}.
+```
+
+This is not the post-filter observable `S_q` used above. In particular,
+
+```math
+L_D(p,q)=S_{<p}(X_D(p,q)).
+```
+
+Choose an exactly countable expansion with
+
+```math
+X_D(p,q)\subseteq\widetilde X_D
+```
+
+and prove pre-filter bounds
+
+```math
+S_{<p}(\widetilde X_D)\ge B_D,
+\qquad
+S_{<p}(\widetilde X_D\setminus X_D(p,q))\le U_D.
+```
+
+Exterior subtraction would then give
+
+```math
+\begin{aligned}
+L_D(p,q)
+&=
+S_{<p}(\widetilde X_D)
+-S_{<p}(\widetilde X_D\setminus X_D(p,q)),\\
+&\ge B_D-U_D.
+\end{aligned}
+```
+
+The exact sufficient exterior target is
+
+```math
+B_D-U_D>A(p,q)-1.
+```
+
+By the incremental form of [local surplus](local-surplus.md), this forces a
+newly exposed surviving 2-gap. With `d=q-p`, the simpler raw sufficient target
+is
+
+```math
+B_D-U_D>
+2d+\left\lceil\frac{d^2}{p}\right\rceil-1.
+```
+
+The annular formulation has a smaller effective destruction allowance, but it
+also counts a smaller pre-filter population. No theorem currently shows that
+this tradeoff is easier: a favorable exactly countable `widetilde X_D` and
+bounds `B_D,U_D` have not been constructed.
+
 ## Relation to Existing Candidates
 
-- [Local surplus](local-surplus.md) is the terminal inequality inside the real
-  zone. Exterior subtraction is one proposed mechanism for proving that local
-  population is positive.
+- [Local surplus](local-surplus.md) gives terminal inequalities in both the
+  square-safe target and the incremental annulus. Exterior subtraction is one
+  proposed mechanism for proving the required local population.
 - [Protected cluster](protected-cluster.md) bounds what one filter can destroy
   after a local cluster is already present.
 - [Forbidden-copy covered run](forbidden-copy-covered-run.md) fixes one old

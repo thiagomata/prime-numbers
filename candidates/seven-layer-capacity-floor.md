@@ -231,6 +231,55 @@ are recorded in
 ../empirical/sieve-sequence/capacity-density-candidates.md
 ).
 
+## Algebraic Bridge To Candidate #24
+
+Property #75 proves that this candidate's one-layer threshold has a second
+consequence beyond close-pair survival. For
+
+```math
+B_r
+=
+\left\lfloor
+\frac{Q^2-Q-3}{6r}
+\right\rfloor+1,
+```
+
+the threshold and the already-installed filter `5` imply
+
+```math
+2B_r\le G_r(W_Q)\le(r-2)B_r.
+```
+
+Therefore property #74's population slack is maximal:
+
+```math
+\sigma_r=2B_r,
+\qquad
+X_r\ge B_r^2.
+```
+
+At the proved base layer `r=7`, property #76 inserts this floor into the
+native-period Bessel normalization. It proves
+
+```math
+e_2
+\ge
+\left(
+\frac{7B_7^2}{30}
+-((Q^2-Q-2)\bmod210)
+\right)_+
+\ge1
+```
+
+for every integer `Q>=36`. Thus the established base case already gives a
+strict improvement of candidate #24's all-capacity energy envelope for every
+future prime head `Q>=37`.
+
+This does not prove the later-layer lower envelope stated by this candidate,
+and strict energy-envelope improvement does not by itself prove survival. The
+remaining #24 comparison is whether the quantified gain clears its extinction
+deficit.
+
 ## Limitation
 
 The candidate is a conditioned short-window density theorem. Exact
@@ -251,6 +300,14 @@ recurrence alone.
 - [Exact seven-layer capacity floor](
   ../properties/sieve-sequence/exact-seven-layer-capacity-floor.md
   ) — proves the base inequality `rho(Q,7)>1` for every integer `Q>=17`.
+- [Seven-layer density floor maximizes capacity width](
+  ../properties/sieve-sequence/seven-layer-density-floor-maximizes-capacity-width.md
+  ) — converts this candidate's count threshold into maximal population
+  slack for candidate #24.
+- [Seven-layer floor forces native overflow](
+  ../properties/sieve-sequence/seven-layer-floor-forces-native-overflow.md
+  ) — proves unconditional positive overflow at the native cut after filter
+  `7` for every future prime head `Q>=37`.
 - [Hereditary shot-spacing capacity](
   hereditary-shot-spacing-capacity.md
   ) — candidate #14, whose full chain premise follows from this candidate.

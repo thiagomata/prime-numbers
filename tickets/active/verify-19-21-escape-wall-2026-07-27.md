@@ -86,11 +86,119 @@ and proves that cut `k` gains at least
 
 over the all-capacity envelope.
 
-Start from this overflow checkpoint. The next useful input must independently
-lower-bound some `e_k` at the scale of the remaining extinction deficit, or
-provide localized interval correlations stronger than the native-period
-Bessel budget. Do not restart complete-period Bessel, separate-layer capacity
-optimization, first-deletion reindexing, or empirical-range extension.
+Property #74 now lower-bounds that overflow through the realized
+population slack
+
+```math
+\sigma_i=\min(N_i,2B_i,r_iB_i-N_i).
+```
+
+Its synchronization with candidate #24 and both permanent catalogs is
+complete. The conditional #17-to-#24 bridge is also proved: candidate #17's
+local-count threshold places every applicable realized population in
+property #74's maximal-width regime
+
+```math
+2B_i\le N_i\le(r_i-2)B_i,
+```
+
+and hence forces `sigma_i=2B_i`. The lower inequality comes from #17's count
+threshold; the upper inequality comes independently from the three allowed
+two-gap-start classes modulo `30`. The exact fixed-cut parameter comparison is
+now complete. Its positive half is: at the native cut after filter `7`,
+`q_(1,2)=30/7`, and for every `Q>=36`,
+
+```math
+e_2
+\ge
+\left(
+\frac{7B_7^2}{30}-((Q^2-Q-2)\bmod210)
+\right)_+
+\ge1.
+```
+
+Thus the hybrid envelope is unconditionally and strictly smaller than the
+all-capacity envelope for every future prime head `Q>=37`. The bridge does
+not prove candidate #17 or candidate #24; the quantified gain still has to be
+compared with the exact remaining extinction deficit. Property #77 completes
+that comparison for the original threshold at the fixed `k=2` cut: under #17
+at filter `11`, the untouched suffix forces
+`U_2^hyb>T^2/(2W_-)` on chains with `m>=37`. Resume from a moving cut, not by
+enlarging the settled filter-`7` overflow. Property #78 now generalizes this
+to every cut:
+
+```math
+m
+>
+P_k(r_k-2)^2(1+6/D)^2
+\quad\Longrightarrow\quad
+\mathcal U_k^{\mathrm{hyb}}
+>
+\frac{T^2}{2W_-}.
+```
+
+Hence every fixed cut eventually fails, and any cut that could clear the
+original threshold must satisfy
+
+```math
+r_k
+\ge
+2+
+\frac{\sqrt{7m/3}}{1+6/D}.
+```
+
+The next live question is whether moving this far makes the native modulus
+too large for useful complete-block cancellation. Property #79 answers that
+question. Under the finite hypotheses `theta(r_(k-1))>=c r_(k-1)` and
+Bertrand, a threshold-clearing cut with `M_k<=H` must satisfy
+
+```math
+m
+<
+\frac37(1+6/D)^2
+\left(
+\frac{2\log H}{c}-2
+\right)^2.
+```
+
+Using PNT externally, the actual `m=pi(Q)-3` eventually exceeds this
+logarithmic-squared bound. Hence every sufficiently large potentially
+successful cut has `M_k>H` and `s_k=H`: there are no complete native blocks.
+The remaining native-period question is the Bessel constraint on that single
+incomplete block. Property #80 closes that question. For every cut,
+
+```math
+\sum_{i<k}\frac{X_i}{q_{i,k}}
+\le
+\frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.
+```
+
+When `M_k>H` and
+
+```math
+M_kP_k
+\ge
+\frac{3kD^2r_k^2}{25H(r_k-2)},
+```
+
+one has `e_k=0` and `U_k^hyb=U_cap`. PNT makes this product inequality hold
+at every sufficiently large moving cut that could avoid the suffix
+obstruction. Combined with properties #77--#79, the current
+capacity-plus-native-Bessel envelope cannot certify #24's original threshold
+under full candidate #17. Property #81 now closes the `Gamma_cap` repair of
+that same envelope: all post-`5` minimizer capacities eventually fit, the
+remaining filter-`5` gap is negligible, and filter `7` already forces
+`U_cap>=P_mD^2/1080`.
+
+Property #82 supplies the first localized-energy success:
+`|b_7|<=18/7`, so the actual filter-`7` energy is at most `54P_m/5` rather
+than the capacity charge of order `P_mD^2`. Its direct generalization is
+property #58's identity `b_i=delta_(0,i)+delta_(-2,i)`, exactly candidate
+#23's accepted-boundary discrepancy. Start from the need for new signed
+mean-square or cross-layer cancellation. Do not restart complete-period
+Bessel, native-period Bessel, separate-layer capacity optimization,
+`Gamma_cap` alone, fixed-period enumeration, first-deletion reindexing, or
+empirical-range extension.
 
 ## Goal
 
@@ -1063,6 +1171,160 @@ characterization boundary.
   candidate #24 and both permanent catalogs agree on `U_hyb` and `e_k`,
   `git diff --check` is clean, and the separately staged giant CSV remains
   untouched.
+- The first overflow-floor audit is complete algebraically. For one layer,
+  let
+
+  ```math
+  \ell=\max(0,N-(r-2)B),
+  \qquad
+  u=\min(N,2B),
+  \qquad
+  \mu=\frac{2N}{r}.
+  ```
+
+  Then the sharp capacity envelope has the exact midpoint form
+
+  ```math
+  X
+  =
+  \left(
+  \frac{u-\ell}{2}
+  +
+  \left|
+  \mu-\frac{\ell+u}{2}
+  \right|
+  \right)^2,
+  ```
+
+  and its feasible width is
+
+  ```math
+  u-\ell
+  =
+  \min(N,2B,rB-N).
+  ```
+
+  Consequently,
+
+  ```math
+  X
+  \ge
+  \frac14
+  \min(N,2B,rB-N)^2.
+  ```
+
+  Property #73 therefore receives the explicit overflow floor
+
+  ```math
+  e_k
+  \ge
+  \left(
+  \sum_{i<k}
+  \frac{
+  \min(N_i,2B_i,r_iB_i-N_i)^2
+  }{
+  4M_kd_ip_ia_i
+  }
+  -
+  s_k
+  \right)_+.
+  ```
+
+  This floor is useful only through actual population slack. For `B>0`,
+  `X=0` exactly at `N=0` or `N=rB`; in particular, positive `N` does not
+  imply a positive population-independent floor because the fully occupied
+  feasible profile `N=rB` also has `X=0`.
+- The result is promoted as
+  `properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md`.
+  It includes the exact midpoint identity, the three-case width proof, the
+  zero characterization, and the induced property #73 survival certificate.
+- The theorem is registered as property #74 in the permanent property
+  catalog.
+- Candidate #24 now includes property #74's population-slack floor, exact
+  zero characterization, induced overflow certificate, and the requirement
+  for an unbounded-family slack theorem or localized residue input.
+- The conditional #17-to-#24 population-slack bridge is proved. For
+  `Q>=17`, `7<=r<Q`, and `B=floor((Q^2-Q-3)/(6r))+1`, candidate #17's
+  local-count threshold gives `N>=2B`. Independently, the three possible
+  modulo-30 start classes give `N<=(r-2)B`. Hence property #74's slack is
+  exactly `sigma=2B`, and its width floor is the maximal value `X>=B^2`.
+  This does not prove candidate #17; it identifies exactly what #17 would
+  contribute to candidate #24.
+- The filter-`7` specialization supplies unconditional positive native
+  overflow. With `r_0=5`, `r_1=7`, cut `k=2`, `M_2=210`, and pre-filter-`7`
+  pair density `3/30`, the exact norm is `q_(1,2)=30/7`. The proved seven-layer
+  floor gives `X_1>=B_7^2`, so `e_2>=1` for every integer `Q>=36`. Property #73
+  therefore gives a strict capacity-envelope reduction
+  `Delta_2>=42d_m e_2`. This is an unconditional envelope improvement, not a
+  survival theorem.
+- The exact fixed-cut scale audit is complete. If candidate #17's threshold
+  holds at the first untouched layer `r_2=11`, then for every chain with
+  `Q>=17` and `m>=37`,
+
+  ```math
+  \mathcal U_2^{\mathrm{hyb}}
+  >
+  \frac{T^2}{2W_-}.
+  ```
+
+  The proof lower-bounds the untouched filter-`11` suffix term by
+  `(847/486)P_m(D/66)^2` and upper-bounds the original threshold by
+  `P_m(D/6+1)^2/(2m)`. Thus the positive filter-`7` overflow cannot make the
+  fixed `k=2` envelope certify the original #24 threshold on long chains.
+  Later cuts and the capacity-relaxed threshold remain open.
+- The arbitrary-cut scale audit is complete. Under candidate #17 at the first
+  untouched layer, cut `k` cannot clear the original threshold whenever
+  `m>P_k(r_k-2)^2(1+6/D)^2`. Thus every fixed `k` eventually fails. Since
+  `P_k<=P_2=3/7`, threshold clearance requires
+  `r_k>=2+sqrt(7m/3)/(1+6/D)`. This is a necessary moving-prime rate, not a
+  sufficient cut construction.
+- The moving-cut complete-block audit is complete. If a cut both clears the
+  original threshold and has `M_k<=H`, then a finite theta lower bound and
+  Bertrand force
+  `m<(3/7)(1+6/D)^2(2log(H)/c-2)^2`. PNT gives
+  `m=pi(Q)-3~Q/log(Q)`, so this inequality eventually fails. Therefore every
+  sufficiently large potentially successful cut has `M_k>H` and remainder
+  `s_k=H`. This uses Bertrand/PNT as explicit external dependencies and does
+  not rule out one-incomplete-block Bessel gain.
+- The one-incomplete-block audit is complete. The finite bound
+  `sum_(i<k) X_i/q_(i,k)<=3kD^2r_k^2/(25M_kP_k(r_k-2))` gives the exact
+  sufficient criterion
+  `M_kP_k>=3kD^2r_k^2/(25H(r_k-2))` for `e_k=0`. PNT makes the left side
+  exponentially large in the required moving-cut prime while the right side
+  is polynomial, so every sufficiently large potentially successful moving
+  cut has `e_k=0` and `U_k^hyb=U_cap`. With property #77's
+  `U_cap>=U_2^hyb>T^2/(2W_-)`, no native cut clears the original threshold
+  under full candidate #17.
+- The `Gamma_cap` scale audit is complete. For every `i>=1`, the minimizing
+  deletion mass satisfies
+  `K_i^star-C_i<=N_0/S-(2D-18)/(15r_i)`. Thus the finite condition
+  `S>=15QN_0/(2D-18)` removes every post-5 capacity violation. The only
+  possible contribution then obeys
+  `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`. In contrast, candidate #17 at
+  filter `7` and property #75 give
+  `U_cap>=P_mD^2/1080`, while the original threshold is at most
+  `P_m(D/6+1)^2/(2m)`. Prime Mertens plus PNT give
+  `S` of order `Q log Q`, so the finite condition holds and both allowance
+  terms are negligible relative to the filter-7 envelope floor. The relaxed
+  capacity threshold therefore cannot rescue the separate capacity envelope
+  on an unbounded family under full candidate #17.
+- The first localized actual-energy audit succeeds sharply at filter `7`.
+  In one modulo-`210` period, the 21 admissible starts have centered weights
+  `7g_7` equal to six copies of `5` and fifteen copies of `-2`. In residue
+  order their cumulative sums range from `-8` to `10`, so every interval has
+  `|b_7|<=18/7`. Consequently the actual filter-`7` energy is at most
+  `(49P_m/30)(18/7)^2=54P_m/5`, replacing the separate capacity charge
+  `>=P_mD^2/1080`. This is a genuine `D^2`-scale saving, but it controls only
+  one fixed early layer.
+- The direct generalization of property #82 is not a new algebraic route.
+  Property #58 gives `b_i=delta_(0,i)+delta_(-2,i)`, so the general native
+  prefix discrepancy is exactly the two-residue accepted-boundary arithmetic
+  already reduced in candidate #23. Complete-period cancellation removes the
+  bulk, but independent inclusion--exclusion summands give an exponential
+  bound, and total variation over the native residue certificate grows with
+  `prod_(j<i)(r_j-2)`. Scaling #82 therefore requires a new signed mean-square
+  or Möbius-boundary cancellation theorem, not further fixed-period
+  enumeration.
 
 ### Independent property-catalog audit (2026-07-29)
 
@@ -1280,13 +1542,64 @@ understanding the obstruction, not a proof that escapes it.
   The first cleanup patch then missed because its context wrapped
   `enlargement` differently from the source. Exact numbered inspection enabled
   the final permitted correction; the catalog now consistently uses `U_hyb`.
+- **Positive capacity-overflow floor from `r_i,B_i` alone:** impossible.
+  Property #70's sharp coordinate envelope vanishes on the feasible profiles
+  `N_i=0` and `N_i=r_iB_i`. Retry only with a quantitative restriction keeping
+  some actual population away from both empty and full capacity, or with
+  localized residue information beyond the capacity box.
+- **Finish #24 by enlarging only the proved filter-`7` overflow:** blocked for
+  the fixed `k=2` envelope. Under candidate #17 at `r=11`, the untouched
+  filter-`11` capacity term alone exceeds the original extinction threshold
+  for `m>=37`. Retry only by moving the cut so filter `11` and later layers
+  enter the joint Bessel budget, by using `Gamma_cap` quantitatively, or by
+  proving localized information that reduces the suffix below its capacity
+  maximum.
+- **Replace filter `7` by any other fixed native cut:** blocked for the
+  original threshold under candidate #17 at the first untouched layer. The
+  exact obstruction is
+  `m>P_k(r_k-2)^2(1+6/D)^2`. Retry only with a cut index growing with the
+  chain, the capacity-relaxed `Gamma_cap` allowance, or localized suffix
+  control.
+- **Use a moving cut while retaining complete native blocks:** asymptotically
+  blocked for the original threshold under candidate #17 at the first suffix
+  layer. The exact finite retry condition is
+  `m<(3/7)(1+6/D)^2(2log(H)/c-2)^2` under
+  `theta(r_(k-1))>=c r_(k-1)` and Bertrand. PNT shows the actual full chain
+  eventually violates it. Retry only through the one-incomplete-block Bessel
+  constraint, the capacity-relaxed threshold, or a different localized
+  estimate.
+- **Use native-period Bessel on the remaining incomplete block:**
+  asymptotically blocked for the original threshold under full candidate #17.
+  The finite retry condition is failure of
+  `M_kP_k>=3kD^2r_k^2/(25H(r_k-2))`; PNT shows this failure cannot persist at
+  the moving-prime scale forced by property #78. Retry only with a smaller
+  localized upper bound replacing `X_i`, the capacity-relaxed `Gamma_cap`
+  threshold, or a different cross-layer inequality.
+- **Use `Gamma_cap` to rescue the separate/native capacity envelope:**
+  asymptotically blocked under full candidate #17. Property #81 proves that
+  all post-`5` minimizer capacities eventually fit and
+  `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`, while filter `7` forces
+  `U_cap>=P_mD^2/1080`. PNT/Mertens make both the original threshold and the
+  stability gap negligible relative to this envelope floor. Retry only with
+  a smaller localized upper bound for actual `E_b` or a genuinely different
+  joint cross-layer inequality.
+- **Generalize property #82 by enumerating each larger native period:** does
+  not scale. The coefficient is exactly the two-residue boundary discrepancy
+  already isolated by candidate #23. Generic inclusion--exclusion is
+  exponential in the installed-prime count, while total-variation control
+  grows with the native accepted population. Retry only with a signed
+  mean-square/cross-layer cancellation theorem or a proved recursive prefix
+  bound that beats this growth.
 
 ## Next Action
 
-Stop at the normalized-capacity overflow checkpoint. Resume only with a
-genuinely independent lower bound for some `e_k` at the extinction-deficit
-scale, or with a localized interval-correlation inequality that is stronger
-than native-period Bessel.
+Property #82 is registered and synchronized. Stop at the strategy boundary:
+its direct native-period enumeration generalization converges to candidate
+#23's already-classified boundary discrepancy. The next useful theorem must
+be genuinely new arithmetic information: either a signed mean-square bound
+for the two harmful boundary sums after chain weights are inserted, or a
+recursive prefix-discrepancy bound whose growth is sub-native. Do not create a
+duplicate candidate for the same boundary identity.
 
 Treat property #68's positive extinction gap as secondary unless the same
 arithmetic input also supplies, or materially relaxes, a usable upper bound
@@ -1383,4 +1696,26 @@ collect additional empirical evidence.
 | 2026-07-29 | Property #73 is registered in the permanent property catalog. | Add the overflow certificate and its open lower-bound obligation to candidate #24. |
 | 2026-07-29 | Candidate #24 now states property #73's scalar overflow certificate and identifies a lower bound for `e_k` at the extinction-deficit scale as the next independent input. | Synchronize the candidate catalog and run the final consistency audit. |
 | 2026-07-29 | Final audit passes: properties #71--#73, candidate #24, and both catalogs are synchronized; no stale `U_cap` target remains; Markdown is clean; the staged giant CSV is untouched. | Stop at the overflow checkpoint until an independent lower bound for `e_k` or stronger localized correlation input is available. |
+| 2026-07-29 | The sharp capacity envelope has exact width `min(N,2B,rB-N)` and is at least one quarter of its square, yielding an explicit lower bound for `e_k`. The bound necessarily vanishes at empty and fully occupied feasible populations, so `r,B` alone cannot force positive overflow. | Promote the width-floor theorem and require actual population slack or localized residue input next. |
+| 2026-07-29 | The capacity-width floor and population-free obstruction are now a standalone property, including their composition with the property #73 survival certificate. | Register as property #74 and synchronize candidate #24 and the catalogs. |
+| 2026-07-29 | Property #74 is registered in the permanent property catalog. | Add its population-slack floor and population-free obstruction to candidate #24. |
+| 2026-07-29 | Candidate #24 now states property #74's population-slack overflow floor and proves why `r_i,B_i` alone cannot make it positive. | Synchronize the candidate catalog and run the final audit. |
+| 2026-08-03 | Property #74 is synchronized across candidate #24 and both catalogs. Candidate #17's count threshold appears to force property #74's maximal population-slack width: the lower side is a floor comparison, and the upper side follows from the three allowed start classes modulo `30`. | Make the conditional #17-to-#24 middle-regime bridge the next one-lemma proof; do not claim either candidate is thereby proved. |
+| 2026-08-03 | The #17-to-#24 bridge is proved: #17 gives `N>=2B`, installed filter `5` gives `N<=(r-2)B`, and therefore property #74 has `sigma=2B` and `X>=B^2`. | Register the bridge as property #75, then compare its normalized `B_i^2` sum with property #73's remainder budget before claiming any cross-candidate gain. |
+| 2026-08-03 | The proved `r=7` floor makes the first native overflow unconditional: `q_(1,2)=30/7` and `e_2>=(7B_7^2/30-s_2)_+>=1` for every `Q>=36`. Hence property #73 strictly improves the capacity envelope by at least `42d_m e_2`. | Promote as property #76, then compare the quantified gain with candidate #24's exact extinction deficit; strict improvement is not yet survival. |
+| 2026-08-03 | Property #76 is registered and candidates #17/#24 and both permanent catalogs now distinguish unconditional strict hybrid gain from the still-open survival comparison. | Audit whether the fixed `k=2` envelope can clear the original or capacity-relaxed extinction threshold; if not, state the exact obstruction and move only to later cuts or localized information. |
+| 2026-08-03 | The fixed cut after filter `7` cannot clear the original #24 threshold on long chains under candidate #17 at the first untouched layer: for `m>=37`, the filter-`11` suffix term alone gives `U_2^hyb>T^2/(2W_-)`. | Promote as property #77; stop enlarging the settled filter-`7` overflow and test whether the same obstruction holds for every fixed cut. |
+| 2026-08-03 | Property #77 is registered and candidate #24 and both catalogs now classify the fixed `k=2` route. All Markdown, link, and stale-claim checks pass; the Stainless baseline remains `30/0/0` and the unrelated staged giant CSV is untouched. | Generalize the suffix comparison to arbitrary fixed `k`; determine whether a successful native cut must grow with the future head. |
+| 2026-08-03 | The suffix comparison generalizes exactly: cut `k` fails the original threshold when `m>P_k(r_k-2)^2(1+6/D)^2`. Every fixed cut therefore eventually fails, and `P_k<=3/7` gives the necessary movement rate `r_k>=2+sqrt(7m/3)/(1+6/D)`. | Promote as property #78; next compare this necessary movement with the native-modulus requirement for useful complete-block cancellation. |
+| 2026-08-03 | Property #78 is registered and candidate #24 and both catalogs now classify every fixed cut. The repository has no internal primorial-growth lemma strong enough for the next comparison; Bertrand and PNT are already used elsewhere as explicit external mathematical dependencies. | Prove an exact conditional `m=O(log^2 H)` bound for cuts with `M_k<=H`, then use PNT only in a separately labeled asymptotic corollary. |
+| 2026-08-03 | A moving cut that clears the original threshold and retains `M_k<=H` must satisfy an exact logarithmic-squared chain bound under a finite theta lower bound and Bertrand. PNT makes that bound incompatible with `m=pi(Q)-3` for all sufficiently large heads, so any potentially successful cut has `M_k>H` and `s_k=H`. | Promote as property #79; next test whether the one-incomplete-block Bessel budget can exclude any capacity mass at all. |
+| 2026-08-03 | The incomplete-block capacity sum is at most `3kD^2r_k^2/(25M_kP_k(r_k-2))`; if the corresponding finite product inequality holds, then `e_k=0`. PNT makes it hold at every sufficiently large moving cut, so the current native hybrid cannot clear the original #24 threshold under full #17. | Promote as property #80 and stop the exhausted native-period route; next choose between `Gamma_cap` and localized actual-energy control. |
 | 2026-07-29 | Independent reviewer (separate agent) audited the full ~40 new properties per `TICKET_DISCIPLINE.md` §6. Stratified sample across 3 tiers (negative/insufficiency, load-bearing positive identities, heavy-machinery). | All checked notes are mathematically SOUND and carefully scoped. Net: the new work sharpens the wall (precise inventory of which standard tools fail, the one viable shape left) but does not escape it. Recorded as "Independent property-catalog audit" subsection in What is Learned. No corrections needed to the team's properties. |
+| 2026-08-03 | Property #80, candidate #24, and both catalogs are synchronized; stale transitional claims that incomplete-block Bessel remained open were corrected. Markdown and link checks pass, the Stainless baseline remains `30/0/0`, and the unrelated staged giant CSV is untouched. | Stop at the strategy boundary. Prefer auditing `Gamma_cap` first because it stays inside #24's proved scalar framework; use localized actual-energy control only if that audit shows no asymptotic room. |
+| 2026-08-03 | The user selected the recommended `Gamma_cap` branch. Existing properties #69--#70 already reduce it to `U_cap<T^2/(2W_-)+Gamma_cap`; no separate ticket or stronger existing lemma was found. | Compare the minimizer-capacity violations with the aggregate envelope excess under full candidate #17, without retrying exhausted one-layer or native-period arguments. |
+| 2026-08-03 | The `Gamma_cap` comparison closes algebraically: after a finite `S` condition all post-5 minimizer capacities fit, the remaining gap is at most `(25P_m/18)(2/5+3N_0/(5S))^2`, but candidate #17 forces `U_cap>=P_mD^2/1080` already at filter `7`. PNT/Mertens make both the original threshold and `Gamma_cap` negligible against this floor. | Promote the finite and asymptotic obstruction as property #81, then synchronize candidate #24 and both catalogs. |
+| 2026-08-03 | Property #81 is registered and synchronized across candidate #24, both catalogs, and the boundaries of properties #79--#80. The stability gap is eventually positive but cannot rescue the separately maximized capacity envelope under full #17. | Stop at the strategy boundary; next prefer localized control of actual `b_i^2`, with a genuinely joint cross-layer inequality as the fallback. |
+| 2026-08-03 | At filter `7`, the modulo-`210` centered-weight certificate has cumulative range `18`, proving the sharp interval bound `|b_7|<=18/7` and actual energy contribution at most `54P_m/5`. This replaces the capacity-envelope charge of order `P_mD^2` by a boundary constant. | Promote as property #82, then test which part of the cumulative-discrepancy argument scales to a general native period. |
+| 2026-08-03 | Property #82 is registered and synchronized across candidate #24 and both catalogs. It proves a genuine fixed-layer localized saving without claiming uniformity in the growing native modulus. | Compare the general cumulative discrepancy with candidate #23's existing boundary arithmetic before proposing a scalable theorem. |
+| 2026-08-03 | The general property #82 coefficient is exactly `b_i=delta_(0,i)+delta_(-2,i)`, the accepted-boundary discrepancy already classified in candidate #23. Fixed-period enumeration scales with the native accepted population and generic inclusion--exclusion is exponential, so neither supplies the required chain bound. | Stop rather than duplicate #23; continue only with a new signed mean-square/cross-layer cancellation input or a sub-native recursive prefix bound. |
+| 2026-08-03 | Property #82, candidate #24, both catalogs, and the active-ticket cold-start guidance are synchronized. The positive fixed-layer theorem and the failed naive scaling route are both preserved; no candidate was refuted. | Stop at the new-arithmetic boundary until a signed mean-square/cross-layer cancellation theorem or sub-native recursive discrepancy bound is selected. |

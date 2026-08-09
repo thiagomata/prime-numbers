@@ -432,7 +432,7 @@ filter from concentrating on one local pattern.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: for the word `w=(2)`, `residue_max_dev =
 max_a |N_{w,a} - N_w/p|`, the worst deviation of any residue class's 2-gap-start
 count from uniform. **Low-power measurement**: one window is a small sample of
@@ -483,7 +483,7 @@ earlier filters, is the higher-priority formulation.
 The candidate's OWN sufficient margin `nu E < N(1 - nu/r)` (for the word
 `(2)`, with `nu=2` forbidden classes and `E` the worst residue-class excess)
 was measured per layer by the fixed-future-window lineage experiment
-(`candidates/analysis/run_lineage.py`), replacing the earlier `sqrt(G_local)`
+(`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`), replacing the earlier `sqrt(G_local)`
 normalization that was flagged as insufficient.
 
 **Q=101, 24 layers:** the margin `N(1 - nu/r) - nu E` is **positive at 24/24

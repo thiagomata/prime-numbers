@@ -1,5 +1,13 @@
 # Learnings: Capacity Argument for Twin Prime Persistence
 
+**Current assessment (2026-08-03):** Sections 1--21 preserve the historical
+development of the capacity argument. Their empirical observations remain
+useful, but their older claims that there is one undifferentiated remaining
+density question are superseded by Sections 22--23. Properties #66--#83 now
+separate the exhausted capacity/native-period envelopes from the live signed
+residue-energy and partial-boundary problem. Properties #84--#86 define a
+distinct relaxed almost-prime program.
+
 ## 1. The Core Invariant (Sound)
 
 **Worst-Case Growth Inequality:**
@@ -55,9 +63,15 @@ It shifts the burden. The critic must now claim:
 
 This is a strong claim requiring systematic avoidance of 2-gaps in early positions — structurally unlikely given the deterministic CRT-based construction.
 
-## 6. Empirical Results (p ≤ 997)
+## 6. Historical Empirical Results (superseded)
 
-A segmented sieve runner using `BigInt` arithmetic computed $G_{\text{local}}$ for each prime layer up to $p=997$ (all 166 primes, 676s runtime). The complete dataset is at `data/empirical/results.csv`.
+The table below records the old Scala `[p,p^2)` counter. That experiment is
+incompatible with the canonical `[q,q^2)` transition workflow and is not
+current evidence for it; physical retirement of the old runner and dataset is
+still pending under the repository's file-deletion rule. Current measurements
+are in `data/candidates/window-measurements.csv`, with analysis in
+`empirical/sieve-sequence/FINDINGS.md` and
+`empirical/sieve-sequence/FINDINGS_lineage.md`.
 
 ### 6.1 Crossover
 
@@ -296,13 +310,16 @@ After exhaustive analysis of all approaches, the Parallax engine's formal bounda
 | **Across-copy uniformity ⇒ local density** | Proves global survival (p-2 copies), but copies 1..p-1 are at positions ≫ p² |
 | **Cluster persistence across layers** | C=1 after one filter kills the guarantee; requires reconstruction each layer |
 
-### The single remaining question
+### Historical formulation of the single remaining question
 
 The Twin Prime Conjecture for this sieve reduces to:
 
 > **In A_k (the k-th gap cycle), some 2-gap exists at position < p_{k+1}².**
 
-This is a claim about the *positional* distribution of 2-gaps within a single copy of the cycle. Every other piece of the puzzle is verifiably correct. The remaining density question is a genuinely deep mathematical problem (closely tied to the twin prime conjecture itself), not a verification gap.
+This is a claim about the *positional* distribution of 2-gaps within a single
+copy of the cycle. At this stage of the investigation it was treated as the
+remaining question. Sections 22--23 replace that compressed formulation with
+the later signed quadratic boundary and the distinct almost-prime program.
 
 ### Two paths considered
 
@@ -313,7 +330,13 @@ This is a claim about the *positional* distribution of 2-gaps within a single co
 
 ### Recommendation
 
-Close the discussion. The Parallax engine proves: **if** the safe zone contains a 2-gap cluster of ≥ 2 within 8 units, that cluster survives forever and produces infinitely many twin primes. The remaining open question — whether such a cluster always exists in the safe zone — is a density claim not provable from the structural invariants alone, and is equivalent to a known open problem in number theory.
+Do not continue optimizing the same unsigned capacity envelope. Later work
+proved a sharp quadratic survival threshold and then showed that the separate
+capacity/native-period relaxations cannot clear it on an unbounded family.
+The productive continuation is signed: use actual interval order, residue
+energy, and cross-layer composition. The exact current boundary is recorded in
+Section 22. The earlier cluster condition remains a conditional sufficient
+statement, not the final architecture verdict.
 
 ## 16. What the Previous Sequence Tells Us About the Safe Zone
 
@@ -355,7 +378,11 @@ This is a claim about the **distribution** of the T_k elements of S_k. The eleme
 
 The safe zone probes a tiny fraction of the cycle (≈ p²/M_k), and this fraction shrinks to 0 exponentially fast. The previous sequence reveals the exact data but offers no proven constraint on which positions are "lucky" enough to fall in the window. The gap is purely distributional, which is why it reduces to a known hard problem in analytic number theory.
 
-### Proven properties of the engine (final catalog)
+### Proven properties of the engine (historical snapshot)
+
+This table records the state when Section 16 was written. It is not the current
+complete catalog; see Section 22 and the sieve-sequence property index for the
+later quadratic, capacity-envelope, and signed-localization results.
 
 | # | Property | Status |
 |---|----------|--------|
@@ -496,7 +523,12 @@ so the average gap $M_k/T_k \sim e^{\gamma}\ln h \to \infty$ — it diverges, wi
 
 **Max gap does the same, empirically.** Checked against the real Spark cycles (same dataset as Section 19), $\text{maxGap}/h$ is *increasing* at every one of the ten stages checked ($h=3$ to $31$): $0.67, 0.8, 1.4, 2.5, 3.1, 3.8, 5.6, 6.4, 7.0, 8.3$. No sign of stabilization over this range.
 
-**Lesson:** "each step is gentle" is true, and it is exactly why the *count* of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT product, and the formal exact count in `gap-dynamics-v2.md` §5.2). It is not, by itself, evidence that any statistic *stabilizes* — Mertens' theorem is the standing proof that it doesn't, for the one statistic (average gap) where the asymptotic is fully known.
+**Lesson:** "each step is gentle" is true, and it is exactly why the *count*
+of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT
+product and `gap-dynamics-v2.md` §§3.1--3.3). It is not, by itself, evidence
+that any statistic *stabilizes* — Mertens' theorem is the standing proof that
+it does not, for the one statistic (average gap) where the asymptotic is fully
+known.
 
 ## 21. Worst-Case Adversarial Merge Bounds Size, Not Position (Open — Needs Large-Scale Data)
 
@@ -507,3 +539,108 @@ A tempting proof strategy: construct a deliberately pessimistic ("fake") merge p
 **Where this breaks:** as a bound on *position*. The danger window $[p, p^2)$ only overlaps one specific copy ("copy 0") of the $h$-fold expansion. A freely adversarial model — unconstrained by which copy each residue's removal actually lands in — could simply choose to dump all its damage into copy 0 specifically, since nothing stops it from doing so. That would make the pessimistic model "prove" local extinction is possible, which contradicts the empirical reality (survival is always observed) — meaning a fully free adversary is *too* pessimistic to say anything useful about *where* damage lands. The real process's rigidity (each residue's target copy is a fixed affine function of its value mod $h$, not a free choice) is exactly the structure a valid positional bound would need to exploit — the same equidistribution difficulty as everywhere else in this file.
 
 **Status:** the *size*-bound direction (Section 19's chain characterization) is checked against real data and found to break down quickly. The *position* question here has not been checked at all beyond the existing $p \le 997$ / $h \le 31$ ranges. **Open item:** extend the Spark empirical run to much larger primes (the current dataset tops out at $h=31$, 429M gaps) and track max gap, average gap, and 2-gap count together, to see whether the "gentle per-step, but still growing" pattern in Sections 19-20 continues to hold, weakens, or reverses at scale far beyond what's been checked so far. Nothing here changes the open-problem status — it is a possible empirical extension, not a new argument.
+
+## 22. Current Twin-Prime Boundary After The Quadratic Audit
+
+The later algebra replaces the old single-capacity narrative with three
+separate layers.
+
+### 22.1 The terminal condition is quadratic and signed
+
+Candidate #24 proves a sufficient survival threshold of the form
+
+```math
+E_b < \frac{T^2}{2W_-},
+```
+
+where $E_b$ is the weighted harmful-excess energy. This is strictly weaker
+than controlling the full collision energy. It is already terminal: proving
+the required aggregate bound forces survival rather than merely supplying a
+soft intermediate estimate.
+
+### 22.2 Separate capacity envelopes are exhausted
+
+Properties #66--#81 classify the conservation, capacity, native-period
+Bessel, fixed-cut, moving-cut, and stability-gap variants. The important
+lesson is not that capacity bounds are false. They are sharp for the limited
+information they retain. The problem is that maximizing each layer
+independently discards actual signs and residue order, producing an envelope
+too large to certify the quadratic threshold on an unbounded family.
+
+This closes further optimization of the same separate envelope unless a new
+ingredient prevents the abstract maximizing profiles from occurring.
+
+### 22.3 Exact interval order gives a real saving
+
+Property #82 computes the filter-$7$ centered residue word modulo $210$. Its
+cumulative sums range from $-8$ to $10$, proving
+
+```math
+|b_7(I)|\le\frac{18}{7}
+```
+
+for every interval. The corresponding energy is at most $54P_m/5$, replacing
+the false impression of a charge proportional to $P_mD^2$. This proves that
+the capacity obstruction at the first nontrivial layer is an artifact of
+discarding interval order.
+
+### 22.4 Complete blocks reduce to residue energy
+
+For an incoming prime $r$, let $c_t$ be the old-start histogram modulo $r$,
+$d_t=c_t-N/r$, and $V_r=\sum_td_t^2$. Property #83 proves that copy-block
+harmful excess has the exact form
+
+```math
+B_j=d_{t_j}+d_{t_j-2}
+```
+
+and therefore
+
+```math
+\sum_{j=0}^{r-1}B_j^2
+=2V_r+2\sum_td_td_{t-2}
+\le4V_r.
+```
+
+This is the durable bridge from conditioned residue-collision energy to the
+quadratic survival criterion. It controls runs of complete old-period blocks.
+
+### 22.5 The remaining obstruction is now precise
+
+An arbitrary square window contains a complete-block run plus at most two
+partial old-period fragments. Late in the chain, the old period can exceed the
+whole window, so the partial fragments dominate. The remaining twin-prime
+program therefore needs all three of:
+
+1. a relative bound for the actual residue energy $V_r$;
+2. signed control of the partial old-period boundaries; and
+3. composition of those estimates across the weighted filter chain.
+
+Accepted-anchor recursion, generic Gram/Bessel algebra, and additional
+capacity-only optimization do not add those ingredients. This is a sharper
+boundary than the historical statement “prove local density.” The full
+mathematical synthesis is in
+[Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences](
+../chapter6/gap-dynamics-v2.md).
+
+## 23. Distinct Relaxed Almost-Prime Program
+
+Candidate #25 weakens the second endpoint: the square-safe survivor $p$ is
+prime, while $p+2$ is required to have at most two prime factors. This does not
+prove a 2-gap and should not be counted as another capacity route.
+
+Properties #84--#86 establish its current algebraic boundary:
+
+- the final relaxed weight has an exact divisor-dependent local factor;
+- the natural shifted divisor remainder is exactly
+  $\pi(I;d,-2)-\pi(I)/\varphi(d)$;
+- the scalar-centered bilinear remainder decomposes into nonprincipal
+  character modes; and
+- modulo-$3$ character coefficients refute complete-wheel scalar-density
+  Type-II orthogonality at full survivor scale.
+
+The next input is an averaged prime-progression theorem matched to the exact
+divisor and interval range, followed by a pre-sieved or locally adapted
+bilinear estimate. The complete analysis is in
+[Relaxed Almost-Prime Production in Sieve Sequences](
+../draft/draft-relaxed-almost-prime-sieve-sequence.md).

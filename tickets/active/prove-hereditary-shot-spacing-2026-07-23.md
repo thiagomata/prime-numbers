@@ -160,7 +160,7 @@ and confidence language never substitute for proof.
   are exact.
 - **User-scoped continuation (2026-07-26):** do not block this documentation
   and empirical-classification pass on the unrelated Scala test failures or
-  missing generator provenance for `data/sieven-sequence/first_gaps_per_seq.csv`.
+  missing generator provenance for `data/sieve-sequence/first_gaps_per_seq.csv`.
   Treat the supplied CSV as trusted finite data for now, record both concerns,
   and make Markdown-only changes. Do not alter the measurement source while
   its normal code gate is unresolved.

@@ -6,9 +6,11 @@
 
 **Conditional implication:** Mathematically proved.
 
-**Empirical status:** NOT EVALUATED — this is an algebra-first candidate. Its
-purpose is to expose a proof route through four-point upper correlations, not
-to initiate another data sweep.
+**Empirical status:** BOUNDED FALSIFIER INCONCLUSIVE — exact conditioned-layer
+search through prime heads `Q<=251` found no violation. This finite non-witness
+does not support or refute the infinitely-many-heads hypothesis. The minimal
+algebraic violating histograms are known, so further computation should seek
+only those targeted witnesses rather than extend an undirected sweep.
 
 ## Purpose
 
@@ -131,6 +133,37 @@ x,x+2,x+d,x+d+2
 Thus the candidate can be attacked through upper bounds for explicit
 four-point patterns.
 
+## Exact Minimal Falsifiers
+
+For residue multiplicities `(c_a)`, the exact identity
+
+```math
+C_r-N_r
+=
+2\sum_a\binom{c_a}{2}
+```
+
+shows that the collision inequality permits at most `N_r^2/(2r)` unordered
+same-class pairs. At the candidate's smallest allowed populations, the first
+violating histograms are:
+
+| `(r,N_r)` | Minimal violating nonzero multiplicities | Pair count | Allowed pair count |
+|-----------|-------------------------------------------|------------|--------------------|
+| `(5,6)` | `3+2+1` | `4` | `18/5` |
+| `(7,4)` | `2+2` | `2` | `8/7` |
+| `r>=11, N_r=3` | `2+1` | `1` | `9/(2r)<1` |
+
+These are exact algebraic countermodels to the collision inequality at the
+minimal populations. Basic spacing does not exclude them: starts in one
+residue class may be separated by multiples of `6r`. They are not candidate
+counterexamples until the complete histogram is realized by an actual
+conditioned square-window population.
+
+A dependency-free exact search recomputed those populations and histograms for
+every prime head through `Q<=251` and found no violating layer. Because the
+candidate asks for successful chains at infinitely many heads, neither this
+finite agreement nor any isolated future failure decides its main quantifier.
+
 ## Why The Candidate Is Sufficient
 
 The proved collision-energy lemma says that survival follows from
@@ -225,6 +258,27 @@ new difficulty. For current proof work, #20 is a useful pointwise testbed, but
 #22's harmless energy and candidate #21's weighted aggregate are the more
 precise primary targets.
 
+Property #83 gives candidate #20 a direct localized role in candidate #24.
+For one incoming prime, let `V_r=C_r-N_r^2/r` be the residue energy of the
+old-period start histogram. If `B_j` is the centered harmful excess in old-
+period copy block `j`, then
+
+```math
+\sum_{j=0}^{r-1}B_j^2\le4V_r
+```
+
+and every `k` consecutive complete blocks satisfy
+
+```math
+\left|\sum_{j\in J}B_j\right|^2\le4kV_r.
+```
+
+Thus a relative collision theorem for #20 controls #24's harmful excess on
+the complete old-period blocks inside the square window. It still leaves the
+two partial old-period boundary fragments, and late layers may contain no
+complete old-period block at all. The bridge is proved; the collision and
+short-boundary estimates are not.
+
 ## Algebraic Proof Program
 
 The most concrete route is:
@@ -280,4 +334,7 @@ argument is meant to prove.
   )
 - [Square-safe certification](
   ../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md
+  )
+- [Copy-block harmful excess is controlled by residue energy](
+  ../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md
   )

@@ -37,19 +37,26 @@ unless the same counterexample defeats those formulations too.
 3. [Centered conductor-block orthogonality](centered-conductor-block-orthogonality.md)
    — the distinct- and coprime-conductor orthogonality shortcuts around
    candidate #22 fail exactly at `P=30`, `r=7`, `q=2`, `q'=3`.
+4. [Bounded cyclic destruction run two](bounded-cyclic-destruction-run-two.md)
+   — the constant shortcut `R_r<=2` around candidate #4 fails exactly at
+   future head `Q=101`, filter `r=23`, where the full-period cyclic run is `3`.
+5. [Scalar-density Type-II orthogonality for the relaxed weight](relaxed-weight-scalar-density-type-ii.md)
+   — the scalar local-density comparison around candidate #25 leaves an exact
+   modulo-`3` bilinear character mode. On the complete reduced wheel, bounded
+   product coefficients correlate with the full relaxed survivor count.
 
-## Relationship To The Four Documented Negative Results
+## Relationship To The Five Documented Negative Results
 
-This index contains **three** refuted auxiliary statement families. A fourth
+This index contains **five** refuted auxiliary statement families. A sixth
 negative result is documented in
 [candidate #3, Protected Cluster](../protected-cluster.md): its condition
 fails at `(p,q)=(5,7)`.
 
-Candidate #3 is not a fourth entry in this index because its main hypothesis
+Candidate #3 is not a sixth entry in this index because its main hypothesis
 asks for protected clusters at infinitely many transitions. The single
 failure refutes the stronger all-transitions formulation, not that
-infinitely-many statement. Thus the repository documents four negative
-results while this catalog correctly contains three refuted auxiliary
+infinitely-many statement. Thus the repository documents six negative
+results while this catalog correctly contains five refuted auxiliary
 families.
 
 ## Scope Boundary

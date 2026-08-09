@@ -4,7 +4,12 @@
 
 **Conditional implication:** Mathematically proved from the stated ordering.
 
-**Empirical status:** INCONCLUSIVE — window-linear run flat (max 2); cyclic run unmeasurable at scale (period-scale, no shortcut). See "Empirical status (lineage experiment)".
+**Empirical status:** INCONCLUSIVE FOR THE MAIN HYPOTHESIS; THE AUXILIARY
+CONSTANT `R=2` IS REFUTED — the window-linear run has maximum `2`, but the
+exact full-period cyclic run is `3` at `Q=101`, `r=23`. The cyclic quantity
+remains unmeasurable at later primorial-scale layers. See "Empirical status
+(lineage experiment)" and the [refuted constant-two bound](
+refuted/bounded-cyclic-destruction-run-two.md).
 
 ## Candidate Hypothesis
 
@@ -36,7 +41,7 @@ consecutive run among 2-gap starts.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `candidates/analysis/measure_candidates.py`, 186 transitions (dense
+Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `max_cons_destroyed_run` = the longest
 consecutive run in the **linear order of starts lying inside `W_q`** that the
 filter destroys. The implementation does not join the last local start back to
@@ -63,20 +68,22 @@ growing.
 ## Strategic assessment after empirical review
 
 Among the mechanistic candidates, this is one of the sharpest and most
-falsifiable: a third consecutive destroyed start would immediately refute the
-conjectural constant `R=2` in the tested setting. Proof priority is high, but
-the next experiment must first close the measurement gap by checking cyclic
-runs on complete small periods and by tracking runs in a fixed future window
-after several consecutive filters.
+falsifiable. The proposed constant `R=2` has already been refuted by an exact
+third consecutive destroyed start at `Q=101`, `r=23`. A viable replacement
+must prove a larger or stage-dependent cyclic bound that is still small enough
+relative to an independently proved local block of starts. Merely taking
+`R_p` to be the finite-period maximum is tautological and supplies no survival
+mechanism.
 
-A proof should characterize the simultaneous congruence requirements for a
-run of three destroyed 2-gap starts. If those requirements are impossible, or
-force a local configuration incompatible with the prior sieve stages, #4
-becomes a concrete non-cherry-picking mechanism rather than an observed bound.
+A proof should characterize the simultaneous congruence requirements for long
+destroyed-start runs and derive a quantitative upper bound that composes with
+local population. Further small-period enumeration is useful only as a
+falsifier for a specifically proposed bound, not as a substitute for that
+algebraic theorem.
 
 ## Empirical status (lineage experiment): cyclic run unmeasurable at scale
 
-The lineage experiment (`candidates/analysis/run_lineage.py`) computes the
+The lineage experiment (`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`) computes the
 cyclic destroyed run for the layers where the period modulus `M_r` is small
 enough to materialize. Unlike #14's `sigma_r` (which has a stable-wheel form
 making it `O(1)` at any scale), the **cyclic destroyed run genuinely requires
@@ -85,10 +92,11 @@ the full period**: it is defined over the cyclic ordering of all `T_r = phi(M_r)
 Q=101, layers 0-7 (r = 3..23) report the cyclic run exactly; layers 8+
 (r = 29..97) report `None` (unmeasured), with `M_r` past tractability.
 
-Across the measured early layers the cyclic run stays small (0-3), consistent
-with — but not confirming — the conjectural `R=2`. The window-linear run is
-reported alongside and differs (confirming the cyclic and linear orderings are
-not interchangeable, as the note states).
+Across the measured early layers the cyclic run stays small (`0` through `3`),
+but the value `3` refutes the conjectural universal bound `R=2`. It occurs
+exactly at `Q=101`, `r=23`, with old modulus `9699690`. The window-linear run
+there is only `2`, confirming that the cyclic and linear orderings are not
+interchangeable.
 
 **Honest scope:** the cyclic run at scale is the one quantity in this whole
 empirical effort that does NOT have a cheap path. Unlike #14, #12, #13 (whose

@@ -15,10 +15,10 @@ The measurements use:
 
 - `data/candidates/lineage-Q17.csv`;
 - `data/candidates/lineage-Q101.csv`;
-- `data/sieven-sequence/first_gaps_per_seq.csv`;
-- `candidates/analysis/lib_lineage.py`;
-- `candidates/analysis/run_lineage.py`;
-- `candidates/analysis/test_lineage.py`.
+- `data/sieve-sequence/first_gaps_per_seq.csv`;
+- `empirical/sieve-sequence/src/sieve_sequence_empirical/lineage.py`;
+- `empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`;
+- `empirical/sieve-sequence/tests/test_lineage.py`.
 
 The lineage test suite passed before the measurements described here. The
 200-stage CSV is accepted as trusted finite input for this research pass by
