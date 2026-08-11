@@ -917,7 +917,7 @@ correctly-scoped versions exist, both distinct from the anchored chart line:
    which is not a faithful way to represent "the filter behaves randomly" --
    growth is guaranteed and structural, only the *selection* of which
    copies die should be random. See
-   [candidates/randomized-filter-branching-survival.md](../../candidates/randomized-filter-branching-survival.md),
+   [candidates/balanced-randomized-2-gap-companion-process.md](../../candidates/balanced-randomized-2-gap-companion-process.md),
    which went through two versions: an initial independent-Bernoulli-per-copy
    model only supporting a loose union bound, then a cleaner model --
    "exactly 2 of `r` copies die, chosen at random" (mirroring the real

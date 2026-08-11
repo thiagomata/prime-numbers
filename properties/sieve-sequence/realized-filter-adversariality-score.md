@@ -585,10 +585,13 @@ distinct, correctly-scoped versions of that question exist:
   This is a different chart entirely (x-axis `Q`, not `r`), not yet built.
 - **A genuinely randomized filter, replacing the deterministic one outright:**
   keep the same proved structural growth (each element copied `r` times per
-  installed filter) but replace the deterministic "exactly 2 of `r` die" rule
-  with independent random removal at the same rate. See
-  [Randomized-filter branching survival](../../candidates/randomized-filter-branching-survival.md)
-  for the precise setup and what is and is not yet proved about it.
+  installed filter, exactly 2 of the `r` copies destroyed) but replace the
+  deterministic residue-class choice of *which* two die with a uniformly
+  random choice. See
+  [Balanced randomized 2-gap companion process](../../candidates/balanced-randomized-2-gap-companion-process.md)
+  for the precise setup: global survival is deterministic and certain under
+  this model, and safe-window / head persistence are proved conditional on
+  a spatial-uniformity premise via the Borel-Cantelli lemmas.
 
 Do not read the anchored `N_random` line in this file as evidence about
 either of those -- it answers "does thinning alone eventually win with no
@@ -602,7 +605,7 @@ primes forever."
 - [Random-like merge survival](../../candidates/random-like-merge-survival.md)
 - [Local surplus](../../candidates/local-surplus.md)
 - [Short-window discrepancy](../../candidates/short-window-discrepancy.md)
-- [Randomized-filter branching survival](../../candidates/randomized-filter-branching-survival.md)
+- [Balanced randomized 2-gap companion process](../../candidates/balanced-randomized-2-gap-companion-process.md)
 - [Incremental danger-annulus decomposition](incremental-danger-annulus-decomposition.md)
 - [Safe-window 2-gaps certify twin primes](safe-window-two-gaps-certify-twin-primes.md)
 - [Exact accepted local filter strikes](exact-accepted-local-filter-strikes.md)
