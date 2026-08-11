@@ -5,7 +5,7 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Properties #62--#64 identify exactly when sixfold capacity places one layer's
+The properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor identify exactly when sixfold capacity places one layer's
 two harmful scalar terms below that layer's complete survival allowance.
 Candidate #21, however, has one global second-moment allowance for the entire
 conditioned chain.
@@ -59,7 +59,7 @@ Q_i
 \frac12\Delta_i^2.
 ```
 
-The one-layer ellipse used by properties #60--#64 is
+The one-layer ellipse used by the properties from Harmful-Residue Box Bound through Late-Layer Sixfold Floor is
 
 ```math
 Q_i<\frac{M_i^2}{2}.
@@ -146,7 +146,7 @@ allowance, even though every layer uses only one half of its local allowance.
 
 ## Exact Corrected Interface
 
-Let property #61's sharp capacity envelope at layer `i` be
+Let the Sixfold-Capacity Energy Envelope property's sharp capacity envelope at layer `i` be
 
 ```math
 C_i
@@ -171,7 +171,7 @@ An aggregate capacity theorem can therefore target
 }
 ```
 
-Property #66 proves that this harmful estimate is already terminal. Its
+The Terminal Harmful-Excess Energy property proves that this harmful estimate is already terminal. Its
 harmful-excess subterm satisfies
 
 ```math
@@ -199,18 +199,18 @@ The pointwise comparisons
 C_i<\frac{M_i^2}{2}
 ```
 
-from properties #62--#64 do not imply this weighted theorem.
+from the properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor do not imply this weighted theorem.
 
 ## Consequences
 
-1. Property #62 remains the exact one-layer capacity threshold.
-2. Property #63 remains the exact hierarchy among one-layer population
+1. The Sixfold Population-Ratio Threshold property remains the exact one-layer capacity threshold.
+2. The Capacity Threshold Hierarchy property remains the exact hierarchy among one-layer population
    thresholds.
-3. Property #64 remains a valid late-layer one-layer implication.
+3. The Late-Layer Sixfold Floor property remains a valid late-layer one-layer implication.
 4. None of them, alone or together, proves candidate #21's cumulative scalar
    budget.
 5. A direct aggregate theorem for the realized `C_i` at the complete #21
-   allowance is terminal by property #66.
+   allowance is terminal by the Terminal Harmful-Excess Energy property.
 
 The next valid algebraic question can be the weighted sum of the exact
 envelopes `C_i`, but it must be advertised as a terminal arithmetic theorem,
@@ -226,7 +226,7 @@ That distinction is enough for the conclusion: any proof using only the local
 ellipse inequalities lacks the information needed to derive the global
 budget. An actual-chain theorem could still succeed by exploiting additional
 correlation, population loss, or a much smaller realized fraction of each
-capacity envelope. Property #66 proves that success at the required aggregate
+capacity envelope. The Terminal Harmful-Excess Energy property proves that success at the required aggregate
 harmful scale would itself settle final survival.
 
 ## Validation

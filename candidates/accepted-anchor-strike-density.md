@@ -20,10 +20,10 @@ route. It asks whether the accepted anchors in the local window meet the
 incoming residue class with density close enough to `1/r` in the exact
 weighted sense required by the collision budget.
 
-Property #58 shows that restricted candidate #12's direct weighted
+The Sampling-Density Recombination property shows that restricted candidate #12's direct weighted
 two-harmful-residue norm can bypass this decomposition and is the preferred
 scalar interface. Candidate #23 remains a valid fallback if its boundary
-arithmetic admits estimates unavailable for the direct route. Property #66
+arithmetic admits estimates unavailable for the direct route. The Terminal Harmful-Excess Energy property
 shows that either assembled aggregate scalar route is terminal at candidate
 #21's global allowance.
 
@@ -81,7 +81,7 @@ nonnegative bounds `xi_i` such that
 
 and the resulting weighted strike-error contribution combines with candidate
 #13's endpoint-sampling budget to place the actual harmful scalar energy below
-candidate #21's global allowance. Property #66 then forces final survival;
+candidate #21's global allowance. The Terminal Harmful-Excess Energy property then forces final survival;
 candidate #22's harmless-dispersion budget is not an additional premise for
 that implication.
 
@@ -189,7 +189,7 @@ D_i
 H_i-\frac{A_i}{r_i}.
 ```
 
-Using property #36's contraction and property #37's weighted composition,
+Using the Endpoint Discrepancy Contraction and Weighted Error Composition properties,
 define
 
 ```math
@@ -249,7 +249,7 @@ Equivalently, candidate #22 receives the exact remaining allowance
 ```
 
 This is the precise interface between candidates #13, #22, #23, and #21.
-Property #66 sharpens its role: once the scalar expression
+The Terminal Harmful-Excess Energy property sharpens its role: once the scalar expression
 
 ```math
 \left(
@@ -283,7 +283,7 @@ does not assume `N_m>0`, and the aggregate statement can be normalized by the
 initial main term `T`, not by the unknown final population.
 
 This makes the strike-density estimate noncircular as a component. The
-assembled scalar theorem is different: property #66 proves that it is
+assembled scalar theorem is different: the Terminal Harmful-Excess Energy property proves that it is
 terminal at the required global scale. The component may nevertheless be
 parity-hard. In particular, a proof that first divides by a positive lower
 bound for a late conditioned 2-gap population would reintroduce the same wall
@@ -371,7 +371,7 @@ The signed discrepancies telescope under the natural one-anchor survival
 weights. Candidate #21 instead requires a weighted sum of their squares with
 two-endpoint survival weights.
 
-Property #36 proves `2N_i<=A_i`, and hence
+The Endpoint Discrepancy Contraction property proves `2N_i<=A_i`, and hence
 
 ```math
 \left|2N_i\varepsilon_i\right|
@@ -415,7 +415,7 @@ between #13 and #23. Proving the remaining square sum requires a
 quadratic-variation or adjacent-correlation estimate for `E_i`; the linear
 telescope alone is insufficient.
 
-Property #38 expands that quadratic variation exactly. Under candidate #21's
+The Strike-Error Quadratic Variation property expands that quadratic variation exactly. Under candidate #21's
 weights,
 
 ```math
@@ -429,7 +429,7 @@ positive interior multiples of `E_i^2`. Consequently, summation by parts does
 not furnish the needed upper bound. A successful #23 proof now requires new
 arithmetic control of the square-window boundary errors themselves.
 
-Property #39 performs the square-window endpoint test. It proves
+The Prime-Square Boundary Formula property performs the square-window endpoint test. It proves
 
 ```math
 E_P(Q,Q^2)
@@ -447,7 +447,7 @@ prove #23.
 
 ## Divisor Activation-Shell Reduction
 
-Property #48 assigns every divisor of the final modulus an activation time
+The Strike Divisor-Activation Kernel property assigns every divisor of the final modulus an activation time
 
 ```math
 \tau(d)
@@ -495,7 +495,7 @@ norm of `m+1` signed activation-shell sums. The chain weights do not create
 kernel sign cancellation; the remaining arithmetic is cancellation inside
 the `Z_t`, or a direct bound for their vector in the `mathcal K` norm.
 
-Property #49 splits every newly activated residue by a bounded CRT lift index
+The Strike CRT Lift-Index property splits every newly activated residue by a bounded CRT lift index
 and cancels the complete old boundary error. Define
 
 ```math
@@ -535,7 +535,7 @@ This is the sharpest current statement of candidate #23's missing theorem.
 It requires a weighted mean-square estimate for explicit bounded-index
 Möbius transforms; neither bulk density nor the old boundary error remains.
 
-Property #50 identifies that transform exactly with a finite-sieve summatory
+The Strike Summatory Remainder property identifies that transform exactly with a finite-sieve summatory
 remainder. If
 
 ```math
@@ -584,7 +584,7 @@ the original dilation discrepancy. The remaining theorem is a weighted
 mean-square bound for these dilation remainders at the two prime-square
 endpoints, with both the modulus and the dilation prime changing by layer.
 
-Property #51 proves that the centered layer strike observables are pairwise
+The Cross-Layer CRT Orthogonality property proves that the centered layer strike observables are pairwise
 orthogonal on the complete final CRT period `R=P_m`. In particular,
 
 ```math
@@ -606,7 +606,7 @@ Bessel composition of the complete-period CRT orthogonality does not prove
 candidate #23. A useful theorem must localize this orthogonality or add a new
 averaging variable.
 
-Property #52 performs that localization exactly. On the actual interval, the
+The Localized-Layer Gram Matrix property performs that localization exactly. On the actual interval, the
 layer Gram matrix is
 
 ```math
@@ -645,7 +645,7 @@ eigenvalue by the trace is exactly the sum of the separate per-layer Cauchy
 bounds. Progress now requires signed spectral cancellation in the explicit
 off-diagonal discrepancies, not generic positive-semidefinite matrix algebra.
 
-Property #53 partitions the initial accepted anchors by their first deleting
+The First-Deletion Variance Identity property partitions the initial accepted anchors by their first deleting
 layer. If `n_k` is the size of class `k`, including `n_m=A_m` for final
 survivors, and `v_k` is its centered strike vector, then
 
@@ -688,7 +688,7 @@ attained in the abstract model by concentrating all mass in one deletion
 class. First-deletion geometry therefore helps only if new arithmetic proves
 that the actual local class counts are dispersed.
 
-Property #54 strength-tests the compulsory part of that dispersion. At every
+The Active Two-Class Variance property strength-tests the compulsory part of that dispersion. At every
 layer,
 
 ```math
@@ -705,10 +705,10 @@ Thus the guaranteed separation between class `i` and all later deletion
 classes contributes `H_iA_(i+1)`, but retaining only this term exactly
 rearranges the unknown `D_i^2`. It is not an independent estimate. A useful
 first-deletion argument must retain the additional intermediate-coordinate
-distances from property #53 or establish arithmetic bounds for the actual
+distances from the First-Deletion Variance Identity property or establish arithmetic bounds for the actual
 class masses.
 
-Property #55 reindexes all of those additional distances and closes the pure
+The First-Deletion Reindexing property reindexes all of those additional distances and closes the pure
 first-deletion algebra. The complete deletion-vector variance is
 
 ```math
@@ -722,13 +722,13 @@ H_iA_{i+1}
 }
 ```
 
-Substitution into property #53, followed by property #54, returns exactly
+Substitution into the First-Deletion Variance Identity property, followed by the Active Two-Class Variance property, returns exactly
 `sum_i c_iD_i^2`. Therefore neither the compulsory distance nor the full
 triangular distance matrix supplies an independent upper bound. The
 first-deletion representation becomes useful only after adding arithmetic
 constraints on the actual class counts or an external averaging theorem.
 
-Property #58 supplies an alternative to proving #23 separately. If
+The Sampling-Density Recombination property supplies an alternative to proving #23 separately. If
 `delta_0` and `delta_(-2)` are the two harmful 2-gap-start residue deviations,
 then
 
@@ -742,7 +742,7 @@ The decomposition `b=H beta+2N epsilon` is exactly a split of this same
 two-class residue error into candidate #13 sampling and candidate #23 strike
 density. A direct joint bound for `delta_0,delta_(-2)` can therefore bypass
 the separate #23 budget and retain correlation lost by Minkowski. This is the
-preferred restricted form of candidate #12. Property #66 proves that success
+preferred restricted form of candidate #12. The Terminal Harmful-Excess Energy property proves that success
 for either representation at candidate #21's global allowance already forces
 final survival.
 
@@ -750,7 +750,7 @@ final survival.
 
 Any of the following could supply the required input:
 
-1. a sharp upper bound for the largest eigenvalue of property #52's localized
+1. a sharp upper bound for the largest eigenvalue of the Localized-Layer Gram Matrix property's localized
    Gram matrix that improves substantially on its trace;
 2. a quadratic-variation bound for the exact adjacent boundary-error
    recurrence;
@@ -764,7 +764,7 @@ Any of the following could supply the required input:
 
 The first option must add information beyond the exact recurrence. Algebraic
 rearrangement of its weighted square has already been exhausted by property
-#38. The second and third options must add cancellation beyond property #39's
+#38. The second and third options must add cancellation beyond the Prime-Square Boundary Formula property's
 exact residue representation; favorable sign is refuted.
 
 ## Limitation

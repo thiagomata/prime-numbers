@@ -139,7 +139,7 @@ Thus candidate #12's stated sufficient condition guarantees that some
 
 ## Collision-Budget Failure
 
-Property #58 gives
+The Sampling-Density Recombination property gives
 
 ```math
 b=\delta_0+\delta_{-2}=2E,

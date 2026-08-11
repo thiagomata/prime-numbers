@@ -21,7 +21,7 @@ divisor sum.
 
 ## Setup
 
-Use the inverse phases from properties #43--#45:
+Use the inverse phases from the properties from CRT Fiber Translation through Phase-Operator Norm Bound:
 
 ```math
 P>r\ge5,
@@ -211,7 +211,7 @@ r+2q.
 }
 ```
 
-This is the conductor-scale replacement for property #45's full squared norm
+This is the conductor-scale replacement for the Phase-Operator Norm Bound property's full squared norm
 `P`.
 
 ## Composition With The CRT Coefficient Mass
@@ -323,7 +323,7 @@ centered cross-Gram bound:
 \mathsf A_q^*C\mathsf A_{q'}.
 ```
 
-Its entries are already known from property #44, but the conductor
+Its entries are already known from the Inverse-Phase Gram Matrix property, but the conductor
 restrictions may create additional cancellation after summation over the
 primitive frequencies in each block.
 

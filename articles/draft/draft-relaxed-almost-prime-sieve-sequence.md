@@ -43,9 +43,9 @@ a prime plus an integer with at most two prime factors, not a twin-prime pair.
 The proof develops the following results in dependency order:
 
 1. relaxed-weight positivity implies prime-plus-$P_2$ production — §3;
-2. Property #84, the exact divisor local factor and periodic remainder — §4;
-3. Property #86, the exact shifted-divisor prime-progression discrepancy — §5;
-4. Property #85, the exact bilinear character decomposition — §6; and
+2. the exact divisor local factor and periodic remainder — §4;
+3. the exact shifted-divisor prime-progression discrepancy — §5;
+4. the exact bilinear character decomposition — §6; and
 5. the refuted scalar-density Type-II shortcut — §7.
 
 Sections 8--9 state the remaining analytic program and the exact claim
@@ -78,7 +78,7 @@ already supplies infinitely many primes $p$ for which $p+2$ has at most two
 prime factors. The project-specific question is whether positivity can be
 derived from the Sieve Sequence's own relaxed weights.
 
-The implication in §3 and Properties #84--#86 in §§4--6 are mathematically
+The implication in §3 and the properties from Divisor Local Factor through Cofactor Progression Discrepancy in §§4--6 are mathematically
 proved. Their Scala/Stainless
 representations are pending and are identified explicitly. No statement in
 this draft should be described as formally verified.
@@ -133,7 +133,7 @@ $a_Q$.
 **Scope and quantifier:** Every fixed exponent
 $1/3\lt\alpha\lt1/2$ and every sufficiently large prime future head $Q$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 The implication is proved; positivity for infinitely many heads remains open.
 
 The relaxed weight keeps enough filtering to certify the first endpoint as
@@ -206,7 +206,7 @@ is [Safe-Window 2-Gaps Certify Twin Primes](
 No `.holds` theorem currently encodes the factor-count argument; Stainless
 verification is pending.
 
-## 4. Property #84 — Exact Divisor Local Factor And Boundary Remainder
+## 4. Exact Divisor Local Factor And Boundary Remainder
 
 **Population:** Relaxed-weight integers in one arbitrary interval that are
 also divisible by one fixed integer $m$.
@@ -214,7 +214,7 @@ also divisible by one fixed integer $m$.
 **Scope and quantifier:** Every pair of squarefree prime wheels $W,Z$ with
 $2\mid W$, every integer interval $[L,U)$ with $L\lt U$, and every $m\ge1$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Before studying divisor averages, the comparison density must account for how
 the tested divisor meets the two wheels. Let $W$ and $Z$ be squarefree with
@@ -332,7 +332,7 @@ This is sieve dimension two below $z$ and dimension one from $z$ to $Q$.
 The exact pointwise remainder bound is not a Type-I theorem because the
 primorial $R$ is much larger than the square-safe interval.
 
-### Stainless And Source Evidence For Property #84
+### Stainless And Source Evidence For the Divisor Local Factor property
 
 No maintained Scala theorem currently models both squarefree wheels, all five
 local cases, CRT composition, and the arbitrary interval remainder. A future
@@ -343,7 +343,7 @@ is maintained in [Relaxed Almost-Prime Weight Has An Exact Divisor Local
 Factor](
 ../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
 
-## 5. Property #86 — Shifted Divisor Discrepancy
+## 5. Shifted Divisor Discrepancy
 
 **Population:** Installed-wheel survivors in one arbitrary interval, with the
 shift $n+2$ constrained by one odd squarefree divisor $d$.
@@ -352,7 +352,7 @@ shift $n+2$ constrained by one odd squarefree divisor $d$.
 every odd squarefree divisor $d\mid W$, and every finite integer interval
 $I=[L,U)$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 The exact reduction is proved; the accumulated prime-progression estimate is
 open.
 
@@ -468,7 +468,7 @@ with a range $D$ and interval family strong enough for the chosen lower-bound
 sieve. This displayed estimate is an open target, not a theorem of this
 article.
 
-### Stainless And Source Evidence For Property #86
+### Stainless And Source Evidence For the Cofactor Progression Discrepancy property
 
 The complete-period CRT identity and periodic remainder are suitable for
 future formalization. The prime-progression interpretation also depends on
@@ -479,7 +479,7 @@ The complete mathematical reduction is maintained in [Relaxed Cofactor
 Divisor Sum Is A Prime-Progression Discrepancy](
 ../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
 
-## 6. Property #85 — Exact Bilinear Character Decomposition
+## 6. Exact Bilinear Character Decomposition
 
 **Population:** Scalar-centered relaxed weights evaluated at products $x=mn$.
 
@@ -487,7 +487,7 @@ Divisor Sum Is A Prime-Progression Discrepancy](
 $2\mid Z\mid W$, every factor pair with $\gcd(mn,W)=1$, every finite factor
 domain $\mathcal D$, and arbitrary coefficients $\xi_m,\kappa_n$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Assume $2\mid Z\mid W$ and put $Z_{\mathrm{odd}}=Z/2$. Conditional on
 $\gcd(x,W)=1$, the complete-wheel relaxed density is
@@ -580,7 +580,7 @@ The formula diagonalizes the local congruence modes. It does not estimate
 them: the geometry of $\mathcal D$, for example a hyperbolic restriction on
 $mn$, still couples the two variables.
 
-### Stainless And Source Evidence For Property #85
+### Stainless And Source Evidence For the Bilinear Character Obstruction property
 
 The proof uses Möbius inversion and finite character orthogonality, neither of
 which currently has a maintained representation for this weight in the
@@ -686,7 +686,7 @@ adapted Type-II estimate.
 The exact failed statement, counterexample, and retry boundary are preserved
 in [Scalar-Density Type-II Orthogonality For The Relaxed Weight](
 ../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md). The same
-character calculation is derived from Property #85's canonical source. No
+character calculation is derived from the Bilinear Character Obstruction property's canonical source. No
 empirical sample is used in the refutation.
 
 ## 8. The Correct Remaining Program
@@ -742,7 +742,7 @@ a_Q(n)=1
 n\text{ is prime and }\Omega(n+2)\le2.
 ```
 
-Property #84 gives the exact one-divisor comparison. Wheel-sharing divisors
+The Divisor Local Factor property gives the exact one-divisor comparison. Wheel-sharing divisors
 vanish; coprime divisors have
 
 ```math
@@ -761,7 +761,7 @@ vanish; coprime divisors have
 \end{aligned}
 ```
 
-Property #86 identifies the natural pre-sieved Type-I remainder exactly:
+The Cofactor Progression Discrepancy property identifies the natural pre-sieved Type-I remainder exactly:
 
 ```math
 \begin{aligned}
@@ -773,7 +773,7 @@ r_d(I)
 \end{aligned}
 ```
 
-Property #85 gives the exact nonprincipal bilinear spectrum
+The Bilinear Character Obstruction property gives the exact nonprincipal bilinear spectrum
 
 ```math
 \mathbf1_{mn\equiv-2\ (\mathrm{mod}\ d)}
@@ -821,9 +821,9 @@ of Chen's theorem, or a twin-prime result.
 | Result | Mathematical status | Stainless status | Canonical evidence |
 |--------|---------------------|------------------|--------------------|
 | Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Pending | [Candidate #25](../../candidates/chen-type-almost-prime-survivor.md) |
-| Property #84 — exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Property #84](../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
-| Property #86 — shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Property #86](../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
-| Property #85 — bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Property #85](../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
+| the Divisor Local Factor property — exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Divisor Local Factor](../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
+| the Cofactor Progression Discrepancy property — shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Cofactor Progression Discrepancy](../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
+| the Bilinear Character Obstruction property — bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Bilinear Character Obstruction](../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
 | Scalar-density Type-II shortcut | [Refuted] on the complete reduced wheel; short locally adapted domains remain open | Not applicable to a false statement | [Archived refutation](../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md) |
 
 The operational Sieve Sequence construction and its square-safe inputs are

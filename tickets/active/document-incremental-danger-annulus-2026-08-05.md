@@ -17,7 +17,7 @@
 
 ## START HERE
 
-Synchronization is complete. Property #87 is the permanent source for the
+Synchronization is complete. The Danger-Annulus Decomposition property is the permanent source for the
 distinction between the full square-safe window and the newly exposed danger
 annulus. No annular 2-gap lower bound is claimed; resume only through one of the
 explicit theorem triggers in `Next Action`.
@@ -43,7 +43,7 @@ bound.
 
 ## Current State
 
-- Documentation synchronization is complete. Property #87, the exact-strike
+- Documentation synchronization is complete. The Danger-Annulus Decomposition property, the exact-strike
   corollary, candidates #2 and #16, the property catalog, the authoritative
   closure matrix, and the candidate handoff now use compatible annular
   definitions and theorem boundaries.
@@ -79,10 +79,10 @@ bound.
   primes `p<q` with `p>=5`. It derives `L_D>=B_D-U_D` and leaves the favorable
   expansion and population bounds open.
 - `properties/sieve-sequence/README.md` now catalogs the foundational result as
-  property #87, including its preconditions, distinct coordinate/population
+  The Danger-Annulus Decomposition property, including its preconditions, distinct coordinate/population
   meanings, effective `A-1` bound, and open `L_D` lower bound.
 - `candidates/INVESTIGATION_STATUS.md` now synchronizes rows #2 and #16 with
-  property #87, records complete surplus/exterior reopen conditions, and
+  The Danger-Annulus Decomposition property, records complete surplus/exterior reopen conditions, and
   classifies the route within the deferred local-mechanism family while
   preserving #23 -> #24 as primary.
 
@@ -169,7 +169,7 @@ bound.
 - Candidate #16 now keeps post-filter full-window and pre-filter annular
   observables at distinct layers. Its smaller destruction allowance is paired
   with a smaller population and is not known to make localization easier.
-- Property #87 is now the cataloged permanent boundary for annular reuse; it
+- the Danger-Annulus Decomposition property is now the cataloged permanent boundary for annular reuse; it
   sharpens the capacity side without satisfying the population-side reopen
   trigger.
 - The authoritative closure matrix treats the annular route as a quantified
@@ -274,10 +274,10 @@ These are explicit reopen triggers, not unfinished documentation. Candidate
 | 2026-08-05 | The permanent danger-annulus property now records the decomposition and sharp effective capacity while leaving annular population open. | Synchronize the exact accepted-strike note with the new source-of-truth definitions. |
 | 2026-08-05 | The exact-strike note now records the annular corollary. Its first patch attempt was a no-op because the expected context did not match the fresh file; rereading the target allowed the same approved change to apply at the correct location, and validation passed. | Refine candidate #2 with the exact and raw incremental surplus forms. |
 | 2026-08-05 | Candidate #2 now separates full-window and newly exposed survival, and explicitly prevents transferring its historical full-window measurements to `L_D`. | Correct candidate #16's danger-zone terminology and add the parallel annular exterior target. |
-| 2026-08-05 | Candidate #16 now cleanly separates its valid post-filter full-window route from a pre-filter annular alternative, with preconditions matching the foundational property. | Catalog the permanent danger-annulus result as property #87. |
-| 2026-08-05 | Ticket review found stale pre-change descriptions of candidates #2 and #16 after their permanent notes had already been corrected. | Synchronize Current State and Open Concerns before cataloging property #87. |
+| 2026-08-05 | Candidate #16 now cleanly separates its valid post-filter full-window route from a pre-filter annular alternative, with preconditions matching the foundational property. | Catalog the permanent danger-annulus result as the Danger-Annulus Decomposition property. |
+| 2026-08-05 | Ticket review found stale pre-change descriptions of candidates #2 and #16 after their permanent notes had already been corrected. | Synchronize Current State and Open Concerns before cataloging the Danger-Annulus Decomposition property. |
 | 2026-08-05 | A second consistency review found the same stale pre-change wording for the already-synchronized exact accepted-strike property. | Correct the final contradictory Current State bullet before continuing. |
-| 2026-08-05 | The property catalog now exposes the annular decomposition and sharp effective capacity as property #87, with `L_D` abundance explicitly open. | Synchronize the authoritative candidate closure matrix. |
+| 2026-08-05 | The property catalog now exposes the annular decomposition and sharp effective capacity as the Danger-Annulus Decomposition property, with `L_D` abundance explicitly open. | Synchronize the authoritative candidate closure matrix. |
 | 2026-08-05 | The closure matrix now records the quantified annular reopen path while preserving #23 -> #24 as primary. Its first patch attempt was a no-op context mismatch; rereading the exact table allowed the approved same-target retry to pass. | Perform a narrow candidate-catalog consistency update. |
 | 2026-08-05 | Post-update review found one remaining negative pre-change closure sentence despite the completed matrix synchronization. | Correct the stale sentence and audit Current State before touching the catalog. |
 | 2026-08-05 | The candidate catalog now distinguishes full-window evidence from the unmeasured annular targets, records #16's pre-filter alternative, and preserves the primary handoff. Scoped Markdown, link, terminology, and status checks passed without touching unrelated dirty or untracked work. | Mark the documentation ticket complete; retain the population and exterior inequalities as future theorem triggers. |

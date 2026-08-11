@@ -27,7 +27,7 @@ a short-interval Type-I theorem.
 
 - `quantifier-screen-refutation-targets-2026-08-03.md` — completed the
   25-candidate closure audit and selected these two final programs.
-- `verify-19-21-escape-wall-2026-07-27.md` — contains properties #66--#82 and
+- `verify-19-21-escape-wall-2026-07-27.md` — contains the properties from Terminal Harmful-Excess Energy through Filter-Seven Excess Bound and
   exhausts the separate/native capacity route for #24.
 - `prove-accepted-strike-mean-square-2026-07-27.md` — completes candidate #23's
   generic activation/CRT/Gram/first-deletion audit; further progress requires
@@ -50,7 +50,7 @@ a sharply stated remaining estimate with all representation-only work removed.
 
 ### Track A — Signed boundary energy (#23 -> #24)
 
-Start from property #82's exact filter-`7` interval-order saving and candidate
+Start from the Filter-Seven Excess Bound property's exact filter-`7` interval-order saving and candidate
 #23's identity for the general coefficient `b_i`. Search existing properties
 and lemma bodies before writing anything. Derive the exact prefix-recursive
 relation when a native accepted set is enlarged by one filter, retaining signs
@@ -94,8 +94,8 @@ as Type II cancellation.
   adjacent boundary difference. Activation-shell, CRT-lift, summatory,
   complete-period orthogonality, localized Gram, and first-deletion rewrites
   are already classified.
-- Candidate #24's terminal threshold is proved. Properties #67--#81 exhaust
-  the current conservation/capacity/native-period envelopes. Property #82
+- Candidate #24's terminal threshold is proved. The properties from Integral Profile Attainment through Capacity Stability Gap exhaust
+  the current conservation/capacity/native-period envelopes. The Filter-Seven Excess Bound property
   proves a real localized saving at filter `7`, but its general coefficient is
   exactly candidate #23's accepted-boundary discrepancy.
 - Candidate #25 now states a project-specific relaxed-weight positivity target
@@ -104,7 +104,7 @@ as Type II cancellation.
   sequence from the sieve-sequence definitions.
 - Track A's proposed accepted-anchor prefix recursion is pre-empted: property
   #49 already cancels the inherited old boundary term by CRT lift indices, and
-  property #50 proves that the remainder is exactly the original summatory
+  The Strike Summatory Remainder property proves that the remainder is exactly the original summatory
   coprime dilation discrepancy.
 - A distinct one-filter block identity survives the search. If `c_t` is the
   old-period start histogram modulo incoming prime `r`, `d_t=c_t-N/r`, and
@@ -113,7 +113,7 @@ as Type II cancellation.
   `sum_j B_j^2=2V+2sum_t d_t d_(t-2)<=4V`, where
   `V=sum_t d_t^2`. A run of `k` complete old-period blocks therefore has
   squared discrepancy at most `4kV`.
-- That identity is now promoted as property #83, **Copy-Block Harmful Excess
+- That identity is now promoted as the Copy-Block Excess Control property, **Copy-Block Harmful Excess
   Is Controlled By Residue Energy**, cataloged in the sieve-sequence property
   index, and linked from candidates #20 and #24. Track A's exact algebraic
   bridge is complete; its remaining obstacle is arithmetic control of residue
@@ -125,7 +125,7 @@ as Type II cancellation.
   `p|W,Z`, `p` for odd `p|Z, p\nmid W, p|m`, and `p-1` for odd
   `p|Z, p\nmid W, p\nmid m`. CRT therefore gives an exact divisor-dependent
   complete-period factor and an arbitrary-interval boundary remainder.
-- That formula is now promoted and cataloged as property #84, **Relaxed
+- That formula is now promoted and cataloged as the Divisor Local Factor property, **Relaxed
   Almost-Prime Weight Has An Exact Divisor Local Factor**, and candidate #25
   now states the exact comparison density and accumulated signed Type-I
   remainder rather than an unspecified Type-I analogy.
@@ -134,11 +134,11 @@ as Type II cancellation.
   `sum_(d|Z/2) mu(d)[1_(n=-2m^(-1) mod d)-1/phi(d)]` after both factors are
   restricted to be wheel-coprime. Character orthogonality converts every
   bracket into nonprincipal modes proportional to `chi(m)chi(n)`.
-- Property #85 now proves and catalogs that exact inverse-residue/character
+- the Bilinear Character Obstruction property now proves and catalogs that exact inverse-residue/character
   decomposition. Its complete-wheel modulo-`3` example refutes scalar-density
   Type-II orthogonality at full survivor scale; the auxiliary route is saved
   in `candidates/refuted/` without refuting candidate #25.
-- Property #86 now proves the natural pre-sieved shifted-divisor identity.
+- the Cofactor Progression Discrepancy property now proves the natural pre-sieved shifted-divisor identity.
   For odd `d|P(z)` in the square-safe window,
   `A_d(I)-A_1(I)/phi(d)=pi(I;d,-2)-pi(I)/phi(d)`. The missing accumulated
   Type-I input is therefore exactly an averaged prime-progression theorem.
@@ -197,11 +197,11 @@ as Type II cancellation.
 
 **Status:** REFINED
 
-The accepted-anchor version duplicates properties #49--#50. The surviving
+The accepted-anchor version duplicates the properties from Strike CRT Lift-Index through Strike Summatory Remainder. The surviving
 version groups the paired harmful observable into complete old-period copy
 blocks and relates its block sequence to the old-period residue histogram.
 
-**Strengths:** Directly generalizes the mechanism behind property #82 and does
+**Strengths:** Directly generalizes the mechanism behind the Filter-Seven Excess Bound property and does
 not introduce the final primorial norm.
 **Risks:** Candidate #20's residue energy is itself open, and arbitrary
 intervals leave two uncontrolled partial old-period blocks.
@@ -212,7 +212,7 @@ the boundary fragments as the remaining obstruction.
 
 **Status:** BLOCKED
 
-Properties #48--#55 and #71 already classify this route. Complete-period norms
+The properties from Strike Divisor-Activation Kernel through First-Deletion Reindexing and #71 already classify this route. Complete-period norms
 retain the primorial, while localized trace bounds reproduce per-layer Cauchy.
 
 **Retry condition:** A new arithmetic restriction on boundary/deletion-class
@@ -236,7 +236,7 @@ would be required.
 
 **Status:** REFUTED AS A COMPLETE-WHEEL UNIVERSAL LAW
 
-Property #85 proves that the final relaxed weight retains nonprincipal local
+The Bilinear Character Obstruction property proves that the final relaxed weight retains nonprincipal local
 character modes after scalar centering. Modulo-`3` product coefficients attain
 the full relaxed survivor count on the complete reduced wheel.
 
@@ -248,7 +248,7 @@ formal scalar-density orthogonality.
 
 **Status:** EXACT REDUCTION PROVED; PRIME-PROGRESSION AVERAGE OPEN
 
-Property #86 identifies the divisor remainder exactly with the progression
+The Cofactor Progression Discrepancy property identifies the divisor remainder exactly with the progression
 discrepancy for certified primes. This is now the recommended formulation.
 
 ### B2. Import Chen's Theorem as the Project Proof
@@ -299,11 +299,11 @@ project-specific candidate.
 - **Generic #23 activation/CRT/Gram/first-deletion rewrites:** exact but return
   the original weighted energy or unusable primorial norm. Retry only with new
   arithmetic constraints or averaging.
-- **Accepted-anchor sub-native recursion:** pre-empted by properties #49--#50;
+- **Accepted-anchor sub-native recursion:** pre-empted by the properties from Strike CRT Lift-Index through Strike Summatory Remainder;
   the inherited boundary cancels and the remaining lift-index transform is
   exactly the original dilation remainder. Retry only with a new averaged
   estimate, not another recursion formula.
-- **#24 capacity/native-period envelope optimization:** properties #67--#81
+- **#24 capacity/native-period envelope optimization:** the properties from Integral Profile Attainment through Capacity Stability Gap
   exhaust the current route, including its stability-gap repair. Retry only
   with signed information not present in separate capacities.
 - **#25 constant-density comparison model:** invalid when the divisor shares
@@ -315,19 +315,19 @@ project-specific candidate.
   not match the current Markdown and made no change. Reading the exact section
   and retrying once with current context succeeded; this was a mechanical
   patch failure, not a failed mathematical route.
-- **Property #84 Related link, first validation:** the initial property used
+- **the Divisor Local Factor property Related link, first validation:** the initial property used
   the nonexistent filename `exact-batch-survival.md`. Validation caught it;
   the sole red-state action corrected the link to the existing
   `exact-batched-two-gap-survival.md`, after which all checks passed. This was
   a documentation-link failure, not a mathematical failure.
-- **Property #86 deep search, first command:** a combined ripgrep expression
+- **the Cofactor Progression Discrepancy property deep search, first command:** a combined ripgrep expression
   used an unsupported escape and failed before searching. A read-only retry
   with fixed-string patterns succeeded and found no existing shifted-divisor
   property. This was a search-syntax failure and made no repository change.
 
 ## Open Concerns
 
-- Property #82 may rely on the exceptional fixed modulo-`210` order and fail
+- the Filter-Seven Excess Bound property may rely on the exceptional fixed modulo-`210` order and fail
   to expose a scalable recursion.
 - The correct #25 weight uses a survivor condition for `n` and a separate
   relaxed condition for `n+2`; symmetric pair-survivor formulas may over-sieve
@@ -335,11 +335,11 @@ project-specific candidate.
 - A genuine #25 Type-II family may require averaging over heads or seed
   residues, expanding the theorem beyond one fixed window. Such an expansion
   must still imply the candidate's stated positivity.
-- Property #85 proves that a scalar comparison cannot remove fixed local
+- the Bilinear Character Obstruction property proves that a scalar comparison cannot remove fixed local
   character modes. The unresolved formulation question is how much local
   structure must be absorbed while retaining a nonvacuous theorem that still
   feeds the lower-bound almost-prime sieve.
-- Property #86 moves the first arithmetic obligation into prime distribution
+- the Cofactor Progression Discrepancy property moves the first arithmetic obligation into prime distribution
   in progressions. Proving it purely from current sieve-sequence properties is
   not expected; importing an analytic theorem would require matching its
   modulus range and interval uniformity to the candidate exactly.
@@ -352,7 +352,7 @@ Stable handoff:
    if a new arithmetic estimate controls `V_r` in late short windows; property
    #83 already supplies the composition into #24.
 2. For Track B, select an explicit prime-progression theorem and check whether
-   its divisor range and interval uniformity prove property #86's accumulated
+   its divisor range and interval uniformity prove the Cofactor Progression Discrepancy property's accumulated
    target. Only then formulate the corresponding pre-sieved bilinear
    remainder, with all local character modes accounted for.
 3. Do not collect more undirected empirical data or restart the refuted
@@ -363,10 +363,10 @@ Stable handoff:
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-08-03 | Ticket created after the 25-candidate closure audit selected #23->#24 signed cancellation and #25 relaxed-weight Type-I/Type-II as the two final programs. Prior searches show #23's generic algebra and #24's capacity envelopes are exhausted, while #25 lacks a project-specific divisor-local model. | Start with Track A's sub-native prefix recursion; do not write a new lemma until existing property bodies are read. |
-| 2026-08-03 | The accepted-anchor recursion is exactly properties #49--#50 and is pre-empted. A distinct copy-block identity survives: block harmful excess is a paired residue-histogram deviation, with total block energy at most four times candidate #20's residue energy. | Promote the exact one-filter bridge and its partial-boundary limitation, then advance to #25. |
-| 2026-08-03 | Property #83 now records and catalogs the exact copy-block bridge; candidates #20 and #24 are synchronized. Track A has reached a stable reduction: complete blocks are controlled by residue energy, while partial fragments and the residue-energy estimate remain open. | Treat Track A's representation work as complete and do not restart accepted-anchor or generic Bessel rewrites. |
+| 2026-08-03 | The accepted-anchor recursion is exactly the properties from Strike CRT Lift-Index through Strike Summatory Remainder and is pre-empted. A distinct copy-block identity survives: block harmful excess is a paired residue-histogram deviation, with total block energy at most four times candidate #20's residue energy. | Promote the exact one-filter bridge and its partial-boundary limitation, then advance to #25. |
+| 2026-08-03 | the Copy-Block Excess Control property now records and catalogs the exact copy-block bridge; candidates #20 and #24 are synchronized. Track A has reached a stable reduction: complete blocks are controlled by residue energy, while partial fragments and the residue-energy estimate remain open. | Treat Track A's representation work as complete and do not restart accepted-anchor or generic Bessel rewrites. |
 | 2026-08-03 | Track B's exact local factor is divisor-dependent in general. When `1/3<alpha<1/2`, `P(z)|P(Q)`, coprime divisors share one explicit density and non-coprime divisors contribute zero. The remaining one-divisor error is a periodic boundary discrepancy, not yet a Type-I average. | Promote the exact formula, then expose the inverse-residue bilinear family created by expanding the relaxed cofactor sieve. |
-| 2026-08-03 | Property #84 now proves and catalogs the exact one-divisor local factor; candidate #25 names the accumulated signed remainder. Its initial Related link was stale and was corrected under red-cascade discipline before further work. | Treat scalar local density as solved bookkeeping, not as Type-I cancellation. |
+| 2026-08-03 | the Divisor Local Factor property now proves and catalogs the exact one-divisor local factor; candidate #25 names the accumulated signed remainder. Its initial Related link was stale and was corrected under red-cascade discipline before further work. | Treat scalar local density as solved bookkeeping, not as Type-I cancellation. |
 | 2026-08-03 | Möbius expansion of the centered relaxed condition gives exact inverse-residue brackets, and character orthogonality diagonalizes them into nonprincipal `chi(m)chi(n)` modes. Arbitrary coefficients can select an individual mode, so scalar-density centering alone cannot yield formal Type-II cancellation. | Promote the decomposition and classify the naive scalar-density Type-II route as blocked, not the candidate itself. |
-| 2026-08-03 | Property #85 proves the exact bilinear character family. The modulo-`3` character has full-survivor correlation on the complete reduced wheel, so scalar-density Type-II orthogonality and every strict uniform contraction are refuted auxiliary laws. | Save the refutation; move the viable program one level earlier than the final sifted indicator. |
-| 2026-08-03 | Property #86 proves that the pre-sieved shifted-divisor remainder is exactly `pi(I;d,-2)-pi(I)/phi(d)` in the square-safe window. The first Type-I input is therefore a prime arithmetic-progression average, not further CRT bookkeeping. | Close this investigation with a stable handoff to theorem matching; retain candidate #25 as open. |
+| 2026-08-03 | the Bilinear Character Obstruction property proves the exact bilinear character family. The modulo-`3` character has full-survivor correlation on the complete reduced wheel, so scalar-density Type-II orthogonality and every strict uniform contraction are refuted auxiliary laws. | Save the refutation; move the viable program one level earlier than the final sifted indicator. |
+| 2026-08-03 | the Cofactor Progression Discrepancy property proves that the pre-sieved shifted-divisor remainder is exactly `pi(I;d,-2)-pi(I)/phi(d)` in the square-safe window. The first Type-I input is therefore a prime arithmetic-progression average, not further CRT bookkeeping. | Close this investigation with a stable handoff to theorem matching; retain candidate #25 as open. |

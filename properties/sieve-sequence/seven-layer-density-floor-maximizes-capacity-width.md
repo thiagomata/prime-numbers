@@ -6,13 +6,13 @@ is not claimed.
 ## Meaning
 
 Candidate #17 asks for a local population large enough to force a close pair
-at every conditioned layer. Property #74 instead asks how far the same
+at every conditioned layer. The Envelope Width Floor property instead asks how far the same
 population lies from the empty and full endpoints of the residue-capacity
 box.
 
 These requirements are compatible in the strongest possible way. Once
 filter `5` is installed, candidate #17's local-count threshold places the
-population in the middle regime of property #74. Its feasible harmful-count
+population in the middle regime of the Envelope Width Floor property. Its feasible harmful-count
 interval then has the maximum possible width `2B`.
 
 This theorem does not prove candidate #17's local-count hypothesis. It proves
@@ -163,7 +163,7 @@ N\ge2B,
 rB-N\ge2B.
 ```
 
-Property #74's population slack is consequently
+the Envelope Width Floor property's population slack is consequently
 
 ```math
 \boxed{
@@ -181,14 +181,14 @@ Its capacity-envelope floor becomes
 \boxed{X\ge B^2.}
 ```
 
-This is the largest lower bound obtainable from property #74's width
+This is the largest lower bound obtainable from the Envelope Width Floor property's width
 inequality, because the width can never exceed `2B`.
 
 ## Conditioned-Chain Consequence
 
 Suppose candidate #17's threshold holds at each layer in a prefix. For the
 layers with `r_i>=7`, the theorem gives `sigma_i=2B_i`. Omitting any earlier
-nonnegative contribution, property #74 therefore yields
+nonnegative contribution, the Envelope Width Floor property therefore yields
 
 ```math
 \boxed{
@@ -202,7 +202,7 @@ e_k
 }
 ```
 
-Property #73 then converts any positive excess at the required scale into an
+The Native-Period Capacity Overflow property then converts any positive excess at the required scale into an
 explicit reduction of candidate #24's capacity-energy envelope.
 
 ## Boundary
@@ -216,7 +216,7 @@ The next algebraic question is now a parameter comparison: insert the proved
 `B_i^2` contributions into the overflow and compare their scale with `s_k`
 and the remaining extinction deficit. If that comparison fails, candidate
 #17 can still prove survival directly through its close-pair mechanism, but
-it will not close candidate #24 through property #74 alone.
+it will not close candidate #24 through the Envelope Width Floor property alone.
 
 No empirical evidence is used in this result.
 

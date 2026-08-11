@@ -258,7 +258,7 @@ new difficulty. For current proof work, #20 is a useful pointwise testbed, but
 #22's harmless energy and candidate #21's weighted aggregate are the more
 precise primary targets.
 
-Property #83 gives candidate #20 a direct localized role in candidate #24.
+The Copy-Block Excess Control property gives candidate #20 a direct localized role in candidate #24.
 For one incoming prime, let `V_r=C_r-N_r^2/r` be the residue energy of the
 old-period start histogram. If `B_j` is the centered harmful excess in old-
 period copy block `j`, then

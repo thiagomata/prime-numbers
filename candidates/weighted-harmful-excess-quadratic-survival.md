@@ -11,7 +11,7 @@
 **Role:** Terminal survival theorem.
 
 **Empirical status:** NOT EVALUATED — this candidate is an algebraic
-consequence of property #66 and is not a request for additional data.
+consequence of the Terminal Harmful-Excess Energy property and is not a request for additional data.
 
 ## Purpose
 
@@ -128,13 +128,13 @@ claim.
 
 ## Why The Candidate Is Sufficient
 
-Property #25 proves the exact signed conservation law
+The Weighted Deletion Conservation property proves the exact signed conservation law
 
 ```math
 \sum_iw_ib_i=T-N_m.
 ```
 
-Property #66 applies weighted Cauchy--Schwarz and proves
+The Terminal Harmful-Excess Energy property applies weighted Cauchy--Schwarz and proves
 
 ```math
 \boxed{
@@ -211,7 +211,7 @@ P_i=A_{0,i},
 z_i=\frac{N_i}{P_i}.
 ```
 
-Property #66 proves the exact identity
+The Terminal Harmful-Excess Energy property proves the exact identity
 
 ```math
 E_b
@@ -240,7 +240,7 @@ This form uses the vocabulary distinction between the actual population
 `N_i` and the multiplicative profile `P_i`. It does not assume that the actual
 population follows that profile.
 
-Property #67 proves that the scalar constraints visible in this form are not
+The Integral Profile Attainment property proves that the scalar constraints visible in this form are not
 enough. For every fixed prime chain, the Cauchy-equality extinction profile
 can be scaled so that all `N_i` and `K_i=N_i-N_{i+1}` are nonnegative
 integers and the populations decrease strictly to zero. Therefore
@@ -353,7 +353,7 @@ The proof must not:
 
 ## Stability-Gap Extension
 
-Property #68 proves the exact extinction identity
+The Harmful-Excess Stability Decomposition property proves the exact extinction identity
 
 ```math
 E_b
@@ -379,7 +379,7 @@ E_b
 
 would also certify survival.
 
-Property #69 supplies the first proved instance of this interface from the
+The Capacity Minimizer Separation property supplies the first proved instance of this interface from the
 post-filter-3 harmful-class capacities. It defines
 
 ```math
@@ -431,7 +431,7 @@ upper bound for the actual energy. Thus the two proof obligations are:
 
 ## Capacity-Only Upper Interface
 
-Property #70 projects the proved common residue-class capacities onto the
+The Harmful-Capacity Excess Envelope property projects the proved common residue-class capacities onto the
 single harmful-excess coordinate. For each layer, put
 
 ```math
@@ -464,7 +464,7 @@ w_i\frac{r_i}{2(r_i-2)}M_i.
 }
 ```
 
-Combining properties #69 and #70 proves the explicit sufficient theorem
+Combining the Capacity Minimizer Separation property and #70 proves the explicit sufficient theorem
 
 ```math
 \boxed{
@@ -483,7 +483,7 @@ family of actual conditioned population profiles. The per-layer envelope
 cannot be improved from `N_i`, `r_i`, and `B_i` alone; any improvement must
 use cross-layer CRT compatibility.
 
-There is no new one-layer regime hidden in this projection. Property #70
+There is no new one-layer regime hidden in this projection. The Harmful-Capacity Excess Envelope property
 proves that the sharp b-only envelope fits its one-layer allowance exactly
 when
 
@@ -497,13 +497,13 @@ when
 
 This is strictly stronger than candidate #19's ordinary capacity-survival
 condition `N_i>2B_i`. For a one-layer chain, `Gamma_cap` is zero below that
-ordinary survival threshold and redundant above it. Properties #69--#70 are
+ordinary survival threshold and redundant above it. The properties from Capacity Minimizer Separation through Harmful-Capacity Excess Envelope are
 therefore useful only if cross-layer CRT compatibility improves on the sum of
 separate endpoint maxima.
 
 ## Cross-Layer CRT Orthogonality Boundary
 
-Property #71 gives the exact first cross-layer theorem for the harmful-excess
+The Paired CRT Primorial Scale property gives the exact first cross-layer theorem for the harmful-excess
 coordinates themselves. With
 
 ```math
@@ -558,7 +558,7 @@ that removes the complete-period factor.
 
 ## Native-Period Capacity Hybrid
 
-Property #72 extracts a rigorous intermediate-period gain before requiring
+The Native-Period Hybrid Envelope property extracts a rigorous intermediate-period gain before requiring
 any new correlation theorem. For a cut `k`, complete `M_k` blocks cancel from
 the observables `g_i` with `i<k`. If
 
@@ -574,7 +574,7 @@ native-period Bessel gives the joint prefix constraint
 \sum_{i<k}\frac{b_i^2}{q_{i,k}}\le s_k.
 ```
 
-Intersect this with property #70's individual bounds `b_i^2<=X_i`. After the
+Intersect this with the Harmful-Capacity Excess Envelope property's individual bounds `b_i^2<=X_i`. After the
 normalization
 
 ```math
@@ -614,7 +614,7 @@ With
 \sum_{i<k}\beta_{i,k}t_{i,k}^{\star},
 ```
 
-property #72 proves
+The Native-Period Hybrid Envelope property proves
 
 ```math
 \boxed{
@@ -642,7 +642,7 @@ The gain at a fixed positive cut is strict exactly when
 s_k.
 ```
 
-Combining the hybrid upper bound with property #69 gives the currently
+Combining the hybrid upper bound with the Capacity Minimizer Separation property gives the currently
 sharpest proved capacity/orthogonality certificate:
 
 ```math
@@ -663,7 +663,7 @@ clears the extinction threshold for an unbounded family of actual chains.
 
 ## Scalar Capacity-Overflow Checkpoint
 
-Property #73 compresses the exact greedy gain to one scalar per cut:
+The Native-Period Capacity Overflow property compresses the exact greedy gain to one scalar per cut:
 
 ```math
 e_k
@@ -723,7 +723,7 @@ capacity overflow at the scale of the remaining extinction deficit.
 
 ## Population-Slack Overflow Floor
 
-Property #74 supplies the first unconditional algebraic lower bound for that
+The Envelope Width Floor property supplies the first unconditional algebraic lower bound for that
 overflow from the actual populations. Define
 
 ```math
@@ -732,7 +732,7 @@ overflow from the actual populations. Define
 \min(N_i,2B_i,r_iB_i-N_i).
 ```
 
-This is exactly the width of property #70's feasible total-harmful-count
+This is exactly the width of the Harmful-Capacity Excess Envelope property's feasible total-harmful-count
 interval. Its sharp endpoint envelope satisfies
 
 ```math
@@ -756,7 +756,7 @@ s_k
 }
 ```
 
-Substituting `underline e_k` for `e_k` in property #73's lower gain estimate
+Substituting `underline e_k` for `e_k` in the Native-Period Capacity Overflow property's lower gain estimate
 gives another fully proved survival certificate.
 
 The same theorem identifies the exact boundary:
@@ -774,7 +774,7 @@ residue information outside the capacity model.
 
 ## Seven-Layer Overflow Is Unconditionally Positive
 
-Property #75 connects candidate #17's local-count threshold to the preceding
+The Seven-Layer Density Floor property connects candidate #17's local-count threshold to the preceding
 population-slack floor. For every applicable layer `r>=7`, that threshold and
 the already-installed filter `5` imply
 
@@ -791,7 +791,7 @@ X_r\ge B_r^2.
 ```
 
 At the first such layer, `r=7`, the local-count threshold is already proved
-for every integer `Q>=17`. Property #76 evaluates the native cut after filter
+for every integer `Q>=17`. The Seven-Layer Overflow Forcing property evaluates the native cut after filter
 `7` exactly. With `r_0=5`, `r_1=7`, `k=2`, and `M_2=210`, the filter-`7`
 coordinate has
 
@@ -836,7 +836,7 @@ between the all-capacity envelope and the extinction threshold.
 
 ## No Fixed Native Cut Is Enough
 
-Property #77 performs that comparison against the original threshold. Assume
+The Filter-Seven Cut Failure property performs that comparison against the original threshold. Assume
 candidate #17's count threshold at the first untouched layer, filter `11`.
 For every chain with `Q>=17` and at least `37` filter layers, the filter-`11`
 suffix term alone satisfies
@@ -859,7 +859,7 @@ layers into the joint Bessel budget through a moving cut, use the larger
 capacity-relaxed threshold quantitatively, or reduce the suffix with localized
 residue information.
 
-Property #78 proves the arbitrary-cut form. If candidate #17 holds at the
+The Fixed Native Cut Failure property proves the arbitrary-cut form. If candidate #17 holds at the
 first suffix layer `r_k`, then
 
 ```math
@@ -900,7 +900,7 @@ a useful native-period remainder budget.
 
 ## Moving Cuts Lose Complete Native Blocks
 
-Property #79 proves the complementary obstruction. Suppose a moving cut both
+The Moving-Cut Block Loss property proves the complementary obstruction. Suppose a moving cut both
 clears the original threshold and retains `M_k<=H`, so that the square-window
 start interval contains at least one complete native block. Under a finite
 Chebyshev-theta lower bound
@@ -934,13 +934,13 @@ M_k>H,
 s_k=H.
 ```
 
-There are no complete native blocks to cancel. Property #80, in the next
+There are no complete native blocks to cancel. The Incomplete-Block Bessel Bound property, in the next
 section, proves that the single-incomplete-block capacity box eventually fits
 inside the Bessel budget, so this remaining native-period step gives no gain.
 
 ## Incomplete-Block Bessel Gives No Gain
 
-Property #80 closes that final native-period step. For `M_k>H`, it proves
+The Incomplete-Block Bessel Bound property closes that final native-period step. For `M_k>H`, it proves
 
 ```math
 \sum_{i<k}
@@ -970,16 +970,16 @@ e_k=0,
 Using PNT explicitly outside Stainless, `M_kP_k` grows exponentially in the
 moving-cut prime while the required right side is only polynomial. The
 condition therefore holds at every sufficiently large moving cut forced by
-property #78.
+The Fixed Native Cut Failure property.
 
-Together, properties #77--#80 prove that the current
+Together, the properties from Filter-Seven Cut Failure through Incomplete-Block Bessel Bound prove that the current
 capacity-plus-native-Bessel envelope cannot clear this candidate's original
 threshold under the full candidate #17 hypothesis on an unbounded family.
 This is a method obstruction, not a refutation of either candidate.
 
 ## Capacity Stability Gap Does Not Rescue the Envelope
 
-Property #81 closes the remaining capacity-relaxed comparison. For every
+The Capacity Stability Gap property closes the remaining capacity-relaxed comparison. For every
 post-`5` layer it proves
 
 ```math
@@ -1029,7 +1029,7 @@ exclude a smaller upper bound for the actual `E_b`.
 
 ## Exact Localized Saving at Filter Seven
 
-Property #82 supplies the first such smaller actual-energy bound. The
+The Filter-Seven Excess Bound property supplies the first such smaller actual-energy bound. The
 filter-`7` observable is mean-zero and periodic modulo `210`. Its 21
 admissible centered integer weights have cumulative sums between `-8` and
 `10`, so every interval satisfies
@@ -1057,7 +1057,7 @@ This replaces the separate capacity charge
 ```
 
 by a boundary constant times `P_m`. Their ratio is at most `11664/D^2`.
-Thus the filter-`7` obstruction used to diagnose properties #77--#81 is not
+Thus the filter-`7` obstruction used to diagnose the properties from Filter-Seven Cut Failure through Capacity Stability Gap is not
 an obstruction for the actual coefficient. The remaining problem is to make
 this localized saving scale across the growing set of later filters. Property
 #58 identifies the general coefficient as
@@ -1068,7 +1068,7 @@ extension needs new signed mean-square or cross-layer cancellation.
 
 ## Copy-Block Localization Through Residue Energy
 
-Property #83 supplies a second exact localized bridge. For one incoming prime,
+The Copy-Block Excess Control property supplies a second exact localized bridge. For one incoming prime,
 partition the numerical interval into old-period copy blocks. If `V_i` is the
 full residue-histogram energy before filter `r_i` and `B_(i,j)` is the centered
 harmful excess in copy block `j`, then
@@ -1095,13 +1095,13 @@ residue energy rather than maximizing each harmful class separately.
 
 An arbitrary interval still has two partial old-period boundary fragments.
 When the old period exceeds the square window, the entire coefficient is such
-a fragment. Thus property #83 narrows the signed-cancellation frontier but
+a fragment. Thus the Copy-Block Excess Control property narrows the signed-cancellation frontier but
 does not remove it: a viable continuation needs candidate #20-type energy plus
 a separate partial-boundary theorem, or one joint estimate controlling both.
 
 ## Limitation
 
-This candidate does not escape the terminal positivity wall. Property #66
+This candidate does not escape the terminal positivity wall. The Terminal Harmful-Excess Energy property
 proves that its strict inequality cannot hold when `N_m=0`. Its advantage is
 economy, not noncircularity: it removes every quadratic term that the exact
 population recurrence does not need and uses the sharp conservation-only
@@ -1112,19 +1112,19 @@ the capacity-only envelope. The candidate is not refuted; the explicit
 aggregate inequality for actual chains remains open. Separate-layer capacity,
 complete-period black-box orthogonality, and the native-period capacity hybrid
 are now exhausted for the original threshold under full candidate #17.
-Property #73 makes its simplest missing input explicit, and property #74
-lower-bounds it by actual population slack. Properties #75--#76 now prove
+The Native-Period Capacity Overflow property makes its simplest missing input explicit, and the Envelope Width Floor property
+lower-bounds it by actual population slack. The properties from Seven-Layer Density Floor through Seven-Layer Overflow Forcing now prove
 that the first native cut has positive overflow for every sufficiently large
-head. Property #77 proves that the first fixed cut cannot clear the original
-threshold on long chains; property #78 proves the same eventual obstruction
-for every fixed cut and gives the necessary moving-prime scale. Property #79
+head. The Filter-Seven Cut Failure property proves that the first fixed cut cannot clear the original
+threshold on long chains; the Fixed Native Cut Failure property proves the same eventual obstruction
+for every fixed cut and gives the necessary moving-prime scale. The Moving-Cut Block Loss property
 then proves, using Bertrand/PNT explicitly outside Stainless, that such a
-moving cut eventually has no complete native blocks. Property #80 proves that
+moving cut eventually has no complete native blocks. The Incomplete-Block Bessel Bound property proves that
 the remaining incomplete-block constraint eventually excludes no capacity
-mass. Property #81 proves that the capacity-relaxed `Gamma_cap` threshold
-cannot absorb the remaining separate-envelope excess. Property #82 proves
+mass. The Capacity Stability Gap property proves that the capacity-relaxed `Gamma_cap` threshold
+cannot absorb the remaining separate-envelope excess. The Filter-Seven Excess Bound property proves
 that exact localized residue structure does remove that excess at filter `7`.
-Property #83 proves that candidate #20's residue energy controls complete
+The Copy-Block Excess Control property proves that candidate #20's residue energy controls complete
 old-period block runs, but leaves partial boundary fragments. The live #24
 route is now a scalable localized bound for the growing collection of actual
 `b_i^2`, potentially split into collision-controlled block interiors and

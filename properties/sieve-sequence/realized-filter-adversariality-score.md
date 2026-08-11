@@ -222,8 +222,8 @@ C_p\!\left(
 ```
 
 For consecutive primes `p<q` with `p>=5`, the refined annular population
-inherits the preconditions of property #87. Require `L_D(p,q)>0` so that its
-score is defined. Property #87 gives
+inherits the preconditions of the Danger-Annulus Decomposition property. Require `L_D(p,q)>0` so that its
+score is defined. The Danger-Annulus Decomposition property gives
 
 ```math
 K_D(p,q)

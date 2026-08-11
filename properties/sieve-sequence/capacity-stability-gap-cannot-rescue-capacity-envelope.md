@@ -6,8 +6,8 @@ explicit external dependencies. Stainless verification is not claimed.
 
 ## Meaning
 
-Property #69 enlarges candidate #24's extinction threshold by the stability
-gap `Gamma_cap`. Property #70 supplies the separate capacity upper envelope
+The Capacity Minimizer Separation property enlarges candidate #24's extinction threshold by the stability
+gap `Gamma_cap`. The Harmful-Capacity Excess Envelope property supplies the separate capacity upper envelope
 `U_cap`. The open capacity-only certificate is
 
 ```math
@@ -77,7 +77,7 @@ C_i
 \right).
 ```
 
-Property #69 gives the deletion mass of the extinct Cauchy minimizer:
+The Capacity Minimizer Separation property gives the deletion mass of the extinct Cauchy minimizer:
 
 ```math
 N_i^\star
@@ -267,7 +267,7 @@ The lower estimate also shows that the gap is positive whenever
 
 ## Candidate #17 Forces a Much Larger Filter-7 Envelope
 
-Assume candidate #17's local-count threshold at filter `7`. Property #75
+Assume candidate #17's local-count threshold at filter `7`. The Seven-Layer Density Floor property
 then gives the sharp coordinate envelope
 
 ```math
@@ -304,7 +304,7 @@ Hence the layer-`1` energy coefficient is
 \boxed{\frac{49P_m}{30}}.
 ```
 
-Keeping only this nonnegative term in property #70's envelope gives
+Keeping only this nonnegative term in the Harmful-Capacity Excess Envelope property's envelope gives
 
 ```math
 \begin{aligned}
@@ -323,7 +323,7 @@ Keeping only this nonnegative term in property #70's envelope gives
 \end{aligned}
 ```
 
-Property #78 already gives the original-threshold upper bound
+The Fixed Native Cut Failure property already gives the original-threshold upper bound
 
 ```math
 \boxed{
@@ -377,7 +377,7 @@ then the preceding bounds give
 \qquad[\text{Q.E.D.}]
 ```
 
-Thus property #69's relaxed certificate cannot hold under these explicit
+Thus the Capacity Minimizer Separation property's relaxed certificate cannot hold under these explicit
 finite hypotheses.
 
 ## Prime-Number-Theorem Scale
@@ -468,8 +468,8 @@ but it cannot rescue the separate capacity envelope on an unbounded family.
 This is a method obstruction, not a refutation of candidate #17 or candidate
 #24. Candidate #17 would already imply survival through its close-pair
 capacity theorem. The result says that translating its filter-`7` density
-into property #70's separately maximized energy envelope loses much more than
-property #69's stability gap can restore.
+into the Harmful-Capacity Excess Envelope property's separately maximized energy envelope loses much more than
+the Capacity Minimizer Separation property's stability gap can restore.
 
 The result does not address an upper bound for the actual `E_b` that is
 strictly smaller than `U_cap`. In particular, localized residue correlations

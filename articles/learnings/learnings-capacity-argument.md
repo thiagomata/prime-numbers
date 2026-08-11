@@ -3,9 +3,9 @@
 **Current assessment (2026-08-03):** Sections 1--21 preserve the historical
 development of the capacity argument. Their empirical observations remain
 useful, but their older claims that there is one undifferentiated remaining
-density question are superseded by Sections 22--23. Properties #66--#83 now
+density question are superseded by Sections 22--23. The properties from Terminal Harmful-Excess Energy through Copy-Block Excess Control now
 separate the exhausted capacity/native-period envelopes from the live signed
-residue-energy and partial-boundary problem. Properties #84--#86 define a
+residue-energy and partial-boundary problem. The properties from Divisor Local Factor through Cofactor Progression Discrepancy define a
 distinct relaxed almost-prime program.
 
 ## 1. The Core Invariant (Sound)
@@ -560,7 +560,7 @@ soft intermediate estimate.
 
 ### 22.2 Separate capacity envelopes are exhausted
 
-Properties #66--#81 classify the conservation, capacity, native-period
+The properties from Terminal Harmful-Excess Energy through Capacity Stability Gap classify the conservation, capacity, native-period
 Bessel, fixed-cut, moving-cut, and stability-gap variants. The important
 lesson is not that capacity bounds are false. They are sharp for the limited
 information they retain. The problem is that maximizing each layer
@@ -572,7 +572,7 @@ ingredient prevents the abstract maximizing profiles from occurring.
 
 ### 22.3 Exact interval order gives a real saving
 
-Property #82 computes the filter-$7$ centered residue word modulo $210$. Its
+The Filter-Seven Excess Bound property computes the filter-$7$ centered residue word modulo $210$. Its
 cumulative sums range from $-8$ to $10$, proving
 
 ```math
@@ -587,7 +587,7 @@ discarding interval order.
 ### 22.4 Complete blocks reduce to residue energy
 
 For an incoming prime $r$, let $c_t$ be the old-start histogram modulo $r$,
-$d_t=c_t-N/r$, and $V_r=\sum_td_t^2$. Property #83 proves that copy-block
+$d_t=c_t-N/r$, and $V_r=\sum_td_t^2$. The Copy-Block Excess Control property proves that copy-block
 harmful excess has the exact form
 
 ```math
@@ -629,7 +629,7 @@ Candidate #25 weakens the second endpoint: the square-safe survivor $p$ is
 prime, while $p+2$ is required to have at most two prime factors. This does not
 prove a 2-gap and should not be counted as another capacity route.
 
-Properties #84--#86 establish its current algebraic boundary:
+The properties from Divisor Local Factor through Cofactor Progression Discrepancy establish its current algebraic boundary:
 
 - the final relaxed weight has an exact divisor-dependent local factor;
 - the natural shifted divisor remainder is exactly

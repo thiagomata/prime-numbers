@@ -184,17 +184,17 @@ the two scalar square errors in the orthogonal residue-energy decomposition.
 They do not control dispersion among the `p-2` harmless survivor classes;
 that is candidate #22.
 
-Property #58, discussed below, proves that restricted candidate #12 can
+The Sampling-Density Recombination property, discussed below, proves that restricted candidate #12 can
 instead control the two harmful residue deviations directly. That direct
 weighted norm is the preferred scalar interface because it retains
-correlation lost by the separate #13+#23 composition. Property #66 proves
+correlation lost by the separate #13+#23 composition. The Terminal Harmful-Excess Energy property proves
 that this aggregate scalar interface is already terminal at candidate #21's
 global allowance: a successful bound forces a positive final population
 without a separate harmless-energy premise.
 
 ## Sharp Joint Capacity Envelope
 
-Property #56 centers the two endpoint-class hit counts directly:
+The Joint Capacity Envelope property centers the two endpoint-class hit counts directly:
 
 ```math
 e_L=K_L-\frac{LH}{N},
@@ -257,7 +257,7 @@ the actual incoming residue class to select an extremal endpoint pattern. A
 useful #13 theorem must exclude those vertices through arithmetic correlation
 information.
 
-Property #57 shows that this limitation is quantitatively decisive for the
+The Endpoint Capacity Insufficiency property shows that this limitation is quantitatively decisive for the
 collision program. In a capacity-admissible one-layer configuration, the
 filter hits all `L` left endpoints and no right endpoints. Then
 
@@ -280,7 +280,7 @@ the other nonnegative energy terms are inserted. This is not a refutation of
 candidate #13; it proves that a residue-sampling or correlation theorem is
 essential.
 
-Property #58 shows that candidate #13 can also be bypassed as a separate
+The Sampling-Density Recombination property shows that candidate #13 can also be bypassed as a separate
 component if the two harmful start-residue deviations are controlled
 directly. Define
 
@@ -392,7 +392,7 @@ prove the universal statement. For the current collision-energy program, the
 minimal known useful class contains both unsigned and signed endpoint
 observables. Even proving those two leaves candidate #23 accepted-strike
 density as the remaining part of the separated scalar representation.
-Property #66 then makes a sufficiently small aggregate scalar bound terminal;
+The Terminal Harmful-Excess Energy property then makes a sufficiently small aggregate scalar bound terminal;
 candidate #22's harmless-class dispersion remains an independent distribution
 question, not an additional survival obligation after scalar feasibility.
 

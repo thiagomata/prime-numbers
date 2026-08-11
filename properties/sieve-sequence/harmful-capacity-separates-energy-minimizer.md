@@ -5,12 +5,12 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Property #67 constructs the unique extinct population profile that attains
-candidate #24's conservation-only energy threshold. Property #68 measures the
+The Integral Profile Attainment property constructs the unique extinct population profile that attains
+candidate #24's conservation-only energy threshold. The Harmful-Excess Stability Decomposition property measures the
 energy above that threshold by the squared distance from this minimizing
 profile.
 
-The sieve also has an arithmetic restriction absent from property #67:
+The sieve also has an arithmetic restriction absent from the Integral Profile Attainment property:
 post-filter-3 spacing gives an absolute capacity for the two harmful residue
 classes at every layer. This property computes the minimizing profile's
 deletion masses exactly and quantifies what happens when a proved capacity is
@@ -37,7 +37,7 @@ P_i=A_{0,i},
 P_0=1.
 ```
 
-As in property #67, define
+As in the Integral Profile Attainment property, define
 
 ```math
 R_i=\sum_{j=i}^{m-1}\frac1{P_j},
@@ -45,7 +45,7 @@ R_i=\sum_{j=i}^{m-1}\frac1{P_j},
 S=R_0.
 ```
 
-Let `N_0>0` be fixed. For an extinct profile, `N_m=0`, and property #68's
+Let `N_0>0` be fixed. For an extinct profile, `N_m=0`, and the Harmful-Excess Stability Decomposition property's
 unique minimizing harmful excess is
 
 ```math
@@ -203,7 +203,7 @@ the actual deletion profile from the energy minimizer.
 
 ## Explicit Capacity-Induced Stability Gap
 
-Property #68 gives the exact extinct-chain remainder
+The Harmful-Excess Stability Decomposition property gives the exact extinct-chain remainder
 
 ```math
 \mathcal R

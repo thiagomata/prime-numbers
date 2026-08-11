@@ -217,7 +217,7 @@ These complete-wheel counts are finite falsifiers, not proof inputs.
 
 ## Consequence For The Final Program
 
-Property #84 supplies the exact local factor when the final relaxed weight is
+The Divisor Local Factor property supplies the exact local factor when the final relaxed weight is
 tested by `m|n`. This property locates the more natural divisor sum for the
 lower-bound cofactor sieve: `d|n+2` before the final sifting step.
 

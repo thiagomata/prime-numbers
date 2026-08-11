@@ -384,8 +384,8 @@ and hence forces the `k=2` premise. This replaces qualitative close-pair
 existence by a sharp finite count threshold, but it does not prove that the
 conditioned local count meets that threshold in every required layer.
 
-Property #63 also proves that this same count floor is strictly above
-property #62's sharp harmful scalar threshold
+The Capacity Threshold Hierarchy property also proves that this same count floor is strictly above
+the Sixfold Population-Ratio Threshold property's sharp harmful scalar threshold
 
 ```math
 G_r(W_Q)>\rho_*(r)
@@ -399,7 +399,7 @@ place that layer's two harmful scalar terms inside their local ellipse as well
 as force the `k=2` interval premise. The converse is false at the threshold
 level: the scalar route requires strictly less population.
 
-Property #65 proves that local ellipse membership does not compose into
+The One-Layer Ellipse Non-Composition property proves that local ellipse membership does not compose into
 candidate #21's global weighted allowance. This consequence therefore
 compares one-layer strengths; it is not a cumulative proof of #21.
 

@@ -15,7 +15,7 @@ Candidate #23 is the active top-candidate path after candidate #22's generic
 finite-Fourier routes were exhausted. Do not collect more data.
 
 The activated shell factors exactly through bounded CRT lift indices, the
-complete old boundary error cancels, and property #50 identifies the
+complete old boundary error cancels, and the Strike Summatory Remainder property identifies the
 remaining transform exactly as a summatory coprime-count dilation remainder.
 The immediate micro-goal is to classify whether an existing mean-square
 theorem applies to the changing pairs `(P_i,r_i)`, or whether #23 requires new
@@ -47,7 +47,7 @@ densities.
 
 1. Restate candidate #21's required #23 budget using only initial or
    independently controlled quantities.
-2. Insert property #35's Möbius boundary formula and property #38's exact
+2. Insert the Möbius Strike-Density Sum property's boundary formula and the Strike-Error Quadratic Variation property's exact
    positive quadratic variation.
 3. Keep the divisor coefficients signed until the final quadratic form.
 4. Derive the coefficient kernel produced by the layer weights and adjacent
@@ -70,11 +70,11 @@ conditioned layers.
   H_i-\frac{A_i}{r_i}.
   ```
 
-- Property #35 rewrites each centered accepted-strike discrepancy as a signed
+- the Möbius Strike-Density Sum property rewrites each centered accepted-strike discrepancy as a signed
   Möbius boundary sum. The main density term cancels exactly.
-- Property #36 removes the dangerous population ratio by proving
+- the Endpoint Discrepancy Contraction property removes the dangerous population ratio by proving
   `2N_i<=A_i`.
-- Property #37 gives the sharp aggregate scalar composition
+- the Weighted Error Composition property gives the sharp aggregate scalar composition
 
   ```math
   \left(
@@ -86,12 +86,12 @@ conditioned layers.
   \mathcal E_\Delta.
   ```
 
-- Property #38 proves that the weighted square of adjacent boundary errors is
+- the Strike-Error Quadratic Variation property proves that the weighted square of adjacent boundary errors is
   a positive quadratic variation; the linear telescope does not upper-bound
   it.
-- Property #39 gives the exact prime-square endpoint residue formula and
+- the Prime-Square Boundary Formula property gives the exact prime-square endpoint residue formula and
   refutes universal sign and sign-preservation laws.
-- Property #48 collapses the exponential divisor-pair quadratic form to
+- the Strike Divisor-Activation Kernel property collapses the exponential divisor-pair quadratic form to
   `m+1` signed activation-shell sums:
 
   ```math
@@ -106,7 +106,7 @@ conditioned layers.
 
   The explicit kernel `mathcal K` is positive semidefinite and has
   nonnegative entries.
-- Property #49 proves
+- the Strike CRT Lift-Index property proves
 
   ```math
   D_i
@@ -122,7 +122,7 @@ conditioned layers.
 
   where `mathcal M_i(Q)` is the signed Möbius transform of the difference
   between the two bounded CRT lift indices at `Q` and `Q^2`.
-- Property #50 proves
+- the Strike Summatory Remainder property proves
 
   ```math
   \mathcal M_i(Q)
@@ -142,7 +142,7 @@ conditioned layers.
 
   Thus the lift-index transform is exactly the dilation remainder of the
   finite-sieve summatory coprime count.
-- Property #51 proves that the complete-period centered strike functions
+- the Cross-Layer CRT Orthogonality property proves that the complete-period centered strike functions
   `g_i` are pairwise orthogonal and
 
   ```math
@@ -153,7 +153,7 @@ conditioned layers.
 
   Bessel therefore gives an exact cross-layer mean square, but its right side
   is proportional to the full final period `R=P_m`.
-- Property #52 localizes those functions to the actual interval and proves
+- the Localized-Layer Gram Matrix property localizes those functions to the actual interval and proves
 
   ```math
   G_{ii}
@@ -177,7 +177,7 @@ conditioned layers.
   \le
   |I|\lambda_{\max}(C^{1/2}GC^{1/2}).
   ```
-- Property #53 factors the local Gram matrix by first-deletion class and
+- the First-Deletion Variance Identity property factors the local Gram matrix by first-deletion class and
   proves
 
   ```math
@@ -198,7 +198,7 @@ conditioned layers.
   \le
   A_0^2\max_k\lVert C^{1/2}v_k\rVert^2.
   ```
-- Property #54 proves the exact active two-class identity
+- the Active Two-Class Variance property proves the exact active two-class identity
 
   ```math
   D_i^2=A_iG_{ii}-H_iA_{i+1}.
@@ -207,8 +207,8 @@ conditioned layers.
   Therefore retaining only the compulsory distance `c_i` between deletion
   class `i` and all later classes rearranges the unknown strike energy rather
   than upper-bounding it.
-- Property #55 reindexes the complete first-deletion variance and proves that
-  property #53 collapses exactly to `sum_i c_iD_i^2`. No residual spectral
+- the First-Deletion Reindexing property reindexes the complete first-deletion variance and proves that
+  The First-Deletion Variance Identity property collapses exactly to `sum_i c_iD_i^2`. No residual spectral
   gain remains without new arithmetic constraints on the deletion counts.
 - No weighted mean-square upper bound for `mathcal E_D` is proved.
 
@@ -258,7 +258,7 @@ kernel whose upper bound would imply this statement.
 
 ## Assumptions And Validation
 
-- **Assumption:** property #35's boundary sum applies to the untrimmed accepted
+- **Assumption:** the Möbius Strike-Density Sum property's boundary sum applies to the untrimmed accepted
   anchor interval.
   **Validation:** derive the endpoint correction needed by candidate #13
   before composing the final theorem.
@@ -299,7 +299,7 @@ kernel whose upper bound would imply this statement.
 - Standard fixed-sequence large-sieve theorems do not match the target
   directly: the coefficient sequence
   `1_{gcd(n,P_i)=1}` changes with `i`. The exact common-space substitute is
-  property #51's CRT orthogonality, whose norm retains the final primorial.
+  the Cross-Layer CRT Orthogonality property's CRT orthogonality, whose norm retains the final primorial.
 - Complete-period layer orthogonality is exact, but restriction to the local
   window is precisely where its useful normalization is lost.
 - Localizing restores the correct window scale and leaves a highly structured
@@ -332,30 +332,30 @@ kernel whose upper bound would imply this statement.
 - **Universal sign or sign preservation:** exactly refuted at `Q=19` when
   filter `13` is adjoined. Retry only with averaged cancellation that permits
   sign changes.
-- **Expecting the layer kernel to alternate:** property #48 proves every
+- **Expecting the layer kernel to alternate:** the Strike Divisor-Activation Kernel property proves every
   kernel entry is nonnegative. Retry only with cancellation inside the signed
   activation shells or with external averaging.
 - **Repeated floor, residue, shell, or CRT coordinate rewrites:** properties
   #48--#50 show these are exact representations of the same dilation
   discrepancy and provide no upper bound by themselves. Retry only if a new
   inequality or analytic mean-square theorem is introduced.
-- **Complete-period CRT orthogonality plus Bessel:** property #51 gives a
+- **Complete-period CRT orthogonality plus Bessel:** the Cross-Layer CRT Orthogonality property gives a
   right side proportional to `|I|P_m`, which retains the enormous ambient
   period. Retry only with localized Gram control or another averaging
   variable.
-- **Localized Gram trace/self-bound:** property #52's trace inequality
+- **Localized Gram trace/self-bound:** the Localized-Layer Gram Matrix property's trace inequality
   discards every off-diagonal entry and reproduces per-layer Cauchy; bounding
   its remaining signed linear term by Cauchy introduces a generic
   `|I|sqrt(C_0)` term. Retry only with a sharper spectral estimate using the
   nested off-diagonal structure.
 - **First-deletion triangular geometry without class-mass information:**
-  property #53's population-only envelope is sharp under abstract
+  the First-Deletion Variance Identity property's population-only envelope is sharp under abstract
   concentration in one deletion class. Retry only with a forced-dispersion
   lower bound for the actual `H_k` and `A_m`.
-- **Only the compulsory `c_i H_i A_(i+1)` deletion variance:** property #54
+- **Only the compulsory `c_i H_i A_(i+1)` deletion variance:** the Active Two-Class Variance property
   proves it contains `D_i^2` through an exact two-class identity. Retry only
   if the additional intermediate-coordinate distances are retained.
-- **Full first-deletion distance reindexing:** property #55 proves that all
+- **Full first-deletion distance reindexing:** the First-Deletion Reindexing property proves that all
   remaining intermediate-coordinate terms complete the exact coordinatewise
   variance identity and return to `mathcal E_D`. Retry only with genuinely
   new arithmetic restrictions on `H_i`, averaging over heads, or an external
@@ -410,11 +410,11 @@ not combine the components until both receive valid bounds.
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-07-27 | Dedicated #23 ticket created after #22's generic finite-Fourier program reached a coefficient-weighted bilinear boundary. | Derive the exact divisor-by-divisor quadratic kernel for `mathcal E_D` without collecting more data. |
-| 2026-07-27 | The divisor-pair kernel factors exactly through activation times: `mathcal E_D=Z^T mathcal K Z` with only `m+1` signed shell sums. The kernel is positive semidefinite and entrywise nonnegative. | Promoted property #48, synchronized candidate #23, and selected the newly activated shell's CRT factorization as the next algebraic test. |
-| 2026-07-28 | CRT lift indices split every new `r_i e` boundary summand into the old `e` summand plus a bounded index difference; the old boundary error cancels completely from `D_i`. | Promoted property #49, synchronized candidate #23, and selected the exact summatory-coprime interpretation to classify the remaining mean-square theorem. |
-| 2026-07-28 | The lift-index transform is exactly `T_{P,r}(x)=F_P(x-1)-rF_P(floor((x-1)/r))`; it is a coordinate rewrite of the original dilation discrepancy, not an additional elementary cancellation. | Promoted property #50, synchronized candidate #23, ruled out further representation-only rewrites, and selected an applicability audit of existing mean-square results. |
-| 2026-07-28 | The centered strike functions are exactly orthogonal across layers on the final CRT period, but their norms contain `P_m`; Bessel gives a genuine theorem at the unusable complete-period scale. Standard fixed-sequence large-sieve input also mismatches the changing nested sieve weights. | Promoted property #51, synchronized candidate #23, recorded complete-period Bessel as exhausted, and selected the exact localized Gram matrix as the next self-bounding test. |
-| 2026-07-28 | On the actual window, `G_ij=-D_max(i,j)/r_min(i,j)` off diagonal and the diagonal is explicit in `A_i,D_i`; this removes the primorial but trace composition is exactly per-layer Cauchy. | Promoted property #52, synchronized candidate #23, recorded trace/self-bounding as exhausted, and selected the first-deletion rank-one factorization for the next spectral audit. |
-| 2026-07-28 | The local Gram matrix is a sum of first-deletion rank-one blocks, and `mathcal E_D` is exactly population-times-trace minus weighted deletion-class variance. Without constraints on class masses, concentration makes the population envelope sharp. | Promoted property #53, synchronized candidate #23, recorded triangular geometry alone as exhausted, and selected the forced variance `sum c_k H_k A_(k+1)` as the next deterministic gain. |
-| 2026-07-28 | The compulsory distance between deletion class `i` and all later classes gives `H_i A_(i+1)`, but `D_i^2=A_iG_(ii)-H_iA_(i+1)` exactly. The apparent forced gain is the active two-class variance itself. | Promoted property #54, synchronized candidate #23, recorded minimum-distance truncation as a loop, and selected reindexing of every remaining deletion-distance term. |
-| 2026-07-28 | Reindexing every first-deletion distance by coordinate gives `sum_i c_i[H_iA_(i+1)+(A_0-A_i)G_(ii)]`; substitution collapses exactly to the original weighted strike energy. | Promoted property #55, synchronized candidate #23, completed the generic algebraic classification, and handed the next top-candidate audit to #13. |
+| 2026-07-27 | The divisor-pair kernel factors exactly through activation times: `mathcal E_D=Z^T mathcal K Z` with only `m+1` signed shell sums. The kernel is positive semidefinite and entrywise nonnegative. | Promoted the Strike Divisor-Activation Kernel property, synchronized candidate #23, and selected the newly activated shell's CRT factorization as the next algebraic test. |
+| 2026-07-28 | CRT lift indices split every new `r_i e` boundary summand into the old `e` summand plus a bounded index difference; the old boundary error cancels completely from `D_i`. | Promoted the Strike CRT Lift-Index property, synchronized candidate #23, and selected the exact summatory-coprime interpretation to classify the remaining mean-square theorem. |
+| 2026-07-28 | The lift-index transform is exactly `T_{P,r}(x)=F_P(x-1)-rF_P(floor((x-1)/r))`; it is a coordinate rewrite of the original dilation discrepancy, not an additional elementary cancellation. | Promoted the Strike Summatory Remainder property, synchronized candidate #23, ruled out further representation-only rewrites, and selected an applicability audit of existing mean-square results. |
+| 2026-07-28 | The centered strike functions are exactly orthogonal across layers on the final CRT period, but their norms contain `P_m`; Bessel gives a genuine theorem at the unusable complete-period scale. Standard fixed-sequence large-sieve input also mismatches the changing nested sieve weights. | Promoted the Cross-Layer CRT Orthogonality property, synchronized candidate #23, recorded complete-period Bessel as exhausted, and selected the exact localized Gram matrix as the next self-bounding test. |
+| 2026-07-28 | On the actual window, `G_ij=-D_max(i,j)/r_min(i,j)` off diagonal and the diagonal is explicit in `A_i,D_i`; this removes the primorial but trace composition is exactly per-layer Cauchy. | Promoted the Localized-Layer Gram Matrix property, synchronized candidate #23, recorded trace/self-bounding as exhausted, and selected the first-deletion rank-one factorization for the next spectral audit. |
+| 2026-07-28 | The local Gram matrix is a sum of first-deletion rank-one blocks, and `mathcal E_D` is exactly population-times-trace minus weighted deletion-class variance. Without constraints on class masses, concentration makes the population envelope sharp. | Promoted the First-Deletion Variance Identity property, synchronized candidate #23, recorded triangular geometry alone as exhausted, and selected the forced variance `sum c_k H_k A_(k+1)` as the next deterministic gain. |
+| 2026-07-28 | The compulsory distance between deletion class `i` and all later classes gives `H_i A_(i+1)`, but `D_i^2=A_iG_(ii)-H_iA_(i+1)` exactly. The apparent forced gain is the active two-class variance itself. | Promoted the Active Two-Class Variance property, synchronized candidate #23, recorded minimum-distance truncation as a loop, and selected reindexing of every remaining deletion-distance term. |
+| 2026-07-28 | Reindexing every first-deletion distance by coordinate gives `sum_i c_i[H_iA_(i+1)+(A_0-A_i)G_(ii)]`; substitution collapses exactly to the original weighted strike energy. | Promoted the First-Deletion Reindexing property, synchronized candidate #23, completed the generic algebraic classification, and handed the next top-candidate audit to #13. |

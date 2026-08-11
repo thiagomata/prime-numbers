@@ -6,14 +6,14 @@ external mathematical dependencies. Stainless verification is not claimed.
 
 ## Meaning
 
-Property #78 proves that a native cut capable of clearing candidate #24's
+The Fixed Native Cut Failure property proves that a native cut capable of clearing candidate #24's
 original threshold cannot remain fixed: its first suffix prime must grow at
 least on the order of the square root of the chain length.
 
 Moving the cut creates the opposite pressure. The native modulus is the
 product of every prime preceding that suffix prime. Once this product exceeds
 the square-window start length, the interval contains no complete native
-block. Property #72 can still apply Bessel to the one incomplete block, but it
+block. The Native-Period Hybrid Envelope property can still apply Bessel to the one incomplete block, but it
 loses the exact complete-block cancellation that motivated the moving cut.
 
 The exact theorem below isolates the two requirements. The prime number
@@ -109,7 +109,7 @@ Assume all of the following:
    r_k<2r_{k-1}.
    ```
 
-Property #78 gives the necessary moving-prime bound
+The Fixed Native Cut Failure property gives the necessary moving-prime bound
 
 ```math
 r_k
@@ -232,7 +232,7 @@ M_k>H
 
 for every sufficiently large `Q` and every cut `k`.
 
-Since `0<H<M_k`, property #72's remainder is then
+Since `0<H<M_k`, the Native-Period Hybrid Envelope property's remainder is then
 
 ```math
 \boxed{
@@ -249,7 +249,7 @@ There are no complete native blocks to cancel.
 ## Boundary
 
 This theorem does not prove that no moving-cut Bessel estimate can work.
-When `M_k>H`, property #72 still gives an orthogonality constraint on the
+When `M_k>H`, the Native-Period Hybrid Envelope property still gives an orthogonality constraint on the
 single incomplete interval block. The result proves only that complete-block
 cancellation disappears for every sufficiently large cut that avoids the
 suffix obstruction.
@@ -264,10 +264,10 @@ Finally, the asymptotic conclusion depends explicitly on classical external
 prime-distribution theorems. The exact logarithmic-squared inequality remains
 valid under its five stated finite hypotheses without invoking the full PNT.
 
-Property #80 subsequently answers the one-incomplete-block question: at the
-moving-prime scale forced by property #78, the normalized capacity box fits
+The Incomplete-Block Bessel Bound property subsequently answers the one-incomplete-block question: at the
+moving-prime scale forced by the Fixed Native Cut Failure property, the normalized capacity box fits
 inside `s_k=H`, so `e_k=0`. Thus the capacity-plus-native-Bessel framework is
-exhausted for the original threshold under full candidate #17. Property #81
+exhausted for the original threshold under full candidate #17. The Capacity Stability Gap property
 then proves that `Gamma_cap` cannot rescue the separate capacity envelope.
 The remaining routes are localized control of actual harmful excess or a
 genuinely different cross-layer inequality.

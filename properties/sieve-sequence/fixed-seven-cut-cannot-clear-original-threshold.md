@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #76 proves that the native cut immediately after filter `7` strictly
+The Seven-Layer Overflow Forcing property proves that the native cut immediately after filter `7` strictly
 improves candidate #24's all-capacity envelope. Strict improvement and
 threshold clearance are different questions.
 
@@ -15,7 +15,7 @@ then that one suffix capacity term already keeps the fixed-`7` hybrid envelope
 above candidate #24's original conservation-only extinction threshold once
 the chain has at least `37` layers.
 
-Thus property #76's gain is genuine but cannot by itself finish the original
+Thus the Seven-Layer Overflow Forcing property's gain is genuine but cannot by itself finish the original
 candidate through one fixed early cut. The optimized later cuts and the
 capacity-relaxed extinction threshold remain open.
 
@@ -67,7 +67,7 @@ B_{11}
 
 ## Untouched Filter-Eleven Suffix Term
 
-The cut immediately after filter `7` is `k=2`. Property #72 leaves every
+The cut immediately after filter `7` is `k=2`. The Native-Period Hybrid Envelope property leaves every
 coordinate `i>=2` under its separate capacity bound, so
 
 ```math
@@ -254,7 +254,7 @@ It also does not address:
 
 1. a later optimized cut `k>=3`, which brings filter `11` into the joint
    Bessel budget;
-2. property #69's larger capacity-relaxed threshold
+2. the Capacity Minimizer Separation property's larger capacity-relaxed threshold
    `T^2/(2W_-)+Gamma_cap`; or
 3. localized residue or correlation information that reduces the actual
    suffix contribution below its capacity maximum.

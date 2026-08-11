@@ -10,7 +10,7 @@ inequality `U_i<=M_i` has no violation in the 1,035 layers with prime heads
 nothing decisive about infinitely many heads. The weakest standalone
 distribution target remains a weighted aggregate bound for
 `sum_i w_i U_i`; pointwise `U_i<=M_i` is only a convenient stronger
-benchmark. Property #66 shows that this harmless target is no longer the
+benchmark. The Terminal Harmful-Excess Energy property shows that this harmless target is no longer the
 primary missing survival theorem.
 
 ## Purpose
@@ -25,7 +25,7 @@ control among the `r-2` harmless classes.
 
 This remains a well-defined noncircular distribution problem: `U_i=0` when
 the actual harmless survivor population is zero. Its role in the survival
-program is now diagnostic rather than decisive. Property #66 proves that the
+program is now diagnostic rather than decisive. The Terminal Harmful-Excess Energy property proves that the
 separate harmful-excess square is already terminal at candidate #21's global
 allowance.
 
@@ -108,7 +108,7 @@ D_i^2,
 \frac12\sum_iw_iH_i^2\eta_i^2.
 ```
 
-Properties #36 and #37 give the denominator-free scalar bound
+The Endpoint Discrepancy Contraction and Weighted Error Composition properties give the denominator-free scalar bound
 
 ```math
 \sum_iw_i
@@ -160,10 +160,10 @@ This is exactly the harmless allowance left by the orthogonal candidate #21
 decomposition. It permits individual layers to violate the natural linear
 benchmark.
 
-Property #66 changes its survival interpretation. The first condition
+The Terminal Harmful-Excess Energy property changes its survival interpretation. The first condition
 `mathcal U_*(Q)>0` says that the proved scalar upper bound is already strictly
 below `T^2/(2W)`. Since that upper bound contains the actual harmful-excess
-energy `E_b`, property #66 already gives
+energy `E_b`, the Terminal Harmful-Excess Energy property already gives
 
 ```math
 N_m>0.
@@ -215,7 +215,7 @@ x\ne y,\ r_i\mid x-y
 \}.
 ```
 
-Property #40 gives
+The Harmless-Energy Pair Correlation property gives
 
 ```math
 \boxed{
@@ -251,7 +251,7 @@ candidate #21 kernel.
 
 ## Complete-Period Boundary
 
-Property #41 proves that every harmless class has exactly the same number of
+The Harmless-Class Uniformity property proves that every harmless class has exactly the same number of
 2-gap starts over one complete CRT period. Therefore
 
 ```math
@@ -271,7 +271,7 @@ an exactly balanced cyclic harmless-class sequence.
 
 Extend the harmless counts by setting the two harmful class counts to zero,
 and let `hat(d_i)(k)` be their additive Fourier transform modulo `r_i`.
-Property #42 proves
+The Harmless Spectral Excess property proves
 
 ```math
 \boxed{
@@ -297,7 +297,7 @@ the post-deletion difference kernel.
 
 ## CRT Translated-Fiber Boundary
 
-Property #43 gives a physical-space normal form for the same problem. If `P`
+The CRT Fiber Translation property gives a physical-space normal form for the same problem. If `P`
 is the prior-filter modulus, `s=r_i^{-1} modulo P`, and a surviving start is
 written as `x=a+r_i t`, then every harmless-class count has the form
 
@@ -336,9 +336,9 @@ sampling inequality** at local scale:
 
 This is exactly the pointwise benchmark, now expressed as a theorem about one
 explicit CRT word and one explicit family of inverse phases. It is not proved
-by property #43.
+by the CRT Fiber Translation property.
 
-Property #44 inserts the harmless-class mean projection exactly. For
+The Inverse-Phase Gram Matrix property inserts the harmless-class mean projection exactly. For
 `phi_m(a)=exp(2 pi i m v_{i,a}/P)` and `h=r_i-2`, its single-frequency cost is
 
 ```math
@@ -361,9 +361,9 @@ K_{m-n}-\frac{K_mK_{-n}}h.
 Thus centering can make some frequencies much cheaper than an uncentered
 large-sieve estimate predicts. The open step is to control the full
 cross-frequency quadratic form on the particular factored CRT spectrum;
-property #44 does not prove that form is diagonal.
+The Inverse-Phase Gram Matrix property does not prove that form is diagonal.
 
-Property #45 computes the generic centered operator norm exactly. The inverse
+The Phase-Operator Norm Bound property computes the generic centered operator norm exactly. The inverse
 phases have orthogonal full-Fourier rows, so
 
 ```math
@@ -378,10 +378,10 @@ one-unit fiber-length correction is split off.
 
 Therefore neither uncentered nor centered black-box operator estimates can
 prove #22. A remaining spectral proof must couple the explicit CRT factors of
-`hat(g_0)(m)` to the centered kernel from property #44, or obtain cancellation
+`hat(g_0)(m)` to the centered kernel from the Inverse-Phase Gram Matrix property, or obtain cancellation
 only after candidate #21's chain weights are inserted.
 
-Property #46 makes the first coupling conductor-sensitive. For exact
+The Conductor Phase-Block Bound property makes the first coupling conductor-sensitive. For exact
 conductor `q`, let `mu_q` be the largest multiplicity of one inverse phase
 modulo `q`. The two affine phase runs give
 
@@ -411,7 +411,7 @@ which does not close the local-population bound. The remaining spectral
 question is cross-conductor cancellation or an almost-orthogonal square-sum
 theorem that keeps the interval multipliers.
 
-Property #47 calculates the cross-conductor geometry exactly:
+The Ramanujan Cross-Conductor Geometry property calculates the cross-conductor geometry exactly:
 
 ```math
 \|\mathsf A_q^*C\mathsf A_{q'}\|_{\mathrm{HS}}^2
@@ -521,7 +521,7 @@ M_i
 ```
 
 When this inequality holds, candidate #21's proved implication gives a final
-2-gap survivor. Property #66 gives a sharper interpretation: if the scalar
+2-gap survivor. The Terminal Harmful-Excess Energy property gives a sharper interpretation: if the scalar
 terms alone are already bounded strictly below the complete allowance, they
 force a final survivor without requiring the additional `M_i` contribution.
 
@@ -548,7 +548,7 @@ Any of the following would suffice:
    `r_i`, normalized by the actual survivor population;
 4. a stronger weighted aggregate bound for `sum_iw_iU_i`, even if some
    individual layers violate `U_i<=M_i`. This would prove the standalone
-   distribution statement, but property #66 shows it is not needed for
+   distribution statement, but the Terminal Harmful-Excess Energy property shows it is not needed for
    survival once the scalar allowance is positive.
 
 ## Limitation
@@ -564,7 +564,7 @@ This candidate is useful because it is the smallest independently noncircular
 distributional component left by the exact algebra, not because the parity
 barrier has been removed. It is no longer a top survival target in the current
 separated framework. The aggregate form has a scalar feasibility precondition
-`mathcal U_*(Q)>0`, and property #66 proves that satisfying that precondition
+`mathcal U_*(Q)>0`, and the Terminal Harmful-Excess Energy property proves that satisfying that precondition
 with valid scalar bounds already forces survival. If the scalar errors exhaust
 the allowance, no harmless-dispersion estimate can rescue this particular #21
 budget.

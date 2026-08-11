@@ -137,7 +137,7 @@ N_{(2),0}(J)-\frac Gp,
 N_{(2),-2}(J)-\frac Gp.
 ```
 
-Property #58 proves that candidate #21's harmful excess and signed endpoint
+The Sampling-Density Recombination property proves that candidate #21's harmful excess and signed endpoint
 imbalance are exactly
 
 ```math
@@ -170,7 +170,7 @@ strike-density estimates. It does not ask for uniformity in the other `p-2`
 classes or for arbitrary gap words.
 
 Its proof role is nevertheless terminal, not independently noncircular.
-Property #66 proves that the weighted `b_i^2` component alone being below
+The Terminal Harmful-Excess Energy property proves that the weighted `b_i^2` component alone being below
 candidate #21's complete global allowance already forces a positive final
 2-gap-start population. Thus this formulation is a clean theorem target, but
 proving it at the required scale would already prove conditioned-chain
@@ -199,7 +199,7 @@ because `W_-<W`. Therefore use candidate #24 as the minimal quadratic survival
 target; use the full direct norm here only when the joint two-class geometry
 provides additional arithmetic leverage.
 
-Property #59 proves that the candidate's existing pointwise survival margin
+The Pointwise Margin Insufficiency property proves that the candidate's existing pointwise survival margin
 does not automatically supply this stronger quadratic bound. For every prime
 `p>=5`, it constructs an integral residue histogram satisfying
 
@@ -239,10 +239,10 @@ The stronger direct target is
 
 with `mathcal B_harm(Q)` small enough to fit candidate #21 after harmless
 dispersion is inserted. Because this bound contains the harmful-excess square,
-property #66 shows that it is already terminal whenever
+The Terminal Harmful-Excess Energy property shows that it is already terminal whenever
 `mathcal B_harm(Q)<T^2/(2W)`.
 
-Property #60 computes the sharp conversion from the original pointwise
+The Harmful-Residue Box Bound property computes the sharp conversion from the original pointwise
 deviation language to this ellipse. If
 
 ```math
@@ -282,7 +282,7 @@ The candidate's existing survival margin is `E<T/2`; the additional square
 root factor is the exact price of controlling the same-sign harmful
 direction in the second-moment argument.
 
-Property #61 gives a deterministic alternative that does not assume a
+The Sixfold-Capacity Energy Envelope property gives a deterministic alternative that does not assume a
 deviation bound. If every residue class has the sixfold capacity
 
 ```math
@@ -331,7 +331,7 @@ where
 ```
 
 This controls the scalar ellipse exactly when the displayed maximum is below
-`G^2(1-2/p)^2/2`. Property #62 solves that comparison. Define
+`G^2(1-2/p)^2/2`. The Sixfold Population-Ratio Threshold property solves that comparison. Define
 
 ```math
 \rho_*(p)
@@ -357,7 +357,7 @@ Thus the missing population theorem is now quantitative: ordinary
 two-harmful-class survival asks for `G>2B`, while the collision budget asks
 for the slightly stronger sharp ratio above at one layer.
 
-Property #65 proves that meeting this ratio at every layer does not
+The One-Layer Ellipse Non-Composition property proves that meeting this ratio at every layer does not
 automatically fit candidate #21's global weighted allowance. The cumulative
 target can still be stated as the direct aggregate theorem
 
@@ -374,7 +374,7 @@ target can still be stated as the direct aggregate theorem
 ```
 
 Thus the ratio theorem classifies local capacity. A proof of the aggregate
-bound would need new weighted cross-layer information, but property #66 shows
+bound would need new weighted cross-layer information, but the Terminal Harmful-Excess Energy property shows
 that such a proof is already a terminal survival theorem rather than one
 independent component to be combined later. Candidate #24 supplies the weaker
 global target when control of left/right imbalance is unnecessary.

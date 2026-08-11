@@ -403,7 +403,7 @@ Use one of these explicit statuses:
 - **Stainless verified:** a named Scala theorem has passed Stainless. This
   status is stronger about the encoded program, but only within its stated
   preconditions and specification.
-- **Draft — mathematically proved, Stainless verification pending:** the
+- **Mathematically proved, Stainless verification pending:** the
   mathematical proof exists but the corresponding formal verification is not
   complete.
 - **Proved conditional implication:** `H => C` is proved, while the antecedent

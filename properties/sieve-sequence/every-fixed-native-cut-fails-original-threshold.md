@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #77 proves that the fixed native cut after filter `7` cannot clear
+The Filter-Seven Cut Failure property proves that the fixed native cut after filter `7` cannot clear
 candidate #24's original conservation-only threshold on sufficiently long
 chains. This property gives the exact arbitrary-cut form.
 
@@ -46,7 +46,7 @@ P_i=\prod_{j<i}a_j.
 
 Let `N_0` be the complete 2-gap-start population before filter `5`. Assume
 candidate #17's local-count threshold at the first layer outside the cut,
-namely `r_k`. Property #75 then gives
+namely `r_k`. The Seven-Layer Density Floor property then gives
 
 ```math
 X_k\ge B_k^2,
@@ -58,7 +58,7 @@ B_k
 
 ## First Untouched Suffix Term
 
-Property #72 writes the hybrid envelope at cut `k` as a nonnegative prefix
+The Native-Period Hybrid Envelope property writes the hybrid envelope at cut `k` as a nonnegative prefix
 term plus the separate capacity terms with indices `i>=k`. Therefore
 
 ```math
@@ -286,7 +286,7 @@ Thus the prime at a potentially successful native cut must grow at least on
 the order of `sqrt(m)`. This uses no estimate for the distribution of primes
 and does not convert the prime bound into a sufficient bound on the cut index.
 
-## Recovery Of Property #77
+## Recovery Of the Filter-Seven Cut Failure property
 
 For the cut after filter `7`, one has
 
@@ -310,7 +310,7 @@ P_2(r_2-2)^2
 \frac{29403}{847}.
 ```
 
-The general criterion therefore recovers property #77's constant exactly.
+The general criterion therefore recovers the Filter-Seven Cut Failure property's constant exactly.
 
 ## Boundary
 
@@ -327,7 +327,7 @@ It rules out only the original comparison
 
 It does not address:
 
-1. property #69's larger capacity-relaxed threshold
+1. the Capacity Minimizer Separation property's larger capacity-relaxed threshold
    `T^2/(2W_-)+Gamma_cap`;
 2. a cut `k(Q)` growing with the chain;
 3. the exact greedy envelope using additional realized structure; or

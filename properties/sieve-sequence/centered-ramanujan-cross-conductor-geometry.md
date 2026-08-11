@@ -6,7 +6,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #46 improves the inverse-phase operator norm after restricting to
+The Conductor Phase-Block Bound property improves the inverse-phase operator norm after restricting to
 one exact Fourier conductor. To combine those blocks by a square sum, one
 might hope that distinct conductor blocks become orthogonal after subtracting
 the harmless-class mean.
@@ -32,7 +32,7 @@ a\in H,
 |H|=h=r-2
 ```
 
-from properties #43--#46. Let `C` be the orthogonal projection that subtracts
+from the properties from CRT Fiber Translation through Conductor Phase-Block Bound. Let `C` be the orthogonal projection that subtracts
 the mean across `H`.
 
 For an exact conductor `q|P`, define the primitive-character phase matrix
@@ -89,7 +89,7 @@ Then
 ```
 
 This is the exact primitive-character refinement of the all-character phase
-multiplicity matrix in property #46.
+multiplicity matrix in the Conductor Phase-Block Bound property.
 
 ## Exact Centered Cross-Block Identity
 
@@ -246,7 +246,7 @@ distinctness or coprimality of the conductors.
 
 ## Consequence For Candidate #22
 
-The single-conductor gain from property #46 is real, but the conductor blocks
+The single-conductor gain from the Conductor Phase-Block Bound property is real, but the conductor blocks
 cannot be recombined by any of the following generic shortcuts:
 
 1. exact orthogonality of distinct conductors;

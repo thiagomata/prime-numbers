@@ -12,7 +12,7 @@ orthogonal energy reduction)
 
 The #19-#21 audit is complete but its original blanket verdict was too coarse.
 Use the revised three-way classification: same-wall premise, noncircular
-component, or terminal consumer. Property #66 now classifies restricted #12's
+component, or terminal consumer. The Terminal Harmful-Excess Energy property now classifies restricted #12's
 weighted harmful norm as terminal. Candidate #22 remains an independently
 noncircular distribution diagnostic, but it is not required for survival
 after scalar feasibility.
@@ -25,16 +25,16 @@ orthogonality is exactly false.
 Dedicated #23 and #13 algebraic audits are now complete through properties
 #55 and #64 respectively. Candidate #13 plus #23 recombines exactly into the
 two harmful residue deviations, so the direct restricted #12 route is now the
-preferred scalar representation. Property #66 proves that either aggregate
+preferred scalar representation. The Terminal Harmful-Excess Energy property proves that either aggregate
 representation is terminal at candidate #21's global allowance.
 
-Property #65 now proves that the one-layer capacity thresholds do not compose
+The One-Layer Ellipse Non-Composition property now proves that the one-layer capacity thresholds do not compose
 into #21's global allowance, even on the ideal multiplicative population
 scale. The correct scalar interface is a direct weighted aggregate for the
 realized harmful energies or capacity envelopes.
 
-Properties #66--#70 and candidate #24 give the complete separate-layer
-capacity boundary. Properties #71--#73 now give the first cross-layer
+The properties from Terminal Harmful-Excess Energy through Harmful-Capacity Excess Envelope and candidate #24 give the complete separate-layer
+capacity boundary. The properties from Paired CRT Primorial Scale through Native-Period Capacity Overflow now give the first cross-layer
 refinement for the harmful-excess observables
 
 ```math
@@ -51,9 +51,9 @@ b_i=\sum_{n\in W_Q}g_i(n),
 where `F_i` is the current paired-survivor indicator and `h_i` is the
 two-residue hit indicator.
 
-Property #71 proves exact complete-block cancellation, cross-layer
+The Paired CRT Primorial Scale property proves exact complete-block cancellation, cross-layer
 orthogonality, and norms. Final-period Bessel retains the primorial and is
-exhausted. Property #72 instead uses every intermediate native period,
+exhausted. The Native-Period Hybrid Envelope property instead uses every intermediate native period,
 intersects its prefix Bessel budget sharply with coordinate capacities, and
 proves
 
@@ -65,7 +65,7 @@ E_b
 \mathcal U_{\mathrm{cap}}.
 ```
 
-Property #73 defines the normalized capacity overflow
+The Native-Period Capacity Overflow property defines the normalized capacity overflow
 
 ```math
 e_k
@@ -86,7 +86,7 @@ and proves that cut `k` gains at least
 
 over the all-capacity envelope.
 
-Property #74 now lower-bounds that overflow through the realized
+The Envelope Width Floor property now lower-bounds that overflow through the realized
 population slack
 
 ```math
@@ -96,7 +96,7 @@ population slack
 Its synchronization with candidate #24 and both permanent catalogs is
 complete. The conditional #17-to-#24 bridge is also proved: candidate #17's
 local-count threshold places every applicable realized population in
-property #74's maximal-width regime
+the Envelope Width Floor property's maximal-width regime
 
 ```math
 2B_i\le N_i\le(r_i-2)B_i,
@@ -120,11 +120,11 @@ e_2
 Thus the hybrid envelope is unconditionally and strictly smaller than the
 all-capacity envelope for every future prime head `Q>=37`. The bridge does
 not prove candidate #17 or candidate #24; the quantified gain still has to be
-compared with the exact remaining extinction deficit. Property #77 completes
+compared with the exact remaining extinction deficit. The Filter-Seven Cut Failure property completes
 that comparison for the original threshold at the fixed `k=2` cut: under #17
 at filter `11`, the untouched suffix forces
 `U_2^hyb>T^2/(2W_-)` on chains with `m>=37`. Resume from a moving cut, not by
-enlarging the settled filter-`7` overflow. Property #78 now generalizes this
+enlarging the settled filter-`7` overflow. The Fixed Native Cut Failure property now generalizes this
 to every cut:
 
 ```math
@@ -148,7 +148,7 @@ r_k
 ```
 
 The next live question is whether moving this far makes the native modulus
-too large for useful complete-block cancellation. Property #79 answers that
+too large for useful complete-block cancellation. The Moving-Cut Block Loss property answers that
 question. Under the finite hypotheses `theta(r_(k-1))>=c r_(k-1)` and
 Bertrand, a threshold-clearing cut with `M_k<=H` must satisfy
 
@@ -165,7 +165,7 @@ Using PNT externally, the actual `m=pi(Q)-3` eventually exceeds this
 logarithmic-squared bound. Hence every sufficiently large potentially
 successful cut has `M_k>H` and `s_k=H`: there are no complete native blocks.
 The remaining native-period question is the Bessel constraint on that single
-incomplete block. Property #80 closes that question. For every cut,
+incomplete block. The Incomplete-Block Bessel Bound property closes that question. For every cut,
 
 ```math
 \sum_{i<k}\frac{X_i}{q_{i,k}}
@@ -183,17 +183,17 @@ M_kP_k
 
 one has `e_k=0` and `U_k^hyb=U_cap`. PNT makes this product inequality hold
 at every sufficiently large moving cut that could avoid the suffix
-obstruction. Combined with properties #77--#79, the current
+obstruction. Combined with the properties from Filter-Seven Cut Failure through Moving-Cut Block Loss, the current
 capacity-plus-native-Bessel envelope cannot certify #24's original threshold
-under full candidate #17. Property #81 now closes the `Gamma_cap` repair of
+under full candidate #17. The Capacity Stability Gap property now closes the `Gamma_cap` repair of
 that same envelope: all post-`5` minimizer capacities eventually fit, the
 remaining filter-`5` gap is negligible, and filter `7` already forces
 `U_cap>=P_mD^2/1080`.
 
-Property #82 supplies the first localized-energy success:
+The Filter-Seven Excess Bound property supplies the first localized-energy success:
 `|b_7|<=18/7`, so the actual filter-`7` energy is at most `54P_m/5` rather
 than the capacity charge of order `P_mD^2`. Its direct generalization is
-property #58's identity `b_i=delta_(0,i)+delta_(-2,i)`, exactly candidate
+the Sampling-Density Recombination property's identity `b_i=delta_(0,i)+delta_(-2,i)`, exactly candidate
 #23's accepted-boundary discrepancy. Start from the need for new signed
 mean-square or cross-layer cancellation. Do not restart complete-period
 Bessel, native-period Bessel, separate-layer capacity optimization,
@@ -457,32 +457,32 @@ the proposed proof.
   heads `5<=Q<224`. No violation occurred. The lineage library's independent
   hand-derived tests pass. This finite non-result is inconclusive and is not
   evidence for either the pointwise law or the preferred aggregate theorem.
-- Property #43 gives the exact translated-fiber form
+- the CRT Fiber Translation property gives the exact translated-fiber form
   `d_a=rho ell_a+E_(ell_a)(v_a)`, where
   `v_a=ceil((Q-a)/r)+sa`, `s=r^(-1) mod P`, the lengths differ by at most
   one, and distinct phases are spaced on the order of `P/r`. The remaining
   pointwise theorem is centered `L^2` discrepancy on these explicit phases.
-- Property #44 evaluates the centered inverse-phase Gram matrix. Its
+- the Inverse-Phase Gram Matrix property evaluates the centered inverse-phase Gram matrix. Its
   single-frequency cost is `h-|K_m|^2/h`, its phase sum `K_m` is an explicit
   collapsed geometric expression, and its cross-frequency entry is
   `K_(m-n)-K_m K_(-n)/h`. The full quadratic form is not diagonal.
-- Property #45 proves the inverse phases have orthogonal full-Fourier rows:
+- the Phase-Operator Norm Bound property proves the inverse phases have orthogonal full-Fourier rows:
   `AA^*=PI` and `CAA^*C=PC`. The centered operator norm is sharply `sqrt(P)`,
   so black-box composition reproduces the full-shift Parseval energy exactly;
   the one-unit fiber-length correction has the same period-scale boundary.
-- Property #46 restricts to exact conductor `q`. If `mu_q` is the largest
+- the Conductor Phase-Block Bound property restricts to exact conductor `q`. If `mu_q` is the largest
   inverse-phase multiplicity modulo `q`, then the squared block norm is at
   most `q mu_q<r+2q`, and the interval multiplier contributes
   `min(ell,q)`. This is a genuine conductor-scale improvement, but triangle
   recombination creates an oversized square-root divisor sum.
-- Property #47 gives the exact centered cross-conductor Ramanujan trace.
+- the Ramanujan Cross-Conductor Geometry property gives the exact centered cross-conductor Ramanujan trace.
   Distinct conductor blocks are not orthogonal: already at `P=30`, `r=7`,
   the coprime pair `q=2`, `q'=3` has squared cross norm `168/25`. Another pair
   has squared normalized Hilbert--Schmidt coherence `2793/3203`.
-- Properties #56--#58 solve #13's exact endpoint-capacity geometry and prove
+- the properties from Joint Capacity Envelope through Sampling-Density Recombination solve #13's exact endpoint-capacity geometry and prove
   that #13 plus #23 is precisely the sum/difference decomposition of the two
   harmful start-residue deviations.
-- Properties #59--#62 show that the old pointwise survival margin is
+- the properties from Pointwise Margin Insufficiency through Sixfold Population-Ratio Threshold show that the old pointwise survival margin is
   insufficient, solve the sharp harmful-energy capacity envelope, and reduce
   its one-layer criterion exactly to
 
@@ -490,11 +490,11 @@ the proposed proof.
   G>\rho_*(r)B.
   ```
 
-- Properties #63--#64 place this threshold strictly below #14's count floor,
+- the properties from Capacity Threshold Hierarchy through Late-Layer Sixfold Floor place this threshold strictly below #14's count floor,
   classify when #19's `2B+1` floor is enough, and prove that it is enough
   throughout `Q^2-Q-3<3r(r-1)`, in particular
   `r>=Q/sqrt(3)+1`.
-- Property #65 proves that these one-layer comparisons do not imply #21's
+- the One-Layer Ellipse Non-Composition property proves that these one-layer comparisons do not imply #21's
   global weighted scalar budget. At half of each local allowance on the ideal
   multiplicative scale, the global overrun factor is at least `m^2/2`.
 
@@ -640,7 +640,7 @@ characterization boundary.
   cancellation. Any remaining #22 theorem must use the actual signed CRT
   coefficient vectors or combine layers before absolute values.
 - The scalar decomposition no longer needs #13 and #23 to be proved
-  separately: property #58 exposes restricted candidate #12 as the direct
+  separately: the Sampling-Density Recombination property exposes restricted candidate #12 as the direct
   two-harmful-class target.
 - Sixfold capacity gives an exact conditional scalar criterion rather than a
   sampling theorem. Its population threshold lies strictly between #19 and
@@ -660,7 +660,7 @@ characterization boundary.
   W_-=\sum_iw_{i-1}.
   ```
 
-  Property #25 and weighted Cauchy prove
+  The Weighted Deletion Conservation property and weighted Cauchy prove
 
   ```math
   E_b
@@ -674,7 +674,7 @@ characterization boundary.
   strict candidate budget is impossible by nonnegativity. The theorem and its
   exact normalized-population quadratic-variation form are now recorded in
   `properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md`
-  and registered as property #66.
+  and registered as the Terminal Harmful-Excess Energy property.
 - Candidate #12 now preserves its valid one-layer survival and capacity
   results while classifying its direct weighted harmful norm as a terminal
   conditioned-chain theorem.
@@ -686,7 +686,7 @@ characterization boundary.
   separated scalar feasibility condition is proved. Its exact reductions and
   standalone open distribution status remain valid.
 - The candidate catalog now replaces the stale parallel-component dependency
-  chain with the property #66 classification and reranks #12, #21, #22, and
+  chain with the the Terminal Harmful-Excess Energy property classification and reranks #12, #21, #22, and
   #23 accordingly.
 - Candidate #13 now preserves its endpoint-sampling role while recording that
   the completed #13+#23 or direct #12 aggregate scalar interface is terminal;
@@ -705,26 +705,26 @@ characterization boundary.
 - `prove-endpoint-observable-sampling-2026-07-28.md` now classifies its
   weighted realized-capacity target as terminal and removes #22 as a later
   survival allowance.
-- The completed one-layer/global audit now records property #66's later
+- The completed one-layer/global audit now records the Terminal Harmful-Excess Energy property's later
   supersession and has moved to `tickets/done/`.
-- A second stale-boundary scan found properties #61, #63, #64, and #65 still
+- A second stale-boundary scan found the Sixfold-Capacity Energy Envelope property, #63, #64, and #65 still
   describe the direct harmful aggregate as a separate component without the
   terminal classification. Their local theorems remain valid.
-- Property #65 now preserves its non-composition result while classifying
+- the One-Layer Ellipse Non-Composition property now preserves its non-composition result while classifying
   `sum_iw_iC_i<T^2/(2W)` as a terminal capacity theorem; #22 is not a later
   survival requirement.
-- Property #61 now labels its sharp envelope as one-layer and the direct
+- the Sixfold-Capacity Energy Envelope property now labels its sharp envelope as one-layer and the direct
   cumulative realized-envelope estimate as terminal.
-- Property #63 now preserves its strict one-layer threshold hierarchy while
+- the Capacity Threshold Hierarchy property now preserves its strict one-layer threshold hierarchy while
   classifying the direct aggregate harmful theorem as terminal.
-- Property #64 now preserves its late-layer one-layer implication while
+- the Late-Layer Sixfold Floor property now preserves its late-layer one-layer implication while
   classifying the remaining global harmful theorem as terminal.
-- All four property boundaries identified by the property #66 follow-up scan
+- All four property boundaries identified by the the Terminal Harmful-Excess Energy property follow-up scan
   are corrected.
 - Final stale-role, property-link, vocabulary-scope, ticket-lifecycle, and
   repository-wide Markdown checks pass. The unrelated staged empirical CSV
   remains untouched.
-- Property #66 exposes a strictly leaner terminal candidate than #21:
+- the Terminal Harmful-Excess Energy property exposes a strictly leaner terminal candidate than #21:
   `E_b<T^2/(2W_-)`. It ignores harmless dispersion and imbalance, and
   `W_-<W` gives it a larger allowance than #21's full-energy budget.
 - Candidate #24,
@@ -733,7 +733,7 @@ characterization boundary.
   its infinitely-many-head arithmetic antecedent is open.
 - The candidate catalog registers #24 as the top quadratic survival target
   and reclassifies #21 as a stronger secondary composition framework.
-- Property #66 now names candidate #24 as its sharp conservation-only
+- the Terminal Harmful-Excess Energy property now names candidate #24 as its sharp conservation-only
   quadratic consumer and links directly to it.
 - Candidate #21 now identifies #24 as the minimal quadratic target and
   retains full collision energy only as a possible source of additional
@@ -762,7 +762,7 @@ characterization boundary.
   `properties/sieve-sequence/integral-population-profiles-attain-harmful-energy-threshold.md`.
   Its boundary explicitly excludes CRT realizability and therefore does not
   refute candidate #24.
-- The construction is registered as property #67. Candidate #24 and the
+- The construction is registered as the Integral Profile Attainment property. Candidate #24 and the
   candidate catalog now state that population integrality and monotonicity
   are exhausted; the remaining route must use first-hit CRT deletion
   geometry.
@@ -781,8 +781,8 @@ characterization boundary.
 
   The remainder is the unique weighted distance from the endpoint-constrained
   minimizer. Under extinction it measures exactly how far an actual CRT
-  deletion profile is from property #67's abstract equality schedule.
-- The identity is registered as property #68. Candidate #24 now keeps its
+  deletion profile is from the Integral Profile Attainment property's abstract equality schedule.
+- The identity is registered as the Harmful-Excess Stability Decomposition property. Candidate #24 now keeps its
   original upper-bound obligation separate from the optional stability-gap
   route: a positive CRT gap enlarges the survival-certifying threshold, but
   does not itself upper-bound `E_b`.
@@ -793,7 +793,7 @@ characterization boundary.
   back to the original energy. The unrelated staged empirical CSV remains
   untouched.
 - The capacity-compatibility audit gives an exact new interface. With
-  `p_i=2/r_i`, property #67's equality profile has
+  `p_i=2/r_i`, the Integral Profile Attainment property's equality profile has
 
   ```math
   K_i^\star
@@ -807,7 +807,7 @@ characterization boundary.
   Therefore a proved total harmful cap `K_i<=C_i` admits the equality profile
   exactly when `K_i^star<=C_i` at every layer. If one cap is smaller, it
   excludes zero stability remainder but does not exclude extinction. Combined
-  with property #68, the cap supplies a quantitative lower bound on the
+  with the Harmful-Excess Stability Decomposition property, the cap supplies a quantitative lower bound on the
   stability remainder; it still supplies no upper bound for actual `E_b`.
 - The full perturbation calculation is now proved in
   `properties/sieve-sequence/harmful-capacity-separates-energy-minimizer.md`.
@@ -836,7 +836,7 @@ characterization boundary.
 
   This is the first explicit arithmetic enlargement of candidate #24's
   extinction threshold, but it remains a lower-bound interface.
-- The theorem is registered as property #69. Candidate #24 now contains the
+- The theorem is registered as the Capacity Minimizer Separation property. Candidate #24 now contains the
   proved relaxed certificate
 
   ```math
@@ -849,7 +849,7 @@ characterization boundary.
 
   while preserving the missing coefficient-sensitive upper bound as the
   primary obligation.
-- Property #61's exact capacity polytope already gives the sharp missing
+- the Sixfold-Capacity Energy Envelope property's exact capacity polytope already gives the sharp missing
   one-layer projection for candidate #24. With population `N_i`, common
   one-class capacity `B_i`, and harmful total `K_i`,
 
@@ -876,7 +876,7 @@ characterization boundary.
   ```
 
   This exact b-only envelope is not yet stated as a property. It is sharper
-  for #24 than property #61's full harmful-plus-imbalance maximum.
+  for #24 than the Sixfold-Capacity Energy Envelope property's full harmful-plus-imbalance maximum.
 - The projection and aggregate composition are now proved in
   `properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md`.
   Defining the sharp endpoint maximum by `M_i`, one has
@@ -890,7 +890,7 @@ characterization boundary.
   w_i\frac{r_i}{2(r_i-2)}M_i.
   ```
 
-  Together with property #69,
+  Together with the Capacity Minimizer Separation property,
 
   ```math
   \mathcal U_{\mathrm{cap}}
@@ -902,7 +902,7 @@ characterization boundary.
 
   is a proved sufficient condition for final survival. The open obligation is
   the displayed aggregate inequality for actual conditioned populations.
-- The theorem is registered as property #70. Candidate #24 now states the
+- The theorem is registered as the Harmful-Capacity Excess Envelope property. Candidate #24 now states the
   complete capacity-only interface:
 
   ```math
@@ -922,7 +922,7 @@ characterization boundary.
   Thus the only missing capacity-only step is the explicit aggregate
   comparison between these two proved bounds.
 - The strategy assessment shows that the separate-layer capacity route does
-  not weaken candidate #19's abundance obligation. Property #62's decisive
+  not weaken candidate #19's abundance obligation. the Sixfold Population-Ratio Threshold property's decisive
   extremal branch has `K_i=2B_i` and zero left/right imbalance, so property
   #70's b-only envelope fits the one-layer scalar allowance exactly when
 
@@ -941,19 +941,19 @@ characterization boundary.
 - For a one-layer chain, `K_0^star=N_0`. If `N_0<=2B_0`, then
   `Gamma_cap=0` and the sharp capacity envelope cannot certify survival. If
   `N_0>2B_0`, the ordinary capacity theorem already certifies survival.
-  Properties #69--#70 therefore create no new one-layer regime; their only
+  The properties from Capacity Minimizer Separation through Harmful-Capacity Excess Envelope therefore create no new one-layer regime; their only
   possible gain is genuinely cross-layer.
-- Property #70, candidate #24, and both permanent catalogs now record this
+- the Harmful-Capacity Excess Envelope property, candidate #24, and both permanent catalogs now record this
   classification. The complete capacity-only loop is synchronized:
 
   ```text
   proved capacities
-      -> property #69 extinction stability gap
-      -> property #70 sharp separate-layer upper envelope
+      -> the Capacity Minimizer Separation property extinction stability gap
+      -> the Harmful-Capacity Excess Envelope property sharp separate-layer upper envelope
       -> explicit terminal aggregate comparison
       -> cross-layer CRT restriction still missing
   ```
-- Candidate #19 now links properties #69--#70 and states the same boundary:
+- Candidate #19 now links the properties from Capacity Minimizer Separation through Harmful-Capacity Excess Envelope and states the same boundary:
   its proved capacity can feed a cross-layer #24 argument, but the exact local
   b-only threshold remains `G/B>rho_*(r)>2`.
 - The paired harmful-excess CRT observables have exact complete-period
@@ -990,13 +990,13 @@ characterization boundary.
   through black-box Bessel.
 - This result is now promoted as
   `properties/sieve-sequence/paired-harmful-excess-crt-orthogonality-has-primorial-scale.md`.
-  It is registered as property #71, uses no empirical evidence, and makes no
+  It is registered as the Paired CRT Primorial Scale property, uses no empirical evidence, and makes no
   Stainless claim.
-- Candidate #24 now includes property #71's exact orthogonality and norm,
+- Candidate #24 now includes the Paired CRT Primorial Scale property's exact orthogonality and norm,
   rejects complete-period black-box Bessel, and states the remaining target
   as a localized interval-correlation or coefficient-sensitive inequality.
 - Candidate #24's catalog entry and detailed algebraic next step are
-  synchronized with property #71. The repository now consistently rejects
+  synchronized with the Paired CRT Primorial Scale property. The repository now consistently rejects
   complete-period Bessel as the missing estimate.
 - A sharper algebraic composition is available before introducing an unproved
   localized-correlation hypothesis. For a cut `k`, the prefix observables
@@ -1018,7 +1018,7 @@ characterization boundary.
   \end{cases}
   ```
 
-  This coarse prefix estimate can be combined sharply with property #70,
+  This coarse prefix estimate can be combined sharply with the Harmful-Capacity Excess Envelope property,
   rather than merely chosen instead of it. Put
 
   ```math
@@ -1069,7 +1069,7 @@ characterization boundary.
   \sum_{i<k}\beta_{i,k}t_{i,k}^{\star}.
   ```
 
-  Property #70 bounds the suffix. Thus the proposed sharp hybrid is
+  The Harmful-Capacity Excess Envelope property bounds the suffix. Thus the proposed sharp hybrid is
 
   ```math
   \mathcal U_k^{\mathrm{hyb}}
@@ -1081,7 +1081,7 @@ characterization boundary.
   ```
 
   The cut `k=0` is the all-capacity envelope, so minimizing over `k` can never
-  weaken property #70. Without the box constraints, `k=m` reduces to property
+  weaken the Harmful-Capacity Excess Envelope property. Without the box constraints, `k=m` reduces to property
   #71's complete-period Bessel bound when `L<R`.
 - The corrected sharp theorem is now promoted as
   `properties/sieve-sequence/native-period-bessel-capacity-hybrid-envelope.md`.
@@ -1104,18 +1104,18 @@ characterization boundary.
   s_k.
   ```
 
-  The theorem also composes with property #69's extinction gap. It does not
+  The theorem also composes with the Capacity Minimizer Separation property's extinction gap. It does not
   prove that the resulting terminal inequality holds universally.
-- The theorem is registered as property #72 in the permanent property
+- The theorem is registered as the Native-Period Hybrid Envelope property in the permanent property
   catalog.
-- Candidate #24 now states property #72's sharp native-period/capacity
+- Candidate #24 now states the Native-Period Hybrid Envelope property's sharp native-period/capacity
   envelope, exact strict-gain criterion, and relaxed survival certificate.
   Its limitation correctly remains the unproved aggregate threshold comparison
   for an unbounded family of actual chains.
 - Candidate #24's catalog entry and detailed algebraic next step are now
   synchronized. Both name `U_hyb`, not the superseded all-capacity comparison,
   as the strongest proved explicit envelope.
-- Property #72's exact greedy program has a useful scalar consequence. Define
+- the Native-Period Hybrid Envelope property's exact greedy program has a useful scalar consequence. Define
 
   ```math
   e_k
@@ -1162,12 +1162,12 @@ characterization boundary.
   so `e_k>0` is exactly strict hybrid gain, and its lower coefficient gives
   the advertised simplified survival criterion. The result adds no new
   cancellation source and leaves the overflow-to-threshold comparison open.
-- The scalar theorem is registered as property #73 in the permanent property
+- The scalar theorem is registered as the Native-Period Capacity Overflow property in the permanent property
   catalog.
-- Candidate #24 now includes property #73's exact overflow definition,
+- Candidate #24 now includes the Native-Period Capacity Overflow property's exact overflow definition,
   two-sided hybrid-gain bound, simplified survival certificate, and explicit
   open lower-bound obligation.
-- Final consistency audit passes: properties #71--#73 exist and are numbered,
+- Final consistency audit passes: the properties from Paired CRT Primorial Scale through Native-Period Capacity Overflow exist and are numbered,
   candidate #24 and both permanent catalogs agree on `U_hyb` and `e_k`,
   `git diff --check` is clean, and the separately staged giant CSV remains
   untouched.
@@ -1213,7 +1213,7 @@ characterization boundary.
   \min(N,2B,rB-N)^2.
   ```
 
-  Property #73 therefore receives the explicit overflow floor
+  The Native-Period Capacity Overflow property therefore receives the explicit overflow floor
 
   ```math
   e_k
@@ -1237,23 +1237,23 @@ characterization boundary.
 - The result is promoted as
   `properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md`.
   It includes the exact midpoint identity, the three-case width proof, the
-  zero characterization, and the induced property #73 survival certificate.
-- The theorem is registered as property #74 in the permanent property
+  zero characterization, and the induced the Native-Period Capacity Overflow property survival certificate.
+- The theorem is registered as the Envelope Width Floor property in the permanent property
   catalog.
-- Candidate #24 now includes property #74's population-slack floor, exact
+- Candidate #24 now includes the Envelope Width Floor property's population-slack floor, exact
   zero characterization, induced overflow certificate, and the requirement
   for an unbounded-family slack theorem or localized residue input.
 - The conditional #17-to-#24 population-slack bridge is proved. For
   `Q>=17`, `7<=r<Q`, and `B=floor((Q^2-Q-3)/(6r))+1`, candidate #17's
   local-count threshold gives `N>=2B`. Independently, the three possible
-  modulo-30 start classes give `N<=(r-2)B`. Hence property #74's slack is
+  modulo-30 start classes give `N<=(r-2)B`. Hence the Envelope Width Floor property's slack is
   exactly `sigma=2B`, and its width floor is the maximal value `X>=B^2`.
   This does not prove candidate #17; it identifies exactly what #17 would
   contribute to candidate #24.
 - The filter-`7` specialization supplies unconditional positive native
   overflow. With `r_0=5`, `r_1=7`, cut `k=2`, `M_2=210`, and pre-filter-`7`
   pair density `3/30`, the exact norm is `q_(1,2)=30/7`. The proved seven-layer
-  floor gives `X_1>=B_7^2`, so `e_2>=1` for every integer `Q>=36`. Property #73
+  floor gives `X_1>=B_7^2`, so `e_2>=1` for every integer `Q>=36`. The Native-Period Capacity Overflow property
   therefore gives a strict capacity-envelope reduction
   `Delta_2>=42d_m e_2`. This is an unconditional envelope improvement, not a
   survival theorem.
@@ -1292,7 +1292,7 @@ characterization boundary.
   `M_kP_k>=3kD^2r_k^2/(25H(r_k-2))` for `e_k=0`. PNT makes the left side
   exponentially large in the required moving-cut prime while the right side
   is polynomial, so every sufficiently large potentially successful moving
-  cut has `e_k=0` and `U_k^hyb=U_cap`. With property #77's
+  cut has `e_k=0` and `U_k^hyb=U_cap`. With the Filter-Seven Cut Failure property's
   `U_cap>=U_2^hyb>T^2/(2W_-)`, no native cut clears the original threshold
   under full candidate #17.
 - The `Gamma_cap` scale audit is complete. For every `i>=1`, the minimizing
@@ -1301,7 +1301,7 @@ characterization boundary.
   `S>=15QN_0/(2D-18)` removes every post-5 capacity violation. The only
   possible contribution then obeys
   `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`. In contrast, candidate #17 at
-  filter `7` and property #75 give
+  filter `7` and the Seven-Layer Density Floor property give
   `U_cap>=P_mD^2/1080`, while the original threshold is at most
   `P_m(D/6+1)^2/(2m)`. Prime Mertens plus PNT give
   `S` of order `Q log Q`, so the finite condition holds and both allowance
@@ -1316,8 +1316,8 @@ characterization boundary.
   `(49P_m/30)(18/7)^2=54P_m/5`, replacing the separate capacity charge
   `>=P_mD^2/1080`. This is a genuine `D^2`-scale saving, but it controls only
   one fixed early layer.
-- The direct generalization of property #82 is not a new algebraic route.
-  Property #58 gives `b_i=delta_(0,i)+delta_(-2,i)`, so the general native
+- The direct generalization of the Filter-Seven Excess Bound property is not a new algebraic route.
+  The Sampling-Density Recombination property gives `b_i=delta_(0,i)+delta_(-2,i)`, so the general native
   prefix discrepancy is exactly the two-residue accepted-boundary arithmetic
   already reduced in candidate #23. Complete-period cancellation removes the
   bulk, but independent inclusion--exclusion summands give an exponential
@@ -1398,20 +1398,20 @@ understanding the obstruction, not a proof that escapes it.
   `E_30030=1403/1001>0`. Retry only with an averaged cancellation theorem that
   does not assume a fixed sign.
 - **#23 activation, CRT-lift, and summatory rewrites as upper bounds:**
-  properties #48--#50 prove exact compressed forms, but all represent the same
+  The properties from Strike Divisor-Activation Kernel through Strike Summatory Remainder prove exact compressed forms, but all represent the same
   dilation discrepancy and supply no inequality by themselves. Retry only
   with new spectral or analytic input.
-- **#23 complete-period layer orthogonality plus Bessel:** property #51 is
+- **#23 complete-period layer orthogonality plus Bessel:** the Cross-Layer CRT Orthogonality property is
   exact, but its norm retains the full final primorial. Retry only after
   localization or with an additional averaging variable.
-- **#23 localized Gram trace/self-bound:** property #52 removes the primorial,
+- **#23 localized Gram trace/self-bound:** the Localized-Layer Gram Matrix property removes the primorial,
   but the trace is exactly the sum of per-layer Cauchy bounds. Retry only with
   a sharper estimate using the signed nested off-diagonal matrix.
 - **#23 first-deletion spectral factorization without new arithmetic:**
-  properties #53--#55 factor the matrix, identify its exact deletion-class
+  The properties from First-Deletion Variance Identity through First-Deletion Reindexing factor the matrix, identify its exact deletion-class
   variance, and reindex the whole variance back to `sum_i c_iD_i^2`. Retry
   only with arithmetic constraints on deletion counts or external averaging.
-- **#21 local ellipse composition:** property #65 proves that even strict
+- **#21 local ellipse composition:** the One-Layer Ellipse Non-Composition property proves that even strict
   success at every one-layer scalar threshold can exceed the global weighted
   allowance by a factor at least `m^2/2`. Retry only with a direct estimate of
   `sum_i w_i Q_i` or `sum_i w_i C_i`, using actual cross-layer arithmetic.
@@ -1470,14 +1470,14 @@ understanding the obstruction, not a proof that escapes it.
   does not control the boundary-error quadratic variation. Choosing
   the optimal aggregate composition still requires independent bounds for
   both the #13 and #23 budgets.
-- Property #38 is a lower-energy decomposition, not the upper estimate
+- the Strike-Error Quadratic Variation property is a lower-energy decomposition, not the upper estimate
   candidate #23 requires. Without special information about the endpoints
   `[Q,Q^2)`, further algebraic rearrangement of the same recurrence is a loop.
-- Property #39 supplies exact endpoint information but no usable universal
+- the Prime-Square Boundary Formula property supplies exact endpoint information but no usable universal
   bound. Proving the required mean-square cancellation for its Möbius-residue
   sum may be as difficult as the original conditioned distribution problem;
   its strength has not yet been classified against known parity barriers.
-- The extra negative correction in property #40 is genuine, but it does not
+- The extra negative correction in the Harmless-Energy Pair Correlation property is genuine, but it does not
   control the positive off-diagonal pair count by itself. A worst-difference
   estimate multiplied by `N_0^2` remains forbidden by the earlier #21 audit.
 - **#22 extra centering plus worst-difference:** the new negative gain is at
@@ -1503,7 +1503,7 @@ understanding the obstruction, not a proof that escapes it.
   `P=30`, `r=7`, `q=2`, `q'=3`, where the centered squared cross norm is
   `168/25`. Retry only with coefficient-weighted cancellation; conductor
   labels alone are insufficient.
-- **Transform-only first-hit rewrite for #24:** properties #53--#55 and the
+- **Transform-only first-hit rewrite for #24:** the properties from First-Deletion Variance Identity through First-Deletion Reindexing and the
   weighted pair-kernel identities already show that Gram factorization,
   coordinate reindexing, or divisor-incidence swapping without a new mass
   constraint closes back to the original quadratic energy. Do not add another
@@ -1529,21 +1529,21 @@ understanding the obstruction, not a proof that escapes it.
   The resulting bound is `LRd_m/(r_0-2)`, far above the square-window scale.
   Do not retry complete-period orthogonality without a genuinely localized
   coefficient or interval-correlation estimate.
-- **Candidate #24 property #71 synchronization, attempt 1:** the patch expected
-  a wrapped `Properties #69--#70 are` line that is not present as a separate
+- **Candidate #24 the Paired CRT Primorial Scale property synchronization, attempt 1:** the patch expected
+  a wrapped `the properties from Capacity Minimizer Separation through Harmful-Capacity Excess Envelope are` line that is not present as a separate
   physical line. No candidate file changed. The exact numbered source range is
   now captured; retry only against those confirmed anchors.
 - **Native-prefix hybrid draft, endpoint normalization:** the first ticket
   formula assigned a Bessel prefix term at `k=0` even though that prefix is
   empty. It was corrected immediately to `B_0=0`. Preserve the explicit
   endpoint convention in the promoted theorem.
-- **Candidate catalog property #72 synchronization:** validation found one
+- **Candidate catalog the Native-Period Hybrid Envelope property synchronization:** validation found one
   stale sentence still calling the `U_cap` comparison “the remaining target.”
   The first cleanup patch then missed because its context wrapped
   `enlargement` differently from the source. Exact numbered inspection enabled
   the final permitted correction; the catalog now consistently uses `U_hyb`.
 - **Positive capacity-overflow floor from `r_i,B_i` alone:** impossible.
-  Property #70's sharp coordinate envelope vanishes on the feasible profiles
+  the Harmful-Capacity Excess Envelope property's sharp coordinate envelope vanishes on the feasible profiles
   `N_i=0` and `N_i=r_iB_i`. Retry only with a quantitative restriction keeping
   some actual population away from both empty and full capacity, or with
   localized residue information beyond the capacity box.
@@ -1572,18 +1572,18 @@ understanding the obstruction, not a proof that escapes it.
   asymptotically blocked for the original threshold under full candidate #17.
   The finite retry condition is failure of
   `M_kP_k>=3kD^2r_k^2/(25H(r_k-2))`; PNT shows this failure cannot persist at
-  the moving-prime scale forced by property #78. Retry only with a smaller
+  the moving-prime scale forced by the Fixed Native Cut Failure property. Retry only with a smaller
   localized upper bound replacing `X_i`, the capacity-relaxed `Gamma_cap`
   threshold, or a different cross-layer inequality.
 - **Use `Gamma_cap` to rescue the separate/native capacity envelope:**
-  asymptotically blocked under full candidate #17. Property #81 proves that
+  asymptotically blocked under full candidate #17. The Capacity Stability Gap property proves that
   all post-`5` minimizer capacities eventually fit and
   `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`, while filter `7` forces
   `U_cap>=P_mD^2/1080`. PNT/Mertens make both the original threshold and the
   stability gap negligible relative to this envelope floor. Retry only with
   a smaller localized upper bound for actual `E_b` or a genuinely different
   joint cross-layer inequality.
-- **Generalize property #82 by enumerating each larger native period:** does
+- **Generalize the Filter-Seven Excess Bound property by enumerating each larger native period:** does
   not scale. The coefficient is exactly the two-residue boundary discrepancy
   already isolated by candidate #23. Generic inclusion--exclusion is
   exponential in the installed-prime count, while total-variation control
@@ -1593,7 +1593,7 @@ understanding the obstruction, not a proof that escapes it.
 
 ## Next Action
 
-Property #82 is registered and synchronized. Stop at the strategy boundary:
+The Filter-Seven Excess Bound property is registered and synchronized. Stop at the strategy boundary:
 its direct native-period enumeration generalization converges to candidate
 #23's already-classified boundary discrepancy. The next useful theorem must
 be genuinely new arithmetic information: either a signed mean-square bound
@@ -1601,7 +1601,7 @@ for the two harmful boundary sums after chain weights are inserted, or a
 recursive prefix-discrepancy bound whose growth is sub-native. Do not create a
 duplicate candidate for the same boundary identity.
 
-Treat property #68's positive extinction gap as secondary unless the same
+Treat the Harmful-Excess Stability Decomposition property's positive extinction gap as secondary unless the same
 arithmetic input also supplies, or materially relaxes, a usable upper bound
 for actual `E_b`.
 
@@ -1618,27 +1618,27 @@ collect additional empirical evidence.
 | 2026-07-27 | Candidate #23 now isolates accepted-anchor strike density from #10. The exact bridge gives `|b_i|<=H_i eta_i+2N_i xi_i`, and the resulting scalar terms can be subtracted explicitly from #21's allowance for weighted harmless energy. | Add #23 to the catalog, then audit whether its weighted error can be bounded without late-population normalization. |
 | 2026-07-27 | Accepted strikes equal a coprime count in a scaled interval. Centered inclusion--exclusion cancels the bulk density exactly and leaves two Möbius boundary sums; the unsigned bound is exponential and unusable. | Promoted the exact identity, recorded unsigned inclusion--exclusion as failed, and selected weighted boundary cancellation plus the #13 endpoint correction as the next algebraic test. |
 | 2026-07-27 | The centered strike discrepancy is exactly `(1-1/r_i)E_i-E_{i+1}` and therefore telescopes linearly under one-anchor weights. The #21 obligation is quadratic and uses two-endpoint weights, so the linear conservation law is not sufficient. | Narrowed #23 to weighted quadratic variation of adjacent boundary errors, with `(N_i/A_i)^2` and endpoint trimming as the next coefficients to audit. |
-| 2026-07-27 | Post-3 endpoint isolation proves `2N_i<=A_i`, hence `|2N_i epsilon_i|<=|H_i-A_i/r_i|`. Young's inequality then separates the #13 endpoint bias from #23's boundary discrepancy. | Promoted property #36, removed `N_i/A_i` from #23's open target, and selected the denominator-free scalar allowance as the next #22 refinement. |
-| 2026-07-27 | Weighted Minkowski combines #13 and #23 sharply at the aggregate level: the scalar cost is `(sqrt(E_beta)+sqrt(E_D))^2+E_Delta`. | Promoted property #37, synchronized #22/#23, and isolated `E_D` as a weighted quadratic variation of adjacent accepted-anchor boundary errors. |
-| 2026-07-27 | The exact square expansion of #23 is a positive quadratic energy: every interior mass coefficient is positive, so the linear strike telescope cannot upper-bound the squared budget. | Promoted property #38, recorded summation by parts as exhausted without new boundary arithmetic, and selected square-window endpoint structure as the go/no-go test. |
-| 2026-07-27 | Prime-square endpoints give the exact residue sum `sum mu(d)([Q]_d-[Q^2]_d)/d`, but an exact `Q=19` chain changes sign after adjoining filter `13`. Universal sign and sign preservation are refuted. | Promoted property #39, cataloged the failed sign laws under `candidates/refuted/`, classified further #23 recurrence algebra as exhausted without new mean-square input, and recommended shifting primary work to #22. |
-| 2026-07-27 | Candidate #22 is an ordered harmless-survivor pair correlation on `S_0`. Relative to the old post-filter variance, it has the exact negative correction `2M_i^2/(r_i(r_i-2))`, and its kernel stops before the deleting layer. | Promoted property #40 and reduced the next theorem to the weakest weighted upper bound for the off-diagonal harmless collision count `sum_i w_i R_i`. |
+| 2026-07-27 | Post-3 endpoint isolation proves `2N_i<=A_i`, hence `|2N_i epsilon_i|<=|H_i-A_i/r_i|`. Young's inequality then separates the #13 endpoint bias from #23's boundary discrepancy. | Promoted the Endpoint Discrepancy Contraction property, removed `N_i/A_i` from #23's open target, and selected the denominator-free scalar allowance as the next #22 refinement. |
+| 2026-07-27 | Weighted Minkowski combines #13 and #23 sharply at the aggregate level: the scalar cost is `(sqrt(E_beta)+sqrt(E_D))^2+E_Delta`. | Promoted the Weighted Error Composition property, synchronized #22/#23, and isolated `E_D` as a weighted quadratic variation of adjacent accepted-anchor boundary errors. |
+| 2026-07-27 | The exact square expansion of #23 is a positive quadratic energy: every interior mass coefficient is positive, so the linear strike telescope cannot upper-bound the squared budget. | Promoted the Strike-Error Quadratic Variation property, recorded summation by parts as exhausted without new boundary arithmetic, and selected square-window endpoint structure as the go/no-go test. |
+| 2026-07-27 | Prime-square endpoints give the exact residue sum `sum mu(d)([Q]_d-[Q^2]_d)/d`, but an exact `Q=19` chain changes sign after adjoining filter `13`. Universal sign and sign preservation are refuted. | Promoted the Prime-Square Boundary Formula property, cataloged the failed sign laws under `candidates/refuted/`, classified further #23 recurrence algebra as exhausted without new mean-square input, and recommended shifting primary work to #22. |
+| 2026-07-27 | Candidate #22 is an ordered harmless-survivor pair correlation on `S_0`. Relative to the old post-filter variance, it has the exact negative correction `2M_i^2/(r_i(r_i-2))`, and its kernel stops before the deleting layer. | Promoted the Harmless-Energy Pair Correlation property and reduced the next theorem to the weakest weighted upper bound for the off-diagonal harmless collision count `sum_i w_i R_i`. |
 | 2026-07-27 | The extra harmless centering is at most `8/15` per pair, so it cannot offset the logarithmic coefficient in the failed worst-difference bound. | Recorded the combined route as failed and selected the exact post-deletion autocorrelation sum for the next aggregate-pair analysis. |
-| 2026-07-27 | Harmless classes are exactly uniform over a complete CRT period, so `U=0`; complete blocks cancel and all #22 energy is remainder-prefix energy. The off-diagonal term is the conditioned version of candidate #20's four-point correlation. | Promoted property #41, removed stale #23 instructions from Next Action, and selected a short-prefix spectral audit for #22. |
-| 2026-07-27 | Candidate #22 is the localized nontrivial Fourier mass above the sharp two-empty-class floor. Generic spectral localization still retains the complete-period population, so harmless recentering does not repair its scale. | Promoted property #42, recorded generic localized Fourier composition as failed, and selected a bounded exact falsifier for the stronger pointwise benchmark `U_i<=M_i`. |
+| 2026-07-27 | Harmless classes are exactly uniform over a complete CRT period, so `U=0`; complete blocks cancel and all #22 energy is remainder-prefix energy. The off-diagonal term is the conditioned version of candidate #20's four-point correlation. | Promoted the Harmless-Class Uniformity property, removed stale #23 instructions from Next Action, and selected a short-prefix spectral audit for #22. |
+| 2026-07-27 | Candidate #22 is the localized nontrivial Fourier mass above the sharp two-empty-class floor. Generic spectral localization still retains the complete-period population, so harmless recentering does not repair its scale. | Promoted the Harmless Spectral Excess property, recorded generic localized Fourier composition as failed, and selected a bounded exact falsifier for the stronger pointwise benchmark `U_i<=M_i`. |
 | 2026-07-27 | The bounded exact falsifier found no violation of `U_i<=M_i` in 1,035 layers for prime heads `5<=Q<224`; the independent lineage tests pass. Finite agreement is inconclusive and supplies no proof evidence. | Stopped empirical work at the predetermined bound and selected the exact CRT translated-fiber normal form as the next algebraic audit. |
-| 2026-07-27 | Every harmless-class count is an interval sum of one common prior-filter CRT word at phase `ceil((Q-a)/r)+sa`; the phases are almost equally spaced, but uncentered Parseval and generic large-sieve sampling remain period-normalized. | Promoted property #43, synchronized candidate #22, recorded the uncentered route as failed, and selected the centered inverse-phase Gram matrix as the next exact lemma. |
-| 2026-07-27 | Harmless-class centering has exact single-mode cost `h-|K_m|^2/h`, but the full energy contains cross-frequency Gram entries `K_(m-n)-K_m K_(-n)/h`; it is not a diagonal Fourier sum. | Promoted property #44, synchronized candidate #22, and selected an exact full-operator audit before attempting coefficient estimates. |
-| 2026-07-27 | The inverse phases have orthogonal full-Fourier rows, and harmless-class centering leaves sharp operator norm `sqrt(P)`; black-box composition returns exactly to full-shift Parseval scale. | Promoted property #45, synchronized candidate #22, recorded centered operator-norm composition as failed, and selected an audit of arithmetic alignment by exact CRT conductor. |
-| 2026-07-27 | Restricting to exact conductor `q` improves the squared phase-block norm to `q mu_q<r+2q`, but triangle recombination introduces an oversized square-root divisor product. | Promoted property #46, synchronized candidate #22, recorded absolute block recombination as failed, and selected the exact centered Ramanujan cross-block geometry as the next test. |
-| 2026-07-27 | Exact Ramanujan geometry shows distinct and even coprime conductor blocks are not centered-orthogonal; an exact pair has squared normalized coherence `2793/3203`. | Promoted property #47, cataloged the refuted orthogonality law, classified further unweighted finite-Fourier rearrangement as exhausted, and selected dedicated #23 mean-square work. |
-| 2026-07-28 | Dedicated #23 work promoted properties #48--#52: activation shells, CRT lift indices, summatory dilation remainders, complete-period layer orthogonality, and the exact localized Gram matrix. Complete-period Bessel retains the primorial, while local trace composition is only per-layer Cauchy. | Synchronized the umbrella ticket with the dedicated #23 ticket and selected the first-deletion rank-one factorization as the live algebraic micro-goal. |
-| 2026-07-28 | Properties #53--#55 factor the localized strike Gram matrix by deletion time, identify its exact negative variance, and reindex that variance completely back to the original strike energy. First-deletion geometry supplies no independent upper bound without new arithmetic mass constraints. | Closed candidate #23's generic algebraic audit and handed the next top-candidate work to #13's endpoint-sampling component. |
-| 2026-07-29 | Properties #56--#64 reduce #13+#23 to the direct two-harmful-residue norm, derive its sharp sixfold-capacity ratio, place that ratio strictly between #19 and #14, and show #19's floor already suffices in the explicit late-layer range. | Synchronized the umbrella assessment and selected the weighted early/middle harmful-capacity contribution as the remaining scalar audit. |
-| 2026-07-29 | Property #65 proves that one-layer harmful ellipses do not compose into #21's global allowance; even half-local energies overrun it by at least `m^2/2` on the ideal multiplicative scale. | Corrected candidate #21 and both active tickets, recorded the local-to-global route as failed, and stopped at the required strategy checkpoint. |
-| 2026-07-29 | Property #25 plus weighted Cauchy appears to give `E_b> T^2/(2W)` whenever `N_m=0`, because the natural dual weight sum is `W_-<W`. | Reopened the checkpoint for one exact classification theorem before spending effort on another scalar upper bound. |
+| 2026-07-27 | Every harmless-class count is an interval sum of one common prior-filter CRT word at phase `ceil((Q-a)/r)+sa`; the phases are almost equally spaced, but uncentered Parseval and generic large-sieve sampling remain period-normalized. | Promoted the CRT Fiber Translation property, synchronized candidate #22, recorded the uncentered route as failed, and selected the centered inverse-phase Gram matrix as the next exact lemma. |
+| 2026-07-27 | Harmless-class centering has exact single-mode cost `h-|K_m|^2/h`, but the full energy contains cross-frequency Gram entries `K_(m-n)-K_m K_(-n)/h`; it is not a diagonal Fourier sum. | Promoted the Inverse-Phase Gram Matrix property, synchronized candidate #22, and selected an exact full-operator audit before attempting coefficient estimates. |
+| 2026-07-27 | The inverse phases have orthogonal full-Fourier rows, and harmless-class centering leaves sharp operator norm `sqrt(P)`; black-box composition returns exactly to full-shift Parseval scale. | Promoted the Phase-Operator Norm Bound property, synchronized candidate #22, recorded centered operator-norm composition as failed, and selected an audit of arithmetic alignment by exact CRT conductor. |
+| 2026-07-27 | Restricting to exact conductor `q` improves the squared phase-block norm to `q mu_q<r+2q`, but triangle recombination introduces an oversized square-root divisor product. | Promoted the Conductor Phase-Block Bound property, synchronized candidate #22, recorded absolute block recombination as failed, and selected the exact centered Ramanujan cross-block geometry as the next test. |
+| 2026-07-27 | Exact Ramanujan geometry shows distinct and even coprime conductor blocks are not centered-orthogonal; an exact pair has squared normalized coherence `2793/3203`. | Promoted the Ramanujan Cross-Conductor Geometry property, cataloged the refuted orthogonality law, classified further unweighted finite-Fourier rearrangement as exhausted, and selected dedicated #23 mean-square work. |
+| 2026-07-28 | Dedicated #23 work promoted the properties from Strike Divisor-Activation Kernel through Localized-Layer Gram Matrix: activation shells, CRT lift indices, summatory dilation remainders, complete-period layer orthogonality, and the exact localized Gram matrix. Complete-period Bessel retains the primorial, while local trace composition is only per-layer Cauchy. | Synchronized the umbrella ticket with the dedicated #23 ticket and selected the first-deletion rank-one factorization as the live algebraic micro-goal. |
+| 2026-07-28 | the properties from First-Deletion Variance Identity through First-Deletion Reindexing factor the localized strike Gram matrix by deletion time, identify its exact negative variance, and reindex that variance completely back to the original strike energy. First-deletion geometry supplies no independent upper bound without new arithmetic mass constraints. | Closed candidate #23's generic algebraic audit and handed the next top-candidate work to #13's endpoint-sampling component. |
+| 2026-07-29 | the properties from Joint Capacity Envelope through Late-Layer Sixfold Floor reduce #13+#23 to the direct two-harmful-residue norm, derive its sharp sixfold-capacity ratio, place that ratio strictly between #19 and #14, and show #19's floor already suffices in the explicit late-layer range. | Synchronized the umbrella assessment and selected the weighted early/middle harmful-capacity contribution as the remaining scalar audit. |
+| 2026-07-29 | the One-Layer Ellipse Non-Composition property proves that one-layer harmful ellipses do not compose into #21's global allowance; even half-local energies overrun it by at least `m^2/2` on the ideal multiplicative scale. | Corrected candidate #21 and both active tickets, recorded the local-to-global route as failed, and stopped at the required strategy checkpoint. |
+| 2026-07-29 | the Weighted Deletion Conservation property plus weighted Cauchy appears to give `E_b> T^2/(2W)` whenever `N_m=0`, because the natural dual weight sum is `W_-<W`. | Reopened the checkpoint for one exact classification theorem before spending effort on another scalar upper bound. |
 | 2026-07-29 | The weighted lower bound is proved: `E_b> T^2/(2W)` when `N_m=0` and `T>0`, while the strict budget is impossible when `T=0`. Equivalently, `E_b<T^2/(2W)` already forces `N_m>0`. The same energy is exactly the quadratic variation of normalized population. | Added the standalone property; next register it as #66 and correct the candidate roles. |
-| 2026-07-29 | The terminal harmful-excess theorem is registered as property #66 in the permanent catalog. | Correct candidate #12's description of its direct weighted aggregate role. |
+| 2026-07-29 | The terminal harmful-excess theorem is registered as the Terminal Harmful-Excess Energy property in the permanent catalog. | Correct candidate #12's description of its direct weighted aggregate role. |
 | 2026-07-29 | Candidate #12 now distinguishes its valid one-layer sufficient margin from its terminal conditioned-chain quadratic target. | Correct candidate #21's decomposition and next-step interpretation. |
 | 2026-07-29 | Candidate #21 now identifies the harmful-excess square as terminal and candidate #22 as an independent but insufficient harmless diagnostic. | Correct candidate #22's strategic role without changing its formulas or open status. |
 | 2026-07-29 | The first #22 synchronization patch made no change because one context line was duplicated in captured terminal output but not in the source file. | Recorded the tooling-context failure and regenerated the edit from the exact file text. |
@@ -1649,73 +1649,73 @@ collect additional empirical evidence.
 | 2026-07-29 | The second #23 synchronization patch made no change because overlapping read ranges falsely displayed one bullet twice. | Confirmed the source with line numbers; make one final retry containing only role corrections and the new property link. |
 | 2026-07-29 | Candidate #23 now keeps its standalone strike estimate noncircular while classifying the #13+#23 aggregate scalar theorem as terminal; the final permitted patch retry succeeded. | Audit active guidance for the superseded parallel-component strategy. |
 | 2026-07-29 | The stale-role audit found the permanent candidates and properties synchronized. Three current ticket-guidance sections still preserve the pre-#66 #12+#22 frontier. | Correct those current sections one file at a time while preserving historical logs. |
-| 2026-07-29 | The algebraic-conditioned-survival ticket now records property #66 as controlling and stops the exhausted #22-first route. | Correct the endpoint-observable ticket's aggregate target and open concerns. |
+| 2026-07-29 | The algebraic-conditioned-survival ticket now records the Terminal Harmful-Excess Energy property as controlling and stops the exhausted #22-first route. | Correct the endpoint-observable ticket's aggregate target and open concerns. |
 | 2026-07-29 | The endpoint-observable ticket now classifies `sum_iw_iC_i` below the #21 allowance as a terminal theorem and no longer treats #22 as a subsequent survival requirement. | Update and close the completed one-layer/global audit ticket. |
 | 2026-07-29 | The first completed-audit closure patch made no change because one planned What is Learned context was not present in the source. | Recorded the context failure and regenerated the lifecycle patch from exact section text. |
-| 2026-07-29 | The completed audit now records property #66's supersession and is in `tickets/done/`. A follow-up scan found four property boundaries with pre-#66 component language. | Correct properties #65, #61, #63, and #64 one at a time. |
-| 2026-07-29 | Property #65 now states the sharp later result: a direct weighted capacity envelope below #21's global allowance already forces survival by property #66. | Correct property #61's Boundary. |
-| 2026-07-29 | Property #61 now distinguishes its exact one-layer envelope from the terminal cumulative realized-envelope theorem. | Correct property #63's final hierarchy boundary. |
-| 2026-07-29 | Property #63 now states that its threshold hierarchy is one-layer and the open direct aggregate harmful theorem is terminal. | Correct property #64's final boundary. |
-| 2026-07-29 | Property #64 now states that its late-layer result is one-layer and the remaining direct global harmful estimate is terminal. All property #66 boundary corrections are complete. | Run the final cross-repository audit. |
-| 2026-07-29 | Final audit passes. Property #66 also reveals a sharper terminal condition than #21: use only `E_b` and the natural allowance `T^2/(2W_-)`, which is strictly larger because `W_-<W`. | Create candidate #24 and rank it above #21 as the leanest current quadratic survival target. |
+| 2026-07-29 | The completed audit now records the Terminal Harmful-Excess Energy property's supersession and is in `tickets/done/`. A follow-up scan found four property boundaries with pre-Terminal-Harmful-Excess-Energy component language. | Correct the One-Layer Ellipse Non-Composition, Sixfold-Capacity Energy Envelope, Capacity Threshold Hierarchy, and Late-Layer Sixfold Floor properties one at a time. |
+| 2026-07-29 | the One-Layer Ellipse Non-Composition property now states the sharp later result: a direct weighted capacity envelope below #21's global allowance already forces survival by the Terminal Harmful-Excess Energy property. | Correct the Sixfold-Capacity Energy Envelope property's Boundary. |
+| 2026-07-29 | the Sixfold-Capacity Energy Envelope property now distinguishes its exact one-layer envelope from the terminal cumulative realized-envelope theorem. | Correct the Capacity Threshold Hierarchy property's final hierarchy boundary. |
+| 2026-07-29 | the Capacity Threshold Hierarchy property now states that its threshold hierarchy is one-layer and the open direct aggregate harmful theorem is terminal. | Correct the Late-Layer Sixfold Floor property's final boundary. |
+| 2026-07-29 | the Late-Layer Sixfold Floor property now states that its late-layer result is one-layer and the remaining direct global harmful estimate is terminal. All the Terminal Harmful-Excess Energy property boundary corrections are complete. | Run the final cross-repository audit. |
+| 2026-07-29 | Final audit passes. The Terminal Harmful-Excess Energy property also reveals a sharper terminal condition than #21: use only `E_b` and the natural allowance `T^2/(2W_-)`, which is strictly larger because `W_-<W`. | Create candidate #24 and rank it above #21 as the leanest current quadratic survival target. |
 | 2026-07-29 | Candidate #24 now records the sharp conservation-only quadratic threshold, its normalized-population variation form, and the proved terminal implication. | Register and rank #24 in the candidate catalog. |
-| 2026-07-29 | The catalog now registers #24 as the top quadratic survival target and shows `#21 => #24 => survival`; #22 remains independent. | Link property #66 and candidate #21 directly to #24. |
-| 2026-07-29 | Property #66 now names and links candidate #24 as its sharp conservation-only quadratic condition. | Synchronize candidate #21 as the stronger secondary framework. |
+| 2026-07-29 | The catalog now registers #24 as the top quadratic survival target and shows `#21 => #24 => survival`; #22 remains independent. | Link the Terminal Harmful-Excess Energy property and candidate #21 directly to #24. |
+| 2026-07-29 | the Terminal Harmful-Excess Energy property now names and links candidate #24 as its sharp conservation-only quadratic condition. | Synchronize candidate #21 as the stronger secondary framework. |
 | 2026-07-29 | Candidate #21 now defers to #24 as the minimal quadratic survival condition and keeps full energy only where it may add arithmetic leverage. | Correct candidate #12's aggregate target hierarchy. |
 | 2026-07-29 | Candidate #12 now distinguishes its stronger full two-class ellipse from candidate #24's minimal one-dimensional harmful-excess energy and larger natural allowance. | Audit the actual-chain constraints on the normalized-population quadratic variation before proposing another theorem. |
 | 2026-07-29 | For every fixed prime chain, the Cauchy-equality extinction profile is a rational monotone population profile; scaling `N_0` makes all populations and deletions integral without changing equality. Integrality and monotonicity therefore cannot improve #24's threshold. | Promote the algebraic boundary as a property, then require genuine residue/deletion geometry in the next candidate step. |
-| 2026-07-29 | The integral equality construction is now a standalone property with a narrow boundary: it refutes population-only strengthening but does not realize the schedule by CRT residue classes. | Register it as property #67 and synchronize candidate #24. |
-| 2026-07-29 | Property #67 is registered, and candidate #24 plus its catalog entry now require genuine CRT deletion geometry rather than population-only constraints. | Derive the exact square-completion remainder around the Cauchy minimizer. |
-| 2026-07-29 | Exact square completion gives `E_b=(T-N_m)^2/(2W_-)+sum_i w_i(b_i-b_i^*)^2/(2a_i)` with a unique minimizer. Under extinction, the remainder is precisely the distance from property #67's equality profile. | Register the identity as property #68 and expose the separate upper-bound and stability-gap interfaces in candidate #24. |
-| 2026-07-29 | Property #68 is registered. Candidate #24 now states correctly that a positive CRT stability gap only enlarges the certificate threshold and must still be paired with an upper bound for actual `E_b`. | Synchronize the candidate catalog and audit current guidance for stale population-only or gap-alone strategies. |
+| 2026-07-29 | The integral equality construction is now a standalone property with a narrow boundary: it refutes population-only strengthening but does not realize the schedule by CRT residue classes. | Register it as the Integral Profile Attainment property and synchronize candidate #24. |
+| 2026-07-29 | the Integral Profile Attainment property is registered, and candidate #24 plus its catalog entry now require genuine CRT deletion geometry rather than population-only constraints. | Derive the exact square-completion remainder around the Cauchy minimizer. |
+| 2026-07-29 | Exact square completion gives `E_b=(T-N_m)^2/(2W_-)+sum_i w_i(b_i-b_i^*)^2/(2a_i)` with a unique minimizer. Under extinction, the remainder is precisely the distance from the Integral Profile Attainment property's equality profile. | Register the identity as the Harmful-Excess Stability Decomposition property and expose the separate upper-bound and stability-gap interfaces in candidate #24. |
+| 2026-07-29 | the Harmful-Excess Stability Decomposition property is registered. Candidate #24 now states correctly that a positive CRT stability gap only enlarges the certificate threshold and must still be paired with an upper bound for actual `E_b`. | Synchronize the candidate catalog and audit current guidance for stale population-only or gap-alone strategies. |
 | 2026-07-29 | Final synchronization passes. Existing first-deletion Gram/reindexing and weighted pair-kernel properties show that transform-only first-hit algebra returns to the original energy; the staged empirical CSV is untouched. | Stop at the checkpoint. Next require a genuinely new CRT mass restriction before proposing an upper-bound candidate for actual `E_b`. |
 | 2026-07-29 | The equality deletion mass is `K_i^*=(N_0/S)(1+(2/r_i)P_iR_(i+1))`. A harmful-class cap below this value excludes the Cauchy minimizer and yields a positive stability gap, but it does not exclude extinction or upper-bound `E_b`. | Promote the exact compatibility and gap formula, preserving the separate upper-bound obligation. |
-| 2026-07-29 | The cap violation now has an explicit dual-norm gap: extinction forces `E_b>=T^2/(2W_-)+max_i (K_i^*-C_i)_+^2/D_i`. The theorem is algebraic and uses the proved harmful capacities. | Register the result as property #69 and synchronize candidate #24 without claiming an energy upper bound. |
+| 2026-07-29 | The cap violation now has an explicit dual-norm gap: extinction forces `E_b>=T^2/(2W_-)+max_i (K_i^*-C_i)_+^2/D_i`. The theorem is algebraic and uses the proved harmful capacities. | Register the result as the Capacity Minimizer Separation property and synchronize candidate #24 without claiming an energy upper bound. |
 | 2026-07-29 | One validation search used an invalid regex escape; it changed no file. Fixed-string searches and `git diff --check` pass. | Record the tooling failure and do not retry that regex. |
-| 2026-07-29 | Property #69 is registered, and candidate #24 now includes the proved `Gamma_cap` relaxed certificate while retaining the separate upper-bound obligation. | Synchronize the candidate catalog, then return to actual-energy control. |
+| 2026-07-29 | the Capacity Minimizer Separation property is registered, and candidate #24 now includes the proved `Gamma_cap` relaxed certificate while retaining the separate upper-bound obligation. | Synchronize the candidate catalog, then return to actual-energy control. |
 | 2026-07-29 | A second validation command repeated the unsupported LaTeX escape in regex mode; it changed no file. Fixed-string validation passed. | Ban regex-mode LaTeX validation for the remainder of the ticket. |
-| 2026-07-29 | Property #61's feasible interval projects sharply onto `b_i^2`: its capacity-only maximum is the larger endpoint square over `ell_i<=K_i<=u_i`. This is sharper for #24 than the full two-coordinate envelope. | Promote the b-only envelope and combine its weighted sum with property #69's enlarged threshold. |
-| 2026-07-29 | The sharp b-only envelope is proved: `E_b<=U_cap`, and `U_cap<T^2/(2W_-)+Gamma_cap` is sufficient for survival. The aggregate inequality remains open and population-profile dependent. | Register the result as property #70, synchronize #24, and assess whether the explicit target escapes candidate #19's abundance wall. |
-| 2026-07-29 | Property #70 is registered, and candidate #24 now has a proved sharp capacity-only upper envelope paired with property #69's enlarged extinction threshold. | Update the catalog and classify whether the remaining aggregate comparison is weaker than candidate #19's population floor. |
-| 2026-07-29 | The b-only capacity envelope has exactly property #62's threshold `N_i/B_i>rho_*(r_i)>2`, because the decisive filled-harmful branch has zero imbalance. In one layer, `Gamma_cap` is zero below ordinary capacity survival and redundant above it. | Classify separate-layer capacity optimization as exhausted; preserve #69--#70 only as a possible cross-layer interface. |
-| 2026-07-29 | Property #70, candidate #24, and both catalogs now state that the capacity-only route has no new one-layer regime. Its only remaining value is a joint cross-layer restriction lowering the sum of separately sharp endpoint maxima. | Stop at the cross-layer checkpoint; reject further independent one-layer envelopes. |
+| 2026-07-29 | the Sixfold-Capacity Energy Envelope property's feasible interval projects sharply onto `b_i^2`: its capacity-only maximum is the larger endpoint square over `ell_i<=K_i<=u_i`. This is sharper for #24 than the full two-coordinate envelope. | Promote the b-only envelope and combine its weighted sum with the Capacity Minimizer Separation property's enlarged threshold. |
+| 2026-07-29 | The sharp b-only envelope is proved: `E_b<=U_cap`, and `U_cap<T^2/(2W_-)+Gamma_cap` is sufficient for survival. The aggregate inequality remains open and population-profile dependent. | Register the result as the Harmful-Capacity Excess Envelope property, synchronize #24, and assess whether the explicit target escapes candidate #19's abundance wall. |
+| 2026-07-29 | the Harmful-Capacity Excess Envelope property is registered, and candidate #24 now has a proved sharp capacity-only upper envelope paired with the Capacity Minimizer Separation property's enlarged extinction threshold. | Update the catalog and classify whether the remaining aggregate comparison is weaker than candidate #19's population floor. |
+| 2026-07-29 | The b-only capacity envelope has exactly the Sixfold Population-Ratio Threshold property's threshold `N_i/B_i>rho_*(r_i)>2`, because the decisive filled-harmful branch has zero imbalance. In one layer, `Gamma_cap` is zero below ordinary capacity survival and redundant above it. | Classify separate-layer capacity optimization as exhausted; preserve the Capacity Minimizer Separation and Harmful-Capacity Excess Envelope properties only as a possible cross-layer interface. |
+| 2026-07-29 | the Harmful-Capacity Excess Envelope property, candidate #24, and both catalogs now state that the capacity-only route has no new one-layer regime. Its only remaining value is a joint cross-layer restriction lowering the sum of separately sharp endpoint maxima. | Stop at the cross-layer checkpoint; reject further independent one-layer envelopes. |
 | 2026-07-29 | Two fixed-string validations missed correct prose because of case and physical-line wrapping; exact-range reads passed. | Use exact-range reads for wrapped prose and keep fixed strings for formulas. |
-| 2026-07-29 | Candidate #19 now records how its capacities feed properties #69--#70 while preserving its unchanged local-abundance boundary. All directly affected permanent artifacts are synchronized. | Run the final consistency audit and retain only the joint cross-layer CRT problem as the next useful #24 work. |
+| 2026-07-29 | Candidate #19 now records how its capacities feed the properties from Capacity Minimizer Separation through Harmful-Capacity Excess Envelope while preserving its unchanged local-abundance boundary. All directly affected permanent artifacts are synchronized. | Run the final consistency audit and retain only the joint cross-layer CRT problem as the next useful #24 work. |
 | 2026-07-29 | The final fixed-string catalog search mistakenly used a literal regex anchor; exact-range validation confirmed entries #69--#70 and `git diff --check` passed. | Record the validation misuse and stop without further search variants. |
 | 2026-07-29 | The paired harmful-excess observables are exactly mean-zero and mutually orthogonal over the final CRT period, with norm `Rd_i(2/r_i)(1-2/r_i)`. Black-box Bessel yields `E_b<=LRd_m/(r_0-2)`, retaining the primorial-scale class count. | Promote the exact boundary and reject complete-period Bessel as the missing #24 estimate. |
-| 2026-07-29 | The paired orthogonality theorem is now a standalone property. It proves the exact cross-layer geometry while classifying its direct Bessel use as quantitatively insufficient for a short safe window. | Register it as property #71 and narrow candidate #24's next theorem to localized interval correlations or actual-coefficient cancellation. |
+| 2026-07-29 | The paired orthogonality theorem is now a standalone property. It proves the exact cross-layer geometry while classifying its direct Bessel use as quantitatively insufficient for a short safe window. | Register it as the Paired CRT Primorial Scale property and narrow candidate #24's next theorem to localized interval correlations or actual-coefficient cancellation. |
 | 2026-07-29 | The first candidate #24 synchronization patch made no change because its context assumed a prose wrap not present in the source. | Captured the exact numbered range; make one corrected patch using confirmed anchors. |
-| 2026-07-29 | Property #71 is registered, and candidate #24 now rules out complete-period Bessel while requiring localized interval correlations or coefficient-sensitive cancellation. | Synchronize the candidate catalog and audit the resulting proof frontier. |
-| 2026-07-29 | The catalog is synchronized. Using each prefix's native period gives a concrete hybrid: cancel complete `M_k` blocks and apply Bessel to layers `<k`, then use property #70's capacity envelope on layers `>=k`. The `k=0` cut recovers the all-capacity bound, so optimization cannot be worse. | Prove the exact hybrid formula and test its algebraic strength before proposing any new correlation hypothesis. |
+| 2026-07-29 | the Paired CRT Primorial Scale property is registered, and candidate #24 now rules out complete-period Bessel while requiring localized interval correlations or coefficient-sensitive cancellation. | Synchronize the candidate catalog and audit the resulting proof frontier. |
+| 2026-07-29 | The catalog is synchronized. Using each prefix's native period gives a concrete hybrid: cancel complete `M_k` blocks and apply Bessel to layers `<k`, then use the Harmful-Capacity Excess Envelope property's capacity envelope on layers `>=k`. The `k=0` cut recovers the all-capacity bound, so optimization cannot be worse. | Prove the exact hybrid formula and test its algebraic strength before proposing any new correlation hypothesis. |
 | 2026-07-29 | The initial hybrid draft incorrectly charged the empty `k=0` prefix; the endpoint is now `B_0=0`. Combining prefix Bessel with each `b_i^2` capacity is a linear program whose ratios `M_kd_m/(r_i-2)` decrease with `i`, so greedy saturation gives the sharp combined envelope. | Promote the corrected sharp hybrid as a property, then compare it algebraically with the all-capacity bound. |
-| 2026-07-29 | The sharp native-period/capacity hybrid is proved. It always improves or matches `U_cap`, improves strictly exactly when the normalized prefix capacity box exceeds the interval remainder `s_k`, and composes with `Gamma_cap` to give a terminal survival criterion. | Register as property #72 and synchronize candidate #24 and the catalogs. |
-| 2026-07-29 | Property #72 is registered in the permanent property catalog. | Add its hybrid certificate and exact gain criterion to candidate #24. |
+| 2026-07-29 | The sharp native-period/capacity hybrid is proved. It always improves or matches `U_cap`, improves strictly exactly when the normalized prefix capacity box exceeds the interval remainder `s_k`, and composes with `Gamma_cap` to give a terminal survival criterion. | Register as the Native-Period Hybrid Envelope property and synchronize candidate #24 and the catalogs. |
+| 2026-07-29 | the Native-Period Hybrid Envelope property is registered in the permanent property catalog. | Add its hybrid certificate and exact gain criterion to candidate #24. |
 | 2026-07-29 | Candidate #24 now uses `U_hyb` as its strongest proved capacity/orthogonality envelope and preserves the universal threshold comparison as open. | Synchronize the candidate catalog and reassess the remaining algebraic obligation. |
 | 2026-07-29 | Candidate #24 and both catalogs are synchronized after removing one stale `U_cap` target; the first cleanup patch missed a wrapped context, and the exact-range retry succeeded. The greedy hybrid rejects exactly the normalized overflow `e_k`, giving a prospective gain at least `M_kd_m e_k/(r_(k-1)-2)`. | Prove the scalar overflow-gain lemma and compose it with the extinction threshold. |
-| 2026-07-29 | The scalar overflow theorem is proved: the exact hybrid gain lies between the smallest and largest prefix coefficient times `e_k`, yielding a simplified terminal certificate. | Register as property #73 and synchronize candidate #24 and the catalogs. |
-| 2026-07-29 | Property #73 is registered in the permanent property catalog. | Add the overflow certificate and its open lower-bound obligation to candidate #24. |
-| 2026-07-29 | Candidate #24 now states property #73's scalar overflow certificate and identifies a lower bound for `e_k` at the extinction-deficit scale as the next independent input. | Synchronize the candidate catalog and run the final consistency audit. |
-| 2026-07-29 | Final audit passes: properties #71--#73, candidate #24, and both catalogs are synchronized; no stale `U_cap` target remains; Markdown is clean; the staged giant CSV is untouched. | Stop at the overflow checkpoint until an independent lower bound for `e_k` or stronger localized correlation input is available. |
+| 2026-07-29 | The scalar overflow theorem is proved: the exact hybrid gain lies between the smallest and largest prefix coefficient times `e_k`, yielding a simplified terminal certificate. | Register as the Native-Period Capacity Overflow property and synchronize candidate #24 and the catalogs. |
+| 2026-07-29 | the Native-Period Capacity Overflow property is registered in the permanent property catalog. | Add the overflow certificate and its open lower-bound obligation to candidate #24. |
+| 2026-07-29 | Candidate #24 now states the Native-Period Capacity Overflow property's scalar overflow certificate and identifies a lower bound for `e_k` at the extinction-deficit scale as the next independent input. | Synchronize the candidate catalog and run the final consistency audit. |
+| 2026-07-29 | Final audit passes: the properties from Paired CRT Primorial Scale through Native-Period Capacity Overflow, candidate #24, and both catalogs are synchronized; no stale `U_cap` target remains; Markdown is clean; the staged giant CSV is untouched. | Stop at the overflow checkpoint until an independent lower bound for `e_k` or stronger localized correlation input is available. |
 | 2026-07-29 | The sharp capacity envelope has exact width `min(N,2B,rB-N)` and is at least one quarter of its square, yielding an explicit lower bound for `e_k`. The bound necessarily vanishes at empty and fully occupied feasible populations, so `r,B` alone cannot force positive overflow. | Promote the width-floor theorem and require actual population slack or localized residue input next. |
-| 2026-07-29 | The capacity-width floor and population-free obstruction are now a standalone property, including their composition with the property #73 survival certificate. | Register as property #74 and synchronize candidate #24 and the catalogs. |
-| 2026-07-29 | Property #74 is registered in the permanent property catalog. | Add its population-slack floor and population-free obstruction to candidate #24. |
-| 2026-07-29 | Candidate #24 now states property #74's population-slack overflow floor and proves why `r_i,B_i` alone cannot make it positive. | Synchronize the candidate catalog and run the final audit. |
-| 2026-08-03 | Property #74 is synchronized across candidate #24 and both catalogs. Candidate #17's count threshold appears to force property #74's maximal population-slack width: the lower side is a floor comparison, and the upper side follows from the three allowed start classes modulo `30`. | Make the conditional #17-to-#24 middle-regime bridge the next one-lemma proof; do not claim either candidate is thereby proved. |
-| 2026-08-03 | The #17-to-#24 bridge is proved: #17 gives `N>=2B`, installed filter `5` gives `N<=(r-2)B`, and therefore property #74 has `sigma=2B` and `X>=B^2`. | Register the bridge as property #75, then compare its normalized `B_i^2` sum with property #73's remainder budget before claiming any cross-candidate gain. |
-| 2026-08-03 | The proved `r=7` floor makes the first native overflow unconditional: `q_(1,2)=30/7` and `e_2>=(7B_7^2/30-s_2)_+>=1` for every `Q>=36`. Hence property #73 strictly improves the capacity envelope by at least `42d_m e_2`. | Promote as property #76, then compare the quantified gain with candidate #24's exact extinction deficit; strict improvement is not yet survival. |
-| 2026-08-03 | Property #76 is registered and candidates #17/#24 and both permanent catalogs now distinguish unconditional strict hybrid gain from the still-open survival comparison. | Audit whether the fixed `k=2` envelope can clear the original or capacity-relaxed extinction threshold; if not, state the exact obstruction and move only to later cuts or localized information. |
-| 2026-08-03 | The fixed cut after filter `7` cannot clear the original #24 threshold on long chains under candidate #17 at the first untouched layer: for `m>=37`, the filter-`11` suffix term alone gives `U_2^hyb>T^2/(2W_-)`. | Promote as property #77; stop enlarging the settled filter-`7` overflow and test whether the same obstruction holds for every fixed cut. |
-| 2026-08-03 | Property #77 is registered and candidate #24 and both catalogs now classify the fixed `k=2` route. All Markdown, link, and stale-claim checks pass; the Stainless baseline remains `30/0/0` and the unrelated staged giant CSV is untouched. | Generalize the suffix comparison to arbitrary fixed `k`; determine whether a successful native cut must grow with the future head. |
-| 2026-08-03 | The suffix comparison generalizes exactly: cut `k` fails the original threshold when `m>P_k(r_k-2)^2(1+6/D)^2`. Every fixed cut therefore eventually fails, and `P_k<=3/7` gives the necessary movement rate `r_k>=2+sqrt(7m/3)/(1+6/D)`. | Promote as property #78; next compare this necessary movement with the native-modulus requirement for useful complete-block cancellation. |
-| 2026-08-03 | Property #78 is registered and candidate #24 and both catalogs now classify every fixed cut. The repository has no internal primorial-growth lemma strong enough for the next comparison; Bertrand and PNT are already used elsewhere as explicit external mathematical dependencies. | Prove an exact conditional `m=O(log^2 H)` bound for cuts with `M_k<=H`, then use PNT only in a separately labeled asymptotic corollary. |
-| 2026-08-03 | A moving cut that clears the original threshold and retains `M_k<=H` must satisfy an exact logarithmic-squared chain bound under a finite theta lower bound and Bertrand. PNT makes that bound incompatible with `m=pi(Q)-3` for all sufficiently large heads, so any potentially successful cut has `M_k>H` and `s_k=H`. | Promote as property #79; next test whether the one-incomplete-block Bessel budget can exclude any capacity mass at all. |
-| 2026-08-03 | The incomplete-block capacity sum is at most `3kD^2r_k^2/(25M_kP_k(r_k-2))`; if the corresponding finite product inequality holds, then `e_k=0`. PNT makes it hold at every sufficiently large moving cut, so the current native hybrid cannot clear the original #24 threshold under full #17. | Promote as property #80 and stop the exhausted native-period route; next choose between `Gamma_cap` and localized actual-energy control. |
+| 2026-07-29 | The capacity-width floor and population-free obstruction are now a standalone property, including their composition with the Native-Period Capacity Overflow property's survival certificate. | Register as the Envelope Width Floor property and synchronize candidate #24 and the catalogs. |
+| 2026-07-29 | the Envelope Width Floor property is registered in the permanent property catalog. | Add its population-slack floor and population-free obstruction to candidate #24. |
+| 2026-07-29 | Candidate #24 now states the Envelope Width Floor property's population-slack overflow floor and proves why `r_i,B_i` alone cannot make it positive. | Synchronize the candidate catalog and run the final audit. |
+| 2026-08-03 | the Envelope Width Floor property is synchronized across candidate #24 and both catalogs. Candidate #17's count threshold appears to force the Envelope Width Floor property's maximal population-slack width: the lower side is a floor comparison, and the upper side follows from the three allowed start classes modulo `30`. | Make the conditional #17-to-#24 middle-regime bridge the next one-lemma proof; do not claim either candidate is thereby proved. |
+| 2026-08-03 | The #17-to-#24 bridge is proved: #17 gives `N>=2B`, installed filter `5` gives `N<=(r-2)B`, and therefore the Envelope Width Floor property has `sigma=2B` and `X>=B^2`. | Register the bridge as the Seven-Layer Density Floor property, then compare its normalized `B_i^2` sum with the Native-Period Capacity Overflow property's remainder budget before claiming any cross-candidate gain. |
+| 2026-08-03 | The proved `r=7` floor makes the first native overflow unconditional: `q_(1,2)=30/7` and `e_2>=(7B_7^2/30-s_2)_+>=1` for every `Q>=36`. Hence the Native-Period Capacity Overflow property strictly improves the capacity envelope by at least `42d_m e_2`. | Promote as the Seven-Layer Overflow Forcing property, then compare the quantified gain with candidate #24's exact extinction deficit; strict improvement is not yet survival. |
+| 2026-08-03 | the Seven-Layer Overflow Forcing property is registered and candidates #17/#24 and both permanent catalogs now distinguish unconditional strict hybrid gain from the still-open survival comparison. | Audit whether the fixed `k=2` envelope can clear the original or capacity-relaxed extinction threshold; if not, state the exact obstruction and move only to later cuts or localized information. |
+| 2026-08-03 | The fixed cut after filter `7` cannot clear the original #24 threshold on long chains under candidate #17 at the first untouched layer: for `m>=37`, the filter-`11` suffix term alone gives `U_2^hyb>T^2/(2W_-)`. | Promote as the Filter-Seven Cut Failure property; stop enlarging the settled filter-`7` overflow and test whether the same obstruction holds for every fixed cut. |
+| 2026-08-03 | the Filter-Seven Cut Failure property is registered and candidate #24 and both catalogs now classify the fixed `k=2` route. All Markdown, link, and stale-claim checks pass; the Stainless baseline remains `30/0/0` and the unrelated staged giant CSV is untouched. | Generalize the suffix comparison to arbitrary fixed `k`; determine whether a successful native cut must grow with the future head. |
+| 2026-08-03 | The suffix comparison generalizes exactly: cut `k` fails the original threshold when `m>P_k(r_k-2)^2(1+6/D)^2`. Every fixed cut therefore eventually fails, and `P_k<=3/7` gives the necessary movement rate `r_k>=2+sqrt(7m/3)/(1+6/D)`. | Promote as the Fixed Native Cut Failure property; next compare this necessary movement with the native-modulus requirement for useful complete-block cancellation. |
+| 2026-08-03 | the Fixed Native Cut Failure property is registered and candidate #24 and both catalogs now classify every fixed cut. The repository has no internal primorial-growth lemma strong enough for the next comparison; Bertrand and PNT are already used elsewhere as explicit external mathematical dependencies. | Prove an exact conditional `m=O(log^2 H)` bound for cuts with `M_k<=H`, then use PNT only in a separately labeled asymptotic corollary. |
+| 2026-08-03 | A moving cut that clears the original threshold and retains `M_k<=H` must satisfy an exact logarithmic-squared chain bound under a finite theta lower bound and Bertrand. PNT makes that bound incompatible with `m=pi(Q)-3` for all sufficiently large heads, so any potentially successful cut has `M_k>H` and `s_k=H`. | Promote as the Moving-Cut Block Loss property; next test whether the one-incomplete-block Bessel budget can exclude any capacity mass at all. |
+| 2026-08-03 | The incomplete-block capacity sum is at most `3kD^2r_k^2/(25M_kP_k(r_k-2))`; if the corresponding finite product inequality holds, then `e_k=0`. PNT makes it hold at every sufficiently large moving cut, so the current native hybrid cannot clear the original #24 threshold under full #17. | Promote as the Incomplete-Block Bessel Bound property and stop the exhausted native-period route; next choose between `Gamma_cap` and localized actual-energy control. |
 | 2026-07-29 | Independent reviewer (separate agent) audited the full ~40 new properties per `TICKET_DISCIPLINE.md` §6. Stratified sample across 3 tiers (negative/insufficiency, load-bearing positive identities, heavy-machinery). | All checked notes are mathematically SOUND and carefully scoped. Net: the new work sharpens the wall (precise inventory of which standard tools fail, the one viable shape left) but does not escape it. Recorded as "Independent property-catalog audit" subsection in What is Learned. No corrections needed to the team's properties. |
-| 2026-08-03 | Property #80, candidate #24, and both catalogs are synchronized; stale transitional claims that incomplete-block Bessel remained open were corrected. Markdown and link checks pass, the Stainless baseline remains `30/0/0`, and the unrelated staged giant CSV is untouched. | Stop at the strategy boundary. Prefer auditing `Gamma_cap` first because it stays inside #24's proved scalar framework; use localized actual-energy control only if that audit shows no asymptotic room. |
-| 2026-08-03 | The user selected the recommended `Gamma_cap` branch. Existing properties #69--#70 already reduce it to `U_cap<T^2/(2W_-)+Gamma_cap`; no separate ticket or stronger existing lemma was found. | Compare the minimizer-capacity violations with the aggregate envelope excess under full candidate #17, without retrying exhausted one-layer or native-period arguments. |
-| 2026-08-03 | The `Gamma_cap` comparison closes algebraically: after a finite `S` condition all post-5 minimizer capacities fit, the remaining gap is at most `(25P_m/18)(2/5+3N_0/(5S))^2`, but candidate #17 forces `U_cap>=P_mD^2/1080` already at filter `7`. PNT/Mertens make both the original threshold and `Gamma_cap` negligible against this floor. | Promote the finite and asymptotic obstruction as property #81, then synchronize candidate #24 and both catalogs. |
-| 2026-08-03 | Property #81 is registered and synchronized across candidate #24, both catalogs, and the boundaries of properties #79--#80. The stability gap is eventually positive but cannot rescue the separately maximized capacity envelope under full #17. | Stop at the strategy boundary; next prefer localized control of actual `b_i^2`, with a genuinely joint cross-layer inequality as the fallback. |
-| 2026-08-03 | At filter `7`, the modulo-`210` centered-weight certificate has cumulative range `18`, proving the sharp interval bound `|b_7|<=18/7` and actual energy contribution at most `54P_m/5`. This replaces the capacity-envelope charge of order `P_mD^2` by a boundary constant. | Promote as property #82, then test which part of the cumulative-discrepancy argument scales to a general native period. |
-| 2026-08-03 | Property #82 is registered and synchronized across candidate #24 and both catalogs. It proves a genuine fixed-layer localized saving without claiming uniformity in the growing native modulus. | Compare the general cumulative discrepancy with candidate #23's existing boundary arithmetic before proposing a scalable theorem. |
-| 2026-08-03 | The general property #82 coefficient is exactly `b_i=delta_(0,i)+delta_(-2,i)`, the accepted-boundary discrepancy already classified in candidate #23. Fixed-period enumeration scales with the native accepted population and generic inclusion--exclusion is exponential, so neither supplies the required chain bound. | Stop rather than duplicate #23; continue only with a new signed mean-square/cross-layer cancellation input or a sub-native recursive prefix bound. |
-| 2026-08-03 | Property #82, candidate #24, both catalogs, and the active-ticket cold-start guidance are synchronized. The positive fixed-layer theorem and the failed naive scaling route are both preserved; no candidate was refuted. | Stop at the new-arithmetic boundary until a signed mean-square/cross-layer cancellation theorem or sub-native recursive discrepancy bound is selected. |
+| 2026-08-03 | the Incomplete-Block Bessel Bound property, candidate #24, and both catalogs are synchronized; stale transitional claims that incomplete-block Bessel remained open were corrected. Markdown and link checks pass, the Stainless baseline remains `30/0/0`, and the unrelated staged giant CSV is untouched. | Stop at the strategy boundary. Prefer auditing `Gamma_cap` first because it stays inside #24's proved scalar framework; use localized actual-energy control only if that audit shows no asymptotic room. |
+| 2026-08-03 | The user selected the recommended `Gamma_cap` branch. Existing properties (Capacity Minimizer Separation through Harmful-Capacity Excess Envelope) already reduce it to `U_cap<T^2/(2W_-)+Gamma_cap`; no separate ticket or stronger existing lemma was found. | Compare the minimizer-capacity violations with the aggregate envelope excess under full candidate #17, without retrying exhausted one-layer or native-period arguments. |
+| 2026-08-03 | The `Gamma_cap` comparison closes algebraically: after a finite `S` condition all post-5 minimizer capacities fit, the remaining gap is at most `(25P_m/18)(2/5+3N_0/(5S))^2`, but candidate #17 forces `U_cap>=P_mD^2/1080` already at filter `7`. PNT/Mertens make both the original threshold and `Gamma_cap` negligible against this floor. | Promote the finite and asymptotic obstruction as the Capacity Stability Gap property, then synchronize candidate #24 and both catalogs. |
+| 2026-08-03 | the Capacity Stability Gap property is registered and synchronized across candidate #24, both catalogs, and the boundaries of the properties from Moving-Cut Block Loss through Incomplete-Block Bessel Bound. The stability gap is eventually positive but cannot rescue the separately maximized capacity envelope under full #17. | Stop at the strategy boundary; next prefer localized control of actual `b_i^2`, with a genuinely joint cross-layer inequality as the fallback. |
+| 2026-08-03 | At filter `7`, the modulo-`210` centered-weight certificate has cumulative range `18`, proving the sharp interval bound `|b_7|<=18/7` and actual energy contribution at most `54P_m/5`. This replaces the capacity-envelope charge of order `P_mD^2` by a boundary constant. | Promote as the Filter-Seven Excess Bound property, then test which part of the cumulative-discrepancy argument scales to a general native period. |
+| 2026-08-03 | the Filter-Seven Excess Bound property is registered and synchronized across candidate #24 and both catalogs. It proves a genuine fixed-layer localized saving without claiming uniformity in the growing native modulus. | Compare the general cumulative discrepancy with candidate #23's existing boundary arithmetic before proposing a scalable theorem. |
+| 2026-08-03 | The general the Filter-Seven Excess Bound property coefficient is exactly `b_i=delta_(0,i)+delta_(-2,i)`, the accepted-boundary discrepancy already classified in candidate #23. Fixed-period enumeration scales with the native accepted population and generic inclusion--exclusion is exponential, so neither supplies the required chain bound. | Stop rather than duplicate #23; continue only with a new signed mean-square/cross-layer cancellation input or a sub-native recursive prefix bound. |
+| 2026-08-03 | the Filter-Seven Excess Bound property, candidate #24, both catalogs, and the active-ticket cold-start guidance are synchronized. The positive fixed-layer theorem and the failed naive scaling route are both preserved; no candidate was refuted. | Stop at the new-arithmetic boundary until a signed mean-square/cross-layer cancellation theorem or sub-native recursive discrepancy bound is selected. |

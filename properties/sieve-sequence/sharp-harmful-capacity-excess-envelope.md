@@ -6,7 +6,7 @@ verification is not claimed.
 ## Meaning
 
 Candidate #24 needs an upper bound for the weighted harmful-excess energy
-`E_b`. Property #61 solves a stronger one-layer extremal problem involving
+`E_b`. The Sixfold-Capacity Energy Envelope property solves a stronger one-layer extremal problem involving
 both total harmful excess and left/right imbalance. For candidate #24, only
 the total harmful count matters.
 
@@ -19,7 +19,7 @@ from:
 3. no further distribution information.
 
 Summing the sharp one-layer bounds gives a valid capacity-only upper envelope
-for `E_b`. Combining it with property #69's capacity-induced extinction gap
+for `E_b`. Combining it with the Capacity Minimizer Separation property's capacity-induced extinction gap
 produces a relaxed conditional survival theorem.
 
 The aggregate inequality remains open for actual conditioned chains. This
@@ -73,7 +73,7 @@ B
 
 ## Exact Feasible Harmful Interval
 
-Property #61 proves the exact feasible interval
+The Sixfold-Capacity Energy Envelope property proves the exact feasible interval
 
 ```math
 \boxed{
@@ -142,7 +142,7 @@ After multiplying by the harmful-energy coefficient, one has
 \max\mathcal Q_r.
 ```
 
-Property #61's full envelope also pays for the nonnegative left/right
+the Sixfold-Capacity Energy Envelope property's full envelope also pays for the nonnegative left/right
 imbalance term.
 
 ## Conditioned-Chain Upper Envelope
@@ -203,7 +203,7 @@ capacities are supplied.
 
 ## Composition With The Capacity Stability Gap
 
-Property #69 defines
+The Capacity Minimizer Separation property defines
 
 ```math
 \Gamma_{\mathrm{cap}}
@@ -265,7 +265,7 @@ Put
 \rho=\frac NB.
 ```
 
-Property #62 proves that the stronger full harmful-energy envelope fits its
+The Sixfold Population-Ratio Threshold property proves that the stronger full harmful-energy envelope fits its
 one-layer allowance exactly when
 
 ```math
@@ -283,7 +283,7 @@ one-layer allowance exactly when
 The same threshold is necessary and sufficient for this property's b-only
 envelope.
 
-For necessity, property #62's decisive extremal branch is
+For necessity, the Sixfold Population-Ratio Threshold property's decisive extremal branch is
 
 ```math
 K=2B.
@@ -293,7 +293,7 @@ Both harmful classes are full, so their imbalance is zero. The full energy on
 that branch is therefore exactly the b-energy used here. It violates the
 one-layer allowance whenever `rho<=rho_*(r)`.
 
-For sufficiency, when `rho>rho_*(r)`, property #62 proves that every branch of
+For sufficiency, when `rho>rho_*(r)`, the Sixfold Population-Ratio Threshold property proves that every branch of
 the stronger full harmful-energy envelope fits the allowance. Its b-component
 therefore fits as well.
 
@@ -307,7 +307,7 @@ Thus
 }
 ```
 
-Since property #62 also proves
+Since the Sixfold Population-Ratio Threshold property also proves
 
 ```math
 \rho_*(r)>2,
@@ -342,7 +342,7 @@ The preceding one-layer classification shows that such a joint restriction is
 not optional if this route is to improve candidate #19. Separate-layer
 capacity optimization is exhausted.
 
-Property #65 gives the corresponding warning for the stronger local harmful
+The One-Layer Ellipse Non-Composition property gives the corresponding warning for the stronger local harmful
 ellipses: separate one-layer success does not automatically fit the global
 weighted allowance. Here the sum is a valid upper bound, but proving it below
 the displayed threshold is already a terminal conditioned-chain theorem.

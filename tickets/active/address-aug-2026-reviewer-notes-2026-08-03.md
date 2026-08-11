@@ -10,7 +10,7 @@
 
 Apply the three accepted corrections from
 `articles/learnings/reviewer-notes-aug-2026.md`: define `D` locally in
-Property #82, soften the candidate handoff from one exact frontier to one
+The Filter-Seven Excess Bound property, soften the candidate handoff from one exact frontier to one
 primary frontier, and align candidate #25's closure-matrix vocabulary with the
 existing README label. Retain the complete 86-row Gap Dynamics v2 appendix as
 the requested audit record.
@@ -19,7 +19,7 @@ the requested audit record.
 
 - `complete-gap-dynamics-catalog-coverage-2026-08-03.md` — completed the
   86-property article audit and records why the full table is intentional.
-- `verify-19-21-escape-wall-2026-07-27.md` — established Properties #81--#83
+- `verify-19-21-escape-wall-2026-07-27.md` — established the properties from Capacity Stability Gap through Copy-Block Excess Control
   and the terminal twin-prime frontier.
 - `quantifier-screen-refutation-targets-2026-08-03.md` — established the
   closure matrix and candidate #25 as a distinct analytic program.
@@ -34,7 +34,7 @@ or the published Gap Dynamics v1 article.
 
 ## Expected State
 
-- Property #82 defines `D=Q^2-Q-3` immediately before using `11664/D^2`.
+- the Filter-Seven Excess Bound property defines `D=Q^2-Q-3` immediately before using `11664/D^2`.
 - The handoff describes one **primary** twin-prime frontier while preserving
   the classified supporting routes.
 - Candidate #25 uses **Externally known; method-specific proof open** in the
@@ -60,7 +60,7 @@ heading, whitespace, vocabulary, diff, and recorded-baseline checks.
 
 ## Risks And Assumptions
 
-- Assumption: `D` has exactly the Property #81 meaning `Q^2-Q-3`; validate
+- Assumption: `D` has exactly the the Capacity Stability Gap property meaning `Q^2-Q-3`; validate
   against both #81 and the ratio in #82 before editing.
 - Assumption: “primary” preserves the intended strategic ranking without
   implying other open routes are closed; validate against the matrix rows.
@@ -73,8 +73,8 @@ heading, whitespace, vocabulary, diff, and recorded-baseline checks.
 ## Current State
 
 - Reviewer independently confirmed all mathematics and cross-references.
-- Property #82 now defines `D=Q^2-Q-3` before the reviewed ratio and links
-  Property #81 as the source of the capacity-envelope comparison.
+- the Filter-Seven Excess Bound property now defines `D=Q^2-Q-3` before the reviewed ratio and links
+  The Capacity Stability Gap property as the source of the capacity-envelope comparison.
 - `INVESTIGATION_STATUS.md` now says “one primary twin-prime frontier,”
   matching its supporting and deferred open-route classifications.
 - `candidates/README.md`, the closure glossary, and candidate #25's matrix row
@@ -110,7 +110,7 @@ heading, whitespace, vocabulary, diff, and recorded-baseline checks.
 
 ## Validation
 
-- Property #82 defines `D` at line 207 before its first `D^2` use at line 216.
+- the Filter-Seven Excess Bound property defines `D` at line 207 before its first `D^2` use at line 216.
 - Both corrected public files have all links resolved, balanced fences, unique
   headings, and no trailing whitespace.
 - The old exact-frontier and distinct-next phrases are absent; the primary
@@ -123,7 +123,7 @@ heading, whitespace, vocabulary, diff, and recorded-baseline checks.
 
 ## Implementation Plan
 
-1. Define `D` in Property #82.
+1. Define `D` in the Filter-Seven Excess Bound property.
 2. Change “one exact” to “one primary” in the handoff verdict.
 3. Align candidate #25's matrix row and closure glossary with the README.
 4. Run final validation and close this ticket.
@@ -137,7 +137,7 @@ None for this ticket. The corrected Markdown artifacts are ready for review.
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-08-03 | Reviewer feedback contains three substantive Markdown fixes and one optional appendix presentation suggestion. The README already has the preferred candidate #25 vocabulary. | Retain Appendix B; apply the three accepted fixes one at a time. |
-| 2026-08-03 | Property #82's `D` is exactly Property #81's eligible-window proxy `Q^2-Q-3`; the energy calculation itself was already correct. | Defined `D` locally before the ratio and linked Property #81. |
+| 2026-08-03 | The Filter-Seven Excess Bound property's `D` is exactly the Capacity Stability Gap property's eligible-window proxy `Q^2-Q-3`; the energy calculation itself was already correct. | Defined `D` locally before the ratio and linked the Capacity Stability Gap property. |
 | 2026-08-03 | The #23--#24 chain is the primary frontier, not the only remaining open route. | Replaced “one exact” with “one primary” and confirmed the surrounding classifications remain intact. |
 | 2026-08-03 | Candidate #25's README label is the most informative canonical vocabulary because it separates classical existence from this method's open positivity proof. | Applied that label to the closure glossary and matrix row; removed the old “Distinct next” labels. |
 | 2026-08-03 | Self-containment means defining notation before its first displayed use, not merely before the expression highlighted by a reviewer. | Moved `D` above both formulas, reran all preservation checks, and marked the ticket complete. |

@@ -6,11 +6,11 @@ Stainless verification is not claimed.
 ## Meaning
 
 Candidate #19's population floor is designed only to leave one 2-gap after
-the two harmful residue classes are removed. Property #62 needs a slightly
+the two harmful residue classes are removed. The Sixfold Population-Ratio Threshold property needs a slightly
 larger population-to-capacity ratio to control the full harmful quadratic
 energy.
 
-Property #63 gives the exact comparison cutoff. This property translates that
+The Capacity Threshold Hierarchy property gives the exact comparison cutoff. This property translates that
 cutoff into a simple layer condition: in the late part of a future square
 window, candidate #19's ordinary survival floor is already strong enough for
 that layer's harmful scalar ellipse. No additional residue equidistribution
@@ -26,7 +26,7 @@ L=Q^2-Q-3,
 B=\left\lfloor\frac{L}{6r}\right\rfloor+1.
 ```
 
-Property #62's sharp population ratio is
+the Sixfold Population-Ratio Threshold property's sharp population ratio is
 
 ```math
 \rho_*(r)
@@ -34,7 +34,7 @@ Property #62's sharp population ratio is
 \frac{2r\sqrt r}{2\sqrt r+(r-2)^{3/2}}.
 ```
 
-Property #63 proves that candidate #19's floor
+The Capacity Threshold Hierarchy property proves that candidate #19's floor
 
 ```math
 G\ge2B+1
@@ -156,7 +156,7 @@ Consequently,
 B\le\frac{r-1}{2}<\frac r2<\kappa(r).
 ```
 
-Property #63 now gives
+The Capacity Threshold Hierarchy property now gives
 
 ```math
 2B+1>\rho_*(r)B.
@@ -176,7 +176,7 @@ G>\rho_*(r)B.
 }
 ```
 
-By property #62, the sharp sixfold-capacity envelope for the two harmful
+By the Sixfold Population-Ratio Threshold property, the sharp sixfold-capacity envelope for the two harmful
 classes then lies strictly inside candidate #21's one-layer harmful scalar
 allowance.
 
@@ -240,9 +240,9 @@ The theorem therefore separates the scalar problem:
 It does not prove candidate #19's hereditary floor at any layer.
 
 It also does not allocate the late-layer energies inside candidate #21's
-global weighted allowance. Property #65 proves that local ellipse membership
+global weighted allowance. The One-Layer Ellipse Non-Composition property proves that local ellipse membership
 does not compose; a direct estimate for `sum_i w_i Q_i` remains separate.
-Property #66 proves that success at the required global scale is already a
+The Terminal Harmful-Excess Energy property proves that success at the required global scale is already a
 terminal survival theorem, not an independently noncircular component.
 
 ## Validation

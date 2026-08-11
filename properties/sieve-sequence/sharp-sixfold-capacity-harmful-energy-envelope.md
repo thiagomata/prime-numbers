@@ -30,7 +30,7 @@ Assume every residue class satisfies the common capacity
 0\le c_a\le B.
 ```
 
-For the square-safe window in property #19,
+For the square-safe window in the Close-Pair Matching Bound property,
 
 ```math
 B
@@ -199,7 +199,7 @@ exactly when
 }
 ```
 
-Unlike the symmetric box criterion in property #60, this condition retains
+Unlike the symmetric box criterion in the Harmful-Residue Box Bound property, this condition retains
 the asymmetric relation between the absolute class capacity `B` and the
 uniform mean `G/r`.
 
@@ -222,7 +222,7 @@ properties force the actual `G` above this explicit threshold at a given
 layer. That question may return to the local-abundance/parity boundary.
 
 Even a positive answer at every layer would not prove candidate #21's global
-weighted budget. Property #65 shows that the local ellipses do not compose.
+weighted budget. The One-Layer Ellipse Non-Composition property shows that the local ellipses do not compose.
 The separate cumulative capacity target is a direct estimate for
 
 ```math
@@ -230,7 +230,7 @@ The separate cumulative capacity target is a direct estimate for
 ```
 
 where `C_i` is this property's realized sharp envelope at layer `i`.
-Property #66 classifies the required scale precisely:
+The Terminal Harmful-Excess Energy property classifies the required scale precisely:
 
 ```math
 \sum_iw_iC_i

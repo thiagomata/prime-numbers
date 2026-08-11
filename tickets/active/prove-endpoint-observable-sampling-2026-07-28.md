@@ -51,7 +51,7 @@ Work with the two endpoint classes directly.
 This route was selected because separate absolute bounds on `beta_i` and
 `Delta_i` may double-count the same two endpoint-class deviations.
 
-Property #58 refines the strategy: prefer a direct joint bound for the two
+The Sampling-Density Recombination property refines the strategy: prefer a direct joint bound for the two
 harmful start-residue deviations, which can bypass separate #13 and #23
 budgets and preserve their correlation. Retain the separated interface as a
 fallback.
@@ -69,7 +69,7 @@ G_i=\text{number of complete isolated 2-gaps}.
 ```
 
 Let `k_(i,L)` and `k_(i,R)` count hits on left and right endpoints. Existing
-property #34 proves
+The Orthogonal Residue-Energy Split property proves
 
 ```math
 K_i=k_{i,L}+k_{i,R},
@@ -107,10 +107,10 @@ H_i\beta_i=e_{i,L}+e_{i,R},
 \Delta_i=e_{i,L}-e_{i,R}.
 ```
 
-Property #37 currently bounds the two resulting budgets separately. No sharp
+The Weighted Error Composition property currently bounds the two resulting budgets separately. No sharp
 joint aggregate theorem is proved.
 
-Property #56 solves the sharp one-layer capacity envelope. With
+The Joint Capacity Envelope property solves the sharp one-layer capacity envelope. With
 
 ```math
 \ell_i=\max(0,H_i+2G_i-A_i),
@@ -122,12 +122,12 @@ the maximum is attained among total endpoint-hit counts
 `s in {ell_i,u_i}` and `s=G_i` when feasible, with maximum orientation
 imbalance `|d|=min(s,2G_i-s)`.
 
-Property #57 gives a one-layer capacity-admissible configuration with
+The Endpoint Capacity Insufficiency property gives a one-layer capacity-admissible configuration with
 `k_L=G`, `k_R=0`. Its imbalance cost `G^2/2` is strictly larger than
 candidate #21's complete one-layer allowance
 `G^2(1-2/r)^2/2`.
 
-Property #58 proves
+The Sampling-Density Recombination property proves
 
 ```math
 b_i=\delta_{i,0}+\delta_{i,-2},
@@ -138,12 +138,12 @@ b_i=\delta_{i,0}+\delta_{i,-2},
 where `delta_(i,a)=N_(2),a-G_i/r_i`. Candidate #13 plus #23 is exactly a
 decomposition of this direct two-class error.
 
-Property #59 constructs, for every prime `r>=5`, an integral residue
+The Pointwise Margin Insufficiency property constructs, for every prime `r>=5`, an integral residue
 histogram satisfying candidate #12's pointwise bound and strict survival
 margin while violating candidate #21's scalar ellipse in the same-sign
 harmful direction.
 
-Property #60 proves the sharp box maximum
+The Harmful-Residue Box Bound property proves the sharp box maximum
 
 ```math
 \max_{|\delta_0|,|\delta_{-2}|\le E}
@@ -168,7 +168,7 @@ The existing-estimate audit found:
   short conditioned window;
 - the black-box large-sieve scale is already proved too large for #21.
 
-Property #61 composes the sixfold capacity `B` with the total population `G`.
+The Sixfold-Capacity Energy Envelope property composes the sixfold capacity `B` with the total population `G`.
 It proves the sharp scalar maximum by checking
 
 ```math
@@ -181,7 +181,7 @@ s\in\{\ell,u\}
 
 where `ell=max(0,G-(r-2)B)` and `u=min(G,2B)`.
 
-Property #62 solves that maximum exactly. With
+The Sixfold Population-Ratio Threshold property solves that maximum exactly. With
 
 ```math
 \rho_*(r)
@@ -198,7 +198,7 @@ G>\rho_*(r)B.
 
 For every `r>=5`, `2<rho_*(r)<3`, and `rho_*(r)` tends to `2`.
 
-Property #63 compares the resulting population obligation with candidates
+The Capacity Threshold Hierarchy property compares the resulting population obligation with candidates
 #14 and #19. In the square-window domain,
 
 ```math
@@ -214,7 +214,7 @@ B<\kappa(r)=\frac1{\rho_*(r)-2},
 
 where `kappa(r)/r` tends to `1/2`.
 
-Property #64 proves the uniform bound
+The Late-Layer Sixfold Floor property proves the uniform bound
 
 ```math
 \kappa(r)>\frac r2
@@ -236,7 +236,7 @@ The simpler condition `r>=Q/sqrt(3)+1` is sufficient. Thus candidate #19's
 ordinary floor, if proved, already controls the harmful scalar energy in that
 late part of the chain.
 
-Property #65 corrects the scope of properties #62--#64. They compare each
+The One-Layer Ellipse Non-Composition property corrects the scope of the properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor. They compare each
 layer's scalar energy with its own one-step allowance
 
 ```math
@@ -253,7 +253,7 @@ Even if every layer uses only half its local allowance on the ideal
 multiplicative population scale, the weighted scalar sum exceeds the global
 allowance for every chain of at least two layers.
 
-Property #66 gives the later aggregate classification. If
+The Terminal Harmful-Excess Energy property gives the later aggregate classification. If
 
 ```math
 E_b
@@ -282,7 +282,7 @@ The preferred theorem is a joint aggregate estimate for this exact
 two-dimensional quadratic form, rather than two unrelated uses of
 `|beta_i|,|Delta_i|<=eta_i`.
 
-It must not divide by a late or final 2-gap population. Property #66 proves
+It must not divide by a late or final 2-gap population. The Terminal Harmful-Excess Energy property proves
 that success at candidate #21's global scale is already terminal; it need not
 leave a separate survival allowance for candidate #22.
 
@@ -324,7 +324,7 @@ leave a separate survival allowance for candidate #22.
   `sqrt((r-2)/r)`.
 - The sixfold capacity theorem has the correct local scope, but its natural
   geometry is an asymmetric rectangle around the uniform mean, not the
-  symmetric deviation box of property #60.
+  symmetric deviation box of the Harmful-Residue Box Bound property.
 - The sharp capacity criterion is homogeneous in `G,B`; its true population
   parameter is the ratio `rho=G/B`.
 - The exact ratio threshold is controlled by the filled-harmful corner
@@ -333,7 +333,7 @@ leave a separate survival allowance for candidate #22.
   the stronger ratio `G>rho_*(r)B` when `B` is large.
 - Candidate #14's count-forced-close-pair floor is strictly stronger than the
   harmful scalar population threshold at every square-window layer.
-- Property #62 is therefore a genuine intermediate obligation: weaker than
+- the Sixfold Population-Ratio Threshold property is therefore a genuine intermediate obligation: weaker than
   #14, but stronger than #19 outside the explicit range `B<kappa(r)`.
 - The difficult order-`Q` late layers do not require a population premise
   stronger than candidate #19: their small capacity satisfies
@@ -344,7 +344,7 @@ leave a separate survival allowance for candidate #22.
 - One-layer scalar control in the late range does not mean those layers are
   paid for inside candidate #21. The global budget is smaller and requires a
   genuinely weighted aggregate theorem for the realized capacity envelopes.
-- Property #66 proves that this genuinely weighted harmful theorem is already
+- the Terminal Harmful-Excess Energy property proves that this genuinely weighted harmful theorem is already
   terminal. Candidate #22 remains an independent harmless-distribution
   question, not an additional survival obligation after scalar feasibility.
 
@@ -358,20 +358,20 @@ leave a separate survival allowance for candidate #22.
 - **Separate pointwise `eta_i` bounds as the starting algebra:** can lose the
   joint geometry of `beta_i` and `Delta_i`. Retry only after the exact joint
   envelope is known.
-- **Capacity treated as representative sampling:** property #56 proves the
+- **Capacity treated as representative sampling:** the Joint Capacity Envelope property proves the
   capacity polytope contains vertices concentrated in one endpoint
   orientation. Retry only with an arithmetic reason the incoming residue
   class cannot realize those vertices.
-- **Capacity-only certification of #21:** property #57 supplies an admissible
+- **Capacity-only certification of #21:** the Endpoint Capacity Insufficiency property supplies an admissible
   one-layer countermodel whose imbalance term alone exceeds the allowance.
   Retry only after adding residue-correlation information that suppresses
   orientation concentration.
-- **Treating #13 and #23 as obligatorily separate:** property #58 proves both
+- **Treating #13 and #23 as obligatorily separate:** the Sampling-Density Recombination property proves both
   components recombine exactly into two harmful residue deviations. Retry the
   separated route only if it admits estimates unavailable for the direct
   two-class target.
 - **Using candidate #12's existing pointwise survival margin for #21:**
-  property #59 gives an integral histogram satisfying the margin but
+  The Pointwise Margin Insufficiency property gives an integral histogram satisfying the margin but
   violating the scalar ellipse. Retry only with a stronger threshold or a
   genuinely joint norm.
 - **Complete-period correlation/local factors:** exact over a full primorial
@@ -384,14 +384,14 @@ leave a separate survival allowance for candidate #22.
   dispersion in the `r-2` harmless classes that belongs to candidate #22.
   Retry only if a proved global estimate is unexpectedly sharper than the
   restricted two-class norm.
-- **Composing properties #62--#64 layer by layer into candidate #21:**
-  property #65 proves the inference false at the inequality level. On the
+- **Composing the properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor layer by layer into candidate #21:**
+  The One-Layer Ellipse Non-Composition property proves the inference false at the inequality level. On the
   ideal multiplicative scale, energies equal to one half of every local
   allowance still exceed the global allowance by at least a factor
   `m^2/2`. Retry only with a direct weighted estimate for the realized
   envelopes or new cross-layer correlation; local ellipse membership alone
   is insufficient.
-- **Treating `sum_iw_iC_i` as a preparatory scalar component:** property #66
+- **Treating `sum_iw_iC_i` as a preparatory scalar component:** the Terminal Harmful-Excess Energy property
   proves that any successful bound at candidate #21's global scale already
   forces final survival through its harmful-excess subterm. Retry only as an
   explicitly terminal arithmetic theorem.
@@ -403,7 +403,7 @@ leave a separate survival allowance for candidate #22.
 - A purely combinatorial envelope may be sharp but quantitatively useless.
 - Candidate #13 alone does not control total harmful excess because #23's
   accepted-strike density remains separate. Once their assembled scalar bound
-  clears the global allowance, property #66 gives survival without #22.
+  clears the global allowance, the Terminal Harmful-Excess Energy property gives survival without #22.
 - The `H_i=0` case must remain division-free and is automatically harmless.
 
 ## Next Action
@@ -419,13 +419,13 @@ If this route is continued, the terminal target can be written directly as
 \frac{T^2}{2W},
 ```
 
-where `C_i` is property #61's exact realized capacity envelope. Property #66
+where `C_i` is the Sixfold-Capacity Energy Envelope property's exact realized capacity envelope. The Terminal Harmful-Excess Energy property
 proves that success is already strong enough to force `N_m>0`. Resume only
 with new arithmetic information about the actual population ratios `N_i/B_i`
 or their cross-layer correlation; the pointwise thresholds provide none.
 
 Do not sum local ellipse allowances, do not collect additional empirical
-evidence, do not treat properties #62--#64 as a cumulative result, and do not
+evidence, do not treat the properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor as a cumulative result, and do not
 describe candidate #22 as a remaining survival allowance after this scalar
 target.
 
@@ -443,15 +443,15 @@ target.
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-07-28 | Candidate #13's minimal useful errors are the sum and difference of two centered endpoint-class hit counts; the broad observable statement is unnecessary for #21. | Opened the dedicated algebraic ticket and selected the exact joint feasible-polygon maximum as the first micro-goal. |
-| 2026-07-28 | The exact capacity polygon reduces to at most three endpoint-hit totals; its worst orientation concentrates hits on one endpoint class. Capacity alone therefore does not express representative sampling. | Promoted property #56, synchronized candidate #13, and selected a one-layer concentrated-orientation countermodel against #21's allowance. |
-| 2026-07-28 | A capacity-admissible layer can hit every left endpoint and no right endpoint; its `Delta^2/2` term is larger than #21's full one-layer allowance for every `r>2`. | Promoted property #57, synchronized candidate #13, ruled out capacity-only certification, and selected the exact centered residue-correlation normal form. |
-| 2026-07-28 | Endpoint sampling and accepted-strike density recombine exactly into the sum and difference of the two harmful start-residue deviations. This direct restricted #12 interface retains correlation lost by Minkowski. | Promoted property #58, synchronized candidates #12/#13/#23, made the direct two-class theorem primary, and selected a strength test of #12's existing pointwise margin against #21. |
-| 2026-07-29 | Candidate #12's current pointwise margin is not strong enough for #21: an integral same-sign harmful histogram satisfies `2E<T` but exceeds the scalar ellipse by factor `1+1/(r(r-2))`. | Promoted property #59, synchronized candidate #12, recorded the existing threshold as insufficient, and selected the sharp inscribed-box threshold. |
-| 2026-07-29 | The maximal scalar energy over `|delta_0|,|delta_(-2)|<=E` is `2rE^2/(r-2)`, so the sharp one-layer box threshold is `E<(T/2)sqrt((r-2)/r)`. | Promoted property #60, synchronized candidate #12, and selected an applicability audit of existing harmful-residue estimates at the exact required scale. |
+| 2026-07-28 | The exact capacity polygon reduces to at most three endpoint-hit totals; its worst orientation concentrates hits on one endpoint class. Capacity alone therefore does not express representative sampling. | Promoted the Joint Capacity Envelope property, synchronized candidate #13, and selected a one-layer concentrated-orientation countermodel against #21's allowance. |
+| 2026-07-28 | A capacity-admissible layer can hit every left endpoint and no right endpoint; its `Delta^2/2` term is larger than #21's full one-layer allowance for every `r>2`. | Promoted the Endpoint Capacity Insufficiency property, synchronized candidate #13, ruled out capacity-only certification, and selected the exact centered residue-correlation normal form. |
+| 2026-07-28 | Endpoint sampling and accepted-strike density recombine exactly into the sum and difference of the two harmful start-residue deviations. This direct restricted #12 interface retains correlation lost by Minkowski. | Promoted the Sampling-Density Recombination property, synchronized candidates #12/#13/#23, made the direct two-class theorem primary, and selected a strength test of #12's existing pointwise margin against #21. |
+| 2026-07-29 | Candidate #12's current pointwise margin is not strong enough for #21: an integral same-sign harmful histogram satisfies `2E<T` but exceeds the scalar ellipse by factor `1+1/(r(r-2))`. | Promoted the Pointwise Margin Insufficiency property, synchronized candidate #12, recorded the existing threshold as insufficient, and selected the sharp inscribed-box threshold. |
+| 2026-07-29 | The maximal scalar energy over `|delta_0|,|delta_(-2)|<=E` is `2rE^2/(r-2)`, so the sharp one-layer box threshold is `E<(T/2)sqrt((r-2)/r)`. | Promoted the Harmful-Residue Box Bound property, synchronized candidate #12, and selected an applicability audit of existing harmful-residue estimates at the exact required scale. |
 | 2026-07-29 | Complete-period correlation has the wrong scope, the black-box large sieve has the wrong scale, and full collision energy includes harmless dispersion. Sixfold harmful capacity is the only existing theorem directly matching the two classes locally. | Selected the exact asymmetric capacity rectangle as the next composition and recorded the other theorem routes with their failed hypotheses. |
-| 2026-07-29 | Combining all `r` one-class capacities with total population reduces the exact harmful energy maximum to at most three feasible totals. This yields a deterministic criterion without equidistribution. | Promoted property #61, synchronized candidate #12, and selected the scale-free threshold `rho_*(r)` for `G/B`. |
-| 2026-07-29 | The exact capacity threshold is `G/B>rho_*(r)`, where `rho_*(r)=2r sqrt(r)/(2 sqrt(r)+(r-2)^(3/2))`, lies strictly between `2` and `3`, and tends to `2`. The decisive obstruction is both harmful classes filled to capacity. | Promoted property #62, synchronized candidate #12, and selected an exact implication audit against candidates #14 and #19. |
-| 2026-07-29 | The scalar population threshold lies strictly below #14's count floor. Candidate #19's `2B+1` floor clears it exactly for `B<1/(rho_*(r)-2)`, whose cutoff is asymptotic to `r/2`. | Promoted property #63 and selected an explicit `Q,r` layer-range theorem for when #19 already supplies the scalar criterion. |
-| 2026-07-29 | The exact cutoff satisfies `kappa(r)>r/2`; hence #19's floor supplies the scalar criterion whenever `Q^2-Q-3<3r(r-1)`, in particular for `r>=Q/sqrt(3)+1`. | Promoted property #64 and localized the remaining scalar problem to the early/middle weighted layers. |
-| 2026-07-29 | One-layer scalar ellipse membership does not compose into #21's global allowance. Even at half of every local allowance on the ideal multiplicative scale, weighted Cauchy gives a global overrun factor at least `m^2/2`. | Promoted property #65, recorded the local-to-global route as failed, and stopped before treating #62--#64 as cumulative progress. |
-| 2026-07-29 | Property #66 proves the weighted harmful-excess lower bound `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`; the scalar target below #21's allowance already forces final survival. | Reclassified `sum_iw_iC_i` as a terminal theorem and removed #22 as a subsequent survival obligation. |
+| 2026-07-29 | Combining all `r` one-class capacities with total population reduces the exact harmful energy maximum to at most three feasible totals. This yields a deterministic criterion without equidistribution. | Promoted the Sixfold-Capacity Energy Envelope property, synchronized candidate #12, and selected the scale-free threshold `rho_*(r)` for `G/B`. |
+| 2026-07-29 | The exact capacity threshold is `G/B>rho_*(r)`, where `rho_*(r)=2r sqrt(r)/(2 sqrt(r)+(r-2)^(3/2))`, lies strictly between `2` and `3`, and tends to `2`. The decisive obstruction is both harmful classes filled to capacity. | Promoted the Sixfold Population-Ratio Threshold property, synchronized candidate #12, and selected an exact implication audit against candidates #14 and #19. |
+| 2026-07-29 | The scalar population threshold lies strictly below #14's count floor. Candidate #19's `2B+1` floor clears it exactly for `B<1/(rho_*(r)-2)`, whose cutoff is asymptotic to `r/2`. | Promoted the Capacity Threshold Hierarchy property and selected an explicit `Q,r` layer-range theorem for when #19 already supplies the scalar criterion. |
+| 2026-07-29 | The exact cutoff satisfies `kappa(r)>r/2`; hence #19's floor supplies the scalar criterion whenever `Q^2-Q-3<3r(r-1)`, in particular for `r>=Q/sqrt(3)+1`. | Promoted the Late-Layer Sixfold Floor property and localized the remaining scalar problem to the early/middle weighted layers. |
+| 2026-07-29 | One-layer scalar ellipse membership does not compose into #21's global allowance. Even at half of every local allowance on the ideal multiplicative scale, weighted Cauchy gives a global overrun factor at least `m^2/2`. | Promoted the One-Layer Ellipse Non-Composition property, recorded the local-to-global route as failed, and stopped before treating the properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor as cumulative progress. |
+| 2026-07-29 | the Terminal Harmful-Excess Energy property proves the weighted harmful-excess lower bound `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`; the scalar target below #21's allowance already forces final survival. | Reclassified `sum_iw_iC_i` as a terminal theorem and removed #22 as a subsequent survival obligation. |

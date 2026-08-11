@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #72 gives the exact greedy intersection of a native-period Bessel
+The Native-Period Hybrid Envelope property gives the exact greedy intersection of a native-period Bessel
 budget with the coordinatewise harmful-capacity bounds. This property
 compresses that linear program into one scalar per cut.
 
@@ -21,7 +21,7 @@ required overflow is universally large.
 
 ## Setup
 
-Use property #72's notation. At a positive cut `k`, let
+Use the Native-Period Hybrid Envelope property's notation. At a positive cut `k`, let
 
 ```math
 q_{i,k}=M_kd_ip_ia_i,
@@ -63,7 +63,7 @@ e_k
 }
 ```
 
-Also define the gain of cut `k` over property #70's all-capacity envelope:
+Also define the gain of cut `k` over the Harmful-Capacity Excess Envelope property's all-capacity envelope:
 
 ```math
 \boxed{
@@ -176,7 +176,7 @@ Using `delta_(i,k)>=0` and `sum delta_(i,k)=e_k`,
 ```
 
 In particular, `e_k>0` is equivalent to a strict gain at cut `k`, agreeing
-with property #72's exact improvement criterion.
+with the Native-Period Hybrid Envelope property's exact improvement criterion.
 
 ## Simplified Hybrid Upper Bound
 
@@ -215,13 +215,13 @@ E_b
 }
 ```
 
-This bound is generally weaker than evaluating property #72's exact greedy
+This bound is generally weaker than evaluating the Native-Period Hybrid Envelope property's exact greedy
 formula, but it replaces the entire allocation by one overflow scalar per
 cut.
 
 ## Survival Composition
 
-Property #69 proves that extinction forces
+The Capacity Minimizer Separation property proves that extinction forces
 
 ```math
 E_b
@@ -255,7 +255,7 @@ obligation.
 
 ## Boundary
 
-This theorem quantifies the gain already present in property #72; it does not
+This theorem quantifies the gain already present in the Native-Period Hybrid Envelope property; it does not
 add a new source of cancellation. It is useful when a lower bound on one
 normalized capacity overflow is easier to prove than the full greedy energy
 comparison.

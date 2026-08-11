@@ -153,7 +153,7 @@ factor-size comparison above.
 
 ## Established Algebraic Advance: Exact Divisor Local Factor
 
-Property #84 derives the comparison sequence that a project-specific Type-I
+The Divisor Local Factor property derives the comparison sequence that a project-specific Type-I
 argument must use. Put
 
 ```math
@@ -194,7 +194,7 @@ the installed wheel has the same explicit local density. The first product
 has sieve dimension two and the second has sieve dimension one.
 
 The remainder `E_m(I)` is exactly the discrepancy of the one incomplete CRT
-period. Property #84 proves only the trivial pointwise bound by the complete
+period. The Divisor Local Factor property proves only the trivial pointwise bound by the complete
 primorial modulus. It therefore does **not** prove a Type-I estimate. The first
 honest accumulated obligation is cancellation in
 
@@ -207,7 +207,7 @@ Complete-period density by itself cannot supply that cancellation.
 
 ## Established Bilinear Reduction And A Refuted Shortcut
 
-Property #85 factors the final relaxed indicator at `x=mn`. After both factor
+The Bilinear Character Obstruction property factors the final relaxed indicator at `x=mn`. After both factor
 variables are restricted to be coprime to `P(Q)`, centering by the conditional
 scalar density gives the exact pointwise remainder
 
@@ -255,7 +255,7 @@ bilinear theorem must be formulated for the remainders of this pre-sieved
 base sequence, or use a comparison that already contains the fixed local
 character modes.
 
-Property #86 proves the exact reduction
+The Cofactor Progression Discrepancy property proves the exact reduction
 
 ```math
 \boxed{

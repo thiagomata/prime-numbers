@@ -60,7 +60,7 @@ e_L=k_L-\frac{GH}{A},
 e_R=k_R-\frac{GH}{A}.
 ```
 
-Property #34 gives
+The Orthogonal Residue-Energy Split property gives
 
 ```math
 H\beta=e_L+e_R,
@@ -170,7 +170,7 @@ In harmful-residue coordinates this is exactly
 }
 ```
 
-This is the same two-dimensional quadratic form as property #56, but centered
+This is the same two-dimensional quadratic form as the Joint Capacity Envelope property, but centered
 at the natural residue mean `G/r` rather than the conditional sampling mean
 `GH/A`.
 
@@ -179,7 +179,7 @@ at the natural residue mean `G/r` rather than the conditional sampling mean
 There are now two valid proof interfaces:
 
 1. **Separated interface:** bound `beta` through candidate #13, bound
-   `epsilon` through candidate #23, and combine them using property #37.
+   `epsilon` through candidate #23, and combine them using the Weighted Error Composition property.
 2. **Direct interface:** jointly bound `delta_0` and `delta_(-2)`, the two
    harmful residue deviations of the 2-gap-start population.
 

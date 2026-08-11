@@ -147,7 +147,7 @@ residue system. They are not statements about a local square window.
 
 **Scope and quantifier:** Complete-period; every prime stage after filter $2$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 After filter $2$ is installed, every accepted value is odd. Hence accepted
 endpoints $x$ and $x+2$ are consecutive survivors: the intermediate value is
@@ -231,7 +231,7 @@ representation is pending.
 **Scope and quantifier:** One incoming prime; every complete or finite run of
 copy indices satisfying the stated coprimality precondition.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Expansion distributes every old 2-gap through equally spaced copies before
 filtering. The incoming prime cannot choose arbitrary copies: the two endpoint
@@ -314,7 +314,7 @@ combined period.
 **Scope and quantifier:** Every finite set of distinct incoming odd primes
 coprime to the old period; one complete period after the whole batch.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 The one-filter copy law composes exactly. Applying several future filters as
 one batch counts intersections through CRT, so no survivor is subtracted twice
@@ -407,7 +407,7 @@ period after filters $2$ and $3$ are installed.
 **Scope and quantifier:** Every complete-period stage with modulus $M$
 divisible by $6$, and every incoming prime $r\ge5$ with $r\nmid M$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 The cluster $(2,4,2)$ consists of four consecutive accepted values
 
@@ -499,7 +499,7 @@ verification is pending.
 **Scope and quantifier:** Every nonempty finite cyclic gap list, every
 nonnegative rotation offset, and every gap value $d$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending
+**Status:** **Mathematically proved, Stainless verification pending
 for exact multiplicity.**
 
 Rotation chooses a new origin for the same cyclic list. It neither filters an
@@ -603,7 +603,7 @@ its dedicated `.holds` representation remains pending.
 **Scope and quantifier:** Every later filter transition, and therefore every
 finite chain of later transitions.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Later filtering can copy an old gap or merge consecutive old gaps, but it
 cannot create a smaller positive gap. Thus, once the complete cyclic
@@ -690,7 +690,7 @@ future head's square.
 **Scope and quantifier:** Every prime future head $Q$ and every accepted
 integer $n$ with $Q\le n\lt Q^2$ after all primes below $Q$ are installed.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 The square bound turns acceptance into primality. Any composite below $Q^2$
 has a prime divisor below $Q$, but every such divisor has already been
@@ -768,7 +768,7 @@ have both been installed.
 **Scope and quantifier:** Every sieve stage whose modulus $M$ is divisible by
 $6$, and every later deletion of an accepted value.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 After filter $3$, two 2-gaps cannot share an endpoint. This improves the sharp
 destruction capacity of one later filter strike: removing one accepted value
@@ -833,7 +833,7 @@ inside the next head's square window.
 **Scope and quantifier:** Every incoming prime $r\ge5$ and its next prime
 future head $Q$.
 
-**Status:** **Draft — mathematically proved using Bertrand's postulate,
+**Status:** **Mathematically proved using Bertrand's postulate,
 Stainless verification pending.**
 
 Counting every multiple of $r$ overstates local destruction because most
@@ -921,7 +921,7 @@ remain inside one eligible square-safe window.
 **Scope and quantifier:** Every incoming prime $r\ge5$, its next prime future
 head $Q$, and the single transition that installs filter $r$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 The proved theorem is the conditional implication below; its local-abundance
 antecedent remains open.
 
@@ -947,7 +947,7 @@ K=\left\lfloor\frac{Q^2-1}{r}\right\rfloor,
 A(r,Q)=\pi(K)-\pi(r-1),
 ```
 
-Properties #5 and #6 give
+The 2-Gap Isolation property and #6 give
 
 ```math
 \begin{aligned}
@@ -1026,7 +1026,7 @@ every filter in one complete conditioned chain to a future head $Q$.
 $5\le r_0\lt r_1\lt\cdots\lt r_{m-1}\lt Q$ with exact layer populations
 $N_i$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 The shooting-versus-cluster question becomes an exact signed conservation
 law. Each layer has a multiplicative main term and a harmful excess. The
@@ -1095,7 +1095,7 @@ filter chain as the conservation law of §5.1.
 **Scope and quantifier:** Every nonempty chain
 $5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, using its exact realized populations.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 The strict energy inequality is sufficient for survival. Proving that it
 holds for infinitely many future heads remains open (the terminal survival candidate).
 
@@ -1177,14 +1177,14 @@ pending.
 ### 5.3 Why The Capacity Envelope Is Exhausted
 
 **Population:** The same fixed eligible 2-gap-start population and conditioned
-filter chain as Properties #25 and #66.
+filter chain as the Weighted Deletion Conservation property and #66.
 
 **Scope and quantifier:** Every nonempty conditioned chain
 $5\le r_0\lt\cdots\lt r_{m-1}\lt Q$. The narrated properties (#67--#81) are
 each mathematically proved in their canonical notes; full self-contained
 proofs of the load-bearing steps appear in Appendix C.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 This section narrates a closed exhaustion argument. It does not introduce a
 new theorem; it walks the reader through why every unsigned-capacity route to
 the terminal survival threshold $E_b\lt T^2/(2W_-)$ fails, leaving signed
@@ -1340,7 +1340,7 @@ interval.
 **Scope and quantifier:** Every finite integer interval $I$, after filters
 $2$, $3$, and $5$ have been installed and immediately before filter $7$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 At the first nontrivial conditioned layer, exact residue order replaces the
 quadratic capacity envelope by a constant boundary discrepancy. This is an
@@ -1475,7 +1475,7 @@ cyclic subsums. Stainless verification is pending.
 
 ## 6.5 The Live Frontier: Two Candidates The Conclusion Names
 
-Properties #82 and #83 are the last two steps of a longer argument, and the
+The Filter-Seven Excess Bound property and #83 are the last two steps of a longer argument, and the
 article's conclusion ($\S$8, $\S$10) names two candidates as the live
 twin-prime frontier. This section introduces them so that conclusion is
 readable without external files. It states each candidate's core identity,
@@ -1492,7 +1492,7 @@ conditioned filter chain.
 **Scope and quantifier:** Every nonempty conditioned chain
 $5\le r_0<\cdots<r_{m-1}<Q$.
 
-**Status:** **Draft — mathematically proved reduction; the terminal
+**Status:** **Mathematically proved reduction; the terminal
 signed-mean-square estimate is open. Stainless verification pending.**
 
 Recall from $\S$5.1 that the harmful excess at layer $i$ is
@@ -1531,7 +1531,7 @@ w_i\frac{r_i}{2(r_i-2)}
 Bounding the divisor summands independently gives only
 $|E_P|<2^{\omega(P)}-1$, exponentially too large. Success requires signed
 cancellation, correlation between consecutive layers' boundary sums, or
-cross-layer averaging — a genuinely new arithmetic input. Properties #48–#55
+cross-layer averaging — a genuinely new arithmetic input. The properties from Strike Divisor-Activation Kernel through First-Deletion Reindexing
 catalog the activation-shell, CRT-lift, summatory, Gram, and first-deletion
 reductions; each returns the original energy after exact algebra, so the
 remaining input is signed arithmetic, not another coordinate rewrite.
@@ -1551,7 +1551,7 @@ conditioned layer.
 **Scope and quantifier:** Every incoming prime $r\ge5$ and its actual
 conditioned layer population.
 
-**Status:** **Draft — mathematically proved reduction; the relative
+**Status:** **Mathematically proved reduction; the relative
 four-point correlation estimate is open. Stainless verification pending.**
 
 The residue-collision energy is the input that the copy-block bridge ($\S$7)
@@ -1613,7 +1613,7 @@ grouped into old-period copy blocks.
 $r\ge5$ coprime to $M$, every run of complete copy blocks, and every finite
 integer interval in the copied stream.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 The harmful excess of a copy block is not an arbitrary scalar. It is exactly
 the sum of two centered entries of the old start histogram modulo $r$. This
@@ -1967,7 +1967,7 @@ E_b\lt\frac{T^2}{2W_-}
 \end{aligned}
 ```
 
-Properties #82--#83 then add exact local arithmetic:
+The properties from Filter-Seven Excess Bound through Copy-Block Excess Control then add exact local arithmetic:
 
 ```math
 \begin{aligned}
@@ -2016,26 +2016,26 @@ family of future heads.
 
 | Result | Mathematical status | Stainless status | Canonical evidence |
 |--------|---------------------|------------------|--------------------|
-| Property #1 — exact global 2-gap count | Proved | Pending | [Property #1](../../properties/sieve-sequence/exact-global-two-gap-count.md) |
-| Property #4 — exact copy-index filter frequency | Proved | Pending | [Property #4](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
-| Property #3 — exact batched survival | Proved | Pending | [Property #3](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) |
-| Property #2 — exact global `(2,4,2)` cluster count | Proved | Pending | [Property #2](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) |
-| Property #12 — rotation preserves cyclic multiplicity | Proved for nonempty finite lists | Exact multiplicity pending; membership and size foundations verified | [Property #12](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md), [rotation foundations](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) |
-| Property #13 — absence of 2-gaps is stable | Proved | Pending | [Property #13](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) |
-| Property #8 — square-safe certification | Proved | Pending | [Property #8](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) |
-| Property #5 — post-filter-3 isolation | Proved | Pending | [Property #5](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) |
-| Property #6 — exact accepted strikes | Proved using Bertrand's postulate | Pending | [Property #6](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) |
-| Property #7 — sharp one-transition threshold | Conditional implication proved; abundance antecedent open | Pending | [Property #7](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) |
-| Property #25 — weighted deletion conservation | Exact identity proved | Pending | [Property #25](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) |
-| Property #66 / candidate #24 — terminal harmful-excess energy | Conditional implication proved; strict inequality for infinitely many heads open | Pending | [Property #66](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md), [candidate #24](../../candidates/weighted-harmful-excess-quadratic-survival.md) |
-| Property #82 — filter-$7$ boundary | Proved and sharp | Pending | [Property #82](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) |
-| Property #83 — copy-block residue-energy bridge | Proved; relative-energy and partial-boundary inputs open | Pending | [Property #83](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) |
-| Property #70 — sharp harmful-capacity envelope (Appendix C.1) | Proved; aggregate clearance open | Pending | [Property #70](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) |
-| Property #74 — width floor needs population slack (Appendix C.2) | Proved; vanishes at $N\in\{0,rB\}$ | Pending | [Property #74](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) |
-| Property #77 — fixed-7 cut fails (Appendix C.3) | Proved ($m\ge37$) | Pending | [Property #77](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) |
-| Property #78 — every fixed cut fails (Appendix C.4) | Proved | Pending | [Property #78](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) |
-| Property #79 — moving cut loses blocks (Appendix C.5) | Exact theorem proved; asymptotic corollary uses PNT/Bertrand externally | Pending | [Property #79](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) |
-| Property #80 — incomplete-block Bessel (Appendix C.6) | Exact theorem proved; asymptotic scale uses PNT/Bertrand externally | Pending | [Property #80](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) |
+| the Global 2-Gap Count property — exact global 2-gap count | Proved | Pending | [Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) |
+| the Copy-Index Filter Frequency property — exact copy-index filter frequency | Proved | Pending | [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
+| the Batched 2-Gap Survival property — exact batched survival | Proved | Pending | [Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) |
+| the Global 2-Gap Cluster Count property — exact global `(2,4,2)` cluster count | Proved | Pending | [Global 2-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) |
+| the Rotation Invariance property — rotation preserves cyclic multiplicity | Proved for nonempty finite lists | Exact multiplicity pending; membership and size foundations verified | [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md), [rotation foundations](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) |
+| the Absence Stability property — absence of 2-gaps is stable | Proved | Pending | [Absence Stability](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) |
+| the Safe-Window Certification property — square-safe certification | Proved | Pending | [Safe-Window Certification](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) |
+| the 2-Gap Isolation property — post-filter-3 isolation | Proved | Pending | [2-Gap Isolation](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) |
+| the Accepted Local Strikes property — exact accepted strikes | Proved using Bertrand's postulate | Pending | [Accepted Local Strikes](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) |
+| the Local Survival Threshold property — sharp one-transition threshold | Conditional implication proved; abundance antecedent open | Pending | [Local Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) |
+| the Weighted Deletion Conservation property — weighted deletion conservation | Exact identity proved | Pending | [Weighted Deletion Conservation](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) |
+| the Terminal Harmful-Excess Energy property / candidate #24 — terminal harmful-excess energy | Conditional implication proved; strict inequality for infinitely many heads open | Pending | [Terminal Harmful-Excess Energy](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md), [candidate #24](../../candidates/weighted-harmful-excess-quadratic-survival.md) |
+| the Filter-Seven Excess Bound property — filter-$7$ boundary | Proved and sharp | Pending | [Filter-Seven Excess Bound](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) |
+| the Copy-Block Excess Control property — copy-block residue-energy bridge | Proved; relative-energy and partial-boundary inputs open | Pending | [Copy-Block Excess Control](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) |
+| the Harmful-Capacity Excess Envelope property — sharp harmful-capacity envelope (Appendix C.1) | Proved; aggregate clearance open | Pending | [Harmful-Capacity Excess Envelope](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) |
+| the Envelope Width Floor property — width floor needs population slack (Appendix C.2) | Proved; vanishes at $N\in\{0,rB\}$ | Pending | [Envelope Width Floor](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) |
+| the Filter-Seven Cut Failure property — fixed-7 cut fails (Appendix C.3) | Proved ($m\ge37$) | Pending | [Filter-Seven Cut Failure](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) |
+| the Fixed Native Cut Failure property — every fixed cut fails (Appendix C.4) | Proved | Pending | [Fixed Native Cut Failure](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) |
+| the Moving-Cut Block Loss property — moving cut loses blocks (Appendix C.5) | Exact theorem proved; asymptotic corollary uses PNT/Bertrand externally | Pending | [Moving-Cut Block Loss](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) |
+| the Incomplete-Block Bessel Bound property — incomplete-block Bessel (Appendix C.6) | Exact theorem proved; asymptotic scale uses PNT/Bertrand externally | Pending | [Incomplete-Block Bessel Bound](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) |
 | Candidate #23 — accepted-boundary discrepancy (§6.5.1) | Exact reduction proved; signed mean-square estimate open | Pending | [Candidate #23](../../candidates/accepted-anchor-strike-density.md) |
 | Candidate #20 — residue-collision energy (§6.5.2) | Exact reduction proved; relative four-point correlation open | Pending | [Candidate #20](../../candidates/conditioned-residue-collision-energy.md) |
 
@@ -2054,92 +2054,92 @@ classified there; it is not a substitute for the linked canonical proof.
 
 | Property | Canonical note | Investigation chain | Article treatment |
 |----------|----------------|---------------------|-------------------|
-| #1 | [Exact Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) | Global transition | Full proof in this article |
-| #2 | [Exact Global `(2,4,2)` Two-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) | Global transition | Full proof in this article |
-| #3 | [Exact Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) | Global transition | Full proof in this article |
-| #4 | [Exact Filter Frequency Across Repeated Copies](../../properties/sieve-sequence/copy-index-filter-frequency.md) | Global transition | Full proof in this article |
-| #5 | [Isolation of 2-Gaps After Filtering by 3](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) | Local survival | Full proof in this article |
-| #6 | [Exact Accepted Local Filter Strikes](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) | Local survival | Full proof in this article |
-| #7 | [Sharp Local 2-Gap Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) | Local survival | Full proof in this article |
-| #8 | [Safe-Window 2-Gaps Certify Twin Primes](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) | Local survival | Full proof in this article |
-| #9 | [Reverse-Engineered Initial Scenario for an Eventual Head 2-Gap](../../properties/sieve-sequence/reverse-engineered-eventual-head-scenario.md) | Scenario localization | Canonical note only; no full article section |
-| #10 | [Candidate Property: Infinitely Many Perfect Sieve Scenarios](../../properties/sieve-sequence/infinite-perfect-scenario-property.md) | Scenario localization | Canonical note only; no full article section |
-| #11 | [Global Count Threshold That Forces Local Survival](../../properties/sieve-sequence/global-count-forcing-local-survival.md) | Scenario localization | Canonical note only; no full article section |
-| #12 | [Rotation Preserves Cyclic Gap Counts](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md) | Scenario localization | Full proof in this article |
-| #13 | [Absence of 2-Gaps Is Stable](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) | Scenario localization | Full proof in this article |
-| #14 | [Batched Short-Window Discrepancy Boundary](../../properties/sieve-sequence/batched-short-window-discrepancy-boundary.md) | Scenario localization | Canonical note only; no full article section |
-| #15 | [Fixed-k Shot Spacing: Monotonicity and Eventual Stability](../../properties/sieve-sequence/stable-small-k-shot-spacing.md) | Scenario localization | Canonical note only; no full article section |
-| #16 | [Bounded Pair Separation Gives the k=2 Interval Premise](../../properties/sieve-sequence/interval-premise-from-pair-existence.md) | Scenario localization | Canonical note only; no full article section |
-| #17 | [A Local Count Forces the k=2 Shot-Capacity Premise](../../properties/sieve-sequence/local-count-forces-k2-shot-capacity.md) | Scenario localization | Canonical note only; no full article section |
-| #18 | [Exact Seven-Layer Capacity Floor](../../properties/sieve-sequence/exact-seven-layer-capacity-floor.md) | Capacity and conservation | Canonical note only; no full article section |
-| #19 | [Local Density Forces a Close-Pair Matching Bound](../../properties/sieve-sequence/local-density-forces-close-pair-matching.md) | Capacity and conservation | Canonical note only; no full article section |
-| #20 | [Filtering Attrition Bound for Raw Close Pairs](../../properties/sieve-sequence/filtering-attrition-bound-raw-close-pairs.md) | Capacity and conservation | Canonical note only; no full article section |
-| #21 | [Filtering Attrition Bound for Close-Pair Matchings](../../properties/sieve-sequence/filtering-attrition-bound-close-pair-matching.md) | Capacity and conservation | Canonical note only; no full article section |
-| #22 | [Harmful Residue Capacity After Filter Three](../../properties/sieve-sequence/harmful-residue-capacity-after-filter-three.md) | Capacity and conservation | Canonical note only; no full article section |
-| #23 | [Two-Class Survival From Residue Collision Energy](../../properties/sieve-sequence/two-class-survival-from-collision-energy.md) | Capacity and conservation | Canonical note only; no full article section |
-| #24 | [Weighted Collision-Energy Chain Survival](../../properties/sieve-sequence/weighted-collision-energy-chain-survival.md) | Capacity and conservation | Canonical note only; no full article section |
-| #25 | [Weighted Deletion Conservation Law](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) | Capacity and conservation | Full proof in this article |
-| #26 | [Two-Gap Pair Local Factor By Separation](../../properties/sieve-sequence/two-gap-pair-local-factor-by-separation.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #27 | [Complete-Period Two-Gap Pair-Correlation Average](../../properties/sieve-sequence/complete-period-two-gap-pair-correlation-average.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #28 | [Fourier Bound For Two-Gap Correlation Prefixes](../../properties/sieve-sequence/fourier-two-gap-correlation-prefix-bound.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #29 | [Localized Two-Gap Correlation: Fourier Boundary](../../properties/sieve-sequence/localized-two-gap-correlation-fourier-boundary.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #30 | [Short-Interval Localization Destroys Prime Conductor Decay](../../properties/sieve-sequence/short-interval-localization-destroys-prime-conductor-decay.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #31 | [Black-Box Large Sieve Does Not Fit The Weighted Collision Budget](../../properties/sieve-sequence/black-box-large-sieve-does-not-fit-weighted-collision-budget.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #32 | [First-Deletion Pair Terminal Energy](../../properties/sieve-sequence/first-deletion-pair-terminal-energy.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #33 | [Two Endpoint Observables Separate Harmful Excess And Imbalance](../../properties/sieve-sequence/two-endpoint-observables-separate-harmful-excess-and-imbalance.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #34 | [Orthogonal Residue-Energy Decomposition After A Two-Class Filter](../../properties/sieve-sequence/orthogonal-residue-energy-decomposition-after-two-class-filter.md) | Pair correlation and energy | Canonical note only; no full article section |
-| #35 | [Accepted-Strike Density As A Möbius Boundary Sum](../../properties/sieve-sequence/accepted-strike-density-boundary-decomposition.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #36 | [Endpoint Density Contracts Accepted-Strike Discrepancy](../../properties/sieve-sequence/endpoint-density-contracts-strike-discrepancy.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #37 | [Weighted Composition Of Endpoint And Strike-Density Errors](../../properties/sieve-sequence/weighted-scalar-error-composition.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #38 | [Accepted-Strike Error Is A Positive Quadratic Variation](../../properties/sieve-sequence/accepted-strike-quadratic-variation.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #39 | [Prime-Square Window Boundary Residue Formula](../../properties/sieve-sequence/prime-square-window-boundary-residue-formula.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #40 | [Harmless Energy As A Fixed-Set Pair Correlation](../../properties/sieve-sequence/harmless-energy-fixed-set-pair-form.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #41 | [Complete-Period Uniformity Of Harmless 2-Gap Classes](../../properties/sieve-sequence/complete-period-harmless-class-uniformity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #42 | [Harmless Energy As Spectral Excess Above The Two-Class Floor](../../properties/sieve-sequence/harmless-energy-spectral-excess.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #43 | [Harmless-Class Counts As Translated CRT Fibers](../../properties/sieve-sequence/harmless-class-crt-translated-fibers.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #44 | [Centered Inverse-Phase Gram Matrix](../../properties/sieve-sequence/centered-inverse-phase-gram-matrix.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #45 | [Centered Phase Operator Norm Boundary](../../properties/sieve-sequence/centered-phase-operator-norm-boundary.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #46 | [Exact-Conductor Phase-Block Operator Bound](../../properties/sieve-sequence/exact-conductor-phase-block-operator-bound.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #47 | [Centered Ramanujan Cross-Conductor Geometry](../../properties/sieve-sequence/centered-ramanujan-cross-conductor-geometry.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #48 | [Accepted-Strike Divisor Activation Kernel](../../properties/sieve-sequence/accepted-strike-divisor-activation-kernel.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #49 | [Accepted-Strike CRT Lift-Index Transform](../../properties/sieve-sequence/accepted-strike-crt-lift-index-transform.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #50 | [Accepted-Strike Summatory Coprime Remainder](../../properties/sieve-sequence/accepted-strike-summatory-coprime-remainder.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #51 | [Accepted-Strike Cross-Layer CRT Orthogonality](../../properties/sieve-sequence/accepted-strike-cross-layer-crt-orthogonality.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #52 | [Accepted-Strike Localized Layer Gram Matrix](../../properties/sieve-sequence/accepted-strike-localized-layer-gram-matrix.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #53 | [Accepted-Strike First-Deletion Variance Identity](../../properties/sieve-sequence/accepted-strike-first-deletion-variance-identity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #54 | [Accepted-Strike Active Two-Class Variance Identity](../../properties/sieve-sequence/accepted-strike-active-two-class-variance-identity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #55 | [Accepted-Strike First-Deletion Coordinate Reindexing](../../properties/sieve-sequence/accepted-strike-first-deletion-coordinate-reindexing.md) | Accepted-strike and spectral | Canonical note only; no full article section |
-| #56 | [Endpoint-Observable Joint Capacity Envelope](../../properties/sieve-sequence/endpoint-observable-joint-capacity-envelope.md) | Capacity composition | Canonical note only; no full article section |
-| #57 | [Endpoint Capacity Cannot Certify The Collision Budget](../../properties/sieve-sequence/endpoint-capacity-cannot-certify-collision-budget.md) | Capacity composition | Canonical note only; no full article section |
-| #58 | [Endpoint Sampling And Strike Density Recombine Into Harmful Residues](../../properties/sieve-sequence/endpoint-sampling-strike-density-harmful-residue-bridge.md) | Capacity composition | Canonical note only; no full article section |
-| #59 | [Pointwise Two-Class Margin Does Not Imply The Collision Budget](../../properties/sieve-sequence/pointwise-two-class-margin-does-not-imply-collision-budget.md) | Capacity composition | Canonical note only; no full article section |
-| #60 | [Sharp Harmful-Residue Box Inside The Collision Ellipse](../../properties/sieve-sequence/sharp-harmful-residue-box-inside-collision-ellipse.md) | Capacity composition | Canonical note only; no full article section |
-| #61 | [Sharp Sixfold-Capacity Harmful-Energy Envelope](../../properties/sieve-sequence/sharp-sixfold-capacity-harmful-energy-envelope.md) | Capacity composition | Canonical note only; no full article section |
-| #62 | [Sharp Sixfold-Capacity Population-Ratio Threshold](../../properties/sieve-sequence/sharp-sixfold-capacity-population-ratio-threshold.md) | Capacity composition | Canonical note only; no full article section |
-| #63 | [Capacity Population-Threshold Hierarchy](../../properties/sieve-sequence/capacity-population-threshold-hierarchy.md) | Capacity composition | Canonical note only; no full article section |
-| #64 | [Late-Layer Sixfold Floor Controls Harmful Energy](../../properties/sieve-sequence/late-layer-sixfold-floor-controls-harmful-energy.md) | Capacity composition | Canonical note only; no full article section |
-| #65 | [One-Layer Harmful Ellipses Do Not Compose](../../properties/sieve-sequence/one-layer-harmful-ellipses-do-not-compose.md) | Capacity composition | Canonical note only; no full article section |
-| #66 | [Weighted Harmful-Excess Energy Is Already Terminal](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md) | Terminal quadratic audit | Full proof in this article |
-| #67 | [Integral Population Profiles Attain the Harmful-Energy Threshold](../../properties/sieve-sequence/integral-population-profiles-attain-harmful-energy-threshold.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #68 | [Harmful-Excess Energy Has an Exact Stability Decomposition](../../properties/sieve-sequence/harmful-excess-energy-exact-stability-decomposition.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #69 | [Harmful Capacity Separates the Energy Minimizer](../../properties/sieve-sequence/harmful-capacity-separates-energy-minimizer.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #70 | [Sharp Harmful-Capacity Excess Envelope](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) | Terminal quadratic audit | Narrated in §5.3.1; full proof in Appendix C.1 |
-| #71 | [Paired Harmful-Excess CRT Orthogonality Has Primorial Scale](../../properties/sieve-sequence/paired-harmful-excess-crt-orthogonality-has-primorial-scale.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #72 | [Native-Period Bessel and Capacity Give a Sharp Hybrid Envelope](../../properties/sieve-sequence/native-period-bessel-capacity-hybrid-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #73 | [Native-Period Capacity Overflow Quantifies the Hybrid Gain](../../properties/sieve-sequence/native-period-capacity-overflow-quantifies-hybrid-gain.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #74 | [Capacity-Envelope Width Floor Needs Population Slack](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) | Terminal quadratic audit | Narrated in §5.3.2; full proof in Appendix C.2 |
-| #75 | [Seven-Layer Density Floor Maximizes Capacity Width](../../properties/sieve-sequence/seven-layer-density-floor-maximizes-capacity-width.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #76 | [Seven-Layer Floor Forces Native Overflow](../../properties/sieve-sequence/seven-layer-floor-forces-native-overflow.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #77 | [Fixed Seven Cut Cannot Clear The Original Threshold](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) | Terminal quadratic audit | Narrated in §5.3.4; full proof in Appendix C.3 |
-| #78 | [Every Fixed Native Cut Fails The Original Threshold](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) | Terminal quadratic audit | Narrated in §5.3.4; full proof in Appendix C.4 |
-| #79 | [Moving Cut Loses Complete Native Blocks](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) | Terminal quadratic audit | Narrated in §5.3.5; full proof in Appendix C.5 |
-| #80 | [Incomplete-Block Bessel Excludes No Capacity](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) | Terminal quadratic audit | Narrated in §5.3.5; full proof in Appendix C.6 |
-| #81 | [Capacity Stability Gap Cannot Rescue the Capacity Envelope](../../properties/sieve-sequence/capacity-stability-gap-cannot-rescue-capacity-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| #82 | [Filter-Seven Harmful Excess Is Boundary-Sized](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) | Terminal quadratic audit | Full proof in this article |
-| #83 | [Copy-Block Harmful Excess Is Controlled By Residue Energy](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) | Terminal quadratic audit | Full proof in this article |
-| #84 | [Relaxed Almost-Prime Weight Has An Exact Divisor Local Factor](../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
-| #85 | [Relaxed Almost-Prime Bilinear Remainder Has A Character Obstruction](../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
-| #86 | [Relaxed Cofactor Divisor Sum Is A Prime-Progression Discrepancy](../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
+| [Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) | Global transition | Full proof in this article |
+| [Global 2-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) | Global transition | Full proof in this article |
+| [Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) | Global transition | Full proof in this article |
+| [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) | Global transition | Full proof in this article |
+| [2-Gap Isolation](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) | Local survival | Full proof in this article |
+| [Accepted Local Strikes](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) | Local survival | Full proof in this article |
+| [Local Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) | Local survival | Full proof in this article |
+| [Safe-Window Certification](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) | Local survival | Full proof in this article |
+| [Reverse-Engineered Head Scenario](../../properties/sieve-sequence/reverse-engineered-eventual-head-scenario.md) | Scenario localization | Canonical note only; no full article section |
+| [Perfect Scenario Infinitude](../../properties/sieve-sequence/infinite-perfect-scenario-property.md) | Scenario localization | Canonical note only; no full article section |
+| [Count-Forces-Survival Threshold](../../properties/sieve-sequence/global-count-forcing-local-survival.md) | Scenario localization | Canonical note only; no full article section |
+| [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md) | Scenario localization | Full proof in this article |
+| [Absence Stability](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) | Scenario localization | Full proof in this article |
+| [Batched Discrepancy Boundary](../../properties/sieve-sequence/batched-short-window-discrepancy-boundary.md) | Scenario localization | Canonical note only; no full article section |
+| [Fixed-k Shot Spacing](../../properties/sieve-sequence/stable-small-k-shot-spacing.md) | Scenario localization | Canonical note only; no full article section |
+| [Pair Separation Premise](../../properties/sieve-sequence/interval-premise-from-pair-existence.md) | Scenario localization | Canonical note only; no full article section |
+| [Local Count Shot-Capacity Premise](../../properties/sieve-sequence/local-count-forces-k2-shot-capacity.md) | Scenario localization | Canonical note only; no full article section |
+| [Seven-Layer Capacity Floor](../../properties/sieve-sequence/exact-seven-layer-capacity-floor.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Close-Pair Matching Bound](../../properties/sieve-sequence/local-density-forces-close-pair-matching.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Raw Close-Pair Attrition](../../properties/sieve-sequence/filtering-attrition-bound-raw-close-pairs.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Matching Attrition Bound](../../properties/sieve-sequence/filtering-attrition-bound-close-pair-matching.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Post-Filter-3 Harmful Capacity](../../properties/sieve-sequence/harmful-residue-capacity-after-filter-three.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Two-Class Collision Survival](../../properties/sieve-sequence/two-class-survival-from-collision-energy.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Weighted Chain Survival](../../properties/sieve-sequence/weighted-collision-energy-chain-survival.md) | Capacity and conservation | Canonical note only; no full article section |
+| [Weighted Deletion Conservation](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) | Capacity and conservation | Full proof in this article |
+| [Pair Local Factor](../../properties/sieve-sequence/two-gap-pair-local-factor-by-separation.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Pair-Correlation Average](../../properties/sieve-sequence/complete-period-two-gap-pair-correlation-average.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Fourier Correlation Bound](../../properties/sieve-sequence/fourier-two-gap-correlation-prefix-bound.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Localized Fourier Boundary](../../properties/sieve-sequence/localized-two-gap-correlation-fourier-boundary.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Conductor-Decay Destruction](../../properties/sieve-sequence/short-interval-localization-destroys-prime-conductor-decay.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Large-Sieve Budget Mismatch](../../properties/sieve-sequence/black-box-large-sieve-does-not-fit-weighted-collision-budget.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [First-Deletion Terminal Energy](../../properties/sieve-sequence/first-deletion-pair-terminal-energy.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Endpoint Excess-Imbalance Split](../../properties/sieve-sequence/two-endpoint-observables-separate-harmful-excess-and-imbalance.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Orthogonal Residue-Energy Split](../../properties/sieve-sequence/orthogonal-residue-energy-decomposition-after-two-class-filter.md) | Pair correlation and energy | Canonical note only; no full article section |
+| [Möbius Strike-Density Sum](../../properties/sieve-sequence/accepted-strike-density-boundary-decomposition.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Endpoint Discrepancy Contraction](../../properties/sieve-sequence/endpoint-density-contracts-strike-discrepancy.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Weighted Error Composition](../../properties/sieve-sequence/weighted-scalar-error-composition.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Strike-Error Quadratic Variation](../../properties/sieve-sequence/accepted-strike-quadratic-variation.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Prime-Square Boundary Formula](../../properties/sieve-sequence/prime-square-window-boundary-residue-formula.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Harmless-Energy Pair Correlation](../../properties/sieve-sequence/harmless-energy-fixed-set-pair-form.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Harmless-Class Uniformity](../../properties/sieve-sequence/complete-period-harmless-class-uniformity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Harmless Spectral Excess](../../properties/sieve-sequence/harmless-energy-spectral-excess.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [CRT Fiber Translation](../../properties/sieve-sequence/harmless-class-crt-translated-fibers.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Inverse-Phase Gram Matrix](../../properties/sieve-sequence/centered-inverse-phase-gram-matrix.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Phase-Operator Norm Bound](../../properties/sieve-sequence/centered-phase-operator-norm-boundary.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Conductor Phase-Block Bound](../../properties/sieve-sequence/exact-conductor-phase-block-operator-bound.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Ramanujan Cross-Conductor Geometry](../../properties/sieve-sequence/centered-ramanujan-cross-conductor-geometry.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Strike Divisor-Activation Kernel](../../properties/sieve-sequence/accepted-strike-divisor-activation-kernel.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Strike CRT Lift-Index](../../properties/sieve-sequence/accepted-strike-crt-lift-index-transform.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Strike Summatory Remainder](../../properties/sieve-sequence/accepted-strike-summatory-coprime-remainder.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Cross-Layer CRT Orthogonality](../../properties/sieve-sequence/accepted-strike-cross-layer-crt-orthogonality.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Localized-Layer Gram Matrix](../../properties/sieve-sequence/accepted-strike-localized-layer-gram-matrix.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [First-Deletion Variance Identity](../../properties/sieve-sequence/accepted-strike-first-deletion-variance-identity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Active Two-Class Variance](../../properties/sieve-sequence/accepted-strike-active-two-class-variance-identity.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [First-Deletion Reindexing](../../properties/sieve-sequence/accepted-strike-first-deletion-coordinate-reindexing.md) | Accepted-strike and spectral | Canonical note only; no full article section |
+| [Joint Capacity Envelope](../../properties/sieve-sequence/endpoint-observable-joint-capacity-envelope.md) | Capacity composition | Canonical note only; no full article section |
+| [Endpoint Capacity Insufficiency](../../properties/sieve-sequence/endpoint-capacity-cannot-certify-collision-budget.md) | Capacity composition | Canonical note only; no full article section |
+| [Sampling-Density Recombination](../../properties/sieve-sequence/endpoint-sampling-strike-density-harmful-residue-bridge.md) | Capacity composition | Canonical note only; no full article section |
+| [Pointwise Margin Insufficiency](../../properties/sieve-sequence/pointwise-two-class-margin-does-not-imply-collision-budget.md) | Capacity composition | Canonical note only; no full article section |
+| [Harmful-Residue Box Bound](../../properties/sieve-sequence/sharp-harmful-residue-box-inside-collision-ellipse.md) | Capacity composition | Canonical note only; no full article section |
+| [Sixfold-Capacity Energy Envelope](../../properties/sieve-sequence/sharp-sixfold-capacity-harmful-energy-envelope.md) | Capacity composition | Canonical note only; no full article section |
+| [Sixfold Population-Ratio Threshold](../../properties/sieve-sequence/sharp-sixfold-capacity-population-ratio-threshold.md) | Capacity composition | Canonical note only; no full article section |
+| [Capacity Threshold Hierarchy](../../properties/sieve-sequence/capacity-population-threshold-hierarchy.md) | Capacity composition | Canonical note only; no full article section |
+| [Late-Layer Sixfold Floor](../../properties/sieve-sequence/late-layer-sixfold-floor-controls-harmful-energy.md) | Capacity composition | Canonical note only; no full article section |
+| [One-Layer Ellipse Non-Composition](../../properties/sieve-sequence/one-layer-harmful-ellipses-do-not-compose.md) | Capacity composition | Canonical note only; no full article section |
+| [Terminal Harmful-Excess Energy](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md) | Terminal quadratic audit | Full proof in this article |
+| [Integral Profile Attainment](../../properties/sieve-sequence/integral-population-profiles-attain-harmful-energy-threshold.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Harmful-Excess Stability Decomposition](../../properties/sieve-sequence/harmful-excess-energy-exact-stability-decomposition.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Capacity Minimizer Separation](../../properties/sieve-sequence/harmful-capacity-separates-energy-minimizer.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Harmful-Capacity Excess Envelope](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) | Terminal quadratic audit | Narrated in §5.3.1; full proof in Appendix C.1 |
+| [Paired CRT Primorial Scale](../../properties/sieve-sequence/paired-harmful-excess-crt-orthogonality-has-primorial-scale.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Native-Period Hybrid Envelope](../../properties/sieve-sequence/native-period-bessel-capacity-hybrid-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Native-Period Capacity Overflow](../../properties/sieve-sequence/native-period-capacity-overflow-quantifies-hybrid-gain.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Envelope Width Floor](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) | Terminal quadratic audit | Narrated in §5.3.2; full proof in Appendix C.2 |
+| [Seven-Layer Density Floor](../../properties/sieve-sequence/seven-layer-density-floor-maximizes-capacity-width.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Seven-Layer Overflow Forcing](../../properties/sieve-sequence/seven-layer-floor-forces-native-overflow.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Filter-Seven Cut Failure](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) | Terminal quadratic audit | Narrated in §5.3.4; full proof in Appendix C.3 |
+| [Fixed Native Cut Failure](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) | Terminal quadratic audit | Narrated in §5.3.4; full proof in Appendix C.4 |
+| [Moving-Cut Block Loss](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) | Terminal quadratic audit | Narrated in §5.3.5; full proof in Appendix C.5 |
+| [Incomplete-Block Bessel Bound](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) | Terminal quadratic audit | Narrated in §5.3.5; full proof in Appendix C.6 |
+| [Capacity Stability Gap](../../properties/sieve-sequence/capacity-stability-gap-cannot-rescue-capacity-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](../learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
+| [Filter-Seven Excess Bound](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) | Terminal quadratic audit | Full proof in this article |
+| [Copy-Block Excess Control](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) | Terminal quadratic audit | Full proof in this article |
+| [Divisor Local Factor](../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
+| [Bilinear Character Obstruction](../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
+| [Cofactor Progression Discrepancy](../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) | Relaxed almost-prime | Full proof in [the relaxed almost-prime draft](../draft/draft-relaxed-almost-prime-sieve-sequence.md) |
 
 ## Appendix C: Self-Contained Proofs For The Exhaustion Chain
 
@@ -2165,7 +2165,7 @@ harmful classes.
 **Scope and quantifier:** Every incoming prime $r>2$, every common
 residue-class capacity $B\ge0$, and every population $0\le N\le rB$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Let the residue counts $c_a$ ($a\bmod r$) satisfy $0\le c_a\le B$ and
 $\sum c_a=N$. The two harmful classes hold $K=c_0+c_{-2}$ starts, and the
@@ -2227,7 +2227,7 @@ it reduces the capacity-only route to that explicit inequality.
 
 **Scope and quantifier:** Every $r\ge5$, $B\ge0$, $0\le N\le rB$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 This property extracts the explicit lower bound on $X_{r,N,B}$ supplied by
 the *width* of the feasible interval $[\ell,u]$. Write
@@ -2293,7 +2293,7 @@ $11$) of a conditioned chain.
 $Q\ge17$ and $m\ge37$, assuming the seven-layer density floor's local-count
 threshold at filter $11$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Consider the cut immediately after filter $7$, so $k=2$. The native-period
 hybrid envelope leaves every coordinate $i\ge2$ under its separate capacity
@@ -2364,7 +2364,7 @@ arbitrary native cut.
 $Q\ge17$ and $2\le k<m$, assuming the seven-layer density floor at layer
 $r_k$.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 Generalize C.3 to an arbitrary cut $k$. The seven-layer density floor gives
 $X_k\ge B_k^2$ with $B_k=\lfloor D/(6r_k)\rfloor+1\ge D/(6r_k)$, and
@@ -2436,7 +2436,7 @@ logarithmic-squared inequality holds under five stated finite hypotheses. The
 asymptotic corollary uses Bertrand's postulate and the prime number theorem
 as explicit external dependencies.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 The exact theorem is finite; only the asymptotic corollary is external.
 
 The native modulus at cut $k$ is $M_k=\prod_{p<r_k}p=2\cdot3\prod_{i<k}r_i$.
@@ -2510,7 +2510,7 @@ them under the five stated hypotheses.
 hypotheses of C.4--C.5. The asymptotic scale uses Bertrand and PNT as
 external dependencies.
 
-**Status:** **Draft — mathematically proved, Stainless verification pending.**
+**Status:** **Mathematically proved, Stainless verification pending.**
 
 When $M_k>H$, the native-period hybrid envelope's interval remainder is
 $s_k=H$: the whole window is one incomplete block. This entry proves the

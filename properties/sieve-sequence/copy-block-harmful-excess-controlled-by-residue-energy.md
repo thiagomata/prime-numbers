@@ -271,7 +271,7 @@ short-window information for those partial blocks or average them with signs.
 
 ## Filter-Seven Check
 
-For property #82's old period `M=30`, incoming prime `r=7`, and starts
+For the Filter-Seven Excess Bound property's old period `M=30`, incoming prime `r=7`, and starts
 
 ```math
 S=\{11,17,29\},

@@ -8,7 +8,7 @@ Every initially accepted integer is either first deleted by one incoming
 prime or survives the complete chain. Its vector of centered strike
 observables depends only on that first-deletion class.
 
-This gives an exact rank-one factorization of property #52's localized Gram
+This gives an exact rank-one factorization of the Localized-Layer Gram Matrix property's localized Gram
 matrix. More importantly, candidate #23's strike energy is exactly a
 first-deletion barycenter energy. The standard population upper bound has an
 explicit negative correction equal to the weighted variance between
@@ -112,7 +112,7 @@ D=\sum_{k=0}^{m}n_kv_k.
 
 ## Rank-One Gram Factorization
 
-Let `G` be property #52's localized Gram matrix:
+Let `G` be the Localized-Layer Gram Matrix property's localized Gram matrix:
 
 ```math
 G_{ij}

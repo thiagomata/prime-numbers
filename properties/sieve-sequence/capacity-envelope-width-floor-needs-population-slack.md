@@ -5,9 +5,9 @@ verification is not claimed.
 
 ## Meaning
 
-Property #73 reduces the useful native-period gain to a lower bound for the
+The Native-Period Capacity Overflow property reduces the useful native-period gain to a lower bound for the
 normalized capacity overflow `e_k`. This property extracts the strongest
-immediate lower bound supplied by the geometry of property #70's feasible
+immediate lower bound supplied by the geometry of the Harmful-Capacity Excess Envelope property's feasible
 harmful-count interval.
 
 The sharp squared harmful-excess envelope is at least one quarter of the
@@ -29,7 +29,7 @@ the current population satisfy
 0\le N\le rB.
 ```
 
-Property #70 proves that the total harmful count `K` lies in
+The Harmful-Capacity Excess Envelope property proves that the total harmful count `K` lies in
 
 ```math
 \ell
@@ -225,7 +225,7 @@ Then
 X_i\ge\frac{\sigma_i^2}{4}.
 ```
 
-Property #73 defines
+The Native-Period Capacity Overflow property defines
 
 ```math
 e_k
@@ -255,7 +255,7 @@ s_k
 }
 ```
 
-Property #73 also proves that the hybrid gain at cut `k` satisfies
+The Native-Period Capacity Overflow property also proves that the hybrid gain at cut `k` satisfies
 
 ```math
 \Delta_k
@@ -275,7 +275,7 @@ Therefore
 
 ## Survival Composition
 
-Combining the population-slack gain with properties #69 and #73 gives the
+Combining the population-slack gain with the Capacity Minimizer Separation property and #73 gives the
 proved sufficient condition
 
 ```math

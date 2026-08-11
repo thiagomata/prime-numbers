@@ -5,7 +5,7 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Property #70 bounds each harmful-excess coefficient by maximizing over all
+The Harmful-Capacity Excess Envelope property bounds each harmful-excess coefficient by maximizing over all
 residue histograms compatible with a common capacity. At filter `7`, that
 forgets almost all available arithmetic. The incoming 2-gap starts are the
 fixed classes `11,17,29 modulo 30`, so their filter-`7` harmful excess is a
@@ -21,7 +21,7 @@ interval bound
 The bound is independent of the square-window length. Consequently, the
 actual filter-`7` energy is boundary-sized, while the separate capacity
 envelope can charge an amount proportional to the square of the window
-length. This is the first concrete localized saving after properties #77--#81
+length. This is the first concrete localized saving after the properties from Filter-Seven Cut Failure through Capacity Stability Gap
 exhausted the separate/native capacity routes.
 
 The theorem controls one fixed early layer. It does not yet bound the growing
@@ -30,7 +30,7 @@ collection of later harmful-excess coefficients.
 ## Setup
 
 Immediately before filter `7`, filters `2`, `3`, and `5` are installed.
-Property #17's exact seven-layer analysis proves that the complete 2-gap
+the Local Count Shot-Capacity Premise property's exact seven-layer analysis proves that the complete 2-gap
 starts are precisely
 
 ```math
@@ -115,7 +115,7 @@ complete-period sum is
 6\cdot5+15\cdot(-2)=0.
 ```
 
-This is property #71's complete-block cancellation specialized to filter `7`.
+This is the Paired CRT Primorial Scale property's complete-block cancellation specialized to filter `7`.
 
 ## Sharp Cumulative-Sum Range
 
@@ -205,9 +205,9 @@ Therefore its actual contribution to the harmful-excess energy satisfies
 ```
 
 Here $D=Q^2-Q-3$ is the eligible-window population proxy from
-[property #81](capacity-stability-gap-cannot-rescue-capacity-envelope.md).
+[Capacity Stability Gap](capacity-stability-gap-cannot-rescue-capacity-envelope.md).
 
-By contrast, under candidate #17, properties #75 and #81 give the separate
+By contrast, under candidate #17, the Seven-Layer Density Floor property and #81 give the separate
 capacity-envelope charge
 
 ```math
@@ -234,8 +234,8 @@ residue structure at this layer.
 
 ## Boundary
 
-This theorem neither proves candidate #24 nor refutes property #70. Property
-#70 is sharp given only population and common capacity; property #82 adds
+This theorem neither proves candidate #24 nor refutes the Harmful-Capacity Excess Envelope property. Property
+#70 is sharp given only population and common capacity; the Filter-Seven Excess Bound property adds
 strictly more information by using the exact ordered residue pattern.
 
 The same argument gives a finite discrepancy constant for every fixed layer,
@@ -245,7 +245,7 @@ and a naive cumulative-sum constant can grow rapidly. The next theorem must
 control that growth strongly enough to sum the coefficients through a chain
 whose length increases with `Q`.
 
-The general coefficient is already identified by property #58 as
+The general coefficient is already identified by the Sampling-Density Recombination property as
 
 ```math
 b_i=\delta_{0,i}+\delta_{-2,i}.

@@ -4,7 +4,7 @@
 **Updated:** 2026-08-03
 **Status:** Open — draft Scala captured here; articles deliberately left deferring
 **Depends on:** `investigate-final-programs-signed-energy-almost-prime-2026-08-03.md`
-(properties #82, #83, #84, #85, #86 originate there)
+(the Filter-Seven Excess Bound property, #83, #84, #85, #86 originate there)
 
 ## START HERE
 
@@ -29,7 +29,7 @@ annotated `// DRAFT — not yet verified through Stainless`.
 ## Related Tickets
 
 - `investigate-final-programs-signed-energy-almost-prime-2026-08-03.md` —
-  originated properties #82, #83, #84, #85, #86.
+  originated the Filter-Seven Excess Bound property, #83, #84, #85, #86.
 - `prove-apply1-is-prime.md` — prior example of a property whose
   Stainless verification is tracked separately while the math is proved.
 
@@ -97,7 +97,7 @@ pending, which is what they honestly are.
   require(...); assert(...); <claim> }.holds }` with `Calc.mod`/`Calc.div`
   for all modular arithmetic (never `%`).
 - `SpecSieveSeqHeadIsPrime.assertApplyOnePrimeIfOwnNextPrimeBelowHeadSq`
-  already proves the head-is-prime direction; Property #8 is its two-endpoint
+  already proves the head-is-prime direction; the Safe-Window Certification property is its two-endpoint
   generalization and should compose from it.
 - Finite CRT products (#1–#4) have close analogues in `GapCycle` and
   `SpecSieveSeqPeriodProperties`; deep-search those before writing new code.
@@ -125,7 +125,7 @@ pending, which is what they honestly are.
    `SpecSieveSeqSurvivorCountProperties`, `SieveUtils` for any lemma already
    covering the #1–#4 finite CRT products. Do not write a new lemma that
    duplicates an existing one.
-2. If none exists, promote the Property #1 draft below into a new
+2. If none exists, promote the the Global 2-Gap Count property draft below into a new
    `SpecTwoGapCountProperties` object and run `just verify` on that one
    function (green-to-green, one lemma per cycle).
 
@@ -147,7 +147,7 @@ theorems. They are written in the project idiom but have not been type
 checked or verified. Annotate any inlined copy `// DRAFT — not yet verified
 through Stainless`.
 
-### Property #1 — Exact Global 2-Gap Count (finite CRT product)
+### Exact Global 2-Gap Count (finite CRT product)
 
 ```scala
 // DRAFT — not yet verified through Stainless
@@ -186,7 +186,7 @@ object SpecTwoGapCountProperties {
 }
 ```
 
-### Property #8 — Safe-Window 2-Gaps Certify Twin Primes
+### Safe-Window 2-Gaps Certify Twin Primes
 
 ```scala
 // DRAFT — not yet verified through Stainless
@@ -201,7 +201,7 @@ def assertSquareSafeEndpointPrime(n: BigInt, Q: BigInt, primorialQ: BigInt): Boo
 }.holds
 ```
 
-### Property #84 — Exact Divisor Local Factor (one prime, one case)
+### Exact Divisor Local Factor (one prime, one case)
 
 ```scala
 // DRAFT — not yet verified through Stainless
@@ -215,7 +215,7 @@ def localFactorCase_PW_not_PZ(p: BigInt): Boolean = {
 }.holds
 ```
 
-### Property #85 — χ₃ Refutation (the scalar-density counterexample)
+### χ₃ Refutation (the scalar-density counterexample)
 
 ```scala
 // DRAFT — not yet verified through Stainless
@@ -232,7 +232,7 @@ def assertChi3CounterexampleOnWheel30: Boolean = {
 }.holds
 ```
 
-### Properties #6, #25/#66, #82 chain consequence, #83 relative input
+### , #25/#66, #82 chain consequence, #83 relative input
 
 No draft provided. These either depend on Bertrand / prime-counting (#6),
 an open abundance antecedent (#7), a weighted Cauchy-Schwarz chain over a

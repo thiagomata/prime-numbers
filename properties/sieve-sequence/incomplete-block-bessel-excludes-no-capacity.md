@@ -6,7 +6,7 @@ external mathematical dependencies. Stainless verification is not claimed.
 
 ## Meaning
 
-Property #79 proves that a moving native cut far enough to avoid candidate
+The Moving-Cut Block Loss property proves that a moving native cut far enough to avoid candidate
 #24's suffix obstruction eventually has modulus larger than the entire
 square-window start interval. The Bessel constraint then sees one incomplete
 block and has remainder budget equal to the whole interval length.
@@ -51,7 +51,7 @@ d_i=\frac{P_i}{6},
 
 because the base pair-start density after filters `2,3` is `1/6`.
 
-Property #72's exact native norm is
+the Native-Period Hybrid Envelope property's exact native norm is
 
 ```math
 q_{i,k}
@@ -78,7 +78,7 @@ K_i-\frac{2N_i}{r_i}
 \le N_i.
 ```
 
-Property #70's sharp endpoint maximum consequently obeys
+the Harmful-Capacity Excess Envelope property's sharp endpoint maximum consequently obeys
 
 ```math
 \boxed{X_i\le N_i^2.}
@@ -159,7 +159,7 @@ Assume
 M_k>H.
 ```
 
-Then property #72's interval remainder is
+Then the Native-Period Hybrid Envelope property's interval remainder is
 
 ```math
 s_k=H.
@@ -187,7 +187,7 @@ the normalized capacity bound gives
 \le H=s_k.
 ```
 
-Property #73 defines
+The Native-Period Capacity Overflow property defines
 
 ```math
 e_k
@@ -203,7 +203,7 @@ Consequently,
 \boxed{e_k=0.}
 ```
 
-The exact improvement criterion in property #72 then gives
+The exact improvement criterion in the Native-Period Hybrid Envelope property then gives
 
 ```math
 \boxed{
@@ -265,7 +265,7 @@ r_{k-1}.
 ```
 
 Now suppose, for contradiction, that a cut clears candidate #24's original
-threshold under candidate #17 at its first suffix layer. Properties #78--#79
+threshold under candidate #17 at its first suffix layer. The properties from Fixed Native Cut Failure through Moving-Cut Block Loss
 give
 
 ```math
@@ -309,7 +309,7 @@ at every cut that could otherwise avoid the suffix obstruction.
 ## Exhaustion Of The Original Native Hybrid
 
 Assume the full candidate #17 lower-envelope hypothesis. In particular, it
-holds at filter `11`. Property #77 then proves, for sufficiently long chains,
+holds at filter `11`. The Filter-Seven Cut Failure property then proves, for sufficiently long chains,
 
 ```math
 \mathcal U_2^{\mathrm{hyb}}
@@ -336,7 +336,7 @@ For a potentially successful moving cut, the preceding section instead gives
 ```
 
 This contradicts threshold clearance. Fixed cuts are already excluded by
-property #78. Therefore, using Bertrand/PNT explicitly as external inputs,
+The Fixed Native Cut Failure property. Therefore, using Bertrand/PNT explicitly as external inputs,
 
 ```math
 \boxed{
@@ -360,14 +360,14 @@ current #24 envelope loses too much.
 
 The result does not address:
 
-1. property #69's capacity-relaxed threshold
+1. the Capacity Minimizer Separation property's capacity-relaxed threshold
    `T^2/(2W_-)+Gamma_cap`;
 2. an upper bound for actual `E_b` using localized residue information rather
    than coordinate capacity maxima `X_i`; or
 3. a different cross-layer inequality not represented by native-period
    Bessel.
 
-Property #81 subsequently proves that the first item cannot rescue the
+The Capacity Stability Gap property subsequently proves that the first item cannot rescue the
 separate capacity envelope under full candidate #17 on an unbounded family.
 Thus the live routes are a smaller localized upper bound for actual `E_b` or
 a genuinely different cross-layer inequality.

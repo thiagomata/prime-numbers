@@ -5,7 +5,7 @@ boundary. Stainless verification is not claimed.
 
 ## Meaning
 
-Property #44 shows that harmless-class centering can make an individual
+The Inverse-Phase Gram Matrix property shows that harmless-class centering can make an individual
 Fourier frequency much cheaper than an uncentered estimate predicts. This
 property tests whether those single-frequency savings improve the generic
 operator norm after all frequencies are combined.
@@ -22,7 +22,7 @@ CRT spectrum and interval multipliers, not only centering and operator norm.
 
 ## Setup
 
-Use the notation of properties #43 and #44:
+Use the notation of the CRT Fiber Translation property and #44:
 
 ```math
 P>r\ge5,
@@ -173,7 +173,7 @@ Equivalently, the frequency-side Gram matrix
 ```
 
 has nonzero eigenvalue `P` with multiplicity `h-1`. Its entries are exactly
-the centered phase Gram entries from property #44.
+the centered phase Gram entries from the Inverse-Phase Gram Matrix property.
 
 ## The Sharp Generic Bound
 
@@ -206,7 +206,7 @@ so equality holds.
 
 ## Exact Return To Full-Shift Parseval
 
-Consider the equal-fiber-length core of property #44. Put
+Consider the equal-fiber-length core of the Inverse-Phase Gram Matrix property. Put
 
 ```math
 \alpha_m
@@ -237,7 +237,7 @@ P\sum_{m\bmod P}|\alpha_m|^2\\
 \end{aligned}
 ```
 
-The last line is exactly the full-shift Parseval energy from property #43.
+The last line is exactly the full-shift Parseval energy from the CRT Fiber Translation property.
 Thus the generic centered operator norm gives no improvement over the
 full-shift bound.
 
@@ -305,7 +305,7 @@ large-sieve inequality all discard the required arithmetic alignment.
 The remaining noncircular possibilities are:
 
 1. a bilinear estimate coupling the CRT factors of `hat(g_0)` to the exact
-   centered kernel from property #44; or
+   centered kernel from the Inverse-Phase Gram Matrix property; or
 2. cancellation after the centered forms are summed with candidate #21's
    chain weights.
 

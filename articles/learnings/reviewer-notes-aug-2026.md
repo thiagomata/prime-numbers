@@ -27,13 +27,13 @@ boundary is drawn more carefully than is typical.
 
 Every spot of mathematics was re-derived independently and is correct:
 
-- Property #82 (filter-7): the 21-weight sequence, cumulative sums
+- the Filter-Seven Excess Bound property (filter-7): the 21-weight sequence, cumulative sums
   (min −8, max 10), the bound 18/7, the attaining interval (residues 47–161,
   weight sum 18), and the energy consequence `(49P_m/30)·(18/7)² = 54P_m/5`.
-- Property #83 (copy-block bridge): `B_j = d_{t_j}+d_{t_j-2}`,
+- the Copy-Block Excess Control property (copy-block bridge): `B_j = d_{t_j}+d_{t_j-2}`,
   zero-sum, `ΣB_j² ≤ 4V_r`, and the filter-7 consistency check
   (ΣB²=20/7 ≤ 4V₇=48/7).
-- Property #85 / scalar-density refutation: the χ₃ counterexample on
+- the Bilinear Character Obstruction property / scalar-density refutation: the χ₃ counterexample on
   W=30, Z=6 (8 reduced residues split 4-and-4 mod 3, 32 allowed ordered
   pairs, correlation −32, scalar comparison 0 → ratio exactly 1).
 - Bounded cyclic run-two: Q=101, r=23, M=9,699,690, three consecutive
@@ -50,7 +50,7 @@ bringing the total to six. None affects any proved result; they are
 correctness-adjacent (items 1, 5, 6), framing consistency (items 2, 3), and
 presentation (item 4).
 
-## Item 1 — `D` is undefined inside Property #82
+## Item 1 — `D` is undefined inside the Filter-Seven Excess Bound property
 
 **Severity:** correctness-adjacent / easy fix.
 **Resolution:** Fixed by the authors after round 1.
@@ -80,7 +80,7 @@ the #82 note, before the ratio:
 
 ```text
 where D = Q^2 - Q - 3 is the eligible-window population proxy
-from property #81.
+from the Capacity Stability Gap property.
 ```
 
 No math changes; this only makes the note self-contained.
@@ -148,8 +148,11 @@ communicate "these properties live in their notes, not here." A reader
 scanning the appendix for signal has to filter past 54 identical rows.
 
 **Suggested fix (optional).** Collapse the 54 "canonical note only" rows
-into a single sentence ("Properties #9–#11, #14–#24, #26–#65, #67–#81 are
-treated only in their canonical notes; the rows below record the properties
+into a single sentence ("the properties from Reverse-Engineered Head Scenario
+through Count-Forces-Survival Threshold, Batched Discrepancy Boundary through
+Weighted Chain Survival, Pair Local Factor through One-Layer
+Ellipse Non-Composition, and Integral Profile Attainment through Capacity
+Stability Gap are treated only in their canonical notes; the rows below record the properties
 that receive non-trivial article treatment"), and keep only the rows with
 non-trivial treatment (Full proof / Collectively summarized / Refuted).
 This loses no information and improves readability.
@@ -158,7 +161,7 @@ If the full table is valued as an audit record, an alternative is to move
 it to a collapsible `<details>` block so the default view shows only the
 non-trivial rows.
 
-## Item 5 — Property #86 open-target inequality drift (`\le` vs `\ll`)
+## Item 5 — the Cofactor Progression Discrepancy property open-target inequality drift (`\le` vs `\ll`)
 
 **Severity:** correctness-adjacent.
 **Resolution:** Fixed. The canonical note's `\le`
@@ -192,13 +195,13 @@ does not pretend an exact equality-constant is known). Change the canonical
 note's `\le` at line 194 to `\ll`. No math changes downstream since the line
 is an open target, not a proved bound.
 
-## Item 6 — Property #81 uses `M_1` where Property #75 (its cited source) uses `X_1`
+## Item 6 — The Capacity Stability Gap property uses `M_1` where the Seven-Layer Density Floor property (its cited source) uses `X_1`
 
 **Severity:** correctness-adjacent / notation collision.
 **Resolution:** Fixed. Both occurrences in #81
 (`capacity-stability-gap-cannot-rescue-capacity-envelope.md:274, :313`)
-changed from `M_1` to `X_1`. Notation history, for context: Property #70
-originally names the capacity maximum `M_i`; Properties #72 onward
+changed from `M_1` to `X_1`. Notation history, for context: the Harmful-Capacity Excess Envelope property
+originally names the capacity maximum `M_i`; the Native-Period Hybrid Envelope property onward
 deliberately rename it `X_i` to avoid collision with the native modulus
 `M_k`. Since #81 directly invokes #75's `X_1 \ge B_1^2`, its two occurrences
 must be `X_1`. Neither the proof nor any constant changes.
@@ -208,11 +211,11 @@ This was found in the second round by re-deriving the capacity chain. The
 file states
 
 ```text
-Property #75 then gives the sharp coordinate envelope
+The Seven-Layer Density Floor property then gives the sharp coordinate envelope
     M_1 >= B_1^2
 ```
 
-and later `U_cap >= α_1 M_1` (line 313). But Property #75's actual boxed
+and later `U_cap >= α_1 M_1` (line 313). But the Seven-Layer Density Floor property's actual boxed
 result (`seven-layer-density-floor-maximizes-capacity-width.md:181`) is
 
 ```text
@@ -273,9 +276,9 @@ sections and their canonical notes. Constants, formulas, quantifier scope,
 and sharpness claims are identical everywhere except the one `\le`/`\ll`
 discrepancy in #86 (item 5). Notably:
 
-- Property #84's five-row local-factor table is byte-for-byte identical in
+- the Divisor Local Factor property's five-row local-factor table is byte-for-byte identical in
   both files.
-- Properties #82 and #83's weight sequences, cumulative sums, and boxed
+- the Filter-Seven Excess Bound property and #83's weight sequences, cumulative sums, and boxed
   bounds are character-for-character identical.
 
 The articles omit some of the canonical notes' finite consistency checks

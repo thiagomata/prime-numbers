@@ -62,7 +62,7 @@ a_iN_i-N_{i+1}
 
 for the signed total harmful excess at layer `i`.
 
-Property #25 proves the exact weighted conservation law
+The Weighted Deletion Conservation property proves the exact weighted conservation law
 
 ```math
 \boxed{
@@ -321,7 +321,7 @@ of this variation.
    it vanishes when the actual harmless survivor population is zero.
 5. Proving candidate #22 does not remove the terminal scalar obligation.
 6. One-layer capacity thresholds remain valid local classifications, but
-   property #65 already shows they do not bound this quadratic variation
+   The One-Layer Ellipse Non-Composition property already shows they do not bound this quadratic variation
    globally.
 
 The next useful algebraic search should therefore not describe
@@ -348,7 +348,7 @@ estimate from being mistaken for completion of the chain argument.
 
 ## Validation
 
-- The definitions of `b_i`, `w_i`, and `T` match property #25 and candidate
+- The definitions of `b_i`, `w_i`, and `T` match the Weighted Deletion Conservation property and candidate
   #21.
 - The identity `a_iw_i=w_{i-1}` includes `i=0` through the declared extension
   `w_{-1}=A_{0,m}`.

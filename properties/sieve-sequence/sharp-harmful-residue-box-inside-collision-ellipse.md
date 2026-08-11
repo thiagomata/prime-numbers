@@ -4,7 +4,7 @@
 
 ## Meaning
 
-Property #59 proves that candidate #12's existing pointwise survival margin
+The Pointwise Margin Insufficiency property proves that candidate #12's existing pointwise survival margin
 is too weak for candidate #21's quadratic budget. This property computes the
 exact stronger pointwise threshold.
 

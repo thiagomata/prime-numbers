@@ -12,20 +12,20 @@ proof-completeness, framing, and mechanical review
 
 Create a new review-draft `articles/chapter6/gap-dynamics-v2.md` without
 modifying `gap-dynamics.md`; create a separate relaxed almost-prime draft for
-candidate #25 and properties #84--#86; update the capacity learnings; and mark
+candidate #25 and the properties from Divisor Local Factor through Cofactor Progression Discrepancy; update the capacity learnings; and mark
 the older survival draft as superseded while preserving its historical
 material.
 
 ## Related Tickets
 
 - `investigate-final-programs-signed-energy-almost-prime-2026-08-03.md` —
-  properties #83--#86, the exact Type-II auxiliary refutation, and the stable
+  The properties from Copy-Block Excess Control through Cofactor Progression Discrepancy, the exact Type-II auxiliary refutation, and the stable
   arithmetic handoff (complete).
 - `tickets/done/gap-dynamics-v2-research-update.md` — a prior v2 was created
   and later folded into `gap-dynamics.md` by commit `f3d6e00f`; its scope and
   review lessons remain relevant, but the deleted file must not be restored
   blindly.
-- `verify-19-21-escape-wall-2026-07-27.md` — properties #66--#82 and the
+- `verify-19-21-escape-wall-2026-07-27.md` — the properties from Terminal Harmful-Excess Energy through Filter-Seven Excess Bound and the
   exhausted capacity/native-period routes.
 
 ## Related Articles
@@ -63,13 +63,13 @@ conclusion is weaker than a 2-gap.
 ## Current State
 
 - The published `gap-dynamics.md` ends with a generic short-window/Type-I/II
-  boundary and does not contain properties #82--#83.
+  boundary and does not contain the properties from Filter-Seven Excess Bound through Copy-Block Excess Control.
 - The former `gap-dynamics-v2.md` was deleted when its content was folded into
   v1; no v2 exists at HEAD.
 - No almost-prime article exists.
 - The old survival draft predates the signed energy and almost-prime results.
 - The capacity learnings overstates a single capacity/position boundary and
-  does not record the exhaustion of properties #66--#81 or property #83.
+  does not record the exhaustion of the properties from Terminal Harmful-Excess Energy through Capacity Stability Gap or the Copy-Block Excess Control property.
 - New `articles/chapter6/gap-dynamics-v2.md` is complete as a review draft. It
   preserves the complete-period/square-safe foundation, proves the filter-`7`
   cumulative-sum bound and copy-block residue-energy theorem in full, states
@@ -100,19 +100,19 @@ conclusion is weaker than a 2-gap.
   30 valid / 0 invalid / 0 unknown.
 - The review-readiness rewrite now has the established article front matter,
   terminology/evidence boundary, and complete canonical sections for
-  Properties #1, #4, and #3. Each section identifies its population and scope,
+  The Global 2-Gap Count property, #4, and #3. Each section identifies its population and scope,
   gives a labeled proof, links its canonical note, marks Stainless pending,
   and denies the invalid complete-period-to-short-window inference.
-- Property #12 now closes the complete-period group with an exact
+- the Rotation Invariance property now closes the complete-period group with an exact
   index-bijection proof and an honest distinction between verified
   membership/size foundations and pending multiplicity verification.
-  Properties #8, #5, #6, and #7 now form the local theorem chain: strict
+  The Safe-Window Certification property, #5, #6, and #7 now form the local theorem chain: strict
   square-safe certification, endpoint isolation, exact accepted strikes, and
   the conditional one-transition survival threshold.
 - The weighted section now proves candidate #24's terminal implication from
-  the telescoping conservation law and weighted Cauchy--Schwarz. Property #82
+  the telescoping conservation law and weighted Cauchy--Schwarz. The Filter-Seven Excess Bound property
   now contains the complete modulo-210 arbitrary-interval certificate and
-  derived filter-7 energy coefficient. Property #83 now proves the exact
+  derived filter-7 energy coefficient. The Copy-Block Excess Control property now proves the exact
   block observable, zero sum, autocorrelation energy, `4V_r` bound,
   arbitrary-interval boundary, and collision-energy composition.
 - Gap Dynamics v2 now has its complete conclusion recap and evidence appendix;
@@ -135,7 +135,7 @@ conclusion is weaker than a 2-gap.
 
 - The requested v2 is a new successor, not a restoration of the deleted 2026-
   07-20 file.
-- Properties #82--#86 are mathematically proved but have no Stainless `.holds`
+- the properties from Filter-Seven Excess Bound through Cofactor Progression Discrepancy are mathematically proved but have no Stainless `.holds`
   verification. Article framing must not call them verified.
 - Candidate #25 is not a twin-prime condition; combining it into the main
   2-gap proof narrative would misstate the conclusion.
@@ -169,17 +169,17 @@ conclusion is weaker than a 2-gap.
 | Isolation after filter 3 (#5) | Local pre-filter 2-gap-start population | Mathematically proved; Stainless pending | One removed accepted value destroys at most one 2-gap |
 | Exact accepted strikes / sharp threshold (#6--#7) | One stated local window and one incoming filter | Mathematical theorem using verified foundation | Exact strike count, deletion injection, survival inequality |
 | Weighted harmful-excess survival (#66 / candidate #24 implication) | One complete conditioned chain to one future head | Proved conditional implication | Conservation, weighted Cauchy, contradiction at final extinction |
-| Filter-seven boundary (#82) | Actual filter-7 observable on every integer interval | Draft — mathematically proved, Stainless pending | Exact 21-weight certificate and sharp cumulative-sum proof |
-| Copy-block energy bridge (#83) | Complete old-period copy blocks for one incoming prime | Draft — mathematically proved, Stainless pending | Exact `B_j`, zero sum, autocorrelation identity, `4V_r`, prefix bound, partial-boundary derivation |
+| Filter-seven boundary (#82) | Actual filter-7 observable on every integer interval | Mathematically proved, Stainless pending | Exact 21-weight certificate and sharp cumulative-sum proof |
+| Copy-block energy bridge (#83) | Complete old-period copy blocks for one incoming prime | Mathematically proved, Stainless pending | Exact `B_j`, zero sum, autocorrelation identity, `4V_r`, prefix bound, partial-boundary derivation |
 
 ### Relaxed Almost-Prime Draft
 
 | Property | Population / scope | Status | Required article treatment |
 |----------|--------------------|--------|----------------------------|
 | Relaxed-weight implication | Survivors in one square-safe interval | Proved conditional implication | Prime certification plus `z^3>X+1` contradiction |
-| Exact divisor local factor (#84) | Final relaxed weight with `m|n` in one interval | Draft — mathematically proved, Stainless pending | Wheel-sharing zero case, five local cases, CRT factor, exact remainder |
-| Shifted divisor discrepancy (#86) | Pre-sieved base sequence and odd `d|P(z)` | Draft — mathematically proved, Stainless pending | Complete-wheel `1/phi(d)`, periodic boundary, exact prime-progression identity |
-| Bilinear character decomposition (#85) | Scalar-centered final weight at `x=mn` | Draft — mathematically proved, Stainless pending | Möbius expansion, density expansion, inverse-residue form, nonprincipal characters |
+| Exact divisor local factor (#84) | Final relaxed weight with `m|n` in one interval | Mathematically proved, Stainless pending | Wheel-sharing zero case, five local cases, CRT factor, exact remainder |
+| Shifted divisor discrepancy (#86) | Pre-sieved base sequence and odd `d|P(z)` | Mathematically proved, Stainless pending | Complete-wheel `1/phi(d)`, periodic boundary, exact prime-progression identity |
+| Bilinear character decomposition (#85) | Scalar-centered final weight at `x=mn` | Mathematically proved, Stainless pending | Möbius expansion, density expansion, inverse-residue form, nonprincipal characters |
 | Scalar-density Type-II shortcut | Complete reduced wheel with arbitrary bounded product coefficients | Refuted auxiliary statement | Exact modulo-3 counterexample and narrow scope |
 
 ## Expected State
@@ -199,7 +199,7 @@ conclusion is weaker than a 2-gap.
 
 **Status:** BLOCKED
 
-The old v2 was already folded into v1 and predates properties #66--#86.
+The old v2 was already folded into v1 and predates the properties from Terminal Harmful-Excess Energy through Cofactor Progression Discrepancy.
 
 **Retry condition:** None for verbatim restoration; historical content may be
 consulted when it remains mathematically current.
@@ -228,7 +228,7 @@ the complete proof program belongs in its own article.
 
 ## Assumptions
 
-- Properties #82--#86 at HEAD are authoritative mathematical sources.
+- the properties from Filter-Seven Excess Bound through Cofactor Progression Discrepancy at HEAD are authoritative mathematical sources.
 - Draft articles may include unverified Scala sketches only when labeled
   `DRAFT — not verified through Stainless`; otherwise they state explicitly
   that the third representation is pending.
@@ -236,7 +236,7 @@ the complete proof program belongs in its own article.
 
 ## Risks
 
-- Accidentally implying properties #82--#86 are Stainless-verified.
+- Accidentally implying the properties from Filter-Seven Excess Bound through Cofactor Progression Discrepancy are Stainless-verified.
 - Claiming the complete-block #83 bound controls late partial blocks.
 - Claiming the modulo-3 obstruction refutes candidate #25 rather than one
   comparison route.
@@ -298,17 +298,17 @@ the complete proof program belongs in its own article.
   fence, heading, and whitespace checks without a content-completeness audit.
   The user correctly rejected that handoff. Future completion requires a
   claim-by-claim matrix against the property catalog and article rules.
-- **Rotation theorem omitted nonempty hypothesis:** the first Property #12
+- **Rotation theorem omitted nonempty hypothesis:** the first the Rotation Invariance property
   draft used modulo the list length without stating `T>=1`. The same-property
   correction added the hypothesis and the exact inverse map; do not state
   cyclic index arithmetic for an empty list.
-- **Compact strict-comparison typography:** the first Property #8 and #6
+- **Compact strict-comparison typography:** the first the Safe-Window Certification property and #6
   drafts used raw compact `<` notation. Their same-property corrections use
   `\lt`, matching the vocabulary and avoiding ambiguous Markdown rendering.
-- **Property #82 validation path typo:** one read-only `sed` command omitted
+- **the Filter-Seven Excess Bound property validation path typo:** one read-only `sed` command omitted
   the `.md` suffix and inspected nothing. No file changed; the immediate retry
   used the exact path and validated the coefficient derivation.
-- **Compressed Property #84 local cases:** the first canonicalized section
+- **Compressed the Divisor Local Factor property local cases:** the first canonicalized section
   retained the correct five-row table but summarized its derivation in one
   sentence. Review rejected that as below finished-article proof style. The
   same-property correction now derives the installed-only, shared-wheel, and
@@ -341,8 +341,8 @@ requested.
 | 2026-08-03 | Final audit found only repeated generic Stainless subheadings; after renaming them by property, all links, fences, headings, whitespace, framing checks, and the untouched-v1 check passed. Recorded verification baseline remains 30/0/0 because all changes are Markdown-only. | Ticket complete; hand off both new drafts for review. |
 | 2026-08-03 | User review exposed that mechanical validation had been mistaken for article completeness. The drafts contain some math, but omit the canonical property structure, full theorem spine, dependency/status map, and established article style; v2 also has a visible formula typo. | Reopen the ticket and perform a property-by-property rewrite before requesting review again. |
 | 2026-08-03 | Full vocabulary and representative finished-article sections establish the required structure and terminology. A claim matrix now fixes population, scope, status, and proof treatment for every property in both drafts. | Rewrite gap-dynamics v2 against the matrix before touching the almost-prime article. |
-| 2026-08-03 | Gap Dynamics v2 now matches the established opening structure and completes the global count, one-filter copy law, and finite-batch CRT survival chain as canonical Properties #1, #4, and #3. These exact complete-period theorems still provide no local placement. | Add rotation invariance as Property #12, then begin the local certification group. |
-| 2026-08-03 | The complete-period group now ends with a nonempty-list rotation bijection, and the local group proves Properties #8, #5, #6, and #7 in dependency order. The last result is explicitly conditional on local abundance rather than presented as existence. | Add the weighted harmful-excess terminal theorem before reorganizing Properties #82--#83. |
+| 2026-08-03 | Gap Dynamics v2 now matches the established opening structure and completes the global count, one-filter copy law, and finite-batch CRT survival chain as the canonical Global 2-Gap Count, Copy-Index Filter Frequency, and Batched 2-Gap Survival properties. These exact complete-period theorems still provide no local placement. | Add rotation invariance as the Rotation Invariance property, then begin the local certification group. |
+| 2026-08-03 | The complete-period group now ends with a nonempty-list rotation bijection, and the local group proves the Safe-Window Certification property, #5, #6, and #7 in dependency order. The last result is explicitly conditional on local abundance rather than presented as existence. | Add the weighted harmful-excess terminal theorem before reorganizing the properties from Filter-Seven Excess Bound through Copy-Block Excess Control. |
 | 2026-08-03 | Candidate #24's conservation/Cauchy implication and the full #82--#83 signed localization proofs are now self-contained. They reduce the live theorem to relative residue energy, partial old-period boundaries, and weighted composition without claiming those estimates. | Finish the v2 conclusion/evidence appendix, then apply the same review-ready structure to the almost-prime draft. |
 | 2026-08-03 | Gap Dynamics v2 is structurally complete and mechanically green. The almost-prime article now proves its conditional implication and #84--#86 in canonical form, and preserves the exact modulo-3 refutation with its narrow scope. | Add the almost-prime mathematical recap/evidence map, run a typography and cross-document audit, then synchronize the two supporting drafts. |
 | 2026-08-03 | Both new articles now match the established article structure and contain every planned mathematical proof, evidence boundary, limitation, conclusion recap, and status map. Supporting documents are synchronized; all final mechanical checks pass; published v1 is unchanged; recorded Stainless baseline is 30/0/0. | Ticket complete; hand off for substantive review. |

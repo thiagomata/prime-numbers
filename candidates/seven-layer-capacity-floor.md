@@ -233,7 +233,7 @@ are recorded in
 
 ## Algebraic Bridge To Candidate #24
 
-Property #75 proves that this candidate's one-layer threshold has a second
+The Seven-Layer Density Floor property proves that this candidate's one-layer threshold has a second
 consequence beyond close-pair survival. For
 
 ```math
@@ -250,7 +250,7 @@ the threshold and the already-installed filter `5` imply
 2B_r\le G_r(W_Q)\le(r-2)B_r.
 ```
 
-Therefore property #74's population slack is maximal:
+Therefore the Envelope Width Floor property's population slack is maximal:
 
 ```math
 \sigma_r=2B_r,
@@ -258,7 +258,7 @@ Therefore property #74's population slack is maximal:
 X_r\ge B_r^2.
 ```
 
-At the proved base layer `r=7`, property #76 inserts this floor into the
+At the proved base layer `r=7`, the Seven-Layer Overflow Forcing property inserts this floor into the
 native-period Bessel normalization. It proves
 
 ```math

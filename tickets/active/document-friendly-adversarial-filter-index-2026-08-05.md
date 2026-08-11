@@ -21,7 +21,7 @@
 
 ## START HERE
 
-Documentation is complete. Property #88 defines the calibrated index and
+Documentation is complete. The Filter Adversariality Score property defines the calibrated index and
 publishes the audited full-window evidence; candidate #11 and both catalogs are
 synchronized. Raw destruction, the random/global benchmark, observed score,
 and proved capacity ceiling remain explicitly distinct.
@@ -76,7 +76,7 @@ to a deterministic short window.
   synchronized. No code or data was modified.
 - Candidate #11 already proves the uniform-random-residue benchmark and
   separates it from deterministic transference.
-- Property #87 proves the refined annular capacity
+- the Danger-Annulus Decomposition property proves the refined annular capacity
 
   ```math
   K_D\le A(p,q)-1\le R_V(p,q)-1.
@@ -112,12 +112,12 @@ to a deterministic short window.
   evidence: the conflict-free unique-key merge, observed and capacity tables,
   exact midpoint classifications, exact `(7,11)` ratios, and explicit
   separation from annular and randomness claims.
-- `properties/sieve-sequence/README.md` now catalogs the score as property #88
+- `properties/sieve-sequence/README.md` now catalogs the score as the Filter Adversariality Score property
   with its abstract and concrete preconditions and finite-evidence boundary.
 - Candidate #11 is the appropriate diagnostic cross-link because it owns the
   `2/p` benchmark. The score does not replace or weaken its unresolved
   deterministic-transference hypothesis.
-- `candidates/random-like-merge-survival.md` now links property #88,
+- `candidates/random-like-merge-survival.md` now links the Filter Adversariality Score property,
   distinguishes `C_obs` from `C_cap`, includes the audited finite summary,
   preserves both benchmark models and the transference hypothesis, and makes
   no annular empirical claim. Its stale raw `destruction_rate` maximum location
@@ -274,7 +274,7 @@ to a deterministic short window.
 
 No documentation action remains for this ticket. The items in `Open Concerns`
 are explicit future data or theorem triggers, not unfinished score
-documentation. Property #88 remains a diagnostic and does not change the
+documentation. The Filter Adversariality Score property remains a diagnostic and does not change the
 #23 -> #24 handoff.
 
 ## Learning Log
@@ -284,7 +284,7 @@ documentation. Property #88 remains a diagnostic and does not change the
 | 2026-08-05 | The requested fixed anchors require a declared calibration of `K/L`; `2/p` is both the uniform-residue expectation and the exact complete-copy/global rate, but not an exact short-window law. Existing CSVs support only a unique-key full-window observed score. | Create this focused ticket and define the score algebra before publishing finite statistics. |
 | 2026-08-05 | The permanent score property now proves the algebraic calibration and exact `x_max`. Review corrected two boundaries: `K_D<L_D` is exact survival while `L_D>A-1` is only sufficient, and concrete endpoint-isolation capacities require `p>=5` even though the abstract score needs only `p>2`. | Reproduce the unique-key full-window statistics independently before adding numeric evidence. |
 | 2026-08-05 | Independent reproduction confirmed 186 unique clean full-window transitions, four agreeing duplicate keys, observed scores all below `1/2`, and capacity ceilings all below `1`. The observed and capacity summaries answer different questions; no annular score is available. The first synchronization patch was a no-op because its expected ticket context was stale; rereading located the fresh section, and the approved same-target retry passed. | Publish the reviewed finite evidence in a clearly marked empirical section of the score note. |
-| 2026-08-05 | The permanent score note now publishes the audited finite full-window evidence while preserving the boundary between proved algebra, observed behavior, worst-case capacity, and unavailable annular scores. | Catalog the result as property #88 with the same proof/evidence boundary. |
-| 2026-08-05 | Property #88 is cataloged. Candidate #11 is the correct diagnostic cross-link because it defines `2/p`; its transference hypothesis remains unchanged. The project retains one `2/p`-anchored score and leaves the independent-deletion rate as a separately named model only. | Add the diagnostic score cross-link and finite summary to candidate #11. |
-| 2026-08-05 | Candidate #11 now links property #88 and preserves its transference obligation. Review also corrected the raw destruction-rate maximum from `(7,11)` to `(5,7)` while retaining `(7,11)` as the calibrated maximum. The diagnostic does not justify a handoff or priority change. | Synchronize only candidate #11's numbered catalog entry. |
+| 2026-08-05 | The permanent score note now publishes the audited finite full-window evidence while preserving the boundary between proved algebra, observed behavior, worst-case capacity, and unavailable annular scores. | Catalog the result as the Filter Adversariality Score property with the same proof/evidence boundary. |
+| 2026-08-05 | the Filter Adversariality Score property is cataloged. Candidate #11 is the correct diagnostic cross-link because it defines `2/p`; its transference hypothesis remains unchanged. The project retains one `2/p`-anchored score and leaves the independent-deletion rate as a separately named model only. | Add the diagnostic score cross-link and finite summary to candidate #11. |
+| 2026-08-05 | Candidate #11 now links the Filter Adversariality Score property and preserves its transference obligation. Review also corrected the raw destruction-rate maximum from `(7,11)` to `(5,7)` while retaining `(7,11)` as the calibrated maximum. The diagnostic does not justify a handoff or priority change. | Synchronize only candidate #11's numbered catalog entry. |
 | 2026-08-05 | Candidate #11's numbered catalog entry now records the diagnostic anchors and finite realized/capacity scope without changing its benchmark role. Final scoped Markdown, link, terminology, and statistic checks passed; no code or data changed. | Mark this ticket complete and retain annular measurement, annular population/capacity, and deterministic-transference results as explicit future triggers. |

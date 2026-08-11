@@ -5,7 +5,7 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Property #75 shows that candidate #17's local-count threshold maximizes the
+The Seven-Layer Density Floor property shows that candidate #17's local-count threshold maximizes the
 population-slack floor used by candidate #24. At the first proved layer,
 `r=7`, that threshold is already unconditional. This property inserts the
 result into the exact native-period Bessel normalization.
@@ -31,7 +31,7 @@ H=D+1=Q^2-Q-2.
 ```
 
 Here `D` is the diameter of the possible 2-gap starts, while `H` is the
-number of integers in the start interval `[Q,Q^2-2)`. Property #72's Bessel
+number of integers in the start interval `[Q,Q^2-2)`. the Native-Period Hybrid Envelope property's Bessel
 remainder uses the interval length `H`, not the diameter `D`.
 
 Consider the conditioned chain beginning with
@@ -80,7 +80,7 @@ Their complete-period density is therefore
 d=\frac3{30}=\frac1{10}.
 ```
 
-For the incoming prime `7`, property #72 uses
+For the incoming prime `7`, the Native-Period Hybrid Envelope property uses
 
 ```math
 p=\frac27,
@@ -102,8 +102,8 @@ q
 
 ## Unconditional Width Floor At Seven
 
-Property #17 proves candidate #17's local-count threshold at `r=7` for every
-integer `Q>=17`. Property #75 therefore applies and gives
+The Local Count Shot-Capacity Premise property proves candidate #17's local-count threshold at `r=7` for every
+integer `Q>=17`. The Seven-Layer Density Floor property therefore applies and gives
 
 ```math
 \sigma_7=2B,
@@ -112,7 +112,7 @@ X_7\ge B^2.
 ```
 
 The exact norm above is `q_(1,2)`. The filter-`5` capacity term is
-nonnegative, so property #73's normalized overflow at cut `k=2` satisfies
+nonnegative, so the Native-Period Capacity Overflow property's normalized overflow at cut `k=2` satisfies
 
 ```math
 \begin{aligned}
@@ -170,7 +170,7 @@ Since `s<=209`,
 \boxed{e_2\ge1>0.}
 ```
 
-Property #73 proves that positive overflow is equivalent to a strict gain at
+The Native-Period Capacity Overflow property proves that positive overflow is equivalent to a strict gain at
 that cut. Thus
 
 ```math
@@ -186,7 +186,7 @@ head `Q>=37`.
 
 ## Quantified Gain
 
-Property #73 also converts the overflow into an explicit energy-envelope
+The Native-Period Capacity Overflow property also converts the overflow into an explicit energy-envelope
 reduction. If `d_m` is the final paired-survivor density, the smallest prefix
 coefficient at this cut is the filter-`7` coefficient, so
 
@@ -217,7 +217,7 @@ The sharper explicit form is
 
 ## Boundary
 
-This theorem removes the first uncertainty identified after property #74:
+This theorem removes the first uncertainty identified after the Envelope Width Floor property:
 native-period overflow is not merely possible or empirically suggested. It is
 provably positive from the first established density floor.
 

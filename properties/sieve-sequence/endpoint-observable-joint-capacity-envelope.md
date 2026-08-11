@@ -55,7 +55,7 @@ e_L=k_L-\mu,
 e_R=k_R-\mu.
 ```
 
-Property #34 gives
+The Orthogonal Residue-Energy Split property gives
 
 ```math
 H\beta=e_L+e_R,

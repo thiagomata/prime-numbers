@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #43 expresses every harmless-class count as an interval sum of one
+The CRT Fiber Translation property expresses every harmless-class count as an interval sum of one
 common CRT word at an explicit inverse phase. Candidate #22 does not measure
 the uncentered size of those samples: it first subtracts their mean across the
 `r-2` harmless classes.
@@ -22,7 +22,7 @@ spectrum and this phase Gram matrix.
 
 ## Setup
 
-Use the notation of property #43:
+Use the notation of the CRT Fiber Translation property:
 
 ```math
 P>r\ge5,
@@ -240,7 +240,7 @@ orthogonality theorem.
 
 ## Insertion Into The Harmless Energy
 
-Let `g_r` be the periodic CRT word from property #43, let
+Let `g_r` be the periodic CRT word from the CRT Fiber Translation property, let
 
 ```math
 \rho=\frac1P\sum_{u\bmod P}g_r(u),
@@ -267,7 +267,7 @@ D_{\ell_a}(m)
 D_{\ell_a}(m)\phi_m(a).
 ```
 
-Fourier inversion and property #43 give the exact class-count vector
+Fourier inversion and the CRT Fiber Translation property give the exact class-count vector
 
 ```math
 d
@@ -329,7 +329,7 @@ This is the exact centered inverse-phase quadratic form.
 
 ## What The Identity Resolves
 
-The uncentered large-sieve audit in property #43 was incomplete as an audit
+The uncentered large-sieve audit in the CRT Fiber Translation property was incomplete as an audit
 of candidate #22: it ignored the projection `C`. The new diagonal factor
 
 ```math

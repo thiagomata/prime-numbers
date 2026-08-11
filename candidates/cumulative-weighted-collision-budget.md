@@ -7,12 +7,12 @@
 **Conditional implication:** Mathematically proved.
 
 **Empirical status:** NOT EVALUATED — this is a stronger algebraic composition
-framework, not the leanest survival target. Property #66 shows that the
+framework, not the leanest survival target. The Terminal Harmful-Excess Energy property shows that the
 weighted harmful-excess square alone is already terminal at this candidate's
 global allowance; candidate #22's harmless-class energy remains an
 independently noncircular component but cannot remove that terminal scalar
 obligation. Candidate #24 uses only that harmful-excess square with its larger
-natural allowance and is therefore strictly weaker. Properties #58 and #65
+natural allowance and is therefore strictly weaker. The Sampling-Density Recombination property and #65
 show why separate pointwise #13/#23 estimates and one-layer capacity ellipses
 are not the final interface. Extending the existing data is not the current
 step.
@@ -291,7 +291,7 @@ Thus symmetric capacity loses the terminal cancellation.
 
 ## One-Layer Capacity Does Not Compose
 
-Property #58 proves that candidate #13's endpoint error and candidate #23's
+The Sampling-Density Recombination property proves that candidate #13's endpoint error and candidate #23's
 strike-density error recombine exactly into the two harmful start-residue
 deviations. Let their direct scalar energy be
 
@@ -303,8 +303,8 @@ Q_i
 \frac12\Delta_i^2.
 ```
 
-Properties #61--#64 give sharp one-layer capacity comparisons for `Q_i`.
-Property #65 proves that those comparisons do not imply this candidate's
+The properties from Sixfold-Capacity Energy Envelope through Late-Layer Sixfold Floor give sharp one-layer capacity comparisons for `Q_i`.
+The One-Layer Ellipse Non-Composition property proves that those comparisons do not imply this candidate's
 global budget. Even if every layer uses only half of its local allowance
 `(a_iN_i)^2/2` on the ideal multiplicative population scale,
 
@@ -329,7 +329,7 @@ An aggregate scalar target can still be written as
 Pointwise population ratios such as `N_i/B_i>rho_*(r_i)` remain valid
 one-layer facts but cannot replace this weighted theorem.
 
-Property #66 classifies the strength of this target. Define
+The Terminal Harmful-Excess Energy property classifies the strength of this target. Define
 
 ```math
 E_b
@@ -397,10 +397,10 @@ The corrected proof program has two different roles:
    need to retain useful sign or cross-layer arithmetic from
    `sum_iw_ib_i=T-N_m` instead of replacing it by the terminal square budget.
    Algebraic rearrangement of that identity alone is only a restatement.
-5. **Capacity audit.** If property #61's envelope `C_i` is used, estimate
+5. **Capacity audit.** If the Sixfold-Capacity Energy Envelope property's envelope `C_i` is used, estimate
    `sum_i w_i C_i` directly and acknowledge that a successful estimate at the
    required scale is terminal. Do not sum the local ellipse allowances from
-   properties #62--#64.
+   The properties from Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor.
 6. **Constant and scope audit.** Compare every proposed theorem with the exact
    global allowance and state whether it is one-layer, noncircular, or
    terminal.
@@ -411,7 +411,7 @@ appeal to probabilistic independence.
 ## Relation To Other Candidates
 
 - **#12:** controls each residue class at each layer. Its restricted weighted
-  harmful norm matches this candidate's scalar geometry, but property #66
+  harmful norm matches this candidate's scalar geometry, but the Terminal Harmful-Excess Energy property
   shows that norm is already terminal at the required global scale.
 - **#19:** gives an unconditional absolute one-layer destruction cap but needs
   a large hereditary population floor. Candidate #21 replaces that floor with
@@ -439,7 +439,7 @@ appeal to probabilistic independence.
 ## Limitation
 
 The weighted budget is unproved and is strong enough to imply final
-square-window positivity. Property #66 sharpens that warning: even the
+square-window positivity. The Terminal Harmful-Excess Energy property sharpens that warning: even the
 harmful-excess square inside the budget is already terminal at the required
 scale. Candidate #24 is strictly weaker for survival. Candidate #21's
 remaining value is not that the wall has disappeared, but that its full

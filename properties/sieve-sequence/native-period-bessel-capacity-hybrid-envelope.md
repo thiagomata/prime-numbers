@@ -5,8 +5,8 @@ verification is not claimed.
 
 ## Meaning
 
-Property #71 applies cross-layer Bessel over the final CRT period and retains
-an unusable primorial factor. Property #70 instead bounds every layer
+The Paired CRT Primorial Scale property applies cross-layer Bessel over the final CRT period and retains
+an unusable primorial factor. The Harmful-Capacity Excess Envelope property instead bounds every layer
 separately by harmful-class capacity.
 
 The two bounds can be combined at an intermediate native period. For any cut
@@ -17,14 +17,14 @@ each coordinate. Their sharp intersection is an explicit linear program.
 The later coordinates remain controlled by capacity.
 
 Optimizing over the cut can never be worse than the all-capacity theorem,
-because the empty-prefix cut recovers property #70 exactly. This property
+because the empty-prefix cut recovers the Harmful-Capacity Excess Envelope property exactly. This property
 does not prove that the optimized envelope clears the extinction threshold.
 It gives a strictly sharper algebraic target whenever a native-period Bessel
 budget excludes part of the capacity box.
 
 ## Setup
 
-Use property #71's nested CRT moduli and paired observables:
+Use the Paired CRT Primorial Scale property's nested CRT moduli and paired observables:
 
 ```math
 M_{i+1}=M_ir_i,
@@ -60,7 +60,7 @@ Candidate #24's energy coefficients are
 E_b=\sum_{i=0}^{m-1}\alpha_ib_i^2.
 ```
 
-Property #70 gives the sharp capacity-only coordinate bounds
+The Harmful-Capacity Excess Envelope property gives the sharp capacity-only coordinate bounds
 
 ```math
 b_i^2\le X_i,
@@ -277,7 +277,7 @@ Consequently,
 }
 ```
 
-The hybrid theorem is never weaker than property #70.
+The hybrid theorem is never weaker than the Harmful-Capacity Excess Envelope property.
 
 ## Exact Improvement Criterion
 
@@ -326,7 +326,7 @@ algebraic gain.
 
 ## Survival Composition
 
-Property #69 proves that extinction forces
+The Capacity Minimizer Separation property proves that extinction forces
 
 ```math
 E_b
@@ -357,7 +357,7 @@ holds for an unbounded family of actual square-safe conditioned chains.
 
 The theorem uses more cross-layer information than separate capacity: a
 single native-period Bessel budget couples every harmful-excess coordinate
-before the chosen cut. It also avoids property #71's forced use of the final
+before the chosen cut. It also avoids the Paired CRT Primorial Scale property's forced use of the final
 primorial by optimizing over intermediate moduli.
 
 It does not use off-diagonal localized interval correlations, and it does not

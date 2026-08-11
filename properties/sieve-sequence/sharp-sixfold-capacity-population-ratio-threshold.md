@@ -5,7 +5,7 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Property #61 gives an exact but three-point capacity criterion for the harmful
+The Sixfold-Capacity Energy Envelope property gives an exact but three-point capacity criterion for the harmful
 scalar energy. This property solves that criterion in scale-free form.
 
 Let `B` be the common one-class capacity and `G` the local 2-gap population.
@@ -18,7 +18,7 @@ strengthening of the ordinary two-class survival condition `G>2B`. The
 remaining one-layer challenge is proving that population ratio for the actual
 conditioned population.
 
-Property #65 shows that satisfying this comparison at every layer does not
+The One-Layer Ellipse Non-Composition property shows that satisfying this comparison at every layer does not
 by itself prove candidate #21's smaller global weighted allowance. A
 separate aggregate theorem is still required.
 
@@ -41,7 +41,7 @@ Define the scale-free population ratio
 
 Necessarily `0<rho<=r`.
 
-Property #61 gives the sharp harmful scalar energy by maximizing
+The Sixfold-Capacity Energy Envelope property gives the sharp harmful scalar energy by maximizing
 
 ```math
 F(s)
@@ -191,7 +191,7 @@ b=G\left(1-\frac2r\right),
 and its `r/(2(r-2))` coefficient is larger than `1/2`. The scalar allowance
 therefore fails. Hence any successful ratio must exceed `2`.
 
-For `rho>=2`, the other property #61 branches are:
+For `rho>=2`, the other the Sixfold-Capacity Energy Envelope property branches are:
 
 1. `s=0` while `rho<=r-2`;
 2. `s=B` while `rho<=r-1`;
@@ -306,11 +306,11 @@ The theorem also controls only the harmful scalar energy. Candidate #22's
 harmless-class dispersion remains an independent component of #21.
 
 It is a one-layer comparison, not a cumulative composition theorem; see
-property #65.
+The One-Layer Ellipse Non-Composition property.
 
 ## Validation
 
-The threshold and active branch were checked against property #61's exact
+The threshold and active branch were checked against the Sixfold-Capacity Energy Envelope property's exact
 three-point maximum for
 
 ```math

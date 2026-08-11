@@ -4,14 +4,14 @@
 
 ## Meaning
 
-Property #53 expresses accepted-strike energy as population times a Gram
+The First-Deletion Variance Identity property expresses accepted-strike energy as population times a Gram
 trace minus pairwise variance between first-deletion classes. The pairwise
 variance looks like a new cross-layer cancellation term.
 
 This property reindexes every one of those distances by coordinate. The
 complete first-deletion variance is exactly the sum of the ordinary
 three-value variances at each layer: current deletion, current survival, and
-anchors deleted earlier. Combined with property #54, the global identity
+anchors deleted earlier. Combined with the Active Two-Class Variance property, the global identity
 collapses back to the original strike energy.
 
 Therefore first-deletion factorization alone is a coordinate rewrite, not an
@@ -20,7 +20,7 @@ information about deletion-class masses.
 
 ## Setup
 
-Use property #53's class counts
+Use the First-Deletion Variance Identity property's class counts
 
 ```math
 n_k=H_k\quad(k<m),
@@ -111,7 +111,7 @@ H_iA_{i+1}
 
 ## Exact Collapse
 
-Property #53 states
+The First-Deletion Variance Identity property states
 
 ```math
 \mathcal E_D
@@ -165,7 +165,7 @@ This is exactly the original definition of the weighted strike energy.
 
 No subset of the first-deletion variance can be called an independent gain
 without checking what complementary coordinate terms were discarded. The
-minimum separation `H_iA_(i+1)` is property #54's active two-class variance;
+minimum separation `H_iA_(i+1)` is the Active Two-Class Variance property's active two-class variance;
 the remaining term `(A_0-A_i)G_(ii)` accounts exactly for anchors already
 deleted before layer `i`.
 

@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #48 expresses each accepted-strike discrepancy through the old
+The Strike Divisor-Activation Kernel property expresses each accepted-strike discrepancy through the old
 boundary error and the newly activated divisor shell. CRT splits every new
 modulus `re` residue into its old residue modulo `e` plus one lift index
 between `0` and `r-1`.
@@ -126,7 +126,7 @@ candidate #23 ticket.
 
 ## Cancellation Of The Old Boundary Error
 
-At layer `i`, let `P=P_i` and `r=r_i`. Property #48 gives the newly activated
+At layer `i`, let `P=P_i` and `r=r_i`. The Strike Divisor-Activation Kernel property gives the newly activated
 shell
 
 ```math
@@ -169,7 +169,7 @@ t_{Q,r_i}(e)-t_{Q^2,r_i}(e)
 \right).
 ```
 
-Property #48 also gives
+The Strike Divisor-Activation Kernel property also gives
 
 ```math
 D_i

@@ -5,7 +5,7 @@ Stainless verification is not claimed.
 
 ## Meaning
 
-Property #49 rewrites accepted-strike discrepancy as a bounded lift-index
+The Strike CRT Lift-Index property rewrites accepted-strike discrepancy as a bounded lift-index
 Möbius transform. Summing the quotient parts shows that this transform is
 exactly a dilation remainder for the summatory coprime-counting function.
 
@@ -105,7 +105,7 @@ rF_P\left(
 
 ## Exact Form Of Candidate #23
 
-Property #49 gives
+The Strike CRT Lift-Index property gives
 
 ```math
 \mathcal M_i(Q)

@@ -11,7 +11,7 @@
 
 ## START HERE
 
-Property #65 proves that satisfying every one-layer harmful scalar ellipse
+The One-Layer Ellipse Non-Composition property proves that satisfying every one-layer harmful scalar ellipse
 does not imply candidate #21's global weighted collision budget. Audit the
 existing candidates, properties, catalogs, learnings, and articles for claims
 that cross this boundary incorrectly or ambiguously.
@@ -21,7 +21,7 @@ editing it.
 
 ## Related Tickets
 
-- `prove-endpoint-observable-sampling-2026-07-28.md` — properties #56--#65
+- `prove-endpoint-observable-sampling-2026-07-28.md` — the properties from Joint Capacity Envelope through One-Layer Ellipse Non-Composition
   and the direct two-harmful-residue route. Its current stop checkpoint names
   the aggregate theorem that remains open.
 - `verify-19-21-escape-wall-2026-07-27.md` — umbrella classification of
@@ -35,7 +35,7 @@ editing it.
 
 ## Goal
 
-Ensure every repository claim affected by property #65 distinguishes:
+Ensure every repository claim affected by the One-Layer Ellipse Non-Composition property distinguishes:
 
 1. a valid one-layer survival or scalar-ellipse comparison;
 2. candidate #21's smaller cumulative weighted allowance; and
@@ -60,25 +60,25 @@ and catalogs/tickets point to the corrected boundary.
 5. Record any article needing a broader rewrite separately rather than
    silently expanding this audit.
 
-This strategy is preferred over broad rewriting because property #65 changes
+This strategy is preferred over broad rewriting because the One-Layer Ellipse Non-Composition property changes
 one precise implication boundary, not the validity of the underlying
 one-layer theorems.
 
 ## Current State
 
-- Property #65 is promoted and cataloged.
+- the One-Layer Ellipse Non-Composition property is promoted and cataloged.
 - Candidates #12, #14, #19, and #21 already contain the one-layer/global
   qualification.
 - The candidate catalog and both source research tickets already use the
   direct weighted harmful norm as the remaining scalar target.
 - The contextual inventory is complete.
-- Property #61 is corrected: its Boundary now separates the one-layer
+- the Sixfold-Capacity Energy Envelope property is corrected: its Boundary now separates the one-layer
   population threshold from the independent aggregate target
   `sum_i w_i C_i`.
-- Property #63 is corrected: its Meaning, hierarchy, and Boundary now state
+- the Capacity Threshold Hierarchy property is corrected: its Meaning, hierarchy, and Boundary now state
   that it compares one-layer thresholds and does not imply #21's weighted
   aggregate.
-- Property #64 is corrected: its Meaning and late/early conclusions now use
+- the Late-Layer Sixfold Floor property is corrected: its Meaning and late/early conclusions now use
   local-allowance language and explicitly preserve the global aggregate gap.
 - The user resumed the audit after the required procedural stop.
 - Property catalog entries #57, #59, #60, #63, and #64 now explicitly use
@@ -91,7 +91,7 @@ one-layer theorems.
 - Candidate #13's bridge section now labels separate #13+#23 as a fallback
   and restricted #12's direct weighted norm as preferred.
 - All classified substantive corrections are complete.
-- Later property #66 proves that restricted #12's weighted harmful norm is
+- Later the Terminal Harmful-Excess Energy property proves that restricted #12's weighted harmful norm is
   itself terminal at candidate #21's global allowance. The permanent
   candidates and catalogs now classify #22 as an independent diagnostic, not
   a parallel survival prerequisite.
@@ -99,14 +99,14 @@ one-layer theorems.
 - All added links resolve and repository-wide `git diff --check` passes.
 - The unrelated staged giant CSV was not modified by this audit.
 - Confirmed unaffected:
-  - property #37 is a valid aggregate fallback composition theorem;
+  - the Weighted Error Composition property is a valid aggregate fallback composition theorem;
   - candidate #22's displayed sufficient inequality is genuinely global and
     remains correct;
   - the Fourier, large-sieve, and localized-energy obstruction properties
     already compare directly with the global weighted allowance;
-  - property #57 and property #59 prove valid one-layer counterexamples in
+  - the Endpoint Capacity Insufficiency and Pointwise Margin Insufficiency properties prove valid one-layer counterexamples in
     their bodies;
-  - property #60's weighted aggregate consequence is correctly stated;
+  - the Harmful-Residue Box Bound property's weighted aggregate consequence is correctly stated;
   - no affected claims were found in `articles/`, `LEARNINGS.md`, or
     `OBJECTS.md`.
 
@@ -115,8 +115,8 @@ one-layer theorems.
 - No file says or implies that `G_i/B_i>rho_*(r_i)` at every layer is
   sufficient for candidate #21.
 - One-layer properties remain stated as valid and useful.
-- The property #65 audit correctly separates local ellipses from direct
-  weighted estimates. Later property #66 classifies the harmful estimate as
+- The the One-Layer Ellipse Non-Composition property audit correctly separates local ellipses from direct
+  weighted estimates. Later the Terminal Harmful-Excess Energy property classifies the harmful estimate as
   terminal and #22's harmless estimate as independently noncircular but
   unnecessary after scalar feasibility.
 - Any unaffected historical statement remains unchanged.
@@ -125,8 +125,8 @@ one-layer theorems.
 
 ## Assumptions And Validation
 
-- **Assumption:** property #65 affects inference and framing, not the algebra
-  of properties #60--#64.
+- **Assumption:** the One-Layer Ellipse Non-Composition property affects inference and framing, not the algebra
+  of the properties from Harmful-Residue Box Bound through Late-Layer Sixfold Floor.
   **Validation:** check each theorem statement independently of its
   consequences.
 - **Assumption:** uses of “collision budget” may refer either to one layer or
@@ -143,20 +143,20 @@ one-layer theorems.
 
 ## What is Learned
 
-- Property #65 is a non-composition theorem, not a refutation of properties
+- the One-Layer Ellipse Non-Composition property is a non-composition theorem, not a refutation of properties
   #60--#64.
 - The correct audit question is whether a file crosses from a local allowance
   `(a_iN_i)^2/2` to the global allowance
   `(N_0A_{0,m})^2/(2 sum_i w_i)` without an aggregate estimate.
 - Catalog and candidate corrections already made during the proof loop reduce
   the likely remaining scope, but do not replace a repository-wide search.
-- Property #65 changes the strategic priority of #13/#23 but does not
+- the One-Layer Ellipse Non-Composition property changes the strategic priority of #13/#23 but does not
   invalidate their aggregate fallback theorem. Corrections must say
   “fallback, not primary,” not “obsolete.”
 - One-layer counterexamples remain relevant to #21: they disprove universal
   certification from those premises. Their bodies are correct; only catalog
   shorthand such as “full allowance” needs qualification.
-- Property #66 supplies the later boundary: a successful direct weighted
+- the Terminal Harmful-Excess Energy property supplies the later boundary: a successful direct weighted
   harmful theorem already forces final survival through the harmful-excess
   square, so it is terminal rather than a preparatory component waiting to be
   combined with #22.
@@ -169,19 +169,19 @@ one-layer theorems.
 - **Bulk wording replacement:** rejected because “collision budget” has both
   valid local and global uses. Retry only for a mechanically identical set of
   claims after contextual classification.
-- **Audit edits without the pre-execution pipeline:** the property #63 change
+- **Audit edits without the pre-execution pipeline:** the the Capacity Threshold Hierarchy property change
   and its first ticket update were mathematically correct, but each initially
   omitted the required visible gate. Both were restored and reapplied through
   the full protocol. A further pipeline omission must trigger stop-and-ask.
 - **Preserving restricted #12 plus #22 as the current parallel frontier:**
-  this was the correct conclusion after property #65 but was superseded by
-  property #66's weighted lower bound. Retry the parallel framing only if a
+  this was the correct conclusion after the One-Layer Ellipse Non-Composition property but was superseded by
+  the Terminal Harmful-Excess Energy property's weighted lower bound. Retry the parallel framing only if a
   different composition gives harmless energy a nonredundant survival role.
 
 ## Open Concerns
 
 - No unresolved correction remains in the audited scope.
-- Property #64's title remains concise, while its Meaning and Boundary now
+- the Late-Layer Sixfold Floor property's title remains concise, while its Meaning and Boundary now
   make the one-layer scope explicit; no rename is required.
 - No affected article, `LEARNINGS.md`, or `OBJECTS.md` claim was found.
 
@@ -205,14 +205,14 @@ Candidate #22 remains an independent distribution diagnostic. Properties
 
 | Date | Learning | Action |
 |------|----------|--------|
-| 2026-07-29 | Property #65 changes one precise implication boundary and warrants a focused repository review. Initial search found possible residual wording beyond the files corrected during the proof loop. | Opened this dedicated audit ticket, linked the source tickets, and selected an inventory-first classification pass. |
-| 2026-07-29 | Contextual review found three property scope corrections, five catalog wording corrections, and four candidate-role corrections. Aggregate fallback theorem #37 and candidate #22's global sufficient condition remain valid. No affected article, learning, or object claim was found. | Recorded the file-by-file classification and selected property #61's Boundary as the first one-file correction. |
-| 2026-07-29 | Property #61's exact envelope was correct, but its Boundary treated the local population threshold as the only remaining question. | Added the separate aggregate target `sum_i w_i C_i`, linked property #65, and selected property #63's hierarchy wording. |
-| 2026-07-29 | Property #63's floor algebra was correct, but its hierarchy label could be read cumulatively. Two audit edits initially omitted the required pre-execution gate and were restored before compliant reapplication. | Corrected the local scope, linked property #65, recorded the procedural failures, and selected property #64. |
-| 2026-07-29 | Property #64's layer-range theorem was correct, but “harmful scalar collision budget” and its chain conclusions sounded cumulative. The user later resumed the audit after its procedural stop. | Qualified every consequence as one-layer/local, linked property #65, and selected the five property-catalog wording fixes. |
+| 2026-07-29 | the One-Layer Ellipse Non-Composition property changes one precise implication boundary and warrants a focused repository review. Initial search found possible residual wording beyond the files corrected during the proof loop. | Opened this dedicated audit ticket, linked the source tickets, and selected an inventory-first classification pass. |
+| 2026-07-29 | Contextual review found three property scope corrections, five catalog wording corrections, and four candidate-role corrections. Aggregate fallback theorem #37 and candidate #22's global sufficient condition remain valid. No affected article, learning, or object claim was found. | Recorded the file-by-file classification and selected the Sixfold-Capacity Energy Envelope property's Boundary as the first one-file correction. |
+| 2026-07-29 | the Sixfold-Capacity Energy Envelope property's exact envelope was correct, but its Boundary treated the local population threshold as the only remaining question. | Added the separate aggregate target `sum_i w_i C_i`, linked the One-Layer Ellipse Non-Composition property, and selected the Capacity Threshold Hierarchy property's hierarchy wording. |
+| 2026-07-29 | the Capacity Threshold Hierarchy property's floor algebra was correct, but its hierarchy label could be read cumulatively. Two audit edits initially omitted the required pre-execution gate and were restored before compliant reapplication. | Corrected the local scope, linked the One-Layer Ellipse Non-Composition property, recorded the procedural failures, and selected the Late-Layer Sixfold Floor property. |
+| 2026-07-29 | the Late-Layer Sixfold Floor property's layer-range theorem was correct, but “harmful scalar collision budget” and its chain conclusions sounded cumulative. The user later resumed the audit after its procedural stop. | Qualified every consequence as one-layer/local, linked the One-Layer Ellipse Non-Composition property, and selected the five property-catalog wording fixes. |
 | 2026-07-29 | Property catalog shorthand for #57/#59/#60/#63/#64 omitted the one-layer qualifier even though their bodies are local. The user resumed after the subsequent ticket-sync stop. | Corrected all five summaries and selected the stale #22/#23 role labels in the candidate catalog. |
-| 2026-07-29 | The candidate catalog still called #23 primary and described #22's companion scalar input as separate #13+#23, contrary to property #58. | Routed the catalog through restricted #12, retained #23 as a fallback component, and selected candidate #23's opening-role correction. |
-| 2026-07-29 | Candidate #23's later property #58 section already called direct restricted #12 preferable, but its opening and Limitation still called #23 the missing scalar theorem. | Made the file internally consistent as a fallback component and selected candidate #13's parallel bridge wording. |
-| 2026-07-29 | Candidate #13's early bridge paragraph called #23 mandatory even though its later property #58 section already preferred direct restricted #12. | Labeled #13+#23 as fallback, retained the exact bridge, and completed the planned substantive corrections. |
+| 2026-07-29 | The candidate catalog still called #23 primary and described #22's companion scalar input as separate #13+#23, contrary to the Sampling-Density Recombination property. | Routed the catalog through restricted #12, retained #23 as a fallback component, and selected candidate #23's opening-role correction. |
+| 2026-07-29 | Candidate #23's later the Sampling-Density Recombination property section already called direct restricted #12 preferable, but its opening and Limitation still called #23 the missing scalar theorem. | Made the file internally consistent as a fallback component and selected candidate #13's parallel bridge wording. |
+| 2026-07-29 | Candidate #13's early bridge paragraph called #23 mandatory even though its later the Sampling-Density Recombination property section already preferred direct restricted #12. | Labeled #13+#23 as fallback, retained the exact bridge, and completed the planned substantive corrections. |
 | 2026-07-29 | Final searches found no stale mandatory/primary #23 wording, no unqualified local-to-global catalog claim, and no affected article, learning, or object claim. All links and Markdown diffs pass. | Marked the audit complete and preserved restricted #12 plus #22 as the current aggregate proof frontier. |
-| 2026-07-29 | Later property #66 proved that the weighted harmful-excess component below #21's allowance already forces `N_m>0`, superseding the audit's final parallel #12+#22 recommendation. | Corrected the current frontier, preserved the historical audit, and moved the completed ticket to `tickets/done/`. |
+| 2026-07-29 | Later the Terminal Harmful-Excess Energy property proved that the weighted harmful-excess component below #21's allowance already forces `N_m>0`, superseding the audit's final parallel #12+#22 recommendation. | Corrected the current frontier, preserved the historical audit, and moved the completed ticket to `tickets/done/`. |

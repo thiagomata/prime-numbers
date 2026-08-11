@@ -169,7 +169,7 @@ LR.
 }
 ```
 
-Using property #49's `mathcal M_i=r_iD_i`, the same theorem is
+Using the Strike CRT Lift-Index property's `mathcal M_i=r_iD_i`, the same theorem is
 
 ```math
 \boxed{

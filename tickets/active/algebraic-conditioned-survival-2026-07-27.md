@@ -806,7 +806,7 @@ strictly weaker than the final existence claim or merely restates it.
   ticket, candidate #10, #13, #19, #20, #21, and #22 notes, both catalogs,
   the #14 cross-scope note, the future research landscape, the two-endpoint
   property, and the internal capacity learnings summary.
-- Property #66 is the later controlling result. Restricted #12, or the
+- the Terminal Harmful-Excess Energy property is the later controlling result. Restricted #12, or the
   fallback #13+#23 representation, targets a harmful scalar theorem that is
   already terminal at candidate #21's global allowance. Candidate #22 remains
   an independently noncircular harmless-distribution problem but is not an
@@ -1026,7 +1026,7 @@ strictly weaker than the final existence claim or merely restates it.
   the first; the second remains a separate open theorem and is not candidate
   #10 as currently stated.
 - Even perfect control of both terminal errors leaves the post-filter
-  harmless-class variance algebraically open. Property #66 later proves that
+  harmless-class variance algebraically open. The Terminal Harmful-Excess Energy property later proves that
   this harmless variance is not an additional survival obligation once the
   assembled harmful scalar energy is below candidate #21's global allowance.
 - The orthogonal identity removes the earlier terminal-history complexity:
@@ -1054,7 +1054,7 @@ strictly weaker than the final existence claim or merely restates it.
   exactly the direct whole-histogram estimate
   `sum_a c_{i,a}^2<=B_iN_i`. The negative terminal term survives only if the
   harmful and harmless sides receive asymmetric information.
-- Corrected algebraic route classification after property #66:
+- Corrected algebraic route classification after the Terminal Harmful-Excess Energy property:
   1. **Restricted #12 weighted harmful norm:** the cleanest scalar
      representation, but already a terminal conditioned-chain theorem at
      candidate #21's global allowance.
@@ -1159,7 +1159,7 @@ strictly weaker than the final existence claim or merely restates it.
   with asymmetric information: a stronger endpoint-class imbalance bound, a
   stronger harmless-dispersion bound, or a cross-layer covariance joining
   them.
-- **Treating #22 as the primary missing survival theorem.** Property #66
+- **Treating #22 as the primary missing survival theorem.** the Terminal Harmful-Excess Energy property
   proves that the harmful-excess square alone being below candidate #21's
   global allowance already forces `N_m>0`. Retry #22 for independent
   distributional value or only after a new composition gives it a
@@ -1207,7 +1207,7 @@ strictly weaker than the final existence claim or merely restates it.
 
 ## Next Action
 
-Stop checkpoint. Property #66 classifies the current scalar route as terminal
+Stop checkpoint. The Terminal Harmful-Excess Energy property classifies the current scalar route as terminal
 and removes #22 as an additional survival obligation after scalar feasibility.
 
 Resume this ticket only with one of two genuinely new inputs:
@@ -1256,4 +1256,4 @@ composition, and do not collect additional empirical evidence.
 | 2026-07-27 | Correction: candidate #10 is a post-filter safe-window count discrepancy and does not directly control accepted-anchor strike density `H/A-1/r`. | Removed #10 from the scalar-error dependency chain. The current chain is #13 endpoint sampling plus a separate accepted-strike density theorem, together with #22 harmless dispersion, feeding #21. |
 | 2026-07-27 | Completed the user-requested consistency pass across all current #19-#22 candidates, catalogs, properties, active strategy tickets, the future landscape, and the internal learnings summary. The escape-wall audit now includes #22 and distinguishes noncircular components from terminal consumers. | Recorded the mistaken #10 attribution as a failed path and moved the immediate action to repository-wide integrity validation before resuming weighted harmless-energy algebra. |
 | 2026-07-27 | Repository-wide stale-claim, stopping-index, ticket-section, relative-link, and Markdown checks pass. Two unrelated legacy link patterns found by the audit were repaired; the staged giant CSV remains untouched. | Closed the understanding-sync pass. The next mathematical action is again the exact weighted `U_i` allowance, using #13 endpoint errors plus a separate accepted-strike density theorem. |
-| 2026-07-29 | Property #66 proves `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`; hence the harmful-excess square below candidate #21's allowance already forces `N_m>0`. | Reclassified restricted #12 and the assembled #13+#23 scalar theorem as terminal, demoted #22 to an independent diagnostic, and stopped the exhausted algebraic decomposition route. |
+| 2026-07-29 | the Terminal Harmful-Excess Energy property proves `E_b >= (T-N_m)^2/(2W_-)` with `W_-<W`; hence the harmful-excess square below candidate #21's allowance already forces `N_m>0`. | Reclassified restricted #12 and the assembled #13+#23 scalar theorem as terminal, demoted #22 to an independent diagnostic, and stopped the exhausted algebraic decomposition route. |

@@ -5,7 +5,7 @@ verification is not claimed.
 
 ## Meaning
 
-Property #66 obtains the sharp lower bound
+The Terminal Harmful-Excess Energy property obtains the sharp lower bound
 
 ```math
 E_b\ge\frac{(T-N_m)^2}{2W_-}
@@ -18,14 +18,14 @@ profile.
 
 The result turns the equality condition into a quantitative object. For an
 extinct chain, any arithmetic obstruction to the abstract profile constructed
-by property #67 appears as a positive stability remainder.
+by the Integral Profile Attainment property appears as a positive stability remainder.
 
 This is a lower-bound refinement. It does not upper-bound `E_b` and therefore
 does not prove candidate #24 by itself.
 
 ## Setup
 
-Use the conditioned-chain notation of properties #25 and #66:
+Use the conditioned-chain notation of the Weighted Deletion Conservation property and #66:
 
 ```math
 a_i=1-\frac2{r_i},
@@ -236,7 +236,7 @@ E_b
 
 This would enlarge the energy range that certifies survival. The required
 input cannot be a fact about abstract integral monotone populations, because
-property #67 realizes zero remainder under all of those constraints. It must
+The Integral Profile Attainment property realizes zero remainder under all of those constraints. It must
 exclude the equality proportions using actual first-hit residue geometry.
 
 ## Boundary

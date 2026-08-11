@@ -157,7 +157,7 @@ is a proved full-window capacity ceiling. Neither quantity is a probability or
 a proof of deterministic transference.
 
 The independent-deletion benchmark `2/p-1/p^2` remains valid for its own model,
-but it would define a different midpoint calibration. Property #88 intentionally
+but it would define a different midpoint calibration. The Filter Adversariality Score property intentionally
 uses the uniform-residue rate because one modular filter selects one residue
 class globally.
 

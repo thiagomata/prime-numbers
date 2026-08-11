@@ -103,7 +103,7 @@ population at layer `i`.
 
 ## Relation To First-Deletion Dispersion
 
-Property #53 proves that deletion class `i` is separated from every later
+The First-Deletion Variance Identity property proves that deletion class `i` is separated from every later
 class by weighted squared distance at least `c_i`. Since the total mass in
 later classes is exactly `A_(i+1)`,
 
@@ -115,7 +115,7 @@ n_kn_\ell
 \sum_i c_iH_iA_{i+1}.
 ```
 
-Inserted into property #53's global variance identity, this gives
+Inserted into the First-Deletion Variance Identity property's global variance identity, this gives
 
 ```math
 \mathcal E_D

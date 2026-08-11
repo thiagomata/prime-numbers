@@ -85,7 +85,7 @@ strategic assessment; see `empirical/sieve-sequence/FINDINGS.md` for the correct
 cross-candidate synthesis.
 
 1. [Protected endpoints](protected-endpoints.md) — **[outcome measured]** 186/186; not a distinct mechanism
-2. [Local surplus](local-surplus.md) — **[full window directly measured 186/186; annular form unmeasured]** property #87 sharpens newly exposed survival to `L_D>A-1`, or the raw sufficient bound `L_D>2d+ceil(d^2/p)-1`; no annular population lower bound is proved
+2. [Local surplus](local-surplus.md) — **[full window directly measured 186/186; annular form unmeasured]** the Danger-Annulus Decomposition property sharpens newly exposed survival to `L_D>A-1`, or the raw sufficient bound `L_D>2d+ceil(d^2/p)-1`; no annular population lower bound is proved
 3. [Protected clusters](protected-cluster.md) — **[directly measured]** 185/186 (fails at (5,7))
 4. [Bounded consecutive destruction](bounded-consecutive-destruction.md) — **[constant `R=2` refuted; variable bound open]** exact full-period cyclic run `3` at `Q=101`, `r=23`; later primorial-scale cyclic runs unmeasured
 5. [Bounded post-merge spacers](bounded-post-merge-spacer.md) — **[deferred]** whole-period
@@ -94,21 +94,21 @@ cross-candidate synthesis.
 8. [Distinguished head spacer](distinguished-head-spacer.md) — **[outcome measured]** 186/186; near-restatement of local survival
 9. [Forbidden-copy covered runs](forbidden-copy-covered-run.md) — **[deferred]** copy-index / whole-period
 10. [Short-window discrepancy](short-window-discrepancy.md) — **[post-filter E_q measured]** one-sided form holds 24/24 lineage layers; two-sided bound still pending
-11. [Random-like merge survival](random-like-merge-survival.md) — **[benchmark measured]** property #88 calibrates realized destruction to `0` for no destroyed gaps, `1/2` for the uniform-residue/complete-copy benchmark `2/p`, and `1` for local extinction. Across 186 audited full-window transitions, every observed score is below `1/2` and every corresponding proved accepted-strike capacity ceiling is below `1`. This remains finite full-window calibration: deterministic transference is unproved, no annular score is measured, and the candidate remains a benchmark rather than a primary proof mechanism.
-12. [Local pattern-residue balance](local-pattern-residue-balance.md) — **[stated margin measured; aggregate role classified]** `νE<N(1−ν/r)` holds in 1,890/1,890 exact lineage layers across 53 heads; property #66 shows that its restricted weighted harmful norm is already terminal at candidate #21's global scale.
+11. [Random-like merge survival](random-like-merge-survival.md) — **[benchmark measured]** the Filter Adversariality Score property calibrates realized destruction to `0` for no destroyed gaps, `1/2` for the uniform-residue/complete-copy benchmark `2/p`, and `1` for local extinction. Across 186 audited full-window transitions, every observed score is below `1/2` and every corresponding proved accepted-strike capacity ceiling is below `1`. This remains finite full-window calibration: deterministic transference is unproved, no annular score is measured, and the candidate remains a benchmark rather than a primary proof mechanism.
+12. [Local pattern-residue balance](local-pattern-residue-balance.md) — **[stated margin measured; aggregate role classified]** `νE<N(1−ν/r)` holds in 1,890/1,890 exact lineage layers across 53 heads; the Terminal Harmful-Excess Energy property shows that its restricted weighted harmful norm is already terminal at candidate #21's global scale.
 13. [Uniform local observable sampling](uniform-local-observable-sampling.md) — **[one-sided margin measured]** `H(2L/N+b₊)<L` holds in 1,890/1,890 exact lineage layers across 53 heads
 14. [Hereditary shot-spacing capacity](hereditary-shot-spacing-capacity.md) — **[finite exact checks reinforced]** exact interval certificates hold at 4/4 defined Q17 layers and 23/23 defined Q101 layers, with proved spacing inputs through `k=10`; universal close-pair existence and population control remain open.
 15. [Sharp admissible shot-spacing profile](sharp-admissible-shot-spacing-profile.md) — **[proved through k=14; recurrence program open]** fixed-`k` stabilization and exact `D(2)..D(14)=(2,6,8,12,16,20,26,30,32,36,42,48,50)` are proved by explicit witnesses and finite residue-cover certificates. Recurrence inequalities, scalable bounds, and extremal classification beyond `k=14` remain open.
 16. [Expanded-zone exterior-capacity localization](expanded-zone-exterior-capacity.md) — **[unmeasured]** preserves its post-filter square-safe exterior route and adds a distinct pre-filter annular target `L_D>=B_D-U_D>A-1` around `X_D`. No favorable annular expansion or bounds `B_D,U_D` are constructed; the slow-branch alternative remains open.
-17. [Seven-layer capacity floor](seven-layer-capacity-floor.md) — **[base floor proved; finite lower envelope reinforced; #24 bridge proved]** `rho(Q,7)>1` is proved for every integer `Q>=17`; all 53 measured heads and 1,837 layers satisfy `rho(Q,r)>=rho(Q,7)`, with every chain minimum at `r=7`. Property #75 converts the count threshold into maximal population slack `sigma_r=2B_r`; property #76 uses the proved `r=7` base to force positive native overflow for every future prime head `Q>=37`.
+17. [Seven-layer capacity floor](seven-layer-capacity-floor.md) — **[base floor proved; finite lower envelope reinforced; #24 bridge proved]** `rho(Q,7)>1` is proved for every integer `Q>=17`; all 53 measured heads and 1,837 layers satisfy `rho(Q,r)>=rho(Q,7)`, with every chain minimum at `r=7`. The Seven-Layer Density Floor property converts the count threshold into maximal population slack `sigma_r=2B_r`; the Seven-Layer Overflow Forcing property uses the proved `r=7` base to force positive native overflow for every future prime head `Q>=37`.
 18. [Redundant close-pair capacity](redundant-close-pair-capacity.md) — **[density conversion and attrition bounds proved; finite redundancy reinforced]** `P` is exactly the short compressed-separator count; sharp bounds `P_new>=P_old-2H` and `D_new>=D_old-H` are proved, while monotone `P` and `D` are empirically refuted.
 19. [Sixfold harmful-residue capacity](sixfold-harmful-residue-capacity.md) — **[algebra-first; unmeasured separately]** the one-layer destruction bound `K_r(W_Q)<=2(floor((Q^2-Q-3)/(6r))+1)` is proved from the common `5 modulo 6` phase; the open hereditary population floor is asymptotically `G_r(W_Q)>Q^2/(3r)`.
 20. [Conditioned residue-collision energy](conditioned-residue-collision-energy.md) — **[algebra-first; bounded falsifier inconclusive]** the collision reduction is proved; minimal violating histograms are `3+2+1` at `(r,N)=(5,6)`, `2+2` at `(7,4)`, and any repeated class at `r>=11,N=3`. Exact conditioned-layer search through `Q<=251` found none; the relative four-point correlation estimate remains open.
-21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[stronger terminal composition framework; unmeasured]** the chain recurrence, corrected stopping index, first-deletion split, and orthogonal energy reduction are proved; property #65 blocks local-ellipse composition, while property #66 and candidate #24 show that full collision energy is stronger than survival needs.
-22. [Conditioned harmless-class collision energy](conditioned-harmless-class-collision-energy.md) — **[independent distribution diagnostic; unmeasured]** asks for `U_i<=N_{i+1}` after the two harmful classes are removed, with a weaker weighted aggregate preferred. It remains noncircular, but property #66 shows that it is redundant for survival once the separated scalar feasibility condition is proved.
-23. [Accepted-anchor strike density](accepted-anchor-strike-density.md) — **[fallback terminal-scalar representation; algebraically classified]** isolates `epsilon_i=H_i/A_i-1/r_i` and the exact bridge `b_i=H_i beta_i+2N_i epsilon_i`; properties #48--#55 classify its weighted budget through activation, CRT, summatory, Gram, and first-deletion forms, while properties #58 and #66 show that direct restricted #12 can bypass the decomposition and that the resulting aggregate scalar target is terminal.
-24. [Weighted harmful-excess quadratic survival](weighted-harmful-excess-quadratic-survival.md) — **[top quadratic survival target; residue-energy localization bridge proved]** asks only for `E_b<T^2/(2W_-)`; properties #66--#70 give the sharp extinction and capacity interfaces. Property #71 proves exact cross-layer CRT orthogonality but shows that final-period Bessel retains the primorial factor. Property #72 gives `E_b<=U_hyb<=U_cap`; #73 quantifies its gain by overflow `e_k`; #74 lower-bounds that overflow by population slack. Properties #75--#81 exhaust the separate/native capacity envelope, including its `Gamma_cap` repair, under full #17 on an unbounded family. Property #82 proves the exact filter-`7` saving. Property #83 then proves generally that complete old-period block runs have harmful-excess square at most `4kV_r`, composing candidate #20's residue energy into #24. The live theorem now requires a relative residue-energy estimate plus control of two partial old-period fragments and the weighted chain; more accepted-anchor or capacity-only rewrites are closed.
-25. [Chen-type almost-prime survivor](chen-type-almost-prime-survivor.md) — **[EXISTENCE EXTERNALLY KNOWN; LOCAL FACTORS AND OBSTRUCTIONS PROVED; WEIGHT POSITIVITY OPEN]** Chen plus Bertrand gives bare existence. Properties #84--#86 prove the exact divisor local factor, expose the inverse-residue/nonprincipal-character bilinear family, refute scalar-density Type-II orthogonality on the complete wheel, and identify the natural shifted Type-I remainder as `pi(I;d,-2)-pi(I)/phi(d)`. The next input is a matched averaged prime-progression theorem followed by a locally adapted bilinear formulation. Success would rederive Chen-type pairs from the project's mechanism; it would not force twin primes.
+21. [Cumulative weighted collision budget](cumulative-weighted-collision-budget.md) — **[stronger terminal composition framework; unmeasured]** the chain recurrence, corrected stopping index, first-deletion split, and orthogonal energy reduction are proved; the One-Layer Ellipse Non-Composition property blocks local-ellipse composition, while the Terminal Harmful-Excess Energy property and candidate #24 show that full collision energy is stronger than survival needs.
+22. [Conditioned harmless-class collision energy](conditioned-harmless-class-collision-energy.md) — **[independent distribution diagnostic; unmeasured]** asks for `U_i<=N_{i+1}` after the two harmful classes are removed, with a weaker weighted aggregate preferred. It remains noncircular, but the Terminal Harmful-Excess Energy property shows that it is redundant for survival once the separated scalar feasibility condition is proved.
+23. [Accepted-anchor strike density](accepted-anchor-strike-density.md) — **[fallback terminal-scalar representation; algebraically classified]** isolates `epsilon_i=H_i/A_i-1/r_i` and the exact bridge `b_i=H_i beta_i+2N_i epsilon_i`; the properties from Strike Divisor-Activation Kernel through First-Deletion Reindexing classify its weighted budget through activation, CRT, summatory, Gram, and first-deletion forms, while the Sampling-Density Recombination and Terminal Harmful-Excess Energy properties show that direct restricted #12 can bypass the decomposition and that the resulting aggregate scalar target is terminal.
+24. [Weighted harmful-excess quadratic survival](weighted-harmful-excess-quadratic-survival.md) — **[top quadratic survival target; residue-energy localization bridge proved]** asks only for `E_b<T^2/(2W_-)`; the properties from Terminal Harmful-Excess Energy through Harmful-Capacity Excess Envelope give the sharp extinction and capacity interfaces. The Paired CRT Primorial Scale property proves exact cross-layer CRT orthogonality but shows that final-period Bessel retains the primorial factor. The Native-Period Hybrid Envelope property gives `E_b<=U_hyb<=U_cap`; the Native-Period Capacity Overflow property quantifies its gain by overflow `e_k`; the Envelope Width Floor property lower-bounds that overflow by population slack. The properties from Seven-Layer Density Floor through Capacity Stability Gap exhaust the separate/native capacity envelope, including its `Gamma_cap` repair, under full #17 on an unbounded family. The Filter-Seven Excess Bound property proves the exact filter-`7` saving. The Copy-Block Excess Control property then proves generally that complete old-period block runs have harmful-excess square at most `4kV_r`, composing candidate #20's residue energy into #24. The live theorem now requires a relative residue-energy estimate plus control of two partial old-period fragments and the weighted chain; more accepted-anchor or capacity-only rewrites are closed.
+25. [Chen-type almost-prime survivor](chen-type-almost-prime-survivor.md) — **[EXISTENCE EXTERNALLY KNOWN; LOCAL FACTORS AND OBSTRUCTIONS PROVED; WEIGHT POSITIVITY OPEN]** Chen plus Bertrand gives bare existence. The properties from Divisor Local Factor through Cofactor Progression Discrepancy prove the exact divisor local factor, expose the inverse-residue/nonprincipal-character bilinear family, refute scalar-density Type-II orthogonality on the complete wheel, and identify the natural shifted Type-I remainder as `pi(I;d,-2)-pi(I)/phi(d)`. The next input is a matched averaged prime-progression theorem followed by a locally adapted bilinear formulation. Success would rederive Chen-type pairs from the project's mechanism; it would not force twin primes.
 
 ## Established Background
 
@@ -129,7 +129,7 @@ signed arithmetic feeding candidate #24's terminal weighted energy bound;
 candidate #20 is a supporting relative-residue-energy input. Candidate #25 is
 a distinct almost-prime program. Candidate #4 should be reopened only after a
 useful quantitative run bound survives its exact run-three counterexample and
-is paired with an independent local-block theorem. [Property #87](../properties/sieve-sequence/incremental-danger-annulus-decomposition.md)
+is paired with an independent local-block theorem. [Danger-Annulus Decomposition](../properties/sieve-sequence/incremental-danger-annulus-decomposition.md)
 gives candidates #2 and #16 a quantified path within the deferred local-
 mechanism family: it sharpens destruction capacity but proves neither annular
 abundance nor a favorable exterior construction, so it does not displace the
@@ -143,11 +143,11 @@ is not itself a continuation.
 
 ### Current dependency map
 
-Property #66 replaces the earlier parallel-component dependency chain:
+The Terminal Harmful-Excess Energy property replaces the earlier parallel-component dependency chain:
 
 ```text
-exact signed conservation (property #25)
-    -> harmful-excess quadratic lower bound (property #66)
+exact signed conservation (the Weighted Deletion Conservation property)
+    -> harmful-excess quadratic lower bound (the Terminal Harmful-Excess Energy property)
     -> candidate #24 natural quadratic budget
     -> hereditary survival / square-safe certificate
 
@@ -164,8 +164,8 @@ restricted #12 or fallback #13+#23
 ```
 
 The former scalar and harmless objectives are not parallel preparatory steps.
-Property #65 proves that the sharp one-layer thresholds #62--#64 do not
-compose. Property #66 supplies the sharp conservation-only threshold used by
+The One-Layer Ellipse Non-Composition property proves that the sharp one-layer thresholds (Sixfold Population-Ratio Threshold through Late-Layer Sixfold Floor) do not
+compose. The Terminal Harmful-Excess Energy property supplies the sharp conservation-only threshold used by
 candidate #24, and candidate #21 implies that leaner condition. Candidate #22
 remains a clean noncircular distribution problem, but solving it is not
 required by #24. Any new derivation must state whether it is a one-layer fact,
@@ -184,7 +184,7 @@ are in the closure matrix.
   many consecutive-prime transitions; the conditional implication then yields
   infinitely many twin-prime certificates. The empirical `p^1.6` surplus fit is
   finite evidence for this full-window condition only, not a proof target or
-  evidence for the annular population. Property #87 introduces the distinct
+  evidence for the annular population. The Danger-Annulus Decomposition property introduces the distinct
   incremental target `L_D(p,q)>A(p,q)-1`, with raw sufficient form
   `L_D(p,q)>2d+ceil(d^2/p)-1`. Neither annular condition is measured or proved.
   This remains an outcome-level formulation; reopening requires an independent
@@ -234,46 +234,46 @@ are in the closure matrix.
   quadratic survival target. Prove
   `E_b<T^2/(2W_-)` for infinitely many future heads, equivalently bound the
   weighted quadratic variation
-  `sum_i A_(0,i)(z_i-z_(i+1))^2`. Property #66 proves the implication and
+  `sum_i A_(0,i)(z_i-z_(i+1))^2`. The Terminal Harmful-Excess Energy property proves the implication and
   shows the threshold is sharp using only conservation plus `E_b`. Property
   #67 strengthens that boundary by constructing scaled integral monotone
-  extinction profiles at equality. Property #68 identifies the exact
+  extinction profiles at equality. The Harmful-Excess Stability Decomposition property identifies the exact
   nonnegative distance from that profile; a positive CRT distance can enlarge
-  the certificate threshold. Property #69 now obtains the explicit enlargement
+  the certificate threshold. The Capacity Minimizer Separation property now obtains the explicit enlargement
   `Gamma_cap=max_i (K_i^star-C_i)_+^2/D_i` from the proved harmful capacities.
-  Property #70 supplies the sharp separate-layer capacity upper envelope
+  The Harmful-Capacity Excess Envelope property supplies the sharp separate-layer capacity upper envelope
   `E_b<=U_cap`. Its exact local threshold remains
   `N_i/B_i>rho_*(r_i)>2`, strictly stronger than #19, so separate-layer
-  capacity optimization is exhausted. Property #71 proves that the centered
+  capacity optimization is exhausted. The Paired CRT Primorial Scale property proves that the centered
   paired observables are exactly orthogonal across layers, but black-box
   Bessel gives only `E_b<=LRd_m/(r_0-2)` and retains the full primorial-scale
-  class count. Property #72 avoids forcing that final period: at each
+  class count. The Native-Period Hybrid Envelope property avoids forcing that final period: at each
   intermediate cut it intersects native-period prefix Bessel with the
   coordinate capacities by an exact greedy linear program. Optimizing the cut
   gives `E_b<=U_hyb<=U_cap`, with strict gain exactly when the normalized
   prefix capacity box exceeds the interval remainder. The current explicit
   relaxed target is
   `U_hyb<T^2/(2W_-)+Gamma_cap` for an unbounded family of actual chains.
-  Property #73 defines the normalized overflow `e_k`, proves that the gain at
+  The Native-Period Capacity Overflow property defines the normalized overflow `e_k`, proves that the gain at
   cut `k` is at least `M_k d_m e_k/(r_(k-1)-2)`, and gives the simpler
   sufficient comparison obtained by subtracting the largest such guaranteed
-  gain from `U_cap`. Property #74 proves
+  gain from `U_cap`. The Envelope Width Floor property proves
   `X_i>=min(N_i,2B_i,r_iB_i-N_i)^2/4`, producing an explicit population-slack
   lower bound for `e_k`. It also proves that the envelope vanishes at
   `N_i=0` and `N_i=r_iB_i`, so `r_i,B_i` alone cannot supply a positive floor.
-  Property #75 shows that candidate #17's threshold instead places the actual
-  population in the maximal-slack regime `sigma_i=2B_i`. Property #76 then
+  The Seven-Layer Density Floor property shows that candidate #17's threshold instead places the actual
+  population in the maximal-slack regime `sigma_i=2B_i`. The Seven-Layer Overflow Forcing property then
   uses the proved `r=7` base to establish `e_2>=1` and
   `Delta_2>=42d_m e_2` for every future prime head `Q>=37`. The next exact
-  comparison is classified first by property #77: under #17 at filter `11`,
+  comparison is classified first by the Filter-Seven Cut Failure property: under #17 at filter `11`,
   the fixed `k=2` envelope satisfies `U_2^hyb>T^2/(2W_-)` whenever `m>=37`.
-  Property #78 generalizes this to every cut through the obstruction
+  The Fixed Native Cut Failure property generalizes this to every cut through the obstruction
   `m>P_k(r_k-2)^2(1+6/D)^2` and forces the necessary moving-prime bound
-  `r_k>=2+sqrt(7m/3)/(1+6/D)`. Property #79 completes the modulus comparison:
+  `r_k>=2+sqrt(7m/3)/(1+6/D)`. The Moving-Cut Block Loss property completes the modulus comparison:
   an exact theta/Bertrand inequality restricts cuts with `M_k<=H` to
   `m=O(log^2 H)`, and PNT shows the actual full chain eventually violates
   that restriction. Thus a potentially successful moving cut has `M_k>H`
-  and `s_k=H`. Property #80 bounds its normalized capacity sum by
+  and `s_k=H`. The Incomplete-Block Bessel Bound property bounds its normalized capacity sum by
   `3kD^2r_k^2/(25M_kP_k(r_k-2))`; PNT makes the resulting zero-overflow
   criterion hold, so `e_k=0` and `U_k^hyb=U_cap`. The native-capacity route is
   therefore exhausted for the original threshold under full #17. Property
@@ -281,10 +281,10 @@ are in the closure matrix.
   `Gamma_cap<=(25P_m/18)(2/5+3N_0/(5S))^2`, while the filter-`7` coordinate
   already forces `U_cap>=P_mD^2/1080`. Prime Mertens and PNT make the gap
   negligible relative to that floor, so the relaxed threshold also cannot
-  rescue this envelope. Property #82 proves that exact interval order changes
+  rescue this envelope. The Filter-Seven Excess Bound property proves that exact interval order changes
   the conclusion at filter `7`: `|b_7|<=18/7`, so its actual energy is at most
   `54P_m/5`, smaller than the charged `P_mD^2/1080` by a factor tending to
-  zero. Property #58 identifies the general coefficient with candidate #23's
+  zero. The Sampling-Density Recombination property identifies the general coefficient with candidate #23's
   two-residue accepted-boundary discrepancy. The next route must prove new
   signed mean-square/cross-layer cancellation or introduce a genuinely
   different inequality—not more data, native-period enumeration, another
@@ -292,10 +292,10 @@ are in the closure matrix.
 - **#21 Cumulative weighted collision budget.** This is a stronger terminal
   composition framework. The proved identity
   `V_i=U_i+r_i b_i^2/(2(r_i-2))+Delta_i^2/2` replaces the earlier opaque
-  stopped-kernel target. Property #58 recombines #13 and #23 exactly into the
-  direct two-harmful-residue norm, while property #65 proves that one-layer
+  stopped-kernel target. The Sampling-Density Recombination property recombines #13 and #23 exactly into the
+  direct two-harmful-residue norm, while the One-Layer Ellipse Non-Composition property proves that one-layer
   ellipse membership does not imply the required global weighted bound.
-  Property #66 further proves that the `b_i^2` component being below that
+  The Terminal Harmful-Excess Energy property further proves that the `b_i^2` component being below that
   allowance already forces final survival. Candidate #24 removes #21's
   unnecessary imbalance and harmless terms and uses the larger natural
   allowance, so pursue #21 only if its full-energy structure enables an
@@ -318,12 +318,12 @@ are in the closure matrix.
   `epsilon_i=H_i/A_i-1/r_i` in the weighted form consumed by #21 after
   inserting #13's endpoint error into
   `b_i=H_i beta_i+2N_i epsilon_i`; do not normalize by a positive final or
-  late-layer 2-gap population. Property #66 shows that success at the required
+  late-layer 2-gap population. The Terminal Harmful-Excess Energy property shows that success at the required
   aggregate scale is itself a terminal survival theorem.
 - **#25 Chen-type relaxed weight.** The existence of Chen pairs is externally
   established, so the project-specific theorem must be the positive sum
   `sum_(n in S_Q) 1_(gcd(n+2,P(Q^(2alpha)))=1)>0` for some fixed
-  `alpha>1/3` and infinitely many heads. Properties #84--#86 now give the exact
+  `alpha>1/3` and infinitely many heads. The properties from Divisor Local Factor through Cofactor Progression Discrepancy now give the exact
   local comparison, bilinear character decomposition, scalar-comparison
   obstruction, and shifted prime-progression remainder. Its separate proof
   program requires matching an

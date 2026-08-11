@@ -11,7 +11,7 @@ configuration, the signed-imbalance energy alone exceeds candidate #21's
 entire one-layer survival allowance.
 
 Therefore no theorem using only the class sizes and capacity constraints from
-property #56 can prove candidate #21. A successful candidate #13 theorem must
+The Joint Capacity Envelope property can prove candidate #21. A successful candidate #13 theorem must
 add arithmetic information that excludes such endpoint concentration.
 
 This does not claim that every actual sieve layer realizes the extremal
@@ -47,7 +47,7 @@ k_L=G,
 k_R=0.
 ```
 
-This satisfies property #56's complete capacity constraints:
+This satisfies the Joint Capacity Envelope property's complete capacity constraints:
 
 ```math
 0\le k_L,k_R\le G,
@@ -129,7 +129,7 @@ The capacity premises admit both:
 - complete concentration on one endpoint orientation.
 
 They cannot distinguish survival from total destruction. Hence the sharp
-capacity envelope in property #56 is a boundary theorem, not a route to the
+capacity envelope in the Joint Capacity Envelope property is a boundary theorem, not a route to the
 desired collision budget.
 
 Retrying a capacity-only proof is justified only after adding a new premise

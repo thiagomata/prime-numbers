@@ -91,7 +91,7 @@ G_{ij}
 }
 ```
 
-Complete-period orthogonality from property #51 is the special case in which
+Complete-period orthogonality from the Cross-Layer CRT Orthogonality property is the special case in which
 every complete-period discrepancy `D_j` is zero.
 
 ## Exact Diagonal Entries
@@ -161,7 +161,7 @@ L\,
 ```
 
 Every entry of this matrix is explicit in `A_i`, `D_i`, `r_i`, and `w_i`.
-This is a local-window normalization: the final primorial from property #51
+This is a local-window normalization: the final primorial from the Cross-Layer CRT Orthogonality property
 has disappeared.
 
 ## Why The Generic Trace Bound Does Not Advance The Proof

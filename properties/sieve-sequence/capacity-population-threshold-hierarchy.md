@@ -9,7 +9,7 @@ Three current routes ask for lower bounds on the same conditioned local
 2-gap population:
 
 - candidate #19 asks for just enough gaps to beat the two harmful capacities;
-- property #62 asks for enough gaps to place one layer's harmful scalar
+- the Sixfold Population-Ratio Threshold property asks for enough gaps to place one layer's harmful scalar
   energy inside its local collision ellipse;
 - candidate #14's count-to-close-pair lemma asks for enough gaps to force two
   nearby occurrences.
@@ -35,7 +35,7 @@ L=Q^2-Q-3,
 B=\left\lfloor\frac{L}{6r}\right\rfloor+1.
 ```
 
-The common one-residue-class capacity is `B`. Define property #62's sharp
+The common one-residue-class capacity is `B`. Define the Sixfold Population-Ratio Threshold property's sharp
 ratio
 
 ```math
@@ -55,7 +55,7 @@ T_{14}&=
 \end{aligned}
 ```
 
-Here `T_19` is candidate #19's integer floor, `G>T_energy` is property #62's
+Here `T_19` is candidate #19's integer floor, `G>T_energy` is the Sixfold Population-Ratio Threshold property's
 strict scalar criterion, and `G>=T_14` is candidate #14's sufficient count for
 the `k=2` interval premise.
 
@@ -80,7 +80,7 @@ L-6r
 
 for every `Q>=7`. Hence `floor(L/(6r))>=1`.
 
-Second, property #62 gives `rho_*(r)>2`. We also need the stronger uniform
+Second, the Sixfold Population-Ratio Threshold property gives `rho_*(r)>2`. We also need the stronger uniform
 upper bound
 
 ```math
@@ -187,7 +187,7 @@ T_{14}>\rho_*(r)B.
 }
 ```
 
-Consequently, candidate #14's count floor implies property #62's harmful
+Consequently, candidate #14's count floor implies the Sixfold Population-Ratio Threshold property's harmful
 scalar criterion at every square-window layer in the stated domain.
 
 ## Exact Range Where Candidate #19 Is Enough
@@ -198,7 +198,7 @@ Candidate #19 guarantees only
 G\ge T_{19}=2B+1.
 ```
 
-This floor certifies property #62 exactly when
+This floor certifies the Sixfold Population-Ratio Threshold property exactly when
 
 ```math
 \begin{aligned}
@@ -265,7 +265,7 @@ only while the one-class capacity is roughly below `r/2`.
 
 ## Hierarchy
 
-Property #62 already proves `rho_*(r)>2`. Together with the #14 comparison,
+The Sixfold Population-Ratio Threshold property already proves `rho_*(r)>2`. Together with the #14 comparison,
 
 ```math
 \boxed{
@@ -296,14 +296,14 @@ the unproved hereditary lower bounds for the actual conditioned population.
 
 It also concerns only one layer's two harmful scalar terms. Candidate #22's
 harmless-class dispersion remains a separate distribution question, but
-property #66 shows it is not an additional survival premise after a global
+The Terminal Harmful-Excess Energy property shows it is not an additional survival premise after a global
 harmful bound succeeds.
 
-Property #65 proves that satisfying the middle threshold at every layer does
+The One-Layer Ellipse Non-Composition property proves that satisfying the middle threshold at every layer does
 not imply candidate #21's global weighted allowance. The hierarchy compares
 local population strengths only; a direct aggregate estimate for
 `sum_i w_i Q_i` remains open and is terminal at the required global scale by
-property #66.
+The Terminal Harmful-Excess Energy property.
 
 ## Validation
 

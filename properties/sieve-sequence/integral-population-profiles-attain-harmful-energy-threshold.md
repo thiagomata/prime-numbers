@@ -5,7 +5,7 @@ is not claimed.
 
 ## Meaning
 
-Property #66 proves that extinction forces the weighted harmful-excess energy
+The Terminal Harmful-Excess Energy property proves that extinction forces the weighted harmful-excess energy
 to satisfy
 
 ```math
@@ -23,7 +23,7 @@ chain, there are scaled abstract population profiles for which:
 1. every population and deletion count is a nonnegative integer;
 2. the population decreases strictly to zero;
 3. the exact deletion recurrence holds; and
-4. equality holds in property #66.
+4. equality holds in the Terminal Harmful-Excess Energy property.
 
 Thus integrality, population monotonicity, and the recurrence alone cannot
 improve candidate #24's sharp threshold. Any improvement must use arithmetic
@@ -143,7 +143,7 @@ N_{i+1}=N_i-K_i.
 
 ## Exact Cauchy Equality
 
-Define the harmful excess as in properties #25 and #66:
+Define the harmful excess as in the Weighted Deletion Conservation property and #66:
 
 ```math
 b_i=a_iN_i-N_{i+1}.
@@ -179,7 +179,7 @@ c_ib_i=\frac{N_0}{2S}
 ```
 
 is constant across every layer. This is exactly the equality condition in
-the weighted Cauchy--Schwarz proof of property #66.
+the weighted Cauchy--Schwarz proof of the Terminal Harmful-Excess Energy property.
 
 To check the value directly, use
 

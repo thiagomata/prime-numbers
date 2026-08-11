@@ -7,6 +7,105 @@ explains what it enables, and marks the exact boundary of the result.
 These notes are not publication articles and do not claim Stainless
 verification unless a file explicitly says otherwise.
 
+## Short-Name Registry
+
+Every property has a short, distinctive name used whenever it is cited from
+outside its own file (headers, prose, tables) — never a bare number. The full
+title lives only in the property's own file `# H1`; the short name below is
+what every other document should use. This table is the canonical registry;
+nothing else in the repo should be treated as authoritative for the mapping.
+
+| Short Name | Full Title | File |
+|---|---|---|
+| Global 2-Gap Count | Exact Global 2-Gap Count | [exact-global-two-gap-count.md](exact-global-two-gap-count.md) |
+| Global 2-Gap Cluster Count | Exact Global `(2,4,2)` Two-Gap Cluster Count | [exact-global-two-gap-cluster-count.md](exact-global-two-gap-cluster-count.md) |
+| Batched 2-Gap Survival | Exact Batched 2-Gap Survival | [exact-batched-two-gap-survival.md](exact-batched-two-gap-survival.md) |
+| Copy-Index Filter Frequency | Exact Filter Frequency Across Repeated Copies | [copy-index-filter-frequency.md](copy-index-filter-frequency.md) |
+| 2-Gap Isolation | Isolation of 2-Gaps After Filtering by 3 | [two-gap-isolation-after-filter-three.md](two-gap-isolation-after-filter-three.md) |
+| Accepted Local Strikes | Exact Accepted Local Filter Strikes | [exact-accepted-local-filter-strikes.md](exact-accepted-local-filter-strikes.md) |
+| Local Survival Threshold | Sharp Local 2-Gap Survival Threshold | [sharp-local-two-gap-survival-threshold.md](sharp-local-two-gap-survival-threshold.md) |
+| Safe-Window Certification | Safe-Window 2-Gaps Certify Twin Primes | [safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md) |
+| Reverse-Engineered Head Scenario | Reverse-Engineered Initial Scenario for an Eventual Head 2-Gap | [reverse-engineered-eventual-head-scenario.md](reverse-engineered-eventual-head-scenario.md) |
+| Perfect Scenario Infinitude | Candidate Property: Infinitely Many Perfect Sieve Scenarios | [infinite-perfect-scenario-property.md](infinite-perfect-scenario-property.md) |
+| Count-Forces-Survival Threshold | Global Count Threshold That Forces Local Survival | [global-count-forcing-local-survival.md](global-count-forcing-local-survival.md) |
+| Rotation Invariance | Rotation Preserves Cyclic Gap Counts | [rotation-preserves-cyclic-gap-counts.md](rotation-preserves-cyclic-gap-counts.md) |
+| Absence Stability | Absence of 2-Gaps Is Stable | [absence-of-two-gaps-is-stable.md](absence-of-two-gaps-is-stable.md) |
+| Batched Discrepancy Boundary | Batched Short-Window Discrepancy Boundary | [batched-short-window-discrepancy-boundary.md](batched-short-window-discrepancy-boundary.md) |
+| Fixed-k Shot Spacing | Fixed-k Shot Spacing: Monotonicity and Eventual Stability | [stable-small-k-shot-spacing.md](stable-small-k-shot-spacing.md) |
+| Pair Separation Premise | Bounded Pair Separation Gives the k=2 Interval Premise | [interval-premise-from-pair-existence.md](interval-premise-from-pair-existence.md) |
+| Local Count Shot-Capacity Premise | A Local Count Forces the k=2 Shot-Capacity Premise | [local-count-forces-k2-shot-capacity.md](local-count-forces-k2-shot-capacity.md) |
+| Seven-Layer Capacity Floor | Exact Seven-Layer Capacity Floor | [exact-seven-layer-capacity-floor.md](exact-seven-layer-capacity-floor.md) |
+| Close-Pair Matching Bound | Local Density Forces a Close-Pair Matching Bound | [local-density-forces-close-pair-matching.md](local-density-forces-close-pair-matching.md) |
+| Raw Close-Pair Attrition | Filtering Attrition Bound for Raw Close Pairs | [filtering-attrition-bound-raw-close-pairs.md](filtering-attrition-bound-raw-close-pairs.md) |
+| Matching Attrition Bound | Filtering Attrition Bound for Close-Pair Matchings | [filtering-attrition-bound-close-pair-matching.md](filtering-attrition-bound-close-pair-matching.md) |
+| Post-Filter-3 Harmful Capacity | Harmful Residue Capacity After Filter Three | [harmful-residue-capacity-after-filter-three.md](harmful-residue-capacity-after-filter-three.md) |
+| Two-Class Collision Survival | Two-Class Survival From Residue Collision Energy | [two-class-survival-from-collision-energy.md](two-class-survival-from-collision-energy.md) |
+| Weighted Chain Survival | Weighted Collision-Energy Chain Survival | [weighted-collision-energy-chain-survival.md](weighted-collision-energy-chain-survival.md) |
+| Weighted Deletion Conservation | Weighted Deletion Conservation Law | [weighted-deletion-conservation-law.md](weighted-deletion-conservation-law.md) |
+| Pair Local Factor | Two-Gap Pair Local Factor By Separation | [two-gap-pair-local-factor-by-separation.md](two-gap-pair-local-factor-by-separation.md) |
+| Pair-Correlation Average | Complete-Period Two-Gap Pair-Correlation Average | [complete-period-two-gap-pair-correlation-average.md](complete-period-two-gap-pair-correlation-average.md) |
+| Fourier Correlation Bound | Fourier Bound For Two-Gap Correlation Prefixes | [fourier-two-gap-correlation-prefix-bound.md](fourier-two-gap-correlation-prefix-bound.md) |
+| Localized Fourier Boundary | Localized Two-Gap Correlation: Fourier Boundary | [localized-two-gap-correlation-fourier-boundary.md](localized-two-gap-correlation-fourier-boundary.md) |
+| Conductor-Decay Destruction | Short-Interval Localization Destroys Prime Conductor Decay | [short-interval-localization-destroys-prime-conductor-decay.md](short-interval-localization-destroys-prime-conductor-decay.md) |
+| Large-Sieve Budget Mismatch | Black-Box Large Sieve Does Not Fit The Weighted Collision Budget | [black-box-large-sieve-does-not-fit-weighted-collision-budget.md](black-box-large-sieve-does-not-fit-weighted-collision-budget.md) |
+| First-Deletion Terminal Energy | First-Deletion Pair Terminal Energy | [first-deletion-pair-terminal-energy.md](first-deletion-pair-terminal-energy.md) |
+| Endpoint Excess-Imbalance Split | Two Endpoint Observables Separate Harmful Excess And Imbalance | [two-endpoint-observables-separate-harmful-excess-and-imbalance.md](two-endpoint-observables-separate-harmful-excess-and-imbalance.md) |
+| Orthogonal Residue-Energy Split | Orthogonal Residue-Energy Decomposition After A Two-Class Filter | [orthogonal-residue-energy-decomposition-after-two-class-filter.md](orthogonal-residue-energy-decomposition-after-two-class-filter.md) |
+| Möbius Strike-Density Sum | Accepted-Strike Density As A Möbius Boundary Sum | [accepted-strike-density-boundary-decomposition.md](accepted-strike-density-boundary-decomposition.md) |
+| Endpoint Discrepancy Contraction | Endpoint Density Contracts Accepted-Strike Discrepancy | [endpoint-density-contracts-strike-discrepancy.md](endpoint-density-contracts-strike-discrepancy.md) |
+| Weighted Error Composition | Weighted Composition Of Endpoint And Strike-Density Errors | [weighted-scalar-error-composition.md](weighted-scalar-error-composition.md) |
+| Strike-Error Quadratic Variation | Accepted-Strike Error Is A Positive Quadratic Variation | [accepted-strike-quadratic-variation.md](accepted-strike-quadratic-variation.md) |
+| Prime-Square Boundary Formula | Prime-Square Window Boundary Residue Formula | [prime-square-window-boundary-residue-formula.md](prime-square-window-boundary-residue-formula.md) |
+| Harmless-Energy Pair Correlation | Harmless Energy As A Fixed-Set Pair Correlation | [harmless-energy-fixed-set-pair-form.md](harmless-energy-fixed-set-pair-form.md) |
+| Harmless-Class Uniformity | Complete-Period Uniformity Of Harmless 2-Gap Classes | [complete-period-harmless-class-uniformity.md](complete-period-harmless-class-uniformity.md) |
+| Harmless Spectral Excess | Harmless Energy As Spectral Excess Above The Two-Class Floor | [harmless-energy-spectral-excess.md](harmless-energy-spectral-excess.md) |
+| CRT Fiber Translation | Harmless-Class Counts As Translated CRT Fibers | [harmless-class-crt-translated-fibers.md](harmless-class-crt-translated-fibers.md) |
+| Inverse-Phase Gram Matrix | Centered Inverse-Phase Gram Matrix | [centered-inverse-phase-gram-matrix.md](centered-inverse-phase-gram-matrix.md) |
+| Phase-Operator Norm Bound | Centered Phase Operator Norm Boundary | [centered-phase-operator-norm-boundary.md](centered-phase-operator-norm-boundary.md) |
+| Conductor Phase-Block Bound | Exact-Conductor Phase-Block Operator Bound | [exact-conductor-phase-block-operator-bound.md](exact-conductor-phase-block-operator-bound.md) |
+| Ramanujan Cross-Conductor Geometry | Centered Ramanujan Cross-Conductor Geometry | [centered-ramanujan-cross-conductor-geometry.md](centered-ramanujan-cross-conductor-geometry.md) |
+| Strike Divisor-Activation Kernel | Accepted-Strike Divisor Activation Kernel | [accepted-strike-divisor-activation-kernel.md](accepted-strike-divisor-activation-kernel.md) |
+| Strike CRT Lift-Index | Accepted-Strike CRT Lift-Index Transform | [accepted-strike-crt-lift-index-transform.md](accepted-strike-crt-lift-index-transform.md) |
+| Strike Summatory Remainder | Accepted-Strike Summatory Coprime Remainder | [accepted-strike-summatory-coprime-remainder.md](accepted-strike-summatory-coprime-remainder.md) |
+| Cross-Layer CRT Orthogonality | Accepted-Strike Cross-Layer CRT Orthogonality | [accepted-strike-cross-layer-crt-orthogonality.md](accepted-strike-cross-layer-crt-orthogonality.md) |
+| Localized-Layer Gram Matrix | Accepted-Strike Localized Layer Gram Matrix | [accepted-strike-localized-layer-gram-matrix.md](accepted-strike-localized-layer-gram-matrix.md) |
+| First-Deletion Variance Identity | Accepted-Strike First-Deletion Variance Identity | [accepted-strike-first-deletion-variance-identity.md](accepted-strike-first-deletion-variance-identity.md) |
+| Active Two-Class Variance | Accepted-Strike Active Two-Class Variance Identity | [accepted-strike-active-two-class-variance-identity.md](accepted-strike-active-two-class-variance-identity.md) |
+| First-Deletion Reindexing | Accepted-Strike First-Deletion Coordinate Reindexing | [accepted-strike-first-deletion-coordinate-reindexing.md](accepted-strike-first-deletion-coordinate-reindexing.md) |
+| Joint Capacity Envelope | Endpoint-Observable Joint Capacity Envelope | [endpoint-observable-joint-capacity-envelope.md](endpoint-observable-joint-capacity-envelope.md) |
+| Endpoint Capacity Insufficiency | Endpoint Capacity Cannot Certify The Collision Budget | [endpoint-capacity-cannot-certify-collision-budget.md](endpoint-capacity-cannot-certify-collision-budget.md) |
+| Sampling-Density Recombination | Endpoint Sampling And Strike Density Recombine Into Harmful Residues | [endpoint-sampling-strike-density-harmful-residue-bridge.md](endpoint-sampling-strike-density-harmful-residue-bridge.md) |
+| Pointwise Margin Insufficiency | Pointwise Two-Class Margin Does Not Imply The Collision Budget | [pointwise-two-class-margin-does-not-imply-collision-budget.md](pointwise-two-class-margin-does-not-imply-collision-budget.md) |
+| Harmful-Residue Box Bound | Sharp Harmful-Residue Box Inside The Collision Ellipse | [sharp-harmful-residue-box-inside-collision-ellipse.md](sharp-harmful-residue-box-inside-collision-ellipse.md) |
+| Sixfold-Capacity Energy Envelope | Sharp Sixfold-Capacity Harmful-Energy Envelope | [sharp-sixfold-capacity-harmful-energy-envelope.md](sharp-sixfold-capacity-harmful-energy-envelope.md) |
+| Sixfold Population-Ratio Threshold | Sharp Sixfold-Capacity Population-Ratio Threshold | [sharp-sixfold-capacity-population-ratio-threshold.md](sharp-sixfold-capacity-population-ratio-threshold.md) |
+| Capacity Threshold Hierarchy | Capacity Population-Threshold Hierarchy | [capacity-population-threshold-hierarchy.md](capacity-population-threshold-hierarchy.md) |
+| Late-Layer Sixfold Floor | Late-Layer Sixfold Floor Controls Harmful Energy | [late-layer-sixfold-floor-controls-harmful-energy.md](late-layer-sixfold-floor-controls-harmful-energy.md) |
+| One-Layer Ellipse Non-Composition | One-Layer Harmful Ellipses Do Not Compose | [one-layer-harmful-ellipses-do-not-compose.md](one-layer-harmful-ellipses-do-not-compose.md) |
+| Terminal Harmful-Excess Energy | Weighted Harmful-Excess Energy Is Already Terminal | [weighted-harmful-excess-energy-is-terminal.md](weighted-harmful-excess-energy-is-terminal.md) |
+| Integral Profile Attainment | Integral Population Profiles Attain the Harmful-Energy Threshold | [integral-population-profiles-attain-harmful-energy-threshold.md](integral-population-profiles-attain-harmful-energy-threshold.md) |
+| Harmful-Excess Stability Decomposition | Harmful-Excess Energy Has an Exact Stability Decomposition | [harmful-excess-energy-exact-stability-decomposition.md](harmful-excess-energy-exact-stability-decomposition.md) |
+| Capacity Minimizer Separation | Harmful Capacity Separates the Energy Minimizer | [harmful-capacity-separates-energy-minimizer.md](harmful-capacity-separates-energy-minimizer.md) |
+| Harmful-Capacity Excess Envelope | Sharp Harmful-Capacity Excess Envelope | [sharp-harmful-capacity-excess-envelope.md](sharp-harmful-capacity-excess-envelope.md) |
+| Paired CRT Primorial Scale | Paired Harmful-Excess CRT Orthogonality Has Primorial Scale | [paired-harmful-excess-crt-orthogonality-has-primorial-scale.md](paired-harmful-excess-crt-orthogonality-has-primorial-scale.md) |
+| Native-Period Hybrid Envelope | Native-Period Bessel and Capacity Give a Sharp Hybrid Envelope | [native-period-bessel-capacity-hybrid-envelope.md](native-period-bessel-capacity-hybrid-envelope.md) |
+| Native-Period Capacity Overflow | Native-Period Capacity Overflow Quantifies the Hybrid Gain | [native-period-capacity-overflow-quantifies-hybrid-gain.md](native-period-capacity-overflow-quantifies-hybrid-gain.md) |
+| Envelope Width Floor | Capacity-Envelope Width Floor Needs Population Slack | [capacity-envelope-width-floor-needs-population-slack.md](capacity-envelope-width-floor-needs-population-slack.md) |
+| Seven-Layer Density Floor | Seven-Layer Density Floor Maximizes Capacity Width | [seven-layer-density-floor-maximizes-capacity-width.md](seven-layer-density-floor-maximizes-capacity-width.md) |
+| Seven-Layer Overflow Forcing | Seven-Layer Floor Forces Native Overflow | [seven-layer-floor-forces-native-overflow.md](seven-layer-floor-forces-native-overflow.md) |
+| Filter-Seven Cut Failure | Fixed Seven Cut Cannot Clear The Original Threshold | [fixed-seven-cut-cannot-clear-original-threshold.md](fixed-seven-cut-cannot-clear-original-threshold.md) |
+| Fixed Native Cut Failure | Every Fixed Native Cut Fails The Original Threshold | [every-fixed-native-cut-fails-original-threshold.md](every-fixed-native-cut-fails-original-threshold.md) |
+| Moving-Cut Block Loss | Moving Cut Loses Complete Native Blocks | [moving-cut-loses-complete-native-blocks.md](moving-cut-loses-complete-native-blocks.md) |
+| Incomplete-Block Bessel Bound | Incomplete-Block Bessel Excludes No Capacity | [incomplete-block-bessel-excludes-no-capacity.md](incomplete-block-bessel-excludes-no-capacity.md) |
+| Capacity Stability Gap | Capacity Stability Gap Cannot Rescue the Capacity Envelope | [capacity-stability-gap-cannot-rescue-capacity-envelope.md](capacity-stability-gap-cannot-rescue-capacity-envelope.md) |
+| Filter-Seven Excess Bound | Filter-Seven Harmful Excess Is Boundary-Sized | [filter-seven-harmful-excess-is-boundary-sized.md](filter-seven-harmful-excess-is-boundary-sized.md) |
+| Copy-Block Excess Control | Copy-Block Harmful Excess Is Controlled By Residue Energy | [copy-block-harmful-excess-controlled-by-residue-energy.md](copy-block-harmful-excess-controlled-by-residue-energy.md) |
+| Divisor Local Factor | Relaxed Almost-Prime Weight Has An Exact Divisor Local Factor | [relaxed-almost-prime-divisor-local-factor.md](relaxed-almost-prime-divisor-local-factor.md) |
+| Bilinear Character Obstruction | Relaxed Almost-Prime Bilinear Remainder Has A Character Obstruction | [relaxed-almost-prime-bilinear-character-obstruction.md](relaxed-almost-prime-bilinear-character-obstruction.md) |
+| Cofactor Progression Discrepancy | Relaxed Cofactor Divisor Sum Is A Prime-Progression Discrepancy | [relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md](relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
+| Danger-Annulus Decomposition | Incremental Danger-Annulus Decomposition | [incremental-danger-annulus-decomposition.md](incremental-danger-annulus-decomposition.md) |
+| Filter Adversariality Score | Realized Filter Adversariality Score | [realized-filter-adversariality-score.md](realized-filter-adversariality-score.md) |
+
 ## Recommended Reading Order
 
 1. [Exact Global 2-Gap Count](exact-global-two-gap-count.md)
@@ -274,7 +373,7 @@ verification unless a file explicitly says otherwise.
       `(K_i^star-C_i)_+^2/D_i`. This enlarges the possible #24 certificate but
       remains a lower bound, not an upper estimate for actual `E_b`.
 71. [Sharp Harmful-Capacity Excess Envelope](sharp-harmful-capacity-excess-envelope.md)
-    - Projects property #61's exact capacity interval onto `b_i^2`, giving the
+    - Projects the Sixfold-Capacity Energy Envelope property's exact capacity interval onto `b_i^2`, giving the
       sharp one-layer endpoint maximum and the valid aggregate upper bound
       `E_b<=U_cap`. Combined with #69, `U_cap<T^2/(2W_-)+Gamma_cap` forces
       survival, but proving that terminal inequality remains open. Its local
@@ -289,7 +388,7 @@ verification unless a file explicitly says otherwise.
       coefficient-sensitive cancellation.
 73. [Native-Period Bessel and Capacity Give a Sharp Hybrid Envelope](native-period-bessel-capacity-hybrid-envelope.md)
     - Applies Bessel to a prefix over its intermediate native CRT period and
-      intersects that joint budget sharply with property #70's coordinate
+      intersects that joint budget sharply with the Harmful-Capacity Excess Envelope property's coordinate
       capacities by an explicit greedy linear program. The optimized envelope
       always improves or matches `U_cap`, with an exact normalized-capacity
       criterion for strict gain, but universal clearance of the extinction
@@ -304,14 +403,14 @@ verification unless a file explicitly says otherwise.
     - Proves the feasible harmful-count width
       `min(N,2B,rB-N)`, the envelope floor
       `X>=min(N,2B,rB-N)^2/4`, and the resulting explicit lower bound for
-      property #73's overflow. The envelope vanishes at both `N=0` and
+      the Native-Period Capacity Overflow property's overflow. The envelope vanishes at both `N=0` and
       `N=rB`, so no positive population-independent floor follows from
       `r,B` alone.
 76. [Seven-Layer Density Floor Maximizes Capacity Width](seven-layer-density-floor-maximizes-capacity-width.md)
     - Proves that candidate #17's local-count threshold, together with the
       installed filter `5`, places every `r>=7` population in
-      `2B<=N<=(r-2)B`. Hence property #74 has maximal slack `sigma=2B` and
-      width floor `X>=B^2`; whether its normalized sum exceeds property #73's
+      `2B<=N<=(r-2)B`. Hence the Envelope Width Floor property has maximal slack `sigma=2B` and
+      width floor `X>=B^2`; whether its normalized sum exceeds the Native-Period Capacity Overflow property's
       remainder budget remains open.
 77. [Seven-Layer Floor Forces Native Overflow](seven-layer-floor-forces-native-overflow.md)
     - At the native cut after filter `7`, proves `q_(1,2)=30/7` and
@@ -337,7 +436,7 @@ verification unless a file explicitly says otherwise.
       `m<(3/7)(1+6/D)^2(2log(H)/c-2)^2`. Using PNT explicitly as an external
       dependency, the actual chain eventually violates this bound, so every
       sufficiently large potentially successful cut has `M_k>H` and
-      `s_k=H`. Property #80 subsequently proves that the incomplete-block
+      `s_k=H`. The Incomplete-Block Bessel Bound property subsequently proves that the incomplete-block
       overflow vanishes at this moving-prime scale.
 81. [Incomplete-Block Bessel Excludes No Capacity](incomplete-block-bessel-excludes-no-capacity.md)
     - Proves the finite bound
@@ -345,7 +444,7 @@ verification unless a file explicitly says otherwise.
       criterion for `e_k=0`. Using PNT explicitly outside Stainless, the
       criterion holds at every sufficiently large moving cut forced by #78.
       Combined with #77--#79, the capacity-plus-native-Bessel envelope cannot
-      certify #24's original threshold under full #17. Property #81 next
+      certify #24's original threshold under full #17. The Capacity Stability Gap property next
       closes the separate-envelope `Gamma_cap` route; localized actual-energy
       bounds remain open.
 82. [Capacity Stability Gap Cannot Rescue the Capacity Envelope](capacity-stability-gap-cannot-rescue-capacity-envelope.md)
@@ -355,13 +454,13 @@ verification unless a file explicitly says otherwise.
       simultaneously forces `U_cap>=P_mD^2/1080`. Prime Mertens and PNT show
       that the stability gap is eventually positive but negligible relative
       to this envelope floor, so the capacity-relaxed threshold cannot rescue
-      the separate capacity envelope on an unbounded family. Property #82
+      the separate capacity envelope on an unbounded family. The Filter-Seven Excess Bound property
       next supplies a localized bound at filter `7`; scaling it remains open.
 83. [Filter-Seven Harmful Excess Is Boundary-Sized](filter-seven-harmful-excess-is-boundary-sized.md)
     - Enumerates the 21 admissible residues modulo `210` and proves that their
       centered integer-weight cumulative sums range from `-8` to `10`. Hence
       every interval has the sharp bound `|b_7|<=18/7`, and the actual
-      filter-`7` energy is at most `54P_m/5`, replacing property #81's
+      filter-`7` energy is at most `54P_m/5`, replacing the Capacity Stability Gap property's
       separate capacity charge `>=P_mD^2/1080`. This removes one fixed-layer
       artifact. Scaling the argument is exactly candidate #23's signed
       accepted-boundary cancellation problem; native-period enumeration and
