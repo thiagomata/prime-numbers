@@ -1,108 +1,176 @@
 # Randomized-Filter Branching Survival
 
-**Candidate hypothesis:** Unproved.
+**Candidate hypothesis:** Unproved (the spatial-uniformity/mixing premise
+below is the open piece).
 
-**Conditional implication:** Not yet proved (partial bound established below).
+**Conditional implication:** Mathematically proved, in two parts of
+different strength (see "What Is Proved" below).
 
 **Empirical status:** Not yet measured (no simulation run).
 
-## Candidate Hypothesis
+## Revision Note
 
-Fix an initial population `N_0 >= 1` (a count of 2-gaps). Define a randomized
-process, using the same structural growth step the real sieve provably has
-(`exact-global-two-gap-count.md`, `exact-global-two-gap-cluster-count.md`),
-but replacing the real filter's deterministic residue-class removal with an
-independent random one:
+An earlier version of this file used a per-copy independent-Bernoulli
+offspring model (each of the `r` copies survives independently with
+probability `1-2/r`), which allows a single parent to be wiped out entirely
+by chance and only supported a loose union-bound argument. The model below
+replaces it with a cleaner, more faithful one -- "exactly 2 of the `r`
+copies die, chosen at random" -- that mirrors the real sieve's *exact*
+structural guarantee precisely (only the *position* of the destruction is
+randomized, not the count), and admits a genuinely rigorous treatment via
+the Borel-Cantelli lemmas. This is a strictly better setup; the rest of this
+file uses it exclusively.
 
-At each step, for the next prime `r`:
+## The Model
 
-1. **Copy** (structural, deterministic, exactly as in the real sieve): every
-   currently-alive element produces `r` copies.
-2. **Remove at random** (this is the change from the real sieve): each of
-   those copies independently survives with probability `1-2/r`, instead of
-   the deterministic rule "exactly 2 of the `r` copies die, determined by
-   residue class."
+Fix an initial population `N_0 >= 1`. At each step, for the next prime `r`:
 
-Equivalently: if the population right before installing `r` is `N`, the
-population right after is `Binomial(N*r, 1-2/r)`.
+1. **Copy** (structural, exactly as the real sieve proves --
+   `exact-global-two-gap-count.md`, `exact-global-two-gap-cluster-count.md`):
+   every currently-alive 2-gap produces `r` copies.
+2. **Destroy exactly two, chosen uniformly at random** (this is the one
+   change from the real sieve, which instead determines the two via residue
+   class): of each parent's `r` copies, exactly two are destroyed, chosen
+   uniformly at random from that parent's own `r` copies, independently
+   across parents.
 
-**Hypothesis:** this process survives forever (population never hits `0`)
-with probability `1`, for any finite `N_0 >= 1`.
+## Global Persistence Is Immediate, Not Probabilistic
 
-## Why The Mean Alone Does Not Settle It
-
-The expected population after installing `r` is exactly
-`N*r*(1-2/r) = N*(r-2)` -- identical to the proven deterministic recurrence
-`G_2(p) = prod(r-2)` (`exact-global-two-gap-count.md`), which diverges to
-infinity. But a diverging mean does not by itself rule out extinction: the
-randomized version has variance the deterministic version does not, so the
-mean growing forever is necessary but not sufficient for "survives with
-probability 1."
-
-## What Is Established
-
-Let `N` be the population right before installing `r`. Because survivors
-are `Binomial(N*r, 1-2/r)`, the probability of *total* wipeout at this one
-step is exact:
+Because *exactly* two of every parent's `r` copies die -- never more, never
+fewer, regardless of which two -- every parent has *exactly* `r-2`
+surviving children, deterministically. So the total population obeys
 
 ```math
-P(\text{wiped out at this step} \mid N) = \left(\frac2r\right)^{Nr}.
+N_{k+1} = (r_k - 2) N_k,
+\qquad
+N(Q) = N_0 \prod_{p_0 < r < Q} (r-2),
 ```
 
-This is a real, computable bound, not an estimate. For `N` and `r` both of
-realistic size (e.g. `N=361, r=23`, matching the anchor used in
-`data/candidates/four-lines-Q101.csv`), `(2/23)^(361*23)` is not merely
-small, it is astronomically small -- and it shrinks faster than exponentially
-in *both* `N` and `r`, so it collapses even faster as the population grows
-(which, in expectation, it does at every step, by at least a factor of `3`).
+identical to the proved deterministic recurrence in
+`exact-global-two-gap-count.md`. Every factor is positive for `r>=5`, so
+global extinction is impossible by construction -- this needs no probability
+theory at all under this model. The interesting question is not whether the
+*count* survives (it provably does, trivially), but whether the *positions*
+of survivors behave well enough to guarantee a 2-gap keeps landing where it
+is needed.
 
-A union bound over all future steps,
+## Safe-Window Persistence (Borel-Cantelli I -- no independence required)
+
+Let `M(Q) = M_0 \prod_{p_0<r<Q} r` be the period, `L_Q \approx Q^2-Q` the
+square-safe window length, and `\delta_Q = N(Q)/M(Q)` the global 2-gap
+density. As established in `properties/sieve-sequence/realized-filter-adversariality-score.md`
+and `empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py`:
 
 ```math
-P(\text{ever wiped out}) \le \sum_k \left(\frac{2}{r_k}\right)^{N_{k-1} r_k},
+\delta_Q = \delta_0 \prod_{p_0<r<Q}\left(1-\frac2r\right) \asymp \frac{C}{(\log Q)^2}.
 ```
 
-is very plausibly a convergent, tiny sum given how fast the terms collapse
-once `N` leaves the single digits (which happens almost immediately in
-practice -- see the real data in `data/candidates/lineage-Q101.csv`, already
-in the thousands after the first couple of layers). This supports "survives
-with probability very close to `1`."
+**Additional premise for this section (not yet proved -- see "What Remains
+Open"):** the `N(Q)` surviving starts are distributed as a uniformly random
+size-`N(Q)` subset of the `M(Q)` possible positions.
+
+Under that premise, the expected count in the safe window is
+
+```math
+\lambda_Q = L_Q \delta_Q \asymp C\frac{Q^2}{(\log Q)^2} \to \infty,
+```
+
+confirmed numerically to grow explosively (`\lambda_{101}\approx193`,
+`\lambda_{100003}\approx3.1\times10^7`, matching
+`short-window-discrepancy.md`'s `main_term`). The exact probability the
+window is empty, sampling `N(Q)` positions without replacement from `M(Q)`,
+is hypergeometric:
+
+```math
+\Pr(X_Q=0) = \frac{\binom{M(Q)-L_Q}{N(Q)}}{\binom{M(Q)}{N(Q)}}
+\le \left(1-\frac{L_Q}{M(Q)}\right)^{N(Q)}
+\le e^{-\lambda_Q}
+```
+
+(the middle inequality is the standard hypergeometric tail bound -- each of
+the `N(Q)` factors in the ratio is `\le 1-L_Q/M(Q)`; the last uses
+`1-x\le e^{-x}`. Verified numerically, e.g. `M=1000,L=50,N=40`: exact
+`0.1232 \le` bound `0.1285 \le e^{-\lambda}` `0.1353`.) Since `\lambda_Q`
+grows like `Q^2/(\log Q)^2`, `e^{-\lambda_Q}` collapses far faster than any
+polynomial, so
+
+```math
+\sum_{Q\text{ prime}} \Pr(X_Q=0) < \infty.
+```
+
+**By the first Borel-Cantelli lemma -- which needs no independence
+assumption at all, only this convergent sum -- almost surely only finitely
+many safe windows are empty.** So, under the uniform-position premise, with
+probability `1`, every *sufficiently large* square-safe window contains a
+2-gap, not merely infinitely many of them.
+
+## Head-Event Persistence (Borel-Cantelli II -- independence required)
+
+A stronger, different question: does one *specific distinguished* location
+(the head) land on a 2-gap infinitely often? Under the same uniform-position
+premise, `\Pr(\text{head is a 2-gap at stage }Q) = \delta_Q \asymp C/(\log Q)^2`.
+Unlike the safe-window case, the relevant sum **diverges**:
+
+```math
+\sum_{Q\text{ prime}} \frac{1}{(\log Q)^2} = \infty
+```
+
+(confirmed numerically: partial sums `9.2` at `Q\sim1000`, `97.7` at
+`Q\sim10^5`, still climbing -- matches the classical `\sim x/(\log x)^3`
+growth from partial summation against `\pi(x)\sim x/\log x`, a divergent
+rate). **If** head-events at successive layers are independent, or
+sufficiently weakly dependent, the *second* Borel-Cantelli lemma applies --
+and second Borel-Cantelli genuinely needs that independence, unlike the
+first -- giving `\Pr(\text{head is a 2-gap infinitely often}) = 1`.
+
+## What Is Proved, Precisely
+
+- Global count survives forever: **proved unconditionally**, under this
+  randomized-position model, no premise needed.
+- Every sufficiently large safe window contains a 2-gap: **proved
+  conditional** on the uniform-random-position premise (needs no
+  independence beyond that -- Borel-Cantelli I is premise-light).
+- The head lands on a 2-gap infinitely often: **proved conditional** on the
+  uniform-random-position premise *and* independence (or adequate weak
+  mixing) between layers -- a strictly stronger requirement than the
+  safe-window case.
 
 ## What Remains Open
 
-The union bound above gives "probability close to 1," not the stronger
-"probability exactly 1" the hypothesis claims. Closing that gap needs one of:
+"Destroy exactly two copies per parent, chosen uniformly at random" does
+not, by itself, establish that the resulting set of survivor positions is a
+uniformly random subset of `M(Q)`, nor that head-events across layers are
+independent or weakly mixing enough for Borel-Cantelli II. This is the same
+underlying difficulty as everywhere else in this program -- compare
+`short-window-discrepancy.md`'s open discrepancy bound and
+`local-surplus.md`'s missing local-abundance proof -- just relocated: instead
+of asking whether the *real, deterministic* filter's survivors happen to be
+equidistributed, this asks whether *this specific random model* (random
+choice of which two copies die, not fully independent per-copy coin flips)
+actually produces the needed spatial uniformity, or whether the underlying
+CRT/copy-index structure introduces correlations that break it. Two next
+steps, neither done yet:
 
-1. A rigorous summability argument (the sum above is genuinely finite, so a
-   Borel-Cantelli-style argument applies cleanly across infinitely many
-   steps despite `N_{k-1}` itself being random, not fixed); or
-2. Direct application of an established theorem for branching processes in
-   varying environments with offspring means diverging to infinity (this is
-   a well-studied class, e.g. Jirina- or Church-type extinction criteria for
-   time-inhomogeneous Galton-Watson processes -- the applicable exact
-   criterion has not yet been located and verified against this specific
-   process here); or
-3. A direct Monte Carlo simulation using the real sequence of primes, as a
-   strong empirical read while (1) or (2) is worked out analytically.
-
-None of these has been done yet. This file records the open bound, not a
-completed proof.
+1. Prove (or disprove) that this process's survivor positions satisfy the
+   uniform-subset premise, from the actual copy-index mechanics (the same
+   residue-class machinery already exact in
+   `properties/sieve-sequence/copy-index-filter-frequency.md`), rather than
+   assuming it.
+2. Monte Carlo simulate this exact process (deterministic count, random
+   position within each parent's `r` copies) against the real sequence of
+   primes, as an empirical check while (1) is worked out analytically.
 
 ## Relation To Other Candidates
 
-This is a different question from
-[Short-window discrepancy](short-window-discrepancy.md): that candidate asks
-whether the *real, deterministic* filter's behavior tracks a random-model
-prediction closely enough (the discrepancy `E_Q`) to force survival in one
-specific fixed window. This candidate instead asks about a genuinely
-*randomized* process (replacing the deterministic filter outright), with no
-fixed window at all -- it is a question about the random model's own internal
-consistency, not about whether reality matches it. A positive resolution
-here would not by itself prove anything about the real sieve; it would
-establish that "behaves randomly" is at least an internally coherent
-scenario in which 2-gaps provably never run out, sharpening exactly what the
-open half of `short-window-discrepancy.md`'s conditional is being compared
-against.
+Different from [Short-window discrepancy](short-window-discrepancy.md): that
+candidate asks whether the *real, deterministic* filter's behavior tracks a
+random-model prediction closely enough to force survival in one specific
+fixed window. This candidate asks about a genuinely *randomized* process
+(replacing the deterministic filter outright, but faithfully preserving its
+exact structural growth), with a much sharper, largely-resolved answer given
+the uniform-position premise -- narrowing "does the random model survive
+forever" down to one precisely stated open premise, rather than leaving the
+whole question open.
 
 ## Related
 

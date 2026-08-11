@@ -911,18 +911,29 @@ correctly-scoped versions exist, both distinct from the anchored chart line:
 2. **A genuinely randomized filter** -- keep the real sieve's proved
    structural growth (each element copied `r` times per filter, exactly as
    in `exact-global-two-gap-count.md`) but replace the deterministic
-   removal rule with independent random removal at the same rate. This
-   reformulation came directly from pushback during this conversation: the
-   earlier anchored model had implicitly removed the structural growth
-   entirely, which is not a faithful way to represent "the filter behaves
-   randomly" -- growth is guaranteed and structural, only the *selection*
-   of which copies die should be random. See
-   [candidates/randomized-filter-branching-survival.md](../../candidates/randomized-filter-branching-survival.md)
-   for the resulting branching-process question: single-step total-wipeout
-   probability is exactly `(2/r)^{Nr}`, collapsing fast as population grows,
-   giving strong evidence for "survives with probability close to 1" via a
-   union bound -- but "probability exactly 1" is not yet proved, and is left
-   as an open, precisely-stated question there.
+   removal rule with a randomized one at the same rate. This reformulation
+   came directly from pushback during this conversation: the earlier
+   anchored model had implicitly removed the structural growth entirely,
+   which is not a faithful way to represent "the filter behaves randomly" --
+   growth is guaranteed and structural, only the *selection* of which
+   copies die should be random. See
+   [candidates/randomized-filter-branching-survival.md](../../candidates/randomized-filter-branching-survival.md),
+   which went through two versions: an initial independent-Bernoulli-per-copy
+   model only supporting a loose union bound, then a cleaner model --
+   "exactly 2 of `r` copies die, chosen at random" (mirroring the real
+   sieve's exact structural guarantee, randomizing only position) -- that
+   admits a genuinely rigorous Borel-Cantelli treatment. Under that model:
+   global survival is immediate (deterministic count, no probability
+   needed); every sufficiently large safe window contains a 2-gap almost
+   surely, proved via the first Borel-Cantelli lemma (needs only a
+   convergent probability sum, no independence) given a uniform-random-position
+   premise; and the head lands on a 2-gap infinitely often almost surely,
+   via the *second* Borel-Cantelli lemma, given that same premise *plus*
+   cross-layer independence (a strictly stronger requirement, since BC2
+   needs independence and BC1 does not). What remains open is exactly that
+   premise -- whether "random choice of which two copies die" actually
+   produces uniformly random survivor positions, or introduces correlations
+   through the underlying copy-index structure.
 
 ### A durable requirement, not just a preference
 
