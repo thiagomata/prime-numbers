@@ -134,17 +134,39 @@ This framework reduces the search space: instead of tracking all theoretical gap
 
 ## Strongest Current Research Direction
 
-Fix a **final stage** $N$. Pull the safe zone $[0, p_N^2]$ back through $S_N, S_{N-1}, \ldots, S_1$. Prove:
+The current primary direction is the weighted harmless-class energy isolated
+by candidates #21 and #22. At incoming prime `r_i`, the full residue energy
+has the exact orthogonal decomposition
 
-> Every transition from $S_k$ to $S_{k+1}$ contributes more new safe descendants (that land in $[0, p_N^2]$) than it removes.
+```math
+V_i
+=
+U_i
++
+\frac{r_i}{2(r_i-2)}b_i^2
++
+\frac12\Delta_i^2.
+```
 
-If that **windowed monotonicity theorem** (#17) can be established, it would imply the final safe window cannot become empty — infinitely many twin primes.
+Here `U_i` is dispersion among the `r_i-2` harmless survivor classes, `b_i`
+is total harmful excess, and `Delta_i` is left/right harmful-class imbalance.
+The immediate target is the weakest aggregate bound on
 
-Three invariants that might help:
+```math
+\sum_iw_iU_i
+```
 
-- **$m_k$ (leftmost 2-gap)**: If $m_k = O(p_k^2)$ infinitely often, safe-zone crossing holds (#12).
-- **$E_k$ (maximum dead block)**: If $E_k < p_k^2$ infinitely often, every large interval has a 2-gap (#13).
-- **Anti-concentration**: Surviving 2-gaps cannot all be pushed into too few regions by filtering (#19).
+that fits candidate #21 after endpoint-sampling and accepted-strike density
+errors are subtracted. Candidate #22's pointwise benchmark `U_i<=N_{i+1}` is
+a convenient stronger statement, not a mandatory premise. It is noncircular
+in isolation because it remains true when `N_{i+1}=0`.
+
+The earlier final-stage pullback remains an alternative geometric direction:
+fix `N`, pull `[0,p_N^2]` back through `S_N,...,S_1`, and seek the windowed
+monotonicity theorem (#17). The leftmost-gap, maximum-dead-block, and
+anti-concentration invariants remain possible inputs to that alternative, but
+none currently controls the three orthogonal energy components at the
+required weighted scale.
 
 ---
 
