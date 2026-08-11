@@ -73,13 +73,32 @@ argument in
 infinitely many qualifying `Q` forces infinitely many *distinct* pairs), that
 is infinitely many distinct twin primes.
 
-**What remains open is exactly one thing:** whether `E_Q` actually stays
-bounded below by `-main_term(Q)` at infinitely many `Q` -- i.e. whether real
-behavior ever undershoots the random prediction all the way to zero,
-infinitely often, or instead reliably tracks it (or beats it, as every
-measurement so far has: `E_q` positive at all 24 measured lineage layers).
-Nothing else in this chain is missing. The whole open problem, for this
-candidate's approach, reduces to that one discrepancy bound.
+**Extinction is not an open question for any of the three reference
+behaviors -- it is decided, three separate times, three separate ways:**
+
+- **Adversarial** (`f=1` up to the proved capacity, `realized-filter-adversariality-score.md`'s
+  `N_adversarial`): extinction is a fact. Computed directly at `Q=101`: the
+  trajectory reaches exactly `0` at `r=67` and stays there, using only the
+  already-proved `worst_case_A` capacity bound at each step -- not
+  speculation.
+- **Random** (`f=2/r`, this file's `main_term`): extinction never happens.
+  Proved above, unconditionally: `main_term(Q)\to\infty` because the window
+  `|W_Q|\sim Q^2` outruns the density decay. No conjecture anywhere in that
+  argument.
+- **Friendly** (`f=0`): never happens, trivially -- the count never
+  decreases.
+
+**What remains open is not "could extinction happen" -- it is which of
+these three the real filter chain actually tracks.** Does `E_Q` stay bounded
+below by `-main_term(Q)` at infinitely many `Q` (behavior at least as good as
+random, inheriting the random model's proved non-extinction), or could real
+behavior undershoot the random prediction all the way to zero, infinitely
+often (behavior converging toward the adversarial model's proved
+extinction)? Every measurement so far tracks the random-or-better side (`E_q`
+positive at all 24 measured lineage layers), but "so far" is a finite check,
+not the infinite claim needed. That one discrepancy bound is the entire
+remaining gap -- not because extinction itself is undecided, but because we
+do not yet know which decided case the real sequence belongs to.
 
 ## Established Inputs
 
