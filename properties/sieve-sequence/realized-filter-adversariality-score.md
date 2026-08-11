@@ -591,7 +591,13 @@ distinct, correctly-scoped versions of that question exist:
   [Balanced randomized 2-gap companion process](../../candidates/balanced-randomized-2-gap-companion-process.md)
   for the precise setup: global survival is deterministic and certain under
   this model, and safe-window / head persistence are proved conditional on
-  a spatial-uniformity premise via the Borel-Cantelli lemmas.
+  a spatial-uniformity premise via the Borel-Cantelli lemmas. Its sibling,
+  [the balanced adversarial 2-gap companion](../../candidates/balanced-adversarial-2-gap-companion-process.md),
+  shares the identical proved global growth but chooses which two copies
+  die to *maximize* local damage instead, proving unconditionally that the
+  same global divergence is compatible with the head never landing on a
+  2-gap again -- demonstrating that population size alone settles nothing
+  about position, in either direction.
 
 Do not read the anchored `N_random` line in this file as evidence about
 either of those -- it answers "does thinning alone eventually win with no
@@ -606,6 +612,7 @@ primes forever."
 - [Local surplus](../../candidates/local-surplus.md)
 - [Short-window discrepancy](../../candidates/short-window-discrepancy.md)
 - [Balanced randomized 2-gap companion process](../../candidates/balanced-randomized-2-gap-companion-process.md)
+- [Balanced adversarial 2-gap companion process](../../candidates/balanced-adversarial-2-gap-companion-process.md)
 - [Incremental danger-annulus decomposition](incremental-danger-annulus-decomposition.md)
 - [Safe-window 2-gaps certify twin primes](safe-window-two-gaps-certify-twin-primes.md)
 - [Exact accepted local filter strikes](exact-accepted-local-filter-strikes.md)

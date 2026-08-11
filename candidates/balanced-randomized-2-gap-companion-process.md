@@ -234,6 +234,19 @@ first -- giving `\Pr(\text{head is a 2-gap infinitely often}) = 1`.
   mixing) between layers -- a strictly stronger requirement than the
   safe-window case.
 
+**Why the uniform-position premise is doing real work, not being cautious
+for its own sake:** see
+[the balanced adversarial 2-gap companion](balanced-adversarial-2-gap-companion-process.md),
+a sibling process sharing the exact same proved global recurrence
+`N(Q)=N_0\prod(r-2)`, that instead chooses which two copies die to
+*maximize* local damage. It proves, unconditionally, that the global count
+can diverge to infinity while the head is deliberately kept 2-gap-free
+forever. So the positive conclusions in this file are not automatic
+consequences of unbounded growth -- they depend entirely on the
+uniform-position premise being true, which a companion sharing the identical
+growth law but a different placement rule shows is not guaranteed by growth
+alone.
+
 ## What Remains Open
 
 "Destroy exactly two copies per parent, chosen uniformly at random" does
@@ -276,6 +289,7 @@ leaving the whole question open.
 
 ## Related
 
+- [Balanced adversarial 2-gap companion process](balanced-adversarial-2-gap-companion-process.md)
 - [Short-window discrepancy](short-window-discrepancy.md)
 - [Local surplus](local-surplus.md)
 - [Exact global 2-gap count](../properties/sieve-sequence/exact-global-two-gap-count.md)

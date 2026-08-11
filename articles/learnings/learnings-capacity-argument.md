@@ -587,6 +587,15 @@ A tempting proof strategy: construct a deliberately pessimistic ("fake") merge p
 
 **Where this breaks:** as a bound on *position*. The danger window $[p, p^2)$ only overlaps one specific copy ("copy 0") of the $h$-fold expansion. A freely adversarial model — unconstrained by which copy each residue's removal actually lands in — could simply choose to dump all its damage into copy 0 specifically, since nothing stops it from doing so. That would make the pessimistic model "prove" local extinction is possible, which contradicts the empirical reality (survival is always observed) — meaning a fully free adversary is *too* pessimistic to say anything useful about *where* damage lands. The real process's rigidity (each residue's target copy is a fixed affine function of its value mod $h$, not a free choice) is exactly the structure a valid positional bound would need to exploit — the same equidistribution difficulty as everywhere else in this file.
 
+**This intuition was later made rigorous** as
+[candidates/balanced-adversarial-2-gap-companion-process.md](../../candidates/balanced-adversarial-2-gap-companion-process.md):
+a fully free adversary (choosing which of the exactly-two destroyed copies
+per parent to make, independently per parent) provably keeps the head
+2-gap-free forever while the global count still diverges — a clean, proved
+instance of exactly the failure mode described here, and the reason a valid
+positional argument needs the real filter's residue-class rigidity, not
+just its growth rate.
+
 **Status:** the *size*-bound direction (Section 19's chain characterization) is checked against real data and found to break down quickly. The *position* question here has not been checked at all beyond the existing $p \le 997$ / $h \le 31$ ranges. **Open item:** extend the Spark empirical run to much larger primes (the current dataset tops out at $h=31$, 429M gaps) and track max gap, average gap, and 2-gap count together, to see whether the "gentle per-step, but still growing" pattern in Sections 19-20 continues to hold, weakens, or reverses at scale far beyond what's been checked so far. Nothing here changes the open-problem status — it is a possible empirical extension, not a new argument.
 
 ## 22. Current Twin-Prime Boundary After The Quadratic Audit
@@ -934,6 +943,20 @@ correctly-scoped versions exist, both distinct from the anchored chart line:
    premise -- whether "random choice of which two copies die" actually
    produces uniformly random survivor positions, or introduces correlations
    through the underlying copy-index structure.
+
+   A third, sibling companion sharpens why that premise matters:
+   [candidates/balanced-adversarial-2-gap-companion-process.md](../../candidates/balanced-adversarial-2-gap-companion-process.md)
+   shares the identical proved global recurrence but chooses which two
+   copies die to *maximize* local damage instead of choosing at random. It
+   proves, unconditionally (no premise needed, unlike the random
+   companion), that global divergence and permanent head-extinction are
+   simultaneously achievable -- formalizing the exact concern Section 21
+   raised years earlier in looser language ("a fully free adversary is too
+   pessimistic to say anything about position"). Together, the two
+   companions bracket the real filter's unknown behavior between a proved
+   good case (random, conditional) and a proved bad case (adversarial,
+   unconditional), both sharing the one fact that is never in question:
+   population size.
 
 ### A durable requirement, not just a preference
 
