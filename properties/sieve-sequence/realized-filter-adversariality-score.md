@@ -548,29 +548,61 @@ survive re-anchoring.
 
 ### `N_random` here is not the same model as the provable conditional
 
-`N_random(Q)` above is a *fixed* anchor `N_0` compounding through every later
-filter with nothing added back. Taken to its own limit (`Q\to\infty`) it
-provably goes to `0` -- the sum of reciprocals of primes diverges, so
-`\prod(1-2/r)\to0` for any fixed starting count, no conjecture needed. That is
-a fact about this closed-system model, not a statement about real twin
-primes: the model has no growing window feeding it fresh candidates.
+**Correction:** an earlier version of this note claimed `N_random(Q)`,
+extended to `Q\to\infty`, provably goes to `0`. That claim was wrong --
+not imprecise, wrong -- and the error is worth recording rather than quietly
+fixing, since it is an easy one to make again.
 
-The model that actually carries the open conjecture is the *growing*-window
-prediction `main_term(Q)=|W_Q|\delta_Q`, which diverges to infinity because
-`|W_Q|\sim Q^2` outruns the shrinking density -- see
-[short-window-discrepancy.md's "Big Picture" section](../../candidates/short-window-discrepancy.md#big-picture-what-the-filter-behaves-as-random-would-prove)
-for the full chain: `main_term(Q)\to\infty` (proved) plus a bounded
-discrepancy `E_Q` (unproved) together give infinitely many twin primes,
-fully proved as a conditional. Do not read the anchored `N_random` line in
-this file as evidence about that different, still-open question -- it
-answers "does thinning alone eventually win with no replenishment," not
-"does the real sequence keep producing new twin primes forever."
+`N_random(Q)` is anchored at one real, fixed window (`Q=101` in
+`data/candidates/four-lines-Q101.csv`), compounding through the filters
+`r` below that same `Q`. By the certification theorem
+([safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md)),
+once every filter below `Q` is installed, that window is *done*: anything
+still alive is permanently prime, immune to every later filter forever.
+There is no physically meaningful way to "keep applying more filters" to
+this same window past that point -- the process terminates, at a specific,
+final, computable number. Extending the formula `\prod(1-2/r)` to primes far
+beyond `Q` (as the earlier version of this note did) does not model
+"the same cohort facing more filters"; it computes an abstract number with
+no corresponding physical continuation of this window's process. That is a
+category error, not a subtlety.
+
+Within its actual, physically meaningful range -- `r` from the anchor up to
+the last prime below `Q=101` -- `N_random` never reaches `0`. Checked
+directly against `data/candidates/four-lines-Q101.csv`: it ends at
+`\approx194`, comfortably positive, same as the friendly and empirical
+lines. Only `N_adversarial` reaches `0` within this chart's own range.
+
+**The question "does a random-behaving filter survive forever" is real, but
+needs a different, correctly-scoped model to ask it, not an extension of
+this chart's anchored line past its own certification boundary.** Two
+distinct, correctly-scoped versions of that question exist:
+
+- **Larger windows, not more filters on one window:** the *growing*-window
+  prediction `main_term(Q)=|W_Q|\delta_Q`, which diverges to infinity because
+  `|W_Q|\sim Q^2` outruns the shrinking density, as `Q` itself increases --
+  see [short-window-discrepancy.md's "Big Picture" section](../../candidates/short-window-discrepancy.md#big-picture-what-the-filter-behaves-as-random-would-prove).
+  This is a different chart entirely (x-axis `Q`, not `r`), not yet built.
+- **A genuinely randomized filter, replacing the deterministic one outright:**
+  keep the same proved structural growth (each element copied `r` times per
+  installed filter) but replace the deterministic "exactly 2 of `r` die" rule
+  with independent random removal at the same rate. See
+  [Randomized-filter branching survival](../../candidates/randomized-filter-branching-survival.md)
+  for the precise setup and what is and is not yet proved about it.
+
+Do not read the anchored `N_random` line in this file as evidence about
+either of those -- it answers "does thinning alone eventually win with no
+replenishment, within one already-fixed window," which is a real and
+correctly-answered question (no, not within this window's own range), just
+not the same question as "does the real sequence keep producing new twin
+primes forever."
 
 ## Related
 
 - [Random-like merge survival](../../candidates/random-like-merge-survival.md)
 - [Local surplus](../../candidates/local-surplus.md)
 - [Short-window discrepancy](../../candidates/short-window-discrepancy.md)
+- [Randomized-filter branching survival](../../candidates/randomized-filter-branching-survival.md)
 - [Incremental danger-annulus decomposition](incremental-danger-annulus-decomposition.md)
 - [Safe-window 2-gaps certify twin primes](safe-window-two-gaps-certify-twin-primes.md)
 - [Exact accepted local filter strikes](exact-accepted-local-filter-strikes.md)

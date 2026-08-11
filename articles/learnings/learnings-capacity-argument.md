@@ -814,3 +814,74 @@ this compounding trend forever, and the run at `Q=101` (anchored at layer 7,
 briefly exceeds the real count at the very next layer (`r=29`) before
 falling back under it. See that file's "Built and computed" note for the
 full run.
+
+## 25. Session Retrospective: An Error, A Correction, And A Sharper Question
+
+This section records the key points from a single extended conversation
+about the four-lines/spacing charts, including a real mistake, because the
+mistake is instructive and easy to repeat.
+
+### The claim and the error
+
+Building the four-lines chart raised a natural next question: does the
+anchored `N_random` trajectory (Section 24, `N_0\cdot\prod(1-2/r)`) go
+extinct if extended indefinitely? The answer given at the time was "yes,
+provably, via divergence of `\sum1/r`" -- computed by extending the product
+formula to primes far beyond the chart's own `Q`.
+
+**That was a category error, not a subtlety.** `N_random(Q)` is anchored to
+one specific, fixed window. By the certification theorem
+(`safe-window-two-gaps-certify-twin-primes.md`), once every filter below
+that window's `Q` installs, the window is *done* -- anything still alive is
+permanently immune to every later filter, forever. There is no physically
+meaningful way to "keep applying more filters" to the same window past that
+point. Extending `\prod(1-2/r)` past `Q` doesn't model the same cohort
+facing more filters (impossible -- they're already certified); it computes
+an abstract number disconnected from any real continuation of the process.
+
+### What is actually true
+
+Checked directly against `data/candidates/four-lines-Q101.csv`: within its
+own physically meaningful range (`r=23` to `r=97`, all filters below
+`Q=101`), `N_random` never reaches `0`. It ends at `\approx194`, positive,
+same as friendly and empirical. Only `N_adversarial` reaches `0` within this
+chart's own range (at `r=67`). A single fixed window's chart has no
+meaningful "does it go on forever" question at all -- it terminates, at a
+specific final number, once its own filters run out.
+
+### The question that survives, correctly posed
+
+"Does a random-behaving filter let 2-gaps go on forever" is a real
+question, but needs a model that doesn't hit the certification wall. Two
+correctly-scoped versions exist, both distinct from the anchored chart line:
+
+1. **Growing windows, not more filters on one window** --
+   `main_term(Q)=|W_Q|\delta_Q` as `Q` itself increases (a different chart,
+   x-axis `Q` not `r`, not yet built). Proved to diverge.
+2. **A genuinely randomized filter** -- keep the real sieve's proved
+   structural growth (each element copied `r` times per filter, exactly as
+   in `exact-global-two-gap-count.md`) but replace the deterministic
+   removal rule with independent random removal at the same rate. This
+   reformulation came directly from pushback during this conversation: the
+   earlier anchored model had implicitly removed the structural growth
+   entirely, which is not a faithful way to represent "the filter behaves
+   randomly" -- growth is guaranteed and structural, only the *selection*
+   of which copies die should be random. See
+   [candidates/randomized-filter-branching-survival.md](../../candidates/randomized-filter-branching-survival.md)
+   for the resulting branching-process question: single-step total-wipeout
+   probability is exactly `(2/r)^{Nr}`, collapsing fast as population grows,
+   giving strong evidence for "survives with probability close to 1" via a
+   union bound -- but "probability exactly 1" is not yet proved, and is left
+   as an open, precisely-stated question there.
+
+### A durable requirement, not just a preference
+
+Two companion charts (`four_lines_chart.py`, counts; `spacing_chart.py`,
+reciprocal spacing) describe the same underlying data. Verified directly,
+programmatically, not just argued: every row satisfies `count==0 \iff
+spacing==\infty`, guaranteed by construction since `implied_spacing` is
+defined as the reciprocal of count. Any future annotation asserting a
+line's long-run fate ("extinct," "continues forever," "unknown") must be
+added to both charts at once, from the same verified conclusion -- never to
+one chart first and reconciled later, which is exactly how the error above
+would have propagated into a second, harder-to-catch place.
