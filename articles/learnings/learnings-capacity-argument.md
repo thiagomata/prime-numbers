@@ -1,5 +1,13 @@
 # Learnings: Capacity Argument for Twin Prime Persistence
 
+**Current assessment (2026-08-03):** Sections 1--21 preserve the historical
+development of the capacity argument. Their empirical observations remain
+useful, but their older claims that there is one undifferentiated remaining
+density question are superseded by Sections 22--23. The properties from Terminal Harmful-Excess Energy through Copy-Block Excess Control now
+separate the exhausted capacity/native-period envelopes from the live signed
+residue-energy and partial-boundary problem. The properties from Divisor Local Factor through Cofactor Progression Discrepancy define a
+distinct relaxed almost-prime program.
+
 ## 1. The Core Invariant (Sound)
 
 **Worst-Case Growth Inequality:**
@@ -55,9 +63,15 @@ It shifts the burden. The critic must now claim:
 
 This is a strong claim requiring systematic avoidance of 2-gaps in early positions — structurally unlikely given the deterministic CRT-based construction.
 
-## 6. Empirical Results (p ≤ 997)
+## 6. Historical Empirical Results (superseded)
 
-A segmented sieve runner using `BigInt` arithmetic computed $G_{\text{local}}$ for each prime layer up to $p=997$ (all 166 primes, 676s runtime). The complete dataset is at `data/empirical/results.csv`.
+The table below records the old Scala `[p,p^2)` counter. That experiment is
+incompatible with the canonical `[q,q^2)` transition workflow and is not
+current evidence for it; physical retirement of the old runner and dataset is
+still pending under the repository's file-deletion rule. Current measurements
+are in `data/candidates/window-measurements.csv`, with analysis in
+`empirical/sieve-sequence/FINDINGS.md` and
+`empirical/sieve-sequence/FINDINGS_lineage.md`.
 
 ### 6.1 Crossover
 
@@ -296,13 +310,16 @@ After exhaustive analysis of all approaches, the Parallax engine's formal bounda
 | **Across-copy uniformity ⇒ local density** | Proves global survival (p-2 copies), but copies 1..p-1 are at positions ≫ p² |
 | **Cluster persistence across layers** | C=1 after one filter kills the guarantee; requires reconstruction each layer |
 
-### The single remaining question
+### Historical formulation of the single remaining question
 
 The Twin Prime Conjecture for this sieve reduces to:
 
 > **In A_k (the k-th gap cycle), some 2-gap exists at position < p_{k+1}².**
 
-This is a claim about the *positional* distribution of 2-gaps within a single copy of the cycle. Every other piece of the puzzle is verifiably correct. The remaining density question is a genuinely deep mathematical problem (closely tied to the twin prime conjecture itself), not a verification gap.
+This is a claim about the *positional* distribution of 2-gaps within a single
+copy of the cycle. At this stage of the investigation it was treated as the
+remaining question. Sections 22--23 replace that compressed formulation with
+the later signed quadratic boundary and the distinct almost-prime program.
 
 ### Two paths considered
 
@@ -313,7 +330,13 @@ This is a claim about the *positional* distribution of 2-gaps within a single co
 
 ### Recommendation
 
-Close the discussion. The Parallax engine proves: **if** the safe zone contains a 2-gap cluster of ≥ 2 within 8 units, that cluster survives forever and produces infinitely many twin primes. The remaining open question — whether such a cluster always exists in the safe zone — is a density claim not provable from the structural invariants alone, and is equivalent to a known open problem in number theory.
+Do not continue optimizing the same unsigned capacity envelope. Later work
+proved a sharp quadratic survival threshold and then showed that the separate
+capacity/native-period relaxations cannot clear it on an unbounded family.
+The productive continuation is signed: use actual interval order, residue
+energy, and cross-layer composition. The exact current boundary is recorded in
+Section 22. The earlier cluster condition remains a conditional sufficient
+statement, not the final architecture verdict.
 
 ## 16. What the Previous Sequence Tells Us About the Safe Zone
 
@@ -355,7 +378,11 @@ This is a claim about the **distribution** of the T_k elements of S_k. The eleme
 
 The safe zone probes a tiny fraction of the cycle (≈ p²/M_k), and this fraction shrinks to 0 exponentially fast. The previous sequence reveals the exact data but offers no proven constraint on which positions are "lucky" enough to fall in the window. The gap is purely distributional, which is why it reduces to a known hard problem in analytic number theory.
 
-### Proven properties of the engine (final catalog)
+### Proven properties of the engine (historical snapshot)
+
+This table records the state when Section 16 was written. It is not the current
+complete catalog; see Section 22 and the sieve-sequence property index for the
+later quadratic, capacity-envelope, and signed-localization results.
 
 | # | Property | Status |
 |---|----------|--------|
@@ -377,7 +404,7 @@ The safe zone probes a tiny fraction of the cycle (≈ p²/M_k), and this fracti
 | Does a 2-gap always exist at gap-position < p²? | Density conjecture (≈ Jacobsthal) |
 | Does S_k always intersect [p, p²]? | Same density conjecture, rephrased |
 | Can an inductive invariant link S_k to S_{k-1}? | Unknown — no such invariant found |
-| Can the safe zone guarantee be reduced to a weaker claim than TPC? | Unknown — all current reductions land at the same wall |
+| Can the safe zone guarantee be reduced to a weaker claim than TPC? | Partially decomposed — harmless-class energy `U_i` is a noncircular component and may vanish with the final population, but no independently proved weighted bound yet fits the complete survival budget |
 
 ## 17. Structural Impossibility: The Inter-Prime Window Cannot Host a Surviving 2-Gap
 
@@ -496,7 +523,12 @@ so the average gap $M_k/T_k \sim e^{\gamma}\ln h \to \infty$ — it diverges, wi
 
 **Max gap does the same, empirically.** Checked against the real Spark cycles (same dataset as Section 19), $\text{maxGap}/h$ is *increasing* at every one of the ten stages checked ($h=3$ to $31$): $0.67, 0.8, 1.4, 2.5, 3.1, 3.8, 5.6, 6.4, 7.0, 8.3$. No sign of stabilization over this range.
 
-**Lesson:** "each step is gentle" is true, and it is exactly why the *count* of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT product, and the formal exact count in `gap-dynamics-v2.md` §5.2). It is not, by itself, evidence that any statistic *stabilizes* — Mertens' theorem is the standing proof that it doesn't, for the one statistic (average gap) where the asymptotic is fully known.
+**Lesson:** "each step is gentle" is true, and it is exactly why the *count*
+of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT
+product and `gap-dynamics-v2.md` §§3.1--3.3). It is not, by itself, evidence
+that any statistic *stabilizes* — Mertens' theorem is the standing proof that
+it does not, for the one statistic (average gap) where the asymptotic is fully
+known.
 
 ## 21. Worst-Case Adversarial Merge Bounds Size, Not Position (Open — Needs Large-Scale Data)
 
@@ -507,3 +539,278 @@ A tempting proof strategy: construct a deliberately pessimistic ("fake") merge p
 **Where this breaks:** as a bound on *position*. The danger window $[p, p^2)$ only overlaps one specific copy ("copy 0") of the $h$-fold expansion. A freely adversarial model — unconstrained by which copy each residue's removal actually lands in — could simply choose to dump all its damage into copy 0 specifically, since nothing stops it from doing so. That would make the pessimistic model "prove" local extinction is possible, which contradicts the empirical reality (survival is always observed) — meaning a fully free adversary is *too* pessimistic to say anything useful about *where* damage lands. The real process's rigidity (each residue's target copy is a fixed affine function of its value mod $h$, not a free choice) is exactly the structure a valid positional bound would need to exploit — the same equidistribution difficulty as everywhere else in this file.
 
 **Status:** the *size*-bound direction (Section 19's chain characterization) is checked against real data and found to break down quickly. The *position* question here has not been checked at all beyond the existing $p \le 997$ / $h \le 31$ ranges. **Open item:** extend the Spark empirical run to much larger primes (the current dataset tops out at $h=31$, 429M gaps) and track max gap, average gap, and 2-gap count together, to see whether the "gentle per-step, but still growing" pattern in Sections 19-20 continues to hold, weakens, or reverses at scale far beyond what's been checked so far. Nothing here changes the open-problem status — it is a possible empirical extension, not a new argument.
+
+## 22. Current Twin-Prime Boundary After The Quadratic Audit
+
+The later algebra replaces the old single-capacity narrative with three
+separate layers.
+
+### 22.1 The terminal condition is quadratic and signed
+
+Candidate #24 proves a sufficient survival threshold of the form
+
+```math
+E_b < \frac{T^2}{2W_-},
+```
+
+where $E_b$ is the weighted harmful-excess energy. This is strictly weaker
+than controlling the full collision energy. It is already terminal: proving
+the required aggregate bound forces survival rather than merely supplying a
+soft intermediate estimate.
+
+### 22.2 Separate capacity envelopes are exhausted
+
+The properties from Terminal Harmful-Excess Energy through Capacity Stability Gap classify the conservation, capacity, native-period
+Bessel, fixed-cut, moving-cut, and stability-gap variants. The important
+lesson is not that capacity bounds are false. They are sharp for the limited
+information they retain. The problem is that maximizing each layer
+independently discards actual signs and residue order, producing an envelope
+too large to certify the quadratic threshold on an unbounded family.
+
+This closes further optimization of the same separate envelope unless a new
+ingredient prevents the abstract maximizing profiles from occurring.
+
+### 22.3 Exact interval order gives a real saving
+
+The Filter-Seven Excess Bound property computes the filter-$7$ centered residue word modulo $210$. Its
+cumulative sums range from $-8$ to $10$, proving
+
+```math
+|b_7(I)|\le\frac{18}{7}
+```
+
+for every interval. The corresponding energy is at most $54P_m/5$, replacing
+the false impression of a charge proportional to $P_mD^2$. This proves that
+the capacity obstruction at the first nontrivial layer is an artifact of
+discarding interval order.
+
+### 22.4 Complete blocks reduce to residue energy
+
+For an incoming prime $r$, let $c_t$ be the old-start histogram modulo $r$,
+$d_t=c_t-N/r$, and $V_r=\sum_td_t^2$. The Copy-Block Excess Control property proves that copy-block
+harmful excess has the exact form
+
+```math
+B_j=d_{t_j}+d_{t_j-2}
+```
+
+and therefore
+
+```math
+\sum_{j=0}^{r-1}B_j^2
+=2V_r+2\sum_td_td_{t-2}
+\le4V_r.
+```
+
+This is the durable bridge from conditioned residue-collision energy to the
+quadratic survival criterion. It controls runs of complete old-period blocks.
+
+### 22.5 The remaining obstruction is now precise
+
+An arbitrary square window contains a complete-block run plus at most two
+partial old-period fragments. Late in the chain, the old period can exceed the
+whole window, so the partial fragments dominate. The remaining twin-prime
+program therefore needs all three of:
+
+1. a relative bound for the actual residue energy $V_r$;
+2. signed control of the partial old-period boundaries; and
+3. composition of those estimates across the weighted filter chain.
+
+Accepted-anchor recursion, generic Gram/Bessel algebra, and additional
+capacity-only optimization do not add those ingredients. This is a sharper
+boundary than the historical statement “prove local density.” The full
+mathematical synthesis is in
+[Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences](
+../chapter6/gap-dynamics-v2.md).
+
+## 23. Distinct Relaxed Almost-Prime Program
+
+Candidate #25 weakens the second endpoint: the square-safe survivor $p$ is
+prime, while $p+2$ is required to have at most two prime factors. This does not
+prove a 2-gap and should not be counted as another capacity route.
+
+The properties from Divisor Local Factor through Cofactor Progression Discrepancy establish its current algebraic boundary:
+
+- the final relaxed weight has an exact divisor-dependent local factor;
+- the natural shifted divisor remainder is exactly
+  $\pi(I;d,-2)-\pi(I)/\varphi(d)$;
+- the scalar-centered bilinear remainder decomposes into nonprincipal
+  character modes; and
+- modulo-$3$ character coefficients refute complete-wheel scalar-density
+  Type-II orthogonality at full survivor scale.
+
+The next input is an averaged prime-progression theorem matched to the exact
+divisor and interval range, followed by a pre-sieved or locally adapted
+bilinear estimate. The complete analysis is in
+[Relaxed Almost-Prime Production in Sieve Sequences](
+../draft/draft-relaxed-almost-prime-sieve-sequence.md).
+
+## 24. The Queue-Thinning Analogy: "Distance From The Head" Is Not A Filter Count
+
+**Origin:** an informal conversational analogy. It is recorded here as an
+illustrative toy model, not a proof about the real sieve. The real filters are
+deterministic divisibility conditions on specific integers, not independent
+random culling, and no constant removal fraction is derived from `2/p` or any
+other real density. Treat this section as a check on a recurring wrong
+instinct, not as new sieve mathematics.
+
+**Plain-language summary of the whole section, in four steps:**
+
+1. 2-gaps get rarer as a percentage of all values, forever — proven exactly
+   (`exact-global-two-gap-count.md`), not estimated.
+2. Every installed filter has some chance of killing any given 2-gap before it
+   reaches the head, so a 2-gap born far from the head faces many
+   opportunities to die on the way.
+3. Each filter's individual kill rate is shrinking, and shrinking in a way
+   that is exactly computable (`2/r` for filter `r`), not just "roughly
+   predictable" — see the crossover numbers above.
+4. Multiplying a real starting count by the exact known survival rate of every
+   filter still to come gives a concrete, checkable *expected* curve for how
+   many 2-gaps should still be around at any future head — *if* the
+   population is spread through the window the way the global average
+   predicts.
+
+Point 4 is a model, not a theorem. It is exactly as good as its "if": the
+assumption that local behavior tracks the global average is the one thing in
+this whole section that stays open (`E_q` in
+`candidates/short-window-discrepancy.md`). Everything upstream of that
+assumption — points 1 through 3 — is proven outright; only the last step,
+turning a known rate into a guarantee about one specific window, is not.
+
+### The wrong instinct
+
+An element is "born" (via merge or copy — see `VOCABULARY.md`'s *descendant*
+and *lineage* entries) with `d_0` elements already ahead of it in some
+ordering. The naive guess is that it needs `d_0` more rounds/filters to reach
+the head, because a filter round only retires the one element currently at
+the front. This equates "positional distance from the head" with "count of
+remaining filters in the conditioned chain to `Q`" (`VOCABULARY.md`,
+*conditioned chain*). The two are not the same quantity whenever later rounds
+also thin the population behind the front.
+
+### The toy model
+
+A queue of people. Each round: the front person is retired (one head-of-stream
+event resolves), then a fixed fraction `f` of everyone still in the queue is
+also removed, uniformly at random with respect to position. This second step
+stands in, loosely, for the thinning every surviving element keeps
+experiencing from later filters — the same phenomenon behind Section 20's
+proven density decay (`T_k/M_k ~ e^{-gamma}/ln(h) -> 0`).
+
+Let `d_n` be the expected number of people still ahead after `n` rounds:
+
+$$d_n = (1-f)\,(d_{n-1} - 1).$$
+
+Worked example: `d_0 = 99` (100th person in line), `f = 0.1`. Solving the
+recurrence (fixed point `d* = -(1-f)/f = -9`, so `d_n = -9 + (1-f)^n(d_0+9)`):
+
+$$d_n = 108 \cdot (0.9)^n - 9.$$
+
+`d_n <= 0` first at `n = 24`. Not `100`. Each round doesn't cost exactly one
+step of distance — it costs one step *plus* a proportional shave off
+whatever distance remains, so the count compounds down geometrically instead
+of ticking down by one.
+
+### The general, reusable lesson
+
+Solving `d_n <= 0` in general (dropping the additive `+9`/`+1` correction,
+which only matters when `d_0` is small) gives
+
+$$n \approx \frac{\ln(f \cdot d_0)}{-\ln(1-f)}.$$
+
+For fixed `f`, this is **logarithmic in `d_0`**, not linear. Starting ten
+times further back (`d_0 -> 10 d_0`) costs a roughly constant number of extra
+rounds, not ten times as many. This is the durable takeaway: whenever a
+process both advances the head *and* thins the remaining population every
+round, "how far back was it born" stops being a good proxy for "how many
+filters does it still need to survive."
+
+### What this does and does not establish
+
+- **Does:** give a checkable, minimal counterexample to the instinct that
+  filters-needed equals raw positional distance, and a closed form
+  (logarithmic scaling in `d_0`) for exactly how much the two diverge under
+  constant-fraction thinning.
+- **Does not:** model the real sieve. The real per-filter removal fraction for
+  an installed filter `r` is `2/r` (see the adversariality-score benchmark
+  `d_p` in `properties/sieve-sequence/realized-filter-adversariality-score.md`),
+  which *shrinks* as the chain progresses, unlike this toy model's constant
+  `f`. The compounding product of `(1-2/r_i)` over the actual conditioned
+  chain is exactly the Mertens product, known to decay like `1/ln(x)` — far
+  slower than a fixed-ratio geometric decay. Whether that slower, real
+  compounding is still enough to keep the danger-annulus population positive
+  at infinitely many transitions is precisely the open question tracked in
+  `candidates/local-surplus.md` and `candidates/short-window-discrepancy.md`;
+  this analogy motivates why the question is worth asking, it does not answer
+  it.
+- **Unlike the toy model, the real rate needs no assumption at all.** The toy
+  model had to *pick* `f=0.1`. The real sieve doesn't: the exact chain of
+  filters up to any target head is just "the primes in order," so the
+  aggregate removal rate is a computed closed form, not a guess --
+  `exact-global-two-gap-count.md` gives it exactly for a complete period
+  (`G_2(p)=prod_{3<=r<p}(r-2)`), and `short-window-discrepancy.md` gives the
+  matching window-scale prediction `main_term = |W_q|*delta_q`. What still
+  needs an assumption is not the *rate* -- it's whether one specific short
+  window's actual count tracks that known rate. That gap has a name,
+  `E_q = |S_q cap W_q| - main_term`, and it is exactly as open as everything
+  else in this section. Knowing the total shots exactly removes one unknown
+  and relocates the remaining difficulty to the discrepancy term, it does not
+  remove the difficulty.
+- **Where the real rate crosses this section's illustrative `f=0.1`:** the
+  real numbers are already gentler than the worked example almost
+  immediately, and keep loosening. The generic single-value filter rate
+  `1/r` (fraction of already-accepted values one filter removes -- not the
+  2-gap-specific rate) drops under `10%` at the first prime bigger than `10`
+  (`1/11 ~= 9.09%`). The 2-gap-specific rate `2/r` needs one more prime:
+  `2/19 ~= 10.53%` is still over, `2/23 ~= 8.70%` is the first one under, so
+  that crossing needs a prime bigger than `20`. Either rate, by the time a
+  handful of small primes are installed the real compounding is already
+  weaker than this section's worked example, and it never tightens back up.
+- **Relation to naming:** this is also why calling the per-transition value
+  annulus a "danger zone" undersells what it is. Per
+  `properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md`, an
+  element only ever faces one *decisive* test — once it clears its own
+  annulus it is certified prime forever, immune to every later filter. "Rounds
+  survived so far" is not "rounds still needed"; this section's compounding
+  argument is the quantitative version of that same point.
+
+### Anchoring the projection at a real measured point
+
+The toy model and the crossover numbers above both start from a hypothetical
+`d_0`. The natural next step is to anchor the same compounding formula at a
+real, already-measured 2-gap count instead: pick a transition `(p_0,q_0)`
+from `data/candidates/window-measurements.csv` with a known
+`G_local(p_0,q_0)=N_0`, and project forward under the same equidistribution
+assumption used everywhere else in this program:
+
+$$N(Q) \approx N_0 \cdot \prod_{p_0 < r \le Q} \left(1 - \frac{2}{r}\right).$$
+
+This is the same shape as the toy queue's population recurrence
+(`N_n=(1-f_n)N_{n-1}`, with `f_n=2/r_n` known exactly instead of assumed),
+just started from a real, large `N_0` instead of a small hypothetical one --
+and it is genuinely different from the ab-initio curves already in
+`gap_heatmap.py` (`estimated_boundary_indices`, and Property 3 of
+`safe-zone-exhaustion-curve.md`), which compute density from `1.0` at the
+very first stage and never consult a measured value. Anchoring at a real
+`N_0` means the projection inherits whatever discrepancy `E_{q_0}` the real
+data already carries at the starting point (per
+`candidates/short-window-discrepancy.md`), rather than re-deriving it from
+scratch -- and that file's lineage experiment found `E_q` positive at all 24
+measured layers, so an anchored projection would run *above* the
+from-scratch curve, not on top of it.
+
+**Status: built and computed.** `sieve_sequence_empirical.four_lines`
+implements this projection (plus the friendly/adversarial bounds and the
+`s`-parametrized mixture family from
+`properties/sieve-sequence/realized-filter-adversariality-score.md`'s "Three
+Compounding Trajectories" section), `four_lines_cli` anchors it at a real
+layer of `data/candidates/lineage-Q101.csv` and writes
+`data/candidates/four-lines-Q101.csv`, and
+`presentations/sieve-sequence-visualization/figures/four_lines_chart.py`
+plots all four lines together. It is still a candidate empirical comparison,
+not a new theorem — it does not resolve whether the real sequence follows
+this compounding trend forever, and the run at `Q=101` (anchored at layer 7,
+`r=23`) already shows the projection is not strictly one-sided: `N_random`
+briefly exceeds the real count at the very next layer (`r=29`) before
+falling back under it. See that file's "Built and computed" note for the
+full run.
