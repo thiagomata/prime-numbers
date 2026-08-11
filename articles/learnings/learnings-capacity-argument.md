@@ -1,12 +1,25 @@
 # Learnings: Capacity Argument for Twin Prime Persistence
 
-**Current assessment (2026-08-03):** Sections 1--21 preserve the historical
+**Current assessment (2026-08-11):** Sections 1--21 preserve the historical
 development of the capacity argument. Their empirical observations remain
 useful, but their older claims that there is one undifferentiated remaining
 density question are superseded by Sections 22--23. The properties from Terminal Harmful-Excess Energy through Copy-Block Excess Control now
 separate the exhausted capacity/native-period envelopes from the live signed
 residue-energy and partial-boundary problem. The properties from Divisor Local Factor through Cofactor Progression Discrepancy define a
-distinct relaxed almost-prime program.
+distinct relaxed almost-prime program. Sections 24--25, added later, are a
+self-contained thread about a compounding-trajectory model of filter
+behavior (friendly/random/adversarial/empirical) built for
+`realized-filter-adversariality-score.md`; they don't depend on or modify
+the Sections 22--23 boundary above.
+
+**A note on status vocabulary:** early sections (roughly 1--17) use
+"Proven"/"Verified" in the sense of the historical Parallax-engine project,
+not this repository's current `VOCABULARY.md` discipline. Section 18
+explicitly downgrades several of those claims to draft or failed status;
+where a section number below and Section 18 disagree on a claim's status,
+Section 18 is the later, authoritative word. Reviewed 2026-08-11 (full
+887-line pass); the corrections below (Sections 8, 17, 20, and this banner)
+came out of that review.
 
 ## 1. The Core Invariant (Sound)
 
@@ -107,13 +120,16 @@ After permanent crossover, $\delta$ strictly increases at all but one step: $p=7
 
 ### 6.4 Verdict
 
-All three empirical hypotheses are confirmed across the full range $3 \le p \le 997$:
+All three empirical hypotheses hold throughout the measured range $3 \le p \le 997$ --
+a finite computation, however large, cannot establish an unbounded
+$\forall p \ge p_c$ quantifier; "confirmed" below means "confirmed throughout
+the measured range," not "proved for all $p$":
 
 | Hypothesis | Status |
 |------------|--------|
-| **Crossing**: $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Confirmed] $p_c = 37$ |
-| **Monotonicity**: $\delta$ never permanently dips back | [Confirmed] One minor fluctuation ($p=73$: 51→50) |
-| **Domination**: $\delta$ grows faster-than-linear | [Confirmed] $\delta/p$ grows from 0.14 → 7.09 |
+| **Crossing**: $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Confirmed throughout measured range] $p_c = 37$ holds for every measured $p \ge 37$, up to $p=997$ |
+| **Monotonicity**: $\delta$ never permanently dips back | [Confirmed throughout measured range] One minor fluctuation ($p=73$: 51→50) |
+| **Domination**: $\delta$ grows faster-than-linear | [Confirmed throughout measured range] $\delta/p$ grows from 0.14 → 7.09 |
 
 ## 7. The Layer 4 Crossover (Window vs Period)
 
@@ -133,7 +149,7 @@ For $p \ge 11$, the primorial $M_k$ permanently outgrows $p^2$, and the window o
 
 | Gap | Severity | Description |
 |---|---|---|
-| **Local density** | Fatal (unproven) | No proof that $G_{\text{local}}$ grows above $p$. $T_k \to \infty$ is global; $G_{\text{local}}$ depends on intra-copy distribution of 2-gap positions. Empirically holds up to $p=97$ (see Section 6). |
+| **Local density** | Fatal (unproven) | No proof that $G_{\text{local}}$ grows above $p$. $T_k \to \infty$ is global; $G_{\text{local}}$ depends on intra-copy distribution of 2-gap positions. Empirically holds up to $p=997$ (see Section 6; an earlier version of this row said $p=97$, inconsistent with Sections 6 and 16 -- corrected). |
 | **Across-copy vs. intra-copy** | Fatal (unproven) | The 1-value rotation proves deletions are uniform across copies at fixed index $i$. It does not prove 2-gap positions are uniformly distributed within a single copy. |
 | **1-value rotation scope** | Clarified | Rotates the gap sequence so smallest survivor is at position 0. Offset is arithmetic (first survivor after filtration). Does NOT rotate the underlying positions of 2-gaps in any controlled way. |
 | **Individual persistence** | Fatal (unproven) | $T_k$ grows, but individual 2-gaps are destroyed and replaced each layer. No invariant tracks a specific 2-gap across layers. The growth inequality is about count, not individual survival. |
@@ -456,7 +472,7 @@ The "Front Zone" or "Black Hole" concept — attempting to find a 2-gap at coord
 
 ### 17.5 Why This Differs from the Standard Safe Zone Argument
 
-The standard safe zone \([p, p^2]\) works because it's a *large* interval: it contains \(p^2 - p \approx p^2\) coordinates, which can hold many survivors and 2-gaps. The inter-prime window \([p_n, p_{n+1})\) is *tiny* — average size \(\sim \log^2 p_n\), growing slowly. The quadratic expansion of the safe zone is the engine's key strength; the linear inter-prime gap is a structural constraint that no invariant can circumvent.
+The standard safe zone \([p, p^2]\) works because it's a *large* interval: it contains \(p^2 - p \approx p^2\) coordinates, which can hold many survivors and 2-gaps. The inter-prime window \([p_n, p_{n+1})\) is *tiny* — average size \(\sim \log p_n\) (the ordinary average-prime-gap consequence of PNT; \(\log^2 p_n\) is the scale of stronger *maximal*-gap heuristics like Cramér's conjecture, a different and much less certain quantity, not used here), growing slowly. The quadratic expansion of the safe zone is the engine's key strength; the linear inter-prime gap is a structural constraint that no invariant can circumvent.
 
 ### 17.6 The Lesson for Future Proposals
 
@@ -515,20 +531,53 @@ Data source: `spark/data/sieve-df/stage_000` through `stage_010`, computed via t
 
 A recurring intuition: each new filter only removes a $1/p$ fraction of survivors, so gap statistics (average, max, spread) should "settle down" as $p$ grows, since each individual step's disruption becomes small.
 
-**This is false for the average gap, provably.** The average gap is exactly $M_k/T_k$, and Mertens' Third Theorem gives:
+**Correction:** an earlier version of this section wrote $T_k/M_k = \prod_{p<h}(1-1/p)$
+and concluded the average *2-gap* spacing grows like $\ln h$. That conflated
+two different quantities. $\prod_{p<h}(1-1/p)$ is the density of **general
+survivors** $R_k$ (values merely coprime to $M_k$, one forbidden residue
+class per filter prime), not of **2-gaps** $T_k$ (pairs where *both*
+endpoints survive, two forbidden residue classes per filter prime, per
+[exact-global-two-gap-count.md](../../properties/sieve-sequence/exact-global-two-gap-count.md)).
+The two have different formulas and different asymptotic orders. Both
+claims below are true; they are about different things.
 
-$$T_k/M_k = \prod_{p<h}\left(1-\frac1p\right) \sim \frac{e^{-\gamma}}{\ln h}$$
+**For general survivors $R_k$ (not 2-gaps): the average gap is provably
+unbounded.** The average survivor gap is exactly $M_k/R_k$, and Mertens'
+Third Theorem gives:
 
-so the average gap $M_k/T_k \sim e^{\gamma}\ln h \to \infty$ — it diverges, without bound, forever. This is a rigorously proven asymptotic (not a conjecture), and it is a clean counterexample to "small step ⇒ stable statistics": the disruption per step really is $O(1/p)$, and the cumulative product of many $(1-1/p)$ factors still drifts toward zero density (equivalently, an unboundedly growing average gap) rather than converging.
+$$R_k/M_k = \prod_{p<h}\left(1-\frac1p\right) \sim \frac{e^{-\gamma}}{\ln h}$$
+
+so the average survivor gap $M_k/R_k \sim e^{\gamma}\ln h \to \infty$ — it
+diverges, without bound, forever. This is a rigorously proven asymptotic
+(not a conjecture).
+
+**For 2-gaps $T_k$ specifically: the same conclusion holds, but the correct
+formula and rate are different.** $T_k/M_k \sim (1/2)\prod_{3 \le p<h}(1-2/p)$
+(see `exact-global-two-gap-count.md` and
+`empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py`'s
+`density_at`), which decays like $C/(\ln h)^2$, not $C/\ln h$ -- the extra
+power comes from removing *two* residue classes per filter instead of one.
+So the average 2-gap spacing $M_k/T_k$ grows like $(\ln h)^2$, not $\ln h$.
+The divergence is still an elementary, unconditional consequence of $\sum 1/p$
+diverging (same classical fact, doubled coefficient) -- only the specific
+rate was wrong in the earlier version of this section.
+
+Either way, this remains a clean counterexample to "small step ⇒ stable
+statistics": the disruption per step really is $O(1/p)$ (or $O(2/p)$ for
+2-gaps), and the cumulative product of many such factors still drifts toward
+zero density (equivalently, an unboundedly growing average gap) rather than
+converging.
 
 **Max gap does the same, empirically.** Checked against the real Spark cycles (same dataset as Section 19), $\text{maxGap}/h$ is *increasing* at every one of the ten stages checked ($h=3$ to $31$): $0.67, 0.8, 1.4, 2.5, 3.1, 3.8, 5.6, 6.4, 7.0, 8.3$. No sign of stabilization over this range.
 
 **Lesson:** "each step is gentle" is true, and it is exactly why the *count*
 of 2-gaps keeps growing rather than collapsing to zero (Section 6's exact CRT
 product and `gap-dynamics-v2.md` §§3.1--3.3). It is not, by itself, evidence
-that any statistic *stabilizes* — Mertens' theorem is the standing proof that
-it does not, for the one statistic (average gap) where the asymptotic is fully
-known.
+that any statistic *stabilizes* — Mertens' theorem (for general survivors)
+and its 2-gap analogue (`spacing.py`'s `density_at`, used in Section 24,
+`$C/(\ln h)^2$`) are the
+standing proof that neither of the two average-gap statistics where the
+asymptotic is fully known ever stabilizes.
 
 ## 21. Worst-Case Adversarial Merge Bounds Size, Not Position (Open — Needs Large-Scale Data)
 
@@ -695,7 +744,8 @@ event resolves), then a fixed fraction `f` of everyone still in the queue is
 also removed, uniformly at random with respect to position. This second step
 stands in, loosely, for the thinning every surviving element keeps
 experiencing from later filters — the same phenomenon behind Section 20's
-proven density decay (`T_k/M_k ~ e^{-gamma}/ln(h) -> 0`).
+proven 2-gap density decay (`T_k/M_k ~ C/ln(h)^2 -> 0`; corrected in Section
+20 above from an earlier, wrong general-survivor rate).
 
 Let `d_n` be the expected number of people still ahead after `n` rounds:
 
