@@ -41,6 +41,15 @@ COLOR_RANDOM = "#4a3aa7"       # violet -- C_p=1/2 projection, dashed
 COLOR_FRIENDLY = "#008300"     # green -- C_p=0 ceiling, dashed
 COLOR_ADVERSARIAL = "#e34948"  # red -- proved worst-case floor, dashed
 
+# Distinct dash pattern per line, not just distinct color: in grayscale,
+# print, or for a colorblind viewer, three lines sharing one dash pattern
+# and differing only by hue become indistinguishable. Solid / dotted /
+# dashed / dash-dot read apart by shape alone.
+DASH_EMPIRICAL = None
+DASH_FRIENDLY = "1,4"
+DASH_RANDOM = "7,4"
+DASH_ADVERSARIAL = "10,3,2,3"
+
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
 GRID = "#dddddd"
@@ -108,10 +117,10 @@ def draw(rows):
     def series(col):
         return [(to_x(int(r["layer"])), to_y(float(r[col]))) for r in rows]
 
-    canvas.polyline(series("N_friendly"), stroke=COLOR_FRIENDLY, width=2, dash="5,4")
-    canvas.polyline(series("N_random"), stroke=COLOR_RANDOM, width=2, dash="5,4")
-    canvas.polyline(series("N_adversarial"), stroke=COLOR_ADVERSARIAL, width=2, dash="5,4")
-    canvas.polyline(series("N_empirical_post"), stroke=COLOR_EMPIRICAL, width=2.5)
+    canvas.polyline(series("N_friendly"), stroke=COLOR_FRIENDLY, width=2, dash=DASH_FRIENDLY)
+    canvas.polyline(series("N_random"), stroke=COLOR_RANDOM, width=2, dash=DASH_RANDOM)
+    canvas.polyline(series("N_adversarial"), stroke=COLOR_ADVERSARIAL, width=2, dash=DASH_ADVERSARIAL)
+    canvas.polyline(series("N_empirical_post"), stroke=COLOR_EMPIRICAL, width=2.5, dash=DASH_EMPIRICAL)
 
     # anchor marker: all four lines agree here by construction
     ax, ay = to_x(anchor_layer), to_y(float(rows[0]["anchor_n0"]))
@@ -123,10 +132,10 @@ def draw(rows):
     # collides with it at some x).
     legend_x, legend_y = left + plot_w + 24, top + 24
     entries = [
-        ("empirical (real data)", COLOR_EMPIRICAL, None),
-        ("random (C_p=1/2)", COLOR_RANDOM, "5,4"),
-        ("friendly (C_p=0)", COLOR_FRIENDLY, "5,4"),
-        ("adversarial (C_p=1)", COLOR_ADVERSARIAL, "5,4"),
+        ("empirical (real data)", COLOR_EMPIRICAL, DASH_EMPIRICAL),
+        ("random (C_p=1/2)", COLOR_RANDOM, DASH_RANDOM),
+        ("friendly (C_p=0)", COLOR_FRIENDLY, DASH_FRIENDLY),
+        ("adversarial (C_p=1)", COLOR_ADVERSARIAL, DASH_ADVERSARIAL),
     ]
     canvas.text(legend_x, legend_y - 14, "trajectory", size=11, anchor="start", weight="bold", fill=INK_MUTED)
     for i, (label, color, dash) in enumerate(entries):

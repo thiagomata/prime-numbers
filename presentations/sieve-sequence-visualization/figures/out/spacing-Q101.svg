@@ -10,13 +10,13 @@
   <line x1="70" y1="430.0" x2="570" y2="430.0" stroke="#dddddd" stroke-width="1" />
   <text x="60" y="434.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">0</text>
   <line x1="70" y1="335.0" x2="570" y2="335.0" stroke="#dddddd" stroke-width="1" />
-  <text x="60" y="339.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">107</text>
+  <text x="60" y="339.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">15</text>
   <line x1="70" y1="240.0" x2="570" y2="240.0" stroke="#dddddd" stroke-width="1" />
-  <text x="60" y="244.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">213</text>
+  <text x="60" y="244.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">30</text>
   <line x1="70" y1="145.0" x2="570" y2="145.0" stroke="#dddddd" stroke-width="1" />
-  <text x="60" y="149.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">320</text>
+  <text x="60" y="149.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">45</text>
   <line x1="70" y1="50.0" x2="570" y2="50.0" stroke="#dddddd" stroke-width="1" />
-  <text x="60" y="54.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">427</text>
+  <text x="60" y="54.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">60</text>
   <text x="70.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">23</text>
   <text x="101.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">29</text>
   <text x="132.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">31</text>
@@ -35,12 +35,15 @@
   <text x="538.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">89</text>
   <text x="570.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">97</text>
   <text x="320.0" y="468" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">installed filter r</text>
-  <text x="18" y="240.0" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle" transform="rotate(-90 18 240.0)">surviving 2-gaps</text>
-  <polyline points="70.0,108.43413033286453 101.25,108.43413033286453 132.5,108.43413033286453 163.75,108.43413033286453 195.0,108.43413033286453 226.25,108.43413033286453 257.5,108.43413033286453 288.75,108.43413033286453 320.0,108.43413033286453 351.25,108.43413033286453 382.5,108.43413033286453 413.75,108.43413033286453 445.0,108.43413033286453 476.25,108.43413033286453 507.5,108.43413033286453 538.75,108.43413033286453 570.0,108.43413033286453" fill="none" stroke="#008300" stroke-width="2" stroke-dasharray="1,4" />
-  <polyline points="70.0,108.43413033286453 101.25,130.61108686163254 132.5,149.92650061249486 163.75,165.06560868749511 195.0,177.9892375320076 226.25,189.71066834447237 257.5,199.93574628726077 288.75,208.6174162386849 320.0,216.12191060347527 351.25,223.13430697713184 382.5,229.30940229124732 413.75,234.96265856473326 445.0,240.30614737117895 476.25,245.10852338709844 507.5,249.56373969102378 538.75,253.6184871136974 570.0,257.2552193381573" fill="none" stroke="#4a3aa7" stroke-width="2" stroke-dasharray="7,4" />
-  <polyline points="70.0,108.43413033286453 101.25,162.77074542897327 132.5,212.6535396155649 163.75,254.51945616502582 195.0,291.0407876230661 226.25,324.8898265353962 257.5,354.2850445382091 288.75,379.22644163150494 320.0,399.7140178152836 351.25,419.31082981715895 382.5,430.0 413.75,430.0 445.0,430.0 476.25,430.0 507.5,430.0 538.75,430.0 570.0,430.0" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="10,3,2,3" />
-  <polyline points="70.0,108.43413033286453 101.25,132.4847632442569 132.5,155.6446319737459 163.75,169.00609470229722 195.0,181.47679324894514 226.25,195.72902015939994 257.5,202.8551336146273 288.75,213.5443037974684 320.0,219.77965307079234 351.25,228.68729488982655 382.5,237.59493670886079 413.75,242.0487576183779 445.0,243.83028598218473 476.25,245.61181434599158 507.5,248.28410689170184 538.75,250.06563525550868 570.0,250.06563525550868" fill="none" stroke="#2a78d6" stroke-width="2.5" />
-  <circle cx="70.0" cy="108.43413033286453" r="5" fill="white" stroke="#111111" stroke-width="2" />
+  <text x="18" y="240.0" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle" transform="rotate(-90 18 240.0)">implied spacing between 2-gaps</text>
+  <polyline points="70.0,252.4908504628637 101.25,252.4908504628637 132.5,252.4908504628637 163.75,252.4908504628637 195.0,252.4908504628637 226.25,252.4908504628637 257.5,252.4908504628637 288.75,252.4908504628637 320.0,252.4908504628637 351.25,252.4908504628637 382.5,252.4908504628637 413.75,252.4908504628637 445.0,252.4908504628637 476.25,252.4908504628637 507.5,252.4908504628637 538.75,252.4908504628637 570.0,252.4908504628637" fill="none" stroke="#008300" stroke-width="2" stroke-dasharray="1,4" />
+  <polyline points="70.0,252.4908504628637 101.25,239.34202457122402 132.5,226.19319867958433 163.75,214.54709574698913 195.0,203.49822886221932 226.25,192.4493619774495 257.5,181.8915558431139 288.75,172.16181293500074 320.0,163.11485900289546 351.25,154.06790507079023 382.5,145.5776867652761 413.75,137.33356174397977 445.0,129.08943672268344 476.25,121.27357793625958 507.5,113.65070331740185 538.75,106.37830569251457 570.0,99.56521739130432" fill="none" stroke="#4a3aa7" stroke-width="2" stroke-dasharray="7,4" />
+  <polyline points="70.0,252.4908504628637 101.25,216.3973233903127 132.5,167.37375826677788 163.75,104.7167361273797 195.0,64 226.25,64 257.5,64 288.75,64 320.0,64 351.25,64" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="10,3,2,3" />
+  <line x1="375.5" y1="57" x2="389.5" y2="71" stroke="#e34948" stroke-width="2.5" />
+  <line x1="375.5" y1="71" x2="389.5" y2="57" stroke="#e34948" stroke-width="2.5" />
+  <polyline points="70.0,252.4908504628637 101.25,238.14130843441257 132.5,221.94544486069418 163.75,211.2941877716512 195.0,200.3197025702287 226.25,186.34675671898785 257.5,178.70273340036786 288.75,166.29299183989218 320.0,158.4711738012449 351.25,146.45662396944164 382.5,133.3296158198787 413.75,126.29951192935454 445.0,123.39328716312826 476.25,120.43090346422127 507.5,115.87841675045979 538.75,112.76830206482083 570.0,112.76830206482083" fill="none" stroke="#2a78d6" stroke-width="2.5" />
+  <circle cx="70.0" cy="252.4908504628637" r="5" fill="white" stroke="#111111" stroke-width="2" />
+  <text x="78" y="58" font-family="Helvetica, Arial, sans-serif" font-size="9" font-weight="normal" font-style="italic" fill="#555555" text-anchor="start">infinite (extinction)</text>
   <text x="594" y="60" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#555555" text-anchor="start">trajectory</text>
   <line x1="594" y1="74" x2="616" y2="74" stroke="#2a78d6" stroke-width="2.5" />
   <text x="624" y="78" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">empirical (real data)</text>
@@ -50,8 +53,11 @@
   <text x="624" y="122" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">friendly (C_p=0)</text>
   <line x1="594" y1="140" x2="616" y2="140" stroke="#e34948" stroke-width="2" stroke-dasharray="10,3,2,3" />
   <text x="624" y="144" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">adversarial (C_p=1)</text>
-  <text x="594" y="176" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">solid = real data</text>
-  <text x="594" y="192" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">dashed = projection</text>
-  <text x="390.0" y="22" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">Four trajectories from a real anchor (layer 7, r=23, Q=101)</text>
-  <text x="390.0" y="478" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">properties/sieve-sequence/realized-filter-adversariality-score.md -- "Three Compounding Trajectories"</text>
+  <line x1="599" y1="170" x2="611" y2="182" stroke="#111111" stroke-width="2" />
+  <line x1="599" y1="182" x2="611" y2="170" stroke="#111111" stroke-width="2" />
+  <text x="624" y="180" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">X = extinction (count hit 0)</text>
+  <text x="594" y="202" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">solid = real data</text>
+  <text x="594" y="218" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">dashed = projection</text>
+  <text x="390.0" y="22" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">Implied spacing between 2-gaps (layer 7, r=23, Q=101)</text>
+  <text x="390.0" y="478" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py -- reciprocal view of four-lines-Q101.csv</text>
 </svg>
