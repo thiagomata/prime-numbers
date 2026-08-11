@@ -26,7 +26,7 @@ Output: ./out/four-lines-Q101.svg
 import csv
 import os
 
-from svg_kit import Canvas, save
+from svg_kit import Canvas, escape, save
 
 OUT_DIR = os.path.join(os.path.dirname(__file__), "out")
 DATA_PATH = os.path.join(
@@ -44,6 +44,22 @@ COLOR_ADVERSARIAL = "#e34948"  # red -- proved worst-case floor, dashed
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
 GRID = "#dddddd"
+
+
+def vertical_text(canvas, x, y, label, size=12, fill=INK_MUTED):
+    """A y-axis label rotated -90deg around (x, y), centered on that point.
+
+    svg_kit.Canvas.text has no rotation option, so this appends the <text>
+    element directly (same escaping/attributes canvas.text uses) with an SVG
+    rotate transform instead. Needed here because a horizontal label this
+    long, anchored in the narrow left margin, runs off the canvas edge and
+    collides with the gridline value labels next to it.
+    """
+    canvas.elements.append(
+        f'<text x="{x}" y="{y}" font-family="{canvas.font_family}" font-size="{size}" '
+        f'font-weight="normal" font-style="normal" fill="{fill}" '
+        f'text-anchor="middle" transform="rotate(-90 {x} {y})">{escape(label)}</text>'
+    )
 
 
 def load_rows():
@@ -87,7 +103,7 @@ def draw(rows):
         layer = int(r["layer"])
         canvas.text(to_x(layer), top + plot_h + 18, r["r"], size=10, anchor="middle", fill=INK_MUTED)
     canvas.text(left + plot_w / 2, top + plot_h + 38, "installed filter r", size=12, anchor="middle", fill=INK_MUTED)
-    canvas.text(18, top + plot_h / 2, "surviving 2-gaps", size=12, anchor="middle", fill=INK_MUTED)
+    vertical_text(canvas, 18, top + plot_h / 2, "surviving 2-gaps", size=12, fill=INK_MUTED)
 
     def series(col):
         return [(to_x(int(r["layer"])), to_y(float(r[col]))) for r in rows]
