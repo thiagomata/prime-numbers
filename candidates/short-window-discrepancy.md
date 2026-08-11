@@ -43,6 +43,44 @@ The candidate inequality gives
 The positive integer count yields a square-safe 2-gap and therefore a
 twin-prime certificate.
 
+## Big Picture: What "The Filter Behaves As Random" Would Prove
+
+"Why It Is Sufficient" above proves a single window. Chaining it across
+transitions proves the actual target: **if the filter behaves as random,
+infinitely often, then infinitely many twin primes exist** -- and that
+implication itself is fully proved, unconditionally, right now.
+
+**Piece 1: the random prediction diverges.** `main_term(Q)=|W_Q|\delta_Q`
+grows because the window `|W_Q|~Q^2` outruns the density decay
+`\delta_Q\sim C/(\ln Q)^2` (Mertens-type, elementary -- no conjecture needed
+for this *order*). Measured directly, not merely asymptotic:
+
+| `Q` | `delta_Q` | `main_term` |
+|---|---|---|
+| `101` | `0.019149` | `193.4` |
+| `1009` | `0.008656` | `8{,}804.1` |
+| `10007` | `0.004894` | `490{,}078.1` |
+| `100003` | `0.003138` | `31{,}383{,}666.9` |
+
+**Piece 2: bounded discrepancy forces a certificate.** Already proved above:
+`E_Q>-main_term(Q)` gives `|S_Q\cap W_Q|>0`, hence a certified twin-prime pair.
+
+**Chained:** if `E_Q>-main_term(Q)` holds at infinitely many `Q`, `main_term`
+diverging forces a survivor at infinitely many `Q`. By the bounded-coverage
+argument in
+[the adversariality-score file's equivalence section](../properties/sieve-sequence/realized-filter-adversariality-score.md#global-window-and-danger-annulus-recurrence-are-the-same-question)
+(a fixed pair only satisfies the window condition for finitely many `Q`, so
+infinitely many qualifying `Q` forces infinitely many *distinct* pairs), that
+is infinitely many distinct twin primes.
+
+**What remains open is exactly one thing:** whether `E_Q` actually stays
+bounded below by `-main_term(Q)` at infinitely many `Q` -- i.e. whether real
+behavior ever undershoots the random prediction all the way to zero,
+infinitely often, or instead reliably tracks it (or beats it, as every
+measurement so far has: `E_q` positive at all 24 measured lineage layers).
+Nothing else in this chain is missing. The whole open problem, for this
+candidate's approach, reduces to that one discrepancy bound.
+
 ## Established Inputs
 
 - [Exact global 2-gap count](../properties/sieve-sequence/exact-global-two-gap-count.md)

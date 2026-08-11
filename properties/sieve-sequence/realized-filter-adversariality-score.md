@@ -546,6 +546,26 @@ mid-chain anchor -- a reminder that "the real line stays above random" is an
 observed pattern for one specific comparison, not a property guaranteed to
 survive re-anchoring.
 
+### `N_random` here is not the same model as the provable conditional
+
+`N_random(Q)` above is a *fixed* anchor `N_0` compounding through every later
+filter with nothing added back. Taken to its own limit (`Q\to\infty`) it
+provably goes to `0` -- the sum of reciprocals of primes diverges, so
+`\prod(1-2/r)\to0` for any fixed starting count, no conjecture needed. That is
+a fact about this closed-system model, not a statement about real twin
+primes: the model has no growing window feeding it fresh candidates.
+
+The model that actually carries the open conjecture is the *growing*-window
+prediction `main_term(Q)=|W_Q|\delta_Q`, which diverges to infinity because
+`|W_Q|\sim Q^2` outruns the shrinking density -- see
+[short-window-discrepancy.md's "Big Picture" section](../../candidates/short-window-discrepancy.md#big-picture-what-the-filter-behaves-as-random-would-prove)
+for the full chain: `main_term(Q)\to\infty` (proved) plus a bounded
+discrepancy `E_Q` (unproved) together give infinitely many twin primes,
+fully proved as a conditional. Do not read the anchored `N_random` line in
+this file as evidence about that different, still-open question -- it
+answers "does thinning alone eventually win with no replenishment," not
+"does the real sequence keep producing new twin primes forever."
+
 ## Related
 
 - [Random-like merge survival](../../candidates/random-like-merge-survival.md)
