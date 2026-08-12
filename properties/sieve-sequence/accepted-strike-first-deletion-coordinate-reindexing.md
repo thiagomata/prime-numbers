@@ -143,7 +143,7 @@ A_iG_{ii}-H_iA_{i+1}
 &&[\text{Simplification}]\\
 &=
 \sum_i c_iD_i^2
-&&[\text{Property \#54}].
+&&[\text{Active Two-Class Variance}].
 \end{aligned}
 ```
 
