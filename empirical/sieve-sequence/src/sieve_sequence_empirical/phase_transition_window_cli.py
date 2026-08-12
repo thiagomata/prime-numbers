@@ -8,6 +8,12 @@ Q is astronomically large, since Q^2 must overtake (ln Q)^(2w)). Writes
 data/candidates/phase-transition-window.csv for
 presentations/sieve-sequence-visualization/figures/phase_transition_window_chart.py
 to plot.
+
+Also includes the log-growth frontier at c=1 (w_r = 1 + log(r)) -- the
+article's own exact square-window threshold (Property IV, section 5.2):
+c<1 still diverges, c>=1 tends to 0. Unlike the fixed-w curves, this one
+sits exactly on the boundary between the two regimes, so it is the natural
+line to mark as the frontier on this chart.
 """
 
 from __future__ import annotations
@@ -20,11 +26,12 @@ from . import phase_transition as lib
 
 FIXED_W_VALUES = [1.0, 3.0, 6.0, 10.0]
 CONSTANT_SHARE_ALPHA = 0.01
+FRONTIER_C = 1.0
 
 COLUMNS = (
     ["log10_Q"]
     + [f"log10_lambda_fixed_w{int(w)}" for w in FIXED_W_VALUES]
-    + ["log10_lambda_constant_share"]
+    + ["log10_lambda_constant_share", "log10_lambda_frontier_c1"]
 )
 
 
@@ -38,6 +45,9 @@ def sweep(log10_Q_min: float, log10_Q_max: float, num_points: int) -> list[dict]
             row[f"log10_lambda_fixed_w{int(w)}"] = lib.log10_window_occupancy_fixed_w(log10_Q, w)
         row["log10_lambda_constant_share"] = lib.log10_window_occupancy_constant_share(
             log10_Q, CONSTANT_SHARE_ALPHA
+        )
+        row["log10_lambda_frontier_c1"] = lib.log10_window_occupancy_log_growth(
+            log10_Q, FRONTIER_C
         )
         rows.append(row)
     return rows
