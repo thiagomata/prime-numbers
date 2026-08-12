@@ -164,6 +164,37 @@ test:
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
     sbt 'set stainlessEnabled := false' 'testOnly * -- -l v1.tags.SlowLemmaTest' 2>&1 | tee test.log
 
+empirical-test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}/empirical/sieve-sequence"
+    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_window.py
+    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_lineage.py
+
+empirical-window max_prime="1000" output="data/candidates/window-measurements.csv":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-window "{{max_prime}}" "{{output}}"
+
+empirical-window-sparse stride="100" max_prime="20000" output="data/candidates/window-measurements-sparse.csv":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-window --sparse "{{stride}}" "{{max_prime}}" "{{output}}"
+
+empirical-lineage q="17" output="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    q={{quote(q)}}
+    output={{quote(output)}}
+    if [[ -z "$output" ]]; then
+      output="data/candidates/lineage-Q${q}.csv"
+    fi
+    [[ "$q" =~ ^[0-9]+$ && -n "$output" ]]
+    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-lineage "$q" "$output"
+
 test-all:
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
