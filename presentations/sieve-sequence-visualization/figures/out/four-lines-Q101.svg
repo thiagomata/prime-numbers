@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="490" viewBox="0 0 780 490">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="780" height="490" fill="white" />
+  <line x1="70" y1="50" x2="70" y2="430" stroke="#dddddd" stroke-width="1" />
+  <line x1="70" y1="430" x2="570" y2="430" stroke="#dddddd" stroke-width="1" />
+  <line x1="70" y1="430.0" x2="570" y2="430.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="434.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">0</text>
+  <line x1="70" y1="335.0" x2="570" y2="335.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="339.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">107</text>
+  <line x1="70" y1="240.0" x2="570" y2="240.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="244.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">213</text>
+  <line x1="70" y1="145.0" x2="570" y2="145.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="149.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">320</text>
+  <line x1="70" y1="50.0" x2="570" y2="50.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="54.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">427</text>
+  <text x="70.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">23</text>
+  <text x="101.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">29</text>
+  <text x="132.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">31</text>
+  <text x="163.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">37</text>
+  <text x="195.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">41</text>
+  <text x="226.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">43</text>
+  <text x="257.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">47</text>
+  <text x="288.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">53</text>
+  <text x="320.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">59</text>
+  <text x="351.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">61</text>
+  <text x="382.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">67</text>
+  <text x="413.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">71</text>
+  <text x="445.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">73</text>
+  <text x="476.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">79</text>
+  <text x="507.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">83</text>
+  <text x="538.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">89</text>
+  <text x="570.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">97</text>
+  <text x="320.0" y="468" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">installed filter r</text>
+  <text x="18" y="240.0" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle" transform="rotate(-90 18 240.0)">surviving 2-gaps</text>
+  <polyline points="70.0,108.43413033286453 101.25,108.43413033286453 132.5,108.43413033286453 163.75,108.43413033286453 195.0,108.43413033286453 226.25,108.43413033286453 257.5,108.43413033286453 288.75,108.43413033286453 320.0,108.43413033286453 351.25,108.43413033286453 382.5,108.43413033286453 413.75,108.43413033286453 445.0,108.43413033286453 476.25,108.43413033286453 507.5,108.43413033286453 538.75,108.43413033286453 570.0,108.43413033286453" fill="none" stroke="#008300" stroke-width="2" stroke-dasharray="1,4" />
+  <polyline points="70.0,108.43413033286453 101.25,130.61108686163254 132.5,149.92650061249486 163.75,165.06560868749511 195.0,177.9892375320076 226.25,189.71066834447237 257.5,199.93574628726077 288.75,208.6174162386849 320.0,216.12191060347527 351.25,223.13430697713184 382.5,229.30940229124732 413.75,234.96265856473326 445.0,240.30614737117895 476.25,245.10852338709844 507.5,249.56373969102378 538.75,253.6184871136974 570.0,257.2552193381573" fill="none" stroke="#4a3aa7" stroke-width="2" stroke-dasharray="7,4" />
+  <polyline points="70.0,108.43413033286453 101.25,162.77074542897327 132.5,212.6535396155649 163.75,254.51945616502582 195.0,291.0407876230661 226.25,324.8898265353962 257.5,354.2850445382091 288.75,379.22644163150494 320.0,399.7140178152836 351.25,419.31082981715895 382.5,430.0 413.75,430.0 445.0,430.0 476.25,430.0 507.5,430.0 538.75,430.0 570.0,430.0" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="10,3,2,3" />
+  <polyline points="70.0,108.43413033286453 101.25,132.4847632442569 132.5,155.6446319737459 163.75,169.00609470229722 195.0,181.47679324894514 226.25,195.72902015939994 257.5,202.8551336146273 288.75,213.5443037974684 320.0,219.77965307079234 351.25,228.68729488982655 382.5,237.59493670886079 413.75,242.0487576183779 445.0,243.83028598218473 476.25,245.61181434599158 507.5,248.28410689170184 538.75,250.06563525550868 570.0,250.06563525550868" fill="none" stroke="#2a78d6" stroke-width="2.5" />
+  <circle cx="70.0" cy="108.43413033286453" r="5" fill="white" stroke="#111111" stroke-width="2" />
+  <text x="594" y="60" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#555555" text-anchor="start">trajectory</text>
+  <line x1="594" y1="74" x2="616" y2="74" stroke="#2a78d6" stroke-width="2.5" />
+  <text x="624" y="78" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">empirical (real data)</text>
+  <line x1="594" y1="96" x2="616" y2="96" stroke="#4a3aa7" stroke-width="2" stroke-dasharray="7,4" />
+  <text x="624" y="100" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">random (C_p=1/2)</text>
+  <line x1="594" y1="118" x2="616" y2="118" stroke="#008300" stroke-width="2" stroke-dasharray="1,4" />
+  <text x="624" y="122" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">friendly (C_p=0)</text>
+  <line x1="594" y1="140" x2="616" y2="140" stroke="#e34948" stroke-width="2" stroke-dasharray="10,3,2,3" />
+  <text x="624" y="144" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">adversarial (C_p=1)</text>
+  <text x="594" y="176" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">solid = real data</text>
+  <text x="594" y="192" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">dashed = projection</text>
+  <text x="390.0" y="22" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">Four trajectories from a real anchor (layer 7, r=23, Q=101)</text>
+  <text x="390.0" y="478" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">properties/sieve-sequence/realized-filter-adversariality-score.md -- "Three Compounding Trajectories"</text>
+</svg>

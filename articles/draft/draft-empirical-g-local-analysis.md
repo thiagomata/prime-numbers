@@ -1,6 +1,10 @@
-# Empirical Analysis of $G_{\text{local}}$: The Local 2-Gap Density in Sieve Sequences
+# Historical $[p,p^2)$ Analysis of $G_{\text{local}}$ (superseded)
 
-**[Draft]** — This article reports empirical results, not formal proofs. The computational functions used are `@extern` (not Stainless-verified). See Section 5.3 for limitations.
+**[Superseded Draft]** — This article preserves results from the historical
+Scala $[p,p^2)$ counter. That convention is incompatible with the canonical
+$[q,q^2)$ transition experiment, so these tables are not current evidence for
+the canonical candidate analysis. The old runner and dataset remain pending
+physical removal under the repository's deletion rule.
 
 **Author:** Mata, T. H.  
 Independent Researcher  
@@ -11,7 +15,13 @@ Independent Researcher
 
 ## Abstract
 
-We present an empirical investigation of $G_{\text{local}}(p)$ — the number of 2-gaps (adjacent survivors differing by 2) in the interval $[p, p^2]$ after sifting by all primes less than $p$. This quantity is the critical input to the capacity argument for twin prime persistence: if $G_{\text{local}}(p) > p$ for all sufficiently large $p$, the sieve filter lacks the "bullets" to destroy all local 2-gaps. Using a segmented sieve implemented with `BigInt` arithmetic, we compute $G_{\text{local}}$ for all primes $3 \le p \le 997$ (166 layers). The data confirms: permanent crossover at $p=37$, $G_{\text{local}}/p$ ratio growing from 1.13 to 8.09 across the range, and strict monotonicity of $\delta = G_{\text{local}} - p$ after the crossover layer with exactly one minor fluctuation. The results support the claim that the geometric expansion of the safe zone $[p, p^2]$ outpaces the linear bullet count $p$ by an increasingly wide margin. **These are empirical results, not formal proofs.**
+This superseded draft records a historical computation of 2-gaps in
+$[p,p^2)$ for primes through 997. Its crossover, ratio, and monotonicity tables
+are retained as an audit record of that experiment only. They neither reproduce
+nor validate the canonical transition measurement, which uses $[q,q^2)$ and
+measures actual candidate destruction and survival. The current successor
+experiment is documented separately in Section 2.5. Neither experiment is a
+formal proof.
 
 ---
 
@@ -40,11 +50,11 @@ $$G_{\text{local}}(p) \le p - 1$$
 
 If this inequality fails permanently from some layer onward, the filter is structurally incapable of extinguishing the local 2-gap population, and twin prime candidates persist indefinitely.
 
-This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](../articles/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
+This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
 
 ---
 
-## 2. Method
+## 2. Historical Method (superseded)
 
 ### 2.1 Segmented Sieve
 
@@ -64,11 +74,9 @@ Implementation uses a boolean array of size $(p^2 - p + 1)$ with `BigInt` arithm
 def survivorsInRange(lo: BigInt, hi: BigInt, primes: Array[BigInt]): List[BigInt]
 ```
 
-This function is implemented in the [
-  SegmentedSieve::survivorsInRange
-](
-  ../../src/main/scala/v1/chapter7/empirical/SegmentedSieve.scala
-) as an `@extern` function (not Stainless-verified).
+The historical implementation called
+`SegmentedSieve::survivorsInRange` as an `@extern` function. It was not
+Stainless-verified and is pending removal with the old runner.
 
 ### 2.2 2-Gap Counting
 
@@ -80,11 +88,9 @@ The capacity argument hinges on comparing the number of 2-gaps ($G_{\text{local}
 def countTwoGaps(survivors: List[BigInt]): BigInt
 ```
 
-This function is implemented in the [
-  GapAnalyzer::countTwoGaps
-](
-  ../../src/main/scala/v1/chapter7/empirical/GapAnalyzer.scala
-) as an `@extern` function (not Stainless-verified).
+The historical implementation called `GapAnalyzer::countTwoGaps` as an
+`@extern` function. It was not Stainless-verified and is pending removal with
+the old runner.
 
 ### 2.3 Output Metrics
 
@@ -103,20 +109,27 @@ For each prime $p$ we record:
 
 All 166 primes from $p=3$ to $p=997$ (the largest prime $\le 1000$). Total runtime: 676 seconds on JVM 21.
 
-### 2.5 Reproducibility
+### 2.5 Historical Reproduction and Current Successor
 
-To reproduce the results:
+The historical $[p,p^2)$ tables are tied to the pending-removal Scala runner
+and dataset. They are not reproducible from the canonical Python project, and
+the obsolete Scala command is intentionally no longer documented.
+
+The current successor is a different $[q,q^2)$ experiment. From the
+repository root, run its unit gates and a small smoke against a caller-created
+fresh temporary output path:
 
 ```bash
-# Run the empirical analysis (requires sbt and JVM 21+)
-sbt 'runMain v1.seq.sieve.empirical.EmpiricalRunner'
+just empirical-test
+just empirical-window 7 /absolute/path/to/new/temp/window.csv
 ```
 
-Expected output: `data/empirical/results.csv` with 167 rows (header + 166 data rows). Expected runtime: approximately 11 minutes on a modern machine.
+The smoke writes two transition rows. See
+`empirical/sieve-sequence/README.md` for full dense, sparse, and lineage runs.
 
 ---
 
-## 3. Results
+## 3. Historical Results (superseded)
 
 ### 3.1 Crossover Analysis
 
@@ -182,7 +195,9 @@ After $p=73$, $\delta$ resumes strict monotonic increase for all remaining 153 p
 
 ### 3.5 Complete Data
 
-Full dataset available at `data/empirical/results.csv` (167 rows including header). All 166 primes from $p=3$ through $p=997$ are covered.
+The historical dataset contained 167 rows including its header and covered 166
+primes from $p=3$ through $p=997$. It remains pending removal and is
+intentionally not presented as a current data source.
 
 ---
 
@@ -259,7 +274,7 @@ See [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) 
 
 ---
 
-## 5. Conclusions
+## 5. Historical Conclusions (not transferable)
 
 ### 5.1 Empirical Findings
 
@@ -275,14 +290,22 @@ Across all 166 primes tested ($3 \le p \le 997$), no prime after $p=37$ exhibits
 
 ### 5.3 Relationship to Formal Verification
 
-The empirical data supports the capacity argument for twin prime persistence:
+The historical data was originally interpreted as supporting the capacity
+argument within its $[p,p^2)$ convention:
 
 - The inequality $G_{\text{local}} > p$ holds for all $p \ge 37$ up to $p=997$
 - The ratio $G/p$ grows monotonically, suggesting the inequality is structural
 
-**Crucially, this is empirical evidence, not a formal proof.** The local density question ($G_{\text{local}} > p$) remains open in the formal verification sense. See [Gap Dynamics in Sieve Sequences](../articles/gap-dynamics.md) Section 6 and [Learnings: Capacity Argument](../articles/learnings/learnings-capacity-argument.md) Sections 10 and 16 for the formal boundary.
+**Crucially, this historical evidence is not a formal proof and does not apply
+to the canonical $[q,q^2)$ experiment.** The local density question
+($G_{\text{local}} > p$) remains open in the formal-verification sense. See
+[Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) Section 6 and
+[Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md)
+Sections 10 and 16 for the formal boundary.
 
-The computational functions used (`SegmentedSieve.survivorsInRange` and `GapAnalyzer.countTwoGaps`) are marked `@extern` and are **not** Stainless-verified. They are standard Scala implementations used for empirical computation, not formal verification.
+The historical computational functions were `@extern` and were not
+Stainless-verified. They are pending removal and are not part of the canonical
+Python successor.
 
 ### 5.4 Methodology Limitations
 
@@ -295,19 +318,18 @@ The computational functions used (`SegmentedSieve.survivorsInRange` and `GapAnal
 
 ---
 
-## 6. Data Access
+## 6. Historical Artifact Status and Current Data
 
-The complete dataset is at `data/empirical/results.csv` with columns: `k, p, p_next, G_local, delta, extinction`.
+The historical runner and CSV remain pending physical removal. Their old paths
+and executable command are intentionally not published here because they are
+not the current empirical workflow.
 
-The empirical runner is at `src/main/scala/v1/chapter6/seq/sieve/empirical/`:
+The current successor uses the different $[q,q^2)$ convention. Its data and
+analysis are available at:
 
-- `EmpiricalRunner.scala` — main entry point
-- `SegmentedSieve.scala` — survivor computation (`@extern`)
-- `GapAnalyzer.scala` — 2-gap counting (`@extern`)
-- `Types.scala` — data types
-- `CsvWriter.scala` — CSV output
-
-All files use `BigInt` arithmetic for arbitrary-precision coordinate handling.
+- `data/candidates/window-measurements.csv`
+- `empirical/sieve-sequence/FINDINGS.md`
+- `empirical/sieve-sequence/FINDINGS_lineage.md`
 
 ---
 
@@ -315,5 +337,5 @@ All files use `BigInt` arithmetic for arbitrary-precision coordinate handling.
 
 1. Mata, T. H. (2026). Gap Dynamics and Twin Prime Candidates in Sieve Sequences. `articles/gap-dynamics.md`
 2. Mata, T. H. (2026). Learnings: Capacity Argument for Twin Prime Persistence. `articles/learnings/learnings-capacity-argument.md`
-3. Mata, T. H. (2026). Empirical Runner and Results. `src/main/scala/v1/chapter6/seq/sieve/empirical/EmpiricalRunner.scala`
+3. Mata, T. H. (2026). Sieve-Sequence Empirical Findings. `empirical/sieve-sequence/FINDINGS.md`
 4. Mata, T. H. (2026). Spark Sieve Pipeline and Gap Data. `spark/src/main/scala/v1/chapter8/SievePipelineDF.scala`, data at `spark/data/sieve-df/`.
