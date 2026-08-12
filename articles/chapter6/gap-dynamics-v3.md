@@ -8,11 +8,16 @@ directly against the theorem it empirically illustrates, not added for
 decoration; no other content changes.
 **Proof status:** The sequence foundation is Stainless-verified in the
 companion Sieve Sequence article. The signed-localization theorems introduced
-here are mathematically proved; Stainless verification is pending.
+here are mathematically proved but not yet Stainless-verified.
 **Author:** Mata, T. H.
 Independent Researcher
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
+
+<div align="justify">
+<p style="text-align: justify">
 
 This article studies how 2-gaps evolve under successive prime filters and
 sharpens the boundary between complete-period survival and square-window
@@ -21,8 +26,7 @@ an incoming odd prime removes exactly two copy classes of each old 2-gap.
 Those counts do not force a survivor into a particular interval
 $[Q,Q^2)$.
 
-The article then walks the reader through the full argument that reduces
-survival to a single signed quantity. A weighted conservation law and its
+The full argument reduces survival to a single signed quantity. A weighted conservation law and its
 Cauchy--Schwarz corollary give a sharp terminal threshold on the harmful-excess
 energy. A closed exhaustion argument—capacity envelopes, native-period Bessel,
 fixed and moving cuts, and the stability-gap repair—shows that no
@@ -33,7 +37,6 @@ quadratically with the window scale. More generally, when an old period is
 copied through an incoming prime $r$, the centered harmful excess in copy
 block $j$ is exactly $B_j=d_t+d_{t-2}$ for two entries of the centered
 old-start histogram modulo $r$. Consequently,
-
 ```math
 \sum_{j=0}^{r-1}B_j^2
 =2V_r+2\sum_{t\bmod r}d_td_{t-2}
@@ -47,6 +50,9 @@ residue-energy estimate across an unbounded filter chain. Those are now the
 precise remaining arithmetic obligations, framed by a scale conflict that
 limits fixed-seed averaging and a Type-II barrier that any prime-producing
 sieve must overcome.
+
+</p>
+</div>
 
 ## 1. Introduction
 
@@ -88,7 +94,6 @@ as a short-window lower bound.
 ## 2. Preliminaries And Evidence Boundary
 
 For a prime stage head $p$, let
-
 ```math
 M_p=\prod_{q\lt p}q
 ```
@@ -133,12 +138,12 @@ The following status convention is used:
 
 No theorem in this article claims infinitely many twin primes.
 
-Each property section states its population, scope, quantifier, and evidence
-status. Verified construction inputs link to maintained Scala contracts.
-Mathematical properties without a corresponding `.holds` theorem link to
-their canonical property note and are labeled **Draft — mathematically
-proved, Stainless verification pending**. A mathematical proof is not called
-Stainless-verified merely because its finite instances can be computed.
+Each property section states its population, scope, and quantifier, then
+proves the result. Verified construction inputs link to maintained Scala
+contracts. Mathematical properties without a corresponding `.holds` theorem
+link to their canonical property note and are marked not yet
+Stainless-verified. A mathematical proof is not called Stainless-verified
+merely because its finite instances can be computed.
 
 ## 3. Complete-Period 2-Gap Properties
 
@@ -148,73 +153,54 @@ residue system. They are not statements about a local square window.
 
 ### 3.1 Exact Global 2-Gap Count
 
-**Population:** Cyclic 2-gap starts in one complete period of a prime stage.
-
-**Scope and quantifier:** Complete-period; every prime stage after filter $2$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-After filter $2$ is installed, every accepted value is odd. Hence accepted
+After filter $2$ is installed, every accepted value is odd, so accepted
 endpoints $x$ and $x+2$ are consecutive survivors: the intermediate value is
-even. The property counts all such cyclic starts without constructing the gap
-list.
+even. For every prime stage after filter $2$, this property counts all such
+cyclic 2-gap starts in one complete period of that stage, without
+constructing the gap list.
 
 Let $p$ be the stage head and
-
 ```math
 M_p=\prod_{q\lt p}q,
 ```
 
 where $q$ ranges over installed primes. A residue $x$ represents a cyclic
 2-gap exactly when
-
 ```math
 \gcd(x(x+2),M_p)=1.
 ```
 
 The exact count is
-
 ```math
-\boxed{
 G_2(p)
 =
 \prod_{\substack{3\le q\lt p\\q\text{ prime}}}(q-2).
-}
 ```
 
 For the filter $2$, the start must be odd, leaving one allowed residue. For
 each installed odd prime $q$, the two endpoints fail precisely in the two
 classes
-
 ```math
 x\equiv0\pmod q,
 \qquad
 x\equiv-2\pmod q.
 ```
 
-They are distinct because $q$ is odd. Therefore
-
-```math
-\begin{aligned}
-\#\{x\bmod q:q\nmid x(x+2)\}
-&=q-2
-&&[\text{Two Distinct Forbidden Classes}].
-\end{aligned}
-```
+They are distinct because $q$ is odd, so exactly $q-2$ residues remain
+allowed at each installed odd prime $q$.
 
 The installed primes are pairwise coprime, so CRT gives a bijection between
 one allowed choice at every installed prime and one residue modulo $M_p$.
 Consequently,
-
 ```math
 \begin{aligned}
 G_2(p)
 &=1\cdot
 \prod_{\substack{3\le q\lt p\\q\text{ prime}}}
-\#\{x\bmod q:q\nmid x(x+2)\}
+(q-2)
 &&[\text{Chinese Remainder Theorem}]\\
 &=\prod_{\substack{3\le q\lt p\\q\text{ prime}}}(q-2).
-&&[\text{Substitution; Q.E.D.}]
+&&[\text{Q.E.D.}]
 \end{aligned}
 ```
 
@@ -222,29 +208,21 @@ The empty odd-prime product is $1$, so the statement includes the first odd
 stage. The result proves complete-period global presence, not placement in any
 specified local window.
 
-#### Stainless And Source Evidence For The Global 2-Gap Count
-
 The mathematical proof is maintained in [Exact Global 2-Gap Count](
 ../../properties/sieve-sequence/exact-global-two-gap-count.md). No `.holds`
-theorem currently encodes this exact product count, so the Stainless
-representation is pending.
+theorem currently encodes this exact product count, so this result is not yet
+Stainless-verified.
 
 ### 3.2 Exact Filter Frequency Across Repeated Copies
 
-**Population:** Lifted copies of one fixed old cyclic 2-gap.
-
-**Scope and quantifier:** One incoming prime; every complete or finite run of
-copy indices satisfying the stated coprimality precondition.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 Expansion distributes every old 2-gap through equally spaced copies before
-filtering. The incoming prime cannot choose arbitrary copies: the two endpoint
-strikes occur at two exact copy-index phases.
+filtering, and one incoming prime cannot choose arbitrary copies: the two
+endpoint strikes occur at two exact copy-index phases. This holds for lifted
+copies of one fixed old cyclic 2-gap, across every complete or finite run of
+copy indices satisfying the stated coprimality precondition.
 
 Let $M$ be the old period, let $(a,a+2)$ be one old cyclic 2-gap, and let
 $r>2$ be an incoming prime with $\gcd(M,r)=1$. Copy $j$ has endpoints
-
 ```math
 a+jM,
 \qquad
@@ -253,7 +231,6 @@ a+2+jM.
 
 Let $M^{-1}$ denote the inverse of $M$ modulo $r$. The left endpoint is
 deleted exactly when
-
 ```math
 \begin{aligned}
 a+jM&\equiv0\pmod r
@@ -264,7 +241,6 @@ j&\equiv-aM^{-1}\pmod r.
 ```
 
 Likewise, the right endpoint is deleted exactly when
-
 ```math
 \begin{aligned}
 a+2+jM&\equiv0\pmod r
@@ -280,22 +256,17 @@ Therefore the classes are distinct.
 
 Every residue class modulo $r$ occurs at most $\lceil L/r\rceil$ times in a
 run of $L$ consecutive copy indices. Thus
-
 ```math
-\boxed{
 K_r(J)\le2\left\lceil\frac{L}{r}\right\rceil.
-}
 ```
 
 For one complete run of $r$ consecutive copy indices, each forbidden class
 occurs exactly once. Hence
-
 ```math
-\boxed{
 K_r=2,
 \qquad
 G_{\mathrm{survive}}=r-2.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -303,31 +274,23 @@ This is exact distribution across copies before and under one filter. It does
 not say that the $r-2$ survivors are evenly distributed after filtering or
 that one lies in a chosen numerical window.
 
-#### Stainless And Source Evidence For The Filter-Frequency Theorem
-
 The mathematical proof is maintained in [Exact Filter Frequency Across
 Repeated Copies](../../properties/sieve-sequence/copy-index-filter-frequency.md).
 The repeated-stream foundation is verified in the companion Sieve Sequence
 article, but no `.holds` theorem currently packages these two exact copy-index
-classes and the finite-slice bound. Stainless verification is pending.
+classes and the finite-slice bound. This result is not yet Stainless-verified.
 
 ### 3.3 Exact Batched 2-Gap Survival
 
-**Population:** Lifted copies of every old cyclic 2-gap in one complete
-combined period.
-
-**Scope and quantifier:** Every finite set of distinct incoming odd primes
-coprime to the old period; one complete period after the whole batch.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 The one-filter copy law composes exactly. Applying several future filters as
 one batch counts intersections through CRT, so no survivor is subtracted twice
-and no intermediate floor or density approximation is needed.
+and no intermediate floor or density approximation is needed. This holds for
+every finite set of distinct incoming odd primes coprime to the old period,
+over one complete period after the whole batch, for lifted copies of every
+old cyclic 2-gap in one complete combined period.
 
 Let $M$ be the old period and let $(a,a+2)$ be one old cyclic 2-gap. Choose a
 finite set of distinct odd primes
-
 ```math
 \mathcal R=\{r_1,r_2,\ldots,r_k\},
 \qquad
@@ -335,28 +298,21 @@ finite set of distinct odd primes
 ```
 
 and define
-
 ```math
-B=\prod_{r\in\mathcal R}r.
+R=\prod_{r\in\mathcal R}r.
 ```
 
-The complete combined period modulo $MB$ contains $B$ lifted copies of the
+The complete combined period modulo $MR$ contains $R$ lifted copies of the
 old pair. Exactly
-
 ```math
-\boxed{
 \prod_{r\in\mathcal R}(r-2)
-}
 ```
 
 survive every filter in the batch. Therefore, if the old complete period has
 $G$ cyclic 2-gaps, the new complete period has
-
 ```math
-\boxed{
 G_{\mathrm{after}}
 =G\prod_{r\in\mathcal R}(r-2).
-}
 ```
 
 For each $r\in\mathcal R$, the filter-frequency theorem (§3.2) identifies two distinct forbidden
@@ -364,22 +320,17 @@ copy-index classes: one where $r$ divides the left endpoint and one where it
 divides the right endpoint. Hence there are exactly $r-2$ allowed choices
 modulo $r$. Because the primes in $\mathcal R$ are pairwise coprime, CRT makes
 these choices independent. Thus, for one old 2-gap,
-
 ```math
 \begin{aligned}
 G_{\mathrm{one\ old\ gap}}
-&=\prod_{r\in\mathcal R}
-  \#\{j\bmod r:r\nmid(a+jM)(a+2+jM)\}
-&&[\text{Chinese Remainder Theorem}]\\
 &=\prod_{r\in\mathcal R}(r-2).
-&&[\text{Property \#4; Substitution}]
+&&[\text{Chinese Remainder Theorem; Copy-Index Filter Frequency}]
 \end{aligned}
 ```
 
 The lifted copy sets belonging to distinct old cyclic starts are counted as
 distinct starts in the new complete period. Summing the same exact count over
 the $G$ old starts gives
-
 ```math
 \begin{aligned}
 G_{\mathrm{after}}
@@ -393,40 +344,42 @@ G_{\mathrm{after}}
 
 The formula is independent of the conceptual order of the filters and counts
 overlapping strikes correctly. Its scope is nevertheless the full combined
-period $MB$. A shorter interval can omit all allowed CRT classes, so this
+period $MR$. A shorter interval can omit all allowed CRT classes, so this
 theorem cannot place a survivor in an eligible square-safe window.
-
-#### Stainless And Source Evidence For The Batched-Survival Theorem
 
 The mathematical theorem and its complete-period limitation are maintained in
 [Exact Batched 2-Gap Survival](
 ../../properties/sieve-sequence/exact-batched-two-gap-survival.md). No
 corresponding `.holds` theorem currently packages the finite-batch product;
-Stainless verification is pending.
+this result is not yet Stainless-verified.
 
 ### 3.4 Exact Global `(2,4,2)` Cluster Count
 
-**Population:** Cyclic occurrences of the gap word $(2,4,2)$ in one complete
-period after filters $2$ and $3$ are installed.
-
-**Scope and quantifier:** Every complete-period stage with modulus $M$
-divisible by $6$, and every incoming prime $r\ge5$ with $r\nmid M$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-The cluster $(2,4,2)$ consists of four consecutive accepted values
-
+The label $(2,4,2)$ names the sequence of consecutive gaps inside a
+four-term cluster
 ```math
-a,\qquad a+2,\qquad a+6,\qquad a+8.
+a,\qquad a+2,\qquad a+6,\qquad a+8:
 ```
+gap $2$ from $a$ to $a+2$, gap $4$ from $a+2$ to $a+6$, gap $2$ again from
+$a+6$ to $a+8$. This is the classic prime-quadruplet shape, realized for
+example by $11,13,17,19$ or $101,103,107,109$: two twin-prime pairs sharing
+their two middle values four apart. Counting how often this exact pattern
+survives is the natural next question once single 2-gaps (§3.1) are
+understood, since it asks whether 2-gaps keep arriving in tight pairs rather
+than only individually. It is also where the pattern comes from in the first
+place: at the earliest stage, right after filters $2$ and $3$ are installed,
+the entire accepted sequence already repeats as $\ldots,2,4,2,4,2,\ldots$
+forever, so $(2,4,2)$ starts out as the universal shape of the sequence, not
+a rare event — this section tracks how much of that shape survives as larger
+primes filter it down.
 
-Its two 2-gaps are endpoint-disjoint and lie in a total span of $8$. Expansion
+The cluster's two 2-gaps are endpoint-disjoint and lie in a total span of
+$8$. Expansion
 creates $r$ copies of every old cluster; the incoming filter strikes exactly
 four copies and preserves the other $r-4$ intact.
 
 Let $C_M$ be the cyclic cluster count at modulus $M$. Copy $j$ of a cluster
 has endpoints
-
 ```math
 a+jM+\{0,2,6,8\},
 \qquad
@@ -435,7 +388,6 @@ a+jM+\{0,2,6,8\},
 
 For each offset $h\in\{0,2,6,8\}$, the endpoint $a+jM+h$ is removed exactly
 in the copy-index class
-
 ```math
 j\equiv-(a+h)M^{-1}\pmod r.
 ```
@@ -443,15 +395,15 @@ j\equiv-(a+h)M^{-1}\pmod r.
 If two offsets produced the same class, their difference would be divisible
 by $r$. The nonzero pairwise differences are $2,4,6,8$. Neither $5$ nor $7$
 divides any applicable difference, and every prime $r\ge11$ exceeds all four.
-Thus the four classes are distinct, giving
-
+Thus the four classes are distinct. Out of the $r$ total copies created by
+expansion, let $N_{\text{struck}}$ be the number of copies struck by the
+incoming filter (one per distinct endpoint class) and $N_{\text{intact}}$
+the number left intact. Then
 ```math
 \begin{aligned}
-\#\{\text{expanded copies}\}&=r
-&&[\text{Expansion}]\\
-\#\{\text{struck copies}\}&=4
+N_{\text{struck}}&=4
 &&[\text{Four Distinct Endpoint Classes}]\\
-\#\{\text{intact copies}\}&=r-4.
+N_{\text{intact}}&=r-N_{\text{struck}}=r-4.
 &&[\text{Subtraction}]
 \end{aligned}
 ```
@@ -463,24 +415,29 @@ would require all three values $x,x+2,x+4$ to be accepted, whereas one of
 them is divisible by $3$. Since filter $3$ is installed, that is impossible.
 Therefore every new gap of size $2$ or $4$ is a copied old gap, and every new
 $(2,4,2)$ occurrence is one of the intact copies counted above. Hence
-
 ```math
-\boxed{
 C_{rM}=(r-4)C_M.
-}
+
 \qquad[\text{No New Occurrences; Q.E.D.}]
 ```
 
-The wheel modulo $6$ has cyclic gap word $(4,2)$ and exactly one cyclic
-$(2,4,2)$ occurrence, so $C_6=1$. Iterating the recurrence over a finite
-installed-prime set $\mathcal P$ containing $2$ and $3$ gives
+This recurrence holds for every complete-period stage with modulus $M$
+divisible by $6$ and every incoming prime $r\ge5$ with $r\nmid M$, counting
+cyclic occurrences of the gap word $(2,4,2)$ in one complete period after
+filters $2$ and $3$ are installed.
 
+The wheel modulo $6$ has cyclic gap word $(4,2)$: accepted residues
+$1,5\pmod6$ repeat forever as $\ldots,4,2,4,2,4,2,\ldots$ before any prime
+beyond $3$ is installed. At this base stage the sequence is *nothing but*
+copies of $(2,4,2)$ back to back, so there is exactly one cyclic $(2,4,2)$
+occurrence per period, $C_6=1$ — the recurrence below tracks how that
+initially-universal pattern gets diluted, but never destroyed, as larger
+primes are installed. Iterating the recurrence over a finite
+installed-prime set $\mathcal P$ containing $2$ and $3$ gives
 ```math
-\boxed{
 C(\mathcal P)
 =
 \prod_{\substack{p\in\mathcal P\\p\ge5}}(p-4).
-}
 ```
 
 The absolute cluster population is positive at every stage and grows whenever
@@ -488,57 +445,44 @@ an incoming prime exceeds $5$. Its proportion among accepted positions is
 multiplied by $(r-4)/(r-1)\lt1$, so global growth does not imply that a chosen
 short window contains a cluster.
 
-#### Stainless And Source Evidence For The Cluster-Count Theorem
-
 The exact recurrence, no-creation proof, closed product, and localization
 boundary are maintained in [Exact Global Count Of `(2,4,2)` Two-Gap
 Clusters](
 ../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md). No
-`.holds` theorem currently packages the cyclic cluster count; Stainless
-verification is pending.
+`.holds` theorem currently packages the cyclic cluster count; this result is
+not yet Stainless-verified.
 
 ### 3.5 Rotation Preserves Cyclic Gap Counts
 
-**Population:** Entries of one complete cyclic gap list, counted by gap value.
-
-**Scope and quantifier:** Every nonempty finite cyclic gap list, every
-nonnegative rotation offset, and every gap value $d$.
-
-**Status:** **Mathematically proved, Stainless verification pending
-for exact multiplicity.**
-
 Rotation chooses a new origin for the same cyclic list. It neither filters an
 accepted value nor merges adjacent gaps, so it preserves the number of entries
-having every gap value, including $2$.
+having every gap value, including $2$, for every nonempty finite cyclic gap
+list, every nonnegative rotation offset, and every gap value $d$. The
+rotation invariance itself is proved; the exact multiplicity claim is not yet
+Stainless-verified.
 
 Let
-
 ```math
 G=(g_0,g_1,\ldots,g_{T-1}),
 \qquad T\ge1,
 ```
 
 and define rotation by offset $j$ through
-
 ```math
 \operatorname{rot}_j(G)_i
 =g_{(i+j)\bmod T}.
 ```
 
 For every value $d$,
-
 ```math
-\boxed{
 \#\{i: \operatorname{rot}_j(G)_i=d\}
 =\#\{i:g_i=d\}.
-}
 ```
 
 Define the index map $\varphi_j(i)=(i+j)\bmod T$. Addition by $j$ modulo
 $T$ is invertible, with inverse $\varphi_{-j}(i)=(i-j)\bmod T$. Hence
 $\varphi_j$ is a bijection of
 $\{0,1,\ldots,T-1\}$. Therefore
-
 ```math
 \begin{aligned}
 \#\{i:\operatorname{rot}_j(G)_i=d\}
@@ -562,7 +506,6 @@ an absolute coordinate window such as $[Q,Q^2)$ contains the same number of
 The maintained list implementation defines rotation as `back ++ front`. Its
 verified properties preserve membership in both directions and preserve list
 size:
-
 ```scala
 def assertRotateContainsForward(
   list: List[BigInt], index: BigInt, x: BigInt
@@ -599,24 +542,19 @@ They establish the rotation operation and its same-elements/size behavior, but
 membership alone does not count duplicate entries. The exact multiplicity
 theorem above is maintained mathematically in [Rotation Preserves Cyclic Gap
 Counts](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md);
-its dedicated `.holds` representation remains pending.
+it is not yet Stainless-verified.
 
 ### 3.6 Absence Of 2-Gaps Is Stable
 
-**Population:** Every gap in one complete cyclic post-filter-2 gap list.
-
-**Scope and quantifier:** Every later filter transition, and therefore every
-finite chain of later transitions.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 Later filtering can copy an old gap or merge consecutive old gaps, but it
 cannot create a smaller positive gap. Thus, once the complete cyclic
-population contains no 2-gap, no later filter can recreate one.
+population contains no 2-gap, no later filter can recreate one — a fact that
+holds for every later filter transition, and therefore every finite chain of
+later transitions, over every gap in one complete cyclic post-filter-2 gap
+list.
 
 Let the old cyclic gaps be $g_0,\ldots,g_{T-1}$. Because filter $2$ is already
 installed, every $g_i$ is positive and even. Under the no-2 hypothesis,
-
 ```math
 \forall i,\qquad g_i\ne2
 \quad\Longrightarrow\quad
@@ -627,7 +565,6 @@ For two values that remain consecutive after the next filter, their new gap
 $h$ has one of two forms. If no intermediate accepted value was removed, it
 copies one old gap. If one or more intermediate accepted values were removed,
 it is the sum of at least two consecutive old gaps. Therefore
-
 ```math
 \begin{aligned}
 h=g_i
@@ -640,18 +577,15 @@ h=\sum_{j=u}^{v}g_j,\quad v\ge u+1
 ```
 
 In either case $h\ne2$, so
-
 ```math
-\boxed{
 \left(\forall i,\ g_i\ne2\right)
 \Longrightarrow
 \left(\forall j,\ h_j\ne2\right).
-}
+
 \qquad[\text{Copy-Or-Merge Exhaustion; Q.E.D.}]
 ```
 
 Applying the same implication inductively yields
-
 ```math
 G_s(2)=0
 \Longrightarrow
@@ -663,14 +597,11 @@ where $G_s(2)$ is the complete-period 2-gap count at stage $s$. This is a
 one-way extinction theorem. A positive global count does not force a 2-gap
 into a chosen short window, so it must not be used as a localization result.
 
-#### Stainless And Source Evidence For The Stable-Absence Theorem
-
 The copy-or-merge proof, inductive consequence, and global/local boundary are
 maintained in [Absence Of 2-Gaps Is Stable Under Later Filtering](
 ../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md). No
 dedicated `.holds` theorem currently quantifies over the complete cyclic gap
-transition, so the Scala representation is explicitly pending rather than
-presented as verified code.
+transition, so this result is not yet Stainless-verified.
 
 These are complete-period statements. They explain global growth but do not
 locate any surviving copy in a prescribed short interval.
@@ -713,27 +644,19 @@ attrition conditions needed to retain one.
 
 ### 4.1 Safe-Window 2-Gaps Certify Twin Primes
 
-**Population:** Accepted integers, and accepted 2-gap endpoints, below one
-future head's square.
-
-**Scope and quantifier:** Every prime future head $Q$ and every accepted
-integer $n$ with $Q\le n\lt Q^2$ after all primes below $Q$ are installed.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 The square bound turns acceptance into primality. Any composite below $Q^2$
 has a prime divisor below $Q$, but every such divisor has already been
-installed as a filter. Therefore a surviving accepted pair at distance $2$ is
-not merely a candidate pair; it is a twin-prime pair.
+installed as a filter. Therefore, for every prime future head $Q$ and every
+accepted integer $n$ with $Q\le n\lt Q^2$ after all primes below $Q$ are
+installed, a surviving accepted pair at distance $2$ is not merely a
+candidate pair; it is a twin-prime pair.
 
 Let
-
 ```math
 P_Q=\prod_{r\lt Q}r,
 ```
 
 where $r$ ranges over primes. If
-
 ```math
 Q\le n\lt Q^2,
 \qquad
@@ -744,7 +667,6 @@ then $n$ is prime. Indeed, suppose that $n$ were composite. It has a prime
 divisor $r\le\sqrt n$. The strict square bound gives
 $r\le\sqrt n\lt Q$, so $r$ is one of the factors of $P_Q$. Consequently
 $r\mid n$ and $r\mid P_Q$, contradicting $\gcd(n,P_Q)=1$:
-
 ```math
 \begin{aligned}
 n\text{ composite}
@@ -763,9 +685,7 @@ n\text{ composite}
 ```
 
 Hence $n$ is prime. Applying this result independently to both endpoints gives
-
 ```math
-\boxed{
 Q\le x,
 \qquad
 x+2\lt Q^2,
@@ -773,7 +693,7 @@ x+2\lt Q^2,
 \gcd(x(x+2),P_Q)=1
 \Longrightarrow
 x\text{ and }x+2\text{ are prime}.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -781,32 +701,22 @@ The right-endpoint inequality must be strict: $Q^2$ is composite but has no
 prime divisor below $Q$. The theorem certifies one eligible survivor; it does
 not prove that any such survivor exists.
 
-#### Stainless And Source Evidence For Safe-Window Certification
-
 The mathematical theorem and endpoint discipline are maintained in
 [Safe-Window 2-Gaps Certify Twin Primes](
 ../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md).
 No `.holds` theorem currently encodes the least-prime-divisor argument, so
-Stainless verification is pending.
+this result is not yet Stainless-verified.
 
 ### 4.2 Isolation Of 2-Gaps After Filter 3
 
-**Population:** Accepted endpoints and 2-gap starts after filters $2$ and $3$
-have both been installed.
-
-**Scope and quantifier:** Every sieve stage whose modulus $M$ is divisible by
-$6$, and every later deletion of an accepted value.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-After filter $3$, two 2-gaps cannot share an endpoint. This improves the sharp
-destruction capacity of one later filter strike: removing one accepted value
-can destroy at most one existing 2-gap.
+After filter $3$, two 2-gaps cannot share an endpoint, for every sieve stage
+whose modulus $M$ is divisible by $6$. This improves the sharp destruction
+capacity of one later filter strike: for every later deletion of an accepted
+value, removing one accepted value can destroy at most one existing 2-gap.
 
 Suppose both $(x,x+2)$ and $(x+2,x+4)$ were accepted 2-gaps. The three values
 $x,x+2,x+4$ occupy all three residue classes modulo $3$, so exactly one is
 divisible by $3$. Because $3\mid M$, that value cannot be accepted. Thus
-
 ```math
 \begin{aligned}
 (x,x+2)\text{ and }(x+2,x+4)\text{ both accepted}
@@ -819,7 +729,6 @@ divisible by $3$. Because $3\mid M$, that value cannot be accepted. Thus
 ```
 
 Equivalently, parity and filter $3$ force every 2-gap start into one residue:
-
 ```math
 \begin{aligned}
 x,x+2\text{ accepted}
@@ -832,14 +741,14 @@ x,x+2\text{ accepted}
 
 Any destroyed 2-gap must contain a removed accepted value as an endpoint. A
 value could belong to two 2-gaps only in the forbidden overlapping
-configuration above. Therefore
-
+configuration above. Let $N_{\text{destroyed}}$ be the number of destroyed
+2-gaps and $N_{\text{removed}}$ the number of removed accepted values.
+Therefore
 ```math
-\boxed{
-\#\{\text{destroyed 2-gaps}\}
+N_{\text{destroyed}}
 \le
-\#\{\text{removed accepted values}\}.
-}
+N_{\text{removed}}.
+
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -859,32 +768,21 @@ bound proved above rather than merely approximating it.
 
 ![Average and maximum distance between consecutive 2-gaps, per stage; the average floor is exactly 4](../../presentations/sieve-sequence-visualization/figures/out/gap-two-cluster-size.svg)
 
-#### Stainless And Source Evidence For The Isolation Theorem
-
 The overlap proof and its filtering consequence are maintained in [Isolation
 Of 2-Gaps After Filtering By 3](
 ../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md). No
 dedicated `.holds` theorem currently counts incident 2-gaps per accepted
-endpoint, so Stainless verification is pending.
+endpoint, so this result is not yet Stainless-verified.
 
 ### 4.3 Exact Accepted Local Filter Strikes
 
-**Population:** Previously accepted values removed by one incoming prime
-inside the next head's square window.
-
-**Scope and quantifier:** Every incoming prime $r\ge5$ and its next prime
-future head $Q$.
-
-**Status:** **Mathematically proved using Bertrand's postulate,
-Stainless verification pending.**
-
 Counting every multiple of $r$ overstates local destruction because most
-multiples have already been removed by smaller filters. In the next
-square-safe window, the remaining multiples admit an exact prime-multiplier
-description.
+multiples have already been removed by smaller filters. For every incoming
+prime $r\ge5$ and its next prime future head $Q$, the remaining multiples in
+that square-safe window admit an exact prime-multiplier description, proved
+here using Bertrand's postulate as an external dependency.
 
 Let
-
 ```math
 M_r=\prod_{s\lt r}s,
 \qquad
@@ -893,18 +791,14 @@ K=\left\lfloor\frac{Q^2-1}{r}\right\rfloor,
 
 where $s$ ranges over primes and $Q$ is the next prime after $r$. Before
 filter $r$ is applied, the accepted multiples of $r$ in $[Q,Q^2)$ are exactly
-
 ```math
 r\ell
 \qquad\text{with }\ell\text{ prime and }r\le\ell\le K.
 ```
 
 Consequently their number is
-
 ```math
-\boxed{
 A(r,Q)=\pi(K)-\pi(r-1).
-}
 ```
 
 Every multiple of $r$ in the window has the form $r\ell$ with
@@ -913,7 +807,6 @@ $\gcd(r,M_r)=1$, this value survived the earlier filters exactly when
 $\gcd(\ell,M_r)=1$.
 
 Bertrand's bound also gives
-
 ```math
 \begin{aligned}
 K
@@ -930,7 +823,6 @@ If an accepted multiplier $\ell\lt K+1\le r^2$ were composite, its least prime
 divisor would be at most $\sqrt\ell\lt r$ and would divide $M_r$, contradicting
 $\gcd(\ell,M_r)=1$. Thus every accepted multiplier is prime and at least $r$.
 Conversely, every prime $\ell\ge r$ is coprime to $M_r$. Therefore
-
 ```math
 \begin{aligned}
 \#\{n\in[Q,Q^2):r\mid n,\ \gcd(n,M_r)=1\}
@@ -947,25 +839,19 @@ This is the exact count of accepted values struck by filter $r$ in the stated
 window. A struck value need not be a 2-gap endpoint, so $A(r,Q)$ is only an
 upper bound on the number of destroyed local 2-gaps.
 
-#### Stainless And Source Evidence For The Accepted-Strikes Theorem
-
 The exact characterization, including its Bertrand dependency, is maintained
 in [Exact Accepted Local Filter Strikes](
 ../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md). No
-`.holds` theorem currently contains the prime-counting argument; Stainless
-verification is pending.
+`.holds` theorem currently contains the prime-counting argument; this result
+is not yet Stainless-verified.
 
 ### 4.4 Sharp Local 2-Gap Survival Threshold
 
-**Population:** Pre-filter and post-filter 2-gap starts whose two endpoints
-remain inside one eligible square-safe window.
-
-**Scope and quantifier:** Every incoming prime $r\ge5$, its next prime future
-head $Q$, and the single transition that installs filter $r$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
 The proved theorem is the conditional implication below; its local-abundance
-antecedent remains open.
+antecedent remains open. It holds for every incoming prime $r\ge5$, its next
+prime future head $Q$, and the single transition that installs filter $r$,
+over pre-filter and post-filter 2-gap starts whose two endpoints remain
+inside one eligible square-safe window.
 
 The exact accepted-strike count becomes a sharp deterministic survival test.
 If the eligible window initially contains more 2-gaps than filter $r$ has
@@ -973,7 +859,6 @@ accepted values to remove, endpoint isolation forces at least one gap to
 survive.
 
 Let $G_{\mathrm{local}}(r,Q)$ count the pre-filter 2-gaps $(x,x+2)$ satisfying
-
 ```math
 Q\le x,
 \qquad
@@ -982,32 +867,30 @@ x+2\lt Q^2,
 
 and let $G_{\mathrm{surviving}}(r,Q)$ count those still present after filter
 $r$. With
-
 ```math
 K=\left\lfloor\frac{Q^2-1}{r}\right\rfloor,
 \qquad
 A(r,Q)=\pi(K)-\pi(r-1),
 ```
 
-The 2-Gap Isolation property and #6 give
-
+Let $G_{\mathrm{destroyed}}(r,Q)$ count the destroyed eligible 2-gaps. The
+2-gap isolation and accepted local strikes properties give
 ```math
 \begin{aligned}
-\#\{\text{destroyed eligible 2-gaps}\}
+G_{\mathrm{destroyed}}(r,Q)
 &\le\#\{\text{accepted values struck in }[Q,Q^2)\}
-&&[\text{Property \#5}]\\
+&&[\text{2-Gap Isolation}]\\
 &=A(r,Q).
-&&[\text{Property \#6}]
+&&[\text{Accepted Local Strikes}]
 \end{aligned}
 ```
 
 Therefore
-
 ```math
 \begin{aligned}
 G_{\mathrm{surviving}}(r,Q)
 &=G_{\mathrm{local}}(r,Q)
-  -\#\{\text{destroyed eligible 2-gaps}\}
+  -G_{\mathrm{destroyed}}(r,Q)
 &&[\text{Population Accounting}]\\
 &\ge G_{\mathrm{local}}(r,Q)-A(r,Q).
 &&[\text{Substitution}]
@@ -1015,13 +898,11 @@ G_{\mathrm{surviving}}(r,Q)
 ```
 
 Both counts are integers, so
-
 ```math
-\boxed{
 G_{\mathrm{local}}(r,Q)>A(r,Q)
 \Longrightarrow
 G_{\mathrm{surviving}}(r,Q)>0.
-}
+
 \qquad[\text{Integer Positivity; Q.E.D.}]
 ```
 
@@ -1029,18 +910,15 @@ Equivalently, $A(r,Q)+1$ eligible pre-filter gaps suffice. The theorem does
 not prove this local-abundance antecedent. Iterating it through later filters
 would require a fresh eligible population bound at every transition.
 
-#### Stainless And Source Evidence For The Survival Threshold
-
 The conditional theorem and its exact boundary are maintained in [Sharp Local
 2-Gap Survival Threshold](
 ../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md). No
 `.holds` theorem currently encodes the local populations or the prime-counting
-threshold; Stainless verification is pending.
+threshold; this result is not yet Stainless-verified.
 
 ### Local Harmful-Excess Notation
 
 Let $Q$ be a future prime head and define the eligible start window
-
 ```math
 W_Q=\{x\in\mathbb Z:Q\le x\ \land\ x+2\lt Q^2\}.
 ```
@@ -1048,7 +926,6 @@ W_Q=\{x\in\mathbb Z:Q\le x\ \land\ x+2\lt Q^2\}.
 For a fixed filter $r$, let $K_r(I)$ count the incoming 2-gap starts in an
 interval $I$ destroyed because $r$ divides one endpoint. If $N_r(I)$ is the
 incoming population, define its centered harmful excess by
-
 ```math
 b_r(I)=K_r(I)-\frac{2N_r(I)}r.
 ```
@@ -1061,24 +938,17 @@ capacity estimates.
 
 ### 5.1 Weighted Deletion Conservation
 
-**Population:** One fixed eligible 2-gap-start population followed through
-every filter in one complete conditioned chain to a future head $Q$.
-
-**Scope and quantifier:** Every nonempty chain
-$5\le r_0\lt r_1\lt\cdots\lt r_{m-1}\lt Q$ with exact layer populations
-$N_i$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 The shooting-versus-cluster question becomes an exact signed conservation
-law. Each layer has a multiplicative main term and a harmful excess. The
-weighted sum of those excesses is not an approximation: it is exactly the
-predicted final population minus the realized final population.
+law. Each layer has a multiplicative main term and a harmful excess. For one
+fixed eligible 2-gap-start population followed through every filter in one
+complete conditioned chain $5\le r_0\lt r_1\lt\cdots\lt r_{m-1}\lt Q$ to a
+future head $Q$, with exact layer populations $N_i$, the weighted sum of
+those excesses is not an approximation: it is exactly the predicted final
+population minus the realized final population.
 
 Let $N_i$ be the number of eligible 2-gap starts immediately before filter
 $r_i$, and let $N_m$ be the number surviving the entire conditioned chain.
 Define
-
 ```math
 a_i=1-\frac2{r_i},
 \qquad
@@ -1090,7 +960,6 @@ w_{-1}=A_{0,m}.
 ```
 
 Let
-
 ```math
 T=N_0A_{0,m},
 \qquad
@@ -1099,7 +968,6 @@ b_i=a_iN_i-N_{i+1},
 
 Moreover, $a_iw_i=A_{i,m}=w_{i-1}$ and $w_{m-1}=1$. Multiplying the
 definition of $b_i$ by $w_i$ therefore gives
-
 ```math
 \begin{aligned}
 \sum_{i=0}^{m-1}w_ib_i
@@ -1121,28 +989,22 @@ definition of $b_i$ by $w_i$ therefore gives
 This is an identity, not an independent upper bound: the condition
 $\sum_iw_ib_i<T$ is exactly equivalent to $N_m>0$.
 
-#### Stainless And Source Evidence For The Conservation Law
-
 The exact recurrence, telescoping identity, and per-gap interpretation are
 maintained in [Weighted Deletion Conservation Law](
 ../../properties/sieve-sequence/weighted-deletion-conservation-law.md). No
 `.holds` theorem currently encodes the weighted conditioned chain, so
-Stainless verification is pending.
+this result is not yet Stainless-verified.
 
 ### 5.2 Terminal Harmful-Excess Energy
 
-**Population:** The same fixed eligible 2-gap-start population and conditioned
-filter chain as the conservation law of §5.1.
-
-**Scope and quantifier:** Every nonempty chain
-$5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, using its exact realized populations.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-The strict energy inequality is sufficient for survival. Proving that it
-holds for infinitely many future heads remains open (the terminal survival candidate).
+The strict energy inequality is sufficient for survival, for every nonempty
+chain $5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, using its exact realized
+populations, over the same fixed eligible 2-gap-start population and
+conditioned filter chain as the conservation law of §5.1. Proving that it
+holds for infinitely many future heads remains open (the terminal survival
+candidate).
 
 Define
-
 ```math
 E_b=
 \sum_{i=0}^{m-1}
@@ -1154,7 +1016,6 @@ W_-=\sum_{i=0}^{m-1}w_{i-1}.
 Every $a_i$, $w_i$, and $w_{i-1}$ is positive, so $W_->0$.
 
 Put $c_i=r_i/[2(r_i-2)]$. Weighted Cauchy--Schwarz yields
-
 ```math
 \begin{aligned}
 (T-N_m)^2
@@ -1180,22 +1041,17 @@ Put $c_i=r_i/[2(r_i-2)]$. Weighted Cauchy--Schwarz yields
 ```
 
 Hence the actual chain always satisfies
-
 ```math
-\boxed{
 E_b\ge\frac{(T-N_m)^2}{2W_-}.
-}
 ```
 
 If the final population were extinct, $N_m=0$, this lower bound would become
 $E_b\ge T^2/(2W_-)$. Therefore
-
 ```math
-\boxed{
 E_b\lt\frac{T^2}{2W_-}
 \Longrightarrow
 N_m>0.
-}
+
 \qquad[\text{Contradiction At Extinction; Q.E.D.}]
 ```
 
@@ -1205,32 +1061,27 @@ candidate is the new arithmetic statement that the strict energy inequality
 holds for infinitely many future heads $Q$. Complete-period density and
 separate one-layer capacity bounds do not establish that inequality.
 
-#### Stainless And Source Evidence For The Terminal-Energy Theorem
-
 The sharp lower bound and terminal classification are maintained in [Weighted
 Harmful-Excess Energy Is Already Terminal](
 ../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md).
 The candidate's exact hypothesis and proof boundary are maintained in
 [Weighted Harmful-Excess Quadratic Survival](
 ../../candidates/weighted-harmful-excess-quadratic-survival.md). No `.holds`
-theorem currently encodes the weighted chain, so Stainless verification is
-pending.
+theorem currently encodes the weighted chain, so this result is not yet
+Stainless-verified.
 
 ### 5.3 Why The Capacity Envelope Is Exhausted
 
-**Population:** The same fixed eligible 2-gap-start population and conditioned
-filter chain as the Weighted Deletion Conservation property and #66.
-
-**Scope and quantifier:** Every nonempty conditioned chain
-$5\le r_0\lt\cdots\lt r_{m-1}\lt Q$. The narrated properties (#67--#81) are
-each mathematically proved in their canonical notes; full self-contained
-proofs of the load-bearing steps appear in Appendix C.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-This section narrates a closed exhaustion argument. It does not introduce a
-new theorem; it walks the reader through why every unsigned-capacity route to
-the terminal survival threshold $E_b\lt T^2/(2W_-)$ fails, leaving signed
-residue information as the only remaining ingredient.
+This section presents a closed exhaustion argument rather than a single new
+theorem: it shows why every unsigned-capacity route to the terminal survival
+threshold $E_b\lt T^2/(2W_-)$ fails, leaving signed residue information as
+the only remaining ingredient. It holds for every nonempty conditioned chain
+$5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, over the same fixed eligible 2-gap-start
+population and conditioned filter chain as the weighted deletion conservation
+and terminal harmful-excess energy properties above. The narrated properties
+from integral profile attainment through capacity stability gap are each
+mathematically proved in their canonical notes; full self-contained proofs of
+the load-bearing steps appear in Appendix C.
 
 The terminal-energy theorem of §5.2 reduces survival to a single inequality
 on the weighted harmful-excess energy $E_b$. The most natural way to
@@ -1246,7 +1097,6 @@ the two harmful classes together can hold at most $2B_i$. The sharp
 capacity-envelope theorem (Appendix C.1) proves that maximizing $b_i^2$ over
 every histogram compatible with these class capacities gives the sharp
 separate-layer envelope
-
 ```math
 E_b\le\mathcal U_{\mathrm{cap}}
 =\sum_i\alpha_iX_i,
@@ -1264,7 +1114,6 @@ information is enough.
 #### 5.3.2 Why capacity alone gives no positive floor
 
 The width-floor theorem (Appendix C.2) proves the explicit per-layer floor
-
 ```math
 X_i\ge\frac14\min(N_i,2B_i,r_iB_i-N_i)^2.
 ```
@@ -1293,7 +1142,6 @@ that no cut in the chain can clear the original survival threshold.
 The fixed-seven-cut theorem (Appendix C.3) proves that the fixed cut
 immediately after filter $7$ fails: under the seven-layer density floor at
 the next untouched layer (filter $11$), the hybrid envelope satisfies
-
 ```math
 \mathcal U_2^{\mathrm{hyb}}>\frac{T^2}{2W_-}
 \qquad\text{whenever }m\ge37.
@@ -1303,7 +1151,6 @@ The constant $37$ comes from the exact integer check
 $29403\cdot275^2=2{,}223{,}601{,}875<37\cdot847\cdot269^2=2{,}267{,}721{,}379$.
 The arbitrary-cut theorem (Appendix C.4) generalizes this to every fixed
 cut $k$:
-
 ```math
 m>P_k(r_k-2)^2\left(1+\frac6D\right)^2
 \quad\Longrightarrow\quad
@@ -1320,7 +1167,6 @@ A cut that moves outward with the head can in principle avoid the fixed-cut
 obstruction. The moving-cut theorem (Appendix C.5) proves the opposite
 pressure: a threshold-clearing cut with at least one complete native block
 forces
-
 ```math
 m<\frac37\left(1+\frac6D\right)^2
 \left(\frac{2\log H}{c}-2\right)^2,
@@ -1345,7 +1191,6 @@ exactly $\mathcal U_{\mathrm{cap}}$.
 The capacity-stability enlargement had enlarged the certificate threshold by
 $\Gamma_{\mathrm{cap}}$. The stability-gap theorem closes that escape: under
 the seven-layer density floor at filter $7$,
-
 ```math
 \Gamma_{\mathrm{cap}}\le\frac{25P_m}{18}\left(\frac25+\frac{3N_0}{5S}\right)^2,
 \qquad
@@ -1376,20 +1221,14 @@ article.
 
 ## 6. Exact Filter-Seven Localization
 
-**Population:** Actual pre-filter-$7$ 2-gap starts in an arbitrary integer
-interval.
-
-**Scope and quantifier:** Every finite integer interval $I$, after filters
-$2$, $3$, and $5$ have been installed and immediately before filter $7$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 At the first nontrivial conditioned layer, exact residue order replaces the
-quadratic capacity envelope by a constant boundary discrepancy. This is an
-arithmetic localization theorem, not a density estimate.
+quadratic capacity envelope by a constant boundary discrepancy, for every
+finite integer interval $I$, after filters $2$, $3$, and $5$ have been
+installed and immediately before filter $7$, over actual pre-filter-$7$
+2-gap starts in an arbitrary integer interval. This is an arithmetic
+localization theorem, not a density estimate.
 
 The incoming starts occupy exactly three classes modulo $30$. Define
-
 ```math
 F_7(x)=\mathbf1_{\{11,17,29\}\bmod30}(x),
 \qquad
@@ -1398,7 +1237,6 @@ h_7(x)=\mathbf1_{\{0,5\}\bmod7}(x),
 
 where $h_7$ marks the two endpoint-strike classes. The centered observable and
 its interval sum are
-
 ```math
 g_7(x)=F_7(x)\left(h_7(x)-\frac27\right),
 \qquad
@@ -1407,7 +1245,6 @@ b_7(I)=\sum_{x\in I}g_7(x).
 
 Because $30$ and $7$ are coprime, $g_7$ has period $210$. Its 21 admissible
 start residues in increasing order are
-
 ```math
 \begin{aligned}
 &11,17,29,41,47,59,71,77,89,101,107,\\
@@ -1417,22 +1254,17 @@ start residues in increasing order are
 
 Clearing the denominator gives weight $5$ at a harmful residue and $-2$ at a
 harmless residue. In the order above the exact sequence is
-
 ```math
-\boxed{
 -2,-2,-2,-2,5,-2,-2,5,5,-2,-2,5,5,-2,-2,5,-2,-2,-2,-2,-2.
-}
 ```
 
 It contains six harmful and fifteen harmless terms, so
-
 ```math
 6\cdot5+15\cdot(-2)=0.
 \qquad[\text{Complete-Period Cancellation}]
 ```
 
 Starting from zero, its cumulative sums are
-
 ```math
 \begin{aligned}
 0,&-2,-4,-6,-8,-3,-5,-7,-2,3,1,-1,\\
@@ -1444,7 +1276,6 @@ Their minimum is $-8$ and maximum is $10$. Every non-wrapping consecutive
 subsum is the difference of two cumulative sums. Every wrapping subsum is the
 negative of its non-wrapping complement because the full sum is zero. Hence
 every cyclic subsum $C$ satisfies
-
 ```math
 \begin{aligned}
 |C|
@@ -1458,12 +1289,11 @@ every cyclic subsum $C$ satisfies
 Now partition any integer interval $I$ into consecutive complete blocks of
 length $210$ and one remainder of length less than $210$. The complete blocks
 contribute zero, and the remainder selects one cyclic subsum. Therefore
-
 ```math
 \begin{aligned}
 |7b_7(I)|&\le18
 &&[\text{Complete Blocks Cancel}]\\
-|b_7(I)|&\le\boxed{\frac{18}{7}}.
+|b_7(I)|&\le\frac{18}{7}.
 &&[\text{Divide By }7;\ \text{Q.E.D.}]
 \end{aligned}
 ```
@@ -1471,7 +1301,6 @@ contribute zero, and the remainder selects one cyclic subsum. Therefore
 The interval from residue $47$ through residue $161$ attains $18/7$, so the
 constant is sharp. For the complete conditioned chain with
 $r_0=5$ and $r_1=7$, write $P_m=A_{0,m}$. Then
-
 ```math
 \begin{aligned}
 w_1
@@ -1492,13 +1321,12 @@ w_1
 ```
 
 Therefore
-
 ```math
 \begin{aligned}
 \alpha_1b_7^2
 &\le\frac{49P_m}{30}\left(\frac{18}{7}\right)^2
 &&[\text{Sharp Interval Bound}]\\
-&=\boxed{\frac{54}{5}P_m}.
+&=\frac{54}{5}P_m.
 &&[\text{Simplification}]
 \end{aligned}
 ```
@@ -1507,17 +1335,15 @@ The saving comes from the exact ordered residue pattern. It controls one
 fixed early layer and does not give a uniform bound for the growing family of
 later coefficients.
 
-### Stainless And Source Evidence For The Filter-Seven Theorem
-
 The exact certificate and arbitrary-interval proof are maintained in
 [Filter-Seven Harmful Excess Is Boundary-Sized](
 ../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md).
-No `.holds` theorem currently encodes the 21 weights, their zero sum, and all
-cyclic subsums. Stainless verification is pending.
+The 21 weights, their zero sum, and all cyclic subsums are not yet encoded
+as a `.holds` theorem.
 
 ## 6.5 The Live Frontier: Two Candidates The Conclusion Names
 
-The Filter-Seven Excess Bound property and #83 are the last two steps of a longer argument, and the
+The filter-seven excess bound and copy-block excess control properties are the last two steps of a longer argument, and the
 article's conclusion ($\S$8, $\S$10) names two candidates as the live
 twin-prime frontier. This section introduces them so that conclusion is
 readable without external files. It states each candidate's core identity,
@@ -1528,14 +1354,10 @@ reader needs to follow the article's own arc.
 
 ### 6.5.1 The Accepted-Boundary Discrepancy
 
-**Population:** Accepted anchor values in one interval, followed through the
-conditioned filter chain.
-
-**Scope and quantifier:** Every nonempty conditioned chain
-$5\le r_0<\cdots<r_{m-1}<Q$.
-
-**Status:** **Mathematically proved reduction; the terminal
-signed-mean-square estimate is open. Stainless verification pending.**
+The reduction below is proved for every nonempty conditioned chain
+$5\le r_0<\cdots<r_{m-1}<Q$, over accepted anchor values in one interval,
+followed through the conditioned filter chain; the terminal
+signed-mean-square estimate is open.
 
 Recall from $\S$5.1 that the harmful excess at layer $i$ is
 $b_i=a_iN_i-N_{i+1}$. Candidate #23 isolates the *strike-density error*
@@ -1546,9 +1368,7 @@ already exact, and the harmful excess reduces to a difference of signed
 Möbius boundary sums. Specifically, with
 $E_i=A_i-\ell\varphi(P_i)/P_i$ the centered inclusion–exclusion discrepancy
 at layer $i$,
-
 ```math
-\boxed{
 H_i-\frac{A_i}{r_i}
 =
 \left(1-\frac1{r_i}\right)E_i-E_{i+1},
@@ -1556,18 +1376,14 @@ H_i-\frac{A_i}{r_i}
 \varepsilon_i
 =
 \frac{(1-1/r_i)E_i-E_{i+1}}{A_i}.
-}
 ```
 
 The signed discrepancies telescope under one-anchor survival weights, but
 candidate's weighted-energy budget requires a *weighted sum of their squares*:
-
 ```math
-\boxed{
 \sum_i
 w_i\frac{r_i}{2(r_i-2)}
 \left(\left(1-\frac1{r_i}\right)E_i-E_{i+1}\right)^2.
-}
 ```
 
 Bounding the divisor summands independently gives only
@@ -1587,47 +1403,36 @@ here. The canonical note is
 
 ### 6.5.2 The Residue-Collision Energy
 
-**Population:** 2-gap-start residues modulo one incoming prime, in one
-conditioned layer.
-
-**Scope and quantifier:** Every incoming prime $r\ge5$ and its actual
-conditioned layer population.
-
-**Status:** **Mathematically proved reduction; the relative
-four-point correlation estimate is open. Stainless verification pending.**
+For every incoming prime $r\ge5$ and its actual conditioned layer population,
+over 2-gap-start residues modulo one incoming prime in one conditioned layer,
+the reduction below is proved; the relative four-point correlation estimate
+is open.
 
 The residue-collision energy is the input that the copy-block bridge ($\S$7)
 consumes. Let
 $c_t$ count the incoming 2-gap starts in residue class $t\bmod r$, so
 $N_r=\sum c_t$. The centered deviation is $d_t=c_t-N_r/r$, and the
 residue-collision energy is
-
 ```math
 V_r=\sum_{t\bmod r}d_t^2.
 ```
 
 The two harmful classes contain $c_0+c_{-2}$ starts. Their centered excess
 reduces exactly to the histogram second moment and its autocorrelation:
-
 ```math
-\boxed{
 C_r
 =
 \sum_{t\bmod r}c_t^2
 =
 N_r+2\sum_{h\ge1}A_r(6rh),
-}
 ```
 
 where $A_r(\cdot)$ is the four-point autocorrelation of the start indicator
 at the given shift. The candidate's target is the *relative* bound
-
 ```math
-\boxed{
 C_r\le N_r+\frac{N_r^2}{r},
 \qquad\text{equivalently}\qquad
 V_r\le\frac{N_r^2}{r}.
-}
 ```
 
 An absolute upper-bound-sieve estimate is insufficient until its
@@ -1648,23 +1453,16 @@ open. This is exactly what the article's conclusion ($\S$8) names.
 
 ## 7. Copy-Block Harmful Excess And Residue Energy
 
-**Population:** Lifted copies of one complete old-period 2-gap-start set,
-grouped into old-period copy blocks.
-
-**Scope and quantifier:** Every old period $M\ge1$, every incoming prime
-$r\ge5$ coprime to $M$, every run of complete copy blocks, and every finite
-integer interval in the copied stream.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
 The harmful excess of a copy block is not an arbitrary scalar. It is exactly
-the sum of two centered entries of the old start histogram modulo $r$. This
-turns residue-collision energy into a quantitative bound for the complete
-block portion of a local interval.
+the sum of two centered entries of the old start histogram modulo $r$, for
+every old period $M\ge1$, every incoming prime $r\ge5$ coprime to $M$, every
+run of complete copy blocks, and every finite integer interval in the copied
+stream, over lifted copies of one complete old-period 2-gap-start set,
+grouped into old-period copy blocks. This turns residue-collision energy into
+a quantitative bound for the complete block portion of a local interval.
 
 Let $S\subset[0,M)$ be the old 2-gap starts and put $N=|S|$. For
 $t\bmod r$, define
-
 ```math
 c_t=\#\{a\in S:a\equiv t\pmod r\},
 \qquad
@@ -1675,14 +1473,12 @@ V_r=\sum_{t\bmod r}d_t^2.
 
 Copy block $j$ is $[jM,(j+1)M)$. Let $K_j$ count starts $a+jM$ destroyed by
 filter $r$ and define its centered harmful excess
-
 ```math
 B_j=K_j-\frac{2N}{r}.
 ```
 
 Set $t_j\equiv-jM\pmod r$. The two endpoint strikes are disjoint because
 $r>2$, and they are equivalent to
-
 ```math
 a\equiv t_j\pmod r,
 \qquad
@@ -1690,7 +1486,6 @@ a\equiv t_j-2\pmod r.
 ```
 
 Consequently,
-
 ```math
 \begin{aligned}
 K_j
@@ -1704,7 +1499,6 @@ B_j
 
 Because $\gcd(M,r)=1$, the map $j\mapsto-jM\pmod r$ permutes all residues.
 Also $\sum_td_t=\sum_tc_t-N=0$. Hence a complete run of $r$ blocks has
-
 ```math
 \begin{aligned}
 \sum_{j=0}^{r-1}B_j
@@ -1718,7 +1512,6 @@ Also $\sum_td_t=\sum_tc_t-N=0$. Hence a complete run of $r$ blocks has
 ```
 
 The same permutation gives the exact energy identity
-
 ```math
 \begin{aligned}
 \sum_{j=0}^{r-1}B_j^2
@@ -1731,7 +1524,6 @@ The same permutation gives the exact energy identity
 
 The autocorrelation may be negative. Discarding its sign with
 $2xy\le x^2+y^2$ gives
-
 ```math
 \begin{aligned}
 2\sum_td_td_{t-2}
@@ -1740,13 +1532,12 @@ $2xy\le x^2+y^2$ gives
 &=2V_r,
 &&[\text{Cyclic Reindexing}]\\
 \sum_{j=0}^{r-1}B_j^2
-&\le\boxed{4V_r}.
+&\le4V_r.
 &&[\text{Substitution; Q.E.D.}]
 \end{aligned}
 ```
 
 For any $k$ consecutive blocks with $0\le k\lt r$, Cauchy--Schwarz yields
-
 ```math
 \begin{aligned}
 \left|\sum_{j\in J}B_j\right|^2
@@ -1754,7 +1545,7 @@ For any $k$ consecutive blocks with $0\le k\lt r$, Cauchy--Schwarz yields
 &&[\text{Cauchy--Schwarz}]\\
 &\le k\sum_{j=0}^{r-1}B_j^2
 &&[\text{Nonnegative Terms}]\\
-&\le\boxed{4kV_r}.
+&\le4kV_r.
 &&[\text{Complete-Block Energy}]
 \end{aligned}
 ```
@@ -1767,7 +1558,6 @@ An arbitrary integer interval $I$ has a left partial old-period block, a run
 of complete blocks, and a right partial block. Each partial block contains at
 most one copy of every start in $S$. Since $r\ge5$ and the strike indicator is
 either $0$ or $1$,
-
 ```math
 \left|
 \mathbf1_{r\mid x(x+2)}-\frac2r
@@ -1777,20 +1567,17 @@ either $0$ or $1$,
 
 Each partial contribution is therefore at most $N(1-2/r)$ in absolute value.
 Combining both fragments with the complete-block bound gives
-
 ```math
-\boxed{
 |b_r(I)|
 \le
 2N\left(1-\frac2r\right)+2\sqrt{kV_r},
 \qquad 0\le k\lt r.
-}
+
 \qquad[\text{Triangle Inequality; Q.E.D.}]
 ```
 
 Finally, if $C_r=\sum_tc_t^2$ is the residue collision count, direct
 expansion gives
-
 ```math
 \begin{aligned}
 V_r
@@ -1811,16 +1598,14 @@ bounds must still compose under the weights. When $M$ exceeds the whole
 square-safe window there may be no complete block, and the boundary term
 dominates.
 
-### Stainless And Source Evidence For The Copy-Block Bridge
-
 The exact identities, energy bound, and arbitrary-interval boundary are
 maintained in [Copy-Block Harmful Excess Is Controlled By Residue Energy](
 ../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md).
 The open relative collision input is formulated in [Conditioned
 Residue-Collision Energy](
-../../candidates/conditioned-residue-collision-energy.md). No `.holds` theorem
-currently models the centered rational histogram and block observable;
-Stainless verification is pending.
+../../candidates/conditioned-residue-collision-energy.md). The centered
+rational histogram and block observable are not yet modeled as a `.holds`
+theorem.
 
 ## 8. Routes That Are Now Classified
 
@@ -1831,15 +1616,12 @@ CRT cancellation. These facts do not refute the quadratic survival condition;
 they identify which additional information it must use.
 
 The live twin-prime program is now narrow:
-
 ```math
-\boxed{
 \text{control }V_r\text{ relatively in the actual short window,}
 \quad
 \text{control partial blocks,}
 \quad
 \text{then compose the signed layers.}
-}
 ```
 
 More optimization of unsigned capacity or complete-period norms cannot supply
@@ -1857,19 +1639,16 @@ seed prime $p$, so that the future head $Q$ satisfies $Q<p^2$. This keeps
 the chain numerically short, but it conflicts with using many repeated
 copies of one fixed seed residue inside the final safe window $[Q,Q^2)$.
 The seed period is the primorial
-
 ```math
 M_p=\prod_{r<p}r,
 ```
 
 and by the prime number theorem in Chebyshev-theta form,
-
 ```math
 \log M_p=\sum_{r<p}\log r\sim p.
 ```
 
 Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
-
 ```math
 \begin{aligned}
 \frac{M_p}{Q^2}
@@ -1958,7 +1737,6 @@ counts. One old 2-gap has $r-2$ surviving lifts under one incoming prime,
 each old cluster has $r-4$ intact lifts, finite batches compose by CRT,
 rotation preserves cyclic multiplicity, and global 2-gap extinction is stable.
 Writing $C_M$ for the cyclic cluster count at modulus $M$:
-
 ```math
 \begin{aligned}
 G_2(p)
@@ -1979,7 +1757,6 @@ G_s(2)=0&\Longrightarrow G_t(2)=0\quad(t\ge s).
 
 The local theorems identify both the certificate and the sharp
 one-transition condition:
-
 ```math
 \begin{aligned}
 Q\le x,\ x+2\lt Q^2,\ \gcd(x(x+2),P_Q)=1
@@ -1996,7 +1773,6 @@ G_{\mathrm{local}}(r,Q)>A(r,Q)
 
 For a complete conditioned chain, the signed conservation law (§5.1) and its
 weighted Cauchy--Schwarz corollary (§5.2) prove
-
 ```math
 \begin{aligned}
 \sum_iw_ib_i&=T-N_m,
@@ -2010,7 +1786,6 @@ E_b\lt\frac{T^2}{2W_-}
 ```
 
 The properties from Filter-Seven Excess Bound through Copy-Block Excess Control then add exact local arithmetic:
-
 ```math
 \begin{aligned}
 |b_7(I)|&\le\frac{18}{7},
@@ -2056,30 +1831,35 @@ family of future heads.
 
 ## Appendix A: Evidence And Verification Status
 
-| Result | Mathematical status | Stainless status | Canonical evidence |
-|--------|---------------------|------------------|--------------------|
-| the Global 2-Gap Count property — exact global 2-gap count | Proved | Pending | [Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) |
-| the Copy-Index Filter Frequency property — exact copy-index filter frequency | Proved | Pending | [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
-| the Batched 2-Gap Survival property — exact batched survival | Proved | Pending | [Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) |
-| the Global 2-Gap Cluster Count property — exact global `(2,4,2)` cluster count | Proved | Pending | [Global 2-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) |
-| the Rotation Invariance property — rotation preserves cyclic multiplicity | Proved for nonempty finite lists | Exact multiplicity pending; membership and size foundations verified | [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md), [rotation foundations](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) |
-| the Absence Stability property — absence of 2-gaps is stable | Proved | Pending | [Absence Stability](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) |
-| the Safe-Window Certification property — square-safe certification | Proved | Pending | [Safe-Window Certification](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) |
-| the 2-Gap Isolation property — post-filter-3 isolation | Proved | Pending | [2-Gap Isolation](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) |
-| the Accepted Local Strikes property — exact accepted strikes | Proved using Bertrand's postulate | Pending | [Accepted Local Strikes](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) |
-| the Local Survival Threshold property — sharp one-transition threshold | Conditional implication proved; abundance antecedent open | Pending | [Local Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) |
-| the Weighted Deletion Conservation property — weighted deletion conservation | Exact identity proved | Pending | [Weighted Deletion Conservation](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) |
-| the Terminal Harmful-Excess Energy property / candidate #24 — terminal harmful-excess energy | Conditional implication proved; strict inequality for infinitely many heads open | Pending | [Terminal Harmful-Excess Energy](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md), [candidate #24](../../candidates/weighted-harmful-excess-quadratic-survival.md) |
-| the Filter-Seven Excess Bound property — filter-$7$ boundary | Proved and sharp | Pending | [Filter-Seven Excess Bound](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) |
-| the Copy-Block Excess Control property — copy-block residue-energy bridge | Proved; relative-energy and partial-boundary inputs open | Pending | [Copy-Block Excess Control](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) |
-| the Harmful-Capacity Excess Envelope property — sharp harmful-capacity envelope (Appendix C.1) | Proved; aggregate clearance open | Pending | [Harmful-Capacity Excess Envelope](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) |
-| the Envelope Width Floor property — width floor needs population slack (Appendix C.2) | Proved; vanishes at $N\in\{0,rB\}$ | Pending | [Envelope Width Floor](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) |
-| the Filter-Seven Cut Failure property — fixed-7 cut fails (Appendix C.3) | Proved ($m\ge37$) | Pending | [Filter-Seven Cut Failure](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) |
-| the Fixed Native Cut Failure property — every fixed cut fails (Appendix C.4) | Proved | Pending | [Fixed Native Cut Failure](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) |
-| the Moving-Cut Block Loss property — moving cut loses blocks (Appendix C.5) | Exact theorem proved; asymptotic corollary uses PNT/Bertrand externally | Pending | [Moving-Cut Block Loss](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) |
-| the Incomplete-Block Bessel Bound property — incomplete-block Bessel (Appendix C.6) | Exact theorem proved; asymptotic scale uses PNT/Bertrand externally | Pending | [Incomplete-Block Bessel Bound](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) |
-| Candidate #23 — accepted-boundary discrepancy (§6.5.1) | Exact reduction proved; signed mean-square estimate open | Pending | [Candidate #23](../../candidates/accepted-anchor-strike-density.md) |
-| Candidate #20 — residue-collision energy (§6.5.2) | Exact reduction proved; relative four-point correlation open | Pending | [Candidate #20](../../candidates/conditioned-residue-collision-energy.md) |
+None of the mathematical properties in the table below has a corresponding
+Stainless `.holds` theorem yet, with one partial exception: the rotation
+invariance property's underlying membership and size behavior is verified,
+though its exact multiplicity claim is not.
+
+| Result | Mathematical status | Canonical evidence |
+|--------|---------------------|--------------------|
+| the Global 2-Gap Count property — exact global 2-gap count | Proved | [Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) |
+| the Copy-Index Filter Frequency property — exact copy-index filter frequency | Proved | [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
+| the Batched 2-Gap Survival property — exact batched survival | Proved | [Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) |
+| the Global 2-Gap Cluster Count property — exact global `(2,4,2)` cluster count | Proved | [Global 2-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) |
+| the Rotation Invariance property — rotation preserves cyclic multiplicity | Proved for nonempty finite lists | [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md), [rotation foundations](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) |
+| the Absence Stability property — absence of 2-gaps is stable | Proved | [Absence Stability](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) |
+| the Safe-Window Certification property — square-safe certification | Proved | [Safe-Window Certification](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) |
+| the 2-Gap Isolation property — post-filter-3 isolation | Proved | [2-Gap Isolation](../../properties/sieve-sequence/two-gap-isolation-after-filter-three.md) |
+| the Accepted Local Strikes property — exact accepted strikes | Proved using Bertrand's postulate | [Accepted Local Strikes](../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md) |
+| the Local Survival Threshold property — sharp one-transition threshold | Conditional implication proved; abundance antecedent open | [Local Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) |
+| the Weighted Deletion Conservation property — weighted deletion conservation | Exact identity proved | [Weighted Deletion Conservation](../../properties/sieve-sequence/weighted-deletion-conservation-law.md) |
+| the Terminal Harmful-Excess Energy property / candidate #24 — terminal harmful-excess energy | Conditional implication proved; strict inequality for infinitely many heads open | [Terminal Harmful-Excess Energy](../../properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md), [candidate #24](../../candidates/weighted-harmful-excess-quadratic-survival.md) |
+| the Filter-Seven Excess Bound property — filter-$7$ boundary | Proved and sharp | [Filter-Seven Excess Bound](../../properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) |
+| the Copy-Block Excess Control property — copy-block residue-energy bridge | Proved; relative-energy and partial-boundary inputs open | [Copy-Block Excess Control](../../properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) |
+| the Harmful-Capacity Excess Envelope property — sharp harmful-capacity envelope (Appendix C.1) | Proved; aggregate clearance open | [Harmful-Capacity Excess Envelope](../../properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) |
+| the Envelope Width Floor property — width floor needs population slack (Appendix C.2) | Proved; vanishes at $N\in\{0,rB\}$ | [Envelope Width Floor](../../properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) |
+| the Filter-Seven Cut Failure property — fixed-7 cut fails (Appendix C.3) | Proved ($m\ge37$) | [Filter-Seven Cut Failure](../../properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) |
+| the Fixed Native Cut Failure property — every fixed cut fails (Appendix C.4) | Proved | [Fixed Native Cut Failure](../../properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) |
+| the Moving-Cut Block Loss property — moving cut loses blocks (Appendix C.5) | Exact theorem proved; asymptotic corollary uses PNT/Bertrand externally | [Moving-Cut Block Loss](../../properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) |
+| the Incomplete-Block Bessel Bound property — incomplete-block Bessel (Appendix C.6) | Exact theorem proved; asymptotic scale uses PNT/Bertrand externally | [Incomplete-Block Bessel Bound](../../properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) |
+| Candidate #23 — accepted-boundary discrepancy (§6.5.1) | Exact reduction proved; signed mean-square estimate open | [Candidate #23](../../candidates/accepted-anchor-strike-density.md) |
+| Candidate #20 — residue-collision energy (§6.5.2) | Exact reduction proved; relative four-point correlation open | [Candidate #20](../../candidates/conditioned-residue-collision-energy.md) |
 
 The operational Sieve Sequence construction used by these mathematical
 properties is Stainless-verified separately in [Formal Verification of Sieve
@@ -2201,39 +1981,31 @@ the later convention).
 
 ### C.1 Sharp Harmful-Capacity Excess Envelope
 
-**Population:** One filter layer's residue histogram, restricted to the two
-harmful classes.
+Fix one filter layer's residue histogram, restricted to the two harmful
+classes: for every incoming prime $r>2$, every common residue-class capacity
+$B\ge0$, and every population $0\le N\le rB$, let the residue counts $c_a$
+($a\bmod r$) satisfy $0\le c_a\le B$ and $\sum c_a=N$. The two harmful
+classes hold $N_{\text{harm}}=c_0+c_{-2}$ starts, and the signed harmful
+excess is $b=N_{\text{harm}}-2N/r$.
 
-**Scope and quantifier:** Every incoming prime $r>2$, every common
-residue-class capacity $B\ge0$, and every population $0\le N\le rB$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-Let the residue counts $c_a$ ($a\bmod r$) satisfy $0\le c_a\le B$ and
-$\sum c_a=N$. The two harmful classes hold $K=c_0+c_{-2}$ starts, and the
-signed harmful excess is $b=K-2N/r$.
-
-The total $K$ is constrained by two facts. First, each harmful class holds at
-most $B$, so $K\le 2B$. Also $K\le N$. Second, the other $r-2$ classes hold
-at most $(r-2)B$ of the $N$ starts, forcing at least
-$N-(r-2)B$ into the harmful pair. The sixfold-capacity envelope proves both
-endpoints are attainable, giving the exact feasible interval
-
+The total $N_{\text{harm}}$ is constrained by two facts. First, each harmful
+class holds at most $B$, so $N_{\text{harm}}\le 2B$. Also
+$N_{\text{harm}}\le N$. Second, the other $r-2$ classes hold at most
+$(r-2)B$ of the $N$ starts, forcing at least $N-(r-2)B$ into the harmful
+pair. The sixfold-capacity envelope proves both endpoints are attainable,
+giving the exact feasible interval
 ```math
-\boxed{
-\ell\le K\le u,
+\ell\le N_{\text{harm}}\le u,
 \qquad
 \ell=\max(0,N-(r-2)B),
 \qquad
 u=\min(N,2B).
-}
 ```
 
-Because $b^2=(K-2N/r)^2$ is convex in $K$, its maximum over $[\ell,u]$ occurs
+Because $b^2=(N_{\text{harm}}-2N/r)^2$ is convex in $N_{\text{harm}}$, its
+maximum over $[\ell,u]$ occurs
 at an endpoint:
-
 ```math
-\boxed{
 b^2
 \le
 X_{r,N,B}
@@ -2242,21 +2014,18 @@ X_{r,N,B}
 \left(\ell-\frac{2N}{r}\right)^2,
 \left(u-\frac{2N}{r}\right)^2
 \right\}.
-}
 ```
 
 Both endpoints are attainable, so this bound is sharp. The conditioned-chain
 upper envelope follows by summing the per-layer sharp bounds with the energy
 coefficients $\alpha_i=w_ir_i/[2(r_i-2)]$:
-
 ```math
-\boxed{
 E_b\le\mathcal U_{\mathrm{cap}}:=\sum_i\alpha_iX_i.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
-**Boundary.** The bound is sharp one layer at a time but need not be sharp
+The bound is sharp one layer at a time but need not be sharp
 over a chain, because the histograms attaining each $X_i$ separately may not
 co-arise from one nested survivor sequence. A cross-layer CRT restriction
 could lower the true aggregate energy below $\mathcal U_{\mathrm{cap}}$. The
@@ -2265,35 +2034,24 @@ it reduces the capacity-only route to that explicit inequality.
 
 ### C.2 Capacity-Envelope Width Floor Needs Population Slack
 
-**Population:** One filter layer's feasible harmful-count interval.
-
-**Scope and quantifier:** Every $r\ge5$, $B\ge0$, $0\le N\le rB$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-This property extracts the explicit lower bound on $X_{r,N,B}$ supplied by
+For every $r\ge5$, $B\ge0$, $0\le N\le rB$, over one filter layer's feasible
+harmful-count interval, this property extracts the explicit lower bound on
+$X_{r,N,B}$ supplied by
 the *width* of the feasible interval $[\ell,u]$. Write
 $c=(\ell+u)/2$, $h=(u-\ell)/2$. The farther endpoint from $2N/r$ has distance
-
 ```math
 \max\left(\left|\frac{2N}{r}-(c-h)\right|,\left|\frac{2N}{r}-(c+h)\right|\right)
 =h+\left|\frac{2N}{r}-c\right|\ge h.
 ```
 
 Therefore
-
 ```math
-\boxed{
 X_{r,N,B}\ge\frac{(u-\ell)^2}{4}.
-}
 ```
 
 The width has the closed form
-
 ```math
-\boxed{
 u-\ell=\min(N,2B,rB-N).
-}
 ```
 
 This follows by splitting the feasible range into three parts. If
@@ -2302,11 +2060,9 @@ $2B\le N\le(r-2)B$, then $u=2B$, $\ell=0$, and $u-\ell=2B$. If
 $(r-2)B\le N\le rB$, then $u=2B$, $\ell=N-(r-2)B$, and $u-\ell=rB-N$. The
 formulas agree at the shared endpoints, proving the minimum formula.
 Combining,
-
 ```math
-\boxed{
 X_{r,N,B}\ge\frac14\min(N,2B,rB-N)^2.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -2314,11 +2070,8 @@ X_{r,N,B}\ge\frac14\min(N,2B,rB-N)^2.
 $X_{r,N,B}=0$ iff both endpoints equal $2N/r$, which requires $u=\ell$. By the
 width formula this is equivalent to $\min(N,2B,rB-N)=0$. Since $2B>0$ and
 $0\le N\le rB$, this occurs exactly at
-
 ```math
-\boxed{
 X_{r,N,B}=0\iff N\in\{0,rB\}.
-}
 ```
 
 This is the obstruction: the envelope vanishes at both the empty and the
@@ -2328,26 +2081,19 @@ zero capacity envelope.
 
 ### C.3 Fixed Seven Cut Cannot Clear The Original Threshold
 
-**Population:** The suffix capacity term at the first untouched layer (filter
-$11$) of a conditioned chain.
-
-**Scope and quantifier:** Every chain $r_0=5,r_1=7,r_2=11,\ldots$ with
-$Q\ge17$ and $m\ge37$, assuming the seven-layer density floor's local-count
-threshold at filter $11$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-Consider the cut immediately after filter $7$, so $k=2$. The native-period
+Consider the cut immediately after filter $7$, so $k=2$, for every chain
+$r_0=5,r_1=7,r_2=11,\ldots$ with $Q\ge17$ and $m\ge37$, examining the suffix
+capacity term at the first untouched layer (filter $11$) of a conditioned
+chain and assuming the seven-layer density floor's local-count threshold at
+filter $11$. The native-period
 hybrid envelope leaves every coordinate $i\ge2$ under its separate capacity
 bound, giving
-
 ```math
 \mathcal U_2^{\mathrm{hyb}}\ge\alpha_2X_2.
 ```
 
 The first three multiplicative factors are $a_0=3/5$, $a_1=5/7$, $a_2=9/11$,
 so $P_3=a_0a_1a_2=27/77$. Since $w_2=P_m/P_3$ and $\alpha_2=w_2/(2a_2)$,
-
 ```math
 \alpha_2=\frac{P_m}{2a_2P_3}=\frac{P_m}{2\cdot(9/11)\cdot(27/77)}
 =\frac{847}{486}P_m.
@@ -2355,63 +2101,48 @@ so $P_3=a_0a_1a_2=27/77$. Since $w_2=P_m/P_3$ and $\alpha_2=w_2/(2a_2)$,
 
 Candidate #17 at filter $11$ gives $X_2\ge B_{11}^2$ with
 $B_{11}=\lfloor D/66\rfloor+1\ge D/66$. Therefore
-
 ```math
-\boxed{
 \mathcal U_2^{\mathrm{hyb}}\ge\frac{847}{486}P_m\left(\frac{D}{66}\right)^2.
-}
 ```
 
 For the threshold upper bound, $T=N_0P_m$ and $W_-=\sum_{i<m}P_m/P_i\ge mP_m$
 (since $P_i\le1$). Before filter $5$ every 2-gap start is $5\bmod6$, so
 $N_0\le\lfloor D/6\rfloor+1\le D/6+1$. Hence
-
 ```math
 \frac{T^2}{2W_-}\le\frac{P_m}{2m}\left(\frac D6+1\right)^2.
 ```
 
 The suffix exceeds the threshold whenever
-
 ```math
 \frac{847}{486}\left(\frac{D}{66}\right)^2>\frac1{2m}\left(\frac D6+1\right)^2,
 ```
 
 equivalently $m>\frac{29403}{847}(1+6/D)^2$. For $Q\ge17$, $D\ge269$, so the
 right side is at most $\frac{29403}{847}(275/269)^2$. The integer comparison
-
 ```math
 29403\cdot275^2=2{,}223{,}601{,}875<2{,}267{,}721{,}379=37\cdot847\cdot269^2
 ```
 
 shows this is strictly below $37$. Therefore $m\ge37$ proves
-
 ```math
-\boxed{
 \mathcal U_2^{\mathrm{hyb}}>\frac{T^2}{2W_-}.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
-**Boundary.** This proves the *envelope* cannot certify survival through this
+This proves the *envelope* cannot certify survival through this
 fixed cut. It does not bound the actual energy $E_b$. It does not address
 later optimized cuts ($k\ge3$), the capacity-relaxed threshold, or localized
 residue information.
 
 ### C.4 Every Fixed Native Cut Fails The Original Threshold
 
-**Population:** The suffix capacity term at the first untouched layer of an
-arbitrary native cut.
-
-**Scope and quantifier:** Every chain $5\le r_0<\cdots<r_{m-1}<Q$ with
-$Q\ge17$ and $2\le k<m$, assuming the seven-layer density floor at layer
-$r_k$.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-Generalize C.3 to an arbitrary cut $k$. The seven-layer density floor gives
+Generalize C.3 to an arbitrary cut $k$, for every chain
+$5\le r_0<\cdots<r_{m-1}<Q$ with $Q\ge17$ and $2\le k<m$, over the suffix
+capacity term at the first untouched layer of an arbitrary native cut. The
+seven-layer density floor at layer $r_k$ gives
 $X_k\ge B_k^2$ with $B_k=\lfloor D/(6r_k)\rfloor+1\ge D/(6r_k)$, and
 $\alpha_k=P_m/(2P_ka_k^2)$. Therefore
-
 ```math
 \mathcal U_k^{\mathrm{hyb}}
 \ge\frac{P_mD^2}{72P_ka_k^2r_k^2}.
@@ -2419,20 +2150,16 @@ $\alpha_k=P_m/(2P_ka_k^2)$. Therefore
 
 The threshold upper bound is unchanged:
 $T^2/(2W_-)\le(P_m/2m)(D/6+1)^2$. The suffix exceeds the threshold whenever
-
 ```math
 \frac{P_mD^2}{72P_ka_k^2r_k^2}>\frac{P_m}{2m}\left(\frac D6+1\right)^2.
 ```
 
 Canceling $P_m>0$ and rearranging gives $m>P_ka_k^2r_k^2(1+6/D)^2$. Since
 $a_kr_k=r_k-2$,
-
 ```math
-\boxed{
 m>P_k(r_k-2)^2\left(1+\frac6D\right)^2
 \quad\Longrightarrow\quad
 \mathcal U_k^{\mathrm{hyb}}>\frac{T^2}{2W_-}.
-}
 ```
 
 Every fixed cut eventually fails: for fixed $k$, $P_k$ and $r_k$ are constants
@@ -2442,19 +2169,16 @@ original threshold must move: $k=k(Q)\to\infty$.
 
 A parameter-free lower bound on the cut prime follows from $k\ge2$, giving
 $P_k\le P_2=(3/5)(5/7)=3/7$. Threshold clearance would require
-
 ```math
 m\le\frac37(r_k-2)^2\left(1+\frac6D\right)^2,
 ```
 
 equivalently
-
 ```math
-\boxed{
 \mathcal U_k^{\mathrm{hyb}}<\frac{T^2}{2W_-}
 \quad\Longrightarrow\quad
 r_k\ge2+\frac{\sqrt{7m/3}}{1+6/D}.
-}
+
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -2462,7 +2186,7 @@ r_k\ge2+\frac{\sqrt{7m/3}}{1+6/D}.
 $P_2=3/7$, and $P_2(r_2-2)^2=(3/7)\cdot81=243/7=29403/847$, recovering
 C.3's constant exactly.
 
-**Boundary.** The bound $r_k\ge2+\sqrt{7m/3}/(1+6/D)$ uses no estimate for
+The bound $r_k\ge2+\sqrt{7m/3}/(1+6/D)$ uses no estimate for
 the distribution of primes. It is a necessary condition on the cut prime, not
 sufficient: it does not prove such an $r_k$ exists in the chain. Converting
 the prime bound into a cut-index bound requires the prime number theorem
@@ -2470,20 +2194,15 @@ the prime bound into a cut-index bound requires the prime number theorem
 
 ### C.5 Moving Cut Loses Complete Native Blocks
 
-**Population:** A native cut that moves outward with the future head, together
-with the prime-counting function.
-
-**Scope and quantifier:** Every chain $5\le r_i<Q$, cut $2\le k<m$. The exact
-logarithmic-squared inequality holds under five stated finite hypotheses. The
-asymptotic corollary uses Bertrand's postulate and the prime number theorem
-as explicit external dependencies.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-The exact theorem is finite; only the asymptotic corollary is external.
+For every chain $5\le r_i<Q$, cut $2\le k<m$, over a native cut that moves
+outward with the future head together with the prime-counting function, the
+exact logarithmic-squared inequality below holds under five stated finite
+hypotheses. The asymptotic corollary uses Bertrand's postulate and the prime
+number theorem as explicit external dependencies; the exact theorem itself is
+finite, and only the asymptotic corollary is external.
 
 The native modulus at cut $k$ is $M_k=\prod_{p<r_k}p=2\cdot3\prod_{i<k}r_i$.
 Since $r_{k-1}$ is the prime immediately before $r_k$,
-
 ```math
 \log M_k=\vartheta(r_{k-1}).
 ```
@@ -2498,17 +2217,13 @@ Assume the following five hypotheses:
 
 From C.4, hypothesis 2 forces
 $r_k\ge2+\sqrt{7m/3}/(1+6/D)$. From hypotheses 3--5,
-
 ```math
 \log H\ge\log M_k=\vartheta(r_{k-1})\ge cr_{k-1}>\frac c2 r_k.
 ```
 
 Combining the lower and upper requirements on $r_k$ and rearranging,
-
 ```math
-\boxed{
 m<\frac37\left(1+\frac6D\right)^2\left(\frac{2\log H}{c}-2\right)^2.
-}
 ```
 
 This is the exact finite theorem: a threshold-clearing cut with at least one
@@ -2518,7 +2233,6 @@ complete native block forces the chain length to be at most $O(\log^2H)$.
 $\vartheta(x)\sim x$ and $\pi(x)\sim x/\log x$ are external to the project's
 verification. For the actual full chain, $m=\pi(Q)-3\sim Q/\log Q$, whereas
 $\log^2H\sim4\log^2Q$. Therefore
-
 ```math
 \frac{m}{\log^2H}\sim\frac{Q}{4\log^3Q}\longrightarrow\infty.
 ```
@@ -2526,19 +2240,16 @@ $\log^2H\sim4\log^2Q$. Therefore
 The exact logarithmic-squared necessary condition fails for all sufficiently
 large $Q$. Hence, under the seven-layer density floor at the first suffix
 layer,
-
 ```math
-\boxed{
 \mathcal U_k^{\mathrm{hyb}}<\frac{T^2}{2W_-}
 \quad\Longrightarrow\quad
 M_k>H
-}
 ```
 
 for every sufficiently large $Q$ and every cut $k$. There are no complete
 native blocks to cancel.
 
-**Boundary.** When $M_k>H$, the native-period hybrid envelope still
+When $M_k>H$, the native-period hybrid envelope still
 constrains the single incomplete interval block. C.6 addresses whether that
 constraint can supply the missing gain. The asymptotic conclusion depends
 explicitly on PNT and Bertrand; the exact inequality remains valid without
@@ -2546,22 +2257,16 @@ them under the five stated hypotheses.
 
 ### C.6 Incomplete-Block Bessel Excludes No Capacity
 
-**Population:** The single incomplete native block left when $M_k>H$.
-
-**Scope and quantifier:** Every cut $2\le k<m$ with $M_k>H$, under the
-hypotheses of C.4--C.5. The asymptotic scale uses Bertrand and PNT as
-external dependencies.
-
-**Status:** **Mathematically proved, Stainless verification pending.**
-
-When $M_k>H$, the native-period hybrid envelope's interval remainder is
-$s_k=H$: the whole window is one incomplete block. This entry proves the
+Under the hypotheses of C.4–C.5, for every cut $2\le k<m$ with $M_k>H$, the
+native-period hybrid envelope's interval remainder on the single incomplete
+native block left is $s_k=H$: the whole window is one incomplete block (the
+asymptotic scale uses Bertrand and PNT as external dependencies). This entry
+proves the
 normalized capacity box then fits inside that budget, so the overflow $e_k$
 vanishes and the hybrid envelope collapses back to the all-capacity
 envelope.
 
 The native-period hybrid envelope's exact norm at coordinate $i<k$ is
-
 ```math
 q_{i,k}=\frac{M_kP_i(r_i-2)}{3r_i^2}.
 ```
@@ -2569,14 +2274,12 @@ q_{i,k}=\frac{M_kP_i(r_i-2)}{3r_i^2}.
 The capacity numerator obeys $X_i\le N_i^2$. Since conditioned populations
 decrease, $N_i\le N_0$, and before filter $5$ every 2-gap start is $5\bmod6$,
 so $N_0\le\lfloor D/6\rfloor+1\le D/5$ (using $D\ge269>30$). Therefore
-
 ```math
 X_i\le\frac{D^2}{25}.
 ```
 
 For the denominator, the function $x\mapsto(x-2)/x^2$ is decreasing for
 $x\ge4$, so for $i<k$,
-
 ```math
 \frac{r_i-2}{r_i^2}\ge\frac{r_k-2}{r_k^2},
 \qquad
@@ -2584,22 +2287,16 @@ q_{i,k}\ge\frac{M_kP_k(r_k-2)}{3r_k^2}.
 ```
 
 Summing the $k$ prefix coordinates,
-
 ```math
-\boxed{
 \sum_{i<k}\frac{X_i}{q_{i,k}}
 \le\frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.
-}
 ```
 
 The overflow quantification defines
 $e_k=(\sum_{i<k}X_i/q_{i,k}-s_k)_+$. When $M_k>H$, $s_k=H$. The normalized
 sum is at most $H$—giving $e_k=0$—whenever
-
 ```math
-\boxed{
 M_kP_k\ge\frac{3kD^2r_k^2}{25H(r_k-2)}.
-}
 ```
 
 **Prime-number-theorem scale (external).** The prefix product satisfies
@@ -2609,9 +2306,8 @@ $\log(M_kP_k)\sim r_{k-1}\gg\sqrt{Q/\log Q}$. The logarithm of the right side
 of the zero-overflow criterion is only $O(\log Q)$, since $k<Q$,
 $D<H<Q^2$, and $r_k<Q$. The criterion therefore holds for every sufficiently
 large $Q$, giving
-
 ```math
-\boxed{e_k=0,\qquad\mathcal U_k^{\mathrm{hyb}}=\mathcal U_{\mathrm{cap}}.}
+e_k=0,\qquad\mathcal U_k^{\mathrm{hyb}}=\mathcal U_{\mathrm{cap}}.
 ```
 
 **Exhaustion of the original native hybrid.** Combining C.3--C.6: fixed cuts
@@ -2619,18 +2315,15 @@ are excluded by C.3--C.4; any potentially successful moving cut has
 $M_k>H$ (C.5) and then $\mathcal U_k^{\mathrm{hyb}}=\mathcal U_{\mathrm{cap}}$
 (C.6). Since C.3 gives $\mathcal U_{\mathrm{cap}}\ge\mathcal U_2^{\mathrm{hyb}}>T^2/(2W_-)$,
 the capacity-plus-native-Bessel envelope satisfies
-
 ```math
-\boxed{
 \mathcal U_{\mathrm{hyb}}\ge\frac{T^2}{2W_-}
-}
 ```
 
 for every sufficiently large complete chain satisfying the seven-layer
 density floor. The current capacity-plus-native-Bessel envelope cannot
 certify the terminal survival threshold on an unbounded family.
 
-**Boundary.** This is a method obstruction, not a refutation of the
+This is a method obstruction, not a refutation of the
 seven-layer density floor or the terminal survival candidate. It does not
 address the capacity-relaxed threshold
 $T^2/(2W_-)+\Gamma_{\mathrm{cap}}$ (handled by the stability-gap theorem,
