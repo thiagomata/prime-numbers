@@ -10,13 +10,36 @@ article Property IV, section 5.2). This directly visualizes the
 Borel-Cantelli criterion: a curve that keeps climbing means the sum
 diverges (infinitely many head hits, with mixing); a curve that flattens
 means the sum converges (only finitely many head hits). The article's
-threshold is c=1/2 -- c=0.1 climbs the whole way, c>=0.5 all flatten out.
+threshold is c=1/2 -- c=0.0 and c=0.1 climb the whole way, c>=0.5 all
+flatten out.
+
+The six c values are not arbitrary: c=0.0 is the true-random baseline
+(w_r=1 exactly, matching the random benchmark elsewhere in this project --
+realized-filter-adversariality-score.md's d_p=2/p at C_p=1/2), c=0.5 is the
+article's own head threshold, and c=1.0 is its own square-window threshold
+(section 5.2). 0.1 and 0.3 give a clearly- and a barely-divergent example
+above the true-random baseline but still below the head threshold; 0.7
+gives a convergent example between the two thresholds.
+
+Two display choices, both fixes for an earlier draft of this chart:
+- The y-axis is log10(cumulative sum), not the raw value. c=0.0's sum
+  reaches into the hundreds while c=1.0's stays near 0.12; on a linear axis
+  the smaller curves are indistinguishable flat lines at the bottom and
+  c=0.0 visually swallows the chart. Log-space gives every curve's *shape*
+  (still rising vs. flat) equal visual weight regardless of its absolute
+  scale.
+- The displayed Q range is trimmed to where the story actually resolves
+  (Q up to ~2.5*10^5), not the full computed range (up to 10^7 in the CSV).
+  By that point c=0.7/1.0 have been flat for a while -- c=0.5, right at the
+  boundary, converges far more slowly (needs Q~1.8*10^6 to settle, checked
+  directly against the CSV) and is still visibly approaching its limit at
+  the right edge here, which is the honest picture at the boundary itself.
 
 c=0.3 is included deliberately as a subtle case: it is still climbing at
 the right edge of this chart (per the proof, it must diverge, being below
-1/2), but far more slowly than c=0.1 -- a real illustration of how close to
-the boundary the divergence becomes numerically hard to distinguish from
-convergence, not a rendering artifact.
+1/2), but far more slowly than c=0.0 or c=0.1 -- a real illustration of how
+close to the boundary the divergence becomes numerically hard to
+distinguish from convergence, not a rendering artifact.
 
 Run: python3 phase_transition_head_chart.py
 Output: ./out/phase-transition-head.svg
@@ -33,15 +56,20 @@ DATA_PATH = os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "data", "candidates", "phase-transition-head.csv"
 )
 
-C_VALUES = [0.1, 0.3, 0.5, 0.7, 1.0, 1.5]
+C_VALUES = [0.0, 0.1, 0.3, 0.5, 0.7, 1.0]
 COLUMN_FOR_C = {c: f"cumsum_c{str(c).replace('.', '_')}" for c in C_VALUES}
 
-COLORS = ["#2a78d6", "#1baf7a", "#eda100", "#008300", "#4a3aa7", "#e34948"]
-DASHES = ["1,4", "7,4", "10,3,2,3", "4,2,1,2,1,2", "10,3,2,3,2,3", None]
+COLORS = ["#e34948", "#2a78d6", "#1baf7a", "#008300", "#eda100", "#4a3aa7"]
+# c=0.5 (index 3) is the c=1/2 boundary itself -- the most important line in
+# this chart -- so it gets the solid stroke and a strong, high-contrast
+# color (dark green, not yellow); every other c is dashed.
+DASHES = ["2,2", "1,4", "7,4", None, "4,2,1,2,1,2", "10,3,2,3,2,3"]
 
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
 GRID = "#dddddd"
+
+Q_MAX_DISPLAY = 250_000  # trims the long flat tail past 10^7 -- see module docstring
 
 
 def vertical_text(canvas, x, y, label, size=12, fill=INK_MUTED):
@@ -59,7 +87,7 @@ def load_rows():
         row["Q"] = float(row["Q"])
         for c in C_VALUES:
             row[COLUMN_FOR_C[c]] = float(row[COLUMN_FOR_C[c]])
-    return rows
+    return [r for r in rows if r["Q"] <= Q_MAX_DISPLAY]
 
 
 def draw(rows):
@@ -71,22 +99,23 @@ def draw(rows):
 
     log_Q = [math.log10(r["Q"]) for r in rows]
     x_lo, x_hi = min(log_Q), max(log_Q)
-    y_max = max(max(r[COLUMN_FOR_C[c]] for c in C_VALUES) for r in rows)
-    y_lo, y_hi = 0.0, y_max * 1.08
+    log_vals = [math.log10(r[COLUMN_FOR_C[c]]) for r in rows for c in C_VALUES]
+    y_lo, y_hi = min(log_vals) - 0.2, max(log_vals) + 0.2
 
     def to_x(lq):
         return left + (lq - x_lo) / (x_hi - x_lo) * plot_w
 
     def to_y(value):
-        return top + plot_h - (value / (y_hi - y_lo)) * plot_h
+        log_v = math.log10(value)
+        return top + plot_h - (log_v - y_lo) / (y_hi - y_lo) * plot_h
 
     canvas.line(left, top, left, top + plot_h, stroke=GRID, width=1)
     canvas.line(left, top + plot_h, left + plot_w, top + plot_h, stroke=GRID, width=1)
     for frac in (0.0, 0.25, 0.5, 0.75, 1.0):
         y = top + plot_h - frac * plot_h
-        val = frac * (y_hi - y_lo)
+        log_val = y_lo + frac * (y_hi - y_lo)
         canvas.line(left, y, left + plot_w, y, stroke=GRID, width=1)
-        canvas.text(left - 10, y + 4, f"{val:.0f}", size=11, anchor="end", fill=INK_MUTED)
+        canvas.text(left - 10, y + 4, f"{10 ** log_val:.2f}", size=11, anchor="end", fill=INK_MUTED)
     for frac in (0.0, 0.25, 0.5, 0.75, 1.0):
         x = left + frac * plot_w
         val = x_lo + frac * (x_hi - x_lo)
@@ -94,7 +123,7 @@ def draw(rows):
         canvas.text(x, top + plot_h + 18, f"{val:.1f}", size=10, anchor="middle", fill=INK_MUTED)
 
     canvas.text(left + plot_w / 2, top + plot_h + 38, "log10(Q)", size=12, anchor="middle", fill=INK_MUTED)
-    vertical_text(canvas, 18, top + plot_h / 2, "cumulative sum of Pr(head is a 2-gap)", size=12, fill=INK_MUTED)
+    vertical_text(canvas, 18, top + plot_h / 2, "cumulative sum of Pr(head is a 2-gap) [log scale]", size=12, fill=INK_MUTED)
 
     def series(c):
         col = COLUMN_FOR_C[c]
@@ -105,12 +134,12 @@ def draw(rows):
 
     legend_x, legend_y = left + plot_w + 24, top + 24
     labels = {
-        0.1: "c=0.1 (climbs clearly)",
-        0.3: "c=0.3 (climbs, but slowly)",
-        0.5: "c=0.5 (boundary: converges)",
-        0.7: "c=0.7 (converges fast)",
-        1.0: "c=1.0 (converges)",
-        1.5: "c=1.5 (converges instantly)",
+        0.0: "c=0.0 (true random, diverges)",
+        0.1: "c=0.1 (diverges clearly)",
+        0.3: "c=0.3 (diverges slowly)",
+        0.5: "c=0.5 (boundary)",
+        0.7: "c=0.7 (converges slowly)",
+        1.0: "c=1.0 (converges clearly)",
     }
     canvas.text(legend_x, legend_y - 14, "w_r = 1 + c*log(r)", size=11, anchor="start", weight="bold", fill=INK_MUTED)
     for i, c in enumerate(C_VALUES):
@@ -122,14 +151,17 @@ def draw(rows):
     note_y = legend_y + len(C_VALUES) * 22 + 16
     for i, line in enumerate([
         "Threshold is c=1/2 (draft Property IV).",
-        "A climbing curve = the Borel-Cantelli",
-        "sum diverges = infinitely many head",
-        "hits, with mixing. A flat curve = only",
-        "finitely many, almost surely.",
+        "c=0.0 is the true-random baseline",
+        "(w_r=1, no growing penalty at all).",
+        "Y-axis is log-scale: a still-rising line",
+        "means the Borel-Cantelli sum diverges",
+        "(infinitely many head hits, with mixing);",
+        "a flat line means it converges (only",
+        "finitely many, almost surely).",
         "",
-        "c=0.3 is still technically climbing at",
-        "the right edge -- proved divergent,",
-        "just numerically slow near c=1/2.",
+        "c=0.3 is still technically rising here --",
+        "proved divergent, just numerically slow",
+        "this close to the c=1/2 boundary.",
     ]):
         canvas.text(legend_x, note_y + i * 15, line, size=10, anchor="start", fill=INK_MUTED)
 

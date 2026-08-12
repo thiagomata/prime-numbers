@@ -11,6 +11,10 @@ phase transition is polynomial-rate in Q, not double-logarithmic like the
 fixed-w family, so the c<1/2 vs c>=1/2 split is already clearly visible well
 within that range (see tests/test_phase_transition.py's numeric check).
 
+c=0.0 is included as the true-random baseline (w_r=1 exactly, no growing
+worse-than-random penalty at all) -- it must diverge fastest among these
+c values, since it carries no extra decay beyond the plain random rate.
+
 Writes data/candidates/phase-transition-head.csv for
 presentations/sieve-sequence-visualization/figures/phase_transition_head_chart.py
 to plot.
@@ -26,7 +30,7 @@ from sympy import primerange
 
 from . import phase_transition as lib
 
-C_VALUES = [0.1, 0.3, 0.5, 0.7, 1.0, 1.5]
+C_VALUES = [0.0, 0.1, 0.3, 0.5, 0.7, 1.0]
 
 COLUMNS = ["Q", "prime_index"] + [f"cumsum_c{str(c).replace('.', '_')}" for c in C_VALUES]
 
