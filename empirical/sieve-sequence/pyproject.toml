@@ -17,6 +17,8 @@ sieve-sequence-window = "sieve_sequence_empirical.window_cli:main"
 sieve-sequence-lineage = "sieve_sequence_empirical.lineage_cli:main"
 sieve-sequence-four-lines = "sieve_sequence_empirical.four_lines_cli:main"
 sieve-sequence-spacing = "sieve_sequence_empirical.spacing_cli:main"
+sieve-sequence-phase-transition-window = "sieve_sequence_empirical.phase_transition_window_cli:main"
+sieve-sequence-phase-transition-head = "sieve_sequence_empirical.phase_transition_head_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
