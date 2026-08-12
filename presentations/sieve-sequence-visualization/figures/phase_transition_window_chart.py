@@ -16,18 +16,22 @@ constant positive share, by contrast, is fatal almost immediately and
 permanently (lambda->0), because its relative-hazard factor w_r ~ alpha*r/2
 grows linearly in r rather than staying fixed. The c=1 frontier sits
 exactly on the article's own square-window boundary: still climbs, but at
-the slowest possible rate before the regime flips.
+the slowest possible rate before the regime flips -- it is the actual
+threshold this chart is about, so it gets the solid stroke; every other
+line is dashed.
 
 This is a purely analytic/asymptotic comparison, not real measured data
 (unlike four_lines_chart.py / spacing_chart.py), so Q is pushed to
 astronomical values (log10(Q) up to 60) specifically to make the w=10
 recovery visible -- something no real measurement could ever reach.
 
-Color/dash pairing is shared with phase_transition_head_chart.py wherever
-the two charts describe the same underlying quantity: w=1 here is exactly
-c=0 there (both mean w_r=1 constant, the true-random baseline), and the c=1
-frontier here is exactly the c=1.0 line there -- both get the identical
-color+dash in both charts so a reader can carry the mapping between them.
+Color is shared with phase_transition_head_chart.py wherever the two
+charts describe the same underlying quantity: w=1 here is exactly c=0
+there (both mean w_r=1 constant, the true-random baseline), and the c=1
+frontier here is exactly the c=1.0 line there -- both share the identical
+color in both charts so a reader can carry the mapping between them, even
+though the frontier is drawn solid here (it is this chart's own boundary)
+and dashed there (that chart's boundary is c=0.5, not c=1.0).
 
 Run: python3 phase_transition_window_chart.py
 Output: ./out/phase-transition-window.svg
@@ -47,8 +51,8 @@ DATA_PATH = os.path.join(
 # family used across the other companion-process charts. Distinct dash
 # pattern per line as well as color -- see feedback memory on grayscale/
 # print/colorblind safety for multi-series line charts. w=1 and the c=1
-# frontier intentionally match phase_transition_head_chart.py's c=0.0 and
-# c=1.0 -- see module docstring.
+# frontier intentionally share color with phase_transition_head_chart.py's
+# c=0.0 and c=1.0 -- see module docstring.
 COLOR_W1 = "#2a78d6"        # blue -- true-random baseline, matches head chart's c=0.0
 COLOR_W3 = "#1baf7a"        # aqua
 COLOR_W6 = "#eda100"        # yellow
@@ -60,8 +64,8 @@ DASH_W1 = "1,4"
 DASH_W3 = "7,4"
 DASH_W6 = "10,3,2,3"
 DASH_W10 = "4,2,1,2,1,2"
-DASH_SHARE = None  # solid -- the "this one actually dies" reference
-DASH_FRONTIER = "10,3,2,3,2,3"
+DASH_SHARE = "2,2"
+DASH_FRONTIER = None  # solid -- the article's own exact square-window threshold
 
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
@@ -131,8 +135,8 @@ def draw(rows):
     canvas.polyline(series("log10_lambda_fixed_w3"), stroke=COLOR_W3, width=2, dash=DASH_W3)
     canvas.polyline(series("log10_lambda_fixed_w6"), stroke=COLOR_W6, width=2, dash=DASH_W6)
     canvas.polyline(series("log10_lambda_fixed_w10"), stroke=COLOR_W10, width=2, dash=DASH_W10)
-    canvas.polyline(series("log10_lambda_constant_share"), stroke=COLOR_SHARE, width=2.5, dash=DASH_SHARE)
-    canvas.polyline(series("log10_lambda_frontier_c1"), stroke=COLOR_FRONTIER, width=2, dash=DASH_FRONTIER)
+    canvas.polyline(series("log10_lambda_constant_share"), stroke=COLOR_SHARE, width=2, dash=DASH_SHARE)
+    canvas.polyline(series("log10_lambda_frontier_c1"), stroke=COLOR_FRONTIER, width=2.5, dash=DASH_FRONTIER)
 
     legend_x, legend_y = left + plot_w + 24, top + 24
     entries = [
