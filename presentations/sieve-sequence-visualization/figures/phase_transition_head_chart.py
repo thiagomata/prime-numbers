@@ -25,7 +25,11 @@ Color/dash pairing is shared with phase_transition_window_chart.py wherever
 the two charts describe the same underlying quantity: c=0.0 here is exactly
 w=1 there (both mean w_r=1 constant, the true-random baseline), and c=1.0
 here is exactly the c=1 frontier there -- both get the identical color+dash
-in both charts so a reader can carry the mapping between them.
+in both charts so a reader can carry the mapping between them. c=1.0 is
+solid here for the same reason it is solid on the window chart: it is that
+chart's own square-window threshold, so both charts draw it as a boundary
+line rather than an ordinary dashed series -- this chart just happens to
+also have its own, different boundary (c=0.5) drawn solid alongside it.
 
 Two display choices, both fixes for an earlier draft of this chart:
 - The y-axis is log10(cumulative sum), not the raw value. c=0.0's sum
@@ -66,12 +70,12 @@ C_VALUES = [0.0, 0.1, 0.3, 0.5, 0.7, 1.0]
 COLUMN_FOR_C = {c: f"cumsum_c{str(c).replace('.', '_')}" for c in C_VALUES}
 
 COLORS = ["#2a78d6", "#e34948", "#1baf7a", "#008300", "#eda100", "#4a3aa7"]
-# c=0.5 (index 3) is the c=1/2 boundary itself -- the most important line in
-# this chart -- so it gets the solid stroke and a strong, high-contrast
-# color (dark green, not yellow); every other c is dashed. c=0.0 (blue,
-# "1,4") and c=1.0 (violet, "10,3,2,3,2,3") intentionally match
+# c=0.5 (index 3) is this chart's own c=1/2 boundary, and c=1.0 (index 5) is
+# the window chart's c=1 boundary shown here for reference -- both are
+# solid, strong-color threshold lines; every other c is dashed. c=0.0
+# (blue, "1,4") and c=1.0 (violet, solid) intentionally match
 # phase_transition_window_chart.py's w=1 and c=1 frontier -- see docstring.
-DASHES = ["1,4", "2,2", "7,4", None, "4,2,1,2,1,2", "10,3,2,3,2,3"]
+DASHES = ["1,4", "2,2", "7,4", None, "4,2,1,2,1,2", None]
 
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
