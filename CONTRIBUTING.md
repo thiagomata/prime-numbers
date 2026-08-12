@@ -132,7 +132,11 @@ Every article must pass these checks before publication:
 
 3. **No meta-labels** — The words "Intuition:", "Why This Matters:", and "Proved:"
    are writing guides for the author, not article text. The content under them
-   should stand as natural prose.
+   should stand as natural prose. This also covers the "Population:",
+   "Scope and quantifier:", and "Status:" triplet some notes have used as a
+   subsection preamble — it is a drafting checklist, not a template to
+   publish. See PROOF_GUIDE.md's "Anti-Pattern: Labeled Blocks Are Not Prose"
+   for a worked before/after example.
 
 4. **No ticket references** — Articles are self-contained. Never reference ticket
    files, "the companion ticket", or "ticket XYZ".
@@ -266,6 +270,23 @@ Every article must pass these checks before publication:
     (`36/36 VCs`, `11472/11472 VCs`) in articles — those belong in
     `logs/verify.log` only. A concise appendix may confirm that the described
     properties verify and link to the log for readers who want to inspect it.
+    This also covers repeated per-property status tags outside tables (e.g.
+    "**Mathematically proved, Stainless verification pending**" stamped after
+    every property) — see VOCABULARY.md's Evidence and Proof Status list for
+    how to state verification status once, as a plain fact, rather than as a
+    recurring disclaimer. A note that never claims full Stainless verification
+    does not need to apologize for that in every section.
+
+25. **Voice and style match the earliest articles** — See PROOF_GUIDE.md's
+    "Voice and Style" section: first person plural ("we prove"), close proofs
+    with `\blacksquare`/`[Q.E.D.]` rather than `\boxed{...}`, bold for defining
+    a term once rather than labeling every claim, sentence case for inline
+    concept names in prose (headers and citation labels keep Title Case, per
+    existing convention), and varied rather than formulaic contrastive
+    phrasing. This applies to every article, including version drafts and
+    figure-comparison drafts that aren't literally named `draft-*.md` — the
+    "Draft Articles" section above already requires the same structure as
+    finished articles; that includes voice.
 
 ## README Updates
 

@@ -150,6 +150,18 @@ any prime, at the cost of being far more conservative than necessary.
 Property 3 predicts where the transition actually happens, but remains a
 conjecture.
 
+The figure below is exactly this dataset (200 stages, the first 100,000 gaps
+of each): one row per stage, one pixel per gap, colored by gap magnitude. The
+dashed curve is Property 3's estimate `\hat A(p)`; the solid curve is Property
+2's proven (looser) lower bound, drawn only where `p >= 11`. The red pixel in
+each row is that stage's first non-prime survivor -- exactly `head^2`, per
+Property 1. Both curves are truncated, not padded or clamped, wherever a
+stage's boundary falls past this chart's displayed width, so a curve simply
+stops where the data backing it runs out of room rather than pinning to the
+edge.
+
+![Gap-cycle heatmap with both chaos-to-order boundary curves overlaid](../../presentations/sieve-sequence-visualization/figures/out/gap-heatmap.svg)
+
 ## References
 
 - Elementary boundary value: [Safe-Window 2-Gaps Certify Twin Primes](safe-window-two-gaps-certify-twin-primes.md)
