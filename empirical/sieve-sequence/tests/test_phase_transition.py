@@ -139,17 +139,21 @@ def test_head_probability_hand_derived():
 
 def test_cumulative_head_sum_diverges_below_half_converges_above():
     print("test_cumulative_head_sum_diverges_below_half_converges_above")
-    primes = list(primerange(3, 2_000_000))
-    for c, label in [(0.3, "below 1/2"), (0.7, "above 1/2")]:
+    # Numerically confirmed checkpoints (see conversation): near the c=1/2
+    # boundary itself, both divergence and convergence are extremely slow to
+    # become visible (c=0.3 grows only ~1.4x from Q~1e5 to Q~1e7), so this
+    # test uses c=0.1 for an unambiguous divergence signal and c=0.7 for an
+    # unambiguous convergence signal, rather than values close to 1/2.
+    primes = list(primerange(3, 10_000_000))
+    for c, label, ratio_check in [
+        (0.1, "well below 1/2", lambda r: r > 2.0),
+        (0.7, "above 1/2", lambda r: r < 1.01),
+    ]:
         partial_100k = sum(lib.head_probability_log_growth(p, c) for p in primes if p < 100_000)
-        partial_2m = sum(lib.head_probability_log_growth(p, c) for p in primes)
-        ratio = partial_2m / partial_100k
-        if c < 0.5:
-            check(f"c={c} ({label}): sum still growing substantially", ratio > 1.5,
-                  f"ratio={ratio:.3f}")
-        else:
-            check(f"c={c} ({label}): sum nearly flat (converging)", ratio < 1.15,
-                  f"ratio={ratio:.3f}")
+        partial_10m = sum(lib.head_probability_log_growth(p, c) for p in primes)
+        ratio = partial_10m / partial_100k
+        check(f"c={c} ({label}): ratio matches expected trend", ratio_check(ratio),
+              f"ratio={ratio:.3f}")
 
 
 def main():
