@@ -8,17 +8,26 @@ Plots the expected square-safe-window occupancy lambda(Q), in log10 form,
 for several *fixed* relative-hazard factors w (draft article
 articles/draft/draft-adversariality-phase-transition-2-gap-companions.md,
 Property III, section 5.1) against a constant per-filter adversarial share
-(section 7). The article proves every fixed finite w survives (lambda->
-infinity) no matter how large -- w=6 and w=10 visibly *dip* before
-recovering, since Q^2 needs to grow astronomically large before it
-overtakes (ln Q)^(2w); a constant positive share, by contrast, is fatal
-almost immediately and permanently (lambda->0), because its relative-hazard
-factor w_r ~ alpha*r/2 grows linearly in r rather than staying fixed.
+(section 7) and the log-growth frontier at c=1 (Property IV, section 5.2).
+The article proves every fixed finite w survives (lambda->infinity) no
+matter how large -- w=6 and w=10 visibly *dip* before recovering, since Q^2
+needs to grow astronomically large before it overtakes (ln Q)^(2w); a
+constant positive share, by contrast, is fatal almost immediately and
+permanently (lambda->0), because its relative-hazard factor w_r ~ alpha*r/2
+grows linearly in r rather than staying fixed. The c=1 frontier sits
+exactly on the article's own square-window boundary: still climbs, but at
+the slowest possible rate before the regime flips.
 
 This is a purely analytic/asymptotic comparison, not real measured data
 (unlike four_lines_chart.py / spacing_chart.py), so Q is pushed to
 astronomical values (log10(Q) up to 60) specifically to make the w=10
 recovery visible -- something no real measurement could ever reach.
+
+Color/dash pairing is shared with phase_transition_head_chart.py wherever
+the two charts describe the same underlying quantity: w=1 here is exactly
+c=0 there (both mean w_r=1 constant, the true-random baseline), and the c=1
+frontier here is exactly the c=1.0 line there -- both get the identical
+color+dash in both charts so a reader can carry the mapping between them.
 
 Run: python3 phase_transition_window_chart.py
 Output: ./out/phase-transition-window.svg
@@ -37,18 +46,22 @@ DATA_PATH = os.path.join(
 # Categorical palette (references/palette.md in the dataviz skill), same
 # family used across the other companion-process charts. Distinct dash
 # pattern per line as well as color -- see feedback memory on grayscale/
-# print/colorblind safety for multi-series line charts.
-COLOR_W1 = "#2a78d6"     # blue
-COLOR_W3 = "#1baf7a"     # aqua
-COLOR_W6 = "#eda100"     # yellow
-COLOR_W10 = "#4a3aa7"    # violet
-COLOR_SHARE = "#e34948"  # red -- the one that dies
+# print/colorblind safety for multi-series line charts. w=1 and the c=1
+# frontier intentionally match phase_transition_head_chart.py's c=0.0 and
+# c=1.0 -- see module docstring.
+COLOR_W1 = "#2a78d6"        # blue -- true-random baseline, matches head chart's c=0.0
+COLOR_W3 = "#1baf7a"        # aqua
+COLOR_W6 = "#eda100"        # yellow
+COLOR_W10 = "#008300"       # dark green
+COLOR_SHARE = "#e34948"     # red -- the one that dies
+COLOR_FRONTIER = "#4a3aa7"  # violet -- c=1 frontier, matches head chart's c=1.0
 
 DASH_W1 = "1,4"
 DASH_W3 = "7,4"
 DASH_W6 = "10,3,2,3"
-DASH_W10 = "10,3,2,3,2,3"
+DASH_W10 = "4,2,1,2,1,2"
 DASH_SHARE = None  # solid -- the "this one actually dies" reference
+DASH_FRONTIER = "10,3,2,3,2,3"
 
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
@@ -75,7 +88,7 @@ def load_rows():
 
 
 def draw(rows):
-    left, right, top, bottom = 70, 270, 50, 60
+    left, right, top, bottom = 70, 270, 50, 85
     plot_w, plot_h = 480, 380
     W = left + plot_w + right
     H = top + plot_h + bottom
@@ -119,14 +132,16 @@ def draw(rows):
     canvas.polyline(series("log10_lambda_fixed_w6"), stroke=COLOR_W6, width=2, dash=DASH_W6)
     canvas.polyline(series("log10_lambda_fixed_w10"), stroke=COLOR_W10, width=2, dash=DASH_W10)
     canvas.polyline(series("log10_lambda_constant_share"), stroke=COLOR_SHARE, width=2.5, dash=DASH_SHARE)
+    canvas.polyline(series("log10_lambda_frontier_c1"), stroke=COLOR_FRONTIER, width=2, dash=DASH_FRONTIER)
 
     legend_x, legend_y = left + plot_w + 24, top + 24
     entries = [
-        ("w=1 (random baseline)", COLOR_W1, DASH_W1),
+        ("w=1 (true random baseline)", COLOR_W1, DASH_W1),
         ("w=3 (3x worse than random)", COLOR_W3, DASH_W3),
         ("w=6 (dips, then recovers)", COLOR_W6, DASH_W6),
         ("w=10 (dips much longer)", COLOR_W10, DASH_W10),
         ("constant 1% share (dies)", COLOR_SHARE, DASH_SHARE),
+        ("c=1 frontier (window threshold)", COLOR_FRONTIER, DASH_FRONTIER),
     ]
     canvas.text(legend_x, legend_y - 14, "relative-hazard factor", size=11, anchor="start", weight="bold", fill=INK_MUTED)
     for i, (label, color, dash) in enumerate(entries):
@@ -139,6 +154,11 @@ def draw(rows):
         "eventually climbs without bound.",
         "Only a share that GROWS with r",
         "(here: constant %, so w_r~r) dies.",
+        "",
+        "c=1 (w_r=1+log r) is the article's",
+        "own square-window threshold: the",
+        "slowest-climbing case that still",
+        "survives, right before c>=1 dies.",
     ]):
         canvas.text(legend_x, note_y + i * 15, line, size=10, anchor="start", fill=INK_MUTED)
 
@@ -149,7 +169,7 @@ def draw(rows):
     )
     canvas.text(
         W / 2, H - 12,
-        "articles/draft/draft-adversariality-phase-transition-2-gap-companions.md -- Property III (section 5.1)",
+        "Adversariality Phase Transition in 2-Gap Companions: Square-Window Survival",
         size=10, anchor="middle", fill=INK_MUTED,
     )
     return canvas

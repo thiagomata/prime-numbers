@@ -21,6 +21,12 @@ article's own head threshold, and c=1.0 is its own square-window threshold
 above the true-random baseline but still below the head threshold; 0.7
 gives a convergent example between the two thresholds.
 
+Color/dash pairing is shared with phase_transition_window_chart.py wherever
+the two charts describe the same underlying quantity: c=0.0 here is exactly
+w=1 there (both mean w_r=1 constant, the true-random baseline), and c=1.0
+here is exactly the c=1 frontier there -- both get the identical color+dash
+in both charts so a reader can carry the mapping between them.
+
 Two display choices, both fixes for an earlier draft of this chart:
 - The y-axis is log10(cumulative sum), not the raw value. c=0.0's sum
   reaches into the hundreds while c=1.0's stays near 0.12; on a linear axis
@@ -59,11 +65,13 @@ DATA_PATH = os.path.join(
 C_VALUES = [0.0, 0.1, 0.3, 0.5, 0.7, 1.0]
 COLUMN_FOR_C = {c: f"cumsum_c{str(c).replace('.', '_')}" for c in C_VALUES}
 
-COLORS = ["#e34948", "#2a78d6", "#1baf7a", "#008300", "#eda100", "#4a3aa7"]
+COLORS = ["#2a78d6", "#e34948", "#1baf7a", "#008300", "#eda100", "#4a3aa7"]
 # c=0.5 (index 3) is the c=1/2 boundary itself -- the most important line in
 # this chart -- so it gets the solid stroke and a strong, high-contrast
-# color (dark green, not yellow); every other c is dashed.
-DASHES = ["2,2", "1,4", "7,4", None, "4,2,1,2,1,2", "10,3,2,3,2,3"]
+# color (dark green, not yellow); every other c is dashed. c=0.0 (blue,
+# "1,4") and c=1.0 (violet, "10,3,2,3,2,3") intentionally match
+# phase_transition_window_chart.py's w=1 and c=1 frontier -- see docstring.
+DASHES = ["1,4", "2,2", "7,4", None, "4,2,1,2,1,2", "10,3,2,3,2,3"]
 
 INK_PRIMARY = "#111111"
 INK_MUTED = "#555555"
@@ -91,7 +99,7 @@ def load_rows():
 
 
 def draw(rows):
-    left, right, top, bottom = 70, 280, 50, 60
+    left, right, top, bottom = 70, 280, 50, 85
     plot_w, plot_h = 460, 380
     W = left + plot_w + right
     H = top + plot_h + bottom
@@ -172,7 +180,7 @@ def draw(rows):
     )
     canvas.text(
         W / 2, H - 12,
-        "articles/draft/draft-adversariality-phase-transition-2-gap-companions.md -- Property IV (section 5.2)",
+        "Adversariality Phase Transition in 2-Gap Companions: Head Recurrence",
         size=10, anchor="middle", fill=INK_MUTED,
     )
     return canvas
