@@ -13,6 +13,8 @@ target
 .bsp/**
 __pycache__/
 *.pyc
+.venv/
+*.egg-info/
 *.log
 logs/*.log
 
