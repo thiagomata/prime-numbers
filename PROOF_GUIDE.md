@@ -65,6 +65,32 @@ This property is verified in the [
 Simpler properties (e.g., `sum(A ⧺ B) = sum(A) + sum(B)`) may skip
 the English layer if the formula is self-explanatory.
 
+### Anti-Pattern: Labeled Blocks Are Not Prose
+
+Do not replace the English description with a stack of bolded labels. This
+has happened in practice and is exactly what "without explicit labels" (above)
+rules out:
+
+```markdown
+**Population:** Cyclic 2-gap starts in one complete period of a prime stage.
+**Scope and quantifier:** Complete-period; every prime stage after filter 2.
+**Status:** Mathematically proved. Not Stainless-verified.
+```
+
+Write the same content as prose instead:
+
+```markdown
+This property counts every 2-gap in one complete sieve period directly from
+the installed prime filters, for any prime stage once filter 2 is installed.
+It is an exact finite product, not a recurrence or an asymptotic estimate.
+```
+
+The labels are a checklist for the author while drafting (does the prose
+state the population? the scope? the status?), not headings meant to survive
+into the published text. If a note's population or scope genuinely needs to
+be pinned down precisely (see `VOCABULARY.md`), say so in a sentence, not a
+label.
+
 ## Mathematical Proofs
 
 ### Format
@@ -199,6 +225,17 @@ Stainless annotations. Prefer wording like "This property is verified in
 above." Avoid phrases that make `.holds`, assertions, or solver caching the
 topic of the article.
 
+**State verification status as a fact, not an apology.** A note whose scope
+never claims full Stainless verification does not owe the reader a "pending"
+disclaimer after every property. Use the `VOCABULARY.md` statuses precisely:
+say **Stainless verified** when a theorem passed, **Not Stainless-verified**
+as the plain, neutral default when it hasn't (and nothing says it's about
+to), and reserve **Stainless verification pending** for a result with an
+actual tracked next step. Do not write "No `.holds` theorem currently
+encodes this... Stainless verification is pending" as a stock closer on
+dozens of unrelated properties — that repetition reads as an apology for
+something the note never promised. State it once, plainly, and move on.
+
 ```scala
 def myLemma(x: BigInt): Boolean = {
   require(x >= 0)
@@ -277,6 +314,42 @@ if (condition1) {
   result
 }
 ```
+
+## Voice and Style
+
+These conventions were implicit in the earliest articles (`integral.md`,
+`modulo.md`, `list.md`, `cycle.md`, `integral-cycle.md`) but were never
+written down, and later articles drifted from them. They are now explicit.
+
+- **Write in first person plural.** "We prove...", "we define...", not "This
+  article proves..." or "The article defines...". The author is present in
+  the prose, doing the work, not narrating a document that does the work.
+- **Close a derivation with `\blacksquare` and/or `[Q.E.D.]`**, matching every
+  existing article. Do not introduce `\boxed{...}` around conclusions; it is
+  not the established convention and mixing the two within one project reads
+  as two different authors.
+- **Bold is for defining a term once**, not for labeling every claim. Do not
+  bold entire status or label phrases ("**Mathematically proved, Stainless
+  verification pending.**") as a matter of routine — see the labeled-block
+  anti-pattern above. If most sentences in a section start with a bolded
+  phrase, that is a sign the prose has collapsed into a checklist.
+- **Use sentence case for inline concept names in flowing prose.** Write "the
+  divisor local factor property," not "the Divisor Local Factor property."
+  Capitalize only genuine proper nouns (a person's name, a named theorem from
+  the literature). This does not apply to section/subsection headers, which
+  keep Title Case per existing convention (e.g. "Core Integral Properties"),
+  nor to a property's short name used as a citation label — link text, table
+  cells, and "properties from X through Y" range references keep the
+  registry's Title Case, matching how the short-name registry itself presents
+  them.
+- **Vary contrastive phrasing.** "This does not X; it does Y" is a useful
+  sentence once. Repeated as the default way to state every scope boundary,
+  it becomes a tic. Prefer stating what something establishes first, and
+  reach for a contrastive construction only when the reader would otherwise
+  guess wrong.
+- **One explanatory sentence before the first display equation.** Do not
+  jump from a header straight into `math` blocks; give the reader the idea in
+  words first, the way `integral.md` and `cycle.md` do.
 
 ## Getting Started
 
