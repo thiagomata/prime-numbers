@@ -27,11 +27,12 @@ recovery visible -- something no real measurement could ever reach.
 
 Color is shared with phase_transition_head_chart.py wherever the two
 charts describe the same underlying quantity: w=1 here is exactly c=0
-there (both mean w_r=1 constant, the true-random baseline), and the c=1
-frontier here is exactly the c=1.0 line there -- both share the identical
-color in both charts so a reader can carry the mapping between them, even
-though the frontier is drawn solid here (it is this chart's own boundary)
-and dashed there (that chart's boundary is c=0.5, not c=1.0).
+there (both mean w_r=1 constant, the true-random baseline), so both draw
+that series in the same blue. The boundary itself -- this chart's c=1
+frontier and the head chart's c=0.5 -- is drawn as the same solid black
+line in both charts, so a reader sees the two thresholds as the same kind
+of object. Every non-boundary series is dashed, and those dashed colors do
+not carry across the two charts.
 
 Run: python3 phase_transition_window_chart.py
 Output: ./out/phase-transition-window.svg
@@ -50,15 +51,15 @@ DATA_PATH = os.path.join(
 # Categorical palette (references/palette.md in the dataviz skill), same
 # family used across the other companion-process charts. Distinct dash
 # pattern per line as well as color -- see feedback memory on grayscale/
-# print/colorblind safety for multi-series line charts. w=1 and the c=1
-# frontier intentionally share color with phase_transition_head_chart.py's
-# c=0.0 and c=1.0 -- see module docstring.
+# print/colorblind safety for multi-series line charts. w=1 shares color
+# with phase_transition_head_chart.py's c=0.0, and the c=1 frontier shares
+# its solid black with that chart's solid boundary -- see module docstring.
 COLOR_W1 = "#2a78d6"        # blue -- true-random baseline, matches head chart's c=0.0
 COLOR_W3 = "#1baf7a"        # aqua
 COLOR_W6 = "#eda100"        # yellow
 COLOR_W10 = "#008300"       # dark green
 COLOR_SHARE = "#e34948"     # red -- the one that dies
-COLOR_FRONTIER = "#4a3aa7"  # violet -- c=1 frontier, matches head chart's c=1.0
+COLOR_FRONTIER = "#111111"  # solid black -- c=1 frontier, same as the head chart's solid boundary
 
 DASH_W1 = "1,4"
 DASH_W3 = "7,4"
