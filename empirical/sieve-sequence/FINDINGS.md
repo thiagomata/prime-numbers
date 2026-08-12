@@ -1,0 +1,258 @@
+# Findings: Window-Scale Candidate Stress-Test (dense p to 997, sparse p to ~19000)
+
+**Canonical reproduction:** `just empirical-window 1000 data/candidates/window-measurements.csv` (166 transitions, p from 3 to 991, q to 997)
+**Python gate:** `just empirical-test` PASS
+**Date:** 2026-07-23
+
+This file reports what the **measured data** shows for each window-measurable
+candidate. It is deliberately written against the verdicts in
+`articles/learnings/learnings-capacity-argument.md`, which a source-grounded
+investigation found unreliable (isolation lemma + 5 "established inputs" are
+NOT Stainless-verified; `verifyGeneralizedGrowth` does not exist in code).
+
+## The scope line, stated up front
+
+Every number below is measured over the square-safe **window** `W = [q, q^2)`
+per transition. It proves survival only in the finitely many measured windows.
+It does not establish recurrence at infinitely many stages. This limitation is
+about the finite sample, not about window-local candidates: for example, a
+proof of #2 at infinitely many transitions would itself imply infinitely many
+certificates.
+
+## External-review corrections
+
+The raw data is retained, but the first interpretation pass overstated what
+several columns measured. These corrections are authoritative:
+
+- #4 measures a linear run inside `W`, not the cyclic full-period run.
+- #10 uses pre-filter `G_local`; the candidate requires the post-filter count,
+  so its reported pass is invalid.
+- #12's `E/sqrt(G_local)` normalization does not establish improving
+  equidistribution across `p` residue classes.
+- #13's absolute bias loses the harmful sign and was not compared with its
+  `N,H,L` survival margin.
+- #14's waste ratio is a whole-window proxy. `waste_ratio=0` does not
+  counterexample the interval/partial-sum capacity condition.
+
+## Headline signal: the filter wastes most of its shots
+
+| quantity (165 transitions, p >= 5) | value |
+|---|---|
+| `waste_ratio` mean | 0.778 |
+| `waste_ratio` max | 1.000 |
+| transitions where the filter destroyed **nothing** (`waste_ratio == 1.0`) | 85 / 165 |
+| transitions with `waste_ratio > 0.5` | 125 / 165 |
+| max destroyed in any single transition | 4 |
+| total `A_worst` budget across all transitions | 449 |
+| total actually destroyed | 103 |
+
+The real modular filter destroys 2-gaps far less often than its worst-case
+count `A(p,q)` allows in aggregate. This is a useful descriptive fact, but it
+does not test #14's local interval/partial-sum condition or hereditary chain.
+
+## Per-candidate verdict (window scale, p to 997)
+
+"Pass" below means the candidate's success condition held in that transition.
+Several candidates had a small number of failures; these are listed explicitly
+because the *which* is more informative than the count.
+
+**Two kinds of candidate, treated differently:**
+
+- **Explicit-threshold candidates** (#2 `surplus>0`, #3 `cluster>=2`, #8
+  `d_head<=q^2-q-3`, and #10's stated discrepancy): the notes state concrete
+  inequalities, but only #2, #3, and #8 were measured with the correct
+  quantities. #10 has a measurement mismatch.
+- **Existential-threshold candidates** (#4 "there exists a bound `R_p`", #7
+  "there exists `C(q)`", #11/#13 "there exists `epsilon_p`/`eta_p` small
+  enough"): the note asserts the *existence* of some bound/tolerance without a
+  value. **No finite measurement can confirm an existential claim** — it can
+  only falsify it by showing unbounded growth or a closed margin. For these,
+  the observed *trajectory* is reported, and the candidate is marked
+  "trajectory reported," not "pass." Picking an arbitrary constant and testing
+  against it would be dishonest, since the note does not supply one.
+
+| # | Candidate | Verdict | Evidence |
+|---|-----------|---------|----------|
+| 2 | Local-surplus | **Pass 165/165** | `surplus > 0` in every clean transition. The worst-case bound alone guarantees a surviving 2-gap in every measured window. |
+| 1 | Protected-endpoints | **Pass 165/165** | `surviving > 0` in every clean transition. |
+| 8 | Distinguished-head-spacer | **Pass 165/165** | `d_head <= q^2-q-3` always; median 16, max 148. |
+| 10 | Short-window-discrepancy | **Not tested as stated** | The recorded `E_q` subtracts the post-filter main term from pre-filter `G_local`. Recompute it from `surviving`. |
+| 11 | Random-like-merge-survival | **Favorable benchmark** | `destruction_rate < 2/p` in every transition; ratio median 0.000, max 0.955. This calibrates a target margin but does not establish deterministic random-like transference. |
+| 3 | Protected-cluster | **Pass 164/165; FAIL at (5,7)** | The single failure is the smallest clean window [7,49), where the 2-gaps happen to be spaced exactly 6 apart (11,17,23,29,35,41) so no two fit within width < 5. A small-window artifact; survival there still holds via #2. |
+| 14 | Hereditary-shot-spacing | **Proxy only** | `waste_ratio=0` at 5 dense transitions, but that neither proves nor falsifies existence of an interval satisfying the actual `sigma` capacity. The hereditary chain is also unmeasured. |
+| 4 | Bounded-consecutive-destruction | **Window-linear proxy** | The run is 0 in 85 transitions, 1 in 79, 2 in one. The implementation does not test cyclic wrap or runs elsewhere in the period. |
+| 13 | Uniform-local-observable-sampling | **Partial diagnostic** | Absolute `endpoint_bias` was recorded, but its sign and the transition-specific margin `L/H-2L/N` were not tested. |
+| 12 | Local-pattern-residue-balance | **Inconclusive** | `residue_max_dev` was recorded for `w=(2)`, but the stated margin `nu E < N(1-nu/p)` was not evaluated and the prior normalization was insufficient. |
+
+### Notable proxy-equality pattern
+
+The #14 whole-window equalities cluster on transitions where p,q are themselves a
+twin pair: (239,241), (313,317), (569,571). At a twin-prime transition the
+window [q, q+2) immediately contains a 2-gap whose endpoints straddle q's
+residue, which may force the filter to operate near worst-case. This is a
+concrete, checkable hypothesis, not a conclusion — only 3 data points here. A
+larger run could confirm or refute whether twin-prime transitions systematically
+produce `waste_ratio=0`. They are not failures of #14's stated condition.
+
+## Data-imposed constraints on the unknown thresholds
+
+Some candidates require a bound or tolerance whose value the note does not
+state. The following distributions calibrate the measured quantities, but for
+#4, #13, and #14 those quantities are incomplete proxies and therefore do not
+directly constrain the full candidate.
+
+Quantities are over all 165 clean transitions (p from 5 to 991). "early" = first
+40 transitions (p up to ~197), "late" = last 40 (p ~607..991); comparing them
+reveals whether the quantity is flat (consistent with a bound) or growing (which
+would threaten the candidate).
+
+| # | quantity (what the proof needs bounded/small/large) | min | median | mean | max | early-max | late-max | read |
+|---|---|---|---|---|---|---|---|---|
+| 4 | `max_cons_destroyed_run` (window-linear proxy) | 0 | 0 | 0.49 | **2** | 2 | 1 | Distribution {0:85, 1:79, 2:1}. `R=2` covers the measured linear windows only; it says nothing yet about cyclic full-period runs. |
+| 11 | `destruction_rate` (candidate wants: exists `epsilon_p` margin below `2/p`) | 0.000 | 0.000 | 0.006 | **0.333** | 0.333 | 0.0006 | Sharply *shrinking* with p. A proof needing a margin below 0.333 is refuted at (7,11); a margin near 0 is comfortably available at large p. |
+| 13 | `endpoint_bias` (absolute proxy) | 0.0003 | 0.223 | 0.222 | **0.771** | 0.508 | 0.589 | Roughly flat, but no conclusion follows until harmful signed bias is compared with `L/H-2L/N`. |
+| 14 | `waste_ratio` (whole-window proxy) | 0.000 | 1.000 | 0.778 | **1.000** | 1.000 | 1.000 | 5/165 transitions sit at 0. This does not test the local `sigma`-capacity condition. |
+| 12 | `residue_max_dev` (partial diagnostic) | 0.800 | 6.06 | 5.74 | **10.34** | 5.28 | 10.11 | Absolute deviation grows with population; evaluate the candidate's explicit normalized margin instead. |
+
+### How to use this table
+
+- A lemma targeting #4 can use `R=2` as a conjecture for the measured linear
+  setting, but must separately handle cyclic wrap and the rest of the period.
+- A lemma using #11 by assuming a destruction-rate margin must contend with the
+  observed max 0.333: the margin it assumes cannot be smaller than that, or the
+  data refutes it at (7,11).
+- For #12 and #13, the current extrema do not constrain the proof's actual
+  sufficient margins because those margins were not computed.
+- None of these *prove* the existential claim. They bound the space of viable
+  proofs. A proof whose assumptions stay inside these limits is
+  data-consistent; one that violates them is already in trouble.
+
+## Large-p check (sparse sample, p to ~19000)
+
+A concern: properties sometimes change at big numbers. Sieving *every*
+transition to a large p is infeasible (window `[q,q^2)` grows quadratically;
+one transition at q~20000 is ~400M integers). So a **sparse sample** was run:
+one transition every 100th prime, p from ~1000 to ~19000 (21 new transitions),
+output in `data/candidates/window-measurements-sparse.csv`. Each window is
+still sieved in full; only the *sampling* of which transitions is sparse.
+
+| quantity | dense p<=991 | sparse p>=997 | read at scale |
+|---|---|---|---|
+| #2 `surplus` (min) | 4 | 11,768 | surplus > 0 in 21/21; the worst-case margin **grows** with p. |
+| #11 `destruction_rate` (max) | 0.333 | 0.00008 | the filter destroys an ever-smaller fraction of 2-gaps; the margin widens. |
+| #4 linear-window run (max) | 2 | 1 | flat in the measured proxy; cyclic condition remains untested. |
+| #13 absolute `endpoint_bias` (range) | [0.0003, 0.77] | [0.03, 0.85] | roughly unchanged; sufficient margin remains untested. |
+| #14 proxy `waste_ratio`==0 | 5/165 | 1/21 | whole-window equality remains possible; actual interval condition remains untested. |
+
+**#12 remains unresolved.** Absolute count deviations naturally grow with the
+population, but dividing the maximum over `p` residue classes by
+`sqrt(G_local)` is not a sufficient random-reference normalization. The
+observed decrease (median 0.14 -> 0.067) is descriptive only. The direct next
+test is `nu E < N(1-nu/p)`.
+
+### What the large-p check does and does not establish
+
+- **Does:** show that #2's surplus and #11's benchmark margin are not confined
+  to the smallest sampled primes, and calibrate the proxy columns at larger p.
+- **Does not:** reach asymptotic p. p~19000 is still small in analytic-number-
+  theory terms. It refutes "these only work for tiny p"; it does not prove the
+  existential candidates for all p.
+- **Does not:** test the whole-period candidates (#5, #6, #7, #9) or #14's
+  conditioned hereditary chain.
+
+## Trends vs p (dense p<=991 + sparse p to ~19000, 186 transitions)
+
+For each quantity, a log-log fit `value ~ p^k` was computed across all 186
+transitions. The exponent `k` and Pearson `r` (against log p) tell how the
+quantity varied over this sample. They provide conjectural target scales, not
+assumptions available to a proof.
+
+| # | quantity | exponent k (v ~ p^k) | r vs log p | read |
+|---|---|---|---|---|
+| 2 | `surplus` | **+1.61** | +0.998 | Strong rising fit over the measured sample; not an asymptotic growth claim. |
+| 11 | `destruction_rate` | **-1.62** | -0.991 | Sharp decline over measured nonzero cases; not a claim that the fraction tends to zero. |
+| 12 | `residue_max_dev / sqrt(G)` | -0.09 | -0.87 | Descriptive trend under an insufficient normalization; no equidistribution conclusion. |
+| 4 | `max_cons_destroyed_run` | -0.08 | -0.09 | No trend in the window-linear proxy; cyclic condition unmeasured. |
+| 13 | `endpoint_bias` | -0.01 | -0.05 | No trend in absolute bias; harmful survival margin unmeasured. |
+| 14 | `waste_ratio` | +0.06 | +0.14 | No trend in the whole-window proxy; `sigma` interval capacity unmeasured. |
+| 8 | `d_head` | +0.31 | +0.44 | Weak/noisy finite-range fit; all measured values lie far below the quadratic bound, with no asymptotic conclusion. |
+
+### How to read the trends
+
+- **Strong trends (|r| > 0.97): #2 and #11.** These are empirical exponents
+  over p<=19000, not proven asymptotics.
+- **Flat proxies: #4 and #13.** Flatness is useful calibration but does not
+  establish the candidates because their required cyclic or margin quantities
+  were not measured.
+- **Do not infer candidate trends from #12 or #14.** Their plotted columns are
+  not the stated sufficient conditions.
+
+The larger sample shows no deterioration in the directly measured #2 margin.
+It does not extend to asymptotic p and does not repair the proxy/mismatch
+limitations above.
+
+## Corrected strategic ranking
+
+The useful distinction is between a **terminal target** and a **mechanism**,
+not between window-local and whole-period statements.
+
+| priority | role | candidates | reason |
+|---|---|---|---|
+| High | Terminal sufficient target | **#2 Local surplus** | Directly measured with a large finite margin. If proved at infinitely many stages, it would imply infinitely many certificates. It still needs a mechanism for the local count or harmful-hit bound. |
+| High | Mechanism | **#4 Bounded destruction** | Crisp and falsifiable; the window-linear maximum of 2 suggests a concrete conjecture. Cyclic and hereditary versions must be tested. |
+| High | Mechanism | **#14 Shot-spacing capacity** | Encodes both fixed shot count and constrained shot distribution across future filters. Current waste data does not test it. |
+| Medium-high | Arithmetic/sampling mechanisms | **restricted #12 and #13** | They can formalize “no cherry-picking,” but must be tested with their exact one-sided margins after conditioning on earlier filters. |
+| Medium | Local capacity mechanism | **#3 Protected cluster** | Explicit one-layer route with one small-stage failure; naturally generalizes to cluster capacity versus local shots. |
+| Medium | Benchmark | **#11 Random-like survival** | Supplies target scales but does not itself transfer randomness to the deterministic filter. |
+| Low as standalone proofs | Outcome formulations | **#1 and #8** | Useful terminal checks, but their measurements largely record that survival already happened. |
+| Low in current form | Strong global extremes | **#5, #6, #7, #9** | Full-period maximum or fixed-seed control is stronger than needed or has a scale obstruction. Prefer local/head-conditioned or mesoscopic refinements. |
+| Unranked until corrected measurement | Analytic discrepancy | **#10** | The current column uses the wrong side of the filter. Recompute the post-filter discrepancy before evaluating it. |
+
+### Recommended next experiment
+
+Choose a future head `q` and its fixed square window. At an earlier stage,
+construct all 2-gap starts in that window and apply every intervening filter
+successively. At each layer record:
+
+- surviving population `L`, accepted shots `H`, and harmful hits `K`;
+- `K/L` versus the arithmetic benchmark `2/r`;
+- harmful one-sided observable bias and its exact remaining margin;
+- maximum linear and, where available, cyclic destroyed-start run;
+- the actual shot partial sums `sigma_r(k)` and whether a capacity-surplus
+  interval exists;
+- the first surviving descendant relative to the future head.
+
+This lineage experiment directly tests whether filters with holes can
+nevertheless cherry-pick the shrinking population near the future head. It is
+more informative for the central question than expanding a full primorial
+without tracking ancestry.
+
+## Candidates not measured this pass (whole-period / M_p-scale)
+
+#5 Bounded-post-merge-spacer, #6 Controlled-merge-run, #7 Balanced-spacers,
+#9 Forbidden-copy-covered-run. Small complete-period data may calibrate them,
+but the preferred next pass is the fixed-window lineage experiment above.
+
+## A scope correction the data forces
+
+The `destroyed <= A_worst` bound — which candidates #2, #11, and the per-layer
+form of #14 all rely on — holds **only for transitions with p >= 5** (filter 3
+already in the pre-filter stage). At p = 3 (the transition that *installs*
+filter 3) the pre-filter still has endpoint-sharing 2-gaps, so a single removal
+can destroy two gaps and `destroyed` can reach `2 * A_worst` (observed: p=3
+gives destroyed=6 = 2*A_worst=3). Any argument citing "one strike destroys at
+most one 2-gap" must scope itself to post-filter-3 stages.
+
+## What this does and does not change
+
+- **Does:** overturn, at the window scale to p=997, the learnings doc's "Fatal
+  (unproven)" verdict on local density. The survival question at window scale
+  is not close to failing; the filter is overwhelmingly inefficient at
+  destroying 2-gaps.
+- **Does not:** prove the infinitude theorem because a finite run cannot prove
+  recurrence at infinitely many stages. A window-local theorem such as #2
+  would bear on infinitude if proved infinitely often; whole-period control is
+  one possible mechanism, not a logical requirement.
+- **Does not:** make `surplus > 0` a theorem for all p. It is measured for p
+  densely to 997 and sparsely to ~19000. The next high-value measurement is
+  conditioned multi-layer lineage, not merely a longer one-layer run.

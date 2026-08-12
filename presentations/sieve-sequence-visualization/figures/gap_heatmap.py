@@ -264,23 +264,37 @@ def draw_boundary_curves(canvas, stages, label_w, top_margin, cell_w_display, ce
     (Rosser & Schoenfeld's density bound applied naively to a short interval)
     was withdrawn as unjustified."""
     def to_xy(row, idx):
-        """Converts a (row, column-index) pair into canvas (x, y) pixel coordinates for this grid."""
-        col = min(idx, prefix_len)
-        x = label_w + stagger * row + col * cell_w_display
+        """Converts a (row, column-index) pair into canvas (x, y) pixel
+        coordinates for this grid. Returns None once the boundary falls past
+        the truncated display width, so the curve stops there instead of
+        clamping to the edge -- clamping made every later row collapse onto
+        the same x, drawing a false flat segment pinned to the right edge
+        that implied the boundary tracked it. Matches the row data's own
+        truncate-not-pad rule (see MAX_DISPLAY_WIDTH in the module docstring)."""
+        if idx > prefix_len:
+            return None
+        x = label_w + stagger * row + idx * cell_w_display
         y = top_margin + row * cell_h_display + cell_h_display / 2
         return (x, y)
 
-    estimated_points = [to_xy(row, boundary_idx) for row, boundary_idx in enumerate(estimated_boundary_indices(stages))]
-    canvas.polyline(estimated_points, stroke="#000000", width=1.5, dash="6,4")
+    estimated_points = []
+    for row, boundary_idx in enumerate(estimated_boundary_indices(stages)):
+        xy = to_xy(row, boundary_idx)
+        if xy is None:
+            break
+        estimated_points.append(xy)
+    if len(estimated_points) > 1:
+        canvas.polyline(estimated_points, stroke="#000000", width=1.5, dash="6,4")
 
     run = []
     for row, boundary_idx in enumerate(proven_safe_boundary_indices(stages)):
-        if boundary_idx is None:
+        xy = None if boundary_idx is None else to_xy(row, boundary_idx)
+        if xy is None:
             if len(run) > 1:
                 canvas.polyline(run, stroke="#000000", width=3)
             run = []
         else:
-            run.append(to_xy(row, boundary_idx))
+            run.append(xy)
     if len(run) > 1:
         canvas.polyline(run, stroke="#000000", width=3)
 

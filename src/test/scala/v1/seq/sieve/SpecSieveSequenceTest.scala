@@ -4,7 +4,8 @@ import org.scalatest.flatspec.*
 import org.scalatest.matchers.should.*
 import stainless.collection.List
 import v1.chapter5.prime.{AllPrimesSoFarList, Prime, SortedPrimeList}
-import v1.chapter6.seq.sieve.{SpecDerivedSieveSequence, SpecSieveSequence}
+import v1.chapter6.sieve.seq.spec.SpecSieveSequence
+import v1.chapter6.sieve.seq.spec.properties.{SpecSieveSeqNextStageProperties, SpecSieveSeqPeriodProperties, SpecSieveSeqSurvivorCountProperties}
 import v1.tags.SlowLemmaTest
 
 class SpecSieveSequenceTest extends FlatSpec with Matchers  {
@@ -112,7 +113,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
   it should "extract correct gapList for S_1" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     // apply: 3, 5, 7, 9, 11, 13, 15, ... → gaps: 2 repeated
-    s1.gapList(BigInt(0), BigInt(4)) should be(
+    SpecSieveSeqPeriodProperties.gapList(s1, BigInt(0), BigInt(4)) should be(
       stainless.collection.List(BigInt(2), BigInt(2), BigInt(2), BigInt(2))
     )
   }
@@ -120,26 +121,28 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
   it should "extract correct gapList for S_2" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     // apply: 5, 7, 11, 13, 17, 19, 23, 25, ... → gaps: 2, 4, 2, 4, ...
-    s2.gapList(BigInt(0), BigInt(4)) should be(
+    SpecSieveSeqPeriodProperties.gapList(s2, BigInt(0), BigInt(4)) should be(
       stainless.collection.List(BigInt(2), BigInt(4), BigInt(2), BigInt(4))
     )
   }
 
   it should "prove assertGapListPositive for S_1" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    s1.assertGapListPositive(BigInt(0), BigInt(4)) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapListPositive(s1, BigInt(0), BigInt(4)) should be(true)
   }
 
   it should "prove assertGapListSize matches count" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    s1.assertGapListSize(BigInt(0), BigInt(4)) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapListSize(s1, BigInt(0), BigInt(4)) should be(true)
   }
 
-  it should "prove assertApplyEqualsHeadPlusGapSum for S_1" taggedAs(SlowLemmaTest) in {
+  it should "prove apply(k) equals head plus the telescoped gap sum for S_1" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    s1.assertApplyEqualsHeadPlusGapSum(BigInt(0)) should be(true)
-    s1.assertApplyEqualsHeadPlusGapSum(BigInt(1)) should be(true)
-    s1.assertApplyEqualsHeadPlusGapSum(BigInt(5)) should be(true)
+    Seq(BigInt(0), BigInt(1), BigInt(5)).foreach { k =>
+      SpecSieveSeqPeriodProperties.assertSumGapTelescopes(s1, BigInt(0), k) should be(true)
+      SpecSieveSeqPeriodProperties.sumGap(s1, BigInt(0), k) should be(s1(k) - s1.head.value)
+    }
+    succeed
   }
 
   it should "prove each gap is positive via assertGapPositive" taggedAs(SlowLemmaTest) in {
@@ -153,25 +156,26 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     // For S_1: head=3, tailPrimorial=2 → head+M=5, indexOfAccepted(5)=1
     val p = BigInt(1)
-    s1.assertGapPeriodic(BigInt(0), p) should be(true)
-    s1.assertGapPeriodic(BigInt(1), p) should be(true)
-    s1.assertGapPeriodic(BigInt(5), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s1, BigInt(0), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s1, BigInt(1), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s1, BigInt(5), p) should be(true)
   }
 
   it should "prove gap periodicity for S_2" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     // For S_2: head=5, tailPrimorial=6 → head+M=11, indexOfAccepted(11)=2
     val p = BigInt(2)
-    s2.assertGapPeriodic(BigInt(0), p) should be(true)
-    s2.assertGapPeriodic(BigInt(1), p) should be(true)
-    s2.assertGapPeriodic(BigInt(5), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s2, BigInt(0), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s2, BigInt(1), p) should be(true)
+    SpecSieveSeqPeriodProperties.assertGapPeriodic(s2, BigInt(5), p) should be(true)
   }
 
-  it should "prove sum of one period equals tailPrimes" taggedAs(SlowLemmaTest) in {
+  it should "prove sum of one period equals tailPrimorial" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    // For S_1: head=3, tailPrimes=2, p=1, sumGap(0,p)=2 which equals tailPrimorial
+    // For S_1: head=3, tailPrimorial=2, p=1, sumGap(0,p)=2 which equals tailPrimorial
     val p = BigInt(1)
-    s1.assertGapSum(p) should be(true)
+    SpecSieveSeqPeriodProperties.assertSumGapTelescopes(s1, BigInt(0), p) should be(true)
+    SpecSieveSeqPeriodProperties.sumGap(s1, BigInt(0), p) should be(s1.tailPrimorial)
   }
 
   // === Same-head extended filter size theorem tests ===
@@ -182,7 +186,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     // mod(M, head) = mod(2,3) = 2 != 0 ✓
     // ─── The theorem ───
     // countAcceptedHeadNonMultiplesBetween(3, 9) == 1 * (3-1) == 2
-    s1.assertSameHeadExtendedFilterCount(BigInt(1)) should be(true)
+    SpecSieveSeqSurvivorCountProperties.assertSameHeadExtendedFilterCount(s1, BigInt(1)) should be(true)
   }
 
   it should "prove same-head filter size for S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
@@ -191,7 +195,7 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
     // mod(M, head) = mod(6,5) = 1 != 0 ✓
     // ─── The theorem ───
     // countAcceptedHeadNonMultiplesBetween(5, 35) == 2 * (5-1) == 8
-    s2.assertSameHeadExtendedFilterCount(BigInt(2)) should be(true)
+    SpecSieveSeqSurvivorCountProperties.assertSameHeadExtendedFilterCount(s2, BigInt(2)) should be(true)
   }
 
   // === Same-head survivor count (body computes actual count) ===
@@ -199,29 +203,27 @@ class SpecSieveSequenceTest extends FlatSpec with Matchers  {
   it should "compute same-head survivor count for S_1 [3,2]" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
     // head=3, M=2, period=1 → survivors in [3,9): 5,7 → count=2
-    s1.sameHeadSurvivorCount(BigInt(1)) should be(BigInt(2))
+    SpecSieveSeqSurvivorCountProperties.sameHeadSurvivorCount(s1, BigInt(1)) should be(BigInt(2))
   }
 
   it should "compute same-head survivor count for S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
     // head=5, M=6, period=2 → survivors in [5,35): 7,11,13,17,19,23,29,31 → count=8
-    s2.sameHeadSurvivorCount(BigInt(2)) should be(BigInt(8))
+    SpecSieveSeqSurvivorCountProperties.sameHeadSurvivorCount(s2, BigInt(2)) should be(BigInt(8))
   }
 
-  // === Next period via SpecDerivedSieveSequence ===
+  // === Next period via SpecSieveSeqNextStageProperties ===
 
-  it should "compute nextPeriod for derived S_1 [3,2]" taggedAs(SlowLemmaTest) in {
+  it should "compute nextPeriod for S_1 [3,2]" taggedAs(SlowLemmaTest) in {
     val s1 = SpecSieveSequence(allPrimesSoFar(List(Prime(3), Prime(2))))
-    val d1 = SpecDerivedSieveSequence(s1, BigInt(1))
     // period=1, head=3 → nextPeriod == 1 * (3-1) == 2
-    d1.nextPeriod() should be(BigInt(2))
+    SpecSieveSeqNextStageProperties.verifiedNextPeriod(s1, BigInt(1)) should be(BigInt(2))
   }
 
-  it should "compute nextPeriod for derived S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
+  it should "compute nextPeriod for S_2 [5,3,2]" taggedAs(SlowLemmaTest) in {
     val s2 = SpecSieveSequence(allPrimesSoFar(List(Prime(5), Prime(3), Prime(2))))
-    val d2 = SpecDerivedSieveSequence(s2, BigInt(2))
     // period=2, head=5 → nextPeriod == 2 * (5-1) == 8
-    d2.nextPeriod() should be(BigInt(8))
+    SpecSieveSeqNextStageProperties.verifiedNextPeriod(s2, BigInt(2)) should be(BigInt(8))
   }
 
 }
