@@ -1,78 +1,35 @@
-# Relative Hazard And Allocation Phase Transitions In Balanced 2-Gap Companions
+# Survival Frontiers in Balanced 2-Gap Companion Processes
 
-*How Much Worse Than Random Can A Local Filter Be While 2-Gaps Still Survive?*
-
-**Status:** Draft mathematical analysis. The companion-process identities are
-proved from their definitions. Safe-window and head conclusions are conditional
-on the spatial-uniformity, optimistic-supply, head-availability, and cross-layer
-mixing premises stated below. No new Scala/Stainless verification accompanies
-the asymptotic results.
-
-**Author:** Mata, T. H.  
-Independent Researcher
+**Author:** Mata, T. H.<br>
+Independent Researcher<br>
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)<br>
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 
 ## Abstract
 
-The complete-period 2-gap population in a sieve sequence has a simple global
-law: when filter prime $r$ is installed, every old 2-gap has $r$ copies and
-exactly two are destroyed. Balanced companion processes preserve that law but
-change how the two harmful copy indices are selected. The random sister chooses
-them uniformly, the bad sister targets a prescribed local region, and the good
-sister protects that region whenever the exact-two rule permits.
+<div align="justify">
+<p style="text-align: justify">
+We study companion processes that reproduce the exact global growth of 2-gaps but
+change where each filter removes them. Every parent produces $r$ copies and
+exactly two are removed, as in the sieve sequence. The companion may place
+those two removals randomly, protect a chosen target, or direct them toward it.
+This construction separates the number of surviving 2-gaps from their
+location near the head.
 
-This article measures the realized fraction $f_r$ of a tracked local segment
-destroyed at filter $r$. Random filtering has benchmark $2/r$, so
-$w_r=rf_r/2$ is the factor by which the filter is worse than random and
+If filter $r$ destroys a local fraction $f_r$, we compare it with the random
+rate $2/r$ through $w_r=rf_r/2$. The cumulative product proves that every fixed
+finite value of $w_r$ preserves square-window 2-gaps and, with the stated
+availability and mixing conditions, produces head 2-gaps infinitely often.
+The first boundary occurs when $w_r=1+c\log r$: square windows survive for
+$c < 1$, while head recurrence survives for $c < 1/2$. Exact-quota companions
+that retain the CRT strike count give the same frontiers. Therefore, proving
+that the real sieve remains below the head frontier, together with the stated
+availability and mixing properties, would establish the twin-prime
+conjecture.
+</p>
+</div>
 
-```math
-D(Q)=\sum_{r<Q}-\log(1-f_r)
-```
-
-is its cumulative local hazard. The tracked survival factor is exactly
-$e^{-D(Q)}$. Under the stated quadratic-supply, availability, and mixing
-premises, there is no largest finite constant multiple of random: every fixed
-$w_r=w<\infty$ retains eventual square-window occupancy and infinitely many
-head events. The first nontrivial transition occurs when $w_r$ grows like
-$\log r$. For $w_r=1+c\log r$, square-window survival holds for $c<1$, while
-head recurrence holds for $c<1/2$; at and beyond the respective boundaries the
-corresponding local conclusion fails in the stipulated model.
-
-Bad/random and bad/good mixtures are then studied as specializations. A fixed
-absolute bad share $\alpha>0$ is fatal for the trivial reason that it makes
-$w_r\sim\alpha r/2$, rather than keeping damage a fixed amount worse than the
-shrinking random benchmark. Decaying absolute shares recover the previously
-derived window and head transitions.
-
-An exact-CRT-quota/random-location sister retains the chosen population's
-exact number of filter shots but allocates them uniformly without replacement.
-If its cumulative quota fractions match the CRT rate, its one-head survival is
-again of order $(\log Q)^{-2}$. Persistent head availability and cross-layer
-mixing then imply infinitely many head hits almost surely; the corresponding
-blind-placement square-window model is eventually nonempty almost surely.
-Exact shot counts alone do not imply either conclusion.
-
-Biasing that exact quota toward 2-gap endpoints recovers the same frontier as
-the general relative-hazard model. Every fixed finite effective preference
-still gives infinitely many head hits almost surely with mixing. For effective
-skew $\kappa_r=1+c\log r$, the head coefficient is $c=1/2$ and the square-window
-coefficient is $c=1$. This agreement shows that the boundary comes from the
-cumulative supply-versus-hazard balance rather than one particular random
-companion definition.
-
-Percentage is nevertheless only one axis. For $N$ parents, $L$ locally
-relevant parents, and $K$ bad labels, the exact local survivor interval is
-$\max(0,L-K)\le S\le\min(L,N-K)$. A perfectly informed bad sister can suppress
-one head candidate with one label, whereas uniform allocation kills it only
-with probability $K/N$. The article therefore separates bad-label budget from
-targeting strength and proposes reproducible blind, delayed, and noisy-ranking
-experiments.
-
-These are results about constructed companion processes, not the real modular
-filter. Their value is to isolate the missing question: how the real filter's
-CRT-coupled harmful indices compare with the shrinking random destruction rate,
-their cumulative local hazard, and their realized targeting score.
-
-## 1. The Question That Needs Three Meanings Of Survival
+## 1. Introduction
 
 Saying that “2-gaps survive” can mean three different things:
 
@@ -96,22 +53,33 @@ which descendants die. This makes global survival identical in every companion
 while allowing local behavior to range from maximally protective, through
 position-blind random, to maximally hostile.
 
-### 1.1 Evidence Status And Scope
+We establish:
 
-This draft uses three levels of evidence:
+- the exact allocation-independent global recurrence $N_{k+1}=(r_k-2)N_k$;
+- the cumulative local-hazard law $P(Q)=e^{-D(Q)}$ and its fixed-factor and
+  logarithmic survival frontiers;
+- the distinct square-window and head thresholds for adversarial/random and adversarial/protective
+  mixtures;
+- sharp finite allocation bounds separating adversarial-label budget from positional
+  information; and
+- exact-quota and biased exact-quota companions that preserve CRT strike counts
+  while randomizing their locations.
 
-- **Exact companion identity:** follows directly from the constructed process.
-- **Conditional probability theorem:** mathematically proved after explicitly
-  assuming spatial uniformity or cross-layer mixing.
-- **Real-sieve comparison:** an open interpretation, not a theorem.
+### 1.1 Scope and Evidence
 
-The asymptotic prime sums use standard prime-distribution inputs. They are not
-encoded in Stainless. Consequently, the mathematical derivations below have
-no third, Scala-verification representation yet. Each property is marked
-**Draft — mathematically proved under its stated premises; Stainless
-verification pending or outside the current verifier scope.**
+We prove exact identities for the finite companion processes and conditional
+theorems for their asymptotic local behavior. Whenever a result needs spatial
+uniformity, head availability, or cross-layer mixing, we state that premise in
+the property itself before using it. The comparison with the real sieve then
+shows what additional arithmetic information would transfer the companion
+result.
 
-## 2. Balanced Good, Random, And Adversarial Companions
+The companion theorems in this draft are mathematically proved but not
+Stainless-verified. We link the maintained finite real-sieve properties that
+support the construction, while keeping the stochastic and asymptotic
+arguments as mathematical proofs.
+
+## 2. Preliminaries and Companion Models
 
 Let $\mathcal G_k$ be the 2-gap descendants before installing prime $r$. Each
 parent $g\in\mathcal G_k$ produces the indexed copies
@@ -120,35 +88,75 @@ parent $g\in\mathcal G_k$ produces the indexed copies
 (g,0),(g,1),\ldots,(g,r-1).
 ```
 
-Exactly two distinct indices are harmful. The balanced random companion draws
-the harmful pair uniformly from the two-element subsets of $\mathbb Z/r\mathbb
-Z$. The balanced adversarial companion instead spends its two deletions on
-children in a chosen target region whenever possible.
+Exactly two distinct indices are harmful. Each parent receives one of three
+policies. A **random parent** draws the harmful pair uniformly from the
+two-element subsets of $\mathbb Z/r\mathbb Z$. An **adversarial parent** places
+a deletion on its target child whenever possible. A **protective parent**,
+defined fully in §5.2, places both deletions away from the target whenever
+possible.
 
-The balanced good companion, defined fully in §13, spends both deletions away
-from the target whenever possible.
+Every policy leaves exactly $r-2$ children. The companions therefore change
+the location of the deletions, not the population size.
 
-In both cases every parent leaves exactly $r-2$ children. The companions
-therefore randomize or optimize location, not population size.
+For example, let $r=5$ and suppose child index $1$ is the target. A random
+parent may remove any pair, such as $\{0,4\}$. An adversarial parent chooses a
+pair containing $1$, such as $\{1,4\}$. A protective parent chooses both
+indices outside the target, again allowing $\{0,4\}$. The three parents make
+different local choices, but each leaves exactly three children. This simple
+example is the distinction used throughout the article: global reproduction
+is fixed, while local placement changes.
 
-The definitions and their precise limitations are maintained in
-[Balanced Randomized 2-Gap Companion Process](
-../../candidates/balanced-randomized-2-gap-companion-process.md) and
-[Balanced Adversarial 2-Gap Companion Process](
-../../candidates/balanced-adversarial-2-gap-companion-process.md). The real
-modular pair is derived in [Copy-Index Filter Frequency](
-../../properties/sieve-sequence/copy-index-filter-frequency.md).
+The random, adversarial, and protective companion definitions above are the
+definitions used throughout this article. The corresponding real modular pair
+is derived in [Gap Dynamics §6.1](
+../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes).
 
-## 3. Property I: Global Persistence Is Independent Of Adversariality
+### 2.1 Notation
 
-**Status:** **Mathematically proved by definition. Stainless verification is
-not supplied in this draft.** The corresponding real-sieve complete-period
-count has separate maintained source evidence.
+We use the following notation throughout:
 
-No choice of the harmful pair can change the number of surviving descendants.
-Random, adversarial, friendly, and mixed companions all have the same global
-population. This matters because any later local extinction cannot be blamed
-on exhausting the complete-period supply.
+| Symbol | Meaning |
+|---|---|
+| $r$ | incoming filter prime |
+| $Q$ | target prime head |
+| $N_k$ | complete-period 2-gap population at layer $k$ |
+| $f_r$ | fraction of a tracked local population destroyed at filter $r$ |
+| $w_r=rf_r/2$ | destruction relative to the random benchmark $2/r$ |
+| $D(Q)=\sum_{r < Q}-\log(1-f_r)$ | cumulative local hazard |
+| $\alpha_r$ | scheduled absolute adversarial share in a mixture |
+| $A(Q)=\sum_{r < Q}-\log(1-\alpha_r)$ | cumulative adversarial-share hazard |
+| $J_r/N_r=u_r$ | exact-quota strike fraction |
+| $\beta_r$ | raw endpoint preference in a biased quota |
+| $\kappa_r$ | effective destruction skew, equal to $w_r$ when measured from $f_r$ |
+
+All products and sums over $r < Q$ are over prime filters unless stated
+otherwise. Square-window conclusions use a population of order $Q^2$; head
+conclusions concern one distinguished position.
+
+### 2.2 Mathematical Foundation
+
+The companion construction uses three exact sieve-sequence results proved in
+[Gap Dynamics](../chapter6/gap-dynamics.md):
+
+- the [exact complete-period 2-gap count](
+  ../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count);
+- the [two harmful copy-index classes](
+  ../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes); and
+- the [exact accepted-strike count](
+  ../chapter6/gap-dynamics.md#91-exact-accepted-strikes).
+
+The relative local-damage normalization is defined directly in §3.2, and its
+allocation refinement is defined in §6.2.
+
+## 3. Relative Hazard and Survival Frontiers
+
+### 3.1 Global Persistence Is Independent of Allocation
+
+We begin with the property shared by every balanced companion. No choice of the
+harmful pair changes the number of surviving descendants: random,
+adversarial, protective, and mixed parents all leave the same global
+population. Local extinction must therefore come from placement rather than
+from exhausting the complete-period supply.
 
 Let $N_k=|\mathcal G_k|$. Installing $r_k$ gives
 
@@ -169,7 +177,7 @@ Consequently,
 N_k
 &=N_0\prod_{i < k}(r_i-2)
 &&[\text{Iteration}]\\
-&>0
+& > 0
 &&[r_i\ge5]\\
 &\longrightarrow\infty.
 &&[\text{Every Factor Is At Least }3]
@@ -179,20 +187,18 @@ N_k
 Thus
 
 ```math
-\boxed{
 \text{global 2-gap persistence holds for every adversarial schedule.}
-}
 \qquad[\text{Q.E.D.}]
 ```
 
-The real-sieve analogue is documented in [Exact Global 2-Gap Count](
-../../properties/sieve-sequence/exact-global-two-gap-count.md). This article
-does not add a new `.holds` implementation for the companion recurrence.
+The complete proof record appears in [Appendix A.1](#appendix-a1). The
+corresponding real-sieve count is proved in [Gap Dynamics §5.2](
+../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count).
 
-## 4. Measuring Local Destruction Relative To Random
+### 3.2 Local Destruction Relative to Random
 
 The primary quantity is the realized fraction of the target segment's 2-gaps
-destroyed by filter $r$. If $L_r>0$ gaps are present before the filter and
+destroyed by filter $r$. If $L_r > 0$ gaps are present before the filter and
 $H_r$ are destroyed, define
 
 ```math
@@ -208,11 +214,9 @@ d_r:=\frac2r.
 The dimensionless worse-than-random factor is
 
 ```math
-\boxed{
 w_r
 :=\frac{f_r}{d_r}
 =\frac{rf_r}{2}.
-}
 ```
 
 This is the meaningful adversariality scale because the benchmark itself
@@ -222,7 +226,7 @@ shrinks as filters grow:
 \begin{aligned}
 w_r=0
 &\Longleftrightarrow f_r=0
-&&[\text{Good Endpoint}],\\
+&&[\text{Protective Endpoint}],\\
 w_r=1
 &\Longleftrightarrow f_r=2/r
 &&[\text{Random Benchmark}],\\
@@ -237,7 +241,7 @@ filter may fluctuate above one, and a nominal adversary with poor positional
 information may fall below one. Allocation determines $H_r$; $w_r$ records the
 result after allocation.
 
-### 4.1 Absolute Bad/Random Share As A Specialization
+#### Absolute Adversarial/Random Share as a Specialization
 
 Fix a target: either a square-safe window or one distinguished head position.
 At filter $r$, let
@@ -274,35 +278,31 @@ w_r
 \end{aligned}
 ```
 
-Thus a fixed absolute share $\alpha_r=\alpha>0$ does not represent a fixed
+Thus a fixed absolute share $\alpha_r=\alpha > 0$ does not represent a fixed
 amount worse than random. It makes $w_r$ grow linearly like $\alpha r/2$.
 This is why the fixed-share model is asymptotically fatal for an essentially
 trivial reason; the nontrivial question is how rapidly $w_r$ itself may grow.
 
-## 5. Property II: The General Cumulative Local-Hazard Law
+### 3.3 The General Cumulative Local-Hazard Law
 
-**Status:** **Mathematically proved for a tracked companion lineage. Stainless
-verification pending.** Spatial window and head conclusions require the
-additional abundance and mixing premises introduced later.
-
-The filter's local effect is determined by the total realized destruction
+We now follow one local population through successive filters. Its survival is
+determined by the total realized destruction
 fraction $f_r$, regardless of whether that fraction arose from random choice,
-bad labels, targeting, or another allocation mechanism. The one-step survival
-factor is
+adversarial labels, targeting, or another allocation mechanism. Multiplying
+the one-step survival factors gives an exact cumulative law. The later window
+and head applications add their own abundance and mixing premises.
 
 ```math
 s_r=1-f_r=1-\frac{2w_r}{r}.
 ```
 
-Assume $f_r<1$ for every filter in the tracked chain. Define the cumulative
+Assume $f_r < 1$ for every filter in the tracked chain. Define the cumulative
 local hazard
 
 ```math
-\boxed{
 D(Q)
 :=\sum_{r < Q}-\log(1-f_r)
 =\sum_{r < Q}-\log\left(1-\frac{2w_r}{r}\right).
-}
 ```
 
 The complete survival factor is exactly
@@ -317,6 +317,7 @@ P(Q)
 &=e^{-D(Q)}.
 &&[\text{Definition Of }D(Q)]
 \end{aligned}
+\qquad[\text{Q.E.D.}]
 ```
 
 For the random benchmark $w_r=1$,
@@ -336,7 +337,7 @@ P_{\mathrm{random}}(Q)
 \asymp\frac{C}{(\log Q)^2}.
 ```
 
-The absolute bad/random mixture from §4.1 is recovered because
+The absolute adversarial/random mixture from §3.2 is recovered because
 
 ```math
 1-f_r
@@ -353,9 +354,9 @@ then
 
 ```math
 \begin{aligned}
-D_{\mathrm{bad/random}}(Q)
+D_{\mathrm{adversarial/random}}(Q)
 &=D_{\mathrm{random}}(Q)+A(Q),\\
-P_{\mathrm{bad/random}}(Q)
+P_{\mathrm{adversarial/random}}(Q)
 &\asymp\frac{C}{(\log Q)^2}e^{-A(Q)}.
 \end{aligned}
 ```
@@ -367,15 +368,16 @@ $\alpha_r$ exists.
 If one filter has $f_r=1$, local extinction is immediate and the cumulative
 hazard is infinite from that point.
 
-No Scala/Stainless theorem currently encodes this stochastic product or its
-analytic asymptotics.
+The complete proof record appears in [Appendix A.2](#appendix-a2).
 
-### 5.1 Property III: Every Fixed Finite Worsening Factor Survives The Model
+### 3.4 Every Fixed Finite Worsening Factor Survives
 
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** Square-window survival assumes quadratic eligible supply and blind
-placement; head recurrence additionally assumes availability bounded below and
-adequate cross-layer mixing.
+The random destruction rate shrinks like $2/r$. We first ask what happens when
+the local filter is a fixed number of times worse than that benchmark. With a
+quadratic supply of eligible starts and blind placement, every fixed factor
+still leaves occupied square windows. If head candidates remain available and
+successive layers mix adequately, the head also returns to a 2-gap infinitely
+often.
 
 Let $w\ge 0$ be fixed and suppose
 
@@ -401,9 +403,7 @@ D_w(Q)
 Therefore
 
 ```math
-\boxed{
 P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
-}
 ```
 
 For a square window with $B(Q)\asymp C_0Q^2$ eligible lineages,
@@ -432,9 +432,7 @@ surely.
 Thus
 
 ```math
-\boxed{
 \text{there is no finite constant-factor maximum worse than random.}
-}
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -442,17 +440,26 @@ A filter that is twice, ten times, or one million times worse than the random
 rate still lies in the same asymptotic survival class once $r$ is sufficiently
 large. The nontrivial transition begins only when $w_r$ grows with $r$.
 
-No Scala/Stainless theorem currently encodes the fixed-factor asymptotic or its
-conditional probability consequences.
+The complete proof record appears in [Appendix A.3](#appendix-a3).
 
-### 5.2 Property IV: Logarithmically Growing Worsening Has Two Thresholds
+The fixed-factor conclusion is not only asymptotic; it is visible in the
+square-window occupancy itself. The figure below plots
+$\log_{10}\lambda_w(Q)$ against $\log_{10}Q$ for the fixed factors
+$w=1,3,6,10$, a constant $1\%$ adversarial share, and the $c=1$ frontier
+$w_r=1+\log r$. Every fixed finite $w$ climbs without bound -- $w=6$ and
+$w=10$ visibly dip first, because $Q^2$ must first outgrow $(\log Q)^{2w}$ --
+while the constant share collapses to effective extinction and the $c=1$
+frontier climbs at the slowest surviving rate, exactly the square-window
+threshold derived in §3.5.
 
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** It uses the same quadratic-supply, availability, and mixing premises
-as §5.1.
+![Square-window expected occupancy log10(lambda(Q)) on a log scale: every fixed relative-hazard factor w=1,3,6,10 eventually climbs without bound, a constant 1% adversarial share collapses to effective extinction, and the c=1 frontier climbs at the slowest surviving rate](../../presentations/sieve-sequence-visualization/figures/out/phase-transition-window.svg)
 
-To measure a filter that becomes progressively worse than random while still
-respecting the shrinking benchmark, set
+### 3.5 Logarithmically Growing Worsening Has Two Thresholds
+
+The first genuine transition appears when the worsening factor grows with the
+filter. Using the same supply, availability, and mixing premises as §3.4, we
+let the factor grow logarithmically and compare the reserve supplied by a
+square window with the much thinner reserve at one distinguished head.
 
 ```math
 w_r=1+c\log r,
@@ -475,8 +482,8 @@ growing excess. Prime summation gives
 D_c(Q)
 &=\sum_{r < Q}-\log(1-f_r)
 &&[\text{Definition Of }D(Q)]\\
-&=2\sum_{r<Q}\frac1r
-&\quad+2c\sum_{r<Q}\frac{\log r}{r}+O(1)
+&=2\sum_{r < Q}\frac1r
+&\quad+2c\sum_{r < Q}\frac{\log r}{r}+O(1)
 &&[\text{Substitution; Summable Remainder}]\\
 &=2\log\log Q+2c\log Q+O(1).
 &&[\text{Prime-Sum Asymptotics}]
@@ -486,11 +493,9 @@ D_c(Q)
 Hence
 
 ```math
-\boxed{
 P_c(Q)
 \asymp
 \frac{C_c}{Q^{2c}(\log Q)^2}.
-}
 \qquad[\text{Exponentiation And Simplification}]
 ```
 
@@ -505,7 +510,6 @@ C_0\frac{Q^{2-2c}}{(\log Q)^2}.
 Therefore
 
 ```math
-\boxed{
 \begin{aligned}
 c < 1
 &\Longrightarrow
@@ -514,7 +518,6 @@ c\ge1
 &\Longrightarrow
 \text{square-window expectation tends to zero}.
 \end{aligned}
-}
 ```
 
 For the head,
@@ -535,7 +538,6 @@ Summing over prime heads has the same convergence behavior as
 Thus
 
 ```math
-\boxed{
 \begin{aligned}
 c < \frac12
 &\Longrightarrow
@@ -544,16 +546,26 @@ c\ge\frac12
 &\Longrightarrow
 \text{only finitely many head events almost surely}.
 \end{aligned}
-}
 ```
+
+The threshold is the Borel-Cantelli decision rule for the head, and the figure
+below evaluates it directly. It plots the cumulative sum of $\Pr(H_Q)$ over
+real enumerated primes up to $Q$, for $w_r=1+c\log r$ at
+$c=0.0,0.1,0.3,0.5,0.7,1.0$. Below the threshold the sum keeps climbing --
+$c=0.0$ and $c=0.1$ clearly, $c=0.3$ more slowly but provably -- so there are
+infinitely many head events with mixing. At and above the threshold the sum
+flattens: $c=0.5$ only very slowly (it is the boundary itself), $c=0.7$ and
+$c=1.0$ quickly -- so there are only finitely many, almost surely.
+
+![Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold](../../presentations/sieve-sequence-visualization/figures/out/phase-transition-head.svg)
 
 Equivalently, the robust relative-factor regimes are
 
 ```math
 \begin{aligned}
-w_r&<(1-\varepsilon)\log r
+w_r& < (1-\varepsilon)\log r
 &&[\text{Square-Window Survival}],\\
-w_r&<\left(\frac12-\varepsilon\right)\log r
+w_r& < \left(\frac12-\varepsilon\right)\log r
 &&[\text{Head Recurrence}],
 \end{aligned}
 ```
@@ -563,20 +575,20 @@ total segment destruction fraction,
 
 ```math
 \begin{aligned}
-f_r&<(2-\varepsilon)\frac{\log r}{r}
+f_r& < (2-\varepsilon)\frac{\log r}{r}
 &&[\text{Square-Window Survival}],\\
-f_r&<(1-\varepsilon)\frac{\log r}{r}
+f_r& < (1-\varepsilon)\frac{\log r}{r}
 &&[\text{Head Recurrence}].
 \end{aligned}
+\qquad[\text{Q.E.D.}]
 ```
 
 These are cumulative asymptotic regimes, not pointwise allowances that reset
 at each filter. Irregular schedules must be evaluated through $D(Q)$.
 
-No Scala/Stainless theorem currently encodes these relative-factor phase
-boundaries.
+The complete proof record appears in [Appendix A.4](#appendix-a4).
 
-### 5.3 Relative-To-Random Phase Diagram
+### 3.6 Relative-to-Random Phase Diagram
 
 The answer is not a maximum fixed percentage. It is a growth-rate boundary for
 the realized local damage relative to the random benchmark.
@@ -585,8 +597,8 @@ the realized local damage relative to the random benchmark.
 |---|---:|---|---|
 | $w_r=1$ | $2/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
 | Any fixed finite $w_r=w$ | $2w/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
-| $w_r=1+c\log r$, $0\le c<1/2$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
-| $w_r=1+c\log r$, $1/2\le c<1$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Only finitely often almost surely |
+| $w_r=1+c\log r$, $0\le c < 1/2$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
+| $w_r=1+c\log r$, $1/2\le c < 1$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Only finitely often almost surely |
 | $w_r=1+c\log r$, $c\ge1$ | $2/r+2c\log r/r$ | Expected population tends to zero | Only finitely often almost surely |
 | $f_r=1$ at any tracked step | $1$ | Immediate local extinction | Immediate local extinction |
 
@@ -597,23 +609,24 @@ $\tfrac12\log r$ times worse. In total local-destruction terms, the robust
 sufficient regimes are respectively
 
 ```math
-f_r<(2-\varepsilon)\frac{\log r}{r}
+f_r < (2-\varepsilon)\frac{\log r}{r}
 \qquad\text{and}\qquad
-f_r<(1-\varepsilon)\frac{\log r}{r}.
+f_r < (1-\varepsilon)\frac{\log r}{r}.
 ```
 
 These conclusions concern damage realized inside the tracked segment. A small
-global bad budget can still cause $f_r=1$ if it is allocated with enough target
-information; the allocation theorem later in the article isolates that second
+global adversarial budget can still cause $f_r=1$ if it is allocated with enough target
+information; the allocation theorem in §5 isolates that second
 axis.
 
-## 6. Property V: The Absolute-Share Bad/Random Square-Window Boundary
+## 4. Absolute-Share Mixtures
 
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** Assume the mixed surviving starts obey the spatial-uniformity model
-used by the balanced random companion.
+### 4.1 Adversarial/Random Parent Square-Window Boundary
 
-Let the square-safe window have length
+We now express the general hazard result through an explicit mixture. Each
+parent is adversarial with share $\alpha_r$ and otherwise random. When the
+surviving starts follow the spatial-uniformity model of the balanced random
+companion, a square-safe window has length
 
 ```math
 L_Q\asymp Q^2.
@@ -642,7 +655,7 @@ Taking logarithms exposes the threshold:
 \end{aligned}
 ```
 
-Therefore, for every fixed $\varepsilon>0$,
+Therefore, for every fixed $\varepsilon > 0$,
 
 ```math
 \begin{aligned}
@@ -669,7 +682,7 @@ Under uniform placement, an empty-window estimate has the usual form
 Whenever
 
 ```math
-\sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}}<\infty,
+\sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}} < \infty,
 ```
 
 the first Borel-Cantelli lemma gives only finitely many empty square windows
@@ -677,21 +690,25 @@ almost surely. A convenient sufficient condition is
 
 ```math
 \lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q
+\qquad[\text{Q.E.D.}]
 ```
 
 for all sufficiently large $Q$. This is stronger than merely requiring
 $\lambda_Q^{\mathrm{mix}}\to\infty$ and prevents a slow divergent expectation
 from being mistaken for an eventual-survival theorem.
 
-The safe-window conclusion is not claimed for the real sieve. It is a theorem
-inside the spatially uniform mixed companion.
+This proves eventual safe-window occupancy inside the spatially uniform mixed
+companion. Section 8 states the separate conditions needed to transfer the
+result to the real sieve.
 
-## 7. Why A Constant Absolute Bad Share Is Trivially Fatal Locally
+The complete proof record appears in [Appendix A.5](#appendix-a5).
 
-**Status:** **Conditional mathematical consequence of §6. Stainless
-verification pending.**
+### 4.2 Why a Constant Absolute Adversarial Share Is Locally Fatal
 
-Suppose one fixed share $0 < \alpha < 1$ is adversarial at every filter. Then
+A constant adversarial share sounds mild, but it adds the same positive loss
+at every filter while the random benchmark keeps shrinking. We therefore
+expect it to overwhelm local survival. Let one fixed share
+$0 < \alpha < 1$ be adversarial at every filter. Then
 
 ```math
 \begin{aligned}
@@ -720,12 +737,11 @@ C\frac{Q^2}{(\log Q)^2}(1-\alpha)^{\pi(Q)}\\
 Thus
 
 ```math
-\boxed{
 \text{every fixed positive per-filter adversarial share is locally fatal}
-}
+\qquad[\text{Q.E.D.}]
 ```
 
-for the repeated-mixture projection, even though the complete-period
+in the repeated-mixture model, even though the complete-period
 population continues to grow without bound.
 
 This is different from applying one adversarial dilution after all random
@@ -733,14 +749,14 @@ filters have finished. A one-time dilution multiplies the final count by
 $1-\alpha$ once; the repeated model multiplies it once per prime. Confusing
 these two experiments reverses the asymptotic conclusion.
 
-## 8. Two Absolute-Share Decay Specializations
+### 4.3 Two Decaying Absolute-Share Families
 
 The useful question is therefore not “what fixed percentage is tolerable?”
 The useful question is how quickly $\alpha_r$ must decay.
 
-### 8.1 Reciprocal Decay: $\alpha_r\sim c/r$
+#### Reciprocal Decay: $\alpha_r\sim c/r$
 
-For fixed $c>0$ and sufficiently large primes,
+For fixed $c > 0$ and sufficiently large primes,
 
 ```math
 \begin{aligned}
@@ -769,7 +785,7 @@ C\frac{Q^2}{(\log Q)^{2+c}}\longrightarrow\infty.
 The window population grows polynomially faster than its logarithmic losses,
 so the empty-window probabilities are summable under the spatial model.
 
-### 8.2 Logarithmic-Over-Linear Decay: $\alpha_r\sim c\log r/r$
+#### Logarithmic-Over-Linear Decay: $\alpha_r\sim c\log r/r$
 
 For a finite initial prefix, define the shares separately so that they remain
 in $[0,1]$; this changes only the final constant. On the asymptotic tail,
@@ -797,26 +813,23 @@ e^{-A(Q)}&\asymp Q^{-c},\\
 The square-window phase diagram is therefore
 
 ```math
-\boxed{
 \begin{aligned}
 c < 2&\Longrightarrow\lambda_Q^{\mathrm{mix}}\longrightarrow\infty,\\
 c\ge 2&\Longrightarrow\lambda_Q^{\mathrm{mix}}\longrightarrow0.
 \end{aligned}
-}
 ```
 
 For $c < 2$, the divergence is polynomial, so the empty-window bound is
 summable and every sufficiently large square window is nonempty almost surely
 under the spatial-uniformity premise.
 
-## 9. Property VI: The Absolute-Share Bad/Random Head Boundary
+### 4.4 Adversarial/Random Parent Head Boundary
 
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** Assume uniform head marginals. Almost-sure infinite recurrence also
-requires independence or a sufficiently strong weak-mixing substitute.
-
-A head is one location, so there is no factor $Q^2$. Its mixed occurrence
-probability is
+The head contains only one distinguished position, so it receives no
+quadratic window reserve. Under uniform head marginals, its occurrence
+probability is the surviving local density itself. To turn a divergent sum of
+these probabilities into almost-sure recurrence, we also require independence
+or a sufficiently strong weak-mixing substitute.
 
 ```math
 \Pr(H_Q)
@@ -859,16 +872,15 @@ convergence behavior as
 Therefore
 
 ```math
-\boxed{
 \begin{aligned}
 c < 1
 &\Longrightarrow
 \sum_{Q\text{ prime}}\Pr(H_Q)=\infty,\\
 c\ge 1
 &\Longrightarrow
-\sum_{Q\text{ prime}}\Pr(H_Q)<\infty.
+\sum_{Q\text{ prime}}\Pr(H_Q) < \infty.
 \end{aligned}
-}
+\qquad[\text{Q.E.D.}]
 ```
 
 For $c < 1$, adequate mixing implies infinitely many head events almost surely.
@@ -884,9 +896,9 @@ There is an intermediate regime
 ```
 
 in which square-safe windows remain populated almost surely under the spatial
-model, while head recurrence fails almost surely in the mixed projection.
+model, while head recurrence fails almost surely in the mixed companion.
 
-## 10. Absolute-Share Bad/Random Phase Diagram
+### 4.5 Adversarial/Random Parent Phase Diagram
 
 For the representative schedule $\alpha_r\sim c\log r/r$, the companion
 separates into three regimes:
@@ -898,27 +910,25 @@ separates into three regimes:
 | $c\ge 2$ | Persist and grow | Mixed expectation tends to zero | Only finitely many almost surely |
 | Fixed $\alpha > 0$ | Persist and grow | Mixed expectation tends to zero | Only finitely many almost surely |
 
-The table's last two columns are statements inside the stipulated spatial
+The table's last two columns are statements inside the spatial
 model. The global column is unconditional for every balanced companion.
 
-### 10.1 Why A Fixed Absolute Percentage Gives The Wrong Maximum
+### 4.6 Why a Fixed Absolute Percentage Gives the Wrong Maximum
 
 Within position-blind repeated mixtures, percentages that do not change with
-the filter prime have a blunt but secondary answer. If the same absolute bad
-share $\alpha$ is applied at every filter, every $\alpha>0$ is eventually fatal
+the filter prime have a blunt but secondary answer. If the same absolute adversarial
+share $\alpha$ is applied at every filter, every $\alpha > 0$ is eventually fatal
 to the local mixed baseline. In that restricted normalization,
 
 ```math
-\boxed{
-\text{maximum sustainable fixed absolute bad share}=0\%.
-}
+\text{maximum sustainable fixed absolute adversarial share}=0\%.
 ```
 
 This is not the meaningful answer to “how much worse than random can the
 filter be?” Random destruction itself shrinks as $2/r$, while fixed
-$\alpha>0$ adds a positive floor and makes the relative factor
-$w_r=1+(r-2)\alpha/2$ diverge linearly. The primary answer from §5.3 is instead
-that every fixed finite $w$ survives the stipulated model, with the first
+$\alpha > 0$ adds a positive floor and makes the relative factor
+$w_r=1+(r-2)\alpha/2$ diverge linearly. The primary answer from §3.6 is instead
+that every fixed finite $w$ survives the companion model defined above, with the first
 transition only when $w_r$ grows on the order of $\log r$.
 
 The zero-percent statement concerns safe-window and head survival under this
@@ -926,7 +936,7 @@ fixed absolute-share policy. It does not concern the global population, which
 survives even under $100\%$ adversarial selection.
 
 Nonzero adversariality remains supportable when its share decreases with $r$.
-For a fixed margin $\varepsilon>0$, the representative sufficient schedules
+For a fixed margin $\varepsilon > 0$, the representative sufficient schedules
 are
 
 ```math
@@ -965,7 +975,7 @@ These entries are asymptotic boundary values, not independent allowances that
 reset at each filter. A schedule may temporarily cross a displayed value and
 remain viable if it spent less adversarial budget earlier; it may also fail
 despite staying below isolated entries if its cumulative behavior is worse on
-other filters. The authoritative quantities remain
+other filters. The governing quantities remain
 
 ```math
 A(Q)=\sum_{r < Q}-\log(1-\alpha_r)
@@ -980,63 +990,63 @@ for square windows and
 
 for head recurrence.
 
-## 11. What “Percentage Adversarial” Must Specify
+### 4.7 What “Percentage Adversarial” Must Specify
 
-There is no unique mixture until its sampling unit is stated.
+There is no unique mixture until we specify what receives the adversarial
+label.
 
-### Parent-Level Mixture
+| Mixture | Choice made | Consequence |
+|---|---|---|
+| Parent level | Each parent is adversarial with probability $\alpha_r$ | Independent branching interpretation |
+| Whole filter | The complete filter is adversarial with probability $\alpha_r$ | Same one-lineage marginal, stronger dependence between parents |
+| One-time final | One adversarial dilution is applied after random filtering | One factor $1-\alpha$; no cumulative phase transition |
 
-Each parent independently uses adversarial selection with probability
-$\alpha_r$. This gives the cleanest branching interpretation and the marginal
-factor derived above.
+The calculations in §§3--4 concern a repeated share at every filter. Their
+expectations apply to the first two interpretations because one lineage has
+the same marginal survival probability. Their almost-sure conclusions do not
+transfer automatically: a whole-filter choice coordinates all parents and
+therefore needs its own spatial or mixing argument. The one-time model answers
+a different question because it applies the loss only once.
 
-### Whole-Filter Mixture
+## 5. Allocation and the Protective Parent
 
-The entire filter is adversarial with probability $\alpha_r$. A single
-adversarial filter may coordinate its attack across every local parent. The
-one-lineage marginal factor is unchanged when the whole-filter choices remain
-independent across filters, but dependencies between parents become much
-stronger, so the spatial and almost-sure positive results require a separate
-mixing proof.
+### 5.1 The Same Adversarial Percentage Can Produce Different Outcomes
 
-### One-Time Final Mixture
+This property is a capacity comparison. Suppose $K$ parents may use the
+adversarial policy and $L$ parents contribute a child to the target window. A
+target-aware allocator can clear the window exactly when its budget covers all
+the relevant parents:
 
-After ordinary random filtering, one final adversarial operation removes an
-$\alpha$ share. This produces only the factor $1-\alpha$ and does not describe
-repeated mixed filtering. It has no cumulative phase transition and must not be
-used to answer the per-filter question.
+```math
+K\ge L.
+```
 
-The calculations in §§5--10 concern repeated per-filter marginal shares. Their
-expectations apply to either of the first two interpretations, but their
-almost-sure conclusions require the spatial and dependence premises stated for
-each theorem.
+If the adversarial share $\alpha=K/N$ stays fixed while the relevant fraction
+$L/N$ decreases, then eventually
 
-## 12. Property VII: Allocation Is A Second Independent Axis
+```math
+\alpha\ge\frac LN,
+```
 
-**Status:** **Mathematically proved for the balanced companion. Stainless
-verification pending.** The proof assumes that every parent has at most one
-child in the target region, the post-crossover geometry established for
-windows shorter than the old period.
+which is the same condition as $K\ge L$. Thus a fixed adversarial percentage
+may be enough to suppress the head early and, after the target population
+becomes sparse enough, remove every 2-gap from the tracked window. The result
+depends on allocation: a position-blind allocator with the same percentage
+does not automatically select all $L$ relevant parents.
 
-An adversarial percentage says how many parents receive bad treatment, but it
-does not say which parents they are. That missing choice can move the local
-outcome across its entire feasible range. Consequently, no percentage-only
-threshold applies simultaneously to a position-blind mixture and a perfectly
-targeted adversary.
-
-At one filter, let
+We now derive the complete finite range. The target window is shorter than the
+old period, so each parent contributes at most one child to it. Let
 
 - $N$ be the total number of parents;
 - $R$ be the set of parents with a child in target region $W$;
 - $L=|R|$;
-- $B$ be the set of parents assigned bad behavior; and
-- $K=|B|$.
+- $\mathcal A$ be the set of adversarial parents; and
+- $K=|\mathcal A|$.
 
-Because each relevant parent contributes at most one target child, the number
-of target children destroyed is
+The number of target children destroyed is
 
 ```math
-H=|B\cap R|,
+H=|\mathcal A\cap R|,
 ```
 
 and the number surviving is
@@ -1061,28 +1071,27 @@ H
 Substituting into $S=L-H$ gives
 
 ```math
-\boxed{
 \max(0,L-K)
 \le S\le
 \min(L,N-K).
-}
 ```
 
-Both endpoints are attainable. A target-aware bad sister selects members of
-$R$ first and gives
+Both endpoints are attainable. A target-aware allocator spends its budget on
+$R$ first:
 
 ```math
 S_{\mathrm{targeted}}=\max(0,L-K).
 ```
 
-An optimistic allocator spends bad labels on the $N-L$ irrelevant parents
-first and gives
+A protective allocator spends the same budget on the $N-L$ irrelevant parents
+first:
 
 ```math
-S_{\mathrm{optimistic}}=\min(L,N-K).
+S_{\mathrm{protective}}=\min(L,N-K).
 ```
 
-If $B$ is instead a uniformly random size-$K$ subset of the $N$ parents, then
+Between these endpoints, a position-blind allocator chooses a uniformly random
+size-$K$ subset of the $N$ parents. Then
 
 ```math
 H\sim\text{Hypergeometric}(N,L,K)
@@ -1107,30 +1116,35 @@ When $K\ge L$, the exact probability of total local destruction is
 \frac{\binom KL}{\binom NL}.
 ```
 
-Thus
+Thus the same budget can produce complete protection, average proportional
+loss, or total local destruction. In particular,
 
 ```math
-\boxed{
-\text{bad percentage does not determine local survival without an allocation law.}
-}
+S_{\mathrm{targeted}}=0
+\Longleftrightarrow
+K\ge L
+\Longleftrightarrow
+\alpha\ge\frac LN.
 \qquad[\text{Q.E.D.}]
 ```
 
-The head makes the distinction extreme. There $L=1$. A target-aware
-adversary kills the unique head candidate whenever $K\ge1$, requiring only
-the global share $1/N$. Uniform allocation kills it with probability $K/N$,
-while optimistic allocation preserves it whenever $K\le N-1$.
+The three scales should not be confused. At the head, $L=1$, so one correctly
+allocated adversarial parent kills the current head candidate. In a sparse
+tracked window, a fixed share clears the whole window once $K\ge L$. Neither
+statement erases the complete-period 2-gap population: every targeted parent
+still leaves $r-2$ other descendants outside the target, so the global
+recurrence from §3.1 continues to grow. Preventing future head or window 2-gaps
+therefore requires the allocator to repeat the targeted choice at later
+filters.
 
-The window geometry and targeted endpoint are maintained in [Balanced
-Adversarial 2-Gap Companion Process](
-../../candidates/balanced-adversarial-2-gap-companion-process.md). No
-Scala/Stainless theorem currently encodes the finite-set allocation bounds.
+The complete finite proof appears in [Appendix A.6](#appendix-a6).
 
-## 13. The Balanced Good Sister
+### 5.2 The Protective Parent Policy
 
-The good sister is the local opposite of the bad sister. It preserves a
-parent's target child whenever the exact-two deletion rule permits that choice.
-It does not create extra descendants and cannot change the global recurrence.
+The protective parent policy is the local opposite of the adversarial parent
+policy. It preserves a parent's target child whenever the exact-two deletion
+rule permits that choice. It does not create extra descendants and cannot
+change the global recurrence.
 
 For parent $g$, let $T_g(W)$ be the indices of its children in target region
 $W$. In the post-crossover regime,
@@ -1140,49 +1154,47 @@ $W$. In the post-crossover regime,
 ```
 
 Because $r\ge5$, at least $r-1\ge4$ child indices lie outside $T_g(W)$. The
-good sister may therefore choose a harmful pair
+protective parent policy may therefore choose a harmful pair
 
 ```math
-K_{g,r}^{\mathrm{good}}
+K_{g,r}^{\mathrm{protective}}
 \subseteq
 (\mathbb Z/r\mathbb Z)\setminus T_g(W),
 \qquad
-|K_{g,r}^{\mathrm{good}}|=2.
+|K_{g,r}^{\mathrm{protective}}|=2.
 ```
 
-The bad sister instead chooses a pair containing the target index whenever
-$T_g(W)$ is nonempty. Both policies remove exactly two children, so both leave
-$r-2$ descendants globally. Their only difference is local placement:
+The adversarial parent policy instead chooses a pair containing the target
+index whenever $T_g(W)$ is nonempty. Both policies remove exactly two children,
+so both leave $r-2$ descendants globally. Their only difference is local
+placement:
 
 ```math
 \begin{aligned}
 T_g(W)\ne\varnothing
 &\Longrightarrow
-\text{good preserves the target child},\\
+\text{the protective parent preserves the target child},\\
 T_g(W)\ne\varnothing
 &\Longrightarrow
-\text{bad destroys the target child}.
+\text{the adversarial parent destroys the target child}.
 \end{aligned}
 ```
 
-The good sister is an oracle comparison, not a plausible random filter. It is
-allowed to see the chosen target and place its two deletions elsewhere. Its
-purpose is to define the optimistic endpoint of the same balanced family in
-which the adversarial sister defines the pessimistic endpoint.
+The protective parent is an oracle comparison, not a plausible random filter.
+It is allowed to see the chosen target and place its two deletions elsewhere.
+Its purpose is to define the protective endpoint of the same balanced family
+in which the adversarial parent defines the pessimistic endpoint.
 
-No Scala/Stainless implementation currently represents this target-aware
-companion policy.
+### 5.3 Fixed-Cohort Survival Under Adversarial/Protective Parent Mixing
 
-## 14. Property VIII: Fixed-Cohort Survival Under Bad/Good Mixing
-
-**Status:** **Mathematically proved for independent, position-blind parent
-labels. Stainless verification pending.** This property does not apply when
-the bad sister chooses parents after observing their positions.
-
-Consider $N_0$ locally relevant lineages followed through a fixed finite chain
-of filters. At filter $r$, every surviving lineage independently receives bad
-behavior with probability $\alpha_r$ and good behavior with probability
-$1-\alpha_r$. A bad label destroys its target child; a good label preserves it.
+We next alternate the two target-aware endpoint policies without letting the
+allocator inspect current positions. Consider $N_0$ locally relevant lineages
+followed through a fixed finite chain
+of filters. At filter $r$, every surviving lineage independently becomes an
+adversarial parent with probability $\alpha_r$ or a protective parent with
+probability $1-\alpha_r$. The adversarial policy destroys its target child;
+the protective policy preserves it. The calculation changes if the allocator
+may first observe which parents are locally relevant.
 
 One lineage survives the complete chain with probability
 
@@ -1205,12 +1217,10 @@ X_Q\sim\text{Binomial}(N_0,P_Q),
 so
 
 ```math
-\boxed{
 \begin{aligned}
 \mathbb E[X_Q]&=N_0e^{-A(Q)},\\
-\Pr(X_Q>0)&=1-\left(1-e^{-A(Q)}\right)^{N_0}.
+\Pr(X_Q > 0)&=1-\left(1-e^{-A(Q)}\right)^{N_0}.
 \end{aligned}
-}
 ```
 
 For one filter this reduces to
@@ -1222,53 +1232,49 @@ X_{k+1}\mid X_k=N
 ```
 
 with immediate wipeout probability $\alpha_r^N$. Population redundancy is
-therefore useful under blind parent assignment: the bad sister must happen to
-receive every relevant parent in the same transition to erase the cohort.
+therefore useful under blind parent assignment: every relevant lineage must
+become an adversarial parent in the same transition to erase the cohort.
 
-If $\alpha_r=\alpha>0$ is constant, then
+If $\alpha_r=\alpha > 0$ is constant, then
 
 ```math
 P_Q=(1-\alpha)^{\pi(Q)+O(1)}\longrightarrow0.
 ```
 
-Every one of the finite $N_0$ lineages eventually receives a bad label with
-probability one. Hence the fixed cohort becomes extinct almost surely even
+Every one of the finite $N_0$ lineages eventually becomes an adversarial parent
+with probability one. Hence the fixed cohort becomes extinct almost surely even
 though every lineage continues to have $r-2$ descendants elsewhere in the
 complete period.
 
-Compared with the bad/random mixture, the bad/good law removes the random
+Compared with the adversarial/random mixture, the adversarial/protective law removes the random
 factor $1-2/r$:
 
 ```math
 \begin{aligned}
-s_r^{\mathrm{bad/random}}
+s_r^{\mathrm{adversarial/random}}
 &=(1-\alpha_r)\left(1-\frac2r\right),\\
-s_r^{\mathrm{bad/good}}
+s_r^{\mathrm{adversarial/protective}}
 &=1-\alpha_r.
 \end{aligned}
+\qquad[\text{Q.E.D.}]
 ```
 
 This improvement is local. It does not overcome a fixed positive adversarial
 share repeated through infinitely many filters.
 
-No Scala/Stainless theorem currently represents the probability law above.
+### 5.4 Growing Square Windows Under Adversarial/Protective Parent Mixing
 
-## 15. Property IX: Growing Square Windows Under Bad/Good Mixing
+The protective policy removes the balanced-random density penalty by
+preserving every eligible target child. Suppose the fully protective model
+supplies $B(Q)\asymp C_0Q^2$ eligible lineages in the square window, while
+adversarial assignments remain independent and position-blind. The cumulative
+adversarial-label probability $e^{-A(Q)}$ is then the only local loss.
 
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** Assume that the fully good companion supplies
-$B(Q)\asymp C_0Q^2$ eligible target lineages in the square window and that bad
-labels are independent and position-blind across those lineages and filters.
-
-The good sister removes the balanced-random density penalty because it protects
-every eligible target child. The only remaining local loss is the cumulative
-bad-label probability $e^{-A(Q)}$.
-
-From §14, each of the $B(Q)$ eligible lineages survives with probability
+From §5.3, each of the $B(Q)$ eligible lineages survives with probability
 $e^{-A(Q)}$. Therefore
 
 ```math
-X_Q^{\mathrm{bad/good}}
+X_Q^{\mathrm{adversarial/protective}}
 \sim
 \text{Binomial}\left(B(Q),e^{-A(Q)}\right)
 ```
@@ -1277,8 +1283,8 @@ and
 
 ```math
 \begin{aligned}
-\lambda_Q^{\mathrm{bad/good}}
-&:=\mathbb E[X_Q^{\mathrm{bad/good}}]\\
+\lambda_Q^{\mathrm{adversarial/protective}}
+&:=\mathbb E[X_Q^{\mathrm{adversarial/protective}}]\\
 &=B(Q)e^{-A(Q)}\\
 &\asymp C_0Q^2e^{-A(Q)}.
 \end{aligned}
@@ -1288,9 +1294,9 @@ The empty-window probability satisfies
 
 ```math
 \begin{aligned}
-\Pr(X_Q^{\mathrm{bad/good}}=0)
+\Pr(X_Q^{\mathrm{adversarial/protective}}=0)
 &=\left(1-e^{-A(Q)}\right)^{B(Q)}\\
-&\le e^{-\lambda_Q^{\mathrm{bad/good}}}.
+&\le e^{-\lambda_Q^{\mathrm{adversarial/protective}}}.
 &&[1-x\le e^{-x}]
 \end{aligned}
 ```
@@ -1298,23 +1304,21 @@ The empty-window probability satisfies
 Taking logarithms gives the phase boundary
 
 ```math
-\log\lambda_Q^{\mathrm{bad/good}}
+\log\lambda_Q^{\mathrm{adversarial/protective}}
 =2\log Q-A(Q)+O(1).
 ```
 
-Hence, for every fixed $\varepsilon>0$,
+Hence, for every fixed $\varepsilon > 0$,
 
 ```math
-\boxed{
 \begin{aligned}
 A(Q)\le(2-\varepsilon)\log Q
 &\Longrightarrow
-\lambda_Q^{\mathrm{bad/good}}\longrightarrow\infty,\\
+\lambda_Q^{\mathrm{adversarial/protective}}\longrightarrow\infty,\\
 A(Q)\ge(2+\varepsilon)\log Q
 &\Longrightarrow
-\lambda_Q^{\mathrm{bad/good}}\longrightarrow0.
+\lambda_Q^{\mathrm{adversarial/protective}}\longrightarrow0.
 \end{aligned}
-}
 ```
 
 In the first regime the expectation grows polynomially, the empty-window
@@ -1330,13 +1334,12 @@ For the representative schedule
 we have $A(Q)\sim c\log Q$ and therefore
 
 ```math
-\lambda_Q^{\mathrm{bad/good}}\asymp C_0Q^{2-c}.
+\lambda_Q^{\mathrm{adversarial/protective}}\asymp C_0Q^{2-c}.
 ```
 
 Thus
 
 ```math
-\boxed{
 \begin{aligned}
 c < 2
 &\Longrightarrow
@@ -1348,39 +1351,32 @@ c > 2
 &\Longrightarrow
 \text{expected population tends to zero}.
 \end{aligned}
-}
 ```
 
-The leading threshold $c=2$ matches the bad/random companion, but the boundary
+The leading threshold $c=2$ matches the adversarial/random companion, but the boundary
 term differs:
 
 ```math
 \begin{aligned}
-\lambda_Q^{\mathrm{bad/random}}
+\lambda_Q^{\mathrm{adversarial/random}}
 &\asymp C\frac{Q^{2-c}}{(\log Q)^2},\\
-\lambda_Q^{\mathrm{bad/good}}
+\lambda_Q^{\mathrm{adversarial/protective}}
 &\asymp C_0Q^{2-c}.
 \end{aligned}
+\qquad[\text{Q.E.D.}]
 ```
 
-At $c=2$, the random mixture tends to zero while the good mixture retains only
+At $c=2$, the random mixture tends to zero while the protective mixture retains only
 an order-one expectation, still insufficient for eventual almost-sure
 nonemptiness.
 
-No Scala/Stainless theorem currently represents the optimistic-supply premise
-or the probability bounds above.
+### 5.5 Head Recurrence Under Adversarial/Protective Parent Mixing
 
-## 16. Property X: Head Recurrence Under Bad/Good Mixing
-
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** Assume the fully good companion has an eligible head lineage at
-prime stage $Q$ with probability $b_Q$, where $b_Q\ge b>0$ for all sufficiently
-large $Q$. Infinite recurrence additionally requires independence or adequate
-weak mixing between head events.
-
-The good sister can preserve an eligible head lineage, but it cannot create one
-when none is available. The factor $b_Q$ records that distinction. Conditional
-on availability, the lineage must avoid every bad label in its chain, giving
+At the head, the protective policy can preserve an eligible lineage but cannot
+create one. Let $b_Q$ be its availability probability and suppose
+$b_Q\ge b > 0$ for all sufficiently large $Q$. Conditional on availability,
+the lineage must avoid every adversarial assignment in its chain. Independence
+or adequate weak mixing between head events then supplies the recurrence step.
 
 ```math
 \Pr(H_Q)=b_Qe^{-A(Q)}.
@@ -1417,213 +1413,101 @@ we have $e^{-A(Q)}\asymp Q^{-c}$. The prime-head series therefore behaves like
 ```
 
 The prime harmonic series diverges at $c=1$, while the series converges for
-$c>1$. Hence
+$c > 1$. Hence
 
 ```math
-\boxed{
 \begin{aligned}
 c\le1
 &\Longrightarrow
 \text{infinitely many head events almost surely, with mixing},\\
-c>1
+c > 1
 &\Longrightarrow
 \text{only finitely many head events almost surely}.
 \end{aligned}
-}
 ```
 
-The boundary differs from bad/random mixing. There the balanced-random head
+The boundary differs from adversarial/random mixing. There the balanced-random head
 density contributes $(\log Q)^{-2}$:
 
 ```math
 \begin{aligned}
-\Pr(H_Q^{\mathrm{bad/random}})
+\Pr(H_Q^{\mathrm{adversarial/random}})
 &\asymp\frac1{Q^c(\log Q)^2},\\
-\Pr(H_Q^{\mathrm{bad/good}})
+\Pr(H_Q^{\mathrm{adversarial/protective}})
 &\asymp\frac{b_Q}{Q^c}.
 \end{aligned}
+\qquad[\text{Q.E.D.}]
 ```
 
-At $c=1$, the bad/random prime series converges, while the bad/good series
-diverges. Thus the good sister changes the inclusion of the critical boundary,
+At $c=1$, the adversarial/random prime series converges, while the adversarial/protective series
+diverges. Thus the protective parent policy changes the inclusion of the critical boundary,
 even though both mixtures have the same leading threshold scale.
 
 For the gentler schedule $\alpha_r\sim c/r$, the occurrence probability is
 comparable to $(\log Q)^{-c}$ and the sum over prime heads diverges for every
 fixed finite $c$.
 
-No Scala/Stainless theorem currently represents the optimistic head-availability
-or mixing premises.
-
-### 16.1 Bad/Random And Bad/Good Phase Comparison
+### 5.6 Parent-Mixture Comparison
 
 Under their respective spatial premises, the two position-blind mixtures have
 the following asymptotic behavior:
 
-| Adversarial schedule | Bad/random square window | Bad/good square window | Bad/random head | Bad/good head |
+| Adversarial schedule | Adversarial/random square window | Adversarial/protective square window | Adversarial/random head | Adversarial/protective head |
 |---|---:|---:|---:|---:|
-| Fixed $\alpha>0$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
+| Fixed $\alpha > 0$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
 | $\alpha_r\sim c/r$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Infinite with mixing | Infinite with mixing |
 | $\alpha_r\sim c\log r/r$, $c < 1$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Infinite with mixing | Infinite with mixing |
 | $\alpha_r\sim c\log r/r$, $c=1$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Finitely many almost surely | Infinite with mixing |
 | $\alpha_r\sim c\log r/r$, $1 < c < 2$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Finitely many almost surely | Finitely many almost surely |
 | $\alpha_r\sim c\log r/r$, $c=2$ | Expectation tends to zero | Order-one expectation | Finitely many almost surely | Finitely many almost surely |
-| $\alpha_r\sim c\log r/r$, $c>2$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
+| $\alpha_r\sim c\log r/r$, $c > 2$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
 
-The good sister removes the balanced-random $(\log Q)^{-2}$ loss. This does
+The protective parent policy removes the balanced-random $(\log Q)^{-2}$ loss. This does
 not change the leading square-window threshold $c=2$, because the quadratic
 window dominates logarithmic factors away from the boundary. It does change
 the boundary behavior and, most visibly, includes $c=1$ on the recurrent side
 of the head transition.
 
-Every entry assumes position-blind bad labels. A target-aware allocator is
-governed by §12 instead and may erase the head with one correctly placed bad
-label regardless of this table's percentage regime.
+Every entry assumes position-blind adversarial labels. A target-aware allocator
+is governed by §5.1 instead and may erase the head with one correctly placed
+adversarial label regardless of this table's percentage regime.
 
-## 17. Position-Blind And Limited-Targeting Assignment Mechanisms
+## 6. Allocation Mechanisms and Local Damage
 
-The policy choice belongs to a parent, not to each child independently. A child
-level coin could destroy an arbitrary number of one parent's copies and would
-break the exact-two reproduction law. Every mechanism below first assigns a
-good or bad policy to each parent; that policy then chooses exactly two harmful
-copy indices.
+### 6.1 Mechanism Families
 
-### 17.1 Independent Parent Coin
+An adversarial share becomes meaningful only after we say how policies are
+assigned to parents. A useful comparison begins with a position-blind
+allocator and then adds positional information in controlled steps. We write
+$P$ for a protective parent and $A$ for an adversarial parent.
 
-Each parent independently receives a bad label with probability $\alpha_r$.
-This is the simplest stochastic model and leads directly to the binomial law
-in §14. Its realized bad percentage fluctuates around $\alpha_r$.
-
-The label must be drawn without using the parent's coordinate, copy index, or
-distance from the head. Otherwise the coin is only nominally random and may
-encode hidden targeting.
-
-### 17.2 Exact-Quota Uniform Shuffle
-
-Uniformly shuffle all $N$ parent identities, label exactly
-
-```math
-K=\lfloor\alpha_rN\rfloor
-```
-
-parents bad, and label the rest good. Positions are revealed only after the
-assignment. This guarantees the requested realized percentage and gives the
-hypergeometric local law from §12.
-
-This is the recommended primary null model: it is position-blind, has an exact
-budget, preserves global reproduction, and admits exact finite-population
-probability calculations.
-
-### 17.3 Shuffled Alternation And Round-Robin Labels
-
-For a half-and-half experiment, shuffle the parents and assign
-
-```math
-G,B,G,B,\ldots
-```
-
-through the shuffled order. A new shuffle and reversed starting label may be
-used at the next filter. More general periodic words implement other rational
-shares.
-
-Alternation balances label counts, but it does not undo past damage. A target
-child killed on a bad round is not restored when the same lineage later
-receives a good label. Reusing an unshuffled ordering is also dangerous because
-lineage parity or spatial order may lock to the label pattern.
-
-### 17.4 Block-Balanced Shuffle
-
-Partition the ordered parents into blocks of size $b$ and assign exactly
-$\lfloor\alpha_rb\rfloor$ bad labels uniformly inside each block. This prevents
-all bad assignments from clustering in one long positional region while
-retaining randomness inside each block.
-
-Block balance is not a neutral model of unrestricted randomness. It is a
-controlled anti-clustering model and should be reported as such. Varying $b$
-tests how much the outcome depends on the spatial scale at which balance is
-enforced.
-
-### 17.5 Random Cyclic Mask
-
-Choose a fixed balanced word such as
-
-```math
-G,G,G,B,G,G,G,B,\ldots
-```
-
-and apply a uniformly random cyclic offset at each filter. This is inexpensive,
-reproducible, and keeps short-range bad spacing controlled. Different word
-lengths and offsets are necessary because one periodic mask could resonate with
-the sieve's own periodic geometry.
-
-### 17.6 Position-Blind Hash Assignment
-
-Let a seeded hash of lineage identity and filter prime determine the label:
-
-```math
-B_g
-=
-\mathbf 1\{h(\text{lineage}(g),r,\text{seed})<\alpha_r\}.
-```
-
-The hash must exclude current head distance and other positional observables.
-This model behaves like a parent coin while making every run exactly
-reproducible from its seed.
-
-### 17.7 Delayed Adversary
-
-Allow the bad sister to inspect the previous layer but not the current layer.
-It ranks parents using stale head distances and spends its exact budget on the
-previously closest lineages. This tests whether proximity persists strongly
-enough across one transition to make partial information dangerous.
-
-The delayed adversary lies between blind assignment and a current-position
-oracle. Its effectiveness is itself evidence about cross-layer positional
-memory.
-
-### 17.8 Noisy Adversarial Ranking
-
-Let $d_g$ be a normalized current distance from parent $g$'s closest child to
-the target. Assign bad labels without replacement using weights
-
-```math
-w_g(\beta)=e^{-\beta d_g}.
-```
-
-The parameter $\beta$ controls targeting intelligence:
-
-```math
-\begin{aligned}
-\beta=0
-&\Longrightarrow\text{uniform exact-quota shuffle},\\
-0<\beta<\infty
-&\Longrightarrow\text{partial preference for near-head parents},\\
-\beta\longrightarrow\infty
-&\Longrightarrow\text{closest-parent-first adversary}.
-\end{aligned}
-```
-
-This family turns the qualitative phrase “somewhat adversarial” into two
-separate quantities: the budget $\alpha_r$ and the information strength
-$\beta$. It is the most useful stress-test family once the position-blind null
-model is established.
-
-### 17.9 Recommended Order Of Use
-
-| Mechanism | Realized bad share | Current positional knowledge | Primary purpose |
+| Mechanism | Adversarial share | Position information | What it measures |
 |---|---:|---:|---|
-| Independent parent coin | Random around $\alpha_r$ | None | Simplest probability law |
-| Exact-quota shuffle | Exactly $K/N$ | None | Canonical null model |
-| Block-balanced shuffle | Locally constrained | None | Anti-clustering sensitivity |
-| Delayed adversary | Exactly $K/N$ | Previous layer | Positional-memory test |
-| Noisy ranking | Exactly $K/N$ | Tunable | Targeting phase transition |
-| Perfect adversary | Exactly $K/N$ | Complete | Worst-case endpoint |
+| Independent parent coin | Random around $\alpha_r$ | None | Simplest branching law |
+| Exact-quota shuffle | Exactly $K/N$ | None | Canonical finite-population baseline |
+| Shuffled alternation, $P,A,P,A,\ldots$ | Fixed by pattern | None | Balanced deterministic labels after shuffling |
+| Block-balanced shuffle | Fixed inside each block | None | Sensitivity to local clustering |
+| Random cyclic mask | Fixed by pattern | None | Sensitivity to periodic allocation |
+| Position-blind hash | Random around $\alpha_r$ | None | Reproducible parent coins |
+| Delayed adversary | Exactly $K/N$ | Previous layer | Persistence of positional information |
+| Noisy ranking | Exactly $K/N$ | Tunable | Transition from blind to targeted allocation |
+| Perfect adversary | Exactly $K/N$ | Current layer | Worst-case endpoint |
 
-The exact-quota shuffle should be the baseline. Other mechanisms answer
-different questions and should not be pooled into one undifferentiated
-“percentage adversarial” curve.
+The exact-quota shuffle is the primary null model because it fixes the budget
+without using position. Shuffled patterns and block balance test whether local
+clustering changes the result. A delayed allocator can use only the previous
+layer, while noisy ranking assigns weight $e^{-\beta d_g}$ to a parent at
+distance $d_g$ from the target. Thus $\beta=0$ is uniform allocation and large
+$\beta$ approaches the perfect adversary.
 
-## 18. A Two-Axis Phase Diagram And Experimental Program
+Every mechanism assigns one policy to a parent; the chosen policy still removes
+exactly two of that parent's children. Alternating labels cannot restore a
+target child destroyed at an earlier filter, and an unshuffled periodic pattern
+may lock to the sieve geometry. We therefore compare mechanisms through their
+realized local damage and targeting strength rather than through the scheduled
+percentage alone.
+
+### 6.2 Targeting and Local Hazard
 
 The primary observed state space has two coordinates:
 
@@ -1634,13 +1518,13 @@ The primary observed state space has two coordinates:
 ```
 
 The first says how much total damage the tracked segment actually received.
-The second says how concentrated the controllable bad-label budget was relative
+The second says how concentrated the controllable adversarial-label budget was relative
 to the locally relevant parents. The scheduled share $\alpha_r=K_r/N_r$
 remains an experimental input, but it is not itself the local damage.
 
-### 18.1 Normalized Targeting Strength
+#### Normalized Targeting Strength
 
-For one nondegenerate transition, retain the notation from §12 and define
+For one nondegenerate transition, retain the notation from §5.1 and define
 
 ```math
 \begin{aligned}
@@ -1650,7 +1534,7 @@ H_{\max}&=\min(K,L).
 \end{aligned}
 ```
 
-These are the optimistic minimum, uniform-random mean, and adversarial maximum
+These are the protective minimum, uniform-random mean, and adversarial maximum
 numbers of locally relevant parents hit. When
 $H_{\min} < H_0 < H_{\max}$, normalize the realized hit count $H$ by
 
@@ -1667,7 +1551,7 @@ Then
 ```math
 \begin{aligned}
 \theta=-1&\Longleftrightarrow H=H_{\min}
-&&[\text{Optimistic Endpoint}],\\
+&&[\text{Protective Endpoint}],\\
 \theta=0&\Longleftrightarrow H=H_0
 &&[\text{Uniform Benchmark}],\\
 \theta=1&\Longleftrightarrow H=H_{\max}
@@ -1691,22 +1575,23 @@ The score measures realized placement, not hostile intent. A random shuffle
 may occasionally produce positive $\theta$, and a nominal adversary with poor
 information may produce negative $\theta$.
 
-### 18.2 Realized Local Hazard
+#### Realized Local Hazard
 
 Let $T_r$ be the total number of locally relevant target children destroyed by
-the complete filter, including both random-baseline and bad-label destruction.
+the complete filter, including both random-baseline and adversarial-label destruction.
 Define
 
 ```math
 f_r^{\mathrm{local}}=\frac{T_r}{L_r},
 \qquad
 w_r^{\mathrm{local}}=\frac{rT_r}{2L_r},
-\qquad L_r>0.
+\qquad L_r > 0.
 ```
 
-In the pure bad/good assignment, a bad label destroys its target and a good
-label preserves it, so $T_r=H_r$. In the bad/random assignment, $T_r$ also
-contains the random branch's $2/r$ baseline. For blind bad/random labels,
+In the pure adversarial/protective assignment, an adversarial label destroys
+its target and a protective label preserves it, so $T_r=H_r$. In the
+adversarial/random assignment, $T_r$ also contains the random branch's $2/r$
+baseline. For blind adversarial/random labels,
 
 ```math
 \mathbb E[f_r^{\mathrm{local}}]
@@ -1718,7 +1603,7 @@ A perfect adversary can make $f_r^{\mathrm{local}}=1$ even when the global
 budget $\alpha_r=K_r/N_r$ is tiny, provided its budget and information cover
 the local target.
 
-The cumulative local hazard from §5 is
+The cumulative local hazard from §3.3 is
 
 ```math
 D(Q)
@@ -1729,7 +1614,7 @@ D(Q)
 whenever every factor is positive. If one transition has
 $f_r^{\mathrm{local}}=1$, the tracked local cohort is extinct and $D(Q)$ is
 effectively infinite from that point. This diagnostic generalizes $A(Q)$ and
-includes the random baseline rather than counting only the excess bad-label
+includes the random baseline rather than counting only the excess adversarial-label
 loss. The separation between scheduled $\alpha_r$, realized
 $w_r^{\mathrm{local}}$, and targeting score $\theta_r$ measures respectively
 policy budget, total relative damage, and the value of positional information.
@@ -1738,7 +1623,7 @@ When the locally relevant population is redefined at every transition rather
 than following one cohort, $D(Q)$ is only a cumulative diagnostic; it is not an
 exact survival exponent for a single population.
 
-The phase calculations earlier in the article can therefore be read with three
+We can therefore read the earlier phase calculations with three
 levels of input:
 
 - $A(Q)$ is the scheduled budget under the blind-allocation model;
@@ -1748,99 +1633,67 @@ levels of input:
 Only the first has a closed form from $\alpha_r$ alone. The general survival
 law and relative phase diagram use $D(Q)$ or $w_r^{\mathrm{local}}$ directly.
 
-### 18.3 Experiment Grid
+### 6.3 Comparing the Allocation Mechanisms
 
-For each filter schedule, run the following allocation mechanisms over many
-seeds:
+The mechanisms differ in how much they know about the target, so we compare
+them with the same strike budget and the same target region. Uniform shuffling
+is the neutral reference. Block balance and delayed information show whether
+dependence alone changes the result. Noisy ranking moves continuously toward
+the perfectly targeted endpoint.
 
-| Budget schedule | Uniform quota | Block balanced | Delayed adversary | Noisy ranking | Perfect endpoints |
-|---|---:|---:|---:|---:|---:|
-| Exact local CRT quota $J_r$ | Canonical | Sensitivity test | Sensitivity test | Several $\beta$ | Comparison only |
-| Exact quota with endpoint weight $\beta_r$ | Neutral at $1$ | Several weights | Delayed weights | Dense grid near effective $c=1/2,1$ | Perfect-target limit |
-| Target fixed $w$ | Yes | Yes | Yes | Several $\beta$ | Good and bad |
-| Target $w_r=1+c\log r$ | Yes | Yes | Yes | Dense grid near $c=1/2,1$ | Good and bad |
-| Constant $\alpha$ | Yes | Yes | Yes | Several $\beta$ | Good and bad |
-| $\alpha_r=c/r$ | Yes | Yes | Yes | Several $\beta$ | Good and bad |
-| $\alpha_r=c\log r/r$ | Yes | Yes | Yes | Dense grid near $c=1,2$ | Good and bad |
+| Allocation | Information about the target | Role in the comparison |
+|---|---|---|
+| Uniform exact quota | None | Random baseline |
+| Block-balanced quota | None, but locally dependent | Clustering test |
+| Delayed allocation | Previous layer only | Memory test |
+| Noisy ranking | Partial current information | Intermediate targeting |
+| Perfect allocation | Complete current information | Adversarial endpoint |
 
-Relative-factor schedules should be implemented by calibrating the available
-bad-label budget and then recording the realized $w_r$; exact realization may
-be impossible for small finite populations. The $1+c\log r$ family should
-sample both sides of $c=1/2$ and $c=1$. The absolute-share $c\log r/r$ family
-should sample both sides of its derived $c=1$ and $c=2$ boundaries. No run
-should extend a fixed window past its physical certification boundary.
-
-### 18.4 Required Per-Transition Measurements
-
-Each row should record at least:
-
-- filter prime $r$ and target head $Q$;
-- total parents $N_r$ and locally relevant parents $L_r$;
-- exact CRT shot quota $J_r$, eligible-value population $N_r^{\mathrm{shot}}$,
-  and quota fraction $u_r=J_r/N_r^{\mathrm{shot}}$;
-- endpoint fraction $x_r$, raw preference $\beta_r$, and effective skew
-  $\kappa_r^{\mathrm{eff}}$ for biased-quota runs;
-- bad budget $K_r$ and global share $\alpha_r=K_r/N_r$;
-- bad-label hits $H_r$ and allocation survivors $S_r=L_r-H_r$;
-- total destroyed local target children $T_r$;
-- normalized targeting $\theta_r$ when defined;
-- realized local hazard $f_r^{\mathrm{local}}$, relative factor
-  $w_r^{\mathrm{local}}$, and cumulative $D(Q)$;
-- closest surviving distance to the head;
-- safe-window nonemptiness and head-hit indicators; and
-- global 2-gap count, which must continue to match exact $r-2$ reproduction.
-
-Exact-quota runs should additionally report the partial sums
+For each transition, the essential observation is the tuple
 
 ```math
-\sum_{r<Q}u_r
-\qquad\text{and}\qquad
-\sum_{r<Q}\left(u_r^2+\frac{u_r}{N_r^{\mathrm{shot}}}\right),
+(N_r,L_r,K_r,H_r,T_r,w_r^{\mathrm{local}},\theta_r).
 ```
 
-because preserving each finite shot count does not by itself verify the
-cumulative hypotheses in Property XI.
+It records the total and locally relevant parents, the available adversarial
+budget, the number of relevant parents selected, the total local destruction,
+the damage relative to random, and the targeting score. Exact-quota companions
+also retain $J_r$, $u_r=J_r/N_r^{\mathrm{strike}}$, and the cumulative sums
 
-Counts and reciprocal-spacing charts must be derived from the same rows so
-that zero count and infinite implied spacing remain exactly equivalent.
+```math
+\sum_{r < Q}u_r
+\qquad\text{and}\qquad
+\sum_{r < Q}\left(u_r^2+\frac{u_r}{N_r^{\mathrm{strike}}}\right),
+```
 
-### 18.5 Comparison With The Real Filter
+because matching one finite strike count does not establish the cumulative
+conditions used in §7.1.
 
-Apply the same observables to the deterministic modular filter. It has no
-chosen $K_r$ policy label, but its realized local hit count $H_r$ can still be
-compared with the feasible interval $[H_{\min},H_{\max}]$ and the uniform
-benchmark $H_0$ after selecting the matching global destruction budget.
+The real modular filter has no assigned parent policy, but the same local
+observations still apply. Its hit count can be compared with the protective
+minimum, uniform mean, and adversarial maximum from §6.2. Across successive
+heads, $D(Q)$ then shows whether the arithmetic placement remains near the
+random companion or accumulates damage like an informed allocator. This is a
+comparison of behavior, not an attribution of intent.
 
-The informative comparison is not merely whether the real filter kills more
-than the random mean at one transition. It is whether its realized targeting
-scores and cumulative local hazard persistently track the random, delayed,
-noisy, or perfect-adversarial companions across growing heads.
+## 7. Exact-Quota Companion Processes
 
-This program does not infer intent from the score. It measures how much the
-real arithmetic placement behaves as though it had access to positional
-information.
+### 7.1 Exact CRT Quotas With Random Locations
 
-## 19. Property XI: Exact CRT Quotas With Random Locations Recur At The Head
-
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** The exact one-filter probability follows from uniform sampling
-without replacement. Infinite head recurrence additionally assumes persistent
-head availability and independence or adequate mixing across layers. The
-square-window conclusion assumes blind placement and quadratic eligible
-supply. None of those stochastic premises is asserted for the real sieve.
-
-The balanced random sister fixes two harmful copy indices per parent. A closer
-statistical sister can instead retain the exact number of shots supplied by a
-chosen CRT population and randomize only their locations. This preserves the
-real quota while removing the arithmetic targeting information. Exact quotas
-create dependence within one layer, but they do not change the one-position
-survival scale when allocated uniformly.
+The random parent model fixes two harmful copy indices per parent. A closer
+statistical companion can instead retain the exact number of accepted strikes
+supplied by a chosen CRT population and randomize only their locations. This
+preserves the real count while removing the arithmetic targeting information.
+Exact quotas create dependence within one layer, but they do not change the
+one-position survival scale when allocated uniformly. The head result also
+uses persistent availability and cross-layer mixing, while the square-window
+result uses blind placement and a quadratic eligible supply.
 
 At filter $r$, let $U_r$ contain $N_r$ eligible values and let the CRT quota be
-$J_r$, with $0\le J_r\le N_r-2$. The exact-quota random sister chooses one
-uniformly random size-$J_r$ subset of $U_r$ as its shot set. For a specified
+$J_r$, with $0\le J_r\le N_r-2$. The exact-quota random parent model chooses one
+uniformly random size-$J_r$ subset of $U_r$ as its strike set. For a specified
 2-gap whose two endpoints belong to $U_r$, both endpoints survive precisely
-when every shot is selected from the other $N_r-2$ values. Therefore
+when every strike is selected from the other $N_r-2$ values. Therefore
 
 ```math
 \begin{aligned}
@@ -1852,7 +1705,7 @@ s_r
 \end{aligned}
 ```
 
-Write the shot fraction as
+Write the strike fraction as
 
 ```math
 u_r:=\frac{J_r}{N_r}.
@@ -1870,10 +1723,10 @@ recurrence. Assume that along the conditioned chain to head $Q$,
 
 ```math
 \begin{aligned}
-\sum_{r<Q}u_r
+\sum_{r < Q}u_r
 &=\log\log Q+O(1),
 &&[\text{CRT-Rate Cumulative Quota}]\\
-\sum_{r<Q}
+\sum_{r < Q}
 \left(u_r^2+\frac{u_r}{N_r}\right)
 &=O(1).
 &&[\text{Summable Finite-Population Error}]
@@ -1882,30 +1735,30 @@ recurrence. Assume that along the conditioned chain to head $Q$,
 
 The complete-period CRT benchmark $u_r=1/r$ satisfies these conditions. A
 different local CRT quota must be checked against them; preserving a numerical
-shot count alone does not make the conclusion automatic.
+strike count alone does not make the conclusion automatic.
 
 Multiplying the exact without-replacement factors gives
 
 ```math
 \begin{aligned}
 P_{\mathrm{quota}}(Q)
-&=\prod_{r<Q}s_r
+&=\prod_{r < Q}s_r
 &&[\text{Survive Every Filter}]\\
-&=\exp\left(\sum_{r<Q}\log s_r\right)
+&=\exp\left(\sum_{r < Q}\log s_r\right)
 &&[\text{Product To Sum}]\\
-&=\exp\left(-2\sum_{r<Q}u_r+O(1)\right)
+&=\exp\left(-2\sum_{r < Q}u_r+O(1)\right)
 &&[\text{Summable Error}]\\
 &\asymp\frac{C}{(\log Q)^2}.
 &&[\text{Cumulative Quota Condition}]
 \end{aligned}
 ```
 
-Thus the exact-quota sister has the same one-head survival order as the
-balanced random sister. It is not an independent Bernoulli filter inside one
-layer; it is a uniform shuffle conditioned on the exact CRT shot count.
+Thus the exact-quota companion has the same one-head survival order as the
+random parent model. It is not an independent Bernoulli filter inside one
+layer; it is a uniform shuffle conditioned on the exact CRT strike count.
 
 Suppose the distinguished head candidate is eligible with conditional
-probability at least $b_0>0$, uniformly for all sufficiently large prime heads,
+probability at least $b_0 > 0$, uniformly for all sufficiently large prime heads,
 and that this availability is compatible with the quota-survival experiment.
 Then
 
@@ -1936,9 +1789,7 @@ Under independence or an adequate cross-layer mixing condition, the second
 Borel-Cantelli lemma yields
 
 ```math
-\boxed{
 \Pr(H_Q\text{ occurs infinitely often})=1.
-}
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -1947,7 +1798,7 @@ The set of realizations with only finitely many head hits has probability zero,
 but it is not logically empty.
 
 For square-safe windows, assume $B(Q)\asymp C_0Q^2$ eligible starts and the
-same blind-placement empty-window premise used by the balanced random sister.
+same blind-placement empty-window premise used by the random parent model.
 Then
 
 ```math
@@ -1975,9 +1826,9 @@ eventual-window statement is stronger than the twin-prime-style target: an
 unbounded sequence of successful windows, or infinitely many head hits, is
 already sufficient for infinitely many distinct certificates.
 
-For consecutive primes $p<q$, the real accepted-shot quota in the next safe
-window is maintained in [Exact Accepted Filter Strikes](
-../../properties/sieve-sequence/exact-accepted-local-filter-strikes.md):
+For consecutive primes $p < q$, the real accepted-strike count in the next safe
+window is proved in [Gap Dynamics §9.1](
+../chapter6/gap-dynamics.md#91-exact-accepted-strikes):
 
 ```math
 A(p,q)
@@ -1986,30 +1837,23 @@ A(p,q)
 -\pi(p-1).
 ```
 
-Using this local quota as $J_r=A(p,q)$ in the random-location sister is well
+Using this local quota as $J_r=A(p,q)$ in the random-location companion is well
 defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed
-cumulative conditions for the head proof above. The [Exact Global 2-Gap Count](
-../../properties/sieve-sequence/exact-global-two-gap-count.md) supplies the
-complete-period density; neither exact count determines local placement in the
-real sieve.
+cumulative conditions for the head proof above. The
+[complete-period count](
+../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) supplies the
+global density; neither exact count determines local placement in the real
+sieve.
 
-No Scala/Stainless theorem currently encodes exact-quota random sampling,
-Borel-Cantelli recurrence, or the cumulative quota asymptotic.
+### 7.2 Biased Exact Quotas and the Logarithmic Skew Frontier
 
-## 20. Property XII: Biased Exact Quotas Have A Logarithmic Skew Frontier
-
-**Status:** **Conditional mathematical theorem. Stainless verification
-pending.** The marginal normalization follows from the stipulated
-group-exchangeable exact-quota law. Translating endpoint marginals into 2-gap
-destruction assumes that double hits on one pair have the stated quadratic
-order. Head recurrence and square-window conclusions retain the availability,
-blind-placement, and cross-layer mixing premises of Properties IV and XI.
-
-The neutral exact-quota sister treats every eligible value symmetrically. A
-bad-sister perturbation can keep the same quota $J_r$ while making 2-gap
-endpoints proportionally more likely to receive a shot. This asks how much
-positional preference the quota can carry before the almost-sure head
-conclusion changes.
+The neutral exact-quota companion treats every eligible value symmetrically.
+We now keep the same quota $J_r$ while making
+2-gap endpoints proportionally more likely to receive a harmful strike. This
+asks how much positional preference the quota can carry before the almost-sure
+head conclusion changes. We use a group-exchangeable allocation law, assume
+double strikes on one endpoint pair have quadratic order, and retain the
+availability, placement, and mixing premises of §§3.5 and 7.1.
 
 Let $E_r\subseteq U_r$ be the eligible values that are endpoints of locally
 relevant 2-gaps, and define
@@ -2054,13 +1898,13 @@ Define the quota-normalized preference
 \frac{\beta_r}{1+(\beta_r-1)x_r}.
 ```
 
-For one 2-gap, assume the probability that both endpoints are shot is
+For one 2-gap, assume the probability that both endpoints are struck is
 $O((p_r^{E})^2)$. Its destruction fraction then satisfies
 
 ```math
 \begin{aligned}
 f_r
-&=2p_r^{E}-\Pr(\text{both endpoints are shot})
+&=2p_r^{E}-\Pr(\text{both endpoints are struck})
 &&[\text{Inclusion-Exclusion}]\\
 &=2u_r\kappa_r^{\mathrm{eff}}
 +O\left((u_r\kappa_r^{\mathrm{eff}})^2\right).
@@ -2094,14 +1938,14 @@ For the phase theorem, measure skew by the realized effective factor
 ```
 
 This is the same quantity called $w_r$ in the general hazard analysis. Its
-cumulative survival is defined once $2\kappa_r<r$. Every regime below satisfies
+cumulative survival is defined once $2\kappa_r < r$. Every regime below satisfies
 this inequality for all sufficiently large filters; the finite prefix is
 absorbed into a positive constant. Thus
 
 ```math
 P_{\kappa}(Q)
 =
-\prod_{r<Q}\left(1-\frac{2\kappa_r}{r}\right)
+\prod_{r < Q}\left(1-\frac{2\kappa_r}{r}\right)
 =e^{-D_{\kappa}(Q)},
 ```
 
@@ -2110,10 +1954,10 @@ where
 ```math
 D_{\kappa}(Q)
 :=
-\sum_{r<Q}-\log\left(1-\frac{2\kappa_r}{r}\right).
+\sum_{r < Q}-\log\left(1-\frac{2\kappa_r}{r}\right).
 ```
 
-If $\kappa_r=\kappa<\infty$ is fixed, then
+If $\kappa_r=\kappa < \infty$ is fixed, then
 
 ```math
 \begin{aligned}
@@ -2130,9 +1974,7 @@ The sum of this probability over prime heads diverges for every finite
 $\kappa$. With persistent head availability and adequate cross-layer mixing,
 
 ```math
-\boxed{
 \text{every fixed finite proportional skew gives infinitely many head hits almost surely.}
-}
 ```
 
 Thus there is no finite constant-skew maximum.
@@ -2166,16 +2008,14 @@ For prime heads, the occurrence series has the same convergence behavior as
 Therefore
 
 ```math
-\boxed{
 \begin{aligned}
-c<\frac12
+c < \frac12
 &\Longrightarrow
 \text{infinitely many head hits almost surely, with mixing},\\
 c\ge\frac12
 &\Longrightarrow
 \text{only finitely many head hits almost surely}.
 \end{aligned}
-}
 \qquad[\text{Q.E.D.}]
 ```
 
@@ -2188,25 +2028,21 @@ the cumulative series $D_{\kappa}(Q)$ must be evaluated directly.
 The robust head-safe frontier is therefore
 
 ```math
-\boxed{
 \kappa_r
 \le
 1+\left(\frac12-\varepsilon\right)\log r
 \quad\Longrightarrow\quad
 \text{head recurrence almost surely, with mixing}.
-}
 ```
 
 For square windows, quadratic supply gives the larger robust frontier
 
 ```math
-\boxed{
 \kappa_r
 \le
 1+(1-\varepsilon)\log r
 \quad\Longrightarrow\quad
 \text{eventual square-window occupancy almost surely}.
-}
 ```
 
 Hence the intermediate range between approximately $(1/2)\log r$ and
@@ -2214,21 +2050,16 @@ $\log r$ preserves square windows but not infinitely recurring head hits. The
 window statement is stronger than necessary: the twin-prime-style conclusion
 needs only infinitely many successful windows.
 
-For an irregular skew schedule, the authoritative head criterion is
+For an irregular skew schedule, the head criterion is
 
 ```math
-\boxed{
 \sum_{Q\text{ prime}}e^{-D_{\kappa}(Q)}=\infty,
-}
 ```
 
 together with persistent availability and adequate mixing. A pointwise skew
 percentage cannot replace this cumulative test.
 
-No Scala/Stainless theorem currently encodes biased exact-quota sampling, the
-endpoint-pair collision premise, or these analytic phase boundaries.
-
-## 21. Relation To The Real Sieve
+## 8. Relation to the Real Sieve
 
 For a real 2-gap $(a,a+2)$ and incoming prime $r$, the harmful copies are not
 chosen freely. They are fixed by
@@ -2240,24 +2071,23 @@ K_{a,r}^{\mathrm{real}}
 ```
 
 Different parents are coupled through this single arithmetic rule. The real
-filter has neither independent policy coins nor freely allocated good and bad
-labels. It nevertheless has directly measurable local destruction $f_r$, a
+filter has neither independent policy coins nor freely allocated protective and
+adversarial labels. It nevertheless has directly measurable local destruction $f_r$, a
 relative factor $w_r=rf_r/2$, and cumulative hazard $D(Q)$. Assigning it an
 effective policy share $\alpha_r$ requires an additional declared companion
 benchmark, while assessing its positional concentration requires the separate
-hit count and targeting normalization from §18.
+hit count and targeting normalization from §6.2.
 
-The score developed in [Realized Filter Adversariality](
-../../properties/sieve-sequence/realized-filter-adversariality-score.md)
-provides a finite-transition destruction normalization. The new allocation
-axis asks an additional question: for the same global destruction budget, how
-close is the realized local hit count to the uniform mean or targeted maximum?
+The relative factor defined in §3.2 provides a finite-transition destruction
+normalization. Section 6.2 adds the allocation question: for the same global
+destruction budget, how close is the realized local hit count to the uniform
+mean or targeted maximum?
 
 The companion diagrams identify what a transfer theorem would need to control:
 
 - the realized relative damage $w_r$ and cumulative hazard $D(Q)$;
 - the exact-quota fractions $u_r$ and their cumulative deviation from
-  $\sum_{r<Q}1/r$;
+  $\sum_{r < Q}1/r$;
 - raw endpoint preference $\beta_r$, quota-normalized effective skew
   $\kappa_r^{\mathrm{eff}}$, and cumulative skew hazard $D_{\kappa}(Q)$;
 - any scheduled or effective policy budget $A(Q)$ used for a particular
@@ -2265,26 +2095,209 @@ The companion diagrams identify what a transfer theorem would need to control:
 - the availability and abundance premises for the chosen target; and
 - sufficient cross-layer mixing for divergent head-event sums.
 
-No current property proves that the real CRT-coupled filter follows the random,
-good, delayed, noisy, or perfectly adversarial companion asymptotically.
+### 8.1 Finite Empirical Comparison With Random
 
-## 22. Limitations
+We can compare the real sieve with the random companion at two square-window
+scales. The first comparison counts the 2-gaps already present in each
+sequence's own window. For head $h$, let $G_{\mathrm{real}}(h)$ be the number
+of real 2-gap starts in $[h,h^2)$. The random companion expectation is
+
+```math
+E_{\mathrm{random}}(h)
+=(h^2-h)\frac12
+\prod_{3\le r < h}\left(1-\frac2r\right).
+```
+
+The $c=1$ square-window frontier adds the logarithmic excess hazard from §3.5:
+
+```math
+E_{c=1}(h)
+=E_{\mathrm{random}}(h)
+\prod_{7\le r < h}
+\left(1-\frac{2\log r}{r-2}\right).
+```
+
+The figure compares these two expectations with the real count in every fully
+covered sequence window. Across 188 heads from $3$ through $1129$, the mean
+ratio $G_{\mathrm{real}}/E_{\mathrm{random}}$ is $0.967$. At the largest
+covered head it is $0.947$: the real window contains $10{,}056$ 2-gaps,
+compared with a random expectation of $10{,}616$. The corresponding $c=1$
+frontier expectation is only $0.0845$. Over this finite range, the real
+square-window population follows the random scale and remains far above the
+square-window failure frontier.
+
+![Real per-sequence square-window 2-gap counts compared with the random expectation and the c=1 square-window frontier](../../presentations/sieve-sequence-visualization/figures/out/per-sequence-frontier.svg)
+
+The figure is generated by the [per-sequence frontier calculation](
+../../presentations/sieve-sequence-visualization/figures/per_sequence_frontier_chart.py)
+from the [per-sequence survivor data](
+../../data/sieve-sequence/first_gaps_per_seq.csv).
+
+The second comparison isolates one transition. For consecutive primes $p<q$,
+let $G_p$ be the pre-filter 2-gap population in $[q,q^2)$ and let $H_p$ be the
+number destroyed when filter $p$ is installed. The observed fraction and its
+relative factor are
+
+```math
+f_p^{\mathrm{real}}:=\frac{H_p}{G_p},
+\qquad
+w_p^{\mathrm{real}}:=\frac{pf_p^{\mathrm{real}}}{2}.
+```
+
+The chart compares $f_p^{\mathrm{real}}$ with the random rate $2/p$ and the
+$c=1$ square-window boundary $2(1+\log p)/p$. Among 187 distinct measured
+transitions from $p=3$ through $p=19{,}429$, 186 lie below the random rate and
+the remaining transition, $p=3$, equals it. Ninety-five transitions destroy no
+2-gap in the measured window. From $p\ge1000$, the largest observed relative
+factor is
+
+```math
+w_p^{\mathrm{real}}=0.0523.
+```
+
+Thus the measured real transition is not slightly more destructive than the
+random filter; on these windows it is substantially less destructive.
+
+![Real per-transition square-window 2-gap destruction compared with the random rate and the c=1 square-window boundary](../../presentations/sieve-sequence-visualization/figures/out/frontier-comparison-stages.svg)
+
+The figure is generated by the [per-transition frontier calculation](
+../../presentations/sieve-sequence-visualization/figures/frontier_comparison_stages_chart.py)
+from the [dense](../../data/candidates/window-measurements.csv) and
+[sparse](../../data/candidates/window-measurements-sparse.csv) transition data.
+Zero-destruction transitions are displayed on the chart's $10^{-7}$ floor so
+that they remain visible on a logarithmic axis.
+
+The two findings are compatible. The first chart measures the population left
+after all earlier filters; the second isolates the next filter acting on a new
+window. Neither dataset follows one fixed cohort through every filter below a
+single head, so their changing-window fractions cannot be multiplied into one
+cumulative hazard.
+
+The complete modular cycle supplies an exact reference in two complementary
+views. The first is local to one filter: it asks what fraction of the expanded
+cyclic population that filter destroys. The second is cumulative: it asks how
+much of a normalized starting population remains after those one-filter
+fractions are compounded. The two figures below deliberately mirror these two
+steps of the calculation.
+
+#### Exact Per-Filter Destruction
+
+If $T$ old cyclic 2-gaps are expanded through a new prime $r$, there are $rT$
+copies and exactly two harmful copy indices per parent. Consequently,
+
+```math
+\begin{aligned}
+H_r^{\mathrm{cycle}}
+&=2T
+&&[\text{Two Harmful Copy Classes}],\\
+f_r^{\mathrm{cycle}}
+&=\frac{H_r^{\mathrm{cycle}}}{rT}
+=\frac2r
+&&[\text{Substitution}],\\
+w_r^{\mathrm{cycle}}
+&=1,
+&&[\text{By Definition}],\\
+D_{\mathrm{cycle}}(R)-D_{\mathrm{random}}(R)
+&=0.
+&&[\text{Termwise Equality; Q.E.D.}]
+\end{aligned}
+```
+
+Thus the full-cycle destruction fraction equals the neutral benchmark as a
+count identity. This does not say that the harmful positions are independently
+random. The figure below makes the identity visible alongside the $c=1$
+reference on the valid range $29\le r\le251$. Its simplicity is the point:
+the overlap between the exact-cycle and neutral curves is the graphical form
+of the algebra above, while the separated $c=1$ curve shows the scale of the
+hypothetical logarithmic worsening. The chart is strong precisely because the
+reader can verify the stated relationship without additional interpretation.
+
+![Exact full-cycle 2-gap destruction fraction compared with the neutral rate and the c=1 reference](../../presentations/sieve-sequence-visualization/figures/out/full-cycle-destruction.svg)
+
+The figure is generated by the [full-cycle destruction calculation](
+../../presentations/sieve-sequence-visualization/figures/full_cycle_destruction_chart.py).
+The underlying two-class result is proved in [Gap Dynamics §6.1](
+../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes).
+
+#### Cumulative Survival Consequence
+
+The first diagram makes the proved one-filter equality visible. Compounding
+those same factors gives the normalized complete-cycle survival reference
+
+```math
+\begin{aligned}
+P_{\mathrm{cycle}}(29,R)
+&=\prod_{29\le p\le R}\left(1-\frac2p\right),\\
+P_{c=1}(29,R)
+&=\prod_{29\le p\le R}
+\left(1-\frac{2(1+\log p)}p\right).
+\end{aligned}
+```
+
+At $R=251$, these normalized products are $0.3733$ and $0.003676$,
+respectively, a ratio of about $102$. The second figure therefore shows the
+cumulative consequence that the first figure cannot show by itself: the
+repeated per-filter separation from the $c=1$ schedule compounds into a
+separation of more than two orders of magnitude over the plotted range. The anchor $29$ is
+the first plotted prime and keeps every $c=1$ factor in $(0,1)$; changing a
+finite anchor changes the normalizing constants, not the asymptotic exponents.
+This is a reference comparison, not evidence of head recurrence.
+
+![Normalized full-cycle 2-gap survival under the exact per-filter law compared with the c=1 schedule](../../presentations/sieve-sequence-visualization/figures/out/full-cycle-survival.svg)
+
+The figure is generated by the [full-cycle survival calculation](
+../../presentations/sieve-sequence-visualization/figures/full_cycle_survival_chart.py).
+
+Read together, the two full-cycle figures give a direct progression from the
+one-filter identity to its cumulative effect. A separate fixed-cohort
+experiment then asks the next question: what remains true when a finite window
+cuts through partial cycles? It follows every 2-gap start initially present
+in $[Q,Q^2)$ through all filters $r<Q$. Exact set comparisons at $Q=17$ and
+$Q=101$ confirm that this explicit cohort agrees layer by layer with the
+maintained Reading A lineage. For
+
+```math
+c_{\mathrm{eff}}(r)
+:=\frac{D_{\mathrm{real}}(r)-D_{\mathrm{random}}(r)}{2\log r},
+```
+
+the four runs $Q\in\{17,101,251,503\}$ give signed values between $-0.0353$
+and $0.00908$. The largest positive value is $0.00907$ at $Q=251$; among the
+two larger runs, all absolute values are at most $0.00908$. Because the
+complete-cycle excess is exactly zero, these small positive and negative
+deviations measure how the fixed interval cuts partial cycles. They are finite
+window-boundary effects, not a structural excess or deficit of the sieve.
+
+![Cumulative hazard of fixed-window 2-gap cohorts for four finite Q values](../../presentations/sieve-sequence-visualization/figures/out/fixed-lineage-hazard.svg)
+
+The figure is generated by the [fixed-lineage hazard calculation](
+../../presentations/sieve-sequence-visualization/figures/fixed_lineage_hazard_chart.py)
+from the dedicated fixed-cohort CSVs. Its value is a robustness check: even in
+non-aligned finite windows the boundary deviations are small relative to the
+$c=1/2$ and $c=1$ comparison scales.
+
+None of these measurements follows the distinguished pair at the head.
+Transferring the head phase diagram still requires an arithmetic theorem that
+controls coherent CRT-coupled placement together with persistent availability
+and cross-layer dependence.
+
+## 9. Limitations
 
 The balanced companions track descendants of existing 2-gaps rather than a
 coherent randomized sequence of integers. They do not model non-2 gaps, gap
 mergers, or shared endpoint effects. Their adversary is stronger than the real
 filter because it may select harmful copies separately for each parent. The
-good sister is also an oracle: it knows the current target and moves both
+protective parent policy is also an oracle: it knows the current target and moves both
 deletions elsewhere. Neither endpoint is a description of the real filter.
 
-The bad/random window theorem assumes spatial uniformity. The bad/good window
-theorem instead assumes a quadratic optimistic supply $B(Q)$. Its head theorem
-assumes an eligible good-sister head lineage with availability bounded below.
+The adversarial/random window theorem assumes spatial uniformity. The adversarial/protective window
+theorem instead assumes a quadratic protective supply $B(Q)$. Its head theorem
+assumes an eligible protective-parent head lineage with availability bounded below.
 None of these premises follows from the exact-two choice alone.
 
-The exact-CRT-quota/random-location theorem preserves shot counts but discards
+The exact-CRT-quota/random-location theorem preserves strike counts but discards
 their deterministic arithmetic locations. Its recurrence conclusion requires
-the cumulative quota conditions in Property XI, persistent head availability,
+the cumulative quota conditions in §7.1, persistent head availability,
 and cross-layer mixing. The exact local formula $A(p,q)$ does not establish
 those premises merely by being exact.
 
@@ -2304,104 +2317,84 @@ coins, block balance, delayed information, and noisy ranking create different
 dependencies and cannot inherit one another's almost-sure conclusions merely
 because they share the same marginal budget or destruction rate.
 
-Accordingly, this article proves a phase diagram for stipulated companions. It
-does not prove that the real sieve occupies any particular regime, and it does
-not prove the twin-prime conjecture.
+The empirical comparison in §8.1 is finite. Two datasets use a different
+square window at each measured stage; the fixed-cohort dataset instead follows
+all initial 2-gap starts in one $[Q,Q^2)$ window. The latter yields a coherent
+window hazard, but its deviation from the exact full-cycle rate is a boundary
+effect and the cohort is not the distinguished head pair. None of the data
+therefore substitutes for persistent availability, cross-layer mixing, or an
+arithmetic proof below the $c=1/2$ head frontier.
 
-## 23. Conclusion
+We have therefore proved a phase diagram for the defined companions. The
+remaining question is whether the real sieve occupies one of these regimes.
+
+## 10. Conclusion
 
 Balanced 2-gap companions make global persistence deliberately uninformative:
 every parent always leaves $r-2$ children, so the complete-period population
-grows under friendly, random, adversarial, and mixed selection alike. The
+grows under protective, random, adversarial, and mixed selection alike. The
 local distinction is carried by realized destruction relative to random, its
 cumulative hazard, and allocation.
 
-The central formulas are
+The proof begins with the exact global recurrence and then replaces population
+counting by cumulative local hazard:
 
 ```math
 \begin{aligned}
 N_{k+1}&=(r_k-2)N_k,\\
-D(Q)&=\sum_{r<Q}-\log(1-f_r),\\
 w_r&=\frac{rf_r}{2},\\
-P(Q)&=e^{-D(Q)},\\
-s_r
-&=\frac{\binom{N_r-2}{J_r}}{\binom{N_r}{J_r}},\\
-P_{\mathrm{quota}}(Q)
-&=\prod_{r<Q}s_r
-\asymp\frac{C}{(\log Q)^2},\\
-\kappa_r^{\mathrm{eff}}
-&=\frac{\beta_r}{1+(\beta_r-1)x_r},\\
-D_{\kappa}(Q)
-&=\sum_{r<Q}-\log\left(1-\frac{2\kappa_r}{r}\right),\\
-A(Q)&=\sum_{r < Q}-\log(1-\alpha_r),\\
-\lambda_Q^{\mathrm{bad/random}}
-&\asymp C\frac{Q^2}{(\log Q)^2}e^{-A(Q)},\\
-\lambda_Q^{\mathrm{bad/good}}
-&\asymp C_0Q^2e^{-A(Q)},\\
-\max(0,L-K)&\le S\le\min(L,N-K).
+D(Q)&=\sum_{r < Q}-\log(1-f_r),\\
+P(Q)&=e^{-D(Q)}.
 \end{aligned}
 ```
 
 The main answer is that there is no maximum finite constant factor worse than
-random. If $w_r=w<\infty$, local survival decays only as
+random. If $w_r=w < \infty$, local survival decays only as
 $(\log Q)^{-2w}$; quadratic square-window supply still dominates, and the head
-probability series still diverges. Under the article's stated spatial and
+probability series still diverges. Under the stated spatial and
 mixing premises, square windows are eventually nonempty and head 2-gaps recur
 infinitely often for every fixed finite $w$.
 
-The exact-quota sister sharpens what “random” means: it keeps the CRT number of
-shots and randomizes only their positions. Uniform sampling without replacement
-gives the exact factor $s_r$ above. When the quota fractions have cumulative
-CRT rate, head-event probabilities remain of order $(\log Q)^{-2}$; their sum
-over prime heads diverges, and adequate cross-layer mixing gives infinitely
-many head hits almost surely. Eventual square-window occupancy is a stronger
-companion conclusion; only infinitely many successful windows or head hits are
-needed for infinitely many certificates.
-
-The biased exact-quota sister confirms the same phase boundary from a second
-direction. Every fixed finite effective skew toward 2-gap endpoints retains
-infinite head recurrence with mixing. In the family
-$\kappa_r=1+c\log r$, head recurrence holds for $c<1/2$ and fails almost surely
-for $c\ge1/2$; square-window occupancy instead has coefficient $c=1$. Thus the
-robust frontier functions are
+The first nontrivial boundary occurs when worsening grows with the filter. The
+exact-quota and biased exact-quota companions recover the same frontiers as the
+general hazard law:
 
 ```math
 \begin{aligned}
-\kappa_r
-&\le1+\left(\frac12-\varepsilon\right)\log r
-&&[\text{Head Recurrence}],\\
-\kappa_r
-&\le1+(1-\varepsilon)\log r
-&&[\text{Eventual Square Windows}].
+w_r=1+c\log r,\quad c < 1
+&\Longrightarrow
+\text{eventual square-window occupancy},\\
+w_r=1+c\log r,\quad c < \frac12
+&\Longrightarrow
+\text{infinitely recurring head 2-gaps, with mixing}.
 \end{aligned}
 ```
 
-The equality $c=1/2$ is on the failure side for the explicitly normalized
-effective-skew family. If a raw endpoint weight $\beta_r$ is specified instead,
-quota normalization changes lower-order terms and the cumulative prime-head
-series must be checked directly.
+The allocation theorem explains why a percentage alone cannot locate a
+process in this phase diagram. Uniform, protective, and targeted allocation
+can apply the same adversarial budget and produce different local damage. The
+quantity that enters the theorem is therefore the realized local hazard, not
+the policy label by itself.
 
-The first nontrivial boundary occurs when worsening grows with the filter. For
-$w_r=1+c\log r$, square-window survival holds for $c<1$, while head recurrence
-holds for $c<1/2$. Equivalently, robust sufficient total-destruction regimes
-are $f_r<(2-\varepsilon)\log r/r$ for square windows and
-$f_r<(1-\varepsilon)\log r/r$ for the head. These are cumulative asymptotic
-regimes, not fresh percentages that may be spent independently at each filter.
+The complete-period comparison is exact: every new filter destroys the
+fraction $2/r$ of expanded cyclic 2-gaps, so its cumulative excess over the
+neutral benchmark is zero. The two full-cycle diagrams expose the two parts of
+this statement separately. The destruction diagram makes the per-filter
+identity immediate; the survival diagram shows what compounding that identity
+does and how strongly it separates from the $c=1$ schedule. Neither diagram is
+weakened by being a direct rendering of the calculation: their value is that
+the local equality and cumulative consequence can each be checked visually in
+the representation best suited to it.
 
-A repeated fixed absolute bad share $\alpha>0$ is locally fatal only because it
-makes $w_r\sim\alpha r/2$, an increasingly severe multiple of the shrinking
-random rate. The absolute-share bad/random and bad/good diagrams remain useful
-specializations: for $\alpha_r\sim c\log r/r$, their square-window threshold is
-$c=2$; bad/random head recurrence requires $c<1$, whereas bad/good recurrence
-includes $c=1$ under optimistic availability and mixing.
-
-Every relative-hazard threshold must be measured in the tracked segment. A
-target-aware bad sister can erase $L$ local candidates as soon as $K\ge L$ and
-can kill one head candidate with one bad label, even when $K/N$ is globally
-tiny. Uniform allocation instead leaves expected population $L(1-K/N)$, while
-optimistic allocation leaves $\min(L,N-K)$. Total relative damage and targeting
-intelligence are therefore independent axes, not alternative names for one
-percentage.
+The finite square-window measurements then describe the remaining localization
+question. Through head $1129$, the observed population
+has mean ratio $0.967$ to the random expectation, and the measured one-step
+window rates through filter $19{,}429$ are at or below $2/r$. Fixed cohorts for
+$Q=17,101,251,503$ have signed effective coefficients between $-0.0353$ and
+$0.00908$; these deviations are boundary effects around the exact cycle law.
+The measurements remain far from the $c=1$ window-failure scale, but they do
+not locate the distinguished head pair relative to the $c=1/2$ recurrence
+frontier.
 
 The real sieve question is now expressible as a cumulative comparison rather
 than a vague claim of random or adversarial behavior: measure the total local
@@ -2410,18 +2403,419 @@ the random rate to obtain $w_r$, measure where the controllable damage lands
 relative to the head, and compare the resulting cumulative hazard with the
 companion thresholds above.
 
-## Related Work
+For the deterministic real sieve, we obtain the following conditional transfer
+theorem:
 
-- [Balanced Randomized 2-Gap Companion Process](
-  ../../candidates/balanced-randomized-2-gap-companion-process.md)
-- [Balanced Adversarial 2-Gap Companion Process](
-  ../../candidates/balanced-adversarial-2-gap-companion-process.md)
-- [Realized Filter Adversariality Score](
-  ../../properties/sieve-sequence/realized-filter-adversariality-score.md)
-- [Exact Global 2-Gap Count](
-  ../../properties/sieve-sequence/exact-global-two-gap-count.md)
-- [Copy-Index Filter Frequency](
-  ../../properties/sieve-sequence/copy-index-filter-frequency.md)
-- [Short-Window Discrepancy](../../candidates/short-window-discrepancy.md)
-- [Learnings: Capacity Argument](
-  ../learnings/learnings-capacity-argument.md)
+```math
+\begin{aligned}
+&\text{below-frontier cumulative CRT hazard}\\
+&\quad+\text{persistent head availability}\\
+&\quad+\text{adequate deterministic cross-layer mixing}\\
+&\Longrightarrow
+\text{a 2-gap occurs at the head infinitely often}.
+\end{aligned}
+```
+
+The more general frontier is cumulative: the relevant head-event series must
+diverge, rather than every individual filter satisfying one pointwise bound.
+“Infinitely often” does not mean that every sufficiently large head is a
+2-gap. Proving these premises for the real CRT filter would prove infinitely
+many head 2-gaps and therefore the twin-prime conjecture. We have identified
+the sufficient frontier and the remaining transfer premises.
+
+## 11. Future Work
+
+The companion theorems reduce the real-sieve question to measurable arithmetic
+inputs. The first direction is to estimate the real local hazard
+$D_{\kappa}(Q)$ from CRT-coupled filter locations and compare it with the head
+frontier without assigning hostile intent to individual filters. The second is
+to replace the stochastic mixing premise with a deterministic decorrelation or
+discrepancy theorem strong enough to transfer a divergent head-event sum to the
+real sequence. The third is to test exact-quota, delayed, block-balanced, and
+noisy-ranking companions on the same transitions, reporting both raw endpoint
+preference and quota-normalized effective skew.
+
+These directions are deliberately separate. A finite experiment can identify
+which companion resembles the observed sieve, but it cannot establish the
+infinite transfer theorem. Conversely, a discrepancy theorem must control
+where the real CRT strikes land, not only how many strikes or global 2-gaps
+exist.
+
+## 12. References
+
+- [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md)
+
+## Appendix A. Companion Proof Records
+
+The body develops each result in its mathematical context. This appendix
+collects the companion-process theorems with their premises and conclusions so
+that the article remains self-contained.
+
+<a id="appendix-a1"></a>
+
+### A.1 Global Persistence Is Independent of Allocation
+
+This result is unconditional inside every balanced companion. Let
+$N_k=|\mathcal G_k|$ be the complete-period 2-gap population before installing
+prime $r_k$. Every parent produces $r_k$ copies and loses exactly two,
+regardless of where those two removals occur. Therefore
+
+```math
+\begin{aligned}
+N_{k+1}
+&=\sum_{g\in\mathcal G_k}(r_k-2)
+&&[\text{Exactly Two Copies Removed Per Parent}]\\
+&=(r_k-2)N_k.
+&&[\text{Simplification}]
+\end{aligned}
+```
+
+Iterating the recurrence gives
+
+```math
+\begin{aligned}
+N_k
+&=N_0\prod_{i < k}(r_i-2)
+&&[\text{Iteration}]\\
+&>0
+&&[r_i\ge5]\\
+&\longrightarrow\infty.
+&&[\text{Every Factor Is At Least }3]
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+```
+
+Thus allocation may eliminate 2-gaps from the head or a tracked window, but it
+cannot exhaust the complete-period population while the exact-two removal rule
+is preserved.
+
+<a id="appendix-a2"></a>
+
+### A.2 Cumulative Local-Hazard Law
+
+Follow one local cohort through successive filters. Let $f_r$ be the fraction
+destroyed at filter $r$, and assume $0\le f_r < 1$ throughout the tracked
+chain. Define
+
+```math
+w_r:=\frac{rf_r}{2},
+\qquad
+D(Q):=\sum_{r < Q}-\log(1-f_r).
+```
+
+The cohort survives filter $r$ by the factor $1-f_r$. Multiplying these exact
+one-step factors gives
+
+```math
+\begin{aligned}
+P(Q)
+&=\prod_{r < Q}(1-f_r)
+&&[\text{Survive Every Filter}]\\
+&=\exp\left(\sum_{r < Q}\log(1-f_r)\right)
+&&[\text{Product To Sum}]\\
+&=e^{-D(Q)}.
+&&[\text{Definition Of }D(Q)]
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+```
+
+For the random benchmark $w_r=1$, the prime harmonic sum gives
+
+```math
+\begin{aligned}
+D_{\mathrm{random}}(Q)
+&=\sum_{r < Q}-\log\left(1-\frac2r\right)\\
+&=2\log\log Q+O(1),\\
+P_{\mathrm{random}}(Q)
+&\asymp\frac{C}{(\log Q)^2}.
+\end{aligned}
+```
+
+This identity determines survival once the realized sequence $(f_r)$ is known.
+It does not supply window abundance, head availability, or cross-layer mixing.
+If one filter has $f_r=1$, the cohort becomes extinct immediately and its
+cumulative hazard is infinite from that point.
+
+<a id="appendix-a3"></a>
+
+### A.3 Every Fixed Finite Worsening Factor Survives
+
+Let $w\ge0$ be fixed and suppose $f_r=2w/r$ for all sufficiently large
+filters. A finite prefix changes only the positive leading constant. Since the
+quadratic Taylor remainder is summable over primes, Appendix A.2 gives
+
+```math
+\begin{aligned}
+D_w(Q)
+&=\sum_{r < Q}-\log\left(1-\frac{2w}{r}\right)
+&&[\text{Definition Of }D(Q)]\\
+&=2w\sum_{r < Q}\frac1r+O(1)
+&&[\text{Taylor Expansion; Summable Remainder}]\\
+&=2w\log\log Q+O(1).
+&&[\text{Prime Harmonic Sum}]
+\end{aligned}
+```
+
+Therefore
+
+```math
+P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
+```
+
+Assume first that a square window supplies
+$B(Q)\asymp C_0Q^2$ eligible lineages and that their placement satisfies the
+blind empty-window bound. Its expected surviving population is
+
+```math
+\lambda_w(Q)
+\asymp
+C_0\frac{Q^2}{(\log Q)^{2w}}
+\longrightarrow\infty.
+```
+
+This polynomial growth makes the empty-window probabilities summable, so only
+finitely many square windows are empty almost surely. For a distinguished head
+whose baseline availability is bounded below,
+
+```math
+\Pr(H_Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
+```
+
+The sum over prime heads diverges for every finite $w$. With adequate
+cross-layer mixing, head 2-gaps therefore recur infinitely often almost surely.
+Hence there is no finite constant-factor maximum worse than random.
+$\blacksquare$
+
+<a id="appendix-a4"></a>
+
+### A.4 Logarithmically Growing Worsening Has Two Thresholds
+
+Retain the supply, availability, placement, and mixing premises of Appendix
+A.3, and set
+
+```math
+w_r=1+c\log r,
+\qquad c\ge0.
+```
+
+Then $f_r=2/r+2c\log r/r$. Prime summation and the summable Taylor remainder
+give
+
+```math
+\begin{aligned}
+D_c(Q)
+&=\sum_{r < Q}-\log(1-f_r)
+&&[\text{Definition Of }D(Q)]\\
+&=2\sum_{r < Q}\frac1r
++2c\sum_{r < Q}\frac{\log r}{r}+O(1)
+&&[\text{Substitution; Summable Remainder}]\\
+&=2\log\log Q+2c\log Q+O(1).
+&&[\text{Prime-Sum Asymptotics}]
+\end{aligned}
+```
+
+Consequently,
+
+```math
+P_c(Q)
+\asymp
+\frac{C_c}{Q^{2c}(\log Q)^2}.
+```
+
+For a quadratic square-window supply,
+
+```math
+\lambda_c(Q)
+\asymp
+C_0\frac{Q^{2-2c}}{(\log Q)^2}.
+```
+
+Thus $c < 1$ gives eventual square-window occupancy almost surely under the
+blind-placement premise, while $c\ge1$ makes the expected population tend to
+zero. For the head, the prime occurrence series has the same convergence
+behavior as
+
+```math
+\int^\infty\frac{dx}{x^{2c}(\log x)^3}.
+```
+
+The integral diverges for $c < 1/2$ and converges for $c\ge1/2$. Therefore
+
+```math
+\begin{aligned}
+c < 1
+&\Longrightarrow
+\text{eventual square-window occupancy almost surely},\\
+c < \frac12
+&\Longrightarrow
+\text{infinitely recurring head 2-gaps almost surely, with mixing}.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+```
+
+The intermediate range $1/2\le c < 1$ preserves square windows but not
+infinitely recurring head events. Irregular schedules must be evaluated by the
+cumulative hazard $D(Q)$ rather than by isolated pointwise values.
+
+<a id="appendix-a5"></a>
+
+### A.5 Adversarial/Random Square-Window Boundary
+
+At filter $r$, let a parent be adversarial with share $\alpha_r$ and random
+otherwise. For one locally relevant lineage,
+
+```math
+1-f_r
+=(1-\alpha_r)\left(1-\frac2r\right).
+```
+
+Define the cumulative adversarial-share hazard
+
+```math
+A(Q):=\sum_{r < Q}-\log(1-\alpha_r).
+```
+
+The random survival density contributes $(\log Q)^{-2}$, while the repeated
+adversarial share contributes $e^{-A(Q)}$. If the square-safe window has
+length $L_Q\asymp Q^2$ and surviving starts obey the spatial-uniformity model,
+then
+
+```math
+\begin{aligned}
+\lambda_Q^{\mathrm{mix}}
+&=L_Q\delta_Q^{\mathrm{mix}}
+&&[\text{Expected Uniform Occupancy}]\\
+&\asymp
+C\frac{Q^2}{(\log Q)^2}e^{-A(Q)}.
+&&[\text{Cumulative Survival}]
+\end{aligned}
+```
+
+Taking logarithms gives
+
+```math
+\log\lambda_Q^{\mathrm{mix}}
+=2\log Q-2\log\log Q-A(Q)+O(1).
+```
+
+Therefore, for every fixed $\varepsilon>0$,
+
+```math
+\begin{aligned}
+A(Q)\le(2-\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow\infty,
+&&[\text{Subcritical Budget}]\\
+A(Q)\ge(2+\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow0.
+&&[\text{Supercritical Budget}]
+\end{aligned}
+```
+
+At the exact boundary, the term $-2\log\log Q$ must be retained. Under uniform
+placement,
+
+```math
+\Pr(X_Q=0)\le e^{-\lambda_Q^{\mathrm{mix}}}.
+```
+
+Hence the summability condition
+
+```math
+\sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}}<\infty
+```
+
+implies that only finitely many square windows are empty almost surely. A
+convenient sufficient condition is
+$\lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q$ for all sufficiently large
+$Q$. $\blacksquare$
+
+<a id="appendix-a6"></a>
+
+### A.6 Local Survivor Allocation Range
+
+Consider a target window shorter than the old period, so each parent
+contributes at most one target child. Let $N$ be the number of parents, let
+$R$ be the set of $L$ relevant parents, and let $\mathcal A$ be the size-$K$
+set receiving adversarial treatment. The number of target children destroyed
+and surviving are
+
+```math
+H=|\mathcal A\cap R|,
+\qquad
+S=L-H.
+```
+
+The intersection cannot exceed either set, and at most $N-L$ adversarial
+labels can be placed outside $R$. Hence
+
+```math
+\begin{aligned}
+H
+&\le\min(K,L),
+&&[\text{Intersection Upper Bound}]\\
+H
+&\ge\max(0,K-(N-L)).
+&&[\text{Irrelevant-Parent Capacity}]
+\end{aligned}
+```
+
+Substitution into $S=L-H$ gives the sharp survivor range
+
+```math
+\max(0,L-K)
+\le S\le
+\min(L,N-K).
+```
+
+Both endpoints are attainable. A target-aware allocator selects relevant
+parents first, while a protective allocator assigns the adversarial labels to
+irrelevant parents first:
+
+```math
+\begin{aligned}
+S_{\mathrm{targeted}}&=\max(0,L-K),\\
+S_{\mathrm{protective}}&=\min(L,N-K).
+\end{aligned}
+```
+
+If $\mathcal A$ is instead a uniformly random size-$K$ subset, then
+
+```math
+H\sim\text{Hypergeometric}(N,L,K),
+```
+
+so
+
+```math
+\begin{aligned}
+\mathbb E[H]&=\frac{KL}{N},\\
+\mathbb E[S]&=L\left(1-\frac KN\right).
+\end{aligned}
+```
+
+When $K\ge L$, uniform allocation clears the target with probability
+
+```math
+\Pr(S=0)
+=\frac{\binom{N-L}{K-L}}{\binom NK}
+=\frac{\binom KL}{\binom NL}.
+```
+
+Writing $\alpha=K/N$, the targeted endpoint becomes
+
+```math
+S_{\mathrm{targeted}}=0
+\Longleftrightarrow
+K\ge L
+\Longleftrightarrow
+\alpha\ge\frac LN.
+\qquad[\text{Q.E.D.}]
+```
+
+At the head, $L=1$, so one correctly placed adversarial label destroys the
+current candidate. If $L/N$ decreases in a tracked window, every fixed
+$\alpha>0$ eventually has enough capacity to clear that window. Appendix A.1
+still applies: the targeted parents leave $r-2$ descendants outside the
+window, so complete-period growth continues.

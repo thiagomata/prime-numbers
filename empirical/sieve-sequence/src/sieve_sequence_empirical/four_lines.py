@@ -24,6 +24,8 @@ tests/test_four_lines.py exercises it against hand-derived ground truth.
 
 from __future__ import annotations
 
+import math
+
 from typing import List
 
 from .window import worst_case_A
@@ -49,6 +51,27 @@ def random_trajectory(n0: float, rs: List[int]) -> List[float]:
     n = float(n0)
     for r in rs:
         n *= (1.0 - 2.0 / r)
+        out.append(n)
+    return out
+
+
+def log_growth_trajectory(n0: float, rs: List[int], c: float = 1.0) -> List[float]:
+    """N_c compounded across rs for the log-growth relative-hazard family
+    w_r = 1 + c*log(r) (draft article Property IV, section 5.2):
+
+      N_c = N_0 * prod_{r in rs} (1 - 2*(1 + c*ln r)/r).
+
+    c=0 reduces to random_trajectory exactly (w_r=1). c=1 is the article's
+    square-window frontier: the slowest-growing relative factor whose
+    square-window expectation tends to zero, the threshold this chart draws
+    against the real sieve. Requires 2*(1 + c*ln r) < r for every r in rs,
+    i.e. every per-filter destruction fraction stays below 1.
+    """
+    out = []
+    n = float(n0)
+    for r in rs:
+        w_r = 1.0 + c * math.log(r)
+        n *= (1.0 - 2.0 * w_r / r)
         out.append(n)
     return out
 

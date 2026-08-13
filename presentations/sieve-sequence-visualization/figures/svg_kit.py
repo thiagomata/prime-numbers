@@ -24,12 +24,17 @@ class Canvas:
     font_family: str = "Helvetica, Arial, sans-serif"
     elements: List[str] = field(default_factory=list)
 
-    def line(self, x1, y1, x2, y2, stroke="#222", width=2, dash=None):
+    def comment(self, text: str):
+        """Append a literal XML comment to the element list."""
+        self.elements.append(f"<!-- {escape(text)} -->")
+
+    def line(self, x1, y1, x2, y2, stroke="#222", width=2, dash=None, stroke_opacity=None):
         """A straight `<line>` from (x1, y1) to (x2, y2)."""
         dash_attr = f' stroke-dasharray="{dash}"' if dash else ""
+        opacity_attr = f' stroke-opacity="{stroke_opacity}"' if stroke_opacity is not None else ""
         self.elements.append(
             f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-            f'stroke="{stroke}" stroke-width="{width}"{dash_attr} />'
+            f'stroke="{stroke}" stroke-width="{width}"{dash_attr}{opacity_attr} />'
         )
 
     def arrow(self, x1, y1, x2, y2, stroke="#222", width=2, dash=None):
@@ -41,20 +46,22 @@ class Canvas:
             f'marker-end="url(#arrowhead)" />'
         )
 
-    def polyline(self, points, stroke="#222", width=2, dash=None):
+    def polyline(self, points, stroke="#222", width=2, dash=None, stroke_opacity=None):
         """An unfilled `<polyline>` through `points` (a sequence of (x, y) pairs)."""
         dash_attr = f' stroke-dasharray="{dash}"' if dash else ""
+        opacity_attr = f' stroke-opacity="{stroke_opacity}"' if stroke_opacity is not None else ""
         pts = " ".join(f"{x},{y}" for x, y in points)
         self.elements.append(
             f'<polyline points="{pts}" fill="none" stroke="{stroke}" '
-            f'stroke-width="{width}"{dash_attr} />'
+            f'stroke-width="{width}"{dash_attr}{opacity_attr} />'
         )
 
-    def circle(self, cx, cy, r=7, fill="white", stroke="#222", width=2):
+    def circle(self, cx, cy, r=7, fill="white", stroke="#222", width=2, opacity=None):
         """A `<circle>` centered at (cx, cy) with radius r."""
+        opacity_attr = f' fill-opacity="{opacity}"' if opacity is not None else ""
         self.elements.append(
             f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}" '
-            f'stroke="{stroke}" stroke-width="{width}" />'
+            f'stroke="{stroke}" stroke-width="{width}"{opacity_attr} />'
         )
 
     def cross(self, cx, cy, size=7, stroke="#c0392b", width=2.5):

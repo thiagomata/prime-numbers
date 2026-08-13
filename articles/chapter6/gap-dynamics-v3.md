@@ -1885,7 +1885,7 @@ classified there; it is not a substitute for the linked canonical proof.
 | [Local Survival Threshold](../../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md) | Local survival | Full proof in this article |
 | [Safe-Window Certification](../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md) | Local survival | Full proof in this article |
 | [Reverse-Engineered Head Scenario](../../properties/sieve-sequence/reverse-engineered-eventual-head-scenario.md) | Scenario localization | Canonical note only; no full article section |
-| [Perfect Scenario Infinitude](../../properties/sieve-sequence/infinite-perfect-scenario-property.md) | Scenario localization | Canonical note only; no full article section |
+| [Perfect Scenario Infinitude](../../candidates/infinite-perfect-scenario-property.md) | Scenario localization | Canonical note only; no full article section |
 | [Count-Forces-Survival Threshold](../../properties/sieve-sequence/global-count-forcing-local-survival.md) | Scenario localization | Canonical note only; no full article section |
 | [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md) | Scenario localization | Full proof in this article |
 | [Absence Stability](../../properties/sieve-sequence/absence-of-two-gaps-is-stable.md) | Scenario localization | Full proof in this article |

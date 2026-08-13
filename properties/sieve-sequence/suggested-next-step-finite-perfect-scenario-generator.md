@@ -231,5 +231,5 @@ change the status of the infinite perfect-scenario property.
 - [Exact Filter Frequency Across Repeated Copies](copy-index-filter-frequency.md)
 - [Safe-Window 2-Gaps Certify Twin Primes](safe-window-two-gaps-certify-twin-primes.md)
 - [Reverse-Engineered Initial Scenario](reverse-engineered-eventual-head-scenario.md)
-- [Candidate Property: Infinitely Many Perfect Sieve Scenarios](infinite-perfect-scenario-property.md)
+- [Candidate Property: Infinitely Many Perfect Sieve Scenarios](../../candidates/infinite-perfect-scenario-property.md)
 - [Recent Prime-Producing Sieves Research Assessment](research/recent-prime-producing-sieves-deep-dive.md)

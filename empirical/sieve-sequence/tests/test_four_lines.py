@@ -11,6 +11,7 @@ for adversarial_trajectory cross-checks against window.worst_case_A directly
 compounding/orchestration logic, not worst_case_A's own correctness.
 """
 
+import math
 import sys
 
 from sieve_sequence_empirical import four_lines as lib
@@ -66,6 +67,57 @@ def test_random_monotone_decreasing():
         out[i] < out[i - 1] for i in range(1, len(out))
     ), f"out={out}")
     check("random stays positive", all(v > 0 for v in out), f"out={out}")
+
+
+# ---------------------------------------------------------------------------
+# log_growth_trajectory: the c=1 frontier projection
+# ---------------------------------------------------------------------------
+
+def test_log_growth_c_zero_matches_random():
+    print("test_log_growth_c_zero_matches_random")
+    # c=0 means w_r = 1 exactly, so the log-growth trajectory must reproduce
+    # random_trajectory term for term.
+    n0, rs = 5049.0, [3, 5, 7, 11, 13]
+    a = lib.log_growth_trajectory(n0, rs, c=0.0)
+    b = lib.random_trajectory(n0, rs)
+    check("c=0 == random_trajectory", all(
+        close(x, y) for x, y in zip(a, b)
+    ), f"c0={a} random={b}")
+
+
+def test_log_growth_frontier_hand_derived():
+    print("test_log_growth_frontier_hand_derived")
+    # n0=100, rs=[29]: factor = 1 - 2*(1 + ln 29)/29, computed with the same
+    # natural log the model uses.
+    n0, r = 100.0, 29
+    factor = 1.0 - 2.0 * (1.0 + math.log(r)) / r
+    out = lib.log_growth_trajectory(n0, [r])
+    check("frontier single layer", close(out[0], n0 * factor), f"got {out[0]}")
+    # two layers, running product:
+    rs = [29, 31]
+    out2 = lib.log_growth_trajectory(n0, rs)
+    expected = n0 * factor * (1.0 - 2.0 * (1.0 + math.log(31)) / 31)
+    check("frontier running product", close(out2[1], expected), f"got {out2[1]}")
+
+
+def test_log_growth_frontier_below_random_stays_positive():
+    print("test_log_growth_frontier_below_random_stays_positive")
+    # On the real Q=101 chain (anchored layer 7, future filters r=29..97), the
+    # c=1 frontier must sit strictly below the random projection and stay
+    # positive the whole way (f_r < 1 at every r).
+    Q = 101
+    rs = [29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+    n0 = 361.0
+    frontier = lib.log_growth_trajectory(n0, rs)
+    random_ = lib.random_trajectory(n0, rs)
+    check("frontier strictly below random", all(
+        frontier[i] < random_[i] for i in range(len(frontier))
+    ), f"frontier={frontier} random={random_}")
+    check("frontier stays positive", all(v > 0 for v in frontier), f"frontier={frontier}")
+    # every per-filter destruction fraction stays below 1:
+    check("frontier f_r < 1 at every r", all(
+        (2.0 * (1.0 + math.log(r)) / r) < 1.0 for r in rs
+    ))
 
 
 # ---------------------------------------------------------------------------
@@ -146,6 +198,9 @@ def main():
     test_friendly()
     test_random_hand_derived()
     test_random_monotone_decreasing()
+    test_log_growth_c_zero_matches_random()
+    test_log_growth_frontier_hand_derived()
+    test_log_growth_frontier_below_random_stays_positive()
     test_adversarial_matches_worst_case_A()
     test_adversarial_floors_at_zero()
     test_mixture_score_half_matches_random()

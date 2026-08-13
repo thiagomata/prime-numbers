@@ -170,6 +170,7 @@ empirical-test:
     cd "{{justfile_directory()}}/empirical/sieve-sequence"
     env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_window.py
     env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_lineage.py
+    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_hazard.py
 
 empirical-window max_prime="1000" output="data/candidates/window-measurements.csv":
     #!/usr/bin/env bash
@@ -194,6 +195,25 @@ empirical-lineage q="17" output="":
     fi
     [[ "$q" =~ ^[0-9]+$ && -n "$output" ]]
     exec empirical/sieve-sequence/.venv/bin/sieve-sequence-lineage "$q" "$output"
+
+empirical-hazard q="17" output="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    q={{quote(q)}}
+    output={{quote(output)}}
+    if [[ -z "$output" ]]; then
+      output="data/candidates/fixed-lineage-hazard-Q${q}.csv"
+    fi
+    [[ "$q" =~ ^[0-9]+$ && -n "$output" ]]
+    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-hazard "$q" "$output"
+
+empirical-chart-hazard:
+    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/fixed_lineage_hazard_chart.py"
+
+empirical-chart-full-cycle:
+    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/full_cycle_destruction_chart.py"
+    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/full_cycle_survival_chart.py"
 
 test-all:
     #!/usr/bin/env bash

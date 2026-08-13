@@ -19,6 +19,7 @@ sieve-sequence-four-lines = "sieve_sequence_empirical.four_lines_cli:main"
 sieve-sequence-spacing = "sieve_sequence_empirical.spacing_cli:main"
 sieve-sequence-phase-transition-window = "sieve_sequence_empirical.phase_transition_window_cli:main"
 sieve-sequence-phase-transition-head = "sieve_sequence_empirical.phase_transition_head_cli:main"
+sieve-sequence-hazard = "sieve_sequence_empirical.hazard_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

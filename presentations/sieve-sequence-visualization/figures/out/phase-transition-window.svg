@@ -5,6 +5,11 @@
     </marker>
   </defs>
   <rect x="0" y="0" width="820" height="515" fill="white" />
+  <!-- Generated: 2026-08-12T18:31:22.936657 -->
+  <!-- Script: phase_transition_window_chart.py -->
+  <!-- Python: 3.14.3 (main, Feb  3 2026, 15:32:20) [Clang 17.0.0 (clang-1700.6.3.2)] -->
+  <!-- Input: /Users/thiagomata/github/thiagomata/prime-numbers/presentations/sieve-sequence-visualization/figures/../../../data/candidates/phase-transition-window.csv -->
+  <!-- Git commit: 96e02762 -->
   <line x1="70" y1="50" x2="70" y2="430" stroke="#dddddd" stroke-width="1" />
   <line x1="70" y1="430" x2="550" y2="430" stroke="#dddddd" stroke-width="1" />
   <line x1="70" y1="430.0" x2="550" y2="430.0" stroke="#dddddd" stroke-width="1" />

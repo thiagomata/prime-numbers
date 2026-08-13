@@ -39,7 +39,11 @@ Output: ./out/phase-transition-window.svg
 """
 
 import csv
+import datetime
+import math
 import os
+import subprocess
+import sys
 
 from svg_kit import Canvas, escape, save
 
@@ -98,6 +102,16 @@ def draw(rows):
     W = left + plot_w + right
     H = top + plot_h + bottom
     canvas = Canvas(W, H)
+
+    canvas.comment(f"Generated: {datetime.datetime.now().isoformat()}")
+    canvas.comment(f"Script: {os.path.basename(__file__)}")
+    canvas.comment(f"Python: {sys.version}")
+    canvas.comment(f"Input: {DATA_PATH}")
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
+        canvas.comment(f"Git commit: {commit}")
+    except Exception:
+        canvas.comment("Git commit: unknown")
 
     x_lo = min(r["log10_Q"] for r in rows)
     x_hi = max(r["log10_Q"] for r in rows)

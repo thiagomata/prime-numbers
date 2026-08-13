@@ -31,6 +31,7 @@ COLUMNS = [
     "Q", "anchor_layer", "anchor_r", "anchor_n0",
     "layer", "r",
     "N_friendly", "N_random", "N_adversarial",
+    "N_frontier",
     "N_empirical_pre", "N_empirical_post",
 ]
 
@@ -75,6 +76,7 @@ def run(
     friendly = lib.friendly_trajectory(n0, len(rs))
     random_ = lib.random_trajectory(n0, rs)
     adversarial = lib.adversarial_trajectory(n0, Q, rs)
+    frontier = lib.log_growth_trajectory(n0, rs)
 
     output = Path(out_path).expanduser()
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -87,6 +89,7 @@ def run(
             "Q": Q, "anchor_layer": anchor_layer, "anchor_r": anchor["r"],
             "anchor_n0": n0, "layer": anchor["layer"], "r": anchor["r"],
             "N_friendly": n0, "N_random": n0, "N_adversarial": n0,
+            "N_frontier": n0,
             "N_empirical_pre": anchor["G_r_window"],
             "N_empirical_post": anchor["surviving"],
         })
@@ -97,6 +100,7 @@ def run(
                 "anchor_n0": n0, "layer": row["layer"], "r": row["r"],
                 "N_friendly": friendly[i], "N_random": random_[i],
                 "N_adversarial": adversarial[i],
+                "N_frontier": frontier[i],
                 "N_empirical_pre": row["G_r_window"],
                 "N_empirical_post": row["surviving"],
             })

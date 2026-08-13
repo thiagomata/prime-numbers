@@ -159,10 +159,14 @@ new transition. “Each old object has the same number of copies before
 filtering” is an expansion statement. It says nothing by itself about the
 distribution of surviving copies inside a local window.
 
-### Shot or strike
+### Filter strike
 
-A **shot** or **strike** is a value removed by the incoming filter. In algebraic
-arguments, prefer:
+A **filter strike**, or simply a **strike** when the filter is clear, is an
+eligible value selected for removal by the incoming filter. **Shot** is a
+legacy synonym retained in established names such as “shot spacing” and “shot
+capacity”; prefer **strike** in new prose, definitions, and algebraic arguments.
+
+Refine the term when the distinction matters:
 
 - **accepted strike** when the removed multiple had survived all earlier
   filters;
@@ -171,6 +175,58 @@ arguments, prefer:
 
 Counting raw multiples is not the same as counting accepted strikes, and
 counting strikes is not the same as counting destroyed 2-gaps.
+
+For an exact-count model, use:
+
+- **strike set** for the selected eligible values;
+- **strike count** `J` for the cardinality of that set;
+- **exact-strike quota** when `J` is prescribed before locations are selected;
+- **strike fraction** `u=J/N_eligible` for the quota normalized by its declared
+  eligible population; and
+- **strike-allocation law** for the rule that selects the strike set, such as
+  uniform allocation without replacement or endpoint-biased allocation.
+
+Always name the eligible population behind a strike fraction. Preserving an
+exact strike count does not preserve strike locations, and neither fact alone
+determines how many 2-gaps are destroyed.
+
+### Companion parent policies and allocation
+
+In a balanced 2-gap companion, one old 2-gap is a **parent**, and its `r`
+expanded copies are its **children**. A parent policy selects exactly two
+harmful child indices, so every policy leaves exactly `r-2` children.
+
+Relative to a declared target child or target region:
+
+- a **random parent** chooses its two harmful child indices uniformly without
+  replacement;
+- an **adversarial parent** includes the target child among its harmful indices
+  whenever possible; and
+- a **protective parent** places both harmful indices away from the target
+  whenever possible.
+
+These names are target-relative. A protective parent does not preserve every
+child, and an adversarial parent does not choose more than two harmful indices.
+Both obey the same exact reproduction law as the random parent.
+
+An **allocator** assigns parent policies to parents. The allocator and the
+parent policy are different objects: the allocator decides *which parents are
+adversarial, random, or protective*; each assigned policy decides *which two
+children of that parent are harmful*.
+
+Use **adversarial share** for the fraction of parents assigned the adversarial
+policy. Do not treat it as synonymous with **targeting strength** or **realized
+local destruction**:
+
+- adversarial share measures the policy budget;
+- targeting strength measures how strongly the allocator concentrates that
+  budget on locally relevant parents; and
+- realized local destruction measures the target population actually removed.
+
+Finally, do not conflate a **parent-policy allocator** with a
+**strike-allocation law**. The first assigns policies across parents in the
+exact-two-per-parent companion. The second selects a prescribed strike set
+across an eligible value population in an exact-strike-quota companion.
 
 ### Struck and intact copies
 
