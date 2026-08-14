@@ -743,6 +743,16 @@ operate on the canonical `CycleIntegral` class; use
 | **assertApplyOneEqualsNextPrime()**                                          | `apply(1) == nextPrime.value` when `nextPrime < head*head`            |
 | **assertMergeLandsOnFirstSurvivor(nextSeq,k,period)**                        | Merged gap lands on first survivor position                           |
 
+## 6.5.1 SpecSieveSeqTwoGapProperties (`v1.chapter6.sieve.seq.spec.properties.SpecSieveSeqTwoGapProperties`)
+
+| Lemma                                                 | Statement                                                                                     |
+|-------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| **assertForbiddenLiftOffsetsDistinct(seq,k)**         | For a real sieve-sequence 2-gap and incoming head `p > 2`, its two unique forbidden lift offsets in `[0,p)` are distinct |
+| **assertExactlyTwoDestroyedCopies(seq,k)**            | Exactly two indices in the complete `[0,p)` lift block lose at least one endpoint             |
+| **assertExactlyHeadMinusTwoCopiesSurvive(seq,k)**     | The complement of the destroyed-copy set contains exactly `p - 2` lift indices               |
+| **countDestroyedTwoGapCopies(left,step,p,i)**          | Counts remaining lift indices in `[i,p)` where at least one copied 2-gap endpoint is divisible by `p` |
+| **assertDestroyedCountEqualsEndpointCounts(...)**     | For distinct endpoint witnesses, the destroyed-copy union count equals the sum of the two endpoint zero counts |
+
 ## 6.6 SpecDerivedSieveSequence (`v1.chapter6.seq.sieve.SpecDerivedSieveSequence`)
 
 90 lemmas (86 public, 2 private), plus 6 public predicates and 1 public survivor-gap prefix producer. Key
