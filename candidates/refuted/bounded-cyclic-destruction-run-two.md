@@ -83,7 +83,7 @@ mechanism.
 
 - `data/candidates/lineage-Q101.csv`, row `Q=101`, `r=23`, records
   `cyclic_run_full_period=3`.
-- `empirical/sieve-sequence/src/sieve_sequence_empirical/lineage.py::cyclic_destroyed_run_full_period`
+- `python/src/sieve_sequence/lineage.py::cyclic_destroyed_run_full_period`
   defines the exact full-period cyclic quantity.
 
 ## Reconsideration Condition

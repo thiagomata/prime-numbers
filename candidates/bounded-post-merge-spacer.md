@@ -49,7 +49,7 @@ the average.
 
 This candidate is **whole-period** — it bounds the maximum cyclic spacer
 `D_max(q)` over the full period modulus `M_q`, which requires primorial-scale
-data. The window-scale stress-test (`empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`)
+data. The window-scale stress-test (`python/src/sieve_sequence/window_cli.py`)
 sieves only `[q,q^2)` and so cannot measure `D_max`. Deferred to a deeper
 (whole-period) pass. See `empirical/sieve-sequence/FINDINGS.md` for the distinction
 between window-measurable and whole-period candidates.

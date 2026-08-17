@@ -1,8 +1,9 @@
 # Formal Verification of Sieve Sequence Stages and Their Transitions
 
-**Version:** 2 — figure comparison draft. Text is identical to
-[`sieve-sequence.md`](sieve-sequence.md); the only difference is the figure
-added below, generated from this project's own data pipeline
+**Version:** 2 — figure and verification draft. In addition to the figure
+comparison with [`sieve-sequence.md`](sieve-sequence.md), this version includes
+the newly verified real-sequence 2-gap lifted-copy law. The figure was
+generated from this project's own data pipeline
 (`presentations/sieve-sequence-visualization/figures/`). This file exists so
 the figure can be reviewed side by side with the plain-text original before
 deciding whether to merge it in. An earlier trial figure here (a dense
@@ -29,9 +30,11 @@ and exact transition count. If the current head is $h$, the current period has
 $T$ accepted values, and the current modulus is $M$, then the expanded
 window of length $hM$ contains $hT$ old survivors; exactly $T$ are
 multiples of $h$, leaving $T(h-1)$ survivors. We also verify the local
-copy-or-merge rule for the next gaps and prove, under explicit structural and
-period preconditions, that the resulting gap prefix agrees with the next linear
-specification.
+copy-or-merge rule for the next gaps. For each real linear 2-gap, the two
+endpoint strikes occur at distinct lift offsets, so exactly two of its $h$
+lifts are destroyed and exactly $h-2$ keep both endpoints. Under explicit
+structural and period preconditions, the resulting gap prefix agrees with the
+next linear specification.
 
 The formal result has two explicit boundaries. First, next-head primality is
 conditional on the square bound supplied mathematically by Bertrand's postulate.
@@ -40,7 +43,7 @@ direct construction of the next cycle from a repeated and filtered current cycle
 is a separate open composition problem. Accordingly, the article establishes a
 formally verified finite-stage sieve specification and transition semantics, not
 a new prime-sieving algorithm or a theorem about the persistence of any
-particular prime gap.
+particular prime gap in a prescribed short window.
 
 </p>
 </div>
@@ -363,6 +366,8 @@ window, this operation has an exact count and a deterministic effect on gaps.
 
 - the expanded old stage contains exactly $hT$ accepted values;
 - exactly $T$ of those values are divisible by $h$;
+- a real linear 2-gap has exactly two destroyed lifts and $h-2$ lifts whose
+  endpoints survive;
 - every next gap is either copied or is a sum of consecutive old gaps;
 - filtering the base and repeated cycle views yields equal survivor-gap lists.
 
@@ -404,7 +409,213 @@ This property is verified in [
   ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala
 ).
 
-### 5.2 Copy-or-Merge Gap Dynamics
+### 5.2 Exact Lifted-Copy Law for a Real 2-Gap
+
+This subsection concerns the actual deterministic sieve sequence, not a
+random model. Suppose two consecutive values in the real sequence satisfy
+$\ell_{k+1}-\ell_k=2$. Write $p=h$ for the incoming odd prime and $M$ for the
+current tail primorial. The complete lift block contains the $p$ endpoint
+pairs
+
+```math
+(\ell_k+jM,\ \ell_{k+1}+jM),
+\qquad 0\le j\lt p.
+```
+
+The verified result is deliberately local to one real sequence pair. It does
+not yet aggregate over the cyclic wrap gap or establish a recurrence for the
+total next-stage 2-gap population.
+
+#### 5.2.1 The Two Forbidden Lift Offsets Are Distinct
+
+Each endpoint has one unique lift offset at which the incoming prime divides
+it. Those offsets cannot coincide: if the same prime divided both lifted
+endpoints, it would divide their difference $2$, which is impossible for an
+odd prime. This is the structural fact that prevents the two endpoint strikes
+from collapsing into one destroyed copy.
+
+```math
+\begin{aligned}
+j_L,j_R&\in\{0,\ldots,p-1\},
+&&[\text{By Unique Lift Offset}]\\
+\ell_k+j_LM&\equiv0\pmod p,\\
+\ell_{k+1}+j_RM&\equiv0\pmod p.\\[2pt]
+j_L=j_R=j
+&\Longrightarrow
+(\ell_{k+1}+jM)-(\ell_k+jM)\equiv0\pmod p
+&&[\text{Substitution}]\\
+&\Longrightarrow 2\equiv0\pmod p
+&&[\ell_{k+1}-\ell_k=2]\\
+&\Longrightarrow 2=0
+&&[\text{By Modulo Property},\ 2\lt p],
+\end{aligned}
+```
+
+which is a contradiction. Therefore
+
+```math
+j_L\ne j_R.
+\qquad[\text{Q.E.D.}]
+```
+
+```scala
+def assertForbiddenLiftOffsetsDistinct(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftOffset = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightOffset = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(Calc.mod(left + leftOffset * step, p) == BigInt(0))
+  assert(Calc.mod(right + rightOffset * step, p) == BigInt(0))
+
+  if (leftOffset == rightOffset) {
+    val leftCopy = left + leftOffset * step
+    val rightCopy = right + rightOffset * step
+    assert(rightCopy == leftCopy + BigInt(2))
+    assert(Calc.mod(leftCopy, p) == BigInt(0))
+    assert(Calc.mod(rightCopy, p) == BigInt(0))
+    assert(ModOperations.modZeroPlusC(leftCopy, p, BigInt(2)))
+    assert(Calc.mod(rightCopy, p) == Calc.mod(BigInt(2), p))
+    assert(ModSmallDividend.modSmallDividend(BigInt(2), p))
+    assert(Calc.mod(BigInt(2), p) == BigInt(2))
+    assert(Calc.mod(rightCopy, p) != BigInt(0))
+    leftOffset != rightOffset
+  } else {
+    leftOffset != rightOffset
+  }
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertForbiddenLiftOffsetsDistinct
+](
+  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala
+).
+
+#### 5.2.2 Exactly Two Lifted Copies Are Destroyed
+
+A copied pair is destroyed when at least one endpoint is divisible by $p$.
+The left endpoint is struck once, the right endpoint is struck once, and the
+distinct-offset theorem makes these two singleton strike sets disjoint.
+Consequently their union contains exactly two copy indices.
+
+```math
+\begin{aligned}
+D_L&=\{j:0\le j\lt p,\ p\mid(\ell_k+jM)\},\\
+D_R&=\{j:0\le j\lt p,\ p\mid(\ell_{k+1}+jM)\},
+&&[\text{By Definition}]\\
+|D_L|&=1,
+\qquad |D_R|=1,
+&&[\text{By Unique Lift Offset}]\\
+D_L\cap D_R&=\varnothing
+&&[\text{By Lemma }j_L\ne j_R]\\
+D&=D_L\cup D_R,
+&&[\text{By Definition}]\\
+|D|&=|D_L|+|D_R|=2.
+&&[\text{Q.E.D.}]
+\end{aligned}
+```
+
+```scala
+def assertExactlyTwoDestroyedCopies(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftWitness = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightWitness = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(assertForbiddenLiftOffsetsDistinct(seq, k))
+  assert(leftWitness != rightWitness)
+  assert(assertDestroyedCountEqualsEndpointCounts(
+    left,
+    step,
+    p,
+    BigInt(0),
+    leftWitness,
+    rightWitness
+  ))
+  assert(SieveUtils.assertCountZeroOffsetsOne(left, step, p))
+  assert(SieveUtils.countZeroOffsets(left, step, p, BigInt(0)) == BigInt(1))
+  assert(SieveUtils.assertCountZeroOffsetsOne(right, step, p))
+  assert(SieveUtils.countZeroOffsets(right, step, p, BigInt(0)) == BigInt(1))
+
+  countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == BigInt(2)
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertExactlyTwoDestroyedCopies
+](
+  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala
+).
+
+#### 5.2.3 Exactly \(p-2\) Lifted Copies Keep Both Endpoints
+
+There are $p$ candidate lifts in the complete block. Removing the two and
+only two destroyed indices leaves exactly $p-2$ copies whose two endpoints
+survive the incoming filter. This is an exact deterministic count, not an
+expected value or an independence heuristic.
+
+```math
+\begin{aligned}
+|\{0,\ldots,p-1\}|&=p,
+&&[\text{By Definition}]\\
+|D|&=2,
+&&[\text{By Lemma: Exactly Two Destroyed Copies}]\\
+N_{\mathrm{endpoint\text{-}surviving}}
+&=p-|D|\\
+&=p-2.
+&&[\text{Substitution; Q.E.D.}]
+\end{aligned}
+```
+
+```scala
+def assertExactlyHeadMinusTwoCopiesSurvive(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+
+  assert(assertExactlyTwoDestroyedCopies(seq, k))
+  p - countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == p - BigInt(2)
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertExactlyHeadMinusTwoCopiesSurvive
+](
+  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala
+).
+
+### 5.3 Copy-or-Merge Gap Dynamics
 
 Let old consecutive values be $\ell_k\lt\ell_{k+1}$. If both survive the new
 filter, no new accepted value can appear between them, so their difference is
@@ -448,7 +659,7 @@ gap list. This property is verified in [
   ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
 ).
 
-### 5.3 Filtering the Repeated Cycle Preserves the Semantic Result
+### 5.4 Filtering the Repeated Cycle Preserves the Semantic Result
 
 Section 4.3 proved pointwise equality between the base and repeated cycle
 integrals. Applying the same divisibility predicate at the same positions must
@@ -620,10 +831,12 @@ This section states the boundary as part of the theorem.
   semantic merged-gap prefix, followed by packaging those gaps into a new
   integral cycle.
 
-- **No local gap-persistence theorem.** Exact full-period counts do not imply that
-  a chosen gap occurs in a shorter interval such as $[h,h^2)$. This article
-  proves the sieve-stage foundation only; it makes no claim about infinitely many
-  twin primes or the survival of 2-gaps in every local window.
+- **No short-window gap-persistence theorem.** Section 5.2 proves that exactly
+  $h-2$ lifts of one real linear 2-gap keep both endpoints over a complete
+  lift block. It does not imply that one of those lifts lies in a shorter
+  interval such as $[h,h^2)$, nor does it yet aggregate the cyclic wrap gap
+  into a total next-stage recurrence. This article makes no claim about
+  infinitely many twin primes or the survival of 2-gaps in every local window.
 
 - **No efficiency theorem.** The period grows from $T$ to $T(h-1)$. The finite
   cycle is analytically useful, but materializing it need not outperform a
@@ -684,12 +897,17 @@ I_{G^{\langle h\rangle}}(k)&=I_G(k),
 ```
 
 Installing the current head as a new filter has an exact complete-period count,
-and the local gap update is copy-or-merge:
+an exact lifted-copy law for each real linear 2-gap, and a copy-or-merge local
+gap update:
 
 ```math
 \begin{aligned}
 N_{\mathrm{survive}}&=T(h-1),
   &&\text{[Exact expanded filtering]} \\
+N_{\mathrm{destroyed\ lifts}}(\ell_k,\ell_{k+1})&=2,
+  &&\text{[Real 2-gap endpoint strikes]} \\
+N_{\mathrm{endpoint\text{-}surviving\ lifts}}(\ell_k,\ell_{k+1})&=h-2,
+  &&\text{[Exact lifted-copy survival]} \\
 g'_m&=g_k
   \quad\text{or}\quad
   g'_m=\sum_{i=k}^{j-1}g_i,
@@ -715,9 +933,11 @@ p^+\lt h^2&\Longrightarrow \ell_1=p^+,
 
 The formalization therefore gives a precise finite-stage account of the sieve:
 the old filter pattern repeats, the new head removes exactly one lift per old
-residue over a complete expanded period, and deletion changes gaps only by
-copying or merging them. The theorem does not infer prime-gap persistence or
-algorithmic efficiency from the full-period facts alone.
+residue over a complete expanded period, the two endpoint strikes of a real
+linear 2-gap occur at distinct lift offsets, and deletion changes gaps only by
+copying or merging them. The theorem does not infer short-window prime-gap
+persistence, a cyclic population recurrence, or algorithmic efficiency from
+the full-period facts alone.
 
 ## References
 

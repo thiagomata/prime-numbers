@@ -99,7 +99,7 @@ local lower bound `L(p,q)>A(p,q)`. Complete-period counts do not prove it.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py` (dense p<=991, 165 clean
+Source: `python/src/sieve_sequence/window_cli.py` (dense p<=991, 165 clean
 transitions) + `--sparse` (every 100th prime to p~19000, 21 more). Full data in
 `data/candidates/window-measurements{,-sparse}.csv`. See
 `empirical/sieve-sequence/FINDINGS.md` for the cross-candidate synthesis.

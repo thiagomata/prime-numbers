@@ -15,7 +15,7 @@ that window before it runs out? That count determines how far a finite-length
 sample of a sieve-sequence stage can go before it is even possible to see a
 value where acceptance and certified primality diverge -- directly relevant
 wherever such a sample is drawn, e.g. the gap-cycle heatmaps in
-`presentations/sieve-sequence-visualization/figures/gap_heatmap.py`
+`python/src/sieve_sequence/gap_heatmap.py`
 (`estimated_boundary_indices`, `proven_safe_boundary_indices`,
 `draw_boundary_curves`), which plot both curves from this note directly on
 the diagrams.

@@ -5,42 +5,133 @@ Independent Researcher<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)<br>
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
 
+**Status:** Draft (2026-08-15). The companion-process identities are proved
+exactly; the asymptotic theorems are conditional on the premises stated with
+each result (see §1.1). Stainless verification is pending. No result is
+claimed for the real sieve.
+
 ## Abstract
 
 <div align="justify">
 <p style="text-align: justify">
-We study companion processes that reproduce the exact global growth of 2-gaps but
-change where each filter removes them. Every parent produces $r$ copies and
-exactly two are removed, as in the sieve sequence. The companion may place
-those two removals randomly, protect a chosen target, or direct them toward it.
+
+This article examines companion processes that reproduce the exact global
+growth of 2-gaps but change where each filter removes them. Every parent
+produces $r$ copies and exactly two are removed, as in the sieve sequence. The
+companion may place those two removals randomly, protect a chosen target, or
+direct them toward it.
 This construction separates the number of surviving 2-gaps from their
 location near the head.
 
-If filter $r$ destroys a local fraction $f_r$, we compare it with the random
-rate $2/r$ through $w_r=rf_r/2$. The cumulative product proves that every fixed
+A filter's local destruction fraction $f_r$ is compared with the random rate
+$2/r$ through $w_r=rf_r/2$. The cumulative product proves that every fixed
 finite value of $w_r$ preserves square-window 2-gaps and, with the stated
 availability and mixing conditions, produces head 2-gaps infinitely often.
 The first boundary occurs when $w_r=1+c\log r$: square windows survive for
-$c < 1$, while head recurrence survives for $c < 1/2$. Exact-quota companions
-that retain the CRT strike count give the same frontiers. Therefore, proving
-that the real sieve remains below the head frontier, together with the stated
-availability and mixing properties, would establish the twin-prime
-conjecture.
+$c < 1$, while head recurrence survives for $c < 1/2$. Under the same spatial
+premises, exact-quota companions give the same frontiers when their normalized
+quotas satisfy the CRT-rate cumulative sum and summable finite-population error
+conditions derived below. Retaining one CRT strike count alone is insufficient.
+None of the spatial, availability, or mixing premises used by these
+conditional theorems is proved for the real sieve.
+Therefore, proving that the real sieve remains below the head frontier,
+together with persistent availability and the deterministic discrepancy bound
+stated in §10, would establish the twin-prime conjecture.
 </p>
 </div>
 
 ## 1. Introduction
 
-Saying that “2-gaps survive” can mean three different things:
+Begin with the positive integers and remove multiples of prime numbers one
+prime at a time. At a stage headed by the prime $p$, the accepted values are
+precisely the integers not divisible by any prime smaller than $p$. These
+survivors repeat periodically. If $e_i$ and $e_{i+1}$ are consecutive
+survivors, then $e_{i+1}-e_i$ is their gap; the gaps across one complete period
+form a finite cycle.
+
+This periodic accepted-value object is the **Sieve Sequence**, introduced and
+formally verified in [Formal Verification of Sieve Sequence Stages and Their
+Transitions](../chapter6/sieve-sequence.md) [[1]](#ref1); its finite gap cycle is the
+representation used throughout this article.
+
+After multiples of $2$ have been removed, every survivor is odd. Every gap is
+therefore even, and $2$ is the smallest possible gap. A **2-gap** is a pair of
+consecutive survivors $x$ and $x+2$. At the stage headed by a prime $Q$, all
+primes below $Q$ have been installed as filters. A surviving 2-gap whose
+endpoints lie in the square-safe window $[Q,Q^2)$ is therefore a twin-prime
+pair: any composite number below $Q^2$ has a prime divisor below $Q$ and would
+already have been removed.
+
+When the sieve later reaches the stage headed by $x$, the same pair appears as
+the first gap after the head. Infinitely many such head 2-gaps would give
+infinitely many twin-prime pairs. But survival can be asked at three different
+spatial scales:
 
 1. some 2-gap exists somewhere in the complete period at every layer;
 2. a 2-gap occurs in each sufficiently large square-safe window; or
-3. the distinguished head is a 2-gap infinitely often.
+3. the first gap after the distinguished head equals $2$ infinitely often.
 
 The first statement is global and purely combinatorial. The second is local
 but benefits from a window whose length grows quadratically. The third concerns
 one position and therefore has no window-size reserve. Mixing these meanings
 hides the actual threshold.
+
+The following two empirical views make the distinction visible in the
+deterministic Sieve Sequence. They use the same 200 stages and the same
+2-focused compression: every 2-gap receives its own green cell, while each
+maximal run of consecutive non-2 gaps is collapsed into one colored cell equal
+to its sum. An internal colored cell therefore measures the total distance
+between two consecutive 2-gaps. Both views display $1{,}400$ compressed units
+from every row; they differ only in where those rows are placed horizontally.
+
+**View A — independent compressed snapshots.** Every row begins at column zero,
+so its horizontal coordinate counts compressed units from that stage's own
+head. This is the original view. It honestly shows the texture within each
+stage, but its curved or noisy-looking vertical drift must not be read as a
+2-gap changing before the square boundary: equal columns in adjacent rows need
+not represent the same surviving values.
+
+![Independent 2-focused snapshots of 200 Sieve Sequence stages: every row restarts at its own head](../../charts/gap-heatmap-2focused.svg)
+
+**View B — shared-safe-2 alignment.** For each pair of adjacent rows, let $h$ be
+the previous stage's head. A safe anchor is a 2-gap with the same raw starting
+value in both rows and with both endpoints strictly below $h^2$. The alignment
+calculation compares the compressed indices of every such shared safe 2-gap
+and shifts the later row by their common difference. Across the 199 observed
+transitions, the 200-stage dataset exhibits 118 differences of zero and 81 of
+one; every safe anchor within each transition agrees with that row's difference.
+Accumulating those differences produces the alternative view below.
+
+![Shared-safe-2 aligned compression of 200 Sieve Sequence stages: unchanged pre-square 2-gaps form vertical green lines](../../charts/gap-heatmap-2focused-aligned.svg)
+
+The left white wedge is intentional padding created by the cumulative offsets.
+A zero shift occurs when advancing the head merely shortens the leading
+collapsed non-2 run; a one-cell shift occurs when that step removes an entire
+compressed run or a standalone 2-gap cell. Thus the straight green lines in
+View B and the curved texture in View A describe the same data under different
+coordinates.
+
+The sieve does not rotate this compressed row as an atomic list. Within the
+safe prefix, it advances the head through one raw gap; only afterward does the
+visualization collapse the remaining consecutive non-2 gaps. Thus a raw prefix
+$[4,6,8,2,\ldots]$ appears over successive rows as
+$[18,2,\ldots] \to [14,2,\ldots] \to [8,2,\ldots] \to [2,\ldots]$. The long
+blue feature is not one unchanged merged gap reused in several sequences; it is
+the decreasing suffix of one raw run. Rotating one compressed cell per row
+would show that block only once, but it would define a different dynamics from
+the Sieve Sequence.
+
+| View | Horizontal coordinate | What vertical comparison supports |
+|---|---|---|
+| Independent snapshots | Compressed units from each row's own head | Within-stage density and spacing texture; not cell-by-cell lineage |
+| Shared-safe-2 aligned | Cumulative columns fixed by shared 2-gaps below the previous $h^2$ | Exact alignment of the observed safe prefix; not full lineage beyond it |
+
+These figures provide empirical context for the placement problem; neither is
+evidence for the companion-model survival thresholds derived below. They are
+generated by the [gap-heatmap calculation](
+../../python/src/sieve_sequence/gap_heatmap.py) from a dataset containing the
+[first 100,000 gaps of each stage](
+../../data/sieve-sequence/first_gaps_per_seq.csv).
 
 The central question is therefore not what fixed percentage of behavior may be
 called adversarial. It is how large the realized local destruction may be
@@ -74,10 +165,9 @@ the property itself before using it. The comparison with the real sieve then
 shows what additional arithmetic information would transfer the companion
 result.
 
-The companion theorems in this draft are mathematically proved but not
-Stainless-verified. We link the maintained finite real-sieve properties that
-support the construction, while keeping the stochastic and asymptotic
-arguments as mathematical proofs.
+The companion theorems below are proved mathematically under their stated
+premises; Stainless verification remains pending and is outside this article's
+scope.
 
 ## 2. Preliminaries and Companion Models
 
@@ -109,7 +199,7 @@ is fixed, while local placement changes.
 The random, adversarial, and protective companion definitions above are the
 definitions used throughout this article. The corresponding real modular pair
 is derived in [Gap Dynamics §6.1](
-../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes).
+../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
 
 ### 2.1 Notation
 
@@ -133,10 +223,50 @@ All products and sums over $r < Q$ are over prime filters unless stated
 otherwise. Square-window conclusions use a population of order $Q^2$; head
 conclusions concern one distinguished position.
 
+For the prime-indexed head events $H_Q$, define
+
+```math
+S(X):=
+\sum_{\substack{Q\le X\\Q\text{ prime}}}\Pr(H_Q).
+```
+
+Throughout this article, **adequate cross-layer mixing** means that whenever
+$S(X)\longrightarrow\infty$,
+
+```math
+\sum_{\substack{P,Q\le X\\P,Q\text{ prime}}}
+\Pr(H_P\cap H_Q)
+=
+(1+o(1))S(X)^2.
+```
+
+Mutual independence is a sufficient special case: its diagonal correction is
+$O(S(X))=o(S(X)^2)$. The Kochen--Stone form of the second Borel--Cantelli lemma
+then gives $\Pr(H_Q\text{ infinitely often})=1$ [[3]](#ref3). When $S(X)$ converges, the
+first Borel--Cantelli lemma gives only finitely many head events without any
+mixing premise.
+
+Square-window applications use one further named premise. **Blind placement**
+means that the surviving starts are placed in the window so that the
+empty-window bound
+
+```math
+\Pr(X_Q=0)\le e^{-\lambda_Q}
+```
+
+holds, where $\lambda_Q$ is the expected surviving population of that window
+(for example $\lambda_Q^{\mathrm{mix}}$ in §4.1). This is an assumption about
+the joint placement distribution: it holds for independent uniform placement
+and is not derived in this article for dependent allocators such as exact
+quotas, whole-filter coins, or block balance. Whenever a square-window result
+uses it, the result says so; the same caveat as §9 applies — allocators with
+different dependence structures cannot inherit one another's almost-sure
+conclusions.
+
 ### 2.2 Mathematical Foundation
 
 The companion construction uses three exact sieve-sequence results proved in
-[Gap Dynamics](../chapter6/gap-dynamics.md):
+[Gap Dynamics](../chapter6/gap-dynamics.md) [[2]](#ref2):
 
 - the [exact complete-period 2-gap count](
   ../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count);
@@ -158,7 +288,7 @@ adversarial, protective, and mixed parents all leave the same global
 population. Local extinction must therefore come from placement rather than
 from exhausting the complete-period supply.
 
-Let $N_k=|\mathcal G_k|$. Installing $r_k$ gives
+Let $N_k=|\mathcal G_k|$ and assume $N_0>0$. Installing $r_k$ gives
 
 ```math
 \begin{aligned}
@@ -178,7 +308,7 @@ N_k
 &=N_0\prod_{i < k}(r_i-2)
 &&[\text{Iteration}]\\
 & > 0
-&&[r_i\ge5]\\
+&&[N_0>0;\ r_i\ge5]\\
 &\longrightarrow\infty.
 &&[\text{Every Factor Is At Least }3]
 \end{aligned}
@@ -193,7 +323,7 @@ Thus
 
 The complete proof record appears in [Appendix A.1](#appendix-a1). The
 corresponding real-sieve count is proved in [Gap Dynamics §5.2](
-../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count).
+../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2).
 
 ### 3.2 Local Destruction Relative to Random
 
@@ -319,6 +449,10 @@ P(Q)
 \end{aligned}
 \qquad[\text{Q.E.D.}]
 ```
+
+The Prime Number Theorem, the prime harmonic estimate, and their
+partial-summation consequences used here and below are classical; we use Hardy
+and Wright [[4]](#ref4).
 
 For the random benchmark $w_r=1$,
 
@@ -448,11 +582,11 @@ $\log_{10}\lambda_w(Q)$ against $\log_{10}Q$ for the fixed factors
 $w=1,3,6,10$, a constant $1\%$ adversarial share, and the $c=1$ frontier
 $w_r=1+\log r$. Every fixed finite $w$ climbs without bound -- $w=6$ and
 $w=10$ visibly dip first, because $Q^2$ must first outgrow $(\log Q)^{2w}$ --
-while the constant share collapses to effective extinction and the $c=1$
-frontier climbs at the slowest surviving rate, exactly the square-window
-threshold derived in §3.5.
+while the constant share collapses rapidly and the exact $c=1$ boundary
+declines only logarithmically: $\lambda_1(Q)\asymp C/(\log Q)^2\to0$. This is
+the failure-side boundary derived in §3.5, not a surviving curve.
 
-![Square-window expected occupancy log10(lambda(Q)) on a log scale: every fixed relative-hazard factor w=1,3,6,10 eventually climbs without bound, a constant 1% adversarial share collapses to effective extinction, and the c=1 frontier climbs at the slowest surviving rate](../../presentations/sieve-sequence-visualization/figures/out/phase-transition-window.svg)
+![Square-window expected occupancy log10(lambda(Q)) on a log scale: every fixed relative-hazard factor w=1,3,6,10 eventually climbs without bound, a constant 1% adversarial share collapses rapidly, and the exact c=1 boundary declines slowly to zero](../../charts/phase-transition-window.svg)
 
 ### 3.5 Logarithmically Growing Worsening Has Two Thresholds
 
@@ -557,7 +691,7 @@ infinitely many head events with mixing. At and above the threshold the sum
 flattens: $c=0.5$ only very slowly (it is the boundary itself), $c=0.7$ and
 $c=1.0$ quickly -- so there are only finitely many, almost surely.
 
-![Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold](../../presentations/sieve-sequence-visualization/figures/out/phase-transition-head.svg)
+![Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold](../../charts/phase-transition-head.svg)
 
 Equivalently, the robust relative-factor regimes are
 
@@ -1021,8 +1155,8 @@ the relevant parents:
 K\ge L.
 ```
 
-If the adversarial share $\alpha=K/N$ stays fixed while the relevant fraction
-$L/N$ decreases, then eventually
+For a fixed adversarial share $\alpha=K/N>0$, if the relevant fraction
+$L/N\longrightarrow0$, then eventually
 
 ```math
 \alpha\ge\frac LN,
@@ -1828,7 +1962,7 @@ already sufficient for infinitely many distinct certificates.
 
 For consecutive primes $p < q$, the real accepted-strike count in the next safe
 window is proved in [Gap Dynamics §9.1](
-../chapter6/gap-dynamics.md#91-exact-accepted-strikes):
+../chapter6/gap-dynamics.md#91-exact-accepted-strikes) [[2]](#ref2):
 
 ```math
 A(p,q)
@@ -1841,7 +1975,7 @@ Using this local quota as $J_r=A(p,q)$ in the random-location companion is well
 defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed
 cumulative conditions for the head proof above. The
 [complete-period count](
-../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) supplies the
+../chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2) supplies the
 global density; neither exact count determines local placement in the real
 sieve.
 
@@ -2093,7 +2227,9 @@ The companion diagrams identify what a transfer theorem would need to control:
 - any scheduled or effective policy budget $A(Q)$ used for a particular
   companion specialization;
 - the availability and abundance premises for the chosen target; and
-- sufficient cross-layer mixing for divergent head-event sums.
+- a deterministic discrepancy bound comparing the real head indicators $I_Q$
+  with the divergent companion reference weights $\rho_Q$, as formalized in
+  §10.
 
 ### 8.1 Finite Empirical Comparison With Random
 
@@ -2126,10 +2262,10 @@ frontier expectation is only $0.0845$. Over this finite range, the real
 square-window population follows the random scale and remains far above the
 square-window failure frontier.
 
-![Real per-sequence square-window 2-gap counts compared with the random expectation and the c=1 square-window frontier](../../presentations/sieve-sequence-visualization/figures/out/per-sequence-frontier.svg)
+![Real per-sequence square-window 2-gap counts compared with the random expectation and the c=1 square-window frontier](../../charts/per-sequence-frontier.svg)
 
 The figure is generated by the [per-sequence frontier calculation](
-../../presentations/sieve-sequence-visualization/figures/per_sequence_frontier_chart.py)
+../../python/src/sieve_sequence/per_sequence_frontier_chart.py)
 from the [per-sequence survivor data](
 ../../data/sieve-sequence/first_gaps_per_seq.csv).
 
@@ -2158,10 +2294,10 @@ w_p^{\mathrm{real}}=0.0523.
 Thus the measured real transition is not slightly more destructive than the
 random filter; on these windows it is substantially less destructive.
 
-![Real per-transition square-window 2-gap destruction compared with the random rate and the c=1 square-window boundary](../../presentations/sieve-sequence-visualization/figures/out/frontier-comparison-stages.svg)
+![Real per-transition square-window 2-gap destruction compared with the random rate and the c=1 square-window boundary](../../charts/frontier-comparison-stages.svg)
 
 The figure is generated by the [per-transition frontier calculation](
-../../presentations/sieve-sequence-visualization/figures/frontier_comparison_stages_chart.py)
+../../python/src/sieve_sequence/frontier_comparison_stages_chart.py)
 from the [dense](../../data/candidates/window-measurements.csv) and
 [sparse](../../data/candidates/window-measurements-sparse.csv) transition data.
 Zero-destruction transitions are displayed on the chart's $10^{-7}$ floor so
@@ -2212,12 +2348,12 @@ of the algebra above, while the separated $c=1$ curve shows the scale of the
 hypothetical logarithmic worsening. The chart is strong precisely because the
 reader can verify the stated relationship without additional interpretation.
 
-![Exact full-cycle 2-gap destruction fraction compared with the neutral rate and the c=1 reference](../../presentations/sieve-sequence-visualization/figures/out/full-cycle-destruction.svg)
+![Exact full-cycle 2-gap destruction fraction compared with the neutral rate and the c=1 reference](../../charts/full-cycle-destruction.svg)
 
 The figure is generated by the [full-cycle destruction calculation](
-../../presentations/sieve-sequence-visualization/figures/full_cycle_destruction_chart.py).
+../../python/src/sieve_sequence/full_cycle_destruction_chart.py).
 The underlying two-class result is proved in [Gap Dynamics §6.1](
-../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes).
+../chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
 
 #### Cumulative Survival Consequence
 
@@ -2243,10 +2379,10 @@ the first plotted prime and keeps every $c=1$ factor in $(0,1)$; changing a
 finite anchor changes the normalizing constants, not the asymptotic exponents.
 This is a reference comparison, not evidence of head recurrence.
 
-![Normalized full-cycle 2-gap survival under the exact per-filter law compared with the c=1 schedule](../../presentations/sieve-sequence-visualization/figures/out/full-cycle-survival.svg)
+![Normalized full-cycle 2-gap survival under the exact per-filter law compared with the c=1 schedule](../../charts/full-cycle-survival.svg)
 
 The figure is generated by the [full-cycle survival calculation](
-../../presentations/sieve-sequence-visualization/figures/full_cycle_survival_chart.py).
+../../python/src/sieve_sequence/full_cycle_survival_chart.py).
 
 Read together, the two full-cycle figures give a direct progression from the
 one-filter identity to its cumulative effect. A separate fixed-cohort
@@ -2268,10 +2404,10 @@ complete-cycle excess is exactly zero, these small positive and negative
 deviations measure how the fixed interval cuts partial cycles. They are finite
 window-boundary effects, not a structural excess or deficit of the sieve.
 
-![Cumulative hazard of fixed-window 2-gap cohorts for four finite Q values](../../presentations/sieve-sequence-visualization/figures/out/fixed-lineage-hazard.svg)
+![Cumulative hazard of fixed-window 2-gap cohorts for four finite Q values](../../charts/fixed-lineage-hazard.svg)
 
 The figure is generated by the [fixed-lineage hazard calculation](
-../../presentations/sieve-sequence-visualization/figures/fixed_lineage_hazard_chart.py)
+../../python/src/sieve_sequence/fixed_lineage_hazard_chart.py)
 from the dedicated fixed-cohort CSVs. Its value is a robustness check: even in
 non-aligned finite windows the boundary deviations are small relative to the
 $c=1/2$ and $c=1$ comparison scales.
@@ -2355,9 +2491,12 @@ probability series still diverges. Under the stated spatial and
 mixing premises, square windows are eventually nonempty and head 2-gaps recur
 infinitely often for every fixed finite $w$.
 
-The first nontrivial boundary occurs when worsening grows with the filter. The
-exact-quota and biased exact-quota companions recover the same frontiers as the
-general hazard law:
+The first nontrivial boundary occurs when worsening grows with the filter.
+Under §7.1's cumulative quota/error conditions and the relevant spatial
+premises, the neutral exact-quota companion recovers the random survival scale.
+The biased exact-quota companion recovers the following general-hazard
+frontiers when its realized effective skew follows the displayed schedule and
+its placement, availability, and mixing premises hold:
 
 ```math
 \begin{aligned}
@@ -2403,25 +2542,44 @@ the random rate to obtain $w_r$, measure where the controllable damage lands
 relative to the head, and compare the resulting cumulative hazard with the
 companion thresholds above.
 
-For the deterministic real sieve, we obtain the following conditional transfer
-theorem:
+For a precise deterministic transfer criterion, let $I_Q\in\{0,1\}$ indicate
+that the real sieve has a 2-gap at prime head $Q$. Let $\rho_Q>0$ be the
+companion reference weight obtained from the below-frontier cumulative hazard
+and the stated availability bound, and define
+
+```math
+R(X):=\sum_{\substack{Q\le X\\Q\text{ prime}}}\rho_Q.
+```
+
+Assume
 
 ```math
 \begin{aligned}
-&\text{below-frontier cumulative CRT hazard}\\
-&\quad+\text{persistent head availability}\\
-&\quad+\text{adequate deterministic cross-layer mixing}\\
-&\Longrightarrow
-\text{a 2-gap occurs at the head infinitely often}.
+R(X)&\longrightarrow\infty,
+&&[\text{Divergent Reference Mass}]\\
+\sum_{\substack{Q\le X\\Q\text{ prime}}}(I_Q-\rho_Q)
+&=o(R(X)).
+&&[\text{Deterministic Discrepancy Bound}]
 \end{aligned}
 ```
 
-The more general frontier is cumulative: the relevant head-event series must
-diverge, rather than every individual filter satisfying one pointwise bound.
-“Infinitely often” does not mean that every sufficiently large head is a
-2-gap. Proving these premises for the real CRT filter would prove infinitely
-many head 2-gaps and therefore the twin-prime conjecture. We have identified
-the sufficient frontier and the remaining transfer premises.
+Then
+
+```math
+\sum_{\substack{Q\le X\\Q\text{ prime}}}I_Q
+=R(X)+o(R(X))
+\longrightarrow\infty.
+\qquad[\text{Q.E.D.}]
+```
+
+This discrepancy condition is the precise deterministic substitute for the
+stochastic mixing premise. It is not proved here for the real CRT sieve. The
+frontier is cumulative: the reference mass must diverge, rather than every
+individual filter satisfying one pointwise bound. “Infinitely often” does not
+mean that every sufficiently large head is a 2-gap. Proving this discrepancy
+bound for the real CRT filter would prove infinitely many head 2-gaps and
+therefore the twin-prime conjecture. We have identified the sufficient
+frontier and the remaining transfer premise.
 
 ## 11. Future Work
 
@@ -2443,22 +2601,40 @@ exist.
 
 ## 12. References
 
-- [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md)
+<a name="ref1" id="ref1" href="#ref1">[1]</a>
+Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and Their
+Transitions*. [Local article](../chapter6/sieve-sequence.md).
 
-## Appendix A. Companion Proof Records
+<a name="ref2" id="ref2" href="#ref2">[2]</a>
+Mata, T. H. (2026). *Structural Properties and Open Boundaries of 2-Gaps in
+Sieve Sequences*. [Local article](../chapter6/gap-dynamics.md).
 
-The body develops each result in its mathematical context. This appendix
-collects the companion-process theorems with their premises and conclusions so
-that the article remains self-contained.
+<a name="ref3" id="ref3" href="#ref3">[3]</a>
+Kochen, S. and Stone, C. (1964). [A note on the Borel--Cantelli lemma](
+https://doi.org/10.1215/ijm/1256059668). *Illinois Journal of Mathematics*,
+8(2), 248--251.
+
+<a name="ref4" id="ref4" href="#ref4">[4]</a>
+Hardy, G. H. and Wright, E. M.; revised by Heath-Brown, D. R. and Silverman,
+J. H. (2008). [*An Introduction to the Theory of Numbers*](
+https://doi.org/10.1093/oso/9780199219858.001.0001), 6th edition. Oxford
+University Press.
+
+## Appendix A. Selected Companion Proof Records
+
+The body develops every result in its mathematical context. This appendix
+collects six core companion-process proof records with their premises and
+conclusions; it is a selected reference, not a complete catalog of the body.
 
 <a id="appendix-a1"></a>
 
 ### A.1 Global Persistence Is Independent of Allocation
 
-This result is unconditional inside every balanced companion. Let
+Once the initial population is nonzero, this result is unconditional with
+respect to allocation inside every balanced companion. Let
 $N_k=|\mathcal G_k|$ be the complete-period 2-gap population before installing
-prime $r_k$. Every parent produces $r_k$ copies and loses exactly two,
-regardless of where those two removals occur. Therefore
+prime $r_k$, with $N_0>0$. Every parent produces $r_k$ copies and loses exactly
+two, regardless of where those two removals occur. Therefore
 
 ```math
 \begin{aligned}
@@ -2478,7 +2654,7 @@ N_k
 &=N_0\prod_{i < k}(r_i-2)
 &&[\text{Iteration}]\\
 &>0
-&&[r_i\ge5]\\
+&&[N_0>0;\ r_i\ge5]\\
 &\longrightarrow\infty.
 &&[\text{Every Factor Is At Least }3]
 \end{aligned}
@@ -2815,7 +2991,7 @@ K\ge L
 ```
 
 At the head, $L=1$, so one correctly placed adversarial label destroys the
-current candidate. If $L/N$ decreases in a tracked window, every fixed
+current candidate. If $L/N\longrightarrow0$ in a tracked window, every fixed
 $\alpha>0$ eventually has enough capacity to clear that window. Appendix A.1
 still applies: the targeted parents leave $r-2$ descendants outside the
 window, so complete-period growth continues.

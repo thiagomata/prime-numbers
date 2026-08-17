@@ -231,7 +231,9 @@ representation is pending.
 **Scope and quantifier:** One incoming prime; every complete or finite run of
 copy indices satisfying the stated coprimality precondition.
 
-**Status:** **Mathematically proved, Stainless verification pending.**
+**Status:** **The complete-block specialization for a real linear sequence
+2-gap is Stainless-verified; the cyclic wrap case and arbitrary finite-run
+ceiling bound remain pending.**
 
 Expansion distributes every old 2-gap through equally spaced copies before
 filtering. The incoming prime cannot choose arbitrary copies: the two endpoint
@@ -300,11 +302,15 @@ that one lies in a chosen numerical window.
 
 #### Stainless And Source Evidence For The Filter-Frequency Theorem
 
-The mathematical proof is maintained in [Exact Filter Frequency Across
-Repeated Copies](../../properties/sieve-sequence/copy-index-filter-frequency.md).
-The repeated-stream foundation is verified in the companion Sieve Sequence
-article, but no `.holds` theorem currently packages these two exact copy-index
-classes and the finite-slice bound. Stainless verification is pending.
+For a real linear sequence 2-gap, the complete-block facts—distinct endpoint
+strike offsets, exactly two destroyed lifts, and exactly $r-2$
+endpoint-surviving lifts—are Stainless-verified in [Exact Lifted-Copy Law for
+a Real 2-Gap](sieve-sequence-v2.md#52-exact-lifted-copy-law-for-a-real-2-gap).
+The stronger cyclic-wrap case and the ceiling bound for an arbitrary run of
+$L$ consecutive copy indices are
+maintained in [Exact Filter Frequency Across Repeated Copies](
+../../properties/sieve-sequence/copy-index-filter-frequency.md) and remain
+mathematically proved with dedicated Stainless verification pending.
 
 ### 3.3 Exact Batched 2-Gap Survival
 
@@ -2017,7 +2023,7 @@ family of future heads.
 | Result | Mathematical status | Stainless status | Canonical evidence |
 |--------|---------------------|------------------|--------------------|
 | the Global 2-Gap Count property — exact global 2-gap count | Proved | Pending | [Global 2-Gap Count](../../properties/sieve-sequence/exact-global-two-gap-count.md) |
-| the Copy-Index Filter Frequency property — exact copy-index filter frequency | Proved | Pending | [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
+| the Copy-Index Filter Frequency property — exact copy-index filter frequency | Proved | Complete block verified for a real linear sequence 2-gap; cyclic wrap and arbitrary finite-run ceiling pending | [Sieve Sequence §5.2](sieve-sequence-v2.md#52-exact-lifted-copy-law-for-a-real-2-gap), [Copy-Index Filter Frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md) |
 | the Batched 2-Gap Survival property — exact batched survival | Proved | Pending | [Batched 2-Gap Survival](../../properties/sieve-sequence/exact-batched-two-gap-survival.md) |
 | the Global 2-Gap Cluster Count property — exact global `(2,4,2)` cluster count | Proved | Pending | [Global 2-Gap Cluster Count](../../properties/sieve-sequence/exact-global-two-gap-cluster-count.md) |
 | the Rotation Invariance property — rotation preserves cyclic multiplicity | Proved for nonempty finite lists | Exact multiplicity pending; membership and size foundations verified | [Rotation Invariance](../../properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md), [rotation foundations](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) |

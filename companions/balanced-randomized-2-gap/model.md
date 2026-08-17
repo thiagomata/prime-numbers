@@ -158,7 +158,7 @@ positional questions taken up next.
 Let `M(Q) = M_0 \prod_{p_0<r<Q} r` be the period, `L_Q \approx Q^2-Q` the
 square-safe window length, and `\delta_Q = N(Q)/M(Q)` the global 2-gap
 density. As established in `properties/sieve-sequence/realized-filter-adversariality-score.md`
-and `empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py`:
+and `python/src/sieve_sequence/spacing.py`:
 
 ```math
 \delta_Q = \delta_0 \prod_{p_0<r<Q}\left(1-\frac2r\right) \asymp \frac{C}{(\log Q)^2}.

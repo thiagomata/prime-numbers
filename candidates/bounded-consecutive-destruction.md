@@ -41,7 +41,7 @@ consecutive run among 2-gap starts.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
+Source: `python/src/sieve_sequence/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `max_cons_destroyed_run` = the longest
 consecutive run in the **linear order of starts lying inside `W_q`** that the
 filter destroys. The implementation does not join the last local start back to
@@ -83,7 +83,7 @@ algebraic theorem.
 
 ## Empirical status (lineage experiment): cyclic run unmeasurable at scale
 
-The lineage experiment (`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`) computes the
+The lineage experiment (`python/src/sieve_sequence/lineage_cli.py`) computes the
 cyclic destroyed run for the layers where the period modulus `M_r` is small
 enough to materialize. Unlike #14's `sigma_r` (which has a stable-wheel form
 making it `O(1)` at any scale), the **cyclic destroyed run genuinely requires

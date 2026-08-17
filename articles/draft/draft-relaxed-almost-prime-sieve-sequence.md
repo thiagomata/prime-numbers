@@ -96,7 +96,42 @@ does not call its new number-theoretic properties verified. Each property
 section below states its population and scope before the proof, and names
 its canonical source note at the end.
 
+### 1.2 Relation To Known Results
+
+This draft does not reprove Chen's theorem [[7]](#ref7), which already
+establishes infinitely many primes $p$ such that $p+2$ has at most two prime
+factors. The machinery invoked below is standard in the linear-sieve
+literature: the sifted sequence and level-of-distribution framework of
+Halberstam and Richert [[8]](#ref8), with Type-I/Type-II terminology as in
+Iwaniec and Kowalski [[9]](#ref9) and Friedlander and Iwaniec [[10]](#ref10).
+What is project-specific is the population: the square-safe interval
+$[Q,Q^2)$ anchored at the head, the nested wheels $2 \mid Z \mid W$, and the
+pre-sieved shifted sequence $\mathcal A_Q=\{n+2:n\in S_Q\}$. The modulo-$3$
+obstruction proved in §7 is a specific fixed-character correlation on the
+complete reduced wheel; the classical parity barrier — a sieve's general
+inability to distinguish the parity of the number of prime factors — is the
+broader context for why such local obstructions defeat scalar-density
+models, but the two statements are not identical and are not conflated here.
+
 ## 2. Preliminaries And The Relaxed Candidate Weight
+
+The sieve vocabulary used throughout:
+
+- A **$P_2$ number** is a positive integer $n$ with
+  $\Omega(n)\le2$, where $\Omega$ counts prime factors with multiplicity.
+- A **lower-bound sieve** is a sieve method that produces a lower bound for
+  the count of elements of a sequence surviving a set of divisibility
+  conditions; the quantity $\sum_{Q\le n\lt Q^2}a_Q(n)$ of this article is
+  the sifted sum such a method would bound from below.
+- A **Type-I estimate** controls divisor sums: it bounds
+  $\sum_d \tau(d)\,\bigl|A_d - A_1/\varphi(d)\bigr|$ for divisors $d$ up to
+  some level $D$, i.e. it uses distribution of the sequence on arithmetic
+  progressions. For this article the relevant remainders are the
+  prime-progression discrepancies of §5.
+- A **Type-II estimate** controls bilinear sums
+  $\sum_{m,n}\xi_m\kappa_n\,a_{mn}$ with arbitrary bounded coefficients,
+  i.e. distribution of the sequence along products; §6 identifies the exact
+  character modes such an estimate must control for this weight.
 
 Choose a fixed exponent
 
@@ -133,6 +168,17 @@ This is weaker than twin-prime positivity because $n+2$ is not required to
 survive every prime below $Q$.
 
 ## 3. Relaxed Positivity Implies Prime-Plus-$P_2$ Production
+
+**Theorem 1 (Relaxed positivity implies prime-plus-$P_2$ production).**
+For every fixed exponent $1/3\lt\alpha\lt1/2$ and every sufficiently large
+prime future head $Q$, over the integers in that head's square-safe interval
+weighted by $a_Q$:
+
+```math
+a_Q(n)=1
+\quad\Longrightarrow\quad
+n\text{ is prime and }\Omega(n+2)\le2.
+```
 
 We prove this for every fixed exponent $1/3\lt\alpha\lt1/2$ and every
 sufficiently large prime future head $Q$, over the integers in that head's
@@ -207,6 +253,17 @@ Neither that input nor the factor-count argument above is yet encoded as a
 `.holds` theorem.
 
 ## 4. Exact Divisor Local Factor And Boundary Remainder
+
+**Theorem 2 (Exact divisor local factor and boundary remainder).**
+For every pair of squarefree prime wheels $W,Z$ with $2\mid W$, every integer
+interval $[L,U)$ with $L\lt U$, and every $m\ge1$, over relaxed-weight
+integers in that interval that are also divisible by the fixed integer $m$:
+
+```math
+\mathcal N_m[L,U)=\rho(m)\ell_m+E_m[L,U),
+\qquad
+|E_m[L,U)|\le R-1.
+```
 
 We prove this for every pair of squarefree prime wheels $W,Z$ with $2\mid W$,
 every integer interval $[L,U)$ with $L\lt U$, and every $m\ge1$, over
@@ -336,6 +393,15 @@ Factor](
 
 ## 5. Shifted Divisor Discrepancy
 
+**Theorem 3 (Shifted divisor discrepancy reduces to prime progressions).**
+For every squarefree installed wheel $W$ with $2\mid W$, every odd squarefree
+divisor $d\mid W$, and the square-safe interval $I$:
+
+```math
+r_d(I)=A_d(I)-\frac{A_1(I)}{\varphi(d)}
+=\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}.
+```
+
 We prove this for every squarefree installed wheel $W$ with $2\mid W$, every
 odd squarefree divisor $d\mid W$, and every finite integer interval
 $I=[L,U)$, over installed-wheel survivors in that interval whose shift
@@ -463,6 +529,13 @@ Divisor Sum Is A Prime-Progression Discrepancy](
 
 ## 6. Exact Bilinear Character Decomposition
 
+**Theorem 4 (Exact bilinear character decomposition).**
+For every pair of squarefree nested wheels $2\mid Z\mid W$, every factor pair
+with $\gcd(mn,W)=1$, every finite factor domain $\mathcal D$, and arbitrary
+coefficients $\xi_m,\kappa_n$, the scalar-centered relaxed weight at products
+$x=mn$ decomposes exactly into nonprincipal character products
+$\chi(m)\chi(n)$ as displayed below.
+
 We prove this for every pair of squarefree nested wheels $2\mid Z\mid W$,
 every factor pair with $\gcd(mn,W)=1$, every finite factor domain
 $\mathcal D$, and arbitrary coefficients $\xi_m,\kappa_n$, over the
@@ -563,6 +636,18 @@ Remainder Has A Character Obstruction](
 ../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
 
 ## 7. Refuted Route — Scalar-Density Type-II Orthogonality
+
+**Theorem 5 (Scalar-density Type-II orthogonality fails on the complete
+wheel).** For every pair of squarefree wheels $2\mid Z\mid W$ with $3\mid Z$,
+the quadratic character modulo $3$ gives bounded product coefficients with
+
+```math
+\left|
+\sum_{m,n\in G_W}\chi_3(m)\chi_3(n)w(mn)
+\right|
+=
+\sum_{m,n\in G_W}a(mn).
+```
 
 This section refutes one auxiliary statement, over product pairs on the
 complete reduced wheel $G_W\times G_W$ for every pair of squarefree wheels
@@ -782,6 +867,25 @@ of Chen's theorem, or a twin-prime result.
    ../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md).
 6. [Formal Verification of Sieve Sequence Stages and Their Transitions](
    ../chapter6/sieve-sequence.md).
+
+External references:
+
+<a name="ref7" id="ref7" href="#ref7">[7]</a>
+Chen, J. R. (1973). On the representation of a larger even integer as the
+sum of a prime and the product of at most two primes. *Scientia Sinica*,
+16, 157--176.
+
+<a name="ref8" id="ref8" href="#ref8">[8]</a>
+Halberstam, H. and Richert, H.-E. (1974). *Sieve Methods*. Academic Press,
+London.
+
+<a name="ref9" id="ref9" href="#ref9">[9]</a>
+Iwaniec, H. and Kowalski, E. (2004). *Analytic Number Theory*. American
+Mathematical Society Colloquium Publications, 53.
+
+<a name="ref10" id="ref10" href="#ref10">[10]</a>
+Friedlander, J. and Iwaniec, H. (2010). *Opera de Cribro*. American
+Mathematical Society Colloquium Publications, 57.
 
 ## Appendix A: Evidence And Verification Status
 

@@ -234,7 +234,7 @@ gaps. Neither benchmark alone proves deterministic survival.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
+Source: `python/src/sieve_sequence/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantities: `destruction_rate = destroyed/G_local`
 (actual fraction of 2-gaps the real filter destroys) vs the uniform-residue
 benchmark `2/p`. Full data in

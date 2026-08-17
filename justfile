@@ -66,7 +66,7 @@ check-cycles scope="":
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
     just_log check-cycles "{{justfile_directory()}}" "scope={{scope}}"
-    python3 "{{justfile_directory()}}/scripts/check-scala-cycles.py" "{{scope}}"
+    python3 "{{justfile_directory()}}/python/tools/check_scala_cycles.py" "{{scope}}"
 
 verify-file file pattern="":
     #!/usr/bin/env bash
@@ -164,25 +164,30 @@ test:
     export DYLD_LIBRARY_PATH="/opt/homebrew/Cellar/z3/4.16.0/lib:${DYLD_LIBRARY_PATH:-}"
     sbt 'set stainlessEnabled := false' 'testOnly * -- -l v1.tags.SlowLemmaTest' 2>&1 | tee test.log
 
+python-setup:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}/python"
+    python3 -m venv .venv
+    .venv/bin/pip install -e ".[dev]"
+
 empirical-test:
     #!/usr/bin/env bash
     set -euo pipefail
-    cd "{{justfile_directory()}}/empirical/sieve-sequence"
-    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_window.py
-    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_lineage.py
-    env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python tests/test_hazard.py
+    cd "{{justfile_directory()}}"
+    exec python/.venv/bin/pytest python/tests/ -v
 
 empirical-window max_prime="1000" output="data/candidates/window-measurements.csv":
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-window "{{max_prime}}" "{{output}}"
+    exec python/.venv/bin/sieve-sequence-window "{{max_prime}}" "{{output}}"
 
 empirical-window-sparse stride="100" max_prime="20000" output="data/candidates/window-measurements-sparse.csv":
     #!/usr/bin/env bash
     set -euo pipefail
     cd "{{justfile_directory()}}"
-    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-window --sparse "{{stride}}" "{{max_prime}}" "{{output}}"
+    exec python/.venv/bin/sieve-sequence-window --sparse "{{stride}}" "{{max_prime}}" "{{output}}"
 
 empirical-lineage q="17" output="":
     #!/usr/bin/env bash
@@ -194,7 +199,7 @@ empirical-lineage q="17" output="":
       output="data/candidates/lineage-Q${q}.csv"
     fi
     [[ "$q" =~ ^[0-9]+$ && -n "$output" ]]
-    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-lineage "$q" "$output"
+    exec python/.venv/bin/sieve-sequence-lineage "$q" "$output"
 
 empirical-hazard q="17" output="":
     #!/usr/bin/env bash
@@ -206,14 +211,20 @@ empirical-hazard q="17" output="":
       output="data/candidates/fixed-lineage-hazard-Q${q}.csv"
     fi
     [[ "$q" =~ ^[0-9]+$ && -n "$output" ]]
-    exec empirical/sieve-sequence/.venv/bin/sieve-sequence-hazard "$q" "$output"
+    exec python/.venv/bin/sieve-sequence-hazard "$q" "$output"
+
+empirical-deferred3 max_prime="2000" output="data/candidates/deferred3-measurements.csv":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{justfile_directory()}}"
+    exec python/.venv/bin/sieve-sequence-deferred3 "{{max_prime}}" "{{output}}"
 
 empirical-chart-hazard:
-    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/fixed_lineage_hazard_chart.py"
+    cd "{{justfile_directory()}}/python" && exec .venv/bin/python -m sieve_sequence.fixed_lineage_hazard_chart
 
 empirical-chart-full-cycle:
-    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/full_cycle_destruction_chart.py"
-    @exec python3 "{{justfile_directory()}}/presentations/sieve-sequence-visualization/figures/full_cycle_survival_chart.py"
+    cd "{{justfile_directory()}}/python" && exec .venv/bin/python -m sieve_sequence.full_cycle_destruction_chart
+    cd "{{justfile_directory()}}/python" && exec .venv/bin/python -m sieve_sequence.full_cycle_survival_chart
 
 test-all:
     #!/usr/bin/env bash

@@ -2,6 +2,33 @@
 
 This document describes how to write mathematical proofs with Stainless verification in this repository.
 
+## Print-Only Self-Containment
+
+Every article must stand on its own as a printed document given to a reader who
+has no access to this repository. The article itself must communicate four
+things:
+
+1. **Context:** define the mathematical objects and notation, and state the
+   indispensable prior facts on which the article relies.
+2. **Challenge:** identify the precise question being addressed and explain why
+   it is not already settled by the context.
+3. **Work:** present the construction or method, its assumptions, the argument,
+   and the status of the mathematical, formal, and empirical evidence.
+4. **Conclusion:** state what was established, what remains conditional or open,
+   and why the result matters.
+
+Repository links and citations may provide provenance, verification sources,
+data, and reproducibility. They must not carry a definition, premise, proof
+step, limitation, or conclusion that the reader needs in order to understand
+the article. When a prior theorem is cited, restate its mathematical statement
+and its role in the present argument; the earlier theorem's full proof may
+remain in the cited source.
+
+A final editorial review should therefore include a print-only test: ignore
+every repository link and ask whether the remaining title, abstract,
+introduction, body, and conclusion still explain the context, challenge, work,
+and result as one coherent document.
+
 ## The Three Representations
 
 Every property must be presented three times:

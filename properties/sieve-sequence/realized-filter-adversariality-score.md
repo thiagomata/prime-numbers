@@ -523,13 +523,13 @@ this section only gives it three comparable curves instead of one.
 
 ### Built and computed
 
-This is no longer only a formula. `empirical/sieve-sequence/src/sieve_sequence_empirical/four_lines.py`
+This is no longer only a formula. `python/src/sieve_sequence/four_lines.py`
 implements all three projections and `four_lines_cli.py` anchors them at a
 real layer of an existing lineage chain, writing
 `data/candidates/four-lines-Q101.csv`;
-`presentations/sieve-sequence-visualization/figures/four_lines_chart.py`
+`python/src/sieve_sequence/four_lines_chart.py`
 plots all four together (`out/four-lines-Q101.svg`). Tests are in
-`empirical/sieve-sequence/tests/test_four_lines.py`.
+`python/tests/test_four_lines.py`.
 
 Run at `Q=101` anchored at layer 7 (`r=23`, `N_0=361`, the point where `2/r`
 first drops under `10%` -- see Section 24's crossover note): `N_adversarial`
