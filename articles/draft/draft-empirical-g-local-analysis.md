@@ -1,7 +1,7 @@
-# Historical $[p,p^2)$ Analysis of $G_{\text{local}}$ (superseded)
+# Historical $[p,p^2]$ Analysis of $G_{\text{local}}$ (superseded)
 
 **[Superseded Draft]** — This article preserves results from the historical
-Scala $[p,p^2)$ counter. That convention is incompatible with the canonical
+Scala $[p,p^2]$ counter. That convention is incompatible with the canonical
 $[q,q^2)$ transition experiment, so these tables are not current evidence for
 the canonical candidate analysis. The old runner and dataset remain pending
 physical removal under the repository's deletion rule.
@@ -16,7 +16,7 @@ Independent Researcher
 ## Abstract
 
 This superseded draft records a historical computation of 2-gaps in
-$[p,p^2)$ for primes through 997. Its crossover, ratio, and monotonicity tables
+$[p,p^2]$ for primes through 991. Its crossover, ratio, and monotonicity tables
 are retained as an audit record of that experiment only. They neither reproduce
 nor validate the canonical transition measurement, which uses $[q,q^2)$ and
 measures actual candidate destruction and survival. The current successor
@@ -29,10 +29,10 @@ formal proof.
 
 | # | Property | Statement | Status |
 |---|----------|-----------|--------|
-| 1 | Crossover | $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Empirical — $p_c = 37$ up to $p=997$] |
+| 1 | Crossover | $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Empirical — $p_c = 37$ up to $p=991$] |
 | 2 | Monotonicity | $\delta$ never permanently dips back after crossover | [Empirical — single fluctuation at $p=73$; no extinction] |
 | 3 | Domination | $\delta$ grows faster-than-linear with $p$ | [Empirical — $\delta/p$ increases from 0.14 to 7.09] |
-| 4 | Extinction absence | No $p$ after $p=37$ has $G_{\text{local}} \le p-1$ | [Empirical — all 154 subsequent primes satisfy $G_{\text{local}} > p$] |
+| 4 | Extinction absence | No $p$ after $p=37$ has $G_{\text{local}} \le p-1$ | [Empirical — all 155 subsequent primes satisfy $G_{\text{local}} > p$] |
 
 Status key: `[Empirical]` = observed in computed data; does not constitute a formal proof.
 
@@ -63,6 +63,9 @@ For each prime $p \ge 3$, we compute the survivors in $[p, p^2]$ after removing 
 $$n \not\equiv 0 \pmod{p_i} \quad \forall p_i < p$$
 
 This is equivalent to being coprime to the primorial $M_{<p} = \prod_{p_i < p} p_i$.
+The interval is closed at $p^2$ because $p^2$ has no prime divisor smaller
+than $p$ and therefore survives the installed filters; the implementation
+strikes every multiple $m \le p^2$.
 
 The segmented sieve isolates the window $[p, p^2]$ where twin primes could exist after filtering by all smaller primes. By computing survivors directly instead of simulating the full cycle, we avoid the exponential blowup of the full MemCycle.
 
@@ -107,11 +110,12 @@ For each prime $p$ we record:
 
 ### 2.4 Range
 
-All 166 primes from $p=3$ to $p=997$ (the largest prime $\le 1000$). Total runtime: 676 seconds on JVM 21.
+All 166 primes from $p=3$ to $p=991$; the terminal row's next prime is $997$
+(the largest prime $\le 1000$). Total runtime: 676 seconds on JVM 21.
 
 ### 2.5 Historical Reproduction and Current Successor
 
-The historical $[p,p^2)$ tables are tied to the pending-removal Scala runner
+The historical $[p,p^2]$ tables are tied to the pending-removal Scala runner
 and dataset. They are not reproducible from the canonical Python project, and
 the obsolete Scala command is intentionally no longer documented.
 
@@ -139,7 +143,7 @@ This reverts at $p=31$ (k=11): $G_{\text{local}}=30$, $\delta=-1$, extinction=tr
 
 **Permanent crossover:** $p=37$ (k=12): $G_{\text{local}}=42$, $\delta=+5$.
 
-From $p=37$ onward, $\delta > 0$ for all 154 subsequent primes. No reversion.
+From $p=37$ onward, $\delta > 0$ for all 155 subsequent primes. No reversion.
 
 | Stage | $p$ | $k$ | $G_{\text{local}}$ | $\delta$ | Extinct? |
 |-------|-----|-----|-------------------|----------|----------|
@@ -166,14 +170,16 @@ The ratio $G_{\text{local}}/p$ grows steadily across the range:
 | 113 | 30 | 234 | +121 | 2.07 | 1.07 |
 | 173 | 40 | 456 | +283 | 2.64 | 1.64 |
 | 233 | 51 | 733 | +500 | 3.15 | 2.15 |
-| 353 | 71 | 1484 | +1125 | 4.20 | 3.19 |
+| 353 | 71 | 1448 | +1095 | 4.10 | 3.10 |
 | 467 | 91 | 2290 | +1823 | 4.90 | 3.90 |
-| 607 | 112 | 3590 | +2977 | 5.91 | 4.90 |
-| 739 | 132 | 4935 | +4192 | 6.68 | 5.67 |
-| 881 | 153 | 6581 | +5698 | 7.47 | 6.47 |
-| **997** | **168** | **8016** | **+7025** | **8.09** | **7.09** |
+| 607 | 111 | 3539 | +2932 | 5.83 | 4.83 |
+| 739 | 131 | 4892 | +4153 | 6.62 | 5.62 |
+| 881 | 152 | 6558 | +5677 | 7.44 | 6.44 |
+| **991** | **167** | **8016** | **+7025** | **8.09** | **7.09** |
 
-The $G/p$ ratio increases monotonically (with one small fluctuation, see Section 3.3) from 1.14 at the permanent crossover to 8.09 at the maximum tested $p$. The growth shows no signs of saturation.
+The $G/p$ ratio increases from 1.14 at the permanent crossover to 8.09 at the
+maximum tested $p$, with five small dips, each occurring at a transition
+between twin primes (see Section 4.4). The growth shows no signs of saturation.
 
 ### 3.3 Monotonicity
 
@@ -183,7 +189,8 @@ After permanent crossover ($p \ge 37$), $\delta$ strictly increases at all but o
 
 This is a minor dip of 1 unit — well above the extinction boundary ($\delta=0$). No dip brings $\delta$ anywhere near the danger threshold.
 
-After $p=73$, $\delta$ resumes strict monotonic increase for all remaining 153 primes.
+After $p=73$, $\delta$ resumes strict monotonic increase for the remaining 146
+primes.
 
 ### 3.4 Extinction Events
 
@@ -196,7 +203,7 @@ After $p=73$, $\delta$ resumes strict monotonic increase for all remaining 153 p
 ### 3.5 Complete Data
 
 The historical dataset contained 167 rows including its header and covered 166
-primes from $p=3$ through $p=997$. It remains pending removal and is
+primes from $p=3$ through $p=991$. It remains pending removal and is
 intentionally not presented as a current data source.
 
 ---
@@ -205,37 +212,52 @@ intentionally not presented as a current data source.
 
 ### 4.1 The $G/p$ Ratio Growth
 
-The ratio $G_{\text{local}}/p$ grows approximately linearly with $p$ across the observed range. A linear regression of $G/p$ against $p$ yields:
+The ratio $G_{\text{local}}/p$ grows approximately linearly with $p$ across the observed range. A descriptive ordinary least squares fit of $G/p$ against $p$ over the 156 post-crossover rows ($p \ge 37$) yields:
 
-$$\frac{G}{p} \approx 0.0071 \cdot p + 0.97 \quad (R^2 > 0.99)$$
+$$\frac{G}{p} \approx 0.00701 \cdot p + 1.44 \quad (R^2 = 0.992)$$
 
-At this rate, $G/p$ would reach 10 at approximately $p \approx 1270$ and 100 at $p \approx 13900$.
+This is a descriptive fit of deterministic computed rows, not a statistical
+estimate. At this rate, the fit reaches 10 at approximately $p \approx 1220$
+and 100 at $p \approx 14100$; these are extrapolations of the fit, not
+predictions.
 
 This empirical trend suggests the local 2-gap density in $[p, p^2]$ does not approach extinction but instead **strengthens** relative to $p$ as the sieve progresses to higher layers.
 
 ### 4.2 Growth Rate of $\delta$
 
-The surplus $\delta = G_{\text{local}} - p$ grows faster than linearly. The ratio $\delta/p$ increases from 0.14 at $p=37$ to 7.09 at $p=997$, tracking closely with $p/140$.
+The surplus $\delta = G_{\text{local}} - p$ grows faster than linearly. The ratio $\delta/p$ increases from 0.14 at $p=37$ to 7.09 at $p=991$, tracking closely with $p/140$.
 
 This indicates that $G_{\text{local}}$ itself grows superlinearly in $p$, which is consistent with the quadratic expansion of the safe zone window $[p, p^2]$ — the window captures more of the global cycle as $p$ grows, and thus $G_{\text{local}}$ scales roughly with $p^2$ times the global 2-gap density.
 
 ### 4.3 Comparison with Global Density
 
-Mertens' theorem gives the global density of 2-gaps in the full primorial cycle:
+The per-integer density of 2-gap starts in the full primorial cycle of length
+$M$ is
 
-$$\rho_k = \prod_{i=3}^{k} \frac{p_i - 2}{p_i - 1} \approx \frac{C}{(\ln p_k)^2}$$
+$$\rho_k = \frac{G_2}{M} = \frac12\prod_{i=3}^{k}\left(1-\frac{2}{p_i}\right) \approx \frac{C}{(\ln p_k)^2}$$
 
-If 2-gaps were uniformly distributed within each cycle copy, we would expect:
+If 2-gaps were uniformly distributed across the integers, we would expect:
 
-$$G_{\text{local}} \approx (p^2 - p) \cdot \rho_{\text{prev}}$$
+$$G_{\text{local}} \approx (p^2 - p + 1) \cdot \rho_{\text{prev}}$$
 
-The empirical data exceeds this uniform estimate by a factor of approximately 2-3 across the range, suggesting 2-gaps are **more densely clustered in the early positions** of the cycle than the global average would predict. This is consistent with the 2-gap isolation property (no adjacent 2-gaps) not being the dominant constraint on their positions.
+The empirical data is consistent with this uniform estimate: at $p=31$ the
+observed count is 30 against an expected 31; at $p=101$, 202 against 193; at
+$p=503$, 2585 against 2678; and at $p=991$, 8016 against 8527. The observed
+ratios stay between 0.94 and 1.04 across these checkpoints. An earlier
+version of this section compared $G_{\text{local}}$ against the per-coprime
+density $G_2/\varphi(M) = \prod (p_i-2)/(p_i-1)$ and reported a 2--3$\times$
+excess with early clustering; that comparison used the wrong denominator (the
+window length counts integers, not residues coprime to $M$), and the excess
+was an artifact of the error.
 
 ### 4.4 The Single Dip at $p=73$
 
 The dip at $p=73$ ($\delta: 51 \to 50$) is structurally interesting but insignificant for the capacity argument. It occurs at a transition between closely-spaced primes ($p=71$, $p=73$). The safe zone for $p=73$ is $[73, 5329]$, which is almost identical to $p=71$'s safe zone $[71, 5041]$, so the comparable $G_{\text{local}}$ values are expected — the slight decrease is likely due to the larger prime having a higher bullet count ($p=73$ vs $p=71$) without a corresponding expansion of the window.
 
-This pattern does not recur for any other adjacent pair in the dataset.
+The same nearly-unchanged-window effect produces a small dip in the $G/p$
+ratio at every twin-prime transition in the dataset: $71\to73$, $107\to109$,
+$191\to193$, $269\to271$, and $461\to463$. The $\delta$ dip at $71\to73$
+remains the only non-increasing step for the surplus $\delta$ itself.
 
 ### 4.5 Performance Characteristics
 
@@ -280,20 +302,20 @@ See [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) 
 
 | Hypothesis | Status | Detail |
 |------------|--------|--------|
-| **Crossing**: $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Empirical] | $p_c = 37$; holds for all 154 subsequent primes tested |
+| **Crossing**: $\exists p_c$ s.t. $\forall p \ge p_c$, $G_{\text{local}} > p$ | [Empirical] | $p_c = 37$; holds for all 155 subsequent primes tested |
 | **Monotonicity**: $\delta$ never permanently dips back after crossover | [Empirical] | Single minor fluctuation at $p=73$ (51→50); no extinction reversion |
 | **Domination**: $\delta$ grows faster-than-linear with $p$ | [Empirical] | $\delta/p$ increases from 0.14 to 7.09 across range |
 
 ### 5.2 No Counterexample Found
 
-Across all 166 primes tested ($3 \le p \le 997$), no prime after $p=37$ exhibits the extinction condition. The filter's maximum local bullet count ($p-1$) is permanently exceeded by the local 2-gap count from layer 12 onward.
+Across all 166 primes tested ($3 \le p \le 991$), no prime after $p=37$ exhibits the extinction condition. The filter's maximum local bullet count ($p-1$) is permanently exceeded by the local 2-gap count from layer 12 onward.
 
 ### 5.3 Relationship to Formal Verification
 
 The historical data was originally interpreted as supporting the capacity
-argument within its $[p,p^2)$ convention:
+argument within its $[p,p^2]$ convention:
 
-- The inequality $G_{\text{local}} > p$ holds for all $p \ge 37$ up to $p=997$
+- The inequality $G_{\text{local}} > p$ holds for all $p \ge 37$ up to $p=991$
 - The ratio $G/p$ grows monotonically, suggesting the inequality is structural
 
 **Crucially, this historical evidence is not a formal proof and does not apply

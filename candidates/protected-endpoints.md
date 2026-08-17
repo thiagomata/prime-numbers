@@ -42,7 +42,7 @@ the real modular filter avoids its endpoints.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
+Source: `python/src/sieve_sequence/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `surviving` = the count of 2-gaps among
 *post-filter* survivors in the window `[q,q^2)`. Each such 2-gap is, by the
 square-safe certification, a genuine twin-prime pair whose endpoints survived

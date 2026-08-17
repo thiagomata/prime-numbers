@@ -398,7 +398,7 @@ question, not an additional survival obligation after scalar feasibility.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
+Source: `python/src/sieve_sequence/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). Quantity: `endpoint_bias = |(1/H) sum_D c(v) -
 (1/N) sum_V c(v)|`, the bias of the filter's hit set `D` versus the whole anchor
 population `V`, on the observable `c(v) = 1` iff `v` is an endpoint of a 2-gap.
@@ -452,7 +452,7 @@ not to a universal class before the necessary one-sided margin is understood.
 The candidate's OWN sufficient condition `H(2L/N + b_+) < L` (where `b_+` is
 the harmful one-sided bias, retaining the sign that actually hurts) was
 measured per layer by the fixed-future-window lineage experiment
-(`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`), replacing the earlier absolute-bias
+(`python/src/sieve_sequence/lineage_cli.py`), replacing the earlier absolute-bias
 diagnostic that discarded the sign.
 
 **Q=101, 24 layers:** the margin `L - H(2L/N + b_+)` is **positive at 24/24

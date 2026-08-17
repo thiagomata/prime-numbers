@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="902" height="526" viewBox="0 0 902 526">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="902" height="526" fill="white" />
+  <!-- Generated: 2026-08-13T15:06:09.633171 -->
+  <!-- Script: full_cycle_survival_chart.py -->
+  <!-- Python: 3.14.3 (main, Feb  3 2026, 15:32:20) [Clang 17.0.0 (clang-1700.6.3.2)] -->
+  <!-- Git commit: 96e02762 -->
+  <line x1="82" y1="88" x2="82" y2="448" stroke="#dddddd" stroke-width="1" />
+  <line x1="82" y1="448" x2="642" y2="448" stroke="#dddddd" stroke-width="1" />
+  <line x1="82" y1="88.0" x2="642" y2="88.0" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="92.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">100%</text>
+  <line x1="82" y1="162.61173021218866" x2="642" y2="162.61173021218866" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="166.61173021218866" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">30%</text>
+  <line x1="82" y1="230.6941348939057" x2="642" y2="230.6941348939057" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="234.6941348939057" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">10%</text>
+  <line x1="82" y1="305.30586510609436" x2="642" y2="305.30586510609436" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="309.30586510609436" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">3%</text>
+  <line x1="82" y1="373.3882697878114" x2="642" y2="373.3882697878114" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="377.3882697878114" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">1%</text>
+  <line x1="82" y1="448.0" x2="642" y2="448.0" stroke="#dddddd" stroke-width="1" />
+  <text x="72" y="452.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">0.3%</text>
+  <line x1="99.30512091126067" y1="448" x2="99.30512091126067" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="99.30512091126067" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">31</text>
+  <line x1="184.2105383622084" y1="448" x2="184.2105383622084" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="184.2105383622084" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">43</text>
+  <line x1="266.2939525159463" y1="448" x2="266.2939525159463" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="266.2939525159463" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">59</text>
+  <line x1="342.0390537885166" y1="448" x2="342.0390537885166" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="342.0390537885166" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">79</text>
+  <line x1="405.7863553480669" y1="448" x2="405.7863553480669" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="405.7863553480669" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">101</text>
+  <line x1="465.2246967191022" y1="448" x2="465.2246967191022" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="465.2246967191022" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">127</text>
+  <line x1="510.13891533126537" y1="448" x2="510.13891533126537" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="510.13891533126537" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">151</text>
+  <line x1="554.2781219955061" y1="448" x2="554.2781219955061" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="554.2781219955061" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">179</text>
+  <line x1="581.7620573974025" y1="448" x2="581.7620573974025" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="581.7620573974025" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">199</text>
+  <line x1="618.1975976143053" y1="448" x2="618.1975976143053" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="618.1975976143053" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">229</text>
+  <line x1="642.0" y1="448" x2="642.0" y2="453" stroke="#555555" stroke-width="1" />
+  <text x="642.0" y="466" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">251</text>
+  <text x="362.0" y="486" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">filter prime r (log scale)</text>
+  <text x="18" y="268.0" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle" transform="rotate(-90 18 268.0)">starting population remaining (log scale)</text>
+  <path d="M 82.0 92.4284031356201 L 99.30512091126067 96.56135267044021 L 145.21521529188834 100.00508721942407 L 171.85198146152695 103.10429676494516 L 184.2105383622084 106.05586770487912 L 207.29068945879106 108.75069555201725 L 238.46581306144697 111.13450003420962 L 266.2939525159463 113.27165234847035 L 274.94410836917075 115.3375528292027 L 299.28825954299015 117.21561398839765 L 314.33483059501884 118.98634232078876 L 321.5430898241735 120.70787733812648 L 342.0390537885166 122.29697146719053 L 354.8555178296897 123.808540925773 L 372.96616719728 125.21703963230556 L 395.30086225151797 126.50815456914376 L 405.7863553480669 127.747621393494 L 410.87437416326765 128.9627833737698 L 420.7605468611028 130.13208741068263 L 425.5658813317522 131.2797364197226 L 434.9175473180081 132.38639574532732 L 465.2246967191022 133.37008743716427 L 473.27125296945366 134.32351047933196 L 484.8917310916592 135.23486918906207 L 488.65238598330023 136.1330193357573 L 506.6791221330503 136.9704817477055 L 510.13891533126537 137.7967776610633 L 520.2498300029671 138.591292074318 L 529.9814947495861 139.3563792659121 L 536.272242741966 140.10303017002224 L 545.4313340248066 140.82363451479773 L 554.2781219955061 141.51994830546147 L 557.1612699422764 142.2085251161365 L 571.1152040973186 142.8608603541628 L 573.8181519299412 143.50640030992304 L 579.1410184894971 144.13876574986006 L 581.7620573974025 144.7647435509238 L 596.9555077546229 145.354950634786 L 611.3083262495361 145.91325418914153 L 615.9214370048795 146.46167613451723 L 618.1975976143053 147.00528729910502 L 622.6908812428813 147.53952574029688 L 629.2882021814356 148.06029582492744 L 631.4505534084826 148.57672610841234 L 642.0 149.07249895562052" fill="none" stroke="#2a78d6" stroke-width="4" stroke-linejoin="round" />
+  <path d="M 82.0 110.209291706111 L 99.30512091126067 131.09122705174264 L 145.21521529188834 148.85638767271394 L 171.85198146152695 165.047889691499 L 184.2105383622084 180.56076022009717 L 207.29068945879106 194.886175917391 L 238.46581306144697 207.75829026946698 L 266.2939525159463 219.463855958623 L 274.94410836917075 230.82974148093203 L 299.28825954299015 241.29355816693266 L 314.33483059501884 251.2372068375475 L 321.5430898241735 260.94119126838706 L 342.0390537885166 269.99567372318194 L 354.8555178296897 278.6668556152723 L 372.96616719728 286.82451945736443 L 395.30086225151797 294.3913769019744 L 405.7863553480669 301.696077265376 L 410.87437416326765 308.8769120298464 L 420.7605468611028 315.82313232411343 L 425.5658813317522 322.65813683287706 L 434.9175473180081 329.2818473166368 L 465.2246967191022 335.26510164417726 L 473.27125296945366 341.08906932400885 L 484.8917310916592 346.69051051032017 L 488.65238598330023 352.2217859549136 L 506.6791221330503 357.4287979358869 L 510.13891533126537 362.57579527672027 L 520.2498300029671 367.5513554602871 L 529.9814947495861 372.36732051349225 L 536.272242741966 377.0828608918689 L 545.4313340248066 381.6559250826079 L 554.2781219955061 386.0954640032867 L 557.1612699422764 390.4923357241739 L 571.1152040973186 394.68842935538106 L 573.8181519299412 398.8467039496041 L 579.1410184894971 402.9314948359364 L 581.7620573974025 406.9805795057913 L 596.9555077546229 410.8287378295661 L 611.3083262495361 414.4962321733784 L 615.9214370048795 418.10747479875937 L 618.1975976143053 421.69127978601864 L 622.6908812428813 425.22152934148744 L 629.2882021814356 428.67458660386546 L 631.4505534084826 432.10271071503547 L 642.0 435.4117400024697" fill="none" stroke="#111111" stroke-width="4" stroke-dasharray="10,3,2,3" stroke-linejoin="round" />
+  <text x="666" y="92" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#555555" text-anchor="start">survival schedules</text>
+  <line x1="666" y1="106" x2="690" y2="106" stroke="#2a78d6" stroke-width="4" />
+  <text x="698" y="110" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">exact cycle: prod(1-2/p)</text>
+  <line x1="666" y1="130" x2="690" y2="130" stroke="#111111" stroke-width="4" stroke-dasharray="10,3,2,3" />
+  <text x="698" y="134" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">c=1: prod(1-2(1+ln p)/p)</text>
+  <circle cx="642.0" cy="149.07249895562052" r="4" fill="#2a78d6" stroke="#2a78d6" stroke-width="2" />
+  <circle cx="642.0" cy="435.4117400024697" r="4" fill="#111111" stroke="#111111" stroke-width="2" />
+  <text x="654.0" y="153.07249895562052" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#2a78d6" text-anchor="start">exact cycle: 37.3%</text>
+  <text x="654.0" y="439.4117400024697" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#111111" text-anchor="start">c=1 schedule: 0.368%</text>
+  <text x="451.0" y="22" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">How Much Complete-Cycle 2-Gap Survival Remains?</text>
+  <text x="451.0" y="44" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">Both schedules start at 100% immediately before filter 29; each point includes filters through r.</text>
+  <text x="451.0" y="65" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">At r=251: exact-cycle survival is 102x the c=1 schedule.</text>
+  <text x="451.0" y="514" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">Finite reference comparison normalized at r=29; it does not measure head availability or recurrence.</text>
+</svg>

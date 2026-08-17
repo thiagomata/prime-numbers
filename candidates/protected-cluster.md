@@ -43,7 +43,7 @@ the next stage.
 
 ## Empirical Counterexample (window scale, measured)
 
-The candidate stress-test (`empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`,
+The candidate stress-test (`python/src/sieve_sequence/window_cli.py`,
 186 transitions: dense p<=991 + sparse every-100th-prime to p~19000, full window
 `[q,q^2)`) found one transition where the sufficient condition does not hold:
 

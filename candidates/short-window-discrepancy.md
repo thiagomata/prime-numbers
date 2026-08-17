@@ -138,7 +138,7 @@ language.
 
 ## Empirical status (window scale, p to ~19000)
 
-Source: `empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186 transitions (dense
+Source: `python/src/sieve_sequence/window_cli.py`, 186 transitions (dense
 p<=991 + sparse to p~19000). The run recorded `main_term = |W| delta_q`, but
 computed the reported discrepancy as
 
@@ -179,7 +179,7 @@ the filters. Until the post-filter discrepancy is computed, this candidate is
 The post-filter discrepancy `E_q = surviving - main_term` (using the
 POST-filter count, correcting the window pass's pre/post error) is now
 computed per layer by the lineage experiment
-(`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`).
+(`python/src/sieve_sequence/lineage_cli.py`).
 
 **Q=101, 24 layers:** `E_q` ranges over `[+8.60, +1489.60]` — positive at
 every layer (the post-filter surviving count exceeds the complete-period main

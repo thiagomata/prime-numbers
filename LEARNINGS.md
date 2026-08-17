@@ -832,6 +832,17 @@ definitions, and supporting properties that the article established, as in
 `integral.md` and `cycle.md`. Future work should explain the next mathematical
 directions in prose and state how they extend the article's result.
 
+### 14.20 Print-only self-containment is the final article test
+
+An article must independently explain its context, challenge, substantive work
+and argument, and conclusion to a reader who has no repository access.
+Repository links support provenance, verification, data, and reproducibility;
+they cannot carry definitions, premises, reasoning, limitations, or conclusions
+needed to understand the article. Restate every cited prior result sufficiently
+for the reader to follow its role, even when its full proof remains external.
+
+**Source:** user review of the 2-gap companion draft, 2026-08-14.
+
 ## 15. Structural Index Lemmas (ch60, abandoned indexed bijection)
 
 ### 15.1 Body `val`s are not in scope in `.ensuring` blocks

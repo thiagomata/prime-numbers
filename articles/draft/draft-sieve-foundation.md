@@ -3,6 +3,10 @@
 **Status:** Draft. This article is source-backed, but it is not yet part of the
 active article set.
 
+**Author:** Mata, T. H.
+Independent Researcher
+**Date:** 2026-08-15
+
 ## Abstract
 
 This draft records the small bridge between the foundational arithmetic
@@ -167,11 +171,14 @@ This property is verified in
 ../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
 ).
 
-## 5. Filtering Preserves Other Primes
+## 5. Corollary: The Filter Reading
 
-Now specialize the previous property to a filtering step. Filtering by
-`filterPrime` removes values divisible by `filterPrime`. A different prime `q`
-is not divisible by `filterPrime`, so it survives the divisibility test.
+The previous section proves a single prime survives the filter test. This
+section is the same proposition read in filter vocabulary: it renames the
+divisor `p` of §4 to `filterPrime` and keeps the verified Scala wrapper
+because it is the form the sieve consumes. Filtering by `filterPrime`
+removes values divisible by `filterPrime`; a different prime `q` is not
+divisible by `filterPrime`, so it survives the divisibility test.
 
 ```math
 \begin{aligned}
@@ -264,7 +271,9 @@ This property is verified in
 
 ## 7. What This Bridge Gives The Sieve
 
-The five lemmas above give the candidate/filter foundation:
+The five verified properties above — four substantively distinct lemmas,
+with §5 as the filter-reading corollary of §4 — give the candidate/filter
+foundation:
 
 ```math
 \begin{aligned}

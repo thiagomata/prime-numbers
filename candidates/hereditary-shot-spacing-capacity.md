@@ -228,7 +228,7 @@ capacity-surplus interval through an arbitrarily long future filter chain.
 
 ## Empirical proxy status (window scale, measured)
 
-The candidate stress-test (`empirical/sieve-sequence/src/sieve_sequence_empirical/window_cli.py`, 186
+The candidate stress-test (`python/src/sieve_sequence/window_cli.py`, 186
 transitions: dense p<=991 + sparse every-100th-prime to p~19000, full window
 `[q,q^2)`) measures only a coarse whole-window proxy: the actual number of
 2-gaps destroyed by filter `p` versus the worst-case count `A(p,q)`, expressed
@@ -279,7 +279,7 @@ composition. The earlier “counterexample,” “building-block failure,” and
 The candidate's ACTUAL per-layer premise — exists `J_r\subseteq[q,q^2)` and
 `k_r` with `G_r(J_r)\ge k_r` and `len(J_r) < \sigma_r(k_r)` — was measured for
 the first time by the fixed-future-window lineage experiment
-(`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage_cli.py`), which tracks one window's 2-gap
+(`python/src/sieve_sequence/lineage_cli.py`), which tracks one window's 2-gap
 population through every intermediate filter layer by layer (Reading A).
 
 **Q=101, 24 layers (primes 3,5,...,97):** the stored output reports the

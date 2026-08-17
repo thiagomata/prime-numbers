@@ -503,11 +503,12 @@ accepted strikes and then by a weighted harmful-excess quadratic threshold.
 It also proves that optimizing separate unsigned capacities cannot clear that
 threshold on an unbounded family.
 
-Empirical work in this repository has observed this stronger inequality in
-tested ranges after an initial crossover. That evidence is suggestive, but
-it is not a proof. The missing theorem is not a full-period CRT statement.
-It is a positional theorem about where the 2-gaps fall inside the short
-safe window.
+Historical observation only: the superseded $[p,p^2]$ experiment reported
+this stronger inequality in its tested range after an initial crossover
+([3], superseded). The canonical $[q,q^2)$ transition data do not directly
+measure $A_h$, so no current evidence is claimed here. The missing theorem is
+not a full-period CRT statement. It is a positional theorem about where the
+2-gaps fall inside the short safe window.
 
 ## 11. What This Article Claims
 
@@ -533,94 +534,46 @@ that should be considered candidates for future formalization.
 ## 12. Current Successor Boundary
 
 The newer signed analysis preserves the central global-versus-local lesson but
-makes the missing theorem more precise.
+replaces this article's raw strike counts with a sharper accounting. This
+section is a qualitative summary only; every formula below is defined and
+proved in the successor article, [Structural Properties and Signed Boundaries
+of 2-Gaps in Sieve Sequences](../chapter6/gap-dynamics-v2.md).
 
-For a complete conditioned chain, let $N_i$ be the eligible 2-gap-start
-population before filter $r_i$ and let $N_m$ be the final survivor count.
-Define
+Where this article compares the local 2-gap count with an unsigned strike
+budget, the successor follows a conditioned chain of filters with an exact
+population ledger and a weighted, signed energy. Three changes matter:
 
-```math
-a_i=1-\frac2{r_i},
-\qquad
-A_{u,v}=\prod_{j=u}^{v-1}a_j,
-\qquad
-w_i=A_{i+1,m},
-\qquad
-w_{-1}=A_{0,m},
-```
+1. **Exact accepted strikes replace raw strike counts.** The successor counts
+   only strikes that remove values actually accepted by the earlier filters,
+   and tracks the eligible population layer by layer instead of comparing a
+   window count to a window budget.
 
-Put
+2. **A weighted quadratic threshold replaces the counting inequality.** The
+   surviving population is compared against a weighted Cauchy–Schwarz-type
+   energy bound: proving that the realized signed energy stays below a
+   computable threshold implies a positive survivor count. The open candidate
+   is therefore an arithmetic upper bound on that realized energy, not another
+   complete-period population count.
 
-```math
-T=N_0A_{0,m},
-\qquad
-b_i=a_iN_i-N_{i+1},
-\qquad
-W_-=\sum_{i=0}^{m-1}w_{i-1}.
-```
+3. **Complete old-period blocks reduce to residue energy.** For a general
+   incoming prime, the harmful excess in complete block runs is controlled by
+   the residue-class histogram of old 2-gap starts, and the sharp interval
+   bound at the first odd composite layer is a small explicit constant. An
+   arbitrary square window still contains at most two partial old-period
+   fragments, and late layers may contain no complete old-period block at all.
 
-The current terminal energy is
+The successor's remaining program is, correspondingly: prove a relative
+residue-energy estimate in the actual short window; control the two signed
+partial boundaries; and compose those bounds through the weighted filter
+chain.
 
-```math
-E_b=
-\sum_{i=0}^{m-1}
-w_i\frac{r_i}{2(r_i-2)}b_i^2.
-```
-
-Exact telescoping and weighted Cauchy--Schwarz prove
-
-```math
-\begin{aligned}
-\sum_iw_ib_i&=T-N_m,\\
-E_b&\ge\frac{(T-N_m)^2}{2W_-},\\
-E_b\lt\frac{T^2}{2W_-}&\Longrightarrow N_m>0.
-\end{aligned}
-```
-
-Thus the open candidate is an arithmetic upper bound on the realized signed
-energy, not another complete-period population count.
-
-At filter $7$, exact residue order gives the sharp universal interval bound
-
-```math
-|b_7(I)|\le\frac{18}{7}.
-```
-
-For a general incoming prime $r$, let $c_t$ be the old-start histogram modulo
-$r$, $d_t=c_t-N/r$, and $V_r=\sum_td_t^2$. The centered harmful excess in
-copy block $j$ is exactly
-
-```math
-B_j=d_{t_j}+d_{t_j-2},
-```
-
-with energy
-
-```math
-\sum_{j=0}^{r-1}B_j^2
-=2V_r+2\sum_td_td_{t-2}
-\le4V_r.
-```
-
-Thus complete old-period block runs reduce to relative residue-energy control.
-An arbitrary square window still has at most two partial old-period fragments,
-and late layers may contain no complete old-period block. The current
-twin-prime program is therefore:
-
-1. prove a relative residue-energy estimate in the actual short window;
-2. control the two signed partial boundaries; and
-3. compose those bounds through the weighted filter chain.
-
-The separate candidate #25 relaxes $p+2$ to have at most two prime factors.
-Its exact Type-I remainder is
-
-```math
-\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)},
-```
-
-while its final scalar-centered weight retains nonprincipal character modes.
-That program requires an averaged prime-progression theorem and a locally
-adapted bilinear estimate; it does not prove a 2-gap.
+The separate candidate #25 relaxes `p+2` to have at most two prime factors.
+Its Type-I remainder is a prime-progression discrepancy and its final
+scalar-centered weight retains nonprincipal character modes, so that program
+requires an averaged prime-progression theorem and a locally adapted bilinear
+estimate; it does not prove a 2-gap. That relaxation is developed in [Relaxed
+Almost-Prime Production in Sieve Sequences](
+draft-relaxed-almost-prime-sieve-sequence.md).
 
 ## References
 
@@ -635,7 +588,7 @@ Sequences*. Available at:
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Empirical Analysis of Local 2-Gap Density in Sieve
-Sequences*. Available at:
+Sequences* (superseded draft). Available at:
 [draft-empirical-g-local-analysis.md](draft-empirical-g-local-analysis.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>

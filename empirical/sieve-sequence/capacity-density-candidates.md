@@ -30,7 +30,7 @@ together with
 This gives 53 heads and 1,837 applicable prime-filter layers `5<=r<Q`.
 
 The sweep used the population definitions from
-`empirical/sieve-sequence/src/sieve_sequence_empirical/lineage.py`. It ran in memory and did not write a new
+`python/src/sieve_sequence/lineage.py`. It ran in memory and did not write a new
 CSV. At each head, the `[Q,Q^2)` population was initialized after filters
 `2,3`, then conditioned incrementally by each next prime filter. This is the
 actual Reading-A population at every layer, not a frozen initial population.
