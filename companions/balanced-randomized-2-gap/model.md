@@ -236,7 +236,7 @@ first -- giving `\Pr(\text{head is a 2-gap infinitely often}) = 1`.
 
 **Why the uniform-position premise is doing real work, not being cautious
 for its own sake:** see
-[the balanced adversarial 2-gap companion](balanced-adversarial-2-gap-companion-process.md),
+[the balanced adversarial 2-gap companion](../balanced-adversarial-2-gap/model.md),
 a sibling process sharing the exact same proved global recurrence
 `N(Q)=N_0\prod(r-2)`, that instead chooses which two copies die to
 *maximize* local damage. It proves, unconditionally, that the global count
@@ -276,7 +276,7 @@ correlations even if it were run for real. Two next steps, neither done yet:
 
 ## Relation To Other Candidates
 
-Different from [Short-window discrepancy](short-window-discrepancy.md): that
+Different from [Short-window discrepancy](../../candidates/short-window-discrepancy.md): that
 candidate asks whether the *real, deterministic* filter's behavior tracks a
 random-model prediction closely enough to force survival in one specific
 fixed window. This candidate asks about a genuinely randomized companion
@@ -289,9 +289,9 @@ leaving the whole question open.
 
 ## Related
 
-- [Balanced adversarial 2-gap companion process](balanced-adversarial-2-gap-companion-process.md)
-- [Short-window discrepancy](short-window-discrepancy.md)
-- [Local surplus](local-surplus.md)
-- [Exact global 2-gap count](../properties/sieve-sequence/exact-global-two-gap-count.md)
-- [Copy-index filter frequency](../properties/sieve-sequence/copy-index-filter-frequency.md)
-- [Realized filter adversariality score](../properties/sieve-sequence/realized-filter-adversariality-score.md)
+- [Balanced adversarial 2-gap companion process](../balanced-adversarial-2-gap/model.md)
+- [Short-window discrepancy](../../candidates/short-window-discrepancy.md)
+- [Local surplus](../../candidates/local-surplus.md)
+- [Exact global 2-gap count](../../properties/sieve-sequence/exact-global-two-gap-count.md)
+- [Copy-index filter frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md)
+- [Realized filter adversariality score](../../properties/sieve-sequence/realized-filter-adversariality-score.md)

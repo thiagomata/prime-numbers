@@ -303,6 +303,21 @@ that subject's `candidates/` directory to its `properties/` directory.
   repair are complete. The moved candidate is 565 lines and 13851 bytes.
 - The companion tree is incomplete, and existing companion documents contain
   stale or planned links.
+- 2026-08-19: `companions/balanced-good-2-gap/` and
+  `companions/exact-quota-random-location/` — steps 5 and 6 of the superseded
+  plan above, previously unexecuted (their folders existed but were never
+  populated, confirmed empty at the time) — were reconstructed from the
+  phase-transition draft article's current §5.2-§5.5 (protective parent
+  policy) and §7.1 (exact-quota random-location), following the balanced
+  randomized/adversarial siblings' file structure: `model.md` + a
+  `properties/` file per proved theorem (3 each) + `README.md`. All internal
+  links verified to resolve. The stale "its model folder is not yet
+  populated" note in `companions/properties/position-blind-index-spectrum.md`
+  was corrected to link the new model. Both remaining balanced-adversarial's
+  missing `README.md` and the 3 aspirational rows in
+  `balanced-randomized-2-gap/README.md`'s registry (reciprocal-decay,
+  log-over-linear-decay, bad-random-head-boundary — none of which exist as
+  files) are pre-existing gaps, out of scope here.
 - Flattening the roughly 90 property notes has no filename collisions, but it
   affects hundreds of path mentions, including an operational reference in
   `scripts/retire_property_numbers.py`. It is not a Markdown-only cleanup and

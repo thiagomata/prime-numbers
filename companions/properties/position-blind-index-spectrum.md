@@ -135,9 +135,9 @@ frequency by frequency, at window scales below the CRT period.
 - [Local Survivor Allocation Range](local-survivor-allocation-range.md) —
   the same position-blind framework in physical space; this file is its
   frequency-space counterpart.
-- The exact-quota random-location companion (named in the
-  [companion registry](../README.md)) — its placement law is exactly the
-  uniform size-`K` subset used here; its model folder is not yet populated.
+- [Exact-quota random-location companion](
+  ../exact-quota-random-location/model.md) — its placement law is exactly
+  the uniform size-`K` subset used here.
 - [Short-interval localization destroys prime conductor decay](
   ../../properties/sieve-sequence/short-interval-localization-destroys-prime-conductor-decay.md)
 - [Accepted-strike cross-layer CRT orthogonality](

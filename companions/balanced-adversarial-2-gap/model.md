@@ -14,7 +14,7 @@ empirical claim.
 
 The third of three companion processes sharing the same exact global
 mechanics as
-[the balanced randomized 2-gap companion](balanced-randomized-2-gap-companion-process.md)
+[the balanced randomized 2-gap companion](../balanced-randomized-2-gap/model.md)
 (every parent produces exactly `r-2` surviving children,
 `N(Q)=N_0\prod(r-2)`, proved unbounded exactly as in
 `exact-global-two-gap-count.md`), but choosing *which* two copies die
@@ -25,8 +25,8 @@ single point sharp and unconditional:
 
 | Companion | Choice of the two destroyed copies | Global behavior | Local behavior |
 |---|---|---|---|
-| Friendly | avoid the head/window whenever possible | exact `r-2` growth | maximizes local survival |
-| [Balanced random](balanced-randomized-2-gap-companion-process.md) | uniform two-subset | exact `r-2` growth | statistical baseline (proved conditional on spatial uniformity) |
+| [Balanced good / protective](../balanced-good-2-gap/model.md) | avoid the head/window whenever possible | exact `r-2` growth | maximizes local survival |
+| [Balanced random](../balanced-randomized-2-gap/model.md) | uniform two-subset | exact `r-2` growth | statistical baseline (proved conditional on spatial uniformity) |
 | Adversarial (this file) | prefer the head/window | exact `r-2` growth | can enforce local extinction, unconditionally |
 
 All three share the identical, already-proved global recurrence. Only the
@@ -125,16 +125,20 @@ companions (where local survival is proved, or proved conditional on
 spatial uniformity), or does it permit the kind of sustained, coordinated
 concentration near the head that this unconstrained adversary can achieve
 at will? Nothing proved in this file or
-`balanced-randomized-2-gap-companion-process.md` answers that -- both are
-companions to the real process, not descriptions of it. What they jointly
+[the balanced randomized companion](../balanced-randomized-2-gap/model.md)
+answers that -- both are companions to the real process, not descriptions
+of it. What they jointly
 establish is the *shape* of the open question: it is entirely about whether
 `K^{\mathrm{real}}`'s rigidity is closer to random or closer to adversarial,
 not about population size, which is settled identically in all three cases.
 
 ## Related
 
-- [Balanced randomized 2-gap companion process](balanced-randomized-2-gap-companion-process.md)
-- [Copy-index filter frequency](../properties/sieve-sequence/copy-index-filter-frequency.md)
-- [Exact global 2-gap count](../properties/sieve-sequence/exact-global-two-gap-count.md)
-- [Short-window discrepancy](short-window-discrepancy.md)
-- [Local surplus](local-surplus.md)
+- [Targeted Head Suppression](properties/targeted-head-suppression.md) --
+  this model's proved theorem, cited by name.
+- [Balanced randomized 2-gap companion process](../balanced-randomized-2-gap/model.md)
+- [Balanced good (protective parent) 2-gap companion process](../balanced-good-2-gap/model.md)
+- [Copy-index filter frequency](../../properties/sieve-sequence/copy-index-filter-frequency.md)
+- [Exact global 2-gap count](../../properties/sieve-sequence/exact-global-two-gap-count.md)
+- [Short-window discrepancy](../../candidates/short-window-discrepancy.md)
+- [Local surplus](../../candidates/local-surplus.md)

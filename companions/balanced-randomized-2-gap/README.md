@@ -7,8 +7,8 @@ preserves and does not preserve, and its role as a null model are in
 [`model.md`](model.md).
 
 Proved properties of the bad/random specialization live in
-[`properties/`](properties/); model-specific open claims live in
-[`candidates/`](candidates/). The specialization is a position-blind mixture
+[`properties/`](properties/); model-specific open claims would live in a
+local `candidates/` directory (none filed yet). The specialization is a position-blind mixture
 in which each parent (or each filter) draws an adversarial harmful-pair
 selection with share `alpha_r`, otherwise the uniform random selection. Its
 phase thresholds are the absolute-share specializations of the shared

@@ -57,6 +57,6 @@ It says the complete-period 2-gap count grows without bound for every
 companion. It does **not** say anything about where survivors land: a balanced
 adversarial companion can drive local or head occupancy to zero forever while
 the global count explodes (see
-[Targeted Head Suppression](../balanced-adversarial-2-gap/targeted-head-suppression.md)).
+[Targeted Head Suppression](../balanced-adversarial-2-gap/properties/targeted-head-suppression.md)).
 Local survival is governed by the [Cumulative Local Hazard Law](cumulative-local-hazard-law.md)
 and the per-model specializations, not by this global recurrence.

@@ -111,7 +111,7 @@ The head makes the distinction between allocation laws extreme. There `L = 1`:
 
 This is why total budget and targeting strength are independent axes, not
 alternative names for one percentage. See
-[Targeted Head Suppression](../balanced-adversarial-2-gap/targeted-head-suppression.md)
+[Targeted Head Suppression](../balanced-adversarial-2-gap/properties/targeted-head-suppression.md)
 for the companion-process endpoint that exploits this.
 
 ## What This Does And Does Not Say
