@@ -562,6 +562,12 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 ```
 ```math
 \begin{aligned}
+b &> 0,\quad 0 < k < b \\
+k \text{ mod } b + (b - k) \text{ mod } b & = b
+\end{aligned}
+```
+```math
+\begin{aligned}
 \forall \text{ } n, p & \in \mathbb{N} : p > 1 \\
 \exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 \quad \text{[Exactly one multiple per block of p]}
 \end{aligned}

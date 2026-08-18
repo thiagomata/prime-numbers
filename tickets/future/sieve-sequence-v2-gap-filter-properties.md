@@ -3,7 +3,7 @@
 **Status:** Active
 **Created:** 2026-07-14
 **Owner:** `articles/chapter6/sieve-sequence-v2.md`
-**Related ticket:** [`m-interval-density-and-sieve-sequence-v2.md`](m-interval-density-and-sieve-sequence-v2.md)
+**Related ticket:** [`m-interval-density-and-sieve-sequence-v2.md`](../active/m-interval-density-and-sieve-sequence-v2.md)
 
 ## Goal
 

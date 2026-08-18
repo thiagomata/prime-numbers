@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="515" viewBox="0 0 780 515">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#222" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="780" height="515" fill="white" />
+  <!-- Generated: 2026-08-12T18:30:48.719160 -->
+  <!-- Script: frontier_comparison_chart.py -->
+  <!-- Python: 3.14.3 (main, Feb  3 2026, 15:32:20) [Clang 17.0.0 (clang-1700.6.3.2)] -->
+  <!-- Input: /Users/thiagomata/github/thiagomata/prime-numbers/presentations/sieve-sequence-visualization/figures/../../../data/candidates/four-lines-Q101.csv -->
+  <!-- Git commit: 96e02762 -->
+  <line x1="70" y1="50" x2="70" y2="430" stroke="#dddddd" stroke-width="1" />
+  <line x1="70" y1="430" x2="570" y2="430" stroke="#dddddd" stroke-width="1" />
+  <line x1="70" y1="430.0" x2="570" y2="430.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="434.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">0</text>
+  <line x1="70" y1="335.0" x2="570" y2="335.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="339.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">107</text>
+  <line x1="70" y1="240.0" x2="570" y2="240.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="244.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">213</text>
+  <line x1="70" y1="145.0" x2="570" y2="145.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="149.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">320</text>
+  <line x1="70" y1="50.0" x2="570" y2="50.0" stroke="#dddddd" stroke-width="1" />
+  <text x="60" y="54.0" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#555555" text-anchor="end">427</text>
+  <text x="70.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">23</text>
+  <text x="101.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">29</text>
+  <text x="132.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">31</text>
+  <text x="163.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">37</text>
+  <text x="195.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">41</text>
+  <text x="226.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">43</text>
+  <text x="257.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">47</text>
+  <text x="288.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">53</text>
+  <text x="320.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">59</text>
+  <text x="351.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">61</text>
+  <text x="382.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">67</text>
+  <text x="413.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">71</text>
+  <text x="445.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">73</text>
+  <text x="476.25" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">79</text>
+  <text x="507.5" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">83</text>
+  <text x="538.75" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">89</text>
+  <text x="570.0" y="448" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">97</text>
+  <text x="320.0" y="468" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">installed filter r</text>
+  <text x="18" y="240.0" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle" transform="rotate(-90 18 240.0)">surviving 2-gaps in [Q, Q^2)</text>
+  <polyline points="70.0,108.43413033286453 101.25,130.61108686163254 132.5,149.92650061249486 163.75,165.06560868749511 195.0,177.9892375320076 226.25,189.71066834447237 257.5,199.93574628726077 288.75,208.6174162386849 320.0,216.12191060347527 351.25,223.13430697713184 382.5,229.30940229124732 413.75,234.96265856473326 445.0,240.30614737117895 476.25,245.10852338709844 507.5,249.56373969102378 538.75,253.6184871136974 570.0,257.2552193381573" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="7,4" />
+  <polyline points="70.0,108.43413033286453 101.25,205.28746010274418 132.5,269.5695585925371 163.75,309.5550502692447 195.0,337.2489990802931 226.25,357.7888165830653 257.5,372.69242926673724 288.75,383.4409332441279 320.0,391.45467577993287 351.25,397.91370168624195 382.5,402.8987560151134 413.75,406.9163664760162 445.0,410.2622028297962 476.25,412.9452679596185 507.5,415.17218059902837 538.75,417.001045966399 570.0,418.4951781676397" fill="none" stroke="#111111" stroke-width="2" stroke-dasharray="10,3,2,3" />
+  <polyline points="70.0,108.43413033286453 101.25,132.4847632442569 132.5,155.6446319737459 163.75,169.00609470229722 195.0,181.47679324894514 226.25,195.72902015939994 257.5,202.8551336146273 288.75,213.5443037974684 320.0,219.77965307079234 351.25,228.68729488982655 382.5,237.59493670886079 413.75,242.0487576183779 445.0,243.83028598218473 476.25,245.61181434599158 507.5,248.28410689170184 538.75,250.06563525550868 570.0,250.06563525550868" fill="none" stroke="#2a78d6" stroke-width="2.5" />
+  <circle cx="70.0" cy="108.43413033286453" r="5" fill="white" stroke="#111111" stroke-width="2" />
+  <text x="594" y="60" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="bold" font-style="normal" fill="#555555" text-anchor="start">trajectory</text>
+  <line x1="594" y1="74" x2="616" y2="74" stroke="#2a78d6" stroke-width="2.5" />
+  <text x="624" y="78" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">empirical (real sieve data)</text>
+  <line x1="594" y1="96" x2="616" y2="96" stroke="#e34948" stroke-width="2" stroke-dasharray="7,4" />
+  <text x="624" y="100" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">random (w_r=1 projection)</text>
+  <line x1="594" y1="118" x2="616" y2="118" stroke="#111111" stroke-width="2" stroke-dasharray="10,3,2,3" />
+  <text x="624" y="122" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" font-style="normal" fill="#111111" text-anchor="start">frontier (w_r=1+log r, c=1)</text>
+  <text x="594" y="154" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">solid = real data, dashed = projections.</text>
+  <text x="594" y="169" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">The frontier is the square-window</text>
+  <text x="594" y="184" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">threshold of the phase-transition</text>
+  <text x="594" y="199" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">article (c=1, Property IV): the slowest</text>
+  <text x="594" y="214" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">growing factor whose window expectation</text>
+  <text x="594" y="229" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">still tends to zero. This is a finite</text>
+  <text x="594" y="244" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">measurement: 16 layers, one lineage</text>
+  <text x="594" y="259" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">chain. The trajectory stays above the</text>
+  <text x="594" y="274" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">threshold across them, but nothing</text>
+  <text x="594" y="289" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="start">beyond the measured range is implied.</text>
+  <text x="390.0" y="22" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" font-style="normal" fill="#111111" text-anchor="middle">Real sieve vs random projection and the c=1 frontier (layer 7, r=23, Q=101)</text>
+  <text x="390.0" y="503" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" font-style="normal" fill="#555555" text-anchor="middle">Adversariality Phase Transition in 2-Gap Companions: square-window survival vs the real sieve</text>
+</svg>

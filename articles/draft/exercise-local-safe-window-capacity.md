@@ -1,6 +1,8 @@
 # Exercise: Local Strike Capacity for 2-Gaps in a Sieve Sequence
 
 **Status:** Draft exercise for mathematical verification.
+**Author:** Mata, T. H., Independent Researcher
+**Date:** 2026-08-15
 
 This exercise is meant to be read after:
 
@@ -273,3 +275,31 @@ A complete student solution should contain:
 4. The final pigeonhole argument proving survival.
 5. A short note explaining why this is a capacity theorem, not a proof of local
    2-gap abundance.
+
+## Appendix: Solution Sketches
+
+**Task 1.** The multiples of `a` in `[A, B)` are exactly the numbers `ak`
+with `ceil(A/a) <= k < ceil(B/a)`. The count of such integers `k` is
+`ceil(B/a) - ceil(A/a)`, and the identity
+`ceil(n/a) - 1 = floor((n - 1)/a)` converts this to
+`floor((B - 1)/a) - floor((A - 1)/a)`.
+
+**Task 2.** The `p`-filter removes `v` only when `p` divides `v`; inside the
+window `W = [q, q^2)`, every such `v` is one of the `R(p, q)` multiples
+counted in Task 1. Since some multiples of `p` may not be accepted values,
+the number actually removed is at most `R(p, q)`.
+
+**Task 3.** A destroyed local 2-gap must have a removed endpoint `v`, and the
+only possible 2-gaps with endpoint `v` are `(v - 2, v)` and `(v, v + 2)`. So
+one removed value is credited with at most two destroyed 2-gaps. If both
+endpoints of one gap are removed, that gap is counted twice in this bookkeeping,
+which only keeps the total an upper bound. Hence at most `2 * R(p, q)` local
+2-gaps are destroyed.
+
+**Task 4.** If `G_local > 2 * R(p, q)`, more local 2-gaps exist than the
+maximum number the filter can destroy, so at least one survives.
+
+**Variant (endpoint-disjoint 2-gaps).** Endpoint-disjointness means no two
+local 2-gaps share an endpoint, so a removed value `v` can be the endpoint of
+at most one local 2-gap. The same counting then gives at most `R(p, q)`
+destroyed 2-gaps, and survival follows whenever `G_local > R(p, q)`.
