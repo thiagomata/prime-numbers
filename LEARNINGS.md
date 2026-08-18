@@ -477,6 +477,18 @@ Stainless/Z3 processes. Running two `just verify` commands concurrently means ea
 will kill the other's solver, producing no useful output. Run one at a time and wait
 for it to finish before starting the next.
 
+### 8.6 Well-formed-SVG tests do not catch semantic rendering bugs
+
+A chart test suite that only checks "is this valid XML / does it parse" will pass
+on charts with off-canvas series (a line drawn outside the visible viewBox),
+overlapping/colliding labels, or a legend missing an entry for a plotted series —
+all of these are well-formed SVG. Catching them requires either a rendered visual
+check (open the SVG/PNG and look) or an explicit geometric assertion (e.g. every
+plotted coordinate falls within the canvas bounds, label bounding boxes don't
+overlap).
+
+**Source:** `tickets/done/fix-fixed-lineage-hazard-chart-clarity-2026-08-14.md`.
+
 ## 9. Common Pitfalls
 
 ### 9.1 `.ensuring` on class methods breaks type inference
