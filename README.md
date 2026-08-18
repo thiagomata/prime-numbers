@@ -42,8 +42,8 @@ b \text{ div } b                   & = 1 \\
 (a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 (a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
 (a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
-(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 \end{aligned}
 ```
 ```math
@@ -53,6 +53,23 @@ a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+```
+
+It also proves the classical division algorithm — existence and uniqueness of
+the quotient/remainder pair — and that exactly one integer in any block of
+$p$ consecutive integers is divisible by $p$:
+
+```math
+\begin{aligned}
+  \forall \text{ } a, b, r & \in ℤ \\
+  \quad \exists ! \, r \mid 0 \leq r < |b| & \implies \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } n, p & \in ℕ : p > 1 \\
+\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 \\
 \end{aligned}
 ```
 
