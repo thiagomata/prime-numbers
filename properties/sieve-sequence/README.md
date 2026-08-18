@@ -67,6 +67,10 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | Strike CRT Lift-Index | Accepted-Strike CRT Lift-Index Transform | [accepted-strike-crt-lift-index-transform.md](accepted-strike-crt-lift-index-transform.md) |
 | Strike Summatory Remainder | Accepted-Strike Summatory Coprime Remainder | [accepted-strike-summatory-coprime-remainder.md](accepted-strike-summatory-coprime-remainder.md) |
 | Cross-Layer CRT Orthogonality | Accepted-Strike Cross-Layer CRT Orthogonality | [accepted-strike-cross-layer-crt-orthogonality.md](accepted-strike-cross-layer-crt-orthogonality.md) |
+| Layer Innovation Orthogonality | Layer Strikes Are Innovations Of The Layer Filtration | [layer-strike-innovation-orthogonality.md](layer-strike-innovation-orthogonality.md) |
+| Past-Span Saturation | Past-Span Saturation Does Not Determine Placement | [past-span-saturation-does-not-determine-placement.md](past-span-saturation-does-not-determine-placement.md) |
+| 2-Gap Placement Saturation | Two-Gap Placement Saturation And The Cross-Fiber Coupling Boundary | [two-gap-placement-saturation.md](two-gap-placement-saturation.md) |
+| 2-Focused Alternation Law | Two-Focused Compression Alternation Law | [two-focused-alternation-law.md](two-focused-alternation-law.md) |
 | Localized-Layer Gram Matrix | Accepted-Strike Localized Layer Gram Matrix | [accepted-strike-localized-layer-gram-matrix.md](accepted-strike-localized-layer-gram-matrix.md) |
 | First-Deletion Variance Identity | Accepted-Strike First-Deletion Variance Identity | [accepted-strike-first-deletion-variance-identity.md](accepted-strike-first-deletion-variance-identity.md) |
 | Active Two-Class Variance | Accepted-Strike Active Two-Class Variance Identity | [accepted-strike-active-two-class-variance-identity.md](accepted-strike-active-two-class-variance-identity.md) |

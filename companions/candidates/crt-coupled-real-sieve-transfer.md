@@ -94,6 +94,29 @@ None of the following alone supplies the transfer:
   lineage; or
 - an undefined assertion that the deterministic filter “behaves randomly.”
 
+The first three bullets are not merely unhelpful — their insufficiency is
+now proved in a strong form: the [Past-Span Saturation property](
+../../properties/sieve-sequence/past-span-saturation-does-not-determine-placement.md)
+shows that the complete constraint family expressible from all previous
+layers is exactly the per-fiber quota, that every fiber-admissible
+placement (of which the real sieve is one point among `r^(phi(P))`)
+satisfies every global innovation identity, and that the CRT product
+structure keeps placement invisible to the past at any depth. No
+accumulation of complete-period identities can discharge this obligation;
+only arithmetic coupled to the new layer's residue geometry — windows,
+intervals, the head — can see placement.
+
+The 2-gap-specific bullet — CRT correlations between different gaps and
+shared-value effects — is likewise characterized at the complete-period
+level by the [2-Gap Placement Saturation property](
+../../properties/sieve-sequence/two-gap-placement-saturation.md): the
+balanced two-class law is exactly a compatible-coloring condition on the
+2-gap fiber graph, counts and marginal statistics are coloring-blind
+(next-period total `(r-2)G` for every compatible coloring), and the only
+complete-period statistics carrying placement are the separation-resolved
+pair counts, whose exclusion-intersection term is rigid arithmetic
+(`h=0, +-2 mod r`) under the real rule.
+
 ## Related
 
 - [Companion Models](../README.md)

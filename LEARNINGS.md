@@ -1038,6 +1038,20 @@ The solver can't connect "the first value satisfying property X" at call sites.
 
 Induct on `k` with `decreases(k)` instead.
 
+### 17.4 Global constraint accumulation cannot force local placement (proved)
+
+Do not invest in proofs that "enough complete-period constraints will pin
+down the filter's strike placement." The Past-Span Saturation property
+(`properties/sieve-sequence/past-span-saturation-does-not-determine-placement.md`)
+proves the full past-span constraint family is exactly equivalent to the
+per-fiber quota, that `r^(phi(P))` fiber-admissible placements satisfy
+every innovation identity (real sieve = one point), and that the CRT
+product structure makes placement permanently invisible to the past at
+any depth. Only window/head-local observables see placement; local
+theorems (candidates #26/#27) are structurally irreplaceable.
+
+**Source:** `spectral-positional-filter-analysis-2026-08-18.md`
+
 ## 18. Project Workflow
 
 ### 18.1 One assertion per verify cycle
@@ -1059,6 +1073,19 @@ If >2 tool calls expected, create a ticket. Update after each loop.
 ### 18.5 Search tickets for related work
 
 Before starting, search `tickets/` for similar work. Extract lessons.
+
+### 18.6 Search ALL doc roots before claiming "X does not exist"
+
+A repo-wide grep that misses a directory produces false novelty claims. A
+2026-08-18 session asserted "no spectral/Fourier analysis exists in the
+repo" from a grep of `python/src`, `articles/draft`, and `LEARNINGS.md`
+only — `properties/sieve-sequence/` contained the full complete-period
+Fourier program, including the very lemma being proposed. Any "X does not
+exist" claim must first grep `properties/`, `candidates/`, `companions/`,
+`articles/`, `tickets/`, and `python/src/` before being asserted.
+
+**Source:** `spectral-positional-filter-analysis-2026-08-18.md` (Failed
+Path #3)
 
 ## 19. Cross-instance Lemma Calls [Open]
 

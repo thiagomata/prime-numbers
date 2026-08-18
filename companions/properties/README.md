@@ -28,6 +28,7 @@ The four named companion models specialize these theorems:
 | Fixed-Factor Survival | [fixed-factor-survival.md](fixed-factor-survival.md) |
 | Logarithmic-Worsening Thresholds | [logarithmic-worsening-thresholds.md](logarithmic-worsening-thresholds.md) |
 | Local Survivor Allocation Range | [local-survivor-allocation-range.md](local-survivor-allocation-range.md) |
+| Position-Blind Index Spectrum | [position-blind-index-spectrum.md](position-blind-index-spectrum.md) |
 
 ## Scope Reminder
 
