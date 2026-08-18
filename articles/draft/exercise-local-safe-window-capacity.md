@@ -6,8 +6,8 @@
 
 This exercise is meant to be read after:
 
-- [Formal Verification of the Sieve Sequence](../chapter6/sieve-sequence.md)
-- [Sieve Gap Survival: A Math-Only Follow-Up to Sieve Sequences](draft-sieve-gap-survival-math.md)
+- [Formal Verification of the Sieve Sequence](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md)
+- [Sieve Gap Survival: A Math-Only Follow-Up to Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-sieve-gap-survival-math.md)
 
 The goal is to prove a local capacity bound. The exercise does not ask you to
 prove that many 2-gaps exist in the local window. Instead, it asks you to prove

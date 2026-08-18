@@ -537,7 +537,7 @@ two different quantities. $\prod_{p<h}(1-1/p)$ is the density of **general
 survivors** $R_k$ (values merely coprime to $M_k$, one forbidden residue
 class per filter prime), not of **2-gaps** $T_k$ (pairs where *both*
 endpoints survive, two forbidden residue classes per filter prime, per
-[exact-global-two-gap-count.md](../../properties/sieve-sequence/exact-global-two-gap-count.md)).
+[exact-global-two-gap-count.md](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/exact-global-two-gap-count.md)).
 The two have different formulas and different asymptotic orders. Both
 claims below are true; they are about different things.
 
@@ -588,7 +588,7 @@ A tempting proof strategy: construct a deliberately pessimistic ("fake") merge p
 **Where this breaks:** as a bound on *position*. The danger window $[p, p^2)$ only overlaps one specific copy ("copy 0") of the $h$-fold expansion. A freely adversarial model — unconstrained by which copy each residue's removal actually lands in — could simply choose to dump all its damage into copy 0 specifically, since nothing stops it from doing so. That would make the pessimistic model "prove" local extinction is possible, which contradicts the empirical reality (survival is always observed) — meaning a fully free adversary is *too* pessimistic to say anything useful about *where* damage lands. The real process's rigidity (each residue's target copy is a fixed affine function of its value mod $h$, not a free choice) is exactly the structure a valid positional bound would need to exploit — the same equidistribution difficulty as everywhere else in this file.
 
 **This intuition was later made rigorous** as
-[candidates/balanced-adversarial-2-gap-companion-process.md](../../candidates/balanced-adversarial-2-gap-companion-process.md):
+[candidates/balanced-adversarial-2-gap-companion-process.md](https://github.com/thiagomata/prime-numbers/blob/master/candidates/balanced-adversarial-2-gap-companion-process.md):
 a fully free adversary (choosing which of the exactly-two destroyed copies
 per parent to make, independently per parent) provably keeps the head
 2-gap-free forever while the global count still diverges — a clean, proved
@@ -678,8 +678,7 @@ Accepted-anchor recursion, generic Gram/Bessel algebra, and additional
 capacity-only optimization do not add those ingredients. This is a sharper
 boundary than the historical statement “prove local density.” The full
 mathematical synthesis is in
-[Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences](
-../chapter6/gap-dynamics-v2.md).
+[Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics-v2.md).
 
 ## 23. Distinct Relaxed Almost-Prime Program
 
@@ -700,8 +699,7 @@ The properties from Divisor Local Factor through Cofactor Progression Discrepanc
 The next input is an averaged prime-progression theorem matched to the exact
 divisor and interval range, followed by a pre-sieved or locally adapted
 bilinear estimate. The complete analysis is in
-[Relaxed Almost-Prime Production in Sieve Sequences](
-../draft/draft-relaxed-almost-prime-sieve-sequence.md).
+[Relaxed Almost-Prime Production in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-relaxed-almost-prime-sieve-sequence.md).
 
 ## 24. The Queue-Thinning Analogy: "Distance From The Head" Is Not A Filter Count
 
@@ -926,7 +924,7 @@ correctly-scoped versions exist, both distinct from the anchored chart line:
    which is not a faithful way to represent "the filter behaves randomly" --
    growth is guaranteed and structural, only the *selection* of which
    copies die should be random. See
-   [candidates/balanced-randomized-2-gap-companion-process.md](../../candidates/balanced-randomized-2-gap-companion-process.md),
+   [candidates/balanced-randomized-2-gap-companion-process.md](https://github.com/thiagomata/prime-numbers/blob/master/candidates/balanced-randomized-2-gap-companion-process.md),
    which went through two versions: an initial independent-Bernoulli-per-copy
    model only supporting a loose union bound, then a cleaner model --
    "exactly 2 of `r` copies die, chosen at random" (mirroring the real
@@ -945,7 +943,7 @@ correctly-scoped versions exist, both distinct from the anchored chart line:
    through the underlying copy-index structure.
 
    A third, sibling companion sharpens why that premise matters:
-   [candidates/balanced-adversarial-2-gap-companion-process.md](../../candidates/balanced-adversarial-2-gap-companion-process.md)
+   [candidates/balanced-adversarial-2-gap-companion-process.md](https://github.com/thiagomata/prime-numbers/blob/master/candidates/balanced-adversarial-2-gap-companion-process.md)
    shares the identical proved global recurrence but chooses which two
    copies die to *maximize* local damage instead of choosing at random. It
    proves, unconditionally (no premise needed, unlike the random

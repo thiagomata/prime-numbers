@@ -50,7 +50,7 @@ $$G_{\text{local}}(p) \le p - 1$$
 
 If this inequality fails permanently from some layer onward, the filter is structurally incapable of extinguishing the local 2-gap population, and twin prime candidates persist indefinitely.
 
-This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
+This article tests that inequality empirically across all primes up to 1000. See [Gap Dynamics in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md) for the formal context and [Learnings: Capacity Argument](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md) Sections 10 and 16 for the theoretical boundary.
 
 ---
 
@@ -292,7 +292,7 @@ The window's share of the full cycle drops by roughly an order of magnitude per 
 
 **Consistent with the uniform-density estimate in Section 4.3.** Multiplying the exact global count by the window-share ratio gives an expected count under naive uniformity of $214{,}708{,}725 \times 0.000000149 \approx 32$ for $h=31$ — comfortably above the 1 needed, and the same order of magnitude as the $G_{\text{local}}=30$ value already recorded at the neighboring prime $p=29$ in Section 3.1. This is a second, independently generated dataset landing in the same range as Section 4.3's estimate, not a new argument.
 
-See [Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md) Sections 19-21 for the related max-gap and cascade-merge analysis on this same dataset.
+See [Learnings: Capacity Argument](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md) Sections 19-21 for the related max-gap and cascade-merge analysis on this same dataset.
 
 ---
 
@@ -321,8 +321,8 @@ argument within its $[p,p^2]$ convention:
 **Crucially, this historical evidence is not a formal proof and does not apply
 to the canonical $[q,q^2)$ experiment.** The local density question
 ($G_{\text{local}} > p$) remains open in the formal-verification sense. See
-[Gap Dynamics in Sieve Sequences](../chapter6/gap-dynamics.md) Section 6 and
-[Learnings: Capacity Argument](../learnings/learnings-capacity-argument.md)
+[Gap Dynamics in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md) Section 6 and
+[Learnings: Capacity Argument](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md)
 Sections 10 and 16 for the formal boundary.
 
 The historical computational functions were `@extern` and were not

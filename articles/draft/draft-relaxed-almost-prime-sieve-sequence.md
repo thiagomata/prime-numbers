@@ -245,10 +245,8 @@ certificate nor a proof that the relaxed sum is positive for any unbounded
 family of heads.
 
 The project-specific candidate and this conditional proof are maintained in
-[Chen-Type Almost-Prime Survivor](
-../../candidates/chen-type-almost-prime-survivor.md). The first-endpoint input
-is [Safe-Window 2-Gaps Certify Twin Primes](
-../../properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md).
+[Chen-Type Almost-Prime Survivor](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md). The first-endpoint input
+is [Safe-Window 2-Gaps Certify Twin Primes](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md).
 Neither that input nor the factor-count argument above is yet encoded as a
 `.holds` theorem.
 
@@ -388,8 +386,7 @@ it unverified rather than represent it with speculative code. A future
 verification should prove the local table one prime at a time and then use a
 verified CRT product lemma. The complete mathematical proof
 is maintained in [Relaxed Almost-Prime Weight Has An Exact Divisor Local
-Factor](
-../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
+Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
 
 ## 5. Shifted Divisor Discrepancy
 
@@ -524,8 +521,7 @@ square-safe certification. No maintained theorem currently connects all these
 pieces for arbitrary squarefree $d$; the accumulated analytic inequality lies
 outside what has been formalized either way.
 The complete mathematical reduction is maintained in [Relaxed Cofactor
-Divisor Sum Is A Prime-Progression Discrepancy](
-../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
+Divisor Sum Is A Prime-Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
 
 ## 6. Exact Bilinear Character Decomposition
 
@@ -632,8 +628,7 @@ The proof uses Möbius inversion and finite character orthogonality, neither of
 which currently has a maintained representation for this weight in the
 project. The exact finite algebra is proved
 mathematically above and maintained in [Relaxed Almost-Prime Bilinear
-Remainder Has A Character Obstruction](
-../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
+Remainder Has A Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
 
 ## 7. Refuted Route — Scalar-Density Type-II Orthogonality
 
@@ -735,8 +730,7 @@ reduced wheel, so the counterexample also does not decide every locally
 adapted Type-II estimate.
 
 The exact failed statement, counterexample, and retry boundary are preserved
-in [Scalar-Density Type-II Orthogonality For The Relaxed Weight](
-../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md). The same
+in [Scalar-Density Type-II Orthogonality For The Relaxed Weight](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md). The same
 character calculation is derived from the bilinear character obstruction
 property's canonical source above. No empirical sample is used in the
 refutation.
@@ -855,18 +849,12 @@ of Chen's theorem, or a twin-prime result.
 
 ## References
 
-1. [Chen-Type Almost-Prime Survivor](
-   ../../candidates/chen-type-almost-prime-survivor.md).
-2. [Relaxed Almost-Prime Weight Has An Exact Divisor Local Factor](
-   ../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
-3. [Relaxed Almost-Prime Bilinear Remainder Has A Character Obstruction](
-   ../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
-4. [Relaxed Cofactor Divisor Sum Is A Prime-Progression Discrepancy](
-   ../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
-5. [Scalar-Density Type-II Orthogonality For The Relaxed Weight](
-   ../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md).
-6. [Formal Verification of Sieve Sequence Stages and Their Transitions](
-   ../chapter6/sieve-sequence.md).
+1. [Chen-Type Almost-Prime Survivor](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md).
+2. [Relaxed Almost-Prime Weight Has An Exact Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
+3. [Relaxed Almost-Prime Bilinear Remainder Has A Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
+4. [Relaxed Cofactor Divisor Sum Is A Prime-Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
+5. [Scalar-Density Type-II Orthogonality For The Relaxed Weight](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md).
+6. [Formal Verification of Sieve Sequence Stages and Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
 
 External references:
 
@@ -891,14 +879,14 @@ Mathematical Society Colloquium Publications, 57.
 
 | Result | Mathematical status | Stainless status | Canonical evidence |
 |--------|---------------------|------------------|--------------------|
-| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Pending | [Candidate #25](../../candidates/chen-type-almost-prime-survivor.md) |
-| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Divisor Local Factor](../../properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
-| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Cofactor Progression Discrepancy](../../properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
-| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Bilinear Character Obstruction](../../properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
-| Scalar-density Type-II shortcut | [Refuted] on the complete reduced wheel; short locally adapted domains remain open | Not applicable to a false statement | [Archived refutation](../../candidates/refuted/relaxed-weight-scalar-density-type-ii.md) |
+| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Pending | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
+| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
+| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
+| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
+| Scalar-density Type-II shortcut | [Refuted] on the complete reduced wheel; short locally adapted domains remain open | Not applicable to a false statement | [Archived refutation](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md) |
 
 The operational Sieve Sequence construction and its square-safe inputs are
 documented separately in [Formal Verification of Sieve Sequence Stages and
-Their Transitions](../chapter6/sieve-sequence.md). The new arithmetic results
+Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md). The new arithmetic results
 in this draft remain mathematically proved with Stainless representations
 pending.

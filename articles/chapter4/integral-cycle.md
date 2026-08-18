@@ -145,7 +145,7 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 
 This property is verified in the [
 CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.1; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.1; the complete proof is linked in the source reference.
 
 **Step Property**:
 
@@ -159,7 +159,7 @@ w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 
 This property is verified in the [
 CycleIntegralProperties::assertDiffEqualsCycleValue
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.2; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.2; the complete proof is linked in the source reference.
 
 ### 3.2 Modulo Cycle Integral
 
@@ -198,7 +198,7 @@ w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
 
 This property is verified in the [
 ModCycleIntegralProperties::assertFirstValuesMatchIntegral
-](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.3; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.3; the complete proof is linked in the source reference.
 
 #### Step Property
 
@@ -252,7 +252,7 @@ w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.
 
 This property is verified in the [
 ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle
-](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.4; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.4; the complete proof is linked in the source reference.
 
 ### 3.3 Equivalence of Definitions
 
@@ -269,7 +269,7 @@ definition and the closed-form `ModCycleIntegral` definition.
 
 This property is verified in the [
 ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
-](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.5; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.5; the complete proof is linked in the source reference.
 
 ## 4. Core Verified Properties
 
@@ -291,7 +291,7 @@ This follows directly from the recursive definition of `CycleIntegral`.
 
 This property is verified in the [
 CycleIntegralProperties::assertNextPosition
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
 ### 4.2 Same Difference After Full Cycle
 
@@ -303,7 +303,7 @@ The difference between consecutive values is invariant under adding a full cycle
 
 This property is verified in the [
 CycleIntegralProperties::assertSameDiffAfterCycle
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.6; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.6; the complete proof is linked in the source reference.
 
 ### 4.3 Sum of Mod Values as List
 
@@ -315,7 +315,7 @@ The cycle integral at any position equals the sum of a constructed list containi
 
 This property is verified in the [
 CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.7; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.7; the complete proof is linked in the source reference.
 
 ## 5. Extended Properties
 
@@ -383,14 +383,14 @@ cycle sum is zero modulo the divisor.
 
 The finite classification data structure is [
 MemCycle
-](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala), and its
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala), and its
 per-call classification correctness is verified by [
 CycleCheckMod
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala)
 (`ifInAllModAll`, `ifInSomeModSome`, `ifInNoneModNone`). The unbounded periodic
 lift is verified in [
 GapProperties::assertModIsPeriodic
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The core Scala verification code for the periodic lift is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The core Scala verification code for the periodic lift is in Appendix A.11.
 
 ### 5.2 x-fold Cycle Expansion
 
@@ -411,7 +411,7 @@ The values that change are the finite storage properties:
 
 The period equation is verified in [
 RepeatedGapIntegralProperties::assertRepeatedPeriodIsMultiplied
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
 
 The values that do not change are the semantic stream properties:
 
@@ -427,7 +427,7 @@ L^{(x)}_i &= L_{(i \text{ mod } |L|)}
 
 The cycle lookup equation is verified in [
 RepeatedGapIntegralProperties::assertReplicatedCycleValueEqual
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
 
 So the expansion is not an invariance of the finite cycle object itself. It is
 an invariance of the infinite stream that the cycle object represents.
@@ -459,11 +459,11 @@ L^{(x)}_i &= L_{(i \text{ mod } n)}
 
 These list-level properties are verified by `RepeatedList` and `ListRepeatProperties`: the repeated list size is $x \cdot n$, the repeated value at index $i$ is the original value at $i \text{ mod } n$, and the repeated sum is $x$ times the original sum. See [
 RepeatedList
-](../../src/main/scala/v1/chapter3/list/RepeatedList.scala), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/RepeatedList.scala), [
 RepeatedListProperties::assertSumMultiplier
-](../../src/main/scala/v1/chapter3/list/properties/RepeatedListProperties.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RepeatedListProperties.scala), and [
 ListRepeatProperties::assertRepeatedIndex
-](../../src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala).
 
 ```math
 \begin{aligned}
@@ -487,7 +487,7 @@ ListRepeatProperties::assertRepeatedIndex
 
 This property is verified in the [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.8.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.8.
 
 ### 5.3 Right Index Shift [Finite-Period Verified]
 
@@ -546,7 +546,7 @@ stored-period index with `i + 1 < period`.
 
 This property is verified in [
 GapProperties::assertRotateOneCycleIntegralShiftsByOne
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.9.
 
 The article's mathematical statement above is the all-position version. The
 verified lemma proves the stored-period core; packaging the universal
@@ -617,7 +617,7 @@ the step-lemma that underlies merging adjacent gap ranges.
 
 This property is verified in the [
 CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.10.
 
 ### 5.6 Modulo Periodicity
 
@@ -645,7 +645,7 @@ terminates.
 
 This property is verified in the [
 GapProperties::assertModIsPeriodic
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.11.
 
 The companion div/mod decomposition `ci(pos) == ci(pos % size) + (pos / size) * ci.sum`
 is verified in `GapProperties::assertCIModDivFormula`.
@@ -672,7 +672,7 @@ amount.
 
 These properties are verified in [
 GapProperties::assertPeriodicShift
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
 `assertFullCycleShift`, and `assertMultiCycleShift`. The core Scala verification code is in Appendix A.12.
 
 ### 5.8 Gap Rotation with Head Adjustment
@@ -693,7 +693,7 @@ entire integral by one position.
 
 This property is verified in [
 GapProperties::assertRotateOneShiftsIntegralByOne
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). It delegates to the verified `ShiftedList.assertShiftedApplyIsOriginalPlusOne`; the full source is linked there rather than repeated inline.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). It delegates to the verified `ShiftedList.assertShiftedApplyIsOriginalPlusOne`; the full source is linked there rather than repeated inline.
 
 ### 5.9 Modularity and Survivor Filtering
 
@@ -727,7 +727,7 @@ sub-sequence of scanned values that are coprime to the filter.
 
 These properties are verified in [
 GapProperties::assertSurvivorValuesContainsOnlyNonMultiples
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) and [`assertSurvivorValuesContainsNonMultipleAtPosition`](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The exclusion corollary (`assertSurvivorValuesExcludesMultipleAtPosition`)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) and [`assertSurvivorValuesContainsNonMultipleAtPosition`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The exclusion corollary (`assertSurvivorValuesExcludesMultipleAtPosition`)
 and the type-level non-emptiness guarantee (`assertSurvivorsNonEmpty`) follow
 directly.
 
@@ -765,7 +765,7 @@ two consecutive survivors (after filtering out multiples) is strictly positive
 
 All survivor-structure properties are verified in [
 GapProperties::assertFirstSurvivorIsHead
-](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and the eight companion lemmas in the same module.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and the eight companion lemmas in the same module.
 
 ### 5.10 Cycle Residue Classification
 
@@ -792,7 +792,7 @@ the classification is correct, mutually exclusive, and exhaustive.
 
 These properties are verified in the [
 CycleCheckMod
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
 
 ## 6. Conclusion
 
@@ -919,7 +919,7 @@ Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ 
 
 ### A.1 Sum Property for Small Positions — assertCycleIntegralEqualsSumSmallPositions
 
-Source: [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralEqualsSumSmallPositions(
@@ -960,7 +960,7 @@ def assertCycleIntegralEqualsSumSmallPositions(
 
 ### A.2 Step Property — assertDiffEqualsCycleValue
 
-Source: [CycleIntegralProperties::assertDiffEqualsCycleValue](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertDiffEqualsCycleValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertDiffEqualsCycleValue(
@@ -977,7 +977,7 @@ def assertDiffEqualsCycleValue(
 
 ### A.3 Mod First Values Match Integral — assertFirstValuesMatchIntegral
 
-Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertFirstValuesMatchIntegral(
@@ -1000,7 +1000,7 @@ def assertFirstValuesMatchIntegral(
 
 ### A.4 Mod Step Diff — assertSimplifiedDiffValuesMatchCycle
 
-Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertSimplifiedDiffValuesMatchCycle(
@@ -1031,7 +1031,7 @@ def assertSimplifiedDiffValuesMatchCycle(
 
 ### A.5 Equivalence of Definitions — assertCycleIntegralMatchModCycleDef
 
-Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](../../src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralMatchModCycleDef(
@@ -1068,7 +1068,7 @@ def assertCycleIntegralMatchModCycleDef(
 
 ### A.6 Same Difference After Full Cycle — assertSameDiffAfterCycle
 
-Source: [CycleIntegralProperties::assertSameDiffAfterCycle](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSameDiffAfterCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSameDiffAfterCycle(
@@ -1102,7 +1102,7 @@ def assertSameDiffAfterCycle(
 
 ### A.7 Sum of Mod Values as List — assertSumModValueAsListEqualsCycleIntegralLoop
 
-Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSumModValueAsListEqualsCycleIntegralLoop(
@@ -1138,7 +1138,7 @@ def assertSumModValueAsListEqualsCycleIntegralLoop(
 
 ### A.8 x-fold Cycle Expansion — assertRepeatedValuesIntegralMatches
 
-Source: [CycleIntegralProperties::assertRepeatedValuesIntegralMatches](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertRepeatedValuesIntegralMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertRepeatedValuesIntegralMatches(
@@ -1161,7 +1161,7 @@ def assertRepeatedValuesIntegralMatches(
 
 ### A.9 Right Index Shift Core — assertRotateOneCycleIntegralShiftsByOne
 
-Source: [GapProperties::assertRotateOneCycleIntegralShiftsByOne](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Source: [GapProperties::assertRotateOneCycleIntegralShiftsByOne](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertRotateOneCycleIntegralShiftsByOne(
@@ -1200,7 +1200,7 @@ def assertRotateOneCycleIntegralShiftsByOne(
 
 ### A.10 Gap Telescoping — assertConsecutiveGapSumEqualsDiff
 
-Source: [CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Source: [CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertConsecutiveGapSumEqualsDiff(
@@ -1221,7 +1221,7 @@ def assertConsecutiveGapSumEqualsDiff(
 
 ### A.11 Modulo Periodicity — assertModIsPeriodic
 
-Source: [GapProperties::assertModIsPeriodic](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Source: [GapProperties::assertModIsPeriodic](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertModIsPeriodic(
@@ -1275,7 +1275,7 @@ def assertModIsPeriodic(
 
 ### A.12 Cycle-Period Shifts — assertPeriodicShift, assertFullCycleShift, assertMultiCycleShift
 
-Source: [GapProperties cycle-period shift lemmas](../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Source: [GapProperties cycle-period shift lemmas](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertPeriodicShift(
@@ -1330,4 +1330,4 @@ def assertMultiCycleShift(
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/articles/logs/verify.log)

@@ -251,8 +251,16 @@ Every article must pass these checks before publication:
     auto-adds the `:` before return types, so omit it in source).
 
 21. **Layering** — Each article stands alone within its chapter. It may cite
-    earlier-chapter articles as prerequisites using relative paths (`../chapterN/file.md`).
-    It must not contain forward dependencies on later chapters' code constructs.
+    earlier-chapter articles and other repo files as prerequisites. Link with
+    an absolute GitHub URL once the target already exists on `master`:
+    `https://github.com/thiagomata/prime-numbers/blob/master/<path>` for text
+    links (append `#anchor` for a specific symbol/section), and
+    `https://raw.githubusercontent.com/thiagomata/prime-numbers/master/<path>`
+    for images, so they keep rendering inline. Use a relative path
+    (`../chapterN/file.md`) only while the target exists solely on the
+    current feature branch and not yet on `master`; convert it to the
+    absolute form once the branch merges. It must not contain forward
+    dependencies on later chapters' code constructs.
 
 22. **AGENTS.md rules** — The `three-representations`, `framing-integrity`,
     `property-completeness`, and `no-ticket-references` rules in AGENTS.md

@@ -12,7 +12,7 @@ Independent Researcher
 This draft records the small bridge between the foundational arithmetic
 articles and the full sieve-sequence specification. The full sieve sequence is
 studied in [Formal Verification of Sieve Sequence Stages and Their
-Transitions](../chapter6/sieve-sequence.md). This draft stops earlier: it
+Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md). This draft stops earlier: it
 isolates the two primitive facts that make a sieve plausible before period,
 gap-cycle, and transition semantics enter the picture.
 
@@ -86,9 +86,7 @@ def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
 ```
 
 This property is verified in
-[CycleIntegralOnesProperties::assertCycleIntegralOfOnes](
-../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
-).
+[CycleIntegralOnesProperties::assertCycleIntegralOfOnes](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala).
 
 ## 3. Unit-Cycle Strict Increase
 
@@ -124,9 +122,7 @@ def assertCycleIntegralOfOnesStrictlyIncreasing(
 ```
 
 This property is verified in
-[CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing](
-../../src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala
-).
+[CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala).
 
 ## 4. Distinct Primes Do Not Divide Each Other
 
@@ -167,9 +163,7 @@ def assertPrimeNotDivisibleByDistinctPrime(q: BigInt, p: BigInt): Boolean = {
 ```
 
 This property is verified in
-[FilterPreservesPrimesProperties::assertPrimeNotDivisibleByDistinctPrime](
-../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
-).
+[FilterPreservesPrimesProperties::assertPrimeNotDivisibleByDistinctPrime](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala).
 
 ## 5. Corollary: The Filter Reading
 
@@ -206,9 +200,7 @@ def assertFilterPreservesAllPrimes(
 ```
 
 This property is verified in
-[FilterPreservesPrimesProperties::assertFilterPreservesAllPrimes](
-../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
-).
+[FilterPreservesPrimesProperties::assertFilterPreservesAllPrimes](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala).
 
 ## 6. Filtered Lists Still Contain The Surviving Primes
 
@@ -265,9 +257,7 @@ def assertFilteredContainsAllPrimes(
 ```
 
 This property is verified in
-[FilterPreservesPrimesProperties::assertFilteredContainsAllPrimes](
-../../src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala
-).
+[FilterPreservesPrimesProperties::assertFilteredContainsAllPrimes](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/FilterPreservesPrimesProperties.scala).
 
 ## 7. What This Bridge Gives The Sieve
 

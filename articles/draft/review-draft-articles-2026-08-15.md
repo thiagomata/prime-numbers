@@ -576,9 +576,9 @@ specific fixed-character correlation modulo 3.
 
 The review correctly sensed that this draft is not publication-ready, but it
 understated and partly misdiagnosed the problems. The extant
-[`results.csv`](../../data/empirical/results.csv),
-[`EmpiricalRunner.scala`](../../src/main/scala/v1/chapter7/empirical/EmpiricalRunner.scala),
-and [`SegmentedSieve.scala`](../../src/main/scala/v1/chapter7/empirical/SegmentedSieve.scala)
+[`results.csv`](https://github.com/thiagomata/prime-numbers/blob/master/data/empirical/results.csv),
+[`EmpiricalRunner.scala`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter7/empirical/EmpiricalRunner.scala),
+and [`SegmentedSieve.scala`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter7/empirical/SegmentedSieve.scala)
 make four stronger corrections possible.
 
 | Issue | Disposition | Worth acting on? | Response |
@@ -787,7 +787,7 @@ section A.
 
 The agreed fixes were applied in a separate pass, with every change logged
 for team audit in
-[`tickets/active/draft-articles-round2-fixes-2026-08-15.md`](../../tickets/active/draft-articles-round2-fixes-2026-08-15.md).
+[`tickets/active/draft-articles-round2-fixes-2026-08-15.md`](https://github.com/thiagomata/prime-numbers/blob/master/tickets/active/draft-articles-round2-fixes-2026-08-15.md).
 Summary:
 
 - **Draft 3:** all factual corrections applied from fresh CSV recomputation
@@ -804,7 +804,7 @@ Summary:
   historical labeling of the §10 empirical appeal.
 - Deferred improvement suggestions were NOT applied; they are queued for team
   review in
-  [`tickets/future/draft-articles-deferred-improvements-2026-08-15.md`](../../tickets/future/draft-articles-deferred-improvements-2026-08-15.md).
+  [`tickets/future/draft-articles-deferred-improvements-2026-08-15.md`](https://github.com/thiagomata/prime-numbers/blob/master/tickets/future/draft-articles-deferred-improvements-2026-08-15.md).
 
 ### E. Addendum (post-rejoinder verification pass): one further draft-3 error and a systemic concern
 

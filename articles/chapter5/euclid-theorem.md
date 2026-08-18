@@ -129,7 +129,7 @@ p>1
 
 This property is verified in [
   ModSmallDividend::modSmallDividend
-](../../src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
 
 **Zero Remainder Preserved by Multiplication.** If a number is divisible by
 $b$, multiplying it by any nonnegative factor preserves divisibility by $b$.
@@ -149,7 +149,7 @@ $\text{mod}(p\cdot k,p)=0$.
 
 This property is verified in [
   AdditionAndMultiplication::ATimesBSameMod
-](../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala).
 
 **Adding One After a Multiple.** Once the primorial part is known to be
 divisible by $p$, adding one gives the same remainder as one itself.
@@ -171,11 +171,11 @@ nonzero remainder modulo every original prime.
 
 This property is verified in [
   ModOperations::modZeroPlusC
-](../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala).
 
 This property is verified in [
   PrimeProperties::primorialPlusOneModAny
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.1.
 
 ### 3.2 Stage 2: Finding a New Prime
 
@@ -206,7 +206,7 @@ d=N
 
 The construction of the new prime is verified in [
   PrimeProperties::newPrimeFromEuclid
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.2.
 
 ### 3.3 Stage 3: Proving the New Prime is Not in the List
 
@@ -248,7 +248,7 @@ This non-membership argument is verified by the private helper
 `euclidTailLoop`, which establishes `valueNotMatchesAny(primes, v)` for the
 chosen divisor $v$ in [
   PrimeProperties
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
 ### 3.4 The Main Theorem
 
@@ -275,7 +275,7 @@ d < N
 
 This property is verified in [
   PrimeProperties::euclidTheorem
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). The public theorem wrapper is shown in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). The public theorem wrapper is shown in Appendix A.3.
 
 ## 4. Supporting Verified Lemmas
 
@@ -318,11 +318,11 @@ prefix of the primes, the construction produces a prime beyond that prefix.
 
 This corollary is verified in [
   PrimeProperties::newPrimeNotInList
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
   PrimeProperties::notContainsFromValueNotMatchesAny
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), and [
   PrimeProperties::euclidPrimeGreaterThanHead
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
 ### 4.2 Smallest-Divisor Bounds for Composite Numbers
 
@@ -382,17 +382,11 @@ being the smallest divisor. Therefore $q \ge d$, and $d \cdot d \le d \cdot q = 
 
 These properties are verified in the [
   PrimeProperties::assertSmallestDivisorAtMostSqrt
-](
-  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
   PrimeProperties::assertCompositeHasDivisorStrictlyBelowN
-](
-  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), and [
   PrimeProperties::assertCompositeSmallestPrimeDivisor
-](
-  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
 ### 4.3 Finite-Prefix Primality Criterion
 
@@ -423,13 +417,9 @@ is coprime to every filter prime.
 
 This property is verified in [
   PrimeProperties::assertHeadIsPrime
-](
-  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-). Its main range helper is [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). Its main range helper is [
   PrimeProperties::assertNoDivisorInRangeFromHelper
-](
-  ../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
 ### 4.4 Bézout and Prime-Product Lemmas
 
@@ -482,17 +472,11 @@ The contrapositive form used by product and density arguments is:
 
 The full proof bodies are verified in [
   BezoutUtils::assertCoprimeLinearCombinationOne
-](
-  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala), [
   BezoutUtils::assertPrimeDivKhImpliesDivK
-](
-  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala), and [
   BezoutUtils::assertPrimeProductNotDivisible
-](
-  ../../src/main/scala/v1/chapter5/prime/BezoutUtils.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala).
 
 ## 5. Verification Status
 
@@ -578,7 +562,7 @@ Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First
 
 **Source**: [
   PrimeProperties.scala
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
 Short source excerpt for Stage 1 (Section 3.1):
 
@@ -596,7 +580,7 @@ This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisib
 
 **Source**: [
   PrimeProperties.scala
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
 Short source excerpt for Stage 2 (Section 3.2):
 
@@ -626,7 +610,7 @@ This function constructs a new `Prime` value by finding the smallest divisor of 
 
 **Source**: [
   PrimeProperties.scala
-](../../src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
 Short source excerpt for the main theorem (Section 3.4):
 
@@ -658,4 +642,4 @@ non-empty finite list of primes admits a prime outside the list.
 ## Appendix B: Verification Log
 
 The latest `just verify` run verifies the described properties without errors.
-The full log output is available at [logs/verify.log](../../logs/verify.log).
+The full log output is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
