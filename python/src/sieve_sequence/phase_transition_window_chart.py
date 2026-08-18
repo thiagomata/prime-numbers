@@ -1,7 +1,7 @@
 """Phase-transition chart 1: "No finite constant is fatal."
 
 Reads ../../../data/candidates/phase-transition-window.csv (written by
-sieve_sequence_empirical.phase_transition_window_cli -- run that first)
+sieve_sequence.phase_transition_window_cli -- run that first)
 rather than recomputing anything.
 
 Plots the expected square-safe-window occupancy lambda(Q), in log10 form,

@@ -1,7 +1,7 @@
 """Phase-transition chart 2: the head-recurrence Borel-Cantelli boundary.
 
 Reads ../../../data/candidates/phase-transition-head.csv (written by
-sieve_sequence_empirical.phase_transition_head_cli -- run that first)
+sieve_sequence.phase_transition_head_cli -- run that first)
 rather than recomputing anything.
 
 Plots the *cumulative sum* of head-occurrence probability, summed over real

@@ -48,7 +48,7 @@ verifier (`verify.py`) checks mathematical claims against it.
 | Language | Python >=3.11 |
 | Computation | numpy >=2.0, sympy >=1.13 |
 | Visualization | stdlib only (SVG builder, zlib PNG encoder) |
-| Testing | pytest >=9.1,<10 — 197 tests |
+| Testing | pytest >=9.1,<10 — 249 tests |
 | Packaging | setuptools, `src/` layout, editable install |
 | Orchestration | `just` recipes |
 

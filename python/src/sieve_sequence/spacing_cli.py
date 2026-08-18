@@ -2,13 +2,13 @@
 
 Reads an existing four-lines comparison CSV
 (data/candidates/four-lines-Q{Q}.csv, written by
-sieve_sequence_empirical.four_lines_cli -- run that first if it does not
+sieve_sequence.four_lines_cli -- run that first if it does not
 exist yet) and transforms its four count columns into implied-spacing
 columns, using the anchor's own real density as the reference scale. Writes
 data/candidates/spacing-Q{Q}.csv for
 presentations/sieve-sequence-visualization/figures/spacing_chart.py to plot.
 
-See empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py for why
+See sieve_sequence/spacing.py for why
 this is a reciprocal-scaling transform of the existing counts, not a new
 model, and properties/sieve-sequence/realized-filter-adversariality-score.md
 for why a growing-but-finite spacing avoids the extinction illusion that a

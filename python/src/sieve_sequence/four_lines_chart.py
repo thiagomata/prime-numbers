@@ -3,8 +3,8 @@ and the real measured trajectory, all anchored at one real point and plotted
 together.
 
 Reads ../../../data/candidates/four-lines-Q101.csv (written by
-sieve_sequence_empirical.four_lines_cli -- run that first, which itself reads
-lineage-Q101.csv from sieve_sequence_empirical.lineage_cli) rather than
+sieve_sequence.four_lines_cli -- run that first, which itself reads
+lineage-Q101.csv from sieve_sequence.lineage_cli) rather than
 recomputing anything.
 
 See properties/sieve-sequence/realized-filter-adversariality-score.md,

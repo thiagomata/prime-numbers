@@ -71,7 +71,7 @@ Or directly:
 python/.venv/bin/pytest python/tests/ -v
 ```
 
-All 197 tests use pytest. They cover:
+All 249 tests use pytest. They cover:
 - Window, lineage, four-lines, spacing, phase-transition, hazard, and deferred3 computation
 - SVG kit, PNG writer, gap heatmap, hit-miss heatmap, stage-transition diagram, and verify checks
 - generate_gaps full-period computation and trial-division fallback
@@ -107,7 +107,7 @@ python/
     retire_property_numbers.py          — property-number migration tool
   tests/
     conftest.py                         — shared fixtures
-    test_*.py                           — 197 pytest tests
+    test_*.py                           — 249 pytest tests
 ```
 
 Generated CSV data belongs under `data/` (root level, shared with Spark).

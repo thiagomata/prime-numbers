@@ -10,7 +10,7 @@ question here is whether the real sieve stays above the square-window
 threshold, not its distance to the absolute bounds.
 
 Reads ../../../data/candidates/four-lines-Q101.csv (written by
-sieve_sequence_empirical.four_lines_cli, which adds the N_frontier column for
+sieve_sequence.four_lines_cli, which adds the N_frontier column for
 w_r=1+log r via four_lines.log_growth_trajectory; run that first) rather than
 recomputing anything.
 

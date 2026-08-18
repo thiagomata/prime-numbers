@@ -2,8 +2,8 @@
 viewed as spacing between consecutive 2-gaps instead of raw survivor counts.
 
 Reads ../../../data/candidates/spacing-Q101.csv (written by
-sieve_sequence_empirical.spacing_cli -- run that first, which itself reads
-four-lines-Q101.csv from sieve_sequence_empirical.four_lines_cli) rather than
+sieve_sequence.spacing_cli -- run that first, which itself reads
+four-lines-Q101.csv from sieve_sequence.four_lines_cli) rather than
 recomputing anything.
 
 Why this view exists: a survivor *count* trending toward zero reads
@@ -15,7 +15,7 @@ extinction (a count that actually hits zero, as the adversarial floor does)
 shows up here, as an explicit X marker where the line becomes infinite,
 instead of an optical illusion produced by an ordinary shrinking count.
 
-See empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py for why
+See sieve_sequence/spacing.py for why
 this is a reciprocal-scaling transform of the four_lines.py counts, not a
 second, independent model.
 
@@ -192,7 +192,7 @@ def draw(rows):
     )
     canvas.text(
         W / 2, H - 12,
-        "empirical/sieve-sequence/src/sieve_sequence_empirical/spacing.py -- reciprocal view of four-lines-Q101.csv",
+        "sieve_sequence/spacing.py -- reciprocal view of four-lines-Q101.csv",
         size=10, anchor="middle", fill=INK_MUTED,
     )
     return canvas
