@@ -953,7 +953,7 @@ between global gap survival and infinitely many twin-prime certificates.
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). [Formal Verification of Sieve Sequence Stages and Their
-Transitions](sieve-sequence).
+Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Kevin Ford and James Maynard (2024). [On the theory of prime producing

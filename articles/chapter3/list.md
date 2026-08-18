@@ -140,9 +140,7 @@ $$
 L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
-The implementation of `slice` is available in [ListUtils](
-	../../src/main/scala/v1/chapter3/list/ListUtils.scala#slice
-). The full Scala verification code is in Appendix A.3.
+The implementation of `slice` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#slice). The full Scala verification code is in Appendix A.3.
 
 ### 2.8 List Sum
 
@@ -156,9 +154,7 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The implementation of `sum` is available in [ListUtils](
-	../../src/main/scala/v1/chapter3/list/ListUtils.scala#sum
-). The full Scala verification code is in Appendix A.7.
+The implementation of `sum` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#sum). The full Scala verification code is in Appendix A.7.
 
 ### 2.9 List Product
 
@@ -172,16 +168,14 @@ head(L) \cdot product(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The implementation of `product` is available in [ListProduct](
-	../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendices A.11 through A.15.
+The implementation of `product` is available in [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendices A.11 through A.15.
 
 ## 3. Index and Access Properties
 
 How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
 
-- [Tail access shift](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)[i] = L[i+1]$ for $i < |\text{tail}(L)|$
-- [Last element identity](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L[|L|-1] = \text{last}(L)$
+- [Tail access shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)[i] = L[i+1]$ for $i < |\text{tail}(L)|$
+- [Last element identity](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L[|L|-1] = \text{last}(L)$
 
 ### 3.1 Tail Access Shift
 
@@ -205,14 +199,10 @@ $$
 
 This forward shift is verified in the [
   ListUtilsProperties::accessTailShiftRight
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The reverse indexing form, $L_i = \text{tail}(L)_{i - 1}$ for $i > 0$, is
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The reverse indexing form, $L_i = \text{tail}(L)_{i - 1}$ for $i > 0$, is
 verified in [
   ListBoundUtils::assertTailShiftLeft
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-). The full Scala verification code is in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.1.
 
 ### 3.2 Last Element Identity
 
@@ -261,9 +251,7 @@ verified in [
 
 This property is verified in the [
   ListUtilsProperties::assertLastEqualsLastPosition
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The full Scala verification code is in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.2.
 
 ### 3.3 Indexed Access Under Concatenation
 
@@ -285,22 +273,18 @@ $A$ until it is exhausted, then indexes directly into $B$.
 
 This property is verified in the [
   ListUtilsProperties::assertAppendApplyLeft
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-) and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala) and [
   ListUtilsProperties::assertAppendApplyRight
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala).
 
 ## 4. Slice Properties
 
 Four constructions for extracting a sublist by index range — all equivalent.
 
-- [Tail-recursive slice](../../src/main/scala/v1/chapter3/list/ListUtils.scala): builds from the end by prepending
-- [Head-recursive slice](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): builds from the front
-- [Index-range slice](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): accumulates by position within a range
-- [Slice append consistency](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): appending a singleton preserves the slice structure
+- [Tail-recursive slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): builds from the end by prepending
+- [Head-recursive slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): builds from the front
+- [Index-range slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): accumulates by position within a range
+- [Slice append consistency](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): appending a singleton preserves the slice structure
 
 ### 4.1 Tail-Recursive Slice
 
@@ -361,9 +345,7 @@ Show:
 
 This property is verified in the [
   ListUtils::slice
-](
-  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
-). The implementation and verification code are in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The implementation and verification code are in Appendix A.3.
 
 ### 4.2 Head-Recursive Slice
 
@@ -422,9 +404,7 @@ Show:
 
 This property is verified in the [
   SliceEquivalenceLemmas::headRecursiveSlice
-](
-  ../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
-). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.4.
 
 ### 4.3 Index-Range Slice
 
@@ -483,9 +463,7 @@ Show:
 
 This property is verified in the [
   SliceEquivalenceLemmas::indexRangeValues
-](
-  ../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
-). The full Scala verification code is in Appendix A.5.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.5.
 
 ### 4.4 Slice Append Consistency
 
@@ -501,18 +479,16 @@ L[f \dots t] &= \text{slice}(L, f, t) \\
 
 This property is verified in the [
   ListUtilsProperties::assertAppendToSlice
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The full Scala verification code is in Appendix A.6.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.6.
 
 ## 5. Sum Properties
 
 The recursive `sum` matches the mathematical summation, and addition commutes over concatenation.
 
-- [Sum matches summation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = L[0] + \cdots + L[|L|-1]$
-- [Left append preserves sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
-- [Sum over concatenation](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
-- [Commutativity of sum](../../src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
+- [Sum matches summation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = L[0] + \cdots + L[|L|-1]$
+- [Left append preserves sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
+- [Sum over concatenation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
+- [Commutativity of sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
 
 ### 5.1 Sum matches Summation
 
@@ -591,9 +567,7 @@ Hence, by induction on the size of $L$:
 
 This property is verified in the [
   ListUtils::sum
-](
-  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
-). The implementation and verification code are in Appendix A.7.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The implementation and verification code are in Appendix A.7.
 
 ### 5.2 Left Append Preserves Sum
 
@@ -628,9 +602,7 @@ A & = x :: L  & \qquad \text{[Cons]} \\
 
 This property is verified in the [
   ListUtils::listSumAddValue
-](
-  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
-). The full Scala verification code is in Appendix A.8.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.8.
 
 ### 5.3 Sum over Concatenation
 
@@ -679,9 +651,7 @@ A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt
 
 This property is verified in the [
   ListUtils::listCombine
-](
-  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
-). The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.9.
 
 ### 5.4 Commutativity of Sum over Concatenation
 
@@ -703,9 +673,7 @@ Since:
 
 This property is verified in the [
   ListUtils::listSwap
-](
-  ../../src/main/scala/v1/chapter3/list/ListUtils.scala
-). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.10.
 
 ### 5.5 Sum Positivity
 
@@ -724,19 +692,17 @@ already known to be positive by the inductive hypothesis.
 
 This property is verified in the [
   ListUtilsProperties::assertSumPositive
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala).
 
 ## 6. Product Properties
 
 The product operation, from singleton identity through concatenation distributivity to positivity.
 
-- [Singleton product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: \text{empty}) = x$
-- [Product pull-out element](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
-- [Product over concatenation](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
-- [Commutativity of product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
-- [Positive product](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala): product of all-positive list is positive
+- [Singleton product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: \text{empty}) = x$
+- [Product pull-out element](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
+- [Product over concatenation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
+- [Commutativity of product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
+- [Positive product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): product of all-positive list is positive
 
 ### 6.1 Singleton Product
 
@@ -759,9 +725,7 @@ Proof:
 
 This property is verified in the [
   ListProduct::singletonProduct
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.11.
 
 ### 6.2 Product Pull-Out Element
 
@@ -788,9 +752,7 @@ A single element can be factored out of the product of a concatenated list.
 
 This property is verified in the [
   ListProduct::productPullOutElement
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendix A.12.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.12.
 
 ### 6.3 Product over Concatenation
 
@@ -817,9 +779,7 @@ Product distributes over list concatenation.
 
 This property is verified in the [
   ListProduct::productConcatLemma
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendix A.13.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.13.
 
 ### 6.4 Commutativity of Product
 
@@ -842,9 +802,7 @@ Proof:
 
 This property is verified in the [
   ListProduct::productConcatCommutative
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendix A.14.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.14.
 
 ### 6.5 Positive Product
 
@@ -869,17 +827,15 @@ If every element of a list is strictly positive, then the product is strictly po
 
 This property is verified in the [
   ListProduct::positiveProduct
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala
-). The full Scala verification code is in Appendix A.15.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.15.
 
 ## 7. Product Divisibility Properties
 
 Every element of a list divides its total product.
 
-- [Head divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
-- [All elements divide product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides $\text{product}(L)$
-- [Inserted element divides product](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $x$ divides $\text{product}(x :: L)$
+- [Head divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
+- [All elements divide product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides $\text{product}(L)$
+- [Inserted element divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $x$ divides $\text{product}(x :: L)$
 
 ### 7.1 Head Divides Product
 
@@ -901,9 +857,7 @@ Proof:
 
 This property is verified in the [
   ListProductDiv::ListProductDiv
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
-). The full Scala verification code is in Appendix A.16.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.16.
 
 ### 7.2 All Elements Divide Product
 
@@ -922,9 +876,7 @@ Every element of a positive list divides the product of the list.
 
 This property is verified in the [
   ListProductDiv::allElementsDivideProduct
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
-). The full Scala verification code is in Appendix A.17.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.17.
 
 ### 7.3 Inserted Element Divides Product
 
@@ -947,18 +899,16 @@ Proof:
 
 This property is verified in the [
   ListProductDiv::insertedElementDividesProduct
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala
-). The full Scala verification code is in Appendix A.18.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.18.
 
 ## 8. Bound and Order Properties
 
 How the property $\forall x \in L,\, x > v$ propagates from a whole list to its elements and through concatenation.
 
-- [All greater than at index](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
-- [Append preserves all greater than](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
-- [All greater than head and tail](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala): the head/tail decomposition propagates the bound
-- [Index checking lemmas](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): efficient bound verification
+- [All greater than at index](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
+- [Append preserves all greater than](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
+- [All greater than head and tail](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): the head/tail decomposition propagates the bound
+- [Index checking lemmas](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): efficient bound verification
 
 ### 8.1 All Greater Than at Index
 
@@ -971,9 +921,7 @@ For every list where all elements are greater than a value, any element at a val
 
 This property is verified in the [
   ListBoundUtils::assertGreaterThanAtIndex
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-). The full Scala verification code is in Appendix A.19.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.19.
 
 ### 8.2 Append Preserves All Greater Than
 
@@ -987,9 +935,7 @@ If both lists have all elements greater than a value, then their concatenation a
 
 This property is verified in the [
   ListBoundUtils::assertAppendGreaterThan
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-). The full Scala verification code is in Appendix A.20.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.20.
 
 ### 8.3 All Greater Than Head and Tail
 
@@ -1002,9 +948,7 @@ For a non-empty list where all elements are greater than a value, the head is gr
 
 This property is verified in the [
   ListBoundUtils::assertGreaterThanHeadTail
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-). The full Scala verification code is in Appendix A.21.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.21.
 
 ### 8.4 Check All Bigger at Index
 
@@ -1017,9 +961,7 @@ For every list where all elements are bigger than a value, any element at a vali
 
 This property is verified in the [
   ListUtilsProperties::checkAllBiggerThanValueAtIndex
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The full Scala verification code is in Appendix A.22.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.22.
 
 ### 8.5 Check All Bigger Head and Tail
 
@@ -1032,9 +974,7 @@ For a non-empty list where all elements are bigger than a value, the head is big
 
 This property is verified in the [
   ListUtilsProperties::checkAllBiggerThanValueHeadTail
-](
-  ../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala
-). The full Scala verification code is in Appendix A.23.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.23.
 
 ### 8.6 Split Preserves All Greater Than
 
@@ -1049,9 +989,7 @@ both halves.
 
 This property is verified in the [
   ListBoundUtils::assertSplitAtPreservesAllGreaterThan
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala).
 
 ### 8.7 The All Less Than Family
 
@@ -1078,27 +1016,19 @@ transitivity across a looser bound.
 
 These properties are verified in the [
   ListBoundUtils::assertAppendLessThan
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), [
   ListBoundUtils::assertSplitAtPreservesAllLessThan
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), [
   ListBoundUtils::assertTransitiveLessThan
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), and [
   ListBoundUtils::assertLessThanAtIndex
-](
-  ../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala).
 
 ## 9. Equivalence Properties
 
 All three slice constructions produce identical results for every valid input.
 
-- [Slice equivalence](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): tail-recursive, head-recursive, and index-range slices are identical for all valid inputs
+- [Slice equivalence](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): tail-recursive, head-recursive, and index-range slices are identical for all valid inputs
 
 ### 9.1 Slice Equivalence Lemma
 
@@ -1117,17 +1047,15 @@ All three slice implementations — tail-recursive, head-recursive, and index-ra
 
 This property is verified in the [
   SliceEquivalenceLemmas::tailHeadAndIndexRangeSlicesAreEqual
-](
-  ../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala
-). The full Scala verification code is in Appendix A.24.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.24.
 
 ## 10. Shifted List Properties
 
 A shifted list advances the head by one gap and re-indexes positions. Three lemmas characterize this operation.
 
-- [Same period](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting does not change the period (gap list length)
-- [Adjacent difference equals gap](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): consecutive shifted-list values differ by the corresponding gap
-- [Gap translation](../../src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting translates the gap sequence by one index
+- [Same period](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting does not change the period (gap list length)
+- [Adjacent difference equals gap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): consecutive shifted-list values differ by the corresponding gap
+- [Gap translation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting translates the gap sequence by one index
 
 A shifted list is a value sequence viewed one position later, with
 the head advanced by the first gap. Unlike rotation (which re-indexes without
@@ -1161,7 +1089,7 @@ structural property $\text{size} = |\text{gaps}|$ is an invariant of the case cl
 
 ### Source Verification Excerpt
 
-Source: [ShiftedList::assertSamePeriod](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Source: [ShiftedList::assertSamePeriod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertSamePeriod(otherSize: BigInt): Boolean = {
@@ -1185,7 +1113,7 @@ value definition above.
 
 ### Source Verification Excerpt
 
-Source: [ShiftedList::assertAdjacentDifferenceEqualsGap](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Source: [ShiftedList::assertAdjacentDifferenceEqualsGap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
@@ -1214,7 +1142,7 @@ is rotated by one position.
 
 ### Source Verification Excerpt
 
-Source: [ShiftedList::assertGapTranslation](../../src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Source: [ShiftedList::assertGapTranslation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertGapTranslation(
@@ -1232,26 +1160,20 @@ def assertGapTranslation(
 
 These properties are verified in the [
   ShiftedList::assertSamePeriod
-](
-  ../../src/main/scala/v1/chapter3/list/ShiftedList.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala), [
   ShiftedList::assertAdjacentDifferenceEqualsGap
-](
-  ../../src/main/scala/v1/chapter3/list/ShiftedList.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala), and [
   ShiftedList::assertGapTranslation
-](
-  ../../src/main/scala/v1/chapter3/list/ShiftedList.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala).
 
 ## 11. Rotation Properties
 
 Cyclic permutation preserves every structural invariant: the same elements, same size, same sum, and same bounds.
 
-- [Same elements](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
-- [Same size and sum](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $|\text{rotateAt}(L, k)| = |L|$, $\sum \text{rotateAt}(L, k) = \sum L$
-- [Bound preservation](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $(\forall x \in L,\, x > v) \implies \forall x \in \text{rotateAt}(L, k),\, x > v$, and likewise for the upper bound $\forall x \in L,\, x < b$
-- [Index shift by one](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, 1)(i) = L(i + 1)$
+- [Same elements](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
+- [Same size and sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $|\text{rotateAt}(L, k)| = |L|$, $\sum \text{rotateAt}(L, k) = \sum L$
+- [Bound preservation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $(\forall x \in L,\, x > v) \implies \forall x \in \text{rotateAt}(L, k),\, x > v$, and likewise for the upper bound $\forall x \in L,\, x < b$
+- [Index shift by one](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, 1)(i) = L(i + 1)$
 
 Rotating a list at index `k` swaps the front (first `k` elements)
 and back (remaining elements) — a cyclic permutation. Rotation preserves every
@@ -1323,7 +1245,7 @@ in `ShiftedList`.
 
 ### Source Verification Excerpt
 
-Source: [RotationProperties](../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
+Source: [RotationProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
 
 ```scala
 def assertRotateContainsForward(
@@ -1358,9 +1280,7 @@ def assertRotatedAtIndexPlusOne(list: List[BigInt], k: BigInt): Boolean = {
 
 These properties are verified in the [
   RotationProperties
-](
-  ../../src/main/scala/v1/chapter3/list/properties/RotationProperties.scala
-) module (11 lemmas total). The forward/backward membership pair and the
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) module (11 lemmas total). The forward/backward membership pair and the
 upper/lower bound pair cover all permutation invariants; the remaining
 lemmas (`assertAppendContainsLeft/Right/Decompose/Swap`) are structural
 helpers consumed by the main rotation proofs.
@@ -1552,7 +1472,7 @@ Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wik
 
 ### A.1 Tail Access Shift — accessTailShiftRight
 
-Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
@@ -1561,7 +1481,7 @@ Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/proper
   }.holds
 ```
 
-Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
@@ -1583,7 +1503,7 @@ Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUt
 
 ### A.2 Last Element Identity — assertLastEqualsLastPosition
 
-Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
@@ -1603,7 +1523,7 @@ Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/proper
 
 ### A.3 Tail-Recursive Slice — slice
 
-Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
@@ -1625,7 +1545,7 @@ Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ### A.4 Head-Recursive Slice — headRecursiveSlice
 
-Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
 def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -1638,7 +1558,7 @@ def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ### A.5 Index-Range Slice — indexRangeValues
 
-Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
 def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -1651,7 +1571,7 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 
 ### A.6 Slice Append Consistency — assertAppendToSlice
 
-Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -1668,7 +1588,7 @@ Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/proper
 
 ### A.7 Sum Implementation — sum
 
-Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def sum(loopList: List[BigInt]): BigInt = {
@@ -1682,7 +1602,7 @@ Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ### A.8 Left Append Preserves Sum — listSumAddValue
 
-Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
@@ -1692,7 +1612,7 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 
 ### A.9 Sum over Concatenation — listCombine
 
-Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -1715,7 +1635,7 @@ Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ### A.10 Commutativity of Sum — listSwap
 
-Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
+Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -1730,7 +1650,7 @@ Source: [ListUtils.scala](../../src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ### A.11 Singleton Product — singletonProduct
 
-Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def singletonProduct(x: BigInt): Boolean = {
@@ -1740,7 +1660,7 @@ Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/Lis
 
 ### A.12 Product Pull-Out Element — productPullOutElement
 
-Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productPullOutElement(
@@ -1761,7 +1681,7 @@ Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/Lis
 
 ### A.13 Product over Concatenation — productConcatLemma
 
-Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productConcatLemma(
@@ -1797,7 +1717,7 @@ Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/Lis
 
 ### A.14 Commutativity of Product — productConcatCommutative
 
-Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productConcatCommutative(
@@ -1830,7 +1750,7 @@ Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/Lis
 
 ### A.15 Positive Product — positiveProduct
 
-Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def positiveProduct(elements: List[BigInt]): Boolean = {
@@ -1850,7 +1770,7 @@ Source: [ListProduct.scala](../../src/main/scala/v1/chapter3/list/properties/Lis
 
 ### A.16 Head Divides Product — ListProductDiv
 
-Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def ListProductDiv(
@@ -1887,7 +1807,7 @@ Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/
 
 ### A.17 All Elements Divide Product — allElementsDivideProduct
 
-Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def allElementsDivideProduct(
@@ -1934,7 +1854,7 @@ Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/
 
 ### A.18 Inserted Element Divides Product — insertedElementDividesProduct
 
-Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def insertedElementDividesProduct(
@@ -1983,7 +1903,7 @@ Source: [ListProductDiv.scala](../../src/main/scala/v1/chapter3/list/properties/
 
 ### A.19 All Greater Than at Index — assertGreaterThanAtIndex
 
-Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertGreaterThanAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -2002,7 +1922,7 @@ Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUt
 
 ### A.20 Append Preserves All Greater Than — assertAppendGreaterThan
 
-Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertAppendGreaterThan(listA: List[BigInt], listB: List[BigInt], value: BigInt): Boolean = {
@@ -2022,7 +1942,7 @@ Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUt
 
 ### A.21 All Greater Than Head and Tail — assertGreaterThanHeadTail
 
-Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -2034,7 +1954,7 @@ Source: [ListBoundUtils.scala](../../src/main/scala/v1/chapter3/list/ListBoundUt
 
 ### A.22 Check All Bigger at Index — checkAllBiggerThanValueAtIndex
 
-Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -2046,7 +1966,7 @@ Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/proper
 
 ### A.23 Check All Bigger Head and Tail — checkAllBiggerThanValueHeadTail
 
-Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -2058,7 +1978,7 @@ Source: [ListUtilsProperties.scala](../../src/main/scala/v1/chapter3/list/proper
 
 ### A.24 Slice Equivalence — tailHeadAndIndexRangeSlicesAreEqual
 
-Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
   def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -2092,4 +2012,4 @@ Source: [SliceEquivalenceLemmas.scala](../../src/main/scala/v1/chapter3/list/pro
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log)

@@ -227,7 +227,7 @@ RecCycle &= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 \end{aligned}
 ```
 
-The recursive cycle is defined at [RecursiveCycle](../../src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
+The recursive cycle is defined at [RecursiveCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
 
 ```scala
 case class RecursiveCycle(values: List[BigInt]) {
@@ -264,7 +264,7 @@ n &= |L| \\
 \end{aligned}
 ```
 
-The modulo cycle is defined at [ModCycle](../../src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
+The modulo cycle is defined at [ModCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
 
 ```scala
 case class ModCycle(values: List[BigInt]) {
@@ -307,7 +307,7 @@ immediate by construction: `MemCycle.apply(position)` calls the wrapped
 
 The bounded bridge [
   CycleProperties::assertModCycleEqualsMemCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 verifies the same lookup equality over one physical period for a `ModCycle` and
 a `MemCycle` sharing the same values and period.
 
@@ -347,8 +347,8 @@ case class MemCycle private (
 }
 ```
 
-The memory cycle is defined at [MemCycle](../../src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
-[CycleCheckMod](../../src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
+The memory cycle is defined at [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
+[CycleCheckMod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
 
 ## 4. Cycle Equivalence
 
@@ -389,7 +389,7 @@ The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-n
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
-](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
 
 ### 4.2 Inductive Step ($i \geq n$)
 
@@ -414,7 +414,7 @@ The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
-](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
 
 ## 5. Cycle Properties
 
@@ -453,7 +453,7 @@ The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified i
 
 This property is verified in the [
 CycleProperties::findValueInCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
 
 ### 5.2 Small Value in Cycle
 
@@ -476,7 +476,7 @@ The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified i
 
 This property is verified in the [
 CycleProperties::smallValueInCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
 
 ### 5.3 Value Match After Many Loops
 
@@ -497,11 +497,11 @@ n &= |L| \\
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](../chapter2/modulo.md#quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Proving Properties of Division and Modulo using Formal Verification](../chapter2/modulo.md) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoops
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
 
 ### 5.4 Two Multiples of Cycle Size
 
@@ -523,7 +523,7 @@ n &= |L| \\
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoopsInBoth
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
 
 ### 5.5 Propagate Modulo from Value to Cycle
 
@@ -551,11 +551,11 @@ n &= |L| \\
 
 This property is verified in the [
 CycleProperties::propagateModFromValueToCycle
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The
 related idempotence restatement, `cycle(position) == cycle(position mod period)`,
 is verified in [
 CycleProperties::assertCycleOfPosEqualsCycleOfModPos
-](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
 
 ### 5.6 Repeated-Cycle Invariance
 
@@ -614,7 +614,7 @@ def assertRepeatedValuesCycleMatches(
 
 This property is verified in the [
 MemCycleProperties::assertRepeatedValuesCycleMatches
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
 The same repeated-cycle principle is the foundation for later cycle-integral
 reasoning, where repeated gap storage should preserve the integrated values
@@ -635,9 +635,7 @@ negative numbers, which is essential for integral and gap reasoning.
 
 This property is verified in the [
   CycleProperties::cycleValuePositiveOrZero
-](
-  ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.9.
 
 ### 5.8 Cycle Rotation
 
@@ -654,9 +652,7 @@ connects cycle structure directly to the list rotation concept from chapter 3.
 
 This property is verified in the [
   CycleProperties::rotateAtValue
-](
-  ../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala
-). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.10.
 
 ### 5.9 MemCycle-Level Restatement
 
@@ -684,20 +680,20 @@ key < \text{cycle.period} &\implies \text{cycle}(key) = \text{cycle.values}(key)
 
 These are verified in the [
   MemCycleProperties::findValueInCycle
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
   MemCycleProperties::smallValueInCycle
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
   MemCycleProperties::valueMatchAfterManyLoops
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
   MemCycleProperties::valueMatchAfterManyLoopsInBoth
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), and [
   MemCycleProperties::propagateModFromValueToCycle
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
 The mod-idempotence identity from §5.5's proof (that `Cycle_i` equals
 `Cycle_{(i mod n) mod n}`) has its own `MemCycle` restatement in [
   MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
-](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
 ## 6. Conclusion
 
@@ -752,7 +748,7 @@ Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/
 
 ### A.1 Cycle Equivalence — Base Case
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForSmallValues(
@@ -777,7 +773,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmall
 
 ### A.2 Cycle Equivalence — Inductive Step
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](../../src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForAnyValues(
@@ -810,7 +806,7 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyVa
 
 ### A.3 Cycle Element Access — findValueInCycle
 
-Source: [CycleProperties::findValueInCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::findValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -822,7 +818,7 @@ Source: [CycleProperties::findValueInCycle](../../src/main/scala/v1/chapter4/cyc
 
 ### A.4 Small Value in Cycle — smallValueInCycle
 
-Source: [CycleProperties::smallValueInCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::smallValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -835,7 +831,7 @@ Source: [CycleProperties::smallValueInCycle](../../src/main/scala/v1/chapter4/cy
 
 ### A.5 Value Match After Many Loops — valueMatchAfterManyLoops
 
-Source: [CycleProperties::valueMatchAfterManyLoops](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::valueMatchAfterManyLoops](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
@@ -849,7 +845,7 @@ Source: [CycleProperties::valueMatchAfterManyLoops](../../src/main/scala/v1/chap
 
 ### A.6 Two Multiples of Cycle Size — valueMatchAfterManyLoopsInBoth
 
-Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
@@ -874,7 +870,7 @@ Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](../../src/main/scala/v
 
 ### A.7 Propagate Modulo — propagateModFromValueToCycle / assertCycleOfPosEqualsCycleOfModPos
 
-Source: [CycleProperties::propagateModFromValueToCycle](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::propagateModFromValueToCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
@@ -902,7 +898,7 @@ Source: [CycleProperties::propagateModFromValueToCycle](../../src/main/scala/v1/
 
 ### A.8 Repeated-Cycle Invariance — assertRepeatedValuesCycleMatches
 
-Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../../src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
+Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
 
 ```scala
   def assertRepeatedValuesCycleMatches(
@@ -935,7 +931,7 @@ Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](../../src/main/sc
 
 ### A.9 Cycle Value Positivity — cycleValuePositiveOrZero
 
-Source: [CycleProperties::cycleValuePositiveOrZero](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::cycleValuePositiveOrZero](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
@@ -952,7 +948,7 @@ Source: [CycleProperties::cycleValuePositiveOrZero](../../src/main/scala/v1/chap
 
 ### A.10 Cycle Rotation — rotateAtValue
 
-Source: [CycleProperties::rotateAtValue](../../src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Source: [CycleProperties::rotateAtValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
@@ -984,4 +980,4 @@ Source: [CycleProperties::rotateAtValue](../../src/main/scala/v1/chapter4/cycle/
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](../../logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log)

@@ -209,9 +209,7 @@ $v-\ell_k$ reaches an index $i$ with $\ell_i=v$.
 
 This verified contract is implemented in [
   SpecSieveSequence::indexOfAccepted
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala).
 
 ### 3.2 Strict Increase
 
@@ -234,9 +232,7 @@ g_k
 
 This property is verified in [
   SpecSieveSequence::applyStrictlyIncreases
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala).
 
 ## 4. Period and Cycle Reconstruction
 
@@ -268,9 +264,7 @@ A_S(v+M) &= A_S(v)
 
 This property is verified in [
   SpecSieveSeqPeriodProperties::assertBlockShiftMultiple
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala).
 
 ### 4.2 Gap-Cycle Reconstruction
 
@@ -306,9 +300,7 @@ I_G(k)
 
 This property is verified in [
   SpecSieveSeqPeriodProperties::assertSpecGapCycleIntegralMatchesApply
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala).
 
 ### 4.3 Repetition Does Not Change the Infinite Sequence
 
@@ -332,9 +324,7 @@ I_{G^{\langle h\rangle}}(k)
 
 This property is verified in [
   SpecDerivedRepeatedCycleProperties::assertSpecRepeatedCycleIntegralMatchesBase
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala).
 
 ## 5. Installing the Current Head as a Filter
 
@@ -380,9 +370,7 @@ This is an exact full-period theorem, not a probabilistic density estimate.
 
 This property is verified in [
   SpecSieveSeqSurvivorCountProperties::assertSameHeadExtendedFilterCount
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala).
 
 ### 5.2 Copy-or-Merge Gap Dynamics
 
@@ -409,24 +397,18 @@ g'_m=\ell_j-\ell_k \\
 
 The immediate-survivor branch is verified in [
   SpecSieveSeqNextProperties::assertFilterPreservesNextGap
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
 The skipped-successor branch is verified as a supporting theorem. When the
 immediate old successor is removed, the next gap is the sum of the old gaps up
 to the first later survivor. This supporting property is verified in [
   SpecSieveSeqNextProperties::assertMergeGapEqualsOldGapSum
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
 The general merged prefix is then verified against the next specification's
 gap list. This property is verified in [
   SpecSieveSeqNextProperties::assertMergedGapPrefixMatchesNext
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
 ### 5.3 Filtering the Repeated Cycle Preserves the Semantic Result
 
@@ -452,9 +434,7 @@ I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 
 This property is verified in [
   SpecDerivedRepeatedCycleProperties::assertSpecBaseAndRepeatedGapListMatch
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala).
 
 ## 6. The Next Stage
 
@@ -496,9 +476,7 @@ d\mid\ell_1
 
 This property is verified in [
   SpecSieveSeqHeadIsPrime::assertApplyOneIsPrimeIfBelowHeadSq
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala).
 
 ### 6.2 The First Successor Is the Next Prime
 
@@ -526,9 +504,7 @@ h\lt\ell_1\le p^+,
 
 This property is verified in [
   SpecSieveSeqHeadIsPrime::assertApplyOneEqualsNextPrime
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala).
 
 ### 6.3 Semantic Pipeline Agreement
 
@@ -548,9 +524,7 @@ T'&=T(h-1), \\
 
 This property is verified in [
   SpecSieveSeqNextStageProperties::assertPipelineOutputMatchesNextGapList
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala).
 
 ### 6.4 Conditional Next-Cycle Reconstruction
 
@@ -569,9 +543,7 @@ I_{G'}(k-1)&=\ell'_k
 
 This property is verified in [
   SpecSieveSeqNextStageProperties::assertNextCycleReconstructsNextSpec
-](
-  ../../src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala).
 
 ## 7. Exact Proof Boundary
 
@@ -703,19 +675,19 @@ algorithmic efficiency from the full-period facts alone.
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal
-Verification*. [Local article](../chapter2/modulo.md).
+Verification*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists
-Recursively Defined*. [Local article](../chapter3/list.md).
+Recursively Defined*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md).
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*.
-[Local article](../chapter4/cycle.md).
+[Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md).
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from
-First Principles*. [Local article](../chapter4/integral-cycle.md).
+First Principles*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md).
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of

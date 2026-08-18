@@ -11,10 +11,9 @@ Independent Researcher
 This file preserves the early copy/merge, stable-absence, cluster, and local-
 capacity development. It is no longer the current proof-boundary document.
 The twin-prime analysis continues in [Structural Properties and Signed
-Boundaries of 2-Gaps in Sieve Sequences](../chapter6/gap-dynamics-v2.md); the
+Boundaries of 2-Gaps in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics-v2.md); the
 distinct prime-plus-almost-prime relaxation is developed in [Relaxed
-Almost-Prime Production in Sieve Sequences](
-draft-relaxed-almost-prime-sieve-sequence.md).
+Almost-Prime Production in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-relaxed-almost-prime-sieve-sequence.md).
 
 ## Abstract
 
@@ -537,7 +536,7 @@ The newer signed analysis preserves the central global-versus-local lesson but
 replaces this article's raw strike counts with a sharper accounting. This
 section is a qualitative summary only; every formula below is defined and
 proved in the successor article, [Structural Properties and Signed Boundaries
-of 2-Gaps in Sieve Sequences](../chapter6/gap-dynamics-v2.md).
+of 2-Gaps in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics-v2.md).
 
 Where this article compares the local 2-gap count with an unsigned strike
 budget, the successor follows a conditioned chain of filters with an exact
@@ -572,31 +571,30 @@ Its Type-I remainder is a prime-progression discrepancy and its final
 scalar-centered weight retains nonprincipal character modes, so that program
 requires an averaged prime-progression theorem and a locally adapted bilinear
 estimate; it does not prove a 2-gap. That relaxation is developed in [Relaxed
-Almost-Prime Production in Sieve Sequences](
-draft-relaxed-almost-prime-sieve-sequence.md).
+Almost-Prime Production in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-relaxed-almost-prime-sieve-sequence.md).
 
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Formal Verification of the Sieve Sequence*. Available
-at: [../chapter6/sieve-sequence.md](../chapter6/sieve-sequence.md)
+at: [../chapter6/sieve-sequence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Gap Dynamics and Twin Prime Candidates in Sieve
 Sequences*. Available at:
-[../chapter6/gap-dynamics.md](../chapter6/gap-dynamics.md)
+[../chapter6/gap-dynamics.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Empirical Analysis of Local 2-Gap Density in Sieve
 Sequences* (superseded draft). Available at:
-[draft-empirical-g-local-analysis.md](draft-empirical-g-local-analysis.md)
+[draft-empirical-g-local-analysis.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-empirical-g-local-analysis.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Structural Properties and Signed Boundaries of 2-Gaps in
 Sieve Sequences*. Available at:
-[../chapter6/gap-dynamics-v2.md](../chapter6/gap-dynamics-v2.md)
+[../chapter6/gap-dynamics-v2.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics-v2.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Mata, T. H. (2026). *Relaxed Almost-Prime Production in Sieve Sequences*.
 Available at:
-[draft-relaxed-almost-prime-sieve-sequence.md](draft-relaxed-almost-prime-sieve-sequence.md)
+[draft-relaxed-almost-prime-sieve-sequence.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-relaxed-almost-prime-sieve-sequence.md)

@@ -117,9 +117,7 @@ The solved $DivMod$ states are those where the remainder $r$ satisfies:
 \end{aligned}
 ```
 
-The recursive definition is implemented in [DivMod.scala](
-../../src/main/scala/v1/chapter2/div/DivMod.scala
-).
+The recursive definition is implemented in [DivMod.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/DivMod.scala).
 
 
 ## 5. DivMod Solution Invariance Under Linear Shift
@@ -134,16 +132,12 @@ a &= b(q-1) + (r+b) \\
 \end{aligned}
 ```
 
-This invariant is verified for the [positive shift](
-  ../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution
-) and [negative shift](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
+This invariant is verified for the [positive shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution) and [negative shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
 ### Creating the Division and Modulo Operations
 
-Using the normalized `DivMod` value, [Calc.scala](
-../../src/main/scala/v1/chapter2/div/Calc.scala
-) defines $\text{div}$ and $\text{mod}$ as the quotient and remainder projections
+Using the normalized `DivMod` value, [Calc.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/Calc.scala) defines $\text{div}$ and $\text{mod}$ as the quotient and remainder projections
 of the solved state. Starting from $DivMod(a,b,0,a)$, let:
 
 ```math
@@ -185,7 +179,7 @@ quotient is zero and the remainder is the original dividend.
 
 This property is verified in [
   ModSmallDividend
-](../../src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
 
 ### Identity
 
@@ -205,10 +199,10 @@ $0$.
 
 This property is verified in [
   ModIdentity::modIdentity
-](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala). A longer
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala). A longer
 source proof showing the normalization path is available in [
   ModIdentity::longProof
-](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof).
 
 ### Modulo and Division by One
 
@@ -228,9 +222,9 @@ law for the successor case.
 
 These properties are verified in [
   ModOne::modOneIsZero
-](../../src/main/scala/v1/chapter2/div/properties/ModOne.scala) and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala) and [
   ModOne::divOneIsN
-](../../src/main/scala/v1/chapter2/div/properties/ModOne.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala).
 
 ### Quotient Invariance Under Linear Shift
 
@@ -246,11 +240,7 @@ Adding or subtracting the divisor from the dividend changes the quotient by one 
 \end{aligned}
 ```
 
-This property is verified for the [positive case](
-../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv
-) and [negative case](
-../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv
-).
+This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv).
 
 ### Quotient Invariance Under Linear Shift by Multiplier
 
@@ -269,11 +259,7 @@ As a direct consequence of the one-step shift laws, we can also prove that:
 \end{aligned}
 ```
 
-This property is verified for the [positive case](
-../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod
-) and [negative case](
-../../src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod
-).
+This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod).
 
 ### Unique Remainder
 
@@ -303,9 +289,7 @@ $(q_x,r_x)$ and $(q_y,r_y)$ representing the same dividend, normalization
 reaches the same solution.
 This property is verified in [
   ModIdempotence::modUnique
-](
-../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique).
 
 ### Modulo Idempotence
 
@@ -320,7 +304,7 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 
 This property is verified in [
   ModIdempotence::modIdempotence
-](../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence).
 
 ### Distributivity over Addition
 
@@ -337,12 +321,8 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 
 This property is verified in [
   ModOperations::modAdd
-](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd
-). The third identity, isolating the multiple of $b$ subtracted
-out, is proved directly in [ModIdempotence.scala#modModPlus](
-../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd). The third identity, isolating the multiple of $b$ subtracted
+out, is proved directly in [ModIdempotence.scala#modModPlus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus).
 
 ### Distribution over Subtraction
 
@@ -359,12 +339,8 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 
 This property is verified in [
   ModOperations::modLess
-](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess
-). The third identity, isolating the multiple of $b$ subtracted
-out, is proved directly in [ModIdempotence.scala#modModMinus](
-../../src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess). The third identity, isolating the multiple of $b$ subtracted
+out, is proved directly in [ModIdempotence.scala#modModMinus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus).
 
 ### Modular Shift Invariance under Divisible Base
 
@@ -379,9 +355,7 @@ a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
 
 This property is verified in [
   ModOperations::modZeroPlusC
-](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC).
 
 Substituting `-c` for `c` gives the subtraction corollary directly, since `c`
 is unrestricted:
@@ -395,9 +369,7 @@ a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = ( -c ) \text{ mod } b
 
 This corollary is verified by the same lemma, [
   ModOperations::modZeroPlusC
-](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC
-), called with `-c` in place of `c`.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC), called with `-c` in place of `c`.
 
 ### Symmetrical Modulo Pairs
 
@@ -415,7 +387,7 @@ their remainders are themselves. Their sum is therefore $k + (b-k) = b$.
 
 This property is verified in [
   ModSum::sumSymmetricalMods
-](../../src/main/scala/v1/chapter2/div/properties/ModSum.scala). The source
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala). The source
 excerpt is included in [Appendix A.2](#a2-symmetrical-modulo-pairs-excerpt).
 
 ### Unit-Step Modulo-Division Increment Law
@@ -434,9 +406,7 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 
 This property is verified in [
   ModOperations::addOne
-](
-../../src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne).
 
 ### Consecutive Integers: Zero Density
 
@@ -483,45 +453,29 @@ $p$.
 
 These properties are verified in [
   ConsecutiveIntegers::nonzeroAfterZero
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
   ConsecutiveIntegers::existsZero
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
   ConsecutiveIntegers::exactlyOneZeroInConsecutive
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), and [
   ConsecutiveIntegers::atMostOneZero
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
 The compact source shape is included in [Appendix A.3](#a3-consecutive-zero-density-excerpt).
 
 The density lemmas, [
   ConsecutiveIntegers::densityForDivisor
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
   ConsecutiveIntegers::densityForFactorList
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
   ConsecutiveIntegers::densityPreservedAfterFiltering
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), and [
   ConsecutiveIntegers::twoFactorsDensity
-](
-  ../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala
-), extend these facts to
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), extend these facts to
 multi-filter settings, proving that the proportion of survivors after
 filtering by a product of pairwise non-dividing factors is the product of the individual survival
 rates. The maintained source is [
   ConsecutiveIntegers.scala
-](../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
 
 ## 7. Conclusion
 
@@ -573,9 +527,7 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 \end{aligned}
 ```
 
-Those formally verified properties are collected in [Summary.scala](
- ../../src/main/scala/v1/chapter2/div/properties/Summary.scala
-) and supported by the individual proof modules linked above. The recursive
+Those formally verified properties are collected in [Summary.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/Summary.scala) and supported by the individual proof modules linked above. The recursive
 formulation makes the proof structure transparent: normalize $(q,r)$ without
 changing $a=bq+r$, extract quotient and remainder from the final state, then
 derive the algebraic laws from that normal form.
@@ -589,7 +541,7 @@ This work demonstrates how modular arithmetic can be derived, reasoned about,
 
 Source: [
   ModIdentity.scala
-](../../src/main/scala/v1/chapter2/div/properties/ModIdentity.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala).
 
 ```scala
 def modIdentity(a: BigInt): Boolean = {
@@ -602,7 +554,7 @@ def modIdentity(a: BigInt): Boolean = {
 
 Source: [
   ModSum.scala
-](../../src/main/scala/v1/chapter2/div/properties/ModSum.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala).
 
 ```scala
 def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
@@ -620,7 +572,7 @@ def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
 
 Source: [
   ConsecutiveIntegers.scala
-](../../src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
 
 ```scala
 def nonzeroAfterZero(a: BigInt, p: BigInt, d: BigInt): Boolean = {
@@ -676,4 +628,4 @@ def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
 
 ### A.4 Verification Log
 
-The project verification log is available at [logs/verify.log](../../logs/verify.log).
+The project verification log is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
