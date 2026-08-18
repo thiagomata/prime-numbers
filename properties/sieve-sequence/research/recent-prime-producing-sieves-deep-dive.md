@@ -647,7 +647,7 @@ explicit before either route can plausibly succeed.
 
 ## Related Project Notes
 
-- [Candidate Property: Infinitely Many Perfect Sieve Scenarios](../infinite-perfect-scenario-property.md)
+- [Candidate Property: Infinitely Many Perfect Sieve Scenarios](../../../candidates/infinite-perfect-scenario-property.md)
 - [Batched Short-Window Discrepancy Boundary](../batched-short-window-discrepancy-boundary.md)
 - [Exact Batched 2-Gap Survival](../exact-batched-two-gap-survival.md)
 - [Exact Filter Frequency Across Repeated Copies](../copy-index-filter-frequency.md)

@@ -477,6 +477,18 @@ Stainless/Z3 processes. Running two `just verify` commands concurrently means ea
 will kill the other's solver, producing no useful output. Run one at a time and wait
 for it to finish before starting the next.
 
+### 8.6 Well-formed-SVG tests do not catch semantic rendering bugs
+
+A chart test suite that only checks "is this valid XML / does it parse" will pass
+on charts with off-canvas series (a line drawn outside the visible viewBox),
+overlapping/colliding labels, or a legend missing an entry for a plotted series —
+all of these are well-formed SVG. Catching them requires either a rendered visual
+check (open the SVG/PNG and look) or an explicit geometric assertion (e.g. every
+plotted coordinate falls within the canvas bounds, label bounding boxes don't
+overlap).
+
+**Source:** `tickets/done/fix-fixed-lineage-hazard-chart-clarity-2026-08-14.md`.
+
 ## 9. Common Pitfalls
 
 ### 9.1 `.ensuring` on class methods breaks type inference
@@ -832,6 +844,17 @@ definitions, and supporting properties that the article established, as in
 `integral.md` and `cycle.md`. Future work should explain the next mathematical
 directions in prose and state how they extend the article's result.
 
+### 14.20 Print-only self-containment is the final article test
+
+An article must independently explain its context, challenge, substantive work
+and argument, and conclusion to a reader who has no repository access.
+Repository links support provenance, verification, data, and reproducibility;
+they cannot carry definitions, premises, reasoning, limitations, or conclusions
+needed to understand the article. Restate every cited prior result sufficiently
+for the reader to follow its role, even when its full proof remains external.
+
+**Source:** user review of the 2-gap companion draft, 2026-08-14.
+
 ## 15. Structural Index Lemmas (ch60, abandoned indexed bijection)
 
 ### 15.1 Body `val`s are not in scope in `.ensuring` blocks
@@ -1027,6 +1050,20 @@ The solver can't connect "the first value satisfying property X" at call sites.
 
 Induct on `k` with `decreases(k)` instead.
 
+### 17.4 Global constraint accumulation cannot force local placement (proved)
+
+Do not invest in proofs that "enough complete-period constraints will pin
+down the filter's strike placement." The Past-Span Saturation property
+(`properties/sieve-sequence/past-span-saturation-does-not-determine-placement.md`)
+proves the full past-span constraint family is exactly equivalent to the
+per-fiber quota, that `r^(phi(P))` fiber-admissible placements satisfy
+every innovation identity (real sieve = one point), and that the CRT
+product structure makes placement permanently invisible to the past at
+any depth. Only window/head-local observables see placement; local
+theorems (candidates #26/#27) are structurally irreplaceable.
+
+**Source:** `spectral-positional-filter-analysis-2026-08-18.md`
+
 ## 18. Project Workflow
 
 ### 18.1 One assertion per verify cycle
@@ -1048,6 +1085,19 @@ If >2 tool calls expected, create a ticket. Update after each loop.
 ### 18.5 Search tickets for related work
 
 Before starting, search `tickets/` for similar work. Extract lessons.
+
+### 18.6 Search ALL doc roots before claiming "X does not exist"
+
+A repo-wide grep that misses a directory produces false novelty claims. A
+2026-08-18 session asserted "no spectral/Fourier analysis exists in the
+repo" from a grep of `python/src`, `articles/draft`, and `LEARNINGS.md`
+only — `properties/sieve-sequence/` contained the full complete-period
+Fourier program, including the very lemma being proposed. Any "X does not
+exist" claim must first grep `properties/`, `candidates/`, `companions/`,
+`articles/`, `tickets/`, and `python/src/` before being asserted.
+
+**Source:** `spectral-positional-filter-analysis-2026-08-18.md` (Failed
+Path #3)
 
 ## 19. Cross-instance Lemma Calls [Open]
 

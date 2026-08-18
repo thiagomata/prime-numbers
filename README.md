@@ -5,6 +5,12 @@ division, modulo, lists, cycles, and integrals using recursive, from-scratch
 constructions grounded in a zero-prior-knowledge methodology.
 The project is written in Scala and uses the Stainless library to prove theorems.
 
+## Research Vocabulary
+
+Use the [Research Vocabulary](VOCABULARY.md) for the canonical meanings of
+sieve objects, proof scope, quantifiers, empirical status, and mathematical
+proof status across candidates, properties, articles, and research notes.
+
 ## Note
 
 This project was initially created using Dafny,

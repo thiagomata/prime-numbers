@@ -67,6 +67,52 @@ factors would be at least `p`, forcing `k>=p^2`, a contradiction. Thus every
 accepted `k` in the range is prime and at least `p`. The converse is immediate:
 every such prime `k` is coprime to `M`.
 
+## Incremental Annular Form
+
+The complete interval and gap-population definitions are proved in the
+[incremental danger-annulus decomposition](incremental-danger-annulus-decomposition.md).
+For accepted strike values, define
+
+```math
+V_{p,q}=[p^2,q^2).
+```
+
+Every accepted strike characterized above has the form `pr` with prime
+`r>=p`, and hence is at least `p^2`. Thus every accepted filter-`p` strike in
+the full window `W=[q,q^2)` already lies in `V_{p,q}`, giving the strike-value
+count equality
+
+```math
+A_{full}(p,q)
+=A_{danger}(p,q)
+=A(p,q).
+```
+
+This is not an equality between full-window and annular 2-gap populations.
+
+With `d=q-p`, the raw number of multiples of `p` in the value annulus is
+
+```math
+R_V(p,q)
+=
+\left\lceil\frac{q^2-p^2}{p}\right\rceil
+=
+2d+\left\lceil\frac{d^2}{p}\right\rceil,
+\qquad
+A(p,q)\le R_V(p,q).
+```
+
+For the refined annular population `L_D(p,q)` defined in the linked property,
+the compulsory accepted strike `p^2` is harmless. If `K_D(p,q)` counts the
+gaps from that population destroyed by filter `p`, endpoint isolation gives
+
+```math
+K_D(p,q)\le A(p,q)-1.
+```
+
+This subtraction is specific to the refined annular population. It does not
+replace the full-window destruction bound by `A(p,q)`.
+
 ## Comparison With The Raw Bound
 
 The number of all multiples of `p` in `W` is

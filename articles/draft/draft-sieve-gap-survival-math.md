@@ -1,11 +1,20 @@
 # Sieve Gap Survival: A Math-Only Follow-Up to Sieve Sequences
 
-**Status:** Draft - mathematical exploration, not a Stainless-verified article.
+**Status:** Superseded historical draft — mathematical exploration, not a
+Stainless-verified article.
 
-**Author:** Mata, T. H.  
-Independent Researcher  
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
+**Author:** Mata, T. H.
+Independent Researcher
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
 **GitHub:** [@thiagomata](https://github.com/thiagomata)
+
+This file preserves the early copy/merge, stable-absence, cluster, and local-
+capacity development. It is no longer the current proof-boundary document.
+The twin-prime analysis continues in [Structural Properties and Signed
+Boundaries of 2-Gaps in Sieve Sequences](../chapter6/gap-dynamics-v2.md); the
+distinct prime-plus-almost-prime relaxation is developed in [Relaxed
+Almost-Prime Production in Sieve Sequences](
+draft-relaxed-almost-prime-sieve-sequence.md).
 
 ## Abstract
 
@@ -452,7 +461,7 @@ This suggests a family of finite questions:
 Answering this for a finite stage can rule out entire classes of future
 behavior.
 
-## 10. The Main Open Question
+## 10. Historical Form Of The Main Open Question
 
 The structural facts above reduce twin-prime persistence to a local
 distribution question.
@@ -488,15 +497,22 @@ If this stronger inequality holds from some point onward, and if each local
 filter strike destroys at most one local 2-gap, then each new filter lacks
 enough local strikes to destroy all local 2-gaps.
 
-Empirical work in this repository has observed this stronger inequality in
-tested ranges after an initial crossover. That evidence is suggestive, but
-it is not a proof. The missing theorem is not a full-period CRT statement.
-It is a positional theorem about where the 2-gaps fall inside the short
-safe window.
+This is a sound historical sufficient condition, but it is not the sharpest
+current formulation. Later work replaces the raw strike count by exact
+accepted strikes and then by a weighted harmful-excess quadratic threshold.
+It also proves that optimizing separate unsigned capacities cannot clear that
+threshold on an unbounded family.
+
+Historical observation only: the superseded $[p,p^2]$ experiment reported
+this stronger inequality in its tested range after an initial crossover
+([3], superseded). The canonical $[q,q^2)$ transition data do not directly
+measure $A_h$, so no current evidence is claimed here. The missing theorem is
+not a full-period CRT statement. It is a positional theorem about where the
+2-gaps fall inside the short safe window.
 
 ## 11. What This Article Claims
 
-This draft claims the following mathematical structure:
+This historical draft established the following mathematical structure:
 
 1. Filtering changes gaps only by copying or merging neighboring gaps.
 2. Some gap absences are stable under later copy/merge transitions; absence
@@ -515,11 +531,55 @@ verified Sieve Sequence article supplies the stage language and the
 current-to-next construction; this article explores mathematical consequences
 that should be considered candidates for future formalization.
 
+## 12. Current Successor Boundary
+
+The newer signed analysis preserves the central global-versus-local lesson but
+replaces this article's raw strike counts with a sharper accounting. This
+section is a qualitative summary only; every formula below is defined and
+proved in the successor article, [Structural Properties and Signed Boundaries
+of 2-Gaps in Sieve Sequences](../chapter6/gap-dynamics-v2.md).
+
+Where this article compares the local 2-gap count with an unsigned strike
+budget, the successor follows a conditioned chain of filters with an exact
+population ledger and a weighted, signed energy. Three changes matter:
+
+1. **Exact accepted strikes replace raw strike counts.** The successor counts
+   only strikes that remove values actually accepted by the earlier filters,
+   and tracks the eligible population layer by layer instead of comparing a
+   window count to a window budget.
+
+2. **A weighted quadratic threshold replaces the counting inequality.** The
+   surviving population is compared against a weighted Cauchy–Schwarz-type
+   energy bound: proving that the realized signed energy stays below a
+   computable threshold implies a positive survivor count. The open candidate
+   is therefore an arithmetic upper bound on that realized energy, not another
+   complete-period population count.
+
+3. **Complete old-period blocks reduce to residue energy.** For a general
+   incoming prime, the harmful excess in complete block runs is controlled by
+   the residue-class histogram of old 2-gap starts, and the sharp interval
+   bound at the first odd composite layer is a small explicit constant. An
+   arbitrary square window still contains at most two partial old-period
+   fragments, and late layers may contain no complete old-period block at all.
+
+The successor's remaining program is, correspondingly: prove a relative
+residue-energy estimate in the actual short window; control the two signed
+partial boundaries; and compose those bounds through the weighted filter
+chain.
+
+The separate candidate #25 relaxes `p+2` to have at most two prime factors.
+Its Type-I remainder is a prime-progression discrepancy and its final
+scalar-centered weight retains nonprincipal character modes, so that program
+requires an averaged prime-progression theorem and a locally adapted bilinear
+estimate; it does not prove a 2-gap. That relaxation is developed in [Relaxed
+Almost-Prime Production in Sieve Sequences](
+draft-relaxed-almost-prime-sieve-sequence.md).
+
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Formal Verification of the Sieve Sequence*. Available
-at: [../chapter6/sieve-sequence-v2.md](../chapter6/sieve-sequence)
+at: [../chapter6/sieve-sequence.md](../chapter6/sieve-sequence.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Gap Dynamics and Twin Prime Candidates in Sieve
@@ -528,5 +588,15 @@ Sequences*. Available at:
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Empirical Analysis of Local 2-Gap Density in Sieve
-Sequences*. Available at:
+Sequences* (superseded draft). Available at:
 [draft-empirical-g-local-analysis.md](draft-empirical-g-local-analysis.md)
+
+<a name="ref4" id="ref4" href="#ref4">[4]</a>
+Mata, T. H. (2026). *Structural Properties and Signed Boundaries of 2-Gaps in
+Sieve Sequences*. Available at:
+[../chapter6/gap-dynamics-v2.md](../chapter6/gap-dynamics-v2.md)
+
+<a name="ref5" id="ref5" href="#ref5">[5]</a>
+Mata, T. H. (2026). *Relaxed Almost-Prime Production in Sieve Sequences*.
+Available at:
+[draft-relaxed-almost-prime-sieve-sequence.md](draft-relaxed-almost-prime-sieve-sequence.md)

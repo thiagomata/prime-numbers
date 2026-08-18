@@ -1,30 +1,32 @@
 # Sieve Sequence Gap Heatmaps
 
-Static figures showing how gaps between sieve-sequence survivors evolve
-across stages, built from real generated data (not illustrative numbers).
-See `../06-article-diagram-ideas.md` for the original figure proposals this
-grew out of, and
+The Python scripts for these visualizations have moved to
+`python/src/sieve_sequence/`. See `python/README.md` for installation
+and usage instructions. Generated chart output goes to `charts/` at the
+repository root.
+
+This README documents the visualizations themselves. The scripts now
+live in the unified Python package:
+- `python/src/sieve_sequence/gap_heatmap.py` -- the full-dataset heatmaps
+- `python/src/sieve_sequence/hit_miss_heatmap.py` -- small-sample hit/miss figures
+- `python/src/sieve_sequence/stage_transition_diagram.py` -- pure-computation diagram
+- `python/src/sieve_sequence/generate_gaps.py` -- gap-cycle CSV generator
+- `python/src/sieve_sequence/verify.py` -- verification checks
+
+Chart output is in `charts/` (root level). Full-detail uncapped versions
+are in `charts/giant/`. See `../06-article-diagram-ideas.md` for the original
+figure proposals, and
 [`properties/sieve-sequence/safe-zone-exhaustion-curve.md`](../../../properties/sieve-sequence/safe-zone-exhaustion-curve.md)
-for the math behind the boundary curves drawn on several of these charts.
-
-Three independent pieces live here, split by how much data they need:
-
-1. **`gap_heatmap.py`** -- the full-dataset heatmaps and line charts, reading
-   the large generated (gitignored) CSV. Everything in "Pipeline" and most of
-   "Output Files" below is this.
-2. **`hit_miss_heatmap.py`** -- a small, committed-data figure (see
-   "Small public-sample figures" below).
-3. **`stage_transition_diagram.py`** -- a pure-computation figure with no data
-   dependency at all (see the same section).
+for the math behind the boundary curves.
 
 ## Pipeline
 
-Three scripts, run in this order:
+Three scripts, run in this order (from `python/` with the venv activated):
 
 ```
-python3 generate_gaps.py   # writes ../../../data/sieve-sequence/first_gaps_per_seq.csv (the only persisted data)
-python3 gap_heatmap.py     # reads data/sieve-sequence/first_gaps_per_seq.csv, writes all out/gap-heatmap*.svg + .png
-python3 verify.py          # re-checks every proven claim against data/sieve-sequence/first_gaps_per_seq.csv
+.venv/bin/python -m sieve_sequence.generate_gaps   # writes data/sieve-sequence/first_gaps_per_seq.csv
+.venv/bin/python -m sieve_sequence.gap_heatmap     # reads data/sieve-sequence/first_gaps_per_seq.csv, writes charts/gap-heatmap*.svg + .png
+.venv/bin/python -m sieve_sequence.verify          # re-checks every proven claim against the CSV
 ```
 
 **`data/sieve-sequence/first_gaps_per_seq.csv` is not committed** (see `.gitignore`) -- at
@@ -72,12 +74,12 @@ never padded with white to fill the gap.
 
 ### `giant/` -- full-detail versions
 
-A parallel, uncapped set of the same charts (rendered by temporarily setting
-`MAX_DISPLAY_WIDTH` far higher, e.g. to `PREFIX_LEN` itself) lives in
-`../giant/`, committed despite its size (~95MB total, no single file over
-100MB) for anyone who wants to see the full depth rather than the
-article-ready crop in `out/`. Regenerate it by bumping `MAX_DISPLAY_WIDTH`,
-rerunning `gap_heatmap.py`, and copying `out/*` into `giant/`.
+Uncapped versions of the same charts (rendered by temporarily setting
+`MAX_DISPLAY_WIDTH` far higher) live in `charts/giant/`, committed despite
+its size (~95MB total, no single file over 100MB) for anyone who wants to see
+the full depth rather than the article-ready crop. Regenerate by bumping
+`MAX_DISPLAY_WIDTH`, rerunning `gap_heatmap.py`, and copying output into
+`charts/giant/`.
 
 ## Output Files
 

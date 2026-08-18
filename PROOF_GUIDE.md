@@ -2,9 +2,36 @@
 
 This document describes how to write mathematical proofs with Stainless verification in this repository.
 
+## Print-Only Self-Containment
+
+Every article must stand on its own as a printed document given to a reader who
+has no access to this repository. The article itself must communicate four
+things:
+
+1. **Context:** define the mathematical objects and notation, and state the
+   indispensable prior facts on which the article relies.
+2. **Challenge:** identify the precise question being addressed and explain why
+   it is not already settled by the context.
+3. **Work:** present the construction or method, its assumptions, the argument,
+   and the status of the mathematical, formal, and empirical evidence.
+4. **Conclusion:** state what was established, what remains conditional or open,
+   and why the result matters.
+
+Repository links and citations may provide provenance, verification sources,
+data, and reproducibility. They must not carry a definition, premise, proof
+step, limitation, or conclusion that the reader needs in order to understand
+the article. When a prior theorem is cited, restate its mathematical statement
+and its role in the present argument; the earlier theorem's full proof may
+remain in the cited source.
+
+A final editorial review should therefore include a print-only test: ignore
+every repository link and ask whether the remaining title, abstract,
+introduction, body, and conclusion still explain the context, challenge, work,
+and result as one coherent document.
+
 ## The Three Representations
 
-Every property should be presented three times:
+Every property must be presented three times:
 
 ### 1. English Description (Above the Math)
 
@@ -60,10 +87,38 @@ This property is verified in the [
 - The math proof stands on its own
 - Stainless verification follows the math
 
-### When to Skip English
+### Keep Simple English Simple
 
-Simpler properties (e.g., `sum(A ⧺ B) = sum(A) + sum(B)`) may skip
-the English layer if the formula is self-explanatory.
+Every property needs the English layer, including a formula that appears
+self-explanatory. For a simple identity such as
+`sum(A ⧺ B) = sum(A) + sum(B)`, one sentence can be enough. State what the
+identity says and why it is useful, then continue to the mathematical proof.
+
+### Anti-Pattern: Labeled Blocks Are Not Prose
+
+Do not replace the English description with a stack of bolded labels. This
+has happened in practice and is exactly what "without explicit labels" (above)
+rules out:
+
+```markdown
+**Population:** Cyclic 2-gap starts in one complete period of a prime stage.
+**Scope and quantifier:** Complete-period; every prime stage after filter 2.
+**Status:** Mathematically proved. Not Stainless-verified.
+```
+
+Write the same content as prose instead:
+
+```markdown
+This property counts every 2-gap in one complete sieve period directly from
+the installed prime filters, for any prime stage once filter 2 is installed.
+It is an exact finite product, not a recurrence or an asymptotic estimate.
+```
+
+The labels are a checklist for the author while drafting (does the prose
+state the population? the scope? the status?), not headings meant to survive
+into the published text. If a note's population or scope genuinely needs to
+be pinned down precisely (see `VOCABULARY.md`), say so in a sentence, not a
+label.
 
 ## Mathematical Proofs
 
@@ -79,8 +134,8 @@ Use LaTeX notation in `\`\`\`math` blocks:
 
 ### Structure
 
-1. **State the theorem/lemma** formally
-2. **Explain the intuition** in natural prose (no label required)
+1. **Explain the property and its intuition** in natural prose
+2. **State the theorem/lemma** formally
 3. **Show the proof** with step-by-step derivations
 4. **Reference the Stainless verification**
 
@@ -199,6 +254,29 @@ Stainless annotations. Prefer wording like "This property is verified in
 above." Avoid phrases that make `.holds`, assertions, or solver caching the
 topic of the article.
 
+**State verification status as a fact, not an apology.** A note whose scope
+never claims full Stainless verification does not owe the reader a "pending"
+disclaimer after every property. Use the `VOCABULARY.md` statuses precisely:
+say **Stainless verified** when a theorem passed, **Not Stainless-verified**
+as the plain, neutral default when it hasn't (and nothing says it's about
+to), and reserve **Stainless verification pending** for a result with an
+actual tracked next step. Do not write "No `.holds` theorem currently
+encodes this... Stainless verification is pending" as a stock closer on
+dozens of unrelated properties — that repetition reads as an apology for
+something the note never promised. State it once, plainly, and move on.
+
+#### Mathematical Drafts Without Stainless Verification
+
+A draft may contain a complete mathematical proof before its Scala
+verification exists. State once that the mathematical results are not
+Stainless-verified, and do not present the draft as publication-ready under the
+three-representation standard. The mathematical proof must appear in the
+article body, an appendix, or another published article. Mark any included
+Scala block as `DRAFT — not yet verified through Stainless`. Use “verification
+pending” only when there is an actual tracked verification step. The final
+article still needs English, mathematics, and maintained verification evidence
+for every property.
+
 ```scala
 def myLemma(x: BigInt): Boolean = {
   require(x >= 0)
@@ -210,6 +288,29 @@ Use code blocks only when the snippet helps the reader see the proof shape.
 Otherwise, link to the source. Internal proof-engine observations belong in
 `LEARNINGS.md`, where they can guide future verification work without pulling
 the article away from the mathematics.
+
+### Mathematical Authority and Article Boundaries
+
+An official article may cite only the following locations as the authority for
+a mathematical definition, lemma, proof, or derivation:
+
+1. an earlier section of the same article;
+2. an appendix in the same article; or
+3. another published article under `articles/chapter*/`.
+
+Do not send the reader to `properties/`, `companions/`, `candidates/`,
+`articles/learnings/`, tickets, or other internal working notes for the
+mathematics. If a required proof exists only in one of those locations, either
+include the proof in an appendix or promote it into an article before citing
+it. An article's reference list should likewise omit internal working notes as
+mathematical authorities.
+
+Repository-file links remain appropriate when they point to the artifact that
+implements, verifies, calculates, generates, or reproduces a result. Examples
+include a Scala verification function, a calculation script, a verification
+log, a data file, or a figure generator. Introduce such a link by stating its
+evidentiary role; do not present it as a substitute for the mathematical proof
+in the article or appendix.
 
 ### Helper Lemmas
 
@@ -240,14 +341,25 @@ def mainLemma(...): Boolean = {
 
 ### Verification Workflow
 
-1. Write the mathematical proof first
-2. Implement in Stainless with `require()` for preconditions
-3. Add `decreases()` for recursive functions
-4. Add `assert()` to invoke cached lemmas
-5. Run `just verify`
-6. If it fails, read the error and fix (don't retry blindly)
-7. If stuck after 3 attempts, stop and ask for help
-8. Update README with new properties
+1. Write the mathematical proof first.
+2. Search the full source tree and `LEARNINGS.md` for an existing lemma before
+   writing a new one; read the lemma body, not only its name.
+3. Establish a green baseline with the Scala tests and applicable
+   `just verify-ch N` checks. Inspect the existing logs before rerunning a
+   completed check, and do not begin the proof change from a failed or timed-out
+   gate.
+4. Implement in Stainless with `require()` for preconditions and `decreases()`
+   for recursive functions.
+5. Add one assertion or lemma invocation per change.
+6. Use `just verify functionName` for focused proof iteration when useful.
+7. Repeat the Scala tests and applicable `just verify-ch N` commands for
+   regression; the combined `just verify` timeout is not the canonical project
+   result.
+8. If a check fails, read the error and correct or revert that one change. Do
+   not add unrelated changes while the selected gate is red.
+9. If the same micro-goal fails three times, stop and ask for help.
+10. Update `OBJECTS.md`, relevant articles, and durable `LEARNINGS.md` entries
+   after verification succeeds.
 
 ### Common Patterns
 
@@ -278,14 +390,91 @@ if (condition1) {
 }
 ```
 
+## Voice and Style
+
+These conventions were implicit in the earliest articles (`integral.md`,
+`modulo.md`, `list.md`, `cycle.md`, `integral-cycle.md`) but were never
+written down, and later articles drifted from them. They are now explicit.
+
+### Match the Publication Series, Not Only Its Outline
+
+An article can have the expected title, abstract, numbered sections, equations,
+and references and still sound unrelated to the rest of the series. Structural
+compliance is necessary, but the prose must also follow the same teaching
+rhythm: introduce the construction, make it concrete, explain the property,
+derive it, and then point to its verification evidence.
+
+- **Lead with the contribution.** Use a direct, accurate title. Keep the
+  abstract compact and centered on the construction, main result, and
+  significance. Include assumptions needed for accuracy, but do not turn the
+  abstract into a catalog of caveats, secondary models, or future work.
+- **Build from a concrete case.** When a construction is unfamiliar, give one
+  small example before introducing the general notation or asymptotic law. The
+  example should reveal the invariant or distinction used by the proof, not
+  merely decorate the section.
+- **Teach one mathematical idea at a time.** A subsection should normally
+  introduce one definition, property, or comparison. Explain why it matters
+  before presenting its symbols. Use a summary table when several regimes must
+  be compared, but do not repeat the same conclusion in multiple inventories.
+- **Keep research protocols outside the proof narrative.** Seed grids,
+  per-transition logging checklists, solver tactics, and execution plans belong
+  in companion model documents, `LEARNINGS.md`, or tickets. If an empirical
+  comparison matters to the article, state the mechanisms, essential
+  observables, and mathematical purpose in concise prose or a small table.
+- **Prefer direct language.** Say “the companion model defined above,” “the
+  cumulative criterion,” or “the mixed process” instead of research-ledger
+  phrases such as “the stipulated model,” “the authoritative quantity,” or
+  “the projection,” unless the technical distinction genuinely requires that
+  term.
+- **Preserve depth without preserving drafting history.** A detailed article
+  may be long. Remove duplicated status notes, abandoned alternatives,
+  protocol inventories, and repeated summaries rather than removing premises,
+  derivations, boundary cases, or evidence.
+
+- **Write in first person plural.** "We prove...", "we define...", not "This
+  article proves..." or "The article defines...". The author is present in
+  the prose, doing the work, not narrating a document that does the work.
+- **Close a derivation with `\blacksquare` and/or `[Q.E.D.]`**, matching every
+  existing article. Do not introduce `\boxed{...}` around conclusions; it is
+  not the established convention and mixing the two within one project reads
+  as two different authors.
+- **Bold is for defining a term once**, not for labeling every claim. Do not
+  bold entire status or label phrases ("**Mathematically proved, Stainless
+  verification pending.**") as a matter of routine — see the labeled-block
+  anti-pattern above. If most sentences in a section start with a bolded
+  phrase, that is a sign the prose has collapsed into a checklist.
+- **Use sentence case for inline concept names in flowing prose.** Write "the
+  divisor local factor property," not "the Divisor Local Factor property."
+  Capitalize only genuine proper nouns (a person's name, a named theorem from
+  the literature). This does not apply to section/subsection headers, which
+  keep Title Case per existing convention (e.g. "Core Integral Properties"),
+  nor to a property's short name used as a citation label — link text, table
+  cells, and "properties from X through Y" range references keep the
+  registry's Title Case, matching how the short-name registry itself presents
+  them.
+- **Vary contrastive phrasing.** "This does not X; it does Y" is a useful
+  sentence once. Repeated as the default way to state every scope boundary,
+  it becomes a tic. Prefer stating what something establishes first, and
+  reach for a contrastive construction only when the reader would otherwise
+  guess wrong.
+- **One explanatory sentence before the first display equation.** Do not
+  jump from a header straight into `math` blocks; give the reader the idea in
+  words first, the way `integral.md` and `cycle.md` do.
+
 ## Getting Started
 
 When writing a new article or adding new proofs:
 
-1. **Always look to existing finished articles** (not drafts) to copy the similar structure and style
-2. Reference articles: `integral.md`, `cycle.md`, `list.md`, `modulo.md`, `integral-cycle.md`
-3. Match the formatting patterns you see in those articles
-4. Avoid referencing draft articles (`draft-*.md`) as they may not follow final conventions
+1. **Read the finished articles**, not drafts, before choosing the structure and
+   voice.
+2. Use `articles/chapter2/modulo.md`, `articles/chapter3/list.md`,
+   `articles/chapter4/integral.md`, `articles/chapter4/cycle.md`, and
+   `articles/chapter4/integral-cycle.md` as the principal references.
+3. Follow this guide when an older article contains a legacy inconsistency; use
+   the finished articles for their teaching rhythm, not as permission to copy
+   every historical formatting choice.
+4. Do not use `draft-*.md` articles as style authorities because they may not
+   follow the final conventions.
 
 ## Stainless Rules
 
@@ -311,7 +500,8 @@ When writing a new article or adding new proofs:
 - Check which verification condition failed
 - Add `assert()` to help the solver
 - Use `stainless.lang BooleanDecorations` for `.holds`
-- Run `just verify` after each change
+- Use focused verification while iterating, then run the applicable
+  chapter-by-chapter regression before treating the change as complete
 
 ## Formatting Conventions
 

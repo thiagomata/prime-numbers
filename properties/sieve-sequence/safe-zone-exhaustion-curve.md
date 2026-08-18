@@ -15,7 +15,7 @@ that window before it runs out? That count determines how far a finite-length
 sample of a sieve-sequence stage can go before it is even possible to see a
 value where acceptance and certified primality diverge -- directly relevant
 wherever such a sample is drawn, e.g. the gap-cycle heatmaps in
-`presentations/sieve-sequence-visualization/figures/gap_heatmap.py`
+`python/src/sieve_sequence/gap_heatmap.py`
 (`estimated_boundary_indices`, `proven_safe_boundary_indices`,
 `draw_boundary_curves`), which plot both curves from this note directly on
 the diagrams.
@@ -149,6 +149,18 @@ left of `A(p)`. Property 2 gives a certificate for this holding for literally
 any prime, at the cost of being far more conservative than necessary.
 Property 3 predicts where the transition actually happens, but remains a
 conjecture.
+
+The figure below is exactly this dataset (200 stages, the first 100,000 gaps
+of each): one row per stage, one pixel per gap, colored by gap magnitude. The
+dashed curve is Property 3's estimate `\hat A(p)`; the solid curve is Property
+2's proven (looser) lower bound, drawn only where `p >= 11`. The red pixel in
+each row is that stage's first non-prime survivor -- exactly `head^2`, per
+Property 1. Both curves are truncated, not padded or clamped, wherever a
+stage's boundary falls past this chart's displayed width, so a curve simply
+stops where the data backing it runs out of room rather than pinning to the
+edge.
+
+![Gap-cycle heatmap with both chaos-to-order boundary curves overlaid](../../presentations/sieve-sequence-visualization/figures/out/gap-heatmap.svg)
 
 ## References
 
