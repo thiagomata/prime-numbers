@@ -22,7 +22,7 @@ This rewriting process is still ongoing.
 
 ### Division and Modulo Properties
 
-The article [Proving Properties of Division and Modulo using Formal Verification](./articles/chapter2/modulo.md) describes how the current code verifies the following theorems:
+The article [Division and Modulo from Recursive Normalization](./articles/chapter2/modulo.md) describes how the current code verifies the following theorems:
 
 ```math
 \begin{aligned}
