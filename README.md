@@ -11,6 +11,15 @@ Use the [Research Vocabulary](VOCABULARY.md) for the canonical meanings of
 sieve objects, proof scope, quantifiers, empirical status, and mathematical
 proof status across candidates, properties, articles, and research notes.
 
+## Licensing
+
+The source code — `src/`, `python/`, `spark/` — is licensed under
+[MIT](./LICENSE). The written articles under [`articles/`](./articles/) are
+licensed separately under [CC BY 4.0](./articles/LICENSE). The research notes
+under `companions/`, `candidates/`, `properties/`, and `empirical/` are
+prose, not source code; their licensing has not yet been decided and is not
+covered by either LICENSE file.
+
 ## Note
 
 This project was initially created using Dafny,
