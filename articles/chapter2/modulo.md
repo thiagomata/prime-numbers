@@ -517,6 +517,10 @@ The compact source shape is included in [Appendix A.3](#a3-consecutive-zero-dens
 The maintained source is [
   ConsecutiveIntegers.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
+The file also contains multi-factor density helpers, such as
+`twoFactorsDensity` and `densityForFactorList`; their statements are not
+established in this article, and the multiplicative density extension they
+aim at is discussed as an open direction in [Future Work](#8-future-work).
 
 ## 7. Conclusion
 
