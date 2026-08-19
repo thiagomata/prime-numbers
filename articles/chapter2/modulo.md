@@ -186,17 +186,17 @@ definitions and the linear-shift invariant of
 
 - The base cases where normalization is immediate: a small dividend,
   self-division, division by one, and agreement with the native modulo
-  operator (§6.1–§6.4)
+  operator ([§6.1](#61-trivial-case)–[§6.4](#64-compatibility-with-native-modulo))
 - How a single or repeated shift of the dividend by the divisor moves the
-  quotient without disturbing the remainder (§6.5–§6.6)
+  quotient without disturbing the remainder ([§6.5](#65-quotient-invariance-under-linear-shift)–[§6.6](#66-quotient-invariance-under-linear-shift-by-multiplier))
 - The uniqueness of the normalized remainder and its idempotence under
-  repeated reduction (§6.7–§6.8)
+  repeated reduction ([§6.7](#67-unique-remainder)–[§6.8](#68-modulo-idempotence))
 - Distributivity of modulo and division over addition and subtraction
-  (§6.9–§6.10)
+  ([§6.9](#69-distributivity-over-addition)–[§6.10](#610-distribution-over-subtraction))
 - Shift invariance when the dividend is already divisible by the base, and
-  the symmetry of remainder pairs around that base (§6.11–§6.12)
+  the symmetry of remainder pairs around that base ([§6.11](#611-modular-shift-invariance-under-divisible-base)–[§6.12](#612-symmetrical-modulo-pairs))
 - The unit-step increment law and the density of zero remainders across
-  consecutive integers (§6.13–§6.14)
+  consecutive integers ([§6.13](#613-unit-step-modulo-division-increment-law)–[§6.14](#614-consecutive-integers-zero-density))
 
 ### 6.1 Trivial Case
 

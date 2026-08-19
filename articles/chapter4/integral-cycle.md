@@ -58,9 +58,9 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 
 This article verifies:
 
-- Two equivalent definitions: recursive and modulo-based — §3
-- Core properties: next position, same difference after cycle, sum of mod values — §4
-- Extended properties: modulo periodicity, cycle-period shifts, gap telescoping, rotation, survivor filtering, residue classification — §5
+- Two equivalent definitions: recursive and modulo-based — [§3.1](#31-recursive-cycle-integral)–[3.3](#33-equivalence-of-definitions)
+- Core properties: next position, same difference after cycle, sum of mod values — [§4.1](#41-next-position)–[4.3](#43-sum-of-mod-values-as-list)
+- Extended properties: modulo periodicity, cycle-period shifts, gap telescoping, rotation, survivor filtering, residue classification — [§5.1](#51-modulo-invariance-property)–[5.10](#510-cycle-residue-classification)
 
 ## 2. Preliminaries
 
@@ -78,9 +78,9 @@ and are treated here as foundational primitives.
 
 The cycle integral extends the finite integral to unbounded repeating sequences. Two equivalent definitions are proven.
 
-- Recursive: recurrence on the cycle position — §3.1
-- Modulo: closed-form using `div` and `mod` — §3.2
-- The two definitions are extensionally equivalent — §3.3
+- Recursive: recurrence on the cycle position — [§3.1](#31-recursive-cycle-integral)
+- Modulo: closed-form using `div` and `mod` — [§3.2](#32-modulo-cycle-integral)
+- The two definitions are extensionally equivalent — [§3.3](#33-equivalence-of-definitions)
 
 ```math
 \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃, n = |L| \\
@@ -276,9 +276,9 @@ ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
 
 The fundamental properties of the cycle integral that hold for every position.
 
-- Next position: $CI_{i+1} = CI_i + Cycle(L)_{i+1}$ — §4.1
-- Full cycle shift: adding one cycle period advances by the total sum — §4.2
-- Sum of mod values: the modulo definition matches the list sum — §4.3
+- Next position: $CI_{i+1} = CI_i + Cycle(L)_{i+1}$ — [§4.1](#41-next-position)
+- Full cycle shift: adding one cycle period advances by the total sum — [§4.2](#42-same-difference-after-full-cycle)
+- Sum of mod values: the modulo definition matches the list sum — [§4.3](#43-sum-of-mod-values-as-list)
 
 ### 4.1 Next Position
 
@@ -322,12 +322,12 @@ CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
 
 Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.1, property 5.2, and properties 5.5-5.10 are fully verified.
 
-- Modulo invariance: finite-period classification lifts to all positions — §5.1 [Verified]
-- x-fold cycle expansion: physical period changes while the represented stream is preserved — §5.2 [Verified]
-- Index shifts: right and left — §5.3-5.4
-- Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — §5.5-5.8
-- Survivor filtering: exactness and structure — §5.9
-- Residue classification: all-zero, some-zero, none-zero — §5.10
+- Modulo invariance: finite-period classification lifts to all positions — [§5.1](#51-modulo-invariance-property) [Verified]
+- x-fold cycle expansion: physical period changes while the represented stream is preserved — [§5.2](#52-x-fold-cycle-expansion) [Verified]
+- Index shifts: right and left — [§5.3](#53-right-index-shift-finite-period-verified)-[§5.4](#54-left-index-shift)
+- Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — [§5.5](#55-gap-telescoping)-[§5.8](#58-gap-rotation-with-head-adjustment)
+- Survivor filtering: exactness and structure — [§5.9](#59-modularity-and-survivor-filtering)
+- Residue classification: all-zero, some-zero, none-zero — [§5.10](#510-cycle-residue-classification)
 
 ### 5.1 Modulo Invariance Property
 

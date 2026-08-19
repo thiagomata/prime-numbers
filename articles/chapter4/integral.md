@@ -30,8 +30,8 @@ implementation of discrete integration, suitable as a foundation for higher-leve
 
 This article verifies:
 
-- Core integral properties: head value, cumulative sum, incremental change, final sum, strictly increasing, gaps positivity — §4
-- Implementation consistency: element/acc/delta/last/size agreement between the recursive and accumulated representations — §5
+- Core integral properties: head value, cumulative sum, incremental change, final sum, strictly increasing, gaps positivity — [§4.1](#41-head-value-matches-definition)–[4.6](#46-gaps-positivity)
+- Implementation consistency: element/acc/delta/last/size agreement between the recursive and accumulated representations — [§5.2](#52-element-consistency)–[5.5](#55-size-agreement)
 
 ## 2. Preliminaries and Notation
 
@@ -112,10 +112,10 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
 ## 4. Core Integral Properties
 
-- Head value: $I_0 = L_0 + init$ — §4.1
-- Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ — §4.2
-- Incremental change: $I_{p+1} - I_p = L_{p+1}$ — §4.3
-- Final sum: $I_{n-1} = init + \text{sum}(L)$ — §4.4
+- Head value: $I_0 = L_0 + init$ — [§4.1](#41-head-value-matches-definition)
+- Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ — [§4.2](#42-integral-equals-sum-until-position)
+- Incremental change: $I_{p+1} - I_p = L_{p+1}$ — [§4.3](#43-incremental-change-matches-list-value)
+- Final sum: $I_{n-1} = init + \text{sum}(L)$ — [§4.4](#44-final-element-equals-full-sum)
 
 ### 4.1 Head Value Matches Definition
 
@@ -276,7 +276,7 @@ theorem — the integral grows with every step.
 \end{aligned}
 ```
 
-**Proof.** By induction on $b - a$. Base case $b = a + 1$: §4.3 gives
+**Proof.** By induction on $b - a$. Base case $b = a + 1$: [§4.3](#43-incremental-change-matches-list-value) gives
 $I_{a+1} - I_a = L_{a+1} > 0$. Inductive step: $I_b > I_{b-1} > I_a$ by
 transitivity.
 
@@ -309,7 +309,7 @@ I_{p+1} > I_p \;\implies\; L_{p+1} > 0
 \end{aligned}
 ```
 
-**Proof.** By §4.3, $I_{p+1} - I_p = L_{p+1}$. If $I_{p+1} > I_p$, the
+**Proof.** By [§4.3](#43-incremental-change-matches-list-value), $I_{p+1} - I_p = L_{p+1}$. If $I_{p+1} > I_p$, the
 difference is strictly positive, so $L_{p+1} > 0$.
 
 ### Stainless Verification
@@ -330,10 +330,10 @@ This property is verified in the [
 
 These lemmas verify that the recursive implementation and its accumulated representation agree internally. They do not introduce new mathematical properties but are essential for formal software consistency.
 
-- Element consistency: $I_k = acc_k$ — §5.2
-- Accumulated delta consistency: $acc_{p+1} - acc_p = L_{p+1}$ — §5.3
-- Last element agreement: $\text{last}(I) = acc_{n-1} = I_{n-1}$ — §5.4
-- Size agreement: $|acc| = |L|$ — §5.5
+- Element consistency: $I_k = acc_k$ — [§5.2](#52-element-consistency)
+- Accumulated delta consistency: $acc_{p+1} - acc_p = L_{p+1}$ — [§5.3](#53-accumulated-delta-consistency)
+- Last element agreement: $\text{last}(I) = acc_{n-1} = I_{n-1}$ — [§5.4](#54-last-element-agreement)
+- Size agreement: $|acc| = |L|$ — [§5.5](#55-size-agreement)
 
 ### 5.1 Accumulated List Definition
 

@@ -26,11 +26,11 @@ In this article, we formalize and verify this proof using [Scala Stainless](http
 
 This article verifies:
 
-- Primorial-plus-one coprime to all list primes — §3.1
-- New prime found via the Euclid construction — §3.2
-- The new prime is not in the original list — §3.3
-- Euclid's theorem: primes are infinite — §3.4
-- Supporting verified prime lemmas — §4
+- Primorial-plus-one coprime to all list primes — [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes)
+- New prime found via the Euclid construction — [§3.2](#32-stage-2-finding-a-new-prime)
+- The new prime is not in the original list — [§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list)
+- Euclid's theorem: primes are infinite — [§3.4](#34-the-main-theorem)
+- Supporting verified prime lemmas — [§4](#4-supporting-verified-lemmas)
 
 ## 2. Preliminaries
 
@@ -66,12 +66,12 @@ Euclid's theorem is formalized as the following lemma:
 ```
 
 In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
-verification reference is given in §3.4 and Appendix A.3.
+verification reference is given in [§3.4](#34-the-main-theorem) and Appendix A.3.
 
-- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list (§3.1)
-- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` (§3.2)
-- Stage 3: the new prime is not in the original list (§3.3)
-- Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
+- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list ([§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes))
+- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` ([§3.2](#32-stage-2-finding-a-new-prime))
+- Stage 3: the new prime is not in the original list ([§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list))
+- Main theorem: combine stages 1-3 into Euclid's theorem ([§3.4](#34-the-main-theorem))
 
 The proof proceeds in three stages:
 
@@ -290,7 +290,7 @@ claims.
 A direct corollary of Euclid's construction is that a complete finite prefix
 of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted finite list
 that contains every prime up to its largest element $h=p_k$. Let $q$ be the
-prime produced by the Euclid construction from $P$. Since §3 proves
+prime produced by the Euclid construction from $P$. Since [§3](#3-the-proof-strategy) proves
 $q\notin P$, $q$ cannot be at or below $h$: every prime at or below $h$ is
 already contained in the complete prefix. Therefore $q > h$.
 
@@ -575,7 +575,7 @@ def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in §3.1.
+This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes).
 
 ### A.2 `newPrimeFromEuclid`
 

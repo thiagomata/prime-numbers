@@ -48,14 +48,14 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 
 This article verifies:
 
-- Cycle definitions: recursive, modulo, and memory — §3
-- Equivalence: recursive and modulo produce identical values at every position — §4
-- Element access: modular indexing, small-position direct lookup — §5
-- Periodic invariance: value unchanged by adding cycle-period multiples — §5
-- Mod propagation: remainder computed from base-cycle values — §5
-- Repeated-cycle invariance: repeating the base list preserves all lookups — §5
-- Cycle value positivity: all values ≥ 0 at every position — §5
-- Cycle rotation: rotates base list, shifts index — §5
+- Cycle definitions: recursive, modulo, and memory — [§3](#3-cycle-definitions)
+- Equivalence: recursive and modulo produce identical values at every position — [§4](#4-cycle-equivalence)
+- Element access: modular indexing, small-position direct lookup — [§5.1](#51-cycle-element-access)–[5.2](#52-small-value-in-cycle)
+- Periodic invariance: value unchanged by adding cycle-period multiples — [§5.3](#53-value-match-after-many-loops)–[5.4](#54-two-multiples-of-cycle-size)
+- Mod propagation: remainder computed from base-cycle values — [§5.5](#55-propagate-modulo-from-value-to-cycle)
+- Repeated-cycle invariance: repeating the base list preserves all lookups — [§5.6](#56-repeated-cycle-invariance)
+- Cycle value positivity: all values ≥ 0 at every position — [§5.7](#57-cycle-value-positivity)
+- Cycle rotation: rotates base list, shifts index — [§5.8](#58-cycle-rotation)
 
 ## 2. Preliminaries
 
@@ -423,15 +423,15 @@ In this section, we prove and verify the main properties of Cycles. Each
 property is stated mathematically, then shown to hold via a corresponding
 verified lemma in Scala using the Stainless system.
 
-- Element access: `cycle(key) == cycle.values(mod(key, period))` — §5.1
-- Small-value direct lookup: `key < period ⇒ cycle(key) == cycle.values(key)` — §5.2
-- Periodicity: `cycle(key) == cycle(key + period·m)` for any number of loops — §5.3
-- Multi-loop consistency: value at `key` is independent of which multiple of the period is added — §5.4
-- Mod propagation: remainder modulo `d` at any position equals remainder at the base position — §5.5
-- Repeated-cycle invariance: repeating the base list preserves all lookups — §5.6
-- Value positivity: non-negative base values guarantee non-negative cycle values — §5.7
-- Rotation: rotating the base list shifts the cycle index by the same amount — §5.8
-- MemCycle-level restatements: the key access and modulo properties are also verified directly for the memory-backed representation — §5.9
+- Element access: `cycle(key) == cycle.values(mod(key, period))` — [§5.1](#51-cycle-element-access)
+- Small-value direct lookup: `key < period ⇒ cycle(key) == cycle.values(key)` — [§5.2](#52-small-value-in-cycle)
+- Periodicity: `cycle(key) == cycle(key + period·m)` for any number of loops — [§5.3](#53-value-match-after-many-loops)
+- Multi-loop consistency: value at `key` is independent of which multiple of the period is added — [§5.4](#54-two-multiples-of-cycle-size)
+- Mod propagation: remainder modulo `d` at any position equals remainder at the base position — [§5.5](#55-propagate-modulo-from-value-to-cycle)
+- Repeated-cycle invariance: repeating the base list preserves all lookups — [§5.6](#56-repeated-cycle-invariance)
+- Value positivity: non-negative base values guarantee non-negative cycle values — [§5.7](#57-cycle-value-positivity)
+- Rotation: rotating the base list shifts the cycle index by the same amount — [§5.8](#58-cycle-rotation)
+- MemCycle-level restatements: the key access and modulo properties are also verified directly for the memory-backed representation — [§5.9](#59-memcycle-level-restatement)
 
 ### 5.1 Cycle Element Access
 
@@ -691,7 +691,7 @@ These are verified in the [
   MemCycleProperties::propagateModFromValueToCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-The mod-idempotence identity from §5.5's proof (that `Cycle_i` equals
+The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that `Cycle_i` equals
 `Cycle_{(i mod n) mod n}`) has its own `MemCycle` restatement in [
   MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
