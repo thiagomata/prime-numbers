@@ -309,6 +309,17 @@ Every article must pass these checks before publication:
     "Draft Articles" section above already requires the same structure as
     finished articles; that includes voice.
 
+26. **In-document section references are links** — Every `§N` or `§N.M`
+    reference to a section within the same article (intro group lists,
+    Future Work scope notes, cross-references between properties) must be a
+    Markdown link to that section's own heading anchor, not bare text:
+    `[§3](#3-index-and-access-properties)`, not `§3`. Anchors follow GitHub's
+    heading-slug rule: lowercase the heading text, drop the trailing period
+    after the number and any other punctuation, replace spaces with hyphens
+    (`## 3. Index and Access Properties` → `#3-index-and-access-properties`).
+    This does not apply to references naming a section in a *different*
+    article — those already use rule 21's cross-article link form.
+
 ## README Updates
 
 ### When to Add
