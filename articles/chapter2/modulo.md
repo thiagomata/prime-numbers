@@ -43,14 +43,18 @@ maintained verification code.
 This article establishes:
 
 - Foundational identities: trivial case, self-identity, division by one, and
-  agreement with the native modulo operator — §6
+  agreement with the native modulo operator —
+  [§6.1–6.4](#61-trivial-case)
 - Linear shift laws under single-step and multiple-step divisor addition —
-  §6
-- Uniqueness and idempotence of the normalized remainder — §6
-- Distributivity of modulo and division over addition and subtraction — §6
-- Divisible-base shift invariance and symmetric remainder pairs — §6
+  [§6.5–6.6](#65-quotient-invariance-under-linear-shift)
+- Uniqueness and idempotence of the normalized remainder —
+  [§6.7–6.8](#67-unique-remainder)
+- Distributivity of modulo and division over addition and subtraction —
+  [§6.9–6.10](#69-distributivity-over-addition)
+- Divisible-base shift invariance and symmetric remainder pairs —
+  [§6.11–6.12](#611-modular-shift-invariance-under-divisible-base)
 - The unit-step increment law and zero-density over consecutive integers —
-  §6
+  [§6.13–6.14](#613-unit-step-modulo-division-increment-law)
 
 ## 2. Limitations
 
