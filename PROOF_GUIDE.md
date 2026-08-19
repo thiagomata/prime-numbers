@@ -147,6 +147,14 @@ Label key steps with:
 - `[By Definition]` for definitional expansions
 - `[By Induction Hypothesis]` for induction steps
 
+The same `\quad \text{[Label]}` syntax has a second, distinct use: naming a
+property in a conclusion's math recap rather than justifying a derivation
+step. There the label is the property's short name (e.g.
+`&&\text{[Modulo Idempotence]}`, using a double ampersand since the recap
+row already has its own `&` before the `=`), one per row, not a proof-step
+justification — see CONTRIBUTING.md rule 19 for the conclusion-recap
+convention and formatting/width guidance.
+
 ### Example
 
 ```math

@@ -239,8 +239,21 @@ Every article must pass these checks before publication:
     must synthesize what was proven and why it matters, then bring back the
     core proved properties and proof structure in mathematical form. Include a
     compact math recap of the main theorem, definitions, and supporting
-    properties that the article established, following the `integral.md` and
-    `cycle.md` pattern.
+    properties that the article established, following the `list.md`,
+    `integral-cycle.md`, and `euclid-theorem.md` pattern: one property (or a
+    small group of directly related rows, such as a shift law's `mod` and
+    `div` forms) per `` ```math `` block, each row ending in a trailing
+    `&&\text{[Property Name]}` label naming that row's property — the same
+    double-ampersand label syntax as PROOF_GUIDE.md's proof-step labels, but
+    naming the property itself rather than justifying a derivation step (see
+    PROOF_GUIDE.md's "Labels" section). Keep each block scoped to one property
+    group rather than merging unrelated properties into a single shared
+    `\begin{aligned}` environment: KaTeX/MathJax size every row's `&` column
+    to the widest row sharing that environment, so packing a short one-line
+    identity next to a long nested-parentheses identity stretches the short
+    row to the long row's width — fine on screen (which can scroll
+    horizontally) but liable to overflow a printed or exported page (which
+    cannot).
     Future work should explain the next mathematical directions and their
     relationship to the article's scope.
 
