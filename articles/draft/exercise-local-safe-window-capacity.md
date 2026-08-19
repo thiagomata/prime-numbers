@@ -3,6 +3,7 @@
 **Status:** Draft exercise for mathematical verification.
 **Author:** Mata, T. H., Independent Researcher
 **Date:** 2026-08-15
+**License:** [CC BY 4.0](../LICENSE)
 
 This exercise is meant to be read after:
 
