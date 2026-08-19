@@ -7,7 +7,7 @@ message: >-
 title: "prime-numbers: Formal Verification of Integer, Division, Modulo, List, Cycle, and Integral Properties"
 type: software
 authors:
-  - family-names: Mata
+  - family-names: Ramos da Mata
     given-names: Thiago Henrique
     alias: thiagomata
 repository-code: "https://github.com/thiagomata/prime-numbers"
@@ -22,6 +22,8 @@ keywords:
   - modular arithmetic
   - primality
   - sieve of Eratosthenes
+  - sieve sequence
+  - prime gaps
 abstract: >-
   A repository of Scala/Stainless-verified proofs, from-scratch recursive
   constructions, and accompanying written articles covering integer
