@@ -316,12 +316,12 @@ This property is verified for the [positive case](https://github.com/thiagomata/
 
 ### 6.7 Unique Remainder
 
-There is only one single remainder value for every $a, b$ pair.
+There is only one single remainder value for every $a, b$ pair with $b > 0$.
 
 ```math
 \begin{aligned}
-  \forall \text{ } a, b, r & \in \mathbb{Z} \\
-  \quad \exists ! \, r \mid 0 \leq r < |b| & \implies \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+  \forall \text{ } a, b & \in \mathbb{N} : b > 0 \\
+  \quad \exists ! \, r \in \mathbb{N} &: 0 \leq r < b \;\land\; a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
 \end{aligned}
 ```
 

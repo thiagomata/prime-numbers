@@ -62,8 +62,8 @@ $p$ consecutive integers is divisible by $p$:
 
 ```math
 \begin{aligned}
-  \forall \text{ } a, b, r & \in ℤ \\
-  \quad \exists ! \, r \mid 0 \leq r < |b| & \implies \quad  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+  \forall \text{ } a, b & \in ℕ : b > 0 \\
+  \quad \exists ! \, r \in ℕ &: 0 \leq r < b \;\land\; a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
 \end{aligned}
 ```
 ```math
