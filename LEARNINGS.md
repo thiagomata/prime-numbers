@@ -1099,6 +1099,32 @@ exist" claim must first grep `properties/`, `candidates/`, `companions/`,
 **Source:** `spectral-positional-filter-analysis-2026-08-18.md` (Failed
 Path #3)
 
+### 18.7 Re-verify a consolidated ticket's claims against current files before acting
+
+A ticket that consolidates several older tickets inherits their claims
+verbatim, but the underlying files can have moved on between when each
+source ticket was filed and when they were merged. Filing/consolidation
+date is not evidence the claims still hold.
+
+**Case:** `sieve-sequence-v1-v2-article-consolidation.md` (filed
+2026-08-19, consolidated from three older tickets) asserted specific
+stale phrases in `sieve-sequence-v2.md` (`[h, h * M)`, "every h-th
+value") and placeholder debris (`Hello World`, `$x = 1^2$`) plus an
+overclaiming abstract in `sieve-sequence.md`. None of these were
+reproducible by grep on the actual files — they had already been fixed
+by unrelated work before the ticket was even filed. Two of its four
+"salvage before retirement" items were already present in the newer
+file; the other two had never existed in the older file at all (they
+were proposed new content, not salvage).
+
+**Fix:** Before acting on a ticket's "Current State" section — especially
+a consolidated one — grep the files it describes for the exact phrases
+it flags. Treat mismatches as the ticket being stale, not as the files
+having silently regressed.
+
+**Source:** `sieve-sequence-v1-v2-article-consolidation.md`, closed
+2026-08-19.
+
 ## 19. Cross-instance Lemma Calls [Open]
 
 ### 19.1 Cross-instance calls can time out even for simple lemmas
