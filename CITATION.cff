@@ -13,6 +13,7 @@ authors:
 repository-code: "https://github.com/thiagomata/prime-numbers"
 url: "https://github.com/thiagomata/prime-numbers"
 license: MIT
+version: 1.0.0
 date-released: "2026-08-19"
 keywords:
   - formal verification
