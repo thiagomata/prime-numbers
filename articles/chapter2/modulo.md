@@ -531,45 +531,81 @@ the following set of fundamental properties and identities:
 
 ```math
 \begin{aligned}
-\forall \text{ } n & \in \mathbb{N} \\
+& \forall \text{ } a, b \in \mathbb{N} : b \neq 0 \\
+& a < b \implies a \text{ mod } b & = a \\
+& a < b \implies a \text{ div } b & = 0 \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } n \in \mathbb{N} : n & \neq 0 \\
+n \text{ mod } n & = 0 \\
+n \text{ div } n & = 1 \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } n \in \mathbb{N} & : \\
 n \text{ mod } 1 & = 0 \\
 n \text{ div } 1 & = n \\
 \end{aligned}
+```
+```math
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{Z} : a \geq 0,\; b > 0 \\
 a \text{ mod } b & = a \mathbin{\%} b \\
 \end{aligned}
+```
+```math
 \begin{aligned}
-\forall \text{ } a, b, c, m & \in \mathbb{Z} : b \neq 0 \\
-b > a \geq 0 \implies a \text{ div } b & = 0 \\
-b > a \geq 0 \implies a \text{ mod } b & = a \\
-b \text{ mod } b                   & = 0 \\
-b \text{ div } b                   & = 1 \\
-( a + b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
-( a - b \cdot m ) \text{ mod } b   & = a \text{ mod } b \\
-(a \text{ mod } b) \text{ mod } b  & = a \text{ mod } b \\
-(a + b) \text{ div } b             & = (a \text{ div } b) + 1 \\
-(a - b) \text{ div } b             & = (a \text{ div } b) - 1 \\
-(a + b \cdot m ) \text{ div } b    & = (a \text{ div } b) + m \\
-(a - b \cdot m ) \text{ div } b    & = (a \text{ div } b) - m \\
-(a + c) \text{ div } b             & = (a \text{ div } b) + (c \text{ div } b) + (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
-(a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
-(a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
-(a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
-(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
-a \text{ mod } b = 0                & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
+\forall a,b,q,r \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\text{mod}(a + b, b) & = \text{mod}(a, b) \\
+\text{div}(a + b, b) & = \text{div}(a, b) + 1 \\
+\text{mod}(a - b, b) & = \text{mod}(a, b) \\
+\text{div}(a - b, b) & = \text{div}(a, b) - 1 \\
 \end{aligned}
+```
+```math
+\begin{aligned}
+\forall a,b,q,r,m \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\text{mod}(a + m \cdot b, b) & = \text{mod}(a, b) \\
+\text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m \\
+\text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) \\
+\text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m \\
+\end{aligned}
+```
+```math
 \begin{aligned}
 \forall \text{ } a,b,q_x,r_x,q_y,r_y & \in \mathbb{N},\; b \neq 0,\; a = bq_x + r_x = bq_y + r_y \\
 DivMod(a,b,q_x,r_x).\text{solve} & = DivMod(a,b,q_y,r_y).\text{solve} \\
 \end{aligned}
+```
+```math
 \begin{aligned}
-\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
-a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
-a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
-a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
-a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\forall \text{ } a, b & \in \mathbb{Z} : b \neq 0 \\
+a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
+( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b \\
+( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b \\
+( a +  c) \text{ mod } b & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
+( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b \\
+( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b \\
+( a - c ) \text{ mod } b & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
+a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
 \end{aligned}
 ```
 ```math
@@ -580,8 +616,17 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 ```
 ```math
 \begin{aligned}
+\forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+```
+```math
+\begin{aligned}
 \forall \text{ } n, p & \in \mathbb{N} : p > 1 \\
-\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 \quad \text{[Exactly one multiple per block of p]}
+\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 \\
 \end{aligned}
 ```
 
