@@ -60,7 +60,7 @@ Euclid's theorem is formalized as the following lemma:
 
 ```math
 \begin{aligned}
-\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies
+\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes} \neq \emptyset \implies
 \exists\ p \notin \text{primes} : \text{isPrime}(p)
 \end{aligned}
 ```

@@ -1110,7 +1110,7 @@ structural property $\text{size} = |\text{gaps}|$ is an invariant of the case cl
 
 ```math
 \begin{aligned}
-\text{shifted.size} = \text{original.size} \quad &\text{[Q.E.D.]}
+|\text{shifted}| = |\text{original}| \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
 

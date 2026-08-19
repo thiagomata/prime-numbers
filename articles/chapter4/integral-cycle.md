@@ -623,7 +623,7 @@ CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff
 ### 5.6 Modulo Periodicity
 
 When the total sum of a cycle's values is a multiple of `m`, the residue
-`mod(ci(pos), m)` depends only on `pos % ci.size` — it repeats every cycle
+`mod(ci(pos), m)` depends only on `pos % ci.period` — it repeats every cycle
 period. When `m` is a product of coprime values, the Chinese Remainder
 Theorem [[5]](#ref5) implies the periodicity holds simultaneously for each factor: the
 cycle period serves as a common period for all residues. This is the
@@ -631,8 +631,8 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 
 ```math
 \begin{aligned}
-\text{mod}(\text{ci.sum},\; m) = 0 \;\implies\;
-\text{mod}(\text{ci}(\text{pos}),\; m) = \text{mod}(\text{ci}(\text{pos} \bmod \text{ci.size}),\; m)
+\text{mod}(\text{sum}(ci),\; m) = 0 \;\implies\;
+\text{mod}(\text{ci}(\text{pos}),\; m) = \text{mod}(\text{ci}(\text{pos} \bmod \text{period}(ci)),\; m)
 \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
@@ -660,11 +660,11 @@ amount.
 
 ```math
 \begin{aligned}
-\text{ci}(k + \text{ci.size}) - \text{ci}(k) &= \text{ci.sum}
+\text{ci}(k + \text{period}(ci)) - \text{ci}(k) &= \text{sum}(ci)
   && \text{[One-period shift]} \\
-\text{ci}(\text{pos} + \text{ci.size}) &= \text{ci}(\text{pos}) + \text{ci.sum}
+\text{ci}(\text{pos} + \text{period}(ci)) &= \text{ci}(\text{pos}) + \text{sum}(ci)
   && \text{[Full-cycle shift]} \\
-\text{ci}(\text{pos} + \text{ci.size} \cdot m) &= \text{ci}(\text{pos}) + m \cdot \text{ci.sum}
+\text{ci}(\text{pos} + \text{period}(ci) \cdot m) &= \text{ci}(\text{pos}) + m \cdot \text{sum}(ci)
   && \text{[Multi-cycle shift, by induction on } m \text{]}
 \end{aligned}
 ```

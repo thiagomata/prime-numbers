@@ -646,7 +646,7 @@ connects cycle structure directly to the list rotation concept from chapter 3.
 
 ```math
 \begin{aligned}
-\text{cycle.rotateAt}(k)(i) = \text{cycle}(i + k) \quad
+\text{rotateAt}(\text{Cycle}, k)_i = \text{Cycle}_{i + k} \quad
 \text{for } k \geq 0,\ i \geq 0 \quad \text{[Q.E.D.]}
 \end{aligned}
 ```
@@ -666,15 +666,15 @@ of those five properties is independently re-proved directly against
 
 ```math
 \begin{aligned}
-\text{cycle}(key) &= \text{cycle.values}(key \bmod \text{cycle.period})
+\text{Cycle}_{key} &= L[key \bmod n]
   &&\text{[Element Access]} \\
-key < \text{cycle.period} &\implies \text{cycle}(key) = \text{cycle.values}(key)
+key < n &\implies \text{Cycle}_{key} = L[key]
   &&\text{[Small Value Lookup]} \\
-\text{cycle}(key) &= \text{cycle}(key + \text{cycle.period} \cdot m)
+\text{Cycle}_{key} &= \text{Cycle}_{key + n \cdot m}
   &&\text{[Periodic Invariance]} \\
-\text{cycle}(key + \text{cycle.period} \cdot m_1) &= \text{cycle}(key + \text{cycle.period} \cdot m_2)
+\text{Cycle}_{key + n \cdot m_1} &= \text{Cycle}_{key + n \cdot m_2}
   &&\text{[Multi-Loop Consistency]} \\
-(\text{cycle}(key) \bmod d) &= (\text{cycle.values}(key \bmod \text{cycle.period}) \bmod d)
+\text{Cycle}_{key} \bmod d &= L[key \bmod n] \bmod d
   &&\text{[Mod Propagation]}
 \end{aligned}
 ```
@@ -721,7 +721,7 @@ n &= |L| \\
 \text{key} < n &\implies \text{Cycle}_\text{key} = L_\text{key} \quad &\text{[Small Value Direct Lookup]} \\
 (\forall x \in L,\ x \geq 0) &\implies \text{Cycle}(\text{pos}) \geq 0 \quad &\text{[Cycle Value Positivity]} \\
 \text{repeat}(V, x)(\text{pos}) &= \text{Cycle}_\text{pos} \quad \forall x > 0 \quad &\text{[Repeated-Cycle Invariance]} \\
-\text{cycle.rotateAt}(k)(i) &= \text{cycle}(i + k) \quad &\text{[Rotation Invariance]} \\
+\text{rotateAt}(\text{Cycle}, k)_i &= \text{Cycle}_{i + k} \quad &\text{[Rotation Invariance]} \\
 \end{aligned}
 ```
 
