@@ -24,6 +24,8 @@ keywords:
   - sieve of Eratosthenes
   - sieve sequence
   - prime gaps
+  - 2-gaps
+  - twin primes
 abstract: >-
   A repository of Scala/Stainless-verified proofs, from-scratch recursive
   constructions, and accompanying written articles covering integer
