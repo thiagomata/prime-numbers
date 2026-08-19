@@ -345,6 +345,11 @@ From these definitions, it mathematically proves and formally verifies the follo
 For detailed guidance on writing mathematical proofs with Stainless verification, 
 see [PROOF_GUIDE.md](./PROOF_GUIDE.md).
 
+## Releasing Articles
+
+For the release strategy (one release per article), versioning scheme, and
+the per-release checklist, see [RELEASING.md](./RELEASING.md).
+
 ## Testing and Verification Policy
 
 Every piece of code in this repository — Scala or otherwise — must be **tested
