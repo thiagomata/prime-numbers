@@ -72,15 +72,15 @@ article develops the following properties in dependency order:
 8. post-filter-3 isolation — [§4.2](#42-isolation-of-2-gaps-after-filter-3);
 9. exact accepted strikes and the sharp one-transition threshold —
    [§§4.3](#43-exact-accepted-local-filter-strikes)--[4.4](#44-sharp-local-2-gap-survival-threshold);
-10. why the capacity envelope is exhausted — [§5.3](#53-why-the-capacity-envelope-is-exhausted);
+10. why the capacity envelope is exhausted — [§6](#6-why-the-capacity-envelope-is-exhausted);
 11. exact weighted deletion conservation and its terminal quadratic corollary
     — [§§5.1](#51-weighted-deletion-conservation)--[5.2](#52-terminal-harmful-excess-energy);
-12. the exact filter-$7$ interval saving — [§6](#6-exact-filter-seven-localization);
+12. the exact filter-$7$ interval saving — [§7](#7-exact-filter-seven-localization);
 13. the live frontier (accepted-boundary discrepancy and residue-collision
-    energy) — [§6.5](#65-the-live-frontier-two-candidates-the-conclusion-names);
-14. the copy-block residue-energy bridge — [§7](#7-copy-block-harmful-excess-and-residue-energy);
-15. the classified routes and the live program — [§8](#8-routes-that-are-now-classified); and
-16. the fixed-seed scale conflict ([§8.5](#85-the-fixed-seed-scale-conflict)) and the Type-II barrier ([§9.5](#95-why-this-is-hard-the-type-ii-barrier)).
+    energy) — [§8](#8-the-live-frontier-two-candidates-the-conclusion-names);
+14. the copy-block residue-energy bridge — [§9](#9-copy-block-harmful-excess-and-residue-energy);
+15. the classified routes and the live program — [§10](#10-routes-that-are-now-classified); and
+16. the fixed-seed scale conflict ([§10.1](#101-the-fixed-seed-scale-conflict)) and the Type-II barrier ([§11.1](#111-why-this-is-hard-the-type-ii-barrier)).
 
 The final sections separate the proved complete-block control from the open
 partial-boundary and cross-layer estimates. No complete-period theorem is used
@@ -1053,7 +1053,7 @@ The candidate's exact hypothesis and proof boundary are maintained in
 theorem currently encodes the weighted chain, so this result is not yet
 Stainless-verified.
 
-### 5.3 Why The Capacity Envelope Is Exhausted
+## 6. Why The Capacity Envelope Is Exhausted
 
 This section presents a closed exhaustion argument rather than a single new
 theorem: it shows why every unsigned-capacity route to the terminal survival
@@ -1073,7 +1073,7 @@ using only the arithmetic every residue histogram must satisfy. This produces
 a *capacity envelope*. The next six paragraphs walk through the results that
 build, refine, and ultimately exhaust that envelope.
 
-#### 5.3.1 The separate capacity envelope
+### 6.1 The separate capacity envelope
 
 Each harmful residue class can hold at most $B_i$ incoming 2-gap starts, and
 the two harmful classes together can hold at most $2B_i$. The sharp
@@ -1094,7 +1094,7 @@ $T^2/(2W_-)+\Gamma_{\mathrm{cap}}$. The capacity envelope is correct and
 sharp *for the information it retains*; the question is whether that
 information is enough.
 
-#### 5.3.2 Why capacity alone gives no positive floor
+### 6.2 Why capacity alone gives no positive floor
 
 The width-floor theorem (Appendix C.2) proves the explicit per-layer floor
 ```math
@@ -1108,7 +1108,7 @@ is positive and has zero capacity envelope. Progress requires either keeping
 realized populations away from both extremes, or replacing the capacity
 interval by localized residue information.
 
-#### 5.3.3 Native-period Bessel refines but does not finish
+### 6.3 Native-period Bessel refines but does not finish
 
 The native-period hybrid envelope intersects Bessel's inequality over the
 native prefix with the coordinate capacities via an exact greedy linear
@@ -1120,7 +1120,7 @@ the normalized overflow $e_k$, which the width-floor theorem lower-bounds by
 population slack. The envelope improves, but the next three subsections show
 that no cut in the chain can clear the original survival threshold.
 
-#### 5.3.4 Fixed cuts fail
+### 6.4 Fixed cuts fail
 
 The fixed-seven-cut theorem (Appendix C.3) proves that the fixed cut
 immediately after filter $7$ fails: under the seven-layer density floor at
@@ -1144,7 +1144,7 @@ For any fixed $k$ the right side is bounded as $Q$ grows, while $m$ tends to
 infinity along any unbounded family of heads. Therefore no fixed cut can
 certify survival on unbounded chains.
 
-#### 5.3.5 Moving cuts lose their complete native blocks
+### 6.5 Moving cuts lose their complete native blocks
 
 A cut that moves outward with the head can in principle avoid the fixed-cut
 obstruction. The moving-cut theorem (Appendix C.5) proves the opposite
@@ -1169,7 +1169,7 @@ $M_k>H$: no complete native block remains. The incomplete-block theorem
 moving-prime scale contributes $e_k=0$—the native-capacity route gives back
 exactly $\mathcal U_{\mathrm{cap}}$.
 
-#### 5.3.6 The stability-gap repair is negligible
+### 6.6 The stability-gap repair is negligible
 
 The capacity-stability enlargement had enlarged the certificate threshold by
 $\Gamma_{\mathrm{cap}}$. The stability-gap theorem closes that escape: under
@@ -1185,7 +1185,7 @@ negligible relative to the $P_mD^2/1080$ floor. The capacity-relaxed
 threshold therefore cannot rescue the separate capacity envelope on an
 unbounded family.
 
-#### 5.3.7 Verdict: signed information is required
+### 6.7 Verdict: signed information is required
 
 The capacity-plus-native-Bessel envelope cannot certify the terminal
 survival threshold under the full seven-layer density floor on unbounded
@@ -1194,15 +1194,15 @@ layer over sign-compatible histograms—has been exhausted. The shared reason
 is that unsigned capacity forgets exactly the interval-order information that
 controls actual harmful excess.
 
-This sets up the next two sections. [§6](#6-exact-filter-seven-localization) computes the first genuine localized
-saving at filter $7$ by restoring exact residue order. [§7](#7-copy-block-harmful-excess-and-residue-energy) then bridges that
-saving to the residue-collision energy of [§6.5.2](#652-the-residue-collision-energy) across complete old-period
+This sets up the next two sections. [§7](#7-exact-filter-seven-localization) computes the first genuine localized
+saving at filter $7$ by restoring exact residue order. [§9](#9-copy-block-harmful-excess-and-residue-energy) then bridges that
+saving to the residue-collision energy of [§8.2](#82-the-residue-collision-energy) across complete old-period
 copy blocks. The full self-contained
-proofs of the exhaustion steps summarized in $\S\S$5.3.1--5.3.6 appear in
+proofs of the exhaustion steps summarized in [§§6.1](#61-the-separate-capacity-envelope)--[6.6](#66-the-stability-gap-repair-is-negligible) appear in
 Appendix C, so the reader can verify each constant without leaving the
 article.
 
-## 6. Exact Filter-Seven Localization
+## 7. Exact Filter-Seven Localization
 
 At the first nontrivial conditioned layer, exact residue order replaces the
 quadratic capacity envelope by a constant boundary discrepancy, for every
@@ -1323,10 +1323,10 @@ The exact certificate and arbitrary-interval proof are maintained in
 The 21 weights, their zero sum, and all cyclic subsums are not yet encoded
 as a `.holds` theorem.
 
-## 6.5 The Live Frontier: Two Candidates The Conclusion Names
+## 8. The Live Frontier: Two Candidates The Conclusion Names
 
 The filter-seven excess bound and copy-block excess control properties are the last two steps of a longer argument, and the
-article's conclusion ($\S$8, $\S$10) names two candidates as the live
+article's conclusion ([§10](#10-routes-that-are-now-classified), [§12](#12-conclusion)) names two candidates as the live
 twin-prime frontier. This section introduces them so that conclusion is
 readable without external files. It states each candidate's core identity,
 open estimate, and relationship to what the article has already proved. The
@@ -1334,14 +1334,14 @@ full algebraic reductions (activation shells, CRT lift indices, Gram matrices)
 are developed in their canonical notes; this section carries only what a
 reader needs to follow the article's own arc.
 
-### 6.5.1 The Accepted-Boundary Discrepancy
+### 8.1 The Accepted-Boundary Discrepancy
 
 The reduction below is proved for every nonempty conditioned chain
 $5\le r_0<\cdots<r_{m-1}<Q$, over accepted anchor values in one interval,
 followed through the conditioned filter chain; the terminal
 signed-mean-square estimate is open.
 
-Recall from $\S$5.1 that the harmful excess at layer $i$ is
+Recall from [§5.1](#51-weighted-deletion-conservation) that the harmful excess at layer $i$ is
 $b_i=a_iN_i-N_{i+1}$. Candidate #23 isolates the *strike-density error*
 $\varepsilon_i=H_i/A_i-1/r_i$, where $H_i$ is the count of accepted anchors
 struck by filter $r_i$ and $A_i$ is the accepted-anchor population. Its
@@ -1377,20 +1377,20 @@ reductions; each returns the original energy after exact algebra, so the
 remaining input is signed arithmetic, not another coordinate rewrite.
 
 **Why this is the article's general coefficient.** The filter-7 calculation
-of [§6](#6-exact-filter-seven-localization) is the one-layer, one-prime instance of this same discrepancy:
+of [§7](#7-exact-filter-seven-localization) is the one-layer, one-prime instance of this same discrepancy:
 $|b_7|\le18/7$ came from exact residue *order*, and the general layer
 coefficient $b_i$ is exactly the two-residue boundary discrepancy studied
 here. The canonical note is
 [Accepted-Anchor Strike Density](https://github.com/thiagomata/prime-numbers/blob/master/candidates/accepted-anchor-strike-density.md).
 
-### 6.5.2 The Residue-Collision Energy
+### 8.2 The Residue-Collision Energy
 
 For every incoming prime $r\ge5$ and its actual conditioned layer population,
 over 2-gap-start residues modulo one incoming prime in one conditioned layer,
 the reduction below is proved; the relative four-point correlation estimate
 is open.
 
-The residue-collision energy is the input that the copy-block bridge ($\S$7)
+The residue-collision energy is the input that the copy-block bridge ([§9](#9-copy-block-harmful-excess-and-residue-energy))
 consumes. Let
 $c_t$ count the incoming 2-gap starts in residue class $t\bmod r$, so
 $N_r=\sum c_t$. The centered deviation is $d_t=c_t-N_r/r$, and the
@@ -1424,16 +1424,16 @@ $2+2$ at $(7,4)$), but exact conditioned-layer search through $Q\le251$
 found none. The canonical note is
 [Conditioned Residue-Collision Energy](https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md).
 
-**How the two compose.** The copy-block bridge of [§7](#7-copy-block-harmful-excess-and-residue-energy) proves that the
+**How the two compose.** The copy-block bridge of [§9](#9-copy-block-harmful-excess-and-residue-energy) proves that the
 complete-block harmful excess $B_j=d_{t_j}+d_{t_j-2}$ satisfies
 $\sum_jB_j^2\le4V_r$. Therefore a relative bound for the residue-collision
 energy $V_r$ immediately controls the complete-block portion of the terminal
 harmful excess. The frontier is consequently a single composition: a relative
 residue-energy estimate feeding the signed boundary discrepancy through the
 copy-block bridge, with the two partial old-period boundary fragments still
-open. This is exactly what the article's conclusion ($\S$8) names.
+open. This is exactly what the article's conclusion ([§10](#10-routes-that-are-now-classified)) names.
 
-## 7. Copy-Block Harmful Excess And Residue Energy
+## 9. Copy-Block Harmful Excess And Residue Energy
 
 The harmful excess of a copy block is not an arbitrary scalar. It is exactly
 the sum of two centered entries of the old start histogram modulo $r$, for
@@ -1587,7 +1587,7 @@ Residue-Collision Energy](https://github.com/thiagomata/prime-numbers/blob/maste
 rational histogram and block observable are not yet modeled as a `.holds`
 theorem.
 
-## 8. Routes That Are Now Classified
+## 10. Routes That Are Now Classified
 
 Complete-period counting, native-period Bessel bounds, and separate capacity
 envelopes do not resolve the late short-window problem. Accepted-anchor
@@ -1607,9 +1607,9 @@ The live twin-prime program is now narrow:
 More optimization of unsigned capacity or complete-period norms cannot supply
 those missing facts.
 
-## 8.5 The Fixed-Seed Scale Conflict
+### 10.1 The Fixed-Seed Scale Conflict
 
-The exhaustion argument of [§5.3](#53-why-the-capacity-envelope-is-exhausted) shows that no unsigned-capacity envelope can
+The exhaustion argument of [§6](#6-why-the-capacity-envelope-is-exhausted) shows that no unsigned-capacity envelope can
 certify survival. There is a deeper, structural reason complete-period
 counting cannot place a survivor in a chosen window: the primorial modulus
 outgrows the window itself.
@@ -1654,10 +1654,10 @@ external dependency in this argument.
 
 This scale conflict is the geometric counterpart of the exhaustion verdict:
 complete-period identities are exact globally but become locally uninformative
-once the primorial exceeds the window. The signed local estimates of [§§6](#6-exact-filter-seven-localization)--[7](#7-copy-block-harmful-excess-and-residue-energy)
+once the primorial exceeds the window. The signed local estimates of [§§7](#7-exact-filter-seven-localization)--[9](#9-copy-block-harmful-excess-and-residue-energy)
 are precisely the response to this obstruction.
 
-## 9. A Distinct Almost-Prime Program
+## 11. A Distinct Almost-Prime Program
 
 Requiring both endpoints of a square-safe 2-gap to be prime reaches the
 twin-prime boundary. A separate program relaxes the second endpoint to have at
@@ -1667,7 +1667,7 @@ Production in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/
 
 Its success would not prove a surviving 2-gap or infinitely many twin primes.
 
-## 9.5 Why This Is Hard: The Type-II Barrier
+### 11.1 Why This Is Hard: The Type-II Barrier
 
 The exhaustion argument and the fixed-seed scale conflict together explain
 why this project's complete-period algebra cannot finish the twin-prime
@@ -1685,11 +1685,11 @@ be consistent with a sequence containing no primes.
 This project's exact residue and CRT formulas are algebraic input for a
 possible Type-I analysis. They are not yet a Type-I theorem over the
 required short intervals, because the accumulated discrepancy norm has not
-been bounded—the fixed-seed scale conflict of [§8.5](#85-the-fixed-seed-scale-conflict) is one face of this.
+been bounded—the fixed-seed scale conflict of [§10.1](#101-the-fixed-seed-scale-conflict) is one face of this.
 No arbitrary-coefficient Type-II estimate is currently proved for the
 sieve-sequence weights.
 
-The relaxed almost-prime program of [§9](#9-a-distinct-almost-prime-program) makes the Type-II barrier concrete.
+The relaxed almost-prime program of [§11](#11-a-distinct-almost-prime-program) makes the Type-II barrier concrete.
 Its scalar-centered final weight retains a nonprincipal character mode
 modulo $3$ on the complete reduced wheel: a bounded product coefficient can
 correlate perfectly with the full relaxed survivor count. This refutes the
@@ -1703,14 +1703,14 @@ automatically exist for the affine pair $(x,x+2)$. Their result is therefore
 a methodological guide, not a theorem that transfers.
 
 The actionable consequence is that any route beyond the exhaustion boundary
-of [§5.3](#53-why-the-capacity-envelope-is-exhausted) must either prove a genuine short-window signed Type-I estimate for
-the residue-energy / accepted-boundary quantities of [§6.5](#65-the-live-frontier-two-candidates-the-conclusion-names), or introduce a
+of [§6](#6-why-the-capacity-envelope-is-exhausted) must either prove a genuine short-window signed Type-I estimate for
+the residue-energy / accepted-boundary quantities of [§8](#8-the-live-frontier-two-candidates-the-conclusion-names), or introduce a
 new bilinear variable that supplies the Type-II cancellation the affine pair
 lacks. A full mapping of recent Type-I/Type-II results to these exact
 obligations is developed in
 [Recent Prime-Producing Sieves: A Deep-Dive](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/research/recent-prime-producing-sieves-deep-dive.md).
 
-## 10. Conclusion
+## 12. Conclusion
 
 Complete-period sieve algebra gives exact global 2-gap and `(2,4,2)` cluster
 counts. One old 2-gap has $r-2$ surviving lifts under one incoming prime,
@@ -1788,18 +1788,8 @@ family of future heads.
 
 ## References
 
-1. Mata, T. H. (2026). [Formal Verification of Sieve Sequence Stages and
-   Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
-2. Mata, T. H. (2026). [Structural Properties and Open Boundaries of 2-Gaps
-   in Sieve Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md), version 1.
-3. [Exact Global Count Of `(2,4,2)` Two-Gap Clusters](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/exact-global-two-gap-cluster-count.md).
-4. [Absence Of 2-Gaps Is Stable Under Later Filtering](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/absence-of-two-gaps-is-stable.md).
-5. [Weighted Deletion Conservation Law](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-deletion-conservation-law.md).
-6. [Weighted Harmful-Excess Energy Is Already Terminal](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md).
-7. [Filter-Seven Harmful Excess Is Boundary-Sized](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md).
-8. [Copy-Block Harmful Excess Is Controlled By Residue Energy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md).
-9. [Conditioned Residue-Collision Energy](https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md).
-10. [Weighted Harmful-Excess Quadratic Survival](https://github.com/thiagomata/prime-numbers/blob/master/candidates/weighted-harmful-excess-quadratic-survival.md).
+1. Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and
+   Their Transitions*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
 
 ## Appendix A: Evidence And Verification Status
 
@@ -1830,8 +1820,8 @@ though its exact multiplicity claim is not.
 | the Fixed Native Cut Failure property — every fixed cut fails (Appendix C.4) | Proved | [Fixed Native Cut Failure](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) |
 | the Moving-Cut Block Loss property — moving cut loses blocks (Appendix C.5) | Exact theorem proved; asymptotic corollary uses PNT/Bertrand externally | [Moving-Cut Block Loss](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) |
 | the Incomplete-Block Bessel Bound property — incomplete-block Bessel (Appendix C.6) | Exact theorem proved; asymptotic scale uses PNT/Bertrand externally | [Incomplete-Block Bessel Bound](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) |
-| Candidate #23 — accepted-boundary discrepancy ([§6.5.1](#651-the-accepted-boundary-discrepancy)) | Exact reduction proved; signed mean-square estimate open | [Candidate #23](https://github.com/thiagomata/prime-numbers/blob/master/candidates/accepted-anchor-strike-density.md) |
-| Candidate #20 — residue-collision energy ([§6.5.2](#652-the-residue-collision-energy)) | Exact reduction proved; relative four-point correlation open | [Candidate #20](https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md) |
+| Candidate #23 — accepted-boundary discrepancy ([§8.1](#81-the-accepted-boundary-discrepancy)) | Exact reduction proved; signed mean-square estimate open | [Candidate #23](https://github.com/thiagomata/prime-numbers/blob/master/candidates/accepted-anchor-strike-density.md) |
+| Candidate #20 — residue-collision energy ([§8.2](#82-the-residue-collision-energy)) | Exact reduction proved; relative four-point correlation open | [Candidate #20](https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md) |
 
 The operational Sieve Sequence construction used by these mathematical
 properties is Stainless-verified separately in [Formal Verification of Sieve
@@ -1917,17 +1907,17 @@ classified there; it is not a substitute for the linked canonical proof.
 | [Integral Profile Attainment](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/integral-population-profiles-attain-harmful-energy-threshold.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Harmful-Excess Stability Decomposition](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/harmful-excess-energy-exact-stability-decomposition.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Capacity Minimizer Separation](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/harmful-capacity-separates-energy-minimizer.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| [Harmful-Capacity Excess Envelope](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) | Terminal quadratic audit | Narrated in [§5.3.1](#531-the-separate-capacity-envelope); full proof in Appendix C.1 |
+| [Harmful-Capacity Excess Envelope](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/sharp-harmful-capacity-excess-envelope.md) | Terminal quadratic audit | Narrated in [§6.1](#61-the-separate-capacity-envelope); full proof in Appendix C.1 |
 | [Paired CRT Primorial Scale](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/paired-harmful-excess-crt-orthogonality-has-primorial-scale.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Native-Period Hybrid Envelope](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/native-period-bessel-capacity-hybrid-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Native-Period Capacity Overflow](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/native-period-capacity-overflow-quantifies-hybrid-gain.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| [Envelope Width Floor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) | Terminal quadratic audit | Narrated in [§5.3.2](#532-why-capacity-alone-gives-no-positive-floor); full proof in Appendix C.2 |
+| [Envelope Width Floor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/capacity-envelope-width-floor-needs-population-slack.md) | Terminal quadratic audit | Narrated in [§6.2](#62-why-capacity-alone-gives-no-positive-floor); full proof in Appendix C.2 |
 | [Seven-Layer Density Floor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/seven-layer-density-floor-maximizes-capacity-width.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Seven-Layer Overflow Forcing](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/seven-layer-floor-forces-native-overflow.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
-| [Filter-Seven Cut Failure](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) | Terminal quadratic audit | Narrated in [§5.3.4](#534-fixed-cuts-fail); full proof in Appendix C.3 |
-| [Fixed Native Cut Failure](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) | Terminal quadratic audit | Narrated in [§5.3.4](#534-fixed-cuts-fail); full proof in Appendix C.4 |
-| [Moving-Cut Block Loss](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) | Terminal quadratic audit | Narrated in [§5.3.5](#535-moving-cuts-lose-their-complete-native-blocks); full proof in Appendix C.5 |
-| [Incomplete-Block Bessel Bound](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) | Terminal quadratic audit | Narrated in [§5.3.5](#535-moving-cuts-lose-their-complete-native-blocks); full proof in Appendix C.6 |
+| [Filter-Seven Cut Failure](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/fixed-seven-cut-cannot-clear-original-threshold.md) | Terminal quadratic audit | Narrated in [§6.4](#64-fixed-cuts-fail); full proof in Appendix C.3 |
+| [Fixed Native Cut Failure](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/every-fixed-native-cut-fails-original-threshold.md) | Terminal quadratic audit | Narrated in [§6.4](#64-fixed-cuts-fail); full proof in Appendix C.4 |
+| [Moving-Cut Block Loss](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/moving-cut-loses-complete-native-blocks.md) | Terminal quadratic audit | Narrated in [§6.5](#65-moving-cuts-lose-their-complete-native-blocks); full proof in Appendix C.5 |
+| [Incomplete-Block Bessel Bound](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md) | Terminal quadratic audit | Narrated in [§6.5](#65-moving-cuts-lose-their-complete-native-blocks); full proof in Appendix C.6 |
 | [Capacity Stability Gap](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/capacity-stability-gap-cannot-rescue-capacity-envelope.md) | Terminal quadratic audit | Collectively summarized in [Capacity Learnings §22.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/learnings/learnings-capacity-argument.md#222-separate-capacity-envelopes-are-exhausted); canonical note retains proof |
 | [Filter-Seven Excess Bound](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md) | Terminal quadratic audit | Full proof in this article |
 | [Copy-Block Excess Control](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md) | Terminal quadratic audit | Full proof in this article |
@@ -1938,7 +1928,7 @@ classified there; it is not a substitute for the linked canonical proof.
 ## Appendix C: Self-Contained Proofs For The Exhaustion Chain
 
 This appendix gives the full proofs of the capacity-exhaustion steps
-summarized in $\S$5.3, so the article is self-contained. Each entry states the
+summarized in [§6](#6-why-the-capacity-envelope-is-exhausted), so the article is self-contained. Each entry states the
 property's population, scope, the derivation, and the boundary. The canonical
 notes remain the authoritative source; these proofs adapt them without
 introducing new mathematics.
@@ -2299,4 +2289,4 @@ This is a method obstruction, not a refutation of the
 seven-layer density floor or the terminal survival candidate. It does not
 address the capacity-relaxed threshold
 $T^2/(2W_-)+\Gamma_{\mathrm{cap}}$ (handled by the stability-gap theorem,
-summarized in [§5.3.6](#536-the-stability-gap-repair-is-negligible)) or a localized upper bound for the actual $E_b$.
+summarized in [§6.6](#66-the-stability-gap-repair-is-negligible)) or a localized upper bound for the actual $E_b$.

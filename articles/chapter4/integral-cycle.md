@@ -322,8 +322,8 @@ CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
 
 Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.1, property 5.2, and properties 5.5-5.10 are fully verified.
 
-- Modulo invariance: finite-period classification lifts to all positions — [§5.1](#51-modulo-invariance-property) [Verified]
-- x-fold cycle expansion: physical period changes while the represented stream is preserved — [§5.2](#52-x-fold-cycle-expansion) [Verified]
+- Modulo invariance: finite-period classification lifts to all positions — [§5.1](#51-modulo-invariance-property)
+- x-fold cycle expansion: physical period changes while the represented stream is preserved — [§5.2](#52-x-fold-cycle-expansion)
 - Index shifts: right and left — [§5.3](#53-right-index-shift-finite-period-verified)-[§5.4](#54-left-index-shift)
 - Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — [§5.5](#55-gap-telescoping)-[§5.8](#58-gap-rotation-with-head-adjustment)
 - Survivor filtering: exactness and structure — [§5.9](#59-modularity-and-survivor-filtering)
