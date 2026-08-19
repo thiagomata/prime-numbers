@@ -3,7 +3,8 @@
 **Author:** Mata, T. H.
 Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
-**GitHub:** [@thiagomata](https://github.com/thiagomata)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**License:** [CC BY 4.0](../LICENSE)
 
 ## Abstract
 
@@ -674,8 +675,8 @@ algorithmic efficiency from the full-period facts alone.
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). *Proving Properties of Division and Modulo using Formal
-Verification*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md).
+Mata, T. H. (2026). *Division and Modulo from Recursive
+Normalization*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists

@@ -6,6 +6,7 @@ companion Sieve Sequence article. The signed-localization theorems introduced
 here are mathematically proved; Stainless verification is pending.
 **Author:** Mata, T. H.
 Independent Researcher
+**License:** [CC BY 4.0](../LICENSE)
 
 ## Abstract
 

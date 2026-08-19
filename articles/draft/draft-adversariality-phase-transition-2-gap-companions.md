@@ -3,7 +3,8 @@
 **Author:** Mata, T. H.<br>
 Independent Researcher<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)<br>
-**GitHub:** [@thiagomata](https://github.com/thiagomata)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**License:** [CC BY 4.0](../LICENSE)
 
 **Status:** Draft (2026-08-15). The companion-process identities are proved
 exactly; the asymptotic theorems are conditional on the premises stated with

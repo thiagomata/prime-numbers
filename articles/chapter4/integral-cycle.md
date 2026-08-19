@@ -3,7 +3,8 @@
 **Author:** Mata, T. H.
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**GitHub:** [@thiagomata](https://github.com/thiagomata)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**License:** [CC BY 4.0](../LICENSE)
 
 ## Abstract
 
@@ -68,7 +69,7 @@ We reuse several basic list, cycle and integral operations and their verified pr
 [Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md) [[2]](#ref2),
 and [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md) [[3]](#ref3).
 We also reuse some modulo properties previously defined and verified in the article
-[Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[4]](#ref4).
+[Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[4]](#ref4).
 
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
@@ -909,7 +910,7 @@ Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Unpublished manuscrip
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). _Proving Properties of Division and Modulo using Formal Verification_. Unpublished manuscript.  
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>

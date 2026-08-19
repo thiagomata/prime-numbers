@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: >-
+  If you use this repository's code or articles, please cite it using the
+  metadata below. To cite a specific article, prefer that article's own
+  References-section entry (author, year, title, and URL) over this
+  repository-level citation.
+title: "prime-numbers: Formal Verification of Integer, Division, Modulo, List, Cycle, and Integral Properties"
+type: software
+authors:
+  - family-names: Ramos da Mata
+    given-names: Thiago Henrique
+    alias: thiagomata
+repository-code: "https://github.com/thiagomata/prime-numbers"
+url: "https://github.com/thiagomata/prime-numbers"
+license: MIT
+date-released: "2026-08-19"
+keywords:
+  - formal verification
+  - Stainless
+  - Scala
+  - number theory
+  - modular arithmetic
+  - primality
+  - sieve of Eratosthenes
+  - sieve sequence
+  - prime gaps
+  - 2-gaps
+  - twin primes
+abstract: >-
+  A repository of Scala/Stainless-verified proofs, from-scratch recursive
+  constructions, and accompanying written articles covering integer
+  division and modulo, recursively defined lists, cycles, discrete
+  integrals, primality and coprimality, and sieve-sequence properties. The
+  source code (src/, python/, spark/) is licensed under MIT; the written
+  articles (articles/) are licensed separately under CC BY 4.0 — see
+  articles/LICENSE.

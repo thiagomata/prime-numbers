@@ -11,6 +11,15 @@ Use the [Research Vocabulary](VOCABULARY.md) for the canonical meanings of
 sieve objects, proof scope, quantifiers, empirical status, and mathematical
 proof status across candidates, properties, articles, and research notes.
 
+## Licensing
+
+The source code — `src/`, `python/`, `spark/` — is licensed under
+[MIT](./LICENSE). The written articles under [`articles/`](./articles/) are
+licensed separately under [CC BY 4.0](./articles/LICENSE). The research notes
+under `companions/`, `candidates/`, `properties/`, and `empirical/` are
+prose, not source code; their licensing has not yet been decided and is not
+covered by either LICENSE file.
+
 ## Note
 
 This project was initially created using Dafny,
@@ -22,7 +31,7 @@ This rewriting process is still ongoing.
 
 ### Division and Modulo Properties
 
-The article [Proving Properties of Division and Modulo using Formal Verification](./articles/chapter2/modulo.md) describes how the current code verifies the following theorems:
+The article [Division and Modulo from Recursive Normalization](./articles/chapter2/modulo.md) describes how the current code verifies the following theorems:
 
 ```math
 \begin{aligned}
@@ -42,8 +51,8 @@ b \text{ div } b                   & = 1 \\
 (a - c) \text{ div } b             & = (a \text{ div } b) - (c \text{ div } b) + (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 (a + c) \text{ mod } b             & = ((a \text{ mod } b) + (c \text{ mod } b)) \text{ mod } b \\
 (a - c) \text{ mod } b             & = ((a \text{ mod } b) - (c \text{ mod } b)) \text{ mod } b \\
-(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } c) \\
-(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } c) \\
+(a + c) \text{ mod } b             & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) \\
+(a - c) \text{ mod } b             & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) \\
 \end{aligned}
 ```
 ```math
@@ -53,6 +62,23 @@ a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+```
+
+It also proves the classical division algorithm — existence and uniqueness of
+the quotient/remainder pair — and that exactly one integer in any block of
+$p$ consecutive integers is divisible by $p$:
+
+```math
+\begin{aligned}
+  \forall \text{ } a, b & \in ℕ : b > 0 \\
+  \quad \exists ! \, r \in ℕ &: 0 \leq r < b \;\land\; a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+\end{aligned}
+```
+```math
+\begin{aligned}
+\forall \text{ } n, p & \in ℕ : p > 1 \\
+\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 \\
 \end{aligned}
 ```
 

@@ -3,7 +3,8 @@
 **Author:** Mata, T. H.
 Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
-**GitHub:** [@thiagomata](https://github.com/thiagomata)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**License:** [CC BY 4.0](../LICENSE)
 
 ---
 

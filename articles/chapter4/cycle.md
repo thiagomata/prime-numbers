@@ -3,7 +3,8 @@
 **Author:** Mata, T. H.
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**GitHub:** [@thiagomata](https://github.com/thiagomata)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**License:** [CC BY 4.0](../LICENSE)
 
 ## Abstract
 
@@ -385,7 +386,7 @@ i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text
 \end{aligned}
 ```
 
-The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#trivial-case) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
@@ -410,7 +411,7 @@ i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\t
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#quotient-invariance-under-linear-shift) was proved and verified in the article [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
@@ -497,7 +498,7 @@ n &= |L| \\
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Proving Properties of Division and Modulo using Formal Verification](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoops
@@ -741,7 +742,7 @@ Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Proving Properties of Division and Modulo using Formal Verification_. Unpublished manuscript.  
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 ## Appendix A: Scala Verification Code
