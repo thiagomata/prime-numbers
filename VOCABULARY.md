@@ -102,6 +102,25 @@ pattern. CRT and copy-count identities are often exact on complete periods.
 Complete-period uniformity does not imply uniformity in a short interval cut
 from that period.
 
+### Cycle Integral `period` and `periodSum`
+
+`articles/chapter4/integral-cycle.md` formalizes the periodic-accumulation
+object `ci` (a `CycleIntegral`) that sieve-stage constructions are built on.
+Its notation maps onto this vocabulary as follows:
+
+- `period(ci)` is the length of the finite backing cycle that `ci`
+  accumulates over — the `CycleIntegral`-level instance of the complete
+  period defined above.
+- `periodSum(ci)` is the total of one period's gap values,
+  `sum_{j=0}^{period(ci)-1} cycle(j)`. It is **not** a sum over `ci`'s own
+  output values: `ci` itself is unbounded and, by construction, strictly
+  increasing — it never repeats, so summing its own stream would diverge.
+  `periodSum(ci)` only ever sums the finite backing cycle.
+
+Do not shorten `periodSum(ci)` back to `sum(ci)`; that name was rejected
+specifically because it reads as a sum over `ci`'s own infinite output
+rather than over its finite backing cycle.
+
 ### Local window
 
 A **local window** is a bounded interval selected from the unbounded or cyclic
@@ -451,6 +470,9 @@ this document for when a symbol belongs here.
 
 | Symbol | Concept | Notes |
 |--------|---------|-------|
+| `ci` | A `CycleIntegral` (`articles/chapter4/integral-cycle.md`); unbounded and strictly increasing, never repeats | See `period(ci)`/`periodSum(ci)` below |
+| `period(ci)` | Length of the finite backing cycle behind `ci` | The `CycleIntegral`-level instance of "Complete period" above |
+| `periodSum(ci)` | Total of one period's gap values, `sum_{j=0}^{period(ci)-1} cycle(j)` | Not a sum over `ci`'s own unbounded output stream — see "Cycle Integral `period` and `periodSum`" above |
 | `Q` | Fixed future prime head used for square-safe certification | |
 | `r` | One generic incoming or filter prime | |
 | `r_i` | Filter `i` in an ordered chain | |

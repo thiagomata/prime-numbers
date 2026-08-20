@@ -1,8 +1,13 @@
 # Chapter 4 `integral-cycle.md` — Article Quality Checklist Pass (Publish Prep)
 
 **Created:** 2026-08-20
-**Updated:** 2026-08-20
-**Status:** In progress — mechanical fixes committed, content gaps pending owner decision
+**Updated:** 2026-08-21
+**Status:** In progress — chapters 5/6 restructured, several proofs newly
+  written and one real gap-in-proof-rigor cleaned up per-section; a
+  systematic pass for the same class of issue (thin/missing proofs, vague
+  backward references, implementation-vocabulary-as-notation leaks) has
+  not yet been run across the rest of the article. §6.9 Direct
+  Construction from Survivors is a known remaining thin proof.
 **Depends on:** none — fourth article in the publish-prep sequence
   (`modulo.md`, `list.md`, `cycle.md` already done)
 
@@ -53,33 +58,44 @@ reasoning as cycle.md's Future Work finding); the Hardy & Wright
 citation's `§5.4`/`§15.1` (cites the external book's sections, not this
 article's own, despite the numeric coincidence).
 
-## Open — needs owner decision before continuing
+## Resolved (this session, not yet committed)
 
-1. **Two clear OBJECTS.md parity gaps** in `CycleIntegralProperties`
-   (§4.8): `assertCycleIntegralIncreasing` (CI strictly increasing under
-   positive gaps) and `assertCycleIntegralPositive` (CI positive given
-   non-negative init/values) are verified in source but never mentioned
-   in the article, even though `integral.md`/`cycle.md` both have
-   analogous sections for their own types.
-2. **One large, ambiguous OBJECTS.md gap**: `CycleIntegralFilterProperties`
-   (§4.11, ~22 lemmas about merge/filter-reconstruction semantics --
-   `newCI`, `findFirstMultiple`, `assertShiftAtMerge`, etc.) is almost
-   entirely uncited anywhere in the repo (1 of 22 lemmas gets a passing
-   internal-helper citation in this article; confirmed via grep that
-   `sieve-sequence.md` doesn't cover it either, despite sounding like
-   "copy-or-merge" territory). Real gap or belongs to a future article --
-   undecided.
-3. **Conclusion completeness (rule 6)**: math recap is missing standalone
-   representation for §4.2 (Same Difference After Full Cycle), §5.7
-   (Cycle-Period Shifts -- distinct from Modulo Periodicity, which IS
-   represented), and §6.2 (Survivor Structure -- only 6.1 Survivor
-   Exactness appears). §5.3/§5.4 (index shifts) absence may be
-   deliberate since those two are mathematically-proved-but-not-yet-
-   Stainless-verified, unlike everything else in the recap.
+1. **OBJECTS.md parity gaps in `CycleIntegralProperties`** — added
+   `§4.4 Cycle Integral Strictly Increasing` and `§4.5 Cycle Integral
+   Positivity`, matching the analogous sections already present in
+   `integral.md`/`cycle.md`.
+2. **`CycleIntegralFilterProperties` merge/filter cluster** — after
+   discussion, decided these are valid, Stainless-verified properties
+   that deserve documentation independent of whether other code calls
+   them (CONTRIBUTING.md rule 14.18). Added as a full 4-subsection group
+   covering the merge shift law, removing a multiple, direct
+   construction from survivors, and the filtered result having no
+   multiples, plus 4 new Appendix A entries.
+3. **Conclusion completeness (rule 6)** — recap now includes Cycle-Period
+   Shift and Survivor Structure (both previously missing), plus the two
+   new Persistent Non-Zero/Zero Residue corollaries.
 
-None of the three are mechanical fixes -- #1 and #3 need real math
-writing, #2 is a scope question (new content vs. flag-as-known-gap vs.
-belongs elsewhere). Awaiting direction before continuing.
+## Structural restructuring (this session, not yet committed)
+
+The article's chapters 5–7 were reorganized around a conceptual
+distinction the owner drew out during review: properties of a *fixed*
+cycle integral versus properties for *deriving a new* cycle integral from
+an existing one.
+
+- New **§5 Persistent and Periodic Properties** (fixed CI): general
+  residue periodicity, persistent non-zero/zero residue (the two
+  corollaries, new content), gap telescoping, cycle-period shifts, and
+  residue classification.
+- New **§6 Deriving New Cycle Integrals**: x-fold expansion, right/left
+  index shift, gap rotation, survivor filtering (exactness + structure),
+  and the filter-merge reconstruction group. Old chapters 6 and 7
+  dissolved into this one chapter; §5.3/§5.8 (both index-shift-adjacent)
+  were deliberately kept as separate sections rather than merged, per
+  owner instruction.
+- Old §8 Conclusion → §7, old §9 Future Work → §8. All in-document
+  cross-references, the intro bullet list, and the Conclusion's prose
+  and math recap were updated to match. Verified with a full anchor-link
+  sweep (53 links, all resolve) and `git diff --check`.
 
 ## Learning Log
 
@@ -87,3 +103,7 @@ belongs elsewhere). Awaiting direction before continuing.
 |---|---|---|
 | 2026-08-20 | First-pass heading rename for a promoted section (mirroring gap-dynamics.md) renamed the heading text but left content in the wrong physical file position -- renaming and moving are two separate steps, don't assume a text-substitution script handles reordering. | Caught during self-review before presenting to article owner; content block physically relocated as a second step. |
 | 2026-08-20 | OBJECTS.md parity checks on a dense proof article can surface real gaps (2 confirmed) alongside much larger, more ambiguous ones (22-lemma class almost entirely uncited anywhere in the repo) -- don't conflate the two when reporting; they need different kinds of decisions. | Findings split into "clear gaps" vs. "ambiguous scope question" in this ticket and in the turn presented to the user. |
+| 2026-08-21 | Splicing large verbatim blocks of existing content into a new order (reusing exact ranges via a script) is far more reliable than retyping sections by hand -- but concatenating extracted blocks that each already end in a blank line, next to new hand-written blocks that also start with one, silently produces double-blank-line seams. | Ran a regex pass collapsing 3+ consecutive newlines down to one blank line immediately after the splice, before presenting the result. |
+| 2026-08-21 | A "Proof." paragraph that only names the Scala lemma being invoked, with no worked math, can hide a real ordering/dependency bug -- expanding §5.1's proof for real surfaced that it secretly depended on a fact (§5.5's full-cycle shift) that had no proof of its own and, worse, came later in reading order. | Wrote a real proof for the dependency first, then reordered chapter 5 so proof order matches logical dependency order, instead of leaving a forward-reference disguised as a citation-free assertion. |
+| 2026-08-21 | Naming a math quantity after its Scala field (`sum(ci)`, mirroring `ci.sum`) can be actively misleading when the object it's attached to (`ci`, an unbounded strictly-increasing stream) makes the name read as "sum over infinitely many terms." The notation was also never formally defined anywhere in the article -- just used as if inherited from the source. | Renamed to `periodSum(ci)`, added a real definition where first used, and registered both `period(ci)`/`periodSum(ci)` in `VOCABULARY.md` so future articles reuse the same disambiguated names. |
+| 2026-08-21 | A "connecting sentence" reconciling two similarly-named claims (`assertPeriodicShift` vs `assertFullCycleShift`) was itself a symptom: both Scala lemmas are thin wrappers around the exact same underlying call, so the article had manufactured a "difference form vs. sum form" distinction that doesn't actually exist in the source. | Collapsed the claim, subsection name, and every citation down to one identity ("Full-cycle shift"); removed the reconciling sentence entirely instead of keeping it as a patch. |
