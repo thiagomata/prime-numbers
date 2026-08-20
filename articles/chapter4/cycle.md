@@ -66,8 +66,6 @@ and [Formal Verification of Discrete Integration Properties from First Principle
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
 
-### List Definitions and Properties
-
 For any list $L$ of numeric values $x_i \in 𝕊$ where $𝕊$ is a set of all numeric values,
 $𝕃$ is the the set of all lists,
 and $n$ is the size of the list, we define:
@@ -301,8 +299,7 @@ immediate by construction: `MemCycle.apply(position)` calls the wrapped
 ```math
 \begin{aligned}
 \text{MemCycle}(L)_i
-  &= \text{MemCycle}(L).\text{cycle}_i && \text{[By MemCycle.apply]} \\
-  &= \text{ModCycle}(L)_i              && \text{[By MemCycle construction]}
+  &= \text{ModCycle}(L)_i && \text{[By MemCycle.apply delegating to its wrapped ModCycle]}
 \end{aligned}
 ```
 
@@ -568,8 +565,8 @@ across the nested periods.
 
 ```math
 \begin{aligned}
-C &\text{ — original MemCycle}, \quad V = C.\text{values}, \quad n = |V| \\
-C_t &\text{ — repeated cycle}, \quad C_t.\text{values} = \text{repeat}(V, t)
+C &\text{ — original MemCycle}, \quad V = \text{values}(C), \quad n = |V| \\
+C_t &\text{ — repeated cycle}, \quad \text{values}(C_t) = \text{repeat}(V, t)
   \quad\text{with } t > 0 \\
 \text{period} &= t \cdot n
 \end{aligned}
@@ -595,8 +592,6 @@ The proof separates construction from lookup. Callers must build a valid
 `MemCycle` from the repeated values; this lemma only says that once such a
 cycle exists, the larger physical period does not change any lookup.
 
-### Stainless Verification
-
 ```scala
 def assertRepeatedValuesCycleMatches(
   cycle: MemCycle,
@@ -616,10 +611,6 @@ def assertRepeatedValuesCycleMatches(
 This property is verified in the [
 MemCycleProperties::assertRepeatedValuesCycleMatches
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
-
-The same repeated-cycle principle is the foundation for later cycle-integral
-reasoning, where repeated gap storage should preserve the integrated values
-read from the cycle.
 
 ### 5.7 Cycle Value Positivity
 
@@ -734,16 +725,13 @@ Future work may include exploring more complex properties of Cycles, such as the
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 ## Appendix A: Scala Verification Code
 
