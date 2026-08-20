@@ -60,7 +60,7 @@ This article verifies:
 
 - Two equivalent definitions: recursive and modulo-based — [§3.1](#31-recursive-cycle-integral)–[3.3](#33-equivalence-of-definitions)
 - Core properties: next position, same difference after cycle, sum of mod values — [§4.1](#41-next-position)–[4.3](#43-sum-of-mod-values-as-list)
-- Extended properties: modulo periodicity, cycle-period shifts, gap telescoping, rotation, survivor filtering, residue classification — [§5.1](#51-modulo-invariance-property)–[5.10](#510-cycle-residue-classification)
+- Extended properties: modulo periodicity, cycle-period shifts, gap telescoping, rotation, survivor filtering, residue classification — [§5.1](#51-modulo-invariance-property)–[5.9](#59-cycle-residue-classification)
 
 ## 2. Preliminaries
 
@@ -173,7 +173,7 @@ CycleIntegralProperties::assertDiffEqualsCycleValue
 \end{aligned}
 ```
 
-#### Sum Property
+**Sum Property**:
 
 ```math
 i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Claim to Prove]}
@@ -201,7 +201,7 @@ This property is verified in the [
 ModCycleIntegralProperties::assertFirstValuesMatchIntegral
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.3; the complete proof is linked in the source reference.
 
-#### Step Property
+**Step Property**:
 
 ```math
 w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad i>0,\, n>0
@@ -320,14 +320,14 @@ CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
 
 ## 5. Extended Properties
 
-Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.1, property 5.2, and properties 5.5-5.10 are fully verified.
+Properties 5.3 and 5.4 have mathematical proofs but are not yet Stainless-verified. Property 5.1, property 5.2, properties 5.5-5.9, and [§6](#6-modularity-and-survivor-filtering) are fully verified.
 
 - Modulo invariance: finite-period classification lifts to all positions — [§5.1](#51-modulo-invariance-property)
 - x-fold cycle expansion: physical period changes while the represented stream is preserved — [§5.2](#52-x-fold-cycle-expansion)
-- Index shifts: right and left — [§5.3](#53-right-index-shift-finite-period-verified)-[§5.4](#54-left-index-shift)
+- Index shifts: right and left — [§5.3](#53-right-index-shift)-[§5.4](#54-left-index-shift)
 - Gap arithmetic: telescoping, periodicity, cycle shifts, rotation — [§5.5](#55-gap-telescoping)-[§5.8](#58-gap-rotation-with-head-adjustment)
-- Survivor filtering: exactness and structure — [§5.9](#59-modularity-and-survivor-filtering)
-- Residue classification: all-zero, some-zero, none-zero — [§5.10](#510-cycle-residue-classification)
+- Survivor filtering: exactness and structure — [§6](#6-modularity-and-survivor-filtering)
+- Residue classification: all-zero, some-zero, none-zero — [§5.9](#59-cycle-residue-classification)
 
 ### 5.1 Modulo Invariance Property
 
@@ -355,7 +355,7 @@ I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
 \end{aligned}
 ```
 
-#### Proof
+**Proof.**
 
 ```math
 \begin{aligned}
@@ -373,8 +373,6 @@ I_k &:= \sum_{j=0}^{k} v_j \quad (0 \le k < n) \\
   \ (I_{(i \text{ mod } n)} + init) \text{ mod } v \neq 0 &\implies CycleIntegral(L, init)_i \text{ mod } v \neq 0 \quad &&\text{[Modulo matches Integral]} \\
 \end{aligned}
 ```
-
-### Stainless Verification
 
 Together, the classification lemmas and the unbounded periodicity proof
 establish the same finite-period discipline at both levels used by the sieve:
@@ -484,13 +482,11 @@ ListRepeatProperties::assertRepeatedIndex
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L^{(x)}, init)_i = \text{CycleIntegral}(L, init)_i \quad \blacksquare
 ```
 
-### Stainless Verification
-
 This property is verified in the [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.8.
 
-### 5.3 Right Index Shift [Finite-Period Verified]
+### 5.3 Right Index Shift
 
 Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by one position, and $init' := init + L_0$ be the shifted initial value. Then the CycleIntegral of $L'$ with $init'$ reproduces the CycleIntegral of $L$ with $init$, shifted by one position.
 
@@ -509,7 +505,7 @@ init' &:= init + L_0 \\
 \end{aligned}
 ```
 
-#### Base Case
+**Base Case**:
 
 ```math
 \begin{aligned}
@@ -521,7 +517,7 @@ B_0 &= init' + L'_0 = (init + L_0) + L'_0 = init + L_0 + L_1 = A_1 \\
 \end{aligned}
 ```
 
-#### Induction Step
+**Induction Step**:
 
 ```math
 \begin{aligned}
@@ -536,8 +532,6 @@ B_i &= B_{i-1} + L'_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 ```math
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L, init)_{i+1} = \text{CycleIntegral}(L', init')_{i} \quad \blacksquare
 ```
-
-### Stainless Verification
 
 The one-period `CycleIntegral` wrapper is verified directly. If the shifted
 cycle uses the one-step rotation of the original backing values and the shifted
@@ -572,7 +566,7 @@ init'' &:= init + L_0 - L_{n-1} \\
 \end{aligned}
 ```
 
-#### Base Case
+**Base Case**:
 
 ```math
 \begin{aligned}
@@ -582,7 +576,7 @@ C_1 &= init'' + L''_0 = (init + L_0 - L_{n-1}) + L''_0 \\
 \end{aligned}
 ```
 
-#### Induction Step
+**Induction Step**:
 
 ```math
 \begin{aligned}
@@ -598,8 +592,6 @@ C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L, init)_{i+1} = \text{CycleIntegral}(L'', init'')_{i} \quad \blacksquare
 ```
 
-**Status**: Mathematically proven. Stainless verification pending.
-
 ### 5.5 Gap Telescoping
 
 Two consecutive gaps telescope to the integral difference across both steps.
@@ -613,8 +605,6 @@ the step-lemma that underlies merging adjacent gap ranges.
 \quad \text{for } k \geq 1 \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
-
-### Stainless Verification
 
 This property is verified in the [
 CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff
@@ -642,8 +632,6 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 full cycle does not change the residue. When `pos < size`, the reduction
 terminates.
 
-### Stainless Verification
-
 This property is verified in the [
 GapProperties::assertModIsPeriodic
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.11.
@@ -669,8 +657,6 @@ amount.
 \end{aligned}
 ```
 
-### Stainless Verification
-
 These properties are verified in [
 GapProperties::assertPeriodicShift
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala),
@@ -683,20 +669,44 @@ entire integral by one position.
 
 ```math
 \begin{aligned}
-\text{GapList}(\text{head} + \text{gaps}(0),\; \text{gaps.tail :+ gaps}(0))
-  .\text{apply}(i)
-  = \text{GapList}(\text{head},\; \text{gaps}).\text{apply}(i + 1)
+\text{GapList}(\text{head} + \text{gaps}_0,\; \text{tail}(\text{gaps}) \mathbin{\texttt{++}} (\text{gaps}_0 :: L_e))_i
+  = \text{GapList}(\text{head},\; \text{gaps})_{i + 1}
   \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
-
-### Stainless Verification
 
 This property is verified in [
 GapProperties::assertRotateOneShiftsIntegralByOne
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). It delegates to the verified `ShiftedList.assertShiftedApplyIsOriginalPlusOne`; the full source is linked there rather than repeated inline.
 
-### 5.9 Modularity and Survivor Filtering
+### 5.9 Cycle Residue Classification
+
+For any cycle and modulus `d > 0`, the values of the cycle fall into exactly
+one of three residue categories modulo `d`:
+
+```math
+\begin{aligned}
+\text{all-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) = 0
+  && \text{[Filter removes everything]} \\
+\text{none-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) \neq 0
+  && \text{[Filter has no effect]} \\
+\text{some-zero:} &\quad \exists k_0 : \text{mod}(\text{cycle}(k_0), d) = 0
+  \;\land\; \exists k_1 : \text{mod}(\text{cycle}(k_1), d) \neq 0
+  && \text{[Filter removes specific positions]}
+\end{aligned}
+```
+
+These three states are detected by `MemCycle.checkMod(d)` and stored in lists
+(`modIsZeroForAllValues`, `modIsZeroForNoneValues`, `modIsZeroForSomeValues`).
+The evaluation is idempotent — the cycle's values list never changes, only the
+classification metadata is updated. Ten lemmas in `CycleCheckMod.scala` prove
+the classification is correct, mutually exclusive, and exhaustive.
+
+These properties are verified in the [
+CycleCheckMod
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
+
+## 6. Modularity and Survivor Filtering
 
 The survivor scan `survivorValues(ci, filterValue, start, count)` collects
 every value in the half-open range `[start, start + count)` whose remainder
@@ -705,7 +715,7 @@ Eratosthenes sieve step [[5]](#ref5): values divisible by a modulus are crossed 
 and only the non-multiples survive. Ten verified lemmas in
 `GapProperties.scala` characterize this operation.
 
-#### 5.9.1 Survivor Exactness
+### 6.1 Survivor Exactness
 
 The survivor scan is exact: it retains exactly the non-multiples and excludes
 exactly the multiples. Soundness says every retained value satisfies `mod != 0`;
@@ -732,7 +742,7 @@ GapProperties::assertSurvivorValuesContainsOnlyNonMultiples
 and the type-level non-emptiness guarantee (`assertSurvivorsNonEmpty`) follow
 directly.
 
-#### 5.9.2 Survivor Structure
+### 6.2 Survivor Structure
 
 When the scan prefix `[start, pos)` consists entirely of multiples, the first
 survivor is `ci(pos)`. This lemma, together with its structural-split companion,
@@ -768,34 +778,7 @@ All survivor-structure properties are verified in [
 GapProperties::assertFirstSurvivorIsHead
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and the eight companion lemmas in the same module.
 
-### 5.10 Cycle Residue Classification
-
-For any cycle and modulus `d > 0`, the values of the cycle fall into exactly
-one of three residue categories modulo `d`:
-
-```math
-\begin{aligned}
-\text{all-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) = 0
-  && \text{[Filter removes everything]} \\
-\text{none-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) \neq 0
-  && \text{[Filter has no effect]} \\
-\text{some-zero:} &\quad \exists k_0 : \text{mod}(\text{cycle}(k_0), d) = 0
-  \;\land\; \exists k_1 : \text{mod}(\text{cycle}(k_1), d) \neq 0
-  && \text{[Filter removes specific positions]}
-\end{aligned}
-```
-
-These three states are detected by `MemCycle.checkMod(d)` and stored in lists
-(`modIsZeroForAllValues`, `modIsZeroForNoneValues`, `modIsZeroForSomeValues`).
-The evaluation is idempotent — the cycle's values list never changes, only the
-classification metadata is updated. Ten lemmas in `CycleCheckMod.scala` prove
-the classification is correct, mutually exclusive, and exhaustive.
-
-These properties are verified in the [
-CycleCheckMod
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
-
-## 6. Conclusion
+## 7. Conclusion
 
 This article extends the previously verified foundations for recursive lists,
 discrete integrals, modulo arithmetic, and cycles to define and reason about
@@ -803,10 +786,10 @@ Cycle Integrals. Starting from a finite non-empty list, the construction treats
 the list as a repeating cycle and describes the accumulated value at any
 non-negative index using the cycle sum, modular position, and initial value.
 
-We defined two equivalent presentations of Cycle Integral:
-
-1. **CycleIntegral** — recursive accumulation over a memory-backed cycle (Section 3.1)
-2. **ModCycleIntegral** — closed-form using division and modulo (Section 3.2)
+We defined two equivalent presentations of Cycle Integral: **CycleIntegral**,
+a recursive accumulation over a memory-backed cycle ([§3.1](#31-recursive-cycle-integral)),
+and **ModCycleIntegral**, a closed-form definition using division and modulo
+([§3.2](#32-modulo-cycle-integral)).
 
 For both presentations, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of the recursive and modulo definitions.
 
@@ -881,7 +864,7 @@ I'_{i}=I_{i+1}
 The verified definitions provide a reusable foundation for reasoning about infinite periodic
 accumulations using finite list structures and machine-checked Scala code.
 
-## 7. Future Work
+## 8. Future Work
 
 The nearest continuation is to close the remaining index-shift properties in
 Section 5. Those statements already have mathematical derivations in the
@@ -898,20 +881,16 @@ rather than a direct continuation of the present proof.
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
+Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Unpublished manuscript.  
-Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ (5th ed.). Oxford University Press. §5.4 (Chinese Remainder Theorem), §15.1 (Sieve of Eratosthenes).
