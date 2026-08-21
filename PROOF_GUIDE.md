@@ -165,6 +165,102 @@ convention and formatting/width guidance.
 \end{aligned}
 ```
 
+## Common Rigor Failures (Review Checklist)
+
+These five patterns were found, live, while auditing chapter 4's articles
+(`cycle.md`, `integral.md`, `integral-cycle.md`) against their own cited
+Scala source. Each one *looked* rigorous on a fast read — proper
+headings, a `[Q.E.D.]` tag, a working link to source — and only broke
+down once someone actually opened the cited lemma or traced a reference
+to where it pointed. Check for all five before calling a property
+section done, and re-check them whenever a section is restructured,
+since reordering can silently turn a citation into a forward reference.
+
+### Anti-Pattern: A Q.E.D. Label Is Not a Proof
+
+Restating the theorem statement and appending `[Q.E.D.]` is a label, not
+a derivation:
+
+```markdown
+​```math
+\begin{aligned}
+\text{rotate}(L, k)_i = L_{(i+k) \bmod n} \quad \text{[Q.E.D.]}
+\end{aligned}
+​```
+```
+
+Every such claim needs a real `**Proof.**` paragraph: explicit
+substitution steps, an induction with a stated base case and inductive
+step, or an explicit case split — not a sentence or two that only names
+the Scala lemma verifying it, and not a bare restatement of the claim
+with a label tacked on. A cheap, reliable tell: if a `\blacksquare` mark
+is missing from a Q.E.D. block that every other proved claim in the
+article carries, that block's derivation was probably never actually
+written down.
+
+### Anti-Pattern: A Named Citation Is Not a Different Fact
+
+Before citing a Scala lemma, open it and read the function body — not
+just its docstring or its name. A repeated failure mode: two sections
+each cite a differently-named lemma —
+
+```markdown
+This property is verified in `Module.assertShiftAtBoundary`.
+...
+This property is verified in `Module.assertWrapsAfterPeriod`.
+```
+
+— and both names turn out, on inspection, to be thin wrappers that
+immediately delegate to the same third lemma, with no independent proof
+content of their own (a `require`/one-line-body pattern is the tell —
+check for it explicitly). If two claims are backed by citations that
+resolve to the same underlying call, the article has manufactured a
+distinction that does not exist. Merge the two claims into one, or state
+plainly that the second is the same identity applied at a different call
+site; do not write two proofs for one fact.
+
+### Anti-Pattern: Borrowing a Scala Name as Math Notation Without Defining It
+
+Do not introduce math notation by mirroring a Scala field or method name
+— e.g. writing `\text{total}(x)` in a math block because the Scala class
+has a `.total` field — without a formal definition earlier in the
+article. This matters doubly when the borrowed name could mislead about
+the finiteness of what it names: a name like "total" or "sum" attached
+to an object that is itself unbounded (an infinite, strictly-increasing
+stream, not the finite structure underneath it) reads as if it sums
+infinitely many terms. Ask: does this name still make sense if a
+skimming reader takes it to mean the English word, applied to the thing
+it's attached to? If not, pick a name that survives that reading — e.g.
+`periodTotal(x)` instead of bare `total(x)` when `x` is unbounded but
+the quantity itself is really a total over one finite period — and
+define it explicitly before first use.
+
+### Anti-Pattern: A Vague Backward Reference
+
+"The property cited above," or a proof-step tag like `[X, above]`, sends
+the reader searching an unspecified distance backward. Every
+cross-section reference should be a `[§N](#anchor)` link. A
+same-subsection reference is fine as bare prose only when it is
+genuinely local — a few lines away, inside the same math block or the
+immediately preceding paragraph. If resolving "above" requires the
+reader to scroll past an intervening subsection, it should be a real
+`§N` link instead.
+
+### Anti-Pattern: Proof Order That Doesn't Match Dependency Order
+
+When section B's proof uses a fact that section A establishes, A must
+come before B in reading order — not just be citable from B.
+Restructuring an article (splitting a chapter, promoting a subsection)
+can silently turn a valid citation into a forward reference if the
+dependency wasn't checked first. Before reordering, trace which
+sections' proofs actually use which other sections' conclusions (read
+the derivations, not just the section titles), and order accordingly. A
+vague backward reference (previous anti-pattern) is often the symptom
+that lets a forward dependency go unnoticed in the first place: a proof
+step justified only by a descriptive bracket label, with no `§N`
+pointer at all, gives no way to check whether the fact it leans on is
+actually established yet.
+
 ## Stainless Verification
 
 ### Code Placement

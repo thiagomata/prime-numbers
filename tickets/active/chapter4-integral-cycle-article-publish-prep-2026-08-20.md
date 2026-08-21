@@ -13,6 +13,11 @@
 
 ## Related Tickets
 
+- `chapter4-cycle-integral-md-rigor-audit-2026-08-21.md` (open) — the
+  same "manufactured distinction" pattern found here (§5.1's
+  `assertPeriodicShift`/`assertFullCycleShift`) also shows up in
+  `cycle.md` §5.9 and `integral.md` §4.3/§5.3 — a repo-wide habit, not
+  isolated to this article.
 - `chapter4-cycle-article-publish-prep-2026-08-19.md` (deleted, folded
   into commit `c79d605c`) — established pattern: full read, rule-by-rule
   audit, present findings for confirmation before editing.
