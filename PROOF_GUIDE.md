@@ -167,14 +167,15 @@ convention and formatting/width guidance.
 
 ## Common Rigor Failures (Review Checklist)
 
-These five patterns were found, live, while auditing chapter 4's articles
+These patterns were found, live, while auditing chapter 4's articles
 (`cycle.md`, `integral.md`, `integral-cycle.md`) against their own cited
 Scala source. Each one *looked* rigorous on a fast read — proper
 headings, a `[Q.E.D.]` tag, a working link to source — and only broke
-down once someone actually opened the cited lemma or traced a reference
-to where it pointed. Check for all five before calling a property
-section done, and re-check them whenever a section is restructured,
-since reordering can silently turn a citation into a forward reference.
+down once someone actually opened the cited lemma, traced a reference to
+where it pointed, or rendered the math instead of eyeballing the source.
+Check for all of them before calling a property section done, and
+re-check them whenever a section is restructured, since reordering can
+silently turn a citation into a forward reference.
 
 ### Anti-Pattern: A Q.E.D. Label Is Not a Proof
 
@@ -260,6 +261,105 @@ that lets a forward dependency go unnoticed in the first place: a proof
 step justified only by a descriptive bracket label, with no `§N`
 pointer at all, gives no way to check whether the fact it leans on is
 actually established yet.
+
+### Anti-Pattern: Aligned-Block Row/Column Mismatch
+
+Every row inside one `\begin{aligned}...\end{aligned}` block must have
+the same number of `&` alignment points as every other row that isn't a
+fully unaligned single statement (a bare `\therefore` closer, with zero
+`&`, is fine on its own). KaTeX/MathJax line up column N across every
+row that has one; a row with a different `&` count than its neighbors
+doesn't raise an error, it silently misaligns — a citation label lands
+under nothing, or a continuation clause reads as its own detached
+column:
+
+```markdown
+​```math
+\begin{aligned}
+a < n &\implies f(a) = g(a) \;\land\; f(b) = g(b)
+  && \text{[Some Lemma]} \\
+\implies f(a) \bmod d = 0 \;&\land\; f(b) \bmod d \neq 0
+\end{aligned}
+​```
+```
+
+The first row has three `&` (`&\implies`, then the double `&&` before the
+citation); the second has one. Count the `&` in each row before
+publishing a multi-row block — a raw-source read alone won't catch this,
+since ragged columns are invisible until rendered. Whenever an edit
+touches more than one or two math blocks, render every ` ```math ` fence
+through an actual LaTeX engine (e.g. KaTeX) instead of eyeballing the
+source; this mismatch and the next anti-pattern were only caught this
+way, not by reading the markdown.
+
+### Anti-Pattern: Math Escaped Into a Code Span
+
+Single backticks are for source identifiers and literal code, never for
+LaTeX (see the inline-math rule under Stainless Verification below).
+A subscript, a backslash command, or a comparison chain inside backticks
+renders as literal monospace text — underscores, backslashes, and all —
+not as math:
+
+```markdown
+Let `j_0, j_1 \in [0, n)` be indices of one such value on each side.
+```
+
+renders as the literal string `j_0, j_1 \in [0, n)`, not "j₀, j₁ ∈ [0,
+n)". The tell is mechanical: does the text inside a pair of backticks
+contain a `\`, a `_` followed by a digit or brace, or a `^{`? If so, it's
+math wearing a code span — switch to `$...$`. Reserve backticks for bare
+identifiers (`ModCycle`, `checkMod(d)`, `L`) that don't need subscripts
+or LaTeX commands to read correctly.
+
+### Anti-Pattern: A Citation Proves Less Than It's Used For
+
+Before using a proved theorem to justify a step, check that the objects
+on *both* sides of the step's equation are the objects the theorem
+actually names — not one of them plus a third notion introduced
+separately and only informally identified with one side. A prior theorem
+"`A = B`" does not license writing "`A = C`" just because some earlier
+prose said, in passing, that `C` and `B` "are the same picture." If `C`
+needs its own definition to license that step, give it one explicitly
+(`C := B`, stated as a definition, not a claim) and cite that definition
+alongside the theorem, rather than letting the theorem's name alone
+carry both jobs.
+
+### Anti-Pattern: A Definition Reachable Only From the Wrong Heading
+
+A reader following the article's own overview bullets or table of
+contents jumps directly to a subsection by its anchor — they do not
+necessarily arrive by reading every preceding line. If a symbol a
+subsection uses is defined in the tail of a *different*, thematically
+unrelated subsection above it, a reader who jumps straight in via that
+anchor never sees the definition, even though it is, technically,
+earlier in the file. Every numbered subsection a reader can link to
+directly should be self-contained: define what it needs (or point to
+where it's defined) right where it's used, not rely on prose that
+happens to sit physically above it under someone else's heading.
+
+### Anti-Pattern: Reinventing Notation a Sibling Article Already Established
+
+Before introducing notation for a recurring concept (list repetition,
+rotation, periodicity), check whether a published sibling article in the
+same chapter already named it. Two articles in the same series using
+different notation for the same idea (`repeat(V, t)` in one, `L^{(x)}`
+in another, for the same "x copies concatenated" operation) reads as if
+two different authors wrote them, and forces a reader moving between
+articles to re-learn a concept they already know under a different name.
+Grep the chapter's other articles for the concept before naming it.
+
+### Anti-Pattern: Reproving an Already-Established Fact
+
+The mirror image of "A Q.E.D. Label Is Not a Proof" above: a
+from-scratch induction where the claim is actually a one-line corollary
+of a result already proven earlier in the article. A tell: the induction
+re-derives a generic fact about the underlying data structure (e.g.
+"every valid index into a non-negative list is non-negative") that has
+nothing to do with what *this* section is supposed to be adding, when an
+earlier section already established that the quantity in question is
+literally equal to some element of that structure. Before writing a base
+case and inductive step, check whether substituting an already-proven
+equality collapses the claim to something immediate.
 
 ## Stainless Verification
 

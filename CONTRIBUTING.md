@@ -256,6 +256,12 @@ Every article must pass these checks before publication:
     cannot).
     Future work should explain the next mathematical directions and their
     relationship to the article's scope.
+    When the conclusion's prose states a count ("we verified N
+    properties"), that number must equal both the count of items named in
+    the prose's own enumeration and the number of rows in the recap math
+    block — recount both by hand whenever a section is added, removed,
+    split, or merged, since it is easy to update the number while leaving
+    the list it's supposed to describe out of sync (or vice versa).
 
 20. **Mermaid diagrams** — For multi-variant definitions (cycle, integral),
     include a Mermaid `classDiagram` block after the intro bullets showing
