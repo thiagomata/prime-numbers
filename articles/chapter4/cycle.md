@@ -407,7 +407,7 @@ For positions beyond the first cycle, both definitions reduce the position by th
 
 ```math
 \begin{aligned}
-\text{ModCycle}_{(i - n)}           &= \text{RecCycle}(i - n)   \quad &\text{[By Induction Hypothesis]} \\
+\text{ModCycle}_{(i - n)}           &= \text{RecCycle}_{(i - n)}   \quad &\text{[By Induction Hypothesis]} \\
 i \geq n \implies i \text{ mod } n  &= (i - n) \text{ mod } n  \quad &\text{[Quotient Invariance Under Linear Shift]} \\
 \text{ModCycle}_i   &= L_{(i \text{ mod } n)}        \quad &\text{[ModCycle Definition]} \\
                     &= L_{((i - n) \text{ mod } n)}  \quad &\text{[Since } i \geq n \text{, } i \text{ mod } n = (i - n) \text{ mod } n \text{]} \\
@@ -981,7 +981,7 @@ lemma.
 
 ## 6. Conclusion
 
-This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eleven properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-period multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, rotation invariance, and the three-way transfer of `MemCycle`'s divisor-residue classification (all-zero, none-zero, some-zero) from the base list to every cycle position.
+This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eleven properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-period multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, rotation invariance, and the all-zero, none-zero, and some-zero transfers of `MemCycle`'s divisor-residue classification from the base list to every cycle position.
 
 ```math
 \begin{aligned}
@@ -998,11 +998,12 @@ n &= |L| \\
 ```
 ```math
 \begin{aligned}
+\text{Cycle}_i &= L[i \bmod n] \quad &\text{[Cycle Element Access]} \\
 \text{Cycle}_{(i + n \cdot m)} &= L [i \bmod n] \quad &\text{[Value Match After Many Loops]} \\
 \text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} \quad &\text{[Two Multiples]} \\
 \text{Cycle}_{i} \bmod d &= \text{Cycle}_{(i \bmod n)} \bmod d \quad &\text{[Mod Propagation]} \\
 \text{key} < n &\implies \text{Cycle}_\text{key} = L_\text{key} \quad &\text{[Small Value Direct Lookup]} \\
-(\forall x \in L,\ x \geq 0) &\implies \text{Cycle}(\text{pos}) \geq 0 \quad &\text{[Cycle Value Positivity]} \\
+(\forall x \in L,\ x \geq 0) &\implies \text{Cycle}_{\text{pos}} \geq 0 \quad &\text{[Cycle Value Positivity]} \\
 \text{Cycle}^{(t)}_\text{pos} &= \text{Cycle}_\text{pos} \quad \forall t > 0 \quad &\text{[Repeated-Cycle Invariance]} \\
 \text{rotateAt}(\text{Cycle}, k)_i &= \text{Cycle}_{i + k} \quad &\text{[Rotation Invariance]} \\
 \text{allZero}(d) &\implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad &\text{[All-Zero Residue Transfer]} \\
