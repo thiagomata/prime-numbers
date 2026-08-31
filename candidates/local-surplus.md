@@ -92,6 +92,158 @@ lower bound for the actual annular population.
 - [2-gap isolation](../properties/sieve-sequence/two-gap-isolation-after-filter-three.md)
 - [Sharp local threshold](../properties/sieve-sequence/sharp-local-two-gap-survival-threshold.md)
 
+## Proved Capacity, Defined Benchmark, and Open Local Transfer
+
+The proof-status boundary is:
+
+| Statement | Status |
+|---|---|
+| Exact `A(p,q)` and the upper bound `A(p,q)<=3p` | **[Mathematically proved]** |
+| `L(p,q)>A(p,q)` implies at least one surviving local 2-gap | **[Proved conditional implication]** |
+| `L_hat(p,q)=(q^2-q)delta_p` | **[Definition; complete-period-density benchmark]** |
+| `L_hat~kappa*p^2/log^2(p)` and `L_hat/(3p)->infinity` | **[Mathematically proved for the defined benchmark only]** |
+| Actual `L>A` in all 186 measured transitions and the measured `L/L_hat` range | **[Empirically checked on a finite sample]** |
+| Actual `L>A` infinitely often, or a sufficient bound on the local discrepancy | **[Open]** |
+
+The two sides of the surplus inequality have very different known scales.
+Write the next prime as `q=p+d`. The exact accepted-strike endpoint is
+
+```math
+K
+=
+\left\lfloor\frac{q^2-1}{p}\right\rfloor
+=
+p+2d+\left\lfloor\frac{d^2-1}{p}\right\rfloor,
+```
+
+and therefore
+
+```math
+A(p,q)=\pi(K)-\pi(p-1).
+```
+
+The raw annular multiple count gives the unconditional upper bound
+
+```math
+A(p,q)
+\le
+2d+\left\lceil\frac{d^2}{p}\right\rceil.
+```
+
+Bertrand's postulate gives `d<p`, so the deliberately loose consequence
+`A(p,q)<=3p` is available without predicting the size of the next prime gap.
+The exact accepted count is normally far below this raw bound.
+
+Immediately before installing `p`, the exact complete-period density of
+2-gap starts is
+
+```math
+\delta_p
+=
+\frac12
+\prod_{\substack{3\le r<p\\r\text{ prime}}}
+\left(1-\frac2r\right).
+```
+
+The recorded measurements use the **ambient-coordinate benchmark** obtained by
+multiplying this density by the length of the value interval `[q,q^2)`:
+
+```math
+\widehat L(p,q)
+=
+(q^2-q)\delta_p.
+```
+
+This is a defined benchmark, not a transfer theorem for actual `L`, and its
+length is not the cardinality of the eligible 2-gap-start window. Under the
+canonical endpoint convention
+
+```math
+W_q=\{x:q\le x\text{ and }x+2<q^2\},
+\qquad
+|W_q|=q^2-q-2.
+```
+
+Actual `L` counts only complete pairs with starts in `W_q`. A strict-start
+benchmark would instead be `(q^2-q-2)delta_p`; it differs from the recorded
+ambient benchmark by exactly `2delta_p` and has the same asymptotic scale. The
+finite `L/L_hat` ratios below refer to the recorded ambient benchmark.
+
+If `C_2` denotes the twin-prime Euler-product constant, the classical Mertens
+product gives
+
+```math
+\delta_p
+\sim
+\frac{\kappa}{\log^2p},
+\qquad
+\kappa=2C_2e^{-2\gamma}\approx0.416,
+```
+
+and hence
+
+```math
+\widehat L(p,q)
+\sim
+\kappa\frac{p^2}{\log^2p}.
+```
+
+At the level of this benchmark, even comparison with the loose raw capacity
+is overwhelmingly favorable:
+
+```math
+\frac{\widehat L(p,q)}{3p}
+\sim
+\frac{\kappa}{3}\frac{p}{\log^2p}
+\longrightarrow\infty.
+```
+
+For the incremental annulus, the corresponding conditional benchmark is
+
+```math
+\widehat L_D(p,q)
+=
+(q^2-p^2)\delta_p
+=
+(2pd+d^2)\delta_p.
+```
+
+On the ordinary average-prime-gap scale `d` comparable to `log(p)`, this is
+of order `p/log(p)` and diverges, while the heuristic accepted-strike scale is
+constant order. This average-scale statement is not a bound for every
+individual consecutive-prime gap.
+
+The exact logical boundary is the local discrepancy
+
+```math
+L(p,q)=\widehat L(p,q)+E^{\mathrm{pre}}_{p,q}.
+```
+
+Neither the complete-period product nor its asymptotic controls
+`E^{pre}_{p,q}` in this distinguished window. Thus the scale separation is a
+benchmark asymptotic, not a proof of `L>A`: an unconditional lower bound
+preventing `E^{pre}_{p,q}` from cancelling essentially the entire main term
+is still the candidate's missing theorem.
+
+The 186 distinct measured transitions with `5<=p<=19429` agree strongly with
+the projected separation:
+
+- the exact accepted count was always between `2` and `5`, with histogram
+  `A=2:90`, `A=3:68`, `A=4:20`, and `A=5:8`;
+- actual `L` divided by the pre-filter benchmark `L_hat` stayed between
+  approximately `0.808` and `1.132`; and
+- the measured surplus grew from `4` to `1,431,886`.
+
+Representative rows are:
+
+| `p` | actual `L` | exact `A` | `L-A` |
+|---:|---:|---:|---:|
+| 37 | 49 | 3 | 46 |
+| 71 | 124 | 2 | 122 |
+| 233 | 765 | 3 | 762 |
+| 467 | 2,391 | 4 | 2,387 |
+| 19,429 | 1,431,888 | 2 | 1,431,886 |
+
 ## Limitation
 
 The conditional inequality is established; the candidate is the recurring

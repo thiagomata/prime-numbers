@@ -81,6 +81,86 @@ A **2-gap** has endpoints `x` and `x+2`; its **2-gap start** is `x`. A
 statement about 2-gap starts is not automatically a statement about all
 accepted values or all numerical prime candidates.
 
+### All-gaps representation and 2-focused compression
+
+The **all-gaps representation** (also called the **raw gap-cycle
+representation**) retains every accepted value and every gap between
+consecutive accepted values. For one complete period of coordinate length
+`P`, write
+
+```math
+0\le a_0<a_1<\cdots<a_{m-1}<P.
+```
+
+Its raw cyclic gaps are
+
+```math
+g_j=a_{j+1}-a_j\quad(0\le j<m-1),
+\qquad
+g_{m-1}=P+a_0-a_{m-1}.
+```
+
+The wrap gap is part of the all-gaps representation. A raw 2-gap is one
+`g_j=2`, with start `a_j`.
+
+The **2-focused compression** is a derived representation of the same sieve
+stage, not a separate sieve stage. It keeps every raw 2-gap as a **2-cell** and
+collapses each maximal cyclic run of consecutive non-2 raw gaps between two
+2-gaps into one **focused run-cell** equal to the sum of those raw gaps. After
+filter `3`, the focused cycle alternates between 2-cells and focused run-cells;
+see the [Two-Focused Compression Alternation Law](
+properties/sieve-sequence/two-focused-alternation-law.md).
+This standard alternating form assumes the complete raw cycle contains at
+least one 2-gap. If it contains none, there are no 2-cells and neither the
+alternation statement nor the one-separator-per-2-cell cyclic count applies.
+
+If `t_j<t_{j+1}` are consecutive raw 2-gap starts in the unwrapped coordinate
+order and `R_focus,j` is their intervening focused run value, then
+
+```math
+t_{j+1}-t_j=2+R_{\mathrm{focus},j}.
+```
+
+This equation is the representation bridge: the focused index records
+adjacency, while `R_focus,j` carries the integer-coordinate distance discarded
+by compression.
+
+For an eligible square-safe window `W_Q` and a pre-filter population `S_i` as
+defined below, the **window-induced focused block** has exactly
+`N_i=|S_i|` 2-cells. It has zero internal focused separators when `N_i=0`, and
+`N_i-1` internal focused separators when `N_i>=1`. Separators connecting the
+first or last selected 2-cell to a 2-cell outside `W_Q` are boundary
+separators, not internal separators, unless a statement explicitly includes
+them. A cyclic complete-period focused graph instead has one focused separator
+per 2-cell, including wrap-around.
+
+Keep the two representations' populations and denominators separate:
+
+- `|W_Q|` counts eligible integer start coordinates; `N_i` counts actual raw
+  2-gap starts in that window and therefore the 2-cells in its induced focused
+  block. In general `|W_Q|!=N_i`.
+- An accepted strike is an integer value in the all-gaps representation. A bad
+  focused separator is a run-cell satisfying a necessary congruence condition
+  for both adjacent 2-cells to be destroyed. It is neither a strike nor a
+  deleted value; accepted-strike count and bad-separator count are different
+  observables. See the [Two-Focused Bad-Separator Deletion Bound](
+  properties/sieve-sequence/two-focused-bad-separator-deletion-bound.md).
+- Complete-period raw 2-gap-start density means complete-period 2-gap count
+  divided by integer period length. The focused 2-cell share after filter `3`
+  is instead exactly `1/2`, with compressed-cell count as denominator. These
+  statements use different denominators and do not conflict.
+- Integer-coordinate distance is not focused-index distance. Multiplying an
+  integer-window length by a raw coordinate density estimates a raw 2-gap
+  count; it must not be justified using the focused `1/2` cell share.
+
+The **local-surplus route** lives in the all-gaps representation: it compares
+a stated pre-filter local 2-gap population with accepted-strike capacity. The
+**bad-separator deletion-graph route** lives in the 2-focused representation:
+it compares 2-cell vertices with good or bad focused-separator edges. A proof
+may bridge the routes through the explicit start set `S_i`, but it must not
+substitute one route's population, capacity, density, or boundary count for
+the other's without that bridge.
+
 ### Candidate
 
 The word **candidate** is overloaded and should be qualified:
@@ -478,6 +558,7 @@ this document for when a symbol belongs here.
 | `r_i` | Filter `i` in an ordered chain | |
 | `p`, `q` | Legacy roles: `p` the installed transition prime, `q` the next head | Valid only when defined locally; new cross-cutting work should prefer `r` and `Q` instead |
 | `x` | A gap start or accepted value under discussion | |
+| `R_focus,j` | Focused run-cell value between consecutive raw 2-gap starts `t_j,t_(j+1)` | Prefer this role-revealing name in cross-cutting work; bare `R` is collision-prone and remains valid only when defined locally |
 | `W_Q` | Eligible square-safe 2-gap-start window, `{x : Q<=x and x+2<Q^2}` | |
 | `S_i` | 2-gap starts in the stated window before filter `r_i` | |
 | `N_i` | `\|S_i\|`, the population size before filter `r_i` | |
