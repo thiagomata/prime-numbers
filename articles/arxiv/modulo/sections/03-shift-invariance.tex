@@ -1,0 +1,53 @@
+\section{DivMod Solution Invariance Under Linear Shift}
+\label{sec:shift-invariance}
+
+Moving one copy of the divisor between quotient and remainder preserves the
+represented dividend; normalization therefore reaches the same final state.
+
+\begin{equation*}
+\begin{aligned}
+\forall a,b,q,r \in \mathbb{Z},\; b \neq 0,\; a &= bq + r \\
+a &= b(q+1) + (r-b) \\
+a &= b(q-1) + (r+b) \\
+\operatorname{DivMod}(a,b,q+1,r-b).\operatorname{solve}
+  &= \operatorname{DivMod}(a,b,q,r).\operatorname{solve} \\
+\operatorname{DivMod}(a,b,q-1,r+b).\operatorname{solve}
+  &= \operatorname{DivMod}(a,b,q,r).\operatorname{solve}
+\end{aligned}
+\end{equation*}
+
+This invariant is verified for the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution}{positive shift}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution}{negative shift}.
+
+\subsection{Creating the Division and Modulo Operations}
+\label{sec:creating-operations}
+
+Using the normalized \texttt{DivMod} value,
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/Calc.scala}{\texttt{Calc.scala}}
+defines $\operatorname{div}$ and $\operatorname{mod}$ as the quotient and
+remainder projections of the solved state. Starting from
+$\operatorname{DivMod}(a,b,0,a)$, let:
+
+\begin{equation*}
+\begin{aligned}
+S &:= \operatorname{DivMod}(a,b,0,a).\operatorname{solve} \\
+q &:= S.\operatorname{div} \\
+r &:= S.\operatorname{mod} \\
+\operatorname{div}(a,b) &:= q \\
+\operatorname{mod}(a,b) &:= r
+\end{aligned}
+\end{equation*}
+
+So $\operatorname{div}(a,b)$ names the normalized quotient, while
+$\operatorname{mod}(a,b)$ names the normalized remainder. In the source code
+these are the \texttt{div} and \texttt{mod} fields of the solved
+\texttt{DivMod}; in the article notation, $q$ and $r$ keep the quotient and
+remainder roles separate from the operation names.
+
+The article uses both functional and infix notation for the same operations:
+$\operatorname{div}(x,y)$ and $x \operatorname{div} y$ are equivalent, as are
+$\operatorname{mod}(x,y)$ and $x \operatorname{mod} y$. Functional notation is
+useful when the operation is nested inside another expression; infix notation
+keeps simple algebraic identities closer to the traditional presentation.

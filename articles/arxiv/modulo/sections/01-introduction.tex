@@ -1,0 +1,54 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Integer division and modulo operations are central tools in discrete
+mathematics, number theory, and algorithms. While their properties are well
+known, rigorous formalization and verification, particularly via recursive
+definitions, offer an interesting alternative to the traditional axiomatic
+model.
+
+This article takes the recursive route. Instead of assuming native division
+and modulo, it defines a state $DivMod(a,b,q,r)$ where $a = bq + r$, then proves
+that normalizing the pair $(q,r)$ preserves the represented dividend and
+reaches the canonical remainder interval. The familiar operations
+$\operatorname{div}$ and $\operatorname{mod}$ are then projections from that
+normalized state.
+
+The mathematical statements below are backed by Scala source verified with
+\href{https://epfl-lara.github.io/stainless/intro.html}{Stainless}. The article
+keeps the proof discussion centered on the properties; source links point to
+the maintained verification code.
+
+This article establishes:
+
+\begin{itemize}
+  \item Foundational identities: trivial case, self-identity, division by one,
+    and agreement with the native modulo operator (Sections~6.1--6.4).
+  \item Linear shift laws under single-step and multiple-step divisor addition
+    (Sections~6.5--6.6).
+  \item Uniqueness and idempotence of the normalized remainder
+    (Sections~6.7--6.8).
+  \item Distributivity of modulo and division over addition and subtraction
+    (Sections~6.9--6.10).
+  \item Divisible-base shift invariance and symmetric remainder pairs
+    (Sections~6.11--6.12).
+  \item The unit-step increment law and zero-density over consecutive integers
+    (Sections~6.13--6.14).
+\end{itemize}
+
+\section{Limitations}
+\label{sec:limitations}
+
+The implementation presented in this article is limited to the division and
+modulo operations for integers. Its goal is to make available a set of lemmas
+and proofs that can be verified and used as a base to prove other properties
+related to the division and modulo operations. Therefore, the implementation
+is optimized to correctness and not to performance.
+
+The use of \texttt{BigInt} in the implementation focused on unbounded
+integers, without the need to worry about overflow or underflow issues. But
+they are still constrained by the memory available in the system. Similarly,
+some lemmas and proofs use the recursive definition of the division and modulo
+operations, which could trigger a stack overflow for large numbers. Those
+issues do not invalidate the mathematical properties proved in this article,
+which are the main focus of this article.

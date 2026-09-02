@@ -1,0 +1,71 @@
+\section{Traditional Definition}
+\label{sec:traditional-definition}
+
+Given integers $\text{dividend}$ and $\text{divisor}$ where
+$\text{divisor} \neq 0$, the division algorithm determines integers
+$\text{quotient}$ and $\text{remainder}$ such that:
+
+\begin{equation*}
+\begin{aligned}
+\forall\, \text{dividend},\text{divisor} \in \mathbb{Z},\;
+\text{divisor} \neq 0,\;
+\exists!\, \text{quotient},\text{remainder} &: \\
+\text{dividend} &= \text{divisor} \cdot \text{quotient} + \text{remainder} \\
+0 &\leq \text{remainder} < \lvert\text{divisor}\rvert \\
+\text{dividend} \operatorname{div} \text{divisor} &:= \text{quotient} \\
+\text{dividend} \operatorname{mod} \text{divisor} &:= \text{remainder}
+\end{aligned}
+\end{equation*}
+
+The first two lines state the division relation and the canonical remainder
+range. The final two lines introduce the operation notation: division returns
+the quotient, and modulo returns the remainder.
+
+\section{Recursive Definition}
+\label{sec:recursive-definition}
+
+We introduce a recursive definition of division and modulo because the proof
+can be built from one invariant: shifting one unit of $b$ between quotient and
+remainder preserves the represented dividend. In Section~5, that invariant
+connects the recursive normal form back to the traditional division equation
+from Section~3.
+
+From here on, $a$ is the dividend, $b$ is the divisor, $q$ is the candidate
+quotient, and $r$ is the candidate remainder. The shorter names keep the
+recursive equations readable while preserving the same roles as the
+traditional definition. We reserve $\operatorname{mod}$ for the modulo
+operation itself.
+
+We define $\operatorname{DivMod}(a,b,q,r)$ such that:
+
+\begin{equation*}
+\begin{aligned}
+\forall a,b,q,r \in \mathbb{Z} : b \neq 0,\; a = bq + r
+\end{aligned}
+\end{equation*}
+
+The solved $\operatorname{DivMod}$ states are those where the remainder $r$
+satisfies:
+
+\begin{equation*}
+\begin{cases}
+0 \leq r < b & \text{if } b > 0, \\
+0 \leq r < -b & \text{if } b < 0.
+\end{cases}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{DivMod.solve}(a,b,q,r) &:={}
+\begin{cases}
+\operatorname{DivMod}(a,b,q,r) & \text{if } 0 \leq r < \lvert b\rvert, \\
+\operatorname{DivMod.solve}(a,b,q+\operatorname{sign}(b),r-\lvert b\rvert)
+  & \text{if } r \geq \lvert b\rvert, \\
+\operatorname{DivMod.solve}(a,b,q-\operatorname{sign}(b),r+\lvert b\rvert)
+  & \text{if } r < 0.
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+The recursive definition is implemented in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/DivMod.scala}{\texttt{DivMod.scala}}.

@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\definecolor{codebackground}{RGB}{247,247,247}
+\definecolor{codecomment}{RGB}{72,112,72}
+\definecolor{codekeyword}{RGB}{32,74,135}
+\definecolor{codestring}{RGB}{164,0,0}
+
+\lstdefinestyle{scala}{
+  backgroundcolor=\color{codebackground},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=false,
+  breaklines=true,
+  columns=fullflexible,
+  commentstyle=\color{codecomment},
+  frame=single,
+  keepspaces=true,
+  keywordstyle=\color{codekeyword}\bfseries,
+  language=Scala,
+  numbers=none,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestring},
+  tabsize=2
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Division and Modulo from Recursive Normalization},
+  pdfauthor={Thiago Henrique Mata}
+}
+
+\title{Division and Modulo from Recursive Normalization}
+\author{%
+  Thiago Henrique Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\IfFileExists{sections/00-abstract.tex}{%
+  \input{sections/00-abstract}
+}{}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\IfFileExists{sections/01-introduction.tex}{%
+  \input{sections/01-introduction}
+}{}
+
+\IfFileExists{sections/02-definitions.tex}{%
+  \input{sections/02-definitions}
+}{}
+
+\IfFileExists{sections/03-shift-invariance.tex}{%
+  \input{sections/03-shift-invariance}
+}{}
+
+\IfFileExists{sections/04-properties.tex}{%
+  \input{sections/04-properties}
+}{}
+
+\IfFileExists{sections/05-conclusion.tex}{%
+  \input{sections/05-conclusion}
+}{}
+
+\IfFileExists{references.bib}{%
+  \bibliographystyle{plain}
+  \bibliography{references}
+}{}
+
+\IfFileExists{sections/06-appendix.tex}{%
+  \appendix
+  \input{sections/06-appendix}
+}{}
+
+\end{document}
