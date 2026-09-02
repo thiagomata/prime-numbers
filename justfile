@@ -353,3 +353,29 @@ spark-cat stage="1" file="gaps":
     for f in "${parts[@]}"; do
       gunzip -c "$f" | tail -n +2
     done | column -t -s,
+
+# Build arXiv article PDF(s): `just arxiv-pdf` builds every article under
+# articles/arxiv/, `just arxiv-pdf modulo` builds one. The PDF is written to
+# articles/arxiv/<article>/output/pdf/<article>.pdf; auxiliary LaTeX files
+# stay in a per-article scratch dir under $TMPDIR (outside the repository).
+arxiv-pdf article="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base="{{justfile_directory()}}/articles/arxiv"
+    if [[ -n "{{article}}" ]]; then
+      dirs=("$base/{{article}}")
+    else
+      dirs=("$base"/*/)
+    fi
+    for dir in "${dirs[@]}"; do
+      if [[ ! -f "$dir/main.tex" ]]; then
+        continue
+      fi
+      name=$(basename "$dir")
+      build="${TMPDIR:-/tmp}/arxiv-build-$name"
+      mkdir -p "$build"
+      (cd "$dir" && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$build" main.tex)
+      mkdir -p "$dir/output/pdf"
+      cp "$build/main.pdf" "$dir/output/pdf/$name.pdf"
+      echo "Built $dir/output/pdf/$name.pdf"
+    done

@@ -136,12 +136,35 @@ tracked source package.
   continuation-row idiom (`&\qquad` break before the closing factor);
   content unchanged. The eleven-page compile is green with zero log issues;
   pages ten and eleven render cleanly.
-- A preview PDF for the author is now materialized at
-  `articles/arxiv/modulo/output/pdf/main.pdf` (11 pages, LaTeX-compiled,
+- A preview PDF for the author is now materialized under
+  `articles/arxiv/modulo/output/pdf/` (11 pages, LaTeX-compiled,
   zero-warning log). Iteration compiles still use throwaway `/tmp`
-  directories; this is the package's first persistent PDF artifact.
+  directories; this is the package's persistent PDF artifact.
   Note: the repo has no `.gitignore` coverage for `output/`, so the preview
   PDF currently shows as untracked.
+- Author review feedback on alignment fixed: (a) §6.12's premise row floated
+  right-of-center because its `b &> 0` alignment point was shared with the
+  long equation row below; both rows now use the flush-left leading-`&`
+  house pattern. (b) Single-row statements with a `&&\text{[tag]}` column
+  leave the tag floating in a stretched gap (the tag column only looks neat
+  in multi-row blocks where tags align vertically); the three §6.14
+  statements were normalized to a leading-`&` row with the tag hugging the
+  equation via `\quad`. The multi-row tagged blocks (§6.14 Q.E.D. chain,
+  Conclusion recap) keep the `&&` column, where it renders as a proper
+  aligned tag column. Recompiled green (exit 0, zero log issues), affected
+  regions re-rendered and verified, preview PDF refreshed.
+- Build tooling and knowledge capture, per author request: (a) new
+  `just arxiv-pdf [article]` recipe builds every article under
+  `articles/arxiv/` (or one named article) via `latexmk` with a scratch
+  `$TMPDIR` outdir and writes `articles/arxiv/<article>/output/pdf/
+  <article>.pdf`; validated end-to-end (11 pages, exit 0). (b) The preview
+  PDF was renamed from `output/pdf/main.pdf` to `output/pdf/modulo.pdf` so
+  the artifact carries the article name. (c) The durable conversion
+  conventions are captured in `articles/arxiv/CONVERSION_GUIDE.md`
+  (frozen-source rules, package layout, alignment house style, overflow and
+  long-link tooling, ghostscript validation loop, per-article checklist)
+  so the remaining articles can be converted without rediscovering the
+  pitfalls.
 
 ## Expected State
 
@@ -332,3 +355,5 @@ verification log) follows.
 | 2026-09-02 | Appended §6.11–6.12; eight-page build green (exit 0, zero log issues); corollary, Q.E.D. chains, and paragraph indentation all render correctly. | Append §6.13–6.14 (unit-step increment law, zero density) and compile. |
 | 2026-09-02 | The §6.14 links paragraph overflowed (93pt) because four unbreakable 38-char `\texttt` identifiers defeat justification. Three fix attempts hit the stop-and-ask gate; with the author unavailable, best judgment resolved it: `microtype` in the preamble plus a scoped `\raggedright` for that paragraph. Nine-page build is green with zero log issues. Durable lessons: (a) mixing prose with multiple long unbreakable `\texttt` tokens requires scoped ragged-right, `\allowbreak` alone cannot save justification; (b) `microtype` is safe here and benefits the whole manuscript; (c) poppler tools absent in this environment — ghostscript `png16m`/`txtwrite` are the standing render/extract substitutes. | Convert §7 Conclusion and §8 Future Work into `sections/05-conclusion.tex`. |
 | 2026-09-02 | Converted the Conclusion (14 tagged recap blocks) and Future Work; two distributivity recap identities overflowed (11–25pt) under their new tag columns and were fixed by the amsmath continuation-row idiom (`&\qquad` wrap before the closing factor) — content unchanged, zero log issues, 11 pages, pages ten/eleven render cleanly. Also learned: `gs -o file.png` without `%d` overwrites one file for all pages; always use `-%02d` patterns when counting pages. A persistent author-preview PDF now lives at `output/pdf/main.pdf` (untracked; repo has no `.gitignore` for it). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
+| 2026-09-02 | Author alignment review: (a) a quantifier/premise row sharing an alignment point with a long equation row floats right-of-center — use the flush-left leading-`&` pattern for premise+equation statement blocks (§6.12 fixed); (b) `&&\text{[tag]}` on a SINGLE-row aligned leaves the tag floating in a stretched gap — on single-row statements, hug the tag with `\quad` after a leading-`&` (the three §6.14 statements normalized); keep `&&` tag columns only for multi-row blocks where they align vertically (§6.14 Q.E.D. chain, Conclusion recap — unflagged). Preview PDF refreshed; commit `076a253a` holds the pre-fix state. | Apply the same review lens to remaining units; create `references.bib` + `\cite`. |
+| 2026-09-02 | Delivered author tooling requests: `just arxiv-pdf [article]` recipe (validated end-to-end; latexmk into `$TMPDIR` scratch, PDF copied to `output/pdf/<article>.pdf`), renamed the preview `main.pdf` to `modulo.pdf` so the artifact carries the article name, and captured the durable conversion conventions in `articles/arxiv/CONVERSION_GUIDE.md` — the playbook the next article conversions should follow (frozen-source rules, numbering coincidence requirement, alignment house style, overflow/long-link fixes, ghostscript validation loop, per-article checklist). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
