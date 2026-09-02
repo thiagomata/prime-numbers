@@ -56,11 +56,11 @@ contracts that can be checked by Stainless, a verifier for Scala programs
 
 The proof is organized into these property groups:
 
-- stage semantics and complete increasing enumeration - Section 3;
-- canonical period and finite gap-cycle reconstruction - Section 4;
-- repeated-cycle invariance, exact filtering, and copy-or-merge dynamics - Section 5;
-- next-head primality and next-stage agreement - Section 6;
-- conditional assumptions and open composition problems - Section 7.
+- stage semantics and complete increasing enumeration - [§3](#3-linear-stage-semantics);
+- canonical period and finite gap-cycle reconstruction - [§4](#4-period-and-cycle-reconstruction);
+- repeated-cycle invariance, exact filtering, and copy-or-merge dynamics - [§5](#5-installing-the-current-head-as-a-filter);
+- next-head primality and next-stage agreement - [§6](#6-the-next-stage);
+- conditional assumptions and open composition problems - [§7](#7-exact-proof-boundary).
 
 The mathematical object is separate from its proof namespaces. `SpecSieveSequence`
 is the data model and linear semantic specification. Independent property
@@ -72,10 +72,10 @@ and head-primality theorems.
 This section fixes the notation, relates the linear and cyclic views, and states
 how to interpret a Stainless-verified contract.
 
-- Section 2.1 defines one stage and its acceptance predicate.
-- Section 2.2 defines the finite period and gap cycle.
-- Section 2.3 maps the proof architecture.
-- Section 2.4 explains the verification boundary.
+- [§2.1](#21-stage-definition) defines one stage and its acceptance predicate.
+- [§2.2](#22-period-and-gap-cycle) defines the finite period and gap cycle.
+- [§2.3](#23-source-evidence-map) maps the proof architecture.
+- [§2.4](#24-verification-evidence) explains the verification boundary.
 
 ### 2.1 Stage Definition
 
@@ -125,17 +125,17 @@ later stage head will remove.
 ### 2.2 Period and Gap Cycle
 
 Because every $q\in\overline{P}$ divides $M$, acceptance is unchanged by
-adding $M$:
+adding $M$ within the stage domain $v\ge h$:
 
 ```math
 \begin{aligned}
 A_S(v+M)
 &\Longleftrightarrow
-\forall q\in\overline{P},\
-(v+M)\not\equiv0\pmod q \\
+(v+M)\ge h\ \land\
+\forall q\in\overline{P},\ (v+M)\not\equiv0\pmod q \\
 &\Longleftrightarrow
-\forall q\in\overline{P},\
-v\not\equiv0\pmod q \\
+v\ge h\ \land\
+\forall q\in\overline{P},\ v\not\equiv0\pmod q \\
 &\Longleftrightarrow A_S(v).
 \end{aligned}
 ```
@@ -184,7 +184,8 @@ repository. The preconditions in those contracts are part of the theorem
 statement, and the article states them in mathematical form before linking to
 the source. This keeps the mathematical result and the Stainless evidence
 aligned without relying on repository-wide verification-condition totals, which
-change when unrelated functions are added.
+change when unrelated functions are added. The verification framework's
+formal foundations are described in [[8]](#ref8).
 
 ## 3. Linear Stage Semantics
 
@@ -239,7 +240,7 @@ gap is positive.
   &&\text{[Integer order]} \\
 g_k
 &=\ell_{k+1}-\ell_k\gt0
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -271,7 +272,7 @@ A_S(v+M) &= A_S(v)
 \ell_{k+T} &= \ell_k+M
   &&\text{[Same ordered survivor]} \\
 \ell_{k+nT} &= \ell_k+nM
-  &&\text{[Block induction; Q.E.D.]}.
+  &&\text{[Block induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -307,7 +308,7 @@ I_G(k)
 &=\ell_k+(\ell_{k+1}-\ell_k)
   &&\text{[Induction hypothesis]} \\
 &=\ell_{k+1}
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -331,7 +332,7 @@ G^{\langle h\rangle}_{k\bmod hT}
   &=G_{k\bmod T}, \\
 I_{G^{\langle h\rangle}}(k)
   &=I_G(k)
-  \quad\text{[Equal increments and initial value; Q.E.D.]}.
+  \quad\text{[Equal increments and initial value]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -377,7 +378,7 @@ N_{\mathrm{removed}} &= T
 N_{\mathrm{survive}}
   &=hT-T \\
   &=T(h-1)
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -433,7 +434,7 @@ which is a contradiction. Therefore
 
 ```math
 j_L\ne j_R.
-\qquad[\text{Q.E.D.}]
+\qquad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 ```scala
@@ -499,7 +500,7 @@ D_L\cap D_R&=\varnothing
 D&=D_L\cup D_R,
 &&[\text{By Definition}]\\
 |D|&=|D_L|+|D_R|=2.
-&&[\text{Q.E.D.}]
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -560,7 +561,7 @@ expected value or an independence heuristic.
 N_{\mathrm{endpoint\text{-}surviving}}
 &=p-|D|\\
 &=p-2.
-&&[\text{Substitution; Q.E.D.}]
+&&\text{[Substitution]}\quad\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -606,7 +607,7 @@ g'_m=\ell_{k+1}-\ell_k=g_k,
 g'_m=\ell_j-\ell_k \\
 &=\sum_{i=k}^{j-1}(\ell_{i+1}-\ell_i) \\
 &=\sum_{i=k}^{j-1}g_i.
-  &&\text{[Merge; Q.E.D.]}
+  &&\text{[Merge]}\quad\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -627,7 +628,7 @@ gap list. This property is verified in [
 
 ### 5.4 Filtering the Repeated Cycle Preserves the Semantic Result
 
-Section 4.3 proved pointwise equality between the base and repeated cycle
+[§4.3](#43-repetition-does-not-change-the-infinite-sequence) proved pointwise equality between the base and repeated cycle
 integrals. Applying the same divisibility predicate at the same positions must
 therefore select identical survivor values. Equal survivor lists have equal
 adjacent-gap lists:
@@ -643,7 +644,7 @@ I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 &=\text{survivors}(I_G,h) \\
 \text{gaps}(\text{survivors}(I_{G^{\langle h\rangle}},h))
 &=\text{gaps}(\text{survivors}(I_G,h))
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -656,7 +657,7 @@ This property is verified in [
 The next stage installs the current head as a filter, starts at the following
 prime, and represents its own accepted sequence by a new finite gap cycle.
 Throughout this section, a prime marks the next stage's own version of each
-object defined in Section 2: $S'$ is the next stage, $h'=\ell_1$ its head,
+object defined in [§2](#2-preliminaries): $S'$ is the next stage, $h'=\ell_1$ its head,
 $M'$ its tail primorial, $\ell'$ its linear enumeration, and $G'$ its gap
 cycle.
 
@@ -685,7 +686,7 @@ d\mid\ell_1
 &\Longrightarrow \neg A_S(\ell_1)
   &&\text{[Filter contradiction]} \\
 &\Longrightarrow \ell_1\text{ is prime}.
-  &&\text{[Q.E.D.]}
+  &&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -713,7 +714,7 @@ A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
 h\lt\ell_1\le p^+,
 \quad \ell_1\text{ prime}
   &\Longrightarrow \ell_1=p^+
-  &&\text{[No intervening prime; Q.E.D.]}.
+  &&\text{[No intervening prime]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -725,15 +726,16 @@ This property is verified in [
 
 Let $T'=T(h-1)$. Under the stated stage-relationship invariants, the semantic
 merge process starts at the first surviving old value and emits $T'$ merged
-gaps. Section 5.2 proves recursively that this list equals the first $T'$
-gaps of the next linear specification:
+gaps. [§5.3](#53-copy-or-merge-gap-dynamics) supplies the copy-or-merge
+induction used to prove that this list equals the first $T'$ gaps of the next
+linear specification:
 
 ```math
 \begin{aligned}
 T'&=T(h-1), \\
 \text{mergedGaps}(S,S',1,T')
 &=\text{gapList}(S',0,T')
-  \quad\text{[By copy-or-merge induction; Q.E.D.]}.
+  \quad\text{[By copy-or-merge induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -744,7 +746,7 @@ This property is verified in [
 ### 6.4 Conditional Next-Cycle Reconstruction
 
 If $T'$ is known to be the canonical period of the next stage, the generic
-cycle-reconstruction theorem from Section 4.2 applies directly to that stage:
+cycle-reconstruction theorem from [§4.2](#42-gap-cycle-reconstruction) applies directly to that stage:
 
 ```math
 \begin{aligned}
@@ -752,7 +754,7 @@ cycle-reconstruction theorem from Section 4.2 applies directly to that stage:
   &&\text{[Next-period boundary]} \\
 G'&=\text{gapList}(S',0,T') \\
 I_{G'}(k-1)&=\ell'_k
-  &&\text{[Cycle reconstruction; Q.E.D.]}.
+  &&\text{[Cycle reconstruction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -773,11 +775,14 @@ This section states the boundary as part of the theorem.
   Bertrand's postulate is an external mathematical dependency here, not a
   Stainless theorem in this development.
 
-- **Count-to-period bridge.** Section 5.1 verifies that filtering the complete
-  expanded current-stage window leaves exactly $T(h-1)$ values. Section 6.3
-  separately reconstructs the next stage when
-  $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next canonical-period
-  equation from the same-head count is a distinct open composition theorem.
+- **Count-to-period bridge.** [§5.1](#51-exact-survivor-count) verifies that
+  filtering the complete expanded current-stage window leaves exactly
+  $T(h-1)$ values. [§6.3](#63-semantic-pipeline-agreement) separately
+  establishes the semantic gap-prefix agreement, while
+  [§6.4](#64-conditional-next-cycle-reconstruction) reconstructs the next
+  stage when $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next
+  canonical-period equation from the same-head count is a distinct open
+  composition theorem.
 
 - **Direct cycle-to-cycle construction.** Repetition preserves the represented
   values; filtering the base and repeated views gives equal survivor lists and
@@ -787,7 +792,7 @@ This section states the boundary as part of the theorem.
   semantic merged-gap prefix, followed by packaging those gaps into a new
   integral cycle.
 
-- **No short-window gap-persistence theorem.** Section 5.2 proves that exactly
+- **No short-window gap-persistence theorem.** [§5.2](#52-exact-lifted-copy-law-for-a-real-2-gap) proves that exactly
   $h-2$ lifts of one real linear 2-gap keep both endpoints over a complete
   lift block. It does not imply that one of those lifts lies in a shorter
   interval such as $[h,h^2)$, nor does it yet aggregate the cyclic wrap gap

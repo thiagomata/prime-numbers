@@ -347,17 +347,22 @@ always produces a larger value.
 \begin{aligned}
 init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \;\land\; b > a \implies
 \text{CycleIntegral}(L, init)_b > \text{CycleIntegral}(L, init)_a
-\quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
-**Proof.** By induction on $b - a$. The base case combines the step
-property ([§3.1](#31-recursive-cycle-integral)) with cycle value
-positivity, proved in the companion article [Formal Verification of
-Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md#57-cycle-value-positivity)
-[[3]](#ref3): the next cycle value is positive, so the integral strictly
-grows by one step. The inductive step chains one more positive step onto
-an already-larger value.
+**Proof.** Induct on $b-a$. The base case is one positive step; the
+inductive step adds one more positive cycle value.
+
+```math
+\begin{aligned}
+b=a+1 &\implies CI_b-CI_a=\text{Cycle}(L)_b>0 &&\text{[§3.1 and cycle positivity]} \\
+       &\implies CI_b>CI_a, \\
+CI_{b-1}>CI_a,\quad CI_b-CI_{b-1}=\text{Cycle}(L)_b>0
+       &\implies CI_b>CI_{b-1}>CI_a \\
+\therefore\ CI_b &> CI_a.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in the [
 CycleIntegralProperties::assertCycleIntegralIncreasing
@@ -372,16 +377,22 @@ positive, the cycle integral is positive at every position.
 \begin{aligned}
 init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \implies
 \text{CycleIntegral}(L, init)_i > 0
-\quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
-**Proof.** By induction on $i$. The base case reduces to cycle value
-positivity at position 0, the same companion property cited in
-[§4.4](#44-cycle-integral-strictly-increasing). The
-inductive step adds the positive cycle value at position $i$
-([§4.1](#41-next-position)) to an already-positive integral at position
-$i - 1$.
+**Proof.** At the first position, the non-negative initial value and a
+positive cycle value give a positive integral. Every later position adds one
+more positive cycle value.
+
+```math
+\begin{aligned}
+CI_0 &= init+\text{Cycle}(L)_0>0, \\
+CI_{i-1}>0,\quad CI_i-CI_{i-1}=\text{Cycle}(L)_i>0
+  &\implies CI_i>0 \\
+\therefore\ CI_i &> 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in the [
 CycleIntegralProperties::assertCycleIntegralPositive
@@ -531,7 +542,6 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 \begin{aligned}
 \text{mod}(\text{periodSum}(ci),\; m) = 0 \;\implies\;
 \text{mod}(\text{ci}(\text{pos}),\; m) = \text{mod}(\text{ci}(\text{pos} \bmod \text{period}(ci)),\; m)
-\quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -572,7 +582,7 @@ ci(\text{pos}) &= ci(\text{previous}) + \text{periodSum}(ci)
 ```
 
 ```math
-\therefore \ \text{mod}(\text{periodSum}(ci), m) = 0 \implies \forall \ \text{pos} \in \mathbb{N}_0,\ \text{mod}(ci(\text{pos}), m) = \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m) \quad \blacksquare
+\therefore \ \text{mod}(\text{periodSum}(ci), m) = 0 \implies \forall \ \text{pos} \in \mathbb{N}_0,\ \text{mod}(ci(\text{pos}), m) = \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m) \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
 This property is verified in the [
@@ -592,7 +602,6 @@ residue is never zero at any position, forever.
 \begin{aligned}
 \text{mod}(\text{periodSum}(ci), v) = 0 \;\land\; \big(\forall\, k \in [0, n),\ \text{mod}(ci(k), v) \neq 0\big)
 \implies \forall\, i \in \mathbb{N}_0,\ \text{mod}(ci(i), v) \neq 0
-\quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -600,6 +609,15 @@ residue is never zero at any position, forever.
 = \text{mod}(ci(i \bmod n), v)$ for every position $i$. Since $i \bmod n$
 always falls in $[0, n)$, and none of those $n$ residues is zero by
 hypothesis, the residue at any position $i$ cannot be zero either.
+
+```math
+\begin{aligned}
+\text{mod}(ci(i),v) &= \text{mod}(ci(i \bmod n),v) &&\text{[§5.2]} \\
+                      &\neq 0 &&\text{[In-period hypothesis]} \\
+\therefore\ \text{mod}(ci(i),v) &\neq 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This is a direct corollary of the periodicity lemma [
 GapProperties::assertModIsPeriodic
@@ -614,7 +632,6 @@ then the residue stays zero at every position, forever.
 \begin{aligned}
 \text{mod}(\text{periodSum}(ci), v) = 0 \;\land\; \big(\forall\, k \in [0, n),\ \text{mod}(ci(k), v) = 0\big)
 \implies \forall\, i \in \mathbb{N}_0,\ \text{mod}(ci(i), v) = 0
-\quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -623,6 +640,15 @@ inequality reversed: by [§5.2](#52-general-residue-periodicity),
 $\text{mod}(ci(i), v) = \text{mod}(ci(i \bmod n), v)$, and $i \bmod n$
 always falls among the $n$ in-period residues, all of which are zero by
 hypothesis.
+
+```math
+\begin{aligned}
+\text{mod}(ci(i),v) &= \text{mod}(ci(i \bmod n),v) &&\text{[§5.2]} \\
+                      &= 0 &&\text{[In-period hypothesis]} \\
+\therefore\ \text{mod}(ci(i),v) &= 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This is the same corollary of [
 GapProperties::assertModIsPeriodic
@@ -1220,7 +1246,6 @@ construction, exactly the survivors.
 \text{mod}(ci(0), f) \neq 0 \implies
 \text{mod}(ci''(k), f) \neq 0
 \quad \text{for every valid } k
-\quad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -1228,6 +1253,15 @@ construction, exactly the survivors.
 equals the survivor $S_{k+1}$, and every element of the survivor list is
 already known not to be a multiple of $f$
 ([§6.5](#65-survivor-exactness)).
+
+```math
+\begin{aligned}
+ci''(k) &= S_{k+1} &&\text{[§6.9]} \\
+\text{mod}(S_{k+1},f) &\neq 0 &&\text{[§6.5]} \\
+\therefore\ \text{mod}(ci''(k),f) &\neq 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in [
 CycleIntegralFilterProperties::assertFilterMergeComposition

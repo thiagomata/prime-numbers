@@ -232,9 +232,17 @@ n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
-The proof normalizes $DivMod(n,n,0,n)$ to $DivMod(n,n,1,0)$. The latter is
-already final, so the normalized quotient is $1$ and the normalized remainder is
-$0$.
+The candidate state normalizes in one shift to the final state with quotient
+$1$ and remainder $0$:
+
+```math
+\begin{aligned}
+n &= n\cdot0+n = n\cdot1+0 \\
+0 &\leq 0 < |n| \\
+\text{DivMod}(n,n,0,n).\text{solve} &= \text{DivMod}(n,n,1,0).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in [
   ModIdentity::modIdentity
@@ -255,9 +263,16 @@ n \text{ div } 1 & = n \\
 \end{aligned}
 ```
 
-Modulo by one follows because every integer is congruent to $0$ modulo $1$.
-Division by one is proved by induction over $n$, using the unit-step increment
-law for the successor case.
+Both identities follow directly from the already canonical decomposition
+$n=1\cdot n+0$; no induction or later unit-step result is needed.
+
+```math
+\begin{aligned}
+n &= 1\cdot n+0,\qquad 0\leq0<1 \\
+\text{mod}(n,1) &= 0,\qquad \text{div}(n,1)=n.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 These properties are verified in [
   ModOne::modOneIsZero
@@ -515,7 +530,16 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 ```
 
 Since both $k$ and $b-k$ already lie inside the canonical remainder interval,
-their remainders are themselves. Their sum is therefore $k + (b-k) = b$.
+their remainders are themselves:
+
+```math
+\begin{aligned}
+0<k<b &\implies \text{mod}(k,b)=k \\
+0<b-k<b &\implies \text{mod}(b-k,b)=b-k \\
+\text{mod}(k,b)+\text{mod}(b-k,b) &= k+(b-k)=b.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in [
   ModSum::sumSymmetricalMods

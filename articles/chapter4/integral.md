@@ -91,32 +91,35 @@ The discrete integral accumulates list values into partial sums from a given ini
 
 We define the **discrete integral** $I = Integral(L, init)$ as a list of partial sums such that:
 
-$$
+```math
 \begin{aligned}
 \text{for } k \in [0, n - 1] \\
 I_{k} = init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
-$$
+```
 
 ### 3.2 Recursive Definition
 
-$$
+The implementation computes the same partial sums by peeling one head from the
+list at each recursive step and carrying the current accumulated value.
+
+```math
 \begin{aligned}
 I &= \text{Integral}(L, init) \\
 n &= |L| \\
 k &\in [0, n - 1]
 \end{aligned}
-$$
+```
 
 The value of the $k\text{-th}$ element in the integral $I$ is defined recursively as:
 
-$$
+```math
 I_k =
 \begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
 \end{cases}
-$$
+```
 
 In Scala, this is encoded at [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
@@ -137,6 +140,9 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
 ## 4. Core Integral Properties
 
+These identities connect each recursively defined integral value to the finite
+list of values it accumulates.
+
 - Head value: $I_0 = L_0 + init$ — [§4.1](#41-head-value-matches-definition)
 - Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ — [§4.2](#42-integral-equals-sum-until-position)
 - Incremental change: $I_{p+1} - I_p = L_{p+1}$ — [§4.3](#43-incremental-change-matches-list-value)
@@ -146,13 +152,13 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
 The first element of the Integral equals the first element of the original list plus the initial value.
 
-$$
+```math
 I_0 = x_0 + init
-$$
+```
 
 Since:
 
-$$
+```math
 \begin{aligned}
 I & \ne L_e                               & \qquad \text{[By definition: Integral is not an empty list]} \\
 I_0 & = \text{head}(I)                    & \qquad \text{[List element access and indexing]} \\
@@ -164,7 +170,7 @@ I_0 & = L_0 + init                        & \qquad \text{[Substitute head}(I) \t
 I_0 & = x_0 + init                        & \qquad \text{[Substitute } L_0 \text{ by } x_0] \\
 I_0 & = x_0 + init \quad \blacksquare     & \qquad \text{[Q.E.D.]}
 \end{aligned}
-$$
+```
 
 This property is verified in the [
   IntegralProperties::assertHeadValueMatchDefinition
@@ -174,32 +180,34 @@ This property is verified in the [
 
 The integral at position $k$ equals the sum of all elements in the list up to that position, plus the initial value:
 
-$$
+```math
 \forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
-$$
+```
 
 **Proof by Induction on $k$**
 
 #### Base case: $k = 0$
 
-$$
+```math
 \begin{aligned}
 \sum_{i=0}^{0} x_i &= x_0 \qquad & \text{[By definition of sum]} \\
 I_0 & = \mathit{init} + x_0 \qquad & \text{[By definition of integral]} \\
     & = \mathit{init} + \sum_{i=0}^{0} x_i & \qquad \text{[Substituting } x_0] \\
 \end{aligned}
-$$
-$$ \therefore $$
-$$
+```
+```math
+\therefore
+```
+```math
 I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
-$$
+```
 
 #### Inductive step: Assume the property holds for $k-1$
 
-$$
+```math
 I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \sum_{i=0}^{k} x_i
-$$
-$$
+```
+```math
 \begin{aligned}
 I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                     \qquad & \text{[By induction]} \\ 
 I_k & = I_{k-1} + L_k                                                \qquad & \text{[By definition of integral]} \\
@@ -207,13 +215,15 @@ I_k & = I_{k-1} + L_k                                                \qquad & \t
     &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)       \qquad & \text{[Distributivity]} \\
     &= \mathit{init} + \sum_{i=0}^{k} x_i                            \qquad & \text{[By definition of sum]} \\
 \end{aligned}
-$$
-$$ \therefore $$
-$$
+```
+```math
+\therefore
+```
+```math
 \begin{aligned}
 I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 This property is verified in the [
   IntegralProperties::assertIntegralEqualsSum
@@ -223,16 +233,16 @@ This property is verified in the [
 
 The difference between two consecutive values in the Integral equals the corresponding value in the original list $L$.
 
-$$
+```math
 \begin{aligned}
 \forall \text{ } p & \in [0,\ n-2]: \\
 I_{p+1} - I_p & = L_{p+1}
 \end{aligned}
-$$
+```
 
 #### Proof of the Base Case $I_1 - I_0 = x_1$
 
-$$
+```math
 \begin{aligned}
 I_1    &= \text{Integral}(\text{tail}(L),\ I_0)_0           & \qquad \text{[By recursive definition for a non-first element]} \\
        &= \text{Integral}([x_1, \dots, x_n],\ I_0)_0        & \qquad \text{[By tail definition]} \\
@@ -244,11 +254,11 @@ I_1 - I_0 &= (x_1 + I_0) - I_0                              & \qquad \text{[Subs
           & \therefore \\
 I_1 - I_0 &= x_1                                            & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 #### Proof of the Inductive Step $I_{p+1} - I_p = L_{p+1}$
 
-$$
+```math
 \begin{aligned}
 L &= x_0 :: \text{tail}(L)                                                                                     & \qquad \text{[List decomposition]} \\
 I &= I_0 :: \text{tail}(I)                                                                                     & \qquad \text{[Integral decomposition]} \\
@@ -262,7 +272,7 @@ L_{p+2} &= L_{\text{tail},\ p+1}                                                
 & \therefore \\
 I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                            & \qquad \text{[Q.E.D.]} \\
 \end{aligned}
-$$
+```
 
 This property is verified in the [
   IntegralProperties::assertAccDiffMatchesList
@@ -272,17 +282,17 @@ This property is verified in the [
 
 The last element of the Integral equals the sum of all elements in the List plus the initial value.
 
-$$
+```math
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
-$$
+```
 
 This follows directly from [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
 
-$$
+```math
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
 \therefore \\
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare
-$$
+```
 
 This property is verified in the [
   IntegralProperties::assertLastEqualsSum
@@ -296,16 +306,26 @@ theorem — the integral grows with every step.
 
 ```math
 \begin{aligned}
-(\forall x \in L,\ x > 0) \;\land\; b > a \;\implies\; I_b > I_a
-  \quad \text{[Q.E.D.]}
+(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n \;\implies\; I_b > I_a
 \end{aligned}
 ```
 
-**Proof.** By induction on $b - a$. Base case $b = a + 1$: [§4.3](#43-incremental-change-matches-list-value) gives
-$I_{a+1} - I_a = L_{a+1} > 0$. Inductive step: $I_b > I_{b-1} > I_a$ by
-transitivity.
+**Proof.** Induct on $b-a$. The base case follows from the consecutive
+difference law; the step combines the induction hypothesis with the next
+positive list value.
 
-### Stainless Verification
+```math
+\begin{aligned}
+b=a+1 &\implies I_{a+1}-I_a=L_{a+1}>0 &&\text{[§4.3]} \\
+       &\implies I_{a+1}>I_a, \\
+I_{b-1}>I_a,\quad I_b-I_{b-1}=L_b>0
+       &\implies I_b>I_{b-1}>I_a \\
+\therefore\ I_b &> I_a.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Stainless verification.**
 
 ```scala
 def assertIntegralStrictlyIncreasing(
@@ -329,15 +349,23 @@ has the same sign as the underlying list element.
 
 ```math
 \begin{aligned}
-I_{p+1} > I_p \;\implies\; L_{p+1} > 0
-  \quad \text{[Q.E.D.]}
+0 \leq p < n-1,\quad I_{p+1} > I_p \;\implies\; L_{p+1} > 0
 \end{aligned}
 ```
 
-**Proof.** By [§4.3](#43-incremental-change-matches-list-value), $I_{p+1} - I_p = L_{p+1}$. If $I_{p+1} > I_p$, the
-difference is strictly positive, so $L_{p+1} > 0$.
+**Proof.** The consecutive difference law identifies the positive difference
+with the corresponding list value:
 
-### Stainless Verification
+```math
+\begin{aligned}
+I_{p+1}>I_p &\implies I_{p+1}-I_p>0 \\
+I_{p+1}-I_p &= L_{p+1} &&\text{[§4.3]} \\
+\therefore\ L_{p+1} &> 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
+**Stainless verification.**
 
 ```scala
 def assertGapsPositive(integral: Integral, pos: BigInt): Boolean = {
@@ -366,22 +394,22 @@ The accumulated list represents the discrete integral as a full list of partial 
 
 Let:
 
-$$
+```math
 \begin{aligned}
 & acc(L, init) \in \mathbb{Z}^{|L|} \\
 & L = [x_0, x_1, \dots, x_{n-1}]
 \end{aligned}
-$$
+```
 
 Then, the accumulated list is defined recursively as:
 
-$$
+```math
 acc(L, init) =
 \begin{cases}
 L_e & \text{if } L = L_e \\
 (\text{head}(L) + init) :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
 \end{cases}
-$$
+```
 
 The full Integral implementation including the `acc` method is at [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
@@ -415,9 +443,9 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 
 The $k\text{-th}$ element of the Integral equals the $k\text{-th}$ element of the accumulated list.
 
-$$
+```math
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
-$$
+```
 
 ```math
 \begin{aligned}
@@ -442,9 +470,9 @@ This property is verified in the [
 
 The difference between two consecutive accumulated values in Acc equals the corresponding value from the original list.
 
-$$
+```math
 \forall\ p \in [0, n-2]:\ \text{acc}_{p+1} - \text{acc}_p = L_{p+1}
-$$
+```
 
 ```math
 \begin{aligned}
@@ -475,12 +503,12 @@ This property is verified in the [
 
 The last element of the accumulated list equals the last element of the integral, which is the element at position $n-1$.
 
-$$
+```math
 \begin{aligned}
 acc_{(n - 1)} & = \text{last}(I) \\
 acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
-$$
+```
 
 ```math
 \begin{aligned}
@@ -535,9 +563,9 @@ This property is verified in the [
 
 The size of the accumulated list equals the size of the original list.
 
-$$
+```math
 |acc| = |L|
-$$
+```
 
 ```math
 \begin{aligned}
@@ -607,12 +635,16 @@ I_0 &= x_0 + init & \text{[Head Value Matches Definition]} \\
 I_k &= init + \sum_{i=0}^k x_i & \text{[Integral Equals Sum Until Position]} \\
 I_{n-1} &= init + \sum_{i=0}^{n-1} x_i & \text{[Final Element Equals Full Sum]} \\
 I_{p+1} - I_p &= x_{p+1} & \text{[Incremental Change Matches List]} \\
+(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n &\implies I_b > I_a & \text{[Strictly Increasing]} \\
+0 \leq p < n-1,\quad I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Gaps Positivity]} \\
+\end{aligned}
+```
+```math
+\begin{aligned}
 I_k &= acc_k & \text{[Element Consistency]} \\
 \text{last}(I) &= acc_{n-1} = I_{n-1} & \text{[Last Element Agreement]} \\
 acc_{p+1} - acc_p &= x_{p+1} & \text{[Accumulated Delta Consistency]} \\
 |acc| &= |L| & \text{[Size Agreement]} \\
-(\forall x \in L,\ x > 0) \;\land\; b > a &\implies I_b > I_a & \text{[Strictly Increasing]} \\
-I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Gaps Positivity]} \\
 \end{aligned}
 ```
 
