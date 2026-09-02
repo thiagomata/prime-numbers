@@ -110,13 +110,22 @@ These are the rules the author's visual review enforced:
   `microtype` belongs in the preamble regardless; it helps the whole
   document but does not fix such paragraphs alone.
 - Scala excerpts use the `scala` lstlisting style defined in `main.tex`.
+  Always write `\begin{lstlisting}[style=scala]` — passing only
+  `language=Scala` skips the style entirely (no small font, no frame, no
+  `breaklines`), and long code lines then overflow. The style uses
+  `columns=fixed` with `keepspaces=true` on purpose: it preserves the
+  source's internal alignment spaces exactly and keeps `breaklines`
+  functional (`columns=fullflexible` silently disables breaking).
 
 ## 5. Build and Validation Loop
 
 - Build: `just arxiv-pdf` (all articles) or `just arxiv-pdf modulo` (one).
-  The recipe runs `latexmk -pdf -interaction=nonstopmode -halt-on-error`
+  The recipe runs `latexmk -g -pdf -interaction=nonstopmode -halt-on-error`
   with a scratch `--outdir` under `$TMPDIR` (kept outside the repository)
-  and copies the result to `output/pdf/<article>.pdf`.
+  and copies the result to `output/pdf/<article>.pdf`. The `-g` (go) flag
+  matters: latexmk tracks only files it actually input, and the assembly
+  guards probe section files with `\IfFileExists` — without `-g`, a newly
+  added section file is silently missed and the stale PDF is recopied.
 - During conversion, compile after every logical unit (one section file or
   one property group per cycle) so regressions stay isolated. Require exit
   code 0 and a log grep free of `Warning`, `Error`, `Overfull`, `Underfull`,

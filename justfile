@@ -374,7 +374,10 @@ arxiv-pdf article="":
       name=$(basename "$dir")
       build="${TMPDIR:-/tmp}/arxiv-build-$name"
       mkdir -p "$build"
-      (cd "$dir" && latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$build" main.tex)
+      # -g forces a rebuild: latexmk does not track files that main.tex only
+      # probes with \IfFileExists, so a newly added section file would
+      # otherwise be silently missed in the persistent build directory.
+      (cd "$dir" && latexmk -g -pdf -interaction=nonstopmode -halt-on-error -outdir="$build" main.tex)
       mkdir -p "$dir/output/pdf"
       cp "$build/main.pdf" "$dir/output/pdf/$name.pdf"
       echo "Built $dir/output/pdf/$name.pdf"

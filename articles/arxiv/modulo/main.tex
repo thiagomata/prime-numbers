@@ -21,9 +21,9 @@
 \lstdefinestyle{scala}{
   backgroundcolor=\color{codebackground},
   basicstyle=\ttfamily\small,
-  breakatwhitespace=false,
+  breakatwhitespace=true,
   breaklines=true,
-  columns=fullflexible,
+  columns=fixed,
   commentstyle=\color{codecomment},
   frame=single,
   keepspaces=true,
@@ -95,6 +95,7 @@
 }{}
 
 \IfFileExists{sections/06-appendix.tex}{%
+  \clearpage
   \appendix
   \input{sections/06-appendix}
 }{}

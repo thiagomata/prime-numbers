@@ -176,6 +176,18 @@ tracked source package.
   Wright. An Introduction to the Theory of Numbers. Clarendon Press,
   Oxford, fifth edition, 1979. See Section 5.4 for the Chinese Remainder
   Theorem.` — matching the Markdown entry in content and casing.
+- Appendix unit complete: `sections/06-appendix.tex` converts Markdown
+  Section 9 — `\appendix` renders the section as "A" giving the expected
+  A.1–A.4 headings, the three Scala excerpts are `style=scala` lstlistings
+  copied verbatim (including internal alignment spaces, which
+  `columns=fixed` + `keepspaces` preserve), and A.4 links `logs/verify.log`.
+  Thirteen-page build green (exit 0, zero log issues); pages eleven through
+  thirteen render cleanly with syntax-colored, framed listings and the
+  75-char `atMostOneZero` signature fitting on one line.
+- Author request: the Appendix now starts on a fresh page — `\clearpage`
+  was added inside the appendix assembly guard in `main.tex` (so the break
+  only fires when the appendix exists). References closes page eleven and
+  "A Appendix" opens page twelve; rebuild green, zero log issues.
 
 ## Expected State
 
@@ -340,14 +352,15 @@ verification instructions are changed.
 
 ## Next Action
 
-Run the Worker/Critic/Monitor pipeline for exactly one change: create
-`articles/arxiv/modulo/sections/06-appendix.tex` as a faithful conversion of
-Markdown Section 9 (Appendix): A.1 Identity Property Excerpt, A.2 Symmetrical
-Modulo Pairs Excerpt, A.3 Consecutive Zero Density Excerpt (all as
-lstlisting Scala excerpts with their source links), and A.4 Verification
-Log. Note `main.tex` switches to `\appendix` before this include, so the
-section numbering becomes A.x as the Markdown expects; then compile and
-inspect the affected page.
+Run the Worker/Critic/Monitor pipeline for the closing units, in order:
+(a) create `articles/arxiv/modulo/README.md` documenting compile and arXiv
+packaging steps (Expected State item); (b) perform the complete
+source-parity audit against `articles/chapter2/modulo.md` (headings,
+statements, equations, code, references, links) plus a final page-by-page
+visual review; (c) create the minimal arXiv upload archive (only files
+arXiv requires: `main.tex`, `sections/`, `references.bib`, generated
+`main.bbl`) and compile it once from a clean temporary directory before
+declaring the package arXiv-ready.
 
 ## Learning Log
 
@@ -370,3 +383,4 @@ inspect the affected page.
 | 2026-09-02 | Author alignment review: (a) a quantifier/premise row sharing an alignment point with a long equation row floats right-of-center — use the flush-left leading-`&` pattern for premise+equation statement blocks (§6.12 fixed); (b) `&&\text{[tag]}` on a SINGLE-row aligned leaves the tag floating in a stretched gap — on single-row statements, hug the tag with `\quad` after a leading-`&` (the three §6.14 statements normalized); keep `&&` tag columns only for multi-row blocks where they align vertically (§6.14 Q.E.D. chain, Conclusion recap — unflagged). Preview PDF refreshed; commit `076a253a` holds the pre-fix state. | Apply the same review lens to remaining units; create `references.bib` + `\cite`. |
 | 2026-09-02 | Delivered author tooling requests: `just arxiv-pdf [article]` recipe (validated end-to-end; latexmk into `$TMPDIR` scratch, PDF copied to `output/pdf/<article>.pdf`), renamed the preview `main.pdf` to `modulo.pdf` so the artifact carries the article name, and captured the durable conversion conventions in `articles/arxiv/CONVERSION_GUIDE.md` — the playbook the next article conversions should follow (frozen-source rules, numbering coincidence requirement, alignment house style, overflow/long-link fixes, ghostscript validation loop, per-article checklist). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
 | 2026-09-03 | Bibliography unit green: `references.bib` (`hardywright1979`, no invented metadata, note field preserved) plus `\cite` switch in the same unit — latexmk drove bibtex against the scratch outdir without any manual env, final log zero issues, and page eleven renders the entry with preserved title casing and the "fifth edition" formatting from `plain.bst`. Lesson: `latexmk -outdir` + `\bibliography{references}` works out of the box on TeX Live 2025 (bibtex resolves the bib relative to the project cwd); brace-protect `@book` titles to stop case mangling, and `plain.bst` renders `edition = {Fifth}` as "fifth edition". | Convert Markdown Section 9 into `sections/06-appendix.tex` (`\appendix` numbering gives the A.x headings the Markdown expects). |
+| 2026-09-03 | Appendix unit green after two instructive failures (both now in CONVERSION_GUIDE.md): (1) with a PERSISTENT build dir, latexmk ignored the newly added `06-appendix.tex` because `\IfFileExists` probes are not tracked as dependencies — it declared up-to-date and recopied a stale PDF; fixed with `latexmk -g` in the `arxiv-pdf` recipe. (2) `\begin{lstlisting}[language=Scala]` silently skips the defined `style=scala` (defaults: normalsize, no frame, no breaklines) → 16pt overfull on a 75-char signature; fixed by `[style=scala]` and by switching the style to `columns=fixed` + `keepspaces=true` + `breakatwhitespace=true`, which preserves the Markdown's code alignment and keeps breaking functional (`fullflexible` silently disables breaklines). Thirteen pages, zero log issues, pages 11–13 verified visually. | README.md, full source-parity audit, then the arXiv upload archive. |
