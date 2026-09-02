@@ -165,6 +165,17 @@ tracked source package.
   long-link tooling, ghostscript validation loop, per-article checklist)
   so the remaining articles can be converted without rediscovering the
   pitfalls.
+- Bibliography unit complete: `references.bib` now contains the normalized
+  Hardy & Wright `@book` entry (`hardywright1979`; brace-protected title
+  casing; "See Section 5.4" pointer kept in the `note` field; no invented
+  metadata), and the hardcoded `[1]` marker in `05-conclusion.tex` is now
+  `\cite{hardywright1979}`. latexmk drove bibtex correctly against the
+  scratch outdir (found `./references.bib`, produced `main.bbl`); the final
+  log has zero issues with no undefined citations. The References section
+  renders after Future Work on page eleven: `[1] G. H. Hardy and E. M.
+  Wright. An Introduction to the Theory of Numbers. Clarendon Press,
+  Oxford, fifth edition, 1979. See Section 5.4 for the Chinese Remainder
+  Theorem.` — matching the Markdown entry in content and casing.
 
 ## Expected State
 
@@ -330,12 +341,13 @@ verification instructions are changed.
 ## Next Action
 
 Run the Worker/Critic/Monitor pipeline for exactly one change: create
-`articles/arxiv/modulo/references.bib` with the normalized Hardy & Wright
-entry and switch the hardcoded `[1]` marker in `sections/05-conclusion.tex`
-to `\cite` in the same unit (so no undefined-citation warning appears), then
-compile and inspect the affected page. The appendix unit
-(`sections/06-appendix.tex`, Markdown Section 9 with the Scala excerpts and
-verification log) follows.
+`articles/arxiv/modulo/sections/06-appendix.tex` as a faithful conversion of
+Markdown Section 9 (Appendix): A.1 Identity Property Excerpt, A.2 Symmetrical
+Modulo Pairs Excerpt, A.3 Consecutive Zero Density Excerpt (all as
+lstlisting Scala excerpts with their source links), and A.4 Verification
+Log. Note `main.tex` switches to `\appendix` before this include, so the
+section numbering becomes A.x as the Markdown expects; then compile and
+inspect the affected page.
 
 ## Learning Log
 
@@ -357,3 +369,4 @@ verification log) follows.
 | 2026-09-02 | Converted the Conclusion (14 tagged recap blocks) and Future Work; two distributivity recap identities overflowed (11–25pt) under their new tag columns and were fixed by the amsmath continuation-row idiom (`&\qquad` wrap before the closing factor) — content unchanged, zero log issues, 11 pages, pages ten/eleven render cleanly. Also learned: `gs -o file.png` without `%d` overwrites one file for all pages; always use `-%02d` patterns when counting pages. A persistent author-preview PDF now lives at `output/pdf/main.pdf` (untracked; repo has no `.gitignore` for it). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
 | 2026-09-02 | Author alignment review: (a) a quantifier/premise row sharing an alignment point with a long equation row floats right-of-center — use the flush-left leading-`&` pattern for premise+equation statement blocks (§6.12 fixed); (b) `&&\text{[tag]}` on a SINGLE-row aligned leaves the tag floating in a stretched gap — on single-row statements, hug the tag with `\quad` after a leading-`&` (the three §6.14 statements normalized); keep `&&` tag columns only for multi-row blocks where they align vertically (§6.14 Q.E.D. chain, Conclusion recap — unflagged). Preview PDF refreshed; commit `076a253a` holds the pre-fix state. | Apply the same review lens to remaining units; create `references.bib` + `\cite`. |
 | 2026-09-02 | Delivered author tooling requests: `just arxiv-pdf [article]` recipe (validated end-to-end; latexmk into `$TMPDIR` scratch, PDF copied to `output/pdf/<article>.pdf`), renamed the preview `main.pdf` to `modulo.pdf` so the artifact carries the article name, and captured the durable conversion conventions in `articles/arxiv/CONVERSION_GUIDE.md` — the playbook the next article conversions should follow (frozen-source rules, numbering coincidence requirement, alignment house style, overflow/long-link fixes, ghostscript validation loop, per-article checklist). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
+| 2026-09-03 | Bibliography unit green: `references.bib` (`hardywright1979`, no invented metadata, note field preserved) plus `\cite` switch in the same unit — latexmk drove bibtex against the scratch outdir without any manual env, final log zero issues, and page eleven renders the entry with preserved title casing and the "fifth edition" formatting from `plain.bst`. Lesson: `latexmk -outdir` + `\bibliography{references}` works out of the box on TeX Live 2025 (bibtex resolves the bib relative to the project cwd); brace-protect `@book` titles to stop case mangling, and `plain.bst` renders `edition = {Fifth}` as "fifth edition". | Convert Markdown Section 9 into `sections/06-appendix.tex` (`\appendix` numbering gives the A.x headings the Markdown expects). |
