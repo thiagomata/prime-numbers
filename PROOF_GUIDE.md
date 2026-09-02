@@ -427,8 +427,15 @@ Use the conclusion to synthesize the theorem, proof strategy, verified support,
 and scope of the result. The conclusion must also bring back the core proved
 properties and proof structure in mathematical form: include a compact math
 recap of the main theorem, definitions, and supporting properties that the
-article established, following the `integral.md` and `cycle.md` pattern. Use
-future work to explain the next mathematical directions and why they extend
+article established, following the `integral.md` and `cycle.md` pattern.
+When the conclusion includes the compact theorem inventory required by the
+article standard, bookend it with synthesis: open by naming the article's
+central proved contribution, then close by stating what the listed properties
+establish collectively. Any relationship restated in those sentences must
+preserve its domain, premises, verification status, and implication direction;
+do not promote a one-way implication to an equivalence or use completeness,
+canonicality, or characterization language unless the body proves it.
+Use future work to explain the next mathematical directions and why they extend
 the article, rather than listing project names as bullets.
 Avoid future-facing framing outside Future Work: abstracts, introductions, and
 conclusions should not justify the result by saying it will be used later,
@@ -612,6 +619,27 @@ derive it, and then point to its verification evidence.
   abstract compact and centered on the construction, main result, and
   significance. Include assumptions needed for accuracy, but do not turn the
   abstract into a catalog of caveats, secondary models, or future work.
+- **Align the framing around one intrinsic contribution.** The abstract,
+  introduction, and conclusion should make the same central claim about what
+  the current article establishes and, where applicable, formally verifies,
+  without repeating the same paragraph. The abstract states the construction
+  or question, the flagship result or property families, and their collective
+  result compactly. The introduction motivates that question, fixes the scope
+  and domains, and previews the result structure or property groups that
+  establish the result. The conclusion synthesizes what those results
+  collectively establish and introduces no stronger claim.
+- **Foreground properties when the objects are familiar.** When an article
+  studies a standard object, frame the contribution through the properties,
+  relationships, invariants, representation agreements, or theorem system
+  established about it—not merely through defining the object again. Use this
+  framing only when it matches the body; a paper centered on one theorem or an
+  experimental result should name that actual contribution instead.
+- **State the contribution directly.** Do not turn the abstract or conclusion
+  into a defense against an imagined reviewer, apologize that the underlying
+  objects are standard, or justify the article mainly by later use. Necessary
+  assumptions and verification-status qualifications remain part of accurate
+  scope; comparisons with prior work belong in a clearly scoped related-work
+  discussion, not in an apologetic contribution sentence.
 - **Build from a concrete case.** When a construction is unfamiliar, give one
   small example before introducing the general notation or asymptotic law. The
   example should reveal the invariant or distinction used by the proof, not
@@ -635,9 +663,13 @@ derive it, and then point to its verification evidence.
   protocol inventories, and repeated summaries rather than removing premises,
   derivations, boundary cases, or evidence.
 
-- **Write in first person plural.** "We prove...", "we define...", not "This
-  article proves..." or "The article defines...". The author is present in
-  the prose, doing the work, not narrating a document that does the work.
+- **Prefer the author present in the prose over a document narrating
+  itself.** "We prove...", "we define..." reads better than "This article
+  proves..." or "The article defines...", and is the default already used
+  across the series. This is a preference, not a hard requirement — do not
+  force first person plural where a different construction reads more
+  naturally; just keep the voice consistent within one article rather than
+  switching back and forth.
 - **Close a derivation with `\blacksquare` and/or `[Q.E.D.]`**, matching every
   existing article. Do not introduce `\boxed{...}` around conclusions; it is
   not the established convention and mixing the two within one project reads

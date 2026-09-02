@@ -305,7 +305,9 @@ Every article must pass these checks before publication:
     does not need to apologize for that in every section.
 
 25. **Voice and style match the earliest articles** — See PROOF_GUIDE.md's
-    "Voice and Style" section: first person plural ("we prove"), close proofs
+    "Voice and Style" section: author present in the prose ("we prove") is
+    preferred over a self-narrating document, but not forced where another
+    construction reads more naturally; close proofs
     with `\blacksquare`/`[Q.E.D.]` rather than `\boxed{...}`, bold for defining
     a term once rather than labeling every claim, sentence case for inline
     concept names in prose (headers and citation labels keep Title Case, per
@@ -325,6 +327,21 @@ Every article must pass these checks before publication:
     (`## 3. Index and Access Properties` → `#3-index-and-access-properties`).
     This does not apply to references naming a section in a *different*
     article — those already use rule 21's cross-article link form.
+
+27. **Framing alignment and distinct roles** — The abstract, introduction,
+    and conclusion state the same intrinsic contribution of the current
+    article, but serve different roles. The abstract compactly names the
+    question or construction, flagship results, and collective conclusion.
+    The introduction motivates and scopes that contribution and previews the
+    result structure or property groups. The conclusion synthesizes what the
+    proved results establish without adding a stronger claim. For familiar
+    objects, foreground the established properties or relationships, stating
+    their verification status accurately, rather than the fact that the
+    object was defined. Do not use these sections as an apology, a defense
+    against hypothetical objections, or a claim that the article matters
+    mainly because later work uses it. Bookend the conclusion's theorem
+    inventory with synthesis, preserving all domains, premises,
+    verification-status qualifications, and implication directions.
 
 ## README Updates
 

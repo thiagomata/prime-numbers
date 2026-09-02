@@ -63,6 +63,22 @@ This article verifies:
 - Persistent and periodic properties: how a fixed cycle integral's residues behave forever, and how it advances across full periods — [§5.1](#51-cycle-period-shifts)–[5.6](#56-cycle-residue-classification)
 - Deriving new cycle integrals: expansion, index shifts, rotation, survivor filtering, and merge-based reconstruction — [§6.1](#61-x-fold-cycle-expansion)–[6.10](#610-filtered-result-has-no-multiples)
 
+### Related work
+
+Lean's Mathlib provides a general formal theory of periodic functions. It proves
+that a periodic function remains periodic under integer multiples of a period,
+and that a finite sum of periodic functions is periodic [[6]](#ref6). Mathlib
+also represents a finite cycle as a list modulo cyclic rotation [[7]](#ref7).
+These results give formal context for the finite period and shift structure
+used by the present construction.
+
+This article studies a different object: the cumulative integral of a concrete
+periodic integer list. Its central verified results are the equivalence of a
+recursive integral and a quotient–remainder closed form, together with the
+resulting step, full-period, residue, and reconstruction properties. The
+existing periodicity and finite-cycle developments therefore enrich the
+setting without standing in for this two-presentation cycle-integral proof.
+
 ## 2. Preliminaries
 
 We reuse several basic list, cycle and integral operations and their verified properties from the companion articles
@@ -1340,6 +1356,14 @@ Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Availabl
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ (5th ed.). Oxford University Press. §5.4 (Chinese Remainder Theorem), §15.1 (Sieve of Eratosthenes).
+
+<a name="ref6" id="ref6" href="#ref6">[6]</a>
+The Lean Community. *Mathlib: Periodic Functions*.
+Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html)
+
+<a name="ref7" id="ref7" href="#ref7">[7]</a>
+The Lean Community. *Mathlib: Cycles of Lists*.
+Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html)
 
 ## Appendix A: Scala Verification Code
 

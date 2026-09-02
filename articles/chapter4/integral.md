@@ -8,14 +8,22 @@ Independent Researcher
 
 ## Abstract
 
+<div align="justify">
 <p style="text-align: justify">
-We formalize and verify the discrete integral operation over finite lists of integers using a recursive, from-scratch 
-construction grounded in a zero-prior-knowledge methodology.
-This operation is implemented in pure Scala and verified using the Stainless formal verification system.
-The work builds on a previously verified model of lists and summation &mdash; themselves constructed without domain-specific 
-assumptions &mdash; extending that foundation to list-based accumulation.
-The result is a verified and mathematically rigorous definition of discrete integration with static correctness guarantees.
+
+We define a recursive discrete integral over finite integer lists and verify its
+principal properties in Scala Stainless. At every valid position, the integral
+equals the initial value plus the corresponding prefix sum; its final value equals
+the initial value plus the total sum; and consecutive differences recover the
+corresponding input values. We prove pointwise, final-value, and length agreement
+between recursive lookup and the accumulated-list representation. We also verify
+that positive input values imply a strictly increasing integral, while a positive
+consecutive integral gap implies that the corresponding input value is positive.
+Together, these results characterize the discrete integral as a length-preserving
+cumulative-sum construction with verified representation agreement and value recovery.
+
 </p>
+</div>
 
 ## 1. Introduction
 
@@ -23,15 +31,32 @@ Accumulation is a central operation in mathematics and computing &mdash; from pr
 transforms in signal processing. In functional programming, accumulation often appears as a fold or scan, but such 
 constructs are rarely defined from first principles in a formally verified setting.
 
-In this article, we present a discrete integral operation over finite integer lists, defined recursively and verified 
-some of its properties using the Stainless system. Our approach follows a zero-prior-knowledge philosophy, building on 
-a previously verified foundation for recursive list structures and summation. The result is a verified, from-scratch 
-implementation of discrete integration, suitable as a foundation for higher-level numeric reasoning over lists.
+In this article, we define a recursive discrete integral over finite integer lists
+and verify its cumulative-sum, difference-recovery, monotonicity, and
+representation-agreement properties using Scala Stainless. The recursive lookup
+and accumulated-list representations agree pointwise and in length, and consecutive
+differences recover the corresponding input values.
 
 This article verifies:
 
 - Core integral properties: head value, cumulative sum, incremental change, final sum, strictly increasing, gaps positivity — [§4.1](#41-head-value-matches-definition)–[4.6](#46-gaps-positivity)
 - Implementation consistency: element/acc/delta/last/size agreement between the recursive and accumulated representations — [§5.2](#52-element-consistency)–[5.5](#55-size-agreement)
+
+### Related work
+
+The cumulative-sum construction is the list instance of a prefix scan or
+accumulation. In Rocq/Coq, the standard list library defines `fold_left` and
+proves its composition across concatenation; its natural-number list library
+also defines list sum as a fold and proves sum over concatenation [[2]](#ref2).
+Those formally checked results give a useful established setting for recursive
+accumulation.
+
+The present article develops that setting for a recursive `BigInt` integral in
+Scala Stainless. Its focus is the agreement of two concrete representations—
+recursive lookup and an accumulated list—and the accompanying cumulative-sum,
+difference-recovery, length, and monotonicity properties. The citation places
+these proofs in a broader formal treatment of list accumulation; it does not
+replace the specific representation-agreement results verified here.
 
 ## 2. Preliminaries and Notation
 
@@ -571,7 +596,8 @@ Specifically:
 
 ## 7. Conclusion
 
-This article formally defined and verified the discrete integral operation over finite integer lists using a zero-prior-knowledge methodology.
+This article established and formally verified a property characterization of the
+recursive discrete integral over finite integer lists.
 
 From the recursive definition of $I = \text{Integral}(L, init)$, we proved and verified:
 
@@ -590,7 +616,12 @@ I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Gaps Positivity]} \\
 \end{aligned}
 ```
 
-These results establish that the recursive discrete integral exactly corresponds to the cumulative sum of list elements plus the given initial value. The integral is strictly increasing when the list values are positive, and a positive gap between consecutive integral values implies the underlying list element is positive. The construction preserves list length, and the differences between consecutive integral elements recover the original list entries, confirming the correctness of the accumulation process.
+These results establish that the recursive discrete integral exactly corresponds to
+the cumulative sum of the list elements plus the given initial value. Recursive lookup
+and the accumulated-list representation agree at every valid index, at the final value,
+and in length; their consecutive differences recover the corresponding original list
+entries. Positive input values make the integral strictly increasing, while a positive
+consecutive integral gap implies that the corresponding input value is positive.
 
 All properties were formally verified in Scala using the Stainless verification system. The full verification code is in Appendix A.
 
@@ -604,6 +635,10 @@ gap-period decomposition — the foundation for reasoning about cumulative sums 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
+
+<a name="ref2" id="ref2" href="#ref2">[2]</a>
+The Rocq Development Team. *The Rocq Standard Library: Lists*.
+Available at: [https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html](https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html)
 
 ## Appendix A: Scala Verification Code
 

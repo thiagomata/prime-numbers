@@ -10,16 +10,17 @@ Independent Researcher
 
 <div align="justify">
 <p style="text-align: justify">
-In this article, we define and construct immutable finite lists of <code>BigInt</code> values
-from scratch, relying only on core type 
-constructs and recursion, with no prior knowledge of Scala's collections required. Core 
-properties of finite integer lists are formalised and verified using recursive definitions 
-aligned with functional programming principles. Lists are modelled either as empty or as 
-recursively constructed pairs of head and tail. We recursively define operations such as 
-indexing, concatenation, slicing, and summation both mathematically and in pure Scala.
-All properties are formally verified using the Stainless verification system, ensuring 
-correctness via static guarantees. This work bridges mathematical rigour and executable 
-code, laying a foundation for verified reasoning over recursive data structures.
+
+We define finite integer lists recursively and verify a property calculus for their
+structural and arithmetic operations in Scala Stainless. The verified results establish
+identities for indexed access and slicing, sum and product laws under concatenation,
+divisibility of list products by their elements, and preservation of element bounds
+through append and split. We also verify shifted-list laws preserving the period and
+relating adjacent values to gaps, together with rotation laws preserving membership,
+size, sum, and element bounds. Collectively, these properties describe how recursive
+finite sequences behave under decomposition, composition, aggregation, bounds,
+periodic shifts, and rotation.
+
 </p>
 </div>
 
@@ -51,6 +52,25 @@ This article verifies:
 - Slice equivalence — [§9](#9-equivalence-properties)
 - Shifted list: period, gap identity, gap translation — [§10](#10-shifted-list-properties)
 - Rotation: permutation invariants (size, sum, bounds, membership) — [§11](#11-rotation-properties)
+
+### Related work
+
+Recursive lists, indexed access, and list splitting are long-established parts
+of formal libraries. The Rocq/Coq standard list library defines indexed access,
+prefix and suffix operations, and proves their reconstruction law
+`firstn n l ++ skipn n l = l` [[3]](#ref3). Lean's mathematical library also
+formalizes list rotation through splitting and concatenation, including reduction
+of a rotation index modulo the list length [[4]](#ref4).
+
+These prior developments are useful points of contact for the present work.
+They show how a mature formal-mathematical setting treats familiar list
+structure, while this article develops and verifies the stated property package
+for a minimal recursive `BigInt` implementation in Scala Stainless. In
+particular, the article brings structural operations into the same checked
+development as product divisibility, numeric bounds, shifted-list gaps, and
+rotation invariants. The comparison is contextual rather than competitive: it
+locates the Stainless proofs in the wider body of formal work and makes both
+the overlap and the scope of this implementation clear.
 
 ## 2. Definitions
 
@@ -1306,8 +1326,8 @@ helpers consumed by the main rotation proofs.
 
 ## 12. Conclusion
 
-This article presents a formal framework for defining and reasoning about finite lists using a 
-recursive mathematical structure aligned with functional programming principles.
+This article established a formally verified property calculus for finite integer lists
+represented by recursive head–tail decomposition.
 
 The core proved properties can be summarized as follows, for lists
 $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
@@ -1430,6 +1450,11 @@ All of these properties are verified in the source references cited throughout
 the article. Appendix A collects the Scala excerpts that are useful to keep
 near the text; each excerpt links back to its maintained source file.
 
+Collectively, these results give one verified calculus for decomposing and composing
+finite lists, aggregating and bounding their values, relating their elements to list
+products, preserving period while tracking adjacent values and gaps under shifted-list
+transformations, and preserving membership, size, sum, and element bounds under rotation.
+
 ## 13. Future Work
 
 Extending lists via integration (cumulative sums) and derivation (gap extraction)
@@ -1505,6 +1530,14 @@ Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
 Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
+
+<a name="ref3" id="ref3" href="#ref3">[3]</a>
+The Rocq Development Team. *The Rocq Standard Library: Lists*.
+Available at: [https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html](https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html)
+
+<a name="ref4" id="ref4" href="#ref4">[4]</a>
+The Lean Community. *Mathlib: List Rotation*.
+Available at: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
 
 ## Appendix A: Scala Verification Code
 
