@@ -638,7 +638,26 @@ the step-lemma that underlies merging adjacent gap ranges.
 ```math
 \begin{aligned}
 \text{ci}(k + 1) - \text{ci}(k - 1) = \text{cycle}(k) + \text{cycle}(k + 1)
-\quad \text{for } k \geq 1 \quad &\text{[Q.E.D.]}
+\quad \text{for } 1 \leq k \text{ and } k + 1 < \text{period}(\text{ci}).
+\end{aligned}
+```
+
+**Proof.** The one-step property at positions $k-1$ and $k$ gives
+
+```math
+\begin{aligned}
+\text{ci}(k) - \text{ci}(k-1) &= \text{cycle}(k), \\
+\text{ci}(k+1) - \text{ci}(k) &= \text{cycle}(k+1).
+\end{aligned}
+```
+
+Adding these equalities cancels $\text{ci}(k)$, so
+
+```math
+\begin{aligned}
+\therefore\ \text{ci}(k+1) - \text{ci}(k-1)
+= \text{cycle}(k) + \text{cycle}(k+1)
+\quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -898,7 +917,23 @@ entire integral by one position.
 \begin{aligned}
 \text{GapList}(\text{head} + \text{gaps}_0,\; \text{tail}(\text{gaps}) \mathbin{\texttt{++}} (\text{gaps}_0 :: L_e))_i
   = \text{GapList}(\text{head},\; \text{gaps})_{i + 1}
-  \quad &\text{[Q.E.D.]}
+  \quad \text{for } 0 \leq i \text{ and } i + 1 < |\text{gaps}|.
+\end{aligned}
+```
+
+**Proof.** At $i=0$, the adjusted head is
+$\text{head}+\text{gaps}_0$, which is the original integral at position
+$1$. For $i>0$, assume the shifted integral at $i-1$ equals the original
+integral at $i$. The rotated gap at $i$ is the original gap at $i+1$;
+applying the one-step property to both integrals gives
+
+```math
+\begin{aligned}
+I'_i &= I'_{i-1} + \text{gaps}'_{i-1} \\
+     &= I_i + \text{gaps}_i \\
+     &= I_{i+1}. \\
+\therefore\ I'_i &= I_{i+1}
+\quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -1250,8 +1285,17 @@ T &= \sum_{j=0}^{n-1} v_j \\
 \quad &\text{[Definition Equivalence]} \\
 \text{CycleIntegral}(L, init)_{i+1}
 &- \text{CycleIntegral}(L, init)_i
-= \text{Cycle}(L)_i
+= \text{Cycle}(L)_{i+1}
 \quad &\text{[Step Property]} \\
+\text{CycleIntegral}(L, init)_{i+1}
+&- \text{CycleIntegral}(L, init)_i \\
+&= \text{CycleIntegral}(L, init)_{i+n+1}
+ - \text{CycleIntegral}(L, init)_{i+n}
+\quad &\text{[Same Difference After Full Cycle]} \\
+\text{CycleIntegral}(L, init)_i
+&= \text{sum}([init] \mathbin{\texttt{++}}
+ [\text{Cycle}(L)_0, \ldots, \text{Cycle}(L)_i])
+\quad &\text{[Sum of Mod Values as List]} \\
 init \geq 0 \land (\forall x \in L,\ x > 0) \land b > a
 &\implies
 \text{CycleIntegral}(L, init)_b > \text{CycleIntegral}(L, init)_a

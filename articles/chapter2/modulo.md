@@ -140,6 +140,9 @@ The recursive definition is implemented in [DivMod.scala](https://github.com/thi
 
 ## 5. DivMod Solution Invariance Under Linear Shift
 
+Moving one copy of the divisor between quotient and remainder preserves the
+represented dividend; normalization therefore reaches the same final state.
+
 ```math
 \begin{aligned}
 \forall a,b,q,r \in \mathbb{Z},\; b \neq 0,\; a &= bq + r \\
@@ -297,6 +300,20 @@ Adding or subtracting the divisor from the dividend changes the quotient by one 
 \end{aligned}
 ```
 
+Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$.  The normalized state
+satisfies $a=bq+r$, with $r$ already in the canonical remainder interval.
+Shifting the dividend by one divisor gives two equally canonical states:
+
+```math
+\begin{aligned}
+a+b &= bq+r+b = b(q+1)+r \\
+a-b &= bq+r-b = b(q-1)+r \\
+\text{DivMod}(a+b,b,q+1,r).\text{solve} &= \text{DivMod}(a+b,b,q+1,r) \\
+\text{DivMod}(a-b,b,q-1,r).\text{solve} &= \text{DivMod}(a-b,b,q-1,r).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv).
 
 ### 6.6 Quotient Invariance Under Linear Shift by Multiplier
@@ -313,6 +330,21 @@ As a direct consequence of the one-step shift laws, we can also prove that:
 \text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m \\
 \text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) \\
 \text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m \\
+\end{aligned}
+```
+
+For $m\geq0$, induction applies the positive one-step law to
+$a+m b$: the remainder is unchanged at each step and the quotient gains one.
+Thus the result holds at $m=0$ and is preserved from $m$ to $m+1$.
+The subtraction identities follow by the same induction using the negative
+one-step law.  If $m<0$, write $m=-t$ with $t>0$ and exchange the addition
+and subtraction identities just obtained.
+
+```math
+\begin{aligned}
+\text{mod}(a+(m+1)b,b) &= \text{mod}((a+mb)+b,b) = \text{mod}(a,b) \\
+\text{div}(a+(m+1)b,b) &= \text{div}(a+mb,b)+1 = \text{div}(a,b)+m+1.
+  \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -376,6 +408,22 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 \end{aligned}
 ```
 
+Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalizing the sum of the two remainders
+gives $r_a+r_c=bs+t$, where
+$s=\text{div}(r_a+r_c,b)$ and $t=\text{mod}(r_a+r_c,b)$.  Substitution gives
+the quotient and remainder of $a+c$:
+
+```math
+\begin{aligned}
+a+c &= b(q_a+q_c)+(r_a+r_c) \\
+    &= b(q_a+q_c+s)+t \\
+t &= r_a+r_c-b\cdot\text{div}(r_a+r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified in [
   ModOperations::modAdd
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd). The third identity, isolating the multiple of $b$ subtracted
@@ -394,6 +442,21 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 \end{aligned}
 ```
 
+Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalize the difference $r_a-r_c=bs+t$.
+Then the canonical decomposition of $a-c$ is obtained without any assumption
+that $r_a-r_c$ is nonnegative:
+
+```math
+\begin{aligned}
+a-c &= b(q_a-q_c)+(r_a-r_c) \\
+    &= b(q_a-q_c+s)+t \\
+t &= r_a-r_c-b\cdot\text{div}(r_a-r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified in [
   ModOperations::modLess
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess). The third identity, isolating the multiple of $b$ subtracted
@@ -407,6 +470,18 @@ When a number is a multiple of the divisor (modulo equals zero), adding any valu
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
 a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
+\end{aligned}
+```
+
+The addition law from [§6.9](#69-distributivity-over-addition) reduces the
+left-hand side to the modulo of the two remainders.  The hypothesis removes
+the first one, and modulo idempotence removes the remaining repetition:
+
+```math
+\begin{aligned}
+\text{mod}(a+c,b) &= \text{mod}(\text{mod}(a,b)+\text{mod}(c,b),b) \\
+&= \text{mod}(\text{mod}(c,b),b) \\
+&= \text{mod}(c,b). \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -461,6 +536,19 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
+Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$, so $a=bq+r$ with
+$0\leq r<b$.  If $r=b-1$, adding one produces the canonical state
+$(q+1,0)$.  Otherwise $r<b-1$, so $(q,r+1)$ is already canonical.  This also
+covers $b=1$: only the first case can occur.
+
+```math
+\begin{aligned}
+r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
+r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified in [
   ModOperations::addOne
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne).
@@ -505,6 +593,20 @@ $p$.
 \forall n \geq 0,\; p > 1,\;
 \exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0
   &&\text{[existsZero + atMostOneZero]}
+\end{aligned}
+```
+
+More explicitly, let $k$ be the offset supplied by existence.  If $i$ and
+$j$ are two offsets in $[0,p)$ with zero remainder, the at-most-one result
+applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
+
+```math
+\begin{aligned}
+&\exists\, k\in[0,p):\ \text{mod}(n+k,p)=0 \\
+&\text{mod}(n+i,p)=\text{mod}(n+j,p)=0,\quad i,j\in[0,p)
+  \implies i=j \\
+&\therefore\ \exists!\, k\in[0,p):\ \text{mod}(n+k,p)=0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
