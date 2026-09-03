@@ -63,6 +63,40 @@ tagged release whose links the article can reference permanently.
 - Team review received; no changes made yet.
 - The quoted verification totals (Stainless 0.9.8.8, Scala 3.3.3,
   1,374 valid) are UNVERIFIED claims until the run reproduces them.
+- Local `just verify-ch 2` run REPRODUCED the quoted totals: total 1374,
+  valid 1374 (1364 from cache, 10 trivial), invalid 0, unknown 0
+  (33.2s). Stainless 0.9.8.8 confirmed from install dir; bundled Scala
+  3.3.3 confirmed from log line 1 ("Compiling with standard Scala 3.3.3
+  compiler front end"). Chapter log file: `logs/verify-ch-2-v1-chapter2-_.log`.
+- Stainless citation added from the official references page: Hamza,
+  Voirol, Kuncak — *System FR: Formalized Foundations for the Stainless
+  Verifier*, OOPSLA 2019 (no DOI listed; official PDF URL used as note).
+- Content edits applied: A.4 reproducibility statement (tag-pinned log
+  link), intro `\cite{hamza2019systemfr}` (Hardy & Wright auto-renumbers
+  to [2]), ℕ = {0,1,2,...} sentence in §4, `main.tex` plain `\input`
+  (IfFileExists guards removed), all section links pinned to
+  `blob/modulo-article-v1.0.0/`. 14-page build green; archive clean-room
+  compile green (14 pages).
+- Author approved Docker addition (Option A): implemented `--docker` flag
+  in `scripts/verify-ch.sh` (same chapter scoping/focus inside the
+  compose service, `--vc-cache=false` cold cache, logs get a `-docker`
+  suffix); `verify-ch` recipe is now variadic (`just verify-ch 2
+  --docker`); README's stale `just verify-docker` section rewritten (the
+  recipe had been removed from the justfile while the README still
+  advertised it). Docker (OrbStack) daemon started; chapter-2 Docker run
+  in progress — first run builds the image.
+- Docker run DOCKER REPRODUCED THE TOTALS: cold cache (`--vc-cache=false`,
+  0 from cache) in the container (arm64; native z3 JNI unavailable in the
+  container so Stainless fell back to its bundled cvc5) reported
+  `total: 1374 valid: 1374 (0 from cache, 10 trivial) invalid: 0
+  unknown: 0` in 309.56s. Two instructive failures fixed en route:
+  (1) the release zip extracts FLAT into /opt/stainless, so the binary is
+  on PATH directly (a `stainless-dotty-standalone-0.9.8.8/stainless`
+  subpath fails with exit 127); (2) native z3 needs the x86-64 JNI jar —
+  on arm64 containers Stainless warns and falls back to cvc5 (documented
+  here, not in the paper). A.4 gained the containerized-reproduction
+  sentence linking both pinned logs; both chapter-2 logs are force-added
+  to git (`logs/*.log` is gitignored, so links would 404 otherwise).
 
 ## What is Learned
 

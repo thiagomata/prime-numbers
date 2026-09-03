@@ -99,3 +99,8 @@ All formally verified results in this article were checked with Stainless
 \texttt{modulo-article-v1.0.0}. The run reported 1,374 valid, 0 invalid,
 and 0 unknown verification conditions. The pinned verification log is
 \href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/logs/verify-ch-2-v1-chapter2-_.log}{\texttt{logs/verify-ch-2-v1-chapter2-\_.log}}.
+A containerized reproduction of the same chapter-scoped verification, using
+the environment definition committed with the sources and a cold
+verification cache (\texttt{just verify-ch 2 --docker}), reports identical
+totals; its pinned log is
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/logs/verify-ch-2-v1-chapter2-_-docker.log}{\texttt{logs/verify-ch-2-v1-chapter2-\_-docker.log}}.
