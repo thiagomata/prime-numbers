@@ -37,7 +37,7 @@ needed, so the quotient is zero and the remainder is the original dividend.
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend}}.
 
 \subsection{Identity}
 \label{sec:identity}
@@ -66,9 +66,9 @@ n &= n\cdot 0+n = n\cdot 1+0 \\
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity::modIdentity}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity::modIdentity}}.
 A longer source proof showing the normalization path is available in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof}{\texttt{ModIdentity::longProof}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof}{\texttt{ModIdentity::longProof}}.
 
 \subsection{Modulo and Division by One}
 \label{sec:mod-one}
@@ -96,9 +96,9 @@ n &= 1\cdot n+0,\qquad 0\leq 0<1 \\
 \end{equation*}
 
 These properties are verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::modOneIsZero}}
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::modOneIsZero}}
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::divOneIsN}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::divOneIsN}}.
 
 \subsection{Compatibility with Native Modulo}
 \label{sec:native-compatibility}
@@ -120,7 +120,7 @@ and positive divisors, so results derived from one match results derived from
 the other.
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModNativeCompatibility.scala#percentEqualsCalcMod}{\texttt{ModNativeCompatibility::percentEqualsCalcMod}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModNativeCompatibility.scala#percentEqualsCalcMod}{\texttt{ModNativeCompatibility::percentEqualsCalcMod}}.
 
 \subsection{Quotient Invariance Under Linear Shift}
 \label{sec:linear-shift}
@@ -156,9 +156,9 @@ a-b &= bq+r-b = b(q-1)+r \\
 \end{equation*}
 
 This property is verified for the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv}{positive case}
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv}{positive case}
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv}{negative case}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv}{negative case}.
 
 \subsection{Quotient Invariance Under Linear Shift by Multiplier}
 \label{sec:linear-shift-multiplier}
@@ -196,9 +196,9 @@ identities just obtained.
 \end{equation*}
 
 This property is verified for the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod}{positive case}
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod}{positive case}
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod}{negative case}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod}{negative case}.
 
 \subsection{Unique Remainder}
 \label{sec:unique-remainder}
@@ -231,7 +231,7 @@ a & = bq_y + r_y \text{ then } \\
 For every $a,b$ pair, with any candidate quotients and remainders
 $(q_x,r_x)$ and $(q_y,r_y)$ representing the same dividend, normalization
 reaches the same solution. This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique}{\texttt{ModIdempotence::modUnique}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique}{\texttt{ModIdempotence::modUnique}}.
 
 \subsection{Modulo Idempotence}
 \label{sec:modulo-idempotence}
@@ -247,7 +247,7 @@ a \operatorname{mod} b
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence}{\texttt{ModIdempotence::modIdempotence}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence}{\texttt{ModIdempotence::modIdempotence}}.
 
 \subsection{Distributivity over Addition}
 \label{sec:distributivity-addition}
@@ -258,6 +258,7 @@ break down complex modulo operations into simpler components.
 
 \begin{equation*}
 \begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} : b \neq 0 \\
 ( a + c ) \operatorname{mod} b
   &= ( a \operatorname{mod} b + c \operatorname{mod} b )
      \operatorname{mod} b \\
@@ -289,10 +290,10 @@ t &= r_a+r_c-b\cdot\operatorname{div}(r_a+r_c,b).
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd}{\texttt{ModOperations::modAdd}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd}{\texttt{ModOperations::modAdd}}.
 The third identity, isolating the multiple of $b$ subtracted out, is proved
 directly in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus}{\texttt{ModIdempotence.scala\#modModPlus}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus}{\texttt{ModIdempotence.scala\#modModPlus}}.
 
 \subsection{Distribution over Subtraction}
 \label{sec:distribution-subtraction}
@@ -303,6 +304,7 @@ remainders, with appropriate handling of negative values.
 
 \begin{equation*}
 \begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} : b \neq 0 \\
 ( a - c ) \operatorname{mod} b
   &= ( a \operatorname{mod} b - c \operatorname{mod} b )
      \operatorname{mod} b \\
@@ -333,10 +335,10 @@ t &= r_a-r_c-b\cdot\operatorname{div}(r_a-r_c,b).
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess}{\texttt{ModOperations::modLess}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess}{\texttt{ModOperations::modLess}}.
 The third identity, isolating the multiple of $b$ subtracted out, is proved
 directly in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus}{\texttt{ModIdempotence.scala\#modModMinus}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus}{\texttt{ModIdempotence.scala\#modModMinus}}.
 
 \subsection{Modular Shift Invariance under Divisible Base}
 \label{sec:divisible-base-shift}
@@ -368,7 +370,7 @@ modulo idempotence removes the remaining repetition:
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}}.
 
 Substituting $-c$ for $c$ gives the subtraction corollary directly, since
 $c$ is unrestricted:
@@ -382,7 +384,7 @@ a \operatorname{mod} b = 0
 \end{equation*}
 
 This corollary is verified by the same lemma,
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}},
 called with $-c$ in place of $c$.
 
 \subsection{Symmetrical Modulo Pairs}
@@ -411,7 +413,7 @@ interval, their remainders are themselves:
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum::sumSymmetricalMods}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum::sumSymmetricalMods}}.
 The source excerpt is included in Appendix~A.2.
 
 \subsection{Unit-Step Modulo-Division Increment Law}
@@ -449,7 +451,7 @@ r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne}{\texttt{ModOperations::addOne}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne}{\texttt{ModOperations::addOne}}.
 
 \subsection{Consecutive Integers: Zero Density}
 \label{sec:zero-density}
@@ -514,14 +516,14 @@ applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
 
 {\raggedright
 These properties are verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak nonzeroAfterZero}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak existsZero}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak exactlyOneZeroInConsecutive}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak nonzeroAfterZero}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak existsZero}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak exactlyOneZeroInConsecutive}},
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak atMostOneZero}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak atMostOneZero}}.
 The compact source shape is included in Appendix~A.3. The maintained source
 is
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
 The file also contains multi-factor density helpers, such as
 \texttt{twoFactorsDensity} and \texttt{densityForFactorList}; their
 statements are not established in this article, and the multiplicative

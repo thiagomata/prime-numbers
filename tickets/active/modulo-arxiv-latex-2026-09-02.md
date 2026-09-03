@@ -1,8 +1,9 @@
 # Modulo arXiv LaTeX Submission Package
 
 **Created:** 2026-09-02
-**Updated:** 2026-09-02
-**Status:** In progress
+**Updated:** 2026-09-03
+**Status:** arXiv-ready — awaiting author review and submission (submission
+itself is out of this ticket's scope)
 **Depends on:** none
 
 ## START HERE
@@ -188,6 +189,31 @@ tracked source package.
   was added inside the appendix assembly guard in `main.tex` (so the break
   only fires when the appendix exists). References closes page eleven and
   "A Appendix" opens page twelve; rebuild green, zero log issues.
+- Closing sequence complete; the package is arXiv-ready:
+  - `README.md` documents layout, `just arxiv-pdf` / manual build, the
+    validation gates, and the archive assembly steps.
+  - Mechanical source-parity audit against `articles/chapter2/modulo.md`:
+    math blocks 48 = 48; all 29 headings verbatim; GitHub URL sets
+    identical (the profile link lives in `\url`, not `\href`); Scala
+    excerpts byte-identical (including alignment spaces); Q.E.D. markers
+    10 = 10; intro/chapter bullets 6/6 and 6/6; citation marker 1 = 1.
+  - Final page-by-page visual review of all thirteen pages of the current
+    build: clean throughout (no clipping, overflow, broken glyphs, or poor
+    breaks).
+  - Upload archive `output/arxiv-modulo-source.tar.gz` contains exactly
+    `main.tex`, `sections/` (7 files), `references.bib`, and the generated
+    `main.bbl`; a clean-room compile of the extracted archive (in-place,
+    as arXiv builds) exited 0 with zero log issues and reproduced all
+    thirteen pages.
+- Author review caught two substantive omissions on PDF page 7: the
+  quantifier/precondition row `∀a,b,c ∈ ℤ : b ≠ 0` was missing from the
+  §6.9 and §6.10 statement blocks (block count parity 48=48 held because
+  whole blocks were compared, not rows within them). Both rows restored,
+  recompiled green (zero log issues, 13 pages), page seven re-rendered and
+  verified, and the upload archive was regenerated with a fresh
+  clean-room compile (exit 0, 13 pages). Lesson recorded in
+  CONVERSION_GUIDE.md: parity audits must check rows within math blocks,
+  not only block counts.
 
 ## Expected State
 
@@ -352,15 +378,13 @@ verification instructions are changed.
 
 ## Next Action
 
-Run the Worker/Critic/Monitor pipeline for the closing units, in order:
-(a) create `articles/arxiv/modulo/README.md` documenting compile and arXiv
-packaging steps (Expected State item); (b) perform the complete
-source-parity audit against `articles/chapter2/modulo.md` (headings,
-statements, equations, code, references, links) plus a final page-by-page
-visual review; (c) create the minimal arXiv upload archive (only files
-arXiv requires: `main.tex`, `sections/`, `references.bib`, generated
-`main.bbl`) and compile it once from a clean temporary directory before
-declaring the package arXiv-ready.
+None in this ticket — all Expected State items are satisfied and validated.
+The author reviews the package (`output/pdf/modulo.pdf`, archive
+`output/arxiv-modulo-source.tar.gz`) and performs the actual arXiv
+submission themselves. Two Open Concerns below remain deliberate follow-ups
+outside this ticket: a dedicated content-readiness/category review before
+public submission, and journal-template adaptation if a journal target is
+chosen.
 
 ## Learning Log
 
@@ -384,3 +408,5 @@ declaring the package arXiv-ready.
 | 2026-09-02 | Delivered author tooling requests: `just arxiv-pdf [article]` recipe (validated end-to-end; latexmk into `$TMPDIR` scratch, PDF copied to `output/pdf/<article>.pdf`), renamed the preview `main.pdf` to `modulo.pdf` so the artifact carries the article name, and captured the durable conversion conventions in `articles/arxiv/CONVERSION_GUIDE.md` — the playbook the next article conversions should follow (frozen-source rules, numbering coincidence requirement, alignment house style, overflow/long-link fixes, ghostscript validation loop, per-article checklist). | Create `references.bib` + switch the hardcoded `[1]` to `\cite` in one unit; then the appendix. |
 | 2026-09-03 | Bibliography unit green: `references.bib` (`hardywright1979`, no invented metadata, note field preserved) plus `\cite` switch in the same unit — latexmk drove bibtex against the scratch outdir without any manual env, final log zero issues, and page eleven renders the entry with preserved title casing and the "fifth edition" formatting from `plain.bst`. Lesson: `latexmk -outdir` + `\bibliography{references}` works out of the box on TeX Live 2025 (bibtex resolves the bib relative to the project cwd); brace-protect `@book` titles to stop case mangling, and `plain.bst` renders `edition = {Fifth}` as "fifth edition". | Convert Markdown Section 9 into `sections/06-appendix.tex` (`\appendix` numbering gives the A.x headings the Markdown expects). |
 | 2026-09-03 | Appendix unit green after two instructive failures (both now in CONVERSION_GUIDE.md): (1) with a PERSISTENT build dir, latexmk ignored the newly added `06-appendix.tex` because `\IfFileExists` probes are not tracked as dependencies — it declared up-to-date and recopied a stale PDF; fixed with `latexmk -g` in the `arxiv-pdf` recipe. (2) `\begin{lstlisting}[language=Scala]` silently skips the defined `style=scala` (defaults: normalsize, no frame, no breaklines) → 16pt overfull on a 75-char signature; fixed by `[style=scala]` and by switching the style to `columns=fixed` + `keepspaces=true` + `breakatwhitespace=true`, which preserves the Markdown's code alignment and keeps breaking functional (`fullflexible` silently disables breaklines). Thirteen pages, zero log issues, pages 11–13 verified visually. | README.md, full source-parity audit, then the arXiv upload archive. |
+| 2026-09-03 | Closing sequence complete and the ticket is arXiv-ready. Parity audit method worth reusing for the next articles: count ```math blocks vs `equation*` (48=48), diff unique GitHub URL sets (beware `\url` vs `\href` when grepping), awk-extract scala blocks vs lstlisting bodies and `diff` (byte-identical), count `\blacksquare`/items/citations. Clean-room archive verification (extract + in-place latexmk) reproduced 13 pages with zero log issues; `main.bbl` is staged via a temp dir so the package root stays clean. | Ticket complete; submission is the author's action. |
+| 2026-09-03 | Author's independent review verified everything except two dropped precondition rows (`∀a,b,c ∈ ℤ : b ≠ 0` in §6.9 and §6.10) — proof that block-count parity is necessary but NOT sufficient: a whole-block comparison passes while a row inside is missing. Restored both rows, recompiled (zero log issues, 13 pages), verified page seven visually, regenerated the upload archive with a fresh clean-room compile. The row-level grep check is now part of CONVERSION_GUIDE.md's parity recipe. | Ticket complete; submission is the author's action. |
