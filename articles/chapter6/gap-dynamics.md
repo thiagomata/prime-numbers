@@ -74,7 +74,7 @@ article develops the following properties in dependency order:
    [§§4.3](#43-exact-accepted-local-filter-strikes)--[4.4](#44-sharp-local-2-gap-survival-threshold);
 10. why the capacity envelope is exhausted — [§6](#6-why-the-capacity-envelope-is-exhausted);
 11. exact weighted deletion conservation and its terminal quadratic corollary
-    — [§§5.1](#51-weighted-deletion-conservation)--[5.2](#52-terminal-harmful-excess-energy);
+    — [§§5.1](#51-weighted-deletion-conservation)--[5.2](#52-terminal-survival-criterion);
 12. the exact filter-$7$ interval saving — [§7](#7-exact-filter-seven-localization);
 13. the live frontier (accepted-boundary discrepancy and residue-collision
     energy estimates) — [§8](#8-open-estimates-and-their-proven-reductions);
@@ -1076,12 +1076,12 @@ threshold $E_b\lt T^2/(2W_-)$ fails, leaving signed residue information as
 the only remaining ingredient. It holds for every nonempty conditioned chain
 $5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, over the same fixed eligible 2-gap-start
 population and conditioned filter chain as the weighted deletion conservation
-and terminal harmful-excess energy properties above. The broader research
+and terminal survival criterion properties above. The broader research
 program contains additional mathematically proved capacity analyses. This
 article uses the self-contained proofs of its load-bearing exhaustion steps in
 Appendix C; the other analyses remain in the supplementary research map.
 
-The terminal-energy theorem of [§5.2](#52-terminal-harmful-excess-energy) reduces survival to a single inequality
+The terminal-energy theorem of [§5.2](#52-terminal-survival-criterion) reduces survival to a single inequality
 on the weighted harmful-excess energy $E_b$. The most natural way to
 upper-bound $E_b$ is to maximize each layer's contribution $b_i^2$ separately,
 using only the arithmetic every residue histogram must satisfy. This produces
@@ -1211,7 +1211,7 @@ controls actual harmful excess.
 
 This sets up the next two sections. [§7](#7-exact-filter-seven-localization) computes the first genuine localized
 saving at filter $7$ by restoring exact residue order. [§9](#9-copy-block-harmful-excess-and-residue-energy) then bridges that
-saving to the residue-collision energy of [§8.2](#82-the-residue-collision-energy) across complete old-period
+saving to the residue-collision energy of [§8.2](#82-residue-collision-energy-estimate) across complete old-period
 copy blocks. The full self-contained
 proofs of the exhaustion steps summarized in [§§6.1](#61-the-separate-capacity-envelope)--[6.6](#66-the-stability-gap-repair-is-negligible) appear in
 Appendix C, so the reader can verify each constant without leaving the
@@ -1769,7 +1769,7 @@ G_{\mathrm{local}}(r,Q)>A(r,Q)
 ```
 
 For a complete conditioned chain, the signed conservation law ([§5.1](#51-weighted-deletion-conservation)) and its
-weighted Cauchy--Schwarz corollary ([§5.2](#52-terminal-harmful-excess-energy)) prove
+weighted Cauchy--Schwarz corollary ([§5.2](#52-terminal-survival-criterion)) prove
 ```math
 \begin{aligned}
 \sum_iw_ib_i&=T-N_m,
@@ -1820,6 +1820,13 @@ gap-multiplicity theorem belongs to the mathematical layer.
 | Sieve construction and transition mechanics | Stainless-verified foundation | Companion Sieve Sequence article |
 | Complete-period, local, weighted, capacity-exhaustion, filter-seven, and copy-block results | Mathematically proved; not yet Stainless-verified | [§§3--7](#3-complete-period-2-gap-properties), [§9](#9-copy-block-harmful-excess-and-residue-energy), and Appendix C |
 | Accepted-boundary discrepancy and residue-collision energy | Exact reductions proved; required estimates open | [§8](#8-open-estimates-and-their-proven-reductions) |
+
+External mathematical inputs are confined to two theorems: Bertrand's
+postulate supports the exact accepted-local-strikes characterization of
+[§4.3](#43-exact-accepted-local-filter-strikes) and the asymptotic corollaries
+in Appendix C, and the Prime Number Theorem (with Mertens estimates) supports
+the asymptotic stability-gap discussion of
+[§6.6](#66-the-stability-gap-repair-is-negligible).
 
 The operational Sieve Sequence construction used by these mathematical
 properties is Stainless-verified separately in [Formal Verification of Sieve
