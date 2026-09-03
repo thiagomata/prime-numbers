@@ -5,7 +5,7 @@
 \label{sec:appendix-identity}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity.scala}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity.scala}}.
 
 \begin{lstlisting}[style=scala]
 def modIdentity(a: BigInt): Boolean = {
@@ -18,7 +18,7 @@ def modIdentity(a: BigInt): Boolean = {
 \label{sec:appendix-symmetrical}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum.scala}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum.scala}}.
 
 \begin{lstlisting}[style=scala]
 def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
@@ -36,7 +36,7 @@ def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
 \label{sec:appendix-zero-density}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
 
 \begin{lstlisting}[style=scala]
 def nonzeroAfterZero(a: BigInt, p: BigInt, d: BigInt): Boolean = {
@@ -93,5 +93,9 @@ def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
 \subsection{Verification Log}
 \label{sec:appendix-verification-log}
 
-The project verification log is available at
-\href{https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log}{\texttt{logs/verify.log}}.
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 2} on the exact sources tagged
+\texttt{modulo-article-v1.0.0}. The run reported 1,374 valid, 0 invalid,
+and 0 unknown verification conditions. The pinned verification log is
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/logs/verify-ch-2-v1-chapter2-_.log}{\texttt{logs/verify-ch-2-v1-chapter2-\_.log}}.

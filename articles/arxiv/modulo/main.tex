@@ -60,44 +60,28 @@
 
 \maketitle
 
-\IfFileExists{sections/00-abstract.tex}{%
-  \input{sections/00-abstract}
-}{}
+\input{sections/00-abstract}
 
 \begin{center}
   \small Licensed under the Creative Commons Attribution 4.0 International
   License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
 \end{center}
 
-\IfFileExists{sections/01-introduction.tex}{%
-  \input{sections/01-introduction}
-}{}
+\input{sections/01-introduction}
 
-\IfFileExists{sections/02-definitions.tex}{%
-  \input{sections/02-definitions}
-}{}
+\input{sections/02-definitions}
 
-\IfFileExists{sections/03-shift-invariance.tex}{%
-  \input{sections/03-shift-invariance}
-}{}
+\input{sections/03-shift-invariance}
 
-\IfFileExists{sections/04-properties.tex}{%
-  \input{sections/04-properties}
-}{}
+\input{sections/04-properties}
 
-\IfFileExists{sections/05-conclusion.tex}{%
-  \input{sections/05-conclusion}
-}{}
+\input{sections/05-conclusion}
 
-\IfFileExists{references.bib}{%
-  \bibliographystyle{plain}
-  \bibliography{references}
-}{}
+\bibliographystyle{plain}
+\bibliography{references}
 
-\IfFileExists{sections/06-appendix.tex}{%
-  \clearpage
-  \appendix
-  \input{sections/06-appendix}
-}{}
+\clearpage
+\appendix
+\input{sections/06-appendix}
 
 \end{document}
