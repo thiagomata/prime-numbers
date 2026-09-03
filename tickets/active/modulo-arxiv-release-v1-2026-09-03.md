@@ -2,7 +2,8 @@
 
 **Created:** 2026-09-03
 **Updated:** 2026-09-03
-**Status:** In progress
+**Status:** Complete — branch `codex/release-modulo-arxiv-v1` and tag
+`modulo-article-v1.0.0` pushed; tag-pinned links verified on GitHub
 **Depends on:** `modulo-arxiv-latex-2026-09-02.md` (manuscript is arXiv-ready;
 this ticket covers the team's pre-submission recommendations and the tagged
 release flow)
@@ -125,3 +126,5 @@ and gather the exact Stainless citation metadata while it runs.
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-09-03 | Ticket created from team review; verification numbers must be reproduced locally before entering the manuscript. | Branch, verify, edit, tag, push, rebuild archive. |
+| 2026-09-03 | Local run reproduced the team's numbers exactly (1374/0/0; Stainless 0.9.8.8; Scala 3.3.3 from log line 1). All team claims verified before entering the manuscript. | Apply content edits. |
+| 2026-09-03 | Docker lessons: (1) the standalone release zip extracts FLAT — `stainless` is directly on PATH at /opt/stainless, a subdirectory path fails exit 127; (2) on arm64 containers the bundled scalaz3 JNI (x86-64) cannot load, so Stainless warns and falls back to cvc5 — which still reproduced 1374/0/0 cold in 309.6s; (3) `logs/*.log` is gitignored, so pinned-log links need `git add -f`; (4) a cancelled tag command can leave a stale local tag — `git rev-parse <tag>^{commit}` before trusting it. Release commit a7ba424a tagged and pushed; branch + tag confirmed on origin; tag-pinned source and log links verified to resolve on GitHub. | Ticket complete. Author creates the GitHub Release from the tag if desired and submits to arXiv. |
