@@ -17,15 +17,15 @@ a &= b(q-1) + (r+b) \\
 \end{equation*}
 
 This invariant is verified for the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution}{positive shift}
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution}{positive shift}
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution}{negative shift}.
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution}{negative shift}.
 
 \subsection{Creating the Division and Modulo Operations}
 \label{sec:creating-operations}
 
 Using the normalized \texttt{DivMod} value,
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/Calc.scala}{\texttt{Calc.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/Calc.scala}{\texttt{Calc.scala}}
 defines $\operatorname{div}$ and $\operatorname{mod}$ as the quotient and
 remainder projections of the solved state. Starting from
 $\operatorname{DivMod}(a,b,0,a)$, let:

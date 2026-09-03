@@ -1057,6 +1057,7 @@ n &= |L| \\
 ```math
 \begin{aligned}
 (\forall x \in L,\ x \geq 0) &\implies \text{Cycle}_{\text{pos}} \geq 0 \quad &\text{[Cycle Value Positivity]} \\
+(\forall y \in L,\ y > x) &\implies \text{Cycle}_{\text{pos}} > x \quad &\text{[Cycle Value Greater Than]} \\
 \text{rotateAt}(\text{Cycle}, k)_i &= \text{Cycle}_{i + k} \quad &\text{[Rotation Invariance]} \\
 \end{aligned}
 ```

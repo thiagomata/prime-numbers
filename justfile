@@ -30,11 +30,11 @@ verify focus="":
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
     ./stainless-dotty-standalone-*/stainless --timeout=300 "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify.log >&2) 1> >(tee -a logs/verify.log)
 
-verify-ch chapters="":
+verify-ch *args:
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-ch "{{justfile_directory()}}" "chapters={{chapters}}"
-    exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{chapters}}
+    just_log verify-ch "{{justfile_directory()}}" "args={{args}}"
+    exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{args}}
 
 verify-stop:
     #!/usr/bin/env bash

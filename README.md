@@ -461,9 +461,15 @@ just verify
 
 ### Running on Docker
 
-- Just 0.5.7
-- docker 20.10.16
+The same chapter-scoped verification can run inside the committed
+`docker-compose.yaml` service (`infra/docker/stainless/Dockerfile`, which
+pins Stainless 0.9.8.8 on Ubuntu 22.04). Add `--docker` to `verify-ch`;
+the run uses a cold verification cache (`--vc-cache=false`), so its totals
+are fully independent of any local Stainless cache:
 
 ```bash
-just verify-docker
+just verify-ch 2 --docker
 ```
+
+Log files land in `logs/` with a `-docker` suffix. Docker (or a compatible
+runtime) must be running.

@@ -1684,3 +1684,47 @@ assert(seq.apply(idx) >= nextSeq.head.value)
 
 **Source:** `assertSkippedOldValueRejectedByNext`, `assertNextValueAtOrBeforeFirstSurvivor` in
 `SpecSieveSeqNextProperties.scala`, 2026-07-20.
+
+## 23. Release verification with Docker (`--docker`)
+
+### 23.1 Running chapter verification inside the committed container
+
+`just verify-ch 2 --docker` runs the exact same chapter scoping and focus as the
+local run inside the `docker-compose.yaml` `stainless` service
+(`infra/docker/stainless/Dockerfile` pins Stainless 0.9.8.8 on Ubuntu 22.04).
+Use it when verification evidence must be independent of the local machine and
+local cache: the container invocation passes `--vc-cache=false`, so every VC is
+solved fresh (chapter 2: 1374 valid / 0 invalid / 0 unknown, 0 from cache,
+309.6s — matching the local run's totals).
+
+### 23.2 The standalone release zip extracts FLAT
+
+The `stainless-dotty-standalone-<ver>-linux.zip` unzips directly into the
+current directory (`stainless`, `stainless-cli`, `lib/`, `z3/`, `cvc5/`), NOT
+into a versioned subdirectory. In the container the binary is simply
+`stainless` once the extract dir is on PATH; a `<ver>/stainless` path fails
+with exit 127.
+
+### 23.3 arm64 containers silently fall back from z3 to cvc5
+
+The bundled `scalaz3-unix-64` JNI library is x86-64 only. On arm64 containers
+Stainless prints "The Z3 native interface is not available. Falling back onto
+smt-cvc5" and solves with the bundled cvc5 instead. Verification totals are
+unaffected (the VC set depends on the program, not the solver), but solve times
+differ — budget for a slower cold run instead of assuming native-z3 speed.
+
+### 23.4 Pinned verification logs must be force-added to git
+
+`logs/*.log` is gitignored. If an article or ticket links to a verification log
+at a tag or commit (reproducibility statements), `git add -f` the specific log
+files — otherwise the link 404s even though the file exists locally.
+
+### 23.5 A cancelled tag command can leave a stale local tag
+
+If a `git tag -a ... && git push ...` compound command is interrupted after the
+tag step, the tag exists locally pointing at the pre-interruption commit.
+Always verify with `git rev-parse <tag>^{commit}` before pushing, and
+`git tag -d` + re-create if it points at the wrong commit (safe while the tag
+was never pushed).
+
+**Source:** `modulo-arxiv-release-v1-2026-09-03.md` (archived), 2026-09-03.

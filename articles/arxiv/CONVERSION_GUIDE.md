@@ -145,6 +145,11 @@ These are the rules the author's visual review enforced:
   for all pages.
 - Mechanical parity check: every heading, equation, label, and link in the
   Markdown must be findable in the `.tex` sources or the extracted text.
+  Count math *blocks* (```math vs `equation*`) **and rows within them**:
+  a dropped quantifier/precondition row leaves the block count equal while
+  silently weakening a theorem statement. Grep for each distinct quantifier
+  row (for example `\forall\, a, b, c \in \mathbb{Z} : b \neq 0`) and match
+  its Markdown counterpart one by one.
 
 ## 6. Conversion Checklist for the Next Article
 
