@@ -1099,6 +1099,32 @@ exist" claim must first grep `properties/`, `candidates/`, `companions/`,
 **Source:** `spectral-positional-filter-analysis-2026-08-18.md` (Failed
 Path #3)
 
+### 18.7 Re-verify a consolidated ticket's claims against current files before acting
+
+A ticket that consolidates several older tickets inherits their claims
+verbatim, but the underlying files can have moved on between when each
+source ticket was filed and when they were merged. Filing/consolidation
+date is not evidence the claims still hold.
+
+**Case:** `sieve-sequence-v1-v2-article-consolidation.md` (filed
+2026-08-19, consolidated from three older tickets) asserted specific
+stale phrases in `sieve-sequence-v2.md` (`[h, h * M)`, "every h-th
+value") and placeholder debris (`Hello World`, `$x = 1^2$`) plus an
+overclaiming abstract in `sieve-sequence.md`. None of these were
+reproducible by grep on the actual files — they had already been fixed
+by unrelated work before the ticket was even filed. Two of its four
+"salvage before retirement" items were already present in the newer
+file; the other two had never existed in the older file at all (they
+were proposed new content, not salvage).
+
+**Fix:** Before acting on a ticket's "Current State" section — especially
+a consolidated one — grep the files it describes for the exact phrases
+it flags. Treat mismatches as the ticket being stale, not as the files
+having silently regressed.
+
+**Source:** `sieve-sequence-v1-v2-article-consolidation.md`, closed
+2026-08-19.
+
 ## 19. Cross-instance Lemma Calls [Open]
 
 ### 19.1 Cross-instance calls can time out even for simple lemmas
@@ -1658,3 +1684,47 @@ assert(seq.apply(idx) >= nextSeq.head.value)
 
 **Source:** `assertSkippedOldValueRejectedByNext`, `assertNextValueAtOrBeforeFirstSurvivor` in
 `SpecSieveSeqNextProperties.scala`, 2026-07-20.
+
+## 23. Release verification with Docker (`--docker`)
+
+### 23.1 Running chapter verification inside the committed container
+
+`just verify-ch 2 --docker` runs the exact same chapter scoping and focus as the
+local run inside the `docker-compose.yaml` `stainless` service
+(`infra/docker/stainless/Dockerfile` pins Stainless 0.9.8.8 on Ubuntu 22.04).
+Use it when verification evidence must be independent of the local machine and
+local cache: the container invocation passes `--vc-cache=false`, so every VC is
+solved fresh (chapter 2: 1374 valid / 0 invalid / 0 unknown, 0 from cache,
+309.6s — matching the local run's totals).
+
+### 23.2 The standalone release zip extracts FLAT
+
+The `stainless-dotty-standalone-<ver>-linux.zip` unzips directly into the
+current directory (`stainless`, `stainless-cli`, `lib/`, `z3/`, `cvc5/`), NOT
+into a versioned subdirectory. In the container the binary is simply
+`stainless` once the extract dir is on PATH; a `<ver>/stainless` path fails
+with exit 127.
+
+### 23.3 arm64 containers silently fall back from z3 to cvc5
+
+The bundled `scalaz3-unix-64` JNI library is x86-64 only. On arm64 containers
+Stainless prints "The Z3 native interface is not available. Falling back onto
+smt-cvc5" and solves with the bundled cvc5 instead. Verification totals are
+unaffected (the VC set depends on the program, not the solver), but solve times
+differ — budget for a slower cold run instead of assuming native-z3 speed.
+
+### 23.4 Pinned verification logs must be force-added to git
+
+`logs/*.log` is gitignored. If an article or ticket links to a verification log
+at a tag or commit (reproducibility statements), `git add -f` the specific log
+files — otherwise the link 404s even though the file exists locally.
+
+### 23.5 A cancelled tag command can leave a stale local tag
+
+If a `git tag -a ... && git push ...` compound command is interrupted after the
+tag step, the tag exists locally pointing at the pre-interruption commit.
+Always verify with `git rev-parse <tag>^{commit}` before pushing, and
+`git tag -d` + re-create if it points at the wrong commit (safe while the tag
+was never pushed).
+
+**Source:** `modulo-arxiv-release-v1-2026-09-03.md` (archived), 2026-09-03.

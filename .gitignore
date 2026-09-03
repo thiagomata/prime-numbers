@@ -44,3 +44,7 @@ stainless-dotty-standalone-*
 # ignore Python virtualenvs (e.g. presentations/.../figures/.venv)
 .venv/
 .pytest_cache/
+
+# AI agent harness state
+.zcode/
+.claude/

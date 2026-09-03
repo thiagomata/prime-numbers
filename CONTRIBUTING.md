@@ -256,6 +256,12 @@ Every article must pass these checks before publication:
     cannot).
     Future work should explain the next mathematical directions and their
     relationship to the article's scope.
+    When the conclusion's prose states a count ("we verified N
+    properties"), that number must equal both the count of items named in
+    the prose's own enumeration and the number of rows in the recap math
+    block — recount both by hand whenever a section is added, removed,
+    split, or merged, since it is easy to update the number while leaving
+    the list it's supposed to describe out of sync (or vice versa).
 
 20. **Mermaid diagrams** — For multi-variant definitions (cycle, integral),
     include a Mermaid `classDiagram` block after the intro bullets showing
@@ -299,7 +305,9 @@ Every article must pass these checks before publication:
     does not need to apologize for that in every section.
 
 25. **Voice and style match the earliest articles** — See PROOF_GUIDE.md's
-    "Voice and Style" section: first person plural ("we prove"), close proofs
+    "Voice and Style" section: author present in the prose ("we prove") is
+    preferred over a self-narrating document, but not forced where another
+    construction reads more naturally; close proofs
     with `\blacksquare`/`[Q.E.D.]` rather than `\boxed{...}`, bold for defining
     a term once rather than labeling every claim, sentence case for inline
     concept names in prose (headers and citation labels keep Title Case, per
@@ -308,6 +316,32 @@ Every article must pass these checks before publication:
     figure-comparison drafts that aren't literally named `draft-*.md` — the
     "Draft Articles" section above already requires the same structure as
     finished articles; that includes voice.
+
+26. **In-document section references are links** — Every `§N` or `§N.M`
+    reference to a section within the same article (intro group lists,
+    Future Work scope notes, cross-references between properties) must be a
+    Markdown link to that section's own heading anchor, not bare text:
+    `[§3](#3-index-and-access-properties)`, not `§3`. Anchors follow GitHub's
+    heading-slug rule: lowercase the heading text, drop the trailing period
+    after the number and any other punctuation, replace spaces with hyphens
+    (`## 3. Index and Access Properties` → `#3-index-and-access-properties`).
+    This does not apply to references naming a section in a *different*
+    article — those already use rule 21's cross-article link form.
+
+27. **Framing alignment and distinct roles** — The abstract, introduction,
+    and conclusion state the same intrinsic contribution of the current
+    article, but serve different roles. The abstract compactly names the
+    question or construction, flagship results, and collective conclusion.
+    The introduction motivates and scopes that contribution and previews the
+    result structure or property groups. The conclusion synthesizes what the
+    proved results establish without adding a stronger claim. For familiar
+    objects, foreground the established properties or relationships, stating
+    their verification status accurately, rather than the fact that the
+    object was defined. Do not use these sections as an apology, a defense
+    against hypothetical objections, or a claim that the article matters
+    mainly because later work uses it. Bookend the conclusion's theorem
+    inventory with synthesis, preserving all domains, premises,
+    verification-status qualifications, and implication directions.
 
 ## README Updates
 

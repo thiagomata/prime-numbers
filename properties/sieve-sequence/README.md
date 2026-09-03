@@ -25,6 +25,8 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | Accepted Local Strikes | Exact Accepted Local Filter Strikes | [exact-accepted-local-filter-strikes.md](exact-accepted-local-filter-strikes.md) |
 | Local Survival Threshold | Sharp Local 2-Gap Survival Threshold | [sharp-local-two-gap-survival-threshold.md](sharp-local-two-gap-survival-threshold.md) |
 | Safe-Window Certification | Safe-Window 2-Gaps Certify Twin Primes | [safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md) |
+| Coherent Head-Suppression Cover | Coherent Head Suppression Is Shifted Prime-Shot Coverage | [coherent-head-suppression-is-shifted-prime-shot-coverage.md](coherent-head-suppression-is-shifted-prime-shot-coverage.md) |
+| Coherent-Phase Safety Boundary | Coherent-Phase Adversary Safety Boundary | [coherent-phase-adversary-safety-boundary.md](coherent-phase-adversary-safety-boundary.md) |
 | Reverse-Engineered Head Scenario | Reverse-Engineered Initial Scenario for an Eventual Head 2-Gap | [reverse-engineered-eventual-head-scenario.md](reverse-engineered-eventual-head-scenario.md) |
 | Count-Forces-Survival Threshold | Global Count Threshold That Forces Local Survival | [global-count-forcing-local-survival.md](global-count-forcing-local-survival.md) |
 | Rotation Invariance | Rotation Preserves Cyclic Gap Counts | [rotation-preserves-cyclic-gap-counts.md](rotation-preserves-cyclic-gap-counts.md) |
@@ -71,6 +73,7 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | Past-Span Saturation | Past-Span Saturation Does Not Determine Placement | [past-span-saturation-does-not-determine-placement.md](past-span-saturation-does-not-determine-placement.md) |
 | 2-Gap Placement Saturation | Two-Gap Placement Saturation And The Cross-Fiber Coupling Boundary | [two-gap-placement-saturation.md](two-gap-placement-saturation.md) |
 | 2-Focused Alternation Law | Two-Focused Compression Alternation Law | [two-focused-alternation-law.md](two-focused-alternation-law.md) |
+| 2-Focused Bad-Separator Bound | Two-Focused Bad-Separator Deletion Bound | [two-focused-bad-separator-deletion-bound.md](two-focused-bad-separator-deletion-bound.md) |
 | Localized-Layer Gram Matrix | Accepted-Strike Localized Layer Gram Matrix | [accepted-strike-localized-layer-gram-matrix.md](accepted-strike-localized-layer-gram-matrix.md) |
 | First-Deletion Variance Identity | Accepted-Strike First-Deletion Variance Identity | [accepted-strike-first-deletion-variance-identity.md](accepted-strike-first-deletion-variance-identity.md) |
 | Active Two-Class Variance | Accepted-Strike Active Two-Class Variance Identity | [accepted-strike-active-two-class-variance-identity.md](accepted-strike-active-two-class-variance-identity.md) |
@@ -526,6 +529,29 @@ nothing else in the repo should be treated as authoritative for the mapping.
       proved capacity ceiling is below `1`. These are finite-population
       observations and bounds, not a deterministic-randomness theorem or an
       annular population result.
+89. [Coherent Head Suppression Is Shifted Prime-Shot Coverage](coherent-head-suppression-is-shifted-prime-shot-coverage.md)
+    - Proves that a prime head `q>=5` lacks a head 2-gap exactly when an earlier
+      prime shot covers `q+2`, equivalently when some prime
+      `r<=sqrt(q+2)<q` satisfies `q congruent to -2 modulo r`. Extending this
+      pointwise equivalence to finite blocks and eventual behavior preserves
+      all shot spacing, cyclic-sum, and CRT coherence automatically. It does
+      not prove a bounded backward recurrence or deterministic noncoverage.
+90. [Coherent-Phase Adversary Safety Boundary](coherent-phase-adversary-safety-boundary.md)
+    - Reduces one shared layer phase to the exact damage maximum
+      `max_s(n_s+n_(s-2))`, proves the capacity-only safety line `N>2B` is
+      sharp, and reports finite evidence `w*<=2.506667` without claiming an
+      asymptotic bound. With absolute shifts fixed forever, preservation of
+      every canonical prime head forces all shifts to zero by the external
+      Dirichlet theorem. This closes that intermediate adversary branch, not
+      the original backward-recurrence problem.
+91. [Two-Focused Bad-Separator Deletion Bound](two-focused-bad-separator-deletion-bound.md)
+    - Proves that both 2-cells neighboring `[2,R,2]` can be destroyed only
+      when `p` divides `R(R+2)(R+4)`. If `B` of `N` cyclic separators are
+      bad, at least `ceil((N-B)/2)` 2-cells survive; `R<2p-4` is automatically
+      good. A telescoping complete-period average forces a global good
+      separator, and finite immediate-window data is strongly favorable, but
+      localization through conditioned square windows remains candidate #14's
+      open hereditary obligation.
 
 ## Research Notes
 

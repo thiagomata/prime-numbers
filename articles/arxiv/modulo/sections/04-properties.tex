@@ -1,0 +1,536 @@
+\section{Some Important Properties of Modulo and Division}
+\label{sec:properties}
+
+This chapter develops the concrete identities that follow from the
+definitions and the linear-shift invariant of Section~5. It establishes:
+
+\begin{itemize}
+  \item The base cases where normalization is immediate: a small dividend,
+    self-division, division by one, and agreement with the native modulo
+    operator (Subsections~6.1--6.4)
+  \item How a single or repeated shift of the dividend by the divisor moves
+    the quotient without disturbing the remainder (Subsections~6.5--6.6)
+  \item The uniqueness of the normalized remainder and its idempotence under
+    repeated reduction (Subsections~6.7--6.8)
+  \item Distributivity of modulo and division over addition and subtraction
+    (Subsections~6.9--6.10)
+  \item Shift invariance when the dividend is already divisible by the base,
+    and the symmetry of remainder pairs around that base
+    (Subsections~6.11--6.12)
+  \item The unit-step increment law and the density of zero remainders across
+    consecutive integers (Subsections~6.13--6.14)
+\end{itemize}
+
+\subsection{Trivial Case}
+\label{sec:trivial-case}
+
+If the dividend is smaller than a positive divisor, the candidate state
+$\operatorname{DivMod}(a,b,0,a)$ is already final. No subtraction of $b$ is
+needed, so the quotient is zero and the remainder is the original dividend.
+
+\begin{equation*}
+\begin{aligned}
+& \forall\, a, b \in \mathbb{N} : b \neq 0 \\
+& a < b \implies a \operatorname{mod} b = a \\
+& a < b \implies a \operatorname{div} b = 0
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend}}.
+
+\subsection{Identity}
+\label{sec:identity}
+
+The modulo of every number by itself is zero and the division of every number
+by itself is one.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, n \in \mathbb{N} : n &\neq 0 \\
+n \operatorname{mod} n &= 0 \\
+n \operatorname{div} n &= 1
+\end{aligned}
+\end{equation*}
+
+The candidate state normalizes in one shift to the final state with quotient
+$1$ and remainder $0$:
+
+\begin{equation*}
+\begin{aligned}
+n &= n\cdot 0+n = n\cdot 1+0 \\
+0 &\leq 0 < \lvert n\rvert \\
+\operatorname{DivMod}(n,n,0,n).\operatorname{solve}
+  &= \operatorname{DivMod}(n,n,1,0). \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity::modIdentity}}.
+A longer source proof showing the normalization path is available in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof}{\texttt{ModIdentity::longProof}}.
+
+\subsection{Modulo and Division by One}
+\label{sec:mod-one}
+
+Modulo by one always returns zero and division by one always returns the
+dividend.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, n \in \mathbb{N} &: \\
+n \operatorname{mod} 1 &= 0 \\
+n \operatorname{div} 1 &= n
+\end{aligned}
+\end{equation*}
+
+Both identities follow directly from the already canonical decomposition
+$n=1\cdot n+0$; no induction or later unit-step result is needed.
+
+\begin{equation*}
+\begin{aligned}
+n &= 1\cdot n+0,\qquad 0\leq 0<1 \\
+\operatorname{mod}(n,1) &= 0,\qquad \operatorname{div}(n,1)=n.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+These properties are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::modOneIsZero}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOne.scala}{\texttt{ModOne::divOneIsN}}.
+
+\subsection{Compatibility with Native Modulo}
+\label{sec:native-compatibility}
+
+For non-negative dividends and positive divisors, the recursively normalized
+modulo agrees with \texttt{BigInt}'s native \texttt{\%} operator.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b \in \mathbb{Z} &: a \geq 0,\; b > 0 \\
+a \operatorname{mod} b &= a \mathbin{\%} b
+\end{aligned}
+\end{equation*}
+
+This is not a new mathematical fact but a bridge lemma: it confirms that the
+native \texttt{\%} operator and the recursively defined
+$\operatorname{mod}$ agree on their shared domain of non-negative dividends
+and positive divisors, so results derived from one match results derived from
+the other.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModNativeCompatibility.scala#percentEqualsCalcMod}{\texttt{ModNativeCompatibility::percentEqualsCalcMod}}.
+
+\subsection{Quotient Invariance Under Linear Shift}
+\label{sec:linear-shift}
+
+Adding or subtracting the divisor from the dividend changes the quotient by
+one but leaves the remainder unchanged.
+
+\begin{equation*}
+\begin{aligned}
+\forall a,b,q,r \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\operatorname{mod}(a + b, b) &= \operatorname{mod}(a, b) \\
+\operatorname{div}(a + b, b) &= \operatorname{div}(a, b) + 1 \\
+\operatorname{mod}(a - b, b) &= \operatorname{mod}(a, b) \\
+\operatorname{div}(a - b, b) &= \operatorname{div}(a, b) - 1
+\end{aligned}
+\end{equation*}
+
+Let $q=\operatorname{div}(a,b)$ and $r=\operatorname{mod}(a,b)$. The
+normalized state satisfies $a=bq+r$, with $r$ already in the canonical
+remainder interval. Shifting the dividend by one divisor gives two equally
+canonical states:
+
+\begin{equation*}
+\begin{aligned}
+a+b &= bq+r+b = b(q+1)+r \\
+a-b &= bq+r-b = b(q-1)+r \\
+\operatorname{DivMod}(a+b,b,q+1,r).\operatorname{solve}
+  &= \operatorname{DivMod}(a+b,b,q+1,r) \\
+\operatorname{DivMod}(a-b,b,q-1,r).\operatorname{solve}
+  &= \operatorname{DivMod}(a-b,b,q-1,r).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified for the
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv}{positive case}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv}{negative case}.
+
+\subsection{Quotient Invariance Under Linear Shift by Multiplier}
+\label{sec:linear-shift-multiplier}
+
+Adding a multiple of the divisor changes the quotient by that multiplier but
+leaves the remainder unchanged.
+
+As a direct consequence of the one-step shift laws, we can also prove that:
+
+\begin{equation*}
+\begin{aligned}
+\forall a,b,q,r,m \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
+\operatorname{mod}(a + m \cdot b, b) &= \operatorname{mod}(a, b) \\
+\operatorname{div}(a + m \cdot b, b) &= \operatorname{div}(a, b) + m \\
+\operatorname{mod}(a - m \cdot b, b) &= \operatorname{mod}(a, b) \\
+\operatorname{div}(a - m \cdot b, b) &= \operatorname{div}(a, b) - m
+\end{aligned}
+\end{equation*}
+
+For $m\geq0$, induction applies the positive one-step law to $a+m b$: the
+remainder is unchanged at each step and the quotient gains one. Thus the
+result holds at $m=0$ and is preserved from $m$ to $m+1$. The subtraction
+identities follow by the same induction using the negative one-step law.
+If $m<0$, write $m=-t$ with $t>0$ and exchange the addition and subtraction
+identities just obtained.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(a+(m+1)b,b)
+  &= \operatorname{mod}((a+mb)+b,b) = \operatorname{mod}(a,b) \\
+\operatorname{div}(a+(m+1)b,b)
+  &= \operatorname{div}(a+mb,b)+1 = \operatorname{div}(a,b)+m+1.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified for the
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod}{positive case}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod}{negative case}.
+
+\subsection{Unique Remainder}
+\label{sec:unique-remainder}
+
+There is only one single remainder value for every $a, b$ pair with $b > 0$.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b &\in \mathbb{N} : b > 0 \\
+\exists!\, r \in \mathbb{N} &:
+  0 \leq r < b \;\land\;
+  a = \left\lfloor \frac{a}{b} \right\rfloor \cdot b + r
+\end{aligned}
+\end{equation*}
+
+in other words, two $\operatorname{DivMod}$ instances with the same dividend
+$a$ and divisor $b$ will have the same solution.
+
+\begin{equation*}
+\begin{aligned}
+\forall a,b,q_x,r_x,q_y,r_y & \in \mathbb{N}, \\
+\text{where } b & \neq 0 \text{, } \\
+a & = bq_x + r_x \text{ and } \\
+a & = bq_y + r_y \text{ then } \\
+\operatorname{DivMod}(a,b,q_x,r_x).\operatorname{solve}
+  & = \operatorname{DivMod}(a,b,q_y,r_y).\operatorname{solve}
+\end{aligned}
+\end{equation*}
+
+For every $a,b$ pair, with any candidate quotients and remainders
+$(q_x,r_x)$ and $(q_y,r_y)$ representing the same dividend, normalization
+reaches the same solution. This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique}{\texttt{ModIdempotence::modUnique}}.
+
+\subsection{Modulo Idempotence}
+\label{sec:modulo-idempotence}
+
+Taking the modulo of a number twice gives the same result as taking it once.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b \in \mathbb{Z} &: b \neq 0 \\
+a \operatorname{mod} b
+  &= ( a \operatorname{mod} b ) \operatorname{mod} b
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence}{\texttt{ModIdempotence::modIdempotence}}.
+
+\subsection{Distributivity over Addition}
+\label{sec:distributivity-addition}
+
+The modulo operation distributes over addition, meaning that the remainder
+of a sum equals the remainder of the sum of remainders. This allows us to
+break down complex modulo operations into simpler components.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} : b \neq 0 \\
+( a + c ) \operatorname{mod} b
+  &= ( a \operatorname{mod} b + c \operatorname{mod} b )
+     \operatorname{mod} b \\
+( a + c ) \operatorname{div} b
+  &= a \operatorname{div} b + c \operatorname{div} b
+     + ( a \operatorname{mod} b + c \operatorname{mod} b )
+       \operatorname{div} b \\
+( a + c) \operatorname{mod} b
+  &= (a \operatorname{mod} b) + (c \operatorname{mod} b)
+     - b \cdot (((a \operatorname{mod} b)
+     + (c \operatorname{mod} b)) \operatorname{div} b)
+\end{aligned}
+\end{equation*}
+
+Let $q_a=\operatorname{div}(a,b)$, $r_a=\operatorname{mod}(a,b)$,
+$q_c=\operatorname{div}(c,b)$, and $r_c=\operatorname{mod}(c,b)$. Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$. Normalizing the sum of the two remainders
+gives $r_a+r_c=bs+t$, where $s=\operatorname{div}(r_a+r_c,b)$ and
+$t=\operatorname{mod}(r_a+r_c,b)$. Substitution gives the quotient and
+remainder of $a+c$:
+
+\begin{equation*}
+\begin{aligned}
+a+c &= b(q_a+q_c)+(r_a+r_c) \\
+    &= b(q_a+q_c+s)+t \\
+t &= r_a+r_c-b\cdot\operatorname{div}(r_a+r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd}{\texttt{ModOperations::modAdd}}.
+The third identity, isolating the multiple of $b$ subtracted out, is proved
+directly in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus}{\texttt{ModIdempotence.scala\#modModPlus}}.
+
+\subsection{Distribution over Subtraction}
+\label{sec:distribution-subtraction}
+
+Similar to addition, the modulo operation distributes over subtraction. The
+remainder of a difference equals the remainder of the difference of
+remainders, with appropriate handling of negative values.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} : b \neq 0 \\
+( a - c ) \operatorname{mod} b
+  &= ( a \operatorname{mod} b - c \operatorname{mod} b )
+     \operatorname{mod} b \\
+( a - c ) \operatorname{div} b
+  &= a \operatorname{div} b - c \operatorname{div} b
+     + ( a \operatorname{mod} b - c \operatorname{mod} b )
+       \operatorname{div} b \\
+( a - c ) \operatorname{mod} b
+  &= (a \operatorname{mod} b) - (c \operatorname{mod} b)
+     - b \cdot (((a \operatorname{mod} b)
+     - (c \operatorname{mod} b)) \operatorname{div} b)
+\end{aligned}
+\end{equation*}
+
+Let $q_a=\operatorname{div}(a,b)$, $r_a=\operatorname{mod}(a,b)$,
+$q_c=\operatorname{div}(c,b)$, and $r_c=\operatorname{mod}(c,b)$. Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$. Normalize the difference $r_a-r_c=bs+t$.
+Then the canonical decomposition of $a-c$ is obtained without any assumption
+that $r_a-r_c$ is nonnegative:
+
+\begin{equation*}
+\begin{aligned}
+a-c &= b(q_a-q_c)+(r_a-r_c) \\
+    &= b(q_a-q_c+s)+t \\
+t &= r_a-r_c-b\cdot\operatorname{div}(r_a-r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess}{\texttt{ModOperations::modLess}}.
+The third identity, isolating the multiple of $b$ subtracted out, is proved
+directly in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus}{\texttt{ModIdempotence.scala\#modModMinus}}.
+
+\subsection{Modular Shift Invariance under Divisible Base}
+\label{sec:divisible-base-shift}
+
+When a number is a multiple of the divisor (modulo equals zero), adding any
+value does not change the modulo of that value. This property simplifies
+calculations when one operand is already divisible by the base. It holds for
+any integer $c$, including negative values.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} &: b \neq 0 \\
+a \operatorname{mod} b = 0
+  &\implies ( a + c ) \operatorname{mod} b = c \operatorname{mod} b
+\end{aligned}
+\end{equation*}
+
+The addition law from Subsection~6.9 reduces the left-hand side to the
+modulo of the two remainders. The hypothesis removes the first one, and
+modulo idempotence removes the remaining repetition:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(a+c,b)
+  &= \operatorname{mod}(\operatorname{mod}(a,b)+\operatorname{mod}(c,b),b) \\
+  &= \operatorname{mod}(\operatorname{mod}(c,b),b) \\
+  &= \operatorname{mod}(c,b). \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}}.
+
+Substituting $-c$ for $c$ gives the subtraction corollary directly, since
+$c$ is unrestricted:
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b, c \in \mathbb{Z} &: b \neq 0 \\
+a \operatorname{mod} b = 0
+  &\implies ( a - c ) \operatorname{mod} b = ( -c ) \operatorname{mod} b
+\end{aligned}
+\end{equation*}
+
+This corollary is verified by the same lemma,
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC}{\texttt{ModOperations::modZeroPlusC}},
+called with $-c$ in place of $c$.
+
+\subsection{Symmetrical Modulo Pairs}
+\label{sec:symmetrical-modulo-pairs}
+
+The modulo of a value and the modulo of its complement relative to the base
+sum to the base.
+
+\begin{equation*}
+\begin{aligned}
+& b > 0,\quad 0 < k < b \\
+& k \operatorname{mod} b + (b - k) \operatorname{mod} b = b
+\end{aligned}
+\end{equation*}
+
+Since both $k$ and $b-k$ already lie inside the canonical remainder
+interval, their remainders are themselves:
+
+\begin{equation*}
+\begin{aligned}
+0<k<b &\implies \operatorname{mod}(k,b)=k \\
+0<b-k<b &\implies \operatorname{mod}(b-k,b)=b-k \\
+\operatorname{mod}(k,b)+\operatorname{mod}(b-k,b)
+  &= k+(b-k)=b. \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum::sumSymmetricalMods}}.
+The source excerpt is included in Appendix~A.2.
+
+\subsection{Unit-Step Modulo-Division Increment Law}
+\label{sec:unit-step}
+
+When incrementing a number by one, the modulo cycles from 0 to b-1 and
+resets, while the division increments only when the modulo reaches its
+maximum value. This captures the "carry" behavior of division when counting.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, a, b \in \mathbb{N} : b \neq 0 \\
+a \operatorname{mod} b = b - 1
+  &\implies (a + 1) \operatorname{mod} b = 0 \\
+a \operatorname{mod} b \neq b - 1
+  &\implies (a + 1) \operatorname{mod} b = (a \operatorname{mod} b) + 1 \\
+a \operatorname{mod} b = b - 1
+  &\implies (a + 1) \operatorname{div} b = (a \operatorname{div} b) + 1 \\
+a \operatorname{mod} b \neq b - 1
+  &\implies (a + 1) \operatorname{div} b = a \operatorname{div} b
+\end{aligned}
+\end{equation*}
+
+Let $q=\operatorname{div}(a,b)$ and $r=\operatorname{mod}(a,b)$, so
+$a=bq+r$ with $0\leq r<b$. If $r=b-1$, adding one produces the canonical
+state $(q+1,0)$. Otherwise $r<b-1$, so $(q,r+1)$ is already canonical. This
+also covers $b=1$: only the first case can occur.
+
+\begin{equation*}
+\begin{aligned}
+r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
+r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne}{\texttt{ModOperations::addOne}}.
+
+\subsection{Consecutive Integers: Zero Density}
+\label{sec:zero-density}
+
+In any block of $p$ consecutive integers, exactly one is divisible by $p$.
+This is the basic counting form of modulo periodicity: as we advance through
+consecutive integers, the remainder modulo $p$ visits zero once per complete
+period.
+
+\textbf{At most one zero per block.} If $\operatorname{mod}(a,p)=0$ and
+$0 < d < p$, then $\operatorname{mod}(a+d,p)\neq 0$. Within any block of
+size $p$ starting from a multiple, no later offset inside the same block can
+also be divisible by $p$.
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{mod}(a,\; p) = 0 \;\land\; 0 < d < p
+  \implies \operatorname{mod}(a + d,\; p) \neq 0
+  \quad \text{[nonzeroAfterZero]}
+\end{aligned}
+\end{equation*}
+
+\textbf{At least one zero per block.} For any starting value $n$ and modulus
+$p>1$, there exists a $k \in [0,p)$ such that
+$\operatorname{mod}(n+k,p)=0$. The witness is $k=0$ when $n$ is already
+divisible by $p$, and $k=p-\operatorname{mod}(n,p)$ otherwise.
+
+\begin{equation*}
+\begin{aligned}
+&\forall n \geq 0,\; p > 1,\; \exists\, k \in [0, p) :
+  \operatorname{mod}(n + k,\; p) = 0
+  \quad \text{[existsZero]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Exactly one zero per block.} Existence gives a zero offset, while
+uniqueness says two zero offsets in the same block must be equal. Together,
+among $p$ consecutive integers starting from $n$, exactly one is divisible
+by $p$.
+
+\begin{equation*}
+\begin{aligned}
+&\forall n \geq 0,\; p > 1,\; \exists!\, k \in [0, p) :
+  \operatorname{mod}(n + k,\; p) = 0
+  \quad \text{[existsZero + atMostOneZero]}
+\end{aligned}
+\end{equation*}
+
+More explicitly, let $k$ be the offset supplied by existence. If $i$ and
+$j$ are two offsets in $[0,p)$ with zero remainder, the at-most-one result
+applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
+
+\begin{equation*}
+\begin{aligned}
+&\exists\, k\in[0,p):\ \operatorname{mod}(n+k,p)=0 \\
+&\operatorname{mod}(n+i,p)=\operatorname{mod}(n+j,p)=0,\quad i,j\in[0,p)
+  \implies i=j \\
+&\therefore\ \exists!\, k\in[0,p):\ \operatorname{mod}(n+k,p)=0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+These properties are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak nonzeroAfterZero}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak existsZero}},
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak exactlyOneZeroInConsecutive}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers::\allowbreak atMostOneZero}}.
+The compact source shape is included in Appendix~A.3. The maintained source
+is
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
+The file also contains multi-factor density helpers, such as
+\texttt{twoFactorsDensity} and \texttt{densityForFactorList}; their
+statements are not established in this article, and the multiplicative
+density extension they aim at is discussed as an open direction in the
+Future Work section.
+\par}
+
+
+
+

@@ -10,17 +10,18 @@ Independent Researcher
 
 <div align="justify">
 <p style="text-align: justify">
-The division and modulo operations are fundamental in mathematics and computer science,
- especially in areas such as number theory, cryptography, and algorithm design. 
-In this article, we define these operations from scratch using a recursive formulation,
- without relying on built-in semantics or standard library behavior.
-We mathematically prove and formally verify, using Scala Stainless, key
-properties such as unique remainder, modulo idempotence, distributivity, and
-one-zero-per-period density.
-All properties are expressed and proved within a minimal framework using only elementary arithmetic,
- recursion, and formally verified Scala definitions.
-The result is a self-contained, machine-checked foundation for modular arithmetic.
- </p>
+
+We define integer division and modulo by recursively normalizing quotient–remainder
+states and verify the construction in Scala Stainless. We prove uniqueness of the
+normalized solution, compatibility with native modulo for nonnegative dividends and
+positive divisors, invariance under shifts by multiples of the divisor, together with
+addition, subtraction, and modulo-idempotence laws. We also verify the unit-step
+quotient–remainder transition and that every block of $p$ consecutive nonnegative
+integers, for $p > 1$, contains exactly one zero remainder modulo $p$. Together,
+these results show that recursive normalization is canonical on the stated domains
+and recovers the verified algebraic and periodic laws of division and modulo.
+
+</p>
 </div>
 
 ## 1. Introduction
@@ -139,6 +140,9 @@ The recursive definition is implemented in [DivMod.scala](https://github.com/thi
 
 ## 5. DivMod Solution Invariance Under Linear Shift
 
+Moving one copy of the divisor between quotient and remainder preserves the
+represented dividend; normalization therefore reaches the same final state.
+
 ```math
 \begin{aligned}
 \forall a,b,q,r \in \mathbb{Z},\; b \neq 0,\; a &= bq + r \\
@@ -186,17 +190,17 @@ definitions and the linear-shift invariant of
 
 - The base cases where normalization is immediate: a small dividend,
   self-division, division by one, and agreement with the native modulo
-  operator (§6.1–§6.4)
+  operator ([§6.1](#61-trivial-case)–[§6.4](#64-compatibility-with-native-modulo))
 - How a single or repeated shift of the dividend by the divisor moves the
-  quotient without disturbing the remainder (§6.5–§6.6)
+  quotient without disturbing the remainder ([§6.5](#65-quotient-invariance-under-linear-shift)–[§6.6](#66-quotient-invariance-under-linear-shift-by-multiplier))
 - The uniqueness of the normalized remainder and its idempotence under
-  repeated reduction (§6.7–§6.8)
+  repeated reduction ([§6.7](#67-unique-remainder)–[§6.8](#68-modulo-idempotence))
 - Distributivity of modulo and division over addition and subtraction
-  (§6.9–§6.10)
+  ([§6.9](#69-distributivity-over-addition)–[§6.10](#610-distribution-over-subtraction))
 - Shift invariance when the dividend is already divisible by the base, and
-  the symmetry of remainder pairs around that base (§6.11–§6.12)
+  the symmetry of remainder pairs around that base ([§6.11](#611-modular-shift-invariance-under-divisible-base)–[§6.12](#612-symmetrical-modulo-pairs))
 - The unit-step increment law and the density of zero remainders across
-  consecutive integers (§6.13–§6.14)
+  consecutive integers ([§6.13](#613-unit-step-modulo-division-increment-law)–[§6.14](#614-consecutive-integers-zero-density))
 
 ### 6.1 Trivial Case
 
@@ -228,9 +232,17 @@ n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
-The proof normalizes $DivMod(n,n,0,n)$ to $DivMod(n,n,1,0)$. The latter is
-already final, so the normalized quotient is $1$ and the normalized remainder is
-$0$.
+The candidate state normalizes in one shift to the final state with quotient
+$1$ and remainder $0$:
+
+```math
+\begin{aligned}
+n &= n\cdot0+n = n\cdot1+0 \\
+0 &\leq 0 < |n| \\
+\text{DivMod}(n,n,0,n).\text{solve} &= \text{DivMod}(n,n,1,0).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in [
   ModIdentity::modIdentity
@@ -251,9 +263,16 @@ n \text{ div } 1 & = n \\
 \end{aligned}
 ```
 
-Modulo by one follows because every integer is congruent to $0$ modulo $1$.
-Division by one is proved by induction over $n$, using the unit-step increment
-law for the successor case.
+Both identities follow directly from the already canonical decomposition
+$n=1\cdot n+0$; no induction or later unit-step result is needed.
+
+```math
+\begin{aligned}
+n &= 1\cdot n+0,\qquad 0\leq0<1 \\
+\text{mod}(n,1) &= 0,\qquad \text{div}(n,1)=n.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 These properties are verified in [
   ModOne::modOneIsZero
@@ -296,6 +315,20 @@ Adding or subtracting the divisor from the dividend changes the quotient by one 
 \end{aligned}
 ```
 
+Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$.  The normalized state
+satisfies $a=bq+r$, with $r$ already in the canonical remainder interval.
+Shifting the dividend by one divisor gives two equally canonical states:
+
+```math
+\begin{aligned}
+a+b &= bq+r+b = b(q+1)+r \\
+a-b &= bq+r-b = b(q-1)+r \\
+\text{DivMod}(a+b,b,q+1,r).\text{solve} &= \text{DivMod}(a+b,b,q+1,r) \\
+\text{DivMod}(a-b,b,q-1,r).\text{solve} &= \text{DivMod}(a-b,b,q-1,r).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv).
 
 ### 6.6 Quotient Invariance Under Linear Shift by Multiplier
@@ -312,6 +345,21 @@ As a direct consequence of the one-step shift laws, we can also prove that:
 \text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m \\
 \text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) \\
 \text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m \\
+\end{aligned}
+```
+
+For $m\geq0$, induction applies the positive one-step law to
+$a+m b$: the remainder is unchanged at each step and the quotient gains one.
+Thus the result holds at $m=0$ and is preserved from $m$ to $m+1$.
+The subtraction identities follow by the same induction using the negative
+one-step law.  If $m<0$, write $m=-t$ with $t>0$ and exchange the addition
+and subtraction identities just obtained.
+
+```math
+\begin{aligned}
+\text{mod}(a+(m+1)b,b) &= \text{mod}((a+mb)+b,b) = \text{mod}(a,b) \\
+\text{div}(a+(m+1)b,b) &= \text{div}(a+mb,b)+1 = \text{div}(a,b)+m+1.
+  \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -375,6 +423,22 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 \end{aligned}
 ```
 
+Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalizing the sum of the two remainders
+gives $r_a+r_c=bs+t$, where
+$s=\text{div}(r_a+r_c,b)$ and $t=\text{mod}(r_a+r_c,b)$.  Substitution gives
+the quotient and remainder of $a+c$:
+
+```math
+\begin{aligned}
+a+c &= b(q_a+q_c)+(r_a+r_c) \\
+    &= b(q_a+q_c+s)+t \\
+t &= r_a+r_c-b\cdot\text{div}(r_a+r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified in [
   ModOperations::modAdd
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd). The third identity, isolating the multiple of $b$ subtracted
@@ -393,6 +457,21 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 \end{aligned}
 ```
 
+Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
+$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalize the difference $r_a-r_c=bs+t$.
+Then the canonical decomposition of $a-c$ is obtained without any assumption
+that $r_a-r_c$ is nonnegative:
+
+```math
+\begin{aligned}
+a-c &= b(q_a-q_c)+(r_a-r_c) \\
+    &= b(q_a-q_c+s)+t \\
+t &= r_a-r_c-b\cdot\text{div}(r_a-r_c,b).
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 This property is verified in [
   ModOperations::modLess
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess). The third identity, isolating the multiple of $b$ subtracted
@@ -406,6 +485,18 @@ When a number is a multiple of the divisor (modulo equals zero), adding any valu
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
 a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
+\end{aligned}
+```
+
+The addition law from [§6.9](#69-distributivity-over-addition) reduces the
+left-hand side to the modulo of the two remainders.  The hypothesis removes
+the first one, and modulo idempotence removes the remaining repetition:
+
+```math
+\begin{aligned}
+\text{mod}(a+c,b) &= \text{mod}(\text{mod}(a,b)+\text{mod}(c,b),b) \\
+&= \text{mod}(\text{mod}(c,b),b) \\
+&= \text{mod}(c,b). \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -439,7 +530,16 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 ```
 
 Since both $k$ and $b-k$ already lie inside the canonical remainder interval,
-their remainders are themselves. Their sum is therefore $k + (b-k) = b$.
+their remainders are themselves:
+
+```math
+\begin{aligned}
+0<k<b &\implies \text{mod}(k,b)=k \\
+0<b-k<b &\implies \text{mod}(b-k,b)=b-k \\
+\text{mod}(k,b)+\text{mod}(b-k,b) &= k+(b-k)=b.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
 
 This property is verified in [
   ModSum::sumSymmetricalMods
@@ -457,6 +557,19 @@ a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 \\
 a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 \\
 a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b \\
+\end{aligned}
+```
+
+Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$, so $a=bq+r$ with
+$0\leq r<b$.  If $r=b-1$, adding one produces the canonical state
+$(q+1,0)$.  Otherwise $r<b-1$, so $(q,r+1)$ is already canonical.  This also
+covers $b=1$: only the first case can occur.
+
+```math
+\begin{aligned}
+r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
+r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
+  \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -507,6 +620,20 @@ $p$.
 \end{aligned}
 ```
 
+More explicitly, let $k$ be the offset supplied by existence.  If $i$ and
+$j$ are two offsets in $[0,p)$ with zero remainder, the at-most-one result
+applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
+
+```math
+\begin{aligned}
+&\exists\, k\in[0,p):\ \text{mod}(n+k,p)=0 \\
+&\text{mod}(n+i,p)=\text{mod}(n+j,p)=0,\quad i,j\in[0,p)
+  \implies i=j \\
+&\therefore\ \exists!\, k\in[0,p):\ \text{mod}(n+k,p)=0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
 These properties are verified in [
   ConsecutiveIntegers::nonzeroAfterZero
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
@@ -527,11 +654,10 @@ aim at is discussed as an open direction in [Future Work](#8-future-work).
 
 ## 7. Conclusion
 
-In this article, we constructed the division and modulo operations from first principles,
- using a recursive definition that avoids reliance on any built-in semantics or library
- implementations.
-Within this minimal foundation, we mathematically proved and formally verified
-the following set of fundamental properties and identities:
+This article established a formally verified property theory for division and modulo
+generated by recursive quotient–remainder normalization. Within the stated domains,
+the following results show that the normalization is canonical and satisfies the
+expected algebraic and periodic laws:
 
 ```math
 \begin{aligned}
@@ -639,8 +765,9 @@ formulation makes the proof structure transparent: normalize $(q,r)$ without
 changing $a=bq+r$, extract quotient and remainder from the final state, then
 derive the algebraic laws from that normal form.
  
-This work demonstrates how modular arithmetic can be derived, reasoned about, 
- and formally verified from the ground up.
+Taken together, the canonical solution theorem, shift laws, arithmetic identities,
+unit-step transition, and one-zero-per-period result characterize both the normalized
+quotient–remainder state and its periodic behavior on consecutive integers.
 
 ## 8. Future Work
 
