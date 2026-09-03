@@ -793,7 +793,7 @@ filters does it still need to survive."
   `d_p` in `properties/sieve-sequence/realized-filter-adversariality-score.md`),
   which *shrinks* as the chain progresses, unlike this toy model's constant
   `f`. The compounding product of `(1-2/r_i)` over the actual conditioned
-  chain is exactly the Mertens product, known to decay like `1/ln(x)` — far
+  chain is exactly the Mertens product, known to decay like `1/ln(x)^2` — far
   slower than a fixed-ratio geometric decay. Whether that slower, real
   compounding is still enough to keep the danger-annulus population positive
   at infinitely many transitions is precisely the open question tracked in

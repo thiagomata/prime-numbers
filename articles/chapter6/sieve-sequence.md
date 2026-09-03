@@ -20,9 +20,11 @@ and exact transition count. If the current head is $h$, the current period has
 $T$ accepted values, and the current modulus is $M$, then the expanded
 window of length $hM$ contains $hT$ old survivors; exactly $T$ are
 multiples of $h$, leaving $T(h-1)$ survivors. We also verify the local
-copy-or-merge rule for the next gaps and prove, under explicit structural and
-period preconditions, that the resulting gap prefix agrees with the next linear
-specification.
+copy-or-merge rule for the next gaps. For each real linear 2-gap, the two
+endpoint strikes occur at distinct lift offsets, so exactly two of its $h$
+lifts are destroyed and exactly $h-2$ keep both endpoints. Under explicit
+structural and period preconditions, the resulting gap prefix agrees with the
+next linear specification.
 
 The formal result has two explicit boundaries. First, next-head primality is
 conditional on the square bound supplied mathematically by Bertrand's postulate.
@@ -31,7 +33,7 @@ direct construction of the next cycle from a repeated and filtered current cycle
 is a separate open composition problem. Accordingly, the article establishes a
 formally verified finite-stage sieve specification and transition semantics, not
 a new prime-sieving algorithm or a theorem about the persistence of any
-particular prime gap.
+particular prime gap in a prescribed short window.
 
 </p>
 </div>
@@ -54,11 +56,11 @@ contracts that can be checked by Stainless, a verifier for Scala programs
 
 The proof is organized into these property groups:
 
-- stage semantics and complete increasing enumeration - Section 3;
-- canonical period and finite gap-cycle reconstruction - Section 4;
-- repeated-cycle invariance, exact filtering, and copy-or-merge dynamics - Section 5;
-- next-head primality and next-stage agreement - Section 6;
-- conditional assumptions and open composition problems - Section 7.
+- stage semantics and complete increasing enumeration - [§3](#3-linear-stage-semantics);
+- canonical period and finite gap-cycle reconstruction - [§4](#4-period-and-cycle-reconstruction);
+- repeated-cycle invariance, exact filtering, and copy-or-merge dynamics - [§5](#5-installing-the-current-head-as-a-filter);
+- next-head primality and next-stage agreement - [§6](#6-the-next-stage);
+- conditional assumptions and open composition problems - [§7](#7-exact-proof-boundary).
 
 The mathematical object is separate from its proof namespaces. `SpecSieveSequence`
 is the data model and linear semantic specification. Independent property
@@ -70,10 +72,10 @@ and head-primality theorems.
 This section fixes the notation, relates the linear and cyclic views, and states
 how to interpret a Stainless-verified contract.
 
-- Section 2.1 defines one stage and its acceptance predicate.
-- Section 2.2 defines the finite period and gap cycle.
-- Section 2.3 maps the proof architecture.
-- Section 2.4 explains the verification boundary.
+- [§2.1](#21-stage-definition) defines one stage and its acceptance predicate.
+- [§2.2](#22-period-and-gap-cycle) defines the finite period and gap cycle.
+- [§2.3](#23-source-evidence-map) maps the proof architecture.
+- [§2.4](#24-verification-evidence) explains the verification boundary.
 
 ### 2.1 Stage Definition
 
@@ -110,20 +112,30 @@ current head $5$ has not yet been added to the filter list. Prime generation
 comes from the chain of stage heads, not from treating all values in one stage
 as prime.
 
+The figure below makes this concrete for six early stages: each panel is a
+survivor's own leading $100$ values reshaped into a $10\times10$ grid, colored
+green where the survivor is actually prime and red where the current filter
+set accepted it anyway even though it is composite (stage $0$, with no filter
+installed yet, marks every composite integer this way). Every red cell is
+exactly the phenomenon named above — a value $A_S$ currently accepts that a
+later stage head will remove.
+
+![Six small hit/miss matrices, one per early stage: green cells are survivors that are actually prime, red cells are survivors the current filter set accepts despite being composite](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/presentations/sieve-sequence-visualization/figures/out/hit-miss-matrices.svg)
+
 ### 2.2 Period and Gap Cycle
 
 Because every $q\in\overline{P}$ divides $M$, acceptance is unchanged by
-adding $M$:
+adding $M$ within the stage domain $v\ge h$:
 
 ```math
 \begin{aligned}
 A_S(v+M)
 &\Longleftrightarrow
-\forall q\in\overline{P},\
-(v+M)\not\equiv0\pmod q \\
+(v+M)\ge h\ \land\
+\forall q\in\overline{P},\ (v+M)\not\equiv0\pmod q \\
 &\Longleftrightarrow
-\forall q\in\overline{P},\
-v\not\equiv0\pmod q \\
+v\ge h\ \land\
+\forall q\in\overline{P},\ v\not\equiv0\pmod q \\
 &\Longleftrightarrow A_S(v).
 \end{aligned}
 ```
@@ -172,7 +184,8 @@ repository. The preconditions in those contracts are part of the theorem
 statement, and the article states them in mathematical form before linking to
 the source. This keeps the mathematical result and the Stainless evidence
 aligned without relying on repository-wide verification-condition totals, which
-change when unrelated functions are added.
+change when unrelated functions are added. The verification framework's
+formal foundations are described in [[8]](#ref8).
 
 ## 3. Linear Stage Semantics
 
@@ -227,7 +240,7 @@ gap is positive.
   &&\text{[Integer order]} \\
 g_k
 &=\ell_{k+1}-\ell_k\gt0
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -259,7 +272,7 @@ A_S(v+M) &= A_S(v)
 \ell_{k+T} &= \ell_k+M
   &&\text{[Same ordered survivor]} \\
 \ell_{k+nT} &= \ell_k+nM
-  &&\text{[Block induction; Q.E.D.]}.
+  &&\text{[Block induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -295,7 +308,7 @@ I_G(k)
 &=\ell_k+(\ell_{k+1}-\ell_k)
   &&\text{[Induction hypothesis]} \\
 &=\ell_{k+1}
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -319,7 +332,7 @@ G^{\langle h\rangle}_{k\bmod hT}
   &=G_{k\bmod T}, \\
 I_{G^{\langle h\rangle}}(k)
   &=I_G(k)
-  \quad\text{[Equal increments and initial value; Q.E.D.]}.
+  \quad\text{[Equal increments and initial value]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -334,6 +347,8 @@ window, this operation has an exact count and a deterministic effect on gaps.
 
 - the expanded old stage contains exactly $hT$ accepted values;
 - exactly $T$ of those values are divisible by $h$;
+- a real linear 2-gap has exactly two destroyed lifts and $h-2$ lifts whose
+  endpoints survive;
 - every next gap is either copied or is a sum of consecutive old gaps;
 - filtering the base and repeated cycle views yields equal survivor-gap lists.
 
@@ -363,7 +378,7 @@ N_{\mathrm{removed}} &= T
 N_{\mathrm{survive}}
   &=hT-T \\
   &=T(h-1)
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -373,7 +388,207 @@ This property is verified in [
   SpecSieveSeqSurvivorCountProperties::assertSameHeadExtendedFilterCount
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala).
 
-### 5.2 Copy-or-Merge Gap Dynamics
+### 5.2 Exact Lifted-Copy Law for a Real 2-Gap
+
+This subsection concerns the actual deterministic sieve sequence, not a
+random model. Suppose two consecutive values in the real sequence satisfy
+$\ell_{k+1}-\ell_k=2$. Write $p=h$ for the incoming odd prime and $M$ for the
+current tail primorial. The complete lift block contains the $p$ endpoint
+pairs
+
+```math
+(\ell_k+jM,\ \ell_{k+1}+jM),
+\qquad 0\le j\lt p.
+```
+
+The verified result is deliberately local to one real sequence pair. It does
+not yet aggregate over the cyclic wrap gap or establish a recurrence for the
+total next-stage 2-gap population.
+
+#### 5.2.1 The Two Forbidden Lift Offsets Are Distinct
+
+Each endpoint has one unique lift offset at which the incoming prime divides
+it. Those offsets cannot coincide: if the same prime divided both lifted
+endpoints, it would divide their difference $2$, which is impossible for an
+odd prime. This is the structural fact that prevents the two endpoint strikes
+from collapsing into one destroyed copy.
+
+```math
+\begin{aligned}
+j_L,j_R&\in\{0,\ldots,p-1\},
+&&[\text{By Unique Lift Offset}]\\
+\ell_k+j_LM&\equiv0\pmod p,\\
+\ell_{k+1}+j_RM&\equiv0\pmod p.\\[2pt]
+j_L=j_R=j
+&\Longrightarrow
+(\ell_{k+1}+jM)-(\ell_k+jM)\equiv0\pmod p
+&&[\text{Substitution}]\\
+&\Longrightarrow 2\equiv0\pmod p
+&&[\ell_{k+1}-\ell_k=2]\\
+&\Longrightarrow 2=0
+&&[\text{By Modulo Property},\ 2\lt p],
+\end{aligned}
+```
+
+which is a contradiction. Therefore
+
+```math
+j_L\ne j_R.
+\qquad\blacksquare\ \text{[Q.E.D.]}
+```
+
+```scala
+def assertForbiddenLiftOffsetsDistinct(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftOffset = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightOffset = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(Calc.mod(left + leftOffset * step, p) == BigInt(0))
+  assert(Calc.mod(right + rightOffset * step, p) == BigInt(0))
+
+  if (leftOffset == rightOffset) {
+    val leftCopy = left + leftOffset * step
+    val rightCopy = right + rightOffset * step
+    assert(rightCopy == leftCopy + BigInt(2))
+    assert(Calc.mod(leftCopy, p) == BigInt(0))
+    assert(Calc.mod(rightCopy, p) == BigInt(0))
+    assert(ModOperations.modZeroPlusC(leftCopy, p, BigInt(2)))
+    assert(Calc.mod(rightCopy, p) == Calc.mod(BigInt(2), p))
+    assert(ModSmallDividend.modSmallDividend(BigInt(2), p))
+    assert(Calc.mod(BigInt(2), p) == BigInt(2))
+    assert(Calc.mod(rightCopy, p) != BigInt(0))
+    leftOffset != rightOffset
+  } else {
+    leftOffset != rightOffset
+  }
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertForbiddenLiftOffsetsDistinct
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
+
+#### 5.2.2 Exactly Two Lifted Copies Are Destroyed
+
+A copied pair is destroyed when at least one endpoint is divisible by $p$.
+The left endpoint is struck once, the right endpoint is struck once, and the
+distinct-offset theorem makes these two singleton strike sets disjoint.
+Consequently their union contains exactly two copy indices.
+
+```math
+\begin{aligned}
+D_L&=\{j:0\le j\lt p,\ p\mid(\ell_k+jM)\},\\
+D_R&=\{j:0\le j\lt p,\ p\mid(\ell_{k+1}+jM)\},
+&&[\text{By Definition}]\\
+|D_L|&=1,
+\qquad |D_R|=1,
+&&[\text{By Unique Lift Offset}]\\
+D_L\cap D_R&=\varnothing
+&&[\text{By Lemma }j_L\ne j_R]\\
+D&=D_L\cup D_R,
+&&[\text{By Definition}]\\
+|D|&=|D_L|+|D_R|=2.
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
+```scala
+def assertExactlyTwoDestroyedCopies(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftWitness = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightWitness = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(assertForbiddenLiftOffsetsDistinct(seq, k))
+  assert(leftWitness != rightWitness)
+  assert(assertDestroyedCountEqualsEndpointCounts(
+    left,
+    step,
+    p,
+    BigInt(0),
+    leftWitness,
+    rightWitness
+  ))
+  assert(SieveUtils.assertCountZeroOffsetsOne(left, step, p))
+  assert(SieveUtils.countZeroOffsets(left, step, p, BigInt(0)) == BigInt(1))
+  assert(SieveUtils.assertCountZeroOffsetsOne(right, step, p))
+  assert(SieveUtils.countZeroOffsets(right, step, p, BigInt(0)) == BigInt(1))
+
+  countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == BigInt(2)
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertExactlyTwoDestroyedCopies
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
+
+#### 5.2.3 Exactly \(p-2\) Lifted Copies Keep Both Endpoints
+
+There are $p$ candidate lifts in the complete block. Removing the two and
+only two destroyed indices leaves exactly $p-2$ copies whose two endpoints
+survive the incoming filter. This is an exact deterministic count, not an
+expected value or an independence heuristic.
+
+```math
+\begin{aligned}
+|\{0,\ldots,p-1\}|&=p,
+&&[\text{By Definition}]\\
+|D|&=2,
+&&[\text{By Lemma: Exactly Two Destroyed Copies}]\\
+N_{\mathrm{endpoint\text{-}surviving}}
+&=p-|D|\\
+&=p-2.
+&&\text{[Substitution]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+```
+
+```scala
+def assertExactlyHeadMinusTwoCopiesSurvive(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+
+  assert(assertExactlyTwoDestroyedCopies(seq, k))
+  p - countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == p - BigInt(2)
+}.holds
+```
+
+This property is verified in [
+  SpecSieveSeqTwoGapProperties::assertExactlyHeadMinusTwoCopiesSurvive
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
+
+### 5.3 Copy-or-Merge Gap Dynamics
 
 Let old consecutive values be $\ell_k\lt\ell_{k+1}$. If both survive the new
 filter, no new accepted value can appear between them, so their difference is
@@ -392,7 +607,7 @@ g'_m=\ell_{k+1}-\ell_k=g_k,
 g'_m=\ell_j-\ell_k \\
 &=\sum_{i=k}^{j-1}(\ell_{i+1}-\ell_i) \\
 &=\sum_{i=k}^{j-1}g_i.
-  &&\text{[Merge; Q.E.D.]}
+  &&\text{[Merge]}\quad\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -411,9 +626,9 @@ gap list. This property is verified in [
   SpecSieveSeqNextProperties::assertMergedGapPrefixMatchesNext
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
-### 5.3 Filtering the Repeated Cycle Preserves the Semantic Result
+### 5.4 Filtering the Repeated Cycle Preserves the Semantic Result
 
-Section 4.3 proved pointwise equality between the base and repeated cycle
+[§4.3](#43-repetition-does-not-change-the-infinite-sequence) proved pointwise equality between the base and repeated cycle
 integrals. Applying the same divisibility predicate at the same positions must
 therefore select identical survivor values. Equal survivor lists have equal
 adjacent-gap lists:
@@ -429,7 +644,7 @@ I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 &=\text{survivors}(I_G,h) \\
 \text{gaps}(\text{survivors}(I_{G^{\langle h\rangle}},h))
 &=\text{gaps}(\text{survivors}(I_G,h))
-  &&\text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -442,7 +657,7 @@ This property is verified in [
 The next stage installs the current head as a filter, starts at the following
 prime, and represents its own accepted sequence by a new finite gap cycle.
 Throughout this section, a prime marks the next stage's own version of each
-object defined in Section 2: $S'$ is the next stage, $h'=\ell_1$ its head,
+object defined in [§2](#2-preliminaries): $S'$ is the next stage, $h'=\ell_1$ its head,
 $M'$ its tail primorial, $\ell'$ its linear enumeration, and $G'$ its gap
 cycle.
 
@@ -471,7 +686,7 @@ d\mid\ell_1
 &\Longrightarrow \neg A_S(\ell_1)
   &&\text{[Filter contradiction]} \\
 &\Longrightarrow \ell_1\text{ is prime}.
-  &&\text{[Q.E.D.]}
+  &&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -499,7 +714,7 @@ A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
 h\lt\ell_1\le p^+,
 \quad \ell_1\text{ prime}
   &\Longrightarrow \ell_1=p^+
-  &&\text{[No intervening prime; Q.E.D.]}.
+  &&\text{[No intervening prime]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -511,15 +726,16 @@ This property is verified in [
 
 Let $T'=T(h-1)$. Under the stated stage-relationship invariants, the semantic
 merge process starts at the first surviving old value and emits $T'$ merged
-gaps. Section 5.2 proves recursively that this list equals the first $T'$
-gaps of the next linear specification:
+gaps. [§5.3](#53-copy-or-merge-gap-dynamics) supplies the copy-or-merge
+induction used to prove that this list equals the first $T'$ gaps of the next
+linear specification:
 
 ```math
 \begin{aligned}
 T'&=T(h-1), \\
 \text{mergedGaps}(S,S',1,T')
 &=\text{gapList}(S',0,T')
-  \quad\text{[By copy-or-merge induction; Q.E.D.]}.
+  \quad\text{[By copy-or-merge induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -530,7 +746,7 @@ This property is verified in [
 ### 6.4 Conditional Next-Cycle Reconstruction
 
 If $T'$ is known to be the canonical period of the next stage, the generic
-cycle-reconstruction theorem from Section 4.2 applies directly to that stage:
+cycle-reconstruction theorem from [§4.2](#42-gap-cycle-reconstruction) applies directly to that stage:
 
 ```math
 \begin{aligned}
@@ -538,7 +754,7 @@ cycle-reconstruction theorem from Section 4.2 applies directly to that stage:
   &&\text{[Next-period boundary]} \\
 G'&=\text{gapList}(S',0,T') \\
 I_{G'}(k-1)&=\ell'_k
-  &&\text{[Cycle reconstruction; Q.E.D.]}.
+  &&\text{[Cycle reconstruction]}\quad\blacksquare\ \text{[Q.E.D.]}.
 \end{aligned}
 ```
 
@@ -559,11 +775,14 @@ This section states the boundary as part of the theorem.
   Bertrand's postulate is an external mathematical dependency here, not a
   Stainless theorem in this development.
 
-- **Count-to-period bridge.** Section 5.1 verifies that filtering the complete
-  expanded current-stage window leaves exactly $T(h-1)$ values. Section 6.3
-  separately reconstructs the next stage when
-  $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next canonical-period
-  equation from the same-head count is a distinct open composition theorem.
+- **Count-to-period bridge.** [§5.1](#51-exact-survivor-count) verifies that
+  filtering the complete expanded current-stage window leaves exactly
+  $T(h-1)$ values. [§6.3](#63-semantic-pipeline-agreement) separately
+  establishes the semantic gap-prefix agreement, while
+  [§6.4](#64-conditional-next-cycle-reconstruction) reconstructs the next
+  stage when $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next
+  canonical-period equation from the same-head count is a distinct open
+  composition theorem.
 
 - **Direct cycle-to-cycle construction.** Repetition preserves the represented
   values; filtering the base and repeated views gives equal survivor lists and
@@ -573,10 +792,12 @@ This section states the boundary as part of the theorem.
   semantic merged-gap prefix, followed by packaging those gaps into a new
   integral cycle.
 
-- **No local gap-persistence theorem.** Exact full-period counts do not imply that
-  a chosen gap occurs in a shorter interval such as $[h,h^2)$. This article
-  proves the sieve-stage foundation only; it makes no claim about infinitely many
-  twin primes or the survival of 2-gaps in every local window.
+- **No short-window gap-persistence theorem.** [§5.2](#52-exact-lifted-copy-law-for-a-real-2-gap) proves that exactly
+  $h-2$ lifts of one real linear 2-gap keep both endpoints over a complete
+  lift block. It does not imply that one of those lifts lies in a shorter
+  interval such as $[h,h^2)$, nor does it yet aggregate the cyclic wrap gap
+  into a total next-stage recurrence. This article makes no claim about
+  infinitely many twin primes or the survival of 2-gaps in every local window.
 
 - **No efficiency theorem.** The period grows from $T$ to $T(h-1)$. The finite
   cycle is analytically useful, but materializing it need not outperform a
@@ -637,12 +858,17 @@ I_{G^{\langle h\rangle}}(k)&=I_G(k),
 ```
 
 Installing the current head as a new filter has an exact complete-period count,
-and the local gap update is copy-or-merge:
+an exact lifted-copy law for each real linear 2-gap, and a copy-or-merge local
+gap update:
 
 ```math
 \begin{aligned}
 N_{\mathrm{survive}}&=T(h-1),
   &&\text{[Exact expanded filtering]} \\
+N_{\mathrm{destroyed\ lifts}}(\ell_k,\ell_{k+1})&=2,
+  &&\text{[Real 2-gap endpoint strikes]} \\
+N_{\mathrm{endpoint\text{-}surviving\ lifts}}(\ell_k,\ell_{k+1})&=h-2,
+  &&\text{[Exact lifted-copy survival]} \\
 g'_m&=g_k
   \quad\text{or}\quad
   g'_m=\sum_{i=k}^{j-1}g_i,
@@ -668,9 +894,11 @@ p^+\lt h^2&\Longrightarrow \ell_1=p^+,
 
 The formalization therefore gives a precise finite-stage account of the sieve:
 the old filter pattern repeats, the new head removes exactly one lift per old
-residue over a complete expanded period, and deletion changes gaps only by
-copying or merging them. The theorem does not infer prime-gap persistence or
-algorithmic efficiency from the full-period facts alone.
+residue over a complete expanded period, the two endpoint strikes of a real
+linear 2-gap occur at distinct lift offsets, and deletion changes gaps only by
+copying or merging them. The theorem does not infer short-window prime-gap
+persistence, a cyclic population recurrence, or algorithmic efficiency from
+the full-period facts alone.
 
 ## References
 

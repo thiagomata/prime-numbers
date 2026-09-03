@@ -3,14 +3,19 @@ set -eo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-# Parse arguments: chapters (digits) then optional --functions=<pattern>
+# Parse arguments: chapters (digits), optional --functions=<pattern>,
+# optional --docker (run the same scoped verification inside the committed
+# docker-compose stainless service, with a cold verification cache)
 CHAPTERS=""
 FOCUS=""
+DOCKER=0
 for arg in "$@"; do
   if [[ "$arg" =~ ^[0-9]+$ ]]; then
     CHAPTERS="$CHAPTERS $arg"
   elif [[ "$arg" == --functions=* ]]; then
     FOCUS="${arg#--functions=}"
+  elif [[ "$arg" == "--docker" ]]; then
+    DOCKER=1
   fi
 done
 CHAPTERS="${CHAPTERS# }"
@@ -54,6 +59,9 @@ LOG_FILE="$BASE_DIR/logs/verify-ch-$LOG_TAG-$FOCUS_TAG.log"
 else
   LOG_FILE="$BASE_DIR/logs/verify-ch-$LOG_TAG.log"
 fi
+if [[ "$DOCKER" == "1" ]]; then
+  LOG_FILE="${LOG_FILE%.log}-docker.log"
+fi
 mkdir -p "$BASE_DIR/logs"
 echo "Stainless log: $LOG_FILE" >&2
 rm -f "$LOG_FILE"
@@ -63,10 +71,25 @@ if [[ -n "$FOCUS" ]]; then
   FOCUS_FLAG=(--functions="$FOCUS")
 fi
 
-DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
-JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
-"$STAINLESS" \
-  --timeout=300 --cache-dir="$BASE_DIR/.stainless-cache" \
-  "${FOCUS_FLAG[@]}" \
-  $SRC_FILES \
-  2>&1 | tee "$LOG_FILE"
+if [[ "$DOCKER" == "1" ]]; then
+  # Same chapter scoping and focus as the local run, executed inside the
+  # committed docker-compose stainless service (Stainless 0.9.8.8 on
+  # ubuntu:22.04). --vc-cache=false gives a cold-cache, fully fresh solve.
+  # Source paths are passed container-relative: compose mounts ./src:/app/src
+  # and the container workdir is /app.
+  SRC_FILES_DOCKER=$(echo "$SRC_FILES" | sed "s|$BASE_DIR/||g")
+  docker compose -f "$BASE_DIR/docker-compose.yaml" run -T --build --rm stainless \
+    bash -c "stainless \
+      --vc-cache=false --timeout=300 \
+      ${FOCUS_FLAG[*]} \
+      $SRC_FILES_DOCKER" \
+    2>&1 | tee "$LOG_FILE"
+else
+  DYLD_LIBRARY_PATH="$Z3_LIB:${DYLD_LIBRARY_PATH:-}" \
+  JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
+  "$STAINLESS" \
+    --timeout=300 --cache-dir="$BASE_DIR/.stainless-cache" \
+    "${FOCUS_FLAG[@]}" \
+    $SRC_FILES \
+    2>&1 | tee "$LOG_FILE"
+fi

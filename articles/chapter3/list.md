@@ -10,16 +10,17 @@ Independent Researcher
 
 <div align="justify">
 <p style="text-align: justify">
-In this article, we define and construct immutable finite lists of <code>BigInt</code> values
-from scratch, relying only on core type 
-constructs and recursion, with no prior knowledge of Scala's collections required. Core 
-properties of finite integer lists are formalised and verified using recursive definitions 
-aligned with functional programming principles. Lists are modelled either as empty or as 
-recursively constructed pairs of head and tail. We recursively define operations such as 
-indexing, concatenation, slicing, and summation both mathematically and in pure Scala.
-All properties are formally verified using the Stainless verification system, ensuring 
-correctness via static guarantees. This work bridges mathematical rigour and executable 
-code, laying a foundation for verified reasoning over recursive data structures.
+
+We define finite integer lists recursively and verify a property calculus for their
+structural and arithmetic operations in Scala Stainless. The verified results establish
+identities for indexed access and slicing, sum and product laws under concatenation,
+divisibility of list products by their elements, and preservation of element bounds
+through append and split. We also verify shifted-list laws preserving the period and
+relating adjacent values to gaps, together with rotation laws preserving membership,
+size, sum, and element bounds. Collectively, these properties describe how recursive
+finite sequences behave under decomposition, composition, aggregation, bounds,
+periodic shifts, and rotation.
+
 </p>
 </div>
 
@@ -42,17 +43,41 @@ given preconditions, postconditions, and invariants through automated proofs und
 
 This article verifies:
 
-- Index and access: tail shift, last element — §3
-- Slice: recursive, index-range, append consistency — §4
-- Sum: definition, concatenation, commutativity — §5
-- Product: definition, concatenation, commutativity, positivity — §6
-- Product divisibility: head, all elements, inserted element — §7
-- Bound and order: all-greater-than propagation — §8
-- Slice equivalence — §9
-- Shifted list: period, gap identity, gap translation — §10
-- Rotation: permutation invariants (size, sum, bounds, membership) — §11
+- Index and access: tail shift, last element — [§3](#3-index-and-access-properties)
+- Slice: recursive, index-range, append consistency — [§4](#4-slice-properties)
+- Sum: definition, concatenation, commutativity, positivity — [§5](#5-sum-properties)
+- Product: definition, concatenation, commutativity, positivity — [§6](#6-product-properties)
+- Product divisibility: head, all elements, inserted element — [§7](#7-product-divisibility-properties)
+- Bound and order: lower- and upper-bound propagation through append and split — [§8](#8-bound-and-order-properties)
+- Slice equivalence — [§9](#9-equivalence-properties)
+- Shifted list: period, gap identity, gap translation — [§10](#10-shifted-list-properties)
+- Rotation: permutation invariants (size, sum, bounds, membership) — [§11](#11-rotation-properties)
+
+### Related work
+
+Recursive lists, indexed access, and list splitting are long-established parts
+of formal libraries. The Rocq/Coq standard list library defines indexed access,
+prefix and suffix operations, and proves their reconstruction law
+`firstn n l ++ skipn n l = l` [[3]](#ref3). Lean's mathematical library also
+formalizes list rotation through splitting and concatenation, including reduction
+of a rotation index modulo the list length [[4]](#ref4).
+
+These prior developments are useful points of contact for the present work.
+They show how a mature formal-mathematical setting treats familiar list
+structure, while this article develops and verifies the stated property package
+for a minimal recursive `BigInt` implementation in Scala Stainless. In
+particular, the article brings structural operations into the same checked
+development as product divisibility, numeric bounds, shifted-list gaps, and
+rotation invariants. The comparison is contextual rather than competitive: it
+locates the Stainless proofs in the wider body of formal work and makes both
+the overlap and the scope of this implementation clear.
 
 ## 2. Definitions
+
+This section defines the list model itself. A list is either empty or a
+single value paired with a smaller list, and every operation used later in
+the article — size, append, slicing, indexing, sum, and product — is defined
+by recursion on that same head/tail decomposition.
 
 ### 2.1 List construction
 
@@ -72,6 +97,12 @@ L_{e} & = [] \\
 
 ### 2.3 Recursive Definition of List
 
+A non-empty list packages one value, its **head**, together with the
+remainder of the list, its **tail**, which is itself a smaller list. Every
+list in $𝕃$ is either the single empty list or one of these head/tail
+pairings, so the definition below builds the whole set $𝕃$ out of the
+already-defined $L_e$ plus this one construction rule:
+
 ```math
 \begin{aligned}
 &\text{ head } & \in 𝕊 \\
@@ -81,14 +112,18 @@ L_{e} & = [] \\
 \end{aligned}
 ```
 
-#### Termination and Cyclic References
-
-Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$ 
-produces a distinct structural value without the possibility of cyclic references. 
+**Termination and cyclic references.** Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$
+produces a distinct structural value without the possibility of cyclic references.
 Recursive functions over $𝕃$ terminate naturally, as a strictly decreasing structure defines size.
 
 
 ### 2.4 Elements Access and Indexing
+
+The head/tail decomposition gives direct access to a list's first element
+and its remaining sublist. Indexing extends this one step at a time:
+position $0$ is the head, and position $n > 0$ is found by re-indexing the
+tail at position $n - 1$, so reaching index $n$ costs $n$ recursive tail
+steps. The last element is the value at the final valid index, $|L| - 1$.
 
 ```math
 \begin{aligned}
@@ -114,7 +149,9 @@ We define the size of a list $L$, $|L|$ as follows:
 \end{cases}
 ```
 
-Proved in the native stainless library in `stainless.collection.List`.
+The size of a list is zero for the empty list, or one plus the size of its
+tail otherwise. Proved in the native stainless library in
+`stainless.collection.List`.
 
 
 ### 2.6 List Append
@@ -131,7 +168,9 @@ L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise}
 \end{aligned}
 ```
 
-Proved in the native stainless library in `stainless.collection.List`.
+Appending $B$ onto an empty list yields $B$; appending it onto a non-empty
+list keeps $A$'s head in place and appends $B$ onto $A$'s tail. Proved in
+the native stainless library in `stainless.collection.List`.
 
 ### 2.7 List Slice
 
@@ -141,7 +180,8 @@ $$
 L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
-The implementation of `slice` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#slice). The full Scala verification code is in Appendix A.3.
+The slice from $i$ to $j$ keeps exactly the elements at positions $i$
+through $j$, in order. The implementation of `slice` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#slice). The full Scala verification code is in Appendix A.3.
 
 ### 2.8 List Sum
 
@@ -149,13 +189,13 @@ Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
 
 ```math
 sum(L) = 
-\begin{cases} \\
-0 & \text{if } L = L_e \\
+\begin{cases} 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The implementation of `sum` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#sum). The full Scala verification code is in Appendix A.7.
+The sum of an empty list is zero; the sum of a non-empty list is its head
+plus the sum of its tail. The implementation of `sum` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#sum). The full Scala verification code is in Appendix A.7.
 
 ### 2.9 List Product
 
@@ -163,13 +203,14 @@ Let $\text{product} : 𝕃 \implies 𝕊$ be a recursively defined function:
 
 ```math
 product(L) = 
-\begin{cases} \\
-1 & \text{if } L = L_e \\
+\begin{cases} 1 & \text{if } L = L_e \\
 head(L) \cdot product(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The implementation of `product` is available in [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendices A.11 through A.15.
+The product of an empty list is one; a non-empty list's product is its
+head times the product of its tail. The implementation of `product` is
+available in [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendices A.11 through A.15.
 
 ## 3. Index and Access Properties
 
@@ -219,7 +260,7 @@ verified in [
 \end{aligned}
 ```
 
-#### Base case: $|L| = 1$
+**Base case**: $|L| = 1$
 
 ```math
 \begin{aligned}
@@ -228,7 +269,7 @@ verified in [
 \end{aligned}
 ```
 
-#### Inductive step: $|L| > 1$
+**Inductive step**: $|L| > 1$
 
 ```math
 \begin{aligned}
@@ -496,7 +537,7 @@ The recursive `sum` matches the mathematical summation, and addition commutes ov
 We can prove that the recursive `sum` function over a list $L$ matches the mathematical definition 
 of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
 
-#### Base Case: $|L| = 0$
+**Base case**: $|L| = 0$
 
 ```math
 \begin{aligned}
@@ -517,7 +558,7 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 \end{aligned}
 ```
 
-#### Inductive Step: $|L| > 0$
+**Inductive step**: $|L| > 0$
 
 Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
 
@@ -613,7 +654,7 @@ The sum of two concatenated lists equals the sum of each list added together.
 	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B)
 ```
 
-#### If List A is Empty
+**If list A is empty**:
 
 ```math
 \begin{aligned}
@@ -626,7 +667,7 @@ The sum of two concatenated lists equals the sum of each list added together.
 \end{aligned}
 ```
 
-#### If list A is Non-Empty
+**If list A is non-empty**:
 
 ```math
 \begin{aligned}
@@ -832,7 +873,12 @@ This property is verified in the [
 
 ## 7. Product Divisibility Properties
 
-Every element of a list divides its total product.
+Every element of a list divides its total product. The proofs below apply the
+quotient-invariance-under-shift law $\text{mod}(a + m \cdot b, b) = \text{mod}(a, b)$
+at $a = 0$ to derive $(a \cdot b) \bmod a = 0$; that law is verified in the
+companion article [Division and Modulo from Recursive
+Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+and reused here as a foundational primitive.
 
 - [Head divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
 - [All elements divide product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides $\text{product}(L)$
@@ -1084,11 +1130,9 @@ structural property $\text{size} = |\text{gaps}|$ is an invariant of the case cl
 
 ```math
 \begin{aligned}
-\text{shifted.size} = \text{original.size} \quad &\text{[Q.E.D.]}
+\text{period}(\text{shifted}) = \text{period}(\text{original}) \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
-
-### Source Verification Excerpt
 
 Source: [ShiftedList::assertSamePeriod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
@@ -1111,8 +1155,6 @@ value definition above.
 \quad \text{for } 0 \leq i < \text{size} - 1 \quad &\text{[Q.E.D.]}
 \end{aligned}
 ```
-
-### Source Verification Excerpt
 
 Source: [ShiftedList::assertAdjacentDifferenceEqualsGap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
@@ -1140,8 +1182,6 @@ is rotated by one position.
   && \text{[By adjacent-difference identity for both views]}
 \end{aligned}
 ```
-
-### Source Verification Excerpt
 
 Source: [ShiftedList::assertGapTranslation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
@@ -1244,8 +1284,6 @@ in `ShiftedList`.
 \end{aligned}
 ```
 
-### Source Verification Excerpt
-
 Source: [RotationProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
 
 ```scala
@@ -1288,8 +1326,8 @@ helpers consumed by the main rotation proofs.
 
 ## 12. Conclusion
 
-This article presents a formal framework for defining and reasoning about finite lists using a 
-recursive mathematical structure aligned with functional programming principles.
+This article established a formally verified property calculus for finite integer lists
+represented by recursive head–tail decomposition.
 
 The core proved properties can be summarized as follows, for lists
 $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
@@ -1322,7 +1360,10 @@ $L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
 &&\text{[Sum over Concatenation]} \\
 \text{sum}(A \mathbin{\texttt{++}} B)
 &= \text{sum}(B \mathbin{\texttt{++}} A)
-&&\text{[Commutativity of Sum]}
+&&\text{[Commutativity of Sum]} \\
+(\forall x \in L,\ x > 0) \land L \neq L_e
+&\implies \text{sum}(L) > 0
+&&\text{[Sum Positivity]}
 \end{aligned}
 ```
 
@@ -1368,6 +1409,15 @@ e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 (\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
 &\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
 &&\text{[Bound over Concatenation]} \\
+(\forall x \in L,\ x > v) \land 0 \leq k \leq |L|
+&\implies (\forall x \in \text{front},\ x > v) \land (\forall x \in \text{back},\ x > v)
+&&\text{[Split Preserves Lower Bound]} \\
+(\forall x \in A,\ x < b) \land (\forall x \in B,\ x < b)
+&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
+&&\text{[Bound over Concatenation, Upper]} \\
+(\forall x \in L,\ x < b) \land 0 \leq k \leq |L|
+&\implies (\forall x \in \text{front},\ x < b) \land (\forall x \in \text{back},\ x < b)
+&&\text{[Split Preserves Upper Bound]} \\
 \text{slice}(L,f,t)
 &= \text{headRecursiveSlice}(L,f,t)
  = \text{indexRangeValues}(L,f,t)
@@ -1400,12 +1450,24 @@ All of these properties are verified in the source references cited throughout
 the article. Appendix A collects the Scala excerpts that are useful to keep
 near the text; each excerpt links back to its maintained source file.
 
+Collectively, these results give one verified calculus for decomposing and composing
+finite lists, aggregating and bounding their values, relating their elements to list
+products, preserving period while tracking adjacent values and gaps under shifted-list
+transformations, and preserving membership, size, sum, and element bounds under rotation.
+
 ## 13. Future Work
 
 Extending lists via integration (cumulative sums) and derivation (gap extraction)
 would formalize two dual operations that map between a list and its accumulated
 or decomposed form. These operations connect the finite list algebra presented
 here to the theory of discrete sequences and differences.
+
+Two related list disciplines have verified source proofs but are not developed
+here as headline properties: maintaining ascending order under insertion and
+filtering (`SortedList`), and preserving a lower or upper numeric bound under
+filtering alone rather than the append/split operations covered in [§8](#8-bound-and-order-properties)
+(`MinBoundList`, `MaxBoundList`). A dedicated treatment of ordered and
+bounded-filter list variants is left as future work.
 
 ## 14. Limitations
 
@@ -1468,6 +1530,14 @@ Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
 Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
+
+<a name="ref3" id="ref3" href="#ref3">[3]</a>
+The Rocq Development Team. *The Rocq Standard Library: Lists*.
+Available at: [https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html](https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html)
+
+<a name="ref4" id="ref4" href="#ref4">[4]</a>
+The Lean Community. *Mathlib: List Rotation*.
+Available at: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
 
 ## Appendix A: Scala Verification Code
 

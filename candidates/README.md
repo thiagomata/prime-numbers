@@ -85,7 +85,7 @@ strategic assessment; see `empirical/sieve-sequence/FINDINGS.md` for the correct
 cross-candidate synthesis.
 
 1. [Protected endpoints](protected-endpoints.md) — **[outcome measured]** 186/186; not a distinct mechanism
-2. [Local surplus](local-surplus.md) — **[full window directly measured 186/186; annular form unmeasured]** the Danger-Annulus Decomposition property sharpens newly exposed survival to `L_D>A-1`, or the raw sufficient bound `L_D>2d+ceil(d^2/p)-1`; no annular population lower bound is proved
+2. [Local surplus](local-surplus.md) — **[Mathematically proved]** exact `A`, `A<=3p`, and the conditional implication `L>A =>` one 2-gap survives the incoming filter. **[Definition and benchmark]** the defined complete-period-density benchmark satisfies the mathematically proved asymptotic `L_hat~kappa*p^2/log^2(p)`, and its ratio to `3p` diverges; this is not a bound on actual `L`. **[Empirically checked on a finite sample]** actual `L>A` in 186/186 measured full windows. **[Open]** actual `L>A` infinitely often and any sufficient distinguished-window discrepancy bound. Incrementally, `L_D>A-1` is sufficient, but no annular population lower bound is proved or measured
 3. [Protected clusters](protected-cluster.md) — **[directly measured]** 185/186 (fails at (5,7))
 4. [Bounded consecutive destruction](bounded-consecutive-destruction.md) — **[constant `R=2` refuted; variable bound open]** exact full-period cyclic run `3` at `Q=101`, `r=23`; later primorial-scale cyclic runs unmeasured
 5. [Bounded post-merge spacers](bounded-post-merge-spacer.md) — **[deferred]** whole-period

@@ -1,0 +1,106 @@
+\section{Appendix}
+\label{sec:appendix}
+
+\subsection{Identity Property Excerpt}
+\label{sec:appendix-identity}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala}{\texttt{ModIdentity.scala}}.
+
+\begin{lstlisting}[style=scala]
+def modIdentity(a: BigInt): Boolean = {
+  require(a != 0)
+  Calc.mod(a, a) == 0 && Calc.div(a, a) == 1
+}.holds
+\end{lstlisting}
+
+\subsection{Symmetrical Modulo Pairs Excerpt}
+\label{sec:appendix-symmetrical}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSum.scala}{\texttt{ModSum.scala}}.
+
+\begin{lstlisting}[style=scala]
+def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
+  require(b > 0)
+  require(step > 0)
+  require(step < b)
+  assert(Calc.mod(step, b) == step)
+  assert(Calc.mod(b - step, b) == b - step)
+  assert(Calc.mod(step, b) + Calc.mod(b - step, b) == step + b - step)
+  Calc.mod(step, b) + Calc.mod(b - step, b) == b
+}.holds
+\end{lstlisting}
+
+\subsection{Consecutive Zero Density Excerpt}
+\label{sec:appendix-zero-density}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala}{\texttt{ConsecutiveIntegers.scala}}.
+
+\begin{lstlisting}[style=scala]
+def nonzeroAfterZero(a: BigInt, p: BigInt, d: BigInt): Boolean = {
+  require(p > 1)
+  require(a >= 0)
+  require(d > 0)
+  require(d < p)
+  require(Calc.mod(a, p) == 0)
+
+  ModOperations.modAdd(a, p, d)
+  ModIdempotence.modIdempotence(d, p)
+  ModSmallDividend.modSmallDividend(d, p)
+
+  Calc.mod(a + d, p) != 0
+}.holds
+
+def existsZero(n: BigInt, p: BigInt): Boolean = {
+  require(p > 1)
+  require(n >= 0)
+
+  val r = Calc.mod(n, p)
+
+  if (r == 0) {
+    Calc.mod(n, p) == 0
+  } else {
+    val k = p - r
+    ModOperations.modAdd(n, p, k)
+    ModSmallDividend.modSmallDividend(k, p)
+    Calc.mod(n + k, p) == 0
+  }
+}.holds
+
+def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
+  require(p > 1)
+  require(n >= 0)
+  require(i >= 0 && i < p)
+  require(j >= 0 && j < p)
+  require(Calc.mod(n + i, p) == 0)
+  require(Calc.mod(n + j, p) == 0)
+
+  val smaller = if (i <= j) i else j
+  val larger  = if (i <= j) j else i
+  val d       = larger - smaller
+  assert(d >= 0 && d < p)
+
+  if (d > 0) {
+    nonzeroAfterZero(n + smaller, p, d)
+  }
+
+  i == j
+}.holds
+\end{lstlisting}
+
+\subsection{Verification Log}
+\label{sec:appendix-verification-log}
+
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 2} on the exact sources tagged
+\texttt{modulo-article-v1.0.0}. The run reported 1,374 valid, 0 invalid,
+and 0 unknown verification conditions. The pinned verification log is
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/logs/verify-ch-2-v1-chapter2-_.log}{\texttt{logs/verify-ch-2-v1-chapter2-\_.log}}.
+A containerized reproduction of the same chapter-scoped verification, using
+the environment definition committed with the sources and a cold
+verification cache (\texttt{just verify-ch 2 --docker}), reports identical
+totals; its pinned log is
+\href{https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.0/logs/verify-ch-2-v1-chapter2-_-docker.log}{\texttt{logs/verify-ch-2-v1-chapter2-\_-docker.log}}.

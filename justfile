@@ -30,11 +30,11 @@ verify focus="":
     JAVA_OPTS="-Xmx16g -Djava.library.path=$Z3_LIB" \
     ./stainless-dotty-standalone-*/stainless --timeout=300 "${function_filter[@]}" $(./scripts/find-src.sh) 2> >(tee logs/verify-error.log | tee -a logs/verify.log >&2) 1> >(tee -a logs/verify.log)
 
-verify-ch chapters="":
+verify-ch *args:
     #!/usr/bin/env bash
     source "{{justfile_directory()}}/scripts/just-log.sh"
-    just_log verify-ch "{{justfile_directory()}}" "chapters={{chapters}}"
-    exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{chapters}}
+    just_log verify-ch "{{justfile_directory()}}" "args={{args}}"
+    exec "{{justfile_directory()}}/scripts/verify-ch.sh" {{args}}
 
 verify-stop:
     #!/usr/bin/env bash
@@ -353,3 +353,32 @@ spark-cat stage="1" file="gaps":
     for f in "${parts[@]}"; do
       gunzip -c "$f" | tail -n +2
     done | column -t -s,
+
+# Build arXiv article PDF(s): `just arxiv-pdf` builds every article under
+# articles/arxiv/, `just arxiv-pdf modulo` builds one. The PDF is written to
+# articles/arxiv/<article>/output/pdf/<article>.pdf; auxiliary LaTeX files
+# stay in a per-article scratch dir under $TMPDIR (outside the repository).
+arxiv-pdf article="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base="{{justfile_directory()}}/articles/arxiv"
+    if [[ -n "{{article}}" ]]; then
+      dirs=("$base/{{article}}")
+    else
+      dirs=("$base"/*/)
+    fi
+    for dir in "${dirs[@]}"; do
+      if [[ ! -f "$dir/main.tex" ]]; then
+        continue
+      fi
+      name=$(basename "$dir")
+      build="${TMPDIR:-/tmp}/arxiv-build-$name"
+      mkdir -p "$build"
+      # -g forces a rebuild: latexmk does not track files that main.tex only
+      # probes with \IfFileExists, so a newly added section file would
+      # otherwise be silently missed in the persistent build directory.
+      (cd "$dir" && latexmk -g -pdf -interaction=nonstopmode -halt-on-error -outdir="$build" main.tex)
+      mkdir -p "$dir/output/pdf"
+      cp "$build/main.pdf" "$dir/output/pdf/$name.pdf"
+      echo "Built $dir/output/pdf/$name.pdf"
+    done

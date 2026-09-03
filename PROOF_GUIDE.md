@@ -165,6 +165,202 @@ convention and formatting/width guidance.
 \end{aligned}
 ```
 
+## Common Rigor Failures (Review Checklist)
+
+These patterns were found, live, while auditing chapter 4's articles
+(`cycle.md`, `integral.md`, `integral-cycle.md`) against their own cited
+Scala source. Each one *looked* rigorous on a fast read — proper
+headings, a `[Q.E.D.]` tag, a working link to source — and only broke
+down once someone actually opened the cited lemma, traced a reference to
+where it pointed, or rendered the math instead of eyeballing the source.
+Check for all of them before calling a property section done, and
+re-check them whenever a section is restructured, since reordering can
+silently turn a citation into a forward reference.
+
+### Anti-Pattern: A Q.E.D. Label Is Not a Proof
+
+Restating the theorem statement and appending `[Q.E.D.]` is a label, not
+a derivation:
+
+```markdown
+​```math
+\begin{aligned}
+\text{rotate}(L, k)_i = L_{(i+k) \bmod n} \quad \text{[Q.E.D.]}
+\end{aligned}
+​```
+```
+
+Every such claim needs a real `**Proof.**` paragraph: explicit
+substitution steps, an induction with a stated base case and inductive
+step, or an explicit case split — not a sentence or two that only names
+the Scala lemma verifying it, and not a bare restatement of the claim
+with a label tacked on. A cheap, reliable tell: if a `\blacksquare` mark
+is missing from a Q.E.D. block that every other proved claim in the
+article carries, that block's derivation was probably never actually
+written down.
+
+### Anti-Pattern: A Named Citation Is Not a Different Fact
+
+Before citing a Scala lemma, open it and read the function body — not
+just its docstring or its name. A repeated failure mode: two sections
+each cite a differently-named lemma —
+
+```markdown
+This property is verified in `Module.assertShiftAtBoundary`.
+...
+This property is verified in `Module.assertWrapsAfterPeriod`.
+```
+
+— and both names turn out, on inspection, to be thin wrappers that
+immediately delegate to the same third lemma, with no independent proof
+content of their own (a `require`/one-line-body pattern is the tell —
+check for it explicitly). If two claims are backed by citations that
+resolve to the same underlying call, the article has manufactured a
+distinction that does not exist. Merge the two claims into one, or state
+plainly that the second is the same identity applied at a different call
+site; do not write two proofs for one fact.
+
+### Anti-Pattern: Borrowing a Scala Name as Math Notation Without Defining It
+
+Do not introduce math notation by mirroring a Scala field or method name
+— e.g. writing `\text{total}(x)` in a math block because the Scala class
+has a `.total` field — without a formal definition earlier in the
+article. This matters doubly when the borrowed name could mislead about
+the finiteness of what it names: a name like "total" or "sum" attached
+to an object that is itself unbounded (an infinite, strictly-increasing
+stream, not the finite structure underneath it) reads as if it sums
+infinitely many terms. Ask: does this name still make sense if a
+skimming reader takes it to mean the English word, applied to the thing
+it's attached to? If not, pick a name that survives that reading — e.g.
+`periodTotal(x)` instead of bare `total(x)` when `x` is unbounded but
+the quantity itself is really a total over one finite period — and
+define it explicitly before first use.
+
+### Anti-Pattern: A Vague Backward Reference
+
+"The property cited above," or a proof-step tag like `[X, above]`, sends
+the reader searching an unspecified distance backward. Every
+cross-section reference should be a `[§N](#anchor)` link. A
+same-subsection reference is fine as bare prose only when it is
+genuinely local — a few lines away, inside the same math block or the
+immediately preceding paragraph. If resolving "above" requires the
+reader to scroll past an intervening subsection, it should be a real
+`§N` link instead.
+
+### Anti-Pattern: Proof Order That Doesn't Match Dependency Order
+
+When section B's proof uses a fact that section A establishes, A must
+come before B in reading order — not just be citable from B.
+Restructuring an article (splitting a chapter, promoting a subsection)
+can silently turn a valid citation into a forward reference if the
+dependency wasn't checked first. Before reordering, trace which
+sections' proofs actually use which other sections' conclusions (read
+the derivations, not just the section titles), and order accordingly. A
+vague backward reference (previous anti-pattern) is often the symptom
+that lets a forward dependency go unnoticed in the first place: a proof
+step justified only by a descriptive bracket label, with no `§N`
+pointer at all, gives no way to check whether the fact it leans on is
+actually established yet.
+
+### Anti-Pattern: Aligned-Block Row/Column Mismatch
+
+Every row inside one `\begin{aligned}...\end{aligned}` block must have
+the same number of `&` alignment points as every other row that isn't a
+fully unaligned single statement (a bare `\therefore` closer, with zero
+`&`, is fine on its own). KaTeX/MathJax line up column N across every
+row that has one; a row with a different `&` count than its neighbors
+doesn't raise an error, it silently misaligns — a citation label lands
+under nothing, or a continuation clause reads as its own detached
+column:
+
+```markdown
+​```math
+\begin{aligned}
+a < n &\implies f(a) = g(a) \;\land\; f(b) = g(b)
+  && \text{[Some Lemma]} \\
+\implies f(a) \bmod d = 0 \;&\land\; f(b) \bmod d \neq 0
+\end{aligned}
+​```
+```
+
+The first row has three `&` (`&\implies`, then the double `&&` before the
+citation); the second has one. Count the `&` in each row before
+publishing a multi-row block — a raw-source read alone won't catch this,
+since ragged columns are invisible until rendered. Whenever an edit
+touches more than one or two math blocks, render every ` ```math ` fence
+through an actual LaTeX engine (e.g. KaTeX) instead of eyeballing the
+source; this mismatch and the next anti-pattern were only caught this
+way, not by reading the markdown.
+
+### Anti-Pattern: Math Escaped Into a Code Span
+
+Single backticks are for source identifiers and literal code, never for
+LaTeX (see the inline-math rule under Stainless Verification below).
+A subscript, a backslash command, or a comparison chain inside backticks
+renders as literal monospace text — underscores, backslashes, and all —
+not as math:
+
+```markdown
+Let `j_0, j_1 \in [0, n)` be indices of one such value on each side.
+```
+
+renders as the literal string `j_0, j_1 \in [0, n)`, not "j₀, j₁ ∈ [0,
+n)". The tell is mechanical: does the text inside a pair of backticks
+contain a `\`, a `_` followed by a digit or brace, or a `^{`? If so, it's
+math wearing a code span — switch to `$...$`. Reserve backticks for bare
+identifiers (`ModCycle`, `checkMod(d)`, `L`) that don't need subscripts
+or LaTeX commands to read correctly.
+
+### Anti-Pattern: A Citation Proves Less Than It's Used For
+
+Before using a proved theorem to justify a step, check that the objects
+on *both* sides of the step's equation are the objects the theorem
+actually names — not one of them plus a third notion introduced
+separately and only informally identified with one side. A prior theorem
+"`A = B`" does not license writing "`A = C`" just because some earlier
+prose said, in passing, that `C` and `B` "are the same picture." If `C`
+needs its own definition to license that step, give it one explicitly
+(`C := B`, stated as a definition, not a claim) and cite that definition
+alongside the theorem, rather than letting the theorem's name alone
+carry both jobs.
+
+### Anti-Pattern: A Definition Reachable Only From the Wrong Heading
+
+A reader following the article's own overview bullets or table of
+contents jumps directly to a subsection by its anchor — they do not
+necessarily arrive by reading every preceding line. If a symbol a
+subsection uses is defined in the tail of a *different*, thematically
+unrelated subsection above it, a reader who jumps straight in via that
+anchor never sees the definition, even though it is, technically,
+earlier in the file. Every numbered subsection a reader can link to
+directly should be self-contained: define what it needs (or point to
+where it's defined) right where it's used, not rely on prose that
+happens to sit physically above it under someone else's heading.
+
+### Anti-Pattern: Reinventing Notation a Sibling Article Already Established
+
+Before introducing notation for a recurring concept (list repetition,
+rotation, periodicity), check whether a published sibling article in the
+same chapter already named it. Two articles in the same series using
+different notation for the same idea (`repeat(V, t)` in one, `L^{(x)}`
+in another, for the same "x copies concatenated" operation) reads as if
+two different authors wrote them, and forces a reader moving between
+articles to re-learn a concept they already know under a different name.
+Grep the chapter's other articles for the concept before naming it.
+
+### Anti-Pattern: Reproving an Already-Established Fact
+
+The mirror image of "A Q.E.D. Label Is Not a Proof" above: a
+from-scratch induction where the claim is actually a one-line corollary
+of a result already proven earlier in the article. A tell: the induction
+re-derives a generic fact about the underlying data structure (e.g.
+"every valid index into a non-negative list is non-negative") that has
+nothing to do with what *this* section is supposed to be adding, when an
+earlier section already established that the quantity in question is
+literally equal to some element of that structure. Before writing a base
+case and inductive step, check whether substituting an already-proven
+equality collapses the claim to something immediate.
+
 ## Stainless Verification
 
 ### Code Placement
@@ -231,8 +427,15 @@ Use the conclusion to synthesize the theorem, proof strategy, verified support,
 and scope of the result. The conclusion must also bring back the core proved
 properties and proof structure in mathematical form: include a compact math
 recap of the main theorem, definitions, and supporting properties that the
-article established, following the `integral.md` and `cycle.md` pattern. Use
-future work to explain the next mathematical directions and why they extend
+article established, following the `integral.md` and `cycle.md` pattern.
+When the conclusion includes the compact theorem inventory required by the
+article standard, bookend it with synthesis: open by naming the article's
+central proved contribution, then close by stating what the listed properties
+establish collectively. Any relationship restated in those sentences must
+preserve its domain, premises, verification status, and implication direction;
+do not promote a one-way implication to an equivalence or use completeness,
+canonicality, or characterization language unless the body proves it.
+Use future work to explain the next mathematical directions and why they extend
 the article, rather than listing project names as bullets.
 Avoid future-facing framing outside Future Work: abstracts, introductions, and
 conclusions should not justify the result by saying it will be used later,
@@ -416,6 +619,27 @@ derive it, and then point to its verification evidence.
   abstract compact and centered on the construction, main result, and
   significance. Include assumptions needed for accuracy, but do not turn the
   abstract into a catalog of caveats, secondary models, or future work.
+- **Align the framing around one intrinsic contribution.** The abstract,
+  introduction, and conclusion should make the same central claim about what
+  the current article establishes and, where applicable, formally verifies,
+  without repeating the same paragraph. The abstract states the construction
+  or question, the flagship result or property families, and their collective
+  result compactly. The introduction motivates that question, fixes the scope
+  and domains, and previews the result structure or property groups that
+  establish the result. The conclusion synthesizes what those results
+  collectively establish and introduces no stronger claim.
+- **Foreground properties when the objects are familiar.** When an article
+  studies a standard object, frame the contribution through the properties,
+  relationships, invariants, representation agreements, or theorem system
+  established about it—not merely through defining the object again. Use this
+  framing only when it matches the body; a paper centered on one theorem or an
+  experimental result should name that actual contribution instead.
+- **State the contribution directly.** Do not turn the abstract or conclusion
+  into a defense against an imagined reviewer, apologize that the underlying
+  objects are standard, or justify the article mainly by later use. Necessary
+  assumptions and verification-status qualifications remain part of accurate
+  scope; comparisons with prior work belong in a clearly scoped related-work
+  discussion, not in an apologetic contribution sentence.
 - **Build from a concrete case.** When a construction is unfamiliar, give one
   small example before introducing the general notation or asymptotic law. The
   example should reveal the invariant or distinction used by the proof, not
@@ -439,9 +663,13 @@ derive it, and then point to its verification evidence.
   protocol inventories, and repeated summaries rather than removing premises,
   derivations, boundary cases, or evidence.
 
-- **Write in first person plural.** "We prove...", "we define...", not "This
-  article proves..." or "The article defines...". The author is present in
-  the prose, doing the work, not narrating a document that does the work.
+- **Prefer the author present in the prose over a document narrating
+  itself.** "We prove...", "we define..." reads better than "This article
+  proves..." or "The article defines...", and is the default already used
+  across the series. This is a preference, not a hard requirement — do not
+  force first person plural where a different construction reads more
+  naturally; just keep the voice consistent within one article rather than
+  switching back and forth.
 - **Close a derivation with `\blacksquare` and/or `[Q.E.D.]`**, matching every
   existing article. Do not introduce `\boxed{...}` around conclusions; it is
   not the established convention and mixing the two within one project reads

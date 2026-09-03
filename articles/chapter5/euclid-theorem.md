@@ -10,13 +10,17 @@ Independent Researcher
 
 ## Abstract
 
-We present a formally verified proof of Euclid's Theorem — that there are infinitely many primes — using the Stainless verification system. The proof follows Euclid's classic construction: given any finite list of primes, compute their primorial (product) plus one, and show that this number has a prime divisor not in the original list. The formalization builds on a zero-prior-knowledge foundation of modular arithmetic and list operations, all previously verified from first principles. The described theorem and supporting lemmas are machine-checked using a minimal, self-contained framework.
+We present a formally verified proof of Euclid's Theorem — that there are infinitely many primes — using the Stainless verification system. The proof uses the familiar primorial-plus-one specialization of Euclid's finite-list construction: given any finite list of primes, compute their product plus one, and show that this number has a prime divisor not in the original list. The formalization builds on a zero-prior-knowledge foundation of modular arithmetic and list operations, all previously verified from first principles. The described theorem and supporting lemmas are machine-checked using a minimal, self-contained framework.
 
 ---
 
 ## 1. Introduction
 
-Euclid's theorem — first proved in Euclid's *Elements* (c. 300 BC) — states that there are infinitely many prime numbers. The proof is elegantly simple:
+Euclid's theorem — proved in Euclid's *Elements*, Book IX, Proposition 20
+[[7]](#ref7) — states that there are infinitely many prime numbers. Euclid's
+original presentation uses a common multiple of the assigned primes plus one.
+This article formalizes the product (primorial) specialization of that
+construction:
 
 > Given any finite list of primes $p_1, p_2, \dots, p_k$, let $N = p_1 \cdot p_2 \cdot \dots \cdot p_k + 1$.
 > Then $N$ is either prime itself, or has a prime divisor $d$ that is not among $p_1, \dots, p_k$.
@@ -26,11 +30,11 @@ In this article, we formalize and verify this proof using [Scala Stainless](http
 
 This article verifies:
 
-- Primorial-plus-one coprime to all list primes — §3.1
-- New prime found via the Euclid construction — §3.2
-- The new prime is not in the original list — §3.3
-- Euclid's theorem: primes are infinite — §3.4
-- Supporting verified prime lemmas — §4
+- Primorial-plus-one coprime to all list primes — [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes)
+- New prime found via the Euclid construction — [§3.2](#32-stage-2-finding-a-new-prime)
+- The new prime is not in the original list — [§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list)
+- Euclid's theorem: primes are infinite — [§3.4](#34-the-main-theorem)
+- Supporting verified prime lemmas — [§4](#4-supporting-verified-lemmas)
 
 ## 2. Preliminaries
 
@@ -38,7 +42,7 @@ We reuse several basic operations and their verified properties from companion a
 
 - **Modular Arithmetic** [[2]](#ref2): Division, modulo, quotient invariance, mod idempotence
 - **Lists** [[3]](#ref3): Size, append, sum, slicing, tail shift
-- **Prime Utilities** (defined in the project): Primorial computation, primality testing
+- **Prime Utilities:** Primorial computation, primality testing, and finite divisor search, specified below
 
 ### 2.1 Key Definitions
 
@@ -52,7 +56,51 @@ We define the **primorial** of a list of primes as the product of all primes in 
 \end{aligned}
 ```
 
-A number $n$ is **prime** if it is greater than 1 and has no positive divisors other than 1 and itself.
+A number $n$ is **prime** exactly when it is greater than $1$ and no integer
+in $[2,n)$ divides it:
+
+```math
+\text{isPrime}(n) \;:\\Longleftrightarrow\; n>1\ \land\
+\forall d\in[2,n),\ \text{mod}(n,d)\ne0.
+```
+
+### 2.2 Finite Prime Operations and Their Specifications
+
+The article needs only finite search and the definitions below; it does not
+assume an external enumeration of all primes.  Primorial is structural:
+
+```math
+\begin{aligned}
+\text{primorial}([]) &:= 1, \\
+\text{primorial}(p::P) &:= p\cdot\text{primorial}(P).
+\end{aligned}
+```
+
+For $n>1$ and $2\leq s\leq n$, `findSmallestDivisor(n,s)` tests
+$s,s+1,\ldots,n$ in order and returns the first divisor.  It terminates
+because $n$ itself divides $n$.  Its specification is therefore
+
+```math
+\begin{aligned}
+d &= \text{findSmallestDivisor}(n,s) \\
+&\implies s\leq d\leq n\ \land\ \text{mod}(n,d)=0 \\
+&\phantom{\implies}\land\ \forall e\in[s,d),\ \text{mod}(n,e)\ne0.
+\end{aligned}
+```
+
+The recursive scan proves this by induction on $n-s$: either $s$ divides
+$n$, or the same claim is inherited from the call beginning at $s+1$.
+Thus, when $s=2$, `d=n` is equivalent to the prime definition in
+[§2.1](#21-key-definitions); if $d<n$, $d$ is the least non-trivial divisor.
+The divisor-range postcondition is encoded in
+[`Prime::findSmallestDivisor`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/Prime.scala).
+Its minimality and its equivalence with an empty divisor range are
+machine-checked by `Prime::assertFindSmallestDivisorMinimality` and
+`Prime::assertFindSmallestDivisorEquivNoDivisorInRange` in the same source.
+
+For a list $P$ of positive integers, `isCoprime(n,P)` means that no member of
+$P$ divides $n$; it is a direct recursion over the list.  This is the only
+list-coprimality meaning used below.
 
 ## 3. The Proof Strategy
 
@@ -60,18 +108,18 @@ Euclid's theorem is formalized as the following lemma:
 
 ```math
 \begin{aligned}
-\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes.nonEmpty} \implies
+\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes} \neq \emptyset \implies
 \exists\ p \notin \text{primes} : \text{isPrime}(p)
 \end{aligned}
 ```
 
 In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
-verification reference is given in §3.4 and Appendix A.3.
+verification reference is given in [§3.4](#34-the-main-theorem) and Appendix A.3.
 
-- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list (§3.1)
-- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` (§3.2)
-- Stage 3: the new prime is not in the original list (§3.3)
-- Main theorem: combine stages 1-3 into Euclid's theorem (§3.4)
+- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list ([§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes))
+- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` ([§3.2](#32-stage-2-finding-a-new-prime))
+- Stage 3: the new prime is not in the original list ([§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list))
+- Main theorem: combine stages 1-3 into Euclid's theorem ([§3.4](#34-the-main-theorem))
 
 The proof proceeds in three stages:
 
@@ -102,7 +150,7 @@ residue is nonzero.
   &= 1
   &&\text{[Since }1 < p_i\text{]} \\
   &\ne 0
-  &&\text{[Q.E.D.]}
+  &&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -166,7 +214,7 @@ nonzero remainder modulo every original prime.
 &\Rightarrow \text{mod}(p\cdot k+1,p)=\text{mod}(1,p)=1
 &&\text{[Substitution]} \\
 &\Rightarrow \text{mod}(p\cdot k+1,p)\ne0
-&&\text{[Q.E.D.]}
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -241,7 +289,7 @@ p=v
   &\Rightarrow 1=0
 &&\text{[Contradiction]} \\
 \therefore\ p &\ne v
-&&\text{[Q.E.D.]}
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -270,7 +318,7 @@ d < N
 &\Rightarrow \text{isPrime}(d)\land d\notin L
 &&\text{[Stages 2 and 3]} \\
 \therefore\ \exists p:\text{isPrime}(p)\land p\notin L
-&&\text{[Case Split]}
+&&\text{[Case Split]}\quad\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -285,12 +333,17 @@ related lemmas that reuse the same prime and divisibility foundations.
 They are included here as supporting results, not as additional headline
 claims.
 
+- Finite-prefix consequence: a complete finite prime prefix has a larger prime — [§4.1](#41-corollary-greater-than-a-complete-finite-prefix)
+- Divisor-search bounds: composite inputs have a proper smallest divisor below their square root — [§4.2](#42-smallest-divisor-bounds-for-composite-numbers)
+- Finite-prefix primality: coprimality plus factor coverage excludes all proper divisors — [§4.3](#43-finite-prefix-primality-criterion)
+- Bézout product lemmas: a prime divisor of a product is forced onto a factor — [§4.4](#44-bézout-and-prime-product-lemmas)
+
 ### 4.1 Corollary: Greater Than a Complete Finite Prefix
 
 A direct corollary of Euclid's construction is that a complete finite prefix
 of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted finite list
 that contains every prime up to its largest element $h=p_k$. Let $q$ be the
-prime produced by the Euclid construction from $P$. Since §3 proves
+prime produced by the Euclid construction from $P$. Since [§3](#3-the-proof-strategy) proves
 $q\notin P$, $q$ cannot be at or below $h$: every prime at or below $h$ is
 already contained in the complete prefix. Therefore $q > h$.
 
@@ -310,7 +363,7 @@ q\le h
 &\Rightarrow q\in P\land q\notin P
 &&\text{[Contradiction]} \\
 \therefore\ q&>h
-&&\text{[Q.E.D.]}
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -341,8 +394,16 @@ or $n$ itself is reached.
 \begin{aligned}
 n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
 \exists\, d = \text{findSmallestDivisor}(n, 2) &: 2 \leq d < n \;\land\; \text{Calc.mod}(n, d) = 0
-  &&\text{[Q.E.D.]}
 \end{aligned}
+```
+
+**Proof.** Since $n$ is composite, it has a proper divisor
+$e\in[2,n)$. The minimality specification from [§2.2](#22-finite-prime-operations-and-their-specifications) gives
+$2\leq d\leq e<n$ and $\text{mod}(n,d)=0$.
+
+```math
+\therefore\ 2\leq d<n\ \land\ \text{mod}(n,d)=0.
+\quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
 **Smallest divisor is at most sqrt(n).** When $n$ is composite with smallest
@@ -354,9 +415,17 @@ minimality.
 ```math
 \begin{aligned}
 n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
-d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n
-  &&\text{[Q.E.D.]}
+d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n.
 \end{aligned}
+```
+
+**Proof.** Put $q=n/d$. Since $d$ divides $n$, $dq=n$. Because $d<n$,
+$q>1$; hence $q\ge2$. If $q<d$, then $q\in[2,d)$ is a divisor of $n$,
+contradicting the minimality of $d$.
+Hence $d\leq q$, and
+
+```math
+d^2\leq dq=n.\quad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 **Packaged composite divisor.** The wrapper `assertCompositeSmallestPrimeDivisor`
@@ -444,6 +513,23 @@ algorithm exposes a linear combination:
 \end{aligned}
 ```
 
+For completeness, the subtractive extended Euclidean algorithm repeatedly
+replaces the larger positive input by its difference with the smaller. Common
+divisors are preserved and the positive sum decreases, so it reaches equal
+values. Reversing either subtraction step preserves a linear-combination
+witness:
+
+```math
+\begin{aligned}
+(a-b)x+by=g &\implies ax+b(y-x)=g, \\
+ax+(b-a)y=g &\implies a(x-y)+by=g.
+\end{aligned}
+```
+
+Every common divisor of $h$ and the prime $p$ is either $1$ or $p$; it cannot
+be $p$ because $0<h<p$. The terminal gcd is therefore $1$, which gives the
+displayed Bézout identity. \(\blacksquare\ \text{[Q.E.D.]}\)
+
 Multiplying that identity by $k$ gives $k h x + k p y = k$. If $p$ divides
 $k h$, then $p$ divides both terms on the left and therefore divides $k$.
 
@@ -490,17 +576,14 @@ machine-checked in the current source.
 
 ## 6. Related Work
 
-This formalization builds on a verified hierarchy of mathematical structures:
-
-| Article | Topic | Reference |
-|---------|-------|-----------|
-| Modulo | Division and modulo properties | [[2]](#ref2) |
-| Lists | Recursive list definitions | [[3]](#ref3) |
-| Integral | Discrete integration | [[4]](#ref4) |
-| Cycles | Unbounded periodic lists | [[5]](#ref5) |
-| Cycle Integral | Integration over cycles | [[6]](#ref6) |
-
-The present article adds Euclid's theorem as a formal capstone — a classical result of number theory, verified from first principles, with all arithmetic lemmas machine-checked.
+The modular-arithmetic and list foundations used here are cited in
+[§2](#2-preliminaries). Euclid's classical construction supplies the
+mathematical argument; this article contributes its recursive Scala/Stainless
+formalization together with the explicitly specified finite divisor search.
+For comparison, Mathlib also formalizes the infinitude of primes as
+`Nat.exists_infinite_primes` [[8]](#ref8). That theorem has a different
+library setting and statement form; it is related work, not a dependency of
+this development.
 
 ## 7. Conclusion
 
@@ -519,6 +602,32 @@ divisibility of product members, smallest-divisor primality, and the final
 non-membership theorem. The result is a source-backed formal proof of the
 infinitude of primes, with the supporting finite-prefix corollaries separated
 from the theorem spine rather than folded into the main claim.
+
+The theorem spine can be read compactly as the following verified chain.  Let
+$P=\text{primorial}(L)$ and $N=P+1$:
+
+```math
+\begin{aligned}
+\forall p\in L,\quad \text{mod}(N,p)&=1\ne0
+&&\text{[Stage 1]} \\
+d=\text{findSmallestDivisor}(N,2),\quad d=N
+&\Rightarrow \text{isPrime}(N) \\
+d<N
+&\Rightarrow \text{isPrime}(d)
+&&\text{[Stage 2]} \\
+v\mid N\ \land\ p\in L
+&\Rightarrow p\ne v
+&&\text{[Stage 3].}
+\end{aligned}
+```
+
+Thus either $N$, or its least non-trivial divisor $d$, is a prime outside
+$L$:
+
+```math
+L\ne[]\ \Rightarrow\ \exists p:\text{isPrime}(p)\land p\notin L.
+\quad\blacksquare\ \text{[Q.E.D.]}
+```
 
 ## 8. Future Work
 
@@ -555,6 +664,14 @@ Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Li
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md)
 
+<a name="ref7" id="ref7" href="#ref7">[7]</a>
+Euclid. *Elements*, Book IX, Proposition 20. Translation and notes by David E.
+Joyce. Available at: [https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html](https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html)
+
+<a name="ref8" id="ref8" href="#ref8">[8]</a>
+The Mathlib Community. *Mathlib.Data.Nat.Prime.Infinite*: `Nat.exists_infinite_primes`.
+Mathlib documentation. Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html)
+
 ---
 
 ## Appendix A: Verification Source References
@@ -575,7 +692,7 @@ def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in §3.1.
+This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes).
 
 ### A.2 `newPrimeFromEuclid`
 
