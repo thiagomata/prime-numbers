@@ -214,6 +214,16 @@ tracked source package.
   clean-room compile (exit 0, 13 pages). Lesson recorded in
   CONVERSION_GUIDE.md: parity audits must check rows within math blocks,
   not only block counts.
+- Post-release adjustment (author request): the forced `\clearpage` before
+  the appendix was removed. After the bibliography grew to two entries the
+  break had become counterproductive — it stranded reference [2] alone at
+  a page top while pushing the appendix to a fresh page. The appendix now
+  flows naturally after the references; the document compacted back to 13
+  pages (zero log issues, archive rebuilt and clean-room compiled green).
+  Note: tag `modulo-article-v1.0.0` still points at the pre-change commit
+  — acceptable because the tag pins the verified Scala sources and log
+  links, none of which changed; re-point or bump the tag only if exact
+  main.tex provenance matters to the author.
 
 ## Expected State
 
