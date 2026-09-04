@@ -5,15 +5,15 @@ The product operation, from singleton identity through concatenation
 distributivity to positivity.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Singleton product}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Singleton product}:
     $\operatorname{product}(x :: \text{empty}) = x$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product pull-out element}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product pull-out element}:
     $\operatorname{product}(x :: L) = x \cdot \operatorname{product}(L)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product over concatenation}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product over concatenation}:
     $\operatorname{product}(A \mathbin{\texttt{++}} B) = \operatorname{product}(A) \cdot \operatorname{product}(B)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Commutativity of product}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Commutativity of product}:
     $\operatorname{product}(A \mathbin{\texttt{++}} B) = \operatorname{product}(B \mathbin{\texttt{++}} A)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Positive product}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Positive product}:
     product of all-positive list is positive
 \end{itemize}
 
@@ -42,7 +42,7 @@ Proof:
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak singletonProduct}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak singletonProduct}}.
 The full Scala verification code is in Appendix~A.11.
 \par}
 
@@ -76,7 +76,7 @@ $\operatorname{head}(A) :: listA$.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productPullOutElement}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productPullOutElement}}.
 The full Scala verification code is in Appendix~A.12.
 \par}
 
@@ -110,7 +110,7 @@ result.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatLemma}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatLemma}}.
 The full Scala verification code is in Appendix~A.13.
 \par}
 
@@ -139,7 +139,7 @@ Proof:
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatCommutative}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatCommutative}}.
 The full Scala verification code is in Appendix~A.14.
 \par}
 
@@ -172,6 +172,6 @@ The product of two positive numbers is positive.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak positiveProduct}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak positiveProduct}}.
 The full Scala verification code is in Appendix~A.15.
 \par}

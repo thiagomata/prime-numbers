@@ -4,7 +4,7 @@
 \subsection{Tail Access Shift --- accessTailShiftRight}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
 
 \begin{lstlisting}[style=scala]
   def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
@@ -14,7 +14,7 @@ Source:
 \end{lstlisting}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
@@ -37,7 +37,7 @@ Source:
 \subsection{Last Element Identity --- assertLastEqualsLastPosition}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
@@ -58,7 +58,7 @@ Source:
 \subsection{Tail-Recursive Slice --- slice}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
@@ -81,7 +81,7 @@ Source:
 \subsection{Head-Recursive Slice --- headRecursiveSlice}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
 
 \begin{lstlisting}[style=scala]
 def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -95,7 +95,7 @@ def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 \subsection{Index-Range Slice --- indexRangeValues}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
 
 \begin{lstlisting}[style=scala]
 def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -109,7 +109,7 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 \subsection{Slice Append Consistency --- assertAppendToSlice}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -127,7 +127,7 @@ Source:
 \subsection{Sum Implementation --- sum}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def sum(loopList: List[BigInt]): BigInt = {
@@ -142,7 +142,7 @@ Source:
 \subsection{Left Append Preserves Sum --- listSumAddValue}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
 
 \begin{lstlisting}[style=scala]
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
@@ -153,7 +153,7 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
 \subsection{Sum over Concatenation --- listCombine}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -177,7 +177,7 @@ Source:
 \subsection{Commutativity of Sum --- listSwap}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -193,7 +193,7 @@ Source:
 \subsection{Singleton Product --- singletonProduct}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
 
 \begin{lstlisting}[style=scala]
   def singletonProduct(x: BigInt): Boolean = {
@@ -204,7 +204,7 @@ Source:
 \subsection{Product Pull-Out Element --- productPullOutElement}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
 
 \begin{lstlisting}[style=scala]
   def productPullOutElement(
@@ -226,7 +226,7 @@ Source:
 \subsection{Product over Concatenation --- productConcatLemma}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
 
 \begin{lstlisting}[style=scala]
   def productConcatLemma(
@@ -263,7 +263,7 @@ Source:
 \subsection{Commutativity of Product --- productConcatCommutative}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
 
 \begin{lstlisting}[style=scala]
   def productConcatCommutative(
@@ -297,7 +297,7 @@ Source:
 \subsection{Positive Product --- positiveProduct}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
 
 \begin{lstlisting}[style=scala]
   def positiveProduct(elements: List[BigInt]): Boolean = {
@@ -318,7 +318,7 @@ Source:
 \subsection{Head Divides Product --- ListProductDiv}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
 
 \begin{lstlisting}[style=scala]
   def ListProductDiv(
@@ -356,7 +356,7 @@ Source:
 \subsection{All Elements Divide Product --- allElementsDivideProduct}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
 
 \begin{lstlisting}[style=scala]
   def allElementsDivideProduct(
@@ -404,7 +404,7 @@ Source:
 \subsection{Inserted Element Divides Product --- insertedElementDividesProduct}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
 
 \begin{lstlisting}[style=scala]
   def insertedElementDividesProduct(
@@ -454,7 +454,7 @@ Source:
 \subsection{All Greater Than at Index --- assertGreaterThanAtIndex}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertGreaterThanAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -474,7 +474,7 @@ Source:
 \subsection{Append Preserves All Greater Than --- assertAppendGreaterThan}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertAppendGreaterThan(listA: List[BigInt], listB: List[BigInt], value: BigInt): Boolean = {
@@ -495,7 +495,7 @@ Source:
 \subsection{All Greater Than Head and Tail --- assertGreaterThanHeadTail}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
 
 \begin{lstlisting}[style=scala]
   def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -508,7 +508,7 @@ Source:
 \subsection{Check All Bigger at Index --- checkAllBiggerThanValueAtIndex}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
 
 \begin{lstlisting}[style=scala]
   def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -521,7 +521,7 @@ Source:
 \subsection{Check All Bigger Head and Tail --- checkAllBiggerThanValueHeadTail}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
 
 \begin{lstlisting}[style=scala]
   def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -534,7 +534,7 @@ Source:
 \subsection{Slice Equivalence --- tailHeadAndIndexRangeSlicesAreEqual}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
 
 \begin{lstlisting}[style=scala]
   def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -569,6 +569,9 @@ Source:
 \section{Stainless Verification Log Output}
 \label{sec:appendix-b}
 
-The latest \texttt{just verify} run verifies all the described properties
-without errors. The full log output is available at:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log}{\texttt{logs/verify.log}}.
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 3} on the exact sources tagged
+\texttt{list-article-v1.0.0}. The run reported 1,602 valid, 0 invalid,
+and 0 unknown verification conditions. The pinned verification log is
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/logs/verify-ch-3-v1-chapter3-_.log}{\texttt{logs/verify-ch-3-v1-chapter3-\_.log}}.

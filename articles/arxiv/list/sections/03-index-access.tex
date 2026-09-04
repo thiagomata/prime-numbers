@@ -5,9 +5,9 @@ How positions shift when the list is decomposed into head and tail, and
 how the last element relates to its index.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Tail access shift}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Tail access shift}:
     $\operatorname{tail}(L)[i] = L[i+1]$ for $i < |\operatorname{tail}(L)|$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Last element identity}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Last element identity}:
     $L[|L|-1] = \operatorname{last}(L)$
 \end{itemize}
 
@@ -34,10 +34,10 @@ L &= \operatorname{head}(L) :: \operatorname{tail}(L) && \text{[Head and Tail de
 \end{equation*}
 
 This forward shift is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::accessTailShiftRight}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::accessTailShiftRight}}.
 The reverse indexing form, $L_i = \operatorname{tail}(L)_{i - 1}$ for
 $i > 0$, is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::assertTailShiftLeft}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::assertTailShiftLeft}}.
 The full Scala verification code is in Appendix~A.1.
 
 \subsection{Last Element Identity}
@@ -85,7 +85,7 @@ L &= x_0 :: \operatorname{tail}(L) && \text{[Decomposition]} \\
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::assertLastEqualsLastPosition}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::assertLastEqualsLastPosition}}.
 The full Scala verification code is in Appendix~A.2.
 
 \subsection{Indexed Access Under Concatenation}
@@ -108,7 +108,7 @@ elements off $A$ until it is exhausted, then indexes directly into $B$.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyLeft}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyLeft}}
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyRight}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyRight}}.
 \par}

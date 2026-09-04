@@ -5,13 +5,13 @@ How the property $\forall x \in L,\, x > v$ propagates from a whole list
 to its elements and through concatenation.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than at index}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than at index}:
     $(\forall x \in L,\, x > v) \implies L(pos) > v$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{Append preserves all greater than}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{Append preserves all greater than}:
     $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than head and tail}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than head and tail}:
     the head/tail decomposition propagates the bound
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Index checking lemmas}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Index checking lemmas}:
     efficient bound verification
 \end{itemize}
 
@@ -30,7 +30,7 @@ at a valid position is also greater than that value.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanAtIndex}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanAtIndex}}.
 The full Scala verification code is in Appendix~A.19.
 \par}
 
@@ -53,7 +53,7 @@ concatenation also has all elements greater than that value.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendGreaterThan}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendGreaterThan}}.
 The full Scala verification code is in Appendix~A.20.
 \par}
 
@@ -73,7 +73,7 @@ property.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanHeadTail}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanHeadTail}}.
 The full Scala verification code is in Appendix~A.21.
 \par}
 
@@ -92,7 +92,7 @@ at a valid position is also bigger.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueAtIndex}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueAtIndex}}.
 The full Scala verification code is in Appendix~A.22.
 \par}
 
@@ -115,7 +115,7 @@ head is bigger and the tail also satisfies the property.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueHeadTail}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueHeadTail}}.
 The full Scala verification code is in Appendix~A.23.
 \par}
 
@@ -138,7 +138,7 @@ both halves.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllGreaterThan}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllGreaterThan}}.
 \par}
 
 \subsection{The All Less Than Family}
@@ -166,9 +166,9 @@ preservation, and transitivity across a looser bound.
 
 {\raggedright
 These properties are verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendLessThan}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllLessThan}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertTransitiveLessThan}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendLessThan}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllLessThan}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertTransitiveLessThan}},
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertLessThanAtIndex}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertLessThanAtIndex}}.
 \par}

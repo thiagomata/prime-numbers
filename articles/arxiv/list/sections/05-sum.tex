@@ -5,13 +5,13 @@ The recursive \texttt{sum} matches the mathematical summation, and
 addition commutes over concatenation.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum matches summation}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum matches summation}:
     $\operatorname{sum}(L) = L[0] + \cdots + L[|L|-1]$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{Left append preserves sum}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Left append preserves sum}:
     $\operatorname{sum}(x :: L) = x + \operatorname{sum}(L)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum over concatenation}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum over concatenation}:
     $\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{Commutativity of sum}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Commutativity of sum}:
     $\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(B \mathbin{\texttt{++}} A)$
 \end{itemize}
 
@@ -98,7 +98,7 @@ Hence, by induction on the size of $L$:
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::sum}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::sum}}.
 The implementation and verification code are in Appendix~A.7.
 
 \subsection{Left Append Preserves Sum}
@@ -136,7 +136,7 @@ A & = x :: L && \text{[Cons]} \\
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSumAddValue}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSumAddValue}}.
 The full Scala verification code is in Appendix~A.8.
 \par}
 
@@ -188,7 +188,7 @@ A \mathbin{\texttt{++}} B & = \operatorname{head}(A) :: (\operatorname{tail}(A) 
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listCombine}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listCombine}}.
 The full Scala verification code is in Appendix~A.9.
 \par}
 
@@ -213,7 +213,7 @@ Since:
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSwap}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSwap}}.
 The full Scala verification code is in Appendix~A.10.
 \par}
 
@@ -234,5 +234,5 @@ sum is already known to be positive by the inductive hypothesis.
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertSumPositive}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertSumPositive}}.
 \par}

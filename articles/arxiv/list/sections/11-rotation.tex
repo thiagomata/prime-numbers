@@ -5,14 +5,14 @@ Cyclic permutation preserves every structural invariant: the same
 elements, same size, same sum, and same bounds.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same elements}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same elements}:
     $\operatorname{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same size and sum}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same size and sum}:
     $|\operatorname{rotateAt}(L, k)| = |L|$, $\sum \operatorname{rotateAt}(L, k) = \sum L$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Bound preservation}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Bound preservation}:
     $(\forall x \in L,\, x > v) \implies \forall x \in \operatorname{rotateAt}(L, k),\, x > v$,
     and likewise for the upper bound $\forall x \in L,\, x < b$
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Index shift by one}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Index shift by one}:
     $\operatorname{rotateAt}(L, 1)(i) = L(i + 1)$
 \end{itemize}
 
@@ -88,7 +88,7 @@ translation in \texttt{ShiftedList}.
 \end{equation*}
 
 Source:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
 
 \begin{lstlisting}[style=scala]
 def assertRotateContainsForward(
@@ -123,7 +123,7 @@ def assertRotatedAtIndexPlusOne(list: List[BigInt], k: BigInt): Boolean = {
 
 {\raggedright
 These properties are verified in the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
 module (11 lemmas total). The forward/backward membership pair and the
 upper/lower bound pair cover all permutation invariants; the remaining
 lemmas (\texttt{assertAppendContainsLeft/\allowbreak Right/\allowbreak

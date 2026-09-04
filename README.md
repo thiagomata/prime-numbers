@@ -473,3 +473,9 @@ just verify-ch 2 --docker
 
 Log files land in `logs/` with a `-docker` suffix. Docker (or a compatible
 runtime) must be running.
+
+**Known issue:** on arm64 hosts, some verifications (e.g. chapter 3's
+`ListProduct.productPullOutElement` and `ListProduct.productConcatLemma`)
+time out in Docker because the container has no native Z3 and falls back
+to `cvc5` alone. Getting native Z3 working in the container looks like
+the fix, but that's untested.

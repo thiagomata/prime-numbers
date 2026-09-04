@@ -5,13 +5,13 @@ Four constructions for extracting a sublist by index range --- all
 equivalent.
 
 \begin{itemize}
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{Tail-recursive slice}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Tail-recursive slice}:
     builds from the end by prepending
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{Head-recursive slice}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{Head-recursive slice}:
     builds from the front
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{Index-range slice}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{Index-range slice}:
     accumulates by position within a range
-  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Slice append consistency}:
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Slice append consistency}:
     appending a singleton preserves the slice structure
 \end{itemize}
 
@@ -74,7 +74,7 @@ Show:
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::slice}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::slice}}.
 The implementation and verification code are in Appendix~A.3.
 
 \subsection{Head-Recursive Slice}
@@ -135,7 +135,7 @@ Show:
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas::\allowbreak headRecursiveSlice}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas::\allowbreak headRecursiveSlice}}.
 The full Scala verification code is in Appendix~A.4.
 \par}
 
@@ -197,7 +197,7 @@ Show:
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas::\allowbreak indexRangeValues}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas::\allowbreak indexRangeValues}}.
 The full Scala verification code is in Appendix~A.5.
 \par}
 
@@ -217,6 +217,6 @@ L[f \dots t] &= \operatorname{slice}(L, f, t) \\
 
 {\raggedright
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendToSlice}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendToSlice}}.
 The full Scala verification code is in Appendix~A.6.
 \par}
