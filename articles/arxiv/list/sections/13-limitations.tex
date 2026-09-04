@@ -1,0 +1,65 @@
+\section{Limitations}
+\label{sec:limitations}
+
+This article restricts the implementation and verification to immutable,
+finite lists of integers represented using the
+\texttt{stainless.collection.List} data type. The focus is on
+\textbf{correctness}, not on performance or scalability. Our summation
+and accumulation models follow a \textbf{recursive definition}, aligned
+with mathematical formalism. However, this approach may introduce
+performance limitations in practical applications involving large lists.
+
+\subsection{Overflow and Memory Limits Are Out of Scope}
+
+By using \texttt{BigInt} and immutable lists, the model assumes
+unbounded integer arithmetic and infinite list capacity. This choice
+avoids overflow and out-of-memory errors, but it does not reflect the
+constraints of fixed-size integer types or limited system memory in
+real-world environments.
+
+\subsection{Side Effects Are Excluded}
+
+All list operations are pure and referentially transparent. Mutation,
+I/O, and performance overhead are outside the scope of this model.
+
+\subsection{No Parallelism or Laziness}
+
+Unlike streaming libraries or lazy sequences, this model is strictly
+eager and sequential, without support for parallel computation or lazy
+evaluation.
+
+\subsection{Limitations Imposed by Stainless Verification Tool}
+
+Due to current limitations in the Scala Stainless verifier (version
+0.9.8.8), formal proofs must often rely on concrete numeric types such as
+\texttt{BigInt}. Stainless does not yet fully support generic numeric
+abstractions or type classes like \texttt{Numeric[T]}, which hinders
+verification of implementations parameterized over arbitrary numeric
+types.
+
+As a result, while the mathematical properties in this work conceptually
+apply to any numeric domain satisfying the required algebraic laws,
+practical verification is constrained to \texttt{BigInt}. Overcoming
+these tool limitations is an important direction for future
+enhancements, enabling broader generality and more flexible formal
+verification.
+
+\subsection{Scope of Correctness}
+
+This article emphasizes the \textbf{mathematical correctness} of
+recursive definitions and verified properties, rather than runtime
+behavior or system-level efficiency.
+
+The use of \texttt{BigInt} and conceptually unbounded lists abstracts
+away concerns like stack overflows, memory usage, and execution time. It
+also circumvents limitations of the current version of Scala Stainless
+with respect to generic numeric reasoning.
+
+While limiting practical use in some contexts, these assumptions
+maintain the focus on proving functional correctness as defined by
+recursive specifications.
+
+Future work may include developing alternative implementations of these
+data structures that explicitly address real-world constraints, such as
+bounded memory and side effects, alongside formal proofs establishing
+their equivalence with the current, mathematically rigorous model.

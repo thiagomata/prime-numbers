@@ -1,0 +1,114 @@
+\section{Index and Access Properties}
+\label{sec:index-access}
+
+How positions shift when the list is decomposed into head and tail, and
+how the last element relates to its index.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Tail access shift}:
+    $\operatorname{tail}(L)[i] = L[i+1]$ for $i < |\operatorname{tail}(L)|$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Last element identity}:
+    $L[|L|-1] = \operatorname{last}(L)$
+\end{itemize}
+
+\subsection{Tail Access Shift}
+
+\textbf{Lemma:} For any list $L$ with at least two elements, accessing
+the $i$-th element of its tail is equivalent to accessing the $(i + 1)$-th
+element of the list.
+
+\begin{equation*}
+\forall\, L,\ i,\quad 1 < |L|,\ 0 \le i < |\operatorname{tail}(L)| \implies \operatorname{tail}(L)_{(i)} = L_{(i + 1)}
+\end{equation*}
+
+Since:
+
+\begin{equation*}
+\begin{aligned}
+L &= [x_0, x_1, x_2, \dots, x_{n - 1}] && \text{[List definition]} \\
+L &= x_0 :: [x_1, x_2, \dots, x_{n - 1}] && \text{[Cons definition]} \\
+L &= \operatorname{head}(L) :: \operatorname{tail}(L) && \text{[Head and Tail definition]} \\
+\operatorname{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}] && \text{[Tail definition]} \\
+\operatorname{tail}(L)_i &= x_{i + 1} = L_{i + 1} \ \forall\, 0 \le i < |\operatorname{tail}(L)| \quad \blacksquare && \text{[Q.E.D.]} \\
+\end{aligned}
+\end{equation*}
+
+This forward shift is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::accessTailShiftRight}}.
+The reverse indexing form, $L_i = \operatorname{tail}(L)_{i - 1}$ for
+$i > 0$, is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::assertTailShiftLeft}}.
+The full Scala verification code is in Appendix~A.1.
+
+\subsection{Last Element Identity}
+
+\textbf{Lemma:} The last element of a non-empty list is equal to the
+element at position $n - 1$, where $n = |L|$.
+
+\begin{equation*}
+\forall\, L,\ |L| > 0 \implies \operatorname{last}(L) = L_{(n - 1)}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+L &= [x_0, x_1, \dots, x_{n-1}] && \text{[List definition]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Base case}: $|L| = 1$
+
+\begin{equation*}
+\begin{aligned}
+L &= [x_0] && \text{[Singleton list]} \\
+\operatorname{last}(L) &= x_0 = L_0 = L_{(n - 1)} && \text{[Definition of last]} \\
+\end{aligned}
+\end{equation*}
+
+\textbf{Inductive step}: $|L| > 1$
+
+\begin{equation*}
+\begin{aligned}
+L &= x_0 :: \operatorname{tail}(L) && \text{[Decomposition]} \\
+\operatorname{last}(L) &= \operatorname{last}(\operatorname{tail}(L)) && \text{[Definition of last]} \\
+\operatorname{last}(\operatorname{tail}(L)) &= \operatorname{tail}(L)_{(|\operatorname{tail}(L)| - 1)} && \text{[Inductive hypothesis]} \\
+\operatorname{tail}(L)_{(|\operatorname{tail}(L)| - 1)} &= L_{(|L| - 1)} && \text{[Tail Shift Position]} \\
+\implies \operatorname{last}(L) &= L_{(|L| - 1)} && \text{[By substitution]} \\
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore
+\end{equation*}
+
+\begin{equation*}
+\forall\, L,\ |L| > 0 \implies \operatorname{last}(L) = L_{(|L| - 1)} \quad \blacksquare
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::assertLastEqualsLastPosition}}.
+The full Scala verification code is in Appendix~A.2.
+
+\subsection{Indexed Access Under Concatenation}
+
+Accessing a concatenated list at a given index routes to the matching
+side: an index inside the left list's range reads from the left list at
+that same index, and an index at or past the left list's size reads from
+the right list, offset by the left list's size.
+
+\begin{equation*}
+\begin{aligned}
+0 \leq k < |A| &\implies (A \mathbin{\texttt{++}} B)_k = A_k \\
+|A| \leq k < |A| + |B| &\implies (A \mathbin{\texttt{++}} B)_k = B_{(k - |A|)}
+\end{aligned}
+\end{equation*}
+
+Both directions are proved by induction on $k$: the left case peels one
+head element at a time until $k$ reaches $0$; the right case peels
+elements off $A$ until it is exhausted, then indexes directly into $B$.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyLeft}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertAppendApplyRight}}.
+\par}

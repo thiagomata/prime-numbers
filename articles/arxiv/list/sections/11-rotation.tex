@@ -1,0 +1,132 @@
+\section{Rotation Properties}
+\label{sec:rotation}
+
+Cyclic permutation preserves every structural invariant: the same
+elements, same size, same sum, and same bounds.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same elements}:
+    $\operatorname{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Same size and sum}:
+    $|\operatorname{rotateAt}(L, k)| = |L|$, $\sum \operatorname{rotateAt}(L, k) = \sum L$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Bound preservation}:
+    $(\forall x \in L,\, x > v) \implies \forall x \in \operatorname{rotateAt}(L, k),\, x > v$,
+    and likewise for the upper bound $\forall x \in L,\, x < b$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{Index shift by one}:
+    $\operatorname{rotateAt}(L, 1)(i) = L(i + 1)$
+\end{itemize}
+
+Rotating a list at index \texttt{k} swaps the front (first \texttt{k}
+elements) and back (remaining elements) --- a cyclic permutation.
+Rotation preserves every structural invariant: size, sum, element
+membership, and bound properties are unchanged, because the multiset of
+elements is the same under any cyclic reordering.
+
+Cyclic permutations arise whenever a fixed set of values is viewed from a
+different starting position --- for example, shifting a circular buffer
+or aligning a periodic sequence. Rotation invariance means no structural
+property is lost when the viewing window moves.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(L,\; k) &= \text{back} \mathbin{\texttt{++}} \text{front}
+  \quad\text{where } (\text{front},\; \text{back}) = \operatorname{splitAt}(L, k) \\
+  &= [L_k, L_{k+1}, \ldots, L_{n-1}, L_0, L_1, \ldots, L_{k-1}]
+\end{aligned}
+\end{equation*}
+
+\subsection{Permutation Invariants}
+
+Rotation is a permutation of the underlying multiset: the same elements
+appear, and every structural quantity derived from the list is
+preserved.
+
+\textbf{Membership.} An element belongs to the original list if and only
+if it belongs to the rotated list. Since \texttt{append} order doesn't
+affect membership, swapping \texttt{front} and \texttt{back} preserves
+the element set.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(L, k).\text{contains}(x) &\iff L.\text{contains}(x)
+  &&\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Size and sum.} The rotated list has the same length and the same
+total sum. Sum over \texttt{append} is additive and commutative.
+
+\begin{equation*}
+\begin{aligned}
+|\operatorname{rotateAt}(L, k)| &= |L| &&\text{[Same size]} \\
+\sum \operatorname{rotateAt}(L, k) &= \sum L &&\text{[Same sum]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Bound preservation.} If every element of \texttt{L} is strictly
+greater than \texttt{v} (or strictly less than \texttt{b}), the same
+holds after rotation.
+
+\begin{equation*}
+\begin{aligned}
+(\forall x \in L,\, x > v) &\implies \forall x \in \operatorname{rotateAt}(L, k),\, x > v \\
+(\forall x \in L,\, x < b) &\implies \forall x \in \operatorname{rotateAt}(L, k),\, x < b
+\end{aligned}
+\end{equation*}
+
+\subsection{Index Shift Under Rotation by One}
+
+Rotating by one position and looking up index $k$ gives the original
+list's element at index $k + 1$. This is the lemma that underlies gap
+translation in \texttt{ShiftedList}.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(L, 1)(k) = L(k + 1) \quad \text{for } k + 1 < |L| \quad &
+\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
+
+\begin{lstlisting}[style=scala]
+def assertRotateContainsForward(
+  list: List[BigInt], index: BigInt, x: BigInt
+): Boolean = {
+  require(index >= 0); require(list.contains(x))
+  ListUtils.rotateAt(list, index).contains(x)
+}.holds
+
+def assertRotateSameSize(list: List[BigInt], index: BigInt): Boolean = {
+  require(index >= 0)
+  ListUtils.rotateAt(list, index).size == list.size
+}.holds
+
+def assertRotateSameSum(list: List[BigInt], index: BigInt): Boolean = {
+  require(index >= 0)
+  ListUtils.sum(ListUtils.rotateAt(list, index)) == ListUtils.sum(list)
+}.holds
+
+def assertRotateSameLowerBound(
+  list: List[BigInt], index: BigInt, value: BigInt
+): Boolean = {
+  require(index >= 0); require(ListBoundUtils.allGreaterThan(list, value))
+  ListBoundUtils.allGreaterThan(ListUtils.rotateAt(list, index), value)
+}.holds
+
+def assertRotatedAtIndexPlusOne(list: List[BigInt], k: BigInt): Boolean = {
+  require(k + 1 < list.size)
+  ListUtils.rotateAt(list, BigInt(1)).apply(k) == list.apply(k + 1)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+These properties are verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties}}
+module (11 lemmas total). The forward/backward membership pair and the
+upper/lower bound pair cover all permutation invariants; the remaining
+lemmas (\texttt{assertAppendContainsLeft/\allowbreak Right/\allowbreak
+Decompose/\allowbreak Swap}) are structural helpers consumed by the main
+rotation proofs.
+\par}

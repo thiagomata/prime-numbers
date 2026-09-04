@@ -1,0 +1,574 @@
+\section{Scala Verification Code}
+\label{sec:appendix-a}
+
+\subsection{Tail Access Shift --- accessTailShiftRight}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+
+\begin{lstlisting}[style=scala]
+  def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
+    require(list.nonEmpty && position >= 0 && position < list.tail.size)
+    list.tail(position) == list(position + 1)
+  }.holds
+\end{lstlisting}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
+    require(list.nonEmpty)
+    require(position >= 0 && position < list.size)
+    decreases(position)
+
+    if (position == 0 ) {
+      list(position) == list.head
+    } else {
+      assert( list == List(list.head) ++ list.tail )
+      assert( list(position) == list.apply(position) )
+      assert(assertTailShiftLeft(list.tail, position - 1))
+      assert(list.apply(position) == list.tail.apply(position - 1))
+      list(position) == list.tail(position - 1)
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{Last Element Identity --- assertLastEqualsLastPosition}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
+    require(list.nonEmpty)
+    decreases(list.size)
+
+    if (list.size == 1) {
+      assert(list.head == list.last)
+    } else {
+      assert(assertLastEqualsLastPosition(list.tail))
+      assertTailShiftLeft(list, list.size - 1)
+      assert(list.last == list(list.size - 1))
+    }
+    list.last == list(list.size - 1)
+  }.holds
+\end{lstlisting}
+
+\subsection{Tail-Recursive Slice --- slice}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
+    require(from >= 0)
+    require(to >= from)
+    require(to < list.size)
+    decreases(to)
+
+    val current: BigInt = list(to)
+    if (from == to) {
+      List(current)
+    } else {
+      val prev = slice(list, from, to - 1)
+      ListUtilsProperties.listAddValueTail(prev, current)
+      prev ++ List(current)
+    }
+  }
+\end{lstlisting}
+
+\subsection{Head-Recursive Slice --- headRecursiveSlice}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+
+\begin{lstlisting}[style=scala]
+def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
+  require(0 <= from && from <= to && to < list.length)
+  decreases(to - from)
+  if (from == to) List(list(from))
+  else Cons(list(from), headRecursiveSlice(list, from + 1, to))
+}
+\end{lstlisting}
+
+\subsection{Index-Range Slice --- indexRangeValues}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+
+\begin{lstlisting}[style=scala]
+def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
+  require(0 <= from && from <= to && to < list.length)
+  decreases(to - from)
+  if (from == to) List(list(from))
+  else Cons(list(from), indexRangeValues(list, from + 1, to))
+}
+\end{lstlisting}
+
+\subsection{Slice Append Consistency --- assertAppendToSlice}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
+    require(from >= 0)
+    require(from < to)
+    require(to < list.size)
+
+    listSumAddValue(list, list(to))
+
+    ListUtils.slice(list, from, to) ==
+      ListUtils.slice(list, from, to - 1) ++ List(list(to))
+  }.holds
+\end{lstlisting}
+
+\subsection{Sum Implementation --- sum}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def sum(loopList: List[BigInt]): BigInt = {
+    if (loopList.isEmpty) {
+      BigInt(0)
+    } else {
+      loopList.head + sum(loopList.tail)
+    }
+  }
+\end{lstlisting}
+
+\subsection{Left Append Preserves Sum --- listSumAddValue}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
+    ListUtils.sum(List(value) ++ list) == value + ListUtils.sum(list)
+  }.holds
+\end{lstlisting}
+
+\subsection{Sum over Concatenation --- listCombine}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    decreases(listA.size)
+
+    if (listA.isEmpty) {
+      assert(ListUtils.sum(listA) == BigInt(0))
+      assert(ListUtils.sum(listB) == BigInt(0) + ListUtils.sum(listB))
+      assert(ListUtils.sum(listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+      assert(listA ++ listB == listB)
+    } else {
+      listCombine(listA.tail, listB)
+      val bigList = listA ++ listB
+      assert(bigList == List(listA.head) ++ listA.tail ++ listB)
+      listSumAddValue(listA.tail ++ listB, listA.head)
+    }
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB)
+  }.holds
+\end{lstlisting}
+
+\subsection{Commutativity of Sum --- listSwap}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
+    listCombine(listA, listB)
+    listCombine(listB, listA)
+    assert(ListUtils.sum(listA ++ listB) == ListUtils.sum(listA) + ListUtils.sum(listB))
+    assert(ListUtils.sum(listB ++ listA) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    assert(ListUtils.sum(listA) + ListUtils.sum(listB) == ListUtils.sum(listB) + ListUtils.sum(listA))
+    ListUtils.sum(listA ++ listB) == ListUtils.sum(listB ++ listA)
+  }.holds
+\end{lstlisting}
+
+\subsection{Singleton Product --- singletonProduct}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+
+\begin{lstlisting}[style=scala]
+  def singletonProduct(x: BigInt): Boolean = {
+    product(List(x)) == x
+  }.holds
+\end{lstlisting}
+
+\subsection{Product Pull-Out Element --- productPullOutElement}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+
+\begin{lstlisting}[style=scala]
+  def productPullOutElement(
+                             listA: List[BigInt],
+                             e: BigInt,
+                             listB: List[BigInt]): Boolean = {
+    decreases(listA.size)
+
+    if (listA.isEmpty) {
+      product(List(e) ++ listB) == e * product(listB)
+    } else {
+      productPullOutElement(listA.tail, e, listB)
+      product(listA ++ List(e) ++ listB) ==
+        e * product(listA ++ listB)
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{Product over Concatenation --- productConcatLemma}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+
+\begin{lstlisting}[style=scala]
+  def productConcatLemma(
+                          listA: List[BigInt],
+                          listB: List[BigInt]
+                        ): Boolean = {
+    decreases(listA.size)
+
+    if (listA.isEmpty) {
+      assert(product(listA) == BigInt(1))
+      assert(product(listB) == product(listA) * product(listB))
+      assert(listA ++ listB == listB)
+    } else {
+      productConcatLemma(listA.tail, listB)
+
+      val concatenated = listA ++ listB
+
+      assert(
+        concatenated ==
+          List(listA.head) ++ listA.tail ++ listB
+      )
+
+      assert(
+        product(concatenated) ==
+          listA.head * product(listA.tail ++ listB)
+      )
+    }
+
+    product(listA ++ listB) ==
+      product(listA) * product(listB)
+  }.holds
+\end{lstlisting}
+
+\subsection{Commutativity of Product --- productConcatCommutative}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+
+\begin{lstlisting}[style=scala]
+  def productConcatCommutative(
+                                listA: List[BigInt],
+                                listB: List[BigInt]
+                              ): Boolean = {
+
+    productConcatLemma(listA, listB)
+    productConcatLemma(listB, listA)
+
+    assert(
+      product(listA ++ listB) ==
+        product(listA) * product(listB)
+    )
+
+    assert(
+      product(listB ++ listA) ==
+        product(listB) * product(listA)
+    )
+
+    assert(
+      product(listA) * product(listB) ==
+        product(listB) * product(listA)
+    )
+
+    product(listA ++ listB) ==
+      product(listB ++ listA)
+  }.holds
+\end{lstlisting}
+
+\subsection{Positive Product --- positiveProduct}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct.scala}}
+
+\begin{lstlisting}[style=scala]
+  def positiveProduct(elements: List[BigInt]): Boolean = {
+    decreases(elements.size)
+
+    require(ListBoundUtils.allGreaterThan(elements, 0))
+
+    if (elements.isEmpty) {
+      product(elements) > 0
+    } else {
+      positiveProduct(elements.tail)
+      assert(product(elements.tail) > 0)
+      product(elements) > 0
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{Head Divides Product --- ListProductDiv}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+
+\begin{lstlisting}[style=scala]
+  def ListProductDiv(
+                          elements: List[BigInt]
+                        ): Boolean = {
+
+    require(elements.nonEmpty)
+    require(ListBoundUtils.allGreaterThan(elements, 0))
+
+    val p = elements.head
+    val tailProduct = ListProduct.product(elements.tail)
+
+    assert(
+      ListProduct.product(elements) ==
+        p * tailProduct
+    )
+
+    assert(ModIdentity.modIdentity(p))
+
+    assert(
+      ATimesBSameMod(
+        BigInt(0),
+        p,
+        tailProduct
+      )
+    )
+
+    Calc.mod(
+      ListProduct.product(elements),
+      p
+    ) == BigInt(0)
+  }.holds
+\end{lstlisting}
+
+\subsection{All Elements Divide Product --- allElementsDivideProduct}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+
+\begin{lstlisting}[style=scala]
+  def allElementsDivideProduct(
+                                elements: List[BigInt]
+                              ): Boolean = {
+
+    require(ListBoundUtils.allGreaterThan(elements, 0))
+
+    decreases(elements.size)
+
+    if (elements.isEmpty) {
+      true
+    } else {
+
+      val p = elements.head
+      val tailProduct = ListProduct.product(elements.tail)
+
+      assert(
+        ListProduct.product(elements) ==
+          p * tailProduct
+      )
+
+      assert(ModIdentity.modIdentity(p))
+
+      assert(
+        ATimesBSameMod(
+          BigInt(0),
+          p,
+          tailProduct
+        )
+      )
+
+      assert(
+        Calc.mod(
+          ListProduct.product(elements),
+          p
+        ) == BigInt(0)
+      )
+
+      allElementsDivideProduct(elements.tail)
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{Inserted Element Divides Product --- insertedElementDividesProduct}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv.scala}}
+
+\begin{lstlisting}[style=scala]
+  def insertedElementDividesProduct(
+                                     prefix: List[BigInt],
+                                     e: BigInt,
+                                     suffix: List[BigInt]
+                                   ): Boolean = {
+
+    require(e > 0)
+    require(ListBoundUtils.allGreaterThan(prefix, 0))
+    require(ListBoundUtils.allGreaterThan(suffix, 0))
+
+    ListProduct.productPullOutElement(
+      prefix,
+      e,
+      suffix
+    )
+
+    assert(
+      ListProduct.product(
+        prefix ++ List(e) ++ suffix
+      ) ==
+        e * ListProduct.product(
+          prefix ++ suffix
+        )
+    )
+
+    assert(ModIdentity.modIdentity(e))
+
+    assert(
+      ATimesBSameMod(
+        BigInt(0),
+        e,
+        ListProduct.product(prefix ++ suffix)
+      )
+    )
+
+    Calc.mod(
+      ListProduct.product(
+        prefix ++ List(e) ++ suffix
+      ),
+      e
+    ) == BigInt(0)
+  }.holds
+\end{lstlisting}
+
+\subsection{All Greater Than at Index --- assertGreaterThanAtIndex}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertGreaterThanAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
+    require(allGreaterThan(list, value))
+    require(pos >= 0 && pos < list.size)
+    decreases(pos)
+    if (pos == BigInt(0)) {
+      list.head > value
+    } else {
+      assert(assertGreaterThanAtIndex(list.tail, value, pos - 1))
+      assert(assertTailShiftLeft(list, pos))
+      list(pos) > value
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{Append Preserves All Greater Than --- assertAppendGreaterThan}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertAppendGreaterThan(listA: List[BigInt], listB: List[BigInt], value: BigInt): Boolean = {
+    require(allGreaterThan(listA, value))
+    require(allGreaterThan(listB, value))
+    decreases(listA.size)
+    if (listA.isEmpty) {
+      allGreaterThan(listA ++ listB, value)
+    } else {
+      assert(assertAppendGreaterThan(listA.tail, listB, value))
+      assert(allGreaterThan(listA.tail ++ listB, value))
+      assert(listA.head > value)
+      allGreaterThan(listA ++ listB, value)
+    }
+  }.holds
+\end{lstlisting}
+
+\subsection{All Greater Than Head and Tail --- assertGreaterThanHeadTail}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils.scala}}
+
+\begin{lstlisting}[style=scala]
+  def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
+    require(allGreaterThan(list, value))
+    require(list.nonEmpty)
+    list.head > value && allGreaterThan(list.tail, value)
+  }.holds
+\end{lstlisting}
+
+\subsection{Check All Bigger at Index --- checkAllBiggerThanValueAtIndex}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+
+\begin{lstlisting}[style=scala]
+  def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
+    require(ListUtils.checkAllBiggerThanValue(list, value))
+    require(pos >= 0 && pos < list.size)
+    ListBoundUtils.assertGreaterThanAtIndex(list, value, pos)
+  }.holds
+\end{lstlisting}
+
+\subsection{Check All Bigger Head and Tail --- checkAllBiggerThanValueHeadTail}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties.scala}}
+
+\begin{lstlisting}[style=scala]
+  def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
+    require(ListUtils.checkAllBiggerThanValue(list, value))
+    require(list.nonEmpty)
+    ListBoundUtils.assertGreaterThanHeadTail(list, value)
+  }.holds
+\end{lstlisting}
+
+\subsection{Slice Equivalence --- tailHeadAndIndexRangeSlicesAreEqual}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas.scala}}
+
+\begin{lstlisting}[style=scala]
+  def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
+    require(0 <= from && from <= to && to < list.length)
+    decreases(to - from)
+
+    val indexSlice = indexRangeValues(list, from, to)
+    val tailSlice = ListUtils.slice(list, from, to)
+    val headSlice = headRecursiveSlice(list, from, to)
+
+    if (from == to) {
+      assert(indexSlice == List(list(from)))
+      assert(tailSlice == List(list(from)))
+      assert(headSlice == List(list(from)))
+    } else {
+      assert(tailHeadAndIndexRangeSlicesAreEqual(list, from, to - 1))
+      assert(tailHeadAndIndexRangeSlicesAreEqual(list, from + 1, to))
+      val reconstructedTail = ListUtils.slice(list, from, to - 1) ++ List(list(to))
+      assert(tailSlice == reconstructedTail)
+      assert(tailSlice == indexSlice)
+      assert(headSlice == indexSlice)
+      assert(tailSlice == headSlice)
+    }
+    (
+      tailSlice == headSlice &&
+      tailSlice == indexSlice &&
+      headSlice == indexSlice
+    )
+  }.holds
+\end{lstlisting}
+
+\section{Stainless Verification Log Output}
+\label{sec:appendix-b}
+
+The latest \texttt{just verify} run verifies all the described properties
+without errors. The full log output is available at:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log}{\texttt{logs/verify.log}}.
