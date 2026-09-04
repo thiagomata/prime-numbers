@@ -22,10 +22,11 @@ distributivity to positivity.
 The product of a singleton list containing $x$ is $x$.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, x \in \mathbb{S} \\
+\forall\, x \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{product}(x :: L_e) = x
-\end{aligned}
 \end{equation*}
 
 Proof:
@@ -51,10 +52,11 @@ A single element can be factored out of the product of a concatenated
 list.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, listA, listB \in \mathbb{L}, \forall\, e \in \mathbb{S} \\
+\forall\, listA, listB \in \mathbb{L}, \forall\, e \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{product}(listA \mathbin{\texttt{++}} (e :: listB)) = e \cdot \operatorname{product}(listA \mathbin{\texttt{++}} listB)
-\end{aligned}
 \end{equation*}
 
 \textbf{Proof by induction on $listA$}
@@ -83,10 +85,11 @@ The full Scala verification code is in Appendix~A.12.
 Product distributes over list concatenation.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, listA, listB \in \mathbb{L} \\
+\forall\, listA, listB \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listA) \cdot \operatorname{product}(listB)
-\end{aligned}
 \end{equation*}
 
 \textbf{Proof by induction on $listA$}
@@ -116,10 +119,11 @@ The full Scala verification code is in Appendix~A.13.
 Product is invariant under swapping concatenated blocks.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, listA, listB \in \mathbb{L} \\
+\forall\, listA, listB \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listB \mathbin{\texttt{++}} listA)
-\end{aligned}
 \end{equation*}
 
 Proof:
@@ -145,10 +149,11 @@ If every element of a list is strictly positive, then the product is
 strictly positive.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, elements \in \mathbb{L} \\
+\forall\, elements \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 (\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) > 0
-\end{aligned}
 \end{equation*}
 
 \textbf{Proof by induction on $elements$}

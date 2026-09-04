@@ -116,6 +116,33 @@ These are the rules the author's visual review enforced:
   neighboring line after a recompile, suspect shared-column blowup rather
   than that specific row's content.
 
+- **A multi-row `aligned` where NO row contains `&` does not center each
+  row independently** (a second `list`-conversion bug, easy to miss
+  because it produces no compile warning at all — only a visibly
+  off-center short line, e.g. a `\forall ...` premise sitting far right
+  of the longer equation line below it). With zero `&` anywhere, every
+  row's whole content is the (right-aligned) first column, so a short row
+  gets right-justified under the widest row's column width instead of
+  centered on the page — the shorter the row relative to its neighbor,
+  the more visibly wrong it looks. This is the common "premise line, then
+  equation line" shape (a bare `\forall ... \\` followed by the
+  statement, with no further internal alignment need). Fix: don't wrap
+  these in `aligned` at all — give each line its own `equation*`:
+
+  ```latex
+  \begin{equation*}
+  \forall\, L \in \mathbb{L},\ \forall\, i \in \mathbb{N},\ i < |L|
+  \end{equation*}
+
+  \begin{equation*}
+  \operatorname{slice}(L, i, j) = \dots
+  \end{equation*}
+  ```
+
+  Reserve `aligned` for rows that actually need a shared `&` column (an
+  `=`-chain, a premise/conclusion pair using the flush-left leading-`&`
+  pattern, or a tagged recap row) — never as a bare line-break device.
+
 ## 4. Links and Code
 
 - Copy link URLs verbatim from the Markdown. Labels use `\texttt{...}`.

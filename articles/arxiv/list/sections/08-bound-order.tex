@@ -21,10 +21,11 @@ For every list where all elements are greater than a value, any element
 at a valid position is also greater than that value.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N} \\
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N}
+\end{equation*}
+
+\begin{equation*}
 (\forall x \in list,\, x > value) \wedge 0 \leq pos < |list| \implies list(pos) > value
-\end{aligned}
 \end{equation*}
 
 {\raggedright
@@ -39,11 +40,15 @@ If both lists have all elements greater than a value, then their
 concatenation also has all elements greater than that value.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, listA, listB \in \mathbb{L},\ \forall\, value \in \mathbb{S} \\
-(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value) \\
+\forall\, listA, listB \in \mathbb{L},\ \forall\, value \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
+(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value)
+\end{equation*}
+
+\begin{equation*}
 \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x > value
-\end{aligned}
 \end{equation*}
 
 {\raggedright
@@ -59,10 +64,11 @@ head is greater than that value and the tail also satisfies the
 property.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
 (\forall x \in list,\, x > value) \implies list.\text{head} > value \wedge (\forall x \in list.\text{tail},\, x > value)
-\end{aligned}
 \end{equation*}
 
 {\raggedright
@@ -77,10 +83,11 @@ For every list where all elements are bigger than a value, any element
 at a valid position is also bigger.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N} \\
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{checkAllBiggerThanValue}(list, value) \wedge 0 \leq pos < |list| \implies list(pos) > value
-\end{aligned}
 \end{equation*}
 
 {\raggedright
@@ -95,11 +102,15 @@ For a non-empty list where all elements are bigger than a value, the
 head is bigger and the tail also satisfies the property.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
-\operatorname{checkAllBiggerThanValue}(list, value) \implies list.\text{head} > value \\
-\quad \wedge\ \operatorname{checkAllBiggerThanValue}(list.\text{tail}, value)
-\end{aligned}
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{checkAllBiggerThanValue}(list, value) \implies list.\text{head} > value
+\end{equation*}
+
+\begin{equation*}
+\wedge\ \operatorname{checkAllBiggerThanValue}(list.\text{tail}, value)
 \end{equation*}
 
 {\raggedright
@@ -114,11 +125,15 @@ Splitting a lower-bounded list at any valid index preserves the bound on
 both halves.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ 0 \leq index \leq |list| \\
-(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value) \\
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ 0 \leq index \leq |list|
+\end{equation*}
+
+\begin{equation*}
+(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value)
+\end{equation*}
+
+\begin{equation*}
 \text{where } (front, back) = \operatorname{splitAt}(list, index)
-\end{aligned}
 \end{equation*}
 
 {\raggedright

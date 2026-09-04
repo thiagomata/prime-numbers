@@ -16,10 +16,11 @@ All three slice implementations --- tail-recursive, head-recursive, and
 index-range --- produce the same result for any valid input.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, L \in \mathbb{L},\ \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
+\forall\, L \in \mathbb{L},\ \forall\, i, j \in \mathbb{N},\ i \leq j < |L|
+\end{equation*}
+
+\begin{equation*}
 \operatorname{slice}(L, i, j) = \operatorname{headRecursiveSlice}(L, i, j) = \operatorname{indexRangeValues}(L, i, j)
-\end{aligned}
 \end{equation*}
 
 \textbf{Proof by induction on $j - i$}

@@ -36,10 +36,11 @@ $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
 \end{equation*}
 
 \begin{equation*}
-\begin{aligned}
-\forall\, L \in \mathbb{L} \\
+\forall\, L \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 |L| = 0 \implies \operatorname{sum}(L) = \sum L
-\end{aligned}
 \end{equation*}
 
 \textbf{Inductive step}: $|L| > 0$
@@ -79,19 +80,21 @@ Let's calculate the sum of $L$:
 \end{equation*}
 
 \begin{equation*}
-\begin{aligned}
-\forall\, L \in \mathbb{L} \\
+\forall\, L \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 |L| > 0 \implies \operatorname{sum}(L) = \sum L
-\end{aligned}
 \end{equation*}
 
 Hence, by induction on the size of $L$:
 
 \begin{equation*}
-\begin{aligned}
-\forall\, L \in \mathbb{L} \\
+\forall\, L \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 \operatorname{sum}(L) = \sum L = \sum_{i=0}^{n-1} x_i \in \mathbb{S} \quad \blacksquare \quad \text{[Q.E.D.]}
-\end{aligned}
 \end{equation*}
 
 This property is verified in
@@ -104,10 +107,11 @@ The sum of a list with an element prepended equals the element plus the
 sum of the original list.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, x \in \mathbb{S} \\
-\operatorname{sum}(x :: L) = x + \operatorname{sum}(L) \\
-\end{aligned}
+\forall\, x \in \mathbb{S}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{sum}(x :: L) = x + \operatorname{sum}(L)
 \end{equation*}
 
 Proof:

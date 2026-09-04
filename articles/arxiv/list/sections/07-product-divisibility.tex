@@ -23,25 +23,25 @@ and reused here as a foundational primitive.
 The head of a positive list divides the product of the entire list.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, elements \in \mathbb{L},\ elements \neq L_e \\
+\forall\, elements \in \mathbb{L},\ elements \neq L_e
+\end{equation*}
+
+\begin{equation*}
 (\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) \bmod \operatorname{head}(elements) = 0
-\end{aligned}
 \end{equation*}
 
 Proof:
 
 \begin{equation*}
+\operatorname{product}(elements) = \operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))
+\quad \text{[by definition of product]}
+\end{equation*}
+
+\begin{equation*}
 \begin{aligned}
-\operatorname{product}(elements)
-  &= \operatorname{head}(elements) \\
-  &\qquad \cdot \operatorname{product}(\operatorname{tail}(elements)) \\
-  & \text{[by definition of product]} \\
-\operatorname{product}(elements) \bmod \operatorname{head}(elements)
-  &= (\operatorname{head}(elements) \\
-  &\qquad \cdot \operatorname{product}(\operatorname{tail}(elements))) \\
-  &\qquad \bmod \operatorname{head}(elements) \\
-&= 0 \quad \blacksquare && \text{[by modulo identity]} \\
+&\operatorname{product}(elements) \bmod \operatorname{head}(elements) \\
+&= (\operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))) \bmod \operatorname{head}(elements) \\
+&= 0 \quad \blacksquare \quad \text{[by modulo identity]}
 \end{aligned}
 \end{equation*}
 
@@ -56,10 +56,11 @@ The full Scala verification code is in Appendix~A.16.
 Every element of a positive list divides the product of the list.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, elements \in \mathbb{L} \\
+\forall\, elements \in \mathbb{L}
+\end{equation*}
+
+\begin{equation*}
 (\forall\, x \in elements,\ x > 0) \implies (\forall\, x \in elements,\ \operatorname{product}(elements) \bmod x = 0)
-\end{aligned}
 \end{equation*}
 
 \textbf{Proof by induction on $elements$}
@@ -86,25 +87,33 @@ Inserting an element into a list guarantees that the resulting product is
 divisible by that element.
 
 \begin{equation*}
-\begin{aligned}
-\forall\, prefix, suffix \in \mathbb{L},\ \forall\, e \in \mathbb{S},\ e > 0 \\
-(\forall\, x \in prefix,\ x > 0),\ (\forall\, x \in suffix,\ x > 0) \\
+\forall\, prefix, suffix \in \mathbb{L},\ \forall\, e \in \mathbb{S},\ e > 0
+\end{equation*}
+
+\begin{equation*}
+(\forall\, x \in prefix,\ x > 0),\ (\forall\, x \in suffix,\ x > 0)
+\end{equation*}
+
+\begin{equation*}
 \implies \operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
-\end{aligned}
 \end{equation*}
 
 Proof:
 
 \begin{equation*}
+\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) = e \cdot \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)
+\quad \text{[Product Pull-Out Element]}
+\end{equation*}
+
+\begin{equation*}
+= e \cdot k
+\quad \text{[where $k = \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)$]}
+\end{equation*}
+
+\begin{equation*}
 \begin{aligned}
-\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix))
-  &= e \cdot \operatorname{product}(prefix \mathbin{\texttt{++}} suffix) \\
-  &\qquad\quad \text{[Product Pull-Out Element]} \\
-&= e \cdot k \\
-  &\qquad\quad \text{[where $k = \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)$]} \\
-\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e
-  &= (e \cdot k) \bmod e = 0 \quad \blacksquare \\
-  &\qquad\quad \text{[Q.E.D.]} \\
+&\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e \\
+&= (e \cdot k) \bmod e = 0 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
 \end{equation*}
 
