@@ -87,12 +87,11 @@ $G_{i+1}$ because the gap list is rotated by one position.
 
 \begin{equation*}
 \begin{aligned}
-\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
-  - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
-  &= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1) \\
-  &\qquad \text{[Gap translation]} \\
-  &= \operatorname{gaps}(i + 1) \\
-  &\qquad \text{[By adjacent-difference identity for both views]}
+&\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1) - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
+&= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
+\quad \text{[Gap translation]} \\
+&= \operatorname{gaps}(i + 1)
+\quad \text{[By adjacent-difference identity for both views]}
 \end{aligned}
 \end{equation*}
 
