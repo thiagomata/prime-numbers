@@ -962,8 +962,8 @@ How the property $\forall x \in L,\, x > v$ propagates from a whole list to its 
 For every list where all elements are greater than a value, any element at a valid position is also greater than that value.
 
 ```math
-\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-(\forall x \in list,\, x > value) \wedge pos < |list| \implies list(pos) > value
+\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
+(\forall x \in list,\, x > value) \implies list(pos) > value
 ```
 
 This property is verified in the [
@@ -1002,8 +1002,8 @@ This property is verified in the [
 For every list where all elements are bigger than a value, any element at a valid position is also bigger.
 
 ```math
-\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-\text{checkAllBiggerThanValue}(list, value) \wedge pos < |list| \implies list(pos) > value
+\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
+\text{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
 ```
 
 This property is verified in the [

@@ -21,11 +21,11 @@ For every list where all elements are greater than a value, any element
 at a valid position is also greater than that value.
 
 \begin{equation*}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list|
 \end{equation*}
 
 \begin{equation*}
-(\forall x \in list,\, x > value) \wedge pos < |list| \implies list(pos) > value
+(\forall x \in list,\, x > value) \implies list(pos) > value
 \end{equation*}
 
 {\raggedright
@@ -83,11 +83,11 @@ For every list where all elements are bigger than a value, any element
 at a valid position is also bigger.
 
 \begin{equation*}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list|
 \end{equation*}
 
 \begin{equation*}
-\operatorname{checkAllBiggerThanValue}(list, value) \wedge pos < |list| \implies list(pos) > value
+\operatorname{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
 \end{equation*}
 
 {\raggedright
