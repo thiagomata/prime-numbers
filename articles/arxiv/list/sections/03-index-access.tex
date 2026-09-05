@@ -21,7 +21,7 @@ element of the list.
 \forall\, L,\ i,\quad 1 < |L|,\ 0 \le i < |\operatorname{tail}(L)| \implies \operatorname{tail}(L)_{(i)} = L_{(i + 1)}
 \end{equation*}
 
-Since:
+Since:\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}
@@ -45,17 +45,14 @@ The full Scala verification code is in Appendix~A.1.
 \textbf{Lemma:} The last element of a non-empty list is equal to the
 element at position $n - 1$, where $n = |L|$.
 
-\begin{equation*}
-\forall\, L,\ |L| > 0 \implies \operatorname{last}(L) = L_{(n - 1)}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L,\ |L| > 0 \implies \operatorname{last}(L) = L_{(n - 1)} \\
 \begin{aligned}
 L &= [x_0, x_1, \dots, x_{n-1}] && \text{[List definition]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
-\textbf{Base case}: $|L| = 1$
+\textbf{Base case}: $|L| = 1$\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}
@@ -64,25 +61,19 @@ L &= [x_0] && \text{[Singleton list]} \\
 \end{aligned}
 \end{equation*}
 
-\textbf{Inductive step}: $|L| > 1$
+\textbf{Inductive step}: $|L| > 1$\par\nopagebreak
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 L &= x_0 :: \operatorname{tail}(L) && \text{[Decomposition]} \\
 \operatorname{last}(L) &= \operatorname{last}(\operatorname{tail}(L)) && \text{[Definition of last]} \\
 \operatorname{last}(\operatorname{tail}(L)) &= \operatorname{tail}(L)_{(|\operatorname{tail}(L)| - 1)} && \text{[Inductive hypothesis]} \\
 \operatorname{tail}(L)_{(|\operatorname{tail}(L)| - 1)} &= L_{(|L| - 1)} && \text{[Tail Shift Position]} \\
-\implies \operatorname{last}(L) &= L_{(|L| - 1)} && \text{[By substitution]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
+\implies \operatorname{last}(L) &= L_{(|L| - 1)} && \text{[By substitution]}
+\end{aligned} \\
+\therefore \\
 \forall\, L,\ |L| > 0 \implies \operatorname{last}(L) = L_{(|L| - 1)} \quad \blacksquare
-\end{equation*}
+\end{gather*}
 
 This property is verified in
 \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::assertLastEqualsLastPosition}}.

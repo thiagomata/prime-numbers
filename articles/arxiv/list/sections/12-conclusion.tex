@@ -8,7 +8,7 @@ The core proved properties can be summarized as follows, for lists
 $L,A,B,P,S \in \mathbb{L}$, values $x,e,v \in \mathbb{S}$, and valid
 natural indices.
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 |L| > 0
 &\implies L_{|L|-1} = \operatorname{last}(L)
@@ -21,9 +21,9 @@ natural indices.
  = L[f \dots (t - 1)] \mathbin{\texttt{++}} (L_t :: L_e)
 &&\text{[Slice Append Consistency]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{sum}(L)
 &= \sum_{i=0}^{|L|-1} L_i
@@ -41,9 +41,9 @@ natural indices.
 &\implies \operatorname{sum}(L) > 0
 &&\text{[Sum Positivity]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{product}(x :: L_e)
 &= x
@@ -61,99 +61,70 @@ natural indices.
 &\implies \operatorname{product}(L) > 0
 &&\text{[Positive Product]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
-\begin{equation*}
+\begin{gather*}
 L \neq L_e \land (\forall x \in L,\ x > 0)
 \implies \operatorname{product}(L) \bmod \operatorname{head}(L) = 0
-\quad \text{[Head Divides Product]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[Head Divides Product]} \\
 (\forall x \in L,\ x > 0)
 \implies \forall x \in L,\ \operatorname{product}(L) \bmod x = 0
-\quad \text{[All Elements Divide Product]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[All Elements Divide Product]} \\
 \begin{aligned}
 &e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0) \\
 &\implies \operatorname{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
 \quad \text{[Inserted Element Divides Product]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
-\begin{equation*}
+\begin{gather*}
+\begin{aligned}
 (\forall x \in L,\ x > v) \land 0 \leq i < |L|
-\implies L_i > v
-\quad \text{[Bound at Index]}
-\end{equation*}
-
-\begin{equation*}
+&\implies L_i > v
+&&\text{[Bound at Index]} \\
 (\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
-\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
-\quad \text{[Bound over Concatenation]}
-\end{equation*}
-
-\begin{equation*}
+&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
+&&\text{[Bound over Concatenation]}
+\end{aligned} \\
 \begin{aligned}
 &(\forall x \in L,\ x > v) \land 0 \leq k \leq |L| \\
 &\implies (\forall x \in \text{front},\ x > v) \land (\forall x \in \text{back},\ x > v)
 \quad \text{[Split Preserves Lower Bound]}
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-(\forall x \in A,\ x < b) \land (\forall x \in B,\ x < b)
-\implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
+\end{aligned} \\
+\begin{aligned}
+&(\forall x \in A,\ x < b) \land (\forall x \in B,\ x < b) \\
+&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
 \quad \text{[Bound over Concatenation, Upper]}
-\end{equation*}
-
-\begin{equation*}
+\end{aligned} \\
 \begin{aligned}
 &(\forall x \in L,\ x < b) \land 0 \leq k \leq |L| \\
 &\implies (\forall x \in \text{front},\ x < b) \land (\forall x \in \text{back},\ x < b)
 \quad \text{[Split Preserves Upper Bound]}
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
+\end{aligned} \\
 \operatorname{slice}(L,f,t)
 = \operatorname{headRecursiveSlice}(L,f,t)
 = \operatorname{indexRangeValues}(L,f,t)
 \quad \text{[Slice Equivalence]}
-\end{equation*}
+\end{gather*}
 
-\begin{equation*}
+\begin{gather*}
 \operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i)
 = G_i
-\quad \text{[Adjacent Difference]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[Adjacent Difference]} \\
 \begin{aligned}
-\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
- - \operatorname{value}_{\operatorname{shift}(h,G)}(i)
+&\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
+ - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
 &= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
 \quad \text{[Gap Translation]}
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
+\end{aligned} \\
 \operatorname{rotateAt}(L,k).\text{contains}(x)
 \iff L.\text{contains}(x)
-\quad \text{[Rotation Same Elements]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[Rotation Same Elements]} \\
 |\operatorname{rotateAt}(L,k)| = |L|
-\quad \text{[Rotation Same Size]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[Rotation Same Size]} \\
 \operatorname{sum}(\operatorname{rotateAt}(L,k)) = \operatorname{sum}(L)
 \quad \text{[Rotation Same Sum]}
-\end{equation*}
+\end{gather*}
 
 All of these properties are verified in the source references cited
 throughout the article. Appendix~A collects the Scala excerpts that are

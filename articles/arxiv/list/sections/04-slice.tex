@@ -20,58 +20,49 @@ equivalent.
 The tail-recursive slice builds the sublist from the end, prepending
 elements as it recurses backward.
 
-\begin{equation*}
-\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
 \operatorname{slice}(L, i, j) :=
 \begin{cases}
 L_j :: L_e & \text{if } i = j \\
 \operatorname{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \text{if } i < j
 \end{cases}
-\end{equation*}
+\end{gather*}
 
-\textbf{Goal}:
+\textbf{Goal}:\par\nopagebreak
 
 \begin{equation*}
 \forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \implies \operatorname{slice}(L, i, j) = L[i \dots j]
 \end{equation*}
 
-\textbf{Proof by induction on $j$, with fixed $i$}
+\textbf{Proof by induction on $j$, with fixed $i$}\par\nopagebreak
 
-\textbf{Base case}: $j = i$
+\textbf{Base case}: $j = i$\par\nopagebreak
 
 \begin{equation*}
 \operatorname{slice}(L, i, i) = L_i :: L_e = L[i \dots i]
 \end{equation*}
 
-\textbf{Inductive step}: Assume
+\textbf{Inductive step}: Assume\par\nopagebreak
 
 \begin{equation*}
 \operatorname{slice}(L, i, j - 1) = [ L_k \mid i \leq k \leq j - 1 ]
 \end{equation*}
 
-Show:
+Show:\par\nopagebreak
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{slice}(L, i, j) &= \operatorname{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) && \text{[by definition of slice]} \\
 &= L[i \dots (j - 1)] \mathbin{\texttt{++}} (L_j :: L_e) && \text{[by Inductive Hypothesis]} \\
 &= [ L_k \mid i \leq k \leq j - 1 ] \mathbin{\texttt{++}} (L_j :: L_e) && \text{[by Specification]} \\
 &= [ L_k \mid i \leq k \leq j ] && \text{[by definition of Concatenation]} \\
-&= L[i \dots j] && \text{[Q.E.D]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
+&= L[i \dots j] && \text{[Q.E.D]}
+\end{aligned} \\
+\therefore \\
 \forall\, 0 \leq i \leq j < |L|,\ \operatorname{slice}(L, i, j) = L[i \dots j]
 \quad \blacksquare
-\end{equation*}
+\end{gather*}
 
 This property is verified in
 \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::slice}}.
@@ -82,56 +73,47 @@ The implementation and verification code are in Appendix~A.3.
 The head-recursive slice builds the sublist from the front, cons-ing
 elements as it recurses forward.
 
-\begin{equation*}
-\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
 \operatorname{headRecursiveSlice}(L, i, j) :=
 \begin{cases}
 L_i :: L_e & \text{if } i = j \\
 L_i :: \operatorname{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
-\end{equation*}
+\end{gather*}
 
-\textbf{Goal}:
+\textbf{Goal}:\par\nopagebreak
 
 \begin{equation*}
 \forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \implies \operatorname{headRecursiveSlice}(L, i, j) = L[i \dots j]
 \end{equation*}
 
-\textbf{Proof by induction on $j - i$}
+\textbf{Proof by induction on $j - i$}\par\nopagebreak
 
-\textbf{Base case}: $i = j$
+\textbf{Base case}: $i = j$\par\nopagebreak
 
 \begin{equation*}
 \operatorname{headRecursiveSlice}(L, i, i) = L_i :: L_e = L[i \dots i]
 \end{equation*}
 
-\textbf{Inductive step}: Assume
+\textbf{Inductive step}: Assume\par\nopagebreak
 
 \begin{equation*}
 \operatorname{headRecursiveSlice}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
 \end{equation*}
 
-Show:
+Show:\par\nopagebreak
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{headRecursiveSlice}(L, i, j) &= L_i :: \operatorname{headRecursiveSlice}(L, i + 1, j) && \text{[by definition]} \\
 &= L_i :: L[i + 1 \dots j] && \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] && \text{[by specification]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] && \text{[by specification]}
+\end{aligned} \\
+\therefore \\
 \forall\, 0 \leq i \leq j < |L|,\ \operatorname{headRecursiveSlice}(L, i, j) = L[i \dots j]
 \quad \blacksquare
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -144,56 +126,47 @@ The full Scala verification code is in Appendix~A.4.
 The index-range slice builds the sublist by direct index access,
 recursing forward through the index range.
 
-\begin{equation*}
-\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
 \operatorname{indexRangeValues}(L, i, j) :=
 \begin{cases}
 L_i :: L_e & \text{if } i = j \\
 L_i :: \operatorname{indexRangeValues}(L, i + 1, j) & \text{if } i < j
 \end{cases}
-\end{equation*}
+\end{gather*}
 
-\textbf{Goal}:
+\textbf{Goal}:\par\nopagebreak
 
 \begin{equation*}
 \forall\, L \in \mathbb{L}, \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \implies \operatorname{indexRangeValues}(L, i, j) = L[i \dots j]
 \end{equation*}
 
-\textbf{Proof by induction on $j - i$}
+\textbf{Proof by induction on $j - i$}\par\nopagebreak
 
-\textbf{Base case}: $i = j$
+\textbf{Base case}: $i = j$\par\nopagebreak
 
 \begin{equation*}
 \operatorname{indexRangeValues}(L, i, i) = L_i :: L_e = L[i \dots i]
 \end{equation*}
 
-\textbf{Inductive step}: Assume
+\textbf{Inductive step}: Assume\par\nopagebreak
 
 \begin{equation*}
 \operatorname{indexRangeValues}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
 \end{equation*}
 
-Show:
+Show:\par\nopagebreak
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{indexRangeValues}(L, i, j) &= L_i :: \operatorname{indexRangeValues}(L, i + 1, j) && \text{[by definition]} \\
 &= L_i :: L[i + 1 \dots j] && \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] && \text{[by specification]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] && \text{[by specification]}
+\end{aligned} \\
+\therefore \\
 \forall\, 0 \leq i \leq j < |L|,\ \operatorname{indexRangeValues}(L, i, j) = L[i \dots j]
 \quad \blacksquare
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in

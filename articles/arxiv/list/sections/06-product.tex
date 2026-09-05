@@ -21,15 +21,12 @@ distributivity to positivity.
 
 The product of a singleton list containing $x$ is $x$.
 
-\begin{equation*}
-\forall\, x \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, x \in \mathbb{S} \\
 \operatorname{product}(x :: L_e) = x
-\end{equation*}
+\end{gather*}
 
-Proof:
+\textbf{Proof:}
 
 \begin{equation*}
 \begin{aligned}
@@ -51,17 +48,14 @@ The full Scala verification code is in Appendix~A.11.
 A single element can be factored out of the product of a concatenated
 list.
 
-\begin{equation*}
-\forall\, listA, listB \in \mathbb{L}, \forall\, e \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L}, \forall\, e \in \mathbb{S} \\
 \operatorname{product}(listA \mathbin{\texttt{++}} (e :: listB)) = e \cdot \operatorname{product}(listA \mathbin{\texttt{++}} listB)
-\end{equation*}
+\end{gather*}
 
-\textbf{Proof by induction on $listA$}
+\textbf{Proof by induction on $listA$}\par\nopagebreak
 
-\textbf{Base case}: $listA = L_e$
+\textbf{Base case}: $listA = L_e$\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}
@@ -84,17 +78,14 @@ The full Scala verification code is in Appendix~A.12.
 
 Product distributes over list concatenation.
 
-\begin{equation*}
-\forall\, listA, listB \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L} \\
 \operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listA) \cdot \operatorname{product}(listB)
-\end{equation*}
+\end{gather*}
 
-\textbf{Proof by induction on $listA$}
+\textbf{Proof by induction on $listA$}\par\nopagebreak
 
-\textbf{Base case}: $listA = L_e$
+\textbf{Base case}: $listA = L_e$\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}
@@ -118,15 +109,12 @@ The full Scala verification code is in Appendix~A.13.
 
 Product is invariant under swapping concatenated blocks.
 
-\begin{equation*}
-\forall\, listA, listB \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L} \\
 \operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listB \mathbin{\texttt{++}} listA)
-\end{equation*}
+\end{gather*}
 
-Proof:
+\textbf{Proof:}
 
 \begin{equation*}
 \begin{aligned}
@@ -148,17 +136,14 @@ The full Scala verification code is in Appendix~A.14.
 If every element of a list is strictly positive, then the product is
 strictly positive.
 
-\begin{equation*}
-\forall\, elements \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, elements \in \mathbb{L} \\
 (\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) > 0
-\end{equation*}
+\end{gather*}
 
-\textbf{Proof by induction on $elements$}
+\textbf{Proof by induction on $elements$}\par\nopagebreak
 
-\textbf{Base case}: $elements = L_e$
+\textbf{Base case}: $elements = L_e$\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}

@@ -20,13 +20,10 @@ to its elements and through concatenation.
 For every list where all elements are greater than a value, any element
 at a valid position is also greater than that value.
 
-\begin{equation*}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list| \\
 (\forall x \in list,\, x > value) \implies list(pos) > value
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -39,17 +36,11 @@ The full Scala verification code is in Appendix~A.19.
 If both lists have all elements greater than a value, then their
 concatenation also has all elements greater than that value.
 
-\begin{equation*}
-\forall\, listA, listB \in \mathbb{L},\ \forall\, value \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
-(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value)
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L},\ \forall\, value \in \mathbb{S} \\
+(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value) \\
 \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x > value
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -63,13 +54,10 @@ For a non-empty list where all elements are greater than a value, the
 head is greater than that value and the tail also satisfies the
 property.
 
-\begin{equation*}
-\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
 (\forall x \in list,\, x > value) \implies list.\text{head} > value \wedge (\forall x \in list.\text{tail},\, x > value)
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -82,13 +70,10 @@ The full Scala verification code is in Appendix~A.21.
 For every list where all elements are bigger than a value, any element
 at a valid position is also bigger.
 
-\begin{equation*}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list| \\
 \operatorname{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -101,17 +86,11 @@ The full Scala verification code is in Appendix~A.22.
 For a non-empty list where all elements are bigger than a value, the
 head is bigger and the tail also satisfies the property.
 
-\begin{equation*}
-\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
-\operatorname{checkAllBiggerThanValue}(list, value) \implies list.\text{head} > value
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
+\operatorname{checkAllBiggerThanValue}(list, value) \implies list.\text{head} > value \\
 \wedge\ \operatorname{checkAllBiggerThanValue}(list.\text{tail}, value)
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -124,17 +103,11 @@ The full Scala verification code is in Appendix~A.23.
 Splitting a lower-bounded list at any valid index preserves the bound on
 both halves.
 
-\begin{equation*}
-\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ 0 \leq index \leq |list|
-\end{equation*}
-
-\begin{equation*}
-(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value)
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ 0 \leq index \leq |list| \\
+(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value) \\
 \text{where } (front, back) = \operatorname{splitAt}(list, index)
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -147,22 +120,17 @@ The upper-bound mirror of the property above, $\forall x \in L,\, x < b$,
 satisfies the same shape of properties: append preservation, split
 preservation, and transitivity across a looser bound.
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 &(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \\
-&\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound
-  &&\text{[Append]} \\
-&(\forall x \in list,\, x < bound) \wedge 0 \leq index \leq |list| \\
-&\implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound)
-  &&\text{[Split]} \\
-&(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \\
-&\implies \forall x \in list,\, x < bound_2
-  &&\text{[Transitivity]} \\
-&(\forall x \in list,\, x < bound) \wedge 0 \leq pos < |list| \\
-&\implies list(pos) < bound
-  &&\text{[At Index]}
-\end{aligned}
-\end{equation*}
+&\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Append]}
+\end{aligned} \\
+\forall\, index \in \mathbb{N},\ index \leq |list| \\
+(\forall x \in list,\, x < bound) \implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound) \quad \text{[Split]} \\
+(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \implies \forall x \in list,\, x < bound_2 \quad \text{[Transitivity]} \\
+\forall\, pos \in \mathbb{N},\ pos < |list| \\
+(\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[At Index]}
+\end{gather*}
 
 {\raggedright
 These properties are verified in

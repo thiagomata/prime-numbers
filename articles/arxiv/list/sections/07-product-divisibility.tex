@@ -22,28 +22,22 @@ and reused here as a foundational primitive.
 
 The head of a positive list divides the product of the entire list.
 
-\begin{equation*}
-\forall\, elements \in \mathbb{L},\ elements \neq L_e
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, elements \in \mathbb{L},\ elements \neq L_e \\
 (\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) \bmod \operatorname{head}(elements) = 0
-\end{equation*}
+\end{gather*}
 
-Proof:
+\textbf{Proof:}
 
-\begin{equation*}
+\begin{gather*}
 \operatorname{product}(elements) = \operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))
-\quad \text{[by definition of product]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[by definition of product]} \\
 \begin{aligned}
 &\operatorname{product}(elements) \bmod \operatorname{head}(elements) \\
 &= (\operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))) \bmod \operatorname{head}(elements) \\
 &= 0 \quad \blacksquare \quad \text{[by modulo identity]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -55,17 +49,14 @@ The full Scala verification code is in Appendix~A.16.
 
 Every element of a positive list divides the product of the list.
 
-\begin{equation*}
-\forall\, elements \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, elements \in \mathbb{L} \\
 (\forall\, x \in elements,\ x > 0) \implies (\forall\, x \in elements,\ \operatorname{product}(elements) \bmod x = 0)
-\end{equation*}
+\end{gather*}
 
-\textbf{Proof by induction on $elements$}
+\textbf{Proof by induction on $elements$}\par\nopagebreak
 
-\textbf{Base case}: $elements = L_e$ --- vacuously true.
+\textbf{Base case}: $elements = L_e$ --- vacuously true.\par\nopagebreak
 
 \textbf{Inductive step}: For $\operatorname{head}(p) :: tail$, we have
 $\operatorname{product}(elements) = p \cdot \operatorname{product}(tail)$.
@@ -86,36 +77,24 @@ The full Scala verification code is in Appendix~A.17.
 Inserting an element into a list guarantees that the resulting product is
 divisible by that element.
 
-\begin{equation*}
-\forall\, prefix, suffix \in \mathbb{L},\ \forall\, e \in \mathbb{S},\ e > 0
-\end{equation*}
-
-\begin{equation*}
-(\forall\, x \in prefix,\ x > 0),\ (\forall\, x \in suffix,\ x > 0)
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, prefix, suffix \in \mathbb{L},\ \forall\, e \in \mathbb{S},\ e > 0 \\
+(\forall\, x \in prefix,\ x > 0),\ (\forall\, x \in suffix,\ x > 0) \\
 \implies \operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
-\end{equation*}
+\end{gather*}
 
-Proof:
+\textbf{Proof:}
 
-\begin{equation*}
+\begin{gather*}
 \operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) = e \cdot \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)
-\quad \text{[Product Pull-Out Element]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[Product Pull-Out Element]} \\
 = e \cdot k
-\quad \text{[where $k = \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)$]}
-\end{equation*}
-
-\begin{equation*}
+\quad \text{[where $k = \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)$]} \\
 \begin{aligned}
 &\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e \\
 &= (e \cdot k) \bmod e = 0 \quad \blacksquare \quad \text{[Q.E.D.]}
 \end{aligned}
-\end{equation*}
+\end{gather*}
 
 {\raggedright
 This property is verified in

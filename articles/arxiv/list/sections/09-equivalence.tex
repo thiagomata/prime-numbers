@@ -15,17 +15,14 @@ input.
 All three slice implementations --- tail-recursive, head-recursive, and
 index-range --- produce the same result for any valid input.
 
-\begin{equation*}
-\forall\, L \in \mathbb{L},\ \forall\, i, j \in \mathbb{N},\ i \leq j < |L|
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L \in \mathbb{L},\ \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
 \operatorname{slice}(L, i, j) = \operatorname{headRecursiveSlice}(L, i, j) = \operatorname{indexRangeValues}(L, i, j)
-\end{equation*}
+\end{gather*}
 
-\textbf{Proof by induction on $j - i$}
+\textbf{Proof by induction on $j - i$}\par\nopagebreak
 
-\textbf{Base case}: $i = j$ --- all three produce $L_i :: L_e$.
+\textbf{Base case}: $i = j$ --- all three produce $L_i :: L_e$.\par\nopagebreak
 
 \textbf{Inductive step}: For $i < j$, each function decomposes into a
 head element plus a recursive call on $(i+1, j)$ or $(i, j-1)$. By the

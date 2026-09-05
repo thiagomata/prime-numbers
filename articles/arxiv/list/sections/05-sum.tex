@@ -21,27 +21,18 @@ We can prove that the recursive \texttt{sum} function over a list $L$
 matches the mathematical definition of the summation
 $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
 
-\textbf{Base case}: $|L| = 0$
+\textbf{Base case}: $|L| = 0$\par\nopagebreak
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{sum}(L) &= 0 & \text{[by definition of sum]} \\
 \sum L &= 0 & \text{[summation over empty list]} \\
 \implies \operatorname{sum}(L) &= \sum L \in \mathbb{L}
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
-\forall\, L \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\end{aligned} \\
+\therefore \\
+\forall\, L \in \mathbb{L} \\
 |L| = 0 \implies \operatorname{sum}(L) = \sum L
-\end{equation*}
+\end{gather*}
 
 \textbf{Inductive step}: $|L| > 0$
 
@@ -66,36 +57,24 @@ We can ensure termination, since:
 
 Let's calculate the sum of $L$:
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 \operatorname{sum}(L) &= \operatorname{head}(L) + \operatorname{sum}(\operatorname{tail}(L)) && \text{[by definition of the recursive function sum]} \\
 &= x_0 + \operatorname{sum}(P) && \text{[by definition of head and P]} \\
 &= x_0 + \sum_{i=1}^{n-1} x_i && \text{[by Inductive Hypothesis]} \\
 &= \sum_{i=0}^{n-1} x_i = \sum L
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
-\forall\, L \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\end{aligned} \\
+\therefore \\
+\forall\, L \in \mathbb{L} \\
 |L| > 0 \implies \operatorname{sum}(L) = \sum L
-\end{equation*}
+\end{gather*}
 
 Hence, by induction on the size of $L$:
 
-\begin{equation*}
-\forall\, L \in \mathbb{L}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, L \in \mathbb{L} \\
 \operatorname{sum}(L) = \sum L = \sum_{i=0}^{n-1} x_i \in \mathbb{S} \quad \blacksquare \quad \text{[Q.E.D.]}
-\end{equation*}
+\end{gather*}
 
 This property is verified in
 \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::sum}}.
@@ -106,33 +85,22 @@ The implementation and verification code are in Appendix~A.7.
 The sum of a list with an element prepended equals the element plus the
 sum of the original list.
 
-\begin{equation*}
-\forall\, x \in \mathbb{S}
-\end{equation*}
-
-\begin{equation*}
+\begin{gather*}
+\forall\, x \in \mathbb{S} \\
 \operatorname{sum}(x :: L) = x + \operatorname{sum}(L)
-\end{equation*}
+\end{gather*}
 
-Proof:
+\textbf{Proof:}
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 A & = x :: L && \text{[Cons]} \\
 \operatorname{sum}(A) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) && \text{[By recursive definition of sum]} \\
-& = x + \operatorname{sum}(L) && \text{[By recursive definition of head and tail]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
-\begin{aligned}
-\operatorname{sum}(x :: L) & = x + \operatorname{sum}(L) \quad \blacksquare && \text{[Q.E.D.]} \\
-\end{aligned}
-\end{equation*}
+& = x + \operatorname{sum}(L) && \text{[By recursive definition of head and tail]}
+\end{aligned} \\
+\therefore \\
+\operatorname{sum}(x :: L) = x + \operatorname{sum}(L) \quad \blacksquare \quad \text{[Q.E.D.]}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -164,7 +132,7 @@ A \mathbin{\texttt{++}} B & = L_e \mathbin{\texttt{++}} B & \text{[A is empty li
 
 \textbf{If list A is non-empty}:
 
-\begin{equation*}
+\begin{gather*}
 \begin{aligned}
 C & = \operatorname{tail}(A) \mathbin{\texttt{++}} B \\
 \operatorname{sum}(A) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) & \text{[By definition of sum]} \\
@@ -172,19 +140,11 @@ C & = \operatorname{tail}(A) \mathbin{\texttt{++}} B \\
 A \mathbin{\texttt{++}} B & = \operatorname{head}(A) :: (\operatorname{tail}(A) \mathbin{\texttt{++}} B) & \text{[By definition of head and tail]} \\
 \operatorname{sum}(A \mathbin{\texttt{++}} B) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A) \mathbin{\texttt{++}} B) & \text{[By definition of sum]} \\
 & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) + \operatorname{sum}(B) & \text{[By definition of C]} \\
-& = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Substituting]} \\
-\end{aligned}
-\end{equation*}
-
-\begin{equation*}
-\therefore
-\end{equation*}
-
-\begin{equation*}
-\begin{aligned}
-\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B) & \quad \blacksquare \qquad \text{[Q.E.D.]} \\
-\end{aligned}
-\end{equation*}
+& = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Substituting]}
+\end{aligned} \\
+\therefore \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B) \quad \blacksquare \qquad \text{[Q.E.D.]}
+\end{gather*}
 
 {\raggedright
 This property is verified in
@@ -200,7 +160,7 @@ The order of concatenation does not affect the total sum.
 \operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(B \mathbin{\texttt{++}} A)
 \end{equation*}
 
-Since:
+Since:\par\nopagebreak
 
 \begin{equation*}
 \begin{aligned}
