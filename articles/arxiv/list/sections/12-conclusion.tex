@@ -63,19 +63,19 @@ natural indices.
 \end{aligned}
 \end{gather*}
 
-\begin{gather*}
-L \neq L_e \land (\forall x \in L,\ x > 0)
-\implies \operatorname{product}(L) \bmod \operatorname{head}(L) = 0
-\quad \text{[Head Divides Product]} \\
-(\forall x \in L,\ x > 0)
-\implies \forall x \in L,\ \operatorname{product}(L) \bmod x = 0
-\quad \text{[All Elements Divide Product]} \\
+\begin{equation*}
 \begin{aligned}
+&L \neq L_e \land (\forall x \in L,\ x > 0) \\
+&\implies \operatorname{product}(L) \bmod \operatorname{head}(L) = 0
+  &&\text{[Head Divides Product]} \\
+&(\forall x \in L,\ x > 0)
+  \implies \forall x \in L,\ \operatorname{product}(L) \bmod x = 0
+  &&\text{[All Elements Divide Product]} \\
 &e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0) \\
 &\implies \operatorname{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
-\quad \text{[Inserted Element Divides Product]}
+  &&\text{[Inserted Element Divides Product]}
 \end{aligned}
-\end{gather*}
+\end{equation*}
 
 \begin{equation*}
 \begin{aligned}
@@ -103,24 +103,23 @@ L \neq L_e \land (\forall x \in L,\ x > 0)
 \end{aligned}
 \end{equation*}
 
-\begin{gather*}
-\operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i)
-= G_i
-\quad \text{[Adjacent Difference]} \\
+\begin{equation*}
 \begin{aligned}
+&\operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i) = G_i
+  &&\text{[Adjacent Difference]} \\
 &\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1)
- - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
-&= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
-\quad \text{[Gap Translation]}
-\end{aligned} \\
-\operatorname{rotateAt}(L,k).\text{contains}(x)
-\iff L.\text{contains}(x)
-\quad \text{[Rotation Same Elements]} \\
-|\operatorname{rotateAt}(L,k)| = |L|
-\quad \text{[Rotation Same Size]} \\
-\operatorname{sum}(\operatorname{rotateAt}(L,k)) = \operatorname{sum}(L)
-\quad \text{[Rotation Same Sum]}
-\end{gather*}
+  - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
+&\qquad = \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
+  &&\text{[Gap Translation]} \\
+&\operatorname{rotateAt}(L,k).\text{contains}(x)
+  \iff L.\text{contains}(x)
+  &&\text{[Rotation Same Elements]} \\
+&|\operatorname{rotateAt}(L,k)| = |L|
+  &&\text{[Rotation Same Size]} \\
+&\operatorname{sum}(\operatorname{rotateAt}(L,k)) = \operatorname{sum}(L)
+  &&\text{[Rotation Same Sum]}
+\end{aligned}
+\end{equation*}
 
 All of these properties are verified in the source references cited
 throughout the article. Appendix~A collects the Scala excerpts that are
