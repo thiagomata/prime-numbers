@@ -963,7 +963,7 @@ For every list where all elements are greater than a value, any element at a val
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-(\forall x \in list,\, x > value) \wedge 0 \leq pos < |list| \implies list(pos) > value
+(\forall x \in list,\, x > value) \wedge pos < |list| \implies list(pos) > value
 ```
 
 This property is verified in the [
@@ -1003,7 +1003,7 @@ For every list where all elements are bigger than a value, any element at a vali
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-\text{checkAllBiggerThanValue}(list, value) \wedge 0 \leq pos < |list| \implies list(pos) > value
+\text{checkAllBiggerThanValue}(list, value) \wedge pos < |list| \implies list(pos) > value
 ```
 
 This property is verified in the [
