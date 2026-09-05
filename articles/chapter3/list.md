@@ -622,7 +622,7 @@ The sum of a list with an element prepended equals the element plus the sum of t
 \end{aligned}
 ```
 
-Proof:
+**Proof:**
 
 ```math
 \begin{aligned}
@@ -755,7 +755,7 @@ The product of a singleton list containing $x$ is $x$.
 \text{product}(x :: L_e) = x
 ```
 
-Proof:
+**Proof:**
 ```math
 \begin{aligned}
 \text{product}(x :: L_e) &= \text{head}(x :: L_e) \cdot \text{product}(\text{tail}(x :: L_e)) & \qquad \text{[by definition of product]} \\
@@ -832,7 +832,7 @@ Product is invariant under swapping concatenated blocks.
 \text{product}(listA \mathbin{\texttt{++}} listB) = \text{product}(listB \mathbin{\texttt{++}} listA)
 ```
 
-Proof:
+**Proof:**
 ```math
 \begin{aligned}
 \text{product}(listA \mathbin{\texttt{++}} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Product over Concatenation]} \\
@@ -893,7 +893,7 @@ The head of a positive list divides the product of the entire list.
 (\forall \text{ } x \in elements,\ x > 0) \implies \text{product}(elements) \bmod \text{head}(elements) = 0
 ```
 
-Proof:
+**Proof:**
 ```math
 \begin{aligned}
 \text{product}(elements) &= \text{head}(elements) \cdot \text{product}(\text{tail}(elements)) & \qquad \text{[by definition of product]} \\
@@ -935,7 +935,7 @@ Inserting an element into a list guarantees that the resulting product is divisi
 \implies \text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
 ```
 
-Proof:
+**Proof:**
 ```math
 \begin{aligned}
 \text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) &= e \cdot \text{product}(prefix \mathbin{\texttt{++}} suffix) & \qquad \text{[Product Pull-Out Element]} \\
@@ -962,8 +962,8 @@ How the property $\forall x \in L,\, x > v$ propagates from a whole list to its 
 For every list where all elements are greater than a value, any element at a valid position is also greater than that value.
 
 ```math
-\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-(\forall x \in list,\, x > value) \wedge 0 \leq pos < |list| \implies list(pos) > value
+\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
+(\forall x \in list,\, x > value) \implies list(pos) > value
 ```
 
 This property is verified in the [
@@ -1002,8 +1002,8 @@ This property is verified in the [
 For every list where all elements are bigger than a value, any element at a valid position is also bigger.
 
 ```math
-\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ \\
-\text{checkAllBiggerThanValue}(list, value) \wedge 0 \leq pos < |list| \implies list(pos) > value
+\forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
+\text{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
 ```
 
 This property is verified in the [
@@ -1045,20 +1045,27 @@ satisfies the same shape of properties: append preservation, split preservation,
 transitivity across a looser bound.
 
 ```math
-\begin{aligned}
-(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound)
-  &\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound
-  &&\text{[Append]} \\
-(\forall x \in list,\, x < bound) \wedge 0 \leq index \leq |list|
-  &\implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound)
-  &&\text{[Split]} \\
-(\forall x \in list,\, x < bound) \wedge bound \leq bound_2
-  &\implies \forall x \in list,\, x < bound_2
-  &&\text{[Transitivity]} \\
-(\forall x \in list,\, x < bound) \wedge 0 \leq pos < |list|
-  &\implies list(pos) < bound
-  &&\text{[At Index]}
-\end{aligned}
+(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Append]}
+```
+
+```math
+\forall \text{ } index \in ℕ,\ index \leq |list|
+```
+
+```math
+(\forall x \in list,\, x < bound) \implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound) \quad \text{[Split]}
+```
+
+```math
+(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \implies \forall x \in list,\, x < bound_2 \quad \text{[Transitivity]}
+```
+
+```math
+\forall \text{ } pos \in ℕ,\ pos < |list|
+```
+
+```math
+(\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[At Index]}
 ```
 
 These properties are verified in the [

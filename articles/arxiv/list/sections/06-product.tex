@@ -1,0 +1,162 @@
+\section{Product Properties}
+\label{sec:product}
+
+The product operation, from singleton identity through concatenation
+distributivity to positivity.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Singleton product}:
+    $\operatorname{product}(x :: \text{empty}) = x$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product pull-out element}:
+    $\operatorname{product}(x :: L) = x \cdot \operatorname{product}(L)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Product over concatenation}:
+    $\operatorname{product}(A \mathbin{\texttt{++}} B) = \operatorname{product}(A) \cdot \operatorname{product}(B)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Commutativity of product}:
+    $\operatorname{product}(A \mathbin{\texttt{++}} B) = \operatorname{product}(B \mathbin{\texttt{++}} A)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{Positive product}:
+    product of all-positive list is positive
+\end{itemize}
+
+\subsection{Singleton Product}
+
+The product of a singleton list containing $x$ is $x$.
+
+\begin{gather*}
+\forall\, x \in \mathbb{S} \\
+\operatorname{product}(x :: L_e) = x
+\end{gather*}
+
+\textbf{Proof:}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{product}(x :: L_e) &= \operatorname{head}(x :: L_e) \cdot \operatorname{product}(\operatorname{tail}(x :: L_e)) && \text{[by definition of product]} \\
+&= x \cdot \operatorname{product}([]) && \text{[by definition of head and tail]} \\
+&= x \cdot 1 && \text{[product of empty list is 1]} \\
+&= x \quad \blacksquare && \text{[Q.E.D.]} \\
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak singletonProduct}}.
+The full Scala verification code is in Appendix~A.11.
+\par}
+
+\subsection{Product Pull-Out Element}
+
+A single element can be factored out of the product of a concatenated
+list.
+
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L}, \forall\, e \in \mathbb{S} \\
+\operatorname{product}(listA \mathbin{\texttt{++}} (e :: listB)) = e \cdot \operatorname{product}(listA \mathbin{\texttt{++}} listB)
+\end{gather*}
+
+\textbf{Proof by induction on $listA$}\par\nopagebreak
+
+\textbf{Base case}: $listA = L_e$\par\nopagebreak
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{product}(L_e \mathbin{\texttt{++}} (e :: listB)) &= \operatorname{product}(e :: listB) && \text{[by definition of append and cons]} \\
+&= e \cdot \operatorname{product}(listB) && \text{[by definition of product]} \\
+&= e \cdot \operatorname{product}(L_e \mathbin{\texttt{++}} listB) \quad \blacksquare && \text{[Q.E.D.]} \\
+\end{aligned}
+\end{equation*}
+
+\textbf{Inductive step}: Assume for $listA$, prove for
+$\operatorname{head}(A) :: listA$.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productPullOutElement}}.
+The full Scala verification code is in Appendix~A.12.
+\par}
+
+\subsection{Product over Concatenation}
+
+Product distributes over list concatenation.
+
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L} \\
+\operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listA) \cdot \operatorname{product}(listB)
+\end{gather*}
+
+\textbf{Proof by induction on $listA$}\par\nopagebreak
+
+\textbf{Base case}: $listA = L_e$\par\nopagebreak
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{product}(L_e \mathbin{\texttt{++}} listB) &= \operatorname{product}(listB) && \text{[by definition of append]} \\
+&= 1 \cdot \operatorname{product}(listB) && \text{[1 is multiplicative identity]} \\
+&= \operatorname{product}(L_e) \cdot \operatorname{product}(listB) \quad \blacksquare && \text{[Q.E.D.]} \\
+\end{aligned}
+\end{equation*}
+
+\textbf{Inductive step}: For $\operatorname{head}(A) :: listA$, the
+recursive definition of product and the inductive hypothesis give the
+result.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatLemma}}.
+The full Scala verification code is in Appendix~A.13.
+\par}
+
+\subsection{Commutativity of Product}
+
+Product is invariant under swapping concatenated blocks.
+
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L} \\
+\operatorname{product}(listA \mathbin{\texttt{++}} listB) = \operatorname{product}(listB \mathbin{\texttt{++}} listA)
+\end{gather*}
+
+\textbf{Proof:}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{product}(listA \mathbin{\texttt{++}} listB) &= \operatorname{product}(listA) \cdot \operatorname{product}(listB) && \text{[Product over Concatenation]} \\
+\operatorname{product}(listB \mathbin{\texttt{++}} listA) &= \operatorname{product}(listB) \cdot \operatorname{product}(listA) && \text{[Product over Concatenation]} \\
+&= \operatorname{product}(listA) \cdot \operatorname{product}(listB) && \text{[Commutativity of multiplication]} \\
+&= \operatorname{product}(listA \mathbin{\texttt{++}} listB) \quad \blacksquare && \text{[Q.E.D.]} \\
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak productConcatCommutative}}.
+The full Scala verification code is in Appendix~A.14.
+\par}
+
+\subsection{Positive Product}
+
+If every element of a list is strictly positive, then the product is
+strictly positive.
+
+\begin{gather*}
+\forall\, elements \in \mathbb{L} \\
+(\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) > 0
+\end{gather*}
+
+\textbf{Proof by induction on $elements$}\par\nopagebreak
+
+\textbf{Base case}: $elements = L_e$\par\nopagebreak
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{product}(L_e) &= 1 > 0 \quad \blacksquare
+\end{aligned}
+\end{equation*}
+
+\textbf{Inductive step}: For $\operatorname{head}(e) :: tail$, we have
+$e > 0$ and $\operatorname{product}(tail) > 0$ by inductive hypothesis.
+The product of two positive numbers is positive.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProduct.scala}{\texttt{ListProduct::\allowbreak positiveProduct}}.
+The full Scala verification code is in Appendix~A.15.
+\par}

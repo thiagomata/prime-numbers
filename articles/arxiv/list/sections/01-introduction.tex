@@ -1,0 +1,63 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Lists are finite sequences of values that support a wide range of
+operations in functional and declarative programming. When combined with
+summation, they form the backbone for definitions of sequences,
+recurrence, accumulation, and integration in the discrete domain.
+
+Our approach mirrors traditional recursive definitions but is formally
+verified using
+\href{https://epfl-lara.github.io/stainless/intro.html}{Scala Stainless}
+\cite{hamza2019systemfr}, a verification framework for pure Scala programs
+that uses formal verification to ensure user-defined functions satisfy
+given preconditions, postconditions, and invariants through automated
+proofs under all valid inputs.
+
+\begin{quote}
+Formal verification is the act of proving or disproving the correctness of
+intended algorithms underlying a system with respect to a certain formal
+specification or property, using formal methods of mathematics.
+--- Wikipedia on Formal Verification \cite{wikipedia2026formalverification}
+\end{quote}
+
+This article verifies:
+
+\begin{itemize}
+  \item Index and access: tail shift, last element (Section~3).
+  \item Slice: recursive, index-range, append consistency (Section~4).
+  \item Sum: definition, concatenation, commutativity, positivity
+    (Section~5).
+  \item Product: definition, concatenation, commutativity, positivity
+    (Section~6).
+  \item Product divisibility: head, all elements, inserted element
+    (Section~7).
+  \item Bound and order: lower- and upper-bound propagation through append
+    and split (Section~8).
+  \item Slice equivalence (Section~9).
+  \item Shifted list: period, gap identity, gap translation
+    (Section~10).
+  \item Rotation: permutation invariants (size, sum, bounds, membership)
+    (Section~11).
+\end{itemize}
+
+\subsection*{Related work}
+
+Recursive lists, indexed access, and list splitting are long-established
+parts of formal libraries. The Rocq/Coq standard list library defines
+indexed access, prefix and suffix operations, and proves their
+reconstruction law \texttt{firstn n l ++ skipn n l = l}
+\cite{rocq2024liststdlib}. Lean's mathematical library also formalizes
+list rotation through splitting and concatenation, including reduction of
+a rotation index modulo the list length \cite{leanmathlibrotate}.
+
+These prior developments are useful points of contact for the present
+work. They show how a mature formal-mathematical setting treats familiar
+list structure, while this article develops and verifies the stated
+property package for a minimal recursive \texttt{BigInt} implementation
+in Scala Stainless. In particular, the article brings structural
+operations into the same checked development as product divisibility,
+numeric bounds, shifted-list gaps, and rotation invariants. The comparison
+is contextual rather than competitive: it locates the Stainless proofs in
+the wider body of formal work and makes both the overlap and the scope of
+this implementation clear.

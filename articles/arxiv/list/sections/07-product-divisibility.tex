@@ -1,0 +1,103 @@
+\section{Product Divisibility Properties}
+\label{sec:product-divisibility}
+
+Every element of a list divides its total product. The proofs below apply
+the quotient-invariance-under-shift law
+$\operatorname{mod}(a + m \cdot b, b) = \operatorname{mod}(a, b)$ at
+$a = 0$ to derive $(a \cdot b) \bmod a = 0$; that law is verified in the
+companion article
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/articles/chapter2/modulo.md}{Division and Modulo from Recursive Normalization}
+and reused here as a foundational primitive.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{Head divides product}:
+    $\operatorname{product}(L) \bmod \operatorname{head}(L) = 0$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{All elements divide product}:
+    every element divides $\operatorname{product}(L)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{Inserted element divides product}:
+    $x$ divides $\operatorname{product}(x :: L)$
+\end{itemize}
+
+\subsection{Head Divides Product}
+
+The head of a positive list divides the product of the entire list.
+
+\begin{gather*}
+\forall\, elements \in \mathbb{L},\ elements \neq L_e \\
+(\forall\, x \in elements,\ x > 0) \implies \operatorname{product}(elements) \bmod \operatorname{head}(elements) = 0
+\end{gather*}
+
+\textbf{Proof:}
+
+\begin{gather*}
+\operatorname{product}(elements) = \operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))
+\quad \text{[by definition of product]} \\
+\begin{aligned}
+&\operatorname{product}(elements) \bmod \operatorname{head}(elements) \\
+&= (\operatorname{head}(elements) \cdot \operatorname{product}(\operatorname{tail}(elements))) \bmod \operatorname{head}(elements) \\
+&= 0 \quad \blacksquare \quad \text{[by modulo identity]}
+\end{aligned}
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv::\allowbreak ListProductDiv}}.
+The full Scala verification code is in Appendix~A.16.
+\par}
+
+\subsection{All Elements Divide Product}
+
+Every element of a positive list divides the product of the list.
+
+\begin{gather*}
+\forall\, elements \in \mathbb{L} \\
+(\forall\, x \in elements,\ x > 0) \implies (\forall\, x \in elements,\ \operatorname{product}(elements) \bmod x = 0)
+\end{gather*}
+
+\textbf{Proof by induction on $elements$}\par\nopagebreak
+
+\textbf{Base case}: $elements = L_e$ --- vacuously true.\par\nopagebreak
+
+\textbf{Inductive step}: For $\operatorname{head}(p) :: tail$, we have
+$\operatorname{product}(elements) = p \cdot \operatorname{product}(tail)$.
+By modulo identity, $p$ divides the product. By the inductive hypothesis,
+every element of $tail$ appears as the head of some recursive sublist and
+divides that sublist's product. Multiplying that sublist product by the
+preceding positive factors preserves divisibility, so every tail element
+also divides $p \cdot \operatorname{product}(tail) = \operatorname{product}(elements)$.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv::\allowbreak allElementsDivideProduct}}.
+The full Scala verification code is in Appendix~A.17.
+\par}
+
+\subsection{Inserted Element Divides Product}
+
+Inserting an element into a list guarantees that the resulting product is
+divisible by that element.
+
+\begin{gather*}
+\forall\, prefix, suffix \in \mathbb{L},\ \forall\, e \in \mathbb{S},\ e > 0 \\
+(\forall\, x \in prefix,\ x > 0),\ (\forall\, x \in suffix,\ x > 0) \\
+\implies \operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
+\end{gather*}
+
+\textbf{Proof:}
+
+\begin{gather*}
+\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) = e \cdot \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)
+\quad \text{[Product Pull-Out Element]} \\
+= e \cdot k
+\quad \text{[where $k = \operatorname{product}(prefix \mathbin{\texttt{++}} suffix)$]} \\
+\begin{aligned}
+&\operatorname{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e \\
+&= (e \cdot k) \bmod e = 0 \quad \blacksquare \quad \text{[Q.E.D.]}
+\end{aligned}
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala}{\texttt{ListProductDiv::\allowbreak insertedElementDividesProduct}}.
+The full Scala verification code is in Appendix~A.18.
+\par}

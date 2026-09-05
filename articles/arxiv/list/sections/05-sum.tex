@@ -1,0 +1,198 @@
+\section{Sum Properties}
+\label{sec:sum}
+
+The recursive \texttt{sum} matches the mathematical summation, and
+addition commutes over concatenation.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum matches summation}:
+    $\operatorname{sum}(L) = L[0] + \cdots + L[|L|-1]$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Left append preserves sum}:
+    $\operatorname{sum}(x :: L) = x + \operatorname{sum}(L)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Sum over concatenation}:
+    $\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B)$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{Commutativity of sum}:
+    $\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(B \mathbin{\texttt{++}} A)$
+\end{itemize}
+
+\subsection{Sum matches Summation}
+
+We can prove that the recursive \texttt{sum} function over a list $L$
+matches the mathematical definition of the summation
+$\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
+
+\textbf{Base case}: $|L| = 0$\par\nopagebreak
+
+\begin{gather*}
+\begin{aligned}
+\operatorname{sum}(L) &= 0 & \text{[by definition of sum]} \\
+\sum L &= 0 & \text{[summation over empty list]} \\
+\implies \operatorname{sum}(L) &= \sum L \in \mathbb{L}
+\end{aligned} \\
+\therefore \\
+\forall\, L \in \mathbb{L} \\
+|L| = 0 \implies \operatorname{sum}(L) = \sum L
+\end{gather*}
+
+\textbf{Inductive step}: $|L| > 0$
+
+Let $P \in \mathbb{L}$, with $P = [x_1, x_2, \dots, x_{n-1}] \in \mathbb{L}$,
+and assume:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{sum}(P) & = \sum_{i=1}^{n-1} x_i && \text{[by Inductive Hypothesis]} \\
+L = x_0 :: P & = [x_0, x_1, \dots, x_{n-1}] && \text{[by Definition of Cons]} \\
+\end{aligned}
+\end{equation*}
+
+We can ensure termination, since:
+
+\begin{equation*}
+\begin{aligned}
+|L| &= |P| + 1 && \text{[by Size Definition]} \\
+|P| &< |L| && \text{[Size Decreases Ensures Termination]} \\
+\end{aligned}
+\end{equation*}
+
+Let's calculate the sum of $L$:
+
+\begin{gather*}
+\begin{aligned}
+\operatorname{sum}(L) &= \operatorname{head}(L) + \operatorname{sum}(\operatorname{tail}(L)) && \text{[by definition of the recursive function sum]} \\
+&= x_0 + \operatorname{sum}(P) && \text{[by definition of head and P]} \\
+&= x_0 + \sum_{i=1}^{n-1} x_i && \text{[by Inductive Hypothesis]} \\
+&= \sum_{i=0}^{n-1} x_i = \sum L
+\end{aligned} \\
+\therefore \\
+\forall\, L \in \mathbb{L} \\
+|L| > 0 \implies \operatorname{sum}(L) = \sum L
+\end{gather*}
+
+Hence, by induction on the size of $L$:
+
+\begin{gather*}
+\forall\, L \in \mathbb{L} \\
+\operatorname{sum}(L) = \sum L = \sum_{i=0}^{n-1} x_i \in \mathbb{S} \quad \blacksquare \quad \text{[Q.E.D.]}
+\end{gather*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::sum}}.
+The implementation and verification code are in Appendix~A.7.
+
+\subsection{Left Append Preserves Sum}
+
+The sum of a list with an element prepended equals the element plus the
+sum of the original list.
+
+\begin{gather*}
+\forall\, x \in \mathbb{S} \\
+\operatorname{sum}(x :: L) = x + \operatorname{sum}(L)
+\end{gather*}
+
+\textbf{Proof:}
+
+\begin{gather*}
+\begin{aligned}
+A & = x :: L && \text{[Cons]} \\
+\operatorname{sum}(A) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) && \text{[By recursive definition of sum]} \\
+& = x + \operatorname{sum}(L) && \text{[By recursive definition of head and tail]}
+\end{aligned} \\
+\therefore \\
+\operatorname{sum}(x :: L) = x + \operatorname{sum}(L) \quad \blacksquare \quad \text{[Q.E.D.]}
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSumAddValue}}.
+The full Scala verification code is in Appendix~A.8.
+\par}
+
+\subsection{Sum over Concatenation}
+
+The sum of two concatenated lists equals the sum of each list added
+together.
+
+\begin{equation*}
+\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B)
+\end{equation*}
+
+\textbf{If list A is empty}:
+
+\begin{equation*}
+\begin{aligned}
+A \mathbin{\texttt{++}} B & = L_e \mathbin{\texttt{++}} B & \text{[A is empty list]} \\
+& = B & \text{[By definition of concatenation]} \\
+\operatorname{sum}(A) & = 0 & \text{[By definition of sum]} \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B) & = \operatorname{sum}(B) & \text{[Since A} \mathbin{\texttt{++}} \text{B equals B]} \\
+& = 0 + \operatorname{sum}(B) \\
+& = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Since sum(A) is zero]} \\
+\end{aligned}
+\end{equation*}
+
+\textbf{If list A is non-empty}:
+
+\begin{gather*}
+\begin{aligned}
+C & = \operatorname{tail}(A) \mathbin{\texttt{++}} B \\
+\operatorname{sum}(A) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) & \text{[By definition of sum]} \\
+\operatorname{sum}(C) & = \operatorname{sum}(\operatorname{tail}(A)) + \operatorname{sum}(B) & \text{[Inductive Step]} \\
+A \mathbin{\texttt{++}} B & = \operatorname{head}(A) :: (\operatorname{tail}(A) \mathbin{\texttt{++}} B) & \text{[By definition of head and tail]} \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B) & = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A) \mathbin{\texttt{++}} B) & \text{[By definition of sum]} \\
+& = \operatorname{head}(A) + \operatorname{sum}(\operatorname{tail}(A)) + \operatorname{sum}(B) & \text{[By definition of C]} \\
+& = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Substituting]}
+\end{aligned} \\
+\therefore \\
+\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(A) + \operatorname{sum}(B) \quad \blacksquare \qquad \text{[Q.E.D.]}
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listCombine}}.
+The full Scala verification code is in Appendix~A.9.
+\par}
+
+\subsection{Commutativity of Sum over Concatenation}
+
+The order of concatenation does not affect the total sum.
+
+\begin{equation*}
+\operatorname{sum}(A \mathbin{\texttt{++}} B) = \operatorname{sum}(B \mathbin{\texttt{++}} A)
+\end{equation*}
+
+Since:\par\nopagebreak
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{sum}(A \mathbin{\texttt{++}} B) & = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Sum over Concatenation]} \\
+\operatorname{sum}(B \mathbin{\texttt{++}} A) & = \operatorname{sum}(B) + \operatorname{sum}(A) & \text{[Sum over Concatenation]} \\
+\operatorname{sum}(B) + \operatorname{sum}(A) & = \operatorname{sum}(A) + \operatorname{sum}(B) & \text{[Distributive]} \\
+\operatorname{sum}(B \mathbin{\texttt{++}} A) & = \operatorname{sum}(A \mathbin{\texttt{++}} B) \quad \blacksquare & \text{[Q.E.D]} \\
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListUtils.scala}{\texttt{ListUtils::\allowbreak listSwap}}.
+The full Scala verification code is in Appendix~A.10.
+\par}
+
+\subsection{Sum Positivity}
+
+If every element of a non-empty list is greater than zero, the sum of the
+list is greater than zero.
+
+\begin{equation*}
+\begin{aligned}
+(\forall x \in L,\, x > 0) \wedge L \neq L_e \implies \operatorname{sum}(L) > 0
+\end{aligned}
+\end{equation*}
+
+The base case is the singleton list, where the sum is just the one
+positive element. The inductive step adds a positive head to a tail whose
+sum is already known to be positive by the inductive hypothesis.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak assertSumPositive}}.
+\par}

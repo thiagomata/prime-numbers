@@ -1,0 +1,150 @@
+\section{Bound and Order Properties}
+\label{sec:bound-order}
+
+How the property $\forall x \in L,\, x > v$ propagates from a whole list
+to its elements and through concatenation.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than at index}:
+    $(\forall x \in L,\, x > v) \implies L(pos) > v$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{Append preserves all greater than}:
+    $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{All greater than head and tail}:
+    the head/tail decomposition propagates the bound
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{Index checking lemmas}:
+    efficient bound verification
+\end{itemize}
+
+\subsection{All Greater Than at Index}
+
+For every list where all elements are greater than a value, any element
+at a valid position is also greater than that value.
+
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list| \\
+(\forall x \in list,\, x > value) \implies list(pos) > value
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanAtIndex}}.
+The full Scala verification code is in Appendix~A.19.
+\par}
+
+\subsection{Append Preserves All Greater Than}
+
+If both lists have all elements greater than a value, then their
+concatenation also has all elements greater than that value.
+
+\begin{gather*}
+\forall\, listA, listB \in \mathbb{L},\ \forall\, value \in \mathbb{S} \\
+(\forall x \in listA,\, x > value) \wedge (\forall x \in listB,\, x > value) \\
+\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x > value
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendGreaterThan}}.
+The full Scala verification code is in Appendix~A.20.
+\par}
+
+\subsection{All Greater Than Head and Tail}
+
+For a non-empty list where all elements are greater than a value, the
+head is greater than that value and the tail also satisfies the
+property.
+
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
+(\forall x \in list,\, x > value) \implies list.\text{head} > value \wedge (\forall x \in list.\text{tail},\, x > value)
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertGreaterThanHeadTail}}.
+The full Scala verification code is in Appendix~A.21.
+\par}
+
+\subsection{Check All Bigger at Index}
+
+For every list where all elements are bigger than a value, any element
+at a valid position is also bigger.
+
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ \forall\, pos \in \mathbb{N},\ pos < |list| \\
+\operatorname{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueAtIndex}}.
+The full Scala verification code is in Appendix~A.22.
+\par}
+
+\subsection{Check All Bigger Head and Tail}
+
+For a non-empty list where all elements are bigger than a value, the
+head is bigger and the tail also satisfies the property.
+
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ list \neq L_e,\ \forall\, value \in \mathbb{S} \\
+\operatorname{checkAllBiggerThanValue}(list, value) \implies list.\text{head} > value \\
+\wedge\ \operatorname{checkAllBiggerThanValue}(list.\text{tail}, value)
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala}{\texttt{ListUtilsProperties::\allowbreak checkAllBiggerThanValueHeadTail}}.
+The full Scala verification code is in Appendix~A.23.
+\par}
+
+\subsection{Split Preserves All Greater Than}
+
+Splitting a lower-bounded list at any valid index preserves the bound on
+both halves.
+
+\begin{gather*}
+\forall\, list \in \mathbb{L},\ \forall\, value \in \mathbb{S},\ 0 \leq index \leq |list| \\
+(\forall x \in list,\, x > value) \implies (\forall x \in front,\, x > value) \wedge (\forall x \in back,\, x > value) \\
+\text{where } (front, back) = \operatorname{splitAt}(list, index)
+\end{gather*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllGreaterThan}}.
+\par}
+
+\subsection{The All Less Than Family}
+
+The upper-bound mirror of the property above, $\forall x \in L,\, x < b$,
+satisfies the same shape of properties: append preservation, split
+preservation, and transitivity across a looser bound.
+
+\begin{equation*}
+\begin{aligned}
+&(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \\
+&\qquad \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound
+  &&\text{[Append]} \\
+&\forall\, index \in \mathbb{N},\ index \leq |list| \\
+&(\forall x \in list,\, x < bound)
+  \implies (\forall x \in front,\, x < bound)
+     \wedge (\forall x \in back,\, x < bound)
+  &&\text{[Split]} \\
+&(\forall x \in list,\, x < bound) \wedge bound \leq bound_2
+  \implies \forall x \in list,\, x < bound_2
+  &&\text{[Transitivity]} \\
+&\forall\, pos \in \mathbb{N},\ pos < |list| \\
+&\qquad (\forall x \in list,\, x < bound)
+  \implies list(pos) < bound
+  &&\text{[At Index]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+These properties are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertAppendLessThan}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertSplitAtPreservesAllLessThan}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertTransitiveLessThan}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ListBoundUtils.scala}{\texttt{ListBoundUtils::\allowbreak assertLessThanAtIndex}}.
+\par}

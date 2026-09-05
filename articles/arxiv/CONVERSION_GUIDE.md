@@ -18,6 +18,14 @@ surviving an author review.
   - `|x|` becomes `\lvert x\rvert`.
   - `%` as an operator becomes `\mathbin{\%}` (escaped percent).
   - `\forall \text{ } a` spacing hacks become `\forall\, a`.
+  - Literal Unicode blackboard-bold letters in the Markdown math source
+    (ℤ, ℕ, or article-specific ones like 𝕃/𝕊 for a `list` set / element
+    domain) become `\mathbb{Z}`, `\mathbb{N}`, `\mathbb{L}`, `\mathbb{S}`.
+  - `\text{name}` becomes `\operatorname{name}` only when `name` is being
+    *applied* as a function (`\text{head}(L)` → `\operatorname{head}(L)`).
+    A bare `\text{head}` used as a plain field/variable name (e.g. a
+    constructor argument declaration `\text{head} \in \mathbb{S}`) stays
+    `\text{head}` — it isn't a function call.
   - GitHub anchor links become hardcoded references by section name or
     number ("Section~5", "Subsections~6.1--6.4", "Appendix~A.2").
 - The `three-representations` rule carries over: English prose, math block,
@@ -89,12 +97,64 @@ These are the rules the author's visual review enforced:
     &\qquad + (c \operatorname{mod} b)) \operatorname{div} b)
   ```
 
+- **`aligned` shares column widths across every row it contains** (this
+  bit during the `list` conversion). Column widths are computed once for
+  the whole environment, not per row, so packing one very wide row (long
+  premise + long conclusion + a `[Tag]`) into the same `aligned` as
+  several short ones forces every row's shared column wider — and adding
+  a `\\`-continuation to fix the wide row can make a DIFFERENT row's log
+  warning grow instead of shrink, because the shared columns just got
+  wider still. Two escape hatches, in order of preference: (1) keep
+  visually related rows in one `aligned` only when their widths are
+  comparable; (2) for a "recap list" of many independent one-line
+  identities with very different lengths (see the Conclusion section
+  pattern), skip shared alignment entirely — give each identity its own
+  `equation*` (with a local `aligned` only if that one statement alone
+  needs an internal line break) and put the `[Tag]` inline via `\quad
+  \text{[Tag]}` instead of an `&&` column. Diagnosing this: if fixing one
+  overfull-hbox line makes the reported overfull-pt *larger* on a
+  neighboring line after a recompile, suspect shared-column blowup rather
+  than that specific row's content.
+
+- **A multi-row `aligned` where NO row contains `&` does not center each
+  row independently** (a second `list`-conversion bug, easy to miss
+  because it produces no compile warning at all — only a visibly
+  off-center short line, e.g. a `\forall ...` premise sitting far right
+  of the longer equation line below it). With zero `&` anywhere, every
+  row's whole content is the (right-aligned) first column, so a short row
+  gets right-justified under the widest row's column width instead of
+  centered on the page — the shorter the row relative to its neighbor,
+  the more visibly wrong it looks. This is the common "premise line, then
+  equation line" shape (a bare `\forall ... \\` followed by the
+  statement, with no further internal alignment need). Fix: don't wrap
+  these in `aligned` at all — give each line its own `equation*`:
+
+  ```latex
+  \begin{equation*}
+  \forall\, L \in \mathbb{L},\ \forall\, i \in \mathbb{N},\ i < |L|
+  \end{equation*}
+
+  \begin{equation*}
+  \operatorname{slice}(L, i, j) = \dots
+  \end{equation*}
+  ```
+
+  Reserve `aligned` for rows that actually need a shared `&` column (an
+  `=`-chain, a premise/conclusion pair using the flush-left leading-`&`
+  pattern, or a tagged recap row) — never as a bare line-break device.
+
 ## 4. Links and Code
 
 - Copy link URLs verbatim from the Markdown. Labels use `\texttt{...}`.
 - A literal `#` is fine inside the URL argument of `\href`, but must be
   escaped as `\#` inside the display-text argument
-  (`\href{...scala\#anchor}{\texttt{File.scala\#anchor}}`).
+  (`\href{...scala\#anchor}{\texttt{File.scala\#anchor}}`). Do NOT put
+  `\#` inside the URL argument itself — hyperref does not strip the
+  backslash there, so it becomes a literal `\` character in the link
+  target and silently breaks the URL (caught during the `list` parity
+  audit by diffing the Markdown's and the `.tex` files' unique URL sets;
+  the PDF still compiled clean, so this class of bug is invisible to the
+  build log and only shows up as a dead link).
 - Paragraphs mixing prose with several long `\texttt` identifiers defeat
   justification. After exhausting `\sloppypar` and `\allowbreak`, the
   working fix is a scoped ragged-right block plus breakpoints:

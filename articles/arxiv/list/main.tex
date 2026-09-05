@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\definecolor{codebackground}{RGB}{247,247,247}
+\definecolor{codecomment}{RGB}{72,112,72}
+\definecolor{codekeyword}{RGB}{32,74,135}
+\definecolor{codestring}{RGB}{164,0,0}
+
+\lstdefinestyle{scala}{
+  backgroundcolor=\color{codebackground},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=true,
+  breaklines=true,
+  columns=fixed,
+  commentstyle=\color{codecomment},
+  frame=single,
+  keepspaces=true,
+  keywordstyle=\color{codekeyword}\bfseries,
+  language=Scala,
+  numbers=none,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestring},
+  tabsize=2
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Using Formal Verification to Prove Properties of Lists Recursively Defined},
+  pdfauthor={Thiago Henrique Mata}
+}
+
+\title{Using Formal Verification to Prove Properties of Lists Recursively Defined}
+\author{%
+  Thiago Henrique Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\input{sections/01-introduction}
+
+\input{sections/02-definitions}
+
+\input{sections/03-index-access}
+
+\input{sections/04-slice}
+
+\input{sections/05-sum}
+
+\input{sections/06-product}
+
+\input{sections/07-product-divisibility}
+
+\input{sections/08-bound-order}
+
+\input{sections/09-equivalence}
+
+\input{sections/10-shifted-list}
+
+\input{sections/11-rotation}
+
+\input{sections/12-conclusion}
+
+\input{sections/13-limitations}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\appendix
+\input{sections/14-appendix}
+
+\end{document}

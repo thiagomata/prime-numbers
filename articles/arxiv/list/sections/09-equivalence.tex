@@ -1,0 +1,36 @@
+\section{Equivalence Properties}
+\label{sec:equivalence}
+
+All three slice constructions produce identical results for every valid
+input.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{Slice equivalence}:
+    tail-recursive, head-recursive, and index-range slices are identical
+    for all valid inputs
+\end{itemize}
+
+\subsection{Slice Equivalence Lemma}
+
+All three slice implementations --- tail-recursive, head-recursive, and
+index-range --- produce the same result for any valid input.
+
+\begin{gather*}
+\forall\, L \in \mathbb{L},\ \forall\, i, j \in \mathbb{N},\ i \leq j < |L| \\
+\operatorname{slice}(L, i, j) = \operatorname{headRecursiveSlice}(L, i, j) = \operatorname{indexRangeValues}(L, i, j)
+\end{gather*}
+
+\textbf{Proof by induction on $j - i$}\par\nopagebreak
+
+\textbf{Base case}: $i = j$ --- all three produce $L_i :: L_e$.\par\nopagebreak
+
+\textbf{Inductive step}: For $i < j$, each function decomposes into a
+head element plus a recursive call on $(i+1, j)$ or $(i, j-1)$. By the
+inductive hypothesis, the recursive calls produce equal sublists, and the
+head element is the same, so the results are equal.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala}{\texttt{SliceEquivalenceLemmas::\allowbreak tailHeadAndIndexRangeSlicesAreEqual}}.
+The full Scala verification code is in Appendix~A.24.
+\par}

@@ -1,0 +1,121 @@
+\section{Shifted List Properties}
+\label{sec:shifted-list}
+
+A shifted list advances the head by one gap and re-indexes positions.
+Three lemmas characterize this operation.
+
+\begin{itemize}
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{Same period}:
+    shifting does not change the period (gap list length)
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{Adjacent difference equals gap}:
+    consecutive shifted-list values differ by the corresponding gap
+  \item \href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{Gap translation}:
+    shifting translates the gap sequence by one index
+\end{itemize}
+
+A shifted list is a value sequence viewed one position later, with the
+head advanced by the first gap. Unlike rotation (which re-indexes without
+changing values), a shift changes the head and re-indexes positions.
+
+Shifting is the list-level operation that advances a position in a
+cumulative value sequence. When a sequence of adjacent differences is
+known (the gap list), advancing the head by the first gap and rotating
+the gap list yields the view from the next position --- without
+recomputing the cumulative sums.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{ShiftedList}(h,\; [g_0,\dots,g_{n-1}]) &: \text{head} = h,\; \text{gaps} = [g_0,\dots,g_{n-1}] \\
+\operatorname{value}_{h,G}(0) &= h \\
+\operatorname{value}_{h,G}(i + 1) &= \operatorname{value}_{h,G}(i) + G_i \\
+\operatorname{shift}(h,\; [g_0,\dots,g_{n-1}]) &= \operatorname{ShiftedList}(h + g_0,\; [g_1,\dots,g_{n-1}, g_0])
+\end{aligned}
+\end{equation*}
+
+\subsection{Same Period}
+
+Shifting does not change the period: the gap list remains the same
+length. The structural property $\operatorname{size} = |\operatorname{gaps}|$
+is an invariant of the case class.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{period}(\text{shifted}) = \operatorname{period}(\text{original}) \quad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::assertSamePeriod}}
+
+\begin{lstlisting}[style=scala]
+def assertSamePeriod(otherSize: BigInt): Boolean = {
+  require(otherSize == gaps.size)
+  size == otherSize
+}.holds
+\end{lstlisting}
+
+\subsection{Adjacent Difference Equals Gap}
+
+For any valid position, the difference between consecutive shifted-list
+values equals the gap at that position. This is a direct consequence of
+the cumulative value definition above.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i) = G_i
+\quad \text{for } 0 \leq i < \operatorname{size} - 1 \quad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::assertAdjacentDifferenceEqualsGap}}
+
+\begin{lstlisting}[style=scala]
+def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
+  require(position >= 0)
+  require(position + 1 < size)
+  apply(position + 1) - apply(position) == gaps(position)
+}.holds
+\end{lstlisting}
+
+\subsection{Gap Translation}
+
+Shifting the head and rotating the gaps by one translates the
+adjacent-gap sequence by one index: the shifted sequence's gap at $i$
+equals the original sequence's gap at $i + 1$. Both sides reduce to
+$G_{i+1}$ because the gap list is rotated by one position.
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{value}_{\operatorname{shift}(h,G)}(i + 1) - \operatorname{value}_{\operatorname{shift}(h,G)}(i) \\
+&= \operatorname{value}_{h,G}(i + 2) - \operatorname{value}_{h,G}(i + 1)
+\quad \text{[Gap translation]} \\
+&= \operatorname{gaps}(i + 1)
+\quad \text{[By adjacent-difference identity for both views]}
+\end{aligned}
+\end{equation*}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::assertGapTranslation}}
+
+\begin{lstlisting}[style=scala]
+def assertGapTranslation(
+  origHead: BigInt, gaps: List[BigInt], i: BigInt
+): Boolean = {
+  require(gaps.nonEmpty)
+  require(i >= 0)
+  require(i + 2 < gaps.size)
+  val shifted = shift(origHead, gaps)
+  val orig = ShiftedList(origHead, gaps)
+  shifted.apply(i + 1) - shifted.apply(i) ==
+    orig.apply(i + 2) - orig.apply(i + 1)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+These properties are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::\allowbreak assertSamePeriod}},
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::\allowbreak assertAdjacentDifferenceEqualsGap}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.0/src/main/scala/v1/chapter3/list/ShiftedList.scala}{\texttt{ShiftedList::\allowbreak assertGapTranslation}}.
+\par}
