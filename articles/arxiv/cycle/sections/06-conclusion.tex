@@ -29,58 +29,58 @@ n&=|L|
 \end{equation*}
 
 \begin{equation*}
-\begin{gathered}
-\operatorname{Cycle}_i=L[i\operatorname{mod}n]
-  \quad \text{[Cycle Element Access]} \\
-\text{key}<n\implies
+\begin{aligned}
+&\operatorname{Cycle}_i=L[i\operatorname{mod}n]
+  && \text{[Cycle Element Access]} \\
+&\text{key}<n\implies
   \operatorname{Cycle}_{\text{key}}=L_{\text{key}}
-  \quad \text{[Small Value Direct Lookup]} \\
-\operatorname{Cycle}_i\operatorname{mod}d
+  && \text{[Small Value Direct Lookup]} \\
+&\operatorname{Cycle}_i\operatorname{mod}d
   =\operatorname{Cycle}_{(i\operatorname{mod}n)}\operatorname{mod}d
-  \quad \text{[Mod Propagation]}
-\end{gathered}
+  && \text{[Mod Propagation]}
+\end{aligned}
 \end{equation*}
 
 \begin{equation*}
-\begin{gathered}
-\operatorname{Cycle}_{(i+n\cdot m)}=L[i\operatorname{mod}n]
-  \quad \text{[Value Match After Many Loops]} \\
-\operatorname{Cycle}_{(i+n\cdot m_1)}
+\begin{aligned}
+&\operatorname{Cycle}_{(i+n\cdot m)}=L[i\operatorname{mod}n]
+  && \text{[Value Match After Many Loops]} \\
+&\operatorname{Cycle}_{(i+n\cdot m_1)}
   =\operatorname{Cycle}_{(i+n\cdot m_2)}
-  \quad \text{[Two Multiples]} \\
-\operatorname{Cycle}^{(t)}_{\text{pos}}
+  && \text{[Two Multiples]} \\
+&\operatorname{Cycle}^{(t)}_{\text{pos}}
   =\operatorname{Cycle}_{\text{pos}}\quad \forall t>0
-  \quad \text{[Repeated-Cycle Invariance]}
-\end{gathered}
+  && \text{[Repeated-Cycle Invariance]}
+\end{aligned}
 \end{equation*}
 
 \begin{equation*}
-\begin{gathered}
-(\forall x\in L,\ x\geq 0)
+\begin{aligned}
+&(\forall x\in L,\ x\geq 0)
   \implies \operatorname{Cycle}_{\text{pos}}\geq 0
-  \quad \text{[Cycle Value Positivity]} \\
-(\forall y\in L,\ y>x)
+  && \text{[Cycle Value Positivity]} \\
+&(\forall y\in L,\ y>x)
   \implies \operatorname{Cycle}_{\text{pos}}>x
-  \quad \text{[Cycle Value Greater Than]} \\
-\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  && \text{[Cycle Value Greater Than]} \\
+&\operatorname{rotateAt}(\operatorname{Cycle},k)_i
   =\operatorname{Cycle}_{i+k}
-  \quad \text{[Rotation Invariance]}
-\end{gathered}
+  && \text{[Rotation Invariance]}
+\end{aligned}
 \end{equation*}
 
 \begin{equation*}
-\begin{gathered}
-\operatorname{allZero}(d)\implies
+\begin{aligned}
+&\operatorname{allZero}(d)\implies
   \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d=0
-  \quad \text{[All-Zero Residue Transfer]} \\
-\operatorname{noneZero}(d)\implies
+  && \text{[All-Zero Residue Transfer]} \\
+&\operatorname{noneZero}(d)\implies
   \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d\neq 0
-  \quad \text{[None-Zero Residue Transfer]} \\
-\operatorname{someZero}(d)\implies \exists\,k_0,k_1,\quad
+  && \text{[None-Zero Residue Transfer]} \\
+&\operatorname{someZero}(d)\implies \exists\,k_0,k_1,\quad
   \operatorname{Cycle}_{k_0}\operatorname{mod}d=0\ \land{} \\
-\operatorname{Cycle}_{k_1}\operatorname{mod}d\neq 0
-  \quad \text{[Some-Zero Residue Transfer]}
-\end{gathered}
+&\qquad \operatorname{Cycle}_{k_1}\operatorname{mod}d\neq 0
+  && \text{[Some-Zero Residue Transfer]}
+\end{aligned}
 \end{equation*}
 
 The reusable equivalence, access, periodicity, modulo, repetition, positivity,

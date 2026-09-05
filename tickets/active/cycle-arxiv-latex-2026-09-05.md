@@ -2,8 +2,10 @@
 
 **Created:** 2026-09-05
 **Updated:** 2026-09-06
-**Status:** Complete — package green and arXiv-ready; release commit and
-tag `cycle-article-v1.0.0` cut (push immediately follows)
+**Status:** Complete — package green and arXiv-ready; author-requested
+conclusion tag alignment applied after the first release commit; release
+commit and tag `cycle-article-v1.0.0` re-cut at the final state (push
+pending)
 **Branch:** `feature/article/cycle`
 **Depends on:** none (follow-on to the completed `list-arxiv-latex` /
 `list-arxiv-release-v1` and `modulo-arxiv-latex` / `modulo-arxiv-release-v1`
@@ -119,6 +121,16 @@ links.
   `blob/cycle-article-v1.0.0/` (50 in main.tex + sections, 3 in
   references.bib); zero moving links remain anywhere in the package, and
   Appendix B already identifies the immutable tag.
+- **Conclusion tag alignment (author request, post-release-commit):** the
+  four tagged recap groups were converted from `gathered` with inline
+  `\quad \text{[Tag]}` to `aligned` with `&&\text{[Tag]}` columns, so the
+  tags align vertically within each group (the definitions block and the
+  single-row Three-Way Equivalence line are unchanged — single-row `&&`
+  is the documented floating-tag antipattern). Gates green: zero-warning
+  rebuild, math parity preserved at exactly 6 displays, conclusion recap
+  fits on one page (page 16; References moved to page 17), archive
+  regenerated and clean-room verified (text and all 22 raster pages
+  identical to the tracked PDF).
 - **Underfull regression RESOLVED:** one preamble line was added to
   `main.tex` after `\usepackage{hyperref}` — `\Urlmuskip=0mu plus 1mu\relax`
   — allowing justified bibliography lines containing the long pinned URLs
@@ -268,9 +280,11 @@ links.
 
 ## Next Action
 
-None — push branch + tag. The author reviews the package
-(`output/pdf/cycle.pdf`, archive `output/arxiv-cycle-source.tar.gz`) and
-performs the actual arXiv submission themselves.
+Commit the conclusion tag-alignment change (scoped: `06-conclusion.tex`,
+the regenerated `output/` artifacts, this ticket, the guide note), delete
+and re-create the never-pushed tag `cycle-article-v1.0.0` at the new
+commit, verify with `git rev-parse`, then push branch + tag. The author
+reviews the package and performs the actual arXiv submission themselves.
 
 ## Learning Log
 
@@ -298,3 +312,4 @@ performs the actual arXiv submission themselves.
 | 2026-09-06 | Applied the minimal URL-breaking fix: `\Urlmuskip=0mu plus 1mu\relax` after hyperref in `main.tex` (one line, no content/link change). Rebuild green: 22 pages, zero Warning/Error/Overfull/Underfull/undefined/Missing in the final log; bibliography page 16 visually verified (all five entries, URLs wrap cleanly). The xurl fallback was not needed. | Regenerate the archive and clean-room verify. |
 | 2026-09-06 | Regenerated `arxiv-cycle-source.tar.gz` per the README recipe with the fresh `main.bbl`; clean-room compile from inside the extracted directory: exit 0, 22 pages, zero log issues; extracted text and all 22 rasterized pages identical to the tracked PDF. Package is arXiv-ready. | Run the release sequence (force-add log, commit, tag, push). |
 | 2026-09-06 | Promoted the pinning-underfull lesson to `CONVERSION_GUIDE.md` §4 (pinned URLs lengthen `.bbl` entries; gate re-runs after scripted replacements; `\Urlmuskip` cure). Staged the release per the list convention: verify log force-added (gitignored), package with tracked `output/` artifacts, both ticket files, root strays excluded; commit + annotated tag `cycle-article-v1.0.0` ("cycle article v1.0.0: arXiv-ready manuscript, links pinned, verification reproduced (2995/2995/0/0)"), tag commit verified with `git rev-parse`. | Push branch + tag; author reviews and submits to arXiv. |
+| 2026-09-06 | Author requested aligned conclusion tags. Converted the four recap groups from `gathered` + inline `\quad` tags to `aligned` + `&&\text{[Tag]}` columns (definitions block and single-row equivalence line unchanged). Gates green: zero-warning rebuild, 6/6 display parity, recap on one page, References moved 16→17; archive regenerated, clean-room text/raster identical. Follow-up commit will land and the unpushed tag will be re-cut at the final commit (safe per §23.5 — never pushed). | Commit the alignment change, re-point `cycle-article-v1.0.0`, then push. |
