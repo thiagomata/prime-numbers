@@ -77,35 +77,31 @@ L \neq L_e \land (\forall x \in L,\ x > 0)
 \end{aligned}
 \end{gather*}
 
-\begin{gather*}
+\begin{equation*}
 \begin{aligned}
-(\forall x \in L,\ x > v) \land 0 \leq i < |L|
-&\implies L_i > v
-&&\text{[Bound at Index]} \\
-(\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
-&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
-&&\text{[Bound over Concatenation]}
-\end{aligned} \\
-\begin{aligned}
+&(\forall x \in L,\ x > v) \land 0 \leq i < |L|
+  \implies L_i > v
+  &&\text{[Bound at Index]} \\
+&(\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v) \\
+&\qquad \implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
+  &&\text{[Bound over Concatenation]} \\
 &(\forall x \in L,\ x > v) \land 0 \leq k \leq |L| \\
-&\implies (\forall x \in \text{front},\ x > v) \land (\forall x \in \text{back},\ x > v)
-\quad \text{[Split Preserves Lower Bound]}
-\end{aligned} \\
-\begin{aligned}
+&\qquad \implies (\forall x \in \text{front},\ x > v)
+     \land (\forall x \in \text{back},\ x > v)
+  &&\text{[Split Preserves Lower Bound]} \\
 &(\forall x \in A,\ x < b) \land (\forall x \in B,\ x < b) \\
-&\implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
-\quad \text{[Bound over Concatenation, Upper]}
-\end{aligned} \\
-\begin{aligned}
+&\qquad \implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
+  &&\text{[Bound over Concatenation, Upper]} \\
 &(\forall x \in L,\ x < b) \land 0 \leq k \leq |L| \\
-&\implies (\forall x \in \text{front},\ x < b) \land (\forall x \in \text{back},\ x < b)
-\quad \text{[Split Preserves Upper Bound]}
-\end{aligned} \\
-\operatorname{slice}(L,f,t)
-= \operatorname{headRecursiveSlice}(L,f,t)
-= \operatorname{indexRangeValues}(L,f,t)
-\quad \text{[Slice Equivalence]}
-\end{gather*}
+&\qquad \implies (\forall x \in \text{front},\ x < b)
+     \land (\forall x \in \text{back},\ x < b)
+  &&\text{[Split Preserves Upper Bound]} \\
+&\operatorname{slice}(L,f,t)
+  = \operatorname{headRecursiveSlice}(L,f,t) \\
+&\qquad = \operatorname{indexRangeValues}(L,f,t)
+  &&\text{[Slice Equivalence]}
+\end{aligned}
+\end{equation*}
 
 \begin{gather*}
 \operatorname{value}_{h,G}(i + 1) - \operatorname{value}_{h,G}(i)

@@ -120,17 +120,25 @@ The upper-bound mirror of the property above, $\forall x \in L,\, x < b$,
 satisfies the same shape of properties: append preservation, split
 preservation, and transitivity across a looser bound.
 
-\begin{gather*}
+\begin{equation*}
 \begin{aligned}
 &(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \\
-&\implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Append]}
-\end{aligned} \\
-\forall\, index \in \mathbb{N},\ index \leq |list| \\
-(\forall x \in list,\, x < bound) \implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound) \quad \text{[Split]} \\
-(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \implies \forall x \in list,\, x < bound_2 \quad \text{[Transitivity]} \\
-\forall\, pos \in \mathbb{N},\ pos < |list| \\
-(\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[At Index]}
-\end{gather*}
+&\qquad \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound
+  &&\text{[Append]} \\
+&\forall\, index \in \mathbb{N},\ index \leq |list| \\
+&(\forall x \in list,\, x < bound)
+  \implies (\forall x \in front,\, x < bound)
+     \wedge (\forall x \in back,\, x < bound)
+  &&\text{[Split]} \\
+&(\forall x \in list,\, x < bound) \wedge bound \leq bound_2
+  \implies \forall x \in list,\, x < bound_2
+  &&\text{[Transitivity]} \\
+&\forall\, pos \in \mathbb{N},\ pos < |list| \\
+&\qquad (\forall x \in list,\, x < bound)
+  \implies list(pos) < bound
+  &&\text{[At Index]}
+\end{aligned}
+\end{equation*}
 
 {\raggedright
 These properties are verified in
