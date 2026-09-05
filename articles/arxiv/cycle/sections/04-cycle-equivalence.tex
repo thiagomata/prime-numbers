@@ -1,0 +1,118 @@
+\section{Cycle Equivalence}
+
+Subsection~3.1 defines \texttt{Cycle} to mean \texttt{RecCycle} --- a naming
+choice, not a claim. This section proves the claim that actually needs proving:
+that \texttt{ModCycle}, defined independently by a single modulo operation
+rather than by recursive unrolling, computes exactly the same values as
+\texttt{RecCycle} at every position. This equivalence is what the rest of the
+article leans on whenever it moves between the two representations, and it is
+not immediate from the two definitions side by side. We prove it by induction
+on the position $i$.
+
+\begin{itemize}
+  \item Base case ($i<n$): both definitions consult the base list directly at
+    the same position.
+  \item Inductive step ($i\geq n$): the recursive definition reduces to $i-n$,
+    wrapping to the same modulo position.
+\end{itemize}
+
+\begin{equation*}
+\begin{aligned}
+\forall\, L\in\mathbb{L},\quad \forall\, v&\in\mathbb{N}_0,
+  \quad \forall\, i\in\mathbb{N}_0 \\
+L &:= [v_0,v_1,\dots,v_{n-1}]\in\mathbb{N}_0^n \\
+n &= |L| \\
+\operatorname{ModCycle}_i &= L[i\operatorname{mod}n],\quad |L|>0 \\
+\operatorname{RecCycle}_i &=
+\begin{cases}
+L_i & \text{if } i<n \\
+\operatorname{RecCycle}_{i-n} & \text{if } i\geq n
+\end{cases},\quad |L|>0
+\end{aligned}
+\end{equation*}
+
+\subsection{Base Case (\texorpdfstring{$i<n$}{i < n})}
+
+When the position is within the first cycle, both definitions return the list
+element directly.
+
+\begin{equation*}
+\begin{aligned}
+i<n \implies i\operatorname{mod}n &= i
+  && \text{[Trivial Mod For Small Dividend]} \\
+\operatorname{ModCycle}_i &= L_{(i\operatorname{mod}n)}
+  && \text{[ModCycle Definition]} \\
+&=L_i && \text{[Since }i<n\text{, }i\operatorname{mod}n=i\text{]} \\
+\operatorname{RecCycle}_i &= L_i
+  && \text{[Since }i<n\text{, by RecCycle Definition]} \\
+&\therefore \\
+i<n \implies \operatorname{ModCycle}_i &= \operatorname{RecCycle}_i
+  \quad \blacksquare && \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The lemma
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#61-trivial-case}{Trivial Mod for Small Dividend}
+was proved and verified in the article
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md}{\emph{Division and Modulo from Recursive Normalization}}~\cite{mata2026modulo}.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala}{\texttt{RecursiveCycleMatchesModCycle::}\allowbreak\texttt{assertCycleAndRecursiveCycleMathForSmallValues}}.
+The full Scala verification code is in Appendix~A.1.
+\par}
+
+\subsection{Inductive Step (\texorpdfstring{$i\geq n$}{i >= n})}
+
+For positions beyond the first cycle, both definitions reduce the position by
+the cycle period and rely on the inductive hypothesis.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{ModCycle}_{(i-n)} &= \operatorname{RecCycle}_{(i-n)}
+  && \text{[By Induction Hypothesis]} \\
+i\geq n \implies i\operatorname{mod}n
+  &= (i-n)\operatorname{mod}n
+  && \text{[Quotient Invariance Under Linear Shift]} \\
+\operatorname{ModCycle}_i &= L_{(i\operatorname{mod}n)}
+  && \text{[ModCycle Definition]} \\
+&=L_{((i-n)\operatorname{mod}n)}
+  && \substack{\text{[Since }i\geq n\text{, }i\operatorname{mod}n
+       =(i-n)\operatorname{mod}n\text{]}} \\
+&=\operatorname{ModCycle}_{(i-n)} && \text{[By Definition]} \\
+&=\operatorname{RecCycle}_{(i-n)} && \text{[By Substitution]} \\
+\operatorname{RecCycle}_i &= \operatorname{RecCycle}_{(i-n)}
+  && \text{[By RecCycle Definition]} \\
+&=\operatorname{ModCycle}_i && \text{[By Substitution]} \\
+&\therefore \\
+i\geq n \implies \operatorname{ModCycle}_i &= \operatorname{RecCycle}_i
+  \quad \blacksquare && \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The lemma
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift}{Quotient Invariance Under Linear Shift}
+was proved and verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md}{\emph{Division and Modulo from Recursive Normalization}}~\cite{mata2026modulo}.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala}{\texttt{RecursiveCycleMatchesModCycle::}\allowbreak\texttt{assertCycleAndRecursiveCycleMathForAnyValues}}.
+The full Scala verification code is in Appendix~A.2.
+\par}
+
+With both pieces now established --- \texttt{RecCycle} and \texttt{ModCycle}
+equal by this section, \texttt{MemCycle} and \texttt{ModCycle} equal by
+delegation (Subsection~3.3) --- the three representations agree at every
+position:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{RecCycle}(L)_i
+  &=\operatorname{ModCycle}(L)_i && \text{[Subsections 4.1--4.2]} \\
+  &=\operatorname{MemCycle}(L)_i && \text{[Subsection 3.3]} \\
+\therefore\quad \operatorname{RecCycle}(L)_i
+  &=\operatorname{ModCycle}(L)_i=\operatorname{MemCycle}(L)_i
+  && \text{[Three-Way Equality]}
+\end{aligned}
+\end{equation*}

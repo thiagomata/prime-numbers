@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+\Urlmuskip=0mu plus 1mu\relax
+
+\definecolor{codebackground}{RGB}{247,247,247}
+\definecolor{codecomment}{RGB}{72,112,72}
+\definecolor{codekeyword}{RGB}{32,74,135}
+\definecolor{codestring}{RGB}{164,0,0}
+
+\lstdefinestyle{scala}{
+  backgroundcolor=\color{codebackground},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=true,
+  breaklines=true,
+  columns=fixed,
+  commentstyle=\color{codecomment},
+  frame=single,
+  keepspaces=true,
+  keywordstyle=\color{codekeyword}\bfseries,
+  language=Scala,
+  numbers=none,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestring},
+  tabsize=2
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Formal Verification of Cyclic Lists},
+  pdfauthor={Thiago Henrique Mata}
+}
+
+\title{Formal Verification of Cyclic Lists}
+\author{%
+  Thiago Henrique Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\input{sections/01-introduction}
+
+\input{sections/02-preliminaries}
+
+\input{sections/03-cycle-definitions}
+
+\input{sections/04-cycle-equivalence}
+
+\input{sections/05-cycle-properties}
+
+\input{sections/06-conclusion}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\appendix
+\input{sections/07-appendix}
+
+\end{document}
