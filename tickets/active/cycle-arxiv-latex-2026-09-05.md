@@ -280,11 +280,10 @@ links.
 
 ## Next Action
 
-Commit the conclusion tag-alignment change (scoped: `06-conclusion.tex`,
-the regenerated `output/` artifacts, this ticket, the guide note), delete
-and re-create the never-pushed tag `cycle-article-v1.0.0` at the new
-commit, verify with `git rev-parse`, then push branch + tag. The author
-reviews the package and performs the actual arXiv submission themselves.
+Push branch + tag `cycle-article-v1.0.0` (author to confirm who pushes).
+The author reviews the package (`output/pdf/cycle.pdf`, archive
+`output/arxiv-cycle-source.tar.gz`) and performs the actual arXiv
+submission themselves.
 
 ## Learning Log
 
