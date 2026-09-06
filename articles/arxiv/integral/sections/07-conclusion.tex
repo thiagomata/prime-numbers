@@ -1,0 +1,59 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This article established and formally verified a property
+characterization of the recursive discrete integral over finite integer
+lists.
+
+From the recursive definition of $I = \operatorname{Integral}(L, init)$,
+we proved and verified:
+
+\begin{equation*}
+\begin{aligned}
+I_0 &= x_0 + init
+  && \text{[Head Value Matches Definition]} \\
+I_k &= init + \sum_{i=0}^k x_i
+  && \text{[Integral Equals Sum Until Position]} \\
+I_{n-1} &= init + \sum_{i=0}^{n-1} x_i
+  && \text{[Final Element Equals Full Sum]} \\
+I_{p+1} - I_p &= x_{p+1}
+  && \text{[Incremental Change Matches List]} \\
+(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n &\implies I_b > I_a
+  && \text{[Strictly Increasing]} \\
+0 \leq p < n-1,\quad I_{p+1} > I_p &\implies L_{p+1} > 0
+  && \text{[Gaps Positivity]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+I_k &= acc_k
+  && \text{[Element Consistency]} \\
+\operatorname{last}(I) &= acc_{n-1} = I_{n-1}
+  && \text{[Last Element Agreement]} \\
+acc_{p+1} - acc_p &= x_{p+1}
+  && \text{[Accumulated Delta Consistency]} \\
+\lvert acc\rvert &= \lvert L\rvert
+  && \text{[Size Agreement]}
+\end{aligned}
+\end{equation*}
+
+These results establish that the recursive discrete integral exactly
+corresponds to the cumulative sum of the list elements plus the given
+initial value. Recursive lookup and the accumulated-list representation
+agree at every valid index, at the final value, and in length; their
+consecutive differences recover the corresponding original list entries.
+Positive input values make the integral strictly increasing, while a
+positive consecutive integral gap implies that the corresponding input
+value is positive.
+
+All properties were formally verified in Scala using the Stainless
+verification system. The full verification code is in Appendix~A.
+
+\section{Future Work}
+\label{sec:future-work}
+
+Extending the finite integral to repeating sequences of values would
+capture the relationship between modular arithmetic and gap-period
+decomposition --- the foundation for reasoning about cumulative sums over
+cyclic structures.

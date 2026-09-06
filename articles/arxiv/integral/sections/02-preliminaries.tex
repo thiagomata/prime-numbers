@@ -1,0 +1,30 @@
+\section{Preliminaries and Notation}
+\label{sec:preliminaries}
+
+Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite,
+non-empty list of $n$ integers, where $n = \lvert L\rvert$, and let
+$init \in \mathbb{Z}$ be an initial value.
+
+We reuse several basic list operations and their verified properties from
+a companion article on recursive list construction ---
+\href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md}{Using
+Formal Verification to Prove Properties of Lists Recursively Defined}~%
+\cite{mata2026lists}. These include the following functions:
+
+\begin{itemize}
+  \item $\operatorname{sum}(L)$: recursively computes the total sum of
+    elements in a list.
+  \item $\operatorname{head}(L)$: returns the first element of a non-empty
+    list.
+  \item $\operatorname{tail}(L)$: returns the list without its first
+    element.
+  \item $A \mathbin{\texttt{++}} B$: concatenates two lists $A$ and $B$.
+\end{itemize}
+
+These operations were defined and verified using the same
+zero-prior-knowledge methodology \cite{mata2026lists}, and are treated
+here as foundational primitives.
+
+Proofs in this article are written in Scala and verified using the
+Stainless system with \texttt{BigInt} used to represent unbounded
+integers.

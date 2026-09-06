@@ -286,7 +286,7 @@ The last element of the Integral equals the sum of all elements in the List plus
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
 ```
 
-This follows directly from [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
+Mathematically, this is the $k = n-1$ instance of [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
 
 ```math
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
@@ -296,7 +296,7 @@ I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare
 
 This property is verified in the [
   IntegralProperties::assertLastEqualsSum
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The Stainless proof is a self-contained structural induction on the list size — single-element base case, tail-integral inductive step — giving an independent, machine-checked argument for the same identity. The full Scala verification code is in Appendix A.4.
 
 ### 4.5 Strictly Increasing Integral
 

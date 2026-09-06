@@ -1,0 +1,14 @@
+\begin{abstract}
+We define a recursive discrete integral over finite integer lists and verify
+its principal properties in Scala Stainless. At every valid position, the
+integral equals the initial value plus the corresponding prefix sum; its
+final value equals the initial value plus the total sum; and consecutive
+differences recover the corresponding input values. We prove pointwise,
+final-value, and length agreement between recursive lookup and the
+accumulated-list representation. We also verify that positive input values
+imply a strictly increasing integral, while a positive consecutive integral
+gap implies that the corresponding input value is positive. Together, these
+results characterize the discrete integral as a length-preserving
+cumulative-sum construction with verified representation agreement and value
+recovery.
+\end{abstract}

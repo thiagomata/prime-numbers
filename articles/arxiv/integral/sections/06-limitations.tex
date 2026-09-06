@@ -1,0 +1,23 @@
+\section{Limitations}
+\label{sec:limitations}
+
+This article builds upon the foundational assumptions and constraints
+established in the earlier work
+\href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md}{Using
+Formal Verification to Prove Properties of Lists Recursively Defined}~%
+\cite{mata2026lists}.
+
+Specifically:
+
+\begin{itemize}
+  \item The focus remains on lists of unbounded integers
+    (\texttt{BigInt}), without support for generalized numeric types via
+    abstraction or type classes.
+  \item Recursive functions such as $\operatorname{sum}$,
+    $\operatorname{head}$, $\operatorname{tail}$, and concatenation are
+    reused from the prior work \cite{mata2026lists} and are not redefined
+    here.
+  \item Due to the recursive nature of these definitions, stack overflows
+    may occur with extensive lists, but correctness and verifiability take
+    priority over performance.
+\end{itemize}

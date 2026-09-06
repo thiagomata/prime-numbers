@@ -1,0 +1,307 @@
+\section{Core Integral Properties}
+\label{sec:core-properties}
+
+These identities connect each recursively defined integral value to the
+finite list of values it accumulates.
+
+\begin{itemize}
+  \item Head value: $I_0 = L_0 + init$ --- Section~4.1
+  \item Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ --- Section~4.2
+  \item Incremental change: $I_{p+1} - I_p = L_{p+1}$ --- Section~4.3
+  \item Final sum: $I_{n-1} = init + \operatorname{sum}(L)$ ---
+    Section~4.4
+\end{itemize}
+
+\subsection{Head Value Matches Definition}
+\label{sec:head-value}
+
+The first element of the Integral equals the first element of the original
+list plus the initial value.
+
+\begin{equation*}
+I_0 = x_0 + init
+\end{equation*}
+
+Since:
+
+\begin{equation*}
+\begin{aligned}
+I &\ne L_e
+  & \qquad &\text{[By definition: Integral is not an empty list]} \\
+I_0 &= \operatorname{head}(I)
+  & \qquad &\text{[List element access and indexing]} \\
+\operatorname{head}(I) &= \operatorname{head}(L) + init
+  & \qquad &\text{[By definition of Integral]} \\
+L_0 &= \operatorname{head}(L)
+  & \qquad &\text{[List element access and indexing]} \\
+L_0 &= x_0
+  & \qquad &\text{[By definition of List]} \\
+\operatorname{head}(I) &= L_0 + init
+  & \qquad &\text{[Substitute } \operatorname{head}(L) \text{ by } L_0] \\
+I_0 &= L_0 + init
+  & \qquad &\text{[Substitute } \operatorname{head}(I) \text{ by } I_0] \\
+I_0 &= x_0 + init
+  & \qquad &\text{[Substitute } L_0 \text{ by } x_0] \\
+I_0 &= x_0 + init \quad \blacksquare
+  & \qquad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertHeadValueMatchDefinition}}.
+The full Scala verification code is in Appendix~A.1.
+\par}
+
+\subsection{Integral Equals Sum Until Position}
+\label{sec:integral-equals-sum}
+
+The integral at position $k$ equals the sum of all elements in the list up
+to that position, plus the initial value:
+
+\begin{equation*}
+\forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
+\end{equation*}
+
+\textbf{Proof by Induction on $k$}
+
+\subsubsection*{Base case: $k = 0$}
+
+\begin{equation*}
+\begin{aligned}
+\sum_{i=0}^{0} x_i &= x_0
+  & \qquad &\text{[By definition of sum]} \\
+I_0 &= \mathit{init} + x_0
+  & \qquad &\text{[By definition of integral]} \\
+    &= \mathit{init} + \sum_{i=0}^{0} x_i
+  & \qquad &\text{[Substituting } x_0]
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore
+\end{equation*}
+
+\begin{equation*}
+I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
+\end{equation*}
+
+\subsubsection*{Inductive step: Assume the property holds for $k-1$}
+
+\begin{equation*}
+I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i
+  \implies I_k = \mathit{init} + \sum_{i=0}^{k} x_i
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+I_{k-1} &= \mathit{init} + \sum_{i=0}^{k-1} x_i
+  & \qquad &\text{[By induction]} \\
+I_k &= I_{k-1} + L_k
+  & \qquad &\text{[By definition of integral]} \\
+    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k
+  & \qquad &\text{[By induction and } L_k = x_k]  \\
+    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)
+  & \qquad &\text{[Distributivity]} \\
+    &= \mathit{init} + \sum_{i=0}^{k} x_i
+  & \qquad &\text{[By definition of sum]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore
+\end{equation*}
+
+\begin{equation*}
+I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad
+  \text{[Q.E.D.]}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertIntegralEqualsSum}}.
+The full Scala verification code is in Appendix~A.2.
+\par}
+
+\subsection{Incremental Change Matches List Value}
+\label{sec:incremental-change}
+
+The difference between two consecutive values in the Integral equals the
+corresponding value in the original list $L$.
+
+\begin{equation*}
+\begin{aligned}
+\forall\, p &\in [0,\ n-2]: \\
+I_{p+1} - I_p &= L_{p+1}
+\end{aligned}
+\end{equation*}
+
+\subsubsection*{Proof of the Base Case $I_1 - I_0 = x_1$}
+
+\begin{equation*}
+\begin{aligned}
+I_1 &= \operatorname{Integral}(\operatorname{tail}(L),\ I_0)_0
+  & \qquad &\text{[By recursive definition for a non-first element]} \\
+    &= \operatorname{Integral}([x_1, \dots, x_n],\ I_0)_0
+  & \qquad &\text{[By tail definition]} \\
+    &= \operatorname{head}([x_1, \dots, x_n]) + I_0
+  & \qquad &\text{[By recursive Integral definition for the first element]} \\
+    &= x_1 + I_0
+  & \qquad &\text{[By head definition]} \\
+I_1 - I_0 &= (x_1 + I_0) - I_0
+  & \qquad &\text{[Substituting for } I_1, I_0] \\
+    &= x_1 + I_0 - I_0
+  & \qquad &\text{[Distributivity]} \\
+    &= x_1
+  & \qquad &\text{[Cancellation of terms]} \\
+    & \therefore \\
+I_1 - I_0 &= x_1
+  & \qquad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\subsubsection*{Proof of the Inductive Step $I_{p+1} - I_p = L_{p+1}$}
+
+\begin{equation*}
+\begin{aligned}
+L &= x_0 :: \operatorname{tail}(L)
+  & \qquad &\text{[List decomposition]} \\
+I &= I_0 :: \operatorname{tail}(I)
+  & \qquad &\text{[Integral decomposition]} \\
+I_{p+1} &= I_{\text{tail},\ p}
+  & \qquad &\text{[By indexing: tail of } I \text{ at position } p] \\
+I_{p+2} &= I_{\text{tail},\ p+1}
+  & \qquad &\text{[By indexing: tail of } I \text{ at position } p + 1] \\
+I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}
+  & \qquad &\text{[By recursive definition of Integral]} \\
+I_{p+2} - I_{p+1} &= I_{\text{tail},\ p+1} - I_{\text{tail},\ p}
+  & \qquad &\text{[Substituting for } I_{p+2}, I_{p+1}] \\
+                   &= (L_{\text{tail},\ p+1} + I_{\text{tail},\ p}) - I_{\text{tail},\ p}
+  & \qquad &\text{[Substituting for } I_{\text{tail},\ p+1}] \\
+                   &= L_{\text{tail},\ p+1}
+  & \qquad &\text{[Cancellation of terms]} \\
+L_{p+2} &= L_{\text{tail},\ p+1}
+  & \qquad &\text{[By indexing: tail of } L \text{ at position } p + 1] \\
+& \therefore \\
+I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare
+  & \qquad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertAccDiffMatchesList}}.
+The full Scala verification code is in Appendix~A.3.
+\par}
+
+\subsection{Final Element Equals Full Sum}
+\label{sec:final-element}
+
+The last element of the Integral equals the sum of all elements in the
+List plus the initial value.
+
+\begin{equation*}
+I_{n-1} = init + \sum_{i=0}^{n-1} x_i
+\end{equation*}
+
+Mathematically, this is the $k = n-1$ instance of Section~4.2, which
+proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
+
+\begin{equation*}
+\begin{aligned}
+& k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
+& \therefore \\
+& I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertLastEqualsSum}}.
+The Stainless proof is a self-contained structural induction on the list
+size --- single-element base case, tail-integral inductive step --- giving
+an independent, machine-checked argument for the same identity. The full
+Scala verification code is in Appendix~A.4.
+\par}
+
+\subsection{Strictly Increasing Integral}
+\label{sec:strictly-increasing}
+
+When every value in the list is positive, the integral is strictly
+increasing: a later position always produces a larger value. This is the
+monotonicity theorem --- the integral grows with every step.
+
+\begin{equation*}
+(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n
+  \;\implies\; I_b > I_a
+\end{equation*}
+
+\textbf{Proof.} Induct on $b-a$. The base case follows from the
+consecutive difference law; the step combines the induction hypothesis
+with the next positive list value.
+
+\begin{equation*}
+\begin{aligned}
+b=a+1 &\implies I_{a+1}-I_a=L_{a+1}>0 &&\text{[\S4.3]} \\
+      &\implies I_{a+1}>I_a, \\
+I_{b-1}>I_a,\quad I_b-I_{b-1}=L_b>0
+      &\implies I_b>I_{b-1}>I_a \\
+\therefore\ I_b &> I_a.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Stainless verification.}
+
+\begin{lstlisting}[style=scala]
+def assertIntegralStrictlyIncreasing(
+  integral: Integral, a: BigInt, b: BigInt
+): Boolean = {
+  require(a >= 0); require(b > a); require(b < integral.list.size)
+  require(ListBoundUtils.allGreaterThan(integral.list, BigInt(0)))
+  integral.apply(b) > integral.apply(a)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertIntegralStrictlyIncreasing}}.
+\par}
+
+\subsection{Gaps Positivity}
+\label{sec:gaps-positivity}
+
+If the integral increases between consecutive positions, the corresponding
+list element is positive. The gap (difference between adjacent integral
+values) has the same sign as the underlying list element.
+
+\begin{equation*}
+0 \leq p < n-1,\quad I_{p+1} > I_p \;\implies\; L_{p+1} > 0
+\end{equation*}
+
+\textbf{Proof.} The consecutive difference law identifies the positive
+difference with the corresponding list value:
+
+\begin{equation*}
+\begin{aligned}
+I_{p+1}>I_p &\implies I_{p+1}-I_p>0 \\
+I_{p+1}-I_p &= L_{p+1} &&\text{[\S4.3]} \\
+\therefore\ L_{p+1} &> 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Stainless verification.}
+
+\begin{lstlisting}[style=scala]
+def assertGapsPositive(integral: Integral, pos: BigInt): Boolean = {
+  require(pos >= 0); require(pos + 1 < integral.list.size)
+  require(integral.apply(pos + 1) > integral.apply(pos))
+  integral.list(pos + 1) > BigInt(0)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala}{\texttt{IntegralProperties::\allowbreak assertGapsPositive}}.
+\par}

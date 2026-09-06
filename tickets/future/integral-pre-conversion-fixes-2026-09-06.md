@@ -1,7 +1,7 @@
 # integral.md pre-conversion fixes — review proposal
 
 **Created:** 2026-09-06
-**Status:** Fixes 3 + 5 applied; fixes 1 + 2 held (see decisions below);
+**Status:** Fixes 2 + 3 + 5 applied; fix 1 rejected as not needed (see decisions below);
   fix 4 (diagram) rejected. Content ready for LaTeX conversion.
 **Type:** Content-readiness review for the planned `feature/article/integral`
 arXiv conversion (integral-first sequencing, author decision 2026-09-06)
@@ -203,8 +203,17 @@ Ordinary equality steps in proofs and statements elsewhere stay `=`.
 
 For each item: approve / adjust / reject.
 
-1. Fix 1 — §4.3/§5.3 shared-lemma disclosure sentences — **ON HOLD** (not sure; kept in doc)
-2. Fix 2 — §4.4 verification-sentence rewording — **ON HOLD** (not sure; kept in doc)
+1. Fix 1 — §4.3/§5.3 shared-lemma disclosure sentences — **REJECTED**
+   (2026-09-06, author decision after review: one lemma body proving several
+   properties via multiple asserts/conjuncts is normal at the article's
+   property→lemma granularity; the identical lemma name in both verification
+   sentences and the A.6 note already disclose the reuse; no other lemma's
+   internal dependencies are annotated either)
+2. Fix 2 — §4.4 verification-sentence rewording — **APPLIED** (2026-09-06,
+   with adjusted wording: positive framing "self-contained structural
+   induction … independent, machine-checked argument for the same identity"
+   instead of the draft's "not by instantiating the Section 4.2 lemma";
+   math block unchanged)
 3. Fix 3 — drop "Unpublished manuscript." from References [1] — **APPLIED** (2026-09-06)
 4. Fix 4 — add §3 classDiagram — **REJECTED** (author: "no, at least not the suggested diagram")
 5. Fix 5 — `:=` conversions (all four sub-items including §3.2 alias block) — **APPLIED** (2026-09-06)

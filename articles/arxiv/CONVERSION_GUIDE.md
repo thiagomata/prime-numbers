@@ -169,6 +169,21 @@ These are the rules the author's visual review enforced:
 
   `microtype` belongs in the preamble regardless; it helps the whole
   document but does not fix such paragraphs alone.
+- Pinned release URLs (`blob/<tag>/...`) are longer than `blob/master/...`
+  and can break bibliography line breaking: the generated `main.bbl`'s
+  `\url` entries then produce Underfull \hbox warnings (badness up to
+  10000). The zero-warning gate must be re-run after link pinning — a
+  scripted "mechanical" replacement is still a change (bit the `cycle`
+  conversion). Cure without new packages: `\Urlmuskip=0mu plus 1mu\relax`
+  after `hyperref` in the preamble lets justified lines stretch; URLs then
+  wrap cleanly through the normal `url` break points.
+- Conclusion recap tags should be aligned, not inline: when a recap display
+  groups several statements of similar width, an `aligned` with an
+  `&&\text{[Tag]}` column aligns the tags vertically AND preserves the
+  math-block parity count (one display per Markdown fence). Reserve the
+  independent-`equation*`-per-identity fallback for recaps whose rows differ
+  too much in width (the `list` case). Single-row statements keep the
+  `\quad` inline tag.
 - Scala excerpts use the `scala` lstlisting style defined in `main.tex`.
   Always write `\begin{lstlisting}[style=scala]` — passing only
   `language=Scala` skips the style entirely (no small font, no frame, no
