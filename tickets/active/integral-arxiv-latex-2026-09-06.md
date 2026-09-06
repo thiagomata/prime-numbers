@@ -97,6 +97,14 @@ anchors → "Section~N" hardcoded references, `\mathbb{Z}` present,
   9 section files, references.bib, main.bbl) and clean-room compiled in a
   fresh temp dir: exit 0, zero log issues, PDF reproduces (338778 vs
   338786 bytes — PDF timestamp metadata only).
+- Author-requested math fix (2026-09-06): §5.2's `[Inductive hypothesis]`
+  row equated `tail(L)_p` (tail of the LIST) with
+  `acc(tail(L),(x_0+i))_p` — false in general (element vs cumulative sum)
+  and a dangling term in the substitution chain. Corrected to `tail(I)_p`
+  in md:458 + 05-consistency-lemmas.tex:96; PDF rebuilt (17 pages, log
+  grep 0 issues), archive repacked (10872 bytes), page 9 re-rendered and
+  verified. Scala proof A.5 (`assertAccMatchesApply`) was always correct —
+  only the human-readable proof sketch had the typo.
 
 ## What is Learned
 
@@ -145,3 +153,4 @@ archive + clean-room compile, and tag.
 | 2026-09-06 | Parity audit caught one real defect the compile log could not: an extra `\therefore` display I had inserted in §4.2's inductive step (marker counts 11 vs 12) — the md's order there is implication → aligned → ∴ → Q.E.D., with no ∴ after the implication. Removed; 11=11. The URL-set diff and Scala byte-diff were clean on first pass (unlike the `list` conversion, where the URL diff caught a `\#` bug). | Visual review, archive, clean-room compile. |
 | 2026-09-06 | Clean-room compile of the archive reproduces the tracked 17-page PDF (8-byte size delta = PDF timestamp metadata only). Package is arXiv-ready. | Ticket complete pending author review; release step pins links. |
 | 2026-09-06 | Author visual review flagged the §5 proof chains: the md's flush-left `& LHS &=` rows leave the (left-aligned) LHS column far from its `=` when LHS widths differ. Author request: align around the `=`. Converted all nine §5 chain blocks (5.2, 5.3, 5.4 defs/base/inductive, 5.5 all four) to the list-package house shape `LHS &= RHS && \text{[Tag]}` — LHS in the right-aligned column, `&` immediately before `=`. §5.1's "Let:" premise block (no `=`-chain) keeps flush-left. Build green (0 issues), 17 pages, §5.2-5.5 pages re-rendered and verified; marker counts unchanged (11/10/11); archive rebuilt + clean-room exit 0, 0 issues. | Update CONVERSION_GUIDE if the next article has the same md pattern — candidate durable lesson: md `& LHS &=` chains convert to `LHS &= RHS && [Tag]`, not verbatim. |
+| 2026-09-06 | Content review found §5.2's `[Inductive hypothesis]` row used `tail(L)_p` where the proof chain requires `tail(I)_p` (the substitution step bridges `tail(I)_p` from [Tail Access Shift Left] with `acc(tail(L),…)_p` from [Recursive accumulation]; a list element never appears elsewhere in the chain, and element-vs-cumulative-sum is false for p ≥ 1, e.g. L=[1,2,3]). One-symbol fix in md + tex; PDF/tarball rebuilt in sync. Lesson: chain proofs where each row's terms must appear in an adjacent row are exactly where a wrong-index typo survives compile gates — only reading the chain end-to-end catches it. | md:458 + tex:96 fixed 2026-09-06; verify PDF page 9 on next author review. |

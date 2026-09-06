@@ -455,7 +455,7 @@ The $k\text{-th}$ element of the Integral equals the $k\text{-th}$ element of th
 &I_0 &= x_0 + i = \text{acc}_0                                                        & \qquad \text{[Base case]} \\
 &I_{(p+1)} &= \text{tail}(I)_p                                                        & \qquad \text{[Tail Access Shift Left]} \\
 &\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                         & \qquad \text{[Recursive accumulation]} \\
-&\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
+&\text{tail}(I)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
 &\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
 && \therefore \\
 &\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                 & \qquad \text{[Q.E.D.]}

@@ -93,7 +93,7 @@ I_{(p+1)} &= \operatorname{tail}(I)_p
   && \text{[Tail Access Shift Left]} \\
 \operatorname{acc}_{(p+1)} &= \operatorname{acc}(\operatorname{tail}(L),(x_0 + i))_p
   && \text{[Recursive accumulation]} \\
-\operatorname{tail}(L)_p &= \operatorname{acc}(\operatorname{tail}(L), (x_0 + i))_p
+\operatorname{tail}(I)_p &= \operatorname{acc}(\operatorname{tail}(L), (x_0 + i))_p
   && \text{[Inductive hypothesis]} \\
 \implies \quad I_{p+1} &= \operatorname{acc}_{p+1}
   && \text{[By substitution]} \\
