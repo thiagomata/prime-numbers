@@ -1,6 +1,6 @@
 # Formal Verification of Sieve Sequence Stages and Their Transitions
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
@@ -904,7 +904,7 @@ the full-period facts alone.
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Division and Modulo from Recursive
-Normalization*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md).
+Normalization*. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists
