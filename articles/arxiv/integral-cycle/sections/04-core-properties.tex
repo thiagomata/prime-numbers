@@ -1,0 +1,134 @@
+\section{Core Verified Properties}
+
+The fundamental properties of the cycle integral that hold for every
+position.
+
+\begin{itemize}
+  \item Next position: $CI_{i+1} = CI_i + \operatorname{Cycle}(L)_{i+1}$ ---
+    Subsection~4.1
+  \item Full cycle shift: adding one cycle period advances by the total sum
+    --- Subsection~4.2
+  \item Sum of mod values: the modulo definition matches the list sum ---
+    Subsection~4.3
+  \item Strictly increasing: positive base values force a strictly growing
+    integral --- Subsection~4.4
+  \item Positivity: a non-negative start and positive base values keep the
+    integral positive everywhere --- Subsection~4.5
+\end{itemize}
+
+\subsection{Next Position}
+
+For any positive position, the cycle integral at that position equals the
+previous value plus the current cycle element.
+
+\begin{equation*}
+\forall\, i > 0: \ \mathit{CI}(L, init)_i = \mathit{CI}(L, init)_{i-1} + \operatorname{Cycle}(L)_i
+\end{equation*}
+
+This follows directly from the recursive definition of
+\texttt{CycleIntegral}.
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertNextPosition}}.
+\par}
+
+\subsection{Same Difference After Full Cycle}
+
+The difference between consecutive values is invariant under adding a full
+cycle size to both positions.
+
+\begin{equation*}
+\forall\, i \geq 0: \ \mathit{CI}(L, init)_{i+1} - \mathit{CI}(L, init)_i = \mathit{CI}(L, init)_{i+size+1} - \mathit{CI}(L, init)_{i+size}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertSameDiffAfterCycle}}.
+A key Scala verification excerpt is in Appendix~A.6; the complete proof is
+linked in the source reference.
+\par}
+
+\subsection{Sum of Mod Values as List}
+
+The cycle integral at any position equals the sum of a constructed list
+containing the initial value and all cycle values up to that position (using
+modular indexing for positions beyond one cycle).
+
+\begin{equation*}
+\begin{aligned}
+\forall\, i \geq 0: \ \mathit{CI}(L, init)_i &= \operatorname{sum}([init] \\
+&\quad + [\operatorname{Cycle}(L)_0, \operatorname{Cycle}(L)_1, \dots, \operatorname{Cycle}(L)_i])
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertSumModValueAsListEqualsCycleIntegralLoop}}.
+A key Scala verification excerpt is in Appendix~A.7; the complete proof is
+linked in the source reference.
+\par}
+
+\subsection{Cycle Integral Strictly Increasing}
+
+When the initial value is non-negative and every base-list value is
+positive, the cycle integral is strictly increasing: a later position
+always produces a larger value.
+
+\begin{equation*}
+\begin{aligned}
+init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \;\land\; b > a \implies
+\operatorname{CycleIntegral}(L, init)_b > \operatorname{CycleIntegral}(L, init)_a
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} Induct on $b-a$. The base case is one positive step; the
+inductive step adds one more positive cycle value.
+
+\begin{equation*}
+\begin{aligned}
+b=a+1 &\implies CI_b-CI_a=\operatorname{Cycle}(L)_b>0 \\
+      &\quad \text{[\S3.1 and cycle positivity]} \\
+       &\implies CI_b>CI_a, \\
+CI_{b-1}>CI_a,\quad CI_b-CI_{b-1}=\operatorname{Cycle}(L)_b>0
+       &\implies CI_b>CI_{b-1}>CI_a \\
+\therefore\ CI_b &> CI_a.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertCycleIntegralIncreasing}}.
+\par}
+
+\subsection{Cycle Integral Positivity}
+
+When the initial value is non-negative and every base-list value is
+positive, the cycle integral is positive at every position.
+
+\begin{equation*}
+\begin{aligned}
+init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \implies
+\operatorname{CycleIntegral}(L, init)_i > 0
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} At the first position, the non-negative initial value and a
+positive cycle value give a positive integral. Every later position adds one
+more positive cycle value.
+
+\begin{equation*}
+\begin{aligned}
+CI_0 &= init+\operatorname{Cycle}(L)_0>0, \\
+CI_{i-1}>0,\quad CI_i-CI_{i-1}=\operatorname{Cycle}(L)_i>0
+  &\implies CI_i>0 \\
+\therefore\ CI_i &> 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertCycleIntegralPositive}}.
+\par}
