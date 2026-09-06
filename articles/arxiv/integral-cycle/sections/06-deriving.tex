@@ -1,0 +1,606 @@
+\section{Deriving New Cycle Integrals}
+
+These properties describe how to build a new cycle integral from an
+existing one: replicating its backing list, shifting its index, rotating
+its gaps, filtering out multiples of a value, and reconstructing the
+filtered result directly. Properties 6.1, 6.4--6.10 are fully
+Stainless-verified; Properties 6.2 and 6.3 have mathematical proofs but are
+not yet Stainless-verified.
+
+\begin{itemize}
+  \item x-fold cycle expansion: the physical period changes while the
+    represented stream is preserved --- Subsection~6.1
+  \item Index shifts: right and left --- Subsections~6.2--6.3
+  \item Gap rotation with head adjustment: rotating the gap cycle shifts
+    the represented integral by one position --- Subsection~6.4
+  \item Survivor filtering: exactness and structure of the scan that
+    retains non-multiples --- Subsections~6.5--6.6
+  \item Filter-merge reconstruction: the resulting gap cycle after removing
+    a multiple --- Subsections~6.7--6.10
+\end{itemize}
+
+\subsection{x-fold Cycle Expansion}
+
+Let $L^{(x)}$ be the $x$-fold concatenation of a list $L \in \mathbb{L}$.
+This operation changes the physical backing cycle, but it does not change
+the unbounded stream represented by the cycle.
+
+The values that change are the finite storage properties:
+
+\begin{equation*}
+\begin{aligned}
+|L^{(x)}| &= x \cdot |L|
+  \quad &&\text{[Expanded physical period]} \\
+\sum L^{(x)} &= x \cdot \sum L
+  \quad &&\text{[Expanded physical sum]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+The period equation is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala}{\texttt{RepeatedGapIntegralProperties::\allowbreak assertRepeatedPeriodIsMultiplied}}.
+\par}
+
+The values that do not change are the semantic stream properties:
+
+\begin{equation*}
+\begin{aligned}
+L^{(x)}_i &= L_{(i \operatorname{mod} |L|)}
+  \quad &&\text{[Same cycle lookup]} \\
+\operatorname{CycleIntegral}(L^{(x)}, init)_i
+  &= \operatorname{CycleIntegral}(L, init)_i
+  \quad &&\text{[Same integral stream]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+The cycle lookup equation is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala}{\texttt{RepeatedGapIntegralProperties::\allowbreak assertReplicatedCycleValueEqual}}.
+\par}
+
+So the expansion is not an invariance of the finite cycle object itself. It
+is an invariance of the infinite stream that the cycle object represents.
+
+\begin{equation*}
+\begin{aligned}
+n &= |L|, \quad L = [v_0, \dots, v_{n-1}]
+  &&\text{[Length of original cycle]} \\
+L^{(x)}
+&:= \underbrace{L \mathbin{\texttt{++}} \dots \mathbin{\texttt{++}} L}_{x \text{ copies}}
+  &&\text{[Concatenate $x$ copies]} \\
+m &:= |L^{(x)}| = x \cdot n
+  &&\text{[Length of new cycle]} \\
+T &:= \sum_{j=0}^{n-1} v_j
+  &&\text{[Original cycle sum]}
+\end{aligned}
+\end{equation*}
+
+The list-level repetition is defined by applying the original list at the
+original index modulo $n$:
+
+\begin{equation*}
+\begin{aligned}
+L^{(x)}_i &= L_{(i \operatorname{mod} n)}
+  \quad &&\text{for } 0 \le i < x \cdot n \\
+\sum L^{(x)} &= x \cdot \sum L
+  \quad &&\text{[Repeated sum]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+These list-level properties are verified by \texttt{RepeatedList} and
+\texttt{ListRepeatProperties}: the repeated list size is $x \cdot n$, the
+repeated value at index $i$ is the original value at
+$i \operatorname{mod} n$, and the repeated sum is $x$ times the original
+sum. See
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/RepeatedList.scala}{\texttt{RepeatedList}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RepeatedListProperties.scala}{\texttt{RepeatedListProperties::\allowbreak assertSumMultiplier}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListRepeatProperties.scala}{\texttt{ListRepeatProperties::\allowbreak assertRepeatedIndex}}.
+\par}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{CycleIntegral}(L^{(x)}, init)_i
+&= (i \operatorname{div} m)\cdot T^{(x)} + I^{(x)}_{i \bmod m} + init
+  &&\text{[By Definition]} \\
+&= (i \operatorname{div} (x \cdot n))\cdot (x \cdot T) + I^{(x)}_{i \bmod (x \cdot n)} + init
+  &&\text{[Substitution]} \\
+&= (i \operatorname{div} n)\cdot T + I_{i \bmod n} + init
+  &&\text{[Exact simplification]} \\
+&= \operatorname{CycleIntegral}(L, init)_i
+  &&\text{[Exact value reproduction]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \forall \ i \in \mathbb{N}_0: \ \operatorname{CycleIntegral}(L^{(x)}, init)_i = \operatorname{CycleIntegral}(L, init)_i \quad \blacksquare
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertRepeatedValuesIntegralMatches}}.
+The full Scala verification code is in Appendix~A.8.
+\par}
+
+\subsection{Right Index Shift}
+
+Let $L' \in \mathbb{L}$ be the right shift of $L \in \mathbb{L}$ by one
+position, and $init' := init + L_0$ be the shifted initial value. Then the
+CycleIntegral of $L'$ with $init'$ reproduces the CycleIntegral of $L$ with
+$init$, shifted by one position.
+
+\begin{equation*}
+\begin{aligned}
+n &= |L|, \quad L = [v_0, \dots, v_{n-1}] \\
+L' &:= [v_1, v_2, \dots, v_{n-1}, v_0] \\
+S' &= S \quad &\text{[Cycle Sum Invariance]} \\
+init' &:= init + L_0
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_{i+1} = \operatorname{CycleIntegral}(L', init')_{i} \quad \forall i \in \mathbb{N}_0
+\end{equation*}
+
+\textbf{Base Case}:
+
+\begin{equation*}
+\begin{aligned}
+A &:= \operatorname{CycleIntegral}(L, init)_i \\
+B &:= \operatorname{CycleIntegral}(L', init')_{i} \\
+A_0 &= init + L_0 \\
+A_1 &= init + L_0 + L_1 \\
+B_0 &= init' + L'_0 = (init + L_0) + L'_0 = init + L_0 + L_1 = A_1
+\end{aligned}
+\end{equation*}
+
+\textbf{Induction Step}:
+
+\begin{equation*}
+\begin{aligned}
+B_{i-1} &= A_i \quad &\text{[Induction Hypothesis]} \\
+A_{i+1} &= A_i + L_{((i + 1) \operatorname{mod} n)} \quad &\text{[By Definition]} \\
+B_i &= B_{i-1} + L'_{(i \operatorname{mod} n)} \quad &\text{[By Definition]} \\
+    &= A_i + L_{((i + 1) \operatorname{mod} n)} \quad &\text{[By Induction Hypothesis]} \\
+    &= A_{i+1} \quad &\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \forall \ i \in \mathbb{N}_0: \ \operatorname{CycleIntegral}(L, init)_{i+1} = \operatorname{CycleIntegral}(L', init')_{i} \quad \blacksquare
+\end{equation*}
+
+The one-period \texttt{CycleIntegral} wrapper is verified directly. If the
+shifted cycle uses the one-step rotation of the original backing values and
+the shifted initial value is advanced by the original first gap, then the
+shifted integral at position \texttt{i} equals the original integral at
+position \texttt{i + 1} for every stored-period index with
+\texttt{i + 1 < period}.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertRotateOneCycleIntegralShiftsByOne}}.
+The full Scala verification code is in Appendix~A.9.
+\par}
+
+The article's mathematical statement above is the all-position version. The
+verified lemma proves the stored-period core; packaging the universal
+all-position wrapper only needs the already verified full-cycle shift law.
+
+\subsection{Left Index Shift}
+
+Let $L'' \in \mathbb{L}$ be the left shift of $L \in \mathbb{L}$ by one
+position ($|L| > 1$), and $init'' := init + L_0 - L_{n-1}$ be the shifted
+initial value. Then the CycleIntegral of $L''$ with $init''$ reproduces the
+CycleIntegral of $L$ with $init$, shifted by one position in the opposite
+direction.
+
+\begin{equation*}
+\begin{aligned}
+n &= |L|, \quad L = [v_0, \dots, v_{n-1}], \quad n > 1 \\
+L'' &:= [v_{n-1}, v_0, v_1, \dots, v_{n-2}] \\
+S'' &= S \quad &\text{[Cycle Sum Invariance]} \\
+init'' &:= init + L_0 - L_{n-1}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_i = \operatorname{CycleIntegral}(L'', init'')_{i+1} \quad \forall i \in \mathbb{N}_0
+\end{equation*}
+
+\textbf{Base Case}:
+
+\begin{equation*}
+\begin{aligned}
+C &:= \operatorname{CycleIntegral}(L'', init'')_{i} \\
+C_1 &= init'' + L''_0 = (init + L_0 - L_{n-1}) + L''_0 \\
+    &= init + L_0 - L_{n-1} + L_{n-1} = init + L_0 = A_0
+\end{aligned}
+\end{equation*}
+
+\textbf{Induction Step}:
+
+\begin{equation*}
+\begin{aligned}
+C_{i+1} &= A_i \quad &\text{[Induction Hypothesis]} \\
+A_{i+1} &= A_i + L_{((i + 1) \operatorname{mod} n)} \quad &\text{[By Definition]} \\
+C_{i+1} &= C_{i} + L''_{(i \operatorname{mod} n)} \quad &\text{[By Definition]} \\
+       &= A_i + L_{((i - 1 + n) \operatorname{mod} n)} \quad &\text{[By Induction Hypothesis]} \\
+       &= A_{i+1} \quad &\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \forall \ i \in \mathbb{N}_0: \ \operatorname{CycleIntegral}(L, init)_{i+1} = \operatorname{CycleIntegral}(L'', init'')_{i} \quad \blacksquare
+\end{equation*}
+
+\subsection{Gap Rotation with Head Adjustment}
+
+Rotating a gap cycle by one position and adjusting the head shifts the
+entire integral by one position.
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{GapList}(\text{head} + \text{gaps}_0,\; \operatorname{tail}(\text{gaps}) \mathbin{\texttt{++}} (\text{gaps}_0 :: L_e))_i \\
+  &\quad = \operatorname{GapList}(\text{head},\; \text{gaps})_{i + 1}
+  \quad \text{for } 0 \leq i \text{ and } i + 1 < \operatorname{period}(\operatorname{ci}).
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} At $i=0$, the adjusted head is
+$\text{head}+\text{gaps}_0$, which is the original integral at position
+$1$. For $i>0$, assume the shifted integral at $i-1$ equals the original
+integral at $i$. The rotated gap at $i$ is the original gap at $i+1$;
+applying the one-step property to both integrals gives
+
+\begin{equation*}
+\begin{aligned}
+I'_i &= I'_{i-1} + \text{gaps}'_{i-1} \\
+     &= I_i + \text{gaps}_i \\
+     &= I_{i+1}. \\
+\therefore\ I'_i &= I_{i+1}
+\quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertRotateOneShiftsIntegralByOne}}.
+It delegates to the verified
+\texttt{ShiftedList.assertShiftedApplyIsOriginalPlusOne}; the full source is
+linked there rather than repeated inline.
+\par}
+
+For a filter value $f$ and a range $[start, start + count)$, the survivor
+sequence is the sub-sequence of $ci$'s values at those positions whose
+remainder modulo $f$ is nonzero --- the cycle-integral analogue of one
+Eratosthenes sieve step~\cite{hardywright1979}, where positions divisible by
+$f$ are removed and only the non-multiples remain:
+
+\begin{equation*}
+\begin{aligned}
+&S := \operatorname{survivorValues}(ci, f, start, count) := \\
+&\quad \big[\, ci(pos) \mid start \le pos < start + count,\ \operatorname{mod}(ci(pos), f) \neq 0 \,\big]
+\end{aligned}
+\end{equation*}
+
+Ten verified lemmas in \texttt{GapProperties.scala} characterize this
+sequence.
+
+\subsection{Survivor Exactness}
+
+$S$ is exact by construction: it is defined as exactly the non-multiples of
+$f$ in range, nothing more and nothing less. The recursive Scala
+implementation of \texttt{survivorValues} is verified to compute exactly
+this specification.
+
+{\raggedright
+This is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertSurvivorValuesContainsOnlyNonMultiples}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertSurvivorValuesContainsNonMultipleAtPosition}}.
+\par}
+
+\subsection{Survivor Structure}
+
+When every value in $[start, pos)$ is a multiple of $f$ and $ci(pos)$
+itself is not, $ci(pos)$ is the first survivor, and $S$ decomposes as that
+value followed by the survivors of the rest of the range, $(pos, end)$
+where $end := start + count$:
+
+\begin{equation*}
+\begin{aligned}
+&\big(\forall\, q \in [start, pos),\ \operatorname{mod}(ci(q), f) = 0\big)
+  \;\land\; \operatorname{mod}(ci(pos), f) \neq 0 \\
+&\quad \implies \operatorname{head}(S) = ci(pos)
+  \quad \text{[First survivor]} \\
+&S = ci(pos) :: \big[\, ci(q) \mid pos < q < end,\ \operatorname{mod}(ci(q), f) \neq 0 \,\big]
+  \quad \text{[Structural split]}
+\end{aligned}
+\end{equation*}
+
+At the endpoints of a range that itself survives, the first and last
+elements of $S$ are exactly the endpoint values, and over one complete
+period the difference between them equals the cycle's total gap sum ---
+filtering does not change how far the integral advances across a full
+period:
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{mod}(ci(start), f) \neq 0
+  \implies \operatorname{head}(S) = ci(start) \\
+&\operatorname{mod}(ci(start + count - 1), f) \neq 0
+  \implies \operatorname{last}(S) \\
+&\quad = ci(start + count - 1) \\
+&\operatorname{mod}(ci(0), f) \neq 0 \;\land\; \operatorname{mod}(ci(n), f) \neq 0
+  \implies \operatorname{last}(S) - \operatorname{head}(S) = \operatorname{periodSum}(ci)
+\end{aligned}
+\end{equation*}
+
+The gap between two consecutive survivors, once every intervening multiple
+has been filtered out, is strictly positive:
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{mod}(ci(from), f) \neq 0 \;\land\; \operatorname{mod}(ci(to), f) \neq 0
+\;\land\; \big(\forall\, q \in (from, to),\ \operatorname{mod}(ci(q), f) = 0\big) \\
+&\quad \implies ci(to) - ci(from) > 0
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+All survivor-structure properties are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertFirstSurvivorAtPosition}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertSurvivorValuesSplitAtFirstPosition}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertFirstSurvivorIsHead}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertLastSurvivorIsLastScanned}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertFilteredSumEqualsOriginalSum}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{assertMergedGapPositive}}.
+\par}
+
+Filtering removes a value; the surviving values must still form a valid
+cycle-integral gap list. This section proves that removing one multiple by
+merging its two neighboring gaps produces exactly the cycle integral that
+a fresh construction from the survivor list would produce, and that the
+result contains no multiples of the filter value anywhere.
+
+\subsection{Merge Shift Law}
+
+Let $ci$ be a cycle integral with period $n$, and let $m$ be a merge index
+with $0 \le m$ and $m + 1 < n$. Let $ci'$ be a cycle integral with period
+$n - 1$, the same initial value, and a gap cycle equal to $ci$'s except
+that the gaps at $m$ and $m + 1$ are combined into one:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{cycle}'(i) &= \operatorname{cycle}(i)
+  &&\text{for } i < m \\
+\operatorname{cycle}'(m) &= \operatorname{cycle}(m) + \operatorname{cycle}(m + 1) \\
+\operatorname{cycle}'(i) &= \operatorname{cycle}(i + 1)
+  &&\text{for } i > m
+\end{aligned}
+\end{equation*}
+
+Then $ci'$ agrees with $ci$ before the merge point, and agrees with $ci$
+one position ahead at and after it:
+
+\begin{equation*}
+\begin{aligned}
+pos < m &\implies ci'(pos) = ci(pos)
+  &&\text{[Before merge]} \\
+ci'(m) &= ci(m + 1)
+  &&\text{[At merge]} \\
+pos > m &\implies ci'(pos) = ci(pos + 1)
+  &&\text{[After merge]} \\
+ci'(n - 1) &= ci(n)
+  &&\text{[Period boundary]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} By induction on the position, using the step property
+(Subsection~3.1) in each of three cases split at the merge point.
+
+\textbf{Case 1: Before the merge} ($pos < m$), by induction on $pos$.
+
+\textbf{Base Case} ($pos = 0$):
+
+\begin{equation*}
+\begin{aligned}
+ci'(0) &= init + \operatorname{cycle}'(0)
+  &&\text{[By Definition]} \\
+&= init + \operatorname{cycle}(0)
+  &&\text{[Same initial value; unchanged gap before merge]} \\
+&= ci(0)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Induction Step} ($0 < pos < m$):
+
+\begin{equation*}
+\begin{aligned}
+ci'(pos - 1) &= ci(pos - 1)
+  &&\text{[Induction Hypothesis]} \\
+ci'(pos) &= ci'(pos - 1) + \operatorname{cycle}'(pos)
+  &&\text{[By Definition]} \\
+&= ci(pos - 1) + \operatorname{cycle}(pos)
+  &&\text{[Substitution; unchanged gap before merge]} \\
+&= ci(pos)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ pos < m \implies ci'(pos) = ci(pos) \quad \blacksquare
+\end{equation*}
+
+\textbf{Case 2: At the merge} ($pos = m$). For $m > 0$, using Case 1 at
+$m - 1$:
+
+\begin{equation*}
+\begin{aligned}
+ci'(m) &= ci'(m - 1) + \operatorname{cycle}'(m)
+  &&\text{[By Definition]} \\
+&= ci(m - 1) + \big(\operatorname{cycle}(m) + \operatorname{cycle}(m + 1)\big)
+  &&\text{[Case 1; merged-gap definition]} \\
+&= \big(ci(m - 1) + \operatorname{cycle}(m)\big) + \operatorname{cycle}(m + 1)
+  &&\text{[Regroup]} \\
+&= ci(m) + \operatorname{cycle}(m + 1)
+  &&\text{[By Definition]} \\
+&= ci(m + 1)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+For $m = 0$, the same identity holds directly, with no Case 1 dependency:
+$ci'(0) = init + \operatorname{cycle}'(0) = init + \operatorname{cycle}(0) + \operatorname{cycle}(1) = ci(1)$.
+
+\begin{equation*}
+\therefore \ ci'(m) = ci(m + 1) \quad \blacksquare
+\end{equation*}
+
+\textbf{Case 3: After the merge} ($pos > m$), by induction on $pos$.
+
+\textbf{Base Case} ($pos = m + 1$), using Case 2:
+
+\begin{equation*}
+\begin{aligned}
+ci'(m + 1) &= ci'(m) + \operatorname{cycle}'(m + 1)
+  &&\text{[By Definition]} \\
+&= ci(m + 1) + \operatorname{cycle}(m + 2)
+  &&\text{[Case 2; shifted-gap definition]} \\
+&= ci(m + 2)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Induction Step} ($pos > m + 1$):
+
+\begin{equation*}
+\begin{aligned}
+ci'(pos - 1) &= ci(pos)
+  &&\text{[Induction Hypothesis]} \\
+ci'(pos) &= ci'(pos - 1) + \operatorname{cycle}'(pos)
+  &&\text{[By Definition]} \\
+&= ci(pos) + \operatorname{cycle}(pos + 1)
+  &&\text{[Substitution; shifted-gap definition]} \\
+&= ci(pos + 1)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ pos > m \implies ci'(pos) = ci(pos + 1) \quad \blacksquare
+\end{equation*}
+
+The period boundary case is the last instance of Case 3, at $pos = n - 1$:
+$ci'(n - 1) = ci(n)$.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{CycleIntegralFilterProperties::\allowbreak assertSameBeforeMerge}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertShiftAtMerge}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertShiftAfterMerge}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertNewCIAtSizeEqualsOld}}.
+The full Scala verification code is in Appendix~A.13.
+\par}
+
+\subsection{Removing a Multiple}
+
+When the value at the merge point is a multiple of a filter value $f$,
+merging its two neighboring gaps removes it from the sequence entirely:
+the new integral's value at that position is the old integral's next
+value, which by construction is not itself a multiple.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(ci(0), f) \neq 0 \;\land\; \operatorname{mod}(ci(m), f) = 0
+&\implies ci'(m) = ci(m + 1)
+&&\text{[Multiple removed]} \\
+\operatorname{mod}(ci(m + 1), f) \neq 0
+&\implies \operatorname{mod}(ci'(m), f) \neq 0
+&&\text{[Result is not a multiple]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} The first identity is the merge shift law's "at merge" case
+(Subsection~6.7) applied directly: $ci'(m) = ci(m + 1)$
+regardless of whether $ci(m)$ was a multiple. The second follows because
+equal values satisfy the same modulo condition.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{CycleIntegralFilterProperties::\allowbreak assertRemoveOneMultiple}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertRemoveMultipleModNotZero}}.
+The full Scala verification code is in Appendix~A.14.
+\par}
+
+\subsection{Direct Construction from Survivors}
+
+Rather than merging gaps one multiple at a time, a filtered cycle integral
+can be built directly from the survivor list (Subsection~6.5):
+its initial value is the first survivor, and its gap cycle is the list of
+differences between consecutive survivors. This direct construction
+reproduces exactly what repeated merging would produce.
+
+\begin{equation*}
+\begin{aligned}
+S &:= \operatorname{survivorValues}(ci, f, 0, n) \\
+ci''\text{'s initial value} &= S_0,\quad \operatorname{cycle}''(i) = S_{i+1} - S_i \\
+\implies ci''(k) &= S_{k + 1}
+&&\text{[Direct construction matches survivors]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} By induction on $k$. The base case follows directly from the
+integral's own definition applied to the first gap. The inductive step
+adds the $k$-th constructed gap, which by definition equals
+$S_{k+1} - S_k$, to the inductive hypothesis $ci''(k-1) = S_k$, giving
+$ci''(k) = S_{k+1}$.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{CycleIntegralFilterProperties::\allowbreak assertNewCIGeneratesFiltered}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertNewCIMatchesSurvivors}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertGapsFromSurvivorsMatchCI}}.
+The full Scala verification code is in Appendix~A.15.
+\par}
+
+\subsection{Filtered Result Has No Multiples}
+
+The cycle integral constructed directly from the survivor list contains no
+multiples of the filter value at any position --- its values are, by
+construction, exactly the survivors.
+
+\begin{equation*}
+\operatorname{mod}(ci(0), f) \neq 0 \implies
+\operatorname{mod}(ci''(k), f) \neq 0
+\quad \text{for every valid } k
+\end{equation*}
+
+\textbf{Proof.} By Subsection~6.9, $ci''(k)$
+equals the survivor $S_{k+1}$, and every element of the survivor list is
+already known not to be a multiple of $f$
+(Subsection~6.5).
+
+\begin{equation*}
+\begin{aligned}
+ci''(k) &= S_{k+1} &&\text{[\S6.9]} \\
+\operatorname{mod}(S_{k+1},f) &\neq 0 &&\text{[\S6.5]} \\
+\therefore\ \operatorname{mod}(ci''(k),f) &\neq 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{CycleIntegralFilterProperties::\allowbreak assertFilterMergeComposition}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{assertNextGapsValid}}.
+The full Scala verification code is in Appendix~A.16.
+\par}
