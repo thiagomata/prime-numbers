@@ -143,6 +143,25 @@ These are the rules the author's visual review enforced:
   `=`-chain, a premise/conclusion pair using the flush-left leading-`&`
   pattern, or a tagged recap row) — never as a bare line-break device.
 
+- **Markdown `& LHS &= RHS` chains must be re-aligned around the `=`**, not
+  converted verbatim. The md's leading-`&` form puts the LHS in a
+  *left-aligned* column, so when LHS widths differ inside a block (short
+  `L`, `I`, `I_0` next to a wide `acc(L, i)`), every short name sits far
+  left of its `=` with a large gap (author-flagged in the `integral`
+  conversion, §5.2–§5.5). Convert to the house chain shape instead —
+  LHS in the right-aligned column, `&` immediately before the relation,
+  tags in a `&&` column:
+
+  ```latex
+  \begin{aligned}
+  L &= x_0 :: \operatorname{tail}(L)  && \text{[List decomposition]} \\
+  \operatorname{acc}(L, i) &= \dots   && \text{[Definition of acc]} \\
+  \end{aligned}
+  ```
+
+  The md's flush-left leading-`&` pattern remains correct only for premise
+  lists and recap rows with no `=`-chain alignment need.
+
 ## 4. Links and Code
 
 - Copy link URLs verbatim from the Markdown. Labels use `\texttt{...}`.
