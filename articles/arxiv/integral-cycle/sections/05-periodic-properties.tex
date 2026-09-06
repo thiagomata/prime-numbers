@@ -1,0 +1,395 @@
+\section{Persistent and Periodic Properties}
+
+These properties describe a single, fixed cycle integral: how its residues
+behave forever, and how it advances across full periods. All six
+properties are fully Stainless-verified, except Properties 5.3 and 5.4,
+which are direct corollaries of Property 5.2.
+
+\begin{itemize}
+  \item Cycle-period shifts: a full period advances the integral by the
+    cycle sum --- Subsection~5.1
+  \item General residue periodicity: any residue depends only on the
+    position within one cycle period --- Subsection~5.2
+  \item Persistent non-zero residue: if no residue in one period is zero,
+    none ever is --- Subsection~5.3
+  \item Persistent zero residue: if every residue in one period is zero,
+    every residue always is --- Subsection~5.4
+  \item Gap telescoping: two consecutive gaps sum to the integral span
+    across both --- Subsection~5.5
+  \item Residue classification: all-zero, some-zero, none-zero ---
+    Subsection~5.6
+\end{itemize}
+
+\subsection{Cycle-Period Shifts}
+
+After a full cycle period, the integral advances by the cycle's total sum.
+This is the termination bound for scanning: a survivor is always found
+within one cycle period because the integral advances by a fixed, positive
+amount.
+
+Both quantities below belong to the finite backing cycle that $ci$
+accumulates over, not to $ci$'s own output stream --- which is unbounded
+and, by Section~4.4, strictly increasing and never repeats:
+
+\begin{equation*}
+\begin{aligned}
+n &:= \operatorname{period}(ci)
+  &&\text{[Length of the finite backing cycle]} \\
+\operatorname{periodSum}(ci) &:= \sum_{j=0}^{n-1} \operatorname{cycle}(j)
+  &&\text{[Total of one period's gap values]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{ci}(\operatorname{pos} + \operatorname{period}(ci)) &= \operatorname{ci}(\operatorname{pos}) + \operatorname{periodSum}(ci)
+  && \text{[Full-cycle shift]} \\
+\operatorname{ci}(\operatorname{pos} + \operatorname{period}(ci) \cdot m) &= \operatorname{ci}(\operatorname{pos}) + m \cdot \operatorname{periodSum}(ci)
+  && \text{[Multi-cycle shift, by induction on } m \text{]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.}
+
+\textbf{Step 0 (base identity, $pos = 0$).} Unfolding the recursive
+definition of $ci$ across one full period, using the cycle's own periodicity
+($\operatorname{cycle}(\operatorname{period}(ci)) = \operatorname{cycle}(0)$,
+by definition of a cycle --- Section~1) and reordering the resulting finite
+sum:
+
+\begin{equation*}
+\begin{aligned}
+& ci(\operatorname{period}(ci)) - ci(0)
+  = \operatorname{cycle}(1) + \dots + \operatorname{cycle}(\operatorname{period}(ci) - 1) \\
+&\quad + \operatorname{cycle}(\operatorname{period}(ci))
+  \quad \text{[Telescoping the recursive definition]} \\
+&= \operatorname{cycle}(1) + \dots + \operatorname{cycle}(\operatorname{period}(ci) - 1) + \operatorname{cycle}(0)
+  \quad \text{[Cycle periodicity]} \\
+&= \operatorname{cycle}(0) + \operatorname{cycle}(1) + \dots + \operatorname{cycle}(\operatorname{period}(ci) - 1)
+  \quad \text{[Reorder terms]} \\
+&= \operatorname{periodSum}(ci)
+  \quad \text{[By Definition of periodSum(ci)]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ ci(\operatorname{period}(ci)) = ci(0) + \operatorname{periodSum}(ci) \quad \blacksquare
+\end{equation*}
+
+\textbf{Full-cycle shift, by induction on $pos$.}
+
+\textbf{Base Case} ($pos = 0$): shown in Step 0.
+
+\textbf{Induction Step} ($pos > 0$):
+
+\begin{equation*}
+\begin{aligned}
+ci(\operatorname{pos} - 1 + \operatorname{period}(ci)) &= ci(\operatorname{pos} - 1) + \operatorname{periodSum}(ci)
+  &&\text{[Induction Hypothesis]} \\
+\operatorname{cycle}(\operatorname{pos} + \operatorname{period}(ci)) &= \operatorname{cycle}(\operatorname{pos})
+  &&\text{[Cycle periodicity]} \\
+ci(\operatorname{pos} + \operatorname{period}(ci)) &= ci(\operatorname{pos} - 1 + \operatorname{period}(ci)) \\
+    &\quad + \operatorname{cycle}(\operatorname{pos} + \operatorname{period}(ci))
+  &&\text{[By Definition]} \\
+&= \big(ci(\operatorname{pos} - 1) + \operatorname{periodSum}(ci)\big) + \operatorname{cycle}(\operatorname{pos})
+  &&\text{[Substitution]} \\
+&= \big(ci(\operatorname{pos} - 1) + \operatorname{cycle}(\operatorname{pos})\big) + \operatorname{periodSum}(ci)
+  &&\text{[Regroup]} \\
+&= ci(\operatorname{pos}) + \operatorname{periodSum}(ci)
+  &&\text{[By Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \forall \ \operatorname{pos} \in \mathbb{N}_0,\ ci(\operatorname{pos} + \operatorname{period}(ci)) = ci(\operatorname{pos}) + \operatorname{periodSum}(ci) \quad \blacksquare
+\end{equation*}
+
+\textbf{Multi-cycle shift, by induction on $m$.}
+
+\textbf{Base Case} ($m = 0$):
+
+\begin{equation*}
+ci(\operatorname{pos} + \operatorname{period}(ci) \cdot 0) = ci(\operatorname{pos}) = ci(\operatorname{pos}) + 0 \cdot \operatorname{periodSum}(ci)
+\end{equation*}
+
+\textbf{Induction Step} ($m > 0$):
+
+\begin{equation*}
+\begin{aligned}
+ci(\operatorname{pos} + \operatorname{period}(ci) \cdot (m - 1)) &= ci(\operatorname{pos}) \\
+  &\quad + (m - 1) \cdot \operatorname{periodSum}(ci)
+  \quad \text{[Induction Hypothesis]} \\
+ci\big((\operatorname{pos} + \operatorname{period}(ci) \cdot (m - 1)) + \operatorname{period}(ci)\big)
+  &= ci(\operatorname{pos} + \operatorname{period}(ci) \cdot (m - 1)) \\
+  &\quad + \operatorname{periodSum}(ci)
+  \quad \text{[Full-cycle shift]} \\
+ci(\operatorname{pos} + \operatorname{period}(ci) \cdot m) &= \big(ci(\operatorname{pos}) + (m - 1) \cdot \operatorname{periodSum}(ci)\big) \\
+  &\quad + \operatorname{periodSum}(ci)
+  \quad \text{[Substitution]} \\
+&= ci(\operatorname{pos}) + m \cdot \operatorname{periodSum}(ci)
+  \quad \text{[Arithmetic]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \forall \ m \in \mathbb{N}_0,\ ci(\operatorname{pos} + \operatorname{period}(ci) \cdot m) = ci(\operatorname{pos}) + m \cdot \operatorname{periodSum}(ci) \quad \blacksquare
+\end{equation*}
+
+{\raggedright
+The full-cycle shift identity is verified twice under different names ---
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertPeriodicShift}}
+and \texttt{assertFullCycleShift} --- both thin wrappers over the same
+\texttt{CycleIntegralFilterProperties::\allowbreak assertCIShiftEqualsSum}
+lemma; the article proves the one identity above rather than two. The
+multi-cycle generalization is verified separately as
+\texttt{assertMultiCycleShift}. The core Scala verification code is in
+Appendix~A.12.
+\par}
+
+\subsection{General Residue Periodicity}
+
+When the total sum of a cycle's values is a multiple of \texttt{m}, the
+residue $\operatorname{mod}(ci(\operatorname{pos}), m)$ depends only on
+\texttt{pos \% ci.period} --- it repeats every cycle period. When \texttt{m}
+is a product of coprime values, the Chinese Remainder
+Theorem~\cite{hardywright1979} implies the periodicity holds simultaneously
+for each factor: the cycle period serves as a common period for all
+residues. This is the arithmetic backbone of Eratosthenes'
+sieve~\cite{hardywright1979}.
+
+\begin{equation*}
+\operatorname{mod}(\operatorname{periodSum}(ci),\; m) = 0
+\end{equation*}
+
+\begin{equation*}
+\implies\;
+\operatorname{mod}(ci(\operatorname{pos}),\; m) = \operatorname{mod}(ci(\operatorname{pos} \bmod \operatorname{period}(ci)),\; m)
+\end{equation*}
+
+\textbf{Proof.} By strong induction on \texttt{pos}, subtracting one full
+cycle period at a time.
+
+\textbf{Base Case} ($\operatorname{pos} < \operatorname{period}(ci)$):
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{pos} \bmod \operatorname{period}(ci) &= \operatorname{pos}
+  &&\text{[Mod of a value smaller than the divisor]} \\
+\operatorname{mod}(ci(\operatorname{pos}), m) &= \operatorname{mod}(ci(\operatorname{pos} \bmod \operatorname{period}(ci)), m)
+  &&\text{[Substitution]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Induction Step} ($\operatorname{pos} \geq \operatorname{period}(ci)$):
+let $\operatorname{previous} := \operatorname{pos} - \operatorname{period}(ci)$. By
+the one-period shift identity proven in Subsection~5.1,
+$ci(\operatorname{previous} + \operatorname{period}(ci)) = ci(\operatorname{previous}) + \operatorname{periodSum}(ci)$, i.e.
+$ci(\operatorname{pos}) = ci(\operatorname{previous}) + \operatorname{periodSum}(ci)$:
+
+\begin{equation*}
+\operatorname{previous} \bmod \operatorname{period}(ci) = \operatorname{pos} \bmod \operatorname{period}(ci)
+  \quad \text{[Subtracting a full period does not}
+\end{equation*}
+
+\begin{equation*}
+\text{change the position's residue]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(ci(\operatorname{previous}), m) = \operatorname{mod}(ci(\operatorname{previous} \bmod \operatorname{period}(ci)), m)
+  \quad \text{[Induction Hypothesis]}
+\end{equation*}
+
+\begin{equation*}
+ci(\operatorname{pos}) = ci(\operatorname{previous}) + \operatorname{periodSum}(ci)
+  \quad \text{[Full-cycle shift, \S5.1]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(ci(\operatorname{pos}), m) = \operatorname{mod}(ci(\operatorname{previous}) + \operatorname{periodSum}(ci), m)
+  \quad \text{[Substitution]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(ci(\operatorname{pos}), m) &= \operatorname{mod}(ci(\operatorname{previous}) + \operatorname{periodSum}(ci), m)
+  \quad \text{[Substitution]} \\
+&= \operatorname{mod}(ci(\operatorname{previous}), m)
+  \quad \text{[Since } \operatorname{mod}(\operatorname{periodSum}(ci), m) = 0 \text{]} \\
+&= \operatorname{mod}(ci(\operatorname{previous} \bmod \operatorname{period}(ci)), m)
+  \quad \text{[By Induction Hypothesis]} \\
+&= \operatorname{mod}(ci(\operatorname{pos} \bmod \operatorname{period}(ci)), m)
+  \quad \text{[By the residue equality above]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \ \operatorname{mod}(\operatorname{periodSum}(ci), m) = 0 \implies \forall \ \operatorname{pos} \in \mathbb{N}_0,
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(ci(\operatorname{pos}), m) = \operatorname{mod}(ci(\operatorname{pos} \bmod \operatorname{period}(ci)), m) \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}.
+The full Scala verification code is in Appendix~A.11.
+\par}
+
+{\raggedright
+The companion div/mod decomposition
+\texttt{ci(pos) == ci(pos \% size) + (pos / size) * ci.sum}
+is verified in
+\texttt{GapProperties::\allowbreak assertCIModDivFormula}.
+\par}
+
+\subsection{Persistent Non-Zero Residue}
+
+Let $v \in \mathbb{N}$, $v > 0$, with
+$\operatorname{mod}(\operatorname{periodSum}(ci), v) = 0$. If none of the
+$n$ residues in one full period is zero mod $v$, then the residue is never
+zero at any position, forever.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(\operatorname{periodSum}(ci), v) = 0 \;\land\; \big(\forall\, k \in [0, n),\ \operatorname{mod}(ci(k), v) \neq 0\big)
+\implies \forall\, i \in \mathbb{N}_0,\ \operatorname{mod}(ci(i), v) \neq 0
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} By Subsection~5.2, $\operatorname{mod}(ci(i), v)
+= \operatorname{mod}(ci(i \bmod n), v)$ for every position $i$. Since
+$i \bmod n$ always falls in $[0, n)$, and none of those $n$ residues is zero
+by hypothesis, the residue at any position $i$ cannot be zero either.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(ci(i),v) &= \operatorname{mod}(ci(i \bmod n),v) &&\text{[\S5.2]} \\
+                      &\neq 0 &&\text{[In-period hypothesis]} \\
+\therefore\ \operatorname{mod}(ci(i),v) &\neq 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This is a direct corollary of the periodicity lemma
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
+used in Subsection~5.2; no separate lemma is needed once every in-period
+residue is checked. The full Scala verification code is in Appendix~A.11.
+\par}
+
+\subsection{Persistent Zero Residue}
+
+The mirror-image case: if every residue in one full period is zero mod $v$,
+then the residue stays zero at every position, forever.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(\operatorname{periodSum}(ci), v) = 0 \;\land\; \big(\forall\, k \in [0, n),\ \operatorname{mod}(ci(k), v) = 0\big)
+\implies \forall\, i \in \mathbb{N}_0,\ \operatorname{mod}(ci(i), v) = 0
+\end{aligned}
+\end{equation*}
+
+{\sloppypar
+\textbf{Proof.} Identical to Subsection~5.3, with the inequality reversed:
+by Subsection~5.2, $\operatorname{mod}(ci(i), v) =
+\operatorname{mod}(ci(i \bmod n), v)$, and $i \bmod n$ always falls among
+the $n$ in-period residues, all of which are zero by hypothesis.
+\par}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(ci(i),v) &= \operatorname{mod}(ci(i \bmod n),v) &&\text{[\S5.2]} \\
+                      &= 0 &&\text{[In-period hypothesis]} \\
+\therefore\ \operatorname{mod}(ci(i),v) &= 0.
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This is the same corollary of
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
+as Subsection~5.3, applied to the opposite hypothesis. The full Scala
+verification code is in Appendix~A.11.
+\par}
+
+\subsection{Gap Telescoping}
+
+Two consecutive gaps telescope to the integral difference across both steps.
+By applying the one-step difference lemma twice, the gap values at positions
+\texttt{k} and \texttt{k + 1} add up to the integral span from \texttt{k - 1}
+to \texttt{k + 1}. This is the step-lemma that underlies merging adjacent gap
+ranges.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{ci}(k + 1) - \operatorname{ci}(k - 1) = \operatorname{cycle}(k) + \operatorname{cycle}(k + 1)
+\quad \text{for } 1 \leq k \text{ and } k + 1 < \operatorname{period}(\operatorname{ci}).
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} The one-step property at positions $k-1$ and $k$ gives
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{ci}(k) - \operatorname{ci}(k-1) &= \operatorname{cycle}(k), \\
+\operatorname{ci}(k+1) - \operatorname{ci}(k) &= \operatorname{cycle}(k+1).
+\end{aligned}
+\end{equation*}
+
+Adding these equalities cancels $\operatorname{ci}(k)$, so
+
+\begin{equation*}
+\begin{aligned}
+\therefore\ \operatorname{ci}(k+1) - \operatorname{ci}(k-1)
+= \operatorname{cycle}(k) + \operatorname{cycle}(k+1)
+\quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertConsecutiveGapSumEqualsDiff}}.
+The full Scala verification code is in Appendix~A.10.
+\par}
+
+\subsection{Cycle Residue Classification}
+
+For any cycle and modulus \texttt{d > 0}, the values of the cycle fall into
+exactly one of three residue categories modulo \texttt{d}:
+
+\begin{equation*}
+\text{all-zero:} \quad \forall k,\; \operatorname{mod}(\operatorname{cycle}(k), d) = 0
+  \quad \text{[Filter removes everything]}
+\end{equation*}
+
+\begin{equation*}
+\text{none-zero:} \quad \forall k,\; \operatorname{mod}(\operatorname{cycle}(k), d) \neq 0
+  \quad \text{[Filter has no effect]}
+\end{equation*}
+
+\begin{equation*}
+\text{some-zero:} \quad \exists k_0 : \operatorname{mod}(\operatorname{cycle}(k_0), d) = 0
+  \;\land\; \exists k_1 :
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(\operatorname{cycle}(k_1), d) \neq 0
+  \quad \text{[Filter removes specific positions]}
+\end{equation*}
+
+{\raggedright
+These three states are detected by \texttt{MemCycle.checkMod(d)} and stored
+in lists (\texttt{modIsZeroForAllValues}, \texttt{modIsZeroForNoneValues},
+\texttt{modIsZeroForSomeValues}). The evaluation is idempotent --- the
+cycle's values list never changes, only the classification metadata is
+updated. Ten lemmas in \texttt{CycleCheckMod.scala} prove the classification
+is correct, mutually exclusive, and exhaustive.
+\par}
+
+{\raggedright
+These properties are verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala}{\texttt{CycleCheckMod}}
+module.
+\par}
