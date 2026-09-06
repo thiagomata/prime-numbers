@@ -1,6 +1,6 @@
 # Formal Verification of Euclid's Theorem on the Infinitude of Primes
 
-**Author:** Mata, T. H.  
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
@@ -650,7 +650,7 @@ point for them.
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
@@ -659,7 +659,7 @@ Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recu
 Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Unbound Lists*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
+Mata, T. H. (2026). *Formal Verification of Cyclic Lists*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md)
