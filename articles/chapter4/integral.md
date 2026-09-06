@@ -94,7 +94,7 @@ We define the **discrete integral** $I = Integral(L, init)$ as a list of partial
 ```math
 \begin{aligned}
 \text{for } k \in [0, n - 1] \\
-I_{k} = init + \sum_{i=0}^{k} L_i \\
+I_{k} := init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
 ```
 
@@ -105,8 +105,8 @@ list at each recursive step and carrying the current accumulated value.
 
 ```math
 \begin{aligned}
-I &= \text{Integral}(L, init) \\
-n &= |L| \\
+I &:= \text{Integral}(L, init) \\
+n &:= |L| \\
 k &\in [0, n - 1]
 \end{aligned}
 ```
@@ -114,7 +114,7 @@ k &\in [0, n - 1]
 The value of the $k\text{-th}$ element in the integral $I$ is defined recursively as:
 
 ```math
-I_k =
+I_k :=
 \begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
@@ -404,7 +404,7 @@ Let:
 Then, the accumulated list is defined recursively as:
 
 ```math
-acc(L, init) =
+acc(L, init) :=
 \begin{cases}
 L_e & \text{if } L = L_e \\
 (\text{head}(L) + init) :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
@@ -665,7 +665,7 @@ gap-period decomposition — the foundation for reasoning about cumulative sums 
 ## 9. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
