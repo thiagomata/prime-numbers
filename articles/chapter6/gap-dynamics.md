@@ -3,7 +3,7 @@
 **Proof status:** The sequence foundation is Stainless-verified in the
 companion Sieve Sequence article. The signed-localization theorems introduced
 here are mathematically proved but not yet Stainless-verified.
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
