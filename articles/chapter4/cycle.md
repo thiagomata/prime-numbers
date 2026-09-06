@@ -1,6 +1,6 @@
 # Formal Verification of Cyclic Lists
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
@@ -412,7 +412,7 @@ i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text
 \end{aligned}
 ```
 
-The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
@@ -437,7 +437,7 @@ i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\t
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
@@ -577,7 +577,7 @@ Cycle values remain invariant when adding any multiple of the cycle period to th
 \therefore \ \text{Cycle}_{(i + n \cdot m)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoops
@@ -811,7 +811,7 @@ Rotation is defined by re-indexing the base list from offset $k$:
 The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#68-modulo-idempotence)
 and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#69-distributivity-over-addition),
 both proved and verified in [Division and Modulo from Recursive
-Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[3]](#ref3):
+Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
 $\text{mod}(k + \text{mod}(i,n),\, n) = \text{mod}(k+i,\, n)$ follows because
 both sides reduce to $\text{mod}(\text{mod}(k,n) + \text{mod}(i,n),\, n)$.
 
@@ -1084,7 +1084,7 @@ Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recu
 Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 The Lean Community. *Mathlib: List Rotation*.
