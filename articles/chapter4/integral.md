@@ -1,6 +1,6 @@
 # Formal Verification of Discrete Integration Properties from First Principles
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
