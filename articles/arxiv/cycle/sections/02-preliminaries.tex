@@ -1,0 +1,132 @@
+\section{Preliminaries}
+
+We reuse several basic list operations and their verified properties from the
+companion articles \href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter3/list.md}{\emph{Using Formal Verification to Prove Properties of Lists Recursively Defined}}~\cite{mata2026lists}
+and \href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/integral.md}{\emph{Formal Verification of Discrete Integration Properties from First Principles}}~\cite{mata2026integral}.
+
+These articles also defined and verified their properties using the same
+zero-prior-knowledge methodology, and are treated here as foundational
+primitives.
+
+For any list $L$ of numeric values $x_i \in \mathbb{S}$ where $\mathbb{S}$ is
+a set of all numeric values, $\mathbb{L}$ is the the set of all lists, and $n$
+is the size of the list, we define:
+
+\begin{equation*}
+\begin{aligned}
+L_e &\in \mathbb{L} \\
+L_e &= []
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&\text{head} \in \mathbb{S} \\
+&\text{tail} \in \mathbb{L} \\
+&L_{node}(\text{head}, \text{tail}) \in \mathbb{L}_{node}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\mathbb{L} = \{L_e\} \cup
+\{L_{node}(\text{head}, \text{tail})
+\mid \text{head} \in \mathbb{S},\ \text{tail} \in \mathbb{L}\}
+\end{equation*}
+
+\begin{equation*}
+L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{S}^n
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{size}(L) &:=
+\begin{cases}
+0 & \text{if } L = L_e \\
+1 + \operatorname{size}(\operatorname{tail}(L)) & \text{otherwise}
+\end{cases} \\
+\operatorname{sum}(L) &:=
+\begin{cases}
+0 & \text{if } L = L_e \\
+\operatorname{head}(L) + \operatorname{sum}(\operatorname{tail}(L))
+  & \text{otherwise}
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{gathered}
+\begin{aligned}
+|L| > 0 \implies \operatorname{last}(L) &:=
+\begin{cases}
+\operatorname{head}(L) & \text{if } |L| = 1 \\
+\operatorname{last}(\operatorname{tail}(L)) & \text{otherwise}
+\end{cases} \\
+|L| > 0 \implies \operatorname{slice}(L,f,t) &:=
+\begin{cases}
+[L_j] & \text{if } f = t \\
+\operatorname{slice}(L,f,t-1) \mathbin{\texttt{++}} [L_t]
+  & \text{if } f < t
+\end{cases}
+\end{aligned}
+\\[0.5ex]
+\forall\, f,t \in \mathbb{N}\ \text{where } 0 \leq f \leq t
+\end{gathered}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+A \mathbin{\texttt{++}} B &:=
+\begin{cases}
+B & \text{if } A = L_e \\
+L_{node}(\operatorname{head}(A),
+  \operatorname{tail}(A) \mathbin{\texttt{++}} B) & \text{otherwise}
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\forall\, L,A,B \in \mathbb{L}
+\end{equation*}
+
+From these definitions, the authors~\cite{mata2026lists} mathematically prove
+and formally verify the following properties of lists:
+
+\begin{equation*}
+\forall\, L,A,B \in \mathbb{L},\quad
+\forall\, v \in \mathbb{S},\quad
+\forall\, i,f,t \in \mathbb{N}
+\end{equation*}
+
+\begin{equation*}
+f > t,\quad 0 \leq i < |L|
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+|L| > 0 &\implies \operatorname{tail}(L)
+  = L[x_1,x_2,\dots,x_{n-1}] \quad \text{[Tail Identity]} \\
+|L| > 0 &\implies L_0 = \operatorname{head}(L)
+  \quad \text{[Head Identity]} \\
+|L| > 0 &\implies L_{|L|-1} = \operatorname{last}(L)
+  \quad \text{[Last Element Identity]} \\
+|L|-1 > i > 0 &\implies L_i = \operatorname{tail}(L)_{i-1}
+  \quad \text{[Access Tail Shift Left]} \\
+|L|-2 > i > 1 &\implies \operatorname{tail}(L)_i = L_{i+1}
+  \quad \text{[Access Tail Shift Right]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+|L| &= \operatorname{size}(L) \quad \text{[Size Identity]} \\
+\sum L &= \operatorname{sum}(L) \quad \text{[Sum matches Summation]} \\
+\sum (v :: L) &= v + \sum L \quad \text{[Left Append Preserves Sum]} \\
+\sum (A \mathbin{\texttt{++}} B) &= \sum A + \sum B
+  \quad \text{[Sum over Concatenation]} \\
+\sum (A \mathbin{\texttt{++}} B) &=
+  \sum (B \mathbin{\texttt{++}} A)
+  \quad \text{[Commutativity of Sum over Concatenation]} \\
+L[f \dots t] &= L[f \dots (t-1)] \mathbin{\texttt{++}} [L_t]
+  \quad \text{[Slice Append Consistency]}
+\end{aligned}
+\end{equation*}

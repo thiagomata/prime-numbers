@@ -1,0 +1,99 @@
+\section{Conclusion}
+
+This article presented the definitions and properties of Cycles, a fundamental
+concept that enables representation of repeating sequences of values. We
+defined Cycles using two approaches---a recursive definition and a modulo-based
+definition---and proved their equivalence for all positions. We further
+established eleven properties: element access via modular indexing, direct
+access for small positions, invariance under addition of cycle-period
+multiples, consistency across distinct multiples, modulo propagation from
+values to cycle access, repeated-cycle invariance, value positivity, rotation
+invariance, and the all-zero, none-zero, and some-zero transfers of
+\texttt{MemCycle}'s divisor-residue classification from the base list to cycle
+positions.
+
+\begin{equation*}
+\begin{aligned}
+&\forall\,L\in\mathbb{L},\quad \forall\,v\in\mathbb{N}_0,
+  \quad \forall\,i,m_1,m_2\in\mathbb{N}_0 \\
+L&:=[v_0,v_1,\dots,v_{n-1}]\in\mathbb{N}_0^n,\quad |L|>0 \\
+\operatorname{Cycle}&:=[v_0,v_1,\dots,v_{n-1},v_0,v_1,\dots] \\
+n&=|L|
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{RecCycle}_i=\operatorname{ModCycle}_i
+  =\operatorname{MemCycle}_i
+  \quad \text{[Three-Way Equivalence]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{Cycle}_i=L[i\operatorname{mod}n]
+  && \text{[Cycle Element Access]} \\
+&\text{key}<n\implies
+  \operatorname{Cycle}_{\text{key}}=L_{\text{key}}
+  && \text{[Small Value Direct Lookup]} \\
+&\operatorname{Cycle}_i\operatorname{mod}d
+  =\operatorname{Cycle}_{(i\operatorname{mod}n)}\operatorname{mod}d
+  && \text{[Mod Propagation]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{Cycle}_{(i+n\cdot m)}=L[i\operatorname{mod}n]
+  && \text{[Value Match After Many Loops]} \\
+&\operatorname{Cycle}_{(i+n\cdot m_1)}
+  =\operatorname{Cycle}_{(i+n\cdot m_2)}
+  && \text{[Two Multiples]} \\
+&\operatorname{Cycle}^{(t)}_{\text{pos}}
+  =\operatorname{Cycle}_{\text{pos}}\quad \forall t>0
+  && \text{[Repeated-Cycle Invariance]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&(\forall x\in L,\ x\geq 0)
+  \implies \operatorname{Cycle}_{\text{pos}}\geq 0
+  && \text{[Cycle Value Positivity]} \\
+&(\forall y\in L,\ y>x)
+  \implies \operatorname{Cycle}_{\text{pos}}>x
+  && \text{[Cycle Value Greater Than]} \\
+&\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  =\operatorname{Cycle}_{i+k}
+  && \text{[Rotation Invariance]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{allZero}(d)\implies
+  \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d=0
+  && \text{[All-Zero Residue Transfer]} \\
+&\operatorname{noneZero}(d)\implies
+  \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d\neq 0
+  && \text{[None-Zero Residue Transfer]} \\
+&\operatorname{someZero}(d)\implies \exists\,k_0,k_1,\quad
+  \operatorname{Cycle}_{k_0}\operatorname{mod}d=0\ \land{} \\
+&\qquad \operatorname{Cycle}_{k_1}\operatorname{mod}d\neq 0
+  && \text{[Some-Zero Residue Transfer]}
+\end{aligned}
+\end{equation*}
+
+The reusable equivalence, access, periodicity, modulo, repetition, positivity,
+and rotation properties were formally verified using Scala Stainless. The
+residue-classification counts are likewise verified on the base list; the
+all-zero, none-zero, and some-zero transfers stated here are the mathematical
+corollaries proved in Subsections~5.10--5.12. The full Stainless verification
+code is in Appendix~A.
+
+\section{Future Work}
+
+Future work may include exploring more complex properties of Cycles, such as
+their behavior under operations including concatenation and filtering, and
+their applications in algorithms and data structures. Additionally, we can
+investigate discrete integration of Cycles, similar to the work done for
+lists~\cite{mata2026lists} and integrals~\cite{mata2026integral}.

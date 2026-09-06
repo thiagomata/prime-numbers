@@ -1,0 +1,669 @@
+\section{Cycle Properties}
+
+In this section, we prove and verify the main properties of Cycles. Each
+property is stated mathematically, then shown to hold via a corresponding
+verified lemma in Scala using the Stainless system.
+
+\begin{itemize}
+  \item Element access: \texttt{cycle(key) == cycle.values(mod(key, period))}
+    --- Subsection~5.1.
+  \item Small-value direct lookup: \texttt{key < period} $\Rightarrow$
+    \texttt{cycle(key) == cycle.values(key)} --- Subsection~5.2.
+  \item Periodicity:
+    $\operatorname{cycle}(\text{key})=
+    \operatorname{cycle}(\text{key}+\text{period}\cdot m)$ for any number of
+    loops --- Subsection~5.3.
+  \item Multi-loop consistency: value at \texttt{key} is independent of which
+    multiple of the period is added --- Subsection~5.4.
+  \item Mod propagation: remainder modulo $d$ at any position equals remainder
+    at the base position --- Subsection~5.5.
+  \item Repeated-cycle invariance: repeating the base list preserves all
+    lookups --- Subsection~5.6.
+  \item Value positivity: non-negative base values guarantee non-negative cycle
+    values --- Subsection~5.7.
+  \item Rotation: rotating the base list shifts the cycle index by the same
+    amount --- Subsection~5.8.
+  \item MemCycle-level restatements: the key access and modulo properties are
+    also verified directly for the memory-backed representation ---
+    Subsection~5.9.
+  \item Residue classification transfer: all-zero, none-zero, and some-zero
+    divisor classifications on the base list hold at every cycle position ---
+    Subsections~5.10--5.12.
+\end{itemize}
+
+Throughout this section, $L$ is the finite backing list, $n$ is the period,
+and $Cycle$ is the unbounded periodic stream it defines --- formally,
+\texttt{Cycle} means \texttt{RecCycle} (Subsection~3.1), proved in Section~4 to
+equal \texttt{ModCycle} at every position:
+
+\begin{equation*}
+\begin{aligned}
+\forall\,L\in\mathbb{L},\quad \forall\,v&\in\mathbb{N}_0,
+  \quad \forall\,i\in\mathbb{N}_0 \\
+L &:= [v_0,v_1,\dots,v_{n-1}]\in\mathbb{N}_0^n,\quad |L|>0 \\
+\operatorname{Cycle} &:= [v_0,v_1,\dots,v_{n-1},v_0,v_1,\dots] \\
+n &:= |L|
+\end{aligned}
+\end{equation*}
+
+\subsection{Cycle Element Access}
+
+The value of any element in a cycle equals the value of the underlying list at
+the position modulo the cycle period.
+
+\begin{equation*}
+\operatorname{Cycle}_i=L[i\operatorname{mod}n]
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_i &= \operatorname{RecCycle}_i
+  && \text{[Subsection 3.1 Definition]} \\
+&=\operatorname{ModCycle}_i && \text{[Section 4 Cycle Equivalence]} \\
+&=L[i\operatorname{mod}n] && \text{[ModCycle Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad \operatorname{Cycle}_i=L[i\operatorname{mod}n]
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+The Cycle Equivalence property was proved and verified in Section~4.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::findValueInCycle}}.
+The full Scala verification code is in Appendix~A.3.
+
+\subsection{Small Value in Cycle}
+
+For positions smaller than the cycle period, the cycle value equals the list
+value at that position directly.
+
+\begin{equation*}
+i<n\implies\operatorname{Cycle}_i=L_i
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_i &= \operatorname{RecCycle}_i
+  && \text{[Subsection 3.1 Definition]} \\
+i<n\implies\operatorname{RecCycle}_i &= L_i
+  && \text{[RecCycle Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad i<n\implies\operatorname{Cycle}_i=L_i
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This step only needs the \texttt{Cycle := RecCycle} naming from
+Subsection~3.1; the \texttt{ModCycle} side of the equivalence proved in
+Section~4 is not required here.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::smallValueInCycle}}.
+The full Scala verification code is in Appendix~A.4.
+
+\subsection{Value Match After Many Loops}
+
+Cycle values remain invariant when adding any multiple of the cycle period to
+the access key.
+
+\begin{equation*}
+\operatorname{Cycle}_{(i+n\cdot m)}=L[i\operatorname{mod}n]
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_{(i+n\cdot m)}
+  &=\operatorname{RecCycle}_{(i+n\cdot m)}
+  && \text{[Subsection 3.1 Definition]} \\
+  &=\operatorname{ModCycle}_{(i+n\cdot m)}
+  && \text{[Section 4 Cycle Equivalence]} \\
+  &=L[(i+n\cdot m)\operatorname{mod}n]
+  && \text{[ModCycle Definition]} \\
+  &=L[i\operatorname{mod}n]
+  && \text{[Quotient Invariance Under Linear Shift by Multiplier]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad \operatorname{Cycle}_{(i+n\cdot m)}=L[i\operatorname{mod}n]
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+The lemma
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift}{Quotient Invariance Under Linear Shift}
+and its multiplier variant were proved and verified in
+\emph{Division and Modulo from Recursive Normalization}~\cite{mata2026modulo}.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::valueMatchAfterManyLoops}}.
+The full Scala verification code is in Appendix~A.5.
+
+\subsection{Two Multiples of Cycle Size}
+
+Shifting the same key by two different multiples of the cycle period produces
+the same cycle value either way.
+
+\begin{equation*}
+\operatorname{Cycle}_{(i+n\cdot m_1)}
+  =\operatorname{Cycle}_{(i+n\cdot m_2)}
+\end{equation*}
+
+\noindent\textbf{Proof.} By Subsection~5.3, applied at both $m_1$ and $m_2$:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_{(i+n\cdot m_1)}
+  &=L[i\operatorname{mod}n]
+  && \text{[Subsection 5.3, Value Match After Many Loops]} \\
+\operatorname{Cycle}_{(i+n\cdot m_2)}
+  &=L[i\operatorname{mod}n]
+  && \text{[Subsection 5.3, Value Match After Many Loops]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad
+\operatorname{Cycle}_{(i+n\cdot m_1)}
+  =\operatorname{Cycle}_{(i+n\cdot m_2)}
+  =L[i\operatorname{mod}n]
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::valueMatchAfterManyLoopsInBoth}}.
+The full Scala verification code is in Appendix~A.6.
+
+\subsection{Propagate Modulo from Value to Cycle}
+
+The modulo operation applied to a cycle value can be equivalently applied to
+the underlying list value at the modular index. Since the previous sections
+prove that the cycle representations agree at every position, we can use the
+modulo cycle definition directly: cycle lookup first reduces the position to
+\texttt{i mod n}, and taking a remainder by any positive divisor \texttt{d}
+preserves that same base-position reduction.
+
+\begin{equation*}
+\operatorname{Cycle}_i\operatorname{mod}d
+  =L_{i\operatorname{mod}n}\operatorname{mod}d
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_i
+  &=\operatorname{RecCycle}_i && \text{[Subsection 3.1 Definition]} \\
+  &=\operatorname{ModCycle}_i && \text{[Section 4 Cycle Equivalence]} \\
+  &=L_{i\operatorname{mod}n} && \text{[ModCycle Definition]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad
+\operatorname{Cycle}_i\operatorname{mod}d
+  =L_{i\operatorname{mod}n}\operatorname{mod}d
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::propagateModFromValueToCycle}}.
+The related idempotence restatement,
+\texttt{cycle(position) == cycle(position mod period)}, is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::assertCycleOfPosEqualsCycleOfModPos}}.
+The full Scala verification code is in Appendix~A.7.
+
+\subsection{Repeated-Cycle Invariance}
+
+When a cycle's base list is repeated $t$ times to form a longer physical
+period, the values read at every position remain identical. The repeated cycle
+is structurally a concatenation of $t$ copies of the original list; the extra
+length is invisible at any index because modular indexing composes correctly
+across the nested periods. Repetition uses the same $t$-fold notation as
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/integral-cycle.md#61-integral-invariance-under-cycle-repetition}{\emph{Integral Cycle}, Subsection 6.1's $L^{(x)}$}
+(list repeated $x$ times), defined the same way by unfolding one copy at a
+time:
+
+\begin{equation*}
+\begin{aligned}
+V^{(t)} &:={}
+\begin{cases}
+L_e & \text{if }t=0, \\
+V\mathbin{\texttt{++}}V^{(t-1)} & \text{otherwise}.
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+C &\text{ --- original MemCycle},\quad V=\operatorname{values}(C),
+  \quad n=|V| \\
+C^{(t)} &\text{ --- repeated cycle},\quad
+  \operatorname{values}(C^{(t)})=V^{(t)}\quad\text{with }t>0 \\
+\operatorname{period} &=t\cdot n
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+C^{(t)}(\text{pos})
+  &=V^{(t)}(\operatorname{mod}(\text{pos},\operatorname{period}))
+  && \text{[MemCycle access via modular index]} \\
+  &=V(\operatorname{mod}(\operatorname{mod}(\text{pos},t\cdot n),n))
+  && \text{[Repeated list access pattern]} \\
+  &=V(\operatorname{mod}(\text{pos},n))
+  && \text{[ModOperations::modByPositiveMultipleThenBase]} \\
+  &=C(\text{pos})
+  && \text{[Original cycle access]} \\
+  &\quad\blacksquare && \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The proof separates construction from lookup. Callers must build a valid
+\texttt{MemCycle} from the repeated values; this lemma only says that once such
+a cycle exists, the larger physical period does not change any lookup.
+
+\begin{lstlisting}[style=scala]
+def assertRepeatedValuesCycleMatches(
+  cycle: MemCycle,
+  repeatedCycle: MemCycle,
+  times: BigInt,
+  position: BigInt
+): Boolean = {
+  require(times > BigInt(0))
+  require(position >= BigInt(0))
+  require(cycle.period > BigInt(0))
+  require(repeatedCycle.values == ListRepeatProperties.repeat(cycle.values, times))
+  // ... inductive proof via mod composition ...
+  repeatedCycle(position) == cycle(position)
+}.holds
+\end{lstlisting}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::assertRepeatedValuesCycleMatches}}.
+The complete Scala derivation is included in Appendix~A.8.
+
+\subsection{Cycle Value Positivity}
+
+When every value in the base list is non-negative, every position in the cycle
+returns a non-negative value. This guarantees that cycle lookups never produce
+negative numbers, which is essential for integral and gap reasoning.
+
+\begin{equation*}
+\begin{aligned}
+(\forall x\in L,\ x\geq 0)\land |L|>0
+  \implies \operatorname{Cycle}_{\text{pos}}\geq 0
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.} By Subsection~5.1,
+$\operatorname{Cycle}_{\text{pos}}=L[\text{pos}\operatorname{mod}n]$, and
+$\text{pos}\operatorname{mod}n$ is a valid index into $L$ (in $[0,n)$). So
+$\operatorname{Cycle}_{\text{pos}}$ is one of the values of $L$---and every
+value of $L$ is non-negative by hypothesis, so
+$\operatorname{Cycle}_{\text{pos}}\geq 0$.
+
+\begin{equation*}
+\therefore\quad
+(\forall x\in L,\ x\geq 0)\land |L|>0
+  \implies \operatorname{Cycle}_{\text{pos}}\geq 0
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::cycleValuePositiveOrZero}},
+which reduces to the list-level helper
+\texttt{CycleUtils::checkPositiveOrZeroAtIndex}---indexing into a non-negative
+list at a valid position yields a non-negative value. The full Scala
+verification code is in Appendix~A.9.
+
+The same argument gives the verified strict lower-bound form: if every base
+value is greater than $x$, then every cycle value is greater than $x$.
+
+\begin{equation*}
+\begin{aligned}
+(\forall y\in L,\ y>x)\land |L|>0
+  &\implies \operatorname{Cycle}_{\text{pos}}>x.
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.} The modular index selects a value of $L$, which is
+greater than $x$ by hypothesis:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_{\text{pos}}
+  &=L[\text{pos}\operatorname{mod}n] && \text{[Subsection 5.1]} \\
+L[\text{pos}\operatorname{mod}n]
+  &>x && \text{[Base-list lower bound]} \\
+\therefore\quad \operatorname{Cycle}_{\text{pos}}
+  &>x.\quad \blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This strengthening is verified for \texttt{RecursiveCycle}, the article's
+\texttt{Cycle} representation, in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala#cycleValueBiggerThan}{\texttt{RecursiveCycle::cycleValueBiggerThan}}.
+\par}
+
+\subsection{Cycle Rotation}
+
+Rotating a cycle's base list by $k$ positions and then accessing index $i$
+gives the same value as accessing the original cycle at index $i+k$. This
+connects cycle structure directly to the list rotation concept from chapter 3.
+Rotation is defined by re-indexing the base list from offset $k$:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(L,k)
+  &:=\big[\,L[(k+j)\operatorname{mod}n]\mid 0\leq j<n\,\big] \\
+\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  &:=\operatorname{rotateAt}(L,k)[i\operatorname{mod}n]
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  =\operatorname{Cycle}_{i+k}\quad\text{for }k\geq 0,\ i\geq 0
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  &=\operatorname{rotateAt}(L,k)[i\operatorname{mod}n]
+  && \text{[By Definition]} \\
+  &=L[(k+(i\operatorname{mod}n))\operatorname{mod}n]
+  && \substack{\text{[By Definition, since }i\operatorname{mod}n\\
+                \text{ lies in }[0,n)\text{]}} \\
+  &=L[(k+i)\operatorname{mod}n]
+  && \substack{\text{[Modulo Idempotence + Distributivity}\\
+                \text{over Addition]}} \\
+  &=\operatorname{Cycle}_{i+k}
+  && \text{[Subsection 5.1 Cycle Element Access]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad
+\operatorname{rotateAt}(\operatorname{Cycle},k)_i
+  =\operatorname{Cycle}_{i+k}\quad\text{for }k\geq 0,\ i\geq 0
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+The third step composes
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#68-modulo-idempotence}{Modulo Idempotence}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition}{Distributivity over Addition},
+both proved and verified in
+\emph{Division and Modulo from Recursive Normalization}~\cite{mata2026modulo}:
+$\operatorname{mod}(k+\operatorname{mod}(i,n),n)
+=\operatorname{mod}(k+i,n)$ follows because both sides reduce to
+$\operatorname{mod}(\operatorname{mod}(k,n)+
+\operatorname{mod}(i,n),n)$.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::rotateAtValue}}.
+The full Scala verification code is in Appendix~A.10.
+
+\subsection{MemCycle-Level Restatement}
+
+Sections~5.1--5.5 state element access, small-value lookup, periodic
+invariance, multi-loop consistency, and mod propagation for \texttt{ModCycle}.
+Since $\operatorname{MemCycle}(L)_i=\operatorname{ModCycle}(L)_i$ at every
+position (Subsection~3.3, assembled at the close of Section~4), all five
+results carry over to \texttt{MemCycle} by direct substitution---mathematically,
+this section adds no content beyond Subsections~5.1--5.5. \texttt{MemCycle} is
+nonetheless the representation actually used elsewhere in the codebase (it is
+the one that carries residue-classification metadata), and Stainless has no way
+to transfer a lemma proved for one concrete type to a different wrapper type
+that merely happens to agree with it pointwise: each result below is re-proved
+against \texttt{MemCycle}, and its proof body mirrors the corresponding
+\texttt{ModCycle} lemma line for line rather than deriving anything new:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}_{\text{key}}
+  &=L[\text{key}\operatorname{mod}n] && \text{[Element Access]} \\
+\text{key}<n
+  &\implies \operatorname{Cycle}_{\text{key}}=L[\text{key}]
+  && \text{[Small Value Lookup]} \\
+\operatorname{Cycle}_{\text{key}}
+  &=\operatorname{Cycle}_{\text{key}+n\cdot m}
+  && \text{[Periodic Invariance]} \\
+\operatorname{Cycle}_{\text{key}+n\cdot m_1}
+  &=\operatorname{Cycle}_{\text{key}+n\cdot m_2}
+  && \text{[Multi-Loop Consistency]} \\
+\operatorname{Cycle}_{\text{key}}\operatorname{mod}d
+  &=L[\text{key}\operatorname{mod}n]\operatorname{mod}d
+  && \text{[Mod Propagation]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+These are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::findValueInCycle}},
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::smallValueInCycle}},
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::valueMatchAfterManyLoops}},
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::valueMatchAfterManyLoopsInBoth}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::propagateModFromValueToCycle}}.
+
+The mod-idempotence identity from Subsection~5.5's proof (that
+$\operatorname{Cycle}_i$ equals
+$\operatorname{Cycle}_{(i\operatorname{mod}n)\operatorname{mod}n}$) has its
+own \texttt{MemCycle} restatement in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos}}.
+\par}
+
+{\raggedright
+\texttt{MemCycle} also classifies each divisor by how its residues behave
+across the base list. \texttt{MemCycle.checkMod(d)} (Subsection~3.3) counts how
+many values of $L$ are $\equiv 0\operatorname{mod}d$, via
+\texttt{countModZero}---one pass over the list, adding 1 wherever the value is
+$\equiv 0\operatorname{mod}d$:
+\par}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{countModZero}(L,d)&:={}
+\begin{cases}
+0 & \text{if }L=L_e, \\
+1+\operatorname{countModZero}(\operatorname{tail}(L),d)
+  & \text{if }\operatorname{head}(L)\operatorname{mod}d=0, \\
+\operatorname{countModZero}(\operatorname{tail}(L),d)
+  & \text{otherwise}.
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+\texttt{checkMod(d)} then buckets $d$ as all-zero, none-zero, or some-zero
+based on that count---each bucket defined and proved below to transfer from the
+base list to every position of the infinite \texttt{Cycle}, using the same
+move as Subsection~5.7: a cycle value is always \emph{some} value of $L$
+(Subsection~5.1), so any property that holds of every value of $L$ holds of
+every cycle position too. \texttt{CycleCheckMod.scala}'s ten lemmas separately
+verify that the classification itself is mutually exclusive, exhaustive, and
+persists correctly across independent \texttt{checkMod} calls---bookkeeping
+properties of the classification lists, not further claims about cycle values,
+so they are not restated here.
+
+\subsection{All-Zero Residue Transfers to the Cycle}
+
+\texttt{checkMod(d)} classifies \texttt{d} as all-zero when every value of
+\texttt{L} is $\equiv 0\operatorname{mod}d$---i.e.
+\texttt{countModZero(L, d)} counts all $n$ of them:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{allZero}(d)
+  &:\Leftrightarrow \operatorname{countModZero}(L,d)=n
+  && \text{[MemCycle.allModValuesAreZero]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{allZero}(d)
+  \implies \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d=0
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{allZero}(d)
+  &\implies \forall x\in L,\ x\operatorname{mod}d=0
+  && \text{[Definition of countModZero]} \\
+\operatorname{Cycle}_k
+  &=L[k\operatorname{mod}n]
+  && \text{[Subsection 5.1 Cycle Element Access]} \\
+\implies \operatorname{Cycle}_k\operatorname{mod}d
+  &=0
+  && \text{[$L[k\operatorname{mod}n]$ is a value of $L$]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad
+\operatorname{allZero}(d)
+  \implies \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d=0
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\texttt{allZero} is \texttt{MemCycle.allModValuesAreZero}, defined and set by
+\texttt{checkMod} in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala}{\texttt{MemCycle}}.
+Stainless verifies the base-list count directly; the transfer to an arbitrary
+cycle position \texttt{k} shown above is this article's corollary of that count
+together with Subsection~5.1, not a separate Stainless lemma.
+
+\subsection{None-Zero Residue Transfers to the Cycle}
+
+The symmetric case: \texttt{checkMod(d)} classifies \texttt{d} as none-zero
+when no value of \texttt{L} is $\equiv 0\operatorname{mod}d$---
+\texttt{countModZero(L, d)} counts none of them:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{noneZero}(d)
+  &:\Leftrightarrow \operatorname{countModZero}(L,d)=0
+  && \text{[MemCycle.noModValuesAreZero]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{noneZero}(d)
+  \implies \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d\neq 0
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{noneZero}(d)
+  &\implies \forall x\in L,\ x\operatorname{mod}d\neq 0
+  && \text{[Definition of countModZero]} \\
+\operatorname{Cycle}_k
+  &=L[k\operatorname{mod}n]
+  && \text{[Subsection 5.1 Cycle Element Access]} \\
+\implies \operatorname{Cycle}_k\operatorname{mod}d
+  &\neq 0
+  && \text{[$L[k\operatorname{mod}n]$ is a value of $L$]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\quad
+\operatorname{noneZero}(d)
+  \implies \forall k,\ \operatorname{Cycle}_k\operatorname{mod}d\neq 0
+  \quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\texttt{noneZero} is \texttt{MemCycle.noModValuesAreZero}, defined and set by
+\texttt{checkMod} in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala}{\texttt{MemCycle}}.
+As in Subsection~5.10, Stainless verifies the base-list count; the transfer to
+arbitrary \texttt{k} is this article's corollary of Subsection~5.1.
+
+\subsection{Some-Zero Residue Transfers to the Cycle}
+
+\texttt{checkMod(d)} classifies \texttt{d} as some-zero when some, but not all,
+values of \texttt{L} are $\equiv 0\operatorname{mod}d$---
+\texttt{countModZero(L, d)} counts strictly between \texttt{0} and $n$ of them:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{someZero}(d)
+  &:\Leftrightarrow 0<\operatorname{countModZero}(L,d)<n
+  && \text{[MemCycle.someModValuesAreZero]}
+\end{aligned}
+\end{equation*}
+
+Unlike Subsections~5.10--5.11, \texttt{someZero} is not a claim about
+\emph{every} position---it needs witnesses on both sides, so the transfer
+argument has to name two concrete cycle positions rather than substitute into
+a universal.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{someZero}(d)\implies \exists\,k_0,k_1,\quad
+&\operatorname{Cycle}_{k_0}\operatorname{mod}d=0\ \land{} \\
+&\operatorname{Cycle}_{k_1}\operatorname{mod}d\neq 0
+\end{aligned}
+\end{equation*}
+
+\noindent\textbf{Proof.} By definition, \texttt{someZero(d)} means
+$0<\operatorname{countModZero}(L,d)<n$: at least one value of \texttt{L} is
+$\equiv 0\operatorname{mod}d$, and at least one is not. Let
+$j_0,j_1\in[0,n)$ be indices of one such value on each side, so
+$L_{j_0}\operatorname{mod}d=0$ and
+$L_{j_1}\operatorname{mod}d\neq 0$.
+
+\begin{equation*}
+\begin{aligned}
+j_0,j_1<n
+  &\implies \operatorname{Cycle}_{j_0}=L_{j_0}\ \land\
+    \operatorname{Cycle}_{j_1}=L_{j_1}
+  && \text{[Subsection 5.2 Small Value in Cycle]} \\
+  &\implies \operatorname{Cycle}_{j_0}\operatorname{mod}d=0\ \land\
+    \operatorname{Cycle}_{j_1}\operatorname{mod}d\neq 0
+  && \text{[Substitution]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{gathered}
+\therefore\quad
+\operatorname{someZero}(d)\implies \exists\,k_0,k_1,\quad
+\operatorname{Cycle}_{k_0}\operatorname{mod}d=0\ \land\
+\operatorname{Cycle}_{k_1}\operatorname{mod}d\neq 0 \\
+(k_0:=j_0,\ k_1:=j_1)\quad \blacksquare\ \text{[Q.E.D.]}
+\end{gathered}
+\end{equation*}
+
+\texttt{someZero} is \texttt{MemCycle.someModValuesAreZero}, defined and set
+by \texttt{checkMod} in
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala}{\texttt{MemCycle}}.
+As above, Stainless verifies the base-list count; the witness positions
+$k_0,k_1$ are this article's corollary of Subsection~5.2, not a separate
+Stainless lemma.

@@ -1,0 +1,269 @@
+\section{Scala Verification Code}
+
+\subsection{Cycle Equivalence --- Base Case}
+
+{\raggedright
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala}{\texttt{RecursiveCycleMatchesModCycle::\allowbreak assertCycleAndRecursiveCycleMathForSmallValues}}
+\par}
+
+\begin{lstlisting}[style=scala]
+  def assertCycleAndRecursiveCycleMathForSmallValues(
+    cycle: ModCycle,
+    position: BigInt
+  ): Boolean = {
+    val list = cycle.values
+
+    require(position >= 0)
+    require(position < list.size)
+
+    val recursiveCycle = RecursiveCycle(list)
+    assert(position >= 0)
+    assert(position < list.size)
+    assert(list.size == cycle.period)
+    assert(list.size == recursiveCycle.period)
+    assert(ModSmallDividend.modSmallDividend(position, list.size))
+    assert(Calc.mod(position, list.size) == position)
+    cycle(position) == recursiveCycle(position)
+  }.holds
+\end{lstlisting}
+
+\subsection{Cycle Equivalence --- Inductive Step}
+
+{\raggedright
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala}{\texttt{RecursiveCycleMatchesModCycle::\allowbreak assertCycleAndRecursiveCycleMathForAnyValues}}
+\par}
+
+\begin{lstlisting}[style=scala]
+  def assertCycleAndRecursiveCycleMathForAnyValues(
+    cycle: ModCycle,
+    position: BigInt
+  ): Boolean = {
+    decreases(position)
+    val list = cycle.values
+
+    require(position >= 0)
+    require(list.size > 0)
+
+    val recCycle = RecursiveCycle(list)
+
+    if (position < list.size) {
+      // base case
+      assertCycleAndRecursiveCycleMathForSmallValues(cycle, position)
+    } else {
+      // inductive step
+      assertCycleAndRecursiveCycleMathForAnyValues(cycle, position - list.size)
+      assert(cycle(position - list.size) == recCycle(position - list.size))
+      assert(ModSum.checkValueShift(position, list.size))
+      assert(Calc.mod(position, list.size) == Calc.mod(position - list.size, list.size))
+      assert(cycle(position) == cycle(position - list.size))
+      assert(recCycle(position) == recCycle(position - list.size))
+    }
+    cycle(position) == recCycle(position)
+  }.holds
+\end{lstlisting}
+
+\subsection{Cycle Element Access --- findValueInCycle}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::findValueInCycle}}
+
+\begin{lstlisting}[style=scala]
+  def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
+    require(key >= 0)
+    require(cycle.period > 0)
+    cycle(key) == cycle.values(Calc.mod(key, cycle.period))
+  }.holds
+\end{lstlisting}
+
+\subsection{Small Value in Cycle --- smallValueInCycle}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::smallValueInCycle}}
+
+\begin{lstlisting}[style=scala]
+  def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
+    require(key >= 0)
+    require(key < cycle.period)
+    require(cycle.period > 0)
+    cycle(key) == cycle.values(key)
+  }.holds
+\end{lstlisting}
+
+\subsection{Value Match After Many Loops --- valueMatchAfterManyLoops}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::valueMatchAfterManyLoops}}
+
+\begin{lstlisting}[style=scala]
+  def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
+    require(key >= 0)
+    require(cycle.period > 0)
+    require(m >= 0)
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m)
+    cycle(key) == cycle(key + cycle.period * m)
+  }.holds
+\end{lstlisting}
+
+\subsection{Two Multiples of Cycle Size --- valueMatchAfterManyLoopsInBoth}
+
+{\raggedright
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::\allowbreak valueMatchAfterManyLoopsInBoth}}
+\par}
+
+\begin{lstlisting}[style=scala]
+  def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
+    require(key >= 0)
+    require(cycle.period > 0)
+    require(m1 >= 0)
+    require(m2 >= 0)
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m1)
+    AdditionAndMultiplication.ATimesBSameMod(key, cycle.period, m2)
+    assert(cycle(key) == cycle(key + cycle.period * m1))
+    assert(cycle(key) == cycle(key + cycle.period * m2))
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.period, m1)
+    AdditionAndMultiplication.APlusMultipleTimesBSameMod(key, cycle.period, m2)
+    assert(Calc.mod(key, cycle.period) == Calc.mod(key + cycle.period * m1, cycle.period))
+    assert(Calc.mod(key, cycle.period) == Calc.mod(key + cycle.period * m2, cycle.period))
+    assert(cycle(key + cycle.period * m1) == cycle(key))
+    assert(cycle(key + cycle.period * m2) == cycle(key))
+    assert(cycle(key + cycle.period * m2) == cycle(Calc.mod(key,cycle.period)))
+    assert(cycle(key + cycle.period * m1) == cycle(key + cycle.period * m2))
+  }.holds
+\end{lstlisting}
+
+\subsection{\texorpdfstring{Propagate Modulo ---
+  \protect\texttt{propagateModFromValueToCycle /}\newline
+  \protect\texttt{assertCycleOfPosEqualsCycleOfModPos}}
+  {Propagate Modulo -- propagateModFromValueToCycle / assertCycleOfPosEqualsCycleOfModPos}}
+
+{\raggedright
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::\allowbreak propagateModFromValueToCycle}}
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::\allowbreak assertCycleOfPosEqualsCycleOfModPos}}
+\par}
+
+\begin{lstlisting}[style=scala]
+  def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
+    require(key >= 0)
+    require(dividend > 0)
+    require(cycle.period > 0)
+    val modKeySize = Calc.mod(key, cycle.period)
+    Calc.mod(cycle(key),dividend) == Calc.mod(cycle.values(modKeySize),dividend)
+  }.holds
+
+  def assertCycleOfPosEqualsCycleOfModPos(cycle: ModCycle, position: BigInt): Boolean = {
+    require(position >= 0)
+    require(cycle.period > 0)
+
+    val period = cycle.period
+
+    assert(cycle(position) == cycle.apply(position))
+    assert(cycle(position) == cycle.values(Calc.mod(position, period)))
+
+    assert(ModIdempotence.modIdempotence(position, period))
+    assert(Calc.mod(Calc.mod(position, period),period) == Calc.mod(position, period))
+    assert(cycle(position) == cycle(Calc.mod(position, period)))
+  }.holds
+\end{lstlisting}
+
+\subsection{Repeated-Cycle Invariance --- assertRepeatedValuesCycleMatches}
+
+{\raggedright
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala}{\texttt{MemCycleProperties::\allowbreak assertRepeatedValuesCycleMatches}}
+\par}
+
+\begin{lstlisting}[style=scala]
+  def assertRepeatedValuesCycleMatches(
+    cycle: MemCycle,
+    repeatedCycle: MemCycle,
+    times: BigInt,
+    position: BigInt
+  ): Boolean = {
+    require(times > BigInt(0))
+    require(position >= BigInt(0))
+    require(cycle.period > BigInt(0))
+    require(repeatedCycle.values == ListRepeatProperties.repeat(cycle.values, times))
+    val values = cycle.values
+    val repeatedIndex = Calc.mod(position, values.size * times)
+    val originalIndex = Calc.mod(position, values.size)
+    assert(ListRepeatProperties.assertRepeatSize(values, times))
+    assert(repeatedCycle.period == values.size * times)
+    assert(findValueInCycle(repeatedCycle, position))
+    assert(repeatedCycle(position) == repeatedCycle.values(repeatedIndex))
+    assert(ListRepeatProperties.assertRepeatedIndex(values, times, repeatedIndex))
+    assert(repeatedCycle.values(repeatedIndex) == values(Calc.mod(repeatedIndex, values.size)))
+    assert(ModOperations.modByPositiveMultipleThenBase(position, values.size, times))
+    assert(Calc.mod(repeatedIndex, values.size) == originalIndex)
+    assert(repeatedCycle.values(repeatedIndex) == values(originalIndex))
+    assert(findValueInCycle(cycle, position))
+    assert(cycle(position) == values(originalIndex))
+    repeatedCycle(position) == cycle(position)
+  }.holds
+\end{lstlisting}
+
+\subsection{Cycle Value Positivity --- cycleValuePositiveOrZero}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::cycleValuePositiveOrZero}}
+
+\begin{lstlisting}[style=scala]
+  def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
+    require(pos >= 0)
+    require(cycle.period > 0)
+    findValueInCycle(cycle, pos)
+    val idx = Calc.mod(pos, cycle.period)
+    assert(idx >= 0)
+    assert(idx < cycle.period)
+    CycleUtils.checkPositiveOrZeroAtIndex(cycle.values, idx)
+    cycle(pos) >= 0
+  }.holds
+\end{lstlisting}
+
+\subsection{Cycle Rotation --- rotateAtValue}
+
+Source:
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala}{\texttt{CycleProperties::rotateAtValue}}
+
+\begin{lstlisting}[style=scala]
+  def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
+    require(k >= 0)
+    require(i >= 0)
+    require(cycle.period > 0)
+
+    val size = cycle.period
+    val rotatedCycle = cycle.rotateAt(k)
+
+    findValueInCycle(rotatedCycle, i)
+    val modI = Calc.mod(i, size)
+    assert(rotatedCycle(i) == rotatedCycle.values(modI))
+
+    CycleUtils.collectRotatedValueAt(cycle.values, k, size, modI)
+    assert(rotatedCycle.values(modI) == cycle.values(Calc.mod(k + modI, size)))
+
+    ModIdempotence.modIdempotence(i, size)
+    ModOperations.modAdd(k, size, Calc.mod(i, size))
+    ModOperations.modAdd(k, size, i)
+    assert(Calc.mod(k + modI, size) == Calc.mod(k + i, size))
+
+    findValueInCycle(cycle, k + i)
+    assert(cycle(k + i) == cycle.values(Calc.mod(k + i, size)))
+
+    rotatedCycle(i) == cycle(k + i)
+  }.holds
+\end{lstlisting}
+
+\section{Stainless Verification Log Output}
+\label{sec:appendix-b}
+
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 4}. The run reported 2,995 valid, 0 invalid, and 0
+unknown verification conditions. The full chapter-scoped verification log is
+preserved with the source at the immutable release tag
+\texttt{cycle-article-v1.0.0} and is available at
+\href{https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/logs/verify-ch-4-v1-chapter4-_.log}{\texttt{logs/verify-ch-4-v1-chapter4-\_.log}}.
