@@ -1,10 +1,11 @@
 # Division and Modulo from Recursive Normalization
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)  
+**Published:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 ## Abstract
 
