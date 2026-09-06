@@ -143,6 +143,25 @@ These are the rules the author's visual review enforced:
   `=`-chain, a premise/conclusion pair using the flush-left leading-`&`
   pattern, or a tagged recap row) — never as a bare line-break device.
 
+- **Markdown `& LHS &= RHS` chains must be re-aligned around the `=`**, not
+  converted verbatim. The md's leading-`&` form puts the LHS in a
+  *left-aligned* column, so when LHS widths differ inside a block (short
+  `L`, `I`, `I_0` next to a wide `acc(L, i)`), every short name sits far
+  left of its `=` with a large gap (author-flagged in the `integral`
+  conversion, §5.2–§5.5). Convert to the house chain shape instead —
+  LHS in the right-aligned column, `&` immediately before the relation,
+  tags in a `&&` column:
+
+  ```latex
+  \begin{aligned}
+  L &= x_0 :: \operatorname{tail}(L)  && \text{[List decomposition]} \\
+  \operatorname{acc}(L, i) &= \dots   && \text{[Definition of acc]} \\
+  \end{aligned}
+  ```
+
+  The md's flush-left leading-`&` pattern remains correct only for premise
+  lists and recap rows with no `=`-chain alignment need.
+
 ## 4. Links and Code
 
 - Copy link URLs verbatim from the Markdown. Labels use `\texttt{...}`.
@@ -169,6 +188,21 @@ These are the rules the author's visual review enforced:
 
   `microtype` belongs in the preamble regardless; it helps the whole
   document but does not fix such paragraphs alone.
+- Pinned release URLs (`blob/<tag>/...`) are longer than `blob/master/...`
+  and can break bibliography line breaking: the generated `main.bbl`'s
+  `\url` entries then produce Underfull \hbox warnings (badness up to
+  10000). The zero-warning gate must be re-run after link pinning — a
+  scripted "mechanical" replacement is still a change (bit the `cycle`
+  conversion). Cure without new packages: `\Urlmuskip=0mu plus 1mu\relax`
+  after `hyperref` in the preamble lets justified lines stretch; URLs then
+  wrap cleanly through the normal `url` break points.
+- Conclusion recap tags should be aligned, not inline: when a recap display
+  groups several statements of similar width, an `aligned` with an
+  `&&\text{[Tag]}` column aligns the tags vertically AND preserves the
+  math-block parity count (one display per Markdown fence). Reserve the
+  independent-`equation*`-per-identity fallback for recaps whose rows differ
+  too much in width (the `list` case). Single-row statements keep the
+  `\quad` inline tag.
 - Scala excerpts use the `scala` lstlisting style defined in `main.tex`.
   Always write `\begin{lstlisting}[style=scala]` — passing only
   `language=Scala` skips the style entirely (no small font, no frame, no

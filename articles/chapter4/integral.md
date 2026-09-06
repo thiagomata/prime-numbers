@@ -1,6 +1,6 @@
 # Formal Verification of Discrete Integration Properties from First Principles
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
@@ -94,7 +94,7 @@ We define the **discrete integral** $I = Integral(L, init)$ as a list of partial
 ```math
 \begin{aligned}
 \text{for } k \in [0, n - 1] \\
-I_{k} = init + \sum_{i=0}^{k} L_i \\
+I_{k} := init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
 ```
 
@@ -105,8 +105,8 @@ list at each recursive step and carrying the current accumulated value.
 
 ```math
 \begin{aligned}
-I &= \text{Integral}(L, init) \\
-n &= |L| \\
+I &:= \text{Integral}(L, init) \\
+n &:= |L| \\
 k &\in [0, n - 1]
 \end{aligned}
 ```
@@ -114,7 +114,7 @@ k &\in [0, n - 1]
 The value of the $k\text{-th}$ element in the integral $I$ is defined recursively as:
 
 ```math
-I_k =
+I_k :=
 \begin{cases}
 L_0 + init & \text{if } k = 0 \\
 \text{Integral}(\text{tail}(L),\ \text{head}(L) + init)_{(k - 1)} & \text{if } k > 0
@@ -286,7 +286,7 @@ The last element of the Integral equals the sum of all elements in the List plus
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
 ```
 
-This follows directly from [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
+Mathematically, this is the $k = n-1$ instance of [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
 
 ```math
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
@@ -296,7 +296,7 @@ I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare
 
 This property is verified in the [
   IntegralProperties::assertLastEqualsSum
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The Stainless proof is a self-contained structural induction on the list size — single-element base case, tail-integral inductive step — giving an independent, machine-checked argument for the same identity. The full Scala verification code is in Appendix A.4.
 
 ### 4.5 Strictly Increasing Integral
 
@@ -404,7 +404,7 @@ Let:
 Then, the accumulated list is defined recursively as:
 
 ```math
-acc(L, init) =
+acc(L, init) :=
 \begin{cases}
 L_e & \text{if } L = L_e \\
 (\text{head}(L) + init) :: acc(\text{tail}(L),\ \text{head}(L) + init) & \text{otherwise}
@@ -455,7 +455,7 @@ The $k\text{-th}$ element of the Integral equals the $k\text{-th}$ element of th
 &I_0 &= x_0 + i = \text{acc}_0                                                        & \qquad \text{[Base case]} \\
 &I_{(p+1)} &= \text{tail}(I)_p                                                        & \qquad \text{[Tail Access Shift Left]} \\
 &\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                         & \qquad \text{[Recursive accumulation]} \\
-&\text{tail}(L)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
+&\text{tail}(I)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
 &\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
 && \therefore \\
 &\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                 & \qquad \text{[Q.E.D.]}
@@ -665,7 +665,7 @@ gap-period decomposition — the foundation for reasoning about cumulative sums 
 ## 9. References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Unpublished manuscript.  
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
 Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
