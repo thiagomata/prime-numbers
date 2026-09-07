@@ -1,0 +1,73 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+The Sieve Sequence is a finite representation of an infinite
+accepted-value stream. The formalization verifies the following core
+facts:
+
+\begin{equation*}
+\begin{aligned}
+A_S(v)
+&\Longrightarrow \exists i\ge0,\ \ell_i=v,
+  &&\text{[Complete enumeration]} \\
+\ell_{k+1}&\gt\ell_k,
+  &&\text{[Strict increase]} \\
+\ell_{k+nT}&=\ell_k+nM,
+  &&\text{[Block shift]}.
+\end{aligned}
+\end{equation*}
+
+The finite gap cycle reconstructs the same stream and remains
+semantically unchanged when the cycle is repeated:
+
+\begin{equation*}
+\begin{aligned}
+I_G(k-1)&=\ell_k,
+  &&\text{[Cycle reconstruction]} \\
+I_{G^{\langle h\rangle}}(k)&=I_G(k),
+  &&\text{[Repetition invariance]}.
+\end{aligned}
+\end{equation*}
+
+Installing the current head as a new filter has an exact
+complete-period count, an exact lifted-copy law for each real linear
+2-gap, and a copy-or-merge local gap update:
+
+\begin{equation*}
+\begin{aligned}
+N_{\mathrm{survive}}&=T(h-1),
+  &&\text{[Exact expanded filtering]} \\
+N_{\mathrm{destroyed\ lifts}}(\ell_k,\ell_{k+1})&=2,
+  &&\text{[Real 2-gap endpoint strikes]} \\
+N_{\mathrm{endpoint\text{-}surviving\ lifts}}(\ell_k,\ell_{k+1})&=h-2,
+  &&\text{[Exact lifted-copy survival]} \\
+g'_m&=g_k
+  \quad\text{or}\quad
+  g'_m=\sum_{i=k}^{j-1}g_i,
+  &&\text{[Copy or merge]}.
+\end{aligned}
+\end{equation*}
+
+Under the explicit square-bound and period-boundary assumptions, the
+next head and next-stage reconstruction properties are also verified:
+
+\begin{equation*}
+\begin{aligned}
+p^+\lt h^2&\Longrightarrow \ell_1=p^+,
+  &&\text{[Next head]} \\
+\text{mergedGaps}(S,S',1,T')
+&=\text{gapList}(S',0,T'),
+  &&\text{[Semantic transition]} \\
+\ell'_{T'}=h'+M'
+&\Longrightarrow I_{G'}(k-1)=\ell'_k.
+  &&\text{[Conditional next reconstruction]}
+\end{aligned}
+\end{equation*}
+
+The formalization therefore gives a precise finite-stage account of the
+sieve: the old filter pattern repeats, the new head removes exactly one
+lift per old residue over a complete expanded period, the two endpoint
+strikes of a real linear 2-gap occur at distinct lift offsets, and
+deletion changes gaps only by copying or merging them. The theorem does
+not infer short-window prime-gap persistence, a cyclic population
+recurrence, or algorithmic efficiency from the full-period facts alone.
