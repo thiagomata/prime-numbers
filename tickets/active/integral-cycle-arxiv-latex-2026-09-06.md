@@ -1,8 +1,8 @@
 # integral-cycle arXiv LaTeX package
 
 **Created:** 2026-09-06
-**Status:** In progress — skeleton staged; converting unit-by-unit per
-`articles/arxiv/CONVERSION_GUIDE.md`
+**Status:** Complete — all sections converted; compile green (31 pages,
+zero warnings); parity checked; PDF rebuilt
 **Branch:** `feature/article/integral-cycle`
 **Depends on:** none (follow-on to the completed `cycle-arxiv-latex` /
 `integral-arxiv-latex` conversions; same method, same house style)
@@ -33,9 +33,29 @@ Section plan (order must mirror the Markdown numbering exactly):
 - references.bib: 7 entries (list, integral, cycle, modulo-viXra,
   Hardy & Wright, Lean Periodic, Lean Cycles).
 
-## Next Action
+## Current State (updated)
 
-Stage main.tex + references.bib + section stubs; convert 00+01; compile.
+- All 9 section files converted; full document compiles green at
+  31 pages with zero warnings/errors.
+- Mechanical parity: 41/41 subsections, 16/16 Scala listings, all
+  GitHub links preserved except the 4 intentional substitutions
+  (references -> references.bib; Appendix B dropped as GitHub-only).
+- Page-by-page visual review done for title page, conclusion recap,
+  and appendix; no clipping or overflow visible.
+
+## Learning Log
+
+- Shared-column blowup in `aligned` with long [label] columns was the
+  dominant overfull source; fixed case-by-case with the guide's
+  escape hatches (continuation rows, per-row displays, inline labels).
+- Listings package (this TeX Live) has no `breakanywhere` option; the
+  one >80-char Scala line needed a per-listing
+  `breakatwhitespace=false` override.
+- Literal em-dash inside `lstlisting` is a fatal UTF-8 error under
+  `columns=fixed`; code excerpts must be pure ASCII.
+- Appendix subsections must NOT repeat the A.n prefix (LaTeX numbers
+  appendix subsections automatically); long identifiers in headings
+  need `\texorpdfstring` + `\allowbreak` camel-case breakpoints.
 
 ## Learning Log
 
