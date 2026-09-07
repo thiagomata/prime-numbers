@@ -1,0 +1,257 @@
+\section{Supporting Verified Lemmas}
+\label{sec:supporting-lemmas}
+
+The theorem above is the article's main result. We also record a few
+closely related lemmas that reuse the same prime and divisibility
+foundations. They are included here as supporting results, not as
+additional headline claims.
+
+\begin{itemize}
+  \item Finite-prefix consequence: a complete finite prime prefix has a
+    larger prime (Section~4.1).
+  \item Divisor-search bounds: composite inputs have a proper smallest
+    divisor below their square root (Section~4.2).
+  \item Finite-prefix primality: coprimality plus factor coverage excludes
+    all proper divisors (Section~4.3).
+  \item B\'ezout product lemmas: a prime divisor of a product is forced
+    onto a factor (Section~4.4).
+\end{itemize}
+
+\subsection{Corollary: Greater Than a Complete Finite Prefix}
+\label{sec:complete-finite-prefix}
+
+A direct corollary of Euclid's construction is that a complete finite
+prefix of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted
+finite list that contains every prime up to its largest element $h=p_k$.
+Let $q$ be the prime produced by the Euclid construction from $P$. Since
+Section~3 proves $q\notin P$, $q$ cannot be at or below $h$: every prime
+at or below $h$ is already contained in the complete prefix. Therefore
+$q > h$.
+
+\begin{equation*}
+\begin{aligned}
+P &= [p_1,\dots,p_k],\quad h=p_k
+&&\text{[Finite Prime Prefix]} \\
+\forall r,\ \operatorname{isPrime}(r)\land r\le h
+&\Rightarrow r\in P
+&&\text{[Prefix Complete Through }h\text{]} \\
+\operatorname{isPrime}(q)
+&\land q\notin P
+&&\text{[Euclid Construction]} \\
+q\le h
+&\Rightarrow q\in P
+&&\text{[Prefix Completeness]} \\
+q\le h
+&\Rightarrow q\in P\land q\notin P
+&&\text{[Contradiction]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\ q>h
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This is the ordered-prefix form of the Euclid theorem: from any complete
+finite prefix of the primes, the construction produces a prime beyond that
+prefix.
+
+{\raggedright
+This corollary is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeNotInList}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::notContainsFromValueNotMatchesAny}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidPrimeGreaterThanHead}}.
+\par}
+
+\subsection{Smallest-Divisor Bounds for Composite Numbers}
+\label{sec:smallest-divisor-bounds}
+
+The primality test used in Euclid's proof relies on
+\texttt{findSmallestDivisor(n, 2)}, which scans candidates from 2 upward
+until it finds the smallest divisor of $n$. Two lemmas characterize why
+this scan is both correct and efficient.
+
+\textbf{Composite has a divisor below n.} If $n$ is composite and $d$ is
+its smallest non-trivial divisor, then $d < n$. This is immediate from the
+definition of composite --- there exists a proper divisor --- but must be
+proved against the \texttt{findSmallestDivisor} algorithm, which scans
+upward until a divisor is found or $n$ itself is reached.
+
+\begin{equation*}
+\begin{aligned}
+n > 1 \;\land\; \neg \operatorname{isPrime}(n) &\Rightarrow \\
+\exists\, d = \operatorname{findSmallestDivisor}(n, 2) &: 2 \leq d < n \;\land\; \operatorname{Calc.mod}(n, d) = 0
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} Since $n$ is composite, it has a proper divisor
+$e\in[2,n)$. The minimality specification from Section~2.2 gives
+$2\leq d\leq e<n$ and $\operatorname{mod}(n,d)=0$.
+
+\begin{equation*}
+\therefore\ 2\leq d<n\ \land\ \operatorname{mod}(n,d)=0.
+\quad \blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\textbf{Smallest divisor is at most sqrt(n).} When $n$ is composite with
+smallest divisor $d$, the factor $q = n / d$ satisfies $q \ge d$. Then
+$d \cdot d \le d \cdot q = n$, so $d^2 \le n$. This means the scan only
+needs to check divisors up to $\sqrt{n}$ --- any divisor beyond that would
+have a co-factor below $d$, violating minimality.
+
+\begin{equation*}
+\begin{aligned}
+n > 1 \;\land\; \neg \operatorname{isPrime}(n) &\Rightarrow \\
+d = \operatorname{findSmallestDivisor}(n, 2) &: d \cdot d \leq n.
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} Put $q=n/d$. Since $d$ divides $n$, $dq=n$. Because
+$d<n$, $q>1$; hence $q\ge2$. If $q<d$, then $q\in[2,d)$ is a divisor of
+$n$, contradicting the minimality of $d$. Hence $d\leq q$, and
+
+\begin{equation*}
+d^2\leq dq=n.\quad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\textbf{Packaged composite divisor.} The wrapper
+\texttt{assertCompositeSmallestPrimeDivisor} combines the previous results
+into a reusable form: every composite number has a non-trivial prime
+divisor, the divisor really divides the number, and it lies at or below
+the square root bound.
+
+\begin{equation*}
+\begin{aligned}
+n > 1 \;\land\; \neg \operatorname{isPrime}(n)
+&\Rightarrow \exists d: \\
+&2 \le d < n
+\;\land\; \operatorname{isPrime}(d)
+\;\land\; d^2 \le n \\
+&\qquad \;\land\; \operatorname{Calc.mod}(n,d)=0
+  &&\text{[Composite Smallest Prime Divisor]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Proof.} From the composite assumption,
+\texttt{assertCompositeHasDivisorStrictlyBelowN(n)} gives $d < n$ with
+$\operatorname{mod}(n, d) = 0$. Let $q = n / d$, so $q \cdot d = n$. If
+$q < d$, then $q$ is a divisor of $n$ smaller than $d$, contradicting $d$
+being the smallest divisor. Therefore $q \ge d$, and
+$d \cdot d \le d \cdot q = n$.
+
+{\raggedright
+These properties are verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertSmallestDivisorAtMostSqrt}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeHasDivisorStrictlyBelowN}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeSmallestPrimeDivisor}}.
+\par}
+
+\subsection{Finite-Prefix Primality Criterion}
+\label{sec:finite-prefix-primality}
+
+The next supporting result is a local primality criterion. If a candidate
+number is coprime to all primes in a finite filter list, and every integer
+in the range $[2, head)$ has a prime factor among those filters, then the
+candidate itself is prime.
+
+This is not Euclid's infinitude theorem; it is a finite-prefix primality
+criterion. It turns coverage of all smaller possible divisors into
+primality of the candidate.
+
+\begin{equation*}
+\begin{aligned}
+head > 1
+\;\land\; \operatorname{isCoprime}(head,\overline P)
+\;\land\;
+\forall d\in[2,head),\ \neg \operatorname{isCoprime}(d,\overline P)
+&\Rightarrow \operatorname{isPrime}(head).
+\end{aligned}
+\end{equation*}
+
+The proof is by contradiction over possible divisors. If a divisor $d$ of
+$head$ existed in $[2, head)$, the range-coverage assumption would provide
+a prime factor from the finite filter list dividing $d$. Divisibility
+would then propagate from that factor through $d$ into $head$,
+contradicting that $head$ is coprime to every filter prime.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertHeadIsPrime}}.
+Its main range helper is
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertNoDivisorInRangeFromHelper}}.
+
+\subsection{B\'ezout and Prime-Product Lemmas}
+\label{sec:bezout-prime-product}
+
+Several arguments about prime-filtered products use a product form of
+primality: for a prime $p$, divisibility of a nonnegative product by $p$
+can be pushed onto a factor, and if neither nonnegative factor is
+divisible by $p$, then the product is not divisible by $p$. The verified
+proof goes through B\'ezout's identity.
+
+First, if $0 < h < p$, $p$ is prime, and $h$ is not divisible by $p$, then
+$h$ and $p$ have greatest common divisor $1$, and the extended Euclidean
+algorithm exposes a linear combination:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land 0 < h < p
+\land \operatorname{mod}(h,p)\ne0
+&\Rightarrow
+\exists x,y,\ h x + p y = 1.
+\end{aligned}
+\end{equation*}
+
+For completeness, the subtractive extended Euclidean algorithm repeatedly
+replaces the larger positive input by its difference with the smaller.
+Common divisors are preserved and the positive sum decreases, so it
+reaches equal values. Reversing either subtraction step preserves a
+linear-combination witness:
+
+\begin{equation*}
+\begin{aligned}
+(a-b)x+by=g &\implies ax+b(y-x)=g, \\
+ax+(b-a)y=g &\implies a(x-y)+by=g.
+\end{aligned}
+\end{equation*}
+
+Every common divisor of $h$ and the prime $p$ is either $1$ or $p$; it
+cannot be $p$ because $0<h<p$. The terminal gcd is therefore $1$, which
+gives the displayed B\'ezout identity. $\blacksquare\ \text{[Q.E.D.]}$
+
+Multiplying that identity by $k$ gives $k h x + k p y = k$. If $p$ divides
+$k h$, then $p$ divides both terms on the left and therefore divides $k$.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land k\ge0
+\land h\ge0
+\land \operatorname{mod}(h,p)\ne0
+\land \operatorname{mod}(kh,p)=0
+&\Rightarrow \operatorname{mod}(k,p)=0.
+\end{aligned}
+\end{equation*}
+
+The contrapositive form used by product and density arguments is:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{isPrime}(p)
+\land k\ge0
+\land h\ge0
+\land \operatorname{mod}(k,p)\ne0
+\land \operatorname{mod}(h,p)\ne0
+&\Rightarrow \operatorname{mod}(kh,p)\ne0.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+The full proof bodies are verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertCoprimeLinearCombinationOne}},
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeDivKhImpliesDivK}},
+and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeProductNotDivisible}}.
+\par}
