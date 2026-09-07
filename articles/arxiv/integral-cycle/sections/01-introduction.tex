@@ -1,0 +1,61 @@
+\section{Introduction}
+
+Cycles are a powerful concept in computer science and mathematics,
+representing unbounded lists that repeat a finite sequence of elements. When
+we integrate cycles, we obtain a list of cumulative sums with some unique
+properties that we will explore in this article.
+
+\begin{equation*}
+\begin{aligned}
+L &= [l_0, l_1, l_2, \ldots, l_{n-1}]  \mid &l_n &\in \mathbb{S}, L \in \mathbb{L}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{Cycle}(L)               &= [l_0, l_1, l_2, \ldots, l_{n-1}, l_0, l_1, \ldots] \\
+                              &= [v_0, v_1, v_2, \dots] \mid &v_i &= L[i \operatorname{mod} n] \\
+\operatorname{Integral}(L, init)      &= [y_0, y_1, y_2, \ldots, y_{n-1}] \mid &y_k &= \sum_{i=0}^{k} x_i + init \\
+\operatorname{CycleIntegral}(L, init) &= [w_0, w_1, w_2, \ldots] \mid          &w_k &= \sum_{i=0}^{k} \operatorname{Cycle}(L)_i + init
+\end{aligned}
+\end{equation*}
+
+In this article, we present a discrete definition of Cycle Integral over
+finite integer lists, defined recursively and verified some of its properties
+using the Stainless system. Our approach follows a zero-prior-knowledge
+philosophy, building on a previously verified foundation for recursive list
+and integral structures and summation. The result is a verified, from-scratch
+implementation of the cycle integral suitable as a foundation for
+higher-level numeric reasoning over unbounded lists.
+
+This article verifies:
+
+\begin{itemize}
+  \item Two equivalent definitions: recursive and modulo-based ---
+    Subsections~3.1--3.3
+  \item Core properties: next position, same difference after cycle, sum of
+    mod values, strictly increasing, positivity --- Subsections~4.1--4.5
+  \item Persistent and periodic properties: how a fixed cycle integral's
+    residues behave forever, and how it advances across full periods ---
+    Subsections~5.1--5.6
+  \item Deriving new cycle integrals: expansion, index shifts, rotation,
+    survivor filtering, and merge-based reconstruction ---
+    Subsections~6.1--6.10
+\end{itemize}
+
+\subsection{Related work}
+
+Lean's Mathlib provides a general formal theory of periodic functions. It
+proves that a periodic function remains periodic under integer multiples of a
+period, and that a finite sum of periodic functions is periodic~\cite{leanmathlibperiodic}.
+Mathlib also represents a finite cycle as a list modulo cyclic
+rotation~\cite{leanmathlibcycles}. These results give formal context for the
+finite period and shift structure used by the present construction.
+
+This article studies a different object: the cumulative integral of a
+concrete periodic integer list. Its central verified results are the
+equivalence of a recursive integral and a quotient--remainder closed form,
+together with the resulting step, full-period, residue, and reconstruction
+properties. The existing periodicity and finite-cycle developments therefore
+enrich the setting without standing in for this two-presentation
+cycle-integral proof.

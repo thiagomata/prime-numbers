@@ -1,0 +1,218 @@
+\section{Cycle Integral Definitions}
+
+The cycle integral extends the finite integral to unbounded repeating
+sequences. Two equivalent definitions are proven.
+
+\begin{itemize}
+  \item Recursive: recurrence on the cycle position --- Subsection~3.1
+  \item Modulo: closed-form using \texttt{div} and \texttt{mod} ---
+    Subsection~3.2
+  \item The two definitions are extensionally equivalent --- Subsection~3.3
+\end{itemize}
+
+\begin{equation*}
+\forall\, i \in \mathbb{N}_0,\ init \in \mathbb{N}_0,\ L \in \mathbb{L},\ n = |L|
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init) := [w_0, w_1, w_2, \ldots]
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+0 \leq i < n \implies w_i = \sum_{j=0}^i L_j + init \quad &\text{[Sum Property]} \\
+i > 0 \implies  \ w_i - w_{i-1} = L_{(i \operatorname{mod} n)}
+\quad &\text{[Step Property]}
+\end{aligned}
+\end{equation*}
+
+\subsection{Recursive Cycle Integral}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{RecCycle}(L) &= [v_0, v_1, \dots] \mid v_i =
+\begin{cases}
+  L[i] & i < n \\
+  v_{i - n} & i \geq n
+\end{cases} \\
+\operatorname{RecCycleIntegral}(L, init) &= [w_0, w_1, \dots] \mid w_i =
+\begin{cases}
+  init + w_0 & i = 0 \\
+  v_i + w_{i - 1} & i > 0
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+\textbf{Recursive Cycle Equivalence}: Recursive Cycle is equivalent to Mod
+Cycle, as proven in the article
+\href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md}{\emph{Formal
+Verification of Cyclic Lists}}~\cite{mata2026cycle}.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{RecCycle}(L)_i &=  \operatorname{ModCycle}(L)_i \quad &\text{[Cycle Equivalence]} \\
+  &= L_{(i \operatorname{mod} n)} \quad &\text{[Mod Cycle Definition]}
+\end{aligned}
+\end{equation*}
+
+\textbf{Sum Property}:
+
+\begin{equation*}
+\begin{aligned}
+v_0  &= L_0  \quad &\text{[Base Case]} \\
+&= L_{(0 \operatorname{mod} n)} \quad &\text{[By Modulo Property]} \\
+&= \sum_{j=0}^0 L_j \quad &\text{[Summation Re-indexing]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+& i < n \implies \\
+w_0 &= init + v_0 \quad &\text{[Base Case]} \\
+&= init + \sum_{j=0}^i L_j  \quad &\text{[Summation Re-indexing]} \\
+& i > 0 \implies \\
+w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
+&= init + v_0 + \sum_{j=1}^i L_j \quad &\text{[Mod of Small Values Property]} \\
+&= init + \sum_{j=0}^i v_j \quad &\text{[Summation Re-indexing]} \\
+\therefore w_i &= init + \sum_{j=0}^i L_j \quad &\text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertCycleIntegralEqualsSumSmallPositions}}.
+A key Scala verification excerpt is in Appendix~A.1; the complete proof is
+linked in the source reference.\par}
+
+\textbf{Step Property}:
+
+\begin{equation*}
+\begin{aligned}
+w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
+&= v_i \quad &\text{[Simplification]} \\
+&= L_{(i \operatorname{mod} n)} \quad &\text{[Substitution]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertDiffEqualsCycleValue}}.
+A key Scala verification excerpt is in Appendix~A.2; the complete proof is
+linked in the source reference.\par}
+
+\subsection{Modulo Cycle Integral}
+
+\begin{equation*}
+\begin{aligned}
+&\operatorname{ModCycle}(L)_i &:= L_{(i \operatorname{mod} n)} = [w_0, w_1, \dots ] \\
+&I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral of L]} \\
+&S &:= I_{n-1} \quad &\text{[One full cycle sum]} \\
+&\operatorname{ModCycleIntegral}(L, init)_i &:= (i \operatorname{div} n)\cdot S + I_{(i \operatorname{mod} n)} + init
+\end{aligned}
+\end{equation*}
+
+\textbf{Sum Property}:
+
+\begin{equation*}
+i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Claim to Prove]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+& i < n \implies  \\
+& i \operatorname{div} n
+      \quad = 0 \quad
+      \text{[By Div of Small Values Property]} \\
+w_i &= (i \operatorname{div} n)\cdot S + I_{(i \operatorname{mod} n)} + init \quad
+      &\text{[Definition]} \\
+&= 0 \cdot S + I_i + init \quad &\text{[Substitution]} \\
+&= \sum_{j=0}^i L_j + init \quad &\text{[By definition of } I_i]
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \
+\forall\, i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[Q.E.D.]}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{ModCycleIntegralProperties::\allowbreak assertFirstValuesMatchIntegral}}.
+A key Scala verification excerpt is in Appendix~A.3; the complete proof is
+linked in the source reference.\par}
+
+\textbf{Step Property}:
+
+\begin{equation*}
+w_i - w_{i-1} = L_{\, i \operatorname{mod} n}, \quad i>0,\, n>0
+\quad \text{[Claim to Prove]}
+\end{equation*}
+
+\textbf{Case $i \operatorname{mod} n > 0$:}
+
+\begin{equation*}
+\begin{aligned}
+&i \operatorname{mod} n &= ((i-1) \operatorname{mod} n) + 1 &&\text{[By Modulo Properties]} \\
+&i \operatorname{div} n &= (i-1) \operatorname{div} n &&\text{[By Division Properties]} \\
+&w_i &= (i \operatorname{div} n)\,S + I_{\,i\operatorname{mod} n} + init &&\text{[Definition]} \\
+     &&= (i-1 \operatorname{div} n)\,S + I_{\,((i-1)\operatorname{mod} n)+1} + init &&\text{[Div/Mod property]} \\
+&w_{i-1} &= (i-1 \operatorname{div} n)\,S + I_{\, (i-1)\operatorname{mod} n} + init &&\text{[Definition]} \\
+&w_i-w_{i-1} &= I_{\,((i-1)\operatorname{mod} n)+1} - I_{\, (i-1)\operatorname{mod} n} &&\text{[Cancellation]} \\
+    &&= \Big(\sum_{j=0}^{(i-1)\operatorname{mod} n} L_j + L_{((i-1)\operatorname{mod} n)+1}\Big)
+       - \sum_{j=0}^{(i-1)\operatorname{mod} n} L_j &&\text{[Expand sum]} \\
+    &&= L_{((i-1)\operatorname{mod} n)+1} &&\text{[Cancellation]} \\
+    &&= L_{\,i \operatorname{mod} n} &&\text{[Modulo property]}.
+\end{aligned}
+\end{equation*}
+
+\textbf{Case $i \operatorname{mod} n = 0$:}
+
+\begin{equation*}
+\begin{aligned}
+w_i &= (i \operatorname{div} n)\,S + L_0 + init
+&&\text{[Definition]} \\
+w_{i-1} &= (i \operatorname{div} n -1)\,S + I_{\,n-1} + init
+&&\text{[Div/Mod property]} \\
+w_i-w_{i-1}
+    &= (i \operatorname{div} n)\,S + L_0 + init
+       - \big((i \operatorname{div} n -1)\,S + I_{\,n-1} + init\big)
+&&\text{[Substitution]} \\
+    &= S + L_0 - I_{\,n-1}
+&&\text{[Simplification]} \\
+    &= L_0
+&&\text{[Since } S = I_{\,n-1}] \\
+    &= L_{\,i \operatorname{mod} n}
+&&\text{[Modulo property]}.
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore \
+w_i - w_{i-1} = L_{\, i \operatorname{mod} n}, \quad \forall\, i > 0 \quad \text{[Q.E.D.]}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{ModCycleIntegralProperties::\allowbreak assertSimplifiedDiffValuesMatchCycle}}.
+A key Scala verification excerpt is in Appendix~A.4; the complete proof is
+linked in the source reference.\par}
+
+\subsection{Equivalence of Definitions}
+
+The nontrivial equivalence proved here is between the recursive
+\texttt{CycleIntegral} definition and the closed-form
+\texttt{ModCycleIntegral} definition.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{CycleIntegral}(L, init)
+&= \operatorname{ModCycleIntegral}(L, init) \\
+&= [w_0, w_1, w_2, \ldots] \mid w_i = \sum_{j=0}^i L_{(j \operatorname{mod} n)} + init \ \blacksquare
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in the
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{ModCycleIntegralProperties::\allowbreak assertCycleIntegralMatchModCycleDef}}.
+A key Scala verification excerpt is in Appendix~A.5; the complete proof is
+linked in the source reference.\par}
