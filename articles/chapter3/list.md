@@ -877,7 +877,7 @@ Every element of a list divides its total product. The proofs below apply the
 quotient-invariance-under-shift law $\text{mod}(a + m \cdot b, b) = \text{mod}(a, b)$
 at $a = 0$ to derive $(a \cdot b) \bmod a = 0$; that law is verified in the
 companion article [Division and Modulo from Recursive
-Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Normalization](http://ai.viXra.org/abs/2609.0009) [[5]](#ref5)
 and reused here as a foundational primitive.
 
 - [Head divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
@@ -1545,6 +1545,10 @@ Available at: [https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html](ht
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 The Lean Community. *Mathlib: List Rotation*.
 Available at: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
+
+<a name="ref5" id="ref5" href="#ref5">[5]</a>
+Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*.  
+Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 ## Appendix A: Scala Verification Code
 
