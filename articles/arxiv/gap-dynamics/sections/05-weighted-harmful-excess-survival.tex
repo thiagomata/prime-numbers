@@ -1,0 +1,139 @@
+\section{Weighted Harmful-Excess Survival}
+\label{sec:weighted-harmful-excess-survival}
+
+\subsection{Weighted Deletion Conservation}
+\label{sec:weighted-deletion-conservation}
+
+The shooting-versus-cluster question becomes an exact signed conservation
+law. Each layer has a multiplicative main term and a harmful excess. For one
+fixed eligible 2-gap-start population followed through every filter in one
+complete conditioned chain $5\le r_0\lt r_1\lt\cdots\lt r_{m-1}\lt Q$ to a
+future head $Q$, with exact layer populations $N_i$, the weighted sum of
+those excesses is not an approximation: it is exactly the predicted final
+population minus the realized final population.
+
+Let $N_i$ be the number of eligible 2-gap starts immediately before filter
+$r_i$, and let $N_m$ be the number surviving the entire conditioned chain.
+Define
+\begin{equation*}
+a_i=1-\frac2{r_i},
+\qquad
+A_{u,v}=\prod_{j=u}^{v-1}a_j,
+\qquad
+w_i=A_{i+1,m},
+\qquad
+w_{-1}=A_{0,m}.
+\end{equation*}
+
+Let
+\begin{equation*}
+T=N_0A_{0,m},
+\qquad
+b_i=a_iN_i-N_{i+1},
+\end{equation*}
+
+Moreover, $a_iw_i=A_{i,m}=w_{i-1}$ and $w_{m-1}=1$. Multiplying the
+definition of $b_i$ by $w_i$ therefore gives
+\begin{equation*}
+\begin{aligned}
+\sum_{i=0}^{m-1}w_ib_i
+&=\sum_{i=0}^{m-1}
+  \left(w_ia_iN_i-w_iN_{i+1}\right)
+&&[\text{By Definition Of }b_i]\\
+&=\sum_{i=0}^{m-1}
+  \left(w_{i-1}N_i-w_iN_{i+1}\right)
+&&[\text{Identity }a_iw_i=w_{i-1}]\\
+&=w_{-1}N_0-w_{m-1}N_m
+&&[\text{Telescoping}]\\
+&=N_0A_{0,m}-N_m
+&&[\text{Boundary Weights}]\\
+&=T-N_m.
+&&[\text{By Definition Of }T]
+\end{aligned}
+\end{equation*}
+
+This is an identity, not an independent upper bound: the condition
+$\sum_iw_ib_i\lt T$ is exactly equivalent to $N_m>0$.
+
+{\raggedright
+The derivation above proves the recurrence, telescoping identity, and per-gap
+interpretation. A supplementary research record is available in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-deletion-conservation-law.md}{Weighted Deletion Conservation Law}. No
+\texttt{.holds} theorem currently encodes the weighted conditioned chain, so
+this result is not yet Stainless-verified.
+\par}
+
+\subsection{Terminal Survival Criterion}
+\label{sec:terminal-survival-criterion}
+
+The strict energy inequality is sufficient for survival, for every nonempty
+chain $5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, using its exact realized
+populations, over the same fixed eligible 2-gap-start population and
+conditioned filter chain as the conservation law of Section~5.1. Proving that it
+holds for infinitely many future heads remains open (the terminal survival
+estimate).
+
+Define
+\begin{equation*}
+E_b=
+\sum_{i=0}^{m-1}
+w_i\frac{r_i}{2(r_i-2)}b_i^2,
+\qquad
+W_-=\sum_{i=0}^{m-1}w_{i-1}.
+\end{equation*}
+
+Every $a_i$, $w_i$, and $w_{i-1}$ is positive, so $W_->0$.
+
+Put $c_i=r_i/[2(r_i-2)]$. Weighted Cauchy--Schwarz yields
+\begin{equation*}
+\begin{aligned}
+(T-N_m)^2
+&=\left(\sum_iw_ib_i\right)^2
+&&[\text{Exact Conservation}]\\
+&=\left(
+  \sum_i\sqrt{w_ic_i}\,b_i
+  \sqrt{\frac{w_i}{c_i}}
+  \right)^2
+&&[\text{Factorization}]\\
+&\le
+  \left(\sum_iw_ic_ib_i^2\right)
+  \left(\sum_i\frac{w_i}{c_i}\right)
+&&[\text{Cauchy--Schwarz}]\\
+&=E_b
+  \left(\sum_i2w_i\frac{r_i-2}{r_i}\right)
+&&[\text{By Definition Of }c_i]\\
+&=E_b\left(2\sum_iw_ia_i\right)
+&&[\text{Substitution}]\\
+&=2W_-E_b.
+&&[\text{Identity }a_iw_i=w_{i-1}]
+\end{aligned}
+\end{equation*}
+
+Hence the actual chain always satisfies
+\begin{equation*}
+E_b\ge\frac{(T-N_m)^2}{2W_-}.
+\end{equation*}
+
+If the final population were extinct, $N_m=0$, this lower bound would become
+$E_b\ge T^2/(2W_-)$. Therefore
+\begin{equation*}
+E_b\lt\frac{T^2}{2W_-}
+\Longrightarrow
+N_m>0
+\qquad\blacksquare\ \text{[Contradiction At Extinction; Q.E.D.]}
+\end{equation*}
+
+Safe-window certification (Section~4.1) then certifies the surviving eligible start as a twin-prime pair.
+The implication is a theorem for every complete conditioned chain. The open
+terminal survival estimate is the arithmetic statement that the strict energy inequality
+holds for infinitely many future heads $Q$. Complete-period density and
+separate one-layer capacity bounds do not establish that inequality.
+
+{\raggedright
+The derivation above proves the sharp lower bound and terminal classification.
+Supplementary research records are available in \href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md}{Weighted Harmful-Excess
+Energy Is Already Terminal} and
+\href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/weighted-harmful-excess-quadratic-survival.md}{Weighted Harmful-Excess Quadratic Survival}. No \texttt{.holds}
+theorem currently encodes the weighted chain, so this result is not yet
+Stainless-verified.
+\par}

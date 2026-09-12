@@ -1,0 +1,56 @@
+\section{A Distinct Almost-Prime Program}
+\label{sec:almost-prime-program}
+
+Requiring both endpoints of a square-safe 2-gap to be prime reaches the
+twin-prime boundary. A separate program relaxes the second endpoint to have at
+most two prime factors. That program has different local factors and a
+different Type-I/Type-II formulation; it is developed in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/articles/draft/draft-relaxed-almost-prime-sieve-sequence.md}{Relaxed Almost-Prime
+Production in Sieve Sequences}.
+
+Its success would not prove a surviving 2-gap or infinitely many twin primes.
+
+\subsection{Why This Is Hard: The Type-II Barrier}
+\label{sec:type-two-barrier}
+
+The exhaustion argument and the fixed-seed scale conflict together explain
+why this project's complete-period algebra cannot finish the twin-prime
+program. The deeper reason the program is hard at all comes from the
+contemporary theory of prime-producing sieves.
+
+Ford and Maynard study nonnegative sequences whose difference from a
+comparison model satisfies Type-I and Type-II estimates. Type-I controls
+divisibility averages over many factor scales; Type-II controls bilinear
+sums against arbitrary bounded coefficient sequences. Their framework proves
+that a \emph{substantial Type-II range is genuinely necessary} to guarantee a
+nontrivial prime lower bound: very strong Type-I information alone can still
+be consistent with a sequence containing no primes.
+
+This project's exact residue and CRT formulas are algebraic input for a
+possible Type-I analysis. They are not yet a Type-I theorem over the
+required short intervals, because the accumulated discrepancy norm has not
+been bounded---the fixed-seed scale conflict of Section~10.1 is one face of this.
+No arbitrary-coefficient Type-II estimate is currently proved for the
+sieve-sequence weights.
+
+The relaxed almost-prime program of Section~11 makes the Type-II barrier concrete.
+Its scalar-centered final weight retains a nonprincipal character mode
+modulo $3$ on the complete reduced wheel: a bounded product coefficient can
+correlate perfectly with the full relaxed survivor count. This refutes the
+shortcut that scalar-density centering alone creates Type-II
+orthogonality---the exact obstruction Ford--Maynard's framework predicts.
+
+Green and Sawhney's work on prime values of $p^2+nq^2$ demonstrates a modern
+successful Type-II strategy using extra algebraic variables, number-field
+factorization, and Gowers-norm machinery. Those structural inputs do not
+automatically exist for the affine pair $(x,x+2)$. Their result is therefore
+a methodological guide, not a theorem that transfers.
+
+The actionable consequence is that any route beyond the exhaustion boundary
+of Section~6 must either prove a genuine short-window signed Type-I estimate for
+the residue-energy / accepted-boundary quantities of Section~8, or introduce a
+new bilinear variable that supplies the Type-II cancellation the affine pair
+lacks. A supplementary survey mapping recent Type-I/Type-II results to these
+exact obligations is available in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/research/recent-prime-producing-sieves-deep-dive.md}{Recent Prime-Producing Sieves: A
+Deep-Dive}.

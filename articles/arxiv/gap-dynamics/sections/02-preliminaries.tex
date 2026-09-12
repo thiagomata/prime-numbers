@@ -1,0 +1,75 @@
+\section{Preliminaries And Evidence Boundary}
+\label{sec:preliminaries}
+
+For a prime stage head $p$, let
+\begin{equation*}
+M_p=\prod_{q\lt p}q
+\end{equation*}
+
+and retain the integers coprime to $M_p$. Their accepted residues repeat
+modulo $M_p$; adjacent differences in one complete period form a cyclic
+gap list. The verified companion article establishes accepted-value
+completeness, strict increase, period shift, exact survivor count, and
+the copy-or-merge transition rule.
+
+This article takes those verified construction facts as inputs. It then
+studies mathematical properties of 2-gap populations and signed interval
+discrepancies. The division is deliberate: the companion article fixes
+and machine-checks the sieve object; this article expands the
+mathematical theory of that object without claiming that every new
+theorem has a Scala encoding.
+
+\subsection{Roles, Populations, And Scopes}
+\label{sec:roles-populations-scopes}
+
+The notation follows the shared research vocabulary:
+
+\begin{itemize}
+  \item $Q$ is a fixed \textbf{future head} used for square-safe
+    certification;
+  \item $r$ is one \textbf{incoming prime}, and $r_i$ is filter $i$ in a
+    complete conditioned chain to $Q$;
+  \item a \textbf{complete period} contains one full cyclic sieve pattern;
+  \item a \textbf{local window} is an explicitly stated bounded integer
+    interval;
+  \item a \textbf{2-gap-start population} counts starts $x$, not all
+    accepted values; and
+  \item a \textbf{square-safe certificate} requires both $x$ and $x+2$ to
+    lie strictly below $Q^2$ after every missing prime below $Q$ has been
+    installed.
+\end{itemize}
+
+For a conditioned chain, $S_i$ denotes the local 2-gap starts immediately
+before filter $r_i$, and $N_i=|S_i|$. The final survivor population is
+$S_m$ with size $N_m$. Complete-period populations are named separately
+and are never substituted for $N_i$ without an explicit localization
+theorem.
+
+\subsection{Evidence Status}
+\label{sec:evidence-status}
+
+The following status convention is used:
+
+\begin{itemize}
+  \item \textbf{Verified foundation:} supported by maintained Stainless
+    source through the companion article.
+  \item \textbf{Mathematically proved:} a complete mathematical proof is
+    included here, but no corresponding \texttt{.holds} theorem
+    currently exists.
+  \item \textbf{Open:} the required estimate is stated but not proved.
+\end{itemize}
+
+These local labels map to the shared vocabulary as follows:
+\textbf{Verified foundation} means a Stainless-verified theorem,
+\textbf{Mathematically proved} means a mathematically proved theorem, and
+\textbf{Open} covers an open hypothesis or an unproved required
+estimate. The article's derivations and appendices are the authority for
+its mathematical claims; linked property records are supplementary
+navigation through the wider research program.
+
+No theorem in this article claims infinitely many twin primes.
+
+Each property section states its population, scope, and quantifier, then
+proves the result. Verified construction inputs link to maintained Scala
+contracts. A mathematical proof is not called Stainless-verified merely
+because its finite instances can be computed.

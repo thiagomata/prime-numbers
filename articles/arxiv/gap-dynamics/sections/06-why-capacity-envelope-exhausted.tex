@@ -1,0 +1,156 @@
+\section{Why The Capacity Envelope Is Exhausted}
+\label{sec:why-capacity-envelope-exhausted}
+
+This section presents a closed exhaustion argument rather than a single new
+theorem: it shows why every unsigned-capacity route to the terminal survival
+threshold $E_b\lt T^2/(2W_-)$ fails, leaving signed residue information as
+the only remaining ingredient. It holds for every nonempty conditioned chain
+$5\le r_0\lt\cdots\lt r_{m-1}\lt Q$, over the same fixed eligible 2-gap-start
+population and conditioned filter chain as the weighted deletion conservation
+and terminal survival criterion properties above. The broader research
+program contains additional mathematically proved capacity analyses. This
+article uses the self-contained proofs of its load-bearing exhaustion steps in
+Appendix~C; the other analyses remain in the supplementary research map.
+
+The terminal-energy theorem of Section~5.2 reduces survival to a single inequality
+on the weighted harmful-excess energy $E_b$. The most natural way to
+upper-bound $E_b$ is to maximize each layer's contribution $b_i^2$ separately,
+using only the arithmetic every residue histogram must satisfy. This produces
+a \emph{capacity envelope}. The next six paragraphs walk through the results that
+build, refine, and ultimately exhaust that envelope.
+
+\subsection{The separate capacity envelope}
+\label{sec:separate-capacity-envelope}
+
+Each harmful residue class can hold at most $B_i$ incoming 2-gap starts, and
+the two harmful classes together can hold at most $2B_i$. The sharp
+capacity-envelope theorem (Appendix~C.1) proves that maximizing $b_i^2$ over
+every histogram compatible with these class capacities gives the sharp
+separate-layer envelope
+\begin{equation*}
+E_b\le\mathcal U_{\mathrm{cap}}
+=\sum_i\alpha_iX_i,
+\qquad
+X_i=\max\bigl((\ell_i-\mu_i)^2,(u_i-\mu_i)^2\bigr),
+\end{equation*}
+
+with $\mu_i=2N_i/r_i$ and $\ell_i,u_i$ the feasible harmful-count endpoints.
+The capacity-stability enlargement adds the repair
+$\Gamma_{\mathrm{cap}}$, enlarging the certificate threshold to
+$T^2/(2W_-)+\Gamma_{\mathrm{cap}}$. The capacity envelope is correct and
+sharp \emph{for the information it retains}; the question is whether that
+information is enough.
+
+\subsection{Why capacity alone gives no positive floor}
+\label{sec:capacity-no-positive-floor}
+
+The width-floor theorem (Appendix~C.2) proves the explicit per-layer floor
+\begin{equation*}
+X_i\ge\frac14\min(N_i,2B_i,r_iB_i-N_i)^2.
+\end{equation*}
+
+The same property proves the obstruction: this floor vanishes at both
+$N_i=0$ and $N_i=r_iB_i$. Consequently no theorem using only $r_i$ and $B_i$
+can force a positive envelope, because the fully occupied profile $N_i=r_iB_i$
+is positive and has zero capacity envelope. Progress requires either keeping
+realized populations away from both extremes, or replacing the capacity
+interval by localized residue information.
+
+\subsection{Native-period Bessel refines but does not finish}
+\label{sec:native-period-bessel}
+
+The native-period hybrid envelope intersects Bessel's inequality over the
+native prefix with the coordinate capacities via an exact greedy linear
+program. This gives the hybrid envelope
+$\mathcal U_{\mathrm{hyb}}\le\mathcal U_{\mathrm{cap}}$, with strict gain
+exactly when a normalized prefix-capacity box exceeds an interval remainder.
+The overflow quantification (Appendix~C.2) measures the gain at cut $k$ by
+the normalized overflow $e_k$, which the width-floor theorem lower-bounds by
+population slack. The envelope improves, but the next three subsections show
+that no cut in the chain can clear the original survival threshold.
+
+\subsection{Fixed cuts fail}
+\label{sec:fixed-cuts-fail}
+
+The fixed-seven-cut theorem (Appendix~C.3) proves that the fixed cut
+immediately after filter $7$ fails: under the seven-layer density floor at
+the next untouched layer (filter $11$), the hybrid envelope satisfies
+\begin{equation*}
+\mathcal U_2^{\mathrm{hyb}}>\frac{T^2}{2W_-}
+\qquad\text{whenever }m\ge37.
+\end{equation*}
+
+The constant $37$ comes from the exact integer check
+$29403\cdot275^2=2{,}223{,}601{,}875\lt37\cdot847\cdot269^2=2{,}267{,}721{,}379$.
+The arbitrary-cut theorem (Appendix~C.4) generalizes this to every fixed
+cut $k$:
+\begin{equation*}
+m>P_k(r_k-2)^2\left(1+\frac6D\right)^2
+\quad\Longrightarrow\quad
+\mathcal U_k^{\mathrm{hyb}}>\frac{T^2}{2W_-}.
+\end{equation*}
+
+For any fixed $k$ the right side is bounded as $Q$ grows, while $m$ tends to
+infinity along any unbounded family of heads. Therefore no fixed cut can
+certify survival on unbounded chains.
+
+\subsection{Moving cuts lose their complete native blocks}
+\label{sec:moving-cuts-lose-blocks}
+
+A cut that moves outward with the head can in principle avoid the fixed-cut
+obstruction. The moving-cut theorem (Appendix~C.5) proves the opposite
+pressure: a threshold-clearing cut with at least one complete native block
+forces
+\begin{equation*}
+m\lt\frac37\left(1+\frac6D\right)^2
+\left(\frac{2\log H}{c}-2\right)^2,
+\end{equation*}
+
+where $H$ is the window length and $c$ is a Chebyshev-type lower-bound
+constant for $\vartheta$. This bound is $O(\log^2 H)$. But the prime number
+theorem gives $m=\pi(Q)-3\sim Q/\log Q$, so $m/\log^2H\sim Q/(4\log^3Q)\to\infty$.
+
+The prime number theorem is an explicit external dependency here; the exact
+logarithmic-squared inequality holds without it under five stated finite
+hypotheses. The asymptotic conclusion requires PNT.
+
+Therefore, for all sufficiently large $Q$, any threshold-clearing cut has
+$M_k>H$: no complete native block remains. The incomplete-block theorem
+(Appendix~C.6) then proves that the single incomplete block left at that
+moving-prime scale contributes $e_k=0$---the native-capacity route gives back
+exactly $\mathcal U_{\mathrm{cap}}$.
+
+\subsection{The stability-gap repair is negligible}
+\label{sec:stability-gap-negligible}
+
+The capacity-stability enlargement had enlarged the certificate threshold by
+$\Gamma_{\mathrm{cap}}$. The stability-gap theorem closes that escape: under
+the seven-layer density floor at filter $7$,
+\begin{equation*}
+\Gamma_{\mathrm{cap}}\le\frac{25P_m}{18}\left(\frac25+\frac{3N_0}{5S}\right)^2,
+\qquad
+\mathcal U_{\mathrm{cap}}\ge\frac{P_mD^2}{1080}.
+\end{equation*}
+
+Prime Mertens and PNT make the stability gap eventually positive but
+negligible relative to the $P_mD^2/1080$ floor. The capacity-relaxed
+threshold therefore cannot rescue the separate capacity envelope on an
+unbounded family.
+
+\subsection{Verdict: signed information is required}
+\label{sec:verdict-signed-information}
+
+The capacity-plus-native-Bessel envelope cannot certify the terminal
+survival threshold under the full seven-layer density floor on unbounded
+chains. Every route that discards residue \emph{signs and order}---maximizing each
+layer over sign-compatible histograms---has been exhausted. The shared reason
+is that unsigned capacity forgets exactly the interval-order information that
+controls actual harmful excess.
+
+This sets up the next two sections. Section~7 computes the first genuine localized
+saving at filter $7$ by restoring exact residue order. Section~9 then bridges that
+saving to the residue-collision energy of Section~8.2 across complete old-period
+copy blocks. The full self-contained
+proofs of the exhaustion steps summarized in Sections~6.1--6.6 appear in
+Appendix~C, so the reader can verify each constant without leaving the
+article.
