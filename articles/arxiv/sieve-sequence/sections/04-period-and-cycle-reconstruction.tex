@@ -1,0 +1,101 @@
+\section{Period and Cycle Reconstruction}
+\label{sec:period-and-cycle-reconstruction}
+
+The finite representation works because the filter predicate is periodic
+and the scan preserves the order of the repeated accepted residues.
+
+\begin{itemize}
+  \item one period shifts every generated value by $M$;
+  \item every later block is a translated copy of the first block;
+  \item integrating one finite positive gap cycle reconstructs the
+    infinite scan.
+\end{itemize}
+
+\subsection{Canonical Block Shift}
+\label{sec:canonical-block-shift}
+
+The boundary $h+M$ passes exactly the same filters as $h$, so
+completeness gives a positive index $T$ with $\ell_T=h+M$. Periodicity of
+acceptance and strict order then identify the $k$-th accepted value in
+the following block:
+
+\begin{equation*}
+\begin{aligned}
+A_S(v+M) &= A_S(v)
+  &&\text{[Modulo-period invariance]} \\
+\ell_T &= h+M
+  &&\text{[Canonical boundary]} \\
+\ell_{k+T} &= \ell_k+M
+  &&\text{[Same ordered survivor]} \\
+\ell_{k+nT} &= \ell_k+nM
+  &&\text{[Block induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala}{\texttt{SpecSieveSeqPeriodProperties::assertBlockShiftMultiple}}.
+
+\subsection{Gap-Cycle Reconstruction}
+\label{sec:gap-cycle-reconstruction}
+
+Let \texttt{GapCycle(G)} store the first $T$ adjacent differences. The
+block-shift theorem makes those differences periodic:
+
+\begin{equation*}
+\begin{aligned}
+g_{k+T}
+&=\ell_{k+T+1}-\ell_{k+T} \\
+&=(\ell_{k+1}+M)-(\ell_k+M)
+  &&\text{[Block shift]} \\
+&=g_k.
+\end{aligned}
+\end{equation*}
+
+The cycle integral starts at $h$ and adds these gaps. Induction on $k$
+then reconstructs every scan value:
+
+\begin{equation*}
+\begin{aligned}
+I_G(0)
+&=h+g_0=\ell_1
+  &&\text{[Base]} \\
+I_G(k)
+&=I_G(k-1)+g_k \\
+&=\ell_k+(\ell_{k+1}-\ell_k)
+  &&\text{[Induction hypothesis]} \\
+&=\ell_{k+1}
+  &&\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala}{\texttt{SpecSieveSeqPeriodProperties::assertSpecGapCycleIntegralMatchesApply}}.
+\par}
+
+\subsection{Repetition Does Not Change the Infinite Sequence}
+\label{sec:repetition-invariance}
+
+The transition prepares $h$ copies of the current period before
+installing the head $h$ as a new filter. Repeating the stored gap list
+multiplies the finite representation's period from $T$ to $hT$, but it
+does not change the infinite periodic sequence represented by the cycle
+integral.
+
+\begin{equation*}
+\begin{aligned}
+G^{\langle h\rangle}
+  &=\underbrace{G\mathbin{\texttt{++}}\cdots\mathbin{\texttt{++}}G}_{h\text{ copies}}, \\
+|G^{\langle h\rangle}|&=hT, \\
+G^{\langle h\rangle}_{k\bmod hT}
+  &=G_{k\bmod T}, \\
+I_{G^{\langle h\rangle}}(k)
+  &=I_G(k)
+  \quad\text{[Equal increments and initial value]}\quad\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala}{\texttt{SpecDerivedRepeatedCycleProperties::assertSpecRepeatedCycleIntegralMatchesBase}}.
+\par}

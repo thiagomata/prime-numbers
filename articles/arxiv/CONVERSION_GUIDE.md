@@ -28,6 +28,29 @@ surviving an author review.
     `\text{head}` — it isn't a function call.
   - GitHub anchor links become hardcoded references by section name or
     number ("Section~5", "Subsections~6.1--6.4", "Appendix~A.2").
+  - MathJax-style `\gt` / `\lt` (GitHub's math renderer aliases these to
+    `>` / `<`; plain LaTeX has no such macros and fails with "Undefined
+    control sequence") are not hunted down and replaced one by one.
+    Instead define `\newcommand{\gt}{>}` and `\newcommand{\lt}{<}` once
+    in `main.tex`'s preamble — a pure syntax shim, not a content change —
+    so the section files stay textually identical to the Markdown's math
+    source. Check for these before assuming an article's math blocks will
+    compile unmodified; not every article in this repo uses them.
+  - A Markdown `![alt](https://raw.githubusercontent.com/.../foo.svg)`
+    image becomes a real embedded figure, not a dropped or merely-linked
+    one: `\usepackage{graphicx}` is already in every package's preamble.
+    pdfLaTeX cannot include raw SVG, so locate the source SVG in the repo
+    (the URL's path may not match its actual location — grep the repo,
+    don't trust the URL path) and convert it once to a vector PDF, e.g.
+    `python3 -c "import cairosvg; cairosvg.svg2pdf(url='...', write_to='articles/arxiv/<article>/figures/<name>.pdf', scale=2)"`
+    (a venv may be needed: Homebrew Python blocks unmanaged global pip
+    installs). Do not trust `qlmanage -t` (macOS Quick Look) for this —
+    it silently center-crops non-square SVGs to its `-s` size with no
+    error, truncating the figure. Always render the resulting PDF back to
+    PNG and visually confirm nothing is clipped before wiring it in with
+    `\includegraphics[width=\textwidth]{figures/<name>.pdf}` inside a
+    `figure` environment, with the Markdown's alt text becoming the
+    `\caption`.
 - The `three-representations` rule carries over: English prose, math block,
   and the verified-source link must all survive the conversion. GitHub
   ```` ```math ```` fenced blocks become `\begin{equation*}\begin{aligned}
