@@ -1,0 +1,21 @@
+classDiagram
+    class RecursiveCycle {
+        values: List[BigInt]
+        period: BigInt
+        apply(BigInt) BigInt
+    }
+    class ModCycle {
+        values: List[BigInt]
+        period: BigInt
+        apply(BigInt) BigInt
+    }
+    class MemCycle {
+        cycle: ModCycle
+        modIsZeroForAllValues: List[BigInt]
+        modIsZeroForNoneValues: List[BigInt]
+        modIsZeroForSomeValues: List[BigInt]
+        apply(BigInt) BigInt
+        checkMod(BigInt) MemCycle
+    }
+    RecursiveCycle ..> ModCycle : "proven equivalent by induction (§4.1-4.2)"
+    MemCycle *-- ModCycle : "wraps (delegates apply)"
