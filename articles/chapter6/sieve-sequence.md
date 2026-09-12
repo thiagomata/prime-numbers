@@ -908,11 +908,11 @@ Normalization*. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXr
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists
-Recursively Defined*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md).
+Recursively Defined*. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023).
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*.
-[Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md).
+[Local article](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md).
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from
