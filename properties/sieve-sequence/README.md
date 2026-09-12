@@ -24,6 +24,7 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | 2-Gap Isolation | Isolation of 2-Gaps After Filtering by 3 | [two-gap-isolation-after-filter-three.md](two-gap-isolation-after-filter-three.md) |
 | Accepted Local Strikes | Exact Accepted Local Filter Strikes | [exact-accepted-local-filter-strikes.md](exact-accepted-local-filter-strikes.md) |
 | Local Survival Threshold | Sharp Local 2-Gap Survival Threshold | [sharp-local-two-gap-survival-threshold.md](sharp-local-two-gap-survival-threshold.md) |
+| Pre-Final Twin Decomposition | Pre-Final-Filter Twin/Semiprime Decomposition | [pre-final-filter-twin-semiprime-decomposition.md](pre-final-filter-twin-semiprime-decomposition.md) |
 | Safe-Window Certification | Safe-Window 2-Gaps Certify Twin Primes | [safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md) |
 | Coherent Head-Suppression Cover | Coherent Head Suppression Is Shifted Prime-Shot Coverage | [coherent-head-suppression-is-shifted-prime-shot-coverage.md](coherent-head-suppression-is-shifted-prime-shot-coverage.md) |
 | Coherent-Phase Safety Boundary | Coherent-Phase Adversary Safety Boundary | [coherent-phase-adversary-safety-boundary.md](coherent-phase-adversary-safety-boundary.md) |
