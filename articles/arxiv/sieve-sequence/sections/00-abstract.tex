@@ -1,0 +1,26 @@
+\begin{abstract}
+This article defines a sieve sequence stage as the increasing sequence of
+integers accepted by a finite prefix of the prime filters. The accepted
+pattern is periodic modulo the product of those filters, so one finite
+list of positive gaps reconstructs the entire infinite stage. We formally
+verify the stage's strict increase, completeness, block-period shift,
+gap-cycle reconstruction, and exact transition count. If the current head
+is $h$, the current period has $T$ accepted values, and the current
+modulus is $M$, then the expanded window of length $hM$ contains $hT$ old
+survivors; exactly $T$ are multiples of $h$, leaving $T(h-1)$ survivors.
+We also verify the local copy-or-merge rule for the next gaps. For each
+real linear 2-gap, the two endpoint strikes occur at distinct lift
+offsets, so exactly two of its $h$ lifts are destroyed and exactly $h-2$
+keep both endpoints. Under explicit structural and period preconditions,
+the resulting gap prefix agrees with the next linear specification.
+
+The formal result has two explicit boundaries. First, next-head
+primality is conditional on the square bound supplied mathematically by
+Bertrand's postulate. Second, the article proves the semantic transition
+between stages, while the direct construction of the next cycle from a
+repeated and filtered current cycle is a separate open composition
+problem. Accordingly, the article establishes a formally verified
+finite-stage sieve specification and transition semantics, not a new
+prime-sieving algorithm or a theorem about the persistence of any
+particular prime gap in a prescribed short window.
+\end{abstract}

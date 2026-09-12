@@ -1,0 +1,95 @@
+\section{Verification Source References}
+\label{sec:appendix-a}
+
+\subsection{primorialPlusOneModAny}
+
+\textbf{Source}:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+
+Short source excerpt for Stage 1 (Section~3.1):
+
+\begin{lstlisting}[style=scala]
+def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
+  require(primes.nonEmpty)
+  decreases(primes.size)
+  primorialPlusOneTailLoop(List.empty, primes)
+}.holds
+\end{lstlisting}
+
+This lemma establishes that $\operatorname{primorial}(\text{primes}) + 1$
+is not divisible by any prime in the list, via the recursive
+\texttt{primorialPlusOneTailLoop} helper and the modular arithmetic
+lemmas cited in Section~3.1.
+
+\subsection{newPrimeFromEuclid}
+
+\textbf{Source}:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+
+Short source excerpt for Stage 2 (Section~3.2):
+
+\begin{lstlisting}[style=scala]
+def newPrimeFromEuclid(primes: List[Prime]): Prime = {
+  require(primes.nonEmpty)
+  require(primorialPlusOneModAny(primes))
+
+  PrimeUtils.primorialPositive(primes)
+  val n = PrimeUtils.primorial(primes) + 1
+  val d = findSmallestDivisor(n, 2)
+
+  if (d == n) {
+    findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+    Prime(n)
+  } else {
+    assertSmallestDivisorIsPrime(n, d)
+    findSmallestDivisorResultModZero(n, d)
+    Prime(d)
+  }
+}
+\end{lstlisting}
+
+{\raggedright
+This function constructs a new \texttt{Prime} value by finding the
+smallest divisor of $n = \operatorname{primorial}(\text{primes}) + 1$. If
+$d = n$, then $n$ itself is prime; otherwise $d$ is a prime divisor. In
+either case, the result is a prime not in the original list.
+\par}
+
+\subsection{euclidTheorem}
+
+\textbf{Source}:
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+
+Short source excerpt for the main theorem (Section~3.4):
+
+\begin{lstlisting}[style=scala]
+def euclidTheorem(primes: List[Prime]): Boolean = {
+  require(primes.nonEmpty)
+
+  primorialPlusOneModAny(primes)
+  PrimeUtils.primorialPositive(primes)
+  val n = PrimeUtils.primorial(primes) + 1
+  val d = findSmallestDivisor(n, 2)
+
+  if (d == n) {
+    findSmallestDivisorIsNImpliesNoDivisorInRange(n, 2)
+    assert(euclidTailLoop(primes, n, n, BigInt(1)))
+    valueNotMatchesAny(primes, n)
+  } else {
+    assertSmallestDivisorIsPrime(n, d)
+    findSmallestDivisorResultModZero(n, d)
+    assert(euclidTailLoop(primes, d, n, BigInt(1)))
+    valueNotMatchesAny(primes, d)
+  }
+}.holds
+\end{lstlisting}
+
+This source proof is the machine-checked form of the main theorem: every
+non-empty finite list of primes admits a prime outside the list.
+
+\section{Verification Log}
+\label{sec:appendix-b}
+
+The latest \texttt{just verify} run verifies the described properties
+without errors. The full log output is available at
+\href{https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log}{\texttt{logs/verify.log}}.

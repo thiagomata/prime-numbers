@@ -1,0 +1,60 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This article formalizes Euclid's theorem from the same first-principles
+foundation used throughout the preceding chapters. The proof follows the
+classical primorial-plus-one construction: from a finite list of primes it
+builds a number that is congruent to one modulo every prime in the list,
+then uses the existence of a smallest divisor to extract a prime factor
+outside that list. The contradiction is mathematical before it is
+computational: no member of the original list can divide the constructed
+number, while the constructed number must still have a prime divisor.
+
+The Stainless development verifies each step that the article relies on:
+small-remainder facts, zero-remainder preservation under multiplication,
+divisibility of product members, smallest-divisor primality, and the
+final non-membership theorem. The result is a source-backed formal proof
+of the infinitude of primes, with the supporting finite-prefix corollaries
+separated from the theorem spine rather than folded into the main claim.
+
+The theorem spine can be read compactly as the following verified chain.
+Let $P=\operatorname{primorial}(L)$ and $N=P+1$:
+
+\begin{equation*}
+\begin{aligned}
+\forall p\in L,\quad \operatorname{mod}(N,p)&=1\ne0
+&&\text{[Stage 1]} \\
+d=\operatorname{findSmallestDivisor}(N,2),\quad d=N
+&\Rightarrow \operatorname{isPrime}(N) \\
+d<N
+&\Rightarrow \operatorname{isPrime}(d)
+&&\text{[Stage 2]} \\
+v\mid N\ \land\ p\in L
+&\Rightarrow p\ne v
+&&\text{[Stage 3].}
+\end{aligned}
+\end{equation*}
+
+Thus either $N$, or its least non-trivial divisor $d$, is a prime outside
+$L$:
+
+\begin{equation*}
+L\ne[]\ \Rightarrow\ \exists p:\operatorname{isPrime}(p)\land p\notin L.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\section{Future Work}
+\label{sec:future-work}
+
+The most natural continuation is the Fundamental Theorem of Arithmetic,
+since Euclid's theorem already establishes the existence side of prime
+decomposition. A verified uniqueness proof would require a stronger
+library of divisibility and coprimality lemmas, but it would extend the
+present result in a direct and structurally compatible way.
+
+Further work could then move from existence to distribution. Dirichlet's
+theorem would require arithmetic progressions and substantially richer
+modular reasoning, while the Prime Number Theorem would require asymptotic
+analysis far beyond the finite arithmetic developed here. Those
+directions are intentionally outside the scope of this article, but this
+proof supplies a verified starting point for them.

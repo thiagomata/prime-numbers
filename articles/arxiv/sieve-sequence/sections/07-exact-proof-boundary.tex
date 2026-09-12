@@ -1,0 +1,49 @@
+\section{Exact Proof Boundary}
+\label{sec:exact-proof-boundary}
+
+The verified results above do not form an unconditional operational
+theorem. This section states the boundary as part of the theorem.
+
+\begin{itemize}
+  \item \textbf{Square bound.} \texttt{SpecSieveSequence.next} and the
+    next-head theorem require $p^+\lt h^2$. Bertrand's postulate
+    supplies a prime between $h$ and $2h$; for prime $h\ge2$, this
+    implies the required square bound (with $h=2$ checked directly).
+    Ramanujan gives a direct proof of the required postulate
+    \cite{ramanujan1919}, but Bertrand's postulate is an external
+    mathematical dependency here, not a Stainless theorem in this
+    development.
+
+  \item \textbf{Count-to-period bridge.} Section~5.1 verifies that
+    filtering the complete expanded current-stage window leaves exactly
+    $T(h-1)$ values. Section~6.3 separately establishes the semantic
+    gap-prefix agreement, while Section~6.4 reconstructs the next stage
+    when $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next
+    canonical-period equation from the same-head count is a distinct
+    open composition theorem.
+
+  \item \textbf{Direct cycle-to-cycle construction.} Repetition
+    preserves the represented values; filtering the base and repeated
+    views gives equal survivor lists and gaps; the first survivor is the
+    next head; and the semantic merged-gap prefix agrees with the next
+    specification. The open composition theorem is the equality between
+    the repeated cycle's filtered survivor-gap list and that semantic
+    merged-gap prefix, followed by packaging those gaps into a new
+    integral cycle.
+
+  \item \textbf{No short-window gap-persistence theorem.} Section~5.2
+    proves that exactly $h-2$ lifts of one real linear 2-gap keep both
+    endpoints over a complete lift block. It does not imply that one of
+    those lifts lies in a shorter interval such as $[h,h^2)$, nor does
+    it yet aggregate the cyclic wrap gap into a total next-stage
+    recurrence. This article makes no claim about infinitely many twin
+    primes or the survival of 2-gaps in every local window.
+
+  \item \textbf{No efficiency theorem.} The period grows from $T$ to
+    $T(h-1)$. The finite cycle is analytically useful, but materializing
+    it need not outperform a conventional segmented sieve. No time or
+    space complexity advantage is claimed.
+\end{itemize}
+
+These qualifications are part of the result: they separate the verified
+finite-stage theorem from adjacent mathematical questions.

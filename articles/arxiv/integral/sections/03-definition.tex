@@ -1,0 +1,69 @@
+\section{Definition of Discrete Integral}
+\label{sec:definition}
+
+The discrete integral accumulates list values into partial sums from a
+given initial value. Two representations are equivalent.
+
+\begin{itemize}
+  \item Mathematical: $I_k = init + \sum_{i=0}^k L_i$ --- the
+    specification
+  \item Recursive: $I_0 = L_0 + init$, $I_{k+1} = I_k + L_{k+1}$ --- the
+    implementation
+\end{itemize}
+
+\subsection{Mathematical Definition}
+\label{sec:mathematical-definition}
+
+We define the \textbf{discrete integral} $I = \operatorname{Integral}(L,
+init)$ as a list of partial sums such that:
+
+\begin{equation*}
+\text{for } k \in [0, n - 1]
+\end{equation*}
+\begin{equation*}
+I_{k} := init + \sum_{i=0}^{k} L_i
+\end{equation*}
+
+\subsection{Recursive Definition}
+\label{sec:recursive-definition}
+
+The implementation computes the same partial sums by peeling one head from
+the list at each recursive step and carrying the current accumulated
+value.
+
+\begin{equation*}
+\begin{aligned}
+I &:= \operatorname{Integral}(L, init) \\
+n &:= \lvert L\rvert \\
+k &\in [0, n - 1]
+\end{aligned}
+\end{equation*}
+
+The value of the $k\text{-th}$ element in the integral $I$ is defined
+recursively as:
+
+\begin{equation*}
+I_k :=
+\begin{cases}
+L_0 + init & \text{if } k = 0 \\
+\operatorname{Integral}(\operatorname{tail}(L),\ \operatorname{head}(L) + init)_{(k - 1)} & \text{if } k > 0
+\end{cases}
+\end{equation*}
+
+In Scala, this is encoded at
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala}{\texttt{Integral.scala}}:
+
+\begin{lstlisting}[style=scala]
+case class Integral(list: List[BigInt], init: BigInt = 0) {
+  def apply(position: BigInt): BigInt = {
+    require(list.nonEmpty)
+    require(position >= 0 && position < list.size)
+    if (position == 0) this.head else Integral(list.tail, this.head).apply(position - 1)
+  }
+  def head: BigInt = {
+    require(list.nonEmpty)
+    list.head + init
+  }
+  // ... additional methods omitted
+}
+\end{lstlisting}

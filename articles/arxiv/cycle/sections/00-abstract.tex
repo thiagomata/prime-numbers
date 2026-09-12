@@ -1,0 +1,16 @@
+\begin{abstract}
+In previous articles, we defined bounded Lists and Integrals of
+\texttt{BigInt} from scratch, relying only on core type constructs and
+recursion, with no prior knowledge of Scala's collections required. From that,
+we proved and formally verified some properties related to them as size,
+append, concat, slice and sum. This article uses that as a foundation to define
+Cycles --- unbounded List of Integers created from a bounded List, where the
+values of the Cycle are the values of the List in repetition using recursion.
+Then, we formally defined and verified key properties such as cycle equivalence
+between definitions, element access via modular indexing, and periodic
+invariance using the Stainless verification system. All properties are
+expressed and proved within a minimal framework using only elementary
+arithmetic, recursion, and pure Scala code. This work bridges mathematical
+foundations and executable verification, offering a self-contained, verifiable
+approach of modular arithmetic.
+\end{abstract}

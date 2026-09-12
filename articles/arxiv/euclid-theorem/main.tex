@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{hyperref}
+\Urlmuskip=0mu plus 1mu\relax
+
+\definecolor{codebackground}{RGB}{247,247,247}
+\definecolor{codecomment}{RGB}{72,112,72}
+\definecolor{codekeyword}{RGB}{32,74,135}
+\definecolor{codestring}{RGB}{164,0,0}
+
+\lstdefinestyle{scala}{
+  backgroundcolor=\color{codebackground},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=true,
+  breaklines=true,
+  columns=fixed,
+  commentstyle=\color{codecomment},
+  frame=single,
+  keepspaces=true,
+  keywordstyle=\color{codekeyword}\bfseries,
+  language=Scala,
+  numbers=none,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Formal Verification of Euclid's Theorem on the Infinitude of Primes},
+  pdfauthor={Thiago Henrique Ramos da Mata}
+}
+
+\title{Formal Verification of Euclid's Theorem on the Infinitude of Primes}
+\author{%
+  Thiago Henrique Ramos da Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\IfFileExists{sections/01-introduction.tex}{\input{sections/01-introduction}}{}
+
+\IfFileExists{sections/02-preliminaries.tex}{\input{sections/02-preliminaries}}{}
+
+\IfFileExists{sections/03-proof-strategy.tex}{\input{sections/03-proof-strategy}}{}
+
+\IfFileExists{sections/04-supporting-lemmas.tex}{\input{sections/04-supporting-lemmas}}{}
+
+\IfFileExists{sections/05-verification-status.tex}{\input{sections/05-verification-status}}{}
+
+\IfFileExists{sections/06-related-work.tex}{\input{sections/06-related-work}}{}
+
+\IfFileExists{sections/07-conclusion.tex}{\input{sections/07-conclusion}}{}
+
+\nocite{mata2026integral,mata2026cycle,mata2026integralcycle}
+\bibliographystyle{plain}
+{\raggedright
+\bibliography{references}
+\par}
+
+\appendix
+\IfFileExists{sections/08-appendix.tex}{\input{sections/08-appendix}}{}
+
+\end{document}
