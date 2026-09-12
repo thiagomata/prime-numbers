@@ -1,0 +1,76 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+Complete-period sieve algebra gives exact global 2-gap and \texttt{(2,4,2)} cluster
+counts. One old 2-gap has $r-2$ surviving lifts under one incoming prime,
+each old cluster has $r-4$ intact lifts, finite batches compose by CRT,
+rotation preserves cyclic multiplicity, and global 2-gap extinction is stable.
+Writing $C_M$ for the cyclic cluster count at modulus $M$:
+\begin{equation*}
+\begin{aligned}
+G_2(p)
+&=\prod_{3\le q\lt p}(q-2),
+&&[\text{Exact Global Count}]\\
+G_{\mathrm{after}}
+&=G\prod_{r\in\mathcal R}(r-2),
+&&[\text{Exact Batched Survival}]\\
+C_{rM}&=(r-4)C_M,
+&&[\text{Exact Cluster Recurrence}]\\
+\#\{i:\operatorname{rot}_j(G)_i=2\}
+&=\#\{i:g_i=2\}.
+&&[\text{Rotation Bijection}]\\
+G_s(2)=0&\Longrightarrow G_t(2)=0\quad(t\ge s).
+&&[\text{Stable Global Absence}]
+\end{aligned}
+\end{equation*}
+
+The local theorems identify both the certificate and the sharp
+one-transition condition:
+\begin{equation*}
+\begin{aligned}
+Q\le x,\ x+2\lt Q^2,\ \gcd(x(x+2),P_Q)=1
+&\Longrightarrow x,x+2\text{ prime},
+&&[\text{Square-Safe Certification}]\\
+G_{\mathrm{surviving}}(r,Q)
+&\ge G_{\mathrm{local}}(r,Q)-A(r,Q),
+&&[\text{Exact Accepted Strikes}]\\
+G_{\mathrm{local}}(r,Q)>A(r,Q)
+&\Longrightarrow G_{\mathrm{surviving}}(r,Q)>0.
+&&[\text{Sharp Local Threshold}]
+\end{aligned}
+\end{equation*}
+
+For a complete conditioned chain, the signed conservation law (Section~5.1) and its
+weighted Cauchy--Schwarz corollary (Section~5.2) prove
+\begin{equation*}
+\begin{aligned}
+\sum_iw_ib_i&=T-N_m,
+&&[\text{Exact Conservation}]\\
+E_b&\ge\frac{(T-N_m)^2}{2W_-},
+&&[\text{Weighted Cauchy--Schwarz}]\\
+E_b\lt\frac{T^2}{2W_-}
+&\Longrightarrow N_m>0.
+&&[\text{Terminal Implication}]
+\end{aligned}
+\end{equation*}
+
+The properties from Filter-Seven Excess Bound through Copy-Block Excess Control then add exact local arithmetic:
+\begin{equation*}
+\begin{aligned}
+|b_7(I)|&\le\frac{18}{7},
+&&[\text{Sharp Filter-7 Boundary}]\\
+B_j&=d_{t_j}+d_{t_j-2},
+&&[\text{Exact Copy-Block Formula}]\\
+\sum_{j=0}^{r-1}B_j^2
+&=2V_r+2\sum_td_td_{t-2}
+\le4V_r.
+&&[\text{Residue-Energy Bridge}]
+\end{aligned}
+\end{equation*}
+
+The proved results therefore move the question beyond global density and
+unsigned capacity. They do not complete the twin-prime program. The remaining
+theorem must control relative residue energy for the actual conditioned
+populations, control the two partial old-period boundary fragments, and make
+those estimates beat the weighted terminal threshold through an unbounded
+family of future heads.
