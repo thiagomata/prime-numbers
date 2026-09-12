@@ -1,0 +1,71 @@
+\section{Routes That Are Now Classified}
+\label{sec:routes-classified}
+
+Complete-period counting, native-period Bessel bounds, and separate capacity
+envelopes do not resolve the late short-window problem. Accepted-anchor
+recursion also returns the existing summatory coprime discrepancy after exact
+CRT cancellation. These facts do not refute the quadratic survival condition;
+they identify which additional information it must use.
+
+The live twin-prime program is now narrow:
+\begin{equation*}
+\text{control }V_r\text{ relatively in the actual short window,}
+\quad
+\text{control partial blocks,}
+\quad
+\text{then compose the signed layers.}
+\end{equation*}
+
+More optimization of unsigned capacity or complete-period norms cannot supply
+those missing facts.
+
+\subsection{The Fixed-Seed Scale Conflict}
+\label{sec:fixed-seed-scale-conflict}
+
+The exhaustion argument of Section~6 shows that no unsigned-capacity envelope can
+certify survival. There is a deeper, structural reason complete-period
+counting cannot place a survivor in a chosen window: the primorial modulus
+outgrows the window itself.
+
+Constrain the consecutive prime chain to end below the square horizon of its
+seed prime $p$, so that the future head $Q$ satisfies $Q<p^2$. This keeps
+the chain numerically short, but it conflicts with using many repeated
+copies of one fixed seed residue inside the final safe window $[Q,Q^2)$.
+The seed period is the primorial
+\begin{equation*}
+M_p=\prod_{r<p}r,
+\end{equation*}
+
+and by the prime number theorem in Chebyshev-theta form,
+\begin{equation*}
+\log M_p=\sum_{r<p}\log r\sim p.
+\end{equation*}
+
+Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
+\begin{equation*}
+\begin{aligned}
+\frac{M_p}{Q^2}
+&>\frac{\exp((1+o(1))p)}{p^4}
+\longrightarrow\infty,
+&&[\text{Asymptotic Limit}]\\
+M_p&>Q^2
+&&[\text{Eventually}].
+\end{aligned}
+\end{equation*}
+
+For all sufficiently large scenarios satisfying $Q<p^2$, one fixed residue
+class modulo $M_p$ occurs at most once in $[Q,Q^2)$. Its exact global
+repetition frequency therefore cannot force local placement.
+
+This is not a disproof of survival. It says that a proof cannot simultaneously
+rely on a short chain under $p^2$ and on many local copies of one fixed seed.
+A viable averaging argument must instead range over all seed residues at
+once, use a much earlier seed with a longer filter chain, average over final
+heads $Q$, or introduce an additional factorization or additive structure
+that creates a bilinear variable. The prime number theorem is an explicit
+external dependency in this argument.
+
+This scale conflict is the geometric counterpart of the exhaustion verdict:
+complete-period identities are exact globally but become locally uninformative
+once the primorial exceeds the window. The signed local estimates of Sections~7--9
+are precisely the response to this obstruction.
