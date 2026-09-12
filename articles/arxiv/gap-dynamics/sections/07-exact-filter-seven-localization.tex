@@ -1,0 +1,124 @@
+\section{Exact Filter-Seven Localization}
+\label{sec:exact-filter-seven-localization}
+
+At the first nontrivial conditioned layer, exact residue order replaces the
+quadratic capacity envelope by a constant boundary discrepancy, for every
+finite integer interval $I$, after filters $2$, $3$, and $5$ have been
+installed and immediately before filter $7$, over actual pre-filter-$7$
+2-gap starts in an arbitrary integer interval. This is an arithmetic
+localization theorem, not a density estimate.
+
+The incoming starts occupy exactly three classes modulo $30$. Define
+\begin{equation*}
+F_7(x)=\mathbf1_{\{11,17,29\}\bmod30}(x),
+\qquad
+h_7(x)=\mathbf1_{\{0,5\}\bmod7}(x),
+\end{equation*}
+
+where $h_7$ marks the two endpoint-strike classes. The centered observable and
+its interval sum are
+\begin{equation*}
+g_7(x)=F_7(x)\left(h_7(x)-\frac27\right),
+\qquad
+b_7(I)=\sum_{x\in I}g_7(x).
+\end{equation*}
+
+Because $30$ and $7$ are coprime, $g_7$ has period $210$. Its 21 admissible
+start residues in increasing order are
+\begin{equation*}
+\begin{aligned}
+&11,17,29,41,47,59,71,77,89,101,107,\\
+&119,131,137,149,161,167,179,191,197,209.
+\end{aligned}
+\end{equation*}
+
+Clearing the denominator gives weight $5$ at a harmful residue and $-2$ at a
+harmless residue. In the order above the exact sequence is
+\begin{equation*}
+-2,-2,-2,-2,5,-2,-2,5,5,-2,-2,5,5,-2,-2,5,-2,-2,-2,-2,-2.
+\end{equation*}
+
+It contains six harmful and fifteen harmless terms, so
+\begin{equation*}
+6\cdot5+15\cdot(-2)=0
+\qquad[\text{Complete-Period Cancellation}]
+\end{equation*}
+
+Starting from zero, its cumulative sums are
+\begin{equation*}
+\begin{aligned}
+0,&-2,-4,-6,-8,-3,-5,-7,-2,3,1,-1,\\
+&4,9,7,5,10,8,6,4,2,0.
+\end{aligned}
+\end{equation*}
+
+Their minimum is $-8$ and maximum is $10$. Every non-wrapping consecutive
+subsum is the difference of two cumulative sums. Every wrapping subsum is the
+negative of its non-wrapping complement because the full sum is zero. Hence
+every cyclic subsum $C$ satisfies
+\begin{equation*}
+\begin{aligned}
+|C|
+&\le10-(-8)
+&&[\text{Cumulative-Sum Range}]\\
+&=18.
+&&[\text{Simplification}]
+\end{aligned}
+\end{equation*}
+
+Now partition any integer interval $I$ into consecutive complete blocks of
+length $210$ and one remainder of length less than $210$. The complete blocks
+contribute zero, and the remainder selects one cyclic subsum. Therefore
+\begin{equation*}
+\begin{aligned}
+|7b_7(I)|&\le18
+&&[\text{Complete Blocks Cancel}]\\
+|b_7(I)|&\le\frac{18}{7}.
+&&\text{[Divide By }7\text{]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The interval from residue $47$ through residue $161$ attains $18/7$, so the
+constant is sharp. For the complete conditioned chain with
+$r_0=5$ and $r_1=7$, write $P_m=A_{0,m}$. Then
+\begin{equation*}
+\begin{aligned}
+w_1
+&=A_{2,m}
+&&[\text{By Definition}]\\
+&=\frac{P_m}{a_0a_1}
+&&[\text{Factor }A_{0,m}]\\
+&=\frac{P_m}{(3/5)(5/7)}
+&&[\text{Substitute }r_0=5,\ r_1=7]\\
+&=\frac{7P_m}{3},
+&&[\text{Simplification}]\\
+\alpha_1
+&=w_1\frac{r_1}{2(r_1-2)}
+&&[\text{Energy Coefficient}]\\
+&=\frac{49P_m}{30}.
+&&[\text{Substitution}]
+\end{aligned}
+\end{equation*}
+
+Therefore
+\begin{equation*}
+\begin{aligned}
+\alpha_1b_7^2
+&\le\frac{49P_m}{30}\left(\frac{18}{7}\right)^2
+&&[\text{Sharp Interval Bound}]\\
+&=\frac{54}{5}P_m.
+&&[\text{Simplification}]
+\end{aligned}
+\end{equation*}
+
+The saving comes from the exact ordered residue pattern. It controls one
+fixed early layer and does not give a uniform bound for the growing family of
+later coefficients.
+
+{\raggedright
+The derivation above proves the exact certificate and arbitrary-interval
+bound. A supplementary research record is available in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/filter-seven-harmful-excess-is-boundary-sized.md}{Filter-Seven Harmful Excess Is Boundary-Sized}.
+The 21 weights, their zero sum, and all cyclic subsums are not yet encoded
+as a \texttt{.holds} theorem.
+\par}

@@ -1,0 +1,112 @@
+\section{Open Estimates And Their Proven Reductions}
+\label{sec:open-estimates}
+
+The filter-seven excess bound and copy-block excess control properties are the last two steps of a longer argument, and the
+article's conclusion (Section~10, Section~12) identifies two open estimates at the live
+twin-prime frontier. This section introduces them so that conclusion is
+readable without external files. It states each estimate's exact reduction,
+open bound, and relationship to what the article has already proved. The
+wider research map contains further algebraic reductions (activation shells,
+CRT lift indices, and Gram matrices). This section states the exact reductions
+needed to follow the article's own arc and keeps the remaining estimate open.
+
+\subsection{Accepted-Boundary Discrepancy Estimate}
+\label{sec:accepted-boundary-discrepancy}
+
+The reduction below is proved for every nonempty conditioned chain
+$5\le r_0<\cdots<r_{m-1}<Q$, over accepted anchor values in one interval,
+followed through the conditioned filter chain; the terminal
+signed-mean-square estimate is open.
+
+Recall from Section~5.1 that the harmful excess at layer $i$ is
+$b_i=a_iN_i-N_{i+1}$. The accepted-boundary model isolates the \emph{strike-density error}
+$\varepsilon_i=H_i/A_i-1/r_i$, where $H_i$ is the count of accepted anchors
+struck by filter $r_i$ and $A_i$ is the accepted-anchor population. Its
+central result is an exact bridge: the expected bulk density $1/r_i$ is
+already exact, and the harmful excess reduces to a difference of signed
+M\"obius boundary sums. Specifically, with
+$E_i=A_i-\ell\varphi(P_i)/P_i$ the centered inclusion--exclusion discrepancy
+at layer $i$,
+\begin{equation*}
+H_i-\frac{A_i}{r_i}
+=
+\left(1-\frac1{r_i}\right)E_i-E_{i+1},
+\qquad
+\varepsilon_i
+=
+\frac{(1-1/r_i)E_i-E_{i+1}}{A_i}.
+\end{equation*}
+
+The signed discrepancies telescope under one-anchor survival weights, but the
+weighted-energy budget requires a \emph{weighted sum of their squares}:
+\begin{equation*}
+\sum_i
+w_i\frac{r_i}{2(r_i-2)}
+\left(\left(1-\frac1{r_i}\right)E_i-E_{i+1}\right)^2.
+\end{equation*}
+
+Bounding the divisor summands independently gives only
+$|E_P|\lt2^{\omega(P)}-1$, exponentially too large. Success requires signed
+cancellation, correlation between consecutive layers' boundary sums, or
+cross-layer averaging --- a genuinely new arithmetic input. The properties from Strike Divisor-Activation Kernel through First-Deletion Reindexing
+catalog the activation-shell, CRT-lift, summatory, Gram, and first-deletion
+reductions; each returns the original energy after exact algebra, so the
+remaining input is signed arithmetic, not another coordinate rewrite.
+
+\textbf{Why this is the article's general coefficient.} The filter-7 calculation
+of Section~7 is the one-layer, one-prime instance of this same discrepancy:
+$|b_7|\le18/7$ came from exact residue \emph{order}, and the general layer
+coefficient $b_i$ is exactly the two-residue boundary discrepancy studied
+here. A supplementary model record is
+\href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/accepted-anchor-strike-density.md}{Accepted-Anchor Strike Density}.
+
+\subsection{Residue-Collision Energy Estimate}
+\label{sec:residue-collision-energy}
+
+For every incoming prime $r\ge5$ and its actual conditioned layer population,
+over 2-gap-start residues modulo one incoming prime in one conditioned layer,
+the reduction below is proved; the relative four-point correlation estimate
+is open.
+
+The residue-collision energy is the input that the copy-block bridge (Section~9)
+consumes. Let
+$c_t$ count the incoming 2-gap starts in residue class $t\bmod r$, so
+$N_r=\sum c_t$. The centered deviation is $d_t=c_t-N_r/r$, and the
+residue-collision energy is
+\begin{equation*}
+V_r=\sum_{t\bmod r}d_t^2.
+\end{equation*}
+
+The two harmful classes contain $c_0+c_{-2}$ starts. Their centered excess
+reduces exactly to the histogram second moment and its autocorrelation:
+\begin{equation*}
+C_r
+=
+\sum_{t\bmod r}c_t^2
+=
+N_r+2\sum_{h\ge1}A_r(6rh),
+\end{equation*}
+
+where $A_r(\cdot)$ is the four-point autocorrelation of the start indicator
+at the given shift. The open estimate is the \emph{relative} bound
+\begin{equation*}
+C_r\le N_r+\frac{N_r^2}{r},
+\qquad\text{equivalently}\qquad
+V_r\le\frac{N_r^2}{r}.
+\end{equation*}
+
+An absolute upper-bound-sieve estimate is insufficient until its
+normalization by the actual $N_r$ is justified independently. Minimal
+falsifying histograms exist at small scale ($3+2+1$ at $(r,N)=(5,6)$;
+$2+2$ at $(7,4)$), but exact conditioned-layer search through $Q\le251$
+found none. A supplementary model record is
+\href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md}{Conditioned Residue-Collision Energy}.
+
+\textbf{How the two compose.} The copy-block bridge of Section~9 proves that the
+complete-block harmful excess $B_j=d_{t_j}+d_{t_j-2}$ satisfies
+$\sum_jB_j^2\le4V_r$. Therefore a relative bound for the residue-collision
+energy $V_r$ immediately controls the complete-block portion of the terminal
+harmful excess. The frontier is consequently a single composition: a relative
+residue-energy estimate feeding the signed boundary discrepancy through the
+copy-block bridge, with the two partial old-period boundary fragments still
+open. This is exactly what the article's conclusion (Section~10) names.

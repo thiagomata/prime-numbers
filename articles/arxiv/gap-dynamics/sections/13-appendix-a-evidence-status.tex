@@ -1,0 +1,33 @@
+\section{Evidence And Verification Status}
+\label{sec:appendix-a-evidence-status}
+
+The table separates the verified construction foundation from the new
+mathematical results and the open frontier. The rotation operation's
+underlying membership and size behavior is Stainless-verified, but its exact
+gap-multiplicity theorem belongs to the mathematical layer.
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.34\textwidth}>{\raggedright\arraybackslash}p{0.28\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}}
+\hline
+\textbf{Claim group} & \textbf{Status} & \textbf{Article location}\\
+\hline
+Sieve construction and transition mechanics & Stainless-verified foundation & Companion Sieve Sequence article\\
+Complete-period, local, weighted, capacity-exhaustion, filter-seven, and copy-block results & Mathematically proved; not yet Stainless-verified & Sections~3--7, Section~9, and Appendix~C\\
+Accepted-boundary discrepancy and residue-collision energy & Exact reductions proved; required estimates open & Section~8\\
+\hline
+\end{tabular}
+\end{center}
+
+External mathematical inputs are confined to two theorems: Bertrand's
+postulate supports the exact accepted-local-strikes characterization of
+Section~4.3 and the asymptotic corollaries
+in Appendix~C, and the Prime Number Theorem (with Mertens estimates) supports
+the asymptotic stability-gap discussion of
+Section~6.6.
+
+The operational Sieve Sequence construction used by these mathematical
+properties is Stainless-verified separately in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md}{Formal Verification of Sieve
+Sequence Stages and Their Transitions}. This appendix does
+not promote a mathematical property to verified status merely because its
+construction inputs are verified.
