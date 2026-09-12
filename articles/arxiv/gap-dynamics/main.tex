@@ -1,0 +1,122 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{longtable}
+\usepackage{hyperref}
+\Urlmuskip=0mu plus 1mu\relax
+
+% The Markdown source writes strict inequalities with the MathJax-style
+% \gt / \lt macros (GitHub's math renderer accepts them as aliases for
+% > and <). Plain LaTeX has no such macros, so they are defined here as
+% pure syntax aliases -- not a content change -- to keep the converted
+% math blocks textually identical to the source.
+\newcommand{\gt}{>}
+\newcommand{\lt}{<}
+
+\definecolor{codebackground}{RGB}{247,247,247}
+\definecolor{codecomment}{RGB}{72,112,72}
+\definecolor{codekeyword}{RGB}{32,74,135}
+\definecolor{codestring}{RGB}{164,0,0}
+
+\lstdefinestyle{scala}{
+  backgroundcolor=\color{codebackground},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=true,
+  breaklines=true,
+  columns=fixed,
+  commentstyle=\color{codecomment},
+  frame=single,
+  keepspaces=true,
+  keywordstyle=\color{codekeyword}\bfseries,
+  language=Scala,
+  numbers=none,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences},
+  pdfauthor={Thiago Henrique Ramos da Mata}
+}
+
+\title{Structural Properties and Signed Boundaries of 2-Gaps in Sieve Sequences}
+\author{%
+  Thiago Henrique Ramos da Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\small\textbf{Proof status:} The sequence foundation is Stainless-verified
+in the companion Sieve Sequence article. The signed-localization theorems
+introduced here are mathematically proved but not yet Stainless-verified.
+\end{center}
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\IfFileExists{sections/01-introduction.tex}{\input{sections/01-introduction}}{}
+
+\IfFileExists{sections/02-preliminaries.tex}{\input{sections/02-preliminaries}}{}
+
+\IfFileExists{sections/03-complete-period-two-gap-properties.tex}{\input{sections/03-complete-period-two-gap-properties}}{}
+
+\IfFileExists{sections/04-local-certification.tex}{\input{sections/04-local-certification}}{}
+
+\IfFileExists{sections/05-weighted-harmful-excess-survival.tex}{\input{sections/05-weighted-harmful-excess-survival}}{}
+
+\IfFileExists{sections/06-why-capacity-envelope-exhausted.tex}{\input{sections/06-why-capacity-envelope-exhausted}}{}
+
+\IfFileExists{sections/07-exact-filter-seven-localization.tex}{\input{sections/07-exact-filter-seven-localization}}{}
+
+\IfFileExists{sections/08-open-estimates.tex}{\input{sections/08-open-estimates}}{}
+
+\IfFileExists{sections/09-copy-block-harmful-excess.tex}{\input{sections/09-copy-block-harmful-excess}}{}
+
+\IfFileExists{sections/10-routes-classified.tex}{\input{sections/10-routes-classified}}{}
+
+\IfFileExists{sections/11-almost-prime-program.tex}{\input{sections/11-almost-prime-program}}{}
+
+\IfFileExists{sections/12-conclusion.tex}{\input{sections/12-conclusion}}{}
+
+\bibliographystyle{plain}
+{\raggedright
+\bibliography{references}
+\par}
+
+\appendix
+\IfFileExists{sections/13-appendix-a-evidence-status.tex}{\input{sections/13-appendix-a-evidence-status}}{}
+
+\IfFileExists{sections/14-appendix-b-research-map.tex}{\input{sections/14-appendix-b-research-map}}{}
+
+\IfFileExists{sections/15-appendix-c-proofs.tex}{\input{sections/15-appendix-c-proofs}}{}
+
+\end{document}
