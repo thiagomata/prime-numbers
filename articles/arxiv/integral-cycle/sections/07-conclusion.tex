@@ -1,0 +1,215 @@
+\section{Conclusion}
+
+This article extends the previously verified foundations for recursive
+lists, discrete integrals, modulo arithmetic, and cycles to define and
+reason about Cycle Integrals. Starting from a finite non-empty list, the
+construction treats the list as a repeating cycle and describes the
+accumulated value at any non-negative index using the cycle sum, modular
+position, and initial value.
+
+We defined two equivalent presentations of Cycle Integral:
+\textbf{CycleIntegral}, a recursive accumulation over a memory-backed cycle
+(Subsection~3.1), and \textbf{ModCycleIntegral}, a closed-form definition
+using division and modulo (Subsection~3.2).
+
+For both presentations, we verified the sum property (integral equals
+cumulative cycle sum) and the step property (difference between consecutive
+values equals the corresponding cycle element). We also proved equivalence
+of the recursive and modulo definitions, that the integral is strictly
+increasing under positive base values, and that it stays positive
+everywhere given a non-negative start.
+
+Beyond these core definitions, the article verifies several reusable
+cycle-integral laws. Within a fixed cycle integral: residues are periodic
+when the cycle sum is zero modulo the chosen modulus, with the persistent
+non-zero and persistent zero cases following as immediate corollaries;
+adjacent gaps telescope into integral differences; full-cycle shifts advance
+the integral by the cycle sum; and cycle residue classification is correct,
+exclusive, and exhaustive. Building new cycle integrals from existing ones:
+repeating a backing cycle preserves the represented integral stream;
+rotating a gap cycle with the corresponding head adjustment shifts the
+represented integral by one position; survivor scans retain exactly the
+non-multiples needed for filtering; and merging the two gaps around a
+removed multiple reconstructs exactly the cycle integral that a fresh
+construction from the survivor list would produce, with no multiples of
+the filter value remaining anywhere in the result. The open extension
+points are the index-shift laws in Sections 6.2 and 6.3.
+
+The main established properties are:
+
+\begin{equation*}
+\begin{aligned}
+&\forall \ L \in \mathbb{L},\quad \forall \ init \in \mathbb{N}_0,\quad \forall \ i \in \mathbb{N}_0 \\
+&L = [v_0, v_1, \dots, v_{n-1}], \quad n = |L|,\quad n > 0 \\
+&T = \sum_{j=0}^{n-1} v_j
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_i
+= \left(i \operatorname{div} n\right) \cdot T
+ + \operatorname{CycleIntegral}(L, init)_{i \operatorname{mod} n}
+\quad \text{[Modulo Cycle Integral]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_i
+= \operatorname{ModCycleIntegral}(L, init)_i
+\quad \text{[Definition Equivalence]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_{i+1}
+- \operatorname{CycleIntegral}(L, init)_i
+= \operatorname{Cycle}(L)_{i+1}
+\quad \text{[Step Property]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{CycleIntegral}(L, init)_{i+1}
+&- \operatorname{CycleIntegral}(L, init)_i \\
+&= \operatorname{CycleIntegral}(L, init)_{i+n+1}
+ - \operatorname{CycleIntegral}(L, init)_{i+n} \\
+&\quad \text{[Same Difference After Full Cycle]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L, init)_i
+= \operatorname{sum}([init] \mathbin{\texttt{++}}
+ [\operatorname{Cycle}(L)_0, \ldots, \operatorname{Cycle}(L)_i])
+\quad \text{[Sum of Mod Values as List]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+init \geq 0 \land (\forall x \in L,\ x > 0) \land b > a
+&\implies
+\operatorname{CycleIntegral}(L, init)_b > \operatorname{CycleIntegral}(L, init)_a \\
+&\quad \text{[Strictly Increasing]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+init \geq 0 \land (\forall x \in L,\ x > 0)
+\implies
+\operatorname{CycleIntegral}(L, init)_i > 0
+\quad \text{[Positivity]}
+\end{equation*}
+
+\begin{equation*}
+ci(pos + \operatorname{period}(ci))
+= ci(pos) + \operatorname{periodSum}(ci)
+\quad \text{[Cycle-Period Shift]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(\operatorname{periodSum}(ci), m) = 0
+&\implies
+\operatorname{mod}(ci(pos), m) = \operatorname{mod}(ci(pos \bmod n), m) \\
+&\quad \text{[General Residue Periodicity]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(&\operatorname{periodSum}(ci), m) = 0 \land \big(\forall\, k \in [0,n),\ \operatorname{mod}(ci(k), m) \neq 0\big) \\
+&\implies
+\forall\, i,\ \operatorname{mod}(ci(i), m) \neq 0
+\quad \text{[Persistent Non-Zero Residue]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(&\operatorname{periodSum}(ci), m) = 0 \land \big(\forall\, k \in [0,n),\ \operatorname{mod}(ci(k), m) = 0\big) \\
+&\implies
+\forall\, i,\ \operatorname{mod}(ci(i), m) = 0
+\quad \text{[Persistent Zero Residue]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(G,h)_{k+1}
+- \operatorname{CycleIntegral}(G,h)_{k-1}
+= G_{k-1} + G_k
+\quad \text{[Two-Gap Telescoping]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{classify}(I_i,m)
+\in \{\text{zero},\text{nonzero}\}
+\quad \text{[Residue Classification]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}(L^{\langle x\rangle}, init)_i
+= \operatorname{CycleIntegral}(L, init)_i
+\quad \text{[Repeated-Cycle Invariance]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{rotateAt}(G,1)\text{ with head }h+G_0
+\implies
+I'_{i}=I_{i+1}
+\quad \text{[Rotation Shift]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{survivors}(I,m)
+= \{ I_i \mid I_i \not\equiv 0 \pmod m \}
+\quad \text{[Survivor Exactness]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+&\big(\forall\, q \in [start,pos),\ \operatorname{mod}(ci(q),f)=0\big) \land \operatorname{mod}(ci(pos),f)\neq 0 \\
+&\quad \implies
+\operatorname{head}(S) = ci(pos)
+\quad \text{[Survivor Structure]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+ci'(m) = ci(m + 1)
+\quad \text{[Merge Shift Law]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(ci(m), f) = 0 \implies ci'(m) = ci(m + 1)
+\quad \text{[Removing a Multiple]}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}
+ci''\text{'s initial value} = S_0 \land \operatorname{cycle}''(i) = S_{i+1} - S_i
+&\implies ci''(k) = S_{k+1} \\
+&\quad \text{[Direct Construction from Survivors]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{mod}(ci(0), f) \neq 0 \implies \operatorname{mod}(ci''(k), f) \neq 0
+\quad \text{[Filtered Result Has No Multiples]}
+\end{equation*}
+
+The verified definitions provide a reusable foundation for reasoning about
+infinite periodic accumulations using finite list structures and
+machine-checked Scala code.
+
+\section{Future Work}
+
+The nearest continuation is to close the remaining index-shift properties in
+Section 6. Those statements already have mathematical derivations in the
+article, but they still sit at the boundary between the verified
+cycle-integral library and the stronger shift reasoning needed for later
+sieve arguments.
+
+After that, the same finite-period machinery can support more specialized
+prime-sieve properties: detecting accepted residues, tracking gap evolution
+across filters, and relating local survivor windows to complete-cycle
+structure. More distant extensions, such as multi-dimensional cycles or
+integration over richer algebraic structures, would require new definitions
+rather than a direct continuation of the present proof.

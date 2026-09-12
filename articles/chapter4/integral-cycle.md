@@ -1,6 +1,6 @@
 # Formal Verification of Cycle Integral Properties from First Principles
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
@@ -82,11 +82,11 @@ setting without standing in for this two-presentation cycle-integral proof.
 ## 2. Preliminaries
 
 We reuse several basic list, cycle and integral operations and their verified properties from the companion articles
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md) [[1]](#ref1),
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1),
 [Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md) [[2]](#ref2),
-and [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md) [[3]](#ref3).
+and [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md) [[3]](#ref3).
 We also reuse some modulo properties previously defined and verified in the article
-[Division and Modulo from Recursive Normalization](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md) [[4]](#ref4).
+[Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[4]](#ref4).
 
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
@@ -129,7 +129,7 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-**Recursive Cycle Equivalence**: Recursive Cycle is equivalent to Mod Cycle, as proven in the article [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md) [[3]](#ref3).
+**Recursive Cycle Equivalence**: Recursive Cycle is equivalent to Mod Cycle, as proven in the article [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md) [[3]](#ref3).
 
 ```math
 \begin{aligned}
@@ -1421,16 +1421,16 @@ rather than a direct continuation of the present proof.
 ## References
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter3/list.md)
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/cycle.md)
+Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Available at: [https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ (5th ed.). Oxford University Press. §5.4 (Chinese Remainder Theorem), §15.1 (Sieve of Eratosthenes).
