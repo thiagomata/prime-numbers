@@ -1,0 +1,35 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Euclid's theorem --- proved in Euclid's \emph{Elements}, Book IX,
+Proposition 20 \cite{euclidelements} --- states that there are infinitely
+many prime numbers. Euclid's original presentation uses a common multiple
+of the assigned primes plus one. This article formalizes the product
+(primorial) specialization of that construction:
+
+\begin{quote}
+Given any finite list of primes $p_1, p_2, \dots, p_k$, let
+$N = p_1 \cdot p_2 \cdot \dots \cdot p_k + 1$.
+Then $N$ is either prime itself, or has a prime divisor $d$ that is not
+among $p_1, \dots, p_k$.
+In either case, a new prime is found, proving the list cannot contain all
+primes.
+\end{quote}
+
+In this article, we formalize and verify this proof using
+\href{https://epfl-lara.github.io/stainless/intro.html}{Scala Stainless}
+\cite{hamza2019systemfr}, a verification framework for pure Scala programs.
+Our approach follows the zero-prior-knowledge methodology established in
+earlier articles: modular arithmetic \cite{mata2026modulo}, lists
+\cite{mata2026lists}, and prime utilities are all defined from scratch and
+verified independently.
+
+This article verifies:
+
+\begin{itemize}
+  \item Primorial-plus-one coprime to all list primes (Section~3.1).
+  \item New prime found via the Euclid construction (Section~3.2).
+  \item The new prime is not in the original list (Section~3.3).
+  \item Euclid's theorem: primes are infinite (Section~3.4).
+  \item Supporting verified prime lemmas (Section~4).
+\end{itemize}

@@ -1,0 +1,65 @@
+\section{Linear Stage Semantics}
+\label{sec:linear-stage-semantics}
+
+The linear specification is an ordered enumeration of exactly the
+integers that pass the installed filters at or after the head.
+
+\begin{itemize}
+  \item \texttt{apply} returns accepted values and never moves backwards.
+  \item \texttt{indexOfAccepted} proves completeness of the enumeration.
+  \item strict increase makes indexes and adjacent gaps unambiguous.
+\end{itemize}
+
+\subsection{Accepted Values and Completeness}
+\label{sec:accepted-values-completeness}
+
+{\raggedright
+The generator's \texttt{apply} contract proves soundness: $A_S(\ell_k)$
+for every $k\ge0$. Conversely, \texttt{indexOfAccepted} proves that every
+accepted $v\ge h$ occurs at some index. Together they establish exact
+enumeration rather than merely generation of a subset.
+\par}
+
+\begin{equation*}
+\begin{aligned}
+\forall k\ge0,\quad
+A_S(\ell_k)
+&\quad\text{[Soundness]} \\
+\forall v\ge h,\quad
+A_S(v)
+&\Longrightarrow
+\exists i\ge0,\ \ell_i=v
+\quad\text{[Completeness]}.
+\end{aligned}
+\end{equation*}
+
+For completeness, start at $\ell_0=h\le v$. If the current generated
+value is smaller than $v$, the next generated accepted value cannot pass
+over $v$, because $v$ itself is accepted. Repeating this finite descent
+on $v-\ell_k$ reaches an index $i$ with $\ell_i=v$.
+
+This verified contract is implemented in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala}{\texttt{SpecSieveSequence::indexOfAccepted}}.
+
+\subsection{Strict Increase}
+\label{sec:strict-increase}
+
+Each recursive step searches strictly after the previous result.
+Consequently, the sequence is strictly increasing, indexes are
+injective, and every adjacent gap is positive.
+
+\begin{equation*}
+\begin{aligned}
+\ell_{k+1}
+&\ge \ell_k+1
+  &&\text{[Search starts after previous value]} \\
+&\gt \ell_k
+  &&\text{[Integer order]} \\
+g_k
+&=\ell_{k+1}-\ell_k\gt0
+  &&\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala}{\texttt{SpecSieveSequence::applyStrictlyIncreases}}.

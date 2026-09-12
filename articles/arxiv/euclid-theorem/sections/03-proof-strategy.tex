@@ -1,0 +1,242 @@
+\section{The Proof Strategy}
+\label{sec:proof-strategy}
+
+Euclid's theorem is formalized as the following lemma:
+
+\begin{equation*}
+\forall\ \text{primes} \in \text{List[Prime]},\ \text{primes} \neq \emptyset \implies
+\exists\ p \notin \text{primes} : \operatorname{isPrime}(p)
+\end{equation*}
+
+In the source, this is expressed by \texttt{PrimeProperties::euclidTheorem};
+the verification reference is given in Section~3.4 and Appendix A.3.
+
+\begin{itemize}
+  \item Stage 1: $\operatorname{primorial}(L)+1$ is coprime to every prime
+    in the list (Section~3.1).
+  \item Stage 2: find a prime divisor of $\operatorname{primorial}(L)+1$
+    via \texttt{findSmallestDivisor} (Section~3.2).
+  \item Stage 3: the new prime is not in the original list (Section~3.3).
+  \item Main theorem: combine stages 1--3 into Euclid's theorem
+    (Section~3.4).
+\end{itemize}
+
+The proof proceeds in three stages:
+
+\begin{enumerate}
+  \item \textbf{Primorial-plus-one is not divisible by any prime in the
+    list}: Show that $\operatorname{primorial}(L) + 1 \bmod p_i = 1 \neq 0$
+    for every $p_i \in L$.
+  \item \textbf{Smallest divisor is a new prime}: Find the smallest
+    divisor $d > 1$ of $\operatorname{primorial}(L) + 1$. Prove $d$ is
+    prime and is not in the original list.
+  \item \textbf{Construct the result}: Return either $d$ (if
+    $d < \operatorname{primorial}(L) + 1$) or
+    $\operatorname{primorial}(L) + 1$ itself (if it is prime).
+\end{enumerate}
+
+\subsection{Stage 1: Primorial-plus-one Modulo All Primes}
+\label{sec:stage-1}
+
+The first stage is captured by the lemma \texttt{primorialPlusOneModAny}.
+Let $L = [p_1,\dots,p_k]$ be the finite list of known primes and
+$P=\operatorname{primorial}(L)$. For each $p_i \in L$, the product $P$
+contains $p_i$ as one factor, so $P$ is divisible by $p_i$. Adding one
+moves the residue from $0$ to $1$, and because every prime is greater than
+$1$, that residue is nonzero.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{primorial}(L)
+  &= p_i \cdot \prod_{j\ne i} p_j
+  &&\text{[By Definition]} \\
+\operatorname{mod}(\operatorname{primorial}(L), p_i)
+  &= 0
+  &&\text{[Product Contains }p_i\text{]} \\
+\operatorname{mod}(\operatorname{primorial}(L)+1, p_i)
+  &= \operatorname{mod}(1, p_i)
+  &&\text{[Modulo Shift]} \\
+  &= 1
+  &&\text{[Since }1 < p_i\text{]} \\
+  &\ne 0
+  &&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The verified source proves this by induction over the list. At each step,
+the current prime is split out of the primorial product, the divisibility
+of the remaining product is preserved by multiplication, and the induction
+hypothesis continues over the tail. The loop step is built from three
+verified arithmetic properties.
+
+\textbf{Small Dividend Remainder.} A nonnegative dividend smaller than the
+divisor is already its own remainder. In the Euclid step, this gives both
+$\operatorname{mod}(0,p)=0$ and $\operatorname{mod}(1,p)=1$ because $p>1$.
+
+\begin{equation*}
+\begin{aligned}
+0 \le a < b
+&\Rightarrow \operatorname{mod}(a,b)=a
+&&\text{[Small Dividend]} \\
+p>1
+&\Rightarrow \operatorname{mod}(0,p)=0
+\land \operatorname{mod}(1,p)=1
+&&\text{[Substitution]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend::modSmallDividend}}.
+
+\textbf{Zero Remainder Preserved by Multiplication.} If a number is
+divisible by $b$, multiplying it by any nonnegative factor preserves
+divisibility by $b$. This is the step that turns the explicit factor $p$
+in the primorial into $\operatorname{mod}(p\cdot k,p)=0$.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(a,b)=0
+&\Rightarrow \operatorname{mod}(a\cdot m,b)=0
+&&\text{[Multiplication Preserves Zero Remainder]} \\
+\operatorname{mod}(p,p)=0
+&\Rightarrow \operatorname{mod}(p\cdot k,p)=0
+&&\text{[Substitution]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala}{\texttt{AdditionAndMultiplication::ATimesBSameMod}}.
+
+\textbf{Adding One After a Multiple.} Once the primorial part is known to
+be divisible by $p$, adding one gives the same remainder as one itself.
+Together with the small-dividend property, this proves the Euclid number
+has nonzero remainder modulo every original prime.
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{mod}(m,b)=0
+&\Rightarrow \operatorname{mod}(m+c,b)=\operatorname{mod}(c,b)
+&&\text{[Modulo Shift]} \\
+\operatorname{mod}(p\cdot k,p)=0
+&\Rightarrow \operatorname{mod}(p\cdot k+1,p)=\operatorname{mod}(1,p)=1
+&&\text{[Substitution]} \\
+&\Rightarrow \operatorname{mod}(p\cdot k+1,p)\ne0
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala}{\texttt{ModOperations::modZeroPlusC}}.
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::primorialPlusOneModAny}}.
+A short public wrapper excerpt is included in Appendix A.1.
+
+\subsection{Stage 2: Finding a New Prime}
+\label{sec:stage-2}
+
+Once we know $\operatorname{primorial}(L)+1$ is not divisible by any prime
+in $L$, let
+
+\begin{equation*}
+\begin{aligned}
+N &= \operatorname{primorial}(L)+1, \\
+d &= \operatorname{findSmallestDivisor}(N,2).
+\end{aligned}
+\end{equation*}
+
+There are two cases. If $d=N$, the divisor search found no proper divisor
+in $[2,N)$, so $N$ is prime. If $d < N$, then $d$ divides $N$ and no
+smaller integer greater than $1$ divides $N$. If $d$ were composite, it
+would have a non-trivial divisor $e$ with $1 < e < d$; since $e$ divides
+$d$ and $d$ divides $N$, $e$ would divide $N$, contradicting the
+minimality of $d$. Hence $d$ is prime.
+
+\begin{equation*}
+\begin{aligned}
+d=N
+&\Rightarrow \forall e\in[2,N),\operatorname{mod}(N,e)\ne0.
+&&\text{[No Proper Divisor Found]} \\
+&\Rightarrow \operatorname{isPrime}(N)
+&&\text{[Prime Definition]} \\
+&d < N \land \operatorname{mod}(N,d)=0 \Rightarrow \operatorname{isPrime}(d)
+&&\text{[Minimal Divisor]}
+\end{aligned}
+\end{equation*}
+
+The construction of the new prime is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeFromEuclid}}.
+A short public wrapper excerpt is included in Appendix A.2.
+
+\subsection{Stage 3: Proving the New Prime is Not in the List}
+\label{sec:stage-3}
+
+The final and most subtle step is proving that the newly found prime $d$
+(or $N$ itself) is \textbf{not} in the original list.
+
+Let $v$ be the divisor chosen in Stage 2: either $v=N$ when $N$ is prime,
+or $v=d$ when $d$ is the smallest proper divisor of $N$. In both cases,
+$\operatorname{mod}(N,v)=0$. Now take any prime $p$ from the original
+list. Because $N=\operatorname{primorial}(L)+1$, the same argument from
+Stage 1 gives $\operatorname{mod}(N,p)=1$. If $p=v$, then $N$ would have
+two incompatible remainders modulo the same positive divisor: $0$ and $1$.
+Therefore no element of $L$ equals $v$.
+
+\begin{equation*}
+\begin{aligned}
+N &= \operatorname{primorial}(L) + 1
+&&\text{[Euclid Construction]} \\
+  &= p \cdot k + 1
+&&\text{[Unfold Product at }p\text{]} \\
+\operatorname{mod}(N,p)
+  &= \operatorname{mod}(p\cdot k+1,p) \\
+  &= \operatorname{mod}(1,p)
+&&\text{[Multiple of }p\text{ Drops Out]} \\
+  &= 1
+&&\text{[Since }p>1\text{]} \\
+\operatorname{mod}(N,v)
+  &= 0
+&&\text{[Chosen Divisor]} \\
+p=v
+  &\Rightarrow 1=0
+&&\text{[Contradiction]} \\
+\therefore\ p &\ne v
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+This non-membership argument is verified by the private helper
+\texttt{euclidTailLoop}, which establishes
+\texttt{valueNotMatchesAny(primes, v)} for the chosen divisor $v$ in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties}}.
+
+\subsection{The Main Theorem}
+\label{sec:main-theorem}
+
+The main theorem combines the primorial-plus-one lemma, smallest-divisor
+primality, and non-membership argument. If $N$ is prime, then $N$ itself
+is the new prime. Otherwise, the smallest divisor $d$ of $N$ is prime and
+cannot belong to the original list.
+
+\begin{equation*}
+\begin{aligned}
+L &\ne [] \\
+N &= \operatorname{primorial}(L)+1 \\
+d &= \operatorname{findSmallestDivisor}(N,2) \\
+d=N
+&\Rightarrow \operatorname{isPrime}(N)\land N\notin L
+&&\text{[Stages 2 and 3]} \\
+d < N
+&\Rightarrow \operatorname{isPrime}(d)\land d\notin L
+&&\text{[Stages 2 and 3]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\therefore\ \exists p:\operatorname{isPrime}(p)\land p\notin L
+\quad \text{[Case Split]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidTheorem}}.
+The public theorem wrapper is shown in Appendix A.3.

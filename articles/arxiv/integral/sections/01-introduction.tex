@@ -1,0 +1,43 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Accumulation is a central operation in mathematics and computing --- from
+prefix sums in algorithms to integral transforms in signal processing. In
+functional programming, accumulation often appears as a fold or scan, but
+such constructs are rarely defined from first principles in a formally
+verified setting.
+
+In this article, we define a recursive discrete integral over finite
+integer lists and verify its cumulative-sum, difference-recovery,
+monotonicity, and representation-agreement properties using Scala
+Stainless. The recursive lookup and accumulated-list representations agree
+pointwise and in length, and consecutive differences recover the
+corresponding input values.
+
+This article verifies:
+
+\begin{itemize}
+  \item Core integral properties: head value, cumulative sum, incremental
+    change, final sum, strictly increasing, gaps positivity
+    --- Sections~4.1--4.6.
+  \item Implementation consistency: element/acc/delta/last/size agreement
+    between the recursive and accumulated representations
+    --- Sections~5.2--5.5.
+\end{itemize}
+
+\subsection*{Related work}
+
+The cumulative-sum construction is the list instance of a prefix scan or
+accumulation. In Rocq/Coq, the standard list library defines
+\texttt{fold\_left} and proves its composition across concatenation; its
+natural-number list library also defines list sum as a fold and proves sum
+over concatenation \cite{rocqliststdlib}. Those formally checked results
+give a useful established setting for recursive accumulation.
+
+The present article develops that setting for a recursive \texttt{BigInt}
+integral in Scala Stainless. Its focus is the agreement of two concrete
+representations --- recursive lookup and an accumulated list --- and the
+accompanying cumulative-sum, difference-recovery, length, and monotonicity
+properties. The citation places these proofs in a broader formal treatment
+of list accumulation; it does not replace the specific
+representation-agreement results verified here.

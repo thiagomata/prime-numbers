@@ -1,10 +1,11 @@
 # Using Formal Verification to Prove Properties of Lists Recursively Defined
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)  
+**Published:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)
 
 ## Abstract
 

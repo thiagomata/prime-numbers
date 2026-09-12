@@ -1,0 +1,556 @@
+\section{Scala Verification Code}
+
+\subsection{Sum Property for Small Positions --- \texorpdfstring{\texttt{assert\allowbreak Cycle\allowbreak Integral\allowbreak Equals\allowbreak Sum\allowbreak Small\allowbreak Positions}}{assertCycleIntegralEqualsSumSmallPositions}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Cycle\allowbreak Integral\allowbreak Equals\allowbreak Sum\allowbreak Small\allowbreak Positions}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertCycleIntegralEqualsSumSmallPositions(
+  cycleIntegral: CycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position < cycleIntegral.period)
+  require(position > 0)
+  require(ListUtils.sum(getFirstValuesAsSlice(
+    cycleIntegral, position - 1)) == cycleIntegral(position - 1))
+
+  assert(assertNextPosition(cycleIntegral, position))
+  assert(cycleIntegral(position) ==
+    cycleIntegral.cycle(position) + cycleIntegral(position - 1))
+  assert(MemCycleProperties.smallValueInCycle(
+    cycleIntegral.cycle, position))
+  assert(cycleIntegral.cycle(position) ==
+    cycleIntegral.cycle.values(position))
+  assert(ListUtils.sum(getFirstValuesAsSlice(
+    cycleIntegral, position - 1)) == cycleIntegral(position - 1))
+
+  val prev = getFirstValuesAsSlice(cycleIntegral, position - 1)
+  val prevSum = ListUtils.sum(prev)
+  assert(prevSum == cycleIntegral(position - 1))
+
+  val currentList = List(cycleIntegral.cycle.values(position)) ++ prev
+  val currentValue = cycleIntegral.cycle(position)
+  val currentSum = ListUtils.sum(prev) + currentValue
+  assert(ListUtilsProperties.listAddValueTail(prev, currentValue))
+  assert(ListUtils.sum(prev) + currentValue == ListUtils.sum(currentList))
+  assert(assertNextPosition(
+    cycleIntegral = cycleIntegral, position = position))
+
+  ListUtils.sum(getFirstValuesAsSlice(
+    cycleIntegral, position)) == cycleIntegral(position)
+}.holds
+\end{lstlisting}
+
+\subsection{Step Property --- \texorpdfstring{\texttt{assert\allowbreak Diff\allowbreak Equals\allowbreak Cycle\allowbreak Value}}{assertDiffEqualsCycleValue}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Diff\allowbreak Equals\allowbreak Cycle\allowbreak Value}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertDiffEqualsCycleValue(
+  cycleIntegral: CycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position >= 0)
+  assert(cycleIntegral(position + 1) ==
+    cycleIntegral(position) + cycleIntegral.cycle(position + 1))
+  cycleIntegral(position + 1) - cycleIntegral(position) ==
+    cycleIntegral.cycle(position + 1)
+}.holds
+\end{lstlisting}
+
+\subsection{Mod First Values Match Integral --- \texorpdfstring{\texttt{assert\allowbreak First\allowbreak Values\allowbreak Match\allowbreak Integral}}{assertFirstValuesMatchIntegral}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{Mod\allowbreak Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak First\allowbreak Values\allowbreak Match\allowbreak Integral}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertFirstValuesMatchIntegral(
+  modCycleIntegral: ModCycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position >= 0)
+  require(position < modCycleIntegral.integralValues.size)
+  assert(ModSmallDividend.modSmallDividend(
+    position, modCycleIntegral.integralValues.size))
+  assert(Calc.mod(
+    position, modCycleIntegral.integralValues.size) == position)
+  assert(Calc.div(
+    position, modCycleIntegral.integralValues.size) == 0)
+
+  modCycleIntegral.apply(position) ==
+    modCycleIntegral.integralValues(position) + modCycleIntegral.initialValue
+}.holds
+\end{lstlisting}
+
+\subsection{Mod Step Diff --- \texorpdfstring{\texttt{assert\allowbreak Simplified\allowbreak Diff\allowbreak Values\allowbreak Match\allowbreak Cycle}}{assertSimplifiedDiffValuesMatchCycle}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{Mod\allowbreak Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Simplified\allowbreak Diff\allowbreak Values\allowbreak Match\allowbreak Cycle}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertSimplifiedDiffValuesMatchCycle(
+  modCycleIntegral: ModCycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position >= 0)
+  assert(modCycleIntegral.integralValues.size ==
+    modCycleIntegral.mCycle.size)
+  ModOperations.addOne(
+    position, modCycleIntegral.integralValues.size)
+
+  if (Calc.mod(position, modCycleIntegral.integralValues.size) ==
+      modCycleIntegral.integralValues.size - 1) {
+    // ... boundary case: position mod size == size - 1
+    // (full proof omitted for brevity -- see source file)
+  } else {
+    // ... non-boundary case
+    // (full proof omitted for brevity -- see source file)
+  }
+
+  modCycleIntegral.apply(position + 1) -
+    modCycleIntegral.apply(position) ==
+    modCycleIntegral.mCycle.values(
+      Calc.mod(position + 1, modCycleIntegral.integralValues.size))
+}.holds
+\end{lstlisting}
+
+\subsection{Equivalence of Definitions --- \texorpdfstring{\texttt{assert\allowbreak Cycle\allowbreak Integral\allowbreak Match\allowbreak Mod\allowbreak Cycle\allowbreak Def}}{assertCycleIntegralMatchModCycleDef}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala}{\texttt{Mod\allowbreak Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Cycle\allowbreak Integral\allowbreak Match\allowbreak Mod\allowbreak Cycle\allowbreak Def}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertCycleIntegralMatchModCycleDef(
+  modCycleIntegral: ModCycleIntegral,
+  cycleIntegral: CycleIntegral,
+  position: BigInt,
+): Boolean = {
+  require(position >= 0)
+  require(modCycleIntegral.mCycle.values.nonEmpty)
+  require(cycleIntegral.cycle.values.nonEmpty)
+  require(modCycleIntegral.mCycle.values == cycleIntegral.cycle.values)
+  require(modCycleIntegral.mCycle.size == cycleIntegral.cycle.size)
+  require(modCycleIntegral.initialValue == cycleIntegral.initialValue)
+  decreases(position)
+
+  assertModCycleEqualsCycleIntegral(
+    modCycleIntegral, cycleIntegral, position)
+  val size = modCycleIntegral.mCycle.size
+
+  assert(modCycleIntegral(position) == cycleIntegral(position))
+  assert(
+    modCycleIntegral(position) ==
+      div(position, size) * modCycleIntegral.integralValues.last +
+      modCycleIntegral.integralValues(mod(position, size)) +
+      modCycleIntegral.initialValue
+  )
+
+  cycleIntegral(position) ==
+    div(position, size) * modCycleIntegral.integralValues.last +
+    modCycleIntegral.integralValues(mod(position, size)) +
+    cycleIntegral.initialValue
+}.holds
+\end{lstlisting}
+
+\subsection{Same Difference After Full Cycle --- \texorpdfstring{\texttt{assert\allowbreak Same\allowbreak Diff\allowbreak After\allowbreak Cycle}}{assertSameDiffAfterCycle}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Same\allowbreak Diff\allowbreak After\allowbreak Cycle}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertSameDiffAfterCycle(
+  iCycle: CycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position >= 0)
+
+  val a = position
+  val b = position + 1
+  val c = a + iCycle.size
+  val d = b + iCycle.size
+
+  assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = a)
+  assert(iCycle(b) - iCycle(a) == iCycle.cycle(b))
+
+  assertDiffEqualsCycleValue(cycleIntegral = iCycle, position = c)
+  assert(iCycle(d) - iCycle(c) == iCycle.cycle(d))
+
+  MemCycleProperties.valueMatchAfterManyLoopsInBoth(
+    iCycle.cycle, a, 0, 1)
+  MemCycleProperties.valueMatchAfterManyLoopsInBoth(
+    iCycle.cycle, b, 0, 1)
+
+  assert(iCycle.cycle(d) == iCycle.cycle(b))
+  assert(iCycle.cycle(c) == iCycle.cycle(a))
+
+  iCycle(b) - iCycle(a) == iCycle(d) - iCycle(c)
+}.holds
+\end{lstlisting}
+
+\subsection{Sum of Mod Values as List --- \texorpdfstring{\texttt{assert\allowbreak Sum\allowbreak Mod\allowbreak Value\allowbreak As\allowbreak List\allowbreak Equals\allowbreak Cycle\allowbreak Integral\allowbreak Loop}}{assertSumModValueAsListEqualsCycleIntegralLoop}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Sum\allowbreak Mod\allowbreak Value\allowbreak As\allowbreak List\allowbreak Equals\allowbreak Cycle\allowbreak Integral\allowbreak Loop}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertSumModValueAsListEqualsCycleIntegralLoop(
+  iCycle: CycleIntegral,
+  position: BigInt
+): Boolean = {
+  require(position >= 0)
+  decreases(position)
+
+  if (position == 0) {
+    assert(iCycle(position) ==
+      ListUtils.sum(getModValuesAsList(iCycle, position)))
+    iCycle(position) == iCycle.cycle(0) + iCycle.initialValue &&
+      iCycle(position) ==
+        ListUtils.sum(getModValuesAsList(iCycle, position))
+  } else {
+    if (position > iCycle.size) {
+      assertSameDiffAfterCycle(iCycle, position - iCycle.size)
+      // ... inductive step details
+    }
+    assertSumModValueAsListEqualsCycleIntegralLoop(
+      iCycle, position - 1)
+    assert(iCycle(position - 1) ==
+      ListUtils.sum(getModValuesAsList(iCycle, position - 1)))
+    assert(ListUtilsProperties.listAddValueTail(
+      getModValuesAsList(iCycle, position - 1), iCycle.cycle(position)))
+    iCycle(position) == iCycle.cycle(position) + iCycle(position - 1) &&
+      iCycle(position) ==
+        ListUtils.sum(getModValuesAsList(iCycle, position))
+  }
+}.holds
+\end{lstlisting}
+
+\subsection{x-fold Cycle Expansion --- \texorpdfstring{\texttt{assert\allowbreak Repeated\allowbreak Values\allowbreak Integral\allowbreak Matches}}{assertRepeatedValuesIntegralMatches}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Repeated\allowbreak Values\allowbreak Integral\allowbreak Matches}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertRepeatedValuesIntegralMatches(
+  cycleIntegral: CycleIntegral,
+  repeatedCycleIntegral: CycleIntegral,
+  times: BigInt,
+  position: BigInt
+): Boolean = {
+  require(times > BigInt(0))
+  require(position >= BigInt(0))
+  require(cycleIntegral.cycle.period > BigInt(0))
+  require(repeatedCycleIntegral.initialValue == cycleIntegral.initialValue)
+  require(repeatedCycleIntegral.cycle.values ==
+    ListRepeatProperties.repeat(cycleIntegral.cycle.values, times))
+  RepeatedGapIntegralProperties.assertRepeatedValuesIntegralMatches(
+    cycleIntegral, repeatedCycleIntegral, times, position
+  )
+}.holds
+\end{lstlisting}
+
+\subsection{Right Index Shift Core --- \texorpdfstring{\texttt{assert\allowbreak Rotate\allowbreak One\allowbreak Cycle\allowbreak Integral\allowbreak Shifts\allowbreak By\allowbreak One}}{assertRotateOneCycleIntegralShiftsByOne}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{Gap\allowbreak Properties::assert\allowbreak Rotate\allowbreak One\allowbreak Cycle\allowbreak Integral\allowbreak Shifts\allowbreak By\allowbreak One}}\par}
+
+\begin{lstlisting}[style=scala,breakatwhitespace=false]
+def assertRotateOneCycleIntegralShiftsByOne(
+  originalCI: CycleIntegral,
+  shiftedCI: CycleIntegral,
+  i: BigInt
+): Boolean = {
+  require(i >= 0)
+  require(i + 1 < originalCI.period)
+  require(shiftedCI.initialValue == originalCI.initialValue + originalCI.cycle(0))
+  require(shiftedCI.cycle.values == ListUtils.rotateAt(originalCI.cycle.values, BigInt(1)))
+  decreases(i)
+
+  assert(originalCI.cycle.values.nonEmpty)
+  assert(RotationProperties.assertRotateSameSize(originalCI.cycle.values, BigInt(1)))
+  assert(shiftedCI.period == originalCI.period)
+  assert(RotationProperties.assertRotatedAtIndexPlusOne(originalCI.cycle.values, i))
+  assert(shiftedCI.cycle(i) == originalCI.cycle(i + 1))
+
+  if (i == BigInt(0)) {
+    assert(shiftedCI(i) == shiftedCI.initialValue + shiftedCI.cycle(0))
+    assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+    assert(originalCI(i) == originalCI.initialValue + originalCI.cycle(0))
+    assert(shiftedCI(i) == originalCI(i + 1))
+  } else {
+    assert(assertRotateOneCycleIntegralShiftsByOne(originalCI, shiftedCI, i - BigInt(1)))
+    assert(shiftedCI(i - BigInt(1)) == originalCI(i))
+    assert(shiftedCI(i) == shiftedCI(i - BigInt(1)) + shiftedCI.cycle(i))
+    assert(originalCI(i + 1) == originalCI(i) + originalCI.cycle(i + 1))
+    assert(shiftedCI(i) == originalCI(i + 1))
+  }
+
+  shiftedCI(i) == originalCI(i + 1)
+\section{Scala Verification Code}
+\end{lstlisting}
+
+\subsection{Gap Telescoping --- \texorpdfstring{\texttt{assert\allowbreak Consecutive\allowbreak Gap\allowbreak Sum\allowbreak Equals\allowbreak Diff}}{assertConsecutiveGapSumEqualsDiff}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Properties::assert\allowbreak Consecutive\allowbreak Gap\allowbreak Sum\allowbreak Equals\allowbreak Diff}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertConsecutiveGapSumEqualsDiff(
+  ci: CycleIntegral,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(1))
+  require(ci.cycle.period > k + BigInt(1))
+  require(ci.cycle.values.nonEmpty)
+
+  assert(assertDiffEqualsCycleValue(ci, k - BigInt(1)))
+  assert(assertDiffEqualsCycleValue(ci, k))
+
+  ci(k + BigInt(1)) - ci(k - BigInt(1)) ==
+    ci.cycle(k) + ci.cycle(k + BigInt(1))
+}.holds
+\end{lstlisting}
+
+\subsection{Modulo Periodicity --- \texorpdfstring{\texttt{assert\allowbreak Mod\allowbreak Is\allowbreak Periodic}}{assertModIsPeriodic}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{Gap\allowbreak Properties::assert\allowbreak Mod\allowbreak Is\allowbreak Periodic}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertModIsPeriodic(
+  ci: CycleIntegral,
+  m: BigInt,
+  pos: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(m > 0)
+  require(pos >= 0)
+  require(Calc.mod(ci.sum, m) == BigInt(0))
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  decreases(pos)
+
+  val size = ci.period
+  val r = Calc.mod(pos, size)
+
+  if (pos < size) {
+    assert(ModSmallDividend.modSmallDividend(pos, size))
+    assert(r == pos)
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+  } else {
+    val previous = pos - size
+    val previousR = Calc.mod(previous, size)
+
+    assert(previous >= BigInt(0))
+    assert(previous < pos)
+    assert(previous + size == pos)
+    assert(AdditionAndMultiplication.APlusBSameModPlusDiv(previous, size))
+    assert(Calc.mod(previous + size, size) == Calc.mod(previous, size))
+    assert(r == previousR)
+
+    assert(assertModIsPeriodic(ci, m, previous))
+    assert(Calc.mod(ci(previous), m) == Calc.mod(ci(previousR), m))
+
+    assert(CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, previous))
+    assert(ci(previous + size) - ci(previous) == ci.sum)
+    assert(ci(pos) - ci(previous) == ci.sum)
+    assert(ci(pos) == ci(previous) + ci.sum)
+
+    assert(assertAddZeroModValuePreservesMod(ci(previous), ci.sum, m))
+    assert(Calc.mod(ci(previous) + ci.sum, m) == Calc.mod(ci(previous), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previous), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(previousR), m))
+    assert(Calc.mod(ci(pos), m) == Calc.mod(ci(r), m))
+  }
+
+  Calc.mod(ci(pos), m) == Calc.mod(ci(r), m)
+}.holds
+\end{lstlisting}
+
+\subsection{Cycle-Period Shifts --- \texorpdfstring{\texttt{assert\allowbreak Periodic\allowbreak Shift, assert\allowbreak Full\allowbreak Cycle\allowbreak Shift}\\ 
+\texttt{assert\allowbreak Multi\allowbreak Cycle\allowbreak Shift}}{assertPeriodicShift, assertFullCycleShift, assertMultiCycleShift}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{Gap\allowbreak Properties cycle-period shift lemmas}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertPeriodicShift(
+  ci: CycleIntegral,
+  k: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(k >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, k)
+}.holds
+
+def assertFullCycleShift(
+  ci: CycleIntegral,
+  pos: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(pos >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  CycleIntegralFilterProperties.assertCIShiftEqualsSum(ci, pos)
+}.holds
+
+def assertMultiCycleShift(
+  ci: CycleIntegral,
+  pos: BigInt,
+  m: BigInt
+): Boolean = {
+  require(ci.period > 0)
+  require(pos >= 0)
+  require(m >= 0)
+  require(ci(ci.period) - ci(BigInt(0)) == ci.sum)
+  decreases(m)
+
+  val period = ci.period
+  val totalGaps = ci.sum
+
+  if (m == BigInt(0)) {
+    ci(pos) == ci(pos) + totalGaps * BigInt(0)
+  } else {
+    assert(assertFullCycleShift(ci, pos + period * (m - BigInt(1))))
+    assert(ci(pos + period * (m - BigInt(1)) + period) ==
+      ci(pos + period * (m - BigInt(1))) + totalGaps)
+
+    assert(assertMultiCycleShift(ci, pos, m - BigInt(1)))
+    assert(ci(pos + period * (m - BigInt(1))) ==
+      ci(pos) + totalGaps * (m - BigInt(1)))
+
+    ci(pos + period * m) == ci(pos) + totalGaps * m
+  }
+}.holds
+\end{lstlisting}
+
+\subsection{Merge Shift Law --- \texorpdfstring{\texttt{assert\allowbreak Shift\allowbreak At\allowbreak Merge}}{assertShiftAtMerge}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Filter\allowbreak Properties::assert\allowbreak Shift\allowbreak At\allowbreak Merge}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertShiftAtMerge(
+  oldIntegral: CycleIntegral,
+  newIntegral: CycleIntegral,
+  mergeIndex: BigInt
+): Boolean = {
+  require(mergeIndex >= 0)
+  require(mergeIndex + 1 < oldIntegral.period)
+  require(newIntegral.period == oldIntegral.period - 1)
+  require(oldIntegral.initialValue == newIntegral.initialValue)
+  require(newIntegral.cycle(mergeIndex) ==
+    oldIntegral.cycle(mergeIndex) +
+      oldIntegral.cycle(mergeIndex + 1))
+  require(allGapsMatchBeforeMerge(
+    oldIntegral, newIntegral, mergeIndex, mergeIndex - 1))
+  if (mergeIndex == 0) {
+    assert(newIntegral(0) ==
+      newIntegral.initialValue + newIntegral.cycle(0))
+    assert(oldIntegral(1) ==
+      oldIntegral.cycle(0) + oldIntegral.cycle(1) +
+        oldIntegral.initialValue)
+  } else {
+    assertSameBeforeMerge(
+      oldIntegral, newIntegral, mergeIndex, mergeIndex - 1)
+    assert(newIntegral(mergeIndex - 1) ==
+      oldIntegral(mergeIndex - 1))
+    assert(newIntegral(mergeIndex) ==
+      newIntegral(mergeIndex - 1) +
+        newIntegral.cycle(mergeIndex))
+    assert(oldIntegral(mergeIndex + 1) ==
+      oldIntegral(mergeIndex) +
+        oldIntegral.cycle(mergeIndex + 1))
+  }
+  newIntegral(mergeIndex) == oldIntegral(mergeIndex + 1)
+}.holds
+\end{lstlisting}
+
+\subsection{Removing a Multiple --- \texorpdfstring{\texttt{assert\allowbreak Remove\allowbreak One\allowbreak Multiple}}{assertRemoveOneMultiple}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Filter\allowbreak Properties::assert\allowbreak Remove\allowbreak One\allowbreak Multiple}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertRemoveOneMultiple(
+  oldIntegral: CycleIntegral,
+  newIntegral: CycleIntegral,
+  filterValue: BigInt,
+  multiplePosition: BigInt
+): Boolean = {
+  require(filterValue > 0)
+  require(multiplePosition > 0)
+  require(multiplePosition + 1 < oldIntegral.period)
+  require(newIntegral.period == oldIntegral.period - 1)
+  require(oldIntegral.initialValue == newIntegral.initialValue)
+  require(Calc.mod(oldIntegral(multiplePosition), filterValue) ==
+    BigInt(0))
+  require(Calc.mod(oldIntegral(0), filterValue) != BigInt(0))
+  require(allGapsMatchBeforeMerge(
+    oldIntegral, newIntegral, multiplePosition, multiplePosition - 1))
+  require(newIntegral.cycle(multiplePosition) ==
+    oldIntegral.cycle(multiplePosition) +
+      oldIntegral.cycle(multiplePosition + 1))
+  require(allGapsMatchAfterMerge(
+    oldIntegral, newIntegral, multiplePosition, multiplePosition))
+  assertShiftAtMerge(oldIntegral, newIntegral, multiplePosition)
+  newIntegral(multiplePosition) ==
+    oldIntegral(multiplePosition + 1)
+}.holds
+\end{lstlisting}
+
+\subsection{Direct Construction from Survivors --- \texorpdfstring{\texttt{assert\allowbreak New\allowbreak CIGenerates\allowbreak Filtered}}{assertNewCIGeneratesFiltered}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Filter\allowbreak Properties::assert\allowbreak New\allowbreak CIGenerates\allowbreak Filtered}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertNewCIGeneratesFiltered(
+  filteredIntegral: CycleIntegral,
+  survivorList: List[BigInt],
+  position: BigInt
+): Boolean = {
+  require(survivorList.size > position + 1)
+  require(filteredIntegral.period > position)
+  require(position >= 0)
+  require(filteredIntegral.initialValue == survivorList.head)
+  require(allGapsMatch(filteredIntegral, survivorList, position))
+  decreases(position)
+  if (position == 0) {
+    assert(filteredIntegral(0) ==
+      filteredIntegral.initialValue + filteredIntegral.cycle(0))
+  } else {
+    assert(allGapsMatch(filteredIntegral, survivorList, position - 1))
+    assertNewCIGeneratesFiltered(
+      filteredIntegral, survivorList, position - 1)
+    assert(filteredIntegral(position - 1) ==
+      survivorList(position))
+    assert(filteredIntegral(position) ==
+      filteredIntegral(position - 1) + filteredIntegral.cycle(position))
+  }
+  filteredIntegral(position) == survivorList(position + 1)
+}.holds
+\end{lstlisting}
+
+\subsection{Filtered Result Has No Multiples --- \texorpdfstring{\texttt{assert\allowbreak Filter\allowbreak Merge\allowbreak Composition}}{assertFilterMergeComposition}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Filter\allowbreak Properties::assert\allowbreak Filter\allowbreak Merge\allowbreak Composition}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertFilterMergeComposition(
+  originalCI: CycleIntegral,
+  newCI: CycleIntegral,
+  survivors: List[BigInt],
+  filterValue: BigInt,
+  maxIndex: BigInt
+): Boolean = {
+  require(filterValue > 0)
+  require(originalCI.period > 0)
+  require(Calc.mod(originalCI(0), filterValue) != BigInt(0))
+  require(survivors == survivorValues(originalCI, filterValue,
+    BigInt(0), originalCI.period))
+  require(!survivors.isEmpty)
+  require(newCI.initialValue == survivors.head)
+  require(newCI.cycle.values == gapsFromValues(survivors))
+  require(maxIndex >= 0)
+  require(maxIndex < newCI.period)
+  require(survivors.size > maxIndex + 1)
+  decreases(maxIndex + 1)
+
+  assertNewCIMatchesSurvivors(survivors, newCI, maxIndex)
+  assertSurvivorAtNotMultiple(originalCI, filterValue,
+    BigInt(0), originalCI.period, maxIndex + 1)
+
+  if (maxIndex > 0) {
+    assertFilterMergeComposition(originalCI, newCI,
+      survivors, filterValue, maxIndex - 1)
+  }
+  Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
+}.holds
+\end{lstlisting}
+

@@ -1,0 +1,75 @@
+\section{Preliminaries}
+\label{sec:preliminaries}
+
+We reuse several basic operations and their verified properties from
+companion articles:
+
+\begin{itemize}
+  \item \textbf{Modular Arithmetic} \cite{mata2026modulo}: Division,
+    modulo, quotient invariance, mod idempotence.
+  \item \textbf{Lists} \cite{mata2026lists}: Size, append, sum, slicing,
+    tail shift.
+  \item \textbf{Prime Utilities:} Primorial computation, primality
+    testing, and finite divisor search, specified below.
+\end{itemize}
+
+\subsection{Key Definitions}
+\label{sec:key-definitions}
+
+Let $L = [p_1, p_2, \dots, p_k] \in \mathbb{N}^k$ be a non-empty list of
+primes, with $p_i > 1$ for all $i$.
+
+We define the \textbf{primorial} of a list of primes as the product of all
+primes in the list:
+
+\begin{equation*}
+\operatorname{primorial}(L) = \prod_{i=1}^{k} p_i
+\end{equation*}
+
+A number $n$ is \textbf{prime} exactly when it is greater than $1$ and no
+integer in $[2,n)$ divides it:
+
+\begin{equation*}
+\operatorname{isPrime}(n) \;:\Longleftrightarrow\; n>1\ \land\
+\forall d\in[2,n),\ \operatorname{mod}(n,d)\ne0.
+\end{equation*}
+
+\subsection{Finite Prime Operations and Their Specifications}
+\label{sec:finite-prime-operations}
+
+The article needs only finite search and the definitions below; it does
+not assume an external enumeration of all primes. Primorial is structural:
+
+\begin{equation*}
+\begin{aligned}
+\operatorname{primorial}([]) &:= 1, \\
+\operatorname{primorial}(p::P) &:= p\cdot\operatorname{primorial}(P).
+\end{aligned}
+\end{equation*}
+
+For $n>1$ and $2\leq s\leq n$, \texttt{findSmallestDivisor(n,s)} tests
+$s,s+1,\ldots,n$ in order and returns the first divisor. It terminates
+because $n$ itself divides $n$. Its specification is therefore
+
+\begin{equation*}
+\begin{aligned}
+d &= \operatorname{findSmallestDivisor}(n,s) \\
+&\implies s\leq d\leq n\ \land\ \operatorname{mod}(n,d)=0 \\
+&\phantom{\implies}\land\ \forall e\in[s,d),\ \operatorname{mod}(n,e)\ne0.
+\end{aligned}
+\end{equation*}
+
+The recursive scan proves this by induction on $n-s$: either $s$ divides
+$n$, or the same claim is inherited from the call beginning at $s+1$.
+Thus, when $s=2$, $d=n$ is equivalent to the prime definition in
+Section~2.1; if $d<n$, $d$ is the least non-trivial divisor. The
+divisor-range postcondition is encoded in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/Prime.scala}{\texttt{Prime::findSmallestDivisor}}.
+Its minimality and its equivalence with an empty divisor range are
+machine-checked by \texttt{Prime::assertFindSmallestDivisorMinimality} and
+\texttt{Prime::assertFindSmallestDivisorEquivNoDivisorInRange} in the same
+source.
+
+For a list $P$ of positive integers, \texttt{isCoprime(n,P)} means that no
+member of $P$ divides $n$; it is a direct recursion over the list. This is
+the only list-coprimality meaning used below.

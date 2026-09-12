@@ -1,0 +1,334 @@
+\section{Installing the Current Head as a Filter}
+\label{sec:installing-current-head-as-filter}
+
+The next stage adds $h$ to the active filter list. Over one complete
+expanded window, this operation has an exact count and a deterministic
+effect on gaps.
+
+\begin{itemize}
+  \item the expanded old stage contains exactly $hT$ accepted values;
+  \item exactly $T$ of those values are divisible by $h$;
+  \item a real linear 2-gap has exactly two destroyed lifts and $h-2$
+    lifts whose endpoints survive;
+  \item every next gap is either copied or is a sum of consecutive old
+    gaps;
+  \item filtering the base and repeated cycle views yields equal
+    survivor-gap lists.
+\end{itemize}
+
+\subsection{Exact Survivor Count}
+\label{sec:exact-survivor-count}
+
+Consider the accepted values with indexes $r+iT$, where $0\le r\lt T$ and
+$0\le i\lt h$. The block-shift theorem gives
+
+\begin{equation*}
+\begin{aligned}
+\ell_{r+iT}=\ell_r+iM.
+\end{aligned}
+\end{equation*}
+
+The head $h$ is a prime not present among the smaller-prime factors of
+$M$, so $\gcd(M,h)=1$. Multiplication by $M$ permutes the residues modulo
+$h$. For each fixed $r$, exactly one offset $i\in\{0,\ldots,h-1\}$
+therefore satisfies $\ell_r+iM\equiv0\pmod h$. There are $T$ choices of
+$r$, so exactly $T$ old survivors are removed:
+
+\begin{equation*}
+\begin{aligned}
+N_{\mathrm{old}} &= hT
+  &&\text{[Repeated blocks]} \\
+N_{\mathrm{removed}} &= T
+  &&\text{[One zero residue per row]} \\
+N_{\mathrm{survive}}
+  &=hT-T \\
+  &=T(h-1)
+  &&\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+This is an exact full-period theorem, not a probabilistic density
+estimate.
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala}{\texttt{SpecSieveSeqSurvivorCountProperties::assertSameHeadExtendedFilterCount}}.
+\par}
+
+\subsection{Exact Lifted-Copy Law for a Real 2-Gap}
+\label{sec:exact-lifted-copy-law}
+
+This subsection concerns the actual deterministic sieve sequence, not a
+random model. Suppose two consecutive values in the real sequence satisfy
+$\ell_{k+1}-\ell_k=2$. Write $p=h$ for the incoming odd prime and $M$ for
+the current tail primorial. The complete lift block contains the $p$
+endpoint pairs
+
+\begin{equation*}
+(\ell_k+jM,\ \ell_{k+1}+jM),
+\qquad 0\le j\lt p.
+\end{equation*}
+
+The verified result is deliberately local to one real sequence pair. It
+does not yet aggregate over the cyclic wrap gap or establish a recurrence
+for the total next-stage 2-gap population.
+
+\subsubsection{The Two Forbidden Lift Offsets Are Distinct}
+\label{sec:two-forbidden-lift-offsets}
+
+Each endpoint has one unique lift offset at which the incoming prime
+divides it. Those offsets cannot coincide: if the same prime divided both
+lifted endpoints, it would divide their difference $2$, which is
+impossible for an odd prime. This is the structural fact that prevents
+the two endpoint strikes from collapsing into one destroyed copy.
+
+\begin{equation*}
+\begin{aligned}
+j_L,j_R&\in\{0,\ldots,p-1\},
+&&[\text{By Unique Lift Offset}]\\
+\ell_k+j_LM&\equiv0\pmod p,\\
+\ell_{k+1}+j_RM&\equiv0\pmod p.\\[2pt]
+j_L=j_R=j
+&\Longrightarrow
+(\ell_{k+1}+jM)-(\ell_k+jM)\equiv0\pmod p
+&&[\text{Substitution}]\\
+&\Longrightarrow 2\equiv0\pmod p
+&&[\ell_{k+1}-\ell_k=2]\\
+&\Longrightarrow 2=0
+&&[\text{By Modulo Property},\ 2\lt p],
+\end{aligned}
+\end{equation*}
+
+which is a contradiction. Therefore
+
+\begin{equation*}
+j_L\ne j_R.
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\begin{lstlisting}[style=scala]
+def assertForbiddenLiftOffsetsDistinct(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftOffset = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightOffset = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(Calc.mod(left + leftOffset * step, p) == BigInt(0))
+  assert(Calc.mod(right + rightOffset * step, p) == BigInt(0))
+
+  if (leftOffset == rightOffset) {
+    val leftCopy = left + leftOffset * step
+    val rightCopy = right + rightOffset * step
+    assert(rightCopy == leftCopy + BigInt(2))
+    assert(Calc.mod(leftCopy, p) == BigInt(0))
+    assert(Calc.mod(rightCopy, p) == BigInt(0))
+    assert(ModOperations.modZeroPlusC(leftCopy, p, BigInt(2)))
+    assert(Calc.mod(rightCopy, p) == Calc.mod(BigInt(2), p))
+    assert(ModSmallDividend.modSmallDividend(BigInt(2), p))
+    assert(Calc.mod(BigInt(2), p) == BigInt(2))
+    assert(Calc.mod(rightCopy, p) != BigInt(0))
+    leftOffset != rightOffset
+  } else {
+    leftOffset != rightOffset
+  }
+}.holds
+\end{lstlisting}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala}{\texttt{SpecSieveSeqTwoGapProperties::assertForbiddenLiftOffsetsDistinct}}.
+\par}
+
+\subsubsection{Exactly Two Lifted Copies Are Destroyed}
+\label{sec:exactly-two-lifted-copies-destroyed}
+
+A copied pair is destroyed when at least one endpoint is divisible by
+$p$. The left endpoint is struck once, the right endpoint is struck once,
+and the distinct-offset theorem makes these two singleton strike sets
+disjoint. Consequently their union contains exactly two copy indices.
+
+\begin{equation*}
+\begin{aligned}
+D_L&=\{j:0\le j\lt p,\ p\mid(\ell_k+jM)\},\\
+D_R&=\{j:0\le j\lt p,\ p\mid(\ell_{k+1}+jM)\},
+&&[\text{By Definition}]\\
+|D_L|&=1,
+\qquad |D_R|=1,
+&&[\text{By Unique Lift Offset}]\\
+D_L\cap D_R&=\varnothing
+&&[\text{By Lemma }j_L\ne j_R]\\
+D&=D_L\cup D_R,
+&&[\text{By Definition}]\\
+|D|&=|D_L|+|D_R|=2.
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\begin{lstlisting}[style=scala]
+def assertExactlyTwoDestroyedCopies(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+  val right = seq.apply(k + BigInt(1))
+  val leftWitness = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+  val rightWitness = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+
+  assert(right == left + BigInt(2))
+  assert(assertForbiddenLiftOffsetsDistinct(seq, k))
+  assert(leftWitness != rightWitness)
+  assert(assertDestroyedCountEqualsEndpointCounts(
+    left,
+    step,
+    p,
+    BigInt(0),
+    leftWitness,
+    rightWitness
+  ))
+  assert(SieveUtils.assertCountZeroOffsetsOne(left, step, p))
+  assert(SieveUtils.countZeroOffsets(left, step, p, BigInt(0)) == BigInt(1))
+  assert(SieveUtils.assertCountZeroOffsetsOne(right, step, p))
+  assert(SieveUtils.countZeroOffsets(right, step, p, BigInt(0)) == BigInt(1))
+
+  countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == BigInt(2)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala}{\texttt{SpecSieveSeqTwoGapProperties::assertExactlyTwoDestroyedCopies}}.
+\par}
+
+\subsubsection{Exactly \texorpdfstring{$p-2$}{p-2} Lifted Copies Keep Both Endpoints}
+\label{sec:exactly-p-minus-two-copies-survive}
+
+There are $p$ candidate lifts in the complete block. Removing the two and
+only two destroyed indices leaves exactly $p-2$ copies whose two
+endpoints survive the incoming filter. This is an exact deterministic
+count, not an expected value or an independence heuristic.
+
+\begin{equation*}
+\begin{aligned}
+|\{0,\ldots,p-1\}|&=p,
+&&[\text{By Definition}]\\
+|D|&=2,
+&&[\text{By Lemma: Exactly Two Destroyed Copies}]\\
+N_{\mathrm{endpoint\text{-}surviving}}
+&=p-|D|\\
+&=p-2.
+&&\text{[Substitution]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+\begin{lstlisting}[style=scala]
+def assertExactlyHeadMinusTwoCopiesSurvive(
+  seq: SpecSieveSequence,
+  k: BigInt
+): Boolean = {
+  require(k >= BigInt(0))
+  require(seq.head.value > BigInt(2))
+  require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+  require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+  val p = seq.head.value
+  val step = seq.tailPrimorial
+  val left = seq.apply(k)
+
+  assert(assertExactlyTwoDestroyedCopies(seq, k))
+  p - countDestroyedTwoGapCopies(left, step, p, BigInt(0)) == p - BigInt(2)
+}.holds
+\end{lstlisting}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala}{\texttt{SpecSieveSeqTwoGapProperties::assertExactlyHeadMinusTwoCopiesSurvive}}.
+\par}
+
+\subsection{Copy-or-Merge Gap Dynamics}
+\label{sec:copy-or-merge-gap-dynamics}
+
+Let old consecutive values be $\ell_k\lt\ell_{k+1}$. If both survive the
+new filter, no new accepted value can appear between them, so their
+difference is copied unchanged. If one or more old values are removed,
+the next surviving endpoints are $\ell_k$ and $\ell_j$ for some $j\gt
+k+1$; telescoping merges the intermediate gaps:
+
+\begin{equation*}
+\begin{aligned}
+\ell_{k+1}\text{ survives}
+&\Longrightarrow
+g'_m=\ell_{k+1}-\ell_k=g_k,
+  &&\text{[Copy]} \\
+\ell_{k+1},\ldots,\ell_{j-1}\text{ removed}
+&\Longrightarrow
+g'_m=\ell_j-\ell_k \\
+&=\sum_{i=k}^{j-1}(\ell_{i+1}-\ell_i) \\
+&=\sum_{i=k}^{j-1}g_i.
+  &&\text{[Merge]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+The immediate-survivor branch is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala}{\texttt{SpecSieveSeqNextProperties::assertFilterPreservesNextGap}}.
+\par}
+
+{\raggedright
+The skipped-successor branch is verified as a supporting theorem. When
+the immediate old successor is removed, the next gap is the sum of the
+old gaps up to the first later survivor. This supporting property is
+verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala}{\texttt{SpecSieveSeqNextProperties::assertMergeGapEqualsOldGapSum}}.
+\par}
+
+{\raggedright
+The general merged prefix is then verified against the next
+specification's gap list. This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala}{\texttt{SpecSieveSeqNextProperties::assertMergedGapPrefixMatchesNext}}.
+\par}
+
+\subsection{Filtering the Repeated Cycle Preserves the Semantic Result}
+\label{sec:filtering-repeated-cycle-preserves-result}
+
+Section~4.3 proved pointwise equality between the base and repeated cycle
+integrals. Applying the same divisibility predicate at the same positions
+must therefore select identical survivor values. Equal survivor lists
+have equal adjacent-gap lists:
+
+\begin{equation*}
+\begin{aligned}
+I_{G^{\langle h\rangle}}(k)&=I_G(k)
+  &&\text{[Repeated-cycle equality]} \\
+I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
+&\Longleftrightarrow I_G(k)\not\equiv0\pmod h
+  &&\text{[Substitution]} \\
+\text{survivors}(I_{G^{\langle h\rangle}},h)
+&=\text{survivors}(I_G,h) \\
+\text{gaps}(\text{survivors}(I_{G^{\langle h\rangle}},h))
+&=\text{gaps}(\text{survivors}(I_G,h))
+  &&\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala}{\texttt{SpecDerivedRepeatedCycleProperties::assertSpecBaseAndRepeatedGapListMatch}}.
+\par}

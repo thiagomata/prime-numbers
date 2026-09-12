@@ -1,0 +1,126 @@
+\section{The Next Stage}
+\label{sec:next-stage}
+
+The next stage installs the current head as a filter, starts at the
+following prime, and represents its own accepted sequence by a new
+finite gap cycle. Throughout this section, a prime marks the next
+stage's own version of each object defined in Section~2: $S'$ is the
+next stage, $h'=\ell_1$ its head, $M'$ its tail primorial, $\ell'$ its
+linear enumeration, and $G'$ its gap cycle.
+
+\begin{itemize}
+  \item the first old-stage successor is the next prime under the square
+    bound;
+  \item the semantic merged-gap prefix equals the next specification's
+    gap prefix;
+  \item a valid next-period boundary lets the next gap cycle reconstruct
+    the next scan.
+\end{itemize}
+
+\subsection{Square-Bound Successor Primality}
+\label{sec:square-bound-successor-primality}
+
+The first old-stage successor is accepted by all filters smaller than
+$h$. If that successor lies below $h^2$, then a composite successor
+would have a prime divisor below $h$, contradicting acceptance.
+Therefore the successor is prime under the square-bound precondition:
+
+\begin{equation*}
+\begin{aligned}
+\ell_1&\lt h^2, \\
+\ell_1\text{ composite}
+&\Longrightarrow
+\exists d\lt h,\ d\text{ prime and }d\mid \ell_1
+  &&\text{[Smallest prime divisor]} \\
+d\lt h
+&\Longrightarrow d\in\overline{P}
+  &&\text{[All smaller primes are filters]} \\
+d\mid\ell_1
+&\Longrightarrow \neg A_S(\ell_1)
+  &&\text{[Filter contradiction]} \\
+&\Longrightarrow \ell_1\text{ is prime}.
+  &&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala}{\texttt{SpecSieveSeqHeadIsPrime::assertApplyOneIsPrimeIfBelowHeadSq}}.
+\par}
+
+\subsection{The First Successor Is the Next Prime}
+\label{sec:first-successor-is-next-prime}
+
+Suppose the next prime after $h$ is $p^+$ and $p^+\lt h^2$. The next
+prime passes every smaller-prime filter, so $\ell_1\le p^+$. Conversely,
+if $\ell_1\lt h^2$ were composite, it would have a prime divisor at most
+$\sqrt{\ell_1}\lt h$. That divisor belongs to $\overline{P}$,
+contradicting acceptance. Thus $\ell_1$ is prime. No prime lies strictly
+between $h$ and $p^+$, so $\ell_1=p^+$.
+
+\begin{equation*}
+\begin{aligned}
+A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
+\ell_1 &\le p^+
+  &&\text{[Least accepted successor]} \\
+\ell_1 \lt h^2
+  &\Longrightarrow \ell_1\text{ is prime}
+  &&\text{[Small composite divisor]}
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+h\lt\ell_1\le p^+,\quad \ell_1\text{ prime}
+\ \Longrightarrow\ \ell_1=p^+
+\quad\text{[No intervening prime]}\quad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala}{\texttt{SpecSieveSeqHeadIsPrime::assertApplyOneEqualsNextPrime}}.
+\par}
+
+\subsection{Semantic Pipeline Agreement}
+\label{sec:semantic-pipeline-agreement}
+
+Let $T'=T(h-1)$. Under the stated stage-relationship invariants, the
+semantic merge process starts at the first surviving old value and emits
+$T'$ merged gaps. Section~5.3 supplies the copy-or-merge induction used
+to prove that this list equals the first $T'$ gaps of the next linear
+specification:
+
+\begin{equation*}
+\begin{aligned}
+T'&=T(h-1), \\
+\text{mergedGaps}(S,S',1,T')
+&=\text{gapList}(S',0,T')
+  \quad\text{[By copy-or-merge induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala}{\texttt{SpecSieveSeqNextStageProperties::assertPipelineOutputMatchesNextGapList}}.
+\par}
+
+\subsection{Conditional Next-Cycle Reconstruction}
+\label{sec:conditional-next-cycle-reconstruction}
+
+If $T'$ is known to be the canonical period of the next stage, the
+generic cycle-reconstruction theorem from Section~4.2 applies directly to
+that stage:
+
+\begin{equation*}
+\begin{aligned}
+\ell'_{T'} &= h'+M'
+  &&\text{[Next-period boundary]} \\
+G'&=\text{gapList}(S',0,T') \\
+I_{G'}(k-1)&=\ell'_k
+  &&\text{[Cycle reconstruction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+\end{aligned}
+\end{equation*}
+
+{\raggedright
+This property is verified in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala}{\texttt{SpecSieveSeqNextStageProperties::assertNextCycleReconstructsNextSpec}}.
+\par}

@@ -1,0 +1,18 @@
+\begin{abstract}
+In previous articles, we defined bounded Lists, Integrals of Lists, and
+unbounded Cycles of Integers from scratch, relying only on core type
+constructs and recursion, with no prior knowledge of Scala's collections
+required. From that, we proved and formally verified some properties related
+to them. This article uses that as a foundation to define Integral of Cycles
+using two presentations: the canonical recursive \texttt{CycleIntegral}
+definition and a \texttt{ModCycleIntegral} closed-form definition. For both
+presentations, we formally verify the sum property (integral equals
+cumulative cycle sum) and the step property (difference between consecutive
+values equals the corresponding cycle element) using the Stainless
+verification system. We also prove that the recursive and modulo definitions
+are extensionally equivalent. All properties are expressed and proved within
+a minimal framework using only elementary arithmetic, recursion, and pure
+Scala code. This work bridges mathematical foundations and executable
+verification, offering a self-contained, verifiable approach for reasoning
+about infinite periodic accumulations.
+\end{abstract}

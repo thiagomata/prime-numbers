@@ -1,0 +1,36 @@
+\section{Introduction}
+\label{sec:introduction}
+
+The sieve of Eratosthenes repeatedly removes multiples of known primes
+\cite{hardywright1979}. A standard implementation stores a bounded array
+and crosses out composites. The Sieve Sequence studied here exposes a
+different mathematical view: after a finite set of prime filters has been
+installed, the survivors form an infinite periodic sequence. A finite
+cycle of adjacent gaps therefore represents the whole stage.
+
+This representation belongs to the broad family of cyclic or wheel-based
+sieve descriptions. Pritchard's survey places wheel sieves among
+systematic families of prime-number sieves \cite{pritchard1987}. The
+present contribution is not the wheel idea itself. It is the explicit
+decomposition of the stage and transition into contracts that can be
+checked by Stainless, a verifier for Scala programs
+\cite{stainless2024verification}, against a first-principles arithmetic
+and list library.
+
+The proof is organized into these property groups:
+
+\begin{itemize}
+  \item stage semantics and complete increasing enumeration --- Section~3;
+  \item canonical period and finite gap-cycle reconstruction --- Section~4;
+  \item repeated-cycle invariance, exact filtering, and copy-or-merge
+    dynamics --- Section~5;
+  \item next-head primality and next-stage agreement --- Section~6;
+  \item conditional assumptions and open composition problems ---
+    Section~7.
+\end{itemize}
+
+The mathematical object is separate from its proof namespaces.
+\texttt{SpecSieveSequence} is the data model and linear semantic
+specification. Independent property objects establish the period,
+survivor count, transition, next-stage assembly, and head-primality
+theorems.
