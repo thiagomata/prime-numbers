@@ -1,0 +1,370 @@
+\section{Self-Contained Proofs For The Exhaustion Chain}
+\label{sec:appendix-c-proofs}
+
+This appendix gives the full proofs of the capacity-exhaustion steps
+summarized in Section~6, so the article is self-contained. Each entry states the
+property's population, scope, derivation, and boundary. Its proofs are the
+authority for the exhaustion claims made in this article; the wider research
+records use the same notation and provide supplementary context.
+
+Notation shared across the entries: $D=Q^2-Q-3$, $a_i=1-2/r_i$,
+$P_i=\prod_{j<i}a_j$, $P_m=\prod_{j<m}a_j$, $T=N_0P_m$, and
+$W_-=\sum_{i<m}P_m/P_i$. The per-layer squared harmful-excess envelope is
+written $X_i$ throughout (in earlier research records the capacity
+theorem writes it $M_i$; the native-period hybrid theorem renamed it $X_i$
+to avoid collision with the native modulus $M_k$, and this article follows
+the later convention).
+
+\subsection{Sharp Harmful-Capacity Excess Envelope}
+\label{sec:appendix-c-1}
+
+Fix one filter layer's residue histogram, restricted to the two harmful
+classes: for every incoming prime $r>2$, every common residue-class capacity
+$B\ge0$, and every population $0\le N\le rB$, let the residue counts $c_a$
+($a\bmod r$) satisfy $0\le c_a\le B$ and $\sum c_a=N$. The two harmful
+classes hold $N_{\text{harm}}=c_0+c_{-2}$ starts, and the signed harmful
+excess is $b=N_{\text{harm}}-2N/r$.
+
+The total $N_{\text{harm}}$ is constrained by two facts. First, each harmful
+class holds at most $B$, so $N_{\text{harm}}\le 2B$. Also
+$N_{\text{harm}}\le N$. Second, the other $r-2$ classes hold at most
+$(r-2)B$ of the $N$ starts, forcing at least $N-(r-2)B$ into the harmful
+pair. The sixfold-capacity envelope proves both endpoints are attainable,
+giving the exact feasible interval
+\begin{equation*}
+\ell\le N_{\text{harm}}\le u,
+\qquad
+\ell=\max(0,N-(r-2)B),
+\qquad
+u=\min(N,2B).
+\end{equation*}
+
+Because $b^2=(N_{\text{harm}}-2N/r)^2$ is convex in $N_{\text{harm}}$, its
+maximum over $[\ell,u]$ occurs
+at an endpoint:
+\begin{equation*}
+b^2
+\le
+X_{r,N,B}
+:=
+\max\left\{
+\left(\ell-\frac{2N}{r}\right)^2,
+\left(u-\frac{2N}{r}\right)^2
+\right\}.
+\end{equation*}
+
+Both endpoints are attainable, so this bound is sharp. The conditioned-chain
+upper envelope follows by summing the per-layer sharp bounds with the energy
+coefficients $\alpha_i=w_ir_i/[2(r_i-2)]$:
+\begin{equation*}
+E_b\le\mathcal U_{\mathrm{cap}}:=\sum_i\alpha_iX_i
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+The bound is sharp one layer at a time but need not be sharp
+over a chain, because the histograms attaining each $X_i$ separately may not
+co-arise from one nested survivor sequence. A cross-layer CRT restriction
+could lower the true aggregate energy below $\mathcal U_{\mathrm{cap}}$. The
+property does not prove $\mathcal U_{\mathrm{cap}}\lt T^2/(2W_-)+\Gamma_{\mathrm{cap}}$;
+it reduces the capacity-only route to that explicit inequality.
+
+\subsection{Capacity-Envelope Width Floor Needs Population Slack}
+\label{sec:appendix-c-2}
+
+For every $r\ge5$, $B\ge0$, $0\le N\le rB$, over one filter layer's feasible
+harmful-count interval, this property extracts the explicit lower bound on
+$X_{r,N,B}$ supplied by
+the \emph{width} of the feasible interval $[\ell,u]$. Write
+$c=(\ell+u)/2$, $h=(u-\ell)/2$. The farther endpoint from $2N/r$ has distance
+\begin{equation*}
+\max\left(\left|\frac{2N}{r}-(c-h)\right|,\left|\frac{2N}{r}-(c+h)\right|\right)
+=h+\left|\frac{2N}{r}-c\right|\ge h.
+\end{equation*}
+
+Therefore
+\begin{equation*}
+X_{r,N,B}\ge\frac{(u-\ell)^2}{4}.
+\end{equation*}
+
+The width has the closed form
+\begin{equation*}
+u-\ell=\min(N,2B,rB-N).
+\end{equation*}
+
+This follows by splitting the feasible range into three parts. If
+$0\le N\le 2B$, then $u=N$, $\ell=0$, and $u-\ell=N$. If
+$2B\le N\le(r-2)B$, then $u=2B$, $\ell=0$, and $u-\ell=2B$. If
+$(r-2)B\le N\le rB$, then $u=2B$, $\ell=N-(r-2)B$, and $u-\ell=rB-N$. The
+formulas agree at the shared endpoints, proving the minimum formula.
+Combining,
+\begin{equation*}
+X_{r,N,B}\ge\frac14\min(N,2B,rB-N)^2
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\textbf{Zero characterization.} Because $X_{r,N,B}$ is the maximum of two squares,
+$X_{r,N,B}=0$ iff both endpoints equal $2N/r$, which requires $u=\ell$. By the
+width formula this is equivalent to $\min(N,2B,rB-N)=0$. Since $2B>0$ and
+$0\le N\le rB$, this occurs exactly at
+\begin{equation*}
+X_{r,N,B}=0\iff N\in\{0,rB\}.
+\end{equation*}
+
+This is the obstruction: the envelope vanishes at both the empty and the
+fully-occupied populations. Theorem using only $r$ and $B$ cannot force a
+positive floor, because the fully-occupied profile $N=rB$ is positive and has
+zero capacity envelope.
+
+\subsection{Fixed Seven Cut Cannot Clear The Original Threshold}
+\label{sec:appendix-c-3}
+
+Consider the cut immediately after filter $7$, so $k=2$, for every chain
+$r_0=5,r_1=7,r_2=11,\ldots$ with $Q\ge17$ and $m\ge37$, examining the suffix
+capacity term at the first untouched layer (filter $11$) of a conditioned
+chain and assuming the seven-layer density floor's local-count threshold at
+filter $11$. The native-period
+hybrid envelope leaves every coordinate $i\ge2$ under its separate capacity
+bound, giving
+\begin{equation*}
+\mathcal U_2^{\mathrm{hyb}}\ge\alpha_2X_2.
+\end{equation*}
+
+The first three multiplicative factors are $a_0=3/5$, $a_1=5/7$, $a_2=9/11$,
+so $P_3=a_0a_1a_2=27/77$. Since $w_2=P_m/P_3$ and $\alpha_2=w_2/(2a_2)$,
+\begin{equation*}
+\alpha_2=\frac{P_m}{2a_2P_3}=\frac{P_m}{2\cdot(9/11)\cdot(27/77)}
+=\frac{847}{486}P_m.
+\end{equation*}
+
+The filter-$11$ capacity floor gives $X_2\ge B_{11}^2$ with
+$B_{11}=\lfloor D/66\rfloor+1\ge D/66$. Therefore
+\begin{equation*}
+\mathcal U_2^{\mathrm{hyb}}\ge\frac{847}{486}P_m\left(\frac{D}{66}\right)^2.
+\end{equation*}
+
+For the threshold upper bound, $T=N_0P_m$ and $W_-=\sum_{i<m}P_m/P_i\ge mP_m$
+(since $P_i\le1$). Before filter $5$ every 2-gap start is $5\bmod6$, so
+$N_0\le\lfloor D/6\rfloor+1\le D/6+1$. Hence
+\begin{equation*}
+\frac{T^2}{2W_-}\le\frac{P_m}{2m}\left(\frac D6+1\right)^2.
+\end{equation*}
+
+The suffix exceeds the threshold whenever
+\begin{equation*}
+\frac{847}{486}\left(\frac{D}{66}\right)^2>\frac1{2m}\left(\frac D6+1\right)^2,
+\end{equation*}
+
+equivalently $m>\frac{29403}{847}(1+6/D)^2$. For $Q\ge17$, $D\ge269$, so the
+right side is at most $\frac{29403}{847}(275/269)^2$. The integer comparison
+\begin{equation*}
+29403\cdot275^2=2{,}223{,}601{,}875\lt2{,}267{,}721{,}379=37\cdot847\cdot269^2
+\end{equation*}
+
+shows this is strictly below $37$. Therefore $m\ge37$ proves
+\begin{equation*}
+\mathcal U_2^{\mathrm{hyb}}>\frac{T^2}{2W_-}
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+This proves the \emph{envelope} cannot certify survival through this
+fixed cut. It does not bound the actual energy $E_b$. It does not address
+later optimized cuts ($k\ge3$), the capacity-relaxed threshold, or localized
+residue information.
+
+\subsection{Every Fixed Native Cut Fails The Original Threshold}
+\label{sec:appendix-c-4}
+
+Generalize C.3 to an arbitrary cut $k$, for every chain
+$5\le r_0<\cdots<r_{m-1}<Q$ with $Q\ge17$ and $2\le k<m$, over the suffix
+capacity term at the first untouched layer of an arbitrary native cut. The
+seven-layer density floor at layer $r_k$ gives
+$X_k\ge B_k^2$ with $B_k=\lfloor D/(6r_k)\rfloor+1\ge D/(6r_k)$, and
+$\alpha_k=P_m/(2P_ka_k^2)$. Therefore
+\begin{equation*}
+\mathcal U_k^{\mathrm{hyb}}
+\ge\frac{P_mD^2}{72P_ka_k^2r_k^2}.
+\end{equation*}
+
+The threshold upper bound is unchanged:
+$T^2/(2W_-)\le(P_m/2m)(D/6+1)^2$. The suffix exceeds the threshold whenever
+\begin{equation*}
+\frac{P_mD^2}{72P_ka_k^2r_k^2}>\frac{P_m}{2m}\left(\frac D6+1\right)^2.
+\end{equation*}
+
+Canceling $P_m>0$ and rearranging gives $m>P_ka_k^2r_k^2(1+6/D)^2$. Since
+$a_kr_k=r_k-2$,
+\begin{equation*}
+m>P_k(r_k-2)^2\left(1+\frac6D\right)^2
+\quad\Longrightarrow\quad
+\mathcal U_k^{\mathrm{hyb}}>\frac{T^2}{2W_-}.
+\end{equation*}
+
+Every fixed cut eventually fails: for fixed $k$, $P_k$ and $r_k$ are constants
+while $(1+6/D)^2\to1$ as $Q$ grows. Along any family with $m\to\infty$, the
+fixed cut violates the necessary condition. Thus a cut capable of clearing the
+original threshold must move: $k=k(Q)\to\infty$.
+
+A parameter-free lower bound on the cut prime follows from $k\ge2$, giving
+$P_k\le P_2=(3/5)(5/7)=3/7$. Threshold clearance would require
+\begin{equation*}
+m\le\frac37(r_k-2)^2\left(1+\frac6D\right)^2,
+\end{equation*}
+
+equivalently
+\begin{equation*}
+\mathcal U_k^{\mathrm{hyb}}\lt\frac{T^2}{2W_-}
+\quad\Longrightarrow\quad
+r_k\ge2+\frac{\sqrt{7m/3}}{1+6/D}
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+\textbf{Recovery of C.3.} For the cut after filter $7$, $k=2$, $r_2=11$,
+$P_2=3/7$, and $P_2(r_2-2)^2=(3/7)\cdot81=243/7=29403/847$, recovering
+C.3's constant exactly.
+
+The bound $r_k\ge2+\sqrt{7m/3}/(1+6/D)$ uses no estimate for
+the distribution of primes. It is a necessary condition on the cut prime, not
+sufficient: it does not prove such an $r_k$ exists in the chain. Converting
+the prime bound into a cut-index bound requires the prime number theorem
+(Appendix~C.5).
+
+\subsection{Moving Cut Loses Complete Native Blocks}
+\label{sec:appendix-c-5}
+
+For every chain $5\le r_i<Q$, cut $2\le k<m$, over a native cut that moves
+outward with the future head together with the prime-counting function, the
+exact logarithmic-squared inequality below holds under five stated finite
+hypotheses. The asymptotic corollary uses Bertrand's postulate and the prime
+number theorem as explicit external dependencies; the exact theorem itself is
+finite, and only the asymptotic corollary is external.
+
+The native modulus at cut $k$ is $M_k=\prod_{p<r_k}p=2\cdot3\prod_{i<k}r_i$.
+Since $r_{k-1}$ is the prime immediately before $r_k$,
+\begin{equation*}
+\log M_k=\vartheta(r_{k-1}).
+\end{equation*}
+
+Assume the following five hypotheses:
+
+\begin{enumerate}
+\item the seven-layer density floor holds at layer $r_k$;
+\item the cut clears the original threshold, $\mathcal U_k^{\mathrm{hyb}}\lt T^2/(2W_-)$;
+\item the native modulus fits the interval, $M_k\le H$ where $H=D+1=Q^2-Q-2$;
+\item for some constant $c>0$, $\vartheta(r_{k-1})\ge cr_{k-1}$; and
+\item Bertrand's inequality $r_k\lt2r_{k-1}$.
+\end{enumerate}
+
+From C.4, hypothesis 2 forces
+$r_k\ge2+\sqrt{7m/3}/(1+6/D)$. From hypotheses 3--5,
+\begin{equation*}
+\log H\ge\log M_k=\vartheta(r_{k-1})\ge cr_{k-1}>\frac c2 r_k.
+\end{equation*}
+
+Combining the lower and upper requirements on $r_k$ and rearranging,
+\begin{equation*}
+m\lt\frac37\left(1+\frac6D\right)^2\left(\frac{2\log H}{c}-2\right)^2.
+\end{equation*}
+
+This is the exact finite theorem: a threshold-clearing cut with at least one
+complete native block forces the chain length to be at most $O(\log^2H)$.
+
+\textbf{Prime-number-theorem corollary (external).} The asymptotics
+$\vartheta(x)\sim x$ and $\pi(x)\sim x/\log x$ are external to the project's
+verification. For the actual full chain, $m=\pi(Q)-3\sim Q/\log Q$, whereas
+$\log^2H\sim4\log^2Q$. Therefore
+\begin{equation*}
+\frac{m}{\log^2H}\sim\frac{Q}{4\log^3Q}\longrightarrow\infty.
+\end{equation*}
+
+The exact logarithmic-squared necessary condition fails for all sufficiently
+large $Q$. Hence, under the seven-layer density floor at the first suffix
+layer,
+\begin{equation*}
+\mathcal U_k^{\mathrm{hyb}}\lt\frac{T^2}{2W_-}
+\quad\Longrightarrow\quad
+M_k>H
+\end{equation*}
+
+for every sufficiently large $Q$ and every cut $k$. There are no complete
+native blocks to cancel.
+
+When $M_k>H$, the native-period hybrid envelope still
+constrains the single incomplete interval block. C.6 addresses whether that
+constraint can supply the missing gain. The asymptotic conclusion depends
+explicitly on PNT and Bertrand; the exact inequality remains valid without
+them under the five stated hypotheses.
+
+\subsection{Incomplete-Block Bessel Excludes No Capacity}
+\label{sec:appendix-c-6}
+
+Under the hypotheses of C.4--C.5, for every cut $2\le k<m$ with $M_k>H$, the
+native-period hybrid envelope's interval remainder on the single incomplete
+native block left is $s_k=H$: the whole window is one incomplete block (the
+asymptotic scale uses Bertrand and PNT as external dependencies). This entry
+proves the
+normalized capacity box then fits inside that budget, so the overflow $e_k$
+vanishes and the hybrid envelope collapses back to the all-capacity
+envelope.
+
+The native-period hybrid envelope's exact norm at coordinate $i<k$ is
+\begin{equation*}
+q_{i,k}=\frac{M_kP_i(r_i-2)}{3r_i^2}.
+\end{equation*}
+
+The capacity numerator obeys $X_i\le N_i^2$. Since conditioned populations
+decrease, $N_i\le N_0$, and before filter $5$ every 2-gap start is $5\bmod6$,
+so $N_0\le\lfloor D/6\rfloor+1\le D/5$ (using $D\ge269>30$). Therefore
+\begin{equation*}
+X_i\le\frac{D^2}{25}.
+\end{equation*}
+
+For the denominator, the function $x\mapsto(x-2)/x^2$ is decreasing for
+$x\ge4$, so for $i<k$,
+\begin{equation*}
+\frac{r_i-2}{r_i^2}\ge\frac{r_k-2}{r_k^2},
+\qquad
+q_{i,k}\ge\frac{M_kP_k(r_k-2)}{3r_k^2}.
+\end{equation*}
+
+Summing the $k$ prefix coordinates,
+\begin{equation*}
+\sum_{i<k}\frac{X_i}{q_{i,k}}
+\le\frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.
+\end{equation*}
+
+The overflow quantification defines
+$e_k=(\sum_{i<k}X_i/q_{i,k}-s_k)_+$. When $M_k>H$, $s_k=H$. The normalized
+sum is at most $H$---giving $e_k=0$---whenever
+\begin{equation*}
+M_kP_k\ge\frac{3kD^2r_k^2}{25H(r_k-2)}.
+\end{equation*}
+
+\textbf{Prime-number-theorem scale (external).} The prefix product satisfies
+$M_kP_k=6\prod_{i<k}(r_i-2)\ge M_k/2^k$. Using PNT and Bertrand externally,
+C.5 forces $r_k\gg\sqrt{Q/\log Q}$ for any potentially successful cut, hence
+$\log(M_kP_k)\sim r_{k-1}\gg\sqrt{Q/\log Q}$. The logarithm of the right side
+of the zero-overflow criterion is only $O(\log Q)$, since $k<Q$,
+$D\lt H\lt Q^2$, and $r_k<Q$. The criterion therefore holds for every sufficiently
+large $Q$, giving
+\begin{equation*}
+e_k=0,\qquad\mathcal U_k^{\mathrm{hyb}}=\mathcal U_{\mathrm{cap}}.
+\end{equation*}
+
+\textbf{Exhaustion of the original native hybrid.} Combining C.3--C.6: fixed cuts
+are excluded by C.3--C.4; any potentially successful moving cut has
+$M_k>H$ (C.5) and then $\mathcal U_k^{\mathrm{hyb}}=\mathcal U_{\mathrm{cap}}$
+(C.6). Since C.3 gives $\mathcal U_{\mathrm{cap}}\ge\mathcal U_2^{\mathrm{hyb}}>T^2/(2W_-)$,
+the capacity-plus-native-Bessel envelope satisfies
+\begin{equation*}
+\mathcal U_{\mathrm{hyb}}\ge\frac{T^2}{2W_-}
+\end{equation*}
+
+for every sufficiently large complete chain satisfying the seven-layer
+density floor. The current capacity-plus-native-Bessel envelope cannot
+certify the terminal survival threshold on an unbounded family.
+
+This is a method obstruction, not a refutation of the
+seven-layer density floor or the terminal survival estimate. It does not
+address the capacity-relaxed threshold
+$T^2/(2W_-)+\Gamma_{\mathrm{cap}}$ (handled by the stability-gap theorem,
+summarized in Section~6.6) or a localized upper bound for the actual $E_b$.
