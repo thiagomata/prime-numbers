@@ -1,0 +1,156 @@
+\section{Copy-Block Harmful Excess And Residue Energy}
+\label{sec:copy-block-harmful-excess}
+
+The harmful excess of a copy block is not an arbitrary scalar. It is exactly
+the sum of two centered entries of the old start histogram modulo $r$, for
+every old period $M\ge1$, every incoming prime $r\ge5$ coprime to $M$, every
+run of complete copy blocks, and every finite integer interval in the copied
+stream, over lifted copies of one complete old-period 2-gap-start set,
+grouped into old-period copy blocks. This turns residue-collision energy into
+a quantitative bound for the complete block portion of a local interval.
+
+Let $S\subset[0,M)$ be the old 2-gap starts and put $N=|S|$. For
+$t\bmod r$, define
+\begin{equation*}
+c_t=\#\{a\in S:a\equiv t\pmod r\},
+\qquad
+d_t=c_t-\frac Nr,
+\qquad
+V_r=\sum_{t\bmod r}d_t^2.
+\end{equation*}
+
+Copy block $j$ is $[jM,(j+1)M)$. Let $K_j$ count starts $a+jM$ destroyed by
+filter $r$ and define its centered harmful excess
+\begin{equation*}
+B_j=K_j-\frac{2N}{r}.
+\end{equation*}
+
+Set $t_j\equiv-jM\pmod r$. The two endpoint strikes are disjoint because
+$r>2$, and they are equivalent to
+\begin{equation*}
+a\equiv t_j\pmod r,
+\qquad
+a\equiv t_j-2\pmod r.
+\end{equation*}
+
+Consequently,
+\begin{equation*}
+\begin{aligned}
+K_j
+&=c_{t_j}+c_{t_j-2}
+&&[\text{Two Endpoint Classes}]\\
+B_j
+&=d_{t_j}+d_{t_j-2}.
+&&\blacksquare\ \text{[Centering; Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Because $\gcd(M,r)=1$, the map $j\mapsto-jM\pmod r$ permutes all residues.
+Also $\sum_td_t=\sum_tc_t-N=0$. Hence a complete run of $r$ blocks has
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{r-1}B_j
+&=\sum_{t\bmod r}(d_t+d_{t-2})
+&&[\text{Residue Permutation}]\\
+&=2\sum_{t\bmod r}d_t
+&&[\text{Cyclic Reindexing}]\\
+&=0.
+&&[\text{Centered Histogram}]
+\end{aligned}
+\end{equation*}
+
+The same permutation gives the exact energy identity
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{r-1}B_j^2
+&=\sum_{t\bmod r}(d_t+d_{t-2})^2
+&&[\text{Residue Permutation}]\\
+&=2V_r+2\sum_{t\bmod r}d_td_{t-2}.
+&&[\text{Expansion}]
+\end{aligned}
+\end{equation*}
+
+The autocorrelation may be negative. Discarding its sign with
+$2xy\le x^2+y^2$ gives
+\begin{equation*}
+\begin{aligned}
+2\sum_td_td_{t-2}
+&\le\sum_td_t^2+\sum_td_{t-2}^2
+&&[\text{Termwise Quadratic Bound}]\\
+&=2V_r,
+&&[\text{Cyclic Reindexing}]\\
+\sum_{j=0}^{r-1}B_j^2
+&\le4V_r.
+&&\blacksquare\ \text{[Substitution; Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+For any $k$ consecutive blocks with $0\le k\lt r$, Cauchy--Schwarz yields
+\begin{equation*}
+\begin{aligned}
+\left|\sum_{j\in J}B_j\right|^2
+&\le k\sum_{j\in J}B_j^2
+&&[\text{Cauchy--Schwarz}]\\
+&\le k\sum_{j=0}^{r-1}B_j^2
+&&[\text{Nonnegative Terms}]\\
+&\le4kV_r.
+&&[\text{Complete-Block Energy}]
+\end{aligned}
+\end{equation*}
+
+Thus $|\sum_{j\in J}B_j|\le2\sqrt{kV_r}$. For a longer run, remove complete
+groups of $r$ blocks by the zero-sum identity and take $k$ to be the number of
+remaining blocks.
+
+An arbitrary integer interval $I$ has a left partial old-period block, a run
+of complete blocks, and a right partial block. Each partial block contains at
+most one copy of every start in $S$. Since $r\ge5$ and the strike indicator is
+either $0$ or $1$,
+\begin{equation*}
+\left|
+\mathbf1_{r\mid x(x+2)}-\frac2r
+\right|
+\le1-\frac2r.
+\end{equation*}
+
+Each partial contribution is therefore at most $N(1-2/r)$ in absolute value.
+Combining both fragments with the complete-block bound gives
+\begin{equation*}
+|b_r(I)|
+\le
+2N\left(1-\frac2r\right)+2\sqrt{kV_r},
+\qquad 0\le k\lt r
+\qquad\blacksquare\ \text{[Triangle Inequality; Q.E.D.]}
+\end{equation*}
+
+Finally, if $C_r=\sum_tc_t^2$ is the residue collision count, direct
+expansion gives
+\begin{equation*}
+\begin{aligned}
+V_r
+&=\sum_t\left(c_t-\frac Nr\right)^2
+&&[\text{By Definition}]\\
+&=\sum_tc_t^2-\frac{2N}{r}\sum_tc_t+\frac{N^2}{r}
+&&[\text{Expansion}]\\
+&=C_r-\frac{N^2}{r}.
+&&[\text{Since }\sum_tc_t=N]
+\end{aligned}
+\end{equation*}
+
+Therefore a relative collision-energy theorem for the actual conditioned
+starts would control the complete-block contribution to Section~5's harmful excess.
+The reduction remains incomplete: no suitable relative bound for $V_r$ is
+proved across the growing layers, two partial fragments remain, and the layer
+bounds must still compose under the weights. When $M$ exceeds the whole
+square-safe window there may be no complete block, and the boundary term
+dominates.
+
+{\raggedright
+The derivation above proves the exact identities, energy bound, and
+arbitrary-interval boundary. A supplementary research record is available in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/copy-block-harmful-excess-controlled-by-residue-energy.md}{Copy-Block Harmful Excess Is Controlled By Residue Energy}.
+The open relative collision input is formulated in \href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/conditioned-residue-collision-energy.md}{Conditioned
+Residue-Collision Energy}. The centered
+rational histogram and block observable are not yet modeled as a \texttt{.holds}
+theorem.
+\par}
