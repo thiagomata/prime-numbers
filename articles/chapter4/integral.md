@@ -65,7 +65,7 @@ and let $init \in \mathbb{Z}$ be an initial value.
 
 We reuse several basic list operations and their verified properties from a companion article on recursive list 
 construction &mdash; [Using Formal Verification to Prove Properties of Lists Recursively Defined](
-https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/articles/chapter3/list.md
+https://rxiverse.org/abs/2609.0023
 ) [[1]](#ref1).  
 These include the following functions:
 
@@ -614,7 +614,7 @@ This property is verified in the [
 ## 6. Limitations
 
 This article builds upon the foundational assumptions and constraints established in the earlier work
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/articles/chapter3/list.md) [[1]](#ref1).
+[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1).
 
 Specifically:
 
@@ -666,7 +666,7 @@ gap-period decomposition — the foundation for reasoning about cumulative sums 
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
-Available at: [https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/articles/chapter3/list.md](https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/articles/chapter3/list.md)
+Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 The Rocq Development Team. *The Rocq Standard Library: Lists*.
