@@ -196,3 +196,5 @@ gap-dynamics labels (PDF superscript reordering / math-text hyphenation),
   package's 11 scala URLs a decision in the list ticket, and extend
   `.parity-skip` usage notes into CONVERSION_GUIDE if a ninth package
   converts.
+
+| 2026-09-13 | Owner directive after the reset attempt: avoid git magic — even soft resets of seconds-old unpushed commits. Work linearly: change -> commit, fix -> commit again. If a file lands in the neighboring commit, say so in the next commit message rather than rewriting history. | Applied for the rest of PR #35; recorded as standing practice. |

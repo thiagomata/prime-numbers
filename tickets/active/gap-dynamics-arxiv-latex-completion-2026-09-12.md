@@ -113,3 +113,8 @@ style already established by the 4 existing converted sections
   release-time step per the ORCID ticket.
 - The parity tool gained a dangling-a tripwire (FAIL-level) from this
   defect class; `just arxiv-parity` is 8/8 PASS after the fixes.
+- Standing practice from the owner (2026-09-13): no git history
+  rewriting, ever — plain add/commit/push, fix-forward only. The
+  research-map deletion landing in the tool commit (0470006f) was
+  accepted as-is and disclosed in the next commit message instead of
+  being relocated.
