@@ -14,18 +14,22 @@ premise, for every finite decay rate.
 
 ## Setup
 
-Suppose `alpha_r ~ c/r` for fixed `c>0` and sufficiently large primes `r`,
+Suppose `alpha_r = c/r` exactly for fixed `c>0` and sufficiently large primes `r`,
 in the position-blind adversarial/random mixture of
 [Bad/Random Square-Window Boundary](bad-random-square-window-boundary.md).
+
+Every finite-prefix share is less than one. Mere asymptotic equivalence gives
+`A(Q)=c log log Q+o(log log Q)`, which does not justify the bounded-factor
+asymptotic below.
 
 ## Property
 
 ```math
 \begin{aligned}
 A(Q)
-&\sim c\sum_{r < Q}\frac1r
-&&[-\log(1-x)\sim x]\\
-&\sim c\log\log Q.
+&=c\sum_{r < Q}\frac1r+O(1)
+&&[\text{Taylor Expansion; Summable Error}]\\
+&=c\log\log Q+O(1).
 &&[\text{Prime Harmonic Sum}]
 \end{aligned}
 ```
@@ -56,7 +60,7 @@ just small ones.
 Reciprocal decay is the gentlest of the two decaying-share families studied
 here; [Log-Over-Linear Decay Specialization](
 log-over-linear-decay-specialization.md) shows a schedule that decays only
-slightly faster (`c\log r/r`) does have a finite critical threshold
+more slowly (`c\log r/r`) does have a finite critical threshold
 (`c=2`), unlike this family. The safe-window conclusion is not claimed for
 the real sieve.
 

@@ -72,10 +72,12 @@ separate open research obligation, not a corollary.
 | Balanced good | [`balanced-good-2-gap/`](balanced-good-2-gap/README.md) | Two deletions spent away from the target whenever possible |
 | Exact-quota random location | [`exact-quota-random-location/`](exact-quota-random-location/README.md) | Exact CRT shot count retained, shot locations drawn uniformly without replacement |
 
-All four models preserve the real sieve's exact `r-2` descendant law
+The three balanced models preserve the exact `r-2` descendant law
 (`N_{k+1}=(r_k-2)N_k`); see
 [Global Persistence Independence](properties/global-persistence-independence.md).
-They differ only in which two copies die.
+The exact-quota model instead preserves an accepted-strike count and randomizes
+its locations. Its total strike quota does not generally force two losses per
+2-gap parent.
 
 ## Related Work
 

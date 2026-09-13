@@ -6,7 +6,9 @@ those strikes, drawn uniformly without replacement from the eligible
 population. It preserves the real count while removing the arithmetic
 targeting information -- a closer statistical companion to the real filter's
 exact accepted-strike law than a model that only fixes the per-parent
-casualty count. Its full definition and real-sieve correspondence are in
+casualty count. It does not impose exactly two losses per 2-gap parent, so it
+does not share the balanced companions' global `r-2` recurrence. Its full
+definition and real-sieve correspondence are in
 [`model.md`](model.md).
 
 ## Short-Name Registry
@@ -19,8 +21,9 @@ casualty count. Its full definition and real-sieve correspondence are in
 
 ## Shared Premises
 
-The survival-factor result assumes the stated cumulative-quota and
-summable-error conditions along the conditioned chain (satisfied by the
+The survival-factor result assumes feasible conditional quota kernels
+(`0 <= J_r <= N_r-2`), a nonlethal finite prefix, and the stated cumulative-
+quota and summable-error conditions along the conditioned chain (satisfied by the
 complete-period CRT benchmark `u_r=1/r`). Head recurrence additionally
 assumes bounded-below head availability compatible with the quota-survival
 experiment, and, for the divergent direction, independence or adequate

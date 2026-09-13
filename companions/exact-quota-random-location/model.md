@@ -21,10 +21,10 @@ statistical companion to the real filter's exact accepted-strike law than a
 model that only fixes the per-parent casualty count.
 
 Exact quotas create dependence within one layer (the strikes are drawn
-without replacement from a shared population), but that dependence does not,
-by itself, change the one-position survival scale when the quota is
-allocated uniformly -- the properties below prove the same leading order as
-the balanced-random companion, with sharper or different lower-order terms.
+without replacement from a shared population). Under the stated conditional
+quota, availability, placement, and mixing assumptions, the properties below
+give the same one-position survival order as the balanced-random companion.
+They do not give its exact per-parent `r-2` descendant law.
 
 ## Definition
 
@@ -64,7 +64,8 @@ A(p,q)
 -\pi(p-1).
 ```
 
-Using this local quota as `J_r=A(p,q)` in this companion is well defined,
+Using this local quota as `J_r=A(p,q)` in this companion is well defined when
+the chosen eligible population has `N_r-J_r>=2`,
 but its resulting strike fraction `u_r=J_r/N_r` must still satisfy the
 cumulative conditions used by the properties below -- preserving a numerical
 strike count alone does not make either conclusion automatic. Neither this
