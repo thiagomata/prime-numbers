@@ -54,6 +54,27 @@ substitutions exist). Per-article extras can be exempted via an optional
   (249 -> 275 in README.md and ARCHITECTURE.md).
 - Referenced from AGENTS.md rule `arxiv-sync` and CONVERSION_GUIDE §5.
 
+## Post-commit hardening (2026-09-13, PR #35 review round)
+
+- REAL BUG (freshness): the comparison was asymmetric — sources used
+  git-corrected commit time, the pdf used raw working-tree mtime. Every
+  package FAILed freshness after the first commit session (pdf built
+  before the commit always reads older). Fixed: `effective_time(pdf)`
+  on both sides; regression test
+  `test_freshness_compares_content_time_on_both_sides`.
+- NEW CHECK (dangling-a, FAIL-level): sentence-surgery tripwire
+  `find_dangling_articles` flags a sentence-final 'A' left
+  paragraph-final (the gap-dynamics de-draft removed "A supplementary
+  record ..." sentences and left 14 stray "A"s in 6 tex files; they
+  rendered in the published PDF). Wrapped sentences ("...quantity. A\n
+  weighted ...") are exempt via lookahead; a paragraph genuinely ending
+  in a standalone "A" ("Plan A") would false-positive — none exists in
+  the current packages.
+- New false-negative class recorded: tex-only PROSE surgery is invisible
+  to headings/identifiers/labels/URLs checks; the dangling-a tripwire is
+  the first prose-level guard. Found by the owner's manual PR review,
+  not by the gate — keep manual line-level review in the loop.
+
 ## Real defects the tool found (fixed this session)
 
 - `articles/arxiv/integral-cycle/sections/08-appendix.tex`: a stray

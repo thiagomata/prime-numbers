@@ -253,8 +253,31 @@ def test_url_norm_ignores_release_pinning():
     assert arxiv_parity.url_norm(master) != arxiv_parity.url_norm(other)
 
 
-# --- input_section_paths ------------------------------------------------------
+# --- find_dangling_articles ---------------------------------------------------
 
+def test_find_dangling_articles_flags_paragraph_final_articles():
+    """The real shapes left by the gap-dynamics de-drafting surgery."""
+    flagged = [
+        "found none. A \n\n\\textbf{How the two compose.}",
+        "proves the exact product count. A \\par}",
+        "its endpoint discipline. A\n\\par}",
+        "and its exact boundary. A",
+    ]
+    for s in flagged:
+        assert arxiv_parity.find_dangling_articles(s), s
+
+
+def test_find_dangling_articles_allows_wrapped_sentences_and_math():
+    kept = [
+        "a single signed quantity. A\nweighted conservation law",  # next line
+        "as an endpoint. A value could belong",  # same paragraph, next line
+        "window. A struck value need not be a 2-gap endpoint",  # same line
+    ]
+    for s in kept:
+        assert arxiv_parity.find_dangling_articles(s) == [], s
+
+
+# --- input_section_paths ------------------------------------------------------
 
 def test_input_section_paths_follows_assembly_and_dedupes():
     """Packages guard inputs with \\IfFileExists, naming each file twice;
@@ -299,6 +322,27 @@ def test_effective_time_falls_back_to_mtime_without_commits(monkeypatch):
     monkeypatch.setattr(arxiv_parity, "git", lambda *a: "")
     monkeypatch.setattr(os.path, "getmtime", lambda p: 1234.0)
     assert arxiv_parity.effective_time("new.md") == 1234.0
+
+
+def test_freshness_compares_content_time_on_both_sides(tmp_path, capsys, monkeypatch):
+    """Regression: the pdf side must be git-corrected like the sources.
+
+    A pdf committed together with its sources has an older working-tree
+    mtime (built before the commit) but equal commit time; the asymmetric
+    raw-mtime comparison reported every package stale after such a commit.
+    """
+    pkg = _write_package(tmp_path)
+    content_times = {}
+    for base, _, files in os.walk(tmp_path):
+        for f in files:
+            content_times[os.path.join(base, f)] = 100.0
+    monkeypatch.setattr(arxiv_parity, "effective_time", lambda p: content_times[p])
+    monkeypatch.setattr(sys, "argv", ["arxiv_parity.py", pkg])
+    with pytest.raises(SystemExit) as exc:
+        arxiv_parity.main()
+    out = capsys.readouterr().out
+    assert exc.value.code == 0
+    assert "freshness  ] PASS" in out
 
 
 # --- end-to-end over a synthetic package ---------------------------------------

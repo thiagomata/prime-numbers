@@ -288,6 +288,23 @@ def extract_md_urls(md):
     )
 
 
+DANGLING_ARTICLE = re.compile(r"\.\s+A(?![ \t]*\n?[ \t]*[A-Za-z{])")
+
+
+def find_dangling_articles(text):
+    """Offsets of sentence-final 'A' left paragraph-final.
+
+    Sentence surgery (the de-drafting pass removed 'A supplementary
+    record ...' pointer sentences) can leave the article behind:
+    'found none. A' at a paragraph end renders as a stray 'A' in the
+    PDF. A legitimate wrapped sentence continues with a word directly
+    after the A (same line or the next line), so it is not flagged;
+    a paragraph genuinely ending in a standalone 'A' (e.g. 'Plan A')
+    would false-positive -- none exists in the current packages.
+    """
+    return [m.start() for m in DANGLING_ARTICLE.finditer(text)]
+
+
 def input_section_paths(main_tex):
     """Ordered unique sections/ paths assembled by main.tex.
 
@@ -366,7 +383,12 @@ def main():
     if not os.path.isfile(pdf):
         check("freshness", False, f"missing {os.path.relpath(pdf)}")
     else:
-        pdf_mtime = os.path.getmtime(pdf)
+        # Same git-corrected content time as the sources: a pdf committed
+        # together with its sources reads as equal commit times even when
+        # its working-tree mtime is older (built before the commit). The
+        # asymmetric raw-mtime comparison failed every package after any
+        # such commit.
+        pdf_mtime = effective_time(pdf)
         stale = [
             f
             for f in [md_path] + tex_files
@@ -423,6 +445,20 @@ def main():
         f"{len(tags)} math labels in tex"
         if not missing_tags_tex
         else f"missing from tex: {missing_tags_tex}",
+    )
+
+    # ---- dangling articles (sentence-surgery tripwire) -----------------
+    dangling = []
+    for f in [md_path] + tex_files:
+        n = len(find_dangling_articles(open(f, encoding="utf-8").read()))
+        if n:
+            dangling.append(f"{os.path.relpath(f)}: {n}")
+    check(
+        "dangling-a",
+        not dangling,
+        "no sentence-final 'A' left by sentence surgery"
+        if not dangling
+        else "possible sentence-surgery leftovers: " + "; ".join(dangling),
     )
 
     # ---- 5. PDF text layer ---------------------------------------------
