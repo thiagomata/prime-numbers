@@ -42,3 +42,4 @@ Branch created; ticket opened. Phase 1.1 in progress.
 
 | Date | Learning | Action |
 |---|---|---|
+| 2026-09-13 | Pattern D (bare §N refs) was ALREADY satisfied — 35/35 in-file refs linked during the post-audit revision. The only bare §s were inside cross-article link labels ("[Gap Dynamics §5.2](url)"), where plain text is correct. A regex sweep without a link-text exclusion corrupted 4 of them into nested links (partial §5 match of §5.2). | Repaired all 4 on retry; verified working tree identical to HEAD; lesson: exclude `\[...\]\(...\)` spans before any ref rewriting, and never rewrite what link labels intentionally contain. |

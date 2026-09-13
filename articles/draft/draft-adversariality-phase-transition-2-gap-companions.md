@@ -26,9 +26,10 @@ This construction separates the number of surviving 2-gaps from their
 location near the head.
 
 A filter's local destruction fraction $f_r$ is compared with the random rate
-$2/r$ through $w_r=rf_r/2$. The cumulative product proves that every fixed
-finite value of $w_r$ preserves square-window 2-gaps and, with the stated
-availability and mixing conditions, produces head 2-gaps infinitely often.
+$2/r$ through $w_r=rf_r/2$. Under the stated blind-placement premise, the cumulative
+product proves that every fixed finite value of $w_r$ preserves
+square-window 2-gaps; with the additional availability and mixing
+conditions, it produces head 2-gaps infinitely often.
 The first boundary occurs when $w_r=1+c\log r$: square windows survive for
 $c < 1$, while head recurrence survives for $c < 1/2$. Under the same spatial
 premises, a separate exact-quota random-location model gives the same local
