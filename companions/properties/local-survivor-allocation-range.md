@@ -25,8 +25,9 @@ At one filter, let
 - `B` be the set of parents assigned harmful (bad) behavior, with `K = |B|`.
 
 Each relevant parent contributes at most one target child (the post-crossover
-geometry for windows shorter than the old period), so the number of target
-children destroyed is
+geometry for windows shorter than the old period). In the endpoint experiment,
+parents outside `B` are protective and preserve their target children. Thus
+the number destroyed is
 
 ```math
 H=|B\cap R|,
@@ -116,8 +117,10 @@ for the companion-process endpoint that exploits this.
 
 ## What This Does And Does Not Say
 
-The bounds hold for the real sieve as well, with `B` equal to the
-CRT-determined set of parents whose copy indices land in the two harmful
-classes. They bound what is achievable by allocation; they do not say which
-endpoint the real arithmetic approaches. That is the open real-sieve question
-framed by the [phase-transition article](../../articles/draft/draft-adversariality-phase-transition-2-gap-companions.md).
+The intersection bounds describe a chosen harmful-label set abstractly. The
+real sieve supplies actual target strikes, not the protective-complement
+experiment above; it therefore does not turn this budget comparison into a
+survivor interval determined by a scheduled share. These bounds describe
+allocation endpoints, not which endpoint real arithmetic approaches. That is
+the open real-sieve question framed by the
+[phase-transition article](../../articles/draft/draft-adversariality-phase-transition-2-gap-companions.md).

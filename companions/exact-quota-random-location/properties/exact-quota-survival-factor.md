@@ -17,8 +17,10 @@ without-replacement draw rather than independent per-parent coin flips).
 
 ## Setup
 
-Let `s_r` be the exact-quota survival factor from
-[the model definition](../model.md), and write the strike fraction as
+Let `s_r` be the exact-quota survival factor from a fresh conditional uniform
+size-`J_r` draw at each filter, given that the specified candidate remains
+eligible. Require `0 <= J_r <= N_r-2` and positive factors through the finite
+prefix. Write the strike fraction as
 `u_r:=J_r/N_r`. Assume that along the conditioned chain to head `Q`,
 
 ```math
@@ -33,7 +35,9 @@ Let `s_r` be the exact-quota survival factor from
 \end{aligned}
 ```
 
-The complete-period CRT benchmark `u_r=1/r` satisfies both conditions. A
+The nonnegative summability condition makes `u_r` eventually small; the
+finite-prefix condition excludes a lethal earlier step. The complete-period
+CRT benchmark `u_r=1/r` satisfies both conditions. A
 different local CRT quota must be checked against them individually;
 preserving a numerical strike count alone does not guarantee they hold.
 
@@ -52,7 +56,7 @@ Multiplying the exact without-replacement factors across the chain gives
 \begin{aligned}
 P_{\mathrm{quota}}(Q)
 &=\prod_{r < Q}s_r
-&&[\text{Survive Every Filter}]\\
+&&[\text{Conditional Probability Chain Rule}]\\
 &=\exp\left(\sum_{r < Q}\log s_r\right)
 &&[\text{Product To Sum}]\\
 &=\exp\left(-2\sum_{r < Q}u_r+O(1)\right)

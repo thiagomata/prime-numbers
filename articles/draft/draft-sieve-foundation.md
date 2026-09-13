@@ -1,7 +1,10 @@
 # Draft: Sieve Foundation Properties
 
 **Status:** Draft. This article is source-backed, but it is not yet part of the
-active article set.
+active article set. The unit-cycle properties of §§2–3 are now also maintained
+in [Formal Verification of Cycle Integral Properties from First
+Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md)
+(§4.6 and Appendix A.17); §§2–3 remain here as the bridge presentation.
 
 **Author:** Mata, T. H.
 Independent Researcher

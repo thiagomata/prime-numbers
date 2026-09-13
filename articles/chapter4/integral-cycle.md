@@ -3,6 +3,7 @@
 **Author:** Thiago Henrique Ramos da Mata
 Independent Researcher  
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)
 
@@ -59,7 +60,7 @@ suitable as a foundation for higher-level numeric reasoning over unbounded lists
 This article verifies:
 
 - Two equivalent definitions: recursive and modulo-based — [§3.1](#31-recursive-cycle-integral)–[3.3](#33-equivalence-of-definitions)
-- Core properties: next position, same difference after cycle, sum of mod values, strictly increasing, positivity — [§4.1](#41-next-position)–[4.5](#45-cycle-integral-positivity)
+- Core properties: next position, same difference after cycle, sum of mod values, strictly increasing, positivity, unit-cycle generation — [§4.1](#41-next-position)–[4.6](#46-unit-cycle-generation-of-consecutive-integers)
 - Persistent and periodic properties: how a fixed cycle integral's residues behave forever, and how it advances across full periods — [§5.1](#51-cycle-period-shifts)–[5.6](#56-cycle-residue-classification)
 - Deriving new cycle integrals: expansion, index shifts, rotation, survivor filtering, and merge-based reconstruction — [§6.1](#61-x-fold-cycle-expansion)–[6.10](#610-filtered-result-has-no-multiples)
 
@@ -298,6 +299,7 @@ The fundamental properties of the cycle integral that hold for every position.
 - Sum of mod values: the modulo definition matches the list sum — [§4.3](#43-sum-of-mod-values-as-list)
 - Strictly increasing: positive base values force a strictly growing integral — [§4.4](#44-cycle-integral-strictly-increasing)
 - Positivity: a non-negative start and positive base values keep the integral positive everywhere — [§4.5](#45-cycle-integral-positivity)
+- Unit-cycle generation: the unit cycle `[1]` enumerates the consecutive integers, strictly increasing — [§4.6](#46-unit-cycle-generation-of-consecutive-integers)
 
 ### 4.1 Next Position
 
@@ -397,6 +399,71 @@ CI_{i-1}>0,\quad CI_i-CI_{i-1}=\text{Cycle}(L)_i>0
 This property is verified in the [
 CycleIntegralProperties::assertCycleIntegralPositive
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
+
+### 4.6 Unit-Cycle Generation of Consecutive Integers
+
+The simplest non-empty cycle is the unit cycle `[1]`: every step adds exactly
+one. Its cycle integral enumerates the consecutive integers starting after
+the initial value — the candidate stream that the prime sieve filters in
+later articles. Because each step contributes exactly one, the integral has
+an exact closed form at every position, and strict increase follows from it
+as the unit-cycle instance of [§4.4](#44-cycle-integral-strictly-increasing).
+
+```math
+\begin{aligned}
+init \geq 0 \implies \text{CycleIntegral}([1], init)_i = init + i + 1
+\end{aligned}
+```
+
+**Proof.** Induction on $i$.
+
+**Base Case** ($i = 0$):
+
+```math
+\begin{aligned}
+\text{Cycle}([1])_0 &= 1 &&\text{[Unit Cycle]} \\
+CI_0 &= init + \text{Cycle}([1])_0 &&\text{[By Definition]} \\
+&= init + 1 &&\text{[Substitution]}
+\end{aligned}
+```
+
+**Induction Step** ($i > 0$):
+
+```math
+\begin{aligned}
+CI_{i-1} &= init + (i-1) + 1 &&\text{[Induction Hypothesis]} \\
+&= init + i &&\text{[Simplification]} \\
+\text{Cycle}([1])_i &= 1 &&\text{[Unit Cycle]} \\
+CI_i &= CI_{i-1} + \text{Cycle}([1])_i &&\text{[Step Property, §3.1]} \\
+&= init + i + 1 &&\text{[Substitution]}
+\end{aligned}
+```
+
+```math
+\therefore \ \forall\, i \in \mathbb{N}_0:\ \text{CycleIntegral}([1], init)_i = init + i + 1 \quad \blacksquare\ \text{[Q.E.D.]}
+```
+
+This property is verified in the [
+CycleIntegralOnesProperties::assertCycleIntegralOfOnes
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). A key Scala verification excerpt is in Appendix A.17; the complete proof is linked in the source reference.
+
+**Strict increase.** For positions $0 \leq a < b$, the closed form gives
+
+```math
+\begin{aligned}
+CI_b - CI_a &= (init + b + 1) - (init + a + 1) &&\text{[Unit-Cycle Closed Form]} \\
+&= b - a &&\text{[Simplification]} \\
+&> 0 &&\text{[Since } b > a\text{]}
+\end{aligned}
+```
+
+```math
+\therefore \ 0 \leq a < b \implies \text{CycleIntegral}([1], init)_b > \text{CycleIntegral}([1], init)_a \quad \blacksquare\ \text{[Q.E.D.]}
+```
+
+This property is verified in the [
+CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). A key Scala verification excerpt is in Appendix A.17.
 
 ## 5. Persistent and Periodic Properties
 
@@ -1280,7 +1347,7 @@ a recursive accumulation over a memory-backed cycle ([§3.1](#31-recursive-cycle
 and **ModCycleIntegral**, a closed-form definition using division and modulo
 ([§3.2](#32-modulo-cycle-integral)).
 
-For both presentations, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of the recursive and modulo definitions, that the integral is strictly increasing under positive base values, and that it stays positive everywhere given a non-negative start.
+For both presentations, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of the recursive and modulo definitions, that the integral is strictly increasing under positive base values, and that it stays positive everywhere given a non-negative start. The core block closes with its simplest instance: the unit cycle $[1]$, whose integral enumerates the consecutive integers $init + i + 1$ in strictly increasing order — the candidate stream that the sieve-sequence articles later filter.
 
 Beyond these core definitions, the article verifies several reusable
 cycle-integral laws. Within a fixed cycle integral: residues are periodic
@@ -1338,6 +1405,13 @@ init \geq 0 \land (\forall x \in L,\ x > 0)
 &\implies
 \text{CycleIntegral}(L, init)_i > 0
 \quad &\text{[Positivity]} \\
+\text{CycleIntegral}([1], init)_i
+&= init + i + 1
+\quad &\text{[Unit-Cycle Generation]} \\
+0 \leq a < b \implies
+\text{CycleIntegral}([1], init)_b
+&> \text{CycleIntegral}([1], init)_a
+\quad &\text{[Unit-Cycle Strict Increase]} \\
 \end{aligned}
 ```
 
@@ -1995,6 +2069,41 @@ def assertFilterMergeComposition(
       survivors, filterValue, maxIndex - 1)
   }
   Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
+}.holds
+```
+
+### A.17 Unit-Cycle Generation — assertCycleIntegralOfOnes, assertCycleIntegralOfOnesStrictlyIncreasing
+
+Source: [CycleIntegralOnesProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala)
+
+```scala
+def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
+  require(pos >= 0)
+  require(init >= 0)
+  val cycle = MemCycle(stainless.collection.List(BigInt(1)))
+  val ci = CycleIntegral(init, cycle)
+  decreases(pos)
+  if (pos == 0) {
+    ci(0) == init + BigInt(1)
+  } else {
+    assert(assertCycleIntegralOfOnes(init, pos - 1))
+    ci(pos) == init + pos + BigInt(1)
+  }
+}.holds
+
+def assertCycleIntegralOfOnesStrictlyIncreasing(
+  init: BigInt,
+  a: BigInt,
+  b: BigInt
+): Boolean = {
+  require(a >= 0)
+  require(b > a)
+  require(init >= 0)
+  val cycle = MemCycle(stainless.collection.List(BigInt(1)))
+  val ci = CycleIntegral(init, cycle)
+  assert(assertCycleIntegralOfOnes(init, a))
+  assert(assertCycleIntegralOfOnes(init, b))
+  ci(b) > ci(a)
 }.holds
 ```
 

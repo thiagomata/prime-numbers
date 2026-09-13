@@ -17,7 +17,10 @@ worsening factor grows with `r`, treated in
 
 ## Setup
 
-Builds on the [Cumulative Local Hazard Law](cumulative-local-hazard-law.md).
+Builds on the [Cumulative Local Hazard Law](cumulative-local-hazard-law.md),
+including its conditional-hazard definition, common candidate marginals,
+blind-placement bound, and precise head-mixing premise. Filters start at a
+fixed prime cutoff at least 5; every finite-prefix survival factor is positive.
 Let `w >= 0` be fixed and suppose `f_r = 2w/r` for all sufficiently large
 filters on the tracked chain. A finite prefix is absorbed into a positive
 constant.
@@ -71,6 +74,7 @@ Hence there is no finite constant-factor maximum worse than random. $\blacksquar
 ## What This Does And Does Not Say
 
 The threshold for nontrivial failure is not any finite `w`. It appears only
-when `w_r` grows with `r`; the first such growth rate that changes the
-conclusion is logarithmic. See
+when `w_r` grows on the logarithmic scale studied here. Slower unbounded
+growth can change survival asymptotics without changing these persistence
+conclusions. See
 [Logarithmic-Worsening Thresholds](logarithmic-worsening-thresholds.md).

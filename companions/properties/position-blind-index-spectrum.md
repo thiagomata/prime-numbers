@@ -1,10 +1,10 @@
 # Position-Blind Index Spectrum
 
-**Status:** Mathematically proved finite-probability fact. Holds for **any**
-uniformly random size-`K` subset of a population of size `N`, and therefore
-for any position-blind allocator read in the population's own index
-coordinates: the exact-quota companion's uniform draw without replacement,
-and (by independence, separately) per-parent Bernoulli coins. Like the
+**Status:** Mathematically proved finite-probability fact. Holds for a
+uniformly random size-`K` subset of a population of size `N>=2`. It applies to
+the exact-quota companion's uniform draw without replacement. Independent
+Bernoulli coins require a common inclusion parameter for the separate flat
+expectation. Like the
 [Local Survivor Allocation Range](local-survivor-allocation-range.md), this
 property requires no companion-process premise beyond position-blind
 placement; it is the null model for spectral placement comparisons against
@@ -12,12 +12,13 @@ the real sieve's CRT-determined strikes.
 
 ## Meaning
 
-When a filter's strikes are placed without any information about position,
+When a filter's strikes are exchangeable in the population's index
+coordinates,
 the expected power spectrum of the strike indicator along the population's
 own index axis is exactly flat beyond the zero frequency. Deterministic
-structured placement is the opposite extreme: an arithmetic placement
-concentrates all of its power into a small family of frequencies. This
-separation is the reference point for asking, frequency by frequency,
+placement can instead have non-flat, structured spectra; subgroup and coset
+placements give an extreme sparse-support example below. This separation is
+the reference point for asking, frequency by frequency,
 whether the real sieve's strike placement resembles a position-blind
 allocator or a structured one.
 
@@ -29,7 +30,7 @@ null band, not the mean alone.
 ## Setup
 
 Let `S` be a uniformly random subset of `Z/NZ` with `|S|=K` fixed,
-`1<=K<=N`. For a frequency `k` with `k mod N != 0`, let
+`1<=K<=N` and `N>=2`. For a frequency `k` with `k mod N != 0`, let
 
 ```math
 X_k=\sum_{i\in S}\chi_k(i),
@@ -76,29 +77,29 @@ The value is independent of `k`: for every nonzero frequency,
 \qquad[\text{Q.E.D.}]
 ```
 
-With `delta=K/N`, the normalized power is
+For independent Bernoulli inclusion with one common parameter `delta`, the
+same calculation instead gives `E|X_k|^2=N delta(1-delta)`. With
+`delta=K/N`, the fixed-quota normalized power is
 `delta(1-delta)N/(N-1)`, so the expected spectrum is flat at the
 Bernoulli-variance level up to the finite-population factor `N/(N-1)`.
 
 ## Deterministic Contrast
 
 Flatness is a property of position-blind placement, not of indicator
-supports in general. If `K` divides `N` and `S` is the subgroup (or a
+supports in general. If `K` divides `N` and `S` is a subgroup `H` (or a
 coset) of index `N/K`, then
 
 ```math
 X_k=
 \begin{cases}
-K\chi_k(i_0),&\chi_k\text{ trivial on }S,\\
+K\chi_k(i_0),&\chi_k\text{ trivial on }H,\\
 0,&\text{otherwise},
 \end{cases}
 ```
 
-so all power sits in the dual subgroup: a Dirac concentration at the
-opposite extreme of the flat law. A rotation-coded placement of strike
-indices places its power on the associated rotation frequency and its
-harmonics. Measured spectra can therefore distinguish placement families
-even when every family has the same strike count.
+so all power sits in the dual subgroup in this example. Measured spectra can
+therefore distinguish placement families even when every family has the same
+strike count.
 
 ## Coordinate Contract
 
@@ -106,9 +107,9 @@ The flatness claim is made in the **index coordinates** of the population
 axis (`0..N-1` along the sequence's own enumeration). Two established
 results warn against reading it in other coordinates:
 
-- In raw integer coordinates, both position-blind and CRT placements inherit
-  the wheel-comb lines of the index-to-value map, so spectra there are never
-  flat regardless of placement policy.
+- In raw integer coordinates, the index-to-value map can imprint wheel-comb
+  structure on both position-blind and CRT placements. The index-coordinate
+  flat law therefore does not transfer automatically to raw coordinates.
 - By the [short-interval localization property](
   ../../properties/sieve-sequence/short-interval-localization-destroys-prime-conductor-decay.md),
   any indicator supported on a short interval concentrates the exact

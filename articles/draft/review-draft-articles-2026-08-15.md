@@ -400,8 +400,10 @@ refutation of scalar-density Type-II orthogonality.
 
 **Summary.** The set's centerpiece: balanced companion processes preserving
 the exact `r−2` descendant count while relocating the two deletions (random /
-protective / adversarial / mixtures / exact-quota / biased-quota). Proves
-allocation-independent global persistence, the cumulative hazard law
+protective / adversarial / mixtures). It also studies separate exact-quota and
+biased-quota random-location models, which fix a strike count but do not impose
+two losses per parent. It proves allocation-independent global persistence for
+the balanced models, the cumulative hazard law
 `P(Q) = e^{−D(Q)}`, the fixed-w survival class, and the two logarithmic
 frontiers (square-window at `c < 1`, head recurrence at `c < 1/2`), plus a
 finite allocation theorem, targeting normalization, and an empirical §8.1

@@ -13,11 +13,12 @@ threshold `c=2` for the square window, unlike the reciprocal-decay family.
 
 ## Setup
 
-Suppose `alpha_r ~ c\log r/r` for fixed `c>0`, in the position-blind
+Suppose `alpha_r = c\log r/r` exactly for sufficiently large primes and fixed
+`c>0`, in the position-blind
 adversarial/random mixture of
 [Bad/Random Square-Window Boundary](bad-random-square-window-boundary.md).
 (For a finite initial prefix the shares must be defined separately so they
-remain in `[0,1]`; this changes only the final constant, not the asymptotic
+remain in `[0,1)`; this changes only the positive final constant, not the asymptotic
 tail below.)
 
 ## Property
@@ -25,9 +26,9 @@ tail below.)
 ```math
 \begin{aligned}
 A(Q)
-&\sim c\sum_{r < Q}\frac{\log r}{r}
-&&[-\log(1-x)\sim x]\\
-&\sim c\log Q.
+&=c\sum_{r < Q}\frac{\log r}{r}+O(1)
+&&[\text{Taylor Expansion; Summable Error}]\\
+&=c\log Q+O(1).
 &&[\text{Prime Number Theorem By Partial Summation}]
 \end{aligned}
 ```
@@ -57,6 +58,14 @@ summable and every sufficiently large square window is nonempty almost
 surely under the spatial-uniformity premise.
 
 ## What This Does And Does Not Say
+
+The boundary conclusions use the bounded remainder, not just
+`alpha_r ~ c log r/r`. The latter gives `A(Q)=c log Q+o(log Q)` and leaves
+critical cases undecided. For example, at `c=2`, the valid eventual schedule
+`alpha_r=(2 log r-4 log log r)/r` still has that asymptotic equivalent, but
+`A(Q)=2 log Q-2(log log Q)^2+O(1)`; its window expectation diverges instead
+of tending to zero. It does not follow that these slower-growing expectations
+give eventual occupancy; their empty-window bound must still be summable.
 
 This is the same schedule family whose head-recurrence behavior is studied
 in [Bad/Random Head Boundary](bad-random-head-boundary.md), where the

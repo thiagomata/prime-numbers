@@ -23,7 +23,7 @@ Suppose one fixed share `0 < alpha < 1` is adversarial at every filter.
 ```math
 \begin{aligned}
 A(Q)
-&=-\pi(Q)\log(1-\alpha)
+&=-\bigl(\pi(Q)+O(1)\bigr)\log(1-\alpha)
 &&[\text{Constant Share}]\\
 &\asymp
 \bigl[-\log(1-\alpha)\bigr]\frac{Q}{\log Q}.

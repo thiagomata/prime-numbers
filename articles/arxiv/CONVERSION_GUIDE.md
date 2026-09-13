@@ -267,6 +267,12 @@ These are the rules the author's visual review enforced:
   silently weakening a theorem statement. Grep for each distinct quantifier
   row (for example `\forall\, a, b, c \in \mathbb{Z} : b \neq 0`) and match
   its Markdown counterpart one by one.
+  This pass is machine-enforced by `just arxiv-parity <article>`
+  (`python/tools/arxiv_parity.py`, tested by `python/tests/test_arxiv_parity.py`):
+  bidirectional heading parity, verified-name
+  presence in tex and PDF text, math-label presence, PDF freshness vs
+  sources. Per-package intentional URL substitutions go in the package's
+  `.parity-skip` file (one per line) so warnings stay actionable.
 
 ## 6. Conversion Checklist for the Next Article
 

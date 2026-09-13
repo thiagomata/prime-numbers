@@ -44,7 +44,7 @@ Under adequate cross-layer mixing, the second Borel-Cantelli lemma gives
 H_Q\text{ occurs infinitely often almost surely}.
 ```
 
-For `alpha_r ~ c/r` ([Reciprocal-Decay Specialization](
+For the exact eventual schedule `alpha_r = c/r` ([Reciprocal-Decay Specialization](
 reciprocal-decay-specialization.md)),
 
 ```math
@@ -55,7 +55,7 @@ and the sum over prime `Q` diverges for every fixed `c`. Reciprocal decay is
 therefore compatible with infinitely many head events under mixing, for
 every finite decay rate.
 
-For `alpha_r ~ c\log r/r` ([Log-Over-Linear Decay Specialization](
+For the exact eventual schedule `alpha_r = c\log r/r` ([Log-Over-Linear Decay Specialization](
 log-over-linear-decay-specialization.md)),
 
 ```math

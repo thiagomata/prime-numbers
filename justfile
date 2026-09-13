@@ -358,6 +358,10 @@ spark-cat stage="1" file="gaps":
 # articles/arxiv/, `just arxiv-pdf modulo` builds one. The PDF is written to
 # articles/arxiv/<article>/output/pdf/<article>.pdf; auxiliary LaTeX files
 # stay in a per-article scratch dir under $TMPDIR (outside the repository).
+# The recipe enforces the zero-warning gate of
+# articles/arxiv/CONVERSION_GUIDE.md: it fails (exit 1) when the compile log
+# contains Warning/Error/Overfull/Underfull/undefined/Missing, printing the
+# offending lines so the log never needs to be inspected by hand.
 arxiv-pdf article="":
     #!/usr/bin/env bash
     set -euo pipefail
@@ -378,7 +382,42 @@ arxiv-pdf article="":
       # probes with \IfFileExists, so a newly added section file would
       # otherwise be silently missed in the persistent build directory.
       (cd "$dir" && latexmk -g -pdf -interaction=nonstopmode -halt-on-error -outdir="$build" main.tex)
+      # Zero-warning gate: a red build is a non-green state (rule arxiv-sync).
+      if grep -qE "Warning|Error|Overfull|Underfull|undefined|Missing" "$build/main.log"; then
+        echo "ERROR: compile log for $name is not clean:" >&2
+        grep -nE "Warning|Error|Overfull|Underfull|undefined|Missing" "$build/main.log" >&2
+        echo "(full log: $build/main.log)" >&2
+        exit 1
+      fi
       mkdir -p "$dir/output/pdf"
       cp "$build/main.pdf" "$dir/output/pdf/$name.pdf"
       echo "Built $dir/output/pdf/$name.pdf"
     done
+
+# Parity check (rule arxiv-sync): verify the arXiv LaTeX package AND the
+# built PDF are in sync with the Markdown source article. `just
+# arxiv-parity integral-cycle` checks one article; `just arxiv-parity`
+# checks every article. Fails (exit 1) on: stale PDF (a source is newer),
+# any Markdown heading missing from (or extra in) the .tex sections, any
+# verified-function name or math label missing from the .tex, or any
+# verified-function name missing from the PDF text layer. URLs and PDF
+# math labels are reported as warnings (per-article substitutions exist).
+arxiv-parity article="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base="{{justfile_directory()}}/articles/arxiv"
+    if [[ -n "{{article}}" ]]; then
+      dirs=("$base/{{article}}")
+    else
+      dirs=("$base"/*/)
+    fi
+    status=0
+    for dir in "${dirs[@]}"; do
+      if [[ ! -f "$dir/main.tex" ]]; then
+        continue
+      fi
+      if ! python3 "{{justfile_directory()}}/python/tools/arxiv_parity.py" "$dir"; then
+        status=1
+      fi
+    done
+    exit $status
