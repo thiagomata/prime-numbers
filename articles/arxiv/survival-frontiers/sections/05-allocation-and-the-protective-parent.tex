@@ -1,0 +1,289 @@
+\section{Allocation and the Protective Parent}
+\subsection{The Same Adversarial Percentage Can Produce Different Outcomes}
+This property is a capacity comparison. Suppose $K$ parents may use the adversarial policy and $L$ parents contribute a child to the target window. A target-aware allocator can clear the window exactly when its budget covers all the relevant parents:
+\begin{equation*}
+K\ge L.
+\end{equation*}
+For a fixed adversarial share $\alpha=K/N>0$, if the relevant fraction $L/N\longrightarrow0$, then eventually
+\begin{equation*}
+\alpha\ge\frac LN,
+\end{equation*}
+which is the same condition as $K\ge L$. Thus a fixed adversarial percentage may be enough to suppress the head early and, after the target population becomes sparse enough, remove every 2-gap from the tracked window. The result depends on allocation: a position-blind allocator with the same percentage does not automatically select all $L$ relevant parents.
+We now derive the complete finite range. The target window is shorter than the old period, so each parent contributes at most one child to it. Let
+- $N$ be the total number of parents; - $R$ be the set of parents with a child in target region $W$; - $L=|R|$; - $\mathcal A$ be the set of adversarial parents; and - $K=|\mathcal A|$.
+In this allocation experiment every parent outside $\mathcal A$ is protective: it preserves its target child. Thus the only target losses come from adversarial parents. A random complement would add further losses and would not satisfy the following survivor identity. The number destroyed is
+\begin{equation*}
+H=|\mathcal A\cap R|,
+\end{equation*}
+and the number surviving is
+\begin{equation*}
+S=L-H.
+\end{equation*}
+The intersection size obeys the sharp bounds
+\begin{equation*}
+\begin{aligned}
+H
+&\le\min(K,L)
+&&[\text{Intersection Cannot Exceed Either Set}],\\
+H
+&\ge\max(0,K-(N-L))
+&&[\text{Only }N-L\text{ Irrelevant Parents Exist}].
+\end{aligned}
+\end{equation*}
+Substituting into $S=L-H$ gives
+\begin{equation*}
+\max(0,L-K)
+\le S\le
+\min(L,N-K).
+\end{equation*}
+Both endpoints are attainable. A target-aware allocator spends its budget on $R$ first:
+\begin{equation*}
+S_{\mathrm{targeted}}=\max(0,L-K).
+\end{equation*}
+A protective allocator spends the same budget on the $N-L$ irrelevant parents first:
+\begin{equation*}
+S_{\mathrm{protective}}=\min(L,N-K).
+\end{equation*}
+Between these endpoints, a position-blind allocator chooses a uniformly random size-$K$ subset of the $N$ parents. Then
+\begin{equation*}
+H\sim\text{Hypergeometric}(N,L,K)
+\end{equation*}
+and
+\begin{equation*}
+\begin{aligned}
+\mathbb E[H]&=\frac{KL}{N},\\
+\mathbb E[S]&=L\left(1-\frac KN\right).
+\end{aligned}
+\end{equation*}
+When $K\ge L$, the exact probability of total local destruction is
+\begin{equation*}
+\Pr(S=0)
+=
+\frac{\binom{N-L}{K-L}}{\binom NK}
+=
+\frac{\binom KL}{\binom NL}.
+\end{equation*}
+Thus the same budget can produce complete protection, average proportional loss, or total local destruction. In particular,
+\begin{equation*}
+S_{\mathrm{targeted}}=0
+\Longleftrightarrow
+K\ge L
+\Longleftrightarrow
+\alpha\ge\frac LN.
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+The three scales should not be confused. At the head, $L=1$, so one correctly allocated adversarial parent kills the current head candidate. In a sparse tracked window, a fixed share clears the whole window once $K\ge L$. Neither statement erases the complete-period 2-gap population: every targeted parent still leaves $r-2$ other descendants outside the target, so the global recurrence from Section~3.1 continues to grow. Preventing future head or window 2-gaps therefore requires the allocator to repeat the targeted choice at later filters.
+The complete finite proof appears in Appendix~A.6.
+\subsection{The Protective Parent Policy}
+The protective parent policy is the local opposite of the adversarial parent policy. It preserves a parent's target child whenever the exact-two deletion rule permits that choice. It does not create extra descendants and cannot change the global recurrence.
+For parent $g$, let $T_g(W)$ be the indices of its children in target region $W$. In the post-crossover regime,
+\begin{equation*}
+|T_g(W)|\le1.
+\end{equation*}
+Because $r\ge5$, at least $r-1\ge4$ child indices lie outside $T_g(W)$. The protective parent policy may therefore choose a harmful pair
+\begin{equation*}
+K_{g,r}^{\mathrm{protective}}
+\subseteq
+(\mathbb Z/r\mathbb Z)\setminus T_g(W),
+\qquad
+|K_{g,r}^{\mathrm{protective}}|=2.
+\end{equation*}
+The adversarial parent policy instead chooses a pair containing the target index whenever $T_g(W)$ is nonempty. Both policies remove exactly two children, so both leave $r-2$ descendants globally. Their only difference is local placement:
+\begin{equation*}
+\begin{aligned}
+T_g(W)\ne\varnothing
+&\Longrightarrow
+\text{the protective parent preserves the target child},\\
+T_g(W)\ne\varnothing
+&\Longrightarrow
+\text{the adversarial parent destroys the target child}.
+\end{aligned}
+\end{equation*}
+The protective parent is an oracle comparison, not a plausible random filter. It is allowed to see the chosen target and place its two deletions elsewhere. Its purpose is to define the protective endpoint of the same balanced family in which the adversarial parent defines the pessimistic endpoint.
+\subsection{Fixed-Cohort Survival Under Adversarial/Protective Parent Mixing}
+We next alternate the two target-aware endpoint policies without letting the allocator inspect current positions. Consider $N_0$ locally relevant lineages from distinct initial parents, following one target child per parent through the chain. These histories do not share subsequent parents. At filter $r$, every surviving lineage independently becomes an adversarial parent with probability $\alpha_r$ or a protective parent with probability $1-\alpha_r$. The adversarial policy destroys its target child; the protective policy preserves it. The calculation changes if the allocator may first observe which parents are locally relevant.
+One lineage survives the complete chain with probability
+\begin{equation*}
+\begin{aligned}
+P_Q
+&=\prod_{r < Q}(1-\alpha_r)
+&&[\text{Survive Every Independent Filter Label}]\\
+&=e^{-A(Q)}.
+&&[\text{Definition Of }A(Q)]
+\end{aligned}
+\end{equation*}
+Independence between parent lineages then gives
+\begin{equation*}
+X_Q\sim\text{Binomial}(N_0,P_Q),
+\end{equation*}
+so
+\begin{equation*}
+\begin{aligned}
+\mathbb E[X_Q]&=N_0e^{-A(Q)},\\
+\Pr(X_Q > 0)&=1-\left(1-e^{-A(Q)}\right)^{N_0}.
+\end{aligned}
+\end{equation*}
+For one filter this reduces to
+\begin{equation*}
+X_{k+1}\mid X_k=N
+\sim
+\text{Binomial}(N,1-\alpha_r),
+\end{equation*}
+with immediate wipeout probability $\alpha_r^N$. Population redundancy is therefore useful under blind parent assignment: every relevant lineage must become an adversarial parent in the same transition to erase the cohort.
+If $\alpha_r=\alpha > 0$ is constant, then
+\begin{equation*}
+P_Q=(1-\alpha)^{\pi(Q)+O(1)}\longrightarrow0.
+\end{equation*}
+Every one of the finite $N_0$ lineages eventually becomes an adversarial parent with probability one. Hence the fixed cohort becomes extinct almost surely even though every lineage continues to have $r-2$ descendants elsewhere in the complete period.
+Compared with the adversarial/random mixture, the adversarial/protective law removes the random factor $1-2/r$:
+\begin{equation*}
+\begin{aligned}
+s_r^{\mathrm{adversarial/random}}
+&=(1-\alpha_r)\left(1-\frac2r\right),\\
+s_r^{\mathrm{adversarial/protective}}
+&=1-\alpha_r.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+This improvement is local. It does not overcome a fixed positive adversarial share repeated through infinitely many filters.
+\subsection{Growing Square Windows Under Adversarial/Protective Parent Mixing}
+The protective policy removes the balanced-random density penalty by preserving every eligible target child. Suppose the fully protective model supplies $B(Q)\asymp C_0Q^2$ eligible lineages in the square window, while each history has the conditional survival law $e^{-A(Q)}$. The cumulative adversarial-label probability is then the only marginal local loss.
+From Section~5.3, each of the $B(Q)$ eligible lineages survives with probability $e^{-A(Q)}$. If their complete target histories are independent, then
+\begin{equation*}
+X_Q^{\mathrm{adversarial/protective}}
+\sim
+\text{Binomial}\left(B(Q),e^{-A(Q)}\right)
+\end{equation*}
+and
+\begin{equation*}
+\begin{aligned}
+\lambda_Q^{\mathrm{adversarial/protective}}
+&:=\mathbb E[X_Q^{\mathrm{adversarial/protective}}]\\
+&=B(Q)e^{-A(Q)}\\
+&\asymp C_0Q^2e^{-A(Q)}.
+\end{aligned}
+\end{equation*}
+Under this additional independence hypothesis, the empty-window probability satisfies
+\begin{equation*}
+\begin{aligned}
+\Pr(X_Q^{\mathrm{adversarial/protective}}=0)
+&=\left(1-e^{-A(Q)}\right)^{B(Q)}\\
+&\le e^{-\lambda_Q^{\mathrm{adversarial/protective}}}.
+&&[1-x\le e^{-x}]
+\end{aligned}
+\end{equation*}
+Independent labels at individual parents do not establish independence of terminal histories that share ancestors. The binomial model here is an additional local experiment, not a consequence of balanced branching alone. For the occupancy conclusions below it suffices instead to assume the blind-placement bound $\Pr(X_Q=0)\le e^{-\lambda_Q}$ directly; the expectation formula uses only the marginal survival law.
+Taking logarithms gives the phase boundary
+\begin{equation*}
+\log\lambda_Q^{\mathrm{adversarial/protective}}
+=2\log Q-A(Q)+O(1).
+\end{equation*}
+Hence, for every fixed $\varepsilon > 0$,
+\begin{equation*}
+\begin{aligned}
+A(Q)\le(2-\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{adversarial/protective}}\longrightarrow\infty,\\
+A(Q)\ge(2+\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{adversarial/protective}}\longrightarrow0.
+\end{aligned}
+\end{equation*}
+In the first regime the expectation grows polynomially, the empty-window probabilities are summable, and the first Borel-Cantelli lemma gives only finitely many empty square windows almost surely.
+For the representative schedule
+\begin{equation*}
+\alpha_r= c\frac{\log r}{r},
+\end{equation*}
+we have $A(Q)=c\log Q+O(1)$ and therefore
+\begin{equation*}
+\lambda_Q^{\mathrm{adversarial/protective}}\asymp C_0Q^{2-c}.
+\end{equation*}
+Thus
+\begin{equation*}
+\begin{aligned}
+c < 2
+&\Longrightarrow
+\text{eventually nonempty square windows almost surely},\\
+c=2
+&\Longrightarrow
+\text{critical order-one expected population},\\
+c > 2
+&\Longrightarrow
+\text{expected population tends to zero}.
+\end{aligned}
+\end{equation*}
+The leading threshold $c=2$ matches the adversarial/random companion, but the boundary term differs:
+\begin{equation*}
+\begin{aligned}
+\lambda_Q^{\mathrm{adversarial/random}}
+&\asymp C\frac{Q^{2-c}}{(\log Q)^2},\\
+\lambda_Q^{\mathrm{adversarial/protective}}
+&\asymp C_0Q^{2-c}.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+At $c=2$, the random mixture tends to zero while the protective mixture retains only an order-one expectation, still insufficient for eventual almost-sure nonemptiness.
+\subsection{Head Recurrence Under Adversarial/Protective Parent Mixing}
+At the head, the protective policy can preserve an eligible lineage but cannot create one. Let $b_Q$ be its availability probability and suppose $b_Q\ge b > 0$ for all sufficiently large $Q$. Conditional on availability, the lineage must avoid every adversarial assignment in its chain. Independence or adequate weak mixing between head events then supplies the recurrence step.
+\begin{equation*}
+\Pr(H_Q)=b_Qe^{-A(Q)}.
+\end{equation*}
+The lower bound on $b_Q$ makes the recurrence criterion equivalent, up to positive constants, to
+\begin{equation*}
+\sum_{Q\text{ prime}}e^{-A(Q)}.
+\end{equation*}
+Under adequate cross-layer mixing, the second Borel-Cantelli lemma gives
+\begin{equation*}
+\sum_{Q\text{ prime}}e^{-A(Q)}=\infty
+\Longrightarrow
+H_Q\text{ occurs infinitely often almost surely}.
+\end{equation*}
+If the series converges, the first Borel-Cantelli lemma gives only finitely many head events almost surely without any independence premise.
+For
+\begin{equation*}
+\alpha_r= c\frac{\log r}{r},
+\end{equation*}
+we have $e^{-A(Q)}\asymp Q^{-c}$. The prime-head series therefore behaves like
+\begin{equation*}
+\sum_{Q\text{ prime}}\frac1{Q^c}.
+\end{equation*}
+The prime harmonic series diverges at $c=1$, while the series converges for $c > 1$. Hence
+\begin{equation*}
+\begin{aligned}
+c\le1
+&\Longrightarrow
+\text{infinitely many head events almost surely, with mixing},\\
+c > 1
+&\Longrightarrow
+\text{only finitely many head events almost surely}.
+\end{aligned}
+\end{equation*}
+The boundary differs from adversarial/random mixing. There the balanced-random head density contributes $(\log Q)^{-2}$:
+\begin{equation*}
+\begin{aligned}
+\Pr(H_Q^{\mathrm{adversarial/random}})
+&\asymp\frac1{Q^c(\log Q)^2},\\
+\Pr(H_Q^{\mathrm{adversarial/protective}})
+&\asymp\frac{b_Q}{Q^c}.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+At $c=1$, the adversarial/random prime series converges, while the adversarial/protective series diverges. Thus the protective parent policy changes the inclusion of the critical boundary, even though both mixtures have the same leading threshold scale.
+For the gentler schedule $\alpha_r= c/r$, the occurrence probability is comparable to $(\log Q)^{-c}$ and the sum over prime heads diverges for every fixed finite $c$.
+\subsection{Parent-Mixture Comparison}
+Under their respective spatial premises, the two position-blind mixtures have the following asymptotic behavior:
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.185\textwidth}>{\raggedright\arraybackslash}p{0.185\textwidth}>{\raggedright\arraybackslash}p{0.185\textwidth}>{\raggedright\arraybackslash}p{0.185\textwidth}@{}}
+\toprule
+Adversarial schedule & Adversarial/\allowbreak random square window & Adversarial/\allowbreak protective square window & Adversarial/\allowbreak random head & Adversarial/\allowbreak protective head \\
+\midrule
+Fixed $\alpha > 0$ & Expectation tends to zero & Expectation tends to zero & Finitely many almost surely & Finitely many almost surely \\
+$\alpha_r= c/r$ & Eventually nonempty almost surely & Eventually nonempty almost surely & Infinite with mixing & Infinite with mixing \\
+$\alpha_r= c\log r/r$, $c < 1$ & Eventually nonempty almost surely & Eventually nonempty almost surely & Infinite with mixing & Infinite with mixing \\
+$\alpha_r= c\log r/r$, $c=1$ & Eventually nonempty almost surely & Eventually nonempty almost surely & Finitely many almost surely & Infinite with mixing \\
+$\alpha_r= c\log r/r$, $1 < c < 2$ & Eventually nonempty almost surely & Eventually nonempty almost surely & Finitely many almost surely & Finitely many almost surely \\
+$\alpha_r= c\log r/r$, $c=2$ & Expectation tends to zero & Order-one expectation & Finitely many almost surely & Finitely many almost surely \\
+$\alpha_r= c\log r/r$, $c > 2$ & Expectation tends to zero & Expectation tends to zero & Finitely many almost surely & Finitely many almost surely \\
+\bottomrule
+\end{longtable}
+The protective parent policy removes the balanced-random $(\log Q)^{-2}$ loss. This does not change the leading square-window threshold $c=2$, because the quadratic window dominates logarithmic factors away from the boundary. It does change the boundary behavior and, most visibly, includes $c=1$ on the recurrent side of the head transition.
+Every entry assumes position-blind adversarial labels. A target-aware allocator is governed by Section~5.1 instead and may erase the head with one correctly placed adversarial label regardless of this table's percentage regime.

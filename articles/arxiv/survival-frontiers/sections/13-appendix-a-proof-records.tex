@@ -1,0 +1,241 @@
+\section{Appendix A. Selected Companion Proof Records}
+The body develops every result in its mathematical context. This appendix collects six core companion-process proof records with their premises and conclusions; it is a selected reference, not a complete catalog of the body.
+\subsection{Global Persistence Is Independent of Allocation}
+Once the initial population is nonzero, this result is unconditional with respect to allocation inside every balanced companion. Let $N_k=|\mathcal G_k|$ be the complete-period 2-gap population before installing prime $r_k$, with $N_0>0$. Every parent produces $r_k$ copies and loses exactly two, regardless of where those two removals occur. Therefore
+\begin{equation*}
+\begin{aligned}
+N_{k+1}
+&=\sum_{g\in\mathcal G_k}(r_k-2)
+&&[\text{Exactly Two Copies Removed Per Parent}]\\
+&=(r_k-2)N_k.
+&&[\text{Simplification}]
+\end{aligned}
+\end{equation*}
+Iterating the recurrence gives
+\begin{equation*}
+\begin{aligned}
+N_k
+&=N_0\prod_{i < k}(r_i-2)
+&&[\text{Iteration}]\\
+&>0
+&&[N_0>0;\ r_i\ge5]\\
+&\longrightarrow\infty.
+&&[\text{Every Factor Is At Least }3]
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+Thus allocation may eliminate 2-gaps from the head or a tracked window, but it cannot exhaust the complete-period population while the exact-two removal rule is preserved.
+\subsection{Cumulative Local-Hazard Law}
+Follow one initially eligible candidate through successive filters. Let $f_r$ be its conditional destruction probability given earlier survival and initial eligibility, and assume $0\le f_r < 1$. Define
+\begin{equation*}
+w_r:=\frac{rf_r}{2},
+\qquad
+D(Q):=\sum_{r < Q}-\log(1-f_r).
+\end{equation*}
+The conditional survival factors multiply by the probability chain rule, without requiring independent filter events:
+\begin{equation*}
+\begin{aligned}
+P(Q)
+&=\prod_{r < Q}(1-f_r)
+&&[\text{Survive Every Filter}]\\
+&=\exp\left(\sum_{r < Q}\log(1-f_r)\right)
+&&[\text{Product To Sum}]\\
+&=e^{-D(Q)}.
+&&[\text{Definition Of }D(Q)]
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+For the random benchmark $w_r=1$, the prime harmonic sum gives
+\begin{equation*}
+\begin{aligned}
+D_{\mathrm{random}}(Q)
+&=\sum_{r < Q}-\log\left(1-\frac2r\right)\\
+&=2\log\log Q+O(1),\\
+P_{\mathrm{random}}(Q)
+&\asymp\frac{C}{(\log Q)^2}.
+\end{aligned}
+\end{equation*}
+This identity determines the candidate's survival probability from its conditional hazards. For a fixed nested finite cohort, the analogous product of observed fractions gives its final-to-initial size ratio. Neither version supplies window abundance, head availability, or cross-layer mixing. A lethal step eliminates the tracked candidate or cohort, not every later candidate.
+\subsection{Every Fixed Finite Worsening Factor Survives}
+Let $w\ge0$ be fixed and suppose $f_r=2w/r$ for all sufficiently large filters. A finite prefix changes only the positive leading constant. Since the quadratic Taylor remainder is summable over primes, Appendix A.2 gives
+\begin{equation*}
+\begin{aligned}
+D_w(Q)
+&=\sum_{r < Q}-\log\left(1-\frac{2w}{r}\right)
+&&[\text{Definition Of }D(Q)]\\
+&=2w\sum_{r < Q}\frac1r+O(1)
+&&[\text{Taylor Expansion; Summable Remainder}]\\
+&=2w\log\log Q+O(1).
+&&[\text{Prime Harmonic Sum}]
+\end{aligned}
+\end{equation*}
+Therefore
+\begin{equation*}
+P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
+\end{equation*}
+Assume first that a square window supplies $B(Q)\asymp C_0Q^2$ eligible lineages and that their placement satisfies the blind empty-window bound. Its expected surviving population is
+\begin{equation*}
+\lambda_w(Q)
+\asymp
+C_0\frac{Q^2}{(\log Q)^{2w}}
+\longrightarrow\infty.
+\end{equation*}
+This polynomial growth makes the empty-window probabilities summable, so only finitely many square windows are empty almost surely. For a distinguished head whose baseline availability is bounded below,
+\begin{equation*}
+\Pr(H_Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
+\end{equation*}
+The sum over prime heads diverges for every finite $w$. With adequate cross-layer mixing, head 2-gaps therefore recur infinitely often almost surely. Hence there is no finite constant-factor maximum worse than random. $\blacksquare$
+\subsection{Logarithmically Growing Worsening Has Two Thresholds}
+Retain the supply, availability, placement, and mixing premises of Appendix A.3, and set
+\begin{equation*}
+w_r=1+c\log r,
+\qquad c\ge0.
+\end{equation*}
+Then $f_r=2/r+2c\log r/r$. Prime summation and the summable Taylor remainder give
+\begin{equation*}
+\begin{aligned}
+D_c(Q)
+&=\sum_{r < Q}-\log(1-f_r)
+&&[\text{Definition Of }D(Q)]\\
+&=2\sum_{r < Q}\frac1r
++2c\sum_{r < Q}\frac{\log r}{r}+O(1)
+&&[\text{Substitution; Summable Remainder}]\\
+&=2\log\log Q+2c\log Q+O(1).
+&&[\text{Prime-Sum Asymptotics}]
+\end{aligned}
+\end{equation*}
+Consequently,
+\begin{equation*}
+P_c(Q)
+\asymp
+\frac{C_c}{Q^{2c}(\log Q)^2}.
+\end{equation*}
+For a quadratic square-window supply,
+\begin{equation*}
+\lambda_c(Q)
+\asymp
+C_0\frac{Q^{2-2c}}{(\log Q)^2}.
+\end{equation*}
+Thus $c < 1$ gives eventual square-window occupancy almost surely under the blind-placement premise, while $c\ge1$ makes the expected population tend to zero. For the head, the prime occurrence series has the same convergence behavior as
+\begin{equation*}
+\int^\infty\frac{dx}{x^{2c}(\log x)^3}.
+\end{equation*}
+The integral diverges for $c < 1/2$ and converges for $c\ge1/2$. Therefore
+\begin{equation*}
+\begin{aligned}
+c < 1
+&\Longrightarrow
+\text{eventual square-window occupancy almost surely},\\
+c < \frac12
+&\Longrightarrow
+\text{infinitely recurring head 2-gaps almost surely, with mixing}.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+The intermediate range $1/2\le c < 1$ preserves square windows but not infinitely recurring head events. Irregular schedules must be evaluated by the cumulative hazard $D(Q)$ rather than by isolated pointwise values.
+\subsection{Adversarial/Random Square-Window Boundary}
+At filter $r$, let a parent be adversarial with share $\alpha_r$ and random otherwise. For one locally relevant lineage,
+\begin{equation*}
+1-f_r
+=(1-\alpha_r)\left(1-\frac2r\right).
+\end{equation*}
+Define the cumulative adversarial-share hazard
+\begin{equation*}
+A(Q):=\sum_{r < Q}-\log(1-\alpha_r).
+\end{equation*}
+The random survival density contributes $(\log Q)^{-2}$, while the repeated adversarial share contributes $e^{-A(Q)}$. If the square-safe window has length $L_Q\asymp Q^2$ and surviving starts obey the spatial-uniformity model, then
+\begin{equation*}
+\begin{aligned}
+\lambda_Q^{\mathrm{mix}}
+&=L_Q\delta_Q^{\mathrm{mix}}
+&&[\text{Expected Uniform Occupancy}]\\
+&\asymp
+C\frac{Q^2}{(\log Q)^2}e^{-A(Q)}.
+&&[\text{Cumulative Survival}]
+\end{aligned}
+\end{equation*}
+Taking logarithms gives
+\begin{equation*}
+\log\lambda_Q^{\mathrm{mix}}
+=2\log Q-2\log\log Q-A(Q)+O(1).
+\end{equation*}
+Therefore, for every fixed $\varepsilon>0$,
+\begin{equation*}
+\begin{aligned}
+A(Q)\le(2-\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow\infty,
+&&[\text{Subcritical Budget}]\\
+A(Q)\ge(2+\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow0.
+&&[\text{Supercritical Budget}]
+\end{aligned}
+\end{equation*}
+At the exact boundary, the term $-2\log\log Q$ must be retained. Under uniform placement,
+\begin{equation*}
+\Pr(X_Q=0)\le e^{-\lambda_Q^{\mathrm{mix}}}.
+\end{equation*}
+Hence the summability condition
+\begin{equation*}
+\sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}}<\infty
+\end{equation*}
+implies that only finitely many square windows are empty almost surely. A convenient sufficient condition is $\lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q$ for all sufficiently large $Q$. $\blacksquare$
+\subsection{Local Survivor Allocation Range}
+Consider a target window shorter than the old period, so each parent contributes at most one target child. Let $N$ be the number of parents, let $R$ be the set of $L$ relevant parents, and let $\mathcal A$ be the size-$K$ set receiving adversarial treatment. Every parent outside $\mathcal A$ is protective and preserves its target child. The number of target children destroyed and surviving are
+\begin{equation*}
+H=|\mathcal A\cap R|,
+\qquad
+S=L-H.
+\end{equation*}
+The intersection cannot exceed either set, and at most $N-L$ adversarial labels can be placed outside $R$. Hence
+\begin{equation*}
+\begin{aligned}
+H
+&\le\min(K,L),
+&&[\text{Intersection Upper Bound}]\\
+H
+&\ge\max(0,K-(N-L)).
+&&[\text{Irrelevant-Parent Capacity}]
+\end{aligned}
+\end{equation*}
+Substitution into $S=L-H$ gives the sharp survivor range
+\begin{equation*}
+\max(0,L-K)
+\le S\le
+\min(L,N-K).
+\end{equation*}
+Both endpoints are attainable. A target-aware allocator selects relevant parents first, while a protective allocator assigns the adversarial labels to irrelevant parents first:
+\begin{equation*}
+\begin{aligned}
+S_{\mathrm{targeted}}&=\max(0,L-K),\\
+S_{\mathrm{protective}}&=\min(L,N-K).
+\end{aligned}
+\end{equation*}
+If $\mathcal A$ is instead a uniformly random size-$K$ subset, then
+\begin{equation*}
+H\sim\text{Hypergeometric}(N,L,K),
+\end{equation*}
+so
+\begin{equation*}
+\begin{aligned}
+\mathbb E[H]&=\frac{KL}{N},\\
+\mathbb E[S]&=L\left(1-\frac KN\right).
+\end{aligned}
+\end{equation*}
+When $K\ge L$, uniform allocation clears the target with probability
+\begin{equation*}
+\Pr(S=0)
+=\frac{\binom{N-L}{K-L}}{\binom NK}
+=\frac{\binom KL}{\binom NL}.
+\end{equation*}
+Writing $\alpha=K/N$, the targeted endpoint becomes
+\begin{equation*}
+S_{\mathrm{targeted}}=0
+\Longleftrightarrow
+K\ge L
+\Longleftrightarrow
+\alpha\ge\frac LN.
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+At the head, $L=1$, so one correctly placed adversarial label destroys the current candidate. If $L/N\longrightarrow0$ in a tracked window, every fixed $\alpha>0$ eventually has enough capacity to clear that window. Appendix A.1 still applies: the targeted parents leave $r-2$ descendants outside the window, so complete-period growth continues.
