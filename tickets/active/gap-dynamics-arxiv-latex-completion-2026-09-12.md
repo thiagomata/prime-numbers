@@ -91,3 +91,25 @@ style already established by the 4 existing converted sections
 | 2026-09-12 | App B redesign v2 (user feedback: the 54-fold repeated "not in this article" cell is boilerplate). Final shape — TWO tables: Table 1 "properties left out of this article" (54 rows: Property / Investigation line / Proof status; the blanket reason stated once in the lead-in), Table 2 "properties connected to this article" (18 rows: Property / Connection to this article / Proof status; 6 Appendix-C-supported + 9 collectively-summarized + 3 almost-prime-draft). Proof statuses sourced from each record's own `**Status:**` line (verified: 53 unconditional-proved flavored, 19 conditional families named, 4 partly-proved with open remainder, 1 under external verification). MD + TeX regenerated from one script; PDF rebuilt (36 pp). Build-gate failures hit and fixed: (a) MD table separator row emitted as single-cell `|---|` (fixed to 3-col); (b) TeX generator passed raw MD link `[Name](url)` into `\href` display text → 146 overfull boxes (strip to bare name); (c) r-string `\\raggedright` + missing `\textwidth` units → "Illegal unit of measure" fatal; (d) `[which]` indexing returned one column so `' & '.join` split `\href` per character → "Extra alignment tab" fatal. Final log: 0 Overfull / 0 Underfull / 0 Warning / 0 errors; MD↔PDF parity probes pass (headers, both lead-ins, open-claim row, conditional rows, Appendix-C rows, Bertrand/PNT row, draft rows, no `](http` leak). Remaining known divergence: author-block https://thiagomata.com/ (accepted). |
 | 2026-09-13 | De-drafting pass EXECUTED (user: article mixed proved spine with drafted material; move notes to a new draft; non-verification is the default, so drop "not yet Stainless-verified" disclaimers, keep positive verification claims). MD rebuilt from HEAD (98d3a8d7 — overnight user commit already contained the two-table redesign) after a first transform over-matched and mangled formatting; lesson: anchor transforms on blank-line-separated blocks with whitespace-flexible markers, never per-line regex, never rewrite paragraphs without droppers. Results: 16 pointer/disclaimer sites cut with kept sentences preserved; header note, §2.2, App A label/closing, App C intro/notation reworded; §11 draft link → "developed separately"; Appendix B removed. 130 math blocks and all headings intact. TeX mirrored (main.tex proof-status + section-14 unhooked, file kept on disk per never-destroy; 02-05, 06, 07, 08, 09, 11, 13, 15). Package README layout note + tarball refreshed. New draft `articles/draft/draft-gap-dynamics-research-notes.md` receives all moved material. Gates: PDF 36→31 pp, log 0 Overfull/0 Underfull/0 Warning/0 errors; probes pass (no pointers, no `.holds` disclaimers, no research map/Deep-Dive; positive Scala + companion verification kept; all 19 headings; legit §11 open-Type-I sentence kept). |
 | 2026-09-13 | Structural (article-ness) review, user-prompted. Verdict: article-shaped — §1 states the organizing principle (complete-period vs square-window); §4/§7/§8/§10/§11 open with explicit backward/forward hand-offs; §6 is a 7-step narrative chain ending in a verdict; §12 recaps. Three defects found and fixed in MD+TeX: (1) §8 intro still said conclusion readable "without external files" and referenced the removed "wider research map" — reworded to "readable on its own" + "exist beyond the article's scope"; (2) §5 was the only main section with no opening bridge — added one (count/certify → signed harmful excess → 5.1 conservation → 5.2 terminal inequality); (3) intro's 16-item property list claimed "dependency order" but lists §6 before its input §5 — claim dropped, list kept (defensible theorem-before-lemma ordering). PDF rebuilt: 31 pp, log 0/0/0/0, probes pass. |
+
+## PR #35 review round (2026-09-13, evening)
+
+- Owner's manual PR review found stray sentence-final "A"s in the built
+  PDF. Diagnosis: the de-drafting pass removed "A supplementary
+  research/model record is ..." sentences from the TEX sections but left
+  the leading article behind — 14 instances across 6 section files
+  (03: x5, 04: x4, 05/07/09: x1, 08: x2). The Markdown side was clean in
+  every corresponding spot, so this was a tex-only desync invisible to
+  the parity content checks. All 14 removed; PDF rebuilt green
+  (17:12, zero-warning gate); PDF text layer verified clean.
+- `sections/14-appendix-b-research-map.tex` DELETED (owner decision in
+  the PR review: "Why are we keeping a MOVED OUT element?"; the
+  never-destroy hold is released by that decision). Content remains in
+  `articles/draft/draft-gap-dynamics-research-notes.md`; the README
+  package listing entry was removed with the file.
+- Record correction: the earlier commit message said "source tarball
+  refreshed", which overstated it — the committed tarball's main.tex
+  predates the ORCID line (verified by extraction). Refresh remains a
+  release-time step per the ORCID ticket.
+- The parity tool gained a dangling-a tripwire (FAIL-level) from this
+  defect class; `just arxiv-parity` is 8/8 PASS after the fixes.
