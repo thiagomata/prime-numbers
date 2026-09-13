@@ -1303,8 +1303,6 @@ K\ge L
 \qquad[\text{Q.E.D.}]
 ```
 
-The exact position-blind hit-count distribution behind this comparison is maintained in [Position-Blind Index Spectrum](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/position-blind-index-spectrum.md).
-
 The three scales should not be confused. At the head, $L=1$, so one correctly
 allocated adversarial parent kills the current head candidate. In a sparse
 tracked window, a fixed share clears the whole window once $K\ge L$. Neither
@@ -2757,8 +2755,6 @@ Thus allocation may eliminate 2-gaps from the head or a tracked window, but it
 cannot exhaust the complete-period population while the exact-two removal rule
 is preserved.
 
-
-The maintained record for this result is [Global Persistence Independence](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/global-persistence-independence.md).
 <a id="appendix-a2"></a>
 
 ### A.2 Cumulative Local-Hazard Law
@@ -2807,8 +2803,6 @@ of observed fractions gives its final-to-initial size ratio. Neither version
 supplies window abundance, head availability, or cross-layer mixing. A lethal
 step eliminates the tracked candidate or cohort, not every later candidate.
 
-
-The maintained record for this result is [Cumulative Local Hazard Law](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/cumulative-local-hazard-law.md).
 <a id="appendix-a3"></a>
 
 ### A.3 Every Fixed Finite Worsening Factor Survives
@@ -2859,8 +2853,6 @@ cross-layer mixing, head 2-gaps therefore recur infinitely often almost surely.
 Hence there is no finite constant-factor maximum worse than random.
 $\blacksquare$
 
-
-The maintained record for this result is [Fixed Factor Survival](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/fixed-factor-survival.md).
 <a id="appendix-a4"></a>
 
 ### A.4 Logarithmically Growing Worsening Has Two Thresholds
@@ -2932,8 +2924,6 @@ The intermediate range $1/2\le c < 1$ preserves square windows but not
 infinitely recurring head events. Irregular schedules must be evaluated by the
 cumulative hazard $D(Q)$ rather than by isolated pointwise values.
 
-
-The maintained record for this result is [Logarithmic Worsening Thresholds](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/logarithmic-worsening-thresholds.md).
 <a id="appendix-a5"></a>
 
 ### A.5 Adversarial/Random Square-Window Boundary
@@ -3097,5 +3087,3 @@ current candidate. If $L/N\longrightarrow0$ in a tracked window, every fixed
 $\alpha>0$ eventually has enough capacity to clear that window. Appendix A.1
 still applies: the targeted parents leave $r-2$ descendants outside the
 window, so complete-period growth continues.
-
-The maintained record for this result is [Local Survivor Allocation Range](https://github.com/thiagomata/prime-numbers/blob/master/companions/properties/local-survivor-allocation-range.md).

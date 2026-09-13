@@ -17,8 +17,9 @@ a published chapter article with PDF: `articles/chapter7/survival-frontiers.md`
 
 Phase 1 — markdown editing pass in draft/ (one commit each):
 1. Front matter: full author name, ORCID, license `../LICENSE`, status date.
-2. Coverage-audit requirement: cite the six proved `companions/properties/`
-   lemmas by path (Appendix A records).
+2. ~~Coverage-audit requirement: cite the six proved `companions/properties/`
+   lemmas by path~~ REVERSED per owner (pattern C: never cite internal notes
+   as authority from an article).
 3. Internal §N references -> anchored Markdown links (~32, review pattern D).
 4. Abstract: attach spatial premise to the square-window claim (item 6.6).
 5. Optional: kappa/w consolidation (6.2) — decide later.
@@ -42,4 +43,5 @@ Branch created; ticket opened. Phase 1.1 in progress.
 
 | Date | Learning | Action |
 |---|---|---|
+| 2026-09-13 | The 2026-09-01 coverage-audit item "cite the companions/properties records by path" is REVERSED: adding those links reintroduced pattern C (internal notes cited as mathematical authority), which the repo ranked as its most severe finding and which the gap-dynamics de-drafting just purged. The article's own appendix proofs are the authority; the companion records stay working notes. | Record-citation sentences removed from A.1-A.4, A.6, and 5.1; zero companions/properties links remain. |
 | 2026-09-13 | Pattern D (bare §N refs) was ALREADY satisfied — 35/35 in-file refs linked during the post-audit revision. The only bare §s were inside cross-article link labels ("[Gap Dynamics §5.2](url)"), where plain text is correct. A regex sweep without a link-text exclusion corrupted 4 of them into nested links (partial §5 match of §5.2). | Repaired all 4 on retry; verified working tree identical to HEAD; lesson: exclude `\[...\]\(...\)` spans before any ref rewriting, and never rewrite what link labels intentionally contain. |
