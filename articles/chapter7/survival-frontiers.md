@@ -7,10 +7,10 @@ Independent Researcher
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)
 
-**Status:** Draft (revised 2026-09-13). The companion-process identities are
-proved exactly; the asymptotic theorems are conditional on the premises stated
-with each result (see [§1.1](#11-scope-and-evidence)). Stainless verification
-is pending. No result is claimed for the real sieve.
+**Proof status:** The companion-process identities are proved exactly; the
+asymptotic theorems are conditional on the premises stated with each result
+(see [§1.1](#11-scope-and-evidence)). Stainless verification is pending. No
+result is claimed for the real sieve.
 
 ## Abstract
 

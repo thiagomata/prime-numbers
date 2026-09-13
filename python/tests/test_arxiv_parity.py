@@ -277,6 +277,22 @@ def test_find_dangling_articles_allows_wrapped_sentences_and_math():
         assert arxiv_parity.find_dangling_articles(s) == [], s
 
 
+def test_find_dangling_articles_allows_inline_emphasized_terms():
+    """'A \\textbf{term}' / 'A **term**' on the same line define a term
+    (survival-frontiers §1, §2); the blank-line-separated shape above
+    remains flagged since it is not a same-line continuation."""
+    kept = [
+        "smallest possible gap. A \\textbf{2-gap} is a pair",
+        "possible gap. A **2-gap** is a pair",
+        "one of three policies. A \\textbf{random parent} draws",
+    ]
+    for s in kept:
+        assert arxiv_parity.find_dangling_articles(s) == [], s
+    assert arxiv_parity.find_dangling_articles(
+        "found none. A \n\n\\textbf{How the two compose.}"
+    ), "blank-line-separated \\textbf must still flag"
+
+
 # --- input_section_paths ------------------------------------------------------
 
 def test_input_section_paths_follows_assembly_and_dedupes():
