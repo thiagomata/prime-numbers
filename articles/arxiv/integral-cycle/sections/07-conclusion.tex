@@ -17,7 +17,10 @@ cumulative cycle sum) and the step property (difference between consecutive
 values equals the corresponding cycle element). We also proved equivalence
 of the recursive and modulo definitions, that the integral is strictly
 increasing under positive base values, and that it stays positive
-everywhere given a non-negative start.
+everywhere given a non-negative start. The core block closes with its
+simplest instance: the unit cycle $[1]$, whose integral enumerates the
+consecutive integers $init + i + 1$ in strictly increasing order --- the
+candidate stream that the sieve-sequence articles later filter.
 
 Beyond these core definitions, the article verifies several reusable
 cycle-integral laws. Within a fixed cycle integral: residues are periodic
@@ -96,6 +99,19 @@ init \geq 0 \land (\forall x \in L,\ x > 0)
 \implies
 \operatorname{CycleIntegral}(L, init)_i > 0
 \quad \text{[Positivity]}
+\end{equation*}
+
+\begin{equation*}
+\operatorname{CycleIntegral}([1], init)_i
+= init + i + 1
+\quad \text{[Unit-Cycle Generation]}
+\end{equation*}
+
+\begin{equation*}
+0 \leq a < b \implies
+\operatorname{CycleIntegral}([1], init)_b
+> \operatorname{CycleIntegral}([1], init)_a
+\quad \text{[Unit-Cycle Strict Increase]}
 \end{equation*}
 
 \begin{equation*}

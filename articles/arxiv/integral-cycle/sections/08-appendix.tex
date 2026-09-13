@@ -278,7 +278,7 @@ def assertRotateOneCycleIntegralShiftsByOne(
   }
 
   shiftedCI(i) == originalCI(i + 1)
-\section{Scala Verification Code}
+}.holds
 \end{lstlisting}
 
 \subsection{Gap Telescoping --- \texorpdfstring{\texttt{assert\allowbreak Consecutive\allowbreak Gap\allowbreak Sum\allowbreak Equals\allowbreak Diff}}{assertConsecutiveGapSumEqualsDiff}}
@@ -551,6 +551,42 @@ def assertFilterMergeComposition(
       survivors, filterValue, maxIndex - 1)
   }
   Calc.mod(newCI(maxIndex), filterValue) != BigInt(0)
+}.holds
+\end{lstlisting}
+
+\subsection{Unit-Cycle Generation --- \texorpdfstring{\texttt{assert\allowbreak Cycle\allowbreak Integral\allowbreak Of\allowbreak Ones,}\\
+\texttt{assert\allowbreak Cycle\allowbreak Integral\allowbreak Of\allowbreak Ones\allowbreak Strictly\allowbreak Increasing}}{assertCycleIntegralOfOnes, assertCycleIntegralOfOnesStrictlyIncreasing}}
+
+{\raggedright Source: \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala}{\texttt{Cycle\allowbreak Integral\allowbreak Ones\allowbreak Properties}}\par}
+
+\begin{lstlisting}[style=scala]
+def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
+  require(pos >= 0)
+  require(init >= 0)
+  val cycle = MemCycle(stainless.collection.List(BigInt(1)))
+  val ci = CycleIntegral(init, cycle)
+  decreases(pos)
+  if (pos == 0) {
+    ci(0) == init + BigInt(1)
+  } else {
+    assert(assertCycleIntegralOfOnes(init, pos - 1))
+    ci(pos) == init + pos + BigInt(1)
+  }
+}.holds
+
+def assertCycleIntegralOfOnesStrictlyIncreasing(
+  init: BigInt,
+  a: BigInt,
+  b: BigInt
+): Boolean = {
+  require(a >= 0)
+  require(b > a)
+  require(init >= 0)
+  val cycle = MemCycle(stainless.collection.List(BigInt(1)))
+  val ci = CycleIntegral(init, cycle)
+  assert(assertCycleIntegralOfOnes(init, a))
+  assert(assertCycleIntegralOfOnes(init, b))
+  ci(b) > ci(a)
 }.holds
 \end{lstlisting}
 
