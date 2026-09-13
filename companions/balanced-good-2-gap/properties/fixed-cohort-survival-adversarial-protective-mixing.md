@@ -18,8 +18,9 @@ extinction, it does not prevent it.
 
 ## Setup
 
-Let `N_0` be the number of locally relevant lineages at the start of the
-chain, followed through filters `r<Q`. At filter `r`, each surviving lineage
+Let `N_0` be the number of locally relevant lineages from distinct initial
+parents, followed through filters `r<Q` without shared later parents. At filter
+`r`, each surviving lineage
 independently receives the adversarial label with probability `alpha_r` (its
 target child is destroyed) or the protective label with probability
 `1-alpha_r` (its target child is preserved), and
@@ -42,7 +43,8 @@ P_Q
 \end{aligned}
 ```
 
-Independence between lineages gives
+The distinct complete histories are independent in this fixed-cohort model,
+so
 
 ```math
 X_Q\sim\text{Binomial}(N_0,P_Q),

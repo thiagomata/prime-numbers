@@ -17,9 +17,11 @@ polynomial order right at the boundary.
 
 ## Setup
 
-Let `B(Q) \asymp C_0 Q^2` be the number of eligible lineages supplied by the
-fully protective model in the square window, with adversarial labels
-assigned independently and position-blindly as in
+Let `B(Q) \asymp C_0 Q^2` be the number of eligible histories supplied by the
+fully protective model in the square window. To use the binomial law below,
+assume these complete histories are independent; independent labels at their
+individual parents alone are insufficient when histories share ancestors.
+Adversarial labels are assigned independently and position-blindly as in
 [Fixed-Cohort Survival Under Adversarial/Protective Parent Mixing](
 fixed-cohort-survival-adversarial-protective-mixing.md), and
 `A(Q)=\sum_{r<Q}-\log(1-\alpha_r)`.
@@ -68,9 +70,12 @@ A(Q)\ge(2+\varepsilon)\log Q
 
 In the first regime the empty-window probabilities are summable and the
 first Borel-Cantelli lemma gives only finitely many empty square windows
-almost surely -- with no independence premise needed for that direction.
+almost surely. This step needs no independence across windows; the binomial
+empty-window estimate above still uses within-window history independence.
 
-For the representative schedule `alpha_r ~ c log(r)/r`, `A(Q)\sim c\log Q`
+For the exact eventual schedule `alpha_r = c log(r)/r`, with a nonlethal
+finite prefix, Taylor expansion and summable quadratic errors give
+`A(Q)=c log Q+O(1)`
 and
 
 ```math

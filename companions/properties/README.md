@@ -2,10 +2,9 @@
 
 Model-agnostic companion properties used by every specialization in
 [`../`](../README.md). These results do not belong to any single companion
-model: they hold for any process that preserves the exact `r-2` descendant law
-(common) and reports a realized destruction fraction `f_r` (hazard law), or
-that assigns a size-`K` harmful set against a size-`L` relevant set
-(allocation bounds).
+model: global persistence holds for processes that preserve the exact `r-2`
+descendant law; the hazard law concerns conditional lineage hazards; and the
+allocation bounds concern a size-`K` harmful set against a size-`L` relevant set.
 
 The four named companion models specialize these theorems:
 
@@ -16,8 +15,9 @@ The four named companion models specialize these theorems:
 - [Balanced good](../balanced-good-2-gap/README.md) takes the optimistic
   endpoint.
 - [Exact-quota random location](../exact-quota-random-location/README.md)
-  replaces per-parent Bernoulli selection with uniform sampling without
-  replacement at a fixed quota.
+  replaces per-parent selection with uniform sampling without replacement at a
+  fixed quota. It does not generally preserve exactly two losses per 2-gap
+  parent, so it is not a specialization of Global Persistence Independence.
 
 ## Short-Name Registry
 

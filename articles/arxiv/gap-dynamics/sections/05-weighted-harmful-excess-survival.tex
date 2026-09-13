@@ -1,6 +1,12 @@
 \section{Weighted Harmful-Excess Survival}
 \label{sec:weighted-harmful-excess-survival}
 
+Sections 3 and 4 count and certify 2-gap starts; whether a certified start
+survives is decided by one signed quantity, the harmful excess. This section
+derives the exact conservation law that makes that quantity bookkeepable
+across a whole conditioned chain (Section~5.1) and the terminal criterion that
+turns survival into a single quadratic inequality (Section~5.2).
+
 \subsection{Weighted Deletion Conservation}
 \label{sec:weighted-deletion-conservation}
 
@@ -57,11 +63,7 @@ $\sum_iw_ib_i\lt T$ is exactly equivalent to $N_m>0$.
 
 {\raggedright
 The derivation above proves the recurrence, telescoping identity, and per-gap
-interpretation. A supplementary research record is available in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-deletion-conservation-law.md}{Weighted Deletion Conservation Law}. No
-\texttt{.holds} theorem currently encodes the weighted conditioned chain, so
-this result is not yet Stainless-verified.
-\par}
+interpretation. \par}
 
 \subsection{Terminal Survival Criterion}
 \label{sec:terminal-survival-criterion}
@@ -131,9 +133,4 @@ separate one-layer capacity bounds do not establish that inequality.
 
 {\raggedright
 The derivation above proves the sharp lower bound and terminal classification.
-Supplementary research records are available in \href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/weighted-harmful-excess-energy-is-terminal.md}{Weighted Harmful-Excess
-Energy Is Already Terminal} and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/weighted-harmful-excess-quadratic-survival.md}{Weighted Harmful-Excess Quadratic Survival}. No \texttt{.holds}
-theorem currently encodes the weighted chain, so this result is not yet
-Stainless-verified.
 \par}

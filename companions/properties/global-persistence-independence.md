@@ -16,7 +16,7 @@ population keeps growing unboundedly under every balanced policy.
 ## Setup
 
 Let `G_k` be the 2-gap descendants before installing prime `r_k`, with
-`N_k = |G_k|`. Every balanced companion removes exactly two of each parent's
+`N_k = |G_k|` and `N_0>0`. Every balanced companion removes exactly two of each parent's
 `r_k` copies, regardless of which two.
 
 ## Property

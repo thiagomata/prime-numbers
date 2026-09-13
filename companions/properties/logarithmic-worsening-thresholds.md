@@ -14,7 +14,10 @@ windows populated while losing infinitely-recurring head 2-gaps.
 
 ## Setup
 
-Builds on the [Cumulative Local Hazard Law](cumulative-local-hazard-law.md).
+Builds on the conditional-hazard and probability-application premises of the
+[Cumulative Local Hazard Law](cumulative-local-hazard-law.md). The schedule
+below holds exactly for sufficiently large primes; choose the finite prefix
+with positive survival factors. In particular, only apply it once `f_r<1`.
 Set
 
 ```math

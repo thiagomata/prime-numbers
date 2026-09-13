@@ -105,9 +105,10 @@ python/
     check_scala_cycles.py               — Scala dependency-cycle checker
     disable_holds.py                     — batch .holds disabler
     retire_property_numbers.py          — property-number migration tool
+    arxiv_parity.py                      — md <-> tex <-> PDF parity gate (just arxiv-parity)
   tests/
     conftest.py                         — shared fixtures
-    test_*.py                           — 249 pytest tests
+    test_*.py                           — 275 pytest tests
 ```
 
 Generated CSV data belongs under `data/` (root level, shared with Spark).

@@ -47,7 +47,8 @@ If the series converges, the first Borel-Cantelli lemma gives only finitely
 many head events almost surely, with no independence premise needed for
 that direction.
 
-For `alpha_r \sim c\log(r)/r`, `e^{-A(Q)}\asymp Q^{-c}`, so the prime-head
+For `alpha_r = c\log(r)/r` exactly eventually, with a nonlethal finite prefix,
+`A(Q)=c log Q+O(1)` and `e^{-A(Q)}\asymp Q^{-c}`, so the prime-head
 series behaves like `\sum_{Q\text{ prime}} Q^{-c}`, which diverges at `c=1`
 and converges for `c>1`:
 
@@ -79,11 +80,17 @@ At `c=1`, the adversarial/random prime series converges while the
 adversarial/protective series diverges: the protective parent policy moves
 the critical boundary itself into the recurrent side, even though both
 mixtures share the same leading threshold scale. For the gentler schedule
-`alpha_r \sim c/r`, the occurrence probability is comparable to
+`alpha_r = c/r` exactly eventually, the occurrence probability is comparable to
 `(\log Q)^{-c}` and the sum over prime heads diverges for every fixed finite
 `c`.
 
 ## Related
+
+Mere equivalence `alpha_r ~ log(r)/r` does not decide the critical case:
+`alpha_r=(log r+2 log log r)/r` gives
+`A(Q)=log Q+(log log Q)^2+O(1)`. Its prime-head series converges, so that
+schedule has only finitely many head events despite the same leading
+equivalent. The exact-schedule premise is essential at `c=1`.
 
 - [Balanced good (protective parent) 2-gap companion process](../model.md)
 - [Fixed-Cohort Survival Under Adversarial/Protective Parent Mixing](
@@ -91,10 +98,7 @@ mixtures share the same leading threshold scale. For the gentler schedule
   per-lineage survival probability `e^{-A(Q)}` used here.
 - [Growing Square Windows Under Adversarial/Protective Parent Mixing](
   growing-square-window-adversarial-protective-mixing.md)
-- The adversarial/random companion's analogous head-recurrence result is
-  compared above; as of this writing it is registered in
-  [`balanced-randomized-2-gap/README.md`](
-  ../../balanced-randomized-2-gap/README.md) as "Bad/Random Head Boundary"
-  but not yet filed as its own property file.
+- [Bad/Random Head Boundary](../../balanced-randomized-2-gap/properties/bad-random-head-boundary.md)
+  gives the corresponding random-complement result.
 - [Survival Frontiers in Balanced 2-Gap Companion Processes, §5.5](
   ../../../articles/draft/draft-adversariality-phase-transition-2-gap-companions.md)

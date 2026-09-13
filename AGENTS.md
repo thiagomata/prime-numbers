@@ -242,6 +242,33 @@ Only re-run `just verify` after making a code change.
     matters, state it directly in the article, not "see the ticket." Internal learnings
     docs (`articles/learnings/`) are exempt.
   </rule>
+  <rule id="arxiv-sync" priority="high">
+    When an article's Markdown source and its arXiv LaTeX package BOTH exist
+    (e.g. `articles/chapter4/integral-cycle.md` and `articles/arxiv/integral-cycle/`),
+    the two editions MUST stay in sync. A content change to the Markdown article is
+    NOT complete until the equivalent change is applied to the LaTeX package and the
+    PDF is rebuilt green, in the same unit of work:
+    1. The Markdown is the source edition; the LaTeX package is its faithful
+       conversion (see `articles/arxiv/CONVERSION_GUIDE.md`). Sync direction is
+       Markdown -> LaTeX. Content fixes discovered while editing the LaTeX flow
+       back to the Markdown; only the guide's allowed markup normalizations are
+       LaTeX-side.
+    2. Update the affected `sections/*.tex` files following the guide's house
+       style, then build with `just arxiv-pdf <article>`: require exit code 0
+       and a compile log free of Warning/Error/Overfull/Underfull/undefined/
+       Missing. Structural additions (new subsection, new appendix entry) must
+       also update every hardcoded cross-reference (Subsection~N.M,
+       Appendix~A.N) and the section plan in the article's conversion ticket.
+       Then run `just arxiv-parity <article>` and require PASS: it machine-
+       checks MD <-> tex <-> PDF parity (bidirectional headings, verified
+       names, math labels, PDF freshness and text layer).
+    3. The LaTeX build is a validation gate under <rule id="green-to-green"/>
+       for article changes: a red or stale PDF build is a non-green state.
+    4. If the LaTeX update cannot be completed in the same unit of work,
+       record the drift explicitly in the active ticket (Open Concerns /
+       Next Action) before moving on — never leave a Markdown/LaTeX desync
+       silent.
+  </rule>
   <rule id="red-cascade" priority="critical">
     After a change produces a **non-green state** in any applicable gate
     (failure/invalid/unknown/timeout):
@@ -307,6 +334,7 @@ Only re-run `just verify` after making a code change.
   <item>Did I update OBJECTS.md with new lemmas, methods, or objects?</item>
   <item>Did I promote durable results out of the ticket into `properties/`, `OBJECTS.md`, or `LEARNINGS.md`? (A result that lives only in a ticket is invisible to the rest of the project.)</item>
   <item>Are there articles in `articles/` that should be updated? If so, list them and ask the user.</item>
+  <item>If the changed article has an arXiv LaTeX package (`articles/arxiv/&lt;article&gt;/`), was the same change applied to the `.tex` sections and the PDF rebuilt green (rule `arxiv-sync`)?</item>
 </checklist-after>
 
 <agent-pipeline>
