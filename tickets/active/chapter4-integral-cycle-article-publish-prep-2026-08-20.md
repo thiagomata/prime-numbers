@@ -79,6 +79,19 @@ article's own, despite the numeric coincidence).
 3. **Conclusion completeness (rule 6)** — recap now includes Cycle-Period
    Shift and Survivor Structure (both previously missing), plus the two
    new Persistent Non-Zero/Zero Residue corollaries.
+4. **Unit-cycle properties moved in from the draft bridge article
+   (2026-09-13)** — the two verified lemmas from
+   `articles/draft/draft-sieve-foundation.md` §§2–3
+   (`CycleIntegralOnesProperties::assertCycleIntegralOfOnes` and
+   `assertCycleIntegralOfOnesStrictlyIncreasing`) now live here as **§4.6
+   Unit-Cycle Generation of Consecutive Integers** with Appendix A.17
+   (Scala excerpt). The §1 "This article verifies" map, the §4 bullet
+   list, and the Conclusion (prose sentence + two new math recap entries
+   `[Unit-Cycle Generation]` / `[Unit-Cycle Strict Increase]`) were all
+   updated to include them. The draft retains its bridge presentation
+   with a status pointer to §4.6/A.17. Markdown-only change; no runtime
+   gates required. OBJECTS.md already documents the object (§4.10), no
+   update needed.
 
 ## Structural restructuring (this session, not yet committed)
 
