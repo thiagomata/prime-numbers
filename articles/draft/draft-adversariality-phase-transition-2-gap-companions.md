@@ -1,15 +1,16 @@
 # Survival Frontiers in Balanced 2-Gap Companion Processes
 
-**Author:** Mata, T. H.<br>
-Independent Researcher<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)<br>
+**Author:** Thiago Henrique Ramos da Mata
+Independent Researcher  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)
 
-**Status:** Draft (2026-08-15). The companion-process identities are proved
-exactly; the asymptotic theorems are conditional on the premises stated with
-each result (see [§1.1](#11-scope-and-evidence)). Stainless verification is pending. No result is
-claimed for the real sieve.
+**Status:** Draft (revised 2026-09-13). The companion-process identities are
+proved exactly; the asymptotic theorems are conditional on the premises stated
+with each result (see [§1.1](#11-scope-and-evidence)). Stainless verification
+is pending. No result is claimed for the real sieve.
 
 ## Abstract
 
