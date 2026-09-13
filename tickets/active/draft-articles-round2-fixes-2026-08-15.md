@@ -3,7 +3,7 @@
 ## Goal
 
 Apply the agreed fixes from the review record
-`articles/draft/review-draft-articles-2026-08-15.md` (original review + author
+`articles/notes/review-draft-articles-2026-08-15.md` (original review + author
 response + reviewer rejoinder + addendum) to the six draft articles. Markdown
 only; no code, no data, no pipeline changes.
 
@@ -24,7 +24,7 @@ Scope rule: ONLY the fixes agreed in the review record and summarized to the
 project owner on 2026-08-15. No other text is touched. Each row lists the
 exact change; "verified" cites the data/source that justifies it.
 
-### Draft 3 — `articles/draft/draft-empirical-g-local-analysis.md`
+### Draft 3 — `articles/draft/draft-empirical-g-local-analysis.md` (DELETED 2026-09-13, superseded)
 
 | # | Location | Change (old → new) | Verified by |
 |---|---|---|---|
@@ -110,7 +110,7 @@ planned; row 6.4 verified with zero article changes required.
   (Tasks 1–4 + the endpoint-disjoint variant); Task 3 sketch includes the
   both-endpoints-removed double-counting note as part of the sketch.
 
-### Draft 4 — `articles/draft/draft-sieve-gap-survival-math.md`
+### Draft 4 — `articles/draft/draft-sieve-gap-survival-math.md` (DELETED 2026-09-13, superseded)
 
 | # | Location | Change | Review item |
 |---|---|---|---|
@@ -196,4 +196,4 @@ Team audit of the change log; then decide on the F1–F22 deferred items.
 | 2026-08-15 | Draft 5: §1.2 positioning, §2 vocabulary, Theorems 1–5, external refs [7]–[10]. |
 | 2026-08-15 | Draft 6: status/premise/abstract edits; §8.1 fully verified against data (per-transition, per-sequence, full-cycle, fixed cohorts) — no change needed. |
 | 2026-08-15 | Drafts 1/2/4 minor fixes applied; one accidental over-deletion in draft 4 §10 restored immediately; deferred suggestions moved to tickets/future for team review. |
-| 2026-08-19 | Merged `evaluate-draft-review-claims-2026-08-15.md` into this ticket per the one-ticket-per-article rule: it was the prerequisite evaluation step whose output (an Accept/Accept-with-qualification/Reject disposition for every review claim, including urgent draft-3 provenance/math corrections the original review missed) is already appended to `articles/draft/review-draft-articles-2026-08-15.md` and consumed by this ticket's Round 2 fixes. Original removed. |
+| 2026-08-19 | Merged `evaluate-draft-review-claims-2026-08-15.md` into this ticket per the one-ticket-per-article rule: it was the prerequisite evaluation step whose output (an Accept/Accept-with-qualification/Reject disposition for every review claim, including urgent draft-3 provenance/math corrections the original review missed) is already appended to `articles/notes/review-draft-articles-2026-08-15.md` and consumed by this ticket's Round 2 fixes. Original removed. |

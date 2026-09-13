@@ -1,3 +1,5 @@
+**SUPERSEDED 2026-09-13:** the draft this ticket planned (`articles/draft/draft-sieve-gap-survival-math.md`) was deleted as superseded — its derivations live in `articles/chapter6/gap-dynamics.md` and the review catalog in `articles/notes/`. Do not execute this ticket.
+
 # Math-Only Sieve Gap Survival Article
 
 **Created:** 2026-07-14

@@ -17,12 +17,11 @@ tickets.
 
 - [ ] Decide whether `articles/draft/draft-sieve-foundation.md` should remain a
   draft bridge or be folded into `articles/chapter6/sieve-sequence.md`.
-- [ ] Keep `articles/draft/draft-sieve-gap-survival-math.md` and
-  `articles/draft/exercise-local-safe-window-capacity.md` clearly scoped as
-  mathematical exploration until their claims have verified source references.
-- [ ] Keep `articles/draft/draft-empirical-g-local-analysis.md` explicitly
-  empirical / `@extern`, or merge only its limitations into
-  `articles/chapter6/gap-dynamics.md`.
+- [x] `draft-sieve-gap-survival-math.md` deleted 2026-09-13 as superseded
+  (content preserved in `articles/chapter6/gap-dynamics.md` and git history);
+  the exercise remains in `articles/draft/`.
+- [x] `draft-empirical-g-local-analysis.md` deleted 2026-09-13 as superseded
+  (canonical `[q,q^2)` experiment replaced it; see git history).
 - [ ] Consider merging durable cautions from
   `articles/learnings/reviewer-notes-gap-dynamic.md` into
   `articles/learnings/learnings-capacity-argument.md`.

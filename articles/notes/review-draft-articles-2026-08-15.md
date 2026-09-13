@@ -1,5 +1,7 @@
 # Review of Draft Articles — Scientific Quality Assessment
 
+**Note (2026-09-13):** `draft-empirical-g-local-analysis.md` and `draft-sieve-gap-survival-math.md` were deleted as superseded after this review was written; links to them below are intentionally dead. Their mathematical content is preserved in `articles/chapter6/gap-dynamics.md` and in git history. This file now lives in `articles/notes/`.
+
 **Date:** 2026-08-15
 **Scope:** All six documents in `articles/draft/`, reviewed as scientific papers
 (mathematics / formal-verification scholarship), not only against repository

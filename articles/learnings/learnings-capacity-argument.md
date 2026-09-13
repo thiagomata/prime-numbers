@@ -154,7 +154,8 @@ For $p \ge 11$, the primorial $M_k$ permanently outgrows $p^2$, and the window o
 | **1-value rotation scope** | Clarified | Rotates the gap sequence so smallest survivor is at position 0. Offset is arithmetic (first survivor after filtration). Does NOT rotate the underlying positions of 2-gaps in any controlled way. |
 | **Individual persistence** | Fatal (unproven) | $T_k$ grows, but individual 2-gaps are destroyed and replaced each layer. No invariant tracks a specific 2-gap across layers. The growth inequality is about count, not individual survival. |
 | **Global density $\to$ local guarantee** | Fatal (unproven) | Mertens gives $\frac{T_k}{\|R_k\|} \sim \frac{C}{(\ln p)^2}$. Even if this holds, it's an average over $M_k$, not a guarantee for short interval $[p, p^2]$. Known hard problem (Jacobsthal's function). |
-| **Empirical scan to $p=1000$** | Complete | Full scan completed (676s, 166 primes). Permanent crossover at $p=37$; $G/p$ reaches 8.09 at $p=997$. All three hypotheses confirmed. See article `draft-empirical-g-local-analysis.md`. |
+| **Empirical scan to $p=1000$** | Complete | Full scan completed (676s, 166 primes). Permanent crossover at $p=37$; $G/p$ reaches 8.09 at $p=997$. All three hypotheses confirmed. Source article `draft-empirical-g-local-analysis.md` was deleted on
+  2026-09-13 as superseded (see `articles/notes/README.md` and git history). |
 
 ## 9. Failed Approaches (Discarded)
 

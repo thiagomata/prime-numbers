@@ -3,7 +3,7 @@
 **Date:** 2026-09-01
 **Reviewed against:** `PROOF_GUIDE.md`, `CONTRIBUTING.md` (26-point checklist), `AGENTS.md`.
 **Status:** No changes made — analysis only. A prior review
-(`articles/draft/review-draft-articles-2026-08-15.md`) already assessed this
+(`articles/notes/review-draft-articles-2026-08-15.md`) already assessed this
 draft as a scientific paper; this review checks it specifically against the
 repository's own house-style checklist and notes what has changed since.
 

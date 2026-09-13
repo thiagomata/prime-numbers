@@ -16,7 +16,7 @@ Related work:
 - [Companion model organization](companions-folder-properties-of-models-2026-08-12.md)
 - [Earlier draft corrections](draft-articles-round2-fixes-2026-08-15.md)
 - [Positional analysis](spectral-positional-filter-analysis-2026-08-18.md)
-- [Previous review](../../articles/review/review-draft-adversariality-phase-transition-2-gap-companions.md)
+- [Previous review](../../articles/notes/review-draft-adversariality-phase-transition-2-gap-companions.md)
 
 Validate mathematical assumptions by checking the actual models and rederiving implications; verify external mathematical attributions using primary sources where needed. Validate final Markdown links, math delimiters, claim consistency, and diff scope. Markdown-only changes require no runtime gates.
 

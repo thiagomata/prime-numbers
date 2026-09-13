@@ -76,14 +76,12 @@ These may contain useful material, but they are not canonical as-is.
 
 - `articles/draft/draft-sieve-foundation.md` -> merge useful bridge material
   into `articles/chapter6/sieve-sequence.md` or keep as a short draft.
-- `articles/draft/draft-sieve-gap-survival-math.md` -> keep as math-only
-  exploration until claims become verified or clearly scoped in
-  `articles/chapter6/gap-dynamics.md`.
+- `articles/draft/draft-sieve-gap-survival-math.md` -> DELETED 2026-09-13
+  as superseded; derivations preserved in `articles/chapter6/gap-dynamics.md`.
 - `articles/draft/exercise-local-safe-window-capacity.md` -> either fold into
   the gap-dynamics learning material or keep as an exercise note.
-- `articles/draft/draft-empirical-g-local-analysis.md` -> keep only if
-  empirical exploration remains useful; otherwise merge the limitations into
-  `articles/chapter6/gap-dynamics.md`.
+- `articles/draft/draft-empirical-g-local-analysis.md` -> DELETED 2026-09-13;
+  the canonical `[q,q^2)` transition experiment replaced it.
 - `articles/learnings/reviewer-notes-gap-dynamic.md` -> consider merging any
   durable cautionary points into `articles/learnings/learnings-capacity-argument.md`.
 

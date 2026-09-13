@@ -12,7 +12,7 @@ Stainless-verified.
 This document assumes only the definitions and results introduced in:
 
 - [Formal Verification of the Sieve Sequence](../articles/chapter6/sieve-sequence.md)
-- [Sieve Gap Survival: A Math-Only Follow-Up](../articles/draft/draft-sieve-gap-survival-math.md)
+- [Gap Dynamics in Sieve Sequences](../articles/chapter6/gap-dynamics.md) (successor of the deleted math-only draft)
 
 All notation specific to this property is defined below.
 

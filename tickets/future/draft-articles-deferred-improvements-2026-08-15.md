@@ -1,7 +1,7 @@
 # Deferred Draft-Article Improvements — Team Review Before Applying
 
 **Origin:** Round-2 review loop of 2026-08-15
-(`articles/draft/review-draft-articles-2026-08-15.md`). These items were
+(`articles/notes/review-draft-articles-2026-08-15.md`). These items were
 deliberately **not** applied in the round-2 fix pass: they are either
 optional, low-priority, or outside the owner-approved fix list. Nothing below
 has been applied to any article. The team should review, prioritize, and
