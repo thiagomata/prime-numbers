@@ -65,12 +65,7 @@ odd stage. The result proves complete-period global presence, not
 placement in any specified local window.
 
 {\raggedright
-The derivation above proves the exact product count. A supplementary
-research record is available in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/exact-global-two-gap-count.md}{Exact Global 2-Gap Count}.
-No \texttt{.holds} theorem currently encodes this exact product count, so
-this result is not yet Stainless-verified.
-\par}
+The derivation above proves the exact product count. A \par}
 
 \subsection{Exact Filter Frequency Across Repeated Copies}
 \label{sec:exact-filter-frequency}
@@ -137,14 +132,7 @@ does not say that the $r-2$ survivors are evenly distributed after
 filtering or that one lies in a chosen numerical window.
 
 {\raggedright
-The derivation above proves this exact copy-index law. A supplementary
-research record is available in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/copy-index-filter-frequency.md}{Exact Filter Frequency Across Repeated Copies}.
-The repeated-stream foundation is verified in the companion Sieve
-Sequence article \cite{mata2026sievesequence}, but no \texttt{.holds}
-theorem currently packages these two exact copy-index classes and the
-finite-slice bound. This result is not yet Stainless-verified.
-\par}
+The derivation above proves this exact copy-index law. A \par}
 
 \subsection{Exact Batched 2-Gap Survival}
 \label{sec:exact-batched-survival}
@@ -219,12 +207,7 @@ square-safe window.
 
 {\raggedright
 The derivation above proves the finite-batch formula and its
-complete-period limitation. A supplementary research record is available
-in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/exact-batched-two-gap-survival.md}{Exact Batched 2-Gap Survival}.
-No corresponding \texttt{.holds} theorem currently packages the
-finite-batch product; this result is not yet Stainless-verified.
-\par}
+complete-period limitation. A \par}
 
 \subsection{Exact Global \texorpdfstring{\texttt{(2,4,2)}}{(2,4,2)} Cluster Count}
 \label{sec:exact-global-242-cluster-count}
@@ -324,12 +307,7 @@ imply that a chosen short window contains a cluster.
 
 {\raggedright
 The derivation above establishes the recurrence, no-creation result,
-closed product, and localization boundary. A supplementary research
-record is available in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/exact-global-two-gap-cluster-count.md}{Exact Global Count Of \texttt{(2,4,2)} Two-Gap Clusters}.
-No \texttt{.holds} theorem currently packages the cyclic cluster count;
-this result is not yet Stainless-verified.
-\par}
+closed product, and localization boundary. A \par}
 
 \subsection{Rotation Preserves Cyclic Gap Counts}
 \label{sec:rotation-preserves-cyclic-gap-counts}
@@ -338,8 +316,7 @@ Rotation chooses a new origin for the same cyclic list. It neither
 filters an accepted value nor merges adjacent gaps, so it preserves the
 number of entries having every gap value, including $2$, for every
 nonempty finite cyclic gap list, every nonnegative rotation offset, and
-every gap value $d$. The rotation invariance itself is proved; the exact
-multiplicity claim is not yet Stainless-verified.
+every gap value $d$. The rotation invariance itself is proved.
 
 Let
 \begin{equation*}
@@ -421,10 +398,7 @@ These foundations are verified in
 \href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala}{\texttt{RotationProperties::assertRotateContainsForward}, \texttt{assertRotateContainsBackward}, and \texttt{assertRotateSameSize}}.
 They establish the rotation operation and its same-elements/size
 behavior, but membership alone does not count duplicate entries. The
-exact multiplicity theorem above is maintained mathematically in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/rotation-preserves-cyclic-gap-counts.md}{Rotation Preserves Cyclic Gap Counts};
-it is not yet Stainless-verified.
-\par}
+exact multiplicity theorem above is \par}
 
 \subsection{Absence Of 2-Gaps Is Stable}
 \label{sec:absence-of-two-gaps-is-stable}
@@ -486,13 +460,7 @@ localization result.
 
 {\raggedright
 The copy-or-merge argument above proves the inductive consequence and
-its global/local boundary. A supplementary research record is available
-in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/absence-of-two-gaps-is-stable.md}{Absence Of 2-Gaps Is Stable Under Later Filtering}.
-No dedicated \texttt{.holds} theorem currently quantifies over the
-complete cyclic gap transition, so this result is not yet
-Stainless-verified.
-\par}
+its global/local boundary. A \par}
 
 These are complete-period statements. They explain global growth but do
 not locate any surviving copy in a prescribed short interval.

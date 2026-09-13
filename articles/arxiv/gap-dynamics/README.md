@@ -34,7 +34,12 @@ sections/
   13-appendix-a-evidence-status.tex
                                 evidence and verification status table
   14-appendix-b-research-map.tex
-                                research map (longtable)
+                                research map (longtable) — MOVED OUT of the
+                                article on 2026-09-13 into
+                                articles/draft/draft-gap-dynamics-research-notes.md;
+                                the file is kept for reference but is NOT
+                                compiled (its \IfFileExists line was removed
+                                from main.tex)
   15-appendix-c-proofs.tex      self-contained exhaustion proofs (C.1-C.6)
 references.bib                  companion Sieve Sequence article entry
 figures/
