@@ -394,6 +394,43 @@ arxiv-pdf article="":
       echo "Built $dir/output/pdf/$name.pdf"
     done
 
+# Package arXiv submission source tarball(s): `just arxiv-source` packages
+# every article under articles/arxiv/, `just arxiv-source integral` packages
+# one. Runs `arxiv-pdf` first so the per-article scratch dir under $TMPDIR
+# has a freshly built main.bbl, then stages main.tex, sections/, figures/
+# (only when the package has one), references.bib, and main.bbl -- the
+# minimal file set arXiv requires, main.bbl included so arXiv need not run
+# BibTeX -- into articles/arxiv/<article>/output/arxiv-<article>-source.tar.gz.
+arxiv-source article="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base="{{justfile_directory()}}/articles/arxiv"
+    if [[ -n "{{article}}" ]]; then
+      dirs=("$base/{{article}}")
+    else
+      dirs=("$base"/*/)
+    fi
+    for dir in "${dirs[@]}"; do
+      if [[ ! -f "$dir/main.tex" ]]; then
+        continue
+      fi
+      name=$(basename "$dir")
+      (cd "{{justfile_directory()}}" && just arxiv-pdf "$name")
+      build="${TMPDIR:-/tmp}/arxiv-build-$name"
+      stage=$(mktemp -d)
+      cp "$dir/main.tex" "$dir/references.bib" "$build/main.bbl" "$stage/"
+      cp -r "$dir/sections" "$stage/"
+      pack_files=(main.tex sections references.bib main.bbl)
+      if [[ -d "$dir/figures" ]]; then
+        cp -r "$dir/figures" "$stage/"
+        pack_files+=(figures)
+      fi
+      mkdir -p "$dir/output"
+      tar czf "$dir/output/arxiv-$name-source.tar.gz" -C "$stage" "${pack_files[@]}"
+      rm -rf "$stage"
+      echo "Packaged $dir/output/arxiv-$name-source.tar.gz"
+    done
+
 # Parity check (rule arxiv-sync): verify the arXiv LaTeX package AND the
 # built PDF are in sync with the Markdown source article. `just
 # arxiv-parity integral-cycle` checks one article; `just arxiv-parity`
