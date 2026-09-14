@@ -657,7 +657,7 @@ Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*. Availabl
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
+Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*. Available at: [https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md)

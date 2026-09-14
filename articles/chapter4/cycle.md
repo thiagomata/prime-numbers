@@ -80,7 +80,7 @@ period, residue, and lookup properties of its concrete periodic model.
 
 We reuse several basic list operations and their verified properties from the companion articles
 [Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1)
-and [Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md) [[2]](#ref2).
+and [Formal Verification of Discrete Integration Properties from First Principles](https://doi.org/10.5281/zenodo.22746792) [[2]](#ref2).
 
 These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
 and are treated here as foundational primitives.
@@ -1082,7 +1082,7 @@ Future work may include exploring more complex properties of Cycles, such as the
 Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
