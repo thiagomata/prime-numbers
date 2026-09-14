@@ -288,7 +288,11 @@ def extract_md_urls(md):
     )
 
 
-DANGLING_ARTICLE = re.compile(r"\.\s+A(?![ \t]*\n?[ \t]*[A-Za-z{])")
+DANGLING_ARTICLE = re.compile(
+    r"\.\s+A"
+    r"(?![ \t]*(?:\\(?:textbf|emph|textit)\{|\*\*))"
+    r"(?![ \t]*\n?[ \t]*[A-Za-z{])"
+)
 
 
 def find_dangling_articles(text):
@@ -301,6 +305,11 @@ def find_dangling_articles(text):
     after the A (same line or the next line), so it is not flagged;
     a paragraph genuinely ending in a standalone 'A' (e.g. 'Plan A')
     would false-positive -- none exists in the current packages.
+    'A' immediately (same line, no blank-line break) introducing an
+    emphasized term -- '\\textbf{2-gap}' or Markdown '**2-gap**' -- is
+    also a legitimate continuation (survival-frontiers defines several
+    terms this way); the same shape after a blank line still flags,
+    since that is the paragraph-final surgery leftover shape.
     """
     return [m.start() for m in DANGLING_ARTICLE.finditer(text)]
 

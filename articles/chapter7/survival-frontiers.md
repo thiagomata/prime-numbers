@@ -1,15 +1,16 @@
 # Survival Frontiers in Balanced 2-Gap Companion Processes
 
-**Author:** Mata, T. H.<br>
-Independent Researcher<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)<br>
+**Author:** Thiago Henrique Ramos da Mata
+Independent Researcher  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)
 
-**Status:** Draft (2026-08-15). The companion-process identities are proved
-exactly; the asymptotic theorems are conditional on the premises stated with
-each result (see [§1.1](#11-scope-and-evidence)). Stainless verification is pending. No result is
-claimed for the real sieve.
+**Proof status:** The companion-process identities are proved exactly; the
+asymptotic theorems are conditional on the premises stated with each result
+(see [§1.1](#11-scope-and-evidence)). Stainless verification is pending. No
+result is claimed for the real sieve.
 
 ## Abstract
 
@@ -25,9 +26,10 @@ This construction separates the number of surviving 2-gaps from their
 location near the head.
 
 A filter's local destruction fraction $f_r$ is compared with the random rate
-$2/r$ through $w_r=rf_r/2$. The cumulative product proves that every fixed
-finite value of $w_r$ preserves square-window 2-gaps and, with the stated
-availability and mixing conditions, produces head 2-gaps infinitely often.
+$2/r$ through $w_r=rf_r/2$. Under the stated blind-placement premise, the cumulative
+product proves that every fixed finite value of $w_r$ preserves
+square-window 2-gaps; with the additional availability and mixing
+conditions, it produces head 2-gaps infinitely often.
 The first boundary occurs when $w_r=1+c\log r$: square windows survive for
 $c < 1$, while head recurrence survives for $c < 1/2$. Under the same spatial
 premises, a separate exact-quota random-location model gives the same local

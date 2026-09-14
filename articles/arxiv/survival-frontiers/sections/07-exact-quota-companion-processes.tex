@@ -1,0 +1,267 @@
+\section{Exact-Quota Companion Processes}
+\subsection{Exact CRT Quotas With Random Locations}
+The random parent model fixes two harmful copy indices per parent. A separate statistical companion instead retains the exact number of accepted strikes supplied by a chosen CRT population and randomizes only their locations. This preserves the real count while removing the arithmetic targeting information, but it does not preserve two losses per 2-gap parent or the balanced global recurrence. Exact quotas create dependence within one layer, but they do not change the one-position survival scale when allocated uniformly on the conditioned eligible population. The head result also uses persistent availability and cross-layer mixing, while the square-window result uses blind placement and a quadratic eligible supply.
+At filter $r$, let $U_r$ contain $N_r$ eligible values and let the CRT quota be $J_r$, with $0\le J_r\le N_r-2$. The exact-quota random parent model chooses one uniformly random size-$J_r$ subset of $U_r$ as its strike set. For a specified 2-gap whose two endpoints belong to $U_r$, both endpoints survive precisely when every strike is selected from the other $N_r-2$ values. Therefore
+\begin{equation*}
+\begin{aligned}
+s_r
+&=\frac{\binom{N_r-2}{J_r}}{\binom{N_r}{J_r}}
+&&[\text{Uniform Exact-Quota Choice}]\\
+&=\frac{(N_r-J_r)(N_r-J_r-1)}{N_r(N_r-1)}.
+&&[\text{Factorial Simplification}]
+\end{aligned}
+\end{equation*}
+Write the strike fraction as
+\begin{equation*}
+u_r:=\frac{J_r}{N_r}.
+\end{equation*}
+The exact formula gives
+\begin{equation*}
+\log s_r
+=-2u_r+O\left(u_r^2+\frac{u_r}{N_r}\right).
+\end{equation*}
+This separates the exact finite quota from the cumulative condition needed for recurrence. Assume that along the conditioned chain to head $Q$,
+\begin{equation*}
+\begin{aligned}
+\sum_{r < Q}u_r
+&=\log\log Q+O(1),
+&&[\text{CRT-Rate Cumulative Quota}]\\
+\sum_{r < Q}
+\left(u_r^2+\frac{u_r}{N_r}\right)
+&=O(1).
+&&[\text{Summable Finite-Population Error}]
+\end{aligned}
+\end{equation*}
+The complete-period CRT benchmark $u_r=1/r$ satisfies these conditions. A different local CRT quota must be checked against them; preserving a numerical strike count alone does not make the conclusion automatic.
+Multiplying the exact without-replacement factors gives
+\begin{equation*}
+\begin{aligned}
+P_{\mathrm{quota}}(Q)
+&=\prod_{r < Q}s_r
+&&[\text{Survive Every Filter}]\\
+&=\exp\left(\sum_{r < Q}\log s_r\right)
+&&[\text{Product To Sum}]\\
+&=\exp\left(-2\sum_{r < Q}u_r+O(1)\right)
+&&[\text{Summable Error}]\\
+&\asymp\frac{C}{(\log Q)^2}.
+&&[\text{Cumulative Quota Condition}]
+\end{aligned}
+\end{equation*}
+Thus the exact-quota companion has the same one-head survival order as the random parent model. It is not an independent Bernoulli filter inside one layer; it is a uniform shuffle conditioned on the exact CRT strike count.
+Suppose the distinguished head candidate is eligible with conditional probability at least $b_0 > 0$, uniformly for all sufficiently large prime heads, and that this availability is compatible with the quota-survival experiment. Then
+\begin{equation*}
+\begin{aligned}
+b_0P_{\mathrm{quota}}(Q)
+&\le\Pr(H_Q)\le P_{\mathrm{quota}}(Q),
+&&[\text{Uniform Availability Bounds}]\\
+\Pr(H_Q)
+&\asymp\frac{1}{(\log Q)^2}.
+&&[\text{Quota Survival Asymptotic}]
+\end{aligned}
+\end{equation*}
+Consequently,
+\begin{equation*}
+\begin{aligned}
+\sum_{Q\text{ prime}}\Pr(H_Q)
+&\asymp
+\sum_{Q\text{ prime}}\frac{1}{(\log Q)^2}\\
+&=\infty.
+&&[\text{Prime Number Theorem}]
+\end{aligned}
+\end{equation*}
+Under independence or an adequate cross-layer mixing condition, the second Borel-Cantelli lemma yields
+\begin{equation*}
+\Pr(H_Q\text{ occurs infinitely often})=1.
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+This is an almost-sure theorem, not a guarantee for every random realization. The set of realizations with only finitely many head hits has probability zero, but it is not logically empty.
+For square-safe windows, assume $B(Q)\asymp C_0Q^2$ eligible starts and the same blind-placement empty-window premise used by the random parent model. Then
+\begin{equation*}
+\begin{aligned}
+\lambda_{\mathrm{quota}}(Q)
+&=B(Q)P_{\mathrm{quota}}(Q)
+&&[\text{Expected Surviving Starts}]\\
+&\asymp
+C_0\frac{Q^2}{(\log Q)^2}
+\longrightarrow\infty.
+&&[\text{Quadratic Supply Dominates}]
+\end{aligned}
+\end{equation*}
+If
+\begin{equation*}
+\Pr(W_Q\text{ is empty})
+\le e^{-\lambda_{\mathrm{quota}}(Q)},
+\end{equation*}
+the empty probabilities are summable over prime $Q$. The first Borel-Cantelli lemma then gives only finitely many empty square windows almost surely. This eventual-window statement is stronger than the twin-prime-style target: an unbounded sequence of successful windows, or infinitely many head hits, is already sufficient for infinitely many distinct certificates.
+For consecutive primes $p < q$, the real accepted-strike count in the next safe window is proved in \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes}{Gap Dynamics \S{}9.1} \cite{gapdynamics2026}:
+\begin{equation*}
+A(p,q)
+=
+\pi\left(\left\lfloor\frac{q^2-1}{p}\right\rfloor\right)
+-\pi(p-1).
+\end{equation*}
+Using this local quota as $J_r=A(p,q)$ in the random-location companion is well defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed cumulative conditions for the head proof above. The \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count}{complete-period count} \cite{gapdynamics2026} supplies the global density; neither exact count determines local placement in the real sieve.
+\subsection{Biased Exact Quotas and the Logarithmic Skew Frontier}
+The neutral exact-quota companion treats every eligible value symmetrically. We now keep the same quota $J_r$ while making 2-gap endpoints proportionally more likely to receive a harmful strike. This asks how much positional preference the quota can carry before the almost-sure head conclusion changes. We use a group-exchangeable allocation law, assume double strikes on one endpoint pair have quadratic order, and retain the availability, placement, and mixing premises of Section~3.5 and Section~7.1.
+Let $E_r\subseteq U_r$ be the eligible values that are endpoints of locally relevant 2-gaps, and define
+\begin{equation*}
+x_r:=\frac{|E_r|}{N_r},
+\qquad
+u_r:=\frac{J_r}{N_r}.
+\end{equation*}
+Stipulate a group-exchangeable size-$J_r$ allocation law in which every endpoint has marginal inclusion probability $p_r^{E}$, every ordinary value has marginal inclusion probability $p_r^{O}$, and the endpoint preference ratio is
+\begin{equation*}
+\beta_r:=\frac{p_r^{E}}{p_r^{O}}\ge1.
+\end{equation*}
+We require that these marginals are feasible:
+\begin{equation*}
+0\le p_r^{O},p_r^{E}\le1.
+\end{equation*}
+This condition, together with the fixed-size law, is an assumption on the group-exchangeable quota construction rather than a consequence of the ratio $\beta_r$ alone.
+The fixed quota forces the average marginal inclusion probability to equal $u_r$. Therefore
+\begin{equation*}
+\begin{aligned}
+x_rp_r^{E}+(1-x_r)p_r^{O}
+&=u_r
+&&[\text{Exact Quota}]\\
+p_r^{O}
+&=\frac{u_r}{1+(\beta_r-1)x_r}
+&&[\text{Substitution}]\\
+p_r^{E}
+&=\frac{\beta_ru_r}{1+(\beta_r-1)x_r}.
+&&[\text{Simplification}]
+\end{aligned}
+\end{equation*}
+Define the quota-normalized preference
+\begin{equation*}
+\kappa_r^{\mathrm{eff}}
+:=
+\frac{\beta_r}{1+(\beta_r-1)x_r}.
+\end{equation*}
+For one 2-gap, assume the probability that both endpoints are struck is $O((p_r^{E})^2)$. Its destruction fraction then satisfies
+\begin{equation*}
+\begin{aligned}
+f_r
+&=2p_r^{E}-\Pr(\text{both endpoints are struck})
+&&[\text{Inclusion-Exclusion}]\\
+&=2u_r\kappa_r^{\mathrm{eff}}
++O\left((u_r\kappa_r^{\mathrm{eff}})^2\right).
+&&[\text{Normalized Preference}]
+\end{aligned}
+\end{equation*}
+To use the displayed linear term cumulatively, we additionally require $p_r^E=u_r\kappa_r^{\mathrm{eff}}\to0$ and
+\begin{equation*}
+\sum_{r<\infty}\left(u_r\kappa_r^{\mathrm{eff}}\right)^2<\infty.
+\end{equation*}
+Without this error control, the per-filter expansion does not determine the asymptotic cumulative hazard.
+The raw weight $\beta_r$ and the effective destruction skew are not identical: the exact quota must take probability away from ordinary values when it gives more probability to endpoints. For the complete-period eligible-sieve population, let $V_r$ be its accepted-value count and $T_r$ its 2-gap count. After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and
+\begin{equation*}
+\begin{aligned}
+x_r
+&=\frac{2T_r}{V_r}\\
+&=2\prod_{3\le p<r}\frac{p-2}{p-1}\\
+&=\Theta\left(\frac1{\log r}\right).
+&&[\text{Mertens-Type Product Estimate}]
+\end{aligned}
+\end{equation*}
+The prior $\Theta((\log r)^{-2})$ density would be the density among raw integers, not among the eligible values $U_r$ used in this quota. For the illustrative sharper asymptotics
+\begin{equation*}
+x_r\sim\frac{C}{\log r},
+\qquad
+\beta_r\sim b\log r,
+\end{equation*}
+we instead obtain
+\begin{equation*}
+\kappa_r^{\mathrm{eff}}
+=\frac{b}{1+bC}\log r\,(1+o(1)).
+\end{equation*}
+Thus a logarithmic raw preference changes its leading effective coefficient. A sparse relation $x_r=O((\log r)^{-2})$ may be imposed as an additional assumption for a different local target population, but it is not the complete-period eligible-sieve density.
+For the phase theorem, measure skew by the realized effective factor
+\begin{equation*}
+\kappa_r
+:=\frac{f_r}{2/r}.
+\end{equation*}
+This is the same quantity called $w_r$ in the general hazard analysis. Its cumulative survival is defined once $2\kappa_r < r$. Every regime below satisfies this inequality for all sufficiently large filters; the finite prefix is absorbed into a positive constant. Thus
+\begin{equation*}
+P_{\kappa}(Q)
+=
+\prod_{r < Q}\left(1-\frac{2\kappa_r}{r}\right)
+=e^{-D_{\kappa}(Q)},
+\end{equation*}
+where
+\begin{equation*}
+D_{\kappa}(Q)
+:=
+\sum_{r < Q}-\log\left(1-\frac{2\kappa_r}{r}\right).
+\end{equation*}
+If $\kappa_r=\kappa < \infty$ is fixed, then
+\begin{equation*}
+\begin{aligned}
+D_{\kappa}(Q)
+&=2\kappa\log\log Q+O(1)
+&&[\text{Prime Harmonic Sum}]\\
+P_{\kappa}(Q)
+&\asymp\frac{C_{\kappa}}{(\log Q)^{2\kappa}}.
+&&[\text{Exponentiation}]
+\end{aligned}
+\end{equation*}
+The sum of this probability over prime heads diverges for every finite $\kappa$. With persistent head availability and adequate cross-layer mixing,
+\begin{equation*}
+\text{every fixed finite proportional skew gives infinitely many head hits almost surely.}
+\end{equation*}
+Thus there is no finite constant-skew maximum.
+The first transition appears when effective skew grows logarithmically. Set
+\begin{equation*}
+\kappa_r=1+c\log r,
+\qquad c\ge0.
+\end{equation*}
+Then
+\begin{equation*}
+\begin{aligned}
+D_c(Q)
+&=2\log\log Q+2c\log Q+O(1)
+&&[\text{Prime-Sum Asymptotics}]\\
+P_c(Q)
+&\asymp\frac{C_c}{Q^{2c}(\log Q)^2}.
+&&[\text{Exponentiation}]
+\end{aligned}
+\end{equation*}
+For prime heads, the occurrence series has the same convergence behavior as
+\begin{equation*}
+\int^\infty\frac{dx}{x^{2c}(\log x)^3}.
+\end{equation*}
+Therefore
+\begin{equation*}
+\begin{aligned}
+c < \frac12
+&\Longrightarrow
+\text{infinitely many head hits almost surely, with mixing},\\
+c\ge\frac12
+&\Longrightarrow
+\text{only finitely many head hits almost surely}.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+In this explicitly normalized family, the equality $c=1/2$ is on the failure side because the remaining factor $(\log Q)^{-2}$ makes the boundary prime series converge. If $\beta_r$, rather than effective $\kappa_r$, is specified at its raw equality boundary, quota normalization changes lower-order terms and the cumulative series $D_{\kappa}(Q)$ must be evaluated directly.
+The robust head-safe frontier is therefore
+\begin{equation*}
+\kappa_r
+\le
+1+\left(\frac12-\varepsilon\right)\log r
+\quad\Longrightarrow\quad
+\text{head recurrence almost surely, with mixing}.
+\end{equation*}
+For square windows, quadratic supply gives the larger robust frontier
+\begin{equation*}
+\kappa_r
+\le
+1+(1-\varepsilon)\log r
+\quad\Longrightarrow\quad
+\text{eventual square-window occupancy almost surely}.
+\end{equation*}
+Hence the intermediate range between approximately $(1/2)\log r$ and $\log r$ preserves square windows but not infinitely recurring head hits. The window statement is stronger than necessary: the twin-prime-style conclusion needs only infinitely many successful windows.
+For an irregular skew schedule, the head criterion is
+\begin{equation*}
+\sum_{Q\text{ prime}}e^{-D_{\kappa}(Q)}=\infty,
+\end{equation*}
+together with persistent availability and adequate mixing. A pointwise skew percentage cannot replace this cumulative test.

@@ -1,0 +1,64 @@
+\section{Preliminaries and Companion Models}
+Let $\mathcal G_k$ be the 2-gap descendants before installing prime $r$. Each parent $g\in\mathcal G_k$ produces the indexed copies
+\begin{equation*}
+(g,0),(g,1),\ldots,(g,r-1).
+\end{equation*}
+Exactly two distinct indices are harmful. Each parent receives one of three policies. A \textbf{random parent} draws the harmful pair uniformly from the two-element subsets of $\mathbb Z/r\mathbb Z$. An \textbf{adversarial parent} places a deletion on its target child whenever possible. A \textbf{protective parent}, defined fully in Section~5.2, places both deletions away from the target whenever possible.
+Every policy leaves exactly $r-2$ children. The companions therefore change the location of the deletions, not the population size.
+For example, let $r=5$ and suppose child index $1$ is the target. A random parent may remove any pair, such as $\{0,4\}$. An adversarial parent chooses a pair containing $1$, such as $\{1,4\}$. A protective parent chooses both indices outside the target, again allowing $\{0,4\}$. The three parents make different local choices, but each leaves exactly three children. This simple example is the distinction used throughout the article: global reproduction is fixed, while local placement changes.
+The random, adversarial, and protective companion definitions above are the definitions used throughout this article. The corresponding real modular pair is derived in \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes}{Gap Dynamics \S{}6.1} \cite{gapdynamics2026}.
+The exact-quota process introduced in Section~7 is a separate conditional random-location experiment. It draws a fixed number of strikes from an eligible population and can strike zero, one, or two descendants of a given 2-gap parent. It therefore does not satisfy the balanced per-parent $r-2$ recurrence; its role is to compare conditional local survival at a fixed strike quota.
+\subsection{Notation}
+We use the following notation throughout:
+\begin{longtable}{ll}
+\toprule
+Symbol & Meaning \\
+\midrule
+$r$ & incoming filter prime \\
+$Q$ & target prime head \\
+$N_k$ & complete-period 2-gap population at layer $k$ \\
+$f_r$ & conditional destruction probability of an eligible tracked lineage \\
+$\widehat f_r$ & observed destruction fraction in a specified finite population \\
+$w_r=rf_r/2$ & destruction relative to the random benchmark $2/r$ \\
+$D(Q)=\sum_{r < Q}-\log(1-f_r)$ & cumulative local hazard \\
+$\alpha_r$ & scheduled absolute adversarial share in a mixture \\
+$A(Q)=\sum_{r < Q}-\log(1-\alpha_r)$ & cumulative adversarial-share hazard \\
+$J_r/N_r=u_r$ & exact-quota strike fraction \\
+$\beta_r$ & raw endpoint preference in a biased quota \\
+$\kappa_r$ & effective destruction skew, equal to $w_r$ when measured from $f_r$ \\
+\bottomrule
+\end{longtable}
+Unless a different range is displayed, filter products and sums run over primes $r_0\le r < Q$, with a fixed $r_0\ge5$. Every finite prefix has strictly positive survival factors. Tail schedules are imposed only once their hazards lie in $[0,1)$. A lethal prefix cannot be absorbed into a positive constant.
+For probability statements, all candidate events are defined on one probability space. For each candidate, $f_r$ is its deterministic conditional probability of destruction given initial eligibility and survival through the earlier filters. The common-hazard model assumes these probabilities are the same for the candidates being compared. The chain rule then gives a candidate survival probability $P(Q)$; independence between candidates is a separate issue.
+Window applications assume $B(Q)\asymp Q^2$ eligible candidate histories, each with survival probability $P(Q)$. Head applications assume an eligibility probability $b_Q$ bounded below by a positive constant and the same survival law conditional on eligibility. Consequently,
+\begin{equation*}
+\begin{aligned}
+\lambda_Q:=\mathbb E[X_Q]&=B(Q)P(Q)
+&&[\text{Linearity Of Expectation}],\\
+\Pr(H_Q)&=b_QP(Q)
+&&[\text{Conditional Probability}].
+\end{aligned}
+\end{equation*}
+These marginal assumptions are additional to the balanced branching rule. They are not supplied by its global count. Different window and head experiments need not describe one nested random sequence of integers.
+For the prime-indexed head events $H_Q$, define
+\begin{equation*}
+S(X):=
+\sum_{\substack{Q\le X\\Q\text{ prime}}}\Pr(H_Q).
+\end{equation*}
+Throughout this article, \textbf{adequate cross-layer mixing} means that whenever $S(X)\longrightarrow\infty$,
+\begin{equation*}
+\sum_{\substack{P,Q\le X\\P,Q\text{ prime}}}
+\Pr(H_P\cap H_Q)
+=
+(1+o(1))S(X)^2.
+\end{equation*}
+Mutual independence is a sufficient special case: its diagonal correction is $O(S(X))=o(S(X)^2)$. The Kochen--Stone form of the second Borel--Cantelli lemma then gives $\Pr(H_Q\text{ infinitely often})=1$ \cite{kochenstone1964}. When $S(X)$ converges, the first Borel--Cantelli lemma gives only finitely many head events without any mixing premise.
+Square-window applications use one further named premise. \textbf{Blind placement} means that the surviving starts are placed in the window so that the empty-window bound
+\begin{equation*}
+\Pr(X_Q=0)\le e^{-\lambda_Q}
+\end{equation*}
+holds, where $\lambda_Q$ is the expected surviving population of that window (for example $\lambda_Q^{\mathrm{mix}}$ in Section~4.1). This is an assumption about the joint placement distribution: it holds for independent uniform placement and is not derived in this article for dependent allocators such as exact quotas, whole-filter coins, or block balance. Whenever a square-window result uses it, the result says so; the same caveat as Section~9 applies — allocators with different dependence structures cannot inherit one another's almost-sure conclusions.
+\subsection{Mathematical Foundation}
+The companion construction uses three exact sieve-sequence results proved in \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md}{Gap Dynamics} \cite{gapdynamics2026}:
+- the \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count}{exact complete-period 2-gap count}; - the \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes}{two harmful copy-index classes}; and - the \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes}{exact accepted-strike count}.
+The relative local-damage normalization is defined directly in Section~3.2, and its allocation refinement is defined in Section~6.2.

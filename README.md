@@ -390,6 +390,36 @@ The result is a finite-stage specification and transition semantics. It does
 not claim a faster sieve algorithm, and it does not by itself prove persistence
 of any particular prime gap in local windows.
 
+### Relaxed Almost-Prime Production
+
+The article [Relaxed Almost-Prime Production in Sieve Sequences](./articles/chapter6/relaxed-almost-prime.md)
+studies a deliberately weaker target than a twin-prime pair: the second
+endpoint of a square-safe candidate is required only to avoid primes below a
+smaller threshold, not to survive every filter. Positivity of this relaxed
+weight is proved to imply a prime plus an integer with at most two prime
+factors, alongside three exact algebraic properties of the weight and a
+refutation of one proof shortcut.
+
+```math
+\begin{aligned}
+a_Q(n)=1 &\implies n\text{ is prime and }\Omega(n+2)\le2
+\quad &\text{[Relaxed Positivity Implies Prime-Plus-}P_2\text{]} \\
+\mathcal N_m[L,U) &= \rho(m)\ell_m+E_m[L,U)
+\quad &\text{[Exact Divisor Local Factor]} \\
+r_d(I) &= \pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}
+\quad &\text{[Shifted Divisor Discrepancy]} \\
+w(mn) &= \frac1{\varphi(d)}\sum_{\chi\ne\chi_0}\overline{\chi(-2)}\chi(m)\chi(n)
+\quad &\text{[Bilinear Character Decomposition]} \\
+\left|\sum_{m,n\in G_W}\chi_3(m)\chi_3(n)w(mn)\right| &= \sum_{m,n\in G_W}a(mn)
+\quad &\text{[Scalar-Density Type-II Shortcut Refuted]} \\
+\end{aligned}
+```
+
+These are exact algebraic reductions and one refutation, not a positivity
+proof: an averaged prime-progression theorem and a locally adapted bilinear
+estimate remain the open analytic obstructions, and none of these results is
+yet Stainless-verified.
+
 ### Gap Dynamics And 2-Gap Properties
 
 The article [Structural Properties and Open Boundaries of 2-Gaps in Sieve Sequences](./articles/chapter6/gap-dynamics.md)

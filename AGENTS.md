@@ -241,6 +241,12 @@ Only re-run `just verify` after making a code change.
     Tickets are internal project artifacts. Articles must be self-contained — if a fact
     matters, state it directly in the article, not "see the ticket." Internal learnings
     docs (`articles/learnings/`) are exempt.
+    Self-containment is general: an article never cites internal working materials
+    (`properties/`, `candidates/` research notes, `companions/`, `articles/notes/`,
+    tickets) as mathematical authority, even alongside its own derivation — the
+    article's derivations and appendices ARE the authority. Permitted link targets:
+    published sibling articles, verified Scala sources, chart/data/code provenance,
+    and external literature.
   </rule>
   <rule id="arxiv-sync" priority="high">
     When an article's Markdown source and its arXiv LaTeX package BOTH exist

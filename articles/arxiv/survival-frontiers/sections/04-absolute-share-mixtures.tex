@@ -1,0 +1,254 @@
+\section{Absolute-Share Mixtures}
+\subsection{Adversarial/Random Parent Square-Window Boundary}
+We now express the general hazard result through an explicit mixture. Each parent is adversarial with share $\alpha_r$ and otherwise random. When the surviving starts follow the spatial-uniformity model of the balanced random companion, a square-safe window has length
+\begin{equation*}
+L_Q\asymp Q^2.
+\end{equation*}
+The expected mixed population is
+\begin{equation*}
+\begin{aligned}
+\lambda_Q^{\mathrm{mix}}
+&=L_Q\delta_Q^{\mathrm{mix}}
+&&[\text{Expected Uniform Occupancy}]\\
+&\asymp
+C\frac{Q^2}{(\log Q)^2}e^{-A(Q)}.
+&&[\text{Substitution}]
+\end{aligned}
+\end{equation*}
+Taking logarithms exposes the threshold:
+\begin{equation*}
+\begin{aligned}
+\log\lambda_Q^{\mathrm{mix}}
+&=2\log Q-2\log\log Q-A(Q)+O(1).
+&&[\text{Logarithm}]
+\end{aligned}
+\end{equation*}
+Therefore, for every fixed $\varepsilon > 0$,
+\begin{equation*}
+\begin{aligned}
+A(Q)\le(2-\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow\infty,
+&&[\text{Subcritical Adversarial Budget}]\\
+A(Q)\ge(2+\varepsilon)\log Q
+&\Longrightarrow
+\lambda_Q^{\mathrm{mix}}\longrightarrow0.
+&&[\text{Supercritical Adversarial Budget}]
+\end{aligned}
+\end{equation*}
+The boundary $A(Q)=2\log Q+o(\log Q)$ requires its lower-order terms; the $-2\log\log Q$ contribution cannot be discarded there.
+Under uniform placement, an empty-window estimate has the usual form
+\begin{equation*}
+\Pr(X_Q=0)\le e^{-\lambda_Q^{\mathrm{mix}}}.
+\end{equation*}
+Whenever
+\begin{equation*}
+\sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}} < \infty,
+\end{equation*}
+the first Borel-Cantelli lemma gives only finitely many empty square windows almost surely. A convenient sufficient condition is
+\begin{equation*}
+\lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+for all sufficiently large $Q$. This is stronger than merely requiring $\lambda_Q^{\mathrm{mix}}\to\infty$ and prevents a slow divergent expectation from being mistaken for an eventual-survival theorem.
+This proves eventual safe-window occupancy inside the spatially uniform mixed companion. Section 8 states the separate conditions needed to transfer the result to the real sieve.
+The complete proof record appears in Appendix~A.5.
+\subsection{Why a Constant Absolute Adversarial Share Is Locally Fatal}
+A constant adversarial share sounds mild, but it adds the same positive loss at every filter while the random benchmark keeps shrinking. We therefore expect it to overwhelm local survival. Let one fixed share $0 < \alpha < 1$ be adversarial at every filter. Then
+\begin{equation*}
+\begin{aligned}
+A(Q)
+&=-\bigl(\pi(Q)+O(1)\bigr)\log(1-\alpha)
+&&[\text{Constant Share}]\\
+&\asymp
+\bigl[-\log(1-\alpha)\bigr]\frac{Q}{\log Q}.
+&&[\text{Prime Number Theorem}]
+\end{aligned}
+\end{equation*}
+Since $Q/\log Q$ grows faster than $\log Q$, this lies far above the square-window critical budget. Hence
+\begin{equation*}
+\begin{aligned}
+\lambda_Q^{(\alpha)}
+&\asymp
+C\frac{Q^2}{(\log Q)^2}(1-\alpha)^{\pi(Q)}\\
+&\longrightarrow0.
+&&[\text{Exponential Loss Beats Quadratic Growth}]
+\end{aligned}
+\end{equation*}
+Thus
+\begin{equation*}
+\text{every fixed positive per-filter adversarial share is locally fatal}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+in the repeated-mixture model, even though the complete-period population continues to grow without bound.
+This is different from applying one adversarial dilution after all random filters have finished. A one-time dilution multiplies the final count by $1-\alpha$ once; the repeated model multiplies it once per prime. Confusing these two experiments reverses the asymptotic conclusion.
+\subsection{Two Decaying Absolute-Share Families}
+The useful question is therefore not “what fixed percentage is tolerable?” The useful question is how quickly $\alpha_r$ must decay. In this section and the comparison in Section~5, the displayed schedules hold exactly for all sufficiently large filters. Mere asymptotic equivalence gives weaker remainder control and does not determine the critical cases.
+\subsubsection*{Reciprocal Decay: $\alpha_r= c/r$}
+For fixed $c > 0$ and sufficiently large primes,
+\begin{equation*}
+\begin{aligned}
+A(Q)
+&=c\sum_{r < Q}\frac1r+O(1)
+&&[\text{Taylor Expansion; Summable Error}]\\
+&=c\log\log Q+O(1).
+&&[\text{Prime Harmonic Sum}]
+\end{aligned}
+\end{equation*}
+Therefore
+\begin{equation*}
+e^{-A(Q)}\asymp\frac1{(\log Q)^c}
+\end{equation*}
+and
+\begin{equation*}
+\lambda_Q^{\mathrm{mix}}
+\asymp
+C\frac{Q^2}{(\log Q)^{2+c}}\longrightarrow\infty.
+\end{equation*}
+The window population grows polynomially faster than its logarithmic losses, so the empty-window probabilities are summable under the spatial model.
+\subsubsection*{Logarithmic-Over-Linear Decay: $\alpha_r= c\log r/r$}
+For a finite initial prefix, define the shares separately so that they remain in $[0,1)$; this changes only the positive final constant. On the asymptotic tail,
+\begin{equation*}
+\begin{aligned}
+A(Q)
+&=c\sum_{r < Q}\frac{\log r}{r}+O(1)
+&&[\text{Taylor Expansion; Summable Error}]\\
+&=c\log Q+O(1).
+&&[\text{Prime Number Theorem By Partial Summation}]
+\end{aligned}
+\end{equation*}
+Consequently,
+\begin{equation*}
+\begin{aligned}
+e^{-A(Q)}&\asymp Q^{-c},\\
+\lambda_Q^{\mathrm{mix}}
+&\asymp C\frac{Q^{2-c}}{(\log Q)^2}.
+\end{aligned}
+\end{equation*}
+The square-window phase diagram is therefore
+\begin{equation*}
+\begin{aligned}
+c < 2&\Longrightarrow\lambda_Q^{\mathrm{mix}}\longrightarrow\infty,\\
+c\ge 2&\Longrightarrow\lambda_Q^{\mathrm{mix}}\longrightarrow0.
+\end{aligned}
+\end{equation*}
+For $c < 2$, the divergence is polynomial, so the empty-window bound is summable and every sufficiently large square window is nonempty almost surely under the spatial-uniformity premise.
+\subsection{Adversarial/Random Parent Head Boundary}
+The head contains only one distinguished position, so it receives no quadratic window reserve. Under uniform head marginals, its occurrence probability is the surviving local density itself. To turn a divergent sum of these probabilities into almost-sure recurrence, we also require independence or a sufficiently strong weak-mixing substitute.
+\begin{equation*}
+\Pr(H_Q)
+\asymp
+\delta_Q^{\mathrm{mix}}
+\asymp
+\frac{C}{(\log Q)^2}e^{-A(Q)}.
+\end{equation*}
+Under adequate cross-layer mixing, the second Borel-Cantelli lemma gives
+\begin{equation*}
+\sum_{Q\text{ prime}}\Pr(H_Q)=\infty
+\Longrightarrow
+H_Q\text{ occurs infinitely often almost surely}.
+\end{equation*}
+For $\alpha_r= c/r$,
+\begin{equation*}
+\Pr(H_Q)\asymp\frac{C}{(\log Q)^{2+c}},
+\end{equation*}
+and the sum over prime $Q$ diverges for every fixed $c$. Reciprocal decay is therefore compatible with infinitely many head events under mixing.
+For $\alpha_r= c\log r/r$,
+\begin{equation*}
+\Pr(H_Q)\asymp\frac{C}{Q^c(\log Q)^2}.
+\end{equation*}
+Using prime density $dQ/\log Q$, the corresponding series has the same convergence behavior as
+\begin{equation*}
+\int^\infty\frac{dx}{x^c(\log x)^3}.
+\end{equation*}
+Therefore
+\begin{equation*}
+\begin{aligned}
+c < 1
+&\Longrightarrow
+\sum_{Q\text{ prime}}\Pr(H_Q)=\infty,\\
+c\ge 1
+&\Longrightarrow
+\sum_{Q\text{ prime}}\Pr(H_Q) < \infty.
+\end{aligned}
+\qquad[\text{Q.E.D.}]
+\end{equation*}
+For $c < 1$, adequate mixing implies infinitely many head events almost surely. For $c\ge 1$, the first Borel-Cantelli lemma implies only finitely many head events almost surely; no independence assumption is needed for that convergent direction.
+The head threshold $c=1$ is stricter than the safe-window threshold $c=2$. There is an intermediate regime
+\begin{equation*}
+1\le c < 2
+\end{equation*}
+in which square-safe windows remain populated almost surely under the spatial model, while head recurrence fails almost surely in the mixed companion.
+\subsection{Adversarial/Random Parent Phase Diagram}
+For the representative schedule $\alpha_r= c\log r/r$, the companion separates into three regimes:
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.28\textwidth}@{}}
+\toprule
+Adversarial scale & Global 2-gaps & Square-safe windows & Head recurrence \\
+\midrule
+$0\le c < 1$ & Persist and grow & Eventually nonempty almost surely & Infinite almost surely, with mixing \\
+$1\le c < 2$ & Persist and grow & Eventually nonempty almost surely & Only finitely many almost surely \\
+$c\ge 2$ & Persist and grow & Mixed expectation tends to zero & Only finitely many almost surely \\
+Fixed $\alpha > 0$ & Persist and grow & Mixed expectation tends to zero & Only finitely many almost surely \\
+\bottomrule
+\end{longtable}
+The table's last two columns are statements inside the spatial model. The global column is unconditional for every balanced companion.
+\subsection{Why a Fixed Absolute Percentage Gives the Wrong Maximum}
+Within position-blind repeated mixtures, percentages that do not change with the filter prime have a blunt but secondary answer. If the same absolute adversarial share $\alpha$ is applied at every filter, every $\alpha > 0$ is eventually fatal to the local mixed baseline. In that restricted normalization,
+\begin{equation*}
+\text{maximum sustainable fixed absolute adversarial share}=0\%.
+\end{equation*}
+This is not the meaningful answer to “how much worse than random can the filter be?” Random destruction itself shrinks as $2/r$, while fixed $\alpha > 0$ adds a positive floor and makes the relative factor $w_r=1+(r-2)\alpha/2$ diverge linearly. The primary answer from Section~3.6 is instead that every fixed finite $w$ survives the companion model defined above, with the first transition only when $w_r$ grows on the order of $\log r$.
+The zero-percent statement concerns safe-window and head survival under this fixed absolute-share policy. It does not concern the global population, which survives even under $100\%$ adversarial selection.
+Nonzero adversariality remains supportable when its share decreases with $r$. For a fixed margin $\varepsilon > 0$, the representative sufficient schedules are
+\begin{equation*}
+\begin{aligned}
+\alpha_r
+&\le(2-\varepsilon)\frac{\log r}{r}
+&&[\text{Square-Window Regime}],\\
+\alpha_r
+&\le(1-\varepsilon)\frac{\log r}{r}
+&&[\text{Head-Recurrence Regime, With Mixing}].
+\end{aligned}
+\end{equation*}
+Ignoring the required strict margin only to display the boundary curves, these become
+\begin{equation*}
+\begin{aligned}
+\text{square-window boundary percentage}
+&=200\frac{\log r}{r}\%,\\
+\text{head-recurrence boundary percentage}
+&=100\frac{\log r}{r}\%.
+\end{aligned}
+\end{equation*}
+Here $\log$ is the natural logarithm. Representative values are:
+\begin{longtable}{rrr}
+\toprule
+Filter prime $r$ & Square-window boundary & Head-recurrence boundary \\
+\midrule
+$101$ & $9.14\%$ & $4.57\%$ \\
+$1{,}000$ & $1.38\%$ & $0.691\%$ \\
+$19{,}000$ & $0.104\%$ & $0.0519\%$ \\
+$100{,}003$ & $0.0230\%$ & $0.0115\%$ \\
+\bottomrule
+\end{longtable}
+These entries are asymptotic boundary values, not independent allowances that reset at each filter. A schedule may temporarily cross a displayed value and remain viable if it spent less adversarial budget earlier; it may also fail despite staying below isolated entries if its cumulative behavior is worse on other filters. The governing quantities remain
+\begin{equation*}
+A(Q)=\sum_{r < Q}-\log(1-\alpha_r)
+\end{equation*}
+for square windows and
+\begin{equation*}
+\sum_{Q\text{ prime}}
+\frac{e^{-A(Q)}}{(\log Q)^2}
+\end{equation*}
+for head recurrence.
+\subsection{What “Percentage Adversarial” Must Specify}
+There is no unique mixture until we specify what receives the adversarial label.
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.42\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}@{}}
+\toprule
+Mixture & Choice made & Consequence \\
+\midrule
+Parent level & Each parent is adversarial with probability $\alpha_r$ & Independent branching interpretation \\
+Whole filter & The complete filter is adversarial with probability $\alpha_r$ & Same one-lineage marginal, stronger dependence between parents \\
+One-time final & One adversarial dilution is applied after random filtering & One factor $1-\alpha$; no cumulative phase transition \\
+\bottomrule
+\end{longtable}
+The calculations in Sections~3--4 concern a repeated share at every filter. Their expectations apply to the first two interpretations because one lineage has the same marginal survival probability. Their almost-sure conclusions do not transfer automatically: a whole-filter choice coordinates all parents and therefore needs its own spatial or mixing argument. The one-time model answers a different question because it applies the loss only once.

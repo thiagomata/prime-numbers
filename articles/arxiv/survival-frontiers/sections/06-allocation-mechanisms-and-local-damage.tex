@@ -1,0 +1,113 @@
+\section{Allocation Mechanisms and Local Damage}
+\subsection{Mechanism Families}
+An adversarial share becomes meaningful only after we say how policies are assigned to parents. A useful comparison begins with a position-blind allocator and then adds positional information in controlled steps. We write $P$ for a protective parent and $A$ for an adversarial parent.
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}@{}}
+\toprule
+Mechanism & Adversarial share & Position information & What it measures \\
+\midrule
+Independent parent coin & Random around $\alpha_r$ & None & Simplest branching law \\
+Exact-quota shuffle & Exactly $K/N$ & None & Canonical finite-population baseline \\
+Shuffled alternation, $P,A,P,A,\ldots$ & Fixed by pattern & None & Balanced deterministic labels after shuffling \\
+Block-balanced shuffle & Fixed inside each block & None & Sensitivity to local clustering \\
+Random cyclic mask & Fixed by pattern & None & Sensitivity to periodic allocation \\
+Position-blind hash & Random around $\alpha_r$ & None & Reproducible parent coins \\
+Delayed adversary & Exactly $K/N$ & Previous layer & Persistence of positional information \\
+Noisy ranking & Exactly $K/N$ & Tunable & Transition from blind to targeted allocation \\
+Perfect adversary & Exactly $K/N$ & Current layer & Worst-case endpoint \\
+\bottomrule
+\end{longtable}
+The exact-quota shuffle is the primary null model because it fixes the budget without using position. Shuffled patterns and block balance test whether local clustering changes the result. A delayed allocator can use only the previous layer, while noisy ranking assigns weight $e^{-\beta d_g}$ to a parent at distance $d_g$ from the target. Thus $\beta=0$ is uniform allocation and large $\beta$ approaches the perfect adversary.
+Every mechanism assigns one policy to a parent; the chosen policy still removes exactly two of that parent's children. Alternating labels cannot restore a target child destroyed at an earlier filter, and an unshuffled periodic pattern may lock to the sieve geometry. We therefore compare mechanisms through their realized local damage and targeting strength rather than through the scheduled percentage alone.
+\subsection{Targeting and Local Hazard}
+The primary observed state space has two coordinates:
+\begin{equation*}
+(w_r,\theta_r)
+=
+(\text{damage relative to random},\text{realized targeting strength}).
+\end{equation*}
+The first says how much total damage the tracked segment actually received. The second says how concentrated the controllable adversarial-label budget was relative to the locally relevant parents. The scheduled share $\alpha_r=K_r/N_r$ remains an experimental input, but it is not itself the local damage.
+\subsubsection*{Normalized Targeting Strength}
+For one nondegenerate transition, retain the notation from Section~5.1 and define
+\begin{equation*}
+\begin{aligned}
+H_{\min}&=\max(0,K-(N-L)),\\
+H_0&=\frac{KL}{N},\\
+H_{\max}&=\min(K,L).
+\end{aligned}
+\end{equation*}
+These are the protective minimum, uniform-random mean, and adversarial maximum numbers of locally relevant parents hit. When $H_{\min} < H_0 < H_{\max}$, normalize the realized hit count $H$ by
+\begin{equation*}
+\theta(H)=
+\begin{cases}
+\dfrac{H-H_0}{H_0-H_{\min}},&H\le H_0,\\[8pt]
+\dfrac{H-H_0}{H_{\max}-H_0},&H\ge H_0.
+\end{cases}
+\end{equation*}
+Then
+\begin{equation*}
+\begin{aligned}
+\theta=-1&\Longleftrightarrow H=H_{\min}
+&&[\text{Protective Endpoint}],\\
+\theta=0&\Longleftrightarrow H=H_0
+&&[\text{Uniform Benchmark}],\\
+\theta=1&\Longleftrightarrow H=H_{\max}
+&&[\text{Targeted Endpoint}].
+\end{aligned}
+\end{equation*}
+The center $H_0$ is an expectation and need not be an integer, so a finite realization need not attain $\theta=0$ exactly. It remains the neutral reference point.
+Degenerate cases with a zero denominator should report the raw tuple $(N,L,K,H)$ instead of assigning a synthetic score. In every case the local survivor count remains the exact observable
+\begin{equation*}
+S=L-H.
+\end{equation*}
+The score measures realized placement, not hostile intent. A random shuffle may occasionally produce positive $\theta$, and a nominal adversary with poor information may produce negative $\theta$.
+\subsubsection*{Realized Local Hazard}
+Let $T_r$ be the total number of locally relevant target children destroyed by the complete filter, including both random-baseline and adversarial-label destruction. Define
+\begin{equation*}
+f_r^{\mathrm{local}}=\frac{T_r}{L_r},
+\qquad
+w_r^{\mathrm{local}}=\frac{rT_r}{2L_r},
+\qquad L_r > 0.
+\end{equation*}
+In the pure adversarial/protective assignment, an adversarial label destroys its target and a protective label preserves it, so $T_r=H_r$. In the adversarial/random assignment, $T_r$ also contains the random branch's $2/r$ baseline. For blind adversarial/random labels,
+\begin{equation*}
+\mathbb E[f_r^{\mathrm{local}}]
+\approx
+\alpha_r+(1-\alpha_r)\frac2r.
+\end{equation*}
+A perfect adversary can make $f_r^{\mathrm{local}}=1$ even when the global budget $\alpha_r=K_r/N_r$ is tiny, provided its budget and information cover the local target.
+For a fixed nested cohort, the observed cumulative hazard is
+\begin{equation*}
+\widehat D(Q)
+=
+\sum_{r < Q}-\log\left(1-f_r^{\mathrm{local}}\right),
+\end{equation*}
+whenever every factor is positive. If one transition has $f_r^{\mathrm{local}}=1$, the tracked local cohort is extinct and $\widehat D(Q)$ is effectively infinite from that point. This diagnostic generalizes $A(Q)$ and includes the random baseline rather than counting only the excess adversarial-label loss. The separation between scheduled $\alpha_r$, realized $w_r^{\mathrm{local}}$, and targeting score $\theta_r$ measures respectively policy budget, total relative damage, and the value of positional information.
+When the locally relevant population is redefined at every transition rather than following one cohort, $\widehat D(Q)$ is only a cumulative diagnostic; it is not an exact survival exponent for a single population.
+We can therefore read the earlier phase calculations with three levels of input:
+- $A(Q)$ is the scheduled budget under the blind-allocation model; - $\widehat D(Q)$ records observed damage along a specified cohort; and - $\theta_r$ records how strongly the controllable budget targeted the segment.
+Only the first has a closed form from $\alpha_r$ alone. The probability phase diagram uses conditional hazards $D(Q)$ and $w_r$. Applying it to the observed scores requires a theorem relating those scores to candidate marginals.
+\subsection{Comparing the Allocation Mechanisms}
+The mechanisms differ in how much they know about the target, so we compare them with the same strike budget and the same target region. Uniform shuffling is the neutral reference. Block balance and delayed information show whether dependence alone changes the result. Noisy ranking moves continuously toward the perfectly targeted endpoint.
+\begin{longtable}{lll}
+\toprule
+Allocation & Information about the target & Role in the comparison \\
+\midrule
+Uniform exact quota & None & Random baseline \\
+Block-balanced quota & None, but locally dependent & Clustering test \\
+Delayed allocation & Previous layer only & Memory test \\
+Noisy ranking & Partial current information & Intermediate targeting \\
+Perfect allocation & Complete current information & Adversarial endpoint \\
+\bottomrule
+\end{longtable}
+For each transition, the essential observation is the tuple
+\begin{equation*}
+(N_r,L_r,K_r,H_r,T_r,w_r^{\mathrm{local}},\theta_r).
+\end{equation*}
+It records the total and locally relevant parents, the available adversarial budget, the number of relevant parents selected, the total local destruction, the damage relative to random, and the targeting score. Exact-quota companions also retain $J_r$, $u_r=J_r/N_r^{\mathrm{strike}}$, and the cumulative sums
+\begin{equation*}
+\sum_{r < Q}u_r
+\qquad\text{and}\qquad
+\sum_{r < Q}\left(u_r^2+\frac{u_r}{N_r^{\mathrm{strike}}}\right),
+\end{equation*}
+because matching one finite strike count does not establish the cumulative conditions used in Section~7.1.
+The real modular filter has no assigned parent policy, but the same local observations still apply. Its hit count can be compared with the protective minimum, uniform mean, and adversarial maximum from Section~6.2. Across successive heads, $D(Q)$ then shows whether the arithmetic placement remains near the random companion or accumulates damage like an informed allocator. This is a comparison of behavior, not an attribution of intent.

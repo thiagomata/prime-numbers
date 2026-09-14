@@ -1,0 +1,57 @@
+\section{Preliminaries And The Relaxed Candidate Weight}
+
+The sieve vocabulary used throughout:
+
+\begin{itemize}
+\item A \textbf{$P_2$ number} is a positive integer $n$ with
+  $\Omega(n)\le2$, where $\Omega$ counts prime factors with multiplicity.
+\item A \textbf{lower-bound sieve} is a sieve method that produces a lower bound for
+  the count of elements of a sequence surviving a set of divisibility
+  conditions; the quantity $\sum_{Q\le n\lt Q^2}a_Q(n)$ of this article is
+  the sifted sum such a method would bound from below.
+\item A \textbf{Type-I estimate} controls divisor sums: it bounds
+  $\sum_d \tau(d)\,\bigl|A_d - A_1/\varphi(d)\bigr|$ for divisors $d$ up to
+  some level $D$, i.e. it uses distribution of the sequence on arithmetic
+  progressions. For this article the relevant remainders are the
+  prime-progression discrepancies of Section~5.
+\item A \textbf{Type-II estimate} controls bilinear sums
+  $\sum_{m,n}\xi_m\kappa_n\,a_{mn}$ with arbitrary bounded coefficients,
+  i.e. distribution of the sequence along products; Section~6 identifies the exact
+  character modes such an estimate must control for this weight.
+\end{itemize}
+
+Choose a fixed exponent
+
+\begin{equation*}
+\frac13\lt\alpha\lt\frac12
+\end{equation*}
+
+and define
+
+\begin{equation*}
+\begin{aligned}
+z&=X^\alpha=Q^{2\alpha},
+\qquad
+Z=P(z).
+\end{aligned}
+\end{equation*}
+
+The upper restriction $\alpha\lt 1/2$ is useful because it gives $z\lt Q$, hence
+$Z\mid W$. Define
+
+\begin{equation*}
+a_Q(n)
+=
+\mathbf1_{\gcd(n,W)=1}
+\mathbf1_{\gcd(n+2,Z)=1}.
+\end{equation*}
+
+The candidate asks whether, for some fixed $\alpha>1/3$ and infinitely many
+heads $Q$,
+
+\begin{equation*}
+\sum_{Q\le n\lt Q^2}a_Q(n)>0.
+\end{equation*}
+
+This is weaker than twin-prime positivity because $n+2$ is not required to
+survive every prime below $Q$.

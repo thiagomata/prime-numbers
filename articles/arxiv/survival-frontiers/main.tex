@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\Urlmuskip=0mu plus 1mu\relax
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Survival Frontiers in Balanced 2-Gap Companion Processes},
+  pdfauthor={Thiago Henrique Ramos da Mata}
+}
+
+\title{Survival Frontiers in Balanced 2-Gap Companion Processes}
+\author{%
+  Thiago Henrique Ramos da Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small ORCID: \href{https://orcid.org/0009-0002-7366-939X}{0009-0002-7366-939X}\\
+  \small \url{https://thiagomata.com/}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\small\textbf{Proof status:} The companion-process identities are proved
+exactly; the asymptotic theorems are conditional on the premises stated with
+each result (Section~1.1). Stainless verification is pending. No result is
+claimed for the real sieve.
+\end{center}
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\IfFileExists{sections/01-introduction.tex}{\input{sections/01-introduction}}{}
+
+\IfFileExists{sections/02-preliminaries-companion-models.tex}{\input{sections/02-preliminaries-companion-models}}{}
+
+\IfFileExists{sections/03-relative-hazard-survival-frontiers.tex}{\input{sections/03-relative-hazard-survival-frontiers}}{}
+
+\IfFileExists{sections/04-absolute-share-mixtures.tex}{\input{sections/04-absolute-share-mixtures}}{}
+
+\IfFileExists{sections/05-allocation-and-the-protective-parent.tex}{\input{sections/05-allocation-and-the-protective-parent}}{}
+
+\IfFileExists{sections/06-allocation-mechanisms-and-local-damage.tex}{\input{sections/06-allocation-mechanisms-and-local-damage}}{}
+
+\IfFileExists{sections/07-exact-quota-companion-processes.tex}{\input{sections/07-exact-quota-companion-processes}}{}
+
+\IfFileExists{sections/08-relation-to-the-real-sieve.tex}{\input{sections/08-relation-to-the-real-sieve}}{}
+
+\IfFileExists{sections/09-limitations.tex}{\input{sections/09-limitations}}{}
+
+\IfFileExists{sections/10-conclusion.tex}{\input{sections/10-conclusion}}{}
+
+\bibliographystyle{plain}
+{\raggedright
+\bibliography{references}
+\par}
+
+\appendix
+\IfFileExists{sections/13-appendix-a-proof-records.tex}{\input{sections/13-appendix-a-proof-records}}{}
+
+\end{document}

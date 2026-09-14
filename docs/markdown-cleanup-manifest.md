@@ -74,12 +74,14 @@ articles should be the source of truth instead.
 
 These may contain useful material, but they are not canonical as-is.
 
-- `articles/draft/draft-sieve-foundation.md` -> merge useful bridge material
-  into `articles/chapter6/sieve-sequence.md` or keep as a short draft.
+- `articles/draft/draft-sieve-foundation.md` -> DELETED 2026-09-14; retired
+  rather than merged or kept — see `articles/notes/README.md` "Superseded
+  material (deleted 2026-09-14)".
 - `articles/draft/draft-sieve-gap-survival-math.md` -> DELETED 2026-09-13
   as superseded; derivations preserved in `articles/chapter6/gap-dynamics.md`.
-- `articles/draft/exercise-local-safe-window-capacity.md` -> either fold into
-  the gap-dynamics learning material or keep as an exercise note.
+- `articles/draft/exercise-local-safe-window-capacity.md` -> MOVED 2026-09-14
+  to `articles/notes/exercise-local-safe-window-capacity.md` as an exercise
+  note (kept as-is, not folded) — see `articles/notes/README.md`.
 - `articles/draft/draft-empirical-g-local-analysis.md` -> DELETED 2026-09-13;
   the canonical `[q,q^2)` transition experiment replaced it.
 - `articles/learnings/reviewer-notes-gap-dynamic.md` -> consider merging any

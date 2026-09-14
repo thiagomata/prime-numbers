@@ -1,11 +1,13 @@
 # Relaxed Almost-Prime Production in Sieve Sequences
 
-**Status:** Review draft. Mathematical proofs included; the new properties
-are not yet Stainless-verified, tracked by a separate ticket.
+**Proof status:** The Sieve Sequence foundation is Stainless-verified in the
+companion chapter article; the algebraic results introduced here are proved
+mathematically. The new properties are not yet Stainless-verified.
 
-**Author:** Mata, T. H.
+**Author:** Thiago Henrique Ramos da Mata
 Independent Researcher
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)
 
@@ -87,19 +89,18 @@ derived from the Sieve Sequence's own relaxed weights.
 
 We prove the implication in §3 and the divisor local factor, cofactor
 progression discrepancy, and bilinear character obstruction properties in
-§§4--6 mathematically; none of the four is yet Stainless-verified, and
-formalizing them is tracked as separate future work. No statement in this
-draft should be described as formally verified.
+§§4--6 mathematically; none of the four is yet Stainless-verified. No
+statement in this article should be described as formally verified.
 
 The maintained Sieve Sequence construction is Stainless-verified in the
-companion chapter article. This draft uses that construction as an input but
+companion chapter article. This article uses that construction as an input but
 does not call its new number-theoretic properties verified. Each property
-section below states its population and scope before the proof, and names
-its canonical source note at the end.
+section below states its population and scope before the proof, and links
+its supplementary working note at the end.
 
 ### 1.2 Relation To Known Results
 
-This draft does not reprove Chen's theorem [[7]](#ref7), which already
+This article does not reprove Chen's theorem [[7]](#ref7), which already
 establishes infinitely many primes $p$ such that $p+2$ has at most two prime
 factors. The machinery invoked below is standard in the linear-sieve
 literature: the sifted sequence and level-of-distribution framework of
@@ -168,7 +169,7 @@ heads $Q$,
 This is weaker than twin-prime positivity because $n+2$ is not required to
 survive every prime below $Q$.
 
-## 3. Relaxed Positivity Implies Prime-Plus-$P_2$ Production
+## 3. Relaxed Positivity Implies Prime-Plus-Almost-Prime Production
 
 **Theorem 1 (Relaxed positivity implies prime-plus-$P_2$ production).**
 For every fixed exponent $1/3\lt\alpha\lt1/2$ and every sufficiently large
@@ -181,11 +182,9 @@ a_Q(n)=1
 n\text{ is prime and }\Omega(n+2)\le2.
 ```
 
-We prove this for every fixed exponent $1/3\lt\alpha\lt1/2$ and every
-sufficiently large prime future head $Q$, over the integers in that head's
-square-safe interval weighted by $a_Q$. The implication itself is proved;
-positivity for infinitely many heads remains open, and neither this
-implication nor the properties it depends on is yet Stainless-verified.
+The implication itself is proved; positivity for infinitely many heads
+remains open, and neither this implication nor the properties it depends on
+is yet Stainless-verified.
 
 The relaxed weight keeps enough filtering to certify the first endpoint as
 prime and to bound the factorization depth of the second. It does not certify
@@ -230,7 +229,7 @@ The inequalities contradict each other. Therefore
 a_Q(n)=1
 \Longrightarrow
 n\text{ is prime and }\Omega(n+2)\le2.
-\qquad[\text{Q.E.D.}]
+\qquad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 Consequently,
@@ -245,9 +244,10 @@ This is prime-plus-almost-prime production. It is neither a twin-prime
 certificate nor a proof that the relaxed sum is positive for any unbounded
 family of heads.
 
-The project-specific candidate and this conditional proof are maintained in
-[Chen-Type Almost-Prime Survivor](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md). The first-endpoint input
-is [Safe-Window 2-Gaps Certify Twin Primes](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md).
+The project-specific candidate and this conditional proof are also recorded,
+with the same derivation, in
+[Chen-Type Almost-Prime Survivor](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md). The first-endpoint input's
+proof is also recorded in [Safe-Window 2-Gaps Certify Twin Primes](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md).
 Neither that input nor the factor-count argument above is yet encoded as a
 `.holds` theorem.
 
@@ -263,11 +263,6 @@ integers in that interval that are also divisible by the fixed integer $m$:
 \qquad
 |E_m[L,U)|\le R-1.
 ```
-
-We prove this for every pair of squarefree prime wheels $W,Z$ with $2\mid W$,
-every integer interval $[L,U)$ with $L\lt U$, and every $m\ge1$, over
-relaxed-weight integers in that interval that are also divisible by the
-fixed integer $m$.
 
 Before studying divisor averages, the comparison density must account for how
 the tested divisor meets the two wheels. Let $W$ and $Z$ be squarefree with
@@ -298,6 +293,12 @@ $p\mid n$ and cannot be coprime to $W$. Thus
 ```math
 \mathcal N_m[L,U)=0.
 ```
+
+Adopt the convention $\rho(m)=E_m[L,U)=0$ whenever $\gcd(m,W)>1$: with this
+convention the displayed identity
+$\mathcal N_m[L,U)=\rho(m)\ell_m+E_m[L,U)$ holds trivially in this branch,
+so the theorem's quantifier over every $m\ge1$ is exact rather than
+implicitly restricted to the coprime case developed below.
 
 Assume now $\gcd(m,W)=1$. For every prime $p\mid WZ$, let
 $\lambda_p(m)$ count the allowed residues of $k$ modulo $p$. Direct local
@@ -363,7 +364,7 @@ Defining $E_m[L,U)=C_m-s\rho(m)$ gives
 =\rho(m)\ell_m+E_m[L,U),
 \qquad
 |E_m[L,U)|\le s\le R-1.
-\qquad[\text{Q.E.D.}]
+\qquad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 In the candidate range $Z\mid W$, all divisors coprime to $W$ have the same
@@ -383,10 +384,10 @@ primorial $R$ is much larger than the square-safe interval.
 
 No maintained Scala theorem currently models both squarefree wheels, all five
 local cases, CRT composition, and the arbitrary interval remainder; we leave
-it unverified rather than represent it with speculative code. A future
-verification should prove the local table one prime at a time and then use a
-verified CRT product lemma. The complete mathematical proof
-is maintained in [Relaxed Almost-Prime Weight Has An Exact Divisor Local
+it unverified rather than represent it with speculative code. Proving it
+would require establishing the local table one prime at a time and then
+using a verified CRT product lemma. The complete mathematical proof
+is also recorded, with the same derivation, in [Relaxed Almost-Prime Weight Has An Exact Divisor Local
 Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
 
 ## 5. Shifted Divisor Discrepancy
@@ -400,11 +401,10 @@ r_d(I)=A_d(I)-\frac{A_1(I)}{\varphi(d)}
 =\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}.
 ```
 
-We prove this for every squarefree installed wheel $W$ with $2\mid W$, every
-odd squarefree divisor $d\mid W$, and every finite integer interval
-$I=[L,U)$, over installed-wheel survivors in that interval whose shift
-$n+2$ is constrained by $d$. The exact reduction is proved; the accumulated
-prime-progression estimate remains open.
+This is proved over every finite integer interval $I=[L,U)$, for
+installed-wheel survivors in that interval whose shift $n+2$ is constrained
+by $d$. The exact reduction is proved; the accumulated prime-progression
+estimate remains open.
 
 The lower-bound sieve should be applied before the final relaxed filtering
 step. Its base sequence is
@@ -434,7 +434,7 @@ A_d([a,a+W))
 &=\frac{\varphi(W)}{\varphi(d)}
 &&[\text{Squarefree Products}]\\
 &=\frac{A_1([a,a+W))}{\varphi(d)}.
-&&[\text{Q.E.D.}]
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -496,7 +496,7 @@ In the square-safe interval, wheel survivors are primes. Hence
 r_d(I)
 =
 \pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}.
-\qquad[\text{Q.E.D.}]
+\qquad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 The missing Type-I input is consequently an averaged theorem of the form
@@ -521,7 +521,8 @@ future formalization. The prime-progression interpretation also depends on
 square-safe certification. No maintained theorem currently connects all these
 pieces for arbitrary squarefree $d$; the accumulated analytic inequality lies
 outside what has been formalized either way.
-The complete mathematical reduction is maintained in [Relaxed Cofactor
+The complete mathematical reduction is also recorded, with the same
+derivation, in [Relaxed Cofactor
 Divisor Sum Is A Prime-Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md).
 
 ## 6. Exact Bilinear Character Decomposition
@@ -532,11 +533,6 @@ with $\gcd(mn,W)=1$, every finite factor domain $\mathcal D$, and arbitrary
 coefficients $\xi_m,\kappa_n$, the scalar-centered relaxed weight at products
 $x=mn$ decomposes exactly into nonprincipal character products
 $\chi(m)\chi(n)$ as displayed below.
-
-We prove this for every pair of squarefree nested wheels $2\mid Z\mid W$,
-every factor pair with $\gcd(mn,W)=1$, every finite factor domain
-$\mathcal D$, and arbitrary coefficients $\xi_m,\kappa_n$, over the
-scalar-centered relaxed weight evaluated at products $x=mn$.
 
 Assume $2\mid Z\mid W$ and put $Z_{\mathrm{odd}}=Z/2$. Conditional on
 $\gcd(x,W)=1$, the complete-wheel relaxed density is
@@ -617,7 +613,7 @@ $\mathcal D$ and arbitrary coefficients $\xi_m,\kappa_n$, substitution gives
 \sum_{\substack{(m,n)\in\mathcal D\\
 \gcd(m,W)=\gcd(n,W)=1}}
 \xi_m\kappa_n\chi(m)\chi(n).
-&&[\text{Finite Sum Rearrangement; Q.E.D.}]
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -626,9 +622,9 @@ them: the geometry of $\mathcal D$, for example a hyperbolic restriction on
 $mn$, still couples the two variables.
 
 The proof uses Möbius inversion and finite character orthogonality, neither of
-which currently has a maintained representation for this weight in the
+which currently has a Stainless representation for this weight in the
 project. The exact finite algebra is proved
-mathematically above and maintained in [Relaxed Almost-Prime Bilinear
+mathematically above and also recorded, with the same derivation, in [Relaxed Almost-Prime Bilinear
 Remainder Has A Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md).
 
 ## 7. Refuted Route — Scalar-Density Type-II Orthogonality
@@ -645,11 +641,10 @@ the quadratic character modulo $3$ gives bounded product coefficients with
 \sum_{m,n\in G_W}a(mn).
 ```
 
-This section refutes one auxiliary statement, over product pairs on the
-complete reduced wheel $G_W\times G_W$ for every pair of squarefree wheels
-$2\mid Z\mid W$ with $3\mid Z$, using bounded character coefficients. The
-refutation does not touch candidate #25 itself or short-domain locally
-adapted Type-II estimates.
+This section refutes one auxiliary statement, using bounded character
+coefficients over product pairs on the complete reduced wheel
+$G_W\times G_W$. The refutation does not touch candidate #25 itself or
+short-domain locally adapted Type-II estimates.
 
 The failed shortcut claimed that scalar centering makes the complete-wheel
 weight orthogonal to all bounded product coefficients, or at least gives a
@@ -717,7 +712,7 @@ Because $w=a-b$, subtraction gives
 \right|
 =
 \sum_{m,n\in G_W}a(mn).
-\qquad[\text{Q.E.D.}]
+\qquad\blacksquare\ \text{[Q.E.D.]}
 ```
 
 Thus scalar-density centering does not produce complete-wheel orthogonality or
@@ -730,10 +725,10 @@ locally pseudorandom. A short hyperbolic factor domain is not a complete
 reduced wheel, so the counterexample also does not decide every locally
 adapted Type-II estimate.
 
-The exact failed statement, counterexample, and retry boundary are preserved
+The exact failed statement, counterexample, and retry boundary are archived
 in [Scalar-Density Type-II Orthogonality For The Relaxed Weight](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md). The same
-character calculation is derived from the bilinear character obstruction
-property's canonical source above. No empirical sample is used in the
+character calculation is derived from the bilinear character decomposition
+proved in §6 above. No empirical sample is used in the
 refutation.
 
 ## 8. The Correct Remaining Program
@@ -878,16 +873,16 @@ Mathematical Society Colloquium Publications, 57.
 
 ## Appendix A: Evidence And Verification Status
 
-| Result | Mathematical status | Stainless status | Canonical evidence |
+| Result | Mathematical status | Stainless status | Cross-reference |
 |--------|---------------------|------------------|--------------------|
-| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Pending | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
-| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
-| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
-| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
+| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Not yet verified | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
+| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Not yet verified | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
+| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Not yet verified | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
+| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Not yet verified | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
 | Scalar-density Type-II shortcut | [Refuted] on the complete reduced wheel; short locally adapted domains remain open | Not applicable to a false statement | [Archived refutation](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md) |
 
 The operational Sieve Sequence construction and its square-safe inputs are
 documented separately in [Formal Verification of Sieve Sequence Stages and
 Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md). The new arithmetic results
-in this draft remain mathematically proved with Stainless representations
-pending.
+in this article remain mathematically proved; none has a Stainless
+representation.

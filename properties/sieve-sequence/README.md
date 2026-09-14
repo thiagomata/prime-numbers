@@ -598,4 +598,4 @@ interval for an unbounded family of scenarios.
 
 - [Formal Verification of the Sieve Sequence](../../articles/chapter6/sieve-sequence.md)
 - [Gap Dynamics in Sieve Sequences](../../articles/chapter6/gap-dynamics.md) (successor of the deleted math-only draft)
-- [Local Strike Capacity Exercise](../../articles/draft/exercise-local-safe-window-capacity.md)
+- [Local Strike Capacity Exercise](../../articles/notes/exercise-local-safe-window-capacity.md)
