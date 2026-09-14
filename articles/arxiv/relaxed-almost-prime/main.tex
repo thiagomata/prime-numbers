@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\Urlmuskip=0mu plus 1mu\relax
+
+% The Markdown source writes strict inequalities with the MathJax-style
+% \gt / \lt macros (GitHub's math renderer accepts them as aliases for
+% > and <). Plain LaTeX has no such macros, so they are defined here as
+% pure syntax aliases -- not a content change -- to keep the converted
+% math blocks textually identical to the source.
+\newcommand{\gt}{>}
+\newcommand{\lt}{<}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Relaxed Almost-Prime Production in Sieve Sequences},
+  pdfauthor={Thiago Henrique Ramos da Mata}
+}
+
+\title{Relaxed Almost-Prime Production in Sieve Sequences}
+\author{%
+  Thiago Henrique Ramos da Mata\\
+  \small Independent Researcher\\
+  \small \href{mailto:thiago.henrique.mata@gmail.com}{thiago.henrique.mata@gmail.com}\\
+  \small ORCID: \href{https://orcid.org/0009-0002-7366-939X}{0009-0002-7366-939X}\\
+  \small \url{https://github.com/thiagomata}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\small\textbf{Proof status:} The Sieve Sequence foundation is
+Stainless-verified in the companion chapter article; the algebraic results
+introduced here are proved mathematically. The new properties are not yet
+Stainless-verified.
+\end{center}
+
+\input{sections/00-abstract}
+
+\begin{center}
+  \small Licensed under the Creative Commons Attribution 4.0 International
+  License (CC BY 4.0): \url{https://creativecommons.org/licenses/by/4.0/}.
+\end{center}
+
+\IfFileExists{sections/01-introduction.tex}{\input{sections/01-introduction}}{}
+
+\IfFileExists{sections/02-preliminaries.tex}{\input{sections/02-preliminaries}}{}
+
+\IfFileExists{sections/03-relaxed-positivity-implies-production.tex}{\input{sections/03-relaxed-positivity-implies-production}}{}
+
+\IfFileExists{sections/04-exact-divisor-local-factor.tex}{\input{sections/04-exact-divisor-local-factor}}{}
+
+\IfFileExists{sections/05-shifted-divisor-discrepancy.tex}{\input{sections/05-shifted-divisor-discrepancy}}{}
+
+\IfFileExists{sections/06-exact-bilinear-character-decomposition.tex}{\input{sections/06-exact-bilinear-character-decomposition}}{}
+
+\IfFileExists{sections/07-refuted-route-scalar-density-type-ii.tex}{\input{sections/07-refuted-route-scalar-density-type-ii}}{}
+
+\IfFileExists{sections/08-remaining-program.tex}{\input{sections/08-remaining-program}}{}
+
+\IfFileExists{sections/09-claim-boundary.tex}{\input{sections/09-claim-boundary}}{}
+
+\IfFileExists{sections/10-conclusion.tex}{\input{sections/10-conclusion}}{}
+
+\bibliographystyle{plain}
+{\raggedright
+\bibliography{references}
+\par}
+
+\appendix
+\IfFileExists{sections/13-appendix-a-evidence-status.tex}{\input{sections/13-appendix-a-evidence-status}}{}
+
+\end{document}

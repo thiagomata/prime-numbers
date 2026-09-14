@@ -1,0 +1,77 @@
+\section{Introduction}
+
+The twin-prime program requires both endpoints to survive every missing prime
+filter below a future head. This article investigates a distinct and weaker
+program: the first endpoint is square-safe prime, while the shifted endpoint
+is required only to avoid primes below a smaller threshold. The conclusion is
+a prime plus an integer with at most two prime factors, not a twin-prime pair.
+
+The proof develops the following results in dependency order:
+
+\begin{enumerate}
+\item relaxed-weight positivity implies prime-plus-$P_2$ production --- Section~3;
+\item the exact divisor local factor and periodic remainder --- Section~4;
+\item the exact shifted-divisor prime-progression discrepancy --- Section~5;
+\item the exact bilinear character decomposition --- Section~6; and
+\item the refuted scalar-density Type-II shortcut --- Section~7.
+\end{enumerate}
+
+Sections 8--9 state the remaining analytic program and the exact claim
+boundary. No complete-period identity is substituted for an averaged
+short-interval distribution theorem.
+
+\subsection{Scope And Evidence Status}
+
+Let $Q$ be a prime head and put
+
+\begin{equation*}
+\begin{aligned}
+X&=Q^2,
+\qquad
+W=P(Q)=\prod_{p\lt Q}p.
+\end{aligned}
+\end{equation*}
+
+The installed-wheel survivors in the square-safe interval are
+
+\begin{equation*}
+S_Q
+=
+\{n\in[Q,Q^2):\gcd(n,W)=1\}.
+\end{equation*}
+
+Every $n\in S_Q$ is prime: if it were composite and smaller than $Q^2$, it
+would have a prime divisor smaller than $Q$.
+
+We do not prove a new existence theorem here. Classical Chen theory
+already supplies infinitely many primes $p$ for which $p+2$ has at most two
+prime factors. The project-specific question is whether positivity can be
+derived from the Sieve Sequence's own relaxed weights.
+
+We prove the implication in Section~3 and the divisor local factor, cofactor
+progression discrepancy, and bilinear character obstruction properties in
+Sections~4--6 mathematically; none of the four is yet Stainless-verified. No
+statement in this article should be described as formally verified.
+
+The maintained Sieve Sequence construction is Stainless-verified in the
+companion chapter article. This article uses that construction as an input but
+does not call its new number-theoretic properties verified. Each property
+section below states its population and scope before the proof, and links
+its supplementary working note at the end.
+
+\subsection{Relation To Known Results}
+
+This article does not reprove Chen's theorem \cite{chen1973}, which already
+establishes infinitely many primes $p$ such that $p+2$ has at most two prime
+factors. The machinery invoked below is standard in the linear-sieve
+literature: the sifted sequence and level-of-distribution framework of
+Halberstam and Richert \cite{halberstamrichert1974}, with Type-I/Type-II terminology as in
+Iwaniec and Kowalski \cite{iwaniekowalski2004} and Friedlander and Iwaniec \cite{friedlanderiwaniec2010}.
+What is project-specific is the population: the square-safe interval
+$[Q,Q^2)$ anchored at the head, the nested wheels $2 \mid Z \mid W$, and the
+pre-sieved shifted sequence $\mathcal A_Q=\{n+2:n\in S_Q\}$. The modulo-$3$
+obstruction proved in Section~7 is a specific fixed-character correlation on the
+complete reduced wheel; the classical parity barrier --- a sieve's general
+inability to distinguish the parity of the number of prime factors --- is the
+broader context for why such local obstructions defeat scalar-density
+models, but the two statements are not identical and are not conflated here.

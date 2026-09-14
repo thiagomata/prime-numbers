@@ -1,0 +1,140 @@
+\section{Exact Divisor Local Factor And Boundary Remainder}
+
+\textbf{Theorem 2 (Exact divisor local factor and boundary remainder).}
+For every pair of squarefree prime wheels $W,Z$ with $2\mid W$, every integer
+interval $[L,U)$ with $L\lt U$, and every $m\ge1$, over relaxed-weight
+integers in that interval that are also divisible by the fixed integer $m$:
+
+\begin{equation*}
+\mathcal N_m[L,U)=\rho(m)\ell_m+E_m[L,U),
+\qquad
+|E_m[L,U)|\le R-1.
+\end{equation*}
+
+Before studying divisor averages, the comparison density must account for how
+the tested divisor meets the two wheels. Let $W$ and $Z$ be squarefree with
+$2\mid W$, and define
+
+\begin{equation*}
+\mathcal N_m[L,U)
+=
+\#\{n\in[L,U):m\mid n,\ \gcd(n,W)=1,\ \gcd(n+2,Z)=1\}.
+\end{equation*}
+
+Writing $n=mk$ converts the numerical interval to
+
+\begin{equation*}
+K_m[L,U)
+=
+\left[
+\left\lceil\frac Lm\right\rceil,
+\left\lceil\frac Um\right\rceil
+\right)\cap\mathbb Z,
+\qquad
+\ell_m=|K_m[L,U)|.
+\end{equation*}
+
+If $\gcd(m,W)>1$, choose a prime $p\mid\gcd(m,W)$. Every $n=mk$ then has
+$p\mid n$ and cannot be coprime to $W$. Thus
+
+\begin{equation*}
+\mathcal N_m[L,U)=0.
+\end{equation*}
+
+Adopt the convention $\rho(m)=E_m[L,U)=0$ whenever $\gcd(m,W)>1$: with this
+convention the displayed identity
+$\mathcal N_m[L,U)=\rho(m)\ell_m+E_m[L,U)$ holds trivially in this branch,
+so the theorem's quantifier over every $m\ge1$ is exact rather than
+implicitly restricted to the coprime case developed below.
+
+Assume now $\gcd(m,W)=1$. For every prime $p\mid WZ$, let
+$\lambda_p(m)$ count the allowed residues of $k$ modulo $p$. Direct local
+analysis gives
+
+\begin{equation*}
+\lambda_p(m)=
+\begin{cases}
+p-1,&p\mid W,\ p\nmid Z,\\
+1,&p=2,\ p\mid W,\ p\mid Z,\\
+p-2,&p>2,\ p\mid W,\ p\mid Z,\\
+p,&p\mid Z,\ p\nmid W,\ p\mid m,\\
+p-1,&p\mid Z,\ p\nmid W,\ p\nmid m.
+\end{cases}
+\end{equation*}
+
+Each row follows from an exact residue count:
+
+\begin{itemize}
+\item If $p\mid W$ and $p\nmid Z$, the hypothesis $\gcd(m,W)=1$ makes $m$
+  invertible modulo $p$. The installed condition forbids only
+  $k\equiv0\pmod p$, leaving $p-1$ classes.
+\item If $p\mid W$ and $p\mid Z$, the two conditions forbid
+  $k\equiv0\pmod p$ and $k\equiv-2m^{-1}\pmod p$. They coincide for $p=2$,
+  leaving one class, and are distinct for $p>2$, leaving $p-2$ classes.
+\item If $p\mid Z$ and $p\nmid W$, then $p$ is odd because $2\mid W$. When
+  $p\mid m$, one has $mk+2\equiv2\not\equiv0\pmod p$ for every $k$, so all
+  $p$ classes survive. When $p\nmid m$, invertibility of $m$ leaves exactly
+  one forbidden class and therefore $p-1$ allowed classes.
+\end{itemize}
+
+These cases are exhaustive because every prime dividing $WZ$ belongs to the
+installed wheel only, both wheels, or the relaxed wheel only. This proves the
+local table.
+
+Put
+
+\begin{equation*}
+R=\prod_{p\mid WZ}p,
+\qquad
+\rho(m)=\prod_{p\mid WZ}\frac{\lambda_p(m)}p.
+\end{equation*}
+
+CRT proves that every complete block of $R$ consecutive $k$ values contains
+exactly $R\rho(m)$ allowed values.
+
+Let the $k$ interval have length $\ell_m=qR+s$, with $0\le s\lt R$, and let
+$C_m$ count allowed values in its final $s$ positions. Then
+
+\begin{equation*}
+\begin{aligned}
+\mathcal N_m[L,U)
+&=qR\rho(m)+C_m
+&&[\text{Complete Periods Plus Remainder}]\\
+&=\rho(m)\ell_m+
+\left(C_m-s\rho(m)\right).
+&&[\text{Substitution}]
+\end{aligned}
+\end{equation*}
+
+Defining $E_m[L,U)=C_m-s\rho(m)$ gives
+
+\begin{equation*}
+\mathcal N_m[L,U)
+=\rho(m)\ell_m+E_m[L,U),
+\qquad
+|E_m[L,U)|\le s\le R-1.
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+In the candidate range $Z\mid W$, all divisors coprime to $W$ have the same
+density
+
+\begin{equation*}
+\rho_{Q,z}
+=
+\frac12
+\prod_{2\lt p\lt z}\left(1-\frac2p\right)
+\prod_{z\le p\lt Q}\left(1-\frac1p\right).
+\end{equation*}
+
+This is sieve dimension two below $z$ and dimension one from $z$ to $Q$.
+The exact pointwise remainder bound is not a Type-I theorem because the
+primorial $R$ is much larger than the square-safe interval.
+
+No maintained Scala theorem currently models both squarefree wheels, all five
+local cases, CRT composition, and the arbitrary interval remainder; we leave
+it unverified rather than represent it with speculative code. Proving it
+would require establishing the local table one prime at a time and then
+using a verified CRT product lemma. The complete mathematical proof
+is also recorded, with the same derivation, in \href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md}{Relaxed Almost-Prime Weight Has An Exact Divisor Local
+Factor} \cite{divisorlocalfactor2026}.

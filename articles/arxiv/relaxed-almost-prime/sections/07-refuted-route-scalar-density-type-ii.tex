@@ -1,0 +1,103 @@
+\section{Refuted Route --- Scalar-Density Type-II Orthogonality}
+
+\textbf{Theorem 5 (Scalar-density Type-II orthogonality fails on the complete
+wheel).} For every pair of squarefree wheels $2\mid Z\mid W$ with $3\mid Z$,
+the quadratic character modulo $3$ gives bounded product coefficients with
+
+\begin{equation*}
+\left|
+\sum_{m,n\in G_W}\chi_3(m)\chi_3(n)w(mn)
+\right|
+=
+\sum_{m,n\in G_W}a(mn).
+\end{equation*}
+
+This section refutes one auxiliary statement, using bounded character
+coefficients over product pairs on the complete reduced wheel
+$G_W\times G_W$. The refutation does not touch candidate \#25 itself or
+short-domain locally adapted Type-II estimates.
+
+The failed shortcut claimed that scalar centering makes the complete-wheel
+weight orthogonal to all bounded product coefficients, or at least gives a
+universal strict contraction $c\lt1$ relative to the relaxed survivor count.
+The quadratic character modulo $3$ disproves both claims.
+
+Assume $3\mid Z$. Let $\chi_3$ be the nonprincipal real character modulo $3$
+and let
+
+\begin{equation*}
+G_W=(\mathbb Z/W\mathbb Z)^\times.
+\end{equation*}
+
+Choose bounded product coefficients
+
+\begin{equation*}
+\xi_m=\chi_3(m),
+\qquad
+\kappa_n=\chi_3(n).
+\end{equation*}
+
+If the relaxed weight accepts $mn$, then $mn+2$ is nonzero modulo $3$.
+Because $mn$ is a unit, necessarily $mn\equiv2\pmod3$, and therefore
+
+\begin{equation*}
+\xi_m\kappa_n=\chi_3(mn)=-1.
+\end{equation*}
+
+Hence the relaxed indicator has correlation
+
+\begin{equation*}
+\sum_{m,n\in G_W}\xi_m\kappa_na(mn)
+=
+-\sum_{m,n\in G_W}a(mn).
+\qquad[\text{Constant Character Sign}]
+\end{equation*}
+
+The scalar comparison is
+
+\begin{equation*}
+b(x)=\vartheta_Z\mathbf1_{\gcd(x,W)=1}.
+\end{equation*}
+
+CRT balances the reduced residues between the two unit classes modulo $3$,
+so $\sum_{m\in G_W}\chi_3(m)=0$. Since every product of two wheel units is
+again a wheel unit,
+
+\begin{equation*}
+\begin{aligned}
+\sum_{m,n\in G_W}\xi_m\kappa_nb(mn)
+&=\vartheta_Z
+  \left(\sum_{m\in G_W}\chi_3(m)\right)
+  \left(\sum_{n\in G_W}\chi_3(n)\right)
+&&[\text{Scalar Comparison}]\\
+&=0.
+&&[\text{CRT Balance}]
+\end{aligned}
+\end{equation*}
+
+Because $w=a-b$, subtraction gives
+
+\begin{equation*}
+\left|
+\sum_{m,n\in G_W}\xi_m\kappa_nw(mn)
+\right|
+=
+\sum_{m,n\in G_W}a(mn).
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+Thus scalar-density centering does not produce complete-wheel orthogonality or
+any strict universal contraction against arbitrary product coefficients:
+the ratio to the survivor count is exactly $1$.
+
+This counterexample does not refute relaxed-weight positivity. It refutes only
+the proof shortcut that treats the final scalar-centered periodic weight as
+locally pseudorandom. A short hyperbolic factor domain is not a complete
+reduced wheel, so the counterexample also does not decide every locally
+adapted Type-II estimate.
+
+The exact failed statement, counterexample, and retry boundary are archived
+in \href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md}{Scalar-Density Type-II Orthogonality For The Relaxed Weight} \cite{refutedtypeii2026}. The same
+character calculation is derived from the bilinear character decomposition
+proved in Section~6 above. No empirical sample is used in the
+refutation.

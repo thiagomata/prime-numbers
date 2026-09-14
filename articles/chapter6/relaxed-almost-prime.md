@@ -2,7 +2,7 @@
 
 **Proof status:** The Sieve Sequence foundation is Stainless-verified in the
 companion chapter article; the algebraic results introduced here are proved
-mathematically. Stainless verification of the new properties is pending.
+mathematically. The new properties are not yet Stainless-verified.
 
 **Author:** Thiago Henrique Ramos da Mata
 Independent Researcher
@@ -89,19 +89,18 @@ derived from the Sieve Sequence's own relaxed weights.
 
 We prove the implication in §3 and the divisor local factor, cofactor
 progression discrepancy, and bilinear character obstruction properties in
-§§4--6 mathematically; none of the four is yet Stainless-verified, and
-formalizing them is tracked as separate future work. No statement in this
-draft should be described as formally verified.
+§§4--6 mathematically; none of the four is yet Stainless-verified. No
+statement in this article should be described as formally verified.
 
 The maintained Sieve Sequence construction is Stainless-verified in the
-companion chapter article. This draft uses that construction as an input but
+companion chapter article. This article uses that construction as an input but
 does not call its new number-theoretic properties verified. Each property
 section below states its population and scope before the proof, and links
 its supplementary working note at the end.
 
 ### 1.2 Relation To Known Results
 
-This draft does not reprove Chen's theorem [[7]](#ref7), which already
+This article does not reprove Chen's theorem [[7]](#ref7), which already
 establishes infinitely many primes $p$ such that $p+2$ has at most two prime
 factors. The machinery invoked below is standard in the linear-sieve
 literature: the sifted sequence and level-of-distribution framework of
@@ -170,7 +169,7 @@ heads $Q$,
 This is weaker than twin-prime positivity because $n+2$ is not required to
 survive every prime below $Q$.
 
-## 3. Relaxed Positivity Implies Prime-Plus-$P_2$ Production
+## 3. Relaxed Positivity Implies Prime-Plus-Almost-Prime Production
 
 **Theorem 1 (Relaxed positivity implies prime-plus-$P_2$ production).**
 For every fixed exponent $1/3\lt\alpha\lt1/2$ and every sufficiently large
@@ -385,9 +384,9 @@ primorial $R$ is much larger than the square-safe interval.
 
 No maintained Scala theorem currently models both squarefree wheels, all five
 local cases, CRT composition, and the arbitrary interval remainder; we leave
-it unverified rather than represent it with speculative code. A future
-verification should prove the local table one prime at a time and then use a
-verified CRT product lemma. The complete mathematical proof
+it unverified rather than represent it with speculative code. Proving it
+would require establishing the local table one prime at a time and then
+using a verified CRT product lemma. The complete mathematical proof
 is also recorded, with the same derivation, in [Relaxed Almost-Prime Weight Has An Exact Divisor Local
 Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md).
 
@@ -614,7 +613,7 @@ $\mathcal D$ and arbitrary coefficients $\xi_m,\kappa_n$, substitution gives
 \sum_{\substack{(m,n)\in\mathcal D\\
 \gcd(m,W)=\gcd(n,W)=1}}
 \xi_m\kappa_n\chi(m)\chi(n).
-&&\blacksquare\ \text{[Finite Sum Rearrangement; Q.E.D.]}
+&&\blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
 
@@ -876,14 +875,14 @@ Mathematical Society Colloquium Publications, 57.
 
 | Result | Mathematical status | Stainless status | Cross-reference |
 |--------|---------------------|------------------|--------------------|
-| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Pending | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
-| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Pending | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
-| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Pending | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
-| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Pending | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
+| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Not yet verified | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
+| Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Not yet verified | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
+| Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Not yet verified | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
+| Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Not yet verified | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |
 | Scalar-density Type-II shortcut | [Refuted] on the complete reduced wheel; short locally adapted domains remain open | Not applicable to a false statement | [Archived refutation](https://github.com/thiagomata/prime-numbers/blob/master/candidates/refuted/relaxed-weight-scalar-density-type-ii.md) |
 
 The operational Sieve Sequence construction and its square-safe inputs are
 documented separately in [Formal Verification of Sieve Sequence Stages and
 Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md). The new arithmetic results
-in this draft remain mathematically proved with Stainless representations
-pending.
+in this article remain mathematically proved; none has a Stainless
+representation.

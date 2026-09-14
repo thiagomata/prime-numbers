@@ -1,0 +1,81 @@
+\section{Relaxed Positivity Implies Prime-Plus-Almost-Prime Production}
+
+\textbf{Theorem 1 (Relaxed positivity implies prime-plus-$P_2$ production).}
+For every fixed exponent $1/3\lt\alpha\lt1/2$ and every sufficiently large
+prime future head $Q$, over the integers in that head's square-safe interval
+weighted by $a_Q$:
+
+\begin{equation*}
+a_Q(n)=1
+\quad\Longrightarrow\quad
+n\text{ is prime and }\Omega(n+2)\le2.
+\end{equation*}
+
+The implication itself is proved; positivity for infinitely many heads
+remains open, and neither this implication nor the properties it depends on
+is yet Stainless-verified.
+
+The relaxed weight keeps enough filtering to certify the first endpoint as
+prime and to bound the factorization depth of the second. It does not certify
+the second endpoint as prime.
+
+Suppose $a_Q(n)=1$ for some $Q\le n\lt Q^2$. By the installed-wheel factor,
+$\gcd(n,W)=1$, so square-safe certification proves that $n$ is prime. By the
+relaxed factor, $\gcd(n+2,P(z))=1$, so every prime factor of $n+2$ is at least
+$z=X^\alpha$.
+
+Because $3\alpha>1$, there is $X_0(\alpha)$ such that
+$X^{3\alpha}>X+1$ whenever $X\ge X_0(\alpha)$. If $n+2$ had at least three
+prime factors counted with multiplicity, then
+
+\begin{equation*}
+\begin{aligned}
+\Omega(n+2)\ge3
+&\Longrightarrow n+2\ge z^3
+&&[\text{Three Factor Lower Bound}]\\
+&=X^{3\alpha}
+&&[\text{By Definition Of }z]\\
+&>X+1
+&&[\text{Since }3\alpha>1\text{ And }X\ge X_0(\alpha)].
+\end{aligned}
+\end{equation*}
+
+On the other hand,
+
+\begin{equation*}
+\begin{aligned}
+n\lt Q^2=X
+&\Longrightarrow n\le X-1
+&&[\text{Integer Bound}]\\
+&\Longrightarrow n+2\le X+1.
+&&[\text{Add }2]
+\end{aligned}
+\end{equation*}
+
+The inequalities contradict each other. Therefore
+
+\begin{equation*}
+a_Q(n)=1
+\Longrightarrow
+n\text{ is prime and }\Omega(n+2)\le2.
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+Consequently,
+
+\begin{equation*}
+\sum_{Q\le n\lt Q^2}a_Q(n)>0
+\Longrightarrow
+\exists n:\ n\text{ prime and }\Omega(n+2)\le2.
+\end{equation*}
+
+This is prime-plus-almost-prime production. It is neither a twin-prime
+certificate nor a proof that the relaxed sum is positive for any unbounded
+family of heads.
+
+The project-specific candidate and this conditional proof are also recorded,
+with the same derivation, in
+\href{https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md}{Chen-Type Almost-Prime Survivor} \cite{chentypecandidate2026}. The first-endpoint input's
+proof is also recorded in \href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/safe-window-two-gaps-certify-twin-primes.md}{Safe-Window 2-Gaps Certify Twin Primes}.
+Neither that input nor the factor-count argument above is yet encoded as a
+\texttt{.holds} theorem.

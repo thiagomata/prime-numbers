@@ -1,0 +1,134 @@
+\section{Shifted Divisor Discrepancy}
+
+\textbf{Theorem 3 (Shifted divisor discrepancy reduces to prime progressions).}
+For every squarefree installed wheel $W$ with $2\mid W$, every odd squarefree
+divisor $d\mid W$, and the square-safe interval $I$:
+
+\begin{equation*}
+r_d(I)=A_d(I)-\frac{A_1(I)}{\varphi(d)}
+=\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}.
+\end{equation*}
+
+This is proved over every finite integer interval $I=[L,U)$, for
+installed-wheel survivors in that interval whose shift $n+2$ is constrained
+by $d$. The exact reduction is proved; the accumulated prime-progression
+estimate remains open.
+
+The lower-bound sieve should be applied before the final relaxed filtering
+step. Its base sequence is
+
+\begin{equation*}
+\mathcal A_Q=\{n+2:n\in S_Q\}.
+\end{equation*}
+
+For an odd squarefree divisor $d\mid W$, define
+
+\begin{equation*}
+A_d(I)
+=
+\#\{n\in I:\gcd(n,W)=1,\ d\mid n+2\},
+\qquad
+A_1(I)=\#\{n\in I:\gcd(n,W)=1\}.
+\end{equation*}
+
+In one complete residue system modulo $W$, every prime dividing $d$ fixes
+$n=-2$, while every other wheel prime permits all nonzero classes. Therefore
+
+\begin{equation*}
+\begin{aligned}
+A_d([a,a+W))
+&=\prod_{\substack{p\mid W\\p\nmid d}}(p-1)
+&&[\text{CRT}]\\
+&=\frac{\varphi(W)}{\varphi(d)}
+&&[\text{Squarefree Products}]\\
+&=\frac{A_1([a,a+W))}{\varphi(d)}.
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Thus the centered word
+
+\begin{equation*}
+h_d(n)
+=
+\mathbf1_{\gcd(n,W)=1}
+\left(\mathbf1_{d\mid n+2}-\frac1{\varphi(d)}\right)
+\end{equation*}
+
+is $W$-periodic with zero mean. For every interval $I$,
+
+\begin{equation*}
+r_d(I)
+:=
+A_d(I)-\frac{A_1(I)}{\varphi(d)}
+\end{equation*}
+
+is exactly the sum of $h_d$ over the one incomplete wheel remainder after
+complete blocks are removed. More explicitly, write
+
+\begin{equation*}
+|I|=qW+t,
+\qquad
+0\le t\lt W.
+\end{equation*}
+
+Partition $I$ from its left endpoint into $q$ complete consecutive blocks of
+length $W$ and one final block of length $t$. Periodicity and the complete
+wheel identity give
+
+\begin{equation*}
+\begin{aligned}
+r_d(I)
+&=\sum_{n\in I}h_d(n)
+&&[\text{By Definition}]\\
+&=\sum_{u=0}^{q-1}\sum_{j=0}^{W-1}h_d(L+uW+j)
+  +\sum_{j=0}^{t-1}h_d(L+qW+j)
+&&[\text{Block Decomposition}]\\
+&=\sum_{j=0}^{t-1}h_d(L+qW+j).
+&&[\text{Complete Blocks Have Zero Mean}]
+\end{aligned}
+\end{equation*}
+
+Since $|h_d(n)|\le1$, the exact representation gives only the pointwise bound
+
+\begin{equation*}
+|r_d(I)|\le t\le W-1.
+\end{equation*}
+
+For a primorial $W$, this magnitude bound is too large to be a Type-I theorem;
+the useful fact is the exact signed remainder.
+
+In the square-safe interval, wheel survivors are primes. Hence
+
+\begin{equation*}
+r_d(I)
+=
+\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}.
+\qquad\blacksquare\ \text{[Q.E.D.]}
+\end{equation*}
+
+The missing Type-I input is consequently an averaged theorem of the form
+
+\begin{equation*}
+\sum_{\substack{d\le D\\d\mid P(z)/2}}
+\tau_B(d)
+\max_I
+\left|
+\pi(I;d,-2)-\frac{\pi(I)}{\varphi(d)}
+\right|
+\ll
+\frac{Q^2}{(\log Q)^A},
+\end{equation*}
+
+with a range $D$ and interval family strong enough for the chosen lower-bound
+sieve. This displayed estimate is an open target, not a theorem of this
+article.
+
+The complete-period CRT identity and periodic remainder are suitable for
+future formalization. The prime-progression interpretation also depends on
+square-safe certification. No maintained theorem currently connects all these
+pieces for arbitrary squarefree $d$; the accumulated analytic inequality lies
+outside what has been formalized either way.
+The complete mathematical reduction is also recorded, with the same
+derivation, in \href{https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md}{Relaxed Cofactor
+Divisor Sum Is A Prime-Progression Discrepancy} \cite{cofactordiscrepancy2026}.

@@ -71,17 +71,39 @@ README.md's chapter-6 listing updated with a new summary section between
 `sieve-sequence.md` and `gap-dynamics.md`, and `gap-dynamics.md` §11.1 (both
 the `.md` and its already-published arXiv `.tex` section) now cites the new
 article for its previously-uncited claim -- rebuilt and re-verified
-`just arxiv-parity gap-dynamics` PASS after the edit. Step 8 (build the new
-article's own arXiv LaTeX package) not started -- this is the large
-remaining chunk of work, comparable in scope to the survival-frontiers
-conversion earlier this branch.
+`just arxiv-parity gap-dynamics` PASS after the edit.
+
+Step 8 complete: built `articles/arxiv/relaxed-almost-prime/` (main.tex,
+13 section files, references.bib with 10 entries -- 6 internal
+cross-references + 4 external literature -- unified into one bibliography
+per the survival-frontiers precedent, no figures needed). Also fixed a
+leftover self-referential "this draft" wording (4 instances) in the
+promoted markdown, found while converting. `just arxiv-pdf
+relaxed-almost-prime` zero-warning (13 pages); `just arxiv-parity
+relaxed-almost-prime` full PASS. Two real parity mismatches surfaced and
+fixed during conversion: the Appendix A heading needed the "Appendix A:"
+prefix dropped from the `.tex` `\section{}` title (matches gap-dynamics's
+precedent for colon-style Appendix headings -- survival-frontiers uses the
+period-style form instead, which doesn't need this); and Section 3's
+heading (`Prime-Plus-$P_2$`) was renamed in both the md and tex to the
+plain-English synonym the article already uses in its own prose
+("prime-plus-almost-prime production"), sidestepping a genuine conflict
+between hyperref's PDF-string bare-underscore restriction and the parity
+checker's exact-match title normalization. Full-suite regression
+(`just arxiv-pdf` / `just arxiv-parity`, all 10 packages) confirmed clean;
+reverted the other 9 packages' incidentally-rebuilt output PDFs (identical
+byte sizes, timestamp-only churn) to keep the diff scoped.
+
+Promotion complete end to end. Nothing committed yet.
 
 ## Open Concerns
 
-- Exact chapter-6 filename not yet finalized.
-- Should `articles/notes/review-draft-relaxed-almost-prime-sieve-sequence.md`
-  be kept as-is (precedent: survival-frontiers' review file was kept after
-  its promotion, not deleted -- promotion is not retirement).
+- RESOLVED: filename is `relaxed-almost-prime.md`.
+- RESOLVED: `articles/notes/review-draft-relaxed-almost-prime-sieve-sequence.md`
+  kept as-is, unchanged -- matches the survival-frontiers precedent
+  (promotion is not retirement; only retired drafts' reviews get deleted).
+  Its filename still says "draft" but that's a historical record of what
+  was reviewed at the time, not a live claim about the current article.
 
 ## Learning Log
 
@@ -89,3 +111,4 @@ conversion earlier this branch.
 |---|---|---|
 | 2026-09-14 | Independently verified (not just trusted the 2026-09-01 review): 18 pattern-C citations, 0 `\blacksquare` uses, the §4 $\rho(m)$ gap still present, and confirmed via grep that no published chapter article overlaps this draft's content (euclid-theorem.md hits were false positives on `p_2` list notation). Found gap-dynamics.md §11.1 states this draft's Theorem 5 conclusion in prose, word-for-word matching in substance ("correlate perfectly with the full relaxed survivor count" = "the ratio to the survivor count is exactly 1"), with zero supporting citation. | Confirmed real promotion value beyond the mechanical fixes: this draft is the missing proof for an existing published claim. |
 | 2026-09-14 | Owner decision on chapter placement, after confirming no `arXiv:`/`arxiv.org` marker exists anywhere for gap-dynamics (not externally published, so reordering is cheap): third chapter-6 article, not a renumbered earlier chapter. | Strategy section updated; proceeding without touching gap-dynamics/sieve-sequence/survival-frontiers chapter numbers. |
+| 2026-09-14 | Owner flagged that "Pending" (Appendix A table's Stainless-status column) implies a commitment/roadmap to eventually verify -- the project makes no such promise. Checked: "Pending" as a table status word appears nowhere else in the published corpus (gap-dynamics/survival-frontiers use descriptive phrases, never a bare workflow word); the adjacent `candidates/README.md` taxonomy that Candidate #25 (row 1) belongs to uses "PROOF OPEN" instead. A real tracking ticket exists (`add-draft-scala-three-representations-2026-08-03.md`) but its own text hedges that the analytic-heavy results are "expected to remain documented obstacles" -- not actually expected to get done. Broadened the fix beyond the table on the owner's correction ("we never promise that we will verify"): also reworded the front-matter proof-status line, §1.1's "tracked as separate future work," and §4's "A future verification should prove..." (all implied an anticipated/committed event), leaving purely descriptive phrasing throughout ("not yet Stainless-verified", "Not yet verified", "Proving it would require..."). | Applied to both the `.md` and every corresponding `.tex` section; rebuilt, `just arxiv-parity relaxed-almost-prime` still full PASS; full 10-package regression clean. |
