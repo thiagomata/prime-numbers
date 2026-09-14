@@ -21,7 +21,7 @@ Siblings with different contracts:
 | [review-draft-articles-2026-08-15.md](review-draft-articles-2026-08-15.md) | Scientific-quality review of the draft set (rigor, literature engagement, statistical soundness), revised 2026-09-13 during the survival-frontiers audit. |
 | [review-draft-adversariality-phase-transition-2-gap-companions.md](review-draft-adversariality-phase-transition-2-gap-companions.md) | House-style review of the Survival Frontiers draft. |
 | [review-draft-relaxed-almost-prime-sieve-sequence.md](review-draft-relaxed-almost-prime-sieve-sequence.md) | House-style review of the Relaxed Almost-Prime draft. |
-| [review-draft-sieve-foundation.md](review-draft-sieve-foundation.md) | House-style review of the Sieve Foundation bridge draft. |
+| [exercise-local-safe-window-capacity.md](exercise-local-safe-window-capacity.md) | Worked exercise (tasks + solution sketches) proving a local pigeonhole 2-gap survival bound. Moved here from `articles/draft/` 2026-09-14: a real, correctly-proved result, but not an article of its own — its background restated material already in `sieve-sequence.md`/`gap-dynamics.md` (now links to those sections instead), and its main bound is the elementary warm-up to the exact result already published in Gap Dynamics §4.3–4.4. |
 | [review-exercise-local-safe-window-capacity.md](review-exercise-local-safe-window-capacity.md) | House-style review of the capacity exercise. |
 | [review-list.md](review-list.md) | House-style review of the published list article (chapter 3). |
 | [reviewer-notes-aug-2026.md](reviewer-notes-aug-2026.md) | External-style reviewer notes; source of the "canonical note" vocabulary used by the gap-dynamics evidence tables. |
@@ -44,6 +44,29 @@ maintained documents:
 - `review-draft-empirical-g-local-analysis.md`,
   `review-draft-sieve-gap-survival-math.md` — reviews of the deleted
   files above.
+
+### Superseded material (deleted 2026-09-14)
+
+- `draft-sieve-foundation.md` — a "bridge" draft of five small
+  prerequisite lemmas, not a standalone result. Its unit-cycle
+  generation/strict-increase lemmas (§§2–3) are already published in
+  [Integral Cycle](../chapter4/integral-cycle.md) §4.6 / Appendix A.17.
+  Its remaining three (§§4–6, `FilterPreservesPrimesProperties`:
+  distinct primes don't divide each other, filtering preserves primes,
+  filtered lists still contain them) are correct and Stainless-verified
+  — confirmed directly against `logs/verify-ch-5-v1-chapter5-_.log`
+  (`total: 2145 valid: 2145 ... invalid: 0`) — but checked one call
+  chain deep: none of the three is actually consumed by anything a
+  published article cites. `assertPrimeNotDivisibleByDistinctPrime`'s
+  only chapter-6 caller,
+  `SpecDerivedRepeatedCycleProperties.assertFirstSurvivorMatchesNextSeqHead`,
+  is itself called by nothing, including the lemma `sieve-sequence.md`
+  §5.4 actually cites (`assertSpecBaseAndRepeatedGapListMatch`).
+  Verified-but-uncited is not the same as wrong, and it isn't grounds
+  for forcing a weak article just to have somewhere to quote them; the
+  three lemmas remain valid, verified Scala code with no citing article,
+  same as most of the codebase's internal building-stone lemmas.
+- `review-draft-sieve-foundation.md` — review of the file above.
 
 ## Cross-cutting style findings worth keeping (from the 2026-09-01 house-style pass)
 
@@ -75,7 +98,9 @@ Headline findings of the coverage cross-check of draft claims against
 `companions/`:
 
 - **draft-sieve-foundation** — parity good; one optional prerequisite
-  (smallest divisor ≤ √n) would complete the foundation story.
+  (smallest divisor ≤ √n) would complete the foundation story. Retired
+  2026-09-14 (see "Superseded material" above) rather than completed:
+  parity being good did not make it a strong enough article on its own.
 - **draft-relaxed-almost-prime** — parity adequate; optional §8
   cross-reference to the learnings §15 signed-program boundary.
 - **draft-adversariality (Survival Frontiers)** — the six proved
@@ -86,7 +111,12 @@ Headline findings of the coverage cross-check of draft claims against
 - **exercise-local-safe-window-capacity** — its `2·R(p,q)` pigeonhole
   bound is strictly weaker than the proved
   `G_local > A(p,q)` threshold; an instructor "where this sits" note
-  recommended.
+  recommended. Done 2026-09-14, but as a move rather than a promotion:
+  relocated to `articles/notes/` (it was never headed for a chapter
+  number), math converted from ` ```text ` to ` ```math `/`$...$`, its
+  restated background swapped for links into `sieve-sequence.md` and
+  `gap-dynamics.md`, and the recommended "where this sits" pointer to
+  Gap Dynamics §4.3–4.4 added directly to §6/§7.
 
 Statuses are preserved verbatim from the source notes; nothing is
 promoted to a stronger status, and no article content was changed by

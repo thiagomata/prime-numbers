@@ -87,7 +87,7 @@ planned; row 6.4 verified with zero article changes required.
 | 1.1 | Header | add author/date lines (status line already present) | 1.2 (Accept) |
 | 1.2 | §5 | retitle as a corollary of §4 (same lemma, filter reading); both Scala blocks kept — presentation change only, no code/source changes | 1.1 (Accept with qualification) |
 
-**Status: draft 1 DONE (2026-08-15).**
+**Status: draft 1 DONE (2026-08-15), then RETIRED (2026-09-14).**
 
 - 1.1: author/date lines added below the existing status line.
 - 1.2: §5 retitled "Corollary: The Filter Reading"; intro rewritten to state
@@ -95,20 +95,46 @@ planned; row 6.4 verified with zero article changes required.
   wrapper kept); §7 opening now says "five verified properties — four
   substantively distinct lemmas, with §5 as the filter-reading corollary of
   §4". Both Scala blocks and all source links unchanged.
+- 2026-09-14: revisited during the `feature/draft-to-article` promotion pass.
+  Closer look found the draft is a five-lemma "bridge" with no headline
+  result of its own: §§2-3 (unit-cycle generation) are already published in
+  `integral-cycle.md` §4.6; §§4-6 (`FilterPreservesPrimesProperties`) are
+  correct and Stainless-verified but, checked one call chain deep, consumed
+  by nothing any published article cites (`assertPrimeNotDivisibleByDistinctPrime`'s
+  only chapter-6 caller is itself called by nothing). Retired rather than
+  promoted — deleted, with the disposition recorded in
+  `articles/notes/README.md`'s "Superseded material (deleted 2026-09-14)".
+  No fold-in edit was made to `sieve-sequence.md`: nothing there actually
+  depends on the retired lemmas, so there was nothing correct to cite.
 
-### Draft 2 — `articles/draft/exercise-local-safe-window-capacity.md`
+### Draft 2 — `articles/draft/exercise-local-safe-window-capacity.md` (MOVED 2026-09-14 to `articles/notes/`)
 
 | # | Location | Change | Review item |
 |---|---|---|---|
 | 2.1 | Header | add date/author lines | 2.1 (Accept with qualification) |
 | 2.2 | Appendix (new) | short solution sketches (one paragraph per task) | 2.1 |
 
-**Status: draft 2 DONE (2026-08-15).**
+**Status: draft 2 DONE (2026-08-15), then MOVED (2026-09-14).**
 
 - 2.1: author/date added to the status front matter.
 - 2.2: new "Appendix: Solution Sketches" with one paragraph per task
   (Tasks 1–4 + the endpoint-disjoint variant); Task 3 sketch includes the
   both-endpoints-removed double-counting note as part of the sketch.
+- 2026-09-14: revisited during the `feature/draft-to-article` promotion pass.
+  Unlike the other drafts, this one is a genuinely different genre — a
+  pedagogical exercise (tasks + solution sketches, no Scala/Stainless
+  component), never headed for a chapter number. Its 2026-09-01 review's two
+  open items were fixed: all 26 ` ```text ` math blocks converted to
+  ` ```math `/`$...$` LaTeX, and its restated background (stage/filter
+  definitions, the global lifted-orbit argument, the square-safe window)
+  replaced with links into `sieve-sequence.md` §§2.1/5/5.1/5.2/6.1 and
+  `gap-dynamics.md` §2.1, rather than re-deriving what those articles already
+  prove. Its own `2R(p,q)` pigeonhole bound is not a duplicate — no published
+  article states it as a reader-facing exercise — but §6/§7 now link to the
+  sharper proved result it warms up to (`gap-dynamics.md` §4.3–4.4's exact
+  `A(r,Q)` count), per the 2026-09-01 coverage audit's "where this sits"
+  recommendation. `git mv`'d (not deleted) to `articles/notes/`, preserving
+  history as a rename.
 
 ### Draft 4 — `articles/draft/draft-sieve-gap-survival-math.md` (DELETED 2026-09-13, superseded)
 
