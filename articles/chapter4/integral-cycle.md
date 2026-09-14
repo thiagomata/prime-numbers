@@ -84,7 +84,7 @@ setting without standing in for this two-presentation cycle-integral proof.
 
 We reuse several basic list, cycle and integral operations and their verified properties from the companion articles
 [Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1),
-[Formal Verification of Discrete Integration Properties from First Principles](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md) [[2]](#ref2),
+[Formal Verification of Discrete Integration Properties from First Principles](https://doi.org/10.5281/zenodo.22746792) [[2]](#ref2),
 and [Formal Verification of Cyclic Lists](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md) [[3]](#ref3).
 We also reuse some modulo properties previously defined and verified in the article
 [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[4]](#ref4).
@@ -1498,7 +1498,7 @@ rather than a direct continuation of the present proof.
 Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral.md)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Available at: [https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter4/cycle.md)
