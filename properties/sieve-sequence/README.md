@@ -553,6 +553,17 @@ nothing else in the repo should be treated as authoritative for the mapping.
       separator, and finite immediate-window data is strongly favorable, but
       localization through conditioned square windows remains candidate #14's
       open hereditary obligation.
+92. [Head Self-Deletion Shot Chain](head-self-deletion-shot-chain.md)
+    - Derives five established facts from one root mechanism — the incoming
+      filter's first shot lands on the old head itself: the graveyard `(1,h)`,
+      the always-merged closing gap `h-1` (growing by exactly the prime gap
+      each transition), the shot desert `(h, h^2)` behind the `k>=p`
+      multiplier theorem, window shot confinement to `[p^2, q^2)`, and the
+      compulsory shot opening `p, p^2, p*q`. Corollary: at twin transitions
+      the whole window budget is the compulsory pair `{p^2, p*q}` (`A=2`
+      forced mod 3), turning candidate #14's observed whole-window worst
+      cases at `A=2` transitions into forced degeneracy rather than
+      adversarial alignment.
 
 ## Research Notes
 

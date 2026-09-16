@@ -246,12 +246,20 @@ count, so `waste_ratio = 0`:
 | (569,571) | 2 | 2 | 0.000 | yes |
 | (11681,11689) | 2 | 2 | 0.000 | no |
 
-Notable pattern: three of these six transitions are twin-prime transitions
-(`q - p = 2`). At such a transition the window begins with a 2-gap whose
-endpoints straddle the new head's residue, which may force the filter to operate
-near worst-case. This is a hypothesis from 3 data points, not a conclusion. The
-new case at p=11681 shows that whole-window equality remains possible in the
-measured large-p sample.
+Pattern, now explained structurally: all six transitions share `A(p,q) = 2` —
+the entire window budget is the compulsory pair of forced shots
+`{p^2, p*q}` (see
+[head self-deletion shot chain](../properties/sieve-sequence/head-self-deletion-shot-chain.md)).
+At a twin transition (`q - p = 2`) this configuration is forced: `p ≡ 2 (mod 3)`
+makes `p + 4` composite, so the multiplier range `[p, floor((q^2-1)/p)]`
+contains only the primes `p` and `q`, giving `A = 2` necessarily. The other
+measured cases, such as `(19,23)` and `(11681,11689)`, reach the same two-shot
+budget because no prime lies in `(q, floor((q^2-1)/p)]`. A whole-window worst
+case at such a transition is therefore not evidence of adversarial alignment:
+the filter fires exactly two shots, both at compulsory positions, and
+`destroyed = A` records that both happened to land on 2-gap endpoints. The
+clustering at twin transitions is forced degeneracy, not an unexplained
+coincidence.
 
 ### Across the full measured range (p to ~19000)
 
