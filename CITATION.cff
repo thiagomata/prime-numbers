@@ -4,7 +4,7 @@ message: >-
   metadata below. To cite a specific article, prefer that article's own
   References-section entry (author, year, title, and URL) over this
   repository-level citation.
-title: "prime-numbers: Formal Verification of Integer, Division, Modulo, List, Cycle, and Integral Properties"
+title: "prime-numbers: Formal Verification of Integer, Division, Modulo, List, Cycle, Integral, Primality, and Sieve-Sequence Properties"
 type: software
 authors:
   - family-names: Ramos da Mata
@@ -21,17 +21,25 @@ keywords:
   - Scala
   - number theory
   - modular arithmetic
+  - lists
+  - cycles
+  - discrete integrals
   - primality
+  - Euclid's theorem
   - sieve of Eratosthenes
   - sieve sequence
   - prime gaps
   - 2-gaps
   - twin primes
+  - almost-prime
+  - survival frontiers
 abstract: >-
   A repository of Scala/Stainless-verified proofs, from-scratch recursive
   constructions, and accompanying written articles covering integer
   division and modulo, recursively defined lists, cycles, discrete
-  integrals, primality and coprimality, and sieve-sequence properties. The
-  source code (src/, python/, spark/) is licensed under MIT; the written
-  articles (articles/) are licensed separately under CC BY 4.0 — see
-  articles/LICENSE.
+  integrals over cycles, Euclid's theorem on the infinitude of primes,
+  sieve-sequence stages and their transitions, structural properties of
+  2-gaps, relaxed almost-prime production, and survival frontiers of
+  balanced 2-gap companion processes. The source code (src/, python/,
+  spark/) is licensed under MIT; the written articles (articles/) are
+  licensed separately under CC BY 4.0 — see articles/LICENSE.
