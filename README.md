@@ -1,6 +1,6 @@
 # Prime Numbers
 
-[![DOI](https://zenodo.org/badge/287724904.svg)](https://doi.org/10.5281/zenodo.22745644)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22745644.svg)](https://doi.org/10.5281/zenodo.22745644)
 
 This project uses formal verification to prove properties related to integers,
 division, modulo, lists, cycles, and integrals using recursive, from-scratch 
