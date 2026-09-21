@@ -58,10 +58,10 @@ prefix.
 
 {\raggedright
 This corollary is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeNotInList}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::notContainsFromValueNotMatchesAny}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeNotInList}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::notContainsFromValueNotMatchesAny}},
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidPrimeGreaterThanHead}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidPrimeGreaterThanHead}}.
 \par}
 
 \subsection{Smallest-Divisor Bounds for Composite Numbers}
@@ -142,10 +142,10 @@ $d \cdot d \le d \cdot q = n$.
 
 {\raggedright
 These properties are verified in the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertSmallestDivisorAtMostSqrt}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeHasDivisorStrictlyBelowN}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertSmallestDivisorAtMostSqrt}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeHasDivisorStrictlyBelowN}},
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeSmallestPrimeDivisor}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertCompositeSmallestPrimeDivisor}}.
 \par}
 
 \subsection{Finite-Prefix Primality Criterion}
@@ -177,9 +177,9 @@ would then propagate from that factor through $d$ into $head$,
 contradicting that $head$ is coprime to every filter prime.
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertHeadIsPrime}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertHeadIsPrime}}.
 Its main range helper is
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertNoDivisorInRangeFromHelper}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::assertNoDivisorInRangeFromHelper}}.
 
 \subsection{B\'ezout and Prime-Product Lemmas}
 \label{sec:bezout-prime-product}
@@ -250,8 +250,8 @@ The contrapositive form used by product and density arguments is:
 
 {\raggedright
 The full proof bodies are verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertCoprimeLinearCombinationOne}},
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeDivKhImpliesDivK}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertCoprimeLinearCombinationOne}},
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeDivKhImpliesDivK}},
 and
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeProductNotDivisible}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/BezoutUtils.scala}{\texttt{BezoutUtils::assertPrimeProductNotDivisible}}.
 \par}

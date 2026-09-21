@@ -4,7 +4,7 @@
 \subsection{primorialPlusOneModAny}
 
 \textbf{Source}:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
 
 Short source excerpt for Stage 1 (Section~3.1):
 
@@ -24,7 +24,7 @@ lemmas cited in Section~3.1.
 \subsection{newPrimeFromEuclid}
 
 \textbf{Source}:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
 
 Short source excerpt for Stage 2 (Section~3.2):
 
@@ -58,7 +58,7 @@ either case, the result is a prime not in the original list.
 \subsection{euclidTheorem}
 
 \textbf{Source}:
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties.scala}}
 
 Short source excerpt for the main theorem (Section~3.4):
 
@@ -87,9 +87,13 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 This source proof is the machine-checked form of the main theorem: every
 non-empty finite list of primes admits a prime outside the list.
 
-\section{Verification Log}
+\section{Stainless Verification Log Output}
 \label{sec:appendix-b}
 
-The latest \texttt{just verify} run verifies the described properties
-without errors. The full log output is available at
-\href{https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log}{\texttt{logs/verify.log}}.
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 5}. The run reported 2,145 valid, 0 invalid, and 0
+unknown verification conditions. The full chapter-scoped verification log is
+preserved with the source at the immutable release tag
+\texttt{euclid-theorem-article-v1.0.0} and is available at
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/logs/verify-ch-5-v1-chapter5-_.log}{\texttt{logs/verify-ch-5-v1-chapter5-\_.log}}.

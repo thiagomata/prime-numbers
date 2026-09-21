@@ -86,7 +86,7 @@ p>1
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend::modSmallDividend}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala}{\texttt{ModSmallDividend::modSmallDividend}}.
 
 \textbf{Zero Remainder Preserved by Multiplication.} If a number is
 divisible by $b$, multiplying it by any nonnegative factor preserves
@@ -105,7 +105,7 @@ in the primorial into $\operatorname{mod}(p\cdot k,p)=0$.
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala}{\texttt{AdditionAndMultiplication::ATimesBSameMod}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala}{\texttt{AdditionAndMultiplication::ATimesBSameMod}}.
 
 \textbf{Adding One After a Multiple.} Once the primorial part is known to
 be divisible by $p$, adding one gives the same remainder as one itself.
@@ -126,10 +126,10 @@ has nonzero remainder modulo every original prime.
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala}{\texttt{ModOperations::modZeroPlusC}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter2/div/properties/ModOperations.scala}{\texttt{ModOperations::modZeroPlusC}}.
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::primorialPlusOneModAny}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::primorialPlusOneModAny}}.
 A short public wrapper excerpt is included in Appendix A.1.
 
 \subsection{Stage 2: Finding a New Prime}
@@ -165,7 +165,7 @@ d=N
 \end{equation*}
 
 The construction of the new prime is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeFromEuclid}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::newPrimeFromEuclid}}.
 A short public wrapper excerpt is included in Appendix A.2.
 
 \subsection{Stage 3: Proving the New Prime is Not in the List}
@@ -208,7 +208,7 @@ p=v
 This non-membership argument is verified by the private helper
 \texttt{euclidTailLoop}, which establishes
 \texttt{valueNotMatchesAny(primes, v)} for the chosen divisor $v$ in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties}}.
 
 \subsection{The Main Theorem}
 \label{sec:main-theorem}
@@ -238,5 +238,5 @@ d < N
 \end{equation*}
 
 This property is verified in
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidTheorem}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala}{\texttt{PrimeProperties::euclidTheorem}}.
 The public theorem wrapper is shown in Appendix A.3.
