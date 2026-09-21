@@ -414,7 +414,7 @@ i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text
 \end{aligned}
 ```
 
-The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
@@ -439,7 +439,7 @@ i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\t
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
@@ -579,7 +579,7 @@ Cycle values remain invariant when adding any multiple of the cycle period to th
 \therefore \ \text{Cycle}_{(i + n \cdot m)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
 This property is verified in the [
 CycleProperties::valueMatchAfterManyLoops
@@ -810,8 +810,8 @@ Rotation is defined by re-indexing the base list from offset $k$:
 \text{for } k \geq 0,\ i \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#68-modulo-idempotence)
-and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter2/modulo.md#69-distributivity-over-addition),
+The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#68-modulo-idempotence)
+and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition),
 both proved and verified in [Division and Modulo from Recursive
 Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
 $\text{mod}(k + \text{mod}(i,n),\, n) = \text{mod}(k+i,\, n)$ follows because
