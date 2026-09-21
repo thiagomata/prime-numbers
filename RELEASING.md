@@ -71,6 +71,26 @@ release, not a patch to the old one.
    mint. Software Heritage already archives all public GitHub repositories
    automatically, independent of any release.
 
+## Per-Article Zenodo Deposits
+
+Separate from the automatic repo-wide archival in step 5 above, an
+individual article's own arXiv PDF/source package can be deposited to
+Zenodo directly, minting that article its own DOI (e.g. `integral`, `cycle`,
+`integral-cycle`). **The GitHub release must be cut first, and the deposit
+comes after** — never the other way around:
+
+1. Release-prep the article (pin its self-referencing source links to a
+   `<name>-article-vX.Y.Z` tag, add/verify its Appendix B verification log —
+   see `articles/arxiv/CONVERSION_GUIDE.md` §4 for the citation-precedence
+   rules this feeds into).
+2. Cut the GitHub release with that article's fresh PDF/tarball as an asset.
+3. Only then deposit the released PDF to Zenodo. The deposit's `version`
+   field points back at the GitHub release tag, so the release must already
+   exist when the deposit is created.
+4. Once the DOI is minted, bump every existing citation to that article
+   (bib entries, inline `\href`s, Markdown citations) from its old tier to
+   the DOI, then cut another release with the updated PDFs.
+
 ## Per-Release Checklist
 
 Before tagging a release for article `N`:
