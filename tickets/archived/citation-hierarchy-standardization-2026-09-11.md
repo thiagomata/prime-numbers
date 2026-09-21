@@ -92,6 +92,42 @@ article at the time of the fix. Merges were done in dependency order
 - list-article-v1.0.2 release assets (list.pdf, tarball) predate the
   Published line; clobbering them is optional follow-up.
 
+## Update (2026-09-21): Zenodo Archive Tier
+
+The hierarchy's "Open Concerns" note above ("when integral/integral-cycle/
+euclid-theorem/sieve-sequence/gap-dynamics get releases or archive links,
+dependent citations must be bumped") has started happening. A new tier sits
+above "Release (GitHub release tag)": **Zenodo DOI**, minted by depositing an
+article's own arXiv PDF/source package to Zenodo directly (separate from the
+repo-wide Zenodo archival that already covers every GitHub Release).
+
+- `integral` deposited to Zenodo (10.5281/zenodo.22746792); every citation to
+  it (`cycle`, `integral-cycle`, `euclid-theorem`, `sieve-sequence`) bumped
+  from level 3/4 to the DOI.
+- `cycle` deposited to Zenodo (10.5281/zenodo.22865441); every citation to it
+  (`integral-cycle`, `euclid-theorem`, `sieve-sequence`) bumped from the
+  `cycle-article-v1.0.0` tag to the DOI. `cycle.md`'s own pinpoint citations
+  into `modulo.md` subsections were separately synced from `blob/master` to
+  `blob/cycle-article-v1.0.0`, matching what its already-released LaTeX
+  package had done at release time but the Markdown had never picked up.
+- `integral-cycle` deposited to Zenodo (10.5281/zenodo.22868423); citations
+  to it from `euclid-theorem` and `sieve-sequence` bumped to the DOI. One
+  pinpoint subsection citation (`cycle`'s reference into `integral-cycle`
+  §6.1) was deliberately left on the tag-pinned GitHub link, since a bare
+  DOI can't address a specific subsection the way a tag-pinned anchor can.
+- `euclid-theorem` went through the same release-prep pass `cycle`/`list`/
+  `modulo`/`integral-cycle` already had: self-referencing source links
+  pinned to a new `euclid-theorem-article-v1.0.0` tag, and a missing
+  Appendix B added with a freshly reproduced chapter-5 verification log
+  (2,145 valid, 0 invalid, 0 unknown). Not yet deposited to Zenodo.
+- Repo-wide sweep (`.md`+`.tex`+`.bib`) confirmed zero remaining stale
+  cross-article citations after these bumps.
+
+Lesson confirmed from "Open Concerns": every time a cited article gains a
+higher citation tier, every existing citation to it needs a follow-up bump —
+this is now a recurring, expected step each time an article is deposited to
+Zenodo, not a one-off.
+
 ## Learning Log
 
 | Date | Entry |
