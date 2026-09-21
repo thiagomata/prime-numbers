@@ -137,7 +137,7 @@ ci(\operatorname{pos} + \operatorname{period}(ci) \cdot m) &= \big(ci(\operatorn
 
 {\raggedright
 The full-cycle shift identity is verified twice under different names ---
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertPeriodicShift}}
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertPeriodicShift}}
 and \texttt{assertFullCycleShift} --- both thin wrappers over the same
 \texttt{CycleIntegralFilterProperties::\allowbreak assertCIShiftEqualsSum}
 lemma; the article proves the one identity above rather than two. The
@@ -233,7 +233,7 @@ ci(\operatorname{pos}) = ci(\operatorname{previous}) + \operatorname{periodSum}(
 
 {\raggedright
 This property is verified in the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}.
 The full Scala verification code is in Appendix~A.11.
 \par}
 
@@ -274,7 +274,7 @@ by hypothesis, the residue at any position $i$ cannot be zero either.
 
 {\raggedright
 This is a direct corollary of the periodicity lemma
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
 used in Subsection~5.2; no separate lemma is needed once every in-period
 residue is checked. The full Scala verification code is in Appendix~A.11.
 \par}
@@ -309,7 +309,7 @@ the $n$ in-period residues, all of which are zero by hypothesis.
 
 {\raggedright
 This is the same corollary of
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala}{\texttt{GapProperties::\allowbreak assertModIsPeriodic}}
 as Subsection~5.3, applied to the opposite hypothesis. The full Scala
 verification code is in Appendix~A.11.
 \par}
@@ -350,7 +350,7 @@ Adding these equalities cancels $\operatorname{ci}(k)$, so
 
 {\raggedright
 This property is verified in the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertConsecutiveGapSumEqualsDiff}}.
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala}{\texttt{CycleIntegralProperties::\allowbreak assertConsecutiveGapSumEqualsDiff}}.
 The full Scala verification code is in Appendix~A.10.
 \par}
 
@@ -390,6 +390,6 @@ is correct, mutually exclusive, and exhaustive.
 
 {\raggedright
 These properties are verified in the
-\href{https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala}{\texttt{CycleCheckMod}}
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala}{\texttt{CycleCheckMod}}
 module.
 \par}
