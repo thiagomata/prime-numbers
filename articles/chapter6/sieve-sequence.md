@@ -917,7 +917,7 @@ Mata, T. H. (2026). *Formal Verification of Cyclic Lists*.
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from
-First Principles*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md).
+First Principles*. [Local article](https://doi.org/10.5281/zenodo.22868423).
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of
