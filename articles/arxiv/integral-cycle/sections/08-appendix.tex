@@ -590,3 +590,14 @@ def assertCycleIntegralOfOnesStrictlyIncreasing(
 }.holds
 \end{lstlisting}
 
+\section{Stainless Verification Log Output}
+\label{sec:appendix-b}
+
+All formally verified results in this article were checked with Stainless
+0.9.8.8, compiling with its standard Scala 3.3.3 front end, by running
+\texttt{just verify-ch 4}. The run reported 2,995 valid, 0 invalid, and 0
+unknown verification conditions. The full chapter-scoped verification log is
+preserved with the source at the immutable release tag
+\texttt{integral-cycle-article-v1.0.0} and is available at
+\href{https://github.com/thiagomata/prime-numbers/blob/integral-cycle-article-v1.0.0/logs/verify-ch-4-v1-chapter4-_.log}{\texttt{logs/verify-ch-4-v1-chapter4-\_.log}}.
+
