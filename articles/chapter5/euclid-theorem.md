@@ -663,7 +663,7 @@ Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*. Available at: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
-Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter4/integral-cycle.md)
+Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
 
 <a name="ref7" id="ref7" href="#ref7">[7]</a>
 Euclid. *Elements*, Book IX, Proposition 20. Translation and notes by David E.
