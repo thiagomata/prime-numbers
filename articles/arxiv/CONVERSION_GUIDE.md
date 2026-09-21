@@ -219,6 +219,31 @@ These are the rules the author's visual review enforced:
   conversion). Cure without new packages: `\Urlmuskip=0mu plus 1mu\relax`
   after `hyperref` in the preamble lets justified lines stretch; URLs then
   wrap cleanly through the normal `url` break points.
+- **Citation precedence hierarchy.** When citing a companion article (MD
+  reference or LaTeX `\cite`/`\href`), use the HIGHEST tier currently
+  available for that article, in this order: (1) Magazine/peer-reviewed
+  (none yet), (2) Archive — a Zenodo DOI (from depositing the article's own
+  arXiv PDF/source package) or an external archive like viXra/rxiVerse, (3)
+  Release — the article's own `<name>-article-vX.Y.Z` GitHub tag, (4)
+  Internal — a `blob/master/...` link (only correct while the cited article
+  has no release yet). A citing article's own tag freezes whatever tier its
+  companions were at when it was released; it does not retroactively track
+  later upgrades.
+  - **When a cited article gains a higher tier** (gets its own release tag,
+    or gets deposited to Zenodo), every existing citation to it across the
+    whole repo must be bumped to match — bib entries, inline `\href`s, and
+    the Markdown source's own citations, not just the LaTeX package that
+    happens to be mid-conversion. Do a repo-wide grep for the old link
+    pattern after bumping (`blob/master/articles/.../<name>.md` or the old
+    tag) to confirm nothing was missed, then rebuild and re-verify every
+    PDF that changed (zero-warning gate + `arxiv-parity`).
+  - **Pinpoint/subsection citations cannot use a bare DOI or archive link**
+    — Zenodo/viXra/rxiVerse resolve to the whole record, not a `#anchor`.
+    Keep pinpoint citations (into a specific subsection of a companion
+    article) on a tag-pinned GitHub link even after the target gets a DOI;
+    pin to the CITING article's own release tag (which snapshots the whole
+    repo tree, including the target's content at that point), not
+    necessarily the target's own tag.
 - Conclusion recap tags should be aligned, not inline: when a recap display
   groups several statements of similar width, an `aligned` with an
   `&&\text{[Tag]}` column aligns the tags vertically AND preserves the
