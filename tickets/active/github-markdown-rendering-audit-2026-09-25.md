@@ -1,7 +1,7 @@
 # GitHub Markdown Rendering Audit
 
 **Created:** 2026-09-25
-**Status:** Active
+**Status:** Closed — merged into master as `84cbb2bb` (PR #61)
 
 ## START HERE
 
