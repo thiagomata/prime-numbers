@@ -47,6 +47,13 @@ and other defects that interrupt reading.
   and §5.1), and §5.2 visibly exposes raw `($\\text{pos} < \\text{period}(ci)$)`
   and `($\\text{pos} \\geq \\text{period}(ci)$)` fragments. This is a confirmed
   reader-visible rendering failure, not merely a source-dollar count.
+- Chapter 4 `integral.md`: inspected at commit `8dd94a8`. The abstract renders,
+  but the body visibly exposes extensive raw inline `$...$` and display `$$...$$`
+  source beginning in §2 and continuing through §§3–5 and later. Confirmed
+  examples include `$L = [x_0, x_1, \\dots, x_{n-1}] \\in \\mathbb{Z}^n$`, `$n$`,
+  `$$I_0 = x_0 + init$$`, and raw math in the list bullets and section headings.
+  No explicit `Missing \\end{aligned}` flash-error was observed in this pass;
+  the visible defect is the raw math source itself.
 
 ## What Is Learned
 
@@ -81,3 +88,4 @@ group and re-check the affected pages before expanding scope.
 |------|-------------|----------|
 | 2026-09-25 | Chapter 4 `cycle.md` visibly exposes raw `$$` and inline LaTeX. | Track as a confirmed rendering defect and use it as the first cleanup target. |
 | 2026-09-26 | Chapter 2 `modulo.md` shows two visible `Missing \\end{aligned}` failures in GitHub Preview. | Track flash-errors separately from successfully rendered dollar-delimited math. |
+| 2026-09-26 | Chapter 4 `integral.md` exposes raw inline and display math throughout the body in GitHub Preview. | Record the page as a confirmed raw-dollar rendering failure; continue the browser audit before fixing. |
