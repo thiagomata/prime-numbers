@@ -86,7 +86,7 @@ because $n$ itself divides $n$.  Its specification is therefore
 \begin{aligned}
 d &= \text{findSmallestDivisor}(n,s) \\
 &\implies s\leq d\leq n\ \land\ \text{mod}(n,d)=0 \\
-&\phantom{\implies}\land\ \forall e\in[s,d),\ \text{mod}(n,e)\ne0.
+&\qquad\land\ \forall e\in[s,d),\ \text{mod}(n,e)\ne0.
 \end{aligned}
 ```
 
@@ -404,7 +404,7 @@ $e\in[2,n)$. The minimality specification from [§2.2](#22-finite-prime-operatio
 $2\leq d\leq e<n$ and $\text{mod}(n,d)=0$.
 
 ```math
-\therefore\ 2\leq d<n\ \land\ \text{mod}(n,d)=0.
+\therefore\ 2\leq d\lt n\ \land\ \text{mod}(n,d)=0.
 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
@@ -614,7 +614,7 @@ $P=\text{primorial}(L)$ and $N=P+1$:
 &&\text{[Stage 1]} \\
 d=\text{findSmallestDivisor}(N,2),\quad d=N
 &\Rightarrow \text{isPrime}(N) \\
-d<N
+d\lt N
 &\Rightarrow \text{isPrime}(d)
 &&\text{[Stage 2]} \\
 v\mid N\ \land\ p\in L

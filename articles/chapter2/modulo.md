@@ -537,8 +537,8 @@ their remainders are themselves:
 
 ```math
 \begin{aligned}
-0<k<b &\implies \text{mod}(k,b)=k \\
-0<b-k<b &\implies \text{mod}(b-k,b)=b-k \\
+0\lt k\lt b &\implies \text{mod}(k,b)=k \\
+0\lt b-k\lt b &\implies \text{mod}(b-k,b)=b-k \\
 \text{mod}(k,b)+\text{mod}(b-k,b) &= k+(b-k)=b.
   \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
@@ -571,7 +571,7 @@ covers $b=1$: only the first case can occur.
 ```math
 \begin{aligned}
 r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
-r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
+r\lt b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1\lt b.
   \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
