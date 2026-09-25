@@ -5,7 +5,8 @@ Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)<br>
+**DOI:** [10.5281/zenodo.22955798](https://doi.org/10.5281/zenodo.22955798)
 
 **Proof status:** The companion-process identities are proved exactly; the
 asymptotic theorems are conditional on the premises stated with each result
