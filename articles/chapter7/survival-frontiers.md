@@ -2127,7 +2127,7 @@ After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and
 \begin{aligned}
 x_r
 &=\frac{2T_r}{V_r}\\
-&=2\prod_{3\le p<r}\frac{p-2}{p-1}\\
+&=2\prod_{3\le p\lt r}\frac{p-2}{p-1}\\
 &=\Theta\left(\frac1{\log r}\right).
 &&[\text{Mertens-Type Product Estimate}]
 \end{aligned}

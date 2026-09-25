@@ -451,13 +451,13 @@ G=(g_0,g_1,\ldots,g_{T-1}),
 
 and define rotation by offset $j$ through
 ```math
-\operatorname{rot}_j(G)_i
+\text{rot}_j(G)_i
 =g_{(i+j)\bmod T}.
 ```
 
 For every value $d$,
 ```math
-\#\{i: \operatorname{rot}_j(G)_i=d\}
+\#\{i: \text{rot}_j(G)_i=d\}
 =\#\{i:g_i=d\}.
 ```
 
@@ -467,7 +467,7 @@ $\varphi_j$ is a bijection of
 $\{0,1,\ldots,T-1\}$. Therefore
 ```math
 \begin{aligned}
-\#\{i:\operatorname{rot}_j(G)_i=d\}
+\#\{i:\text{rot}_j(G)_i=d\}
 &=\#\{i:g_{\varphi_j(i)}=d\}
 &&[\text{By Definition Of Rotation}]\\
 &=\#\{k:g_k=d\}
@@ -1583,12 +1583,12 @@ the chain numerically short, but it conflicts with using many repeated
 copies of one fixed seed residue inside the final safe window $[Q,Q^2)$.
 The seed period is the primorial
 ```math
-M_p=\prod_{r<p}r,
+M_p=\prod_{r\lt p}r,
 ```
 
 and by the prime number theorem in Chebyshev-theta form,
 ```math
-\log M_p=\sum_{r<p}\log r\sim p.
+\log M_p=\sum_{r\lt p}\log r\sim p.
 ```
 
 Hence $M_p=\exp((1+o(1))p)$. Meanwhile $Q<p^2$ implies $Q^2<p^4$. Therefore
@@ -1691,7 +1691,7 @@ G_{\mathrm{after}}
 &&[\text{Exact Batched Survival}]\\
 C_{rM}&=(r-4)C_M,
 &&[\text{Exact Cluster Recurrence}]\\
-\#\{i:\operatorname{rot}_j(G)_i=2\}
+\#\{i:\text{rot}_j(G)_i=2\}
 &=\#\{i:g_i=2\}.
 &&[\text{Rotation Bijection}]\\
 G_s(2)=0&\Longrightarrow G_t(2)=0\quad(t\ge s).
@@ -2101,7 +2101,7 @@ q_{i,k}\ge\frac{M_kP_k(r_k-2)}{3r_k^2}.
 
 Summing the $k$ prefix coordinates,
 ```math
-\sum_{i<k}\frac{X_i}{q_{i,k}}
+\sum_{i\lt k}\frac{X_i}{q_{i,k}}
 \le\frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.
 ```
 
