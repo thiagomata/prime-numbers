@@ -731,7 +731,7 @@ negative numbers, which is essential for integral and gap reasoning.
 \end{aligned}
 ```
 
-**Proof.** By [§5.1](#51-cycle-element-access), $\operatorname{Cycle}_{\mathrm{pos}} = L[\mathrm{pos} \bmod n]$, and $\mathrm{pos} \bmod n$ is a valid index into $L$ (in $[0, n)$). So $\operatorname{Cycle}_{\mathrm{pos}}$ is one of the values of $L$ — and every value of $L$ is non-negative by hypothesis, so $\operatorname{Cycle}_{\mathrm{pos}} \geq 0$.
+**Proof.** By [§5.1](#51-cycle-element-access), `Cycle_pos = L[pos mod n]`, and `pos mod n` is a valid index into `L` (in `[0, n)`). So `Cycle_pos` is one of the values of `L` — and every value of `L` is non-negative by hypothesis, so `Cycle_pos >= 0`.
 
 ```math
 \therefore \ (\forall x \in L,\ x \geq 0) \land |L| > 0 \implies \text{Cycle}_{\text{pos}} \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
@@ -863,8 +863,8 @@ These are verified in the [
   MemCycleProperties::propagateModFromValueToCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that $\operatorname{Cycle}_i$ equals
-$\operatorname{Cycle}_{(i \bmod n) \bmod n}$) has its own `MemCycle` restatement in [
+The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that `Cycle_i` equals
+`Cycle_(mod(i, n) mod n)`) has its own `MemCycle` restatement in [
   MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
