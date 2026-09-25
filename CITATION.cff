@@ -14,7 +14,7 @@ repository-code: "https://github.com/thiagomata/prime-numbers"
 url: "https://github.com/thiagomata/prime-numbers"
 license: MIT
 version: 4.0.7
-date-released: "2026-09-24"
+date-released: "2026-09-25"
 keywords:
   - formal verification
   - Stainless
