@@ -54,6 +54,36 @@ and other defects that interrupt reading.
   `$$I_0 = x_0 + init$$`, and raw math in the list bullets and section headings.
   No explicit `Missing \\end{aligned}` flash-error was observed in this pass;
   the visible defect is the raw math source itself.
+- Chapter 5 `euclid-theorem.md`: inspected at commit `8dd94a8`. The abstract
+  and headings render, but much of the mathematical inline content disappears
+  from the prose, leaving sentences with empty gaps throughout §§1–4 and the
+  conclusion. Section §4.4 also visibly exposes the raw fragment
+  `(\\blacksquare\\ \\text{[Q.E.D.]})`. No explicit `Missing \\end{aligned}`
+  flash-error was observed in this pass; the confirmed failures are missing
+  inline math and leaked LaTeX text.
+- Chapter 6 `gap-dynamics.md`: inspected at commit `8dd94a8`. The rendered
+  article visibly exposes raw inline `$...$` and display `$$...$$` throughout
+  the abstract, introductory notation, and later proof sections. Examples
+  include `$[Q,Q^2)$`, `$p$`, `$$M_p=...$$`, and repeated raw `$$` proof blocks.
+  This is a page-wide raw-dollar rendering failure; no separate
+  `Missing \\end{aligned}` flash-error was observed in this pass.
+- Chapter 6 `relaxed-almost-prime.md`: inspected at commit `8dd94a8`. Many
+  inline math expressions disappear from rendered prose, leaving blank gaps
+  across §§1–10. Raw dollar syntax remains visibly exposed in prose/list text,
+  including `prime-plus-$P_2$` in the §1 list and the same fragment in the
+  Appendix A table. No explicit `Missing \\end{aligned}` flash-error was
+  observed in this pass.
+- Chapter 6 `sieve-sequence.md`: inspected at commit `8dd94a8`. The abstract,
+  headings, prose, and code blocks render, but most inline mathematical content
+  disappears from the rendered article, leaving empty gaps in definitions,
+  formulas, and theorem statements across §§2–7. No explicit raw-dollar leak
+  or `Missing \\end{aligned}` flash-error was observed in this pass; the
+  confirmed failure is missing inline math.
+- Chapter 7 `survival-frontiers.md`: inspected at commit `8dd94a8`. The page
+  visibly exposes raw inline `$...$` and display `$$...$$` throughout the
+  abstract, tables, definitions, and proof sections. Examples include `$r$`,
+  `$[Q,Q^2)$`, `$$N_{k+1}=...$$`, and raw display blocks in §§2–8. No explicit
+  `Missing \\end{aligned}` flash-error was observed in this pass.
 
 ## What Is Learned
 
@@ -89,3 +119,8 @@ group and re-check the affected pages before expanding scope.
 | 2026-09-25 | Chapter 4 `cycle.md` visibly exposes raw `$$` and inline LaTeX. | Track as a confirmed rendering defect and use it as the first cleanup target. |
 | 2026-09-26 | Chapter 2 `modulo.md` shows two visible `Missing \\end{aligned}` failures in GitHub Preview. | Track flash-errors separately from successfully rendered dollar-delimited math. |
 | 2026-09-26 | Chapter 4 `integral.md` exposes raw inline and display math throughout the body in GitHub Preview. | Record the page as a confirmed raw-dollar rendering failure; continue the browser audit before fixing. |
+| 2026-09-26 | Chapter 5 `euclid-theorem.md` loses inline math in many rendered paragraphs and leaks `\\blacksquare`/`\\text{[Q.E.D.]}` in §4.4. | Record as a confirmed reader-visible math rendering failure; continue the browser audit. |
+| 2026-09-26 | Chapter 6 `gap-dynamics.md` exposes raw dollar-delimited math across the page. | Record as a page-wide raw-dollar rendering failure. |
+| 2026-09-26 | Chapter 6 `relaxed-almost-prime.md` loses inline math and visibly leaks `$P_2$` in list/table text. | Record both missing-math and raw-dollar defects; continue the browser audit. |
+| 2026-09-26 | Chapter 6 `sieve-sequence.md` loses most inline mathematical content in definitions and theorem prose. | Record as a confirmed missing-inline-math failure. |
+| 2026-09-26 | Chapter 7 `survival-frontiers.md` exposes raw inline and display math throughout the rendered page. | Record as a page-wide raw-dollar rendering failure. |
