@@ -788,6 +788,21 @@ article math because `<b` or `<N` can be read as HTML-like markup by GitHub or
 VS Code. Write spaced raw comparisons such as `a < b`, or use `\lt` and `\gt`
 when spacing would make the expression awkward.
 
+### 14.12a GitHub inline-math delimiter pitfalls (browser-verified)
+
+Beyond raw `<`, three delimiter shapes visibly leak raw TeX on GitHub blob
+pages (confirmed by opening the rendered page, not by reading the source):
+inline `$...$` wrapped so the closing `$` is immediately followed by `)`,
+e.g. `**Base Case** ($pos \lt m$):` — write `**Base Case** $pos \lt m$:`;
+inline math attached directly after a hyphen, e.g. `filter-$7$`,
+`prime-plus-$P_2$` — insert a space or reword; and `$...$` nested inside
+`\text{...}` in a math fence — split the `\text` around the variable.
+`\(...\)` delimiters never render on GitHub. See PROOF_GUIDE "GitHub Math
+Rendering Rules (Verified in the Rendered Page)" for the full list and the
+browser verification protocol (deferred rendering: wait 8-10s; filter raw-
+source regex hits to visible text, since rendered math embeds hidden TeX
+annotations).
+
 ### 14.13 Use `:=` only for definitions
 
 Use `:=` in article math when introducing a definition, notation convention, or

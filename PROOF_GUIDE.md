@@ -311,6 +311,50 @@ math wearing a code span — switch to `$...$`. Reserve backticks for bare
 identifiers (`ModCycle`, `checkMod(d)`, `L`) that don't need subscripts
 or LaTeX commands to read correctly.
 
+### GitHub Math Rendering Rules (Verified in the Rendered Page)
+
+Each rule below was confirmed by opening the article's GitHub blob page in a
+browser and observing a visible rendering failure that disappeared after the
+fix. Source-level guessing is not evidence: some `$`-adjacent forms render
+fine while superficially similar ones leak raw TeX. When in doubt, verify the
+rendered page (wait at least 8–10 seconds — GitHub's math renderer runs
+deferred, and an early check can falsely report whole-page failure).
+
+1. **Never nest `$...$` inside `\text{...}`.** A label like
+   `&&\text{[Concatenate $x$ copies]}` inside a `math` fence renders the
+   whole label as raw source. Split it: `\text{[Concatenate } x \text{ copies]}`.
+2. **Do not wrap inline math in parentheses that close immediately after the
+   closing `$`.** `**Base Case** ($pos \lt m$):` leaks raw source on GitHub
+   even though the same math without the `(...)` wrapper renders. Write
+   `**Base Case** $pos \lt m$:` instead. Suspect any `$...$)` / `$...$):`
+   adjacency; reword to end the math before punctuation runs.
+3. **Do not attach inline math directly after a hyphen.** `filter-$7$`,
+   `pre-filter-$7$`, `prime-plus-$P_2$` all leak raw source. Insert a space
+   (`filter $7$`) or reword.
+4. **`\(...\)` and `\[...\]` do not render on GitHub.** Only `$...$` and
+   fenced ` ```math ` blocks are supported. A prose marker like
+   `\(\blacksquare\ \text{[Q.E.D.]}\)` shows as literal text; write plain
+   text (e.g. `[Q.E.D.]`) or move the marker into a math block.
+5. **Raw `<` inside math is an HTML-tag risk** (see the inline-math rule in
+   LEARNINGS 14.12): use `\lt` / `\gt` or spaced `a < b`.
+6. **Keep blank lines between HTML wrappers and markdown content.** Inside an
+   unbroken HTML block (`<div>`/`<p>` abstract wrappers), markdown and math
+   are not processed. A blank line after the opening tag and before the
+   closing tag lets the parser resume.
+7. **Do not end the last content line of a `math` fence with `\\`.** A
+   trailing line-break immediately before the closing fence renders stray
+   `$` artifacts after the math.
+8. **Everything inside a `math` fence must be inside `\begin{aligned}...
+   \end{aligned}`.** A line placed after `\end{aligned}` but still inside the
+   fence (e.g. a `\forall ...` qualifier) breaks the block and leaks raw
+   source. Move the line inside the environment instead.
+
+Verification protocol: count rendered `<math>` elements and search visible
+text for raw `\text{`, `\blacksquare`, `$...$` fragments. Filter to *visible*
+text — GitHub's rendered math nodes embed hidden TeX annotations that match
+raw-source regexes and produce false positives. Note that GitHub renders
+per-file blob pages lazily; a page can show zero math while loading.
+
 ### Anti-Pattern: A Citation Proves Less Than It's Used For
 
 Before using a proved theorem to justify a step, check that the objects

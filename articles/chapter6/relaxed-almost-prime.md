@@ -52,7 +52,7 @@ a prime plus an integer with at most two prime factors, not a twin-prime pair.
 
 The proof develops the following results in dependency order:
 
-1. relaxed-weight positivity implies prime-plus-$P_2$ production — §3;
+1. relaxed-weight positivity implies prime-plus $P_2$ production — §3;
 2. the exact divisor local factor and periodic remainder — §4;
 3. the exact shifted-divisor prime-progression discrepancy — §5;
 4. the exact bilinear character decomposition — §6; and
@@ -109,7 +109,7 @@ Halberstam and Richert [[8]](#ref8), with Type-I/Type-II terminology as in
 Iwaniec and Kowalski [[9]](#ref9) and Friedlander and Iwaniec [[10]](#ref10).
 What is project-specific is the population: the square-safe interval
 $[Q,Q^2)$ anchored at the head, the nested wheels $2 \mid Z \mid W$, and the
-pre-sieved shifted sequence $\mathcal A_Q=\{n+2:n\in S_Q\}$. The modulo-$3$
+pre-sieved shifted sequence $\mathcal A_Q=\{n+2:n\in S_Q\}$. The modulo $3$
 obstruction proved in §7 is a specific fixed-character correlation on the
 complete reduced wheel; the classical parity barrier — a sieve's general
 inability to distinguish the parity of the number of prime factors — is the
@@ -172,7 +172,7 @@ survive every prime below $Q$.
 
 ## 3. Relaxed Positivity Implies Prime-Plus-Almost-Prime Production
 
-**Theorem 1 (Relaxed positivity implies prime-plus-$P_2$ production).**
+**Theorem 1 (Relaxed positivity implies prime-plus $P_2$ production).**
 For every fixed exponent $1/3\lt\alpha\lt1/2$ and every sufficiently large
 prime future head $Q$, over the integers in that head's square-safe interval
 weighted by $a_Q$:
@@ -827,7 +827,7 @@ The bilinear character obstruction property gives the exact nonprincipal bilinea
 \overline{\chi(-2)}\chi(m)\chi(n),
 ```
 
-and the modulo-$3$ character refutes scalar-only centering:
+and the modulo $3$ character refutes scalar-only centering:
 
 ```math
 \left|
@@ -876,7 +876,7 @@ Mathematical Society Colloquium Publications, 57.
 
 | Result | Mathematical status | Stainless status | Cross-reference |
 |--------|---------------------|------------------|--------------------|
-| Relaxed positivity implies prime-plus-$P_2$ | Conditional implication proved; positivity for infinitely many heads open | Not yet verified | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
+| Relaxed positivity implies prime-plus $P_2$ | Conditional implication proved; positivity for infinitely many heads open | Not yet verified | [Candidate #25](https://github.com/thiagomata/prime-numbers/blob/master/candidates/chen-type-almost-prime-survivor.md) |
 | Exact divisor local factor | Proved, including all five local cases and arbitrary-interval remainder | Not yet verified | [Divisor Local Factor](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-divisor-local-factor.md) |
 | Shifted divisor discrepancy | Exact reduction proved; accumulated prime-progression estimate open | Not yet verified | [Cofactor Progression Discrepancy](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-cofactor-divisor-sum-is-prime-progression-discrepancy.md) |
 | Bilinear character decomposition | Exact pointwise and arbitrary-domain decompositions proved | Not yet verified | [Bilinear Character Obstruction](https://github.com/thiagomata/prime-numbers/blob/master/properties/sieve-sequence/relaxed-almost-prime-bilinear-character-obstruction.md) |

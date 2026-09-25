@@ -1267,7 +1267,7 @@ S_{\mathrm{protective}}=\min(L,N-K).
 ```
 
 Between these endpoints, a position-blind allocator chooses a uniformly random
-size-$K$ subset of the $N$ parents. Then
+size $K$ subset of the $N$ parents. Then
 
 ```math
 H\sim\text{Hypergeometric}(N,L,K)
@@ -1878,7 +1878,7 @@ result uses blind placement and a quadratic eligible supply.
 
 At filter $r$, let $U_r$ contain $N_r$ eligible values and let the CRT quota be
 $J_r$, with $0\le J_r\le N_r-2$. The exact-quota random parent model chooses one
-uniformly random size-$J_r$ subset of $U_r$ as its strike set. For a specified
+uniformly random size $J_r$ subset of $U_r$ as its strike set. For a specified
 2-gap whose two endpoints belong to $U_r$, both endpoints survive precisely
 when every strike is selected from the other $N_r-2$ values. Therefore
 
@@ -2049,7 +2049,7 @@ x_r:=\frac{|E_r|}{N_r},
 u_r:=\frac{J_r}{N_r}.
 ```
 
-Stipulate a group-exchangeable size-$J_r$ allocation law in which every
+Stipulate a group-exchangeable size $J_r$ allocation law in which every
 endpoint has marginal inclusion probability $p_r^{E}$, every ordinary value
 has marginal inclusion probability $p_r^{O}$, and the endpoint preference
 ratio is
@@ -3005,7 +3005,7 @@ $Q$. $\blacksquare$
 
 Consider a target window shorter than the old period, so each parent
 contributes at most one target child. Let $N$ be the number of parents, let
-$R$ be the set of $L$ relevant parents, and let $\mathcal A$ be the size-$K$
+$R$ be the set of $L$ relevant parents, and let $\mathcal A$ be the size $K$
 set receiving adversarial treatment. Every parent outside $\mathcal A$ is
 protective and preserves its target child. The number of target children destroyed
 and surviving are
@@ -3049,7 +3049,7 @@ S_{\mathrm{protective}}&=\min(L,N-K).
 \end{aligned}
 ```
 
-If $\mathcal A$ is instead a uniformly random size-$K$ subset, then
+If $\mathcal A$ is instead a uniformly random size $K$ subset, then
 
 ```math
 H\sim\text{Hypergeometric}(N,L,K),
