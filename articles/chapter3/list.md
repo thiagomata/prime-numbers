@@ -2097,4 +2097,4 @@ Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbe
 
 ## Appendix B: Stainless Verification Log Output
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log)
+The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify-ch-3-v1-chapter3-_.log](https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/logs/verify-ch-3-v1-chapter3-_.log)
