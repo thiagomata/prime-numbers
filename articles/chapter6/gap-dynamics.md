@@ -1387,8 +1387,8 @@ V_r\le\frac{N_r^2}{r}.
 
 An absolute upper-bound-sieve estimate is insufficient until its
 normalization by the actual $N_r$ is justified independently. Minimal
-falsifying histograms exist at small scale ($3+2+1$ at $(r,N)=(5,6)$;
-$2+2$ at $r = 7$, $N = 4$), but exact conditioned-layer search through $Q\le251$
+falsifying histograms exist at small scale, $3+2+1$ at $(r,N)=(5,6)$;
+$2+2$ at $r = 7$ and $N = 4$, but exact conditioned-layer search through $Q\le251$
 found none.
 
 **How the two compose.** The copy-block bridge of [§9](#9-copy-block-harmful-excess-and-residue-energy) proves that the

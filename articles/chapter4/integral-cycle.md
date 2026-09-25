@@ -615,7 +615,7 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 
 **Proof.** By strong induction on `pos`, subtracting one full cycle period at a time.
 
-**Base Case** ($\text{pos} \lt \text{period}(ci)$):
+**Base Case** $\text{pos} \lt \text{period}(ci)$:
 
 ```math
 \begin{aligned}
@@ -626,7 +626,7 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 \end{aligned}
 ```
 
-**Induction Step** ($\text{pos} \geq \text{period}(ci)$): let $\text{previous} := \text{pos} - \text{period}(ci)$. By
+**Induction Step** $\text{pos} \geq \text{period}(ci)$: let $\text{previous} := \text{pos} - \text{period}(ci)$. By
 the one-period shift identity proven in [§5.1](#51-cycle-period-shifts),
 $ci(\text{previous} + \text{period}(ci)) = ci(\text{previous}) + \text{periodSum}(ci)$, i.e. $ci(\text{pos}) = ci(\text{previous}) + \text{periodSum}(ci)$:
 
