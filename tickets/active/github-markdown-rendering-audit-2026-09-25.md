@@ -41,6 +41,12 @@ and other defects that interrupt reading.
   unsupported `\\operatorname` usage, and was re-opened in GitHub Preview.
 - Chapter 4 `integral-cycle.md`, Chapter 4 `integral.md`, Chapter 5, Chapter 6,
   and Chapter 7 remain to be inspected in the browser.
+- Chapter 4 `integral-cycle.md`: inspected at commit `8dd94a8`. GitHub renders
+  many display-math blocks, but numerous inline expressions lose their math
+  content entirely in the prose (for example the variables in §3.2, §4.1,
+  and §5.1), and §5.2 visibly exposes raw `($\\text{pos} < \\text{period}(ci)$)`
+  and `($\\text{pos} \\geq \\text{period}(ci)$)` fragments. This is a confirmed
+  reader-visible rendering failure, not merely a source-dollar count.
 
 ## What Is Learned
 
