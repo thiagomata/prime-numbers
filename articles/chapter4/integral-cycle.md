@@ -615,7 +615,7 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 
 **Proof.** By strong induction on `pos`, subtracting one full cycle period at a time.
 
-**Base Case** ($\text{pos} < \text{period}(ci)$):
+**Base Case** ($\text{pos} \lt \text{period}(ci)$):
 
 ```math
 \begin{aligned}
@@ -847,7 +847,7 @@ n &= |L|, \quad L = [v_0, \dots, v_{n-1}]
   &&\text{[Length of original cycle]} \\
 L^{(x)}
 &:= \underbrace{L \mathbin{\texttt{++}} \dots \mathbin{\texttt{++}} L}_{x \text{ copies}}
-  &&\text{[Concatenate $x$ copies]} \\
+  &&\text{[Concatenate } x \text{ copies]} \\
 m &:= |L^{(x)}| = x \cdot n
   &&\text{[Length of new cycle]} \\
 T &:= \sum_{j=0}^{n-1} v_j
