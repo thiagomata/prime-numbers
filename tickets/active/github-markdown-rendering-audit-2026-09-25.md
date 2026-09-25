@@ -106,11 +106,15 @@ and other defects that interrupt reading.
   synchronized with LaTeX and its PDF under the repository's arXiv rules.
 - The current worktree contains unrelated user changes; they must not enter
   this PR.
+- Most audit findings recorded at commit `8dd94a8` were already fixed on
+  `master` by PRs #60/#62; the branch now merges master, so re-verification
+  must run against the merged head, not the recorded findings.
 
 ## Next Action
 
-Continue the GitHub Preview audit, then make one focused rendering cleanup
-group and re-check the affected pages before expanding scope.
+Re-verify `cycle.md`, `sieve-sequence.md`, `survival-frontiers.md`, and the
+just-fixed pages at merged branch head `366dfaf8` in the browser; fix any
+remaining visible leaks; then finalize the PR description.
 
 ## Learning Log
 
@@ -124,3 +128,8 @@ group and re-check the affected pages before expanding scope.
 | 2026-09-26 | Chapter 6 `relaxed-almost-prime.md` loses inline math and visibly leaks `$P_2$` in list/table text. | Record both missing-math and raw-dollar defects; continue the browser audit. |
 | 2026-09-26 | Chapter 6 `sieve-sequence.md` loses most inline mathematical content in definitions and theorem prose. | Record as a confirmed missing-inline-math failure. |
 | 2026-09-26 | Chapter 7 `survival-frontiers.md` exposes raw inline and display math throughout the rendered page. | Record as a page-wide raw-dollar rendering failure. |
+| 2026-09-26 | Re-audit at master HEAD shows most `8dd94a8` findings already fixed by PRs #60/#62 (`integral.md` fully clean). | Audit against merged head; do not fix stale findings. |
+| 2026-09-26 | `integral-cycle.md` §5.2 leaked `($\\text{pos} \\lt ...$):` even after `<`→`\\lt`; the failure is the closing `$` immediately followed by `)`. | Remove the `(...)` wrapper around inline math followed by `:`; fixed and pushed. |
+| 2026-09-26 | Hyphen-adjacent inline math (`filter-$7$`, `prime-plus-$P_2$`) leaks raw source in `gap-dynamics.md`. | Insert a space or reword; fixed and pushed. |
+| 2026-09-26 | `\\(...\\)` QED marker in `euclid-theorem.md` §5 renders as literal text. | Replace with plain `[Q.E.D.]` text; GitHub renders only `$...$` and fenced math. |
+| 2026-09-26 | GitHub math rendering is deferred (8–10s) and rendered math nodes embed hidden TeX annotations that false-positive raw-source regexes. | Browser checks must wait and filter to visible text; protocol recorded in PROOF_GUIDE and LEARNINGS 14.12a. |
