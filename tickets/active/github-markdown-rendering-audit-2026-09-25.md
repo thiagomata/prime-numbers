@@ -25,15 +25,20 @@ and other defects that interrupt reading.
 
 ## Current State
 
-- Chapter 2 `modulo.md`: inspected in GitHub Preview; no raw dollar syntax was
-  observed in the rendered page.
+- Chapter 2 `modulo.md`: inspected at commit `8dd94a8` in GitHub Preview.
+  The abstract and most math blocks render, but two visible renderer failures
+  occur: `Missing \\end{aligned}` in §6.12 and §6.13, followed by raw `$$` math
+  source. The page also contains many dollar-delimited expressions in source;
+  the browser confirms that some render while malformed blocks do not.
 - Chapter 3 `list.md`: inspected in GitHub Preview; no raw dollar syntax was
   observed in the rendered page.
-- Chapter 4 `cycle.md`: confirmed defects remain in the rendered page:
+- Chapter 4 `cycle.md`: confirmed defects in the original rendered page:
   - standalone `$$` is visible in the introduction;
   - raw inline LaTeX appears in §5.7 Cycle Value Positivity;
   - raw inline LaTeX appears in §5.9 MemCycle-Level Restatement;
   - permalink labels expose raw `$i < n$` and `$i \\geq n$` fragments.
+- The cleanup branch now removes the confirmed raw inline-prose failures and
+  unsupported `\\operatorname` usage, and was re-opened in GitHub Preview.
 - Chapter 4 `integral-cycle.md`, Chapter 4 `integral.md`, Chapter 5, Chapter 6,
   and Chapter 7 remain to be inspected in the browser.
 
@@ -49,7 +54,8 @@ and other defects that interrupt reading.
 - A single browser batch opening all ten long articles timed out during
   accessibility extraction; smaller batches are required.
 - Source grep alone is insufficient evidence for a rendering verdict because
-  dollar signs also occur in code fences and arXiv README shell examples.
+  dollar signs also occur in code fences and some dollar-delimited expressions
+  render successfully. The browser is required to identify visible failures.
 
 ## Open Concerns
 
@@ -68,3 +74,4 @@ group and re-check the affected pages before expanding scope.
 | Date | Observation | Decision |
 |------|-------------|----------|
 | 2026-09-25 | Chapter 4 `cycle.md` visibly exposes raw `$$` and inline LaTeX. | Track as a confirmed rendering defect and use it as the first cleanup target. |
+| 2026-09-26 | Chapter 2 `modulo.md` shows two visible `Missing \\end{aligned}` failures in GitHub Preview. | Track flash-errors separately from successfully rendered dollar-delimited math. |
