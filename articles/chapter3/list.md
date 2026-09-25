@@ -6,7 +6,8 @@ Independent Researcher
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)  
-**Published:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)
+**Published:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)<br>
+**DOI:** [10.5281/zenodo.22955771](https://doi.org/10.5281/zenodo.22955771)
 
 ## Abstract
 
