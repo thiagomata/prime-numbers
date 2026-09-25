@@ -62,7 +62,7 @@ A number $n$ is **prime** exactly when it is greater than $1$ and no integer
 in $[2,n)$ divides it:
 
 ```math
-\text{isPrime}(n) \;:\\Longleftrightarrow\; n>1\ \land\
+\text{isPrime}(n) \;:\Longleftrightarrow\; n>1\ \land\
 \forall d\in[2,n),\ \text{mod}(n,d)\ne0.
 ```
 
