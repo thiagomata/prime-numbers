@@ -76,7 +76,7 @@ article develops the following properties:
 10. why the capacity envelope is exhausted — [§6](#6-why-the-capacity-envelope-is-exhausted);
 11. exact weighted deletion conservation and its terminal quadratic corollary
     — [§§5.1](#51-weighted-deletion-conservation)--[5.2](#52-terminal-survival-criterion);
-12. the exact filter-$7$ interval saving — [§7](#7-exact-filter-seven-localization);
+12. the exact filter $7$ interval saving — [§7](#7-exact-filter-seven-localization);
 13. the live frontier (accepted-boundary discrepancy and residue-collision
     energy estimates) — [§8](#8-open-estimates-and-their-proven-reductions);
 14. the copy-block residue-energy bridge — [§9](#9-copy-block-harmful-excess-and-residue-energy);
@@ -1177,7 +1177,7 @@ article.
 At the first nontrivial conditioned layer, exact residue order replaces the
 quadratic capacity envelope by a constant boundary discrepancy, for every
 finite integer interval $I$, after filters $2$, $3$, and $5$ have been
-installed and immediately before filter $7$, over actual pre-filter-$7$
+installed and immediately before filter $7$, over actual pre-filter $7$
 2-gap starts in an arbitrary integer interval. This is an arithmetic
 localization theorem, not a density estimate.
 
@@ -1387,7 +1387,7 @@ V_r\le\frac{N_r^2}{r}.
 An absolute upper-bound-sieve estimate is insufficient until its
 normalization by the actual $N_r$ is justified independently. Minimal
 falsifying histograms exist at small scale ($3+2+1$ at $(r,N)=(5,6)$;
-$2+2$ at $(7,4)$), but exact conditioned-layer search through $Q\le251$
+$2+2$ at $r = 7$, $N = 4$), but exact conditioned-layer search through $Q\le251$
 found none.
 
 **How the two compose.** The copy-block bridge of [§9](#9-copy-block-harmful-excess-and-residue-energy) proves that the
@@ -1656,7 +1656,7 @@ modulo $3$ on the complete reduced wheel: a bounded product coefficient can
 correlate perfectly with the full relaxed survivor count. This refutes the
 shortcut that scalar-density centering alone creates Type-II
 orthogonality—the exact obstruction Ford–Maynard's framework predicts. The
-refutation, the implication from relaxed positivity to prime-plus-$P_2$
+refutation, the implication from relaxed positivity to prime-plus $P_2$
 production, and the program's exact divisor and bilinear character
 properties are proved in [Relaxed Almost-Prime Production in Sieve
 Sequences](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/relaxed-almost-prime.md).
@@ -1911,7 +1911,7 @@ so $P_3=a_0a_1a_2=27/77$. Since $w_2=P_m/P_3$ and $\alpha_2=w_2/(2a_2)$,
 =\frac{847}{486}P_m.
 ```
 
-The filter-$11$ capacity floor gives $X_2\ge B_{11}^2$ with
+The filter $11$ capacity floor gives $X_2\ge B_{11}^2$ with
 $B_{11}=\lfloor D/66\rfloor+1\ge D/66$. Therefore
 ```math
 \mathcal U_2^{\mathrm{hyb}}\ge\frac{847}{486}P_m\left(\frac{D}{66}\right)^2.
