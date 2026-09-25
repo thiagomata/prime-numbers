@@ -583,7 +583,7 @@ locate any surviving copy in a prescribed short interval.
 
 The verified Scala representation of the underlying repetition, filtering,
 and next-stage reconstruction is documented in [Formal Verification of Sieve
-Sequence Stages and Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md). This article does
+Sequence Stages and Their Transitions](https://doi.org/10.5281/zenodo.22955782). This article does
 not duplicate those maintained source proofs.
 
 [§§3.1](#31-exact-global-2-gap-count)–[3.6](#36-absence-of-2-gaps-is-stable) above are exact complete-period identities; none of them measure a
@@ -597,7 +597,7 @@ head $\approx1200$ — consistent with $G_2(p)$'s product formula thinning the
 *complete-period* count, but shown here at the *local, per-stage* scale that
 Section 3's theorems are careful not to claim.
 
-![Fraction of a stage's gaps equal to 2, per stage, declining from 100% toward roughly 10%](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/presentations/sieve-sequence-visualization/figures/out/gap-two-frequency.svg)
+![Fraction of a stage's gaps equal to 2, per stage, declining from 100% toward roughly 10%](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-two-frequency.svg)
 
 The figure above summarizes each stage to one number; the figure below shows
 the same underlying data at full per-row detail, over the same 200-stage
@@ -608,7 +608,7 @@ back to back; a row with long colored runs is a stage where 2-gaps have
 spread apart. This is the row-by-row texture behind the declining-frequency
 curve above, not a new claim.
 
-![2-focused compression heatmap: every 2-gap in green, the collapsed distance to the next one colored by frequency, one row per stage](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/presentations/sieve-sequence-visualization/figures/out/gap-heatmap-2focused.svg)
+![2-focused compression heatmap: every 2-gap in green, the collapsed distance to the next one colored by frequency, one row per stage](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-heatmap-2focused.svg)
 
 ## 4. Local Certification And One-Transition Survival
 
@@ -737,7 +737,7 @@ last stage), diverging further as the head grows — but the average's floor
 sits at exactly $4$ across every stage, never lower, matching the isolation
 bound proved above rather than merely approximating it.
 
-![Average and maximum distance between consecutive 2-gaps, per stage; the average floor is exactly 4](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/presentations/sieve-sequence-visualization/figures/out/gap-two-cluster-size.svg)
+![Average and maximum distance between consecutive 2-gaps, per stage; the average floor is exactly 4](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-two-cluster-size.svg)
 
 The overlap argument above proves its filtering consequence.
 
@@ -1753,7 +1753,7 @@ family of future heads.
 ## References
 
 1. Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and
-   Their Transitions*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
+   Their Transitions*. Available at: [https://doi.org/10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782).
 
 ## Appendix A: Evidence And Verification Status
 
@@ -1777,7 +1777,7 @@ the asymptotic stability-gap discussion of
 
 The operational Sieve Sequence construction used by these mathematical
 properties is Stainless-verified separately in [Formal Verification of Sieve
-Sequence Stages and Their Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
+Sequence Stages and Their Transitions](https://doi.org/10.5281/zenodo.22955782).
 
 ## Appendix C: Self-Contained Proofs For The Exhaustion Chain
 
