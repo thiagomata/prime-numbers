@@ -6,7 +6,8 @@ Independent Researcher
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)  
-**Published:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)
+**Published:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)<br>
+**DOI:** [10.5281/zenodo.22955131](https://doi.org/10.5281/zenodo.22955131)
 
 ## Abstract
 
@@ -536,8 +537,8 @@ their remainders are themselves:
 
 ```math
 \begin{aligned}
-0<k<b &\implies \text{mod}(k,b)=k \\
-0<b-k<b &\implies \text{mod}(b-k,b)=b-k \\
+0\lt k\lt b &\implies \text{mod}(k,b)=k \\
+0\lt b-k\lt b &\implies \text{mod}(b-k,b)=b-k \\
 \text{mod}(k,b)+\text{mod}(b-k,b) &= k+(b-k)=b.
   \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
@@ -570,7 +571,7 @@ covers $b=1$: only the first case can occur.
 ```math
 \begin{aligned}
 r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
-r<b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1<b.
+r\lt b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1\lt b.
   \quad \blacksquare\ \text{[Q.E.D.]}
 \end{aligned}
 ```
@@ -886,4 +887,4 @@ def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
 
 ### A.4 Verification Log
 
-The project verification log is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
+The project verification log is available at [logs/verify-ch-2-v1-chapter2-_.log](https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.1/logs/verify-ch-2-v1-chapter2-_.log).

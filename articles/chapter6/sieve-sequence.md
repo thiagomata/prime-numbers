@@ -5,7 +5,8 @@ Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)<br>
+**DOI:** [10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782)
 
 ## Abstract
 
@@ -121,7 +122,7 @@ installed yet, marks every composite integer this way). Every red cell is
 exactly the phenomenon named above — a value $A_S$ currently accepts that a
 later stage head will remove.
 
-![Six small hit/miss matrices, one per early stage: green cells are survivors that are actually prime, red cells are survivors the current filter set accepts despite being composite](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/presentations/sieve-sequence-visualization/figures/out/hit-miss-matrices.svg)
+![Six small hit/miss matrices, one per early stage: green cells are survivors that are actually prime, red cells are survivors the current filter set accepts despite being composite](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/hit-miss-matrices.svg)
 
 ### 2.2 Period and Gap Cycle
 
@@ -913,11 +914,11 @@ Recursively Defined*. Available at: [https://rxiverse.org/abs/2609.0023](https:/
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*.
-[Local article](https://doi.org/10.5281/zenodo.22865441).
+Available at: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441).
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from
-First Principles*. [Local article](https://doi.org/10.5281/zenodo.22868423).
+First Principles*. Available at: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423).
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of

@@ -5,7 +5,8 @@ Independent Researcher
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)
+**License:** [CC BY 4.0](../LICENSE)\
+**Published:** [Zenodo:10.5281/zenodo.22929220](https://doi.org/10.5281/zenodo.22929220)
 
 ---
 
@@ -61,7 +62,7 @@ A number $n$ is **prime** exactly when it is greater than $1$ and no integer
 in $[2,n)$ divides it:
 
 ```math
-\text{isPrime}(n) \;:\\Longleftrightarrow\; n>1\ \land\
+\text{isPrime}(n) \;:\Longleftrightarrow\; n>1\ \land\
 \forall d\in[2,n),\ \text{mod}(n,d)\ne0.
 ```
 
@@ -85,7 +86,7 @@ because $n$ itself divides $n$.  Its specification is therefore
 \begin{aligned}
 d &= \text{findSmallestDivisor}(n,s) \\
 &\implies s\leq d\leq n\ \land\ \text{mod}(n,d)=0 \\
-&\phantom{\implies}\land\ \forall e\in[s,d),\ \text{mod}(n,e)\ne0.
+&\qquad\land\ \forall e\in[s,d),\ \text{mod}(n,e)\ne0.
 \end{aligned}
 ```
 
@@ -403,7 +404,7 @@ $e\in[2,n)$. The minimality specification from [§2.2](#22-finite-prime-operatio
 $2\leq d\leq e<n$ and $\text{mod}(n,d)=0$.
 
 ```math
-\therefore\ 2\leq d<n\ \land\ \text{mod}(n,d)=0.
+\therefore\ 2\leq d\lt n\ \land\ \text{mod}(n,d)=0.
 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
@@ -613,7 +614,7 @@ $P=\text{primorial}(L)$ and $N=P+1$:
 &&\text{[Stage 1]} \\
 d=\text{findSmallestDivisor}(N,2),\quad d=N
 &\Rightarrow \text{isPrime}(N) \\
-d<N
+d\lt N
 &\Rightarrow \text{isPrime}(d)
 &&\text{[Stage 2]} \\
 v\mid N\ \land\ p\in L
@@ -761,4 +762,4 @@ non-empty finite list of primes admits a prime outside the list.
 ## Appendix B: Stainless Verification Log Output
 
 The latest `just verify` run verifies the described properties without errors.
-The full log output is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
+The full log output is available at [logs/verify-ch-5-v1-chapter5-_.log](https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/logs/verify-ch-5-v1-chapter5-_.log).
