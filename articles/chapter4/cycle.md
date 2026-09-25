@@ -37,7 +37,7 @@ repetitive structures or processes. They can be thought of as infinite lists tha
 
 ```math
 L = [x_0, x_1, x_2, \ldots, x_{n-1}]  \mid x_n \in 𝕊, L \in 𝕃\\
-\text{Cycle}(L) = [x_0, x_1, x_2, \ldots, x_{n-1}, x_0, x_1, \ldots] \\
+\text{Cycle}(L) = [x_0, x_1, x_2, \ldots, x_{n-1}, x_0, x_1, \ldots]
 ```
 
 In this article, we present discrete definition of Cycle
@@ -139,9 +139,9 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 |L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases}
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) \mathbin{\texttt{++}} [ L_t ] & \text{if } f < t \\
-\end{cases}
+\end{cases} \\
+\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t
 \end{aligned}
-\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
 ```
 
 ```math
