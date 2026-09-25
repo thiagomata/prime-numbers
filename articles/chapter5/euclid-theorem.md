@@ -530,7 +530,7 @@ ax+(b-a)y=g &\implies a(x-y)+by=g.
 
 Every common divisor of $h$ and the prime $p$ is either $1$ or $p$; it cannot
 be $p$ because $0<h<p$. The terminal gcd is therefore $1$, which gives the
-displayed Bézout identity. \(\blacksquare\ \text{[Q.E.D.]}\)
+displayed Bézout identity. [Q.E.D.]
 
 Multiplying that identity by $k$ gives $k h x + k p y = k$. If $p$ divides
 $k h$, then $p$ divides both terms on the left and therefore divides $k$.

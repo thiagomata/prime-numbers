@@ -37,7 +37,7 @@ repetitive structures or processes. They can be thought of as infinite lists tha
 
 ```math
 L = [x_0, x_1, x_2, \ldots, x_{n-1}]  \mid x_n \in 𝕊, L \in 𝕃\\
-\text{Cycle}(L) = [x_0, x_1, x_2, \ldots, x_{n-1}, x_0, x_1, \ldots] \\
+\text{Cycle}(L) = [x_0, x_1, x_2, \ldots, x_{n-1}, x_0, x_1, \ldots]
 ```
 
 In this article, we present discrete definition of Cycle
@@ -139,9 +139,9 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 |L| > 0 &\implies &\text{slice}(L, f, t) &:=  \begin{cases}
 [ L_j ] & \text{if } f = t \\
 \text{slice}(L, f, t - 1) \mathbin{\texttt{++}} [ L_t ] & \text{if } f < t \\
-\end{cases}
+\end{cases} \\
+\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t
 \end{aligned}
-\forall \ f, t \in ℕ \text{ where } 0 \leq f \leq t \\
 ```
 
 ```math
@@ -399,7 +399,7 @@ L_i & \text{if } i < n \\
 \end{aligned}
 ```
 
-### 4.1 Base Case ($i < n$)
+### 4.1 Base Case (`i < n`)
 
 When the position is within the first cycle, both definitions return the list element directly.
 
@@ -420,7 +420,7 @@ This property is verified in the [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
 
-### 4.2 Inductive Step ($i \geq n$)
+### 4.2 Inductive Step (`i >= n`)
 
 For positions beyond the first cycle, both definitions reduce the position by the cycle period and rely on the inductive hypothesis.
 
@@ -731,7 +731,7 @@ negative numbers, which is essential for integral and gap reasoning.
 \end{aligned}
 ```
 
-**Proof.** By [§5.1](#51-cycle-element-access), $\text{Cycle}_{\text{pos}} = L[\text{pos} \bmod n]$, and $\text{pos} \bmod n$ is a valid index into $L$ (in $[0, n)$). So $\text{Cycle}_{\text{pos}}$ is one of the values of $L$ — and every value of $L$ is non-negative by hypothesis, so $\text{Cycle}_{\text{pos}} \geq 0$.
+**Proof.** By [§5.1](#51-cycle-element-access), `Cycle_pos = L[pos mod n]`, and `pos mod n` is a valid index into `L` (in `[0, n)`). So `Cycle_pos` is one of the values of `L` — and every value of `L` is non-negative by hypothesis, so `Cycle_pos >= 0`.
 
 ```math
 \therefore \ (\forall x \in L,\ x \geq 0) \land |L| > 0 \implies \text{Cycle}_{\text{pos}} \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
@@ -814,8 +814,8 @@ The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime
 and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition),
 both proved and verified in [Division and Modulo from Recursive
 Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
-$\text{mod}(k + \text{mod}(i,n),\, n) = \text{mod}(k+i,\, n)$ follows because
-both sides reduce to $\text{mod}(\text{mod}(k,n) + \text{mod}(i,n),\, n)$.
+The identity `mod(k + mod(i, n), n) = mod(k + i, n)` follows because
+both sides reduce to `mod(mod(k, n) + mod(i, n), n)`.
 
 This property is verified in the [
   CycleProperties::rotateAtValue
@@ -863,8 +863,8 @@ These are verified in the [
   MemCycleProperties::propagateModFromValueToCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that $\text{Cycle}_i$ equals
-$\text{Cycle}_{(i \bmod n) \bmod n}$) has its own `MemCycle` restatement in [
+The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that `Cycle_i` equals
+`Cycle_(mod(i, n) mod n)`) has its own `MemCycle` restatement in [
   MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
