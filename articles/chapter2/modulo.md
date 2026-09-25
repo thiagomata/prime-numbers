@@ -887,4 +887,4 @@ def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
 
 ### A.4 Verification Log
 
-The project verification log is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
+The project verification log is available at [logs/verify-ch-2-v1-chapter2-_.log](https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.1/logs/verify-ch-2-v1-chapter2-_.log).

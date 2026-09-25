@@ -762,4 +762,4 @@ non-empty finite list of primes admits a prime outside the list.
 ## Appendix B: Stainless Verification Log Output
 
 The latest `just verify` run verifies the described properties without errors.
-The full log output is available at [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log).
+The full log output is available at [logs/verify-ch-5-v1-chapter5-_.log](https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/logs/verify-ch-5-v1-chapter5-_.log).
