@@ -341,6 +341,13 @@ deferred, and an early check can falsely report whole-page failure).
    unbroken HTML block (`<div>`/`<p>` abstract wrappers), markdown and math
    are not processed. A blank line after the opening tag and before the
    closing tag lets the parser resume.
+7. **Do not end the last content line of a `math` fence with `\\`.** A
+   trailing line-break immediately before the closing fence renders stray
+   `$` artifacts after the math.
+8. **Everything inside a `math` fence must be inside `\begin{aligned}...
+   \end{aligned}`.** A line placed after `\end{aligned}` but still inside the
+   fence (e.g. a `\forall ...` qualifier) breaks the block and leaks raw
+   source. Move the line inside the environment instead.
 
 Verification protocol: count rendered `<math>` elements and search visible
 text for raw `\text{`, `\blacksquare`, `$...$` fragments. Filter to *visible*

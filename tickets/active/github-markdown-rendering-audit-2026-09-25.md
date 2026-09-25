@@ -25,65 +25,25 @@ and other defects that interrupt reading.
 
 ## Current State
 
-- Chapter 2 `modulo.md`: inspected at commit `8dd94a8` in GitHub Preview.
-  The abstract and most math blocks render, but two visible renderer failures
-  occur: `Missing \\end{aligned}` in §6.12 and §6.13, followed by raw `$$` math
-  source. The page also contains many dollar-delimited expressions in source;
-  the browser confirms that some render while malformed blocks do not.
-- Chapter 3 `list.md`: inspected in GitHub Preview; no raw dollar syntax was
-  observed in the rendered page.
-- Chapter 4 `cycle.md`: confirmed defects in the original rendered page:
-  - standalone `$$` is visible in the introduction;
-  - raw inline LaTeX appears in §5.7 Cycle Value Positivity;
-  - raw inline LaTeX appears in §5.9 MemCycle-Level Restatement;
-  - permalink labels expose raw `$i < n$` and `$i \\geq n$` fragments.
-- The cleanup branch now removes the confirmed raw inline-prose failures and
-  unsupported `\\operatorname` usage, and was re-opened in GitHub Preview.
-- Chapter 4 `integral-cycle.md`, Chapter 4 `integral.md`, Chapter 5, Chapter 6,
-  and Chapter 7 remain to be inspected in the browser.
-- Chapter 4 `integral-cycle.md`: inspected at commit `8dd94a8`. GitHub renders
-  many display-math blocks, but numerous inline expressions lose their math
-  content entirely in the prose (for example the variables in §3.2, §4.1,
-  and §5.1), and §5.2 visibly exposes raw `($\\text{pos} < \\text{period}(ci)$)`
-  and `($\\text{pos} \\geq \\text{period}(ci)$)` fragments. This is a confirmed
-  reader-visible rendering failure, not merely a source-dollar count.
-- Chapter 4 `integral.md`: inspected at commit `8dd94a8`. The abstract renders,
-  but the body visibly exposes extensive raw inline `$...$` and display `$$...$$`
-  source beginning in §2 and continuing through §§3–5 and later. Confirmed
-  examples include `$L = [x_0, x_1, \\dots, x_{n-1}] \\in \\mathbb{Z}^n$`, `$n$`,
-  `$$I_0 = x_0 + init$$`, and raw math in the list bullets and section headings.
-  No explicit `Missing \\end{aligned}` flash-error was observed in this pass;
-  the visible defect is the raw math source itself.
-- Chapter 5 `euclid-theorem.md`: inspected at commit `8dd94a8`. The abstract
-  and headings render, but much of the mathematical inline content disappears
-  from the prose, leaving sentences with empty gaps throughout §§1–4 and the
-  conclusion. Section §4.4 also visibly exposes the raw fragment
-  `(\\blacksquare\\ \\text{[Q.E.D.]})`. No explicit `Missing \\end{aligned}`
-  flash-error was observed in this pass; the confirmed failures are missing
-  inline math and leaked LaTeX text.
-- Chapter 6 `gap-dynamics.md`: inspected at commit `8dd94a8`. The rendered
-  article visibly exposes raw inline `$...$` and display `$$...$$` throughout
-  the abstract, introductory notation, and later proof sections. Examples
-  include `$[Q,Q^2)$`, `$p$`, `$$M_p=...$$`, and repeated raw `$$` proof blocks.
-  This is a page-wide raw-dollar rendering failure; no separate
-  `Missing \\end{aligned}` flash-error was observed in this pass.
-- Chapter 6 `relaxed-almost-prime.md`: inspected at commit `8dd94a8`. Many
-  inline math expressions disappear from rendered prose, leaving blank gaps
-  across §§1–10. Raw dollar syntax remains visibly exposed in prose/list text,
-  including `prime-plus-$P_2$` in the §1 list and the same fragment in the
-  Appendix A table. No explicit `Missing \\end{aligned}` flash-error was
-  observed in this pass.
-- Chapter 6 `sieve-sequence.md`: inspected at commit `8dd94a8`. The abstract,
-  headings, prose, and code blocks render, but most inline mathematical content
-  disappears from the rendered article, leaving empty gaps in definitions,
-  formulas, and theorem statements across §§2–7. No explicit raw-dollar leak
-  or `Missing \\end{aligned}` flash-error was observed in this pass; the
-  confirmed failure is missing inline math.
-- Chapter 7 `survival-frontiers.md`: inspected at commit `8dd94a8`. The page
-  visibly exposes raw inline `$...$` and display `$$...$$` throughout the
-  abstract, tables, definitions, and proof sections. Examples include `$r$`,
-  `$[Q,Q^2)$`, `$$N_{k+1}=...$$`, and raw display blocks in §§2–8. No explicit
-  `Missing \\end{aligned}` flash-error was observed in this pass.
+- COMPLETE. All ten chapter articles were re-audited in the browser at branch
+  head `ad23485a` and render clean: zero visible raw-dollar fragments, zero
+  raw backslash commands, zero `Missing \end{aligned}` errors, with math
+  nodes rendering on every page.
+- Fixes applied on this branch (in addition to the original `cycle.md` group):
+  `integral-cycle.md` (paren-adjacent delimiters, nested `$` in `\text`),
+  `euclid-theorem.md` (`\(...\)` marker), `gap-dynamics.md` (hyphen-adjacent
+  and `$):` adjacencies), `relaxed-almost-prime.md` (hyphen-adjacent),
+  `survival-frontiers.md` (hyphen-adjacent), `cycle.md` (malformed fences).
+- Most `8dd94a8` findings were already fixed on master by PRs #60/#62; the
+  branch merges master, so `modulo.md` §6.12/§6.13 `Missing \end{aligned}`
+  failures are resolved by the merged `\lt` fix.
+- Guidelines updated: PROOF_GUIDE "GitHub Math Rendering Rules (Verified in
+  the Rendered Page)" (8 rules + verification protocol) and LEARNINGS 14.12a.
+- arXiv editions: the Markdown fixes are GitHub-rendering-only (delimiter
+  placement, fence structure). The LaTeX editions render the same visible
+  text natively (e.g. `size-$K$` is fine in LaTeX), so rendered content is
+  identical in both editions and no `.tex` content change or PDF rebuild is
+  required for parity.
 
 ## What Is Learned
 
@@ -112,9 +72,8 @@ and other defects that interrupt reading.
 
 ## Next Action
 
-Re-verify `cycle.md`, `sieve-sequence.md`, `survival-frontiers.md`, and the
-just-fixed pages at merged branch head `366dfaf8` in the browser; fix any
-remaining visible leaks; then finalize the PR description.
+None — audit complete and all reader-visible failures fixed and re-verified
+in the browser at `ad23485a`. Ready for review/merge of PR #61.
 
 ## Learning Log
 
@@ -133,3 +92,6 @@ remaining visible leaks; then finalize the PR description.
 | 2026-09-26 | Hyphen-adjacent inline math (`filter-$7$`, `prime-plus-$P_2$`) leaks raw source in `gap-dynamics.md`. | Insert a space or reword; fixed and pushed. |
 | 2026-09-26 | `\\(...\\)` QED marker in `euclid-theorem.md` §5 renders as literal text. | Replace with plain `[Q.E.D.]` text; GitHub renders only `$...$` and fenced math. |
 | 2026-09-26 | GitHub math rendering is deferred (8–10s) and rendered math nodes embed hidden TeX annotations that false-positive raw-source regexes. | Browser checks must wait and filter to visible text; protocol recorded in PROOF_GUIDE and LEARNINGS 14.12a. |
+| 2026-09-26 | First load of a blob page can fail to hydrate math entirely (0 `<math>` nodes, everything raw); a reload renders normally. | Treat 0-math-node results as hydration flakes: reload before diagnosing. |
+| 2026-09-26 | `cycle.md` leaked stray `$` from math fences: trailing `\\\\` on the last line before the closing fence, and a `\\forall` line placed after `\\end{aligned}` inside the fence. | Fixed fence structure; recorded as PROOF_GUIDE rules 7–8. |
+| 2026-09-26 | Hyphen-adjacent inline math also present in `relaxed-almost-prime.md` (`prime-plus-$P_2$`, `modulo-$3$`) and `survival-frontiers.md` (`size-$K$`, `size-$J_r$`). | Fixed by inserting a space; LaTeX editions keep the hyphen form since LaTeX renders it correctly — no tex drift. |
