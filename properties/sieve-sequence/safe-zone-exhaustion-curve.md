@@ -160,7 +160,7 @@ stage's boundary falls past this chart's displayed width, so a curve simply
 stops where the data backing it runs out of room rather than pinning to the
 edge.
 
-![Gap-cycle heatmap with both chaos-to-order boundary curves overlaid](../../presentations/sieve-sequence-visualization/figures/out/gap-heatmap.svg)
+![Gap-cycle heatmap with both chaos-to-order boundary curves overlaid](../../charts/gap-heatmap.svg)
 
 ## References
 

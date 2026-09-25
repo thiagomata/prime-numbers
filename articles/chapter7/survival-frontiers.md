@@ -57,7 +57,7 @@ form a finite cycle.
 
 This periodic accepted-value object is the **Sieve Sequence**, introduced and
 formally verified in [Formal Verification of Sieve Sequence Stages and Their
-Transitions](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md) [[1]](#ref1); its finite gap cycle is the
+Transitions](https://doi.org/10.5281/zenodo.22955782) [[1]](#ref1); its finite gap cycle is the
 representation used throughout this article.
 
 After multiples of $2$ have been removed, every survivor is odd. Every gap is
@@ -303,7 +303,7 @@ conclusions.
 ### 2.2 Mathematical Foundation
 
 The companion construction uses three exact sieve-sequence results proved in
-[Gap Dynamics](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md) [[2]](#ref2):
+[Gap Dynamics](https://doi.org/10.5281/zenodo.22955786) [[2]](#ref2):
 
 - the [exact complete-period 2-gap count](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count);
 - the [two harmful copy-index classes](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes); and
@@ -2694,11 +2694,11 @@ exist.
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and Their
-Transitions*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/sieve-sequence.md).
+Transitions*. Available at: [https://doi.org/10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Structural Properties and Signed Boundaries of 2-Gaps in
-Sieve Sequences*. [Local article](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md).
+Sieve Sequences*. Available at: [https://doi.org/10.5281/zenodo.22955786](https://doi.org/10.5281/zenodo.22955786).
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Kochen, S. and Stone, C. (1964). [A note on the Borel--Cantelli lemma](
