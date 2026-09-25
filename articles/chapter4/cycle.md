@@ -814,8 +814,8 @@ The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime
 and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition),
 both proved and verified in [Division and Modulo from Recursive
 Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
-The identity $\operatorname{mod}(k + \operatorname{mod}(i,n),\, n) = \operatorname{mod}(k+i,\, n)$ follows because
-both sides reduce to $\operatorname{mod}(\operatorname{mod}(k,n) + \operatorname{mod}(i,n),\, n)$.
+The identity `mod(k + mod(i, n), n) = mod(k + i, n)` follows because
+both sides reduce to `mod(mod(k, n) + mod(i, n), n)`.
 
 This property is verified in the [
   CycleProperties::rotateAtValue
