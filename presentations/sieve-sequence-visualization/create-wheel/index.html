@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>First Wheel</title>
+    <style>
+      :root {
+        color-scheme: light;
+        background: #d9c8a5;
+      }
+      * { box-sizing: border-box; }
+      html, body, main { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+      #scene { display: block; width: 100%; height: 100%; }
+    </style>
+    <script type="importmap">
+      {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js"}}
+    </script>
+  </head>
+  <body>
+    <main><canvas id="scene" aria-label="An endless vertical row of evenly spaced blocks passing between two counter-rotating wheels"></canvas></main>
+    <script type="module">
+      import * as THREE from "three";
+
+      const canvas = document.querySelector("#scene");
+      const shell = document.querySelector("main");
+      const TAU = Math.PI * 2;
+      const POSITIONS = 12;
+      const RADIUS = 0.78;
+      const UNIT_DISTANCE = (TAU * RADIUS) / POSITIONS;
+      const WHEEL_ANGULAR_SPEED = 0.45;
+      const ROPE_BLOCK_COUNT = 25;
+      const ROPE_BLOCK_SPAN = ROPE_BLOCK_COUNT * UNIT_DISTANCE;
+      const SAND_SURFACE_Y = -0.055;
+      const CONTACT_CLEARANCE = 0.006;
+      const WHEEL_COLOR = 0x6fae9e;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xd9c8a5);
+      scene.fog = new THREE.Fog(0xd9c8a5, 30, 110);
+      const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 90);
+      camera.position.set(0.9, 2.74, 9.5);
+      camera.lookAt(0.9, 0.6, 0);
+
+      scene.add(new THREE.HemisphereLight(0xfff9e8, 0x756749, 2.3));
+      const sun = new THREE.DirectionalLight(0xfff4d8, 4.2);
+      sun.position.set(-7, 14, 9);
+      sun.castShadow = true;
+      sun.shadow.mapSize.set(2048, 2048);
+      sun.shadow.camera.left = -15;
+      sun.shadow.camera.right = 15;
+      sun.shadow.camera.top = 14;
+      sun.shadow.camera.bottom = -8;
+      scene.add(sun);
+
+      function createSandTexture() {
+        const textureCanvas = document.createElement("canvas");
+        textureCanvas.width = 512;
+        textureCanvas.height = 512;
+        const context = textureCanvas.getContext("2d");
+        context.fillStyle = "#cdb98f";
+        context.fillRect(0, 0, 512, 512);
+        let seed = 4173;
+        const random = () => {
+          const nextSeed = seed * 16807;
+          seed = nextSeed - Math.floor(nextSeed / 2147483647) * 2147483647;
+          return (seed - 1) / 2147483646;
+        };
+        for (let index = 0; index < 7200; index += 1) {
+          const light = random() > 0.52;
+          const alpha = 0.04 + random() * 0.1;
+          context.fillStyle = light
+            ? `rgba(255, 246, 215, ${alpha})`
+            : `rgba(91, 72, 43, ${alpha})`;
+          context.beginPath();
+          context.arc(random() * 512, random() * 512, 0.35 + random() * 1.15, 0, TAU);
+          context.fill();
+        }
+        const texture = new THREE.CanvasTexture(textureCanvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(5, 3);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        return texture;
+      }
+
+      const sand = new THREE.Mesh(
+        new THREE.PlaneGeometry(48, 24),
+        new THREE.MeshStandardMaterial({
+          map: createSandTexture(),
+          color: 0xd1bd94,
+          roughness: 1,
+          metalness: 0,
+        }),
+      );
+      sand.rotation.x = -Math.PI / 2;
+      sand.position.set(0, SAND_SURFACE_Y, 0);
+      sand.receiveShadow = true;
+      const rootRadius = Math.max(RADIUS - 0.16, RADIUS * 0.82);
+      const wheel = new THREE.Group();
+      wheel.position.set(0, RADIUS + SAND_SURFACE_Y + CONTACT_CLEARANCE, 0);
+      const turningWheel = new THREE.Group();
+      wheel.add(turningWheel);
+      scene.add(wheel);
+
+      const wheelMaterial = new THREE.MeshStandardMaterial({
+        color: 0x34403c,
+        metalness: 0.22,
+        roughness: 0.48,
+      });
+      const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(rootRadius, rootRadius, 0.34, POSITIONS),
+        wheelMaterial,
+      );
+      body.rotation.x = Math.PI / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      turningWheel.add(body);
+
+      const slotWidth = Math.max(0.12, Math.min(UNIT_DISTANCE * 0.42, 0.2));
+      const pinMaterial = new THREE.MeshStandardMaterial({ color: WHEEL_COLOR, roughness: 0.42 });
+      for (let position = 0; position < POSITIONS; position += 1) {
+        const angle = -Math.PI / 2 + (position / POSITIONS) * TAU;
+        const pinLength = RADIUS - rootRadius + 0.05;
+        const pin = new THREE.Mesh(
+          new THREE.BoxGeometry(slotWidth, pinLength, 0.34 * 1.08),
+          pinMaterial,
+        );
+        const pinCenter = RADIUS - pinLength / 2;
+        pin.position.set(Math.cos(angle) * pinCenter, Math.sin(angle) * pinCenter, 0);
+        pin.rotation.z = angle - Math.PI / 2;
+        pin.castShadow = true;
+        turningWheel.add(pin);
+      }
+
+      const hubRadius = Math.max(0.12, Math.min(rootRadius * 0.22, 0.42));
+      const hub = new THREE.Mesh(
+        new THREE.CylinderGeometry(hubRadius, hubRadius, 0.34 * 1.2, 32),
+        new THREE.MeshStandardMaterial({ color: WHEEL_COLOR, roughness: 0.4 }),
+      );
+      hub.rotation.x = Math.PI / 2;
+      hub.castShadow = true;
+      turningWheel.add(hub);
+
+      const mirrorWheel = wheel.clone(true);
+      const mirrorTurningWheel = mirrorWheel.children[0];
+      mirrorWheel.position.x = 1.8;
+      scene.add(mirrorWheel);
+
+      const rope = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.035, 0.035, 100, 12),
+        new THREE.MeshStandardMaterial({ color: 0x34403c, roughness: 0.78 }),
+      );
+      rope.position.set(0.9, wheel.position.y, 0.25);
+      scene.add(rope);
+      const ropeBlocks = [];
+      for (let position = 0; position < ROPE_BLOCK_COUNT; position += 1) {
+        const block = new THREE.Mesh(
+          new THREE.BoxGeometry(slotWidth, RADIUS - rootRadius + 0.05, 0.34 * 1.08),
+          pinMaterial,
+        );
+        block.position.set(
+          0.9,
+          wheel.position.y + ((ROPE_BLOCK_COUNT - 1) / 2 - position + 1.1) * UNIT_DISTANCE,
+          0.25,
+        );
+        block.castShadow = true;
+        scene.add(block);
+        ropeBlocks.push(block);
+      }
+
+      function resize() {
+        const width = shell.clientWidth;
+        const height = shell.clientHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+      new ResizeObserver(resize).observe(shell);
+      resize();
+
+      let previousTime = 0;
+      function animate(time) {
+        const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
+        previousTime = time;
+        turningWheel.rotation.z -= delta * WHEEL_ANGULAR_SPEED;
+        mirrorTurningWheel.rotation.z += delta * WHEEL_ANGULAR_SPEED;
+        for (const block of ropeBlocks) {
+          block.position.y -= RADIUS * WHEEL_ANGULAR_SPEED * delta;
+          if (block.position.y < wheel.position.y - ROPE_BLOCK_SPAN / 2) {
+            block.position.y += ROPE_BLOCK_SPAN;
+          }
+        }
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    </script>
+  </body>
+</html>
