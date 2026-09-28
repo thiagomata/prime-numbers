@@ -12,6 +12,28 @@
       * { box-sizing: border-box; }
       html, body, main { width: 100%; height: 100%; margin: 0; overflow: hidden; }
       #scene { display: block; width: 100%; height: 100%; }
+      .slides {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 10px;
+        background: rgba(250, 247, 237, 0.9);
+        color: #26312e;
+        font: 14px system-ui, sans-serif;
+      }
+      .slides button {
+        min-width: 76px;
+        min-height: 36px;
+        border: 1px solid #52645c;
+        background: #f8f5eb;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+      .slides button:disabled { opacity: 0.45; cursor: default; }
     </style>
     <script type="importmap">
       {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js"}}
@@ -19,6 +41,11 @@
   </head>
   <body>
     <main><canvas id="scene" aria-label="An endless vertical row of evenly spaced blocks passing between two counter-rotating wheels"></canvas></main>
+    <nav class="slides" aria-label="Slides">
+      <button id="previous" type="button" disabled>Previous</button>
+      <span id="slide-number" aria-live="polite">1 / 2</span>
+      <button id="next" type="button">Next</button>
+    </nav>
     <script type="module">
       import * as THREE from "three";
 
@@ -158,8 +185,31 @@
 
       const mirrorWheel = wheel.clone(true);
       const mirrorTurningWheel = mirrorWheel.children[0];
-      mirrorWheel.position.x = 1.8;
+      mirrorWheel.position.x = 0;
+      mirrorWheel.visible = false;
       scene.add(mirrorWheel);
+
+      const previousButton = document.querySelector("#previous");
+      const nextButton = document.querySelector("#next");
+      const slideNumber = document.querySelector("#slide-number");
+      let slide = 1;
+      let transition = null;
+
+      function setSlide(target) {
+        if (transition || target === slide) return;
+        mirrorWheel.visible = true;
+        transition = {
+          from: slide - 1,
+          target: target - 1,
+          slideTarget: target,
+          elapsed: 0,
+        };
+        previousButton.disabled = true;
+        nextButton.disabled = true;
+      }
+
+      previousButton.addEventListener("click", () => setSlide(1));
+      nextButton.addEventListener("click", () => setSlide(2));
 
       const rope = new THREE.Mesh(
         new THREE.CylinderGeometry(0.035, 0.035, 100, 12),
@@ -181,6 +231,30 @@
         block.castShadow = true;
         scene.add(block);
         ropeBlocks.push(block);
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 128;
+        labelCanvas.height = 64;
+        const context = labelCanvas.getContext("2d");
+        const drawLabel = (number) => {
+          context.clearRect(0, 0, labelCanvas.width, labelCanvas.height);
+          context.fillStyle = "#26312e";
+          context.font = "bold 42px system-ui, sans-serif";
+          context.textAlign = "right";
+          context.textBaseline = "middle";
+          context.fillText(String(number), 120, 32);
+          labelTexture.needsUpdate = true;
+        };
+        const labelTexture = new THREE.CanvasTexture(labelCanvas);
+        labelTexture.colorSpace = THREE.SRGBColorSpace;
+        drawLabel(position + 1);
+        const label = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: labelTexture,
+          transparent: true,
+          depthWrite: false,
+        }));
+        label.scale.set(0.36, 0.22, 1);
+        label.position.set(-1.96, 0, 0.25);
+        block.add(label);
       }
 
       function resize() {
@@ -199,7 +273,23 @@
         previousTime = time;
         turningWheel.rotation.z -= delta * WHEEL_ANGULAR_SPEED;
         mirrorTurningWheel.rotation.z += delta * WHEEL_ANGULAR_SPEED;
-        for (const block of ropeBlocks) {
+        if (transition) {
+          transition.elapsed = Math.min(transition.elapsed + delta / 1.4, 1);
+          const progress = transition.from + (transition.target - transition.from) * transition.elapsed;
+          const eased = progress * progress * (3 - 2 * progress);
+          mirrorWheel.position.x = 1.8 * eased;
+          mirrorWheel.rotation.x = Math.PI * eased;
+          if (transition.elapsed === 1) {
+            slide = transition.slideTarget;
+            transition = null;
+            mirrorWheel.visible = slide === 2;
+            previousButton.disabled = slide === 1;
+            nextButton.disabled = slide === 2;
+            slideNumber.textContent = `${slide} / 2`;
+          }
+        }
+        for (let index = 0; index < ropeBlocks.length; index += 1) {
+          const block = ropeBlocks[index];
           block.position.y -= RADIUS * WHEEL_ANGULAR_SPEED * delta;
           if (block.position.y < wheel.position.y - ROPE_BLOCK_SPAN / 2) {
             block.position.y += ROPE_BLOCK_SPAN;
