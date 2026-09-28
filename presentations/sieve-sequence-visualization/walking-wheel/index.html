@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Walking Wheel</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #d9c8a5;
+        color: #202521;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .scene-shell {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        overflow: hidden;
+        background: #d9c8a5;
+      }
+
+      #scene {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .topbar {
+        position: absolute;
+        inset: 0 0 auto 0;
+        z-index: 2;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(56, 58, 50, 0.14);
+        background: rgba(217, 200, 165, 0.9);
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+      }
+
+      .title-group,
+      .position {
+        text-shadow: 0 1px 18px rgba(255, 252, 242, 0.75);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(20px, 2.2vw, 30px);
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+
+      .cycle {
+        margin-top: 5px;
+        color: #505951;
+        font-size: 14px;
+      }
+
+      .cycle-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px 12px;
+        margin-top: 7px;
+        color: #3f4841;
+        font-size: 13px;
+      }
+
+      .cycle-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+      }
+
+      .cycle-swatch {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--cycle-color);
+      }
+
+      .position {
+        min-width: 92px;
+        text-align: right;
+        color: #505951;
+        font-size: 13px;
+      }
+
+      .position output {
+        display: block;
+        margin-top: 2px;
+        color: #202521;
+        font-size: clamp(24px, 3vw, 38px);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .controls {
+        position: absolute;
+        left: 50%;
+        bottom: 24px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: max-content;
+        max-width: calc(100% - 32px);
+        padding: 8px;
+        border: 1px solid rgba(56, 58, 50, 0.2);
+        border-radius: 8px;
+        background: rgba(250, 247, 237, 0.9);
+        box-shadow: 0 12px 34px rgba(67, 53, 29, 0.16);
+        backdrop-filter: blur(12px);
+        transform: translateX(-50%);
+      }
+
+      .controls button {
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        background: transparent;
+        color: #252a26;
+        cursor: pointer;
+      }
+
+      .controls button:hover {
+        background: rgba(43, 107, 97, 0.09);
+      }
+
+      .controls button:focus-visible,
+      .controls input:focus-visible {
+        outline: 3px solid rgba(32, 104, 93, 0.35);
+        outline-offset: 2px;
+      }
+
+      .controls .primary {
+        min-width: 88px;
+        background: #255f57;
+        color: #f8fbf8;
+      }
+
+      .controls .primary:hover {
+        background: #1d514a;
+      }
+
+      .controls button:disabled {
+        cursor: default;
+        opacity: 0.38;
+      }
+
+      .focus-controls {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .focus-label {
+        flex: 0 0 132px;
+        min-width: 132px;
+        color: #38423c;
+        text-align: center;
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      .cycle-item {
+        opacity: 0.55;
+      }
+
+      .cycle-item.is-focused {
+        opacity: 1;
+        color: #202521;
+        font-weight: 600;
+      }
+
+      .divider {
+        width: 1px;
+        height: 26px;
+        margin: 0 3px;
+        background: rgba(56, 58, 50, 0.18);
+      }
+
+      .speed-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 8px;
+        color: #505951;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .speed-control input {
+        width: 88px;
+        accent-color: #255f57;
+      }
+
+      .loading,
+      .error {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+        background: #d9c8a5;
+        text-align: center;
+      }
+
+      .error {
+        color: #7c2d24;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 620px) {
+        .scene-shell {
+          min-height: 360px;
+        }
+
+        .topbar {
+          padding: 14px 18px;
+        }
+
+        .controls {
+          bottom: 16px;
+          flex-wrap: wrap;
+          justify-content: center;
+          width: calc(100% - 28px);
+        }
+
+        .focus-controls {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .speed-control {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .speed-control input {
+          flex: 1;
+          max-width: 180px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .controls .primary {
+          transition: none;
+        }
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="scene-shell" aria-label="Walking wheel sieve animation">
+      <canvas id="scene"></canvas>
+
+      <header class="topbar">
+        <div class="title-group">
+          <h1>Walking wheels</h1>
+          <div class="cycle">Active pins remember the gap cycle</div>
+          <div class="cycle-list" aria-label="Wheel lanes from front to back">
+            <span class="cycle-item" style="--cycle-color: #6fae9e"><span class="cycle-swatch"></span>[1]</span>
+            <span class="cycle-item" style="--cycle-color: #d1a24a"><span class="cycle-swatch"></span>[2]</span>
+            <span class="cycle-item" style="--cycle-color: #6f91bd"><span class="cycle-swatch"></span>[2,4]</span>
+            <span class="cycle-item" style="--cycle-color: #b96d5d"><span class="cycle-swatch"></span>[4,2,4,2,4,6,2,6]</span>
+          </div>
+        </div>
+        <div class="position">
+          Distance
+          <output id="contact-value" aria-live="polite">1</output>
+        </div>
+      </header>
+
+      <div class="controls" aria-label="Animation controls">
+        <div class="focus-controls" aria-label="Wheel focus">
+          <button id="previous-wheel" type="button">Previous</button>
+          <output id="focus-label" class="focus-label" aria-live="polite">[1] 1 of 4</output>
+          <button id="next-wheel" type="button">Next</button>
+        </div>
+        <span class="divider" aria-hidden="true"></span>
+        <button id="reset" type="button" aria-label="Reset animation">Reset</button>
+        <button id="step" type="button">Step</button>
+        <button id="play" class="primary" type="button" aria-pressed="false">Play</button>
+        <span class="divider" aria-hidden="true"></span>
+        <label class="speed-control" for="speed">
+          Speed
+          <input id="speed" type="range" min="0.35" max="1.5" step="0.05" value="0.7" />
+        </label>
+      </div>
+
+      <div id="loading" class="loading" role="status">Preparing the wheel...</div>
+      <div id="error" class="error hidden" role="alert"></div>
+    </main>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      const canvas = document.querySelector("#scene");
+      const shell = document.querySelector(".scene-shell");
+      const loading = document.querySelector("#loading");
+      const errorPanel = document.querySelector("#error");
+      const playButton = document.querySelector("#play");
+      const stepButton = document.querySelector("#step");
+      const resetButton = document.querySelector("#reset");
+      const speedInput = document.querySelector("#speed");
+      const contactOutput = document.querySelector("#contact-value");
+      const previousWheelButton = document.querySelector("#previous-wheel");
+      const nextWheelButton = document.querySelector("#next-wheel");
+      const focusLabel = document.querySelector("#focus-label");
+      const cycleItems = [...document.querySelectorAll(".cycle-item")];
+
+      const TAU = Math.PI * 2;
+      const BASE_POSITIONS = 12;
+      const BASE_RADIUS = 0.78;
+      const UNIT_DISTANCE = (TAU * BASE_RADIUS) / BASE_POSITIONS;
+      const SAND_SURFACE_Y = -0.055;
+      const CONTACT_CLEARANCE = 0.006;
+      const START_VALUE = 1;
+      const MAX_TRAIL_MARKS = 24;
+      const RULER_POOL_RADIUS = 22;
+      const STEP_DURATION = 0.72;
+      const LANE_Z = [4, 0, -4, -8];
+      const RULER_Z = [6, 2, -2, -6];
+      const WHEEL_SPECS = [
+        { label: "[1]", startValue: 1, positions: 12, active: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], color: 0x6fae9e },
+        { label: "[2]", startValue: 3, positions: 12, active: [0, 2, 4, 6, 8, 10], color: 0xd1a24a },
+        { label: "[2,4]", startValue: 5, positions: 12, active: [0, 2, 6, 8], color: 0x6f91bd },
+        { label: "[4,2,4,2,4,6,2,6]", startValue: 7, positions: 30, active: [0, 4, 6, 10, 12, 16, 22, 24], color: 0xb96d5d },
+      ];
+      const FOCUS_STAGE_COUNT = WHEEL_SPECS.length * 2;
+
+      const state = {
+        distance: 0,
+        targetDistance: 0,
+        playing: false,
+        stepping: false,
+        speed: Number(speedInput.value),
+        lastTime: 0,
+        focusStage: 0,
+        labelStride: 1,
+        labelScale: 1,
+        mobile: false,
+      };
+
+      function remainder(value, divisor) {
+        return value - Math.floor(value / divisor) * divisor;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function isPrime(value) {
+        if (value < 2) return false;
+        for (let divisor = 2; divisor * divisor <= value; divisor += 1) {
+          if (remainder(value, divisor) === 0) return false;
+        }
+        return true;
+      }
+
+      function setError(message) {
+        loading.classList.add("hidden");
+        errorPanel.textContent = message;
+        errorPanel.classList.remove("hidden");
+      }
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance",
+        });
+      } catch (error) {
+        setError("This draft needs a browser with WebGL enabled.");
+        throw error;
+      }
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xd9c8a5);
+      scene.fog = new THREE.Fog(0xd9c8a5, 30, 110);
+
+      const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 90);
+      camera.position.set(-14, 9, 15);
+      camera.lookAt(0, 2, -0.5);
+
+      const hemisphere = new THREE.HemisphereLight(0xfff9e8, 0x756749, 2.3);
+      scene.add(hemisphere);
+
+      const sun = new THREE.DirectionalLight(0xfff4d8, 4.2);
+      sun.position.set(-7, 14, 9);
+      sun.castShadow = true;
+      sun.shadow.mapSize.set(2048, 2048);
+      sun.shadow.camera.left = -15;
+      sun.shadow.camera.right = 15;
+      sun.shadow.camera.top = 14;
+      sun.shadow.camera.bottom = -8;
+      scene.add(sun);
+
+      function createSandTexture() {
+        const textureCanvas = document.createElement("canvas");
+        textureCanvas.width = 512;
+        textureCanvas.height = 512;
+        const context = textureCanvas.getContext("2d");
+        context.fillStyle = "#cdb98f";
+        context.fillRect(0, 0, 512, 512);
+
+        const random = (() => {
+          let seed = 4173;
+          return () => {
+            seed = remainder(seed * 16807, 2147483647);
+            return (seed - 1) / 2147483646;
+          };
+        })();
+
+        for (let index = 0; index < 7200; index += 1) {
+          const light = random() > 0.52;
+          const alpha = 0.04 + random() * 0.1;
+          context.fillStyle = light
+            ? `rgba(255, 246, 215, ${alpha})`
+            : `rgba(91, 72, 43, ${alpha})`;
+          const radius = 0.35 + random() * 1.15;
+          context.beginPath();
+          context.arc(random() * 512, random() * 512, radius, 0, TAU);
+          context.fill();
+        }
+
+        const texture = new THREE.CanvasTexture(textureCanvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(5, 3);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        return texture;
+      }
+
+      const sandTexture = createSandTexture();
+      const sandMaterial = new THREE.MeshStandardMaterial({
+        map: sandTexture,
+        color: 0xd1bd94,
+        roughness: 1,
+        metalness: 0,
+      });
+      const sand = new THREE.Mesh(new THREE.PlaneGeometry(48, 24), sandMaterial);
+      sand.rotation.x = -Math.PI / 2;
+      sand.receiveShadow = true;
+      sand.position.set(0, SAND_SURFACE_Y, 0);
+      scene.add(sand);
+
+      const wheelMaterial = new THREE.MeshStandardMaterial({
+        color: 0x34403c,
+        metalness: 0.22,
+        roughness: 0.48,
+      });
+
+      function isActivePosition(spec, position) {
+        if (spec.active) return spec.active.includes(position);
+        return spec.activePattern.includes(remainder(position, spec.patternLength));
+      }
+
+      function createCarrierWheel(spec, index) {
+        const radius = BASE_RADIUS * (spec.positions / BASE_POSITIONS);
+        const startPosition = spec.startValue - START_VALUE;
+        const startX = startPosition * UNIT_DISTANCE;
+        const rootRadius = Math.max(radius - 0.16, radius * 0.82);
+        const thickness = spec.positions > BASE_POSITIONS ? 0.5 : 0.34;
+        const group = new THREE.Group();
+        const rolling = new THREE.Group();
+        group.position.set(
+          startX,
+          radius + SAND_SURFACE_Y + CONTACT_CLEARANCE,
+          LANE_Z[index],
+        );
+        group.add(rolling);
+        scene.add(group);
+
+        const body = new THREE.Mesh(
+          new THREE.CylinderGeometry(rootRadius, rootRadius, thickness, spec.positions),
+          wheelMaterial,
+        );
+        body.rotation.x = Math.PI / 2;
+        body.castShadow = true;
+        body.receiveShadow = true;
+        rolling.add(body);
+
+        const slotWidth = clamp(UNIT_DISTANCE * 0.42, 0.12, 0.2);
+        for (let position = 0; position < spec.positions; position += 1) {
+          const active = isActivePosition(spec, position);
+          const angle = -Math.PI / 2 + (position / spec.positions) * TAU;
+          const pinLength = active ? radius - rootRadius + 0.05 : 0.045;
+          const pinMaterial = active
+            ? new THREE.MeshStandardMaterial({ color: spec.color, roughness: 0.42 })
+            : new THREE.MeshStandardMaterial({ color: 0x232a27, roughness: 0.7 });
+          const pin = new THREE.Mesh(
+            new THREE.BoxGeometry(slotWidth, pinLength, thickness * 1.08),
+            pinMaterial,
+          );
+          const pinOuterRadius = active ? radius : rootRadius + 0.015;
+          const pinCenter = pinOuterRadius - pinLength / 2;
+          pin.position.set(
+            Math.cos(angle) * pinCenter,
+            Math.sin(angle) * pinCenter,
+            0,
+          );
+          pin.rotation.z = angle - Math.PI / 2;
+          pin.castShadow = active;
+          rolling.add(pin);
+        }
+
+        const hubRadius = clamp(rootRadius * 0.22, 0.12, 0.42);
+        const hub = new THREE.Mesh(
+          new THREE.CylinderGeometry(hubRadius, hubRadius, thickness * 1.2, 32),
+          new THREE.MeshStandardMaterial({ color: spec.color, roughness: 0.4 }),
+        );
+        hub.rotation.x = Math.PI / 2;
+        hub.castShadow = true;
+        rolling.add(hub);
+
+        const glow = new THREE.Mesh(
+          new THREE.RingGeometry(0.055, 0.13, 28),
+          new THREE.MeshBasicMaterial({
+            color: spec.color,
+            transparent: true,
+            opacity: 0.25,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+          }),
+        );
+        glow.rotation.x = -Math.PI / 2;
+        glow.position.set(startX, SAND_SURFACE_Y + CONTACT_CLEARANCE + 0.004, LANE_Z[index]);
+        scene.add(glow);
+
+        return { ...spec, startPosition, startX, radius, group, rolling, glow, impact: 0, footprints: [] };
+      }
+
+      const wheels = WHEEL_SPECS.map(createCarrierWheel);
+
+      const cameraGoal = new THREE.Vector3();
+      const cameraLook = new THREE.Vector3();
+      const cameraLookGoal = new THREE.Vector3();
+
+      function focusedWheelIndex() {
+        return Math.floor(state.focusStage / 2);
+      }
+
+      function updateCameraGoal() {
+        const wheelIndex = focusedWheelIndex();
+        const wheel = wheels[wheelIndex];
+        const targetX = wheel.startX;
+        const isContactView = remainder(state.focusStage, 2) === 1;
+
+        if (isContactView) {
+          const contactScale = Math.pow(wheel.radius / BASE_RADIUS, 0.55);
+          const rulerSide = wheelIndex < RULER_Z.length
+            ? RULER_Z[wheelIndex]
+            : RULER_Z[RULER_Z.length - 1];
+          const contactCenterZ = (LANE_Z[wheelIndex] + rulerSide) / 2;
+          cameraLookGoal.set(targetX, 0.04, contactCenterZ);
+          cameraGoal.set(
+            targetX + (state.mobile ? -4.4 : -3.8) * contactScale,
+            (state.mobile ? 3.3 : 2.8) * contactScale,
+            contactCenterZ + (state.mobile ? 3.6 : 3.2) * contactScale,
+          );
+          return;
+        }
+
+        const scale = wheel.radius / BASE_RADIUS;
+        const distanceScale = wheelIndex === wheels.length - 1 ? scale : 1;
+        const targetY = Math.max(wheel.radius * 0.56, 0.42);
+        cameraLookGoal.set(targetX, targetY, LANE_Z[wheelIndex]);
+
+        const side = state.mobile ? -6.8 : -5.2;
+        const height = state.mobile ? 4.8 : 3.5;
+        const depth = state.mobile ? 8 : 6.2;
+        cameraGoal.set(
+          targetX + side * distanceScale,
+          targetY + height * distanceScale,
+          LANE_Z[wheelIndex] + depth * distanceScale,
+        );
+      }
+
+      function setFocus(stage, immediate = false) {
+        state.focusStage = clamp(stage, 0, FOCUS_STAGE_COUNT - 1);
+        const wheelIndex = focusedWheelIndex();
+        const isContactView = remainder(state.focusStage, 2) === 1;
+        const wheel = wheels[wheelIndex];
+        state.labelScale = isContactView
+          ? 1.35 * Math.pow(wheel.radius / BASE_RADIUS, 0.55)
+          : wheelIndex === wheels.length - 1 ? 2.5 : 1;
+        state.labelStride = isContactView
+          ? Math.ceil(state.labelScale)
+          : wheelIndex === wheels.length - 1 ? 2 : 1;
+        const viewLabel = isContactView ? "contact" : "wheel";
+        const compactWheelLabel = wheel.positions > BASE_POSITIONS ? "head 7" : wheel.label;
+        focusLabel.value = `${compactWheelLabel} · ${viewLabel} · ${state.focusStage + 1}/${FOCUS_STAGE_COUNT}`;
+        previousWheelButton.disabled = state.focusStage === 0;
+        nextWheelButton.disabled = state.focusStage === FOCUS_STAGE_COUNT - 1;
+        cycleItems.forEach((item, itemIndex) => {
+          item.classList.toggle("is-focused", itemIndex === wheelIndex);
+        });
+        updateCameraGoal();
+        if (immediate) {
+          camera.position.copy(cameraGoal);
+          cameraLook.copy(cameraLookGoal);
+          camera.lookAt(cameraLook);
+        }
+      }
+
+      const rulerMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd7d4c7,
+        metalness: 0.42,
+        roughness: 0.48,
+      });
+      RULER_Z.forEach((z) => {
+        const ruler = new THREE.Mesh(
+          new THREE.BoxGeometry(34, 0.065, 0.72),
+          rulerMaterial,
+        );
+        ruler.position.set(0, -0.005, z);
+        ruler.receiveShadow = true;
+        scene.add(ruler);
+      });
+
+      const rulerGroup = new THREE.Group();
+      scene.add(rulerGroup);
+
+      function createLabelTexture(value) {
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 128;
+        labelCanvas.height = 96;
+        const context = labelCanvas.getContext("2d");
+        context.clearRect(0, 0, 128, 96);
+        const prime = isPrime(value);
+        const fontWeight = prime ? 700 : 500;
+        const fontFamily = prime
+          ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+          : "Inter, system-ui, sans-serif";
+        let fontSize = prime ? 44 : 42;
+        context.fillStyle = prime ? "#9d334d" : "#252b27";
+        context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+        while (context.measureText(String(value)).width > 64 && fontSize > 22) {
+          fontSize -= 1;
+          context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+        }
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(String(value), 64, 48);
+        const texture = new THREE.CanvasTexture(labelCanvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.minFilter = THREE.LinearFilter;
+        return texture;
+      }
+
+      function setRulerLabel(marker, value) {
+        if (marker.value === value) return;
+        marker.value = value;
+        if (marker.texture) marker.texture.dispose();
+        marker.texture = createLabelTexture(value);
+        marker.labels.forEach((label) => {
+          label.material.map = marker.texture;
+          label.material.needsUpdate = true;
+        });
+      }
+
+      const rulerMarkers = [];
+      for (let slot = -RULER_POOL_RADIUS; slot <= RULER_POOL_RADIUS; slot += 1) {
+        const marker = new THREE.Group();
+        const sandGuide = new THREE.Mesh(
+          new THREE.BoxGeometry(0.022, 0.012, 16.5),
+          new THREE.MeshStandardMaterial({
+            color: 0x9f8961,
+            roughness: 1,
+            metalness: 0,
+          }),
+        );
+        sandGuide.position.set(0, -0.025, -1);
+        sandGuide.receiveShadow = true;
+        marker.add(sandGuide);
+
+        marker.labels = [];
+        marker.ticks = [];
+        marker.contactGuides = [];
+        RULER_Z.forEach((z, wheelIndex) => {
+          const wheelZ = LANE_Z[wheelIndex];
+          const contactGuide = new THREE.Mesh(
+            new THREE.BoxGeometry(0.028, 0.014, Math.abs(z - wheelZ)),
+            new THREE.MeshStandardMaterial({
+              color: 0x9f8961,
+              roughness: 1,
+              metalness: 0,
+            }),
+          );
+          contactGuide.position.set(0, -0.025, (z + wheelZ) / 2);
+          contactGuide.receiveShadow = true;
+          marker.add(contactGuide);
+          marker.contactGuides.push(contactGuide);
+
+          const tick = new THREE.Mesh(
+            new THREE.BoxGeometry(0.018, 0.024, slot === 0 ? 0.46 : 0.34),
+            new THREE.MeshStandardMaterial({ color: 0x353b37, roughness: 0.65 }),
+          );
+          tick.position.set(0, 0.05, z - 0.16);
+          marker.add(tick);
+          marker.ticks.push(tick);
+
+          const label = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.58, 0.43),
+            new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false }),
+          );
+          label.rotation.x = -Math.PI / 2;
+          label.position.set(0, 0.064, z + 0.15);
+          marker.add(label);
+          marker.labels.push(label);
+        });
+        marker.value = null;
+        marker.texture = null;
+        rulerMarkers.push(marker);
+        rulerGroup.add(marker);
+      }
+
+      const footprintGeometry = new THREE.CylinderGeometry(0.085, 0.11, 0.035, 28);
+      const footprintMaterial = new THREE.MeshStandardMaterial({
+        color: 0x6f5b38,
+        roughness: 1,
+        metalness: 0,
+      });
+      function addFootprint(wheel, wheelIndex, contactDistance) {
+        const mark = new THREE.Mesh(footprintGeometry, footprintMaterial);
+        mark.position.set(
+          (contactDistance - state.distance) * UNIT_DISTANCE,
+          -0.012,
+          LANE_Z[wheelIndex],
+        );
+        mark.scale.setScalar(0.4);
+        mark.userData.contactDistance = contactDistance;
+        mark.userData.age = 0;
+        mark.receiveShadow = true;
+        scene.add(mark);
+        wheel.footprints.push(mark);
+
+        while (wheel.footprints.length > MAX_TRAIL_MARKS) {
+          const oldMark = wheel.footprints.shift();
+          scene.remove(oldMark);
+        }
+      }
+
+      function clearFootprints() {
+        wheels.forEach((wheel) => {
+          while (wheel.footprints.length > 0) scene.remove(wheel.footprints.pop());
+        });
+      }
+
+      function updateRuler() {
+        const centerValue = Math.floor(state.distance) + START_VALUE;
+        const centerSlot = Math.floor(rulerMarkers.length / 2);
+
+        rulerMarkers.forEach((marker, index) => {
+          const offset = index - centerSlot;
+          const value = centerValue + offset;
+          marker.position.set(
+            (value - START_VALUE - state.distance) * UNIT_DISTANCE,
+            0,
+            0,
+          );
+          marker.visible = value >= START_VALUE;
+          if (marker.visible) {
+            setRulerLabel(marker, value);
+            const contactPosition = value - START_VALUE;
+            marker.ticks.forEach((tick, wheelIndex) => {
+              const wheel = wheels[wheelIndex];
+              const localPosition = contactPosition - wheel.startPosition;
+              const hasReachedContact = localPosition >= 0
+                && localPosition <= Math.floor(state.distance + 0.0001);
+              const isHit = hasReachedContact && isActivePosition(
+                wheel,
+                remainder(localPosition, wheel.positions),
+              );
+              tick.material.color.setHex(isHit ? wheel.color : 0x353b37);
+              marker.contactGuides[wheelIndex].material.color.setHex(
+                isHit ? wheel.color : 0x9f8961,
+              );
+            });
+            const showLabel = remainder(value - START_VALUE, state.labelStride) === 0;
+            marker.labels.forEach((label) => {
+              label.visible = showLabel;
+              label.scale.setScalar(state.labelScale);
+            });
+          }
+        });
+      }
+
+      function updateFootprints(deltaTime) {
+        wheels.forEach((wheel, wheelIndex) => {
+          wheel.footprints.forEach((mark) => {
+            mark.userData.age += deltaTime;
+            mark.position.x =
+              (mark.userData.contactDistance - state.distance) * UNIT_DISTANCE;
+            mark.position.z = LANE_Z[wheelIndex];
+            const entrance = clamp(mark.userData.age * 8, 0, 1);
+            mark.scale.setScalar(0.4 + entrance * 0.6);
+            mark.visible = mark.position.x > -14 && mark.position.x < 8;
+          });
+        });
+      }
+
+      function registerContacts() {
+        const currentContact = Math.floor(state.distance + 0.0001);
+        wheels.forEach((wheel, wheelIndex) => {
+          if (wheel.lastChecked >= currentContact) return;
+          for (let position = wheel.lastChecked + 1; position <= currentContact; position += 1) {
+            if (isActivePosition(wheel, remainder(position, wheel.positions))) {
+              addFootprint(wheel, wheelIndex, wheel.startPosition + position);
+              wheel.impact = 1;
+            }
+          }
+          wheel.lastChecked = currentContact;
+        });
+        contactOutput.value = String(START_VALUE + currentContact);
+      }
+
+      function updateScene(deltaTime) {
+        wheels.forEach((wheel) => {
+          wheel.rolling.rotation.z = -(state.distance * UNIT_DISTANCE) / wheel.radius;
+          wheel.impact = Math.max(0, wheel.impact - deltaTime * 4.8);
+          const pulse =
+            1 + Math.sin((1 - wheel.impact) * Math.PI) * wheel.impact * 0.75;
+          wheel.glow.scale.setScalar(pulse);
+          wheel.glow.material.opacity = 0.18 + wheel.impact * 0.62;
+          wheel.group.position.y =
+            wheel.radius +
+            SAND_SURFACE_Y +
+            CONTACT_CLEARANCE -
+            wheel.impact * 0.012;
+        });
+        sandTexture.offset.x = -remainder(state.distance * 0.055, 1);
+        updateRuler();
+        updateFootprints(deltaTime);
+      }
+
+      function setPlaying(playing) {
+        state.playing = playing;
+        state.stepping = false;
+        playButton.textContent = playing ? "Pause" : "Play";
+        playButton.setAttribute("aria-pressed", String(playing));
+      }
+
+      function reset() {
+        setPlaying(false);
+        state.distance = 0;
+        state.targetDistance = 0;
+        state.lastTime = 0;
+        contactOutput.value = String(START_VALUE);
+        clearFootprints();
+        wheels.forEach((wheel, wheelIndex) => {
+          wheel.lastChecked = 0;
+          wheel.impact = 1;
+          addFootprint(wheel, wheelIndex, wheel.startPosition);
+        });
+        updateScene(0);
+        renderer.render(scene, camera);
+      }
+
+      function step() {
+        setPlaying(false);
+        state.stepping = true;
+        state.targetDistance = Math.floor(state.distance + 0.0001) + 1;
+      }
+
+      playButton.addEventListener("click", () => setPlaying(!state.playing));
+      stepButton.addEventListener("click", step);
+      resetButton.addEventListener("click", reset);
+      previousWheelButton.addEventListener("click", () => {
+        setFocus(state.focusStage - 1);
+      });
+      nextWheelButton.addEventListener("click", () => {
+        setFocus(state.focusStage + 1);
+      });
+      speedInput.addEventListener("input", () => {
+        state.speed = Number(speedInput.value);
+      });
+
+      function resize() {
+        const width = shell.clientWidth;
+        const height = shell.clientHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        state.mobile = width < 620;
+        setFocus(state.focusStage, true);
+        camera.updateProjectionMatrix();
+      }
+
+      function animate(time) {
+        const deltaTime = state.lastTime
+          ? Math.min((time - state.lastTime) / 1000, 0.05)
+          : 0;
+        state.lastTime = time;
+
+        if (state.playing) {
+          state.distance += state.speed * deltaTime;
+        } else if (state.stepping) {
+          const remaining = state.targetDistance - state.distance;
+          const stepSpeed = 1 / STEP_DURATION;
+          state.distance += Math.min(remaining, stepSpeed * deltaTime);
+          if (remaining <= 0.001) {
+            state.distance = state.targetDistance;
+            state.stepping = false;
+          }
+        }
+
+        registerContacts();
+        updateScene(deltaTime);
+        const cameraEase = 1 - Math.exp(-deltaTime * 4.5);
+        camera.position.lerp(cameraGoal, cameraEase);
+        cameraLook.lerp(cameraLookGoal, cameraEase);
+        camera.lookAt(cameraLook);
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      new ResizeObserver(resize).observe(shell);
+      resize();
+      setFocus(0, true);
+      reset();
+      loading.classList.add("hidden");
+      requestAnimationFrame(animate);
+    </script>
+  </body>
+</html>
