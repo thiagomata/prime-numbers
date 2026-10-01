@@ -26,6 +26,8 @@
       }
       .step-copy h1 { margin: 0; font-size: 22px; font-weight: 600; }
       .step-copy p { margin: 5px 0 0; max-width: 460px; color: #414940; font-size: 14px; line-height: 1.4; }
+      .step-copy .gap-line { display: flex; gap: 8px; margin-top: 6px; color: #263f38; white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .gap-line strong { font-weight: 600; }
       .controls {
         position: fixed;
         z-index: 3;
@@ -65,6 +67,7 @@
       <canvas id="scene" aria-label="A [2,4] wheel lays five copies of its trace, removes multiples of 5, then bends into a larger wheel"></canvas>
       <header class="step-copy" aria-live="polite">
         <h1 id="step-title">[2,4] · Current wheel</h1>
+        <p class="gap-line"><span>Gaps</span><strong id="step-gaps">[2, 4]</strong></p>
         <p id="step-description">Four pins repeat the same 2, 4 gap pattern around the 12-position wheel.</p>
       </header>
       <nav class="controls" aria-label="Construction steps">
@@ -79,6 +82,7 @@
       const canvas = document.querySelector("#scene");
       const shell = document.querySelector("main");
       const title = document.querySelector("#step-title");
+      const gapText = document.querySelector("#step-gaps");
       const description = document.querySelector("#step-description");
       const previousButton = document.querySelector("#previous");
       const nextButton = document.querySelector("#next");
@@ -174,7 +178,7 @@
       sand.receiveShadow = true;
       scene.add(sand);
 
-      const rulerMaterial = new THREE.MeshStandardMaterial({ color: 0xd7d4c7, roughness: 0.55 });
+      const rulerMaterial = new THREE.MeshStandardMaterial({ color: 0x789c99, roughness: 0.55 });
       const rulerLanes = [...new Set(Object.values(RULER_LANES))].map((lane) => {
         const ruler = new THREE.Mesh(new THREE.BoxGeometry(80, 0.065, 0.34), rulerMaterial);
         ruler.position.set(0, -0.005, lane);
@@ -273,13 +277,7 @@
         const bendingRadius = bend < 0.0001 ? 0 : EXPANDED_RADIUS / bend;
         const x = bend < 0.0001 ? s : Math.sin(angle) * bendingRadius;
         const y = SURFACE_Y + CLEARANCE + (bend < 0.0001 ? 0 : (1 - Math.cos(angle)) * bendingRadius);
-        const phase = -(state.distance * UNIT_DISTANCE / EXPANDED_RADIUS) * bend * bend * bend;
-        const centerY = SURFACE_Y + CLEARANCE + EXPANDED_RADIUS;
-        return {
-          x: x * Math.cos(phase) - (y - centerY) * Math.sin(phase),
-          y: centerY + x * Math.sin(phase) + (y - centerY) * Math.cos(phase),
-          angle: angle + phase,
-        };
+        return { x, y, angle };
       }
 
       const stripSegments = EXPANDED_POSITIONS * 3;
@@ -321,16 +319,6 @@
         constructionPins.push(pin);
       }
 
-      const seamGeometry = new THREE.BoxGeometry(0.025, 0.17, 0.48);
-      const seamMaterial = new THREE.MeshStandardMaterial({ color: 0xdacdad, roughness: 0.75 });
-      const constructionSeams = [];
-      for (let copy = 1; copy < REPEAT_FACTOR; copy += 1) {
-        const seam = new THREE.Mesh(seamGeometry, seamMaterial);
-        seam.userData.traceDistance = (copy * BASE_POSITIONS - 0.5) * UNIT_DISTANCE;
-        scene.add(seam);
-        constructionSeams.push(seam);
-      }
-
       const contactLink = new THREE.Mesh(
         new THREE.BoxGeometry(0.055, 0.025, Math.abs(LANES.first - LANES.repeated)),
         new THREE.MeshBasicMaterial({ color: 0x348c77, transparent: true, opacity: 0, depthWrite: false }),
@@ -342,6 +330,22 @@
         if (state.stage < 2) return 0;
         if (state.stage > 2) return 1;
         return THREE.MathUtils.clamp((state.filterProgress * badPinPositions.length - rank - 0.25) / 0.6, 0, 1);
+      }
+
+      function updateGapDisplay() {
+        if (state.stage === 0) {
+          gapText.textContent = "[2, 4]";
+          return;
+        }
+        const positions = constructionPins
+          .filter((pin) => !pin.userData.filterHit || removalAmount(pin.userData.filterRank) < 1)
+          .map((pin) => pin.userData.tracePosition);
+        const gaps = positions.map((position, index) =>
+          (positions[index + 1] ?? positions[0] + EXPANDED_POSITIONS) - position);
+        const limit = shell.clientWidth <= 520 ? 8 : 16;
+        const shown = gaps.slice(0, limit).join(", ");
+        const nextText = `[${shown}${gaps.length > limit ? ", …" : ""}]`;
+        if (gapText.textContent !== nextText) gapText.textContent = nextText;
       }
 
       function updateConstruction() {
@@ -407,16 +411,6 @@
           const stagger = label.userData.raised ? 23 * viewHeight / Math.max(shell.clientHeight, 1) : 0;
           label.position.set(distance, SURFACE_Y + CLEARANCE + 0.45 + labelHeight * 0.5 + stagger, LANES.repeated);
           label.scale.set(labelHeight * 128 / 80, labelHeight, 1);
-        });
-        constructionSeams.forEach((seam) => {
-          const distance = seam.userData.traceDistance;
-          seam.visible = constructing && bend < 1 && distance < visibleLength;
-          if (!seam.visible) return;
-          const point = tracePoint(distance, bend);
-          const normalX = Math.sin(point.angle);
-          const normalY = -Math.cos(point.angle);
-          seam.position.set(point.x - normalX * 0.18, point.y - normalY * 0.18, LANES.repeated);
-          seam.rotation.z = Math.PI + point.angle;
         });
       }
 
@@ -517,7 +511,18 @@
       }
 
       function setStage(stage) {
+        const previousStage = state.stage;
         state.stage = Math.max(0, Math.min(STEPS.length - 1, stage));
+        if (state.stage === 3 && previousStage === 4) {
+          state.distance = 0;
+          footprints.forEach((mark) => scene.remove(mark));
+          footprints.length = 0;
+          wheels.forEach((wheel) => {
+            wheel.footprints.length = 0;
+            wheel.lastChecked = -1;
+            wheel.impact = 0;
+          });
+        }
         if (state.stage === 0 || state.stage === 1) {
           state.traceProgress = 0;
           state.traceRevealProgress = 0;
@@ -667,6 +672,7 @@
         });
         repeatedWheel.glow.visible = repeatedWheel.carrier.visible && formed;
         updateConstruction();
+        updateGapDisplay();
         const sourceTravel = state.stage === 1 ? state.traceProgress * TRACE_LENGTH
           : state.stage === 2 || state.stage === 3 ? TRACE_LENGTH : 0;
         firstWheel.carrier.position.x = firstWheel.startPosition * UNIT_DISTANCE + sourceTravel;
@@ -714,7 +720,7 @@
         const requiredWidth = state.stage === 0 ? (narrow ? 3.6 : 9.5)
           : state.stage === 1 ? traceWindow + (TRACE_LENGTH + 3 - traceWindow) * reveal
           : state.stage === 2 ? (narrow ? traceWindow : TRACE_LENGTH + 3)
-          : state.stage === 3 ? (narrow ? 9.5 : 9.5 + (TRACE_LENGTH + 3 - 9.5) * (1 - bend))
+          : state.stage === 3 ? (narrow ? 9.5 + 4 * Math.sin(Math.PI * bend) : 9.5 + (TRACE_LENGTH + 3 - 9.5) * (1 - bend))
           : 9.5;
         const targetHeight = Math.max(baseHeight, requiredWidth / camera.aspect);
         const targetX = state.stage === 1 ? (narrow
@@ -726,7 +732,7 @@
             : TRACE_LENGTH / 2 * (1 - bend) ** 2)
           : 0;
         const targetY = state.stage <= 2 ? 0.8
-          : state.stage === 3 ? 0.8 + 2.7 * bend
+          : state.stage === 3 ? 0.8 + 2.7 * bend + (narrow ? 6 * Math.sin(Math.PI * bend) : 0)
           : 3.5;
         const blend = delta === 0 ? 1 : 1 - Math.exp(-4 * delta);
         state.cameraX += (targetX - state.cameraX) * blend;
@@ -746,6 +752,7 @@
         renderer.setSize(shell.clientWidth, shell.clientHeight, false);
         camera.aspect = shell.clientWidth / shell.clientHeight;
         updateCamera(0);
+        updateGapDisplay();
       }
       new ResizeObserver(resize).observe(shell);
       resize();
