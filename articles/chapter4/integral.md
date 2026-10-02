@@ -1,97 +1,107 @@
-# Formal Verification of Discrete Integration Properties from First Principles
+# Verificação Formal de Propriedades de Integração Discreta a partir de Primeiros Princípios
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)  
-**Published:** [Zenodo:10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [Zenodo:10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
 
-We define a recursive discrete integral over finite integer lists and verify its
-principal properties in Scala Stainless. At every valid position, the integral
-equals the initial value plus the corresponding prefix sum; its final value equals
-the initial value plus the total sum; and consecutive differences recover the
-corresponding input values. We prove pointwise, final-value, and length agreement
-between recursive lookup and the accumulated-list representation. We also verify
-that positive input values imply a strictly increasing integral, while a positive
-consecutive integral gap implies that the corresponding input value is positive.
-Together, these results characterize the discrete integral as a length-preserving
-cumulative-sum construction with verified representation agreement and value recovery.
+Definimos uma integral discreta recursiva sobre listas finitas de inteiros e
+verificamos suas propriedades principais em Scala Stainless. Em toda posição
+válida, a integral é igual ao valor inicial mais a soma prefixa correspondente;
+seu valor final é igual ao valor inicial mais a soma total; e diferenças
+consecutivas recuperam os valores de entrada correspondentes. Provamos a
+concordância ponto a ponto, de valor final e de comprimento entre a consulta
+recursiva e a representação por lista acumulada. Também verificamos que valores
+de entrada positivos implicam uma integral estritamente crescente, enquanto um
+gap integral consecutivo positivo implica que o valor de entrada correspondente
+é positivo. Em conjunto, esses resultados caracterizam a integral discreta como
+uma construção de soma cumulativa que preserva comprimento, com concordância de
+representação e recuperação de valores verificadas.
 
 </p>
 </div>
 
-## 1. Introduction
+## 1. Introdução
 
-Accumulation is a central operation in mathematics and computing &mdash; from prefix sums in algorithms to integral 
-transforms in signal processing. In functional programming, accumulation often appears as a fold or scan, but such 
-constructs are rarely defined from first principles in a formally verified setting.
+Acumulação é uma operação central em matemática e computação &mdash; de somas
+prefixas em algoritmos a transformadas integrais em processamento de sinais. Em
+programação funcional, a acumulação muitas vezes aparece como fold ou scan, mas
+tais construções raramente são definidas a partir de primeiros princípios em um
+ambiente formalmente verificado.
 
-In this article, we define a recursive discrete integral over finite integer lists
-and verify its cumulative-sum, difference-recovery, monotonicity, and
-representation-agreement properties using Scala Stainless. The recursive lookup
-and accumulated-list representations agree pointwise and in length, and consecutive
-differences recover the corresponding input values.
+Neste artigo, definimos uma integral discreta recursiva sobre listas finitas de
+inteiros e verificamos suas propriedades de soma cumulativa, recuperação de
+diferenças, monotonicidade e concordância de representações usando Scala
+Stainless. As representações por consulta recursiva e lista acumulada concordam
+ponto a ponto e em comprimento, e diferenças consecutivas recuperam os valores
+de entrada correspondentes.
 
-This article verifies:
+Este artigo verifica:
 
-- Core integral properties: head value, cumulative sum, incremental change, final sum, strictly increasing, gaps positivity — [§4.1](#41-head-value-matches-definition)–[4.6](#46-gaps-positivity)
-- Implementation consistency: element/acc/delta/last/size agreement between the recursive and accumulated representations — [§5.2](#52-element-consistency)–[5.5](#55-size-agreement)
+- Propriedades centrais da integral: valor da cabeça, soma cumulativa, mudança incremental, soma final, crescimento estrito, positividade dos gaps — [§4.1](#41-head-value-matches-definition)–[4.6](#46-gaps-positivity)
+- Consistência da implementação: concordância de elemento/acc/delta/último/tamanho entre as representações recursiva e acumulada — [§5.2](#52-element-consistency)–[5.5](#55-size-agreement)
 
-### Related work
+### Trabalhos Relacionados
 
-The cumulative-sum construction is the list instance of a prefix scan or
-accumulation. In Rocq/Coq, the standard list library defines `fold_left` and
-proves its composition across concatenation; its natural-number list library
-also defines list sum as a fold and proves sum over concatenation [[2]](#ref2).
-Those formally checked results give a useful established setting for recursive
-accumulation.
+A construção de soma cumulativa é a instância de listas de um prefix scan ou de
+uma acumulação. Em Rocq/Coq, a biblioteca padrão de listas define `fold_left` e
+prova sua composição ao longo da concatenação; sua biblioteca de listas de
+números naturais também define soma de listas como um fold e prova soma sobre
+concatenação [[2]](#ref2). Esses resultados formalmente checados fornecem um
+cenário estabelecido útil para acumulação recursiva.
 
-The present article develops that setting for a recursive `BigInt` integral in
-Scala Stainless. Its focus is the agreement of two concrete representations—
-recursive lookup and an accumulated list—and the accompanying cumulative-sum,
-difference-recovery, length, and monotonicity properties. The citation places
-these proofs in a broader formal treatment of list accumulation; it does not
-replace the specific representation-agreement results verified here.
+O presente artigo desenvolve esse cenário para uma integral recursiva de
+`BigInt` em Scala Stainless. Seu foco é a concordância de duas representações
+concretas — consulta recursiva e lista acumulada — e as propriedades
+correspondentes de soma cumulativa, recuperação de diferenças, comprimento e
+monotonicidade. A citação situa essas provas em um tratamento formal mais amplo
+de acumulação em listas; ela não substitui os resultados específicos de
+concordância de representações verificados aqui.
 
-## 2. Preliminaries and Notation
+## 2. Preliminares e Notação
 
-Let $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ be a finite, non-empty list of $n$ integers, where $n = |L|$,
-and let $init \in \mathbb{Z}$ be an initial value.
+Seja $L = [x_0, x_1, \dots, x_{n-1}] \in \mathbb{Z}^n$ uma lista finita e não
+vazia de $n$ inteiros, em que $n = |L|$, e seja $init \in \mathbb{Z}$ um valor
+inicial.
 
-We reuse several basic list operations and their verified properties from a companion article on recursive list 
-construction &mdash; [Using Formal Verification to Prove Properties of Lists Recursively Defined](
+Reutilizamos várias operações básicas de listas e suas propriedades verificadas
+de um artigo companheiro sobre construção recursiva de listas &mdash; [Usando Verificação Formal para Provar Propriedades de Listas Definidas Recursivamente](
 https://rxiverse.org/abs/2609.0023
 ) [[1]](#ref1).  
-These include the following functions:
+Estas incluem as seguintes funções:
 
-- $\text{sum}(L)$: recursively computes the total sum of elements in a list.
-- $\text{head}(L)$: returns the first element of a non-empty list.
-- $\text{tail}(L)$: returns the list without its first element.
-- $A \mathbin{\texttt{++}} B$: concatenates two lists $A$ and $B$.
+- $\text{sum}(L)$: computa recursivamente a soma total dos elementos de uma lista.
+- $\text{head}(L)$: retorna o primeiro elemento de uma lista não vazia.
+- $\text{tail}(L)$: retorna a lista sem seu primeiro elemento.
+- $A \mathbin{\texttt{++}} B$: concatena duas listas $A$ e $B$.
 
-These operations were defined and verified using the same zero-prior-knowledge methodology [[1]](#ref1), 
-and are treated here as foundational primitives.
+Essas operações foram definidas e verificadas usando a mesma metodologia de
+conhecimento prévio zero [[1]](#ref1), e são tratadas aqui como primitivas
+fundamentais.
 
-Proofs in this article are written in Scala and verified using the Stainless system with `BigInt` used to represent 
-unbounded integers.
+As provas neste artigo são escritas em Scala e verificadas usando o sistema
+Stainless, com `BigInt` usado para representar inteiros ilimitados.
 
-## 3. Definition of Discrete Integral
+## 3. Definição de Integral Discreta
 
-The discrete integral accumulates list values into partial sums from a given initial value. Two representations are equivalent.
+A integral discreta acumula valores de lista em somas parciais a partir de um
+valor inicial dado. Duas representações são equivalentes.
 
-- Mathematical: $I_k = init + \sum_{i=0}^k L_i$ — the specification
-- Recursive: $I_0 = L_0 + init$, $I_{k+1} = I_k + L_{k+1}$ — the implementation
+- Matemática: $I_k = init + \sum_{i=0}^k L_i$ — a especificação
+- Recursiva: $I_0 = L_0 + init$, $I_{k+1} = I_k + L_{k+1}$ — a implementação
 
-### 3.1 Mathematical Definition
+### 3.1 Definição Matemática
 
-We define the **discrete integral** $I = Integral(L, init)$ as a list of partial sums such that:
+Definimos a **integral discreta** $I = Integral(L, init)$ como uma lista de
+somas parciais tal que:
 
 ```math
 \begin{aligned}
@@ -100,10 +110,10 @@ I_{k} := init + \sum_{i=0}^{k} L_i \\
 \end{aligned}
 ```
 
-### 3.2 Recursive Definition
+### 3.2 Definição Recursiva
 
-The implementation computes the same partial sums by peeling one head from the
-list at each recursive step and carrying the current accumulated value.
+A implementação computa as mesmas somas parciais removendo uma cabeça da lista a
+cada passo recursivo e carregando o valor acumulado atual.
 
 ```math
 \begin{aligned}
@@ -113,7 +123,8 @@ k &\in [0, n - 1]
 \end{aligned}
 ```
 
-The value of the $k\text{-th}$ element in the integral $I$ is defined recursively as:
+O valor do $k\text{-ésimo}$ elemento na integral $I$ é definido recursivamente
+como:
 
 ```math
 I_k :=
@@ -123,7 +134,7 @@ L_0 + init & \text{if } k = 0 \\
 \end{cases}
 ```
 
-In Scala, this is encoded at [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
+Em Scala, isso é codificado em [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
 ```scala
 case class Integral(list: List[BigInt], init: BigInt = 0) {
@@ -140,25 +151,28 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 }
 ```
 
-## 4. Core Integral Properties
+## 4. Propriedades Centrais da Integral
 
-These identities connect each recursively defined integral value to the finite
-list of values it accumulates.
+Essas identidades conectam cada valor de integral definido recursivamente à
+lista finita de valores que ele acumula.
 
-- Head value: $I_0 = L_0 + init$ — [§4.1](#41-head-value-matches-definition)
-- Cumulative sum: $I_k = init + \sum_{i=0}^k L_i$ — [§4.2](#42-integral-equals-sum-until-position)
-- Incremental change: $I_{p+1} - I_p = L_{p+1}$ — [§4.3](#43-incremental-change-matches-list-value)
-- Final sum: $I_{n-1} = init + \text{sum}(L)$ — [§4.4](#44-final-element-equals-full-sum)
+- Valor da cabeça: $I_0 = L_0 + init$ — [§4.1](#41-head-value-matches-definition)
+- Soma cumulativa: $I_k = init + \sum_{i=0}^k L_i$ — [§4.2](#42-integral-equals-sum-until-position)
+- Mudança incremental: $I_{p+1} - I_p = L_{p+1}$ — [§4.3](#43-incremental-change-matches-list-value)
+- Soma final: $I_{n-1} = init + \text{sum}(L)$ — [§4.4](#44-final-element-equals-full-sum)
 
-### 4.1 Head Value Matches Definition
+<a id="41-head-value-matches-definition"></a>
 
-The first element of the Integral equals the first element of the original list plus the initial value.
+### 4.1 Valor da Cabeça Coincide com a Definição
+
+O primeiro elemento da Integral é igual ao primeiro elemento da lista original
+mais o valor inicial.
 
 ```math
 I_0 = x_0 + init
 ```
 
-Since:
+Como:
 
 ```math
 \begin{aligned}
@@ -174,21 +188,24 @@ I_0 & = x_0 + init \quad \blacksquare     & \qquad \text{[Q.E.D.]}
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertHeadValueMatchDefinition
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.1.
 
-### 4.2 Integral Equals Sum Until Position
+<a id="42-integral-equals-sum-until-position"></a>
 
-The integral at position $k$ equals the sum of all elements in the list up to that position, plus the initial value:
+### 4.2 Integral Igual à Soma até a Posição
+
+A integral na posição $k$ é igual à soma de todos os elementos da lista até essa
+posição, mais o valor inicial:
 
 ```math
 \forall\ k \in [0, n-1]:\ I_k = \mathit{init} + \sum_{i=0}^{k} x_i
 ```
 
-**Proof by Induction on $k$**
+**Prova por indução em $k$**
 
-#### Base case: $k = 0$
+#### Caso base: $k = 0$
 
 ```math
 \begin{aligned}
@@ -204,7 +221,7 @@ I_0 & = \mathit{init} + x_0 \qquad & \text{[By definition of integral]} \\
 I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
 ```
 
-#### Inductive step: Assume the property holds for $k-1$
+#### Passo indutivo: suponha que a propriedade vale para $k-1$
 
 ```math
 I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \sum_{i=0}^{k} x_i
@@ -227,13 +244,16 @@ I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertIntegralEqualsSum
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.2.
 
-### 4.3 Incremental Change Matches List Value
+<a id="43-incremental-change-matches-list-value"></a>
 
-The difference between two consecutive values in the Integral equals the corresponding value in the original list $L$.
+### 4.3 Mudança Incremental Coincide com o Valor da Lista
+
+A diferença entre dois valores consecutivos na Integral é igual ao valor
+correspondente na lista original $L$.
 
 ```math
 \begin{aligned}
@@ -242,7 +262,7 @@ I_{p+1} - I_p & = L_{p+1}
 \end{aligned}
 ```
 
-#### Proof of the Base Case $I_1 - I_0 = x_1$
+#### Prova do Caso Base $I_1 - I_0 = x_1$
 
 ```math
 \begin{aligned}
@@ -258,7 +278,7 @@ I_1 - I_0 &= x_1                                            & \qquad \text{[Q.E.
 \end{aligned}
 ```
 
-#### Proof of the Inductive Step $I_{p+1} - I_p = L_{p+1}$
+#### Prova do Passo Indutivo $I_{p+1} - I_p = L_{p+1}$
 
 ```math
 \begin{aligned}
@@ -276,19 +296,22 @@ I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                 
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertAccDiffMatchesList
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.3.
 
-### 4.4 Final Element Equals Full Sum
+<a id="44-final-element-equals-full-sum"></a>
 
-The last element of the Integral equals the sum of all elements in the List plus the initial value.
+### 4.4 Elemento Final Igual à Soma Completa
+
+O último elemento da Integral é igual à soma de todos os elementos da Lista mais
+o valor inicial.
 
 ```math
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i
 ```
 
-Mathematically, this is the $k = n-1$ instance of [Section 4.2](#42-integral-equals-sum-until-position), which proves $I_k = init + \sum_{i=0}^{k} x_i$ for all $k$:
+Matematicamente, este é o caso $k = n-1$ da [Seção 4.2](#42-integral-equals-sum-until-position), que prova $I_k = init + \sum_{i=0}^{k} x_i$ para todo $k$:
 
 ```math
 k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
@@ -296,15 +319,15 @@ k = n - 1 \implies I_{n-1} = init + \sum_{i=0}^{n-1} x_i \\
 I_{n-1} = init + \sum_{i=0}^{n-1} x_i \quad \blacksquare
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertLastEqualsSum
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The Stainless proof is a self-contained structural induction on the list size — single-element base case, tail-integral inductive step — giving an independent, machine-checked argument for the same identity. The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). A prova em Stainless é uma indução estrutural autocontida no tamanho da lista — caso base de elemento único, passo indutivo pela integral da cauda — fornecendo um argumento independente, checado por máquina, para a mesma identidade. O código Scala completo de verificação está no Apêndice A.4.
 
-### 4.5 Strictly Increasing Integral
+### 4.5 Integral Estritamente Crescente
 
-When every value in the list is positive, the integral is strictly increasing:
-a later position always produces a larger value. This is the monotonicity
-theorem — the integral grows with every step.
+Quando todo valor da lista é positivo, a integral é estritamente crescente: uma
+posição posterior sempre produz um valor maior. Este é o teorema de
+monotonicidade — a integral cresce a cada passo.
 
 ```math
 \begin{aligned}
@@ -312,9 +335,9 @@ theorem — the integral grows with every step.
 \end{aligned}
 ```
 
-**Proof.** Induct on $b-a$. The base case follows from the consecutive
-difference law; the step combines the induction hypothesis with the next
-positive list value.
+**Prova.** Faça indução em $b-a$. O caso base segue da lei de diferença
+consecutiva; o passo combina a hipótese indutiva com o próximo valor positivo da
+lista.
 
 ```math
 \begin{aligned}
@@ -327,7 +350,7 @@ I_{b-1}>I_a,\quad I_b-I_{b-1}=L_b>0
 \end{aligned}
 ```
 
-**Stainless verification.**
+**Verificação Stainless.**
 
 ```scala
 def assertIntegralStrictlyIncreasing(
@@ -339,15 +362,17 @@ def assertIntegralStrictlyIncreasing(
 }.holds
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertIntegralStrictlyIncreasing
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala).
 
-### 4.6 Gaps Positivity
+<a id="46-gaps-positivity"></a>
 
-If the integral increases between consecutive positions, the corresponding
-list element is positive. The gap (difference between adjacent integral values)
-has the same sign as the underlying list element.
+### 4.6 Positividade dos Gaps
+
+Se a integral aumenta entre posições consecutivas, o elemento correspondente da
+lista é positivo. O gap (diferença entre valores integrais adjacentes) tem o
+mesmo sinal que o elemento subjacente da lista.
 
 ```math
 \begin{aligned}
@@ -355,8 +380,8 @@ has the same sign as the underlying list element.
 \end{aligned}
 ```
 
-**Proof.** The consecutive difference law identifies the positive difference
-with the corresponding list value:
+**Prova.** A lei de diferença consecutiva identifica a diferença positiva com o
+valor correspondente da lista:
 
 ```math
 \begin{aligned}
@@ -367,7 +392,7 @@ I_{p+1}-I_p &= L_{p+1} &&\text{[§4.3]} \\
 \end{aligned}
 ```
 
-**Stainless verification.**
+**Verificação Stainless.**
 
 ```scala
 def assertGapsPositive(integral: Integral, pos: BigInt): Boolean = {
@@ -377,24 +402,27 @@ def assertGapsPositive(integral: Integral, pos: BigInt): Boolean = {
 }.holds
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertGapsPositive
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala).
 
-## 5. Implementation Consistency Lemmas
+## 5. Lemas de Consistência da Implementação
 
-These lemmas verify that the recursive implementation and its accumulated representation agree internally. They do not introduce new mathematical properties but are essential for formal software consistency.
+Estes lemas verificam que a implementação recursiva e sua representação
+acumulada concordam internamente. Eles não introduzem novas propriedades
+matemáticas, mas são essenciais para a consistência formal do software.
 
-- Element consistency: $I_k = acc_k$ — [§5.2](#52-element-consistency)
-- Accumulated delta consistency: $acc_{p+1} - acc_p = L_{p+1}$ — [§5.3](#53-accumulated-delta-consistency)
-- Last element agreement: $\text{last}(I) = acc_{n-1} = I_{n-1}$ — [§5.4](#54-last-element-agreement)
-- Size agreement: $|acc| = |L|$ — [§5.5](#55-size-agreement)
+- Consistência de elemento: $I_k = acc_k$ — [§5.2](#52-element-consistency)
+- Consistência do delta acumulado: $acc_{p+1} - acc_p = L_{p+1}$ — [§5.3](#53-accumulated-delta-consistency)
+- Concordância do último elemento: $\text{last}(I) = acc_{n-1} = I_{n-1}$ — [§5.4](#54-last-element-agreement)
+- Concordância de tamanho: $|acc| = |L|$ — [§5.5](#55-size-agreement)
 
-### 5.1 Accumulated List Definition
+### 5.1 Definição da Lista Acumulada
 
-The accumulated list represents the discrete integral as a full list of partial sums rather than element-by-element access.
+A lista acumulada representa a integral discreta como uma lista completa de
+somas parciais, em vez de acesso elemento por elemento.
 
-Let:
+Seja:
 
 ```math
 \begin{aligned}
@@ -403,7 +431,7 @@ Let:
 \end{aligned}
 ```
 
-Then, the accumulated list is defined recursively as:
+Então, a lista acumulada é definida recursivamente como:
 
 ```math
 acc(L, init) :=
@@ -413,7 +441,7 @@ L_e & \text{if } L = L_e \\
 \end{cases}
 ```
 
-The full Integral implementation including the `acc` method is at [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
+A implementação completa de `Integral`, incluindo o método `acc`, está em [Integral.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/Integral.scala):
 
 ```scala
 case class Integral(list: List[BigInt], init: BigInt = 0) {
@@ -441,9 +469,12 @@ case class Integral(list: List[BigInt], init: BigInt = 0) {
 }
 ```
 
-### 5.2 Element Consistency
+<a id="52-element-consistency"></a>
 
-The $k\text{-th}$ element of the Integral equals the $k\text{-th}$ element of the accumulated list.
+### 5.2 Consistência de Elemento
+
+O $k\text{-ésimo}$ elemento da Integral é igual ao $k\text{-ésimo}$ elemento da
+lista acumulada.
 
 ```math
 \forall \text{ } k \in [0, n-1]:\ I_k = acc_k
@@ -464,13 +495,16 @@ The $k\text{-th}$ element of the Integral equals the $k\text{-th}$ element of th
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertAccMatchesApply
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.5.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.5.
 
-### 5.3 Accumulated Delta Consistency
+<a id="53-accumulated-delta-consistency"></a>
 
-The difference between two consecutive accumulated values in Acc equals the corresponding value from the original list.
+### 5.3 Consistência do Delta Acumulado
+
+A diferença entre dois valores acumulados consecutivos em `Acc` é igual ao valor
+correspondente da lista original.
 
 ```math
 \forall\ p \in [0, n-2]:\ \text{acc}_{p+1} - \text{acc}_p = L_{p+1}
@@ -497,13 +531,16 @@ The difference between two consecutive accumulated values in Acc equals the corr
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertAccDiffMatchesList
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.6.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.6.
 
-### 5.4 Last Element Agreement
+<a id="54-last-element-agreement"></a>
 
-The last element of the accumulated list equals the last element of the integral, which is the element at position $n-1$.
+### 5.4 Concordância do Último Elemento
+
+O último elemento da lista acumulada é igual ao último elemento da integral, que
+é o elemento na posição $n-1$.
 
 ```math
 \begin{aligned}
@@ -524,7 +561,7 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 ```
 
-#### Base case: $|L| = 1$
+#### Caso base: $|L| = 1$
 
 ```math
 \begin{aligned}
@@ -535,7 +572,7 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 ```
 
-#### Inductive step: $|L| > 1$
+#### Passo indutivo: $|L| > 1$
 
 ```math
 \begin{aligned}
@@ -557,13 +594,15 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertLast
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.7.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.7.
 
-### 5.5 Size Agreement
+<a id="55-size-agreement"></a>
 
-The size of the accumulated list equals the size of the original list.
+### 5.5 Concordância de Tamanho
+
+O tamanho da lista acumulada é igual ao tamanho da lista original.
 
 ```math
 |acc| = |L|
@@ -576,7 +615,7 @@ The size of the accumulated list equals the size of the original list.
 \end{aligned}
 ```
 
-#### Empty List: $|L| = 0$
+#### Lista Vazia: $|L| = 0$
 
 ```math
 \begin{aligned}
@@ -586,7 +625,7 @@ The size of the accumulated list equals the size of the original list.
 \end{aligned}
 ```
 
-#### Singleton List: $|L| = 1$
+#### Lista Singleton: $|L| = 1$
 
 ```math
 \begin{aligned}
@@ -596,7 +635,7 @@ The size of the accumulated list equals the size of the original list.
 \end{aligned}
 ```
 
-#### Inductive step: $|L| > 1$
+#### Passo indutivo: $|L| > 1$
 
 ```math
 \begin{aligned}
@@ -609,27 +648,28 @@ The size of the accumulated list equals the size of the original list.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   IntegralProperties::assertSizeAccEqualsSizeList
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). The full Scala verification code is in Appendix A.8.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala). O código Scala completo de verificação está no Apêndice A.8.
 
-## 6. Limitations
+## 6. Limitações
 
-This article builds upon the foundational assumptions and constraints established in the earlier work
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1).
+Este artigo se apoia nas hipóteses e restrições fundamentais estabelecidas no
+trabalho anterior [Usando Verificação Formal para Provar Propriedades de Listas Definidas Recursivamente](https://rxiverse.org/abs/2609.0023) [[1]](#ref1).
 
-Specifically:
+Especificamente:
 
-* The focus remains on lists of unbounded integers (`BigInt`), without support for generalized numeric types via abstraction or type classes.
-* Recursive functions such as $sum$, $head$, $tail$, and concatenation are reused from the prior work [[1]](#ref1) and are not redefined here.
-* Due to the recursive nature of these definitions, stack overflows may occur with extensive lists, but correctness and verifiability take priority over performance.
+* O foco permanece em listas de inteiros ilimitados (`BigInt`), sem suporte a tipos numéricos generalizados por abstração ou type classes.
+* Funções recursivas como $sum$, $head$, $tail$ e concatenação são reutilizadas do trabalho anterior [[1]](#ref1) e não são redefinidas aqui.
+* Devido à natureza recursiva dessas definições, estouros de pilha podem ocorrer com listas extensas, mas correção e verificabilidade têm prioridade sobre desempenho.
 
-## 7. Conclusion
+## 7. Conclusão
 
-This article established and formally verified a property characterization of the
-recursive discrete integral over finite integer lists.
+Este artigo estabeleceu e verificou formalmente uma caracterização por
+propriedades da integral discreta recursiva sobre listas finitas de inteiros.
 
-From the recursive definition of $I = \text{Integral}(L, init)$, we proved and verified:
+A partir da definição recursiva de $I = \text{Integral}(L, init)$, provamos e
+verificamos:
 
 ```math
 \begin{aligned}
@@ -650,35 +690,38 @@ acc_{p+1} - acc_p &= x_{p+1} & \text{[Accumulated Delta Consistency]} \\
 \end{aligned}
 ```
 
-These results establish that the recursive discrete integral exactly corresponds to
-the cumulative sum of the list elements plus the given initial value. Recursive lookup
-and the accumulated-list representation agree at every valid index, at the final value,
-and in length; their consecutive differences recover the corresponding original list
-entries. Positive input values make the integral strictly increasing, while a positive
-consecutive integral gap implies that the corresponding input value is positive.
+Esses resultados estabelecem que a integral discreta recursiva corresponde
+exatamente à soma cumulativa dos elementos da lista mais o valor inicial dado. A
+consulta recursiva e a representação por lista acumulada concordam em todo índice
+válido, no valor final e em comprimento; suas diferenças consecutivas recuperam
+as entradas correspondentes da lista original. Valores de entrada positivos
+tornam a integral estritamente crescente, enquanto um gap integral consecutivo
+positivo implica que o valor de entrada correspondente é positivo.
 
-All properties were formally verified in Scala using the Stainless verification system. The full verification code is in Appendix A.
+Todas as propriedades foram formalmente verificadas em Scala usando o sistema de
+verificação Stainless. O código completo de verificação está no Apêndice A.
 
-## 8. Future Work
+## 8. Trabalho Futuro
 
-Extending the finite integral to repeating sequences of values would capture the relationship between modular arithmetic and 
-gap-period decomposition — the foundation for reasoning about cumulative sums over cyclic structures.
+Estender a integral finita para sequências repetitivas de valores capturaria a
+relação entre aritmética modular e decomposição gap-período — a fundação para
+raciocinar sobre somas cumulativas em estruturas cíclicas.
 
-## 9. References
+## 9. Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>  
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
-Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
+Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 The Rocq Development Team. *The Rocq Standard Library: Lists*.
-Available at: [https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html](https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html)
+Disponível em: [https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html](https://rocq-prover.org/doc/V8.20.0/stdlib/Coq.Lists.List.html)
 
-## Appendix A: Scala Verification Code
+## Apêndice A: Código de Verificação Scala
 
-### A.1 Head Value Matches Definition — assertHeadValueMatchDefinition
+### A.1 Valor da Cabeça Coincide com a Definição — assertHeadValueMatchDefinition
 
-Source: [IntegralProperties::assertHeadValueMatchDefinition](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertHeadValueMatchDefinition](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
@@ -691,9 +734,9 @@ def assertHeadValueMatchDefinition(integral: Integral): Boolean = {
 }.holds
 ```
 
-### A.2 Integral Equals Sum Until Position — assertIntegralEqualsSum
+### A.2 Integral Igual à Soma até a Posição — assertIntegralEqualsSum
 
-Source: [IntegralProperties::assertIntegralEqualsSum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertIntegralEqualsSum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
@@ -734,9 +777,9 @@ def assertIntegralEqualsSum(integral: Integral, position: BigInt): Boolean = {
 }.holds
 ```
 
-### A.3 Incremental Change — assertAccDiffMatchesList
+### A.3 Mudança Incremental — assertAccDiffMatchesList
 
-Source: [IntegralProperties::assertAccDiffMatchesList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertAccDiffMatchesList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
@@ -777,9 +820,9 @@ def assertAccDiffMatchesList(integral: Integral, position: BigInt): Boolean = {
 }.holds
 ```
 
-### A.4 Final Element Equals Full Sum — assertLastEqualsSum
+### A.4 Elemento Final Igual à Soma Completa — assertLastEqualsSum
 
-Source: [IntegralProperties::assertLastEqualsSum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertLastEqualsSum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertLastEqualsSum(integral: Integral): Boolean = {
@@ -810,9 +853,9 @@ def assertLastEqualsSum(integral: Integral): Boolean = {
 }.holds
 ```
 
-### A.5 Element Consistency — assertAccMatchesApply
+### A.5 Consistência de Elemento — assertAccMatchesApply
 
-Source: [IntegralProperties::assertAccMatchesApply](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertAccMatchesApply](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
@@ -860,15 +903,16 @@ def assertAccMatchesApply(integral: Integral, position: BigInt): Boolean = {
 }.holds
 ```
 
-### A.6 Accumulated Delta Consistency — assertAccDiffMatchesList
+### A.6 Consistência do Delta Acumulado — assertAccDiffMatchesList
 
-Source: [IntegralProperties::assertAccDiffMatchesList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertAccDiffMatchesList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
-This is the same function as Appendix A.3. The property is used for both the `apply`-based delta (Section 4.3) and the `acc`-based delta (Section 5.3).
+Esta é a mesma função do Apêndice A.3. A propriedade é usada tanto para o delta
+baseado em `apply` (Seção 4.3) quanto para o delta baseado em `acc` (Seção 5.3).
 
-### A.7 Last Element Agreement — assertLast
+### A.7 Concordância do Último Elemento — assertLast
 
-Source: [IntegralProperties::assertLast](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertLast](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertLast(integral: Integral): Boolean = {
@@ -892,9 +936,9 @@ def assertLast(integral: Integral): Boolean = {
 }.holds
 ```
 
-### A.8 Size Agreement — assertSizeAccEqualsSizeList
+### A.8 Concordância de Tamanho — assertSizeAccEqualsSizeList
 
-Source: [IntegralProperties::assertSizeAccEqualsSizeList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
+Fonte: [IntegralProperties::assertSizeAccEqualsSizeList](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/integral/properties/IntegralProperties.scala)
 
 ```scala
 def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean = {
@@ -926,6 +970,8 @@ def assertSizeAccEqualsSizeList(list: List[BigInt], init: BigInt = 0): Boolean =
 }.holds
 ```
 
-## Appendix B: Stainless Verification Log Output
+## Apêndice B: Saída do Log de Verificação Stainless
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log)
+A execução mais recente de `just verify` verifica todas as propriedades
+descritas sem erros. A saída completa do log está disponível em:
+[logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/logs/verify.log)
