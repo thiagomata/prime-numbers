@@ -1,95 +1,100 @@
-# Using Formal Verification to Prove Properties of Lists Recursively Defined
+# Usando Verificação Formal para Provar Propriedades de Listas Definidas Recursivamente
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)  
-**Published:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)<br>
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)<br>
 **DOI:** [10.5281/zenodo.22955771](https://doi.org/10.5281/zenodo.22955771)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
 
-We define finite integer lists recursively and verify a property calculus for their
-structural and arithmetic operations in Scala Stainless. The verified results establish
-identities for indexed access and slicing, sum and product laws under concatenation,
-divisibility of list products by their elements, and preservation of element bounds
-through append and split. We also verify shifted-list laws preserving the period and
-relating adjacent values to gaps, together with rotation laws preserving membership,
-size, sum, and element bounds. Collectively, these properties describe how recursive
-finite sequences behave under decomposition, composition, aggregation, bounds,
-periodic shifts, and rotation.
+Definimos listas finitas de inteiros recursivamente e verificamos em Scala
+Stainless um cálculo de propriedades para suas operações estruturais e
+aritméticas. Os resultados verificados estabelecem identidades para acesso
+indexado e fatiamento, leis de soma e produto sob concatenação, divisibilidade
+dos produtos de listas por seus elementos e preservação de cotas dos elementos
+por append e split. Também verificamos leis de listas deslocadas que preservam o
+período e relacionam valores adjacentes a gaps, junto com leis de rotação que
+preservam pertinência, tamanho, soma e cotas dos elementos. Coletivamente, essas
+propriedades descrevem como sequências finitas recursivas se comportam sob
+decomposição, composição, agregação, cotas, deslocamentos periódicos e rotação.
 
 </p>
 </div>
 
-## 1. Introduction
+## 1. Introdução
 
-Lists are finite sequences of values that support a wide range of operations in functional 
-and declarative programming. When combined with summation, they form the backbone for 
-definitions of sequences, recurrence, accumulation, and integration in the discrete domain.
+Listas são sequências finitas de valores que dão suporte a uma ampla variedade
+de operações em programação funcional e declarativa. Quando combinadas com
+somatório, elas formam a espinha dorsal de definições de sequências,
+recorrência, acumulação e integração no domínio discreto.
 
-Our approach mirrors traditional recursive definitions but is formally verified
-using  [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1),  
-a verification framework for pure Scala programs
-that uses formal verification to ensure user-defined functions satisfy 
-given preconditions, postconditions, and invariants through automated proofs under all valid inputs.
+Nossa abordagem espelha definições recursivas tradicionais, mas é formalmente
+verificada usando [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1),
+um framework de verificação para programas Scala puros que usa verificação
+formal para garantir que funções definidas pelo usuário satisfaçam
+pré-condições, pós-condições e invariantes dados por meio de provas
+automatizadas sob todas as entradas válidas.
 
-> Formal verification is the act of proving or disproving the correctness of 
-> intended algorithms underlying a system with respect to a certain formal 
-> specification or property, using formal methods of mathematics.
-> [— Wikipedia on Formal Verification](https://en.wikipedia.org/wiki/Formal_verification) [[2]](#ref2)
+> Verificação formal é o ato de provar ou refutar a correção dos algoritmos
+> pretendidos subjacentes a um sistema com respeito a uma certa especificação ou
+> propriedade formal, usando métodos formais da matemática.
+> [— Wikipédia sobre Verificação Formal](https://en.wikipedia.org/wiki/Formal_verification) [[2]](#ref2)
 
-This article verifies:
+Este artigo verifica:
 
-- Index and access: tail shift, last element — [§3](#3-index-and-access-properties)
-- Slice: recursive, index-range, append consistency — [§4](#4-slice-properties)
-- Sum: definition, concatenation, commutativity, positivity — [§5](#5-sum-properties)
-- Product: definition, concatenation, commutativity, positivity — [§6](#6-product-properties)
-- Product divisibility: head, all elements, inserted element — [§7](#7-product-divisibility-properties)
-- Bound and order: lower- and upper-bound propagation through append and split — [§8](#8-bound-and-order-properties)
-- Slice equivalence — [§9](#9-equivalence-properties)
-- Shifted list: period, gap identity, gap translation — [§10](#10-shifted-list-properties)
-- Rotation: permutation invariants (size, sum, bounds, membership) — [§11](#11-rotation-properties)
+- Índice e acesso: deslocamento da cauda, último elemento — [§3](#3-index-and-access-properties)
+- Fatia: recursiva, por intervalo de índices, consistência com append — [§4](#4-slice-properties)
+- Soma: definição, concatenação, comutatividade, positividade — [§5](#5-sum-properties)
+- Produto: definição, concatenação, comutatividade, positividade — [§6](#6-product-properties)
+- Divisibilidade do produto: cabeça, todos os elementos, elemento inserido — [§7](#7-product-divisibility-properties)
+- Cota e ordem: propagação de cotas inferiores e superiores por append e split — [§8](#8-bound-and-order-properties)
+- Equivalência de fatias — [§9](#9-equivalence-properties)
+- Lista deslocada: período, identidade de gap, translação de gap — [§10](#10-shifted-list-properties)
+- Rotação: invariantes de permutação (tamanho, soma, cotas, pertinência) — [§11](#11-rotation-properties)
 
-### Related work
+### Trabalhos Relacionados
 
-Recursive lists, indexed access, and list splitting are long-established parts
-of formal libraries. The Rocq/Coq standard list library defines indexed access,
-prefix and suffix operations, and proves their reconstruction law
-`firstn n l ++ skipn n l = l` [[3]](#ref3). Lean's mathematical library also
-formalizes list rotation through splitting and concatenation, including reduction
-of a rotation index modulo the list length [[4]](#ref4).
+Listas recursivas, acesso indexado e divisão de listas são partes há muito
+estabelecidas de bibliotecas formais. A biblioteca padrão de listas de Rocq/Coq
+define acesso indexado, operações de prefixo e sufixo, e prova sua lei de
+reconstrução `firstn n l ++ skipn n l = l` [[3]](#ref3). A biblioteca
+matemática do Lean também formaliza rotação de listas por meio de divisão e
+concatenação, incluindo a redução de um índice de rotação módulo o comprimento
+da lista [[4]](#ref4).
 
-These prior developments are useful points of contact for the present work.
-They show how a mature formal-mathematical setting treats familiar list
-structure, while this article develops and verifies the stated property package
-for a minimal recursive `BigInt` implementation in Scala Stainless. In
-particular, the article brings structural operations into the same checked
-development as product divisibility, numeric bounds, shifted-list gaps, and
-rotation invariants. The comparison is contextual rather than competitive: it
-locates the Stainless proofs in the wider body of formal work and makes both
-the overlap and the scope of this implementation clear.
+Esses desenvolvimentos prévios são pontos úteis de contato para o presente
+trabalho. Eles mostram como um ambiente formal-matemático maduro trata a
+estrutura familiar de listas, enquanto este artigo desenvolve e verifica o
+pacote de propriedades declarado para uma implementação recursiva mínima de
+`BigInt` em Scala Stainless. Em particular, o artigo traz operações estruturais
+para o mesmo desenvolvimento verificado que divisibilidade de produtos, cotas
+numéricas, gaps de listas deslocadas e invariantes de rotação. A comparação é
+contextual, não competitiva: ela situa as provas em Stainless no corpo mais
+amplo de trabalho formal e deixa claros tanto a sobreposição quanto o escopo
+desta implementação.
 
-## 2. Definitions
+## 2. Definições
 
-This section defines the list model itself. A list is either empty or a
-single value paired with a smaller list, and every operation used later in
-the article — size, append, slicing, indexing, sum, and product — is defined
-by recursion on that same head/tail decomposition.
+Esta seção define o próprio modelo de lista. Uma lista é vazia ou um único valor
+pareado com uma lista menor, e toda operação usada posteriormente no artigo —
+tamanho, append, fatiamento, indexação, soma e produto — é definida por
+recursão sobre essa mesma decomposição cabeça/cauda.
 
-### 2.1 List construction
+### 2.1 Construção de Listas
 
-Let $𝕃$ be the set of all lists over a set $S$.
-A list is either the empty $L_{e}$ or a non-empty list $L_{node}$, as follows:
+Seja $𝕃$ o conjunto de todas as listas sobre um conjunto $S$. Uma lista é ou a
+lista vazia $L_{e}$ ou uma lista não vazia $L_{node}$, como segue:
 
-### 2.2 Empty List
+### 2.2 Lista Vazia
 
-Let's define an empty list $L_{e}$:
+Definamos uma lista vazia $L_{e}$:
 
 ```math
 \begin{aligned}
@@ -98,13 +103,13 @@ L_{e} & = [] \\
 \end{aligned}
 ```
 
-### 2.3 Recursive Definition of List
+### 2.3 Definição Recursiva de Lista
 
-A non-empty list packages one value, its **head**, together with the
-remainder of the list, its **tail**, which is itself a smaller list. Every
-list in $𝕃$ is either the single empty list or one of these head/tail
-pairings, so the definition below builds the whole set $𝕃$ out of the
-already-defined $L_e$ plus this one construction rule:
+Uma lista não vazia empacota um valor, sua **cabeça**, junto com o restante da
+lista, sua **cauda**, que por sua vez é uma lista menor. Toda lista em $𝕃$ é ou
+a lista vazia única ou um desses pares cabeça/cauda; portanto, a definição
+abaixo constrói todo o conjunto $𝕃$ a partir do $L_e$ já definido mais esta
+regra única de construção:
 
 ```math
 \begin{aligned}
@@ -115,18 +120,20 @@ already-defined $L_e$ plus this one construction rule:
 \end{aligned}
 ```
 
-**Termination and cyclic references.** Because all lists in this model are immutable, each application of $L_{\text{node}}(\text{head}, \text{tail})$
-produces a distinct structural value without the possibility of cyclic references.
-Recursive functions over $𝕃$ terminate naturally, as a strictly decreasing structure defines size.
+**Terminação e referências cíclicas.** Como todas as listas neste modelo são
+imutáveis, cada aplicação de $L_{\text{node}}(\text{head}, \text{tail})$
+produz um valor estrutural distinto, sem possibilidade de referências cíclicas.
+Funções recursivas sobre $𝕃$ terminam naturalmente, pois uma estrutura
+estritamente decrescente define o tamanho.
 
 
-### 2.4 Elements Access and Indexing
+### 2.4 Acesso a Elementos e Indexação
 
-The head/tail decomposition gives direct access to a list's first element
-and its remaining sublist. Indexing extends this one step at a time:
-position $0$ is the head, and position $n > 0$ is found by re-indexing the
-tail at position $n - 1$, so reaching index $n$ costs $n$ recursive tail
-steps. The last element is the value at the final valid index, $|L| - 1$.
+A decomposição cabeça/cauda dá acesso direto ao primeiro elemento de uma lista e
+à sua sublista restante. A indexação estende isso um passo por vez: a posição
+$0$ é a cabeça, e a posição $n > 0$ é encontrada reindexando a cauda na posição
+$n - 1$; assim, alcançar o índice $n$ custa $n$ passos recursivos pela cauda. O
+último elemento é o valor no último índice válido, $|L| - 1$.
 
 ```math
 \begin{aligned}
@@ -139,11 +146,11 @@ L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 
 \end{aligned} 
 ```
 
-### 2.5 List Size
+### 2.5 Tamanho da Lista
 
-With the structure of lists defined, we now introduce a recursive definition 
-for their size (or length).
-We define the size of a list $L$, $|L|$ as follows:
+Com a estrutura das listas definida, agora introduzimos uma definição recursiva
+para seu tamanho (ou comprimento). Definimos o tamanho de uma lista $L$, $|L|$,
+como segue:
 
 ```math
 |L| = \begin{cases}
@@ -152,14 +159,15 @@ We define the size of a list $L$, $|L|$ as follows:
 \end{cases}
 ```
 
-The size of a list is zero for the empty list, or one plus the size of its
-tail otherwise. Proved in the native stainless library in
+O tamanho de uma lista é zero para a lista vazia, ou um mais o tamanho de sua
+cauda caso contrário. Provado na biblioteca nativa do Stainless em
 `stainless.collection.List`.
 
 
-### 2.6 List Append
+### 2.6 Append de Listas
 
-Let $A, B \in 𝕃$ over some set $S$. The append operation $A \mathbin{\texttt{++}} B$ is defined recursively as:
+Sejam $A, B \in 𝕃$ sobre algum conjunto $S$. A operação de append
+$A \mathbin{\texttt{++}} B$ é definida recursivamente como:
 
 ```math
 \begin{aligned}
@@ -171,24 +179,24 @@ L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise}
 \end{aligned}
 ```
 
-Appending $B$ onto an empty list yields $B$; appending it onto a non-empty
-list keeps $A$'s head in place and appends $B$ onto $A$'s tail. Proved in
-the native stainless library in `stainless.collection.List`.
+Aplicar append de $B$ a uma lista vazia produz $B$; aplicá-lo a uma lista não
+vazia mantém a cabeça de $A$ no lugar e aplica append de $B$ à cauda de $A$.
+Provado na biblioteca nativa do Stainless em `stainless.collection.List`.
 
-### 2.7 List Slice
+### 2.7 Fatia de Lista
 
-Let $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, with $i \leq j < n$.
+Seja $L = [v_0, v_1, \dots, v_{n-1}]$, $i, j \in \mathbb{N}$, com $i \leq j < n$.
 
 $$
 L[i \dots j] := [ L_k \mid k \in \mathbb{N},\ i \leq k \leq j ]
 $$
 
-The slice from $i$ to $j$ keeps exactly the elements at positions $i$
-through $j$, in order. The implementation of `slice` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#slice). The full Scala verification code is in Appendix A.3.
+A fatia de $i$ até $j$ mantém exatamente os elementos nas posições de $i$ até
+$j$, em ordem. A implementação de `slice` está disponível em [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#slice). O código Scala completo de verificação está no Apêndice A.3.
 
-### 2.8 List Sum
+### 2.8 Soma da Lista
 
-Let $\text{sum} : 𝕃 \implies 𝕊$ be a recursively defined function:
+Seja $\text{sum} : 𝕃 \implies 𝕊$ uma função definida recursivamente:
 
 ```math
 sum(L) = 
@@ -197,12 +205,12 @@ head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The sum of an empty list is zero; the sum of a non-empty list is its head
-plus the sum of its tail. The implementation of `sum` is available in [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#sum). The full Scala verification code is in Appendix A.7.
+A soma de uma lista vazia é zero; a soma de uma lista não vazia é sua cabeça
+mais a soma de sua cauda. A implementação de `sum` está disponível em [ListUtils](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala#sum). O código Scala completo de verificação está no Apêndice A.7.
 
-### 2.9 List Product
+### 2.9 Produto da Lista
 
-Let $\text{product} : 𝕃 \implies 𝕊$ be a recursively defined function:
+Seja $\text{product} : 𝕃 \implies 𝕊$ uma função definida recursivamente:
 
 ```math
 product(L) = 
@@ -211,26 +219,29 @@ head(L) \cdot product(tail(L)) & \text{otherwise} \\
 \end{cases}
 ```
 
-The product of an empty list is one; a non-empty list's product is its
-head times the product of its tail. The implementation of `product` is
-available in [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendices A.11 through A.15.
+O produto de uma lista vazia é um; o produto de uma lista não vazia é sua
+cabeça vezes o produto de sua cauda. A implementação de `product` está
+disponível em [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está nos Apêndices A.11 a A.15.
 
-## 3. Index and Access Properties
+## 3. Propriedades de Índice e Acesso
 
-How positions shift when the list is decomposed into head and tail, and how the last element relates to its index.
+Como as posições se deslocam quando a lista é decomposta em cabeça e cauda, e
+como o último elemento se relaciona com seu índice.
 
-- [Tail access shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)[i] = L[i+1]$ for $i < |\text{tail}(L)|$
-- [Last element identity](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L[|L|-1] = \text{last}(L)$
+- [Deslocamento de acesso pela cauda](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $\text{tail}(L)[i] = L[i+1]$ para $i < |\text{tail}(L)|$
+- [Identidade do último elemento](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): $L[|L|-1] = \text{last}(L)$
 
-### 3.1 Tail Access Shift
+### 3.1 Deslocamento de Acesso pela Cauda
 
-**Lemma:** For any list $L$ with at least two elements, accessing the $i$-th element of its tail is equivalent to accessing the $(i + 1)$-th element of the list.
+**Lema:** Para qualquer lista $L$ com pelo menos dois elementos, acessar o
+$i$-ésimo elemento de sua cauda é equivalente a acessar o $(i + 1)$-ésimo
+elemento da lista.
 
 ```math
 \forall \text{ } L,\ i,\quad 1 < |L|, 0 \le i < |\text{tail}(L)| \implies \text{tail}(L)_{(i)} = L_{(i + 1)}
 ```
 
-Since:
+Como:
 
 $$
 \begin{aligned}
@@ -242,16 +253,17 @@ L &= \text{head}(L) :: \text{tail}(L)                                           
 \end{aligned}
 $$
 
-This forward shift is verified in the [
+Esse deslocamento para frente é verificado em [
   ListUtilsProperties::accessTailShiftRight
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The reverse indexing form, $L_i = \text{tail}(L)_{i - 1}$ for $i > 0$, is
-verified in [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). A forma de indexação reversa, $L_i = \text{tail}(L)_{i - 1}$ para $i > 0$, é
+verificada em [
   ListBoundUtils::assertTailShiftLeft
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). O código Scala completo de verificação está no Apêndice A.1.
 
-### 3.2 Last Element Identity
+### 3.2 Identidade do Último Elemento
 
-**Lemma:** The last element of a non-empty list is equal to the element at position $n - 1$, where $n = |L|$.
+**Lema:** O último elemento de uma lista não vazia é igual ao elemento na
+posição $n - 1$, em que $n = |L|$.
 
 ```math
 \forall \text{ } L,\ |L| > 0 \implies \text{last}(L) = L_{(n - 1)}
@@ -263,7 +275,7 @@ verified in [
 \end{aligned}
 ```
 
-**Base case**: $|L| = 1$
+**Caso base**: $|L| = 1$
 
 ```math
 \begin{aligned}
@@ -272,7 +284,7 @@ verified in [
 \end{aligned}
 ```
 
-**Inductive step**: $|L| > 1$
+**Passo indutivo**: $|L| > 1$
 
 ```math
 \begin{aligned}
@@ -294,16 +306,16 @@ verified in [
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::assertLastEqualsLastPosition
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). O código Scala completo de verificação está no Apêndice A.2.
 
-### 3.3 Indexed Access Under Concatenation
+### 3.3 Acesso Indexado sob Concatenação
 
-Accessing a concatenated list at a given index routes to the matching side:
-an index inside the left list's range reads from the left list at that same
-index, and an index at or past the left list's size reads from the right
-list, offset by the left list's size.
+Acessar uma lista concatenada em um dado índice direciona para o lado
+correspondente: um índice dentro do intervalo da lista à esquerda lê dessa lista
+à esquerda no mesmo índice, e um índice igual ou posterior ao tamanho da lista à
+esquerda lê da lista à direita, deslocado pelo tamanho da lista à esquerda.
 
 ```math
 \begin{aligned}
@@ -312,9 +324,9 @@ list, offset by the left list's size.
 \end{aligned}
 ```
 
-Both directions are proved by induction on $k$: the left case peels one head
-element at a time until $k$ reaches $0$; the right case peels elements off
-$A$ until it is exhausted, then indexes directly into $B$.
+As duas direções são provadas por indução em $k$: o caso da esquerda remove um
+elemento de cabeça por vez até que $k$ alcance $0$; o caso da direita remove
+elementos de $A$ até que ela se esgote, e então indexa diretamente em $B$.
 
 This property is verified in the [
   ListUtilsProperties::assertAppendApplyLeft

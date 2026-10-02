@@ -1,84 +1,92 @@
-# Division and Modulo from Recursive Normalization
+# Divisão e Módulo por Normalização Recursiva
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)  
-**Published:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)<br>
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)<br>
 **DOI:** [10.5281/zenodo.22955131](https://doi.org/10.5281/zenodo.22955131)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
 
-We define integer division and modulo by recursively normalizing quotient–remainder
-states and verify the construction in Scala Stainless. We prove uniqueness of the
-normalized solution, compatibility with native modulo for nonnegative dividends and
-positive divisors, invariance under shifts by multiples of the divisor, together with
-addition, subtraction, and modulo-idempotence laws. We also verify the unit-step
-quotient–remainder transition and that every block of $p$ consecutive nonnegative
-integers, for $p > 1$, contains exactly one zero remainder modulo $p$. Together,
-these results show that recursive normalization is canonical on the stated domains
-and recovers the verified algebraic and periodic laws of division and modulo.
+Definimos divisão inteira e módulo normalizando recursivamente estados de
+quociente-resto e verificamos a construção em Scala Stainless. Provamos a
+unicidade da solução normalizada, a compatibilidade com o módulo nativo para
+dividendos não negativos e divisores positivos, a invariância sob deslocamentos
+por múltiplos do divisor, junto com leis de adição, subtração e idempotência do
+módulo. Também verificamos a transição quociente-resto por passo unitário e que
+todo bloco de $p$ inteiros não negativos consecutivos, para $p > 1$, contém
+exatamente um resto zero módulo $p$. Em conjunto, esses resultados mostram que a
+normalização recursiva é canônica nos domínios declarados e recupera as leis
+algébricas e periódicas verificadas da divisão e do módulo.
 
 </p>
 </div>
 
-## 1. Introduction
+## 1. Introdução
 
-Integer division and modulo operations are central tools in discrete mathematics, number theory, and algorithms. 
-While their properties are well known, rigorous formalization and verification, particularly via recursive definitions,
-offer an interesting alternative to the traditional axiomatic model.
+As operações de divisão inteira e módulo são ferramentas centrais em matemática
+discreta, teoria dos números e algoritmos. Embora suas propriedades sejam bem
+conhecidas, a formalização e a verificação rigorosas, em particular por meio de
+definições recursivas, oferecem uma alternativa interessante ao modelo axiomático
+tradicional.
 
-This article takes the recursive route. Instead of assuming native division and
-modulo, it defines a state $DivMod(a,b,q,r)$ where $a = bq + r$, then proves
-that normalizing the pair $(q,r)$ preserves the represented dividend and reaches
-the canonical remainder interval. The familiar operations $\text{div}$ and
-$\text{mod}$ are then projections from that normalized state.
+Este artigo segue a rota recursiva. Em vez de assumir divisão e módulo nativos,
+ele define um estado $DivMod(a,b,q,r)$ em que $a = bq + r$, e então prova que
+normalizar o par $(q,r)$ preserva o dividendo representado e alcança o intervalo
+canônico do resto. As operações familiares $\text{div}$ e $\text{mod}$ são então
+projeções desse estado normalizado.
 
-The mathematical statements below are backed by Scala source verified with
-[Stainless](https://epfl-lara.github.io/stainless/intro.html). The article keeps
-the proof discussion centered on the properties; source links point to the
-maintained verification code.
+As afirmações matemáticas abaixo são sustentadas por código-fonte Scala
+verificado com [Stainless](https://epfl-lara.github.io/stainless/intro.html). O
+artigo mantém a discussão das provas centrada nas propriedades; os links de
+código apontam para o código de verificação mantido.
 
-This article establishes:
+Este artigo estabelece:
 
-- Foundational identities: trivial case, self-identity, division by one, and
-  agreement with the native modulo operator —
+- Identidades fundamentais: caso trivial, autoidentidade, divisão por um e
+  concordância com o operador de módulo nativo —
   [§6.1–6.4](#61-trivial-case)
-- Linear shift laws under single-step and multiple-step divisor addition —
+- Leis de deslocamento linear sob adição do divisor em um passo e em múltiplos
+  passos —
   [§6.5–6.6](#65-quotient-invariance-under-linear-shift)
-- Uniqueness and idempotence of the normalized remainder —
+- Unicidade e idempotência do resto normalizado —
   [§6.7–6.8](#67-unique-remainder)
-- Distributivity of modulo and division over addition and subtraction —
+- Distributividade de módulo e divisão sobre adição e subtração —
   [§6.9–6.10](#69-distributivity-over-addition)
-- Divisible-base shift invariance and symmetric remainder pairs —
+- Invariância por deslocamento em base divisível e pares simétricos de restos —
   [§6.11–6.12](#611-modular-shift-invariance-under-divisible-base)
-- The unit-step increment law and zero-density over consecutive integers —
+- A lei de incremento por passo unitário e a densidade de zeros sobre inteiros
+  consecutivos —
   [§6.13–6.14](#613-unit-step-modulo-division-increment-law)
 
-## 2. Limitations
+## 2. Limitações
 
-The implementation presented in this article is limited to the division and modulo operations for integers. 
-Its goal is to make available a set of lemmas and proofs that can be verified and used as a base to prove other
-properties related to the division and modulo operations.
-Therefore, the implementation is optimized to correctness and not to performance.
+A implementação apresentada neste artigo limita-se às operações de divisão e
+módulo para inteiros. Seu objetivo é disponibilizar um conjunto de lemas e
+provas que possam ser verificados e usados como base para provar outras
+propriedades relacionadas às operações de divisão e módulo. Portanto, a
+implementação é otimizada para correção, não para desempenho.
 
-The use of BigInt in the implementation focused on unbounded integers, without the need to worry about overflow or 
-underflow issues. 
-But, they are still constrained by the memory available in the system. 
-Similarly, some lemmas and proofs use the recursive definition of the division and modulo operations, which could 
-trigger a stack overflow for large numbers. Those issues do not invalidate the mathematical properties proved in this 
-article, which are the main focus of this article.
+O uso de BigInt na implementação enfoca inteiros não limitados, sem a necessidade
+de se preocupar com overflow ou underflow. Ainda assim, eles continuam
+limitados pela memória disponível no sistema. De modo semelhante, alguns lemas e
+provas usam a definição recursiva das operações de divisão e módulo, o que pode
+causar estouro de pilha para números grandes. Esses pontos não invalidam as
+propriedades matemáticas provadas neste artigo, que são o foco principal.
 
-## 3. Traditional Definition
+<a id="3-traditional-definition"></a>
 
-Given integers $\text{dividend}$ and $\text{divisor}$ where
-$\text{divisor} \neq 0$, the division algorithm determines integers
-$\text{quotient}$ and $\text{remainder}$ such that:
+## 3. Definição Tradicional
+
+Dados inteiros $\text{dividend}$ e $\text{divisor}$ com
+$\text{divisor} \neq 0$, o algoritmo da divisão determina inteiros
+$\text{quotient}$ e $\text{remainder}$ tais que:
 
 ```math
 \begin{aligned}
@@ -92,25 +100,25 @@ $\text{quotient}$ and $\text{remainder}$ such that:
 \end{aligned}
 ```
 
-The first two lines state the division relation and the canonical remainder
-range. The final two lines introduce the operation notation: division returns
-the quotient, and modulo returns the remainder.
+As duas primeiras linhas enunciam a relação de divisão e o intervalo canônico do
+resto. As duas últimas introduzem a notação das operações: a divisão retorna o
+quociente, e o módulo retorna o resto.
 
-## 4. Recursive Definition
+## 4. Definição Recursiva
 
-We introduce a recursive definition of division and modulo because the proof can
-be built from one invariant: shifting one unit of $b$ between quotient and
-remainder preserves the represented dividend. In
-[Section 5](#5-divmod-solution-invariance-under-linear-shift), that invariant
-connects the recursive normal form back to the traditional division equation
-from [Section 3](#3-traditional-definition).
+Introduzimos uma definição recursiva de divisão e módulo porque a prova pode ser
+construída a partir de um invariante: deslocar uma unidade de $b$ entre
+quociente e resto preserva o dividendo representado. Na
+[Seção 5](#5-divmod-solution-invariance-under-linear-shift), esse invariante
+conecta a forma normal recursiva de volta à equação tradicional da divisão da
+[Seção 3](#3-traditional-definition).
 
-From here on, $a$ is the dividend, $b$ is the divisor, $q$ is the candidate
-quotient, and $r$ is the candidate remainder. The shorter names keep the
-recursive equations readable while preserving the same roles as the traditional
-definition. We reserve $\text{mod}$ for the modulo operation itself.
+Daqui em diante, $a$ é o dividendo, $b$ é o divisor, $q$ é o quociente
+candidato, e $r$ é o resto candidato. Os nomes mais curtos mantêm as equações
+recursivas legíveis, preservando os mesmos papéis da definição tradicional.
+Reservamos $\text{mod}$ para a própria operação de módulo.
 
-We define $DivMod(a,b,q,r)$ such that:
+Definimos $DivMod(a,b,q,r)$ de modo que:
 
 ```math
 \begin{aligned}
@@ -118,7 +126,7 @@ We define $DivMod(a,b,q,r)$ such that:
 \end{aligned}
 ```
 
-The solved $DivMod$ states are those where the remainder $r$ satisfies:
+Os estados $DivMod$ resolvidos são aqueles em que o resto $r$ satisfaz:
 
 ```math
 \begin{cases}
@@ -138,13 +146,15 @@ The solved $DivMod$ states are those where the remainder $r$ satisfies:
 \end{aligned}
 ```
 
-The recursive definition is implemented in [DivMod.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/DivMod.scala).
+A definição recursiva está implementada em [DivMod.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/DivMod.scala).
 
 
-## 5. DivMod Solution Invariance Under Linear Shift
+<a id="5-divmod-solution-invariance-under-linear-shift"></a>
 
-Moving one copy of the divisor between quotient and remainder preserves the
-represented dividend; normalization therefore reaches the same final state.
+## 5. Invariância da Solução DivMod sob Deslocamento Linear
+
+Mover uma cópia do divisor entre quociente e resto preserva o dividendo
+representado; portanto, a normalização alcança o mesmo estado final.
 
 ```math
 \begin{aligned}
@@ -156,13 +166,13 @@ a &= b(q-1) + (r+b) \\
 \end{aligned}
 ```
 
-This invariant is verified for the [positive shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution) and [negative shift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
+Esse invariante é verificado para o [deslocamento positivo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithMoreDivAndLessModSameSolution) e o [deslocamento negativo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#assertDivModWithLessDivAndMoreModSameSolution).
 
 
-### 5.1 Creating the Division and Modulo Operations
+### 5.1 Criando as Operações de Divisão e Módulo
 
-Using the normalized `DivMod` value, [Calc.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/Calc.scala) defines $\text{div}$ and $\text{mod}$ as the quotient and remainder projections
-of the solved state. Starting from $DivMod(a,b,0,a)$, let:
+Usando o valor `DivMod` normalizado, [Calc.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/Calc.scala) define $\text{div}$ e $\text{mod}$ como as projeções de quociente e resto
+do estado resolvido. Partindo de $DivMod(a,b,0,a)$, seja:
 
 ```math
 \begin{aligned}
@@ -174,42 +184,44 @@ r &:= S.\text{mod} \\
 \end{aligned}
 ```
 
-So $\text{div}(a,b)$ names the normalized quotient, while $\text{mod}(a,b)$
-names the normalized remainder. In the source code these are the `div` and
-`mod` fields of the solved `DivMod`; in the article notation, $q$ and $r$ keep
-the quotient and remainder roles separate from the operation names.
+Assim, $\text{div}(a,b)$ nomeia o quociente normalizado, enquanto
+$\text{mod}(a,b)$ nomeia o resto normalizado. No código-fonte, esses são os
+campos `div` e `mod` do `DivMod` resolvido; na notação do artigo, $q$ e $r$
+mantêm os papéis de quociente e resto separados dos nomes das operações.
 
-The article uses both functional and infix notation for the same operations:
-$\text{div}(x,y)$ and $x \text{ div } y$ are equivalent, as are
-$\text{mod}(x,y)$ and $x \text{ mod } y$. Functional notation is useful when
-the operation is nested inside another expression; infix notation keeps simple
-algebraic identities closer to the traditional presentation.
+O artigo usa tanto notação funcional quanto infixa para as mesmas operações:
+$\text{div}(x,y)$ e $x \text{ div } y$ são equivalentes, assim como
+$\text{mod}(x,y)$ e $x \text{ mod } y$. A notação funcional é útil quando a
+operação está aninhada em outra expressão; a notação infixa mantém identidades
+algébricas simples mais próximas da apresentação tradicional.
 
-## 6. Some Important Properties of Modulo and Division
+## 6. Algumas Propriedades Importantes de Módulo e Divisão
 
-This chapter develops the concrete identities that follow from the
-definitions and the linear-shift invariant of
-[Section 5](#5-divmod-solution-invariance-under-linear-shift). It establishes:
+Este capítulo desenvolve as identidades concretas que seguem das definições e
+do invariante de deslocamento linear da
+[Seção 5](#5-divmod-solution-invariance-under-linear-shift). Ele estabelece:
 
-- The base cases where normalization is immediate: a small dividend,
-  self-division, division by one, and agreement with the native modulo
-  operator ([§6.1](#61-trivial-case)–[§6.4](#64-compatibility-with-native-modulo))
-- How a single or repeated shift of the dividend by the divisor moves the
-  quotient without disturbing the remainder ([§6.5](#65-quotient-invariance-under-linear-shift)–[§6.6](#66-quotient-invariance-under-linear-shift-by-multiplier))
-- The uniqueness of the normalized remainder and its idempotence under
-  repeated reduction ([§6.7](#67-unique-remainder)–[§6.8](#68-modulo-idempotence))
-- Distributivity of modulo and division over addition and subtraction
+- Os casos-base em que a normalização é imediata: um dividendo pequeno,
+  autodivisão, divisão por um e concordância com o operador de módulo nativo
+  ([§6.1](#61-trivial-case)–[§6.4](#64-compatibility-with-native-modulo))
+- Como um deslocamento único ou repetido do dividendo pelo divisor move o
+  quociente sem perturbar o resto ([§6.5](#65-quotient-invariance-under-linear-shift)–[§6.6](#66-quotient-invariance-under-linear-shift-by-multiplier))
+- A unicidade do resto normalizado e sua idempotência sob redução repetida
+  ([§6.7](#67-unique-remainder)–[§6.8](#68-modulo-idempotence))
+- Distributividade de módulo e divisão sobre adição e subtração
   ([§6.9](#69-distributivity-over-addition)–[§6.10](#610-distribution-over-subtraction))
-- Shift invariance when the dividend is already divisible by the base, and
-  the symmetry of remainder pairs around that base ([§6.11](#611-modular-shift-invariance-under-divisible-base)–[§6.12](#612-symmetrical-modulo-pairs))
-- The unit-step increment law and the density of zero remainders across
-  consecutive integers ([§6.13](#613-unit-step-modulo-division-increment-law)–[§6.14](#614-consecutive-integers-zero-density))
+- Invariância por deslocamento quando o dividendo já é divisível pela base, e
+  a simetria dos pares de restos ao redor dessa base ([§6.11](#611-modular-shift-invariance-under-divisible-base)–[§6.12](#612-symmetrical-modulo-pairs))
+- A lei de incremento por passo unitário e a densidade de restos zero ao longo
+  de inteiros consecutivos ([§6.13](#613-unit-step-modulo-division-increment-law)–[§6.14](#614-consecutive-integers-zero-density))
 
-### 6.1 Trivial Case
+<a id="61-trivial-case"></a>
 
-If the dividend is smaller than a positive divisor, the candidate state
-$DivMod(a,b,0,a)$ is already final. No subtraction of $b$ is needed, so the
-quotient is zero and the remainder is the original dividend.
+### 6.1 Caso Trivial
+
+Se o dividendo é menor que um divisor positivo, o estado candidato
+$DivMod(a,b,0,a)$ já é final. Nenhuma subtração de $b$ é necessária, portanto o
+quociente é zero e o resto é o dividendo original.
 
 ```math
 \begin{aligned}
@@ -219,13 +231,14 @@ quotient is zero and the remainder is the original dividend.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModSmallDividend
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
 
-### 6.2 Identity
+### 6.2 Identidade
 
-The modulo of every number by itself is zero and the division of every number by itself is one.
+O módulo de todo número por ele mesmo é zero, e a divisão de todo número por ele
+mesmo é um.
 
 ```math
 \begin{aligned}
@@ -235,8 +248,8 @@ n \text{ div } n & = 1 \\
 \end{aligned}
 ```
 
-The candidate state normalizes in one shift to the final state with quotient
-$1$ and remainder $0$:
+O estado candidato normaliza em um deslocamento para o estado final com
+quociente $1$ e resto $0$:
 
 ```math
 \begin{aligned}
@@ -247,16 +260,16 @@ n &= n\cdot0+n = n\cdot1+0 \\
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModIdentity::modIdentity
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala). A longer
-source proof showing the normalization path is available in [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala). Uma prova mais longa
+no código-fonte, mostrando o caminho de normalização, está disponível em [
   ModIdentity::longProof
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala#longProof).
 
-### 6.3 Modulo and Division by One
+### 6.3 Módulo e Divisão por Um
 
-Modulo by one always returns zero and division by one always returns the dividend.
+Módulo por um sempre retorna zero, e divisão por um sempre retorna o dividendo.
 
 ```math
 \begin{aligned}
@@ -266,8 +279,9 @@ n \text{ div } 1 & = n \\
 \end{aligned}
 ```
 
-Both identities follow directly from the already canonical decomposition
-$n=1\cdot n+0$; no induction or later unit-step result is needed.
+Ambas as identidades seguem diretamente da decomposição já canônica
+$n=1\cdot n+0$; nenhuma indução nem resultado posterior de passo unitário é
+necessário.
 
 ```math
 \begin{aligned}
@@ -277,16 +291,18 @@ n &= 1\cdot n+0,\qquad 0\leq0<1 \\
 \end{aligned}
 ```
 
-These properties are verified in [
+Essas propriedades são verificadas em [
   ModOne::modOneIsZero
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala) and [
   ModOne::divOneIsN
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOne.scala).
 
-### 6.4 Compatibility with Native Modulo
+<a id="64-compatibility-with-native-modulo"></a>
 
-For non-negative dividends and positive divisors, the recursively normalized
-modulo agrees with BigInt's native `%` operator.
+### 6.4 Compatibilidade com o Módulo Nativo
+
+Para dividendos não negativos e divisores positivos, o módulo normalizado
+recursivamente concorda com o operador nativo `%` de BigInt.
 
 ```math
 \begin{aligned}
@@ -295,18 +311,21 @@ a \text{ mod } b & = a \mathbin{\%} b \\
 \end{aligned}
 ```
 
-This is not a new mathematical fact but a bridge lemma: it confirms that the
-native `%` operator and the recursively defined $\text{mod}$ agree on their
-shared domain of non-negative dividends and positive divisors, so results
-derived from one match results derived from the other.
+Este não é um fato matemático novo, mas um lema de ponte: ele confirma que o
+operador nativo `%` e o $\text{mod}$ definido recursivamente concordam em seu
+domínio comum de dividendos não negativos e divisores positivos, de modo que
+resultados derivados de um coincidem com resultados derivados do outro.
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModNativeCompatibility::percentEqualsCalcMod
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModNativeCompatibility.scala#percentEqualsCalcMod).
 
-### 6.5 Quotient Invariance Under Linear Shift
+<a id="65-quotient-invariance-under-linear-shift"></a>
 
-Adding or subtracting the divisor from the dividend changes the quotient by one but leaves the remainder unchanged.
+### 6.5 Invariância do Quociente sob Deslocamento Linear
+
+Adicionar ou subtrair o divisor do dividendo altera o quociente em uma unidade,
+mas deixa o resto inalterado.
 
 ```math
 \begin{aligned}
@@ -318,9 +337,9 @@ Adding or subtracting the divisor from the dividend changes the quotient by one 
 \end{aligned}
 ```
 
-Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$.  The normalized state
-satisfies $a=bq+r$, with $r$ already in the canonical remainder interval.
-Shifting the dividend by one divisor gives two equally canonical states:
+Sejam $q=\text{div}(a,b)$ e $r=\text{mod}(a,b)$. O estado normalizado satisfaz
+$a=bq+r$, com $r$ já no intervalo canônico do resto. Deslocar o dividendo por um
+divisor produz dois estados igualmente canônicos:
 
 ```math
 \begin{aligned}
@@ -332,14 +351,17 @@ a-b &= bq+r-b = b(q-1)+r \\
 \end{aligned}
 ```
 
-This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv).
+Esta propriedade é verificada para o [caso positivo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusBSameModPlusDiv) e o [caso negativo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessBSameModDecreaseDiv).
 
-### 6.6 Quotient Invariance Under Linear Shift by Multiplier
+<a id="66-quotient-invariance-under-linear-shift-by-multiplier"></a>
 
-Adding a multiple of the divisor changes the quotient by that multiplier but
-leaves the remainder unchanged.
+### 6.6 Invariância do Quociente sob Deslocamento Linear por Multiplicador
 
-As a direct consequence of the one-step shift laws, we can also prove that:
+Adicionar um múltiplo do divisor altera o quociente por esse multiplicador, mas
+deixa o resto inalterado.
+
+Como consequência direta das leis de deslocamento em um passo, também podemos
+provar que:
 
 ```math
 \begin{aligned}
@@ -351,12 +373,12 @@ As a direct consequence of the one-step shift laws, we can also prove that:
 \end{aligned}
 ```
 
-For $m\geq0$, induction applies the positive one-step law to
-$a+m b$: the remainder is unchanged at each step and the quotient gains one.
-Thus the result holds at $m=0$ and is preserved from $m$ to $m+1$.
-The subtraction identities follow by the same induction using the negative
-one-step law.  If $m<0$, write $m=-t$ with $t>0$ and exchange the addition
-and subtraction identities just obtained.
+Para $m\geq0$, a indução aplica a lei positiva de um passo a $a+m b$: o resto
+permanece inalterado a cada passo e o quociente ganha uma unidade. Assim, o
+resultado vale em $m=0$ e é preservado de $m$ para $m+1$. As identidades de
+subtração seguem pela mesma indução usando a lei negativa de um passo. Se
+$m<0$, escreva $m=-t$ com $t>0$ e troque as identidades de adição e subtração
+recém-obtidas.
 
 ```math
 \begin{aligned}
@@ -366,11 +388,13 @@ and subtraction identities just obtained.
 \end{aligned}
 ```
 
-This property is verified for the [positive case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod) and [negative case](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod).
+Esta propriedade é verificada para o [caso positivo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#APlusMultipleTimesBSameMod) e o [caso negativo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala#ALessMultipleTimesBSameMod).
 
-### 6.7 Unique Remainder
+<a id="67-unique-remainder"></a>
 
-There is only one single remainder value for every $a, b$ pair with $b > 0$.
+### 6.7 Resto Único
+
+Existe apenas um único valor de resto para cada par $a,b$ com $b > 0$.
 
 ```math
 \begin{aligned}
@@ -379,7 +403,8 @@ There is only one single remainder value for every $a, b$ pair with $b > 0$.
 \end{aligned}
 ```
 
-in other words, two $DivMod$ instances with the same dividend $a$ and divisor $b$ will have the same solution.
+em outras palavras, duas instâncias de $DivMod$ com o mesmo dividendo $a$ e o
+mesmo divisor $b$ terão a mesma solução.
 
 ```math
 \begin{aligned}
@@ -391,16 +416,19 @@ DivMod(a,b,q_x,r_x).solve & = DivMod(a,b,q_y,r_y).solve \\
 \end{aligned}
 ```
 
-For every $a,b$ pair, with any candidate quotients and remainders
-$(q_x,r_x)$ and $(q_y,r_y)$ representing the same dividend, normalization
-reaches the same solution.
-This property is verified in [
+Para todo par $a,b$, com quaisquer quocientes e restos candidatos $(q_x,r_x)$ e
+$(q_y,r_y)$ representando o mesmo dividendo, a normalização alcança a mesma
+solução.
+Esta propriedade é verificada em [
   ModIdempotence::modUnique
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modUnique).
 
-### 6.8 Modulo Idempotence
+<a id="68-modulo-idempotence"></a>
 
-Taking the modulo of a number twice gives the same result as taking it once.
+### 6.8 Idempotência do Módulo
+
+Tomar o módulo de um número duas vezes produz o mesmo resultado que tomá-lo uma
+única vez.
 
 ```math
 \begin{aligned}
@@ -409,13 +437,17 @@ a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b \\
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModIdempotence::modIdempotence
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modIdempotence).
 
-### 6.9 Distributivity over Addition
+<a id="69-distributivity-over-addition"></a>
 
-The modulo operation distributes over addition, meaning that the remainder of a sum equals the remainder of the sum of remainders. This allows us to break down complex modulo operations into simpler components.
+### 6.9 Distributividade sobre Adição
+
+A operação de módulo distribui sobre a adição, isto é, o resto de uma soma é
+igual ao resto da soma dos restos. Isso permite decompor operações de módulo
+complexas em componentes mais simples.
 
 ```math
 \begin{aligned}
@@ -426,12 +458,11 @@ The modulo operation distributes over addition, meaning that the remainder of a 
 \end{aligned}
 ```
 
-Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
-$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
-$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalizing the sum of the two remainders
-gives $r_a+r_c=bs+t$, where
-$s=\text{div}(r_a+r_c,b)$ and $t=\text{mod}(r_a+r_c,b)$.  Substitution gives
-the quotient and remainder of $a+c$:
+Sejam $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$ e $r_c=\text{mod}(c,b)$. Assim, $a=bq_a+r_a$ e
+$c=bq_c+r_c$. Normalizar a soma dos dois restos dá $r_a+r_c=bs+t$, em que
+$s=\text{div}(r_a+r_c,b)$ e $t=\text{mod}(r_a+r_c,b)$. A substituição fornece o
+quociente e o resto de $a+c$:
 
 ```math
 \begin{aligned}
@@ -442,14 +473,18 @@ t &= r_a+r_c-b\cdot\text{div}(r_a+r_c,b).
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModOperations::modAdd
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd). The third identity, isolating the multiple of $b$ subtracted
-out, is proved directly in [ModIdempotence.scala#modModPlus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modAdd). A terceira identidade, isolando o múltiplo de $b$ subtraído,
+é provada diretamente em [ModIdempotence.scala#modModPlus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModPlus).
 
-### 6.10 Distribution over Subtraction
+<a id="610-distribution-over-subtraction"></a>
 
-Similar to addition, the modulo operation distributes over subtraction. The remainder of a difference equals the remainder of the difference of remainders, with appropriate handling of negative values.
+### 6.10 Distribuição sobre Subtração
+
+De modo semelhante à adição, a operação de módulo distribui sobre a subtração. O
+resto de uma diferença é igual ao resto da diferença dos restos, com tratamento
+adequado para valores negativos.
 
 ```math
 \begin{aligned}
@@ -460,11 +495,11 @@ Similar to addition, the modulo operation distributes over subtraction. The rema
 \end{aligned}
 ```
 
-Let $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
-$q_c=\text{div}(c,b)$, and $r_c=\text{mod}(c,b)$.  Thus
-$a=bq_a+r_a$ and $c=bq_c+r_c$.  Normalize the difference $r_a-r_c=bs+t$.
-Then the canonical decomposition of $a-c$ is obtained without any assumption
-that $r_a-r_c$ is nonnegative:
+Sejam $q_a=\text{div}(a,b)$, $r_a=\text{mod}(a,b)$,
+$q_c=\text{div}(c,b)$ e $r_c=\text{mod}(c,b)$. Assim, $a=bq_a+r_a$ e
+$c=bq_c+r_c$. Normalize a diferença $r_a-r_c=bs+t$. Então a decomposição
+canônica de $a-c$ é obtida sem qualquer hipótese de que $r_a-r_c$ seja não
+negativo:
 
 ```math
 \begin{aligned}
@@ -475,14 +510,19 @@ t &= r_a-r_c-b\cdot\text{div}(r_a-r_c,b).
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModOperations::modLess
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess). The third identity, isolating the multiple of $b$ subtracted
-out, is proved directly in [ModIdempotence.scala#modModMinus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modLess). A terceira identidade, isolando o múltiplo de $b$ subtraído,
+é provada diretamente em [ModIdempotence.scala#modModMinus](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdempotence.scala#modModMinus).
 
-### 6.11 Modular Shift Invariance under Divisible Base
+<a id="611-modular-shift-invariance-under-divisible-base"></a>
 
-When a number is a multiple of the divisor (modulo equals zero), adding any value does not change the modulo of that value. This property simplifies calculations when one operand is already divisible by the base. It holds for any integer $c$, including negative values.
+### 6.11 Invariância de Deslocamento Modular sob Base Divisível
+
+Quando um número é múltiplo do divisor (o módulo é zero), adicionar qualquer
+valor não altera o módulo desse valor. Esta propriedade simplifica cálculos
+quando um operando já é divisível pela base. Ela vale para qualquer inteiro
+$c$, incluindo valores negativos.
 
 ```math
 \begin{aligned}
@@ -491,9 +531,9 @@ a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b \\
 \end{aligned}
 ```
 
-The addition law from [§6.9](#69-distributivity-over-addition) reduces the
-left-hand side to the modulo of the two remainders.  The hypothesis removes
-the first one, and modulo idempotence removes the remaining repetition:
+A lei de adição de [§6.9](#69-distributivity-over-addition) reduz o lado
+esquerdo ao módulo dos dois restos. A hipótese remove o primeiro, e a
+idempotência do módulo remove a repetição restante:
 
 ```math
 \begin{aligned}
@@ -503,12 +543,12 @@ the first one, and modulo idempotence removes the remaining repetition:
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModOperations::modZeroPlusC
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC).
 
-Substituting $-c$ for $c$ gives the subtraction corollary directly, since $c$
-is unrestricted:
+Substituir $-c$ por $c$ fornece diretamente o corolário de subtração, pois $c$
+é irrestrito:
 
 ```math
 \begin{aligned}
@@ -517,13 +557,16 @@ a \text{ mod } b = 0 & \implies ( a - c ) \text{ mod } b = ( -c ) \text{ mod } b
 \end{aligned}
 ```
 
-This corollary is verified by the same lemma, [
+Este corolário é verificado pelo mesmo lema, [
   ModOperations::modZeroPlusC
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC), called with $-c$ in place of $c$.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#modZeroPlusC), chamado com $-c$ no lugar de $c$.
 
-### 6.12 Symmetrical Modulo Pairs
+<a id="612-symmetrical-modulo-pairs"></a>
 
-The modulo of a value and the modulo of its complement relative to the base sum to the base.
+### 6.12 Pares Simétricos de Módulo
+
+O módulo de um valor e o módulo de seu complemento em relação à base somam a
+própria base.
 
 ```math
 \begin{aligned}
@@ -532,8 +575,8 @@ k \text{ mod } b + (b - k) \text{ mod } b & = b
 \end{aligned}
 ```
 
-Since both $k$ and $b-k$ already lie inside the canonical remainder interval,
-their remainders are themselves:
+Como tanto $k$ quanto $b-k$ já estão dentro do intervalo canônico do resto, seus
+restos são eles mesmos:
 
 ```math
 \begin{aligned}
@@ -544,14 +587,18 @@ their remainders are themselves:
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModSum::sumSymmetricalMods
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala). The source
-excerpt is included in [Appendix A.2](#a2-symmetrical-modulo-pairs-excerpt).
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala). O trecho de código-fonte
+está incluído no [Apêndice A.2](#a2-symmetrical-modulo-pairs-excerpt).
 
-### 6.13 Unit-Step Modulo-Division Increment Law
+<a id="613-unit-step-modulo-division-increment-law"></a>
 
-When incrementing a number by one, the modulo cycles from 0 to b-1 and resets, while the division increments only when the modulo reaches its maximum value. This captures the "carry" behavior of division when counting.
+### 6.13 Lei de Incremento Módulo-Divisão por Passo Unitário
+
+Ao incrementar um número em um, o módulo percorre o ciclo de 0 a b-1 e reinicia,
+enquanto a divisão só incrementa quando o módulo atinge seu valor máximo. Isso
+captura o comportamento de "vai um" da divisão durante a contagem.
 
 ```math
 \begin{aligned}
@@ -563,10 +610,10 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
-Let $q=\text{div}(a,b)$ and $r=\text{mod}(a,b)$, so $a=bq+r$ with
-$0\leq r<b$.  If $r=b-1$, adding one produces the canonical state
-$(q+1,0)$.  Otherwise $r<b-1$, so $(q,r+1)$ is already canonical.  This also
-covers $b=1$: only the first case can occur.
+Sejam $q=\text{div}(a,b)$ e $r=\text{mod}(a,b)$, de modo que $a=bq+r$ com
+$0\leq r<b$. Se $r=b-1$, adicionar um produz o estado canônico $(q+1,0)$. Caso
+contrário, $r<b-1$, então $(q,r+1)$ já é canônico. Isso também cobre $b=1$:
+apenas o primeiro caso pode ocorrer.
 
 ```math
 \begin{aligned}
@@ -576,20 +623,23 @@ r\lt b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1\lt b.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModOperations::addOne
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala#addOne).
 
-### 6.14 Consecutive Integers: Zero Density
+<a id="614-consecutive-integers-zero-density"></a>
 
-In any block of $p$ consecutive integers, exactly one is divisible by $p$.
-This is the basic counting form of modulo periodicity: as we advance through
-consecutive integers, the remainder modulo $p$ visits zero once per complete
-period.
+### 6.14 Inteiros Consecutivos: Densidade de Zeros
 
-**At most one zero per block.** If $\text{mod}(a,p)=0$ and $0 < d < p$, then
-$\text{mod}(a+d,p)\neq 0$. Within any block of size $p$ starting from a
-multiple, no later offset inside the same block can also be divisible by $p$.
+Em qualquer bloco de $p$ inteiros consecutivos, exatamente um é divisível por
+$p$. Esta é a forma básica de contagem da periodicidade modular: à medida que
+avançamos por inteiros consecutivos, o resto módulo $p$ visita zero uma vez por
+período completo.
+
+**No máximo um zero por bloco.** Se $\text{mod}(a,p)=0$ e $0 < d < p$, então
+$\text{mod}(a+d,p)\neq 0$. Dentro de qualquer bloco de tamanho $p$ que começa em
+um múltiplo, nenhum deslocamento posterior dentro do mesmo bloco também pode ser
+divisível por $p$.
 
 ```math
 \begin{aligned}
@@ -598,10 +648,10 @@ multiple, no later offset inside the same block can also be divisible by $p$.
 \end{aligned}
 ```
 
-**At least one zero per block.** For any starting value $n$ and modulus
-$p>1$, there exists a $k \in [0,p)$ such that
-$\text{mod}(n+k,p)=0$. The witness is $k=0$ when $n$ is already divisible by
-$p$, and $k=p-\text{mod}(n,p)$ otherwise.
+**Pelo menos um zero por bloco.** Para qualquer valor inicial $n$ e módulo
+$p>1$, existe um $k \in [0,p)$ tal que $\text{mod}(n+k,p)=0$. A testemunha é
+$k=0$ quando $n$ já é divisível por $p$, e $k=p-\text{mod}(n,p)$ caso
+contrário.
 
 ```math
 \begin{aligned}
@@ -610,10 +660,10 @@ $p$, and $k=p-\text{mod}(n,p)$ otherwise.
 \end{aligned}
 ```
 
-**Exactly one zero per block.** Existence gives a zero offset, while
-uniqueness says two zero offsets in the same block must be equal. Together,
-among $p$ consecutive integers starting from $n$, exactly one is divisible by
-$p$.
+**Exatamente um zero por bloco.** A existência fornece um deslocamento zero,
+enquanto a unicidade diz que dois deslocamentos zero no mesmo bloco devem ser
+iguais. Juntas, essas afirmações dizem que, entre $p$ inteiros consecutivos a
+partir de $n$, exatamente um é divisível por $p$.
 
 ```math
 \begin{aligned}
@@ -623,9 +673,9 @@ $p$.
 \end{aligned}
 ```
 
-More explicitly, let $k$ be the offset supplied by existence.  If $i$ and
-$j$ are two offsets in $[0,p)$ with zero remainder, the at-most-one result
-applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
+Mais explicitamente, seja $k$ o deslocamento fornecido pela existência. Se $i$ e
+$j$ são dois deslocamentos em $[0,p)$ com resto zero, o resultado de no máximo
+um aplicado a $i$ e $j$ produz $i=j$; logo o $k$ existente é único.
 
 ```math
 \begin{aligned}
@@ -637,7 +687,7 @@ applied to $i$ and $j$ yields $i=j$; hence the existing $k$ is unique.
 \end{aligned}
 ```
 
-These properties are verified in [
+Essas propriedades são verificadas em [
   ConsecutiveIntegers::nonzeroAfterZero
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), [
   ConsecutiveIntegers::existsZero
@@ -646,21 +696,21 @@ These properties are verified in [
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala), and [
   ConsecutiveIntegers::atMostOneZero
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
-The compact source shape is included in [Appendix A.3](#a3-consecutive-zero-density-excerpt).
-The maintained source is [
+O formato compacto do código-fonte está incluído no [Apêndice A.3](#a3-consecutive-zero-density-excerpt).
+O código-fonte mantido é [
   ConsecutiveIntegers.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
-The file also contains multi-factor density helpers, such as
-`twoFactorsDensity` and `densityForFactorList`; their statements are not
-established in this article, and the multiplicative density extension they
-aim at is discussed as an open direction in [Future Work](#8-future-work).
+O arquivo também contém auxiliares de densidade multifatorial, como
+`twoFactorsDensity` e `densityForFactorList`; seus enunciados não são
+estabelecidos neste artigo, e a extensão de densidade multiplicativa que eles
+visam é discutida como direção aberta em [Trabalho Futuro](#8-future-work).
 
-## 7. Conclusion
+## 7. Conclusão
 
-This article established a formally verified property theory for division and modulo
-generated by recursive quotient–remainder normalization. Within the stated domains,
-the following results show that the normalization is canonical and satisfies the
-expected algebraic and periodic laws:
+Este artigo estabeleceu uma teoria de propriedades formalmente verificada para
+divisão e módulo gerada por normalização recursiva de quociente-resto. Dentro
+dos domínios declarados, os resultados a seguir mostram que a normalização é
+canônica e satisfaz as leis algébricas e periódicas esperadas:
 
 ```math
 \begin{aligned}
@@ -763,42 +813,45 @@ a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b
 \end{aligned}
 ```
 
-Those formally verified properties are collected in [Summary.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/Summary.scala) and supported by the individual proof modules linked above. The recursive
-formulation makes the proof structure transparent: normalize $(q,r)$ without
-changing $a=bq+r$, extract quotient and remainder from the final state, then
-derive the algebraic laws from that normal form.
+Essas propriedades formalmente verificadas estão reunidas em [Summary.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/Summary.scala) e são sustentadas pelos módulos individuais de prova ligados acima. A formulação
+recursiva torna a estrutura da prova transparente: normalize $(q,r)$ sem alterar
+$a=bq+r$, extraia quociente e resto do estado final, e então derive as leis
+algébricas a partir dessa forma normal.
  
-Taken together, the canonical solution theorem, shift laws, arithmetic identities,
-unit-step transition, and one-zero-per-period result characterize both the normalized
-quotient–remainder state and its periodic behavior on consecutive integers.
+Em conjunto, o teorema da solução canônica, as leis de deslocamento, as
+identidades aritméticas, a transição por passo unitário e o resultado de um zero
+por período caracterizam tanto o estado quociente-resto normalizado quanto seu
+comportamento periódico sobre inteiros consecutivos.
 
-## 8. Future Work
+<a id="8-future-work"></a>
 
-The recursive normalization argument used throughout this article generalizes
-beyond the integers: the same shift-and-check invariant applies to any
-Euclidean domain equipped with a well-founded remainder measure, suggesting a
-more general recursive division theorem. The zero-density results of
-[Section 6.14](#614-consecutive-integers-zero-density) also invite a natural
-multiplicative extension: when a block of consecutive integers is filtered by
-several pairwise coprime moduli, the resulting density is expected to be the
-product of the individual single-modulus densities, in the spirit of the
-Chinese Remainder Theorem [[1]](#ref1). Formalizing that multiplicative
-extension, and connecting the recursive $DivMod$ state to congruence-class
-arithmetic more broadly, are natural next steps building on the identities
-established here.
+## 8. Trabalho Futuro
 
-## References
+O argumento de normalização recursiva usado ao longo deste artigo generaliza
+para além dos inteiros: o mesmo invariante de deslocar e verificar se aplica a
+qualquer domínio euclidiano equipado com uma medida bem fundada de resto,
+sugerindo um teorema de divisão recursiva mais geral. Os resultados de densidade
+de zeros da [Seção 6.14](#614-consecutive-integers-zero-density) também sugerem
+uma extensão multiplicativa natural: quando um bloco de inteiros consecutivos é
+filtrado por vários módulos coprimos dois a dois, espera-se que a densidade
+resultante seja o produto das densidades individuais de módulo único, no espírito
+do Teorema Chinês dos Restos [[1]](#ref1). Formalizar essa extensão
+multiplicativa e conectar o estado recursivo $DivMod$ à aritmética de classes de
+congruência de modo mais amplo são próximos passos naturais a partir das
+identidades estabelecidas aqui.
+
+## Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of
-Numbers* (5th ed.). Clarendon Press, Oxford. See Section 5.4 for the Chinese
-Remainder Theorem.
+Numbers* (5th ed.). Clarendon Press, Oxford. Ver a Seção 5.4 para o Teorema
+Chinês dos Restos.
 
-## 9. Appendix
+## 9. Apêndice
 
-### A.1 Identity Property Excerpt
+### A.1 Trecho da Propriedade de Identidade
 
-Source: [
+Fonte: [
   ModIdentity.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModIdentity.scala).
 
@@ -809,9 +862,11 @@ def modIdentity(a: BigInt): Boolean = {
 }.holds
 ```
 
-### A.2 Symmetrical Modulo Pairs Excerpt
+<a id="a2-symmetrical-modulo-pairs-excerpt"></a>
 
-Source: [
+### A.2 Trecho dos Pares Simétricos de Módulo
+
+Fonte: [
   ModSum.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSum.scala).
 
@@ -827,9 +882,11 @@ def sumSymmetricalMods(b: BigInt, step: BigInt): Boolean = {
 }.holds
 ```
 
-### A.3 Consecutive Zero Density Excerpt
+<a id="a3-consecutive-zero-density-excerpt"></a>
 
-Source: [
+### A.3 Trecho da Densidade de Zeros Consecutivos
+
+Fonte: [
   ConsecutiveIntegers.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ConsecutiveIntegers.scala).
 
@@ -885,6 +942,6 @@ def atMostOneZero(n: BigInt, p: BigInt, i: BigInt, j: BigInt): Boolean = {
 }.holds
 ```
 
-### A.4 Verification Log
+### A.4 Log de Verificação
 
-The project verification log is available at [logs/verify-ch-2-v1-chapter2-_.log](https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.1/logs/verify-ch-2-v1-chapter2-_.log).
+O log de verificação do projeto está disponível em [logs/verify-ch-2-v1-chapter2-_.log](https://github.com/thiagomata/prime-numbers/blob/modulo-article-v1.0.1/logs/verify-ch-2-v1-chapter2-_.log).
