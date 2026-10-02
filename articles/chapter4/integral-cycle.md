@@ -1,40 +1,39 @@
-# Formal Verification of Cycle Integral Properties from First Principles
+# Verificação Formal de Propriedades de Integrais de Ciclos a partir de Primeiros Princípios
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)  
-**Published:** [Zenodo:10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [Zenodo:10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
-In previous articles, we defined bounded Lists, Integrals of Lists, and unbounded Cycles of Integers
-from scratch, relying only on core type constructs and recursion, 
-with no prior knowledge of Scala's collections required.
-From that, we proved and formally verified some properties related to them.
-This article uses that as a foundation to define Integral of Cycles using two
-presentations: the canonical recursive `CycleIntegral` definition and a
-`ModCycleIntegral` closed-form definition.
-For both presentations, we formally verify the sum property (integral equals
-cumulative cycle sum) and the step property (difference between consecutive
-values equals the corresponding cycle element) using the Stainless verification
-system.
-We also prove that the recursive and modulo definitions are extensionally
-equivalent.
-All properties are expressed and proved within a minimal framework using only elementary arithmetic,
-recursion, and pure Scala code.
-This work bridges mathematical foundations and executable verification, 
-offering a self-contained, verifiable approach for reasoning about infinite periodic accumulations.
+Em artigos anteriores, definimos Listas limitadas, Integrais de Listas e Ciclos ilimitados de Inteiros
+desde o início, usando apenas construções centrais de tipos e recursão,
+sem exigir conhecimento prévio das coleções de Scala.
+A partir disso, provamos e verificamos formalmente algumas propriedades relacionadas a essas estruturas.
+Este artigo usa esse material como fundamento para definir Integrais de Ciclos por meio de duas
+apresentações: a definição recursiva canônica `CycleIntegral` e uma definição em forma fechada
+`ModCycleIntegral`.
+Para ambas as apresentações, verificamos formalmente a propriedade da soma (a integral é igual
+à soma cumulativa do ciclo) e a propriedade do passo (a diferença entre valores consecutivos
+é igual ao elemento correspondente do ciclo) usando o sistema de verificação Stainless.
+Também provamos que as definições recursiva e modular são extensionalmente equivalentes.
+Todas as propriedades são expressas e provadas dentro de um arcabouço mínimo, usando apenas
+aritmética elementar, recursão e código Scala puro.
+Este trabalho conecta fundamentos matemáticos e verificação executável,
+oferecendo uma abordagem autocontida e verificável para raciocinar sobre acumulações periódicas infinitas.
  </p>
 </div>
 
-## 1. Introduction
+<a id="1-introduction"></a>
+## 1. Introdução
 
-Cycles are a powerful concept in computer science and mathematics, representing unbounded lists that repeat a finite sequence of elements. When we integrate cycles, we obtain a list of cumulative sums with some unique properties that we will explore in this article.
+Ciclos são um conceito poderoso em ciência da computação e matemática, representando listas ilimitadas que repetem uma sequência finita de elementos. Quando integramos ciclos, obtemos uma lista de somas cumulativas com algumas propriedades únicas que exploraremos neste artigo.
 
 ```math
 \begin{aligned}
@@ -51,55 +50,55 @@ L &= [l_0, l_1, l_2, \ldots, l_{n-1}]  \mid &l_n &\in 𝕊, L \in 𝕃\\
 \end{aligned}
 ```
 
-In this article, we present a discrete definition of Cycle Integral
-over finite integer lists, defined recursively and verified some of its properties using the Stainless system.
-Our approach follows a zero-prior-knowledge philosophy, building on a previously
-verified foundation for recursive list and integral structures and summation.
-The result is a verified, from-scratch implementation of the cycle integral
-suitable as a foundation for higher-level numeric reasoning over unbounded lists.
+Neste artigo, apresentamos uma definição discreta de Integral de Ciclo
+sobre listas finitas de inteiros, definida recursivamente, e verificamos algumas de suas propriedades usando o sistema Stainless.
+Nossa abordagem segue uma filosofia de conhecimento prévio zero, construindo sobre uma base já
+verificada para estruturas recursivas de listas, integrais e somatórios.
+O resultado é uma implementação verificada, desde o início, da integral de ciclo,
+adequada como fundamento para raciocínio numérico de nível mais alto sobre listas ilimitadas.
 
-This article verifies:
+Este artigo verifica:
 
-- Two equivalent definitions: recursive and modulo-based — [§3.1](#31-recursive-cycle-integral)–[3.3](#33-equivalence-of-definitions)
-- Core properties: next position, same difference after cycle, sum of mod values, strictly increasing, positivity, unit-cycle generation — [§4.1](#41-next-position)–[4.6](#46-unit-cycle-generation-of-consecutive-integers)
-- Persistent and periodic properties: how a fixed cycle integral's residues behave forever, and how it advances across full periods — [§5.1](#51-cycle-period-shifts)–[5.6](#56-cycle-residue-classification)
-- Deriving new cycle integrals: expansion, index shifts, rotation, survivor filtering, and merge-based reconstruction — [§6.1](#61-x-fold-cycle-expansion)–[6.10](#610-filtered-result-has-no-multiples)
+- Duas definições equivalentes: recursiva e baseada em módulo — [§3.1](#31-recursive-cycle-integral)–[3.3](#33-equivalence-of-definitions)
+- Propriedades centrais: próxima posição, mesma diferença após um ciclo, soma de valores modulares, crescimento estrito, positividade, geração pelo ciclo unitário — [§4.1](#41-next-position)–[4.6](#46-unit-cycle-generation-of-consecutive-integers)
+- Propriedades persistentes e periódicas: como os resíduos de uma integral de ciclo fixa se comportam indefinidamente e como ela avança por períodos completos — [§5.1](#51-cycle-period-shifts)–[5.6](#56-cycle-residue-classification)
+- Derivação de novas integrais de ciclos: expansão, deslocamentos de índice, rotação, filtragem de sobreviventes e reconstrução baseada em mesclagem — [§6.1](#61-x-fold-cycle-expansion)–[6.10](#610-filtered-result-has-no-multiples)
 
-### Related work
+### Trabalhos relacionados
 
-Lean's Mathlib provides a general formal theory of periodic functions. It proves
-that a periodic function remains periodic under integer multiples of a period,
-and that a finite sum of periodic functions is periodic [[6]](#ref6). Mathlib
-also represents a finite cycle as a list modulo cyclic rotation [[7]](#ref7).
-These results give formal context for the finite period and shift structure
-used by the present construction.
+A Mathlib do Lean fornece uma teoria formal geral de funções periódicas. Ela prova
+que uma função periódica permanece periódica sob múltiplos inteiros de um período,
+e que uma soma finita de funções periódicas é periódica [[6]](#ref6). A Mathlib
+também representa um ciclo finito como uma lista módulo rotação cíclica [[7]](#ref7).
+Esses resultados dão contexto formal para a estrutura de período finito e deslocamento
+usada pela construção presente.
 
-This article studies a different object: the cumulative integral of a concrete
-periodic integer list. Its central verified results are the equivalence of a
-recursive integral and a quotient–remainder closed form, together with the
-resulting step, full-period, residue, and reconstruction properties. The
-existing periodicity and finite-cycle developments therefore enrich the
-setting without standing in for this two-presentation cycle-integral proof.
+Este artigo estuda um objeto diferente: a integral cumulativa de uma lista periódica concreta
+de inteiros. Seus resultados verificados centrais são a equivalência entre uma
+integral recursiva e uma forma fechada por quociente e resto, junto com as
+propriedades resultantes de passo, período completo, resíduo e reconstrução. Assim, os
+desenvolvimentos existentes sobre periodicidade e ciclos finitos enriquecem o
+contexto sem substituir esta prova de integral de ciclo em duas apresentações.
 
-## 2. Preliminaries
+## 2. Preliminares
 
-We reuse several basic list, cycle and integral operations and their verified properties from the companion articles
+Reutilizamos várias operações básicas de listas, ciclos e integrais, bem como suas propriedades verificadas, dos artigos complementares
 [Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1),
 [Formal Verification of Discrete Integration Properties from First Principles](https://doi.org/10.5281/zenodo.22746792) [[2]](#ref2),
-and [Formal Verification of Cyclic Lists](https://doi.org/10.5281/zenodo.22865441) [[3]](#ref3).
-We also reuse some modulo properties previously defined and verified in the article
+e [Formal Verification of Cyclic Lists](https://doi.org/10.5281/zenodo.22865441) [[3]](#ref3).
+Também reutilizamos algumas propriedades de módulo definidas e verificadas anteriormente no artigo
 [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[4]](#ref4).
 
-These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
-and are treated here as foundational primitives.
+Esses artigos também definiram e verificaram suas propriedades usando a mesma metodologia de conhecimento prévio zero,
+e são tratados aqui como primitivas fundamentais.
 
-## 3. Cycle Integral Definitions
+## 3. Definições de Integral de Ciclo
 
-The cycle integral extends the finite integral to unbounded repeating sequences. Two equivalent definitions are proven.
+A integral de ciclo estende a integral finita a sequências repetitivas ilimitadas. Duas definições equivalentes são provadas.
 
-- Recursive: recurrence on the cycle position — [§3.1](#31-recursive-cycle-integral)
-- Modulo: closed-form using `div` and `mod` — [§3.2](#32-modulo-cycle-integral)
-- The two definitions are extensionally equivalent — [§3.3](#33-equivalence-of-definitions)
+- Recursiva: recorrência sobre a posição no ciclo — [§3.1](#31-recursive-cycle-integral)
+- Modular: forma fechada usando `div` e `mod` — [§3.2](#32-modulo-cycle-integral)
+- As duas definições são extensionalmente equivalentes — [§3.3](#33-equivalence-of-definitions)
 
 ```math
 \forall \ i \in ℕ_0, \ init \in ℕ_0, L \in 𝕃, n = |L| \\
@@ -114,7 +113,8 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-### 3.1 Recursive Cycle Integral
+<a id="31-recursive-cycle-integral"></a>
+### 3.1 Integral de Ciclo Recursiva
 
 ```math
 \begin{aligned}
@@ -131,7 +131,7 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-**Recursive Cycle Equivalence**: Recursive Cycle is equivalent to Mod Cycle, as proven in the article [Formal Verification of Cyclic Lists](https://doi.org/10.5281/zenodo.22865441) [[3]](#ref3).
+**Equivalência do Ciclo Recursivo**: o Ciclo Recursivo é equivalente ao Ciclo Modular, como provado no artigo [Formal Verification of Cyclic Lists](https://doi.org/10.5281/zenodo.22865441) [[3]](#ref3).
 
 ```math
 \begin{aligned}
@@ -140,7 +140,7 @@ RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
 \end{aligned}
 ```
 
-**Sum Property**:
+**Propriedade da Soma**:
 
 ```math
 \begin{aligned}
@@ -163,11 +163,11 @@ w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.1; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.1; a prova completa está vinculada na referência ao código-fonte.
 
-**Step Property**:
+**Propriedade do Passo**:
 
 ```math
 \begin{aligned}
@@ -177,11 +177,12 @@ w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertDiffEqualsCycleValue
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.2; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.2; a prova completa está vinculada na referência ao código-fonte.
 
-### 3.2 Modulo Cycle Integral
+<a id="32-modulo-cycle-integral"></a>
+### 3.2 Integral de Ciclo Modular
 
 ```math
 \begin{aligned}
@@ -192,7 +193,7 @@ CycleIntegralProperties::assertDiffEqualsCycleValue
 \end{aligned}
 ```
 
-**Sum Property**:
+**Propriedade da Soma**:
 
 ```math
 i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Claim to Prove]}
@@ -216,18 +217,18 @@ w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
 \forall \ i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 ModCycleIntegralProperties::assertFirstValuesMatchIntegral
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.3; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.3; a prova completa está vinculada na referência ao código-fonte.
 
-**Step Property**:
+**Propriedade do Passo**:
 
 ```math
 w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 \quad \text{[Claim to Prove]}
 ```
 
-**Case $i \text{ mod } n > 0$:**
+**Caso $i \text{ mod } n > 0$:**
 
 ```math
 \begin{aligned}
@@ -244,7 +245,7 @@ w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 \end{aligned}
 ```
 
-**Case $i \text{ mod } n = 0$:**
+**Caso $i \text{ mod } n = 0$:**
 
 ```math
 \begin{aligned}
@@ -270,14 +271,15 @@ w_i-w_{i-1}
 w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.4; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.4; a prova completa está vinculada na referência ao código-fonte.
 
-### 3.3 Equivalence of Definitions
+<a id="33-equivalence-of-definitions"></a>
+### 3.3 Equivalência das Definições
 
-The nontrivial equivalence proved here is between the recursive `CycleIntegral`
-definition and the closed-form `ModCycleIntegral` definition.
+A equivalência não trivial provada aqui é entre a definição recursiva `CycleIntegral`
+e a definição em forma fechada `ModCycleIntegral`.
 
 ```math
 \begin{aligned}
@@ -287,64 +289,68 @@ definition and the closed-form `ModCycleIntegral` definition.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.5; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.5; a prova completa está vinculada na referência ao código-fonte.
 
-## 4. Core Verified Properties
+## 4. Propriedades Centrais Verificadas
 
-The fundamental properties of the cycle integral that hold for every position.
+As propriedades fundamentais da integral de ciclo que valem para toda posição.
 
-- Next position: $CI_{i+1} = CI_i + Cycle(L)_{i+1}$ — [§4.1](#41-next-position)
-- Full cycle shift: adding one cycle period advances by the total sum — [§4.2](#42-same-difference-after-full-cycle)
-- Sum of mod values: the modulo definition matches the list sum — [§4.3](#43-sum-of-mod-values-as-list)
-- Strictly increasing: positive base values force a strictly growing integral — [§4.4](#44-cycle-integral-strictly-increasing)
-- Positivity: a non-negative start and positive base values keep the integral positive everywhere — [§4.5](#45-cycle-integral-positivity)
-- Unit-cycle generation: the unit cycle `[1]` enumerates the consecutive integers, strictly increasing — [§4.6](#46-unit-cycle-generation-of-consecutive-integers)
+- Próxima posição: $CI_{i+1} = CI_i + Cycle(L)_{i+1}$ — [§4.1](#41-next-position)
+- Deslocamento por ciclo completo: adicionar um período de ciclo avança pela soma total — [§4.2](#42-same-difference-after-full-cycle)
+- Soma de valores modulares: a definição modular coincide com a soma da lista — [§4.3](#43-sum-of-mod-values-as-list)
+- Crescimento estrito: valores-base positivos forçam uma integral estritamente crescente — [§4.4](#44-cycle-integral-strictly-increasing)
+- Positividade: um início não negativo e valores-base positivos mantêm a integral positiva em toda posição — [§4.5](#45-cycle-integral-positivity)
+- Geração pelo ciclo unitário: o ciclo unitário `[1]` enumera os inteiros consecutivos, em ordem estritamente crescente — [§4.6](#46-unit-cycle-generation-of-consecutive-integers)
 
-### 4.1 Next Position
+<a id="41-next-position"></a>
+### 4.1 Próxima Posição
 
-For any positive position, the cycle integral at that position equals the previous value plus the current cycle element.
+Para qualquer posição positiva, a integral de ciclo nessa posição é igual ao valor anterior mais o elemento atual do ciclo.
 
 ```math
 \forall \ i > 0: \ CI(L, init)_i = CI(L, init)_{i-1} + Cycle(L)_i
 ```
 
-This follows directly from the recursive definition of `CycleIntegral`.
+Isso segue diretamente da definição recursiva de `CycleIntegral`.
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertNextPosition
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
-### 4.2 Same Difference After Full Cycle
+<a id="42-same-difference-after-full-cycle"></a>
+### 4.2 Mesma Diferença Após um Ciclo Completo
 
-The difference between consecutive values is invariant under adding a full cycle size to both positions.
+A diferença entre valores consecutivos é invariante ao adicionar o tamanho de um ciclo completo às duas posições.
 
 ```math
 \forall \ i \geq 0: \ CI(L, init)_{i+1} - CI(L, init)_i = CI(L, init)_{i+size+1} - CI(L, init)_{i+size}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertSameDiffAfterCycle
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.6; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.6; a prova completa está vinculada na referência ao código-fonte.
 
-### 4.3 Sum of Mod Values as List
+<a id="43-sum-of-mod-values-as-list"></a>
+### 4.3 Soma de Valores Modulares como Lista
 
-The cycle integral at any position equals the sum of a constructed list containing the initial value and all cycle values up to that position (using modular indexing for positions beyond one cycle).
+A integral de ciclo em qualquer posição é igual à soma de uma lista construída que contém o valor inicial e todos os valores do ciclo até essa posição (usando indexação modular para posições além de um ciclo).
 
 ```math
 \forall \ i \geq 0: \ CI(L, init)_i = \text{sum}([init] + [Cycle(L)_0, Cycle(L)_1, \dots, Cycle(L)_i])
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). A key Scala verification excerpt is in Appendix A.7; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.7; a prova completa está vinculada na referência ao código-fonte.
 
-### 4.4 Cycle Integral Strictly Increasing
+<a id="44-cycle-integral-strictly-increasing"></a>
+### 4.4 Integral de Ciclo Estritamente Crescente
 
-When the initial value is non-negative and every base-list value is
-positive, the cycle integral is strictly increasing: a later position
-always produces a larger value.
+Quando o valor inicial é não negativo e todo valor da lista-base é
+positivo, a integral de ciclo é estritamente crescente: uma posição posterior
+sempre produz um valor maior.
 
 ```math
 \begin{aligned}
@@ -353,8 +359,8 @@ init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \;\land\; b > a \implies
 \end{aligned}
 ```
 
-**Proof.** Induct on $b-a$. The base case is one positive step; the
-inductive step adds one more positive cycle value.
+**Prova.** Fazemos indução sobre $b-a$. O caso base é um passo positivo; o
+passo indutivo adiciona mais um valor positivo do ciclo.
 
 ```math
 \begin{aligned}
@@ -367,14 +373,15 @@ CI_{b-1}>CI_a,\quad CI_b-CI_{b-1}=\text{Cycle}(L)_b>0
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertCycleIntegralIncreasing
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
-### 4.5 Cycle Integral Positivity
+<a id="45-cycle-integral-positivity"></a>
+### 4.5 Positividade da Integral de Ciclo
 
-When the initial value is non-negative and every base-list value is
-positive, the cycle integral is positive at every position.
+Quando o valor inicial é não negativo e todo valor da lista-base é
+positivo, a integral de ciclo é positiva em toda posição.
 
 ```math
 \begin{aligned}
@@ -383,9 +390,9 @@ init \geq 0 \;\land\; (\forall x \in L,\ x > 0) \implies
 \end{aligned}
 ```
 
-**Proof.** At the first position, the non-negative initial value and a
-positive cycle value give a positive integral. Every later position adds one
-more positive cycle value.
+**Prova.** Na primeira posição, o valor inicial não negativo e um
+valor positivo do ciclo produzem uma integral positiva. Toda posição posterior adiciona
+mais um valor positivo do ciclo.
 
 ```math
 \begin{aligned}
@@ -397,18 +404,19 @@ CI_{i-1}>0,\quad CI_i-CI_{i-1}=\text{Cycle}(L)_i>0
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertCycleIntegralPositive
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala).
 
-### 4.6 Unit-Cycle Generation of Consecutive Integers
+<a id="46-unit-cycle-generation-of-consecutive-integers"></a>
+### 4.6 Geração de Inteiros Consecutivos pelo Ciclo Unitário
 
-The simplest non-empty cycle is the unit cycle `[1]`: every step adds exactly
-one. Its cycle integral enumerates the consecutive integers starting after
-the initial value — the candidate stream that the prime sieve filters in
-later articles. Because each step contributes exactly one, the integral has
-an exact closed form at every position, and strict increase follows from it
-as the unit-cycle instance of [§4.4](#44-cycle-integral-strictly-increasing).
+O ciclo não vazio mais simples é o ciclo unitário `[1]`: todo passo adiciona exatamente
+um. Sua integral de ciclo enumera os inteiros consecutivos começando após
+o valor inicial — o fluxo de candidatos que a peneira de primos filtra nos
+artigos posteriores. Como cada passo contribui exatamente um, a integral tem
+uma forma fechada exata em toda posição, e o crescimento estrito decorre disso
+como a instância de ciclo unitário de [§4.4](#44-cycle-integral-strictly-increasing).
 
 ```math
 \begin{aligned}
@@ -416,9 +424,9 @@ init \geq 0 \implies \text{CycleIntegral}([1], init)_i = init + i + 1
 \end{aligned}
 ```
 
-**Proof.** Induction on $i$.
+**Prova.** Indução sobre $i$.
 
-**Base Case** ($i = 0$):
+**Caso Base** ($i = 0$):
 
 ```math
 \begin{aligned}
@@ -428,7 +436,7 @@ CI_0 &= init + \text{Cycle}([1])_0 &&\text{[By Definition]} \\
 \end{aligned}
 ```
 
-**Induction Step** ($i > 0$):
+**Passo de Indução** ($i > 0$):
 
 ```math
 \begin{aligned}
@@ -444,11 +452,11 @@ CI_i &= CI_{i-1} + \text{Cycle}([1])_i &&\text{[Step Property, §3.1]} \\
 \therefore \ \forall\, i \in \mathbb{N}_0:\ \text{CycleIntegral}([1], init)_i = init + i + 1 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralOnesProperties::assertCycleIntegralOfOnes
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). A key Scala verification excerpt is in Appendix A.17; the complete proof is linked in the source reference.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.17; a prova completa está vinculada na referência ao código-fonte.
 
-**Strict increase.** For positions $0 \leq a < b$, the closed form gives
+**Crescimento estrito.** Para posições $0 \leq a < b$, a forma fechada dá
 
 ```math
 \begin{aligned}
@@ -462,35 +470,35 @@ CI_b - CI_a &= (init + b + 1) - (init + a + 1) &&\text{[Unit-Cycle Closed Form]}
 \therefore \ 0 \leq a < b \implies \text{CycleIntegral}([1], init)_b > \text{CycleIntegral}([1], init)_a \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralOnesProperties::assertCycleIntegralOfOnesStrictlyIncreasing
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). A key Scala verification excerpt is in Appendix A.17.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala). Um trecho central da verificação em Scala está no Apêndice A.17.
 
-## 5. Persistent and Periodic Properties
+## 5. Propriedades Persistentes e Periódicas
 
-These properties describe a single, fixed cycle integral: how its residues
-behave forever, and how it advances across full periods. All six
-properties are fully Stainless-verified, except Properties 5.3 and 5.4,
-which are direct corollaries of Property 5.2.
+Estas propriedades descrevem uma única integral de ciclo fixa: como seus resíduos
+se comportam indefinidamente e como ela avança por períodos completos. Todas as seis
+propriedades são totalmente verificadas pelo Stainless, exceto as Propriedades 5.3 e 5.4,
+que são corolários diretos da Propriedade 5.2.
 
-- Cycle-period shifts: a full period advances the integral by the cycle sum — [§5.1](#51-cycle-period-shifts)
-- General residue periodicity: any residue depends only on the position within one cycle period — [§5.2](#52-general-residue-periodicity)
-- Persistent non-zero residue: if no residue in one period is zero, none ever is — [§5.3](#53-persistent-non-zero-residue)
-- Persistent zero residue: if every residue in one period is zero, every residue always is — [§5.4](#54-persistent-zero-residue)
-- Gap telescoping: two consecutive gaps sum to the integral span across both — [§5.5](#55-gap-telescoping)
-- Residue classification: all-zero, some-zero, none-zero — [§5.6](#56-cycle-residue-classification)
+- Deslocamentos por período de ciclo: um período completo avança a integral pela soma do ciclo — [§5.1](#51-cycle-period-shifts)
+- Periodicidade geral de resíduos: qualquer resíduo depende apenas da posição dentro de um período do ciclo — [§5.2](#52-general-residue-periodicity)
+- Resíduo não zero persistente: se nenhum resíduo em um período é zero, nenhum jamais será — [§5.3](#53-persistent-non-zero-residue)
+- Resíduo zero persistente: se todo resíduo em um período é zero, todo resíduo sempre será — [§5.4](#54-persistent-zero-residue)
+- Telescopagem de lacunas: duas lacunas consecutivas somam o intervalo da integral que cobre ambas — [§5.5](#55-gap-telescoping)
+- Classificação de resíduos: todos zero, alguns zero, nenhum zero — [§5.6](#56-cycle-residue-classification)
 
-### 5.1 Cycle-Period Shifts
+<a id="51-cycle-period-shifts"></a>
+### 5.1 Deslocamentos por Período de Ciclo
 
-After a full cycle period, the integral advances by the cycle's total sum.
-This is the termination bound for scanning: a survivor is always found
-within one cycle period because the integral advances by a fixed, positive
-amount.
+Após um período completo do ciclo, a integral avança pela soma total do ciclo.
+Esse é o limite de terminação para varredura: um sobrevivente é sempre encontrado
+dentro de um período do ciclo porque a integral avança por uma quantidade fixa e positiva.
 
-Both quantities below belong to the finite backing cycle that $ci$
-accumulates over, not to $ci$'s own output stream — which is unbounded
-and, by [§4.4](#44-cycle-integral-strictly-increasing), strictly
-increasing and never repeats:
+As duas quantidades abaixo pertencem ao ciclo finito de base sobre o qual $ci$
+acumula, não ao fluxo de saída do próprio $ci$ — que é ilimitado
+e, por [§4.4](#44-cycle-integral-strictly-increasing), estritamente
+crescente e nunca se repete:
 
 ```math
 \begin{aligned}
@@ -510,12 +518,12 @@ n &:= \text{period}(ci)
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
-**Step 0 (base identity, $pos = 0$).** Unfolding the recursive definition
-of $ci$ across one full period, using the cycle's own periodicity
-($\text{cycle}(\text{period}(ci)) = \text{cycle}(0)$, by definition of a
-cycle — [§1](#1-introduction)) and reordering the resulting finite sum:
+**Passo 0 (identidade base, $pos = 0$).** Ao expandir a definição recursiva
+de $ci$ ao longo de um período completo, usando a periodicidade do próprio ciclo
+($\text{cycle}(\text{period}(ci)) = \text{cycle}(0)$, pela definição de um
+ciclo — [§1](#1-introduction)) e reordenando a soma finita resultante:
 
 ```math
 \begin{aligned}
@@ -535,11 +543,11 @@ ci(\text{period}(ci)) - ci(0)
 \therefore \ ci(\text{period}(ci)) = ci(0) + \text{periodSum}(ci) \quad \blacksquare
 ```
 
-**Full-cycle shift, by induction on $pos$.**
+**Deslocamento por ciclo completo, por indução em $pos$.**
 
-**Base Case** ($pos = 0$): shown in Step 0.
+**Caso Base** ($pos = 0$): mostrado no Passo 0.
 
-**Induction Step** ($pos > 0$):
+**Passo de Indução** ($pos > 0$):
 
 ```math
 \begin{aligned}
@@ -562,15 +570,15 @@ ci(\text{pos} + \text{period}(ci)) &= ci(\text{pos} - 1 + \text{period}(ci)) + \
 \therefore \ \forall \ \text{pos} \in \mathbb{N}_0,\ ci(\text{pos} + \text{period}(ci)) = ci(\text{pos}) + \text{periodSum}(ci) \quad \blacksquare
 ```
 
-**Multi-cycle shift, by induction on $m$.**
+**Deslocamento por múltiplos ciclos, por indução em $m$.**
 
-**Base Case** ($m = 0$):
+**Caso Base** ($m = 0$):
 
 ```math
 ci(\text{pos} + \text{period}(ci) \cdot 0) = ci(\text{pos}) = ci(\text{pos}) + 0 \cdot \text{periodSum}(ci)
 ```
 
-**Induction Step** ($m > 0$):
+**Passo de Indução** ($m > 0$):
 
 ```math
 \begin{aligned}
@@ -589,22 +597,23 @@ ci(\text{pos} + \text{period}(ci) \cdot m) &= \big(ci(\text{pos}) + (m - 1) \cdo
 \therefore \ \forall \ m \in \mathbb{N}_0,\ ci(\text{pos} + \text{period}(ci) \cdot m) = ci(\text{pos}) + m \cdot \text{periodSum}(ci) \quad \blacksquare
 ```
 
-The full-cycle shift identity is verified twice under different names —
+A identidade de deslocamento por ciclo completo é verificada duas vezes sob nomes diferentes —
 [GapProperties::assertPeriodicShift](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
-and `assertFullCycleShift` — both thin wrappers over the same
-`CycleIntegralFilterProperties::assertCIShiftEqualsSum` lemma; the article
-proves the one identity above rather than two. The multi-cycle
-generalization is verified separately as `assertMultiCycleShift`. The core
-Scala verification code is in Appendix A.12.
+e `assertFullCycleShift` — ambas invólucros finos sobre o mesmo
+lema `CycleIntegralFilterProperties::assertCIShiftEqualsSum`; o artigo
+prova a identidade acima uma vez, em vez de duas. A generalização para múltiplos ciclos
+é verificada separadamente como `assertMultiCycleShift`. O código central de
+verificação em Scala está no Apêndice A.12.
 
-### 5.2 General Residue Periodicity
+<a id="52-general-residue-periodicity"></a>
+### 5.2 Periodicidade Geral de Resíduos
 
-When the total sum of a cycle's values is a multiple of `m`, the residue
-`mod(ci(pos), m)` depends only on `pos % ci.period` — it repeats every cycle
-period. When `m` is a product of coprime values, the Chinese Remainder
-Theorem [[5]](#ref5) implies the periodicity holds simultaneously for each factor: the
-cycle period serves as a common period for all residues. This is the
-arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
+Quando a soma total dos valores de um ciclo é múltipla de `m`, o resíduo
+`mod(ci(pos), m)` depende apenas de `pos % ci.period` — ele se repete a cada
+período do ciclo. Quando `m` é produto de valores coprimos, o Teorema Chinês
+dos Restos [[5]](#ref5) implica que a periodicidade vale simultaneamente para cada fator: o
+período do ciclo serve como período comum para todos os resíduos. Essa é a
+espinha dorsal aritmética da peneira de Eratóstenes [[5]](#ref5).
 
 ```math
 \begin{aligned}
@@ -613,9 +622,9 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 \end{aligned}
 ```
 
-**Proof.** By strong induction on `pos`, subtracting one full cycle period at a time.
+**Prova.** Por indução forte em `pos`, subtraindo um período completo do ciclo por vez.
 
-**Base Case** $\text{pos} \lt \text{period}(ci)$:
+**Caso Base** $\text{pos} \lt \text{period}(ci)$:
 
 ```math
 \begin{aligned}
@@ -626,9 +635,9 @@ arithmetic backbone of Eratosthenes' sieve [[5]](#ref5).
 \end{aligned}
 ```
 
-**Induction Step** $\text{pos} \geq \text{period}(ci)$: let $\text{previous} := \text{pos} - \text{period}(ci)$. By
-the one-period shift identity proven in [§5.1](#51-cycle-period-shifts),
-$ci(\text{previous} + \text{period}(ci)) = ci(\text{previous}) + \text{periodSum}(ci)$, i.e. $ci(\text{pos}) = ci(\text{previous}) + \text{periodSum}(ci)$:
+**Passo de Indução** $\text{pos} \geq \text{period}(ci)$: seja $\text{previous} := \text{pos} - \text{period}(ci)$. Pela
+identidade de deslocamento por um período provada em [§5.1](#51-cycle-period-shifts),
+$ci(\text{previous} + \text{period}(ci)) = ci(\text{previous}) + \text{periodSum}(ci)$, isto é, $ci(\text{pos}) = ci(\text{previous}) + \text{periodSum}(ci)$:
 
 ```math
 \begin{aligned}
@@ -653,18 +662,19 @@ ci(\text{pos}) &= ci(\text{previous}) + \text{periodSum}(ci)
 \therefore \ \text{mod}(\text{periodSum}(ci), m) = 0 \implies \forall \ \text{pos} \in \mathbb{N}_0,\ \text{mod}(ci(\text{pos}), m) = \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m) \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 GapProperties::assertModIsPeriodic
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). O código completo de verificação em Scala está no Apêndice A.11.
 
-The companion div/mod decomposition `ci(pos) == ci(pos % size) + (pos / size) * ci.sum`
-is verified in `GapProperties::assertCIModDivFormula`.
+A decomposição complementar div/mod `ci(pos) == ci(pos % size) + (pos / size) * ci.sum`
+é verificada em `GapProperties::assertCIModDivFormula`.
 
-### 5.3 Persistent Non-Zero Residue
+<a id="53-persistent-non-zero-residue"></a>
+### 5.3 Resíduo Não Zero Persistente
 
-Let $v \in \mathbb{N}$, $v > 0$, with $\text{mod}(\text{periodSum}(ci), v) = 0$. If
-none of the $n$ residues in one full period is zero mod $v$, then the
-residue is never zero at any position, forever.
+Seja $v \in \mathbb{N}$, $v > 0$, com $\text{mod}(\text{periodSum}(ci), v) = 0$. Se
+nenhum dos $n$ resíduos em um período completo é zero módulo $v$, então o
+resíduo nunca é zero em nenhuma posição, indefinidamente.
 
 ```math
 \begin{aligned}
@@ -673,10 +683,10 @@ residue is never zero at any position, forever.
 \end{aligned}
 ```
 
-**Proof.** By [§5.2](#52-general-residue-periodicity), $\text{mod}(ci(i), v)
-= \text{mod}(ci(i \bmod n), v)$ for every position $i$. Since $i \bmod n$
-always falls in $[0, n)$, and none of those $n$ residues is zero by
-hypothesis, the residue at any position $i$ cannot be zero either.
+**Prova.** Por [§5.2](#52-general-residue-periodicity), $\text{mod}(ci(i), v)
+= \text{mod}(ci(i \bmod n), v)$ para toda posição $i$. Como $i \bmod n$
+sempre cai em $[0, n)$, e nenhum desses $n$ resíduos é zero por
+hipótese, o resíduo em qualquer posição $i$ também não pode ser zero.
 
 ```math
 \begin{aligned}
@@ -687,14 +697,15 @@ hypothesis, the residue at any position $i$ cannot be zero either.
 \end{aligned}
 ```
 
-This is a direct corollary of the periodicity lemma [
+Este é um corolário direto do lema de periodicidade [
 GapProperties::assertModIsPeriodic
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) used in [§5.2](#52-general-residue-periodicity); no separate lemma is needed once every in-period residue is checked. The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) usado em [§5.2](#52-general-residue-periodicity); nenhum lema separado é necessário depois que todo resíduo dentro do período é verificado. O código completo de verificação em Scala está no Apêndice A.11.
 
-### 5.4 Persistent Zero Residue
+<a id="54-persistent-zero-residue"></a>
+### 5.4 Resíduo Zero Persistente
 
-The mirror-image case: if every residue in one full period is zero mod $v$,
-then the residue stays zero at every position, forever.
+O caso espelhado: se todo resíduo em um período completo é zero módulo $v$,
+então o resíduo permanece zero em toda posição, indefinidamente.
 
 ```math
 \begin{aligned}
@@ -703,11 +714,11 @@ then the residue stays zero at every position, forever.
 \end{aligned}
 ```
 
-**Proof.** Identical to [§5.3](#53-persistent-non-zero-residue), with the
-inequality reversed: by [§5.2](#52-general-residue-periodicity),
-$\text{mod}(ci(i), v) = \text{mod}(ci(i \bmod n), v)$, and $i \bmod n$
-always falls among the $n$ in-period residues, all of which are zero by
-hypothesis.
+**Prova.** Idêntica a [§5.3](#53-persistent-non-zero-residue), com a
+desigualdade invertida: por [§5.2](#52-general-residue-periodicity),
+$\text{mod}(ci(i), v) = \text{mod}(ci(i \bmod n), v)$, e $i \bmod n$
+sempre cai entre os $n$ resíduos dentro do período, todos eles zero por
+hipótese.
 
 ```math
 \begin{aligned}
@@ -718,16 +729,17 @@ hypothesis.
 \end{aligned}
 ```
 
-This is the same corollary of [
+Este é o mesmo corolário de [
 GapProperties::assertModIsPeriodic
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) as [§5.3](#53-persistent-non-zero-residue), applied to the opposite hypothesis. The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) usado em [§5.3](#53-persistent-non-zero-residue), aplicado à hipótese oposta. O código completo de verificação em Scala está no Apêndice A.11.
 
-### 5.5 Gap Telescoping
+<a id="55-gap-telescoping"></a>
+### 5.5 Telescopagem de Lacunas
 
-Two consecutive gaps telescope to the integral difference across both steps.
-By applying the one-step difference lemma twice, the gap values at positions
-`k` and `k + 1` add up to the integral span from `k - 1` to `k + 1`. This is
-the step-lemma that underlies merging adjacent gap ranges.
+Duas lacunas consecutivas telescopam para a diferença da integral ao longo dos dois passos.
+Ao aplicar duas vezes o lema de diferença de um passo, os valores das lacunas nas posições
+`k` e `k + 1` somam o intervalo da integral de `k - 1` a `k + 1`. Este é
+o lema de passo que sustenta a mesclagem de intervalos de lacunas adjacentes.
 
 ```math
 \begin{aligned}
@@ -736,7 +748,7 @@ the step-lemma that underlies merging adjacent gap ranges.
 \end{aligned}
 ```
 
-**Proof.** The one-step property at positions $k-1$ and $k$ gives
+**Prova.** A propriedade de um passo nas posições $k-1$ e $k$ dá
 
 ```math
 \begin{aligned}
@@ -745,7 +757,7 @@ the step-lemma that underlies merging adjacent gap ranges.
 \end{aligned}
 ```
 
-Adding these equalities cancels $\text{ci}(k)$, so
+Somar essas igualdades cancela $\text{ci}(k)$, então
 
 ```math
 \begin{aligned}
@@ -755,14 +767,15 @@ Adding these equalities cancels $\text{ci}(k)$, so
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). O código completo de verificação em Scala está no Apêndice A.10.
 
-### 5.6 Cycle Residue Classification
+<a id="56-cycle-residue-classification"></a>
+### 5.6 Classificação de Resíduos do Ciclo
 
-For any cycle and modulus `d > 0`, the values of the cycle fall into exactly
-one of three residue categories modulo `d`:
+Para qualquer ciclo e módulo `d > 0`, os valores do ciclo caem exatamente
+em uma de três categorias de resíduos módulo `d`:
 
 ```math
 \begin{aligned}
@@ -776,38 +789,39 @@ one of three residue categories modulo `d`:
 \end{aligned}
 ```
 
-These three states are detected by `MemCycle.checkMod(d)` and stored in lists
+Esses três estados são detectados por `MemCycle.checkMod(d)` e armazenados em listas
 (`modIsZeroForAllValues`, `modIsZeroForNoneValues`, `modIsZeroForSomeValues`).
-The evaluation is idempotent — the cycle's values list never changes, only the
-classification metadata is updated. Ten lemmas in `CycleCheckMod.scala` prove
-the classification is correct, mutually exclusive, and exhaustive.
+A avaliação é idempotente — a lista de valores do ciclo nunca muda, apenas os
+metadados de classificação são atualizados. Dez lemas em `CycleCheckMod.scala` provam
+que a classificação é correta, mutuamente exclusiva e exaustiva.
 
-These properties are verified in the [
+Essas propriedades são verificadas no módulo [
 CycleCheckMod
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala) module.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
 
-## 6. Deriving New Cycle Integrals
+## 6. Derivando Novas Integrais de Ciclos
 
-These properties describe how to build a new cycle integral from an
-existing one: replicating its backing list, shifting its index, rotating
-its gaps, filtering out multiples of a value, and reconstructing the
-filtered result directly. Properties 6.1, 6.4–6.10 are fully
-Stainless-verified; Properties 6.2 and 6.3 have mathematical proofs but are
-not yet Stainless-verified.
+Estas propriedades descrevem como construir uma nova integral de ciclo a partir de uma
+integral existente: replicando sua lista de base, deslocando seu índice, rotacionando
+suas lacunas, filtrando múltiplos de um valor e reconstruindo diretamente o
+resultado filtrado. As Propriedades 6.1 e 6.4–6.10 são totalmente
+verificadas pelo Stainless; as Propriedades 6.2 e 6.3 têm provas matemáticas, mas
+ainda não foram verificadas pelo Stainless.
 
-- x-fold cycle expansion: the physical period changes while the represented stream is preserved — [§6.1](#61-x-fold-cycle-expansion)
-- Index shifts: right and left — [§6.2](#62-right-index-shift)–[6.3](#63-left-index-shift)
-- Gap rotation with head adjustment: rotating the gap cycle shifts the represented integral by one position — [§6.4](#64-gap-rotation-with-head-adjustment)
-- Survivor filtering: exactness and structure of the scan that retains non-multiples — [§6.5](#65-survivor-exactness)–[6.6](#66-survivor-structure)
-- Filter-merge reconstruction: the resulting gap cycle after removing a multiple — [§6.7](#67-merge-shift-law)–[6.10](#610-filtered-result-has-no-multiples)
+- Expansão de ciclo por fator x: o período físico muda enquanto o fluxo representado é preservado — [§6.1](#61-x-fold-cycle-expansion)
+- Deslocamentos de índice: à direita e à esquerda — [§6.2](#62-right-index-shift)–[6.3](#63-left-index-shift)
+- Rotação de lacunas com ajuste da cabeça: rotacionar o ciclo de lacunas desloca a integral representada em uma posição — [§6.4](#64-gap-rotation-with-head-adjustment)
+- Filtragem de sobreviventes: exatidão e estrutura da varredura que retém não múltiplos — [§6.5](#65-survivor-exactness)–[6.6](#66-survivor-structure)
+- Reconstrução por filtro e mesclagem: o ciclo de lacunas resultante após remover um múltiplo — [§6.7](#67-merge-shift-law)–[6.10](#610-filtered-result-has-no-multiples)
 
-### 6.1 x-fold Cycle Expansion
+<a id="61-x-fold-cycle-expansion"></a>
+### 6.1 Expansão de Ciclo por Fator x
 
-Let $L^{(x)}$ be the $x$-fold concatenation of a list $L \in 𝕃$. This
-operation changes the physical backing cycle, but it does not change the
-unbounded stream represented by the cycle.
+Seja $L^{(x)}$ a concatenação $x$ vezes de uma lista $L \in 𝕃$. Essa
+operação altera o ciclo físico de base, mas não altera o
+fluxo ilimitado representado pelo ciclo.
 
-The values that change are the finite storage properties:
+Os valores que mudam são as propriedades finitas de armazenamento:
 
 ```math
 \begin{aligned}
@@ -818,11 +832,11 @@ The values that change are the finite storage properties:
 \end{aligned}
 ```
 
-The period equation is verified in [
+A equação do período é verificada em [
 RepeatedGapIntegralProperties::assertRepeatedPeriodIsMultiplied
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
 
-The values that do not change are the semantic stream properties:
+Os valores que não mudam são as propriedades semânticas do fluxo:
 
 ```math
 \begin{aligned}
@@ -834,12 +848,12 @@ L^{(x)}_i &= L_{(i \text{ mod } |L|)}
 \end{aligned}
 ```
 
-The cycle lookup equation is verified in [
+A equação de consulta do ciclo é verificada em [
 RepeatedGapIntegralProperties::assertReplicatedCycleValueEqual
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/RepeatedGapIntegralProperties.scala).
 
-So the expansion is not an invariance of the finite cycle object itself. It is
-an invariance of the infinite stream that the cycle object represents.
+Assim, a expansão não é uma invariância do próprio objeto de ciclo finito. Ela é
+uma invariância do fluxo infinito que o objeto de ciclo representa.
 
 ```math
 \begin{aligned}
@@ -855,7 +869,7 @@ T &:= \sum_{j=0}^{n-1} v_j
 \end{aligned}
 ```
 
-The list-level repetition is defined by applying the original list at the original index modulo $n$:
+A repetição em nível de lista é definida aplicando a lista original no índice original módulo $n$:
 
 ```math
 \begin{aligned}
@@ -866,7 +880,7 @@ L^{(x)}_i &= L_{(i \text{ mod } n)}
 \end{aligned}
 ```
 
-These list-level properties are verified by `RepeatedList` and `ListRepeatProperties`: the repeated list size is $x \cdot n$, the repeated value at index $i$ is the original value at $i \text{ mod } n$, and the repeated sum is $x$ times the original sum. See [
+Essas propriedades em nível de lista são verificadas por `RepeatedList` e `ListRepeatProperties`: o tamanho da lista repetida é $x \cdot n$, o valor repetido no índice $i$ é o valor original em $i \text{ mod } n$, e a soma repetida é $x$ vezes a soma original. Veja [
 RepeatedList
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/RepeatedList.scala), [
 RepeatedListProperties::assertSumMultiplier
@@ -892,13 +906,14 @@ ListRepeatProperties::assertRepeatedIndex
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L^{(x)}, init)_i = \text{CycleIntegral}(L, init)_i \quad \blacksquare
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleIntegralProperties::assertRepeatedValuesIntegralMatches
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). The full Scala verification code is in Appendix A.8.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala). O código completo de verificação em Scala está no Apêndice A.8.
 
-### 6.2 Right Index Shift
+<a id="62-right-index-shift"></a>
+### 6.2 Deslocamento de Índice à Direita
 
-Let $L' \in 𝕃$ be the right shift of $L \in 𝕃$ by one position, and $init' := init + L_0$ be the shifted initial value. Then the CycleIntegral of $L'$ with $init'$ reproduces the CycleIntegral of $L$ with $init$, shifted by one position.
+Seja $L' \in 𝕃$ o deslocamento à direita de $L \in 𝕃$ por uma posição, e seja $init' := init + L_0$ o valor inicial deslocado. Então a CycleIntegral de $L'$ com $init'$ reproduz a CycleIntegral de $L$ com $init$, deslocada em uma posição.
 
 ```math
 \begin{aligned}
@@ -915,7 +930,7 @@ init' &:= init + L_0 \\
 \end{aligned}
 ```
 
-**Base Case**:
+**Caso Base**:
 
 ```math
 \begin{aligned}
@@ -927,7 +942,7 @@ B_0 &= init' + L'_0 = (init + L_0) + L'_0 = init + L_0 + L_1 = A_1 \\
 \end{aligned}
 ```
 
-**Induction Step**:
+**Passo de Indução**:
 
 ```math
 \begin{aligned}
@@ -943,23 +958,24 @@ B_i &= B_{i-1} + L'_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L, init)_{i+1} = \text{CycleIntegral}(L', init')_{i} \quad \blacksquare
 ```
 
-The one-period `CycleIntegral` wrapper is verified directly. If the shifted
-cycle uses the one-step rotation of the original backing values and the shifted
-initial value is advanced by the original first gap, then the shifted integral
-at position `i` equals the original integral at position `i + 1` for every
-stored-period index with `i + 1 < period`.
+O invólucro `CycleIntegral` de um período é verificado diretamente. Se o ciclo
+deslocado usa a rotação de um passo dos valores originais de base e o valor
+inicial deslocado é avançado pela primeira lacuna original, então a integral deslocada
+na posição `i` é igual à integral original na posição `i + 1` para todo
+índice do período armazenado com `i + 1 < period`.
 
-This property is verified in [
+Esta propriedade é verificada em [
 GapProperties::assertRotateOneCycleIntegralShiftsByOne
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). O código completo de verificação em Scala está no Apêndice A.9.
 
-The article's mathematical statement above is the all-position version. The
-verified lemma proves the stored-period core; packaging the universal
-all-position wrapper only needs the already verified full-cycle shift law.
+O enunciado matemático acima é a versão para todas as posições. O
+lema verificado prova o núcleo no período armazenado; encapsular a versão universal
+para todas as posições só precisa da lei já verificada de deslocamento por ciclo completo.
 
-### 6.3 Left Index Shift
+<a id="63-left-index-shift"></a>
+### 6.3 Deslocamento de Índice à Esquerda
 
-Let $L'' \in 𝕃$ be the left shift of $L \in 𝕃$ by one position ($|L| > 1$), and $init'' := init + L_0 - L_{n-1}$ be the shifted initial value. Then the CycleIntegral of $L''$ with $init''$ reproduces the CycleIntegral of $L$ with $init$, shifted by one position in the opposite direction.
+Seja $L'' \in 𝕃$ o deslocamento à esquerda de $L \in 𝕃$ por uma posição ($|L| > 1$), e seja $init'' := init + L_0 - L_{n-1}$ o valor inicial deslocado. Então a CycleIntegral de $L''$ com $init''$ reproduz a CycleIntegral de $L$ com $init$, deslocada em uma posição na direção oposta.
 
 ```math
 \begin{aligned}
@@ -976,7 +992,7 @@ init'' &:= init + L_0 - L_{n-1} \\
 \end{aligned}
 ```
 
-**Base Case**:
+**Caso Base**:
 
 ```math
 \begin{aligned}
@@ -986,7 +1002,7 @@ C_1 &= init'' + L''_0 = (init + L_0 - L_{n-1}) + L''_0 \\
 \end{aligned}
 ```
 
-**Induction Step**:
+**Passo de Indução**:
 
 ```math
 \begin{aligned}
@@ -1002,10 +1018,11 @@ C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
 \therefore \ \forall \ i \in \mathbb{N}_0: \ \text{CycleIntegral}(L, init)_{i+1} = \text{CycleIntegral}(L'', init'')_{i} \quad \blacksquare
 ```
 
-### 6.4 Gap Rotation with Head Adjustment
+<a id="64-gap-rotation-with-head-adjustment"></a>
+### 6.4 Rotação de Lacunas com Ajuste da Cabeça
 
-Rotating a gap cycle by one position and adjusting the head shifts the
-entire integral by one position.
+Rotacionar um ciclo de lacunas por uma posição e ajustar a cabeça desloca a
+integral inteira em uma posição.
 
 ```math
 \begin{aligned}
@@ -1015,11 +1032,11 @@ entire integral by one position.
 \end{aligned}
 ```
 
-**Proof.** At $i=0$, the adjusted head is
-$\text{head}+\text{gaps}_0$, which is the original integral at position
-$1$. For $i>0$, assume the shifted integral at $i-1$ equals the original
-integral at $i$. The rotated gap at $i$ is the original gap at $i+1$;
-applying the one-step property to both integrals gives
+**Prova.** Em $i=0$, a cabeça ajustada é
+$\text{head}+\text{gaps}_0$, que é a integral original na posição
+$1$. Para $i>0$, suponha que a integral deslocada em $i-1$ seja igual à integral original
+em $i$. A lacuna rotacionada em $i$ é a lacuna original em $i+1$;
+aplicar a propriedade de um passo às duas integrais dá
 
 ```math
 \begin{aligned}
@@ -1031,40 +1048,41 @@ I'_i &= I'_{i-1} + \text{gaps}'_{i-1} \\
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
 GapProperties::assertRotateOneShiftsIntegralByOne
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). It delegates to the verified `ShiftedList.assertShiftedApplyIsOriginalPlusOne`; the full source is linked there rather than repeated inline.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala). Ela delega ao `ShiftedList.assertShiftedApplyIsOriginalPlusOne` verificado; o código-fonte completo está vinculado ali em vez de ser repetido em linha.
 
-For a filter value $f$ and a range $[start, start + count)$, the survivor
-sequence is the sub-sequence of $ci$'s values at those positions whose
-remainder modulo $f$ is nonzero — the cycle-integral analogue of one
-Eratosthenes sieve step [[5]](#ref5), where positions divisible by $f$ are
-removed and only the non-multiples remain:
+Para um valor de filtro $f$ e um intervalo $[start, start + count)$, a sequência de
+sobreviventes é a subsequência dos valores de $ci$ nessas posições cujo
+resto módulo $f$ é não zero — o análogo, para integrais de ciclos, de um
+passo da peneira de Eratóstenes [[5]](#ref5), onde posições divisíveis por $f$ são
+removidas e apenas os não múltiplos permanecem:
 
 ```math
 S := \text{survivorValues}(ci, f, start, count) :=
 \big[\, ci(pos) \mid start \le pos < start + count,\ \text{mod}(ci(pos), f) \neq 0 \,\big]
 ```
 
-Ten verified lemmas in `GapProperties.scala` characterize this sequence.
+Dez lemas verificados em `GapProperties.scala` caracterizam essa sequência.
 
-### 6.5 Survivor Exactness
+<a id="65-survivor-exactness"></a>
+### 6.5 Exatidão dos Sobreviventes
 
-$S$ is exact by construction: it is defined as exactly the non-multiples of
-$f$ in range, nothing more and nothing less. The recursive Scala
-implementation of `survivorValues` is verified to compute exactly this
-specification.
+$S$ é exata por construção: ela é definida exatamente como os não múltiplos de
+$f$ no intervalo, nada mais e nada menos. A implementação recursiva em Scala
+de `survivorValues` é verificada para calcular exatamente essa especificação.
 
-This is verified in [
+Isso é verificado em [
 GapProperties::assertSurvivorValuesContainsOnlyNonMultiples
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala) and [`assertSurvivorValuesContainsNonMultipleAtPosition`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
 
-### 6.6 Survivor Structure
+<a id="66-survivor-structure"></a>
+### 6.6 Estrutura dos Sobreviventes
 
-When every value in $[start, pos)$ is a multiple of $f$ and $ci(pos)$
-itself is not, $ci(pos)$ is the first survivor, and $S$ decomposes as that
-value followed by the survivors of the rest of the range, $(pos, end)$
-where $end := start + count$:
+Quando todo valor em $[start, pos)$ é múltiplo de $f$ e o próprio $ci(pos)$
+não é, $ci(pos)$ é o primeiro sobrevivente, e $S$ se decompõe como esse
+valor seguido pelos sobreviventes do restante do intervalo, $(pos, end)$,
+onde $end := start + count$:
 
 ```math
 \begin{aligned}
@@ -1077,11 +1095,10 @@ S &= ci(pos) :: \big[\, ci(q) \mid pos < q < end,\ \text{mod}(ci(q), f) \neq 0 \
 \end{aligned}
 ```
 
-At the endpoints of a range that itself survives, the first and last
-elements of $S$ are exactly the endpoint values, and over one complete
-period the difference between them equals the cycle's total gap sum —
-filtering does not change how far the integral advances across a full
-period:
+Nas extremidades de um intervalo que também sobrevive, o primeiro e o último
+elementos de $S$ são exatamente os valores das extremidades, e ao longo de um período
+completo a diferença entre eles é igual à soma total das lacunas do ciclo —
+a filtragem não altera quanto a integral avança ao atravessar um período completo:
 
 ```math
 \begin{aligned}
@@ -1094,8 +1111,8 @@ period:
 \end{aligned}
 ```
 
-The gap between two consecutive survivors, once every intervening multiple
-has been filtered out, is strictly positive:
+A lacuna entre dois sobreviventes consecutivos, depois que todo múltiplo intermediário
+foi filtrado, é estritamente positiva:
 
 ```math
 \text{mod}(ci(from), f) \neq 0 \;\land\; \text{mod}(ci(to), f) \neq 0
@@ -1103,22 +1120,23 @@ has been filtered out, is strictly positive:
 \implies ci(to) - ci(from) > 0
 ```
 
-All survivor-structure properties are verified in [
+Todas as propriedades de estrutura dos sobreviventes são verificadas em [
 GapProperties::assertFirstSurvivorAtPosition
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertSurvivorValuesSplitAtFirstPosition`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFirstSurvivorIsHead`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertLastSurvivorIsLastScanned`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), [`assertFilteredSumEqualsOriginalSum`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala), and [`assertMergedGapPositive`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala).
 
-Filtering removes a value; the surviving values must still form a valid
-cycle-integral gap list. This section proves that removing one multiple by
-merging its two neighboring gaps produces exactly the cycle integral that
-a fresh construction from the survivor list would produce, and that the
-result contains no multiples of the filter value anywhere.
+A filtragem remove um valor; os valores sobreviventes ainda devem formar uma lista válida
+de lacunas de integral de ciclo. Esta seção prova que remover um múltiplo por meio da
+mesclagem de suas duas lacunas vizinhas produz exatamente a integral de ciclo que
+uma construção nova a partir da lista de sobreviventes produziria, e que o
+resultado não contém múltiplos do valor de filtro em nenhuma posição.
 
-### 6.7 Merge Shift Law
+<a id="67-merge-shift-law"></a>
+### 6.7 Lei de Deslocamento por Mesclagem
 
-Let $ci$ be a cycle integral with period $n$, and let $m$ be a merge index
-with $0 \le m$ and $m + 1 < n$. Let $ci'$ be a cycle integral with period
-$n - 1$, the same initial value, and a gap cycle equal to $ci$'s except
-that the gaps at $m$ and $m + 1$ are combined into one:
+Seja $ci$ uma integral de ciclo com período $n$, e seja $m$ um índice de mesclagem
+com $0 \le m$ e $m + 1 < n$. Seja $ci'$ uma integral de ciclo com período
+$n - 1$, o mesmo valor inicial e um ciclo de lacunas igual ao de $ci$, exceto
+que as lacunas em $m$ e $m + 1$ são combinadas em uma:
 
 ```math
 \begin{aligned}
@@ -1130,8 +1148,8 @@ that the gaps at $m$ and $m + 1$ are combined into one:
 \end{aligned}
 ```
 
-Then $ci'$ agrees with $ci$ before the merge point, and agrees with $ci$
-one position ahead at and after it:
+Então $ci'$ coincide com $ci$ antes do ponto de mesclagem, e coincide com $ci$
+uma posição à frente no ponto de mesclagem e depois dele:
 
 ```math
 \begin{aligned}
@@ -1146,13 +1164,13 @@ ci'(n - 1) &= ci(n)
 \end{aligned}
 ```
 
-**Proof.** By induction on the position, using the step property
-([§3.1](#31-recursive-cycle-integral)) in each of three cases split at the
-merge point.
+**Prova.** Por indução na posição, usando a propriedade do passo
+([§3.1](#31-recursive-cycle-integral)) em cada um dos três casos divididos no
+ponto de mesclagem.
 
-**Case 1: Before the merge** ($pos < m$), by induction on $pos$.
+**Caso 1: Antes da mesclagem** ($pos < m$), por indução em $pos$.
 
-**Base Case** ($pos = 0$):
+**Caso Base** ($pos = 0$):
 
 ```math
 \begin{aligned}
@@ -1165,7 +1183,7 @@ ci'(0) &= init + \text{cycle}'(0)
 \end{aligned}
 ```
 
-**Induction Step** ($0 < pos < m$):
+**Passo de Indução** ($0 < pos < m$):
 
 ```math
 \begin{aligned}
@@ -1184,7 +1202,7 @@ ci'(pos) &= ci'(pos - 1) + \text{cycle}'(pos)
 \therefore \ pos < m \implies ci'(pos) = ci(pos) \quad \blacksquare
 ```
 
-**Case 2: At the merge** ($pos = m$). For $m > 0$, using Case 1 at $m - 1$:
+**Caso 2: No ponto de mesclagem** ($pos = m$). Para $m > 0$, usando o Caso 1 em $m - 1$:
 
 ```math
 \begin{aligned}
@@ -1201,16 +1219,16 @@ ci'(m) &= ci'(m - 1) + \text{cycle}'(m)
 \end{aligned}
 ```
 
-For $m = 0$, the same identity holds directly, with no Case 1 dependency:
+Para $m = 0$, a mesma identidade vale diretamente, sem depender do Caso 1:
 $ci'(0) = init + \text{cycle}'(0) = init + \text{cycle}(0) + \text{cycle}(1) = ci(1)$.
 
 ```math
 \therefore \ ci'(m) = ci(m + 1) \quad \blacksquare
 ```
 
-**Case 3: After the merge** ($pos > m$), by induction on $pos$.
+**Caso 3: Depois da mesclagem** ($pos > m$), por indução em $pos$.
 
-**Base Case** ($pos = m + 1$), using Case 2:
+**Caso Base** ($pos = m + 1$), usando o Caso 2:
 
 ```math
 \begin{aligned}
@@ -1223,7 +1241,7 @@ ci'(m + 1) &= ci'(m) + \text{cycle}'(m + 1)
 \end{aligned}
 ```
 
-**Induction Step** ($pos > m + 1$):
+**Passo de Indução** ($pos > m + 1$):
 
 ```math
 \begin{aligned}
@@ -1242,19 +1260,20 @@ ci'(pos) &= ci'(pos - 1) + \text{cycle}'(pos)
 \therefore \ pos > m \implies ci'(pos) = ci(pos + 1) \quad \blacksquare
 ```
 
-The period boundary case is the last instance of Case 3, at $pos = n - 1$:
+O caso da fronteira do período é a última instância do Caso 3, em $pos = n - 1$:
 $ci'(n - 1) = ci(n)$.
 
-This property is verified in [
+Esta propriedade é verificada em [
 CycleIntegralFilterProperties::assertSameBeforeMerge
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertShiftAtMerge`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertShiftAfterMerge`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), and [`assertNewCIAtSizeEqualsOld`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). The full Scala verification code is in Appendix A.13.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertShiftAtMerge`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertShiftAfterMerge`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), e [`assertNewCIAtSizeEqualsOld`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). O código completo de verificação em Scala está no Apêndice A.13.
 
-### 6.8 Removing a Multiple
+<a id="68-removing-a-multiple"></a>
+### 6.8 Removendo um Múltiplo
 
-When the value at the merge point is a multiple of a filter value $f$,
-merging its two neighboring gaps removes it from the sequence entirely:
-the new integral's value at that position is the old integral's next
-value, which by construction is not itself a multiple.
+Quando o valor no ponto de mesclagem é múltiplo de um valor de filtro $f$,
+mesclar suas duas lacunas vizinhas o remove completamente da sequência:
+o valor da nova integral nessa posição é o próximo valor da integral antiga,
+que por construção não é ele próprio um múltiplo.
 
 ```math
 \begin{aligned}
@@ -1267,22 +1286,23 @@ value, which by construction is not itself a multiple.
 \end{aligned}
 ```
 
-**Proof.** The first identity is the merge shift law's "at merge" case
-([§6.7](#67-merge-shift-law)) applied directly: $ci'(m) = ci(m + 1)$
-regardless of whether $ci(m)$ was a multiple. The second follows because
-equal values satisfy the same modulo condition.
+**Prova.** A primeira identidade é o caso "no ponto de mesclagem" da lei de deslocamento por mesclagem
+([§6.7](#67-merge-shift-law)) aplicado diretamente: $ci'(m) = ci(m + 1)$
+independentemente de $ci(m)$ ser múltiplo. A segunda segue porque
+valores iguais satisfazem a mesma condição modular.
 
-This property is verified in [
+Esta propriedade é verificada em [
 CycleIntegralFilterProperties::assertRemoveOneMultiple
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala) and [`assertRemoveMultipleModNotZero`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). The full Scala verification code is in Appendix A.14.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala) e [`assertRemoveMultipleModNotZero`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). O código completo de verificação em Scala está no Apêndice A.14.
 
-### 6.9 Direct Construction from Survivors
+<a id="69-direct-construction-from-survivors"></a>
+### 6.9 Construção Direta a partir dos Sobreviventes
 
-Rather than merging gaps one multiple at a time, a filtered cycle integral
-can be built directly from the survivor list ([§6.5](#65-survivor-exactness)):
-its initial value is the first survivor, and its gap cycle is the list of
-differences between consecutive survivors. This direct construction
-reproduces exactly what repeated merging would produce.
+Em vez de mesclar lacunas um múltiplo por vez, uma integral de ciclo filtrada
+pode ser construída diretamente a partir da lista de sobreviventes ([§6.5](#65-survivor-exactness)):
+seu valor inicial é o primeiro sobrevivente, e seu ciclo de lacunas é a lista das
+diferenças entre sobreviventes consecutivos. Essa construção direta
+reproduz exatamente o que a mesclagem repetida produziria.
 
 ```math
 \begin{aligned}
@@ -1293,21 +1313,22 @@ ci''\text{'s initial value} &= S_0,\quad \text{cycle}''(i) = S_{i+1} - S_i \\
 \end{aligned}
 ```
 
-**Proof.** By induction on $k$. The base case follows directly from the
-integral's own definition applied to the first gap. The inductive step
-adds the $k$-th constructed gap, which by definition equals
-$S_{k+1} - S_k$, to the inductive hypothesis $ci''(k-1) = S_k$, giving
+**Prova.** Por indução em $k$. O caso base segue diretamente da
+própria definição da integral aplicada à primeira lacuna. O passo indutivo
+adiciona a $k$-ésima lacuna construída, que por definição é igual a
+$S_{k+1} - S_k$, à hipótese de indução $ci''(k-1) = S_k$, obtendo
 $ci''(k) = S_{k+1}$.
 
-This property is verified in [
+Esta propriedade é verificada em [
 CycleIntegralFilterProperties::assertNewCIGeneratesFiltered
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertNewCIMatchesSurvivors`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), and [`assertGapsFromSurvivorsMatchCI`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). The full Scala verification code is in Appendix A.15.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), [`assertNewCIMatchesSurvivors`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala), e [`assertGapsFromSurvivorsMatchCI`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). O código completo de verificação em Scala está no Apêndice A.15.
 
-### 6.10 Filtered Result Has No Multiples
+<a id="610-filtered-result-has-no-multiples"></a>
+### 6.10 Resultado Filtrado Não Tem Múltiplos
 
-The cycle integral constructed directly from the survivor list contains no
-multiples of the filter value at any position — its values are, by
-construction, exactly the survivors.
+A integral de ciclo construída diretamente a partir da lista de sobreviventes não contém
+múltiplos do valor de filtro em nenhuma posição — seus valores são, por
+construção, exatamente os sobreviventes.
 
 ```math
 \begin{aligned}
@@ -1317,9 +1338,9 @@ construction, exactly the survivors.
 \end{aligned}
 ```
 
-**Proof.** By [§6.9](#69-direct-construction-from-survivors), $ci''(k)$
-equals the survivor $S_{k+1}$, and every element of the survivor list is
-already known not to be a multiple of $f$
+**Prova.** Por [§6.9](#69-direct-construction-from-survivors), $ci''(k)$
+é igual ao sobrevivente $S_{k+1}$, e já se sabe que todo elemento da lista de sobreviventes
+não é múltiplo de $f$
 ([§6.5](#65-survivor-exactness)).
 
 ```math
@@ -1331,42 +1352,42 @@ ci''(k) &= S_{k+1} &&\text{[§6.9]} \\
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
 CycleIntegralFilterProperties::assertFilterMergeComposition
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala) and [`assertNextGapsValid`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). The full Scala verification code is in Appendix A.16.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala) e [`assertNextGapsValid`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala). O código completo de verificação em Scala está no Apêndice A.16.
 
-## 7. Conclusion
+## 7. Conclusão
 
-This article extends the previously verified foundations for recursive lists,
-discrete integrals, modulo arithmetic, and cycles to define and reason about
-Cycle Integrals. Starting from a finite non-empty list, the construction treats
-the list as a repeating cycle and describes the accumulated value at any
-non-negative index using the cycle sum, modular position, and initial value.
+Este artigo estende os fundamentos previamente verificados para listas recursivas,
+integrais discretas, aritmética modular e ciclos, a fim de definir e raciocinar sobre
+Integrais de Ciclos. Partindo de uma lista finita não vazia, a construção trata
+a lista como um ciclo repetitivo e descreve o valor acumulado em qualquer
+índice não negativo usando a soma do ciclo, a posição modular e o valor inicial.
 
-We defined two equivalent presentations of Cycle Integral: **CycleIntegral**,
-a recursive accumulation over a memory-backed cycle ([§3.1](#31-recursive-cycle-integral)),
-and **ModCycleIntegral**, a closed-form definition using division and modulo
+Definimos duas apresentações equivalentes de Integral de Ciclo: **CycleIntegral**,
+uma acumulação recursiva sobre um ciclo apoiado em memória ([§3.1](#31-recursive-cycle-integral)),
+e **ModCycleIntegral**, uma definição em forma fechada usando divisão e módulo
 ([§3.2](#32-modulo-cycle-integral)).
 
-For both presentations, we verified the sum property (integral equals cumulative cycle sum) and the step property (difference between consecutive values equals the corresponding cycle element). We also proved equivalence of the recursive and modulo definitions, that the integral is strictly increasing under positive base values, and that it stays positive everywhere given a non-negative start. The core block closes with its simplest instance: the unit cycle $[1]$, whose integral enumerates the consecutive integers $init + i + 1$ in strictly increasing order — the candidate stream that the sieve-sequence articles later filter.
+Para ambas as apresentações, verificamos a propriedade da soma (a integral é igual à soma cumulativa do ciclo) e a propriedade do passo (a diferença entre valores consecutivos é igual ao elemento correspondente do ciclo). Também provamos a equivalência entre as definições recursiva e modular, que a integral é estritamente crescente sob valores-base positivos, e que ela permanece positiva em toda posição dado um início não negativo. O bloco central se encerra com sua instância mais simples: o ciclo unitário $[1]$, cuja integral enumera os inteiros consecutivos $init + i + 1$ em ordem estritamente crescente — o fluxo de candidatos que os artigos sobre sequências de peneira filtram depois.
 
-Beyond these core definitions, the article verifies several reusable
-cycle-integral laws. Within a fixed cycle integral: residues are periodic
-when the cycle sum is zero modulo the chosen modulus, with the persistent
-non-zero and persistent zero cases following as immediate corollaries;
-adjacent gaps telescope into integral differences; full-cycle shifts advance
-the integral by the cycle sum; and cycle residue classification is correct,
-exclusive, and exhaustive. Building new cycle integrals from existing ones:
-repeating a backing cycle preserves the represented integral stream;
-rotating a gap cycle with the corresponding head adjustment shifts the
-represented integral by one position; survivor scans retain exactly the
-non-multiples needed for filtering; and merging the two gaps around a
-removed multiple reconstructs exactly the cycle integral that a fresh
-construction from the survivor list would produce, with no multiples of
-the filter value remaining anywhere in the result. The open extension
-points are the index-shift laws in Sections 6.2 and 6.3.
+Além dessas definições centrais, o artigo verifica várias leis reutilizáveis
+de integrais de ciclos. Dentro de uma integral de ciclo fixa: os resíduos são periódicos
+quando a soma do ciclo é zero módulo o módulo escolhido, com os casos persistentes
+de não zero e de zero seguindo como corolários imediatos;
+lacunas adjacentes telescopam em diferenças da integral; deslocamentos por ciclo completo avançam
+a integral pela soma do ciclo; e a classificação de resíduos do ciclo é correta,
+exclusiva e exaustiva. Ao construir novas integrais de ciclos a partir de existentes:
+repetir um ciclo de base preserva o fluxo integral representado;
+rotacionar um ciclo de lacunas com o ajuste correspondente da cabeça desloca a
+integral representada em uma posição; varreduras de sobreviventes retêm exatamente os
+não múltiplos necessários para a filtragem; e mesclar as duas lacunas ao redor de um
+múltiplo removido reconstrói exatamente a integral de ciclo que uma construção nova
+a partir da lista de sobreviventes produziria, sem que sobrem múltiplos do
+valor de filtro em qualquer ponto do resultado. Os pontos abertos de extensão
+são as leis de deslocamento de índice nas Seções 6.2 e 6.3.
 
-The main established properties are:
+As principais propriedades estabelecidas são:
 
 ```math
 \begin{aligned}
@@ -1476,53 +1497,53 @@ ci''\text{'s initial value} = S_0 \land \text{cycle}''(i) = S_{i+1} - S_i
 \end{aligned}
 ```
 
-The verified definitions provide a reusable foundation for reasoning about infinite periodic
-accumulations using finite list structures and machine-checked Scala code.
+As definições verificadas fornecem uma base reutilizável para raciocinar sobre acumulações periódicas
+infinitas usando estruturas finitas de listas e código Scala verificado por máquina.
 
-## 8. Future Work
+## 8. Trabalhos Futuros
 
-The nearest continuation is to close the remaining index-shift properties in
-Section 6. Those statements already have mathematical derivations in the
-article, but they still sit at the boundary between the verified cycle-integral
-library and the stronger shift reasoning needed for later sieve arguments.
+A continuação mais próxima é fechar as propriedades restantes de deslocamento de índice na
+Seção 6. Esses enunciados já têm derivações matemáticas no
+artigo, mas ainda ficam na fronteira entre a biblioteca verificada de integrais de ciclos
+e o raciocínio mais forte sobre deslocamentos necessário para argumentos posteriores da peneira.
 
-After that, the same finite-period machinery can support more specialized
-prime-sieve properties: detecting accepted residues, tracking gap evolution
-across filters, and relating local survivor windows to complete-cycle
-structure. More distant extensions, such as multi-dimensional cycles or
-integration over richer algebraic structures, would require new definitions
-rather than a direct continuation of the present proof.
+Depois disso, a mesma maquinaria de período finito pode sustentar propriedades mais especializadas
+da peneira de primos: detectar resíduos aceitos, acompanhar a evolução das lacunas
+através dos filtros e relacionar janelas locais de sobreviventes à estrutura de
+ciclos completos. Extensões mais distantes, como ciclos multidimensionais ou
+integração sobre estruturas algébricas mais ricas, exigiriam novas definições
+em vez de uma continuação direta da prova presente.
 
-## References
+## Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Disponível em: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Available at: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
+Mata, T. H. (2026). _Formal Verification of Cyclic Lists_. Disponível em: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hardy, G. H. & Wright, E. M. (1979). _An Introduction to the Theory of Numbers_ (5th ed.). Oxford University Press. §5.4 (Chinese Remainder Theorem), §15.1 (Sieve of Eratosthenes).
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
 The Lean Community. *Mathlib: Periodic Functions*.
-Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html)
+Disponível em: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Periodic.html)
 
 <a name="ref7" id="ref7" href="#ref7">[7]</a>
 The Lean Community. *Mathlib: Cycles of Lists*.
-Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html)
+Disponível em: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Cycle.html)
 
-## Appendix A: Scala Verification Code
+## Apêndice A: Código de Verificação em Scala
 
-### A.1 Sum Property for Small Positions — assertCycleIntegralEqualsSumSmallPositions
+### A.1 Propriedade da Soma para Posições Pequenas — assertCycleIntegralEqualsSumSmallPositions
 
-Source: [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralEqualsSumSmallPositions(
@@ -1561,9 +1582,9 @@ def assertCycleIntegralEqualsSumSmallPositions(
 }.holds
 ```
 
-### A.2 Step Property — assertDiffEqualsCycleValue
+### A.2 Propriedade do Passo — assertDiffEqualsCycleValue
 
-Source: [CycleIntegralProperties::assertDiffEqualsCycleValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertDiffEqualsCycleValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertDiffEqualsCycleValue(
@@ -1578,9 +1599,9 @@ def assertDiffEqualsCycleValue(
 }.holds
 ```
 
-### A.3 Mod First Values Match Integral — assertFirstValuesMatchIntegral
+### A.3 Primeiros Valores Modulares Coincidem com a Integral — assertFirstValuesMatchIntegral
 
-Source: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Fonte: [ModCycleIntegralProperties::assertFirstValuesMatchIntegral](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertFirstValuesMatchIntegral(
@@ -1601,9 +1622,9 @@ def assertFirstValuesMatchIntegral(
 }.holds
 ```
 
-### A.4 Mod Step Diff — assertSimplifiedDiffValuesMatchCycle
+### A.4 Diferença do Passo Modular — assertSimplifiedDiffValuesMatchCycle
 
-Source: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Fonte: [ModCycleIntegralProperties::assertSimplifiedDiffValuesMatchCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertSimplifiedDiffValuesMatchCycle(
@@ -1632,9 +1653,9 @@ def assertSimplifiedDiffValuesMatchCycle(
 }.holds
 ```
 
-### A.5 Equivalence of Definitions — assertCycleIntegralMatchModCycleDef
+### A.5 Equivalência das Definições — assertCycleIntegralMatchModCycleDef
 
-Source: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
+Fonte: [ModCycleIntegralProperties::assertCycleIntegralMatchModCycleDef](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/mod/ModCycleIntegralProperties.scala)
 
 ```scala
 def assertCycleIntegralMatchModCycleDef(
@@ -1669,9 +1690,9 @@ def assertCycleIntegralMatchModCycleDef(
 }.holds
 ```
 
-### A.6 Same Difference After Full Cycle — assertSameDiffAfterCycle
+### A.6 Mesma Diferença Após Ciclo Completo — assertSameDiffAfterCycle
 
-Source: [CycleIntegralProperties::assertSameDiffAfterCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertSameDiffAfterCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSameDiffAfterCycle(
@@ -1703,9 +1724,9 @@ def assertSameDiffAfterCycle(
 }.holds
 ```
 
-### A.7 Sum of Mod Values as List — assertSumModValueAsListEqualsCycleIntegralLoop
+### A.7 Soma de Valores Modulares como Lista — assertSumModValueAsListEqualsCycleIntegralLoop
 
-Source: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertSumModValueAsListEqualsCycleIntegralLoop](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertSumModValueAsListEqualsCycleIntegralLoop(
@@ -1739,9 +1760,9 @@ def assertSumModValueAsListEqualsCycleIntegralLoop(
 }.holds
 ```
 
-### A.8 x-fold Cycle Expansion — assertRepeatedValuesIntegralMatches
+### A.8 Expansão de Ciclo por Fator x — assertRepeatedValuesIntegralMatches
 
-Source: [CycleIntegralProperties::assertRepeatedValuesIntegralMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertRepeatedValuesIntegralMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertRepeatedValuesIntegralMatches(
@@ -1762,9 +1783,9 @@ def assertRepeatedValuesIntegralMatches(
 }.holds
 ```
 
-### A.9 Right Index Shift Core — assertRotateOneCycleIntegralShiftsByOne
+### A.9 Núcleo do Deslocamento de Índice à Direita — assertRotateOneCycleIntegralShiftsByOne
 
-Source: [GapProperties::assertRotateOneCycleIntegralShiftsByOne](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Fonte: [GapProperties::assertRotateOneCycleIntegralShiftsByOne](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertRotateOneCycleIntegralShiftsByOne(
@@ -1801,9 +1822,9 @@ def assertRotateOneCycleIntegralShiftsByOne(
 }.holds
 ```
 
-### A.10 Gap Telescoping — assertConsecutiveGapSumEqualsDiff
+### A.10 Telescopagem de Lacunas — assertConsecutiveGapSumEqualsDiff
 
-Source: [CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
+Fonte: [CycleIntegralProperties::assertConsecutiveGapSumEqualsDiff](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralProperties.scala)
 
 ```scala
 def assertConsecutiveGapSumEqualsDiff(
@@ -1822,9 +1843,9 @@ def assertConsecutiveGapSumEqualsDiff(
 }.holds
 ```
 
-### A.11 Modulo Periodicity — assertModIsPeriodic
+### A.11 Periodicidade Modular — assertModIsPeriodic
 
-Source: [GapProperties::assertModIsPeriodic](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Fonte: [GapProperties::assertModIsPeriodic](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertModIsPeriodic(
@@ -1876,9 +1897,9 @@ def assertModIsPeriodic(
 }.holds
 ```
 
-### A.12 Cycle-Period Shifts — assertPeriodicShift, assertFullCycleShift, assertMultiCycleShift
+### A.12 Deslocamentos por Período de Ciclo — assertPeriodicShift, assertFullCycleShift, assertMultiCycleShift
 
-Source: [GapProperties cycle-period shift lemmas](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
+Fonte: [lemas de deslocamento por período de ciclo em GapProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/GapProperties.scala)
 
 ```scala
 def assertPeriodicShift(
@@ -1931,9 +1952,9 @@ def assertMultiCycleShift(
 }.holds
 ```
 
-### A.13 Merge Shift Law — assertShiftAtMerge
+### A.13 Lei de Deslocamento por Mesclagem — assertShiftAtMerge
 
-Source: [CycleIntegralFilterProperties::assertShiftAtMerge](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
+Fonte: [CycleIntegralFilterProperties::assertShiftAtMerge](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
 
 ```scala
 def assertShiftAtMerge(
@@ -1972,9 +1993,9 @@ def assertShiftAtMerge(
 }.holds
 ```
 
-### A.14 Removing a Multiple — assertRemoveOneMultiple
+### A.14 Removendo um Múltiplo — assertRemoveOneMultiple
 
-Source: [CycleIntegralFilterProperties::assertRemoveOneMultiple](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
+Fonte: [CycleIntegralFilterProperties::assertRemoveOneMultiple](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
 
 ```scala
 def assertRemoveOneMultiple(
@@ -2004,9 +2025,9 @@ def assertRemoveOneMultiple(
 }.holds
 ```
 
-### A.15 Direct Construction from Survivors — assertNewCIGeneratesFiltered
+### A.15 Construção Direta a partir dos Sobreviventes — assertNewCIGeneratesFiltered
 
-Source: [CycleIntegralFilterProperties::assertNewCIGeneratesFiltered](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
+Fonte: [CycleIntegralFilterProperties::assertNewCIGeneratesFiltered](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
 
 ```scala
 def assertNewCIGeneratesFiltered(
@@ -2036,9 +2057,9 @@ def assertNewCIGeneratesFiltered(
 }.holds
 ```
 
-### A.16 Filtered Result Has No Multiples — assertFilterMergeComposition
+### A.16 Resultado Filtrado Não Tem Múltiplos — assertFilterMergeComposition
 
-Source: [CycleIntegralFilterProperties::assertFilterMergeComposition](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
+Fonte: [CycleIntegralFilterProperties::assertFilterMergeComposition](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralFilterProperties.scala)
 
 ```scala
 def assertFilterMergeComposition(
@@ -2073,9 +2094,9 @@ def assertFilterMergeComposition(
 }.holds
 ```
 
-### A.17 Unit-Cycle Generation — assertCycleIntegralOfOnes, assertCycleIntegralOfOnesStrictlyIncreasing
+### A.17 Geração pelo Ciclo Unitário — assertCycleIntegralOfOnes, assertCycleIntegralOfOnesStrictlyIncreasing
 
-Source: [CycleIntegralOnesProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala)
+Fonte: [CycleIntegralOnesProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/integral/recursive/properties/CycleIntegralOnesProperties.scala)
 
 ```scala
 def assertCycleIntegralOfOnes(init: BigInt, pos: BigInt): Boolean = {
@@ -2108,6 +2129,6 @@ def assertCycleIntegralOfOnesStrictlyIncreasing(
 }.holds
 ```
 
-## Appendix B: Stainless Verification Log Output
+## Apêndice B: Saída do Log de Verificação do Stainless
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/articles/logs/verify.log)
+A execução mais recente de `just verify` verifica todas as propriedades descritas sem erros. A saída completa do log está disponível em: [logs/verify.log](https://github.com/thiagomata/prime-numbers/blob/master/articles/logs/verify.log)
