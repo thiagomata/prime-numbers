@@ -1,94 +1,97 @@
-# Formal Verification of Cyclic Lists
+# Verificação Formal de Listas Cíclicas
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)  
-**Published:** [Zenodo:10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [Zenodo:10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
-In previous articles, we defined bounded Lists and Integrals of <code>BigInt</code>
-from scratch, relying only on core type constructs and recursion, 
-with no prior knowledge of Scala's collections required.
-From that, we proved and formally verified some properties related to them as size, append, concat,
-slice and sum.
-This article uses that as a foundation to define Cycles — unbounded List of Integers
-created from a bounded List, where the values of the Cycle are the values of the
-List in repetition using recursion.
-Then, we formally defined and verified key properties such as
-cycle equivalence between definitions, element access via modular indexing, and periodic invariance
-using the Stainless verification system. 
-All properties are expressed and proved within a minimal framework using only elementary arithmetic,
-recursion, and pure Scala code.
-This work bridges mathematical foundations and executable verification, 
-offering a self-contained, verifiable approach of modular arithmetic.
+Em artigos anteriores, definimos do zero Listas limitadas e Integrais de
+<code>BigInt</code>, apoiando-nos apenas em construções centrais de tipos e em
+recursão, sem exigir conhecimento prévio das coleções de Scala. A partir disso,
+provamos e verificamos formalmente propriedades relacionadas a elas, como
+tamanho, append, concatenação, fatia e soma. Este artigo usa essa base para
+definir Ciclos — Listas ilimitadas de Inteiros criadas a partir de uma Lista
+limitada, em que os valores do Ciclo são os valores da Lista repetidos por meio
+de recursão. Em seguida, definimos e verificamos formalmente propriedades-chave,
+como equivalência entre definições de ciclo, acesso a elementos por indexação
+modular e invariância periódica, usando o sistema de verificação Stainless. Todas
+as propriedades são expressas e provadas dentro de um framework mínimo usando
+apenas aritmética elementar, recursão e código Scala puro. Este trabalho conecta
+fundamentos matemáticos e verificação executável, oferecendo uma abordagem
+autocontida e verificável para aritmética modular.
  </p>
 </div>
 
-## 1. Introduction
+## 1. Introdução
 
-Unbounded lists in cycles, are a fundamental concept in computer science and mathematics, often used to model
-repetitive structures or processes. They can be thought of as infinite lists that repeat a finite sequence of elements.
+Listas ilimitadas em ciclos são um conceito fundamental em ciência da computação
+e matemática, frequentemente usado para modelar estruturas ou processos
+repetitivos. Elas podem ser entendidas como listas infinitas que repetem uma
+sequência finita de elementos.
 
 ```math
 L = [x_0, x_1, x_2, \ldots, x_{n-1}]  \mid x_n \in 𝕊, L \in 𝕃\\
 \text{Cycle}(L) = [x_0, x_1, x_2, \ldots, x_{n-1}, x_0, x_1, \ldots]
 ```
 
-In this article, we present discrete definition of Cycle
-operations over finite integer lists, defined recursively and verified some of
-its properties using the Stainless system.
-Our approach follows a zero-prior-knowledge philosophy, building on a previously
-verified foundation for recursive list structure.
-The result is a verified, from-scratch implementation of cycle operations,
-suitable as a foundation for higher-level numeric reasoning over unbounded lists.
+Neste artigo, apresentamos uma definição discreta de operações de Ciclo sobre
+listas finitas de inteiros, definidas recursivamente, e verificamos algumas de
+suas propriedades usando o sistema Stainless. Nossa abordagem segue uma filosofia
+de conhecimento prévio zero, construída sobre uma base previamente verificada
+para estruturas recursivas de listas. O resultado é uma implementação verificada,
+do zero, de operações de ciclo, adequada como fundação para raciocínio numérico
+de nível mais alto sobre listas ilimitadas.
 
-This article verifies:
+Este artigo verifica:
 
-- Cycle definitions: recursive, modulo, and memory — [§3](#3-cycle-definitions)
-- Equivalence: recursive and modulo produce identical values at every position — [§4](#4-cycle-equivalence)
-- Element access: modular indexing, small-position direct lookup — [§5.1](#51-cycle-element-access)–[5.2](#52-small-value-in-cycle)
-- Periodic invariance: value unchanged by adding cycle-period multiples — [§5.3](#53-value-match-after-many-loops)–[5.4](#54-two-multiples-of-cycle-size)
-- Mod propagation: remainder computed from base-cycle values — [§5.5](#55-propagate-modulo-from-value-to-cycle)
-- Repeated-cycle invariance: repeating the base list preserves all lookups — [§5.6](#56-repeated-cycle-invariance)
-- Cycle value positivity: all values ≥ 0 at every position — [§5.7](#57-cycle-value-positivity)
-- Cycle rotation: rotates base list, shifts index — [§5.8](#58-cycle-rotation)
-- Residue classification: all-zero, none-zero, and some-zero divisor classifications transfer from the base list to every cycle position — [§5.10](#510-all-zero-residue-transfers-to-the-cycle)–[5.12](#512-some-zero-residue-transfers-to-the-cycle)
+- Definições de ciclo: recursiva, por módulo e com memória — [§3](#3-cycle-definitions)
+- Equivalência: recursiva e por módulo produzem valores idênticos em toda posição — [§4](#4-cycle-equivalence)
+- Acesso a elementos: indexação modular, busca direta em posições pequenas — [§5.1](#51-cycle-element-access)–[5.2](#52-small-value-in-cycle)
+- Invariância periódica: valor inalterado ao somar múltiplos do período do ciclo — [§5.3](#53-value-match-after-many-loops)–[5.4](#54-two-multiples-of-cycle-size)
+- Propagação de módulo: resto computado a partir de valores do ciclo-base — [§5.5](#55-propagate-modulo-from-value-to-cycle)
+- Invariância de ciclo repetido: repetir a lista-base preserva todas as consultas — [§5.6](#56-repeated-cycle-invariance)
+- Positividade dos valores do ciclo: todos os valores são ≥ 0 em toda posição — [§5.7](#57-cycle-value-positivity)
+- Rotação do ciclo: rotaciona a lista-base, desloca o índice — [§5.8](#58-cycle-rotation)
+- Classificação de resíduos: classificações de divisores todo-zero, nenhum-zero e algum-zero são transferidas da lista-base para toda posição do ciclo — [§5.10](#510-all-zero-residue-transfers-to-the-cycle)–[5.12](#512-some-zero-residue-transfers-to-the-cycle)
 
-### Related work
+### Trabalhos Relacionados
 
-Finite rotation already has a substantial formal treatment in Lean's Mathlib:
-it includes rotation reduced modulo list length, indexed rotation laws, and an
-equivalence relation identifying rotated lists [[4]](#ref4). These results give
-a close formal point of contact for the article's base-list rotation and
-modular-indexing laws.
+Rotação finita já tem um tratamento formal substancial na Mathlib do Lean: ela
+inclui rotação reduzida módulo o comprimento da lista, leis de rotação indexada
+e uma relação de equivalência que identifica listas rotacionadas [[4]](#ref4).
+Esses resultados fornecem um ponto formal próximo de contato para a rotação da
+lista-base e as leis de indexação modular deste artigo.
 
-There is also broader work on cyclic datatypes as recursive programming
-structures. Hamana studies cyclic lists and related data modulo bisimulation,
-with a semantic account of their computation rules [[5]](#ref5). That setting
-is more general and different from the present periodic sequence generated by
-a finite integer list. Together, these sources place the Stainless development
-between finite-list rotation and general cyclic-data theory, while this article
-verifies the equivalence of its recursive and modulo presentations and the
-period, residue, and lookup properties of its concrete periodic model.
+Também há trabalho mais amplo sobre tipos de dados cíclicos como estruturas de
+programação recursiva. Hamana estuda listas cíclicas e dados relacionados módulo
+bissimulação, com uma explicação semântica de suas regras de computação
+[[5]](#ref5). Esse cenário é mais geral e diferente da sequência periódica
+presente gerada por uma lista finita de inteiros. Em conjunto, essas fontes
+posicionam o desenvolvimento em Stainless entre rotação de listas finitas e
+teoria geral de dados cíclicos, enquanto este artigo verifica a equivalência de
+suas apresentações recursiva e modular e as propriedades de período, resíduo e
+consulta de seu modelo periódico concreto.
 
-## 2. Preliminaries
+## 2. Preliminares
 
-We reuse several basic list operations and their verified properties from the companion articles
-[Using Formal Verification to Prove Properties of Lists Recursively Defined](https://rxiverse.org/abs/2609.0023) [[1]](#ref1)
-and [Formal Verification of Discrete Integration Properties from First Principles](https://doi.org/10.5281/zenodo.22746792) [[2]](#ref2).
+Reutilizamos várias operações básicas de listas e suas propriedades verificadas
+dos artigos companheiros [Usando Verificação Formal para Provar Propriedades de Listas Definidas Recursivamente](https://rxiverse.org/abs/2609.0023) [[1]](#ref1)
+e [Verificação Formal de Propriedades de Integração Discreta a partir de Primeiros Princípios](https://doi.org/10.5281/zenodo.22746792) [[2]](#ref2).
 
-These articles also defined and verified their properties using the same zero-prior-knowledge methodology,
-and are treated here as foundational primitives.
+Esses artigos também definiram e verificaram suas propriedades usando a mesma
+metodologia de conhecimento prévio zero, e são tratados aqui como primitivas
+fundamentais.
 
-For any list $L$ of numeric values $x_i \in 𝕊$ where $𝕊$ is a set of all numeric values,
-$𝕃$ is the the set of all lists,
-and $n$ is the size of the list, we define:
+Para qualquer lista $L$ de valores numéricos $x_i \in 𝕊$, em que $𝕊$ é um
+conjunto de todos os valores numéricos, $𝕃$ é o conjunto de todas as listas, e
+$n$ é o tamanho da lista, definimos:
 
 ```math
 \begin{aligned}
@@ -159,7 +162,8 @@ L_{node}(head(A), tail(A) \mathbin{\texttt{++}} B) & \text{otherwise} \\
 \end{aligned}
 ```
 
-From these definitions, the authors [[1]](#ref1) mathematically prove and formally verify the following properties of lists:
+A partir dessas definições, os autores [[1]](#ref1) provam matematicamente e
+verificam formalmente as seguintes propriedades de listas:
 
 ```math
 \begin{aligned}
@@ -195,16 +199,17 @@ f > t, \quad 0 \leq i < |L|\\
 \end{aligned}
 ```
 
-## 3. Cycle Definitions
+## 3. Definições de Ciclo
 
-Building on the definitions and properties of lists, we now define Cycles.
+Com base nas definições e propriedades de listas, agora definimos Ciclos.
 
-A Cycle is an unbounded list that repeats a finite sequence of elements from a bounded list.
-In this study, we restrict our universe of values $𝕊$ to be the set of non-negative integers, i.e., $𝕊 = ℕ_0$.
+Um Ciclo é uma lista ilimitada que repete uma sequência finita de elementos de
+uma lista limitada. Neste estudo, restringimos nosso universo de valores $𝕊$ ao
+conjunto dos inteiros não negativos, isto é, $𝕊 = ℕ_0$.
 
-- Recursive: values at $i$ where $i < n$ come from the base list, otherwise recurse on $i - n$ — the definitional spec
-- Modulo: values come directly from the base list at position $i \bmod n$ — efficient access
-- Memory: wraps ModCycle, adds classification tracking via `checkMod(d)` — remembers which divisors produce all-zero, some-zero, or none-zero residue patterns
+- Recursivo: valores em $i$ com $i < n$ vêm da lista-base; caso contrário, recorre em $i - n$ — a especificação definicional
+- Módulo: valores vêm diretamente da lista-base na posição $i \bmod n$ — acesso eficiente
+- Memória: encapsula `ModCycle`, adiciona rastreamento de classificação via `checkMod(d)` — lembra quais divisores produzem padrões de resíduos todo-zero, algum-zero ou nenhum-zero
 
 ```mermaid
 classDiagram
@@ -230,7 +235,7 @@ classDiagram
     MemCycle *-- ModCycle : "wraps (delegates apply)"
 ```
 
-### 3.1 Recursive Cycle
+### 3.1 Ciclo Recursivo
 
 ```math
 \begin{aligned}
@@ -247,15 +252,15 @@ RecCycle &= [v_0, v_1, \dots, v_{n-1}, v_0, v_1, \dots] \\
 \end{aligned}
 ```
 
-We take this recursive unrolling as the formal ground truth for the informal
-picture of "the infinite periodic sequence" used throughout this article:
-from here on, `Cycle` means `RecCycle`. That is a naming choice, not a
-theorem — the recursion peels off one copy of the base list per step, which
-is exactly what the periodic sequence means. What still needs proof is
-whether the modulo-based definition below computes the same values; that
-equivalence is proved in [Section 4](#4-cycle-equivalence).
+Tomamos esse desenrolar recursivo como a verdade formal para a imagem informal
+da "sequência periódica infinita" usada ao longo deste artigo: daqui em diante,
+`Cycle` significa `RecCycle`. Isso é uma escolha de nome, não um teorema — a
+recursão remove uma cópia da lista-base por passo, que é exatamente o que a
+sequência periódica significa. O que ainda precisa ser provado é se a definição
+baseada em módulo abaixo computa os mesmos valores; essa equivalência é provada
+na [Seção 4](#4-cycle-equivalence).
 
-The recursive cycle is defined at [RecursiveCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
+O ciclo recursivo é definido em [RecursiveCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
 
 ```scala
 case class RecursiveCycle(values: List[BigInt]) {
