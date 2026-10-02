@@ -34,7 +34,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/sieve-sequence.md`
 - `articles/chapter7/survival-frontiers.md`
 
-`articles/chapter2/modulo.md` and `articles/chapter3/list.md` have been translated to Brazilian Portuguese in place. `articles/chapter4/cycle.md` has been started and is translated through Section 3.1 prose, with later sections still in English. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
+`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, and `articles/chapter4/cycle.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
 
 ## What is Learned
 
@@ -44,7 +44,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - Translating headings changes generated Markdown slugs, so translated headings that are internal-link targets need explicit HTML anchors preserving the old ids.
 - `articles/chapter2/modulo.md` has 102 fence markers, balanced after translation, and passes `git diff --check`.
 - `articles/chapter3/list.md` has 266 fence markers, balanced after translation, 9 compatibility anchors for old internal section slugs, and passes `git diff --check`.
-- `articles/chapter4/cycle.md` has 164 fence markers and remains balanced after the first translation chunk; `git diff --check -- articles/chapter4/cycle.md` passes.
+- `articles/chapter4/cycle.md` has 164 fence markers, balanced after translation, 16 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 
 ## Failed Paths
 
@@ -59,7 +59,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Continue `articles/chapter4/cycle.md` from Section 3.2 onward, preserving code/math fences and adding compatibility anchors for translated headings that are internal-link targets.
+Commit and push the completed `articles/chapter4/cycle.md` translation, then continue with `articles/chapter4/integral.md`.
 
 ## Expected State
 
@@ -120,3 +120,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | User asked to commit and push the branch, then move to the next article, and explicitly said not to worry about creating the PDF. | Commit/push the current checkpoint, then continue translating `list.md`. |
 | 2026-10-02 | `articles/chapter3/list.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter3/list.md` passes, and English residual search only reports bibliography titles/names. | Commit/push this checkpoint and continue with `articles/chapter4/cycle.md`. |
 | 2026-10-02 | `articles/chapter4/cycle.md` translation started through Section 3.1 prose. Fences remain balanced and `git diff --check -- articles/chapter4/cycle.md` passes. | Continue from Section 3.2. |
+| 2026-10-02 | `articles/chapter4/cycle.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/cycle.md` passes, and English residual search only reports bibliography title/names. | Commit/push this checkpoint and continue with `articles/chapter4/integral.md`. |

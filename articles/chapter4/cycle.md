@@ -199,6 +199,8 @@ f > t, \quad 0 \leq i < |L|\\
 \end{aligned}
 ```
 
+<a id="3-cycle-definitions"></a>
+
 ## 3. Definições de Ciclo
 
 Com base nas definições e propriedades de listas, agora definimos Ciclos.
@@ -234,6 +236,8 @@ classDiagram
     RecursiveCycle ..> ModCycle : "proven equivalent by induction (§4.1-4.2)"
     MemCycle *-- ModCycle : "wraps (delegates apply)"
 ```
+
+<a id="31-recursive-cycle"></a>
 
 ### 3.1 Ciclo Recursivo
 
@@ -282,9 +286,10 @@ case class RecursiveCycle(values: List[BigInt]) {
 }
 ```
 
-### 3.2 Modulo Cycle
+### 3.2 Ciclo por Módulo
 
-A Cycle can also be defined using modulo arithmetic, which is a common approach in computer science to handle cyclic structures.
+Um Ciclo também pode ser definido usando aritmética modular, que é uma abordagem
+comum em ciência da computação para lidar com estruturas cíclicas.
 
 ```math
 \begin{aligned}
@@ -297,14 +302,14 @@ n &= |L| \\
 \end{aligned}
 ```
 
-This unrolls informally to the same picture, but nothing so far shows that
-`ModCycle` and `RecCycle` — which [§3.1](#31-recursive-cycle) took as the
-meaning of `Cycle` — agree at every index. One recurses by repeated
-subtraction, the other computes a single remainder, and it is not obvious a
-priori that the two produce the same sequence. Section 4 proves they do,
-which is what lets `ModCycle` stand in for `Cycle` as well.
+Informalmente, isso se desenrola para a mesma imagem, mas nada até aqui mostra
+que `ModCycle` e `RecCycle` — que [§3.1](#31-recursive-cycle) tomou como o
+significado de `Cycle` — concordam em todo índice. Um recorre por subtração
+repetida, o outro computa um único resto, e não é óbvio a priori que os dois
+produzam a mesma sequência. A Seção 4 prova que sim, que é o que também permite
+que `ModCycle` represente `Cycle`.
 
-The modulo cycle is defined at [ModCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
+O ciclo por módulo é definido em [ModCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/mod/ModCycle.scala):
 
 ```scala
 case class ModCycle(values: List[BigInt]) {
@@ -325,17 +330,19 @@ case class ModCycle(values: List[BigInt]) {
 }
 ```
 
-### 3.3 Memory Cycle
+<a id="33-memory-cycle"></a>
 
-The third representation, `MemCycle`, wraps a `ModCycle` and adds
-classification state: three lists tracking which divisors produce all-zero,
-some-zero, or none-zero residue patterns across the cycle's values.
+### 3.3 Ciclo com Memória
 
-Like ModCycle, positional lookup uses modular indexing; value access delegates
-directly to the wrapped ModCycle. Positional equivalence between the two is
-immediate by construction: `MemCycle.apply(position)` calls the wrapped
-`cycle(position)`, and `MemCycle(values)` constructs that wrapped cycle as
-`ModCycle(values)`.
+A terceira representação, `MemCycle`, encapsula um `ModCycle` e adiciona estado
+de classificação: três listas que rastreiam quais divisores produzem padrões de
+resíduos todo-zero, algum-zero ou nenhum-zero ao longo dos valores do ciclo.
+
+Como `ModCycle`, a consulta posicional usa indexação modular; o acesso a valores
+delega diretamente ao `ModCycle` encapsulado. A equivalência posicional entre os
+dois é imediata por construção: `MemCycle.apply(position)` chama o
+`cycle(position)` encapsulado, e `MemCycle(values)` constrói esse ciclo
+encapsulado como `ModCycle(values)`.
 
 ```math
 \begin{aligned}
@@ -344,21 +351,22 @@ immediate by construction: `MemCycle.apply(position)` calls the wrapped
 \end{aligned}
 ```
 
-The bounded bridge [
+A ponte limitada [
   CycleProperties::assertModCycleEqualsMemCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
-verifies the same lookup equality over one physical period for a `ModCycle` and
-a `MemCycle` sharing the same values and period.
+verifica a mesma igualdade de consulta ao longo de um período físico para um
+`ModCycle` e um `MemCycle` que compartilham os mesmos valores e período.
 
-`MemCycle(L)` returns the same values as `ModCycle(L)` by definition: it
-stores `ModCycle(L)` and delegates every lookup to it. Section 4 proves the
-remaining piece — that `RecursiveCycle(L)` and `ModCycle(L)` also agree at
-every position — after which the full three-way equality chain used
-throughout the article is assembled at the close of that section.
+`MemCycle(L)` retorna os mesmos valores que `ModCycle(L)` por definição: ele
+armazena `ModCycle(L)` e delega toda consulta a ele. A Seção 4 prova a peça
+restante — que `RecursiveCycle(L)` e `ModCycle(L)` também concordam em toda
+posição — após a qual a cadeia completa de igualdade entre as três
+representações usada ao longo do artigo é montada ao final daquela seção.
 
-The cycle is immutable. Calling `checkMod(d)` returns a *new* `MemCycle` with
-`d` added to the appropriate classification list. The original is unchanged.
-Values are never modified; classification is metadata accumulated across calls.
+O ciclo é imutável. Chamar `checkMod(d)` retorna um *novo* `MemCycle` com `d`
+adicionado à lista de classificação apropriada. O original permanece
+inalterado. Os valores nunca são modificados; a classificação é metadado
+acumulado ao longo das chamadas.
 
 ```scala
 case class MemCycle private (
@@ -374,22 +382,23 @@ case class MemCycle private (
 }
 ```
 
-The memory cycle is defined at [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Classification lemmas are verified in
+O ciclo com memória é definido em [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala). Os lemas de classificação são verificados em
 [CycleCheckMod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/CycleCheckMod.scala).
 
-## 4. Cycle Equivalence
+<a id="4-cycle-equivalence"></a>
 
-Section 3.1 defines `Cycle` to mean `RecCycle` — a naming choice, not a
-claim. This section proves the claim that actually needs proving: that
-`ModCycle`, defined independently by a single modulo operation rather than
-by recursive unrolling, computes exactly the same values as `RecCycle` at
-every position. This equivalence is what the rest of the article leans on
-whenever it moves between the two representations, and it is not immediate
-from the two definitions side by side. We prove it by induction on the
-position $i$.
+## 4. Equivalência de Ciclos
 
-- Base case ($i < n$): both definitions consult the base list directly at the same position
-- Inductive step ($i \geq n$): the recursive definition reduces to $i - n$, wrapping to the same modulo position
+A Seção 3.1 define `Cycle` como `RecCycle` — uma escolha de nome, não uma
+afirmação. Esta seção prova a afirmação que de fato precisa ser provada: que
+`ModCycle`, definido independentemente por uma única operação de módulo em vez
+de desenrolamento recursivo, computa exatamente os mesmos valores que `RecCycle`
+em toda posição. Essa equivalência é aquilo em que o restante do artigo se apoia
+sempre que se move entre as duas representações, e ela não é imediata a partir
+das duas definições lado a lado. Provamos por indução na posição $i$.
+
+- Caso base ($i < n$): ambas as definições consultam a lista-base diretamente na mesma posição
+- Passo indutivo ($i \geq n$): a definição recursiva reduz para $i - n$, retornando à mesma posição modular
 
 ```math
 \begin{aligned}
@@ -404,9 +413,10 @@ L_i & \text{if } i < n \\
 \end{aligned}
 ```
 
-### 4.1 Base Case (`i < n`)
+### 4.1 Caso Base (`i < n`)
 
-When the position is within the first cycle, both definitions return the list element directly.
+Quando a posição está dentro do primeiro ciclo, ambas as definições retornam o
+elemento da lista diretamente.
 
 ```math
 \begin{aligned}
@@ -419,15 +429,16 @@ i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text
 \end{aligned}
 ```
 
-The lemma [Trivial Mod for Small Dividend](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#61-trivial-case) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+O lema [Módulo Trivial para Dividendo Pequeno](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#61-trivial-case) foi provado e verificado no artigo [Divisão e Módulo por Normalização Recursiva](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
-This property is verified in the [
+Esta propriedade é verificada em [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). O código Scala completo de verificação está no Apêndice A.1.
 
-### 4.2 Inductive Step (`i >= n`)
+### 4.2 Passo Indutivo (`i >= n`)
 
-For positions beyond the first cycle, both definitions reduce the position by the cycle period and rely on the inductive hypothesis.
+Para posições além do primeiro ciclo, ambas as definições reduzem a posição pelo
+período do ciclo e dependem da hipótese indutiva.
 
 ```math
 \begin{aligned}
@@ -444,16 +455,15 @@ i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\t
 \end{aligned}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) was proved and verified in the article [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+O lema [Invariância do Quociente sob Deslocamento Linear](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) foi provado e verificado no artigo [Divisão e Módulo por Normalização Recursiva](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
-This property is verified in the [
+Esta propriedade é verificada em [
 RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). The full Scala verification code is in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala). O código Scala completo de verificação está no Apêndice A.2.
 
-With both pieces now established — `RecCycle` and `ModCycle` equal by
-this section, `MemCycle` and `ModCycle` equal by delegation
-([§3.3](#33-memory-cycle)) — the three representations agree at every
-position:
+Com ambas as peças agora estabelecidas — `RecCycle` e `ModCycle` iguais por
+esta seção, `MemCycle` e `ModCycle` iguais por delegação
+([§3.3](#33-memory-cycle)) — as três representações concordam em toda posição:
 
 ```math
 \begin{aligned}
@@ -467,27 +477,27 @@ position:
 \end{aligned}
 ```
 
-## 5. Cycle Properties
+## 5. Propriedades de Ciclos
 
-In this section, we prove and verify the main properties of Cycles. Each
-property is stated mathematically, then shown to hold via a corresponding
-verified lemma in Scala using the Stainless system.
+Nesta seção, provamos e verificamos as principais propriedades de Ciclos. Cada
+propriedade é enunciada matematicamente e então demonstrada por meio de um lema
+correspondente verificado em Scala usando o sistema Stainless.
 
-- Element access: `cycle(key) == cycle.values(mod(key, period))` — [§5.1](#51-cycle-element-access)
-- Small-value direct lookup: `key < period ⇒ cycle(key) == cycle.values(key)` — [§5.2](#52-small-value-in-cycle)
-- Periodicity: `cycle(key) == cycle(key + period·m)` for any number of loops — [§5.3](#53-value-match-after-many-loops)
-- Multi-loop consistency: value at `key` is independent of which multiple of the period is added — [§5.4](#54-two-multiples-of-cycle-size)
-- Mod propagation: remainder modulo `d` at any position equals remainder at the base position — [§5.5](#55-propagate-modulo-from-value-to-cycle)
-- Repeated-cycle invariance: repeating the base list preserves all lookups — [§5.6](#56-repeated-cycle-invariance)
-- Value positivity: non-negative base values guarantee non-negative cycle values — [§5.7](#57-cycle-value-positivity)
-- Rotation: rotating the base list shifts the cycle index by the same amount — [§5.8](#58-cycle-rotation)
-- MemCycle-level restatements: the key access and modulo properties are also verified directly for the memory-backed representation — [§5.9](#59-memcycle-level-restatement)
-- Residue classification transfer: all-zero, none-zero, and some-zero divisor classifications on the base list hold at every cycle position — [§5.10](#510-all-zero-residue-transfers-to-the-cycle)–[5.12](#512-some-zero-residue-transfers-to-the-cycle)
+- Acesso a elementos: `cycle(key) == cycle.values(mod(key, period))` — [§5.1](#51-cycle-element-access)
+- Consulta direta para valor pequeno: `key < period ⇒ cycle(key) == cycle.values(key)` — [§5.2](#52-small-value-in-cycle)
+- Periodicidade: `cycle(key) == cycle(key + period·m)` para qualquer número de voltas — [§5.3](#53-value-match-after-many-loops)
+- Consistência de múltiplas voltas: o valor em `key` independe de qual múltiplo do período é adicionado — [§5.4](#54-two-multiples-of-cycle-size)
+- Propagação de módulo: o resto módulo `d` em qualquer posição é igual ao resto na posição-base — [§5.5](#55-propagate-modulo-from-value-to-cycle)
+- Invariância de ciclo repetido: repetir a lista-base preserva todas as consultas — [§5.6](#56-repeated-cycle-invariance)
+- Positividade de valores: valores-base não negativos garantem valores de ciclo não negativos — [§5.7](#57-cycle-value-positivity)
+- Rotação: rotacionar a lista-base desloca o índice do ciclo pela mesma quantidade — [§5.8](#58-cycle-rotation)
+- Reenunciados no nível de `MemCycle`: as propriedades de acesso por chave e módulo também são verificadas diretamente para a representação com memória — [§5.9](#59-memcycle-level-restatement)
+- Transferência de classificação de resíduos: classificações de divisores todo-zero, nenhum-zero e algum-zero na lista-base valem em toda posição do ciclo — [§5.10](#510-all-zero-residue-transfers-to-the-cycle)–[5.12](#512-some-zero-residue-transfers-to-the-cycle)
 
-Throughout this section, $L$ is the finite backing list, $n$ is the period,
-and $Cycle$ is the unbounded periodic stream it defines — formally, `Cycle`
-means `RecCycle` ([§3.1](#31-recursive-cycle)), proved in
-[Section 4](#4-cycle-equivalence) to equal `ModCycle` at every position:
+Ao longo desta seção, $L$ é a lista finita subjacente, $n$ é o período, e
+$Cycle$ é o fluxo periódico ilimitado que ela define — formalmente, `Cycle`
+significa `RecCycle` ([§3.1](#31-recursive-cycle)), provado na
+[Seção 4](#4-cycle-equivalence) como igual a `ModCycle` em toda posição:
 
 ```math
 \begin{aligned}
@@ -498,9 +508,12 @@ n &:= |L|
 \end{aligned}
 ```
 
-### 5.1 Cycle Element Access
+<a id="51-cycle-element-access"></a>
 
-The value of any element in a cycle equals the value of the underlying list at the position modulo the cycle period.
+### 5.1 Acesso a Elementos do Ciclo
+
+O valor de qualquer elemento em um ciclo é igual ao valor da lista subjacente na
+posição módulo o período do ciclo.
 
 ```math
 \begin{aligned}
@@ -508,7 +521,7 @@ The value of any element in a cycle equals the value of the underlying list at t
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -522,15 +535,19 @@ The value of any element in a cycle equals the value of the underlying list at t
 \therefore \ \text{Cycle}_i = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The [Cycle Equivalence](#4-cycle-equivalence) property was proved and verified in Section 4.
+A propriedade de [Equivalência de Ciclos](#4-cycle-equivalence) foi provada e
+verificada na Seção 4.
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleProperties::findValueInCycle
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.3.
 
-### 5.2 Small Value in Cycle
+<a id="52-small-value-in-cycle"></a>
 
-For positions smaller than the cycle period, the cycle value equals the list value at that position directly.
+### 5.2 Valor Pequeno no Ciclo
+
+Para posições menores que o período do ciclo, o valor do ciclo é diretamente
+igual ao valor da lista nessa posição.
 
 ```math
 \begin{aligned}
@@ -538,7 +555,7 @@ i < n \implies \text{Cycle}_i = L_i
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -551,17 +568,20 @@ i < n \implies \text{RecCycle}_i &= L_i \quad &\text{[RecCycle Definition]}
 \therefore \ i < n \implies \text{Cycle}_i = L_i \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This step only needs the `Cycle := RecCycle` naming from
-[§3.1](#31-recursive-cycle); the `ModCycle` side of the equivalence proved in
-[Section 4](#4-cycle-equivalence) is not required here.
+Este passo precisa apenas da nomeação `Cycle := RecCycle` de
+[§3.1](#31-recursive-cycle); o lado `ModCycle` da equivalência provada na
+[Seção 4](#4-cycle-equivalence) não é necessário aqui.
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleProperties::smallValueInCycle
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.4.
 
-### 5.3 Value Match After Many Loops
+<a id="53-value-match-after-many-loops"></a>
 
-Cycle values remain invariant when adding any multiple of the cycle period to the access key.
+### 5.3 Valor Coincide Após Muitas Voltas
+
+Valores do ciclo permanecem invariantes ao adicionar qualquer múltiplo do
+período do ciclo à chave de acesso.
 
 ```math
 \begin{aligned}
@@ -569,7 +589,7 @@ Cycle values remain invariant when adding any multiple of the cycle period to th
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -584,15 +604,18 @@ Cycle values remain invariant when adding any multiple of the cycle period to th
 \therefore \ \text{Cycle}_{(i + n \cdot m)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The lemma [Quotient Invariance Under Linear Shift](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) and its multiplier variant were proved and verified in [Division and Modulo from Recursive Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
+O lema [Invariância do Quociente sob Deslocamento Linear](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) e sua variante com multiplicador foram provados e verificados em [Divisão e Módulo por Normalização Recursiva](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleProperties::valueMatchAfterManyLoops
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.5.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.5.
 
-### 5.4 Two Multiples of Cycle Size
+<a id="54-two-multiples-of-cycle-size"></a>
 
-Shifting the same key by two different multiples of the cycle period produces the same cycle value either way.
+### 5.4 Dois Múltiplos do Tamanho do Ciclo
+
+Deslocar a mesma chave por dois múltiplos diferentes do período do ciclo produz
+o mesmo valor do ciclo em ambos os casos.
 
 ```math
 \begin{aligned}
@@ -600,7 +623,8 @@ Shifting the same key by two different multiples of the cycle period produces th
 \end{aligned}
 ```
 
-**Proof.** By [§5.3](#53-value-match-after-many-loops), applied at both $m_1$ and $m_2$:
+**Prova.** Por [§5.3](#53-value-match-after-many-loops), aplicado tanto em
+$m_1$ quanto em $m_2$:
 
 ```math
 \begin{aligned}
@@ -613,18 +637,20 @@ Shifting the same key by two different multiples of the cycle period produces th
 \therefore \ \text{Cycle}_{(i + n \cdot m_1)} = \text{Cycle}_{(i + n \cdot m_2)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleProperties::valueMatchAfterManyLoopsInBoth
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.6.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.6.
 
-### 5.5 Propagate Modulo from Value to Cycle
+<a id="55-propagate-modulo-from-value-to-cycle"></a>
 
-The modulo operation applied to a cycle value can be equivalently applied to the
-underlying list value at the modular index. Since the previous sections prove
-that the cycle representations agree at every position, we can use the modulo
-cycle definition directly: cycle lookup first reduces the position to
-`i mod n`, and taking a remainder by any positive divisor `d` preserves that
-same base-position reduction.
+### 5.5 Propagar Módulo do Valor para o Ciclo
+
+A operação de módulo aplicada a um valor do ciclo pode ser aplicada
+equivalentemente ao valor da lista subjacente no índice modular. Como as seções
+anteriores provam que as representações de ciclo concordam em toda posição,
+podemos usar diretamente a definição de ciclo por módulo: a consulta ao ciclo
+primeiro reduz a posição para `i mod n`, e tomar o resto por qualquer divisor
+positivo `d` preserva essa mesma redução à posição-base.
 
 ```math
 \begin{aligned}
@@ -632,7 +658,7 @@ same base-position reduction.
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -647,23 +673,25 @@ same base-position reduction.
 \therefore \ \text{Cycle}_i \bmod d = L_{i \bmod n} \bmod d \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 CycleProperties::propagateModFromValueToCycle
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The
-related idempotence restatement, `cycle(position) == cycle(position mod period)`,
-is verified in [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O
+reenunciado relacionado de idempotência, `cycle(position) == cycle(position mod period)`,
+é verificado em [
 CycleProperties::assertCycleOfPosEqualsCycleOfModPos
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.7.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.7.
 
-### 5.6 Repeated-Cycle Invariance
+<a id="56-repeated-cycle-invariance"></a>
 
-When a cycle's base list is repeated $t$ times to form a longer physical
-period, the values read at every position remain identical. The repeated cycle
-is structurally a concatenation of $t$ copies of the original list; the extra
-length is invisible at any index because modular indexing composes correctly
-across the nested periods. Repetition uses the same $t$-fold notation as
-`integral-cycle.md` §6.1's $L^{(x)}$ (list repeated $x$ times), defined the
-same way by unfolding one copy at a time:
+### 5.6 Invariância de Ciclo Repetido
+
+Quando a lista-base de um ciclo é repetida $t$ vezes para formar um período
+físico mais longo, os valores lidos em toda posição permanecem idênticos. O
+ciclo repetido é estruturalmente uma concatenação de $t$ cópias da lista
+original; o comprimento extra é invisível em qualquer índice porque a indexação
+modular compõe corretamente através dos períodos aninhados. A repetição usa a
+mesma notação $t$-vezes que o $L^{(x)}$ de `integral-cycle.md` §6.1 (lista
+repetida $x$ vezes), definida da mesma forma por desenrolar uma cópia por vez:
 
 ```math
 \begin{aligned}
@@ -683,7 +711,7 @@ C^{(t)} &\text{ — repeated cycle}, \quad \text{values}(C^{(t)}) = V^{(t)}
 \end{aligned}
 ```
 
-**Proof:**
+**Prova:**
 
 ```math
 \begin{aligned}
@@ -699,9 +727,9 @@ C^{(t)}(\text{pos}) &= V^{(t)}(\text{mod}(\text{pos},\; \text{period}))
 \end{aligned}
 ```
 
-The proof separates construction from lookup. Callers must build a valid
-`MemCycle` from the repeated values; this lemma only says that once such a
-cycle exists, the larger physical period does not change any lookup.
+A prova separa construção de consulta. Chamadores devem construir um `MemCycle`
+válido a partir dos valores repetidos; este lema apenas diz que, uma vez que tal
+ciclo existe, o período físico maior não altera nenhuma consulta.
 
 ```scala
 def assertRepeatedValuesCycleMatches(
@@ -719,16 +747,18 @@ def assertRepeatedValuesCycleMatches(
 }.holds
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
 MemCycleProperties::assertRepeatedValuesCycleMatches
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
-The complete Scala derivation is included in [Appendix A.8](#a8-repeated-cycle-invariance--assertrepeatedvaluescyclematches).
+A derivação Scala completa está incluída no [Apêndice A.8](#a8-repeated-cycle-invariance--assertrepeatedvaluescyclematches).
 
-### 5.7 Cycle Value Positivity
+<a id="57-cycle-value-positivity"></a>
 
-When every value in the base list is non-negative, every position in the cycle
-returns a non-negative value. This guarantees that cycle lookups never produce
-negative numbers, which is essential for integral and gap reasoning.
+### 5.7 Positividade dos Valores do Ciclo
+
+Quando todo valor da lista-base é não negativo, toda posição do ciclo retorna um
+valor não negativo. Isso garante que consultas ao ciclo nunca produzam números
+negativos, o que é essencial para raciocínio sobre integrais e gaps.
 
 ```math
 \begin{aligned}
@@ -736,18 +766,18 @@ negative numbers, which is essential for integral and gap reasoning.
 \end{aligned}
 ```
 
-**Proof.** By [§5.1](#51-cycle-element-access), `Cycle_pos = L[pos mod n]`, and `pos mod n` is a valid index into `L` (in `[0, n)`). So `Cycle_pos` is one of the values of `L` — and every value of `L` is non-negative by hypothesis, so `Cycle_pos >= 0`.
+**Prova.** Por [§5.1](#51-cycle-element-access), `Cycle_pos = L[pos mod n]`, e `pos mod n` é um índice válido em `L` (em `[0, n)`). Logo, `Cycle_pos` é um dos valores de `L` — e todo valor de `L` é não negativo por hipótese, portanto `Cycle_pos >= 0`.
 
 ```math
 \therefore \ (\forall x \in L,\ x \geq 0) \land |L| > 0 \implies \text{Cycle}_{\text{pos}} \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   CycleProperties::cycleValuePositiveOrZero
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala), which reduces to the list-level helper `CycleUtils::checkPositiveOrZeroAtIndex` — indexing into a non-negative list at a valid position yields a non-negative value. The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala), que se reduz ao auxiliar de nível de lista `CycleUtils::checkPositiveOrZeroAtIndex` — indexar uma lista não negativa em uma posição válida produz um valor não negativo. O código Scala completo de verificação está no Apêndice A.9.
 
-The same argument gives the verified strict lower-bound form: if every base
-value is greater than $x$, then every cycle value is greater than $x$.
+O mesmo argumento fornece a forma verificada de cota inferior estrita: se todo
+valor-base é maior que $x$, então todo valor do ciclo é maior que $x$.
 
 ```math
 \begin{aligned}
@@ -756,8 +786,8 @@ value is greater than $x$, then every cycle value is greater than $x$.
 \end{aligned}
 ```
 
-**Proof.** The modular index selects a value of $L$, which is greater than
-$x$ by hypothesis:
+**Prova.** O índice modular seleciona um valor de $L$, que é maior que $x$ por
+hipótese:
 
 ```math
 \begin{aligned}
@@ -768,17 +798,20 @@ L[\text{pos} \bmod n] &> x &&\text{[Base-list lower bound]} \\
 \end{aligned}
 ```
 
-This strengthening is verified for `RecursiveCycle`, the article's `Cycle`
-representation, in [
+Esse fortalecimento é verificado para `RecursiveCycle`, a representação de
+`Cycle` do artigo, em [
 RecursiveCycle::cycleValueBiggerThan
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala#cycleValueBiggerThan).
 
-### 5.8 Cycle Rotation
+<a id="58-cycle-rotation"></a>
 
-Rotating a cycle's base list by $k$ positions and then accessing index $i$
-gives the same value as accessing the original cycle at index $i + k$. This
-connects cycle structure directly to the list rotation concept from chapter 3.
-Rotation is defined by re-indexing the base list from offset $k$:
+### 5.8 Rotação do Ciclo
+
+Rotacionar a lista-base de um ciclo por $k$ posições e então acessar o índice
+$i$ dá o mesmo valor que acessar o ciclo original no índice $i + k$. Isso
+conecta a estrutura de ciclo diretamente ao conceito de rotação de listas do
+capítulo 3. A rotação é definida reindexando a lista-base a partir do
+deslocamento $k$:
 
 ```math
 \begin{aligned}
@@ -794,7 +827,7 @@ Rotation is defined by re-indexing the base list from offset $k$:
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -815,31 +848,33 @@ Rotation is defined by re-indexing the base list from offset $k$:
 \text{for } k \geq 0,\ i \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-The third step composes [Modulo Idempotence](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#68-modulo-idempotence)
-and [Distributivity over Addition](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition),
-both proved and verified in [Division and Modulo from Recursive
-Normalization](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
-The identity `mod(k + mod(i, n), n) = mod(k + i, n)` follows because
-both sides reduce to `mod(mod(k, n) + mod(i, n), n)`.
+O terceiro passo compõe [Idempotência do Módulo](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#68-modulo-idempotence)
+e [Distributividade sobre Adição](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#69-distributivity-over-addition),
+ambas provadas e verificadas em [Divisão e Módulo por Normalização
+Recursiva](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3):
+A identidade `mod(k + mod(i, n), n) = mod(k + i, n)` segue porque ambos os
+lados reduzem a `mod(mod(k, n) + mod(i, n), n)`.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   CycleProperties::rotateAtValue
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala). O código Scala completo de verificação está no Apêndice A.10.
 
-### 5.9 MemCycle-Level Restatement
+<a id="59-memcycle-level-restatement"></a>
 
-Sections 5.1-5.5 state element access, small-value lookup, periodic
-invariance, multi-loop consistency, and mod propagation for `ModCycle`.
-Since $\text{MemCycle}(L)_i = \text{ModCycle}(L)_i$ at every position ([§3.3](#33-memory-cycle),
-assembled at the close of [§4](#4-cycle-equivalence)), all five results
-carry over to `MemCycle` by direct substitution — mathematically, this
-section adds no content beyond §5.1-5.5. `MemCycle` is nonetheless the
-representation actually used elsewhere in the codebase (it is the one that
-carries residue-classification metadata), and Stainless has no way to
-transfer a lemma proved for one concrete type to a different wrapper type
-that merely happens to agree with it pointwise: each result below is
-re-proved against `MemCycle`, and its proof body mirrors the corresponding
-`ModCycle` lemma line for line rather than deriving anything new:
+### 5.9 Reenunciado no Nível de MemCycle
+
+As Seções 5.1-5.5 enunciam acesso a elementos, consulta de valor pequeno,
+invariância periódica, consistência de múltiplas voltas e propagação de módulo
+para `ModCycle`. Como $\text{MemCycle}(L)_i = \text{ModCycle}(L)_i$ em toda
+posição ([§3.3](#33-memory-cycle), montado ao final de [§4](#4-cycle-equivalence)),
+todos os cinco resultados passam para `MemCycle` por substituição direta —
+matematicamente, esta seção não acrescenta conteúdo além de §5.1-5.5. Ainda
+assim, `MemCycle` é a representação efetivamente usada em outras partes do
+código (é ela que carrega metadados de classificação de resíduos), e o Stainless
+não tem como transferir um lema provado para um tipo concreto a um tipo wrapper
+diferente que apenas concorda com ele ponto a ponto: cada resultado abaixo é
+reprovado contra `MemCycle`, e seu corpo de prova espelha linha a linha o lema
+correspondente de `ModCycle`, em vez de derivar algo novo:
 
 ```math
 \begin{aligned}
@@ -856,7 +891,7 @@ key < n &\implies \text{Cycle}_{key} = L[key]
 \end{aligned}
 ```
 
-These are verified in the [
+Esses resultados são verificados em [
   MemCycleProperties::findValueInCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
   MemCycleProperties::smallValueInCycle
@@ -864,19 +899,19 @@ These are verified in the [
   MemCycleProperties::valueMatchAfterManyLoops
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), [
   MemCycleProperties::valueMatchAfterManyLoopsInBoth
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala), e [
   MemCycleProperties::propagateModFromValueToCycle
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-The mod-idempotence identity from [§5.5](#55-propagate-modulo-from-value-to-cycle)'s proof (that `Cycle_i` equals
-`Cycle_(mod(i, n) mod n)`) has its own `MemCycle` restatement in [
+A identidade de idempotência do módulo da prova de [§5.5](#55-propagate-modulo-from-value-to-cycle) (de que `Cycle_i` é igual a
+`Cycle_(mod(i, n) mod n)`) tem seu próprio reenunciado para `MemCycle` em [
   MemCycleProperties::assertCycleOfPosEqualsCycleOfModPos
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala).
 
-`MemCycle` also classifies each divisor by how its residues behave across
-the base list. `MemCycle.checkMod(d)` ([§3.3](#33-memory-cycle)) counts how
-many values of `L` are ≡ 0 mod `d`, via `countModZero` — one pass over the
-list, adding 1 wherever the value is ≡ 0 mod `d`:
+`MemCycle` também classifica cada divisor pelo comportamento de seus resíduos ao
+longo da lista-base. `MemCycle.checkMod(d)` ([§3.3](#33-memory-cycle)) conta
+quantos valores de `L` são ≡ 0 mod `d`, via `countModZero` — uma passagem sobre
+a lista, adicionando 1 onde quer que o valor seja ≡ 0 mod `d`:
 
 ```math
 \begin{aligned}
@@ -888,21 +923,24 @@ list, adding 1 wherever the value is ≡ 0 mod `d`:
 \end{aligned}
 ```
 
-`checkMod(d)` then buckets `d` as all-zero, none-zero, or some-zero based on
-that count — each bucket defined and proved below to transfer from the base
-list to every position of the infinite `Cycle`, using the same move as
-[§5.7](#57-cycle-value-positivity): a cycle value is always *some* value of
-`L` ([§5.1](#51-cycle-element-access)), so any property that holds of every
-value of `L` holds of every cycle position too. `CycleCheckMod.scala`'s ten
-lemmas separately verify that the classification itself is mutually
-exclusive, exhaustive, and persists correctly across independent `checkMod`
-calls — bookkeeping properties of the classification lists, not further
-claims about cycle values, so they are not restated here.
+`checkMod(d)` então coloca `d` nos grupos todo-zero, nenhum-zero ou algum-zero
+com base nessa contagem — cada grupo é definido e provado abaixo como
+transferível da lista-base para toda posição do `Cycle` infinito, usando o mesmo
+movimento de [§5.7](#57-cycle-value-positivity): um valor de ciclo é sempre
+*algum* valor de `L` ([§5.1](#51-cycle-element-access)), portanto qualquer
+propriedade que vale para todo valor de `L` também vale para toda posição do
+ciclo. Os dez lemas de `CycleCheckMod.scala` verificam separadamente que a
+classificação em si é mutuamente exclusiva, exaustiva e persiste corretamente
+entre chamadas independentes de `checkMod` — propriedades administrativas das
+listas de classificação, não novas afirmações sobre valores de ciclo, então elas
+não são reenunciadas aqui.
 
-### 5.10 All-Zero Residue Transfers to the Cycle
+<a id="510-all-zero-residue-transfers-to-the-cycle"></a>
 
-`checkMod(d)` classifies `d` as all-zero when every value of `L` is ≡ 0
-mod `d` — i.e. `countModZero(L, d)` counts all `n` of them:
+### 5.10 Resíduo Todo-Zero é Transferido para o Ciclo
+
+`checkMod(d)` classifica `d` como todo-zero quando todo valor de `L` é ≡ 0
+mod `d` — isto é, `countModZero(L, d)` conta todos os `n` valores:
 
 ```math
 \begin{aligned}
@@ -917,7 +955,7 @@ mod `d` — i.e. `countModZero(L, d)` counts all `n` of them:
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -934,17 +972,17 @@ mod `d` — i.e. `countModZero(L, d)` counts all `n` of them:
 \therefore \ \text{allZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-`allZero` is `MemCycle.allModValuesAreZero`, defined and set by `checkMod`
-in [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
-Stainless verifies the base-list count directly; the transfer to an
-arbitrary cycle position `k` shown above is this article's corollary of
-that count together with [§5.1](#51-cycle-element-access), not a separate
-Stainless lemma.
+`allZero` é `MemCycle.allModValuesAreZero`, definido e definido por `checkMod`
+em [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
+O Stainless verifica diretamente a contagem da lista-base; a transferência para
+uma posição arbitrária do ciclo `k` mostrada acima é o corolário deste artigo a
+partir dessa contagem junto com [§5.1](#51-cycle-element-access), não um lema
+Stainless separado.
 
-### 5.11 None-Zero Residue Transfers to the Cycle
+### 5.11 Resíduo Nenhum-Zero é Transferido para o Ciclo
 
-The symmetric case: `checkMod(d)` classifies `d` as none-zero when no value
-of `L` is ≡ 0 mod `d` — `countModZero(L, d)` counts none of them:
+O caso simétrico: `checkMod(d)` classifica `d` como nenhum-zero quando nenhum
+valor de `L` é ≡ 0 mod `d` — `countModZero(L, d)` não conta nenhum:
 
 ```math
 \begin{aligned}
@@ -959,7 +997,7 @@ of `L` is ≡ 0 mod `d` — `countModZero(L, d)` counts none of them:
 \end{aligned}
 ```
 
-**Proof.**
+**Prova.**
 
 ```math
 \begin{aligned}
@@ -976,17 +1014,19 @@ of `L` is ≡ 0 mod `d` — `countModZero(L, d)` counts none of them:
 \therefore \ \text{noneZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d \neq 0 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-`noneZero` is `MemCycle.noModValuesAreZero`, defined and set by `checkMod`
-in [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
-As in [§5.10](#510-all-zero-residue-transfers-to-the-cycle), Stainless
-verifies the base-list count; the transfer to arbitrary `k` is this
-article's corollary of §5.1.
+`noneZero` é `MemCycle.noModValuesAreZero`, definido e definido por `checkMod`
+em [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
+Como em [§5.10](#510-all-zero-residue-transfers-to-the-cycle), o Stainless
+verifica a contagem da lista-base; a transferência para `k` arbitrário é o
+corolário deste artigo a partir de §5.1.
 
-### 5.12 Some-Zero Residue Transfers to the Cycle
+<a id="512-some-zero-residue-transfers-to-the-cycle"></a>
 
-`checkMod(d)` classifies `d` as some-zero when some, but not all, values of
-`L` are ≡ 0 mod `d` — `countModZero(L, d)` counts strictly between `0` and
-`n` of them:
+### 5.12 Resíduo Algum-Zero é Transferido para o Ciclo
+
+`checkMod(d)` classifica `d` como algum-zero quando alguns, mas não todos, os
+valores de `L` são ≡ 0 mod `d` — `countModZero(L, d)` conta um número
+estritamente entre `0` e `n` deles:
 
 ```math
 \begin{aligned}
@@ -995,9 +1035,10 @@ article's corollary of §5.1.
 \end{aligned}
 ```
 
-Unlike §5.10-5.11, `someZero` is not a claim about *every* position — it
-needs witnesses on both sides, so the transfer argument has to name two
-concrete cycle positions rather than substitute into a universal.
+Diferentemente de §5.10-5.11, `someZero` não é uma afirmação sobre *toda*
+posição — ela precisa de testemunhas dos dois lados, então o argumento de
+transferência precisa nomear duas posições concretas do ciclo em vez de
+substituir em uma universal.
 
 ```math
 \begin{aligned}
@@ -1005,10 +1046,10 @@ concrete cycle positions rather than substitute into a universal.
 \end{aligned}
 ```
 
-**Proof.** By definition, `someZero(d)` means $0 < \text{countModZero}(L, d) < n$:
-at least one value of `L` is ≡ 0 mod `d`, and at least one is not. Let
-$j_0, j_1 \in [0, n)$ be indices of one such value on each side, so
-$L_{j_0} \bmod d = 0$ and $L_{j_1} \bmod d \neq 0$.
+**Prova.** Por definição, `someZero(d)` significa $0 < \text{countModZero}(L, d) < n$:
+pelo menos um valor de `L` é ≡ 0 mod `d`, e pelo menos um não é. Sejam
+$j_0, j_1 \in [0, n)$ índices de um valor de cada tipo, de modo que
+$L_{j_0} \bmod d = 0$ e $L_{j_1} \bmod d \neq 0$.
 
 ```math
 \begin{aligned}
@@ -1024,15 +1065,25 @@ j_0, j_1 < n &\implies \text{Cycle}_{j_0} = L_{j_0} \;\land\; \text{Cycle}_{j_1}
   \quad (k_0 := j_0,\ k_1 := j_1) \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-`someZero` is `MemCycle.someModValuesAreZero`, defined and set by
-`checkMod` in [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
-As above, Stainless verifies the base-list count; the witness positions
-$k_0, k_1$ are this article's corollary of §5.2, not a separate Stainless
-lemma.
+`someZero` é `MemCycle.someModValuesAreZero`, definido e definido por
+`checkMod` em [MemCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/MemCycle.scala).
+Como acima, o Stainless verifica a contagem da lista-base; as posições
+testemunhas $k_0, k_1$ são o corolário deste artigo a partir de §5.2, não um
+lema Stainless separado.
 
-## 6. Conclusion
+## 6. Conclusão
 
-This article presented the definitions and properties of Cycles, a fundamental concept that enables representation of repeating sequences of values. We defined Cycles using two approaches — a recursive definition and a modulo-based definition — and proved their equivalence for all positions. We further verified eleven properties: element access via modular indexing, direct access for small positions, invariance under addition of cycle-period multiples, consistency across distinct multiples, modulo propagation from values to cycle access, repeated-cycle invariance, value positivity, rotation invariance, and the all-zero, none-zero, and some-zero transfers of `MemCycle`'s divisor-residue classification from the base list to every cycle position.
+Este artigo apresentou as definições e propriedades de Ciclos, um conceito
+fundamental que permite representar sequências repetitivas de valores. Definimos
+Ciclos por duas abordagens — uma definição recursiva e uma definição baseada em
+módulo — e provamos sua equivalência para todas as posições. Além disso,
+verificamos onze propriedades: acesso a elementos por indexação modular, acesso
+direto para posições pequenas, invariância sob adição de múltiplos do período do
+ciclo, consistência entre múltiplos distintos, propagação de módulo dos valores
+para o acesso ao ciclo, invariância de ciclo repetido, positividade de valores,
+invariância por rotação e as transferências todo-zero, nenhum-zero e algum-zero
+da classificação divisor-resíduo de `MemCycle` da lista-base para toda posição
+do ciclo.
 
 ```math
 \begin{aligned}
@@ -1076,36 +1127,42 @@ n &= |L| \\
 \end{aligned}
 ```
 
-All properties were formally verified using Scala Stainless, ensuring their correctness and reliability. The full verification code is in Appendix A.
+Todas as propriedades foram formalmente verificadas usando Scala Stainless,
+garantindo sua correção e confiabilidade. O código completo de verificação está
+no Apêndice A.
 
-## 7. Future Work
+## 7. Trabalho Futuro
 
-Future work may include exploring more complex properties of Cycles, such as their behavior under various operations like concatenation and filtering, and their applications in algorithms and data structures. Additionally, we can investigate discrete integration of Cycles, similar to the work done for lists [[1]](#ref1) and integrals [[2]](#ref2).
+Trabalhos futuros podem incluir a exploração de propriedades mais complexas de
+Ciclos, como seu comportamento sob várias operações, incluindo concatenação e
+filtragem, e suas aplicações em algoritmos e estruturas de dados. Além disso,
+podemos investigar integração discreta de Ciclos, de modo semelhante ao trabalho
+feito para listas [[1]](#ref1) e integrais [[2]](#ref2).
 
-## References
+## Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
+Mata, T. H. (2026). _Using Formal Verification to Prove Properties of Lists Recursively Defined_. Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
+Mata, T. H. (2026). _Formal Verification of Discrete Integration Properties from First Principles_. Disponível em: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
+Mata, T. H. (2026). _Division and Modulo from Recursive Normalization_. Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 The Lean Community. *Mathlib: List Rotation*.
-Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Rotate.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Rotate.html)
+Disponível em: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Rotate.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Rotate.html)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Hamana, M. (2017). *Cyclic Datatypes modulo Bisimulation based on Second-Order Algebraic Theories*. Logical Methods in Computer Science, 13(4:8).
-Available at: [https://doi.org/10.23638/LMCS-13(4:8)2017](https://doi.org/10.23638/LMCS-13(4:8)2017)
+Disponível em: [https://doi.org/10.23638/LMCS-13(4:8)2017](https://doi.org/10.23638/LMCS-13(4:8)2017)
 
-## Appendix A: Scala Verification Code
+## Apêndice A: Código de Verificação Scala
 
-### A.1 Cycle Equivalence — Base Case
+### A.1 Equivalência de Ciclos — Caso Base
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Fonte: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmallValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForSmallValues(
@@ -1128,9 +1185,9 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForSmall
   }.holds
 ```
 
-### A.2 Cycle Equivalence — Inductive Step
+### A.2 Equivalência de Ciclos — Passo Indutivo
 
-Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
+Fonte: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyValues](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/properties/RecursiveCycleMatchesModCycle.scala)
 
 ```scala
   def assertCycleAndRecursiveCycleMathForAnyValues(
@@ -1161,9 +1218,9 @@ Source: [RecursiveCycleMatchesModCycle::assertCycleAndRecursiveCycleMathForAnyVa
   }.holds
 ```
 
-### A.3 Cycle Element Access — findValueInCycle
+### A.3 Acesso a Elementos do Ciclo — findValueInCycle
 
-Source: [CycleProperties::findValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::findValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def findValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -1173,9 +1230,9 @@ Source: [CycleProperties::findValueInCycle](https://github.com/thiagomata/prime-
   }.holds
 ```
 
-### A.4 Small Value in Cycle — smallValueInCycle
+### A.4 Valor Pequeno no Ciclo — smallValueInCycle
 
-Source: [CycleProperties::smallValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::smallValueInCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def smallValueInCycle(cycle: ModCycle, key: BigInt): Boolean = {
@@ -1186,9 +1243,9 @@ Source: [CycleProperties::smallValueInCycle](https://github.com/thiagomata/prime
   }.holds
 ```
 
-### A.5 Value Match After Many Loops — valueMatchAfterManyLoops
+### A.5 Valor Coincide Após Muitas Voltas — valueMatchAfterManyLoops
 
-Source: [CycleProperties::valueMatchAfterManyLoops](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::valueMatchAfterManyLoops](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoops(cycle: ModCycle, key: BigInt, m: BigInt): Boolean = {
@@ -1200,9 +1257,9 @@ Source: [CycleProperties::valueMatchAfterManyLoops](https://github.com/thiagomat
   }.holds
 ```
 
-### A.6 Two Multiples of Cycle Size — valueMatchAfterManyLoopsInBoth
+### A.6 Dois Múltiplos do Tamanho do Ciclo — valueMatchAfterManyLoopsInBoth
 
-Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::valueMatchAfterManyLoopsInBoth](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def valueMatchAfterManyLoopsInBoth(cycle: ModCycle, key: BigInt, m1: BigInt, m2: BigInt): Boolean = {
@@ -1225,9 +1282,9 @@ Source: [CycleProperties::valueMatchAfterManyLoopsInBoth](https://github.com/thi
   }.holds
 ```
 
-### A.7 Propagate Modulo — propagateModFromValueToCycle / assertCycleOfPosEqualsCycleOfModPos
+### A.7 Propagar Módulo — propagateModFromValueToCycle / assertCycleOfPosEqualsCycleOfModPos
 
-Source: [CycleProperties::propagateModFromValueToCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) and [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::propagateModFromValueToCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala) e [CycleProperties::assertCycleOfPosEqualsCycleOfModPos](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def propagateModFromValueToCycle(cycle: ModCycle, dividend: BigInt, key: BigInt): Boolean = {
@@ -1253,9 +1310,11 @@ Source: [CycleProperties::propagateModFromValueToCycle](https://github.com/thiag
   }.holds
 ```
 
-### A.8 Repeated-Cycle Invariance — assertRepeatedValuesCycleMatches
+<a id="a8-repeated-cycle-invariance--assertrepeatedvaluescyclematches"></a>
 
-Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
+### A.8 Invariância de Ciclo Repetido — assertRepeatedValuesCycleMatches
+
+Fonte: [MemCycleProperties::assertRepeatedValuesCycleMatches](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/memory/properties/MemCycleProperties.scala)
 
 ```scala
   def assertRepeatedValuesCycleMatches(
@@ -1286,9 +1345,9 @@ Source: [MemCycleProperties::assertRepeatedValuesCycleMatches](https://github.co
   }.holds
 ```
 
-### A.9 Cycle Value Positivity — cycleValuePositiveOrZero
+### A.9 Positividade dos Valores do Ciclo — cycleValuePositiveOrZero
 
-Source: [CycleProperties::cycleValuePositiveOrZero](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::cycleValuePositiveOrZero](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def cycleValuePositiveOrZero(cycle: ModCycle, pos: BigInt): Boolean = {
@@ -1303,9 +1362,9 @@ Source: [CycleProperties::cycleValuePositiveOrZero](https://github.com/thiagomat
   }.holds
 ```
 
-### A.10 Cycle Rotation — rotateAtValue
+### A.10 Rotação do Ciclo — rotateAtValue
 
-Source: [CycleProperties::rotateAtValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
+Fonte: [CycleProperties::rotateAtValue](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/properties/CycleProperties.scala)
 
 ```scala
   def rotateAtValue(cycle: ModCycle, k: BigInt, i: BigInt): Boolean = {
@@ -1335,6 +1394,8 @@ Source: [CycleProperties::rotateAtValue](https://github.com/thiagomata/prime-num
   }.holds
 ```
 
-## Appendix B: Stainless Verification Log Output
+## Apêndice B: Saída do Log de Verificação Stainless
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify-ch-4-v1-chapter4-_.log](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/logs/verify-ch-4-v1-chapter4-_.log)
+A execução mais recente de `just verify` verifica todas as propriedades
+descritas sem erros. A saída completa do log está disponível em:
+[logs/verify-ch-4-v1-chapter4-_.log](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/logs/verify-ch-4-v1-chapter4-_.log)
