@@ -1,103 +1,112 @@
-# Formal Verification of Sieve Sequence Stages and Their Transitions
+# Verificação Formal dos Estágios da Sequência de Peneira e Suas Transições
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher
+**Autor:** Thiago Henrique Ramos da Mata
+Pesquisador Independente
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)<br>
 **DOI:** [10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782)
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
 
-This article defines a sieve sequence stage as the increasing sequence of
-integers accepted by a finite prefix of the prime filters. The accepted pattern
-is periodic modulo the product of those filters, so one finite list of positive
-gaps reconstructs the entire infinite stage. We formally verify the stage's
-strict increase, completeness, block-period shift, gap-cycle reconstruction,
-and exact transition count. If the current head is $h$, the current period has
-$T$ accepted values, and the current modulus is $M$, then the expanded
-window of length $hM$ contains $hT$ old survivors; exactly $T$ are
-multiples of $h$, leaving $T(h-1)$ survivors. We also verify the local
-copy-or-merge rule for the next gaps. For each real linear 2-gap, the two
-endpoint strikes occur at distinct lift offsets, so exactly two of its $h$
-lifts are destroyed and exactly $h-2$ keep both endpoints. Under explicit
-structural and period preconditions, the resulting gap prefix agrees with the
-next linear specification.
+Este artigo define um estágio da sequência de peneira como a sequência
+crescente de inteiros aceitos por um prefixo finito dos filtros primos. O padrão
+aceito é periódico módulo o produto desses filtros, então uma lista finita de
+lacunas positivas reconstrói todo o estágio infinito. Verificamos formalmente o
+crescimento estrito, a completude, o deslocamento por bloco de período, a
+reconstrução do ciclo de lacunas e a contagem exata de transição do estágio. Se
+a cabeça atual é $h$, o período atual tem $T$ valores aceitos e o módulo atual é
+$M$, então a janela expandida de comprimento $hM$ contém $hT$ sobreviventes
+antigos; exatamente $T$ são múltiplos de $h$, deixando $T(h-1)$ sobreviventes.
+Também verificamos a regra local de copiar-ou-mesclar para as próximas lacunas.
+Para cada lacuna 2 linear real, os dois ataques aos extremos ocorrem em
+deslocamentos de levantamento distintos, então exatamente dois de seus $h$
+levantamentos são destruídos e exatamente $h-2$ mantêm ambos os extremos. Sob
+pré-condições estruturais e de período explícitas, o prefixo de lacunas
+resultante concorda com a próxima especificação linear.
 
-The formal result has two explicit boundaries. First, next-head primality is
-conditional on the square bound supplied mathematically by Bertrand's postulate.
-Second, the article proves the semantic transition between stages, while the
-direct construction of the next cycle from a repeated and filtered current cycle
-is a separate open composition problem. Accordingly, the article establishes a
-formally verified finite-stage sieve specification and transition semantics, not
-a new prime-sieving algorithm or a theorem about the persistence of any
-particular prime gap in a prescribed short window.
+O resultado formal tem duas fronteiras explícitas. Primeiro, a primalidade da
+próxima cabeça é condicional ao limite quadrático fornecido matematicamente pelo
+postulado de Bertrand. Segundo, o artigo prova a transição semântica entre
+estágios, enquanto a construção direta do próximo ciclo a partir de um ciclo
+atual repetido e filtrado é um problema aberto de composição separado. Portanto,
+o artigo estabelece uma especificação de peneira em estágio finito e uma
+semântica de transição formalmente verificadas, não um novo algoritmo de
+peneiramento de primos nem um teorema sobre a persistência de alguma lacuna
+prima particular em uma janela curta prescrita.
 
 </p>
 </div>
 
-## 1. Introduction
+<a id="1-introduction"></a>
 
-The sieve of Eratosthenes repeatedly removes multiples of known primes
-[[5]](#ref5). A standard implementation stores a bounded array and crosses out
-composites. The Sieve Sequence studied here exposes a different mathematical
-view: after a finite set of prime filters has been installed, the survivors
-form an infinite periodic sequence. A finite cycle of adjacent gaps therefore
-represents the whole stage.
+## 1. Introdução
 
-This representation belongs to the broad family of cyclic or wheel-based sieve
-descriptions. Pritchard's survey places wheel sieves among systematic families
-of prime-number sieves [[6]](#ref6). The present contribution is not the wheel
-idea itself. It is the explicit decomposition of the stage and transition into
-contracts that can be checked by Stainless, a verifier for Scala programs
-[[7]](#ref7), against a first-principles arithmetic and list library.
+A peneira de Eratóstenes remove repetidamente múltiplos de primos conhecidos
+[[5]](#ref5). Uma implementação padrão armazena um vetor limitado e risca
+compostos. A Sequência de Peneira estudada aqui expõe uma visão matemática
+diferente: depois que um conjunto finito de filtros primos foi instalado, os
+sobreviventes formam uma sequência periódica infinita. Um ciclo finito de
+lacunas adjacentes, portanto, representa todo o estágio.
 
-The proof is organized into these property groups:
+Essa representação pertence à ampla família de descrições de peneiras cíclicas
+ou baseadas em rodas. A revisão de Pritchard coloca peneiras de roda entre as
+famílias sistemáticas de peneiras de números primos [[6]](#ref6). A contribuição
+presente não é a ideia de roda em si. Ela é a decomposição explícita do estágio
+e da transição em contratos que podem ser checados pelo Stainless, um verificador
+para programas Scala [[7]](#ref7), contra uma biblioteca de aritmética e listas
+de primeiros princípios.
 
-- stage semantics and complete increasing enumeration - [§3](#3-linear-stage-semantics);
-- canonical period and finite gap-cycle reconstruction - [§4](#4-period-and-cycle-reconstruction);
-- repeated-cycle invariance, exact filtering, and copy-or-merge dynamics - [§5](#5-installing-the-current-head-as-a-filter);
-- next-head primality and next-stage agreement - [§6](#6-the-next-stage);
-- conditional assumptions and open composition problems - [§7](#7-exact-proof-boundary).
+A prova é organizada nestes grupos de propriedades:
 
-The mathematical object is separate from its proof namespaces. `SpecSieveSequence`
-is the data model and linear semantic specification. Independent property
-objects establish the period, survivor count, transition, next-stage assembly,
-and head-primality theorems.
+- semântica de estágio e enumeração crescente completa - [§3](#3-linear-stage-semantics);
+- período canônico e reconstrução por ciclo finito de lacunas - [§4](#4-period-and-cycle-reconstruction);
+- invariância de ciclo repetido, filtragem exata e dinâmica de copiar-ou-mesclar - [§5](#5-installing-the-current-head-as-a-filter);
+- primalidade da próxima cabeça e concordância do próximo estágio - [§6](#6-the-next-stage);
+- hipóteses condicionais e problemas abertos de composição - [§7](#7-exact-proof-boundary).
 
-## 2. Preliminaries
+O objeto matemático é separado de seus namespaces de prova. `SpecSieveSequence`
+é o modelo de dados e a especificação semântica linear. Objetos independentes de
+propriedades estabelecem os teoremas de período, contagem de sobreviventes,
+transição, montagem do próximo estágio e primalidade da cabeça.
 
-This section fixes the notation, relates the linear and cyclic views, and states
-how to interpret a Stainless-verified contract.
+<a id="2-preliminaries"></a>
 
-- [§2.1](#21-stage-definition) defines one stage and its acceptance predicate.
-- [§2.2](#22-period-and-gap-cycle) defines the finite period and gap cycle.
-- [§2.3](#23-source-evidence-map) maps the proof architecture.
-- [§2.4](#24-verification-evidence) explains the verification boundary.
+## 2. Preliminares
 
-### 2.1 Stage Definition
+Esta seção fixa a notação, relaciona as visões linear e cíclica, e declara como
+interpretar um contrato verificado em Stainless.
 
-Let a stage $S$ be determined by a current head prime $h$ and the complete
-list $\overline{P}$ of primes smaller than $h$. The list is stored in
-descending order, but its order does not affect divisibility. Define
+- [§2.1](#21-stage-definition) define um estágio e seu predicado de aceitação.
+- [§2.2](#22-period-and-gap-cycle) define o período finito e o ciclo de lacunas.
+- [§2.3](#23-source-evidence-map) mapeia a arquitetura da prova.
+- [§2.4](#24-verification-evidence) explica a fronteira da verificação.
+
+<a id="21-stage-definition"></a>
+
+### 2.1 Definição de Estágio
+
+Seja um estágio $S$ determinado por uma cabeça prima atual $h$ e pela lista
+completa $\overline{P}$ dos primos menores que $h$. A lista é armazenada em
+ordem decrescente, mas sua ordem não afeta a divisibilidade. Defina
 
 ```math
 \begin{aligned}
 M &= \prod_{q \in \overline{P}} q,
-  &&\text{[Tail primorial]} \\
+  &&\text{[Primorial da cauda]} \\
 A_S(v) &\Longleftrightarrow
   v \ge h \land
   \forall q \in \overline{P},\ v \not\equiv 0 \pmod q.
-  &&\text{[Acceptance]}
+  &&\text{[Aceitação]}
 \end{aligned}
 ```
 
-The linear sequence $L=(\ell_k)_{k\ge 0}$ starts at $h$ and repeatedly
-selects the least later accepted value:
+A sequência linear $L=(\ell_k)_{k\ge 0}$ começa em $h$ e seleciona
+repetidamente o menor valor aceito posterior:
 
 ```math
 \begin{aligned}
@@ -107,27 +116,28 @@ selects the least later accepted value:
 \end{aligned}
 ```
 
-A stage does **not** claim that every $\ell_k$ is prime. For example, the
-stage with $h=5$ and filters $3,2$ emits
-$5,7,11,13,17,19,23,25,\ldots$. The value $25$ survives because the
-current head $5$ has not yet been added to the filter list. Prime generation
-comes from the chain of stage heads, not from treating all values in one stage
-as prime.
+Um estágio **não** afirma que todo $\ell_k$ é primo. Por exemplo, o estágio com
+$h=5$ e filtros $3,2$ emite $5,7,11,13,17,19,23,25,\ldots$. O valor $25$
+sobrevive porque a cabeça atual $5$ ainda não foi adicionada à lista de filtros.
+A geração de primos vem da cadeia de cabeças de estágio, não de tratar todos os
+valores em um estágio como primos.
 
-The figure below makes this concrete for six early stages: each panel is a
-survivor's own leading $100$ values reshaped into a $10\times10$ grid, colored
-green where the survivor is actually prime and red where the current filter
-set accepted it anyway even though it is composite (stage $0$, with no filter
-installed yet, marks every composite integer this way). Every red cell is
-exactly the phenomenon named above — a value $A_S$ currently accepts that a
-later stage head will remove.
+A figura abaixo torna isso concreto para seis estágios iniciais: cada painel é
+composto pelos primeiros $100$ valores de um sobrevivente remodelados em uma
+grade $10\times10$, coloridos de verde onde o sobrevivente é de fato primo e de
+vermelho onde o conjunto atual de filtros o aceitou mesmo sendo composto (o
+estágio $0$, ainda sem filtro instalado, marca todo inteiro composto dessa
+forma). Toda célula vermelha é exatamente o fenômeno nomeado acima — um valor
+que $A_S$ aceita atualmente e que uma cabeça de estágio posterior removerá.
 
-![Six small hit/miss matrices, one per early stage: green cells are survivors that are actually prime, red cells are survivors the current filter set accepts despite being composite](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/hit-miss-matrices.svg)
+![Seis pequenas matrizes de acerto/erro, uma por estágio inicial: células verdes são sobreviventes que são de fato primos, células vermelhas são sobreviventes que o conjunto atual de filtros aceita apesar de serem compostos](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/hit-miss-matrices.svg)
 
-### 2.2 Period and Gap Cycle
+<a id="22-period-and-gap-cycle"></a>
 
-Because every $q\in\overline{P}$ divides $M$, acceptance is unchanged by
-adding $M$ within the stage domain $v\ge h$:
+### 2.2 Período e Ciclo de Lacunas
+
+Como todo $q\in\overline{P}$ divide $M$, a aceitação não muda ao adicionar $M$
+dentro do domínio do estágio $v\ge h$:
 
 ```math
 \begin{aligned}
@@ -142,8 +152,8 @@ v\ge h\ \land\
 \end{aligned}
 ```
 
-Let $T\gt0$ be the unique index satisfying
-$\ell_T=h+M$. Define one complete gap list
+Seja $T\gt0$ o índice único que satisfaz $\ell_T=h+M$. Defina uma lista
+completa de lacunas
 
 ```math
 \begin{aligned}
@@ -152,7 +162,7 @@ g_i &= \ell_{i+1}-\ell_i.
 \end{aligned}
 ```
 
-Every gap is positive and the gaps telescope across the period:
+Toda lacuna é positiva e as lacunas telescopam ao longo do período:
 
 ```math
 \begin{aligned}
@@ -164,141 +174,159 @@ g_i &\gt 0, \\
 \end{aligned}
 ```
 
-The cycle integral repeatedly adds the entries of $G$. With the indexing used
-by the Scala implementation, its position $k-1$ reconstructs $\ell_k$ for
-every $k\gt0$.
+A integral do ciclo adiciona repetidamente as entradas de $G$. Com a indexação
+usada pela implementação Scala, sua posição $k-1$ reconstrói $\ell_k$ para todo
+$k\gt0$.
 
-### 2.3 Source Evidence Map
+<a id="23-source-evidence-map"></a>
 
-The proofs below use `SpecSieveSequence` as the linear mathematical model of a
-stage. Separate property objects verify the period, gap-cycle reconstruction,
-survivor count, copy-or-merge transition, next-stage agreement, and head
-primality facts. The model does not depend on those property objects; they are
-source-backed evidence for the mathematical properties stated in the article.
+### 2.3 Mapa de Evidência de Fonte
 
-The construction builds on the verified modulo [[1]](#ref1), list [[2]](#ref2),
-cycle [[3]](#ref3), and cycle-integral [[4]](#ref4) foundations.
+As provas abaixo usam `SpecSieveSequence` como o modelo matemático linear de um
+estágio. Objetos de propriedades separados verificam os fatos de período,
+reconstrução do ciclo de lacunas, contagem de sobreviventes, transição de
+copiar-ou-mesclar, concordância do próximo estágio e primalidade da cabeça. O
+modelo não depende desses objetos de propriedades; eles são evidência apoiada em
+fonte para as propriedades matemáticas declaradas no artigo.
 
-### 2.4 Verification Evidence
+A construção se apoia nas bases verificadas de módulo [[1]](#ref1), listas
+[[2]](#ref2), ciclos [[3]](#ref3) e integral de ciclo [[4]](#ref4).
 
-Each verified property cited below is tied to a concrete Scala contract in the
-repository. The preconditions in those contracts are part of the theorem
-statement, and the article states them in mathematical form before linking to
-the source. This keeps the mathematical result and the Stainless evidence
-aligned without relying on repository-wide verification-condition totals, which
-change when unrelated functions are added. The verification framework's
-formal foundations are described in [[8]](#ref8).
+<a id="24-verification-evidence"></a>
 
-## 3. Linear Stage Semantics
+### 2.4 Evidência de Verificação
 
-The linear specification is an ordered enumeration of exactly the integers that
-pass the installed filters at or after the head.
+Cada propriedade verificada citada abaixo está vinculada a um contrato Scala
+concreto no repositório. As pré-condições nesses contratos fazem parte da
+declaração do teorema, e o artigo as declara em forma matemática antes de criar
+link para a fonte. Isso mantém o resultado matemático e a evidência em
+Stainless alinhados sem depender dos totais de condições de verificação do
+repositório inteiro, que mudam quando funções não relacionadas são adicionadas.
+As bases formais da estrutura de verificação são descritas em [[8]](#ref8).
 
-- `apply` returns accepted values and never moves backwards.
-- `indexOfAccepted` proves completeness of the enumeration.
-- strict increase makes indexes and adjacent gaps unambiguous.
+<a id="3-linear-stage-semantics"></a>
 
-### 3.1 Accepted Values and Completeness
+## 3. Semântica Linear do Estágio
 
-The generator's `apply` contract proves soundness:
-$A_S(\ell_k)$ for every $k\ge0$. Conversely, `indexOfAccepted` proves that
-every accepted $v\ge h$ occurs at some index. Together they establish exact
-enumeration rather than merely generation of a subset.
+A especificação linear é uma enumeração ordenada exatamente dos inteiros que
+passam pelos filtros instalados na cabeça ou após ela.
+
+- `apply` retorna valores aceitos e nunca anda para trás.
+- `indexOfAccepted` prova a completude da enumeração.
+- o crescimento estrito torna índices e lacunas adjacentes inequívocos.
+
+<a id="31-accepted-values-and-completeness"></a>
+
+### 3.1 Valores Aceitos e Completude
+
+O contrato `apply` do gerador prova a correção:
+$A_S(\ell_k)$ para todo $k\ge0$. Reciprocamente, `indexOfAccepted` prova que
+todo $v\ge h$ aceito ocorre em algum índice. Juntos, eles estabelecem enumeração
+exata, não apenas a geração de um subconjunto.
 
 ```math
 \begin{aligned}
 \forall k\ge0,\quad
 A_S(\ell_k)
-&\quad\text{[Soundness]} \\
+&\quad\text{[Correção]} \\
 \forall v\ge h,\quad
 A_S(v)
 &\Longrightarrow
 \exists i\ge0,\ \ell_i=v
-\quad\text{[Completeness]}.
+\quad\text{[Completude]}.
 \end{aligned}
 ```
 
-For completeness, start at $\ell_0=h\le v$. If the current generated value
-is smaller than $v$, the next generated accepted value cannot pass over $v$,
-because $v$ itself is accepted. Repeating this finite descent on
-$v-\ell_k$ reaches an index $i$ with $\ell_i=v$.
+Para a completude, comece em $\ell_0=h\le v$. Se o valor gerado atual é menor
+que $v$, o próximo valor aceito gerado não pode passar por cima de $v$, porque
+$v$ em si é aceito. Repetir essa descida finita em $v-\ell_k$ alcança um índice
+$i$ com $\ell_i=v$.
 
-This verified contract is implemented in [
+Este contrato verificado é implementado em [
   SpecSieveSequence::indexOfAccepted
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala).
 
-### 3.2 Strict Increase
+<a id="32-strict-increase"></a>
 
-Each recursive step searches strictly after the previous result. Consequently,
-the sequence is strictly increasing, indexes are injective, and every adjacent
-gap is positive.
+### 3.2 Crescimento Estrito
+
+Cada passo recursivo busca estritamente após o resultado anterior.
+Consequentemente, a sequência é estritamente crescente, os índices são
+injetivos e toda lacuna adjacente é positiva.
 
 ```math
 \begin{aligned}
 \ell_{k+1}
 &\ge \ell_k+1
-  &&\text{[Search starts after previous value]} \\
+  &&\text{[A busca começa após o valor anterior]} \\
 &\gt \ell_k
-  &&\text{[Integer order]} \\
+  &&\text{[Ordem inteira]} \\
 g_k
 &=\ell_{k+1}-\ell_k\gt0
-  &&\blacksquare\ \text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSequence::applyStrictlyIncreases
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/SpecSieveSequence.scala).
 
-## 4. Period and Cycle Reconstruction
+<a id="4-period-and-cycle-reconstruction"></a>
 
-The finite representation works because the filter predicate is periodic and
-the scan preserves the order of the repeated accepted residues.
+## 4. Período e Reconstrução do Ciclo
 
-- one period shifts every generated value by $M$;
-- every later block is a translated copy of the first block;
-- integrating one finite positive gap cycle reconstructs the infinite scan.
+A representação finita funciona porque o predicado de filtro é periódico e a
+varredura preserva a ordem dos resíduos aceitos repetidos.
 
-### 4.1 Canonical Block Shift
+- um período desloca todo valor gerado por $M$;
+- todo bloco posterior é uma cópia transladada do primeiro bloco;
+- integrar um ciclo finito positivo de lacunas reconstrói a varredura infinita.
 
-The boundary $h+M$ passes exactly the same filters as $h$, so completeness
-gives a positive index $T$ with $\ell_T=h+M$. Periodicity of acceptance and
-strict order then identify the $k$-th accepted value in the following block:
+<a id="41-canonical-block-shift"></a>
+
+### 4.1 Deslocamento Canônico de Bloco
+
+A fronteira $h+M$ passa exatamente pelos mesmos filtros que $h$, então a
+completude dá um índice positivo $T$ com $\ell_T=h+M$. A periodicidade da
+aceitação e a ordem estrita então identificam o $k$-ésimo valor aceito no bloco
+seguinte:
 
 ```math
 \begin{aligned}
 A_S(v+M) &= A_S(v)
-  &&\text{[Modulo-period invariance]} \\
+  &&\text{[Invariância por período modular]} \\
 \ell_T &= h+M
-  &&\text{[Canonical boundary]} \\
+  &&\text{[Fronteira canônica]} \\
 \ell_{k+T} &= \ell_k+M
-  &&\text{[Same ordered survivor]} \\
+  &&\text{[Mesmo sobrevivente ordenado]} \\
 \ell_{k+nT} &= \ell_k+nM
-  &&\text{[Block induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+  &&\text{[Indução em blocos]}\quad\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqPeriodProperties::assertBlockShiftMultiple
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala).
 
-### 4.2 Gap-Cycle Reconstruction
+<a id="42-gap-cycle-reconstruction"></a>
 
-Let `GapCycle(G)` store the first $T$ adjacent differences. The block-shift
-theorem makes those differences periodic:
+### 4.2 Reconstrução pelo Ciclo de Lacunas
+
+Seja `GapCycle(G)` o armazenamento das primeiras $T$ diferenças adjacentes. O
+teorema de deslocamento por bloco torna essas diferenças periódicas:
 
 ```math
 \begin{aligned}
 g_{k+T}
 &=\ell_{k+T+1}-\ell_{k+T} \\
 &=(\ell_{k+1}+M)-(\ell_k+M)
-  &&\text{[Block shift]} \\
+  &&\text{[Deslocamento por bloco]} \\
 &=g_k.
 \end{aligned}
 ```
 
-The cycle integral starts at $h$ and adds these gaps. Induction on $k$
-then reconstructs every scan value:
+A integral do ciclo começa em $h$ e adiciona essas lacunas. A indução em $k$
+então reconstrói todo valor da varredura:
 
 ```math
 \begin{aligned}
@@ -308,56 +336,65 @@ I_G(0)
 I_G(k)
 &=I_G(k-1)+g_k \\
 &=\ell_k+(\ell_{k+1}-\ell_k)
-  &&\text{[Induction hypothesis]} \\
+  &&\text{[Hipótese de indução]} \\
 &=\ell_{k+1}
-  &&\blacksquare\ \text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqPeriodProperties::assertSpecGapCycleIntegralMatchesApply
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqPeriodProperties.scala).
 
-### 4.3 Repetition Does Not Change the Infinite Sequence
+<a id="43-repetition-does-not-change-the-infinite-sequence"></a>
 
-The transition prepares $h$ copies of the current period before installing
-the head $h$ as a new filter. Repeating the stored gap list multiplies the
-finite representation's period from $T$ to $hT$, but it does not change
-the infinite periodic sequence represented by the cycle integral.
+### 4.3 A Repetição Não Muda a Sequência Infinita
+
+A transição prepara $h$ cópias do período atual antes de instalar a cabeça $h$
+como novo filtro. Repetir a lista armazenada de lacunas multiplica o período da
+representação finita de $T$ para $hT$, mas não muda a sequência periódica
+infinita representada pela integral do ciclo.
 
 ```math
 \begin{aligned}
 G^{\langle h\rangle}
-  &=\underbrace{G\mathbin{\texttt{++}}\cdots\mathbin{\texttt{++}}G}_{h\text{ copies}}, \\
+  &=\underbrace{G\mathbin{\texttt{++}}\cdots\mathbin{\texttt{++}}G}_{h\text{ cópias}}, \\
 |G^{\langle h\rangle}|&=hT, \\
 G^{\langle h\rangle}_{k\bmod hT}
   &=G_{k\bmod T}, \\
 I_{G^{\langle h\rangle}}(k)
   &=I_G(k)
-  \quad\text{[Equal increments and initial value]}\quad\blacksquare\ \text{[Q.E.D.]}.
+  \quad\text{[Incrementos e valor inicial iguais]}\quad\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecDerivedRepeatedCycleProperties::assertSpecRepeatedCycleIntegralMatchesBase
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala).
 
-## 5. Installing the Current Head as a Filter
+<a id="5-installing-the-current-head-as-a-filter"></a>
 
-The next stage adds $h$ to the active filter list. Over one complete expanded
-window, this operation has an exact count and a deterministic effect on gaps.
+## 5. Instalando a Cabeça Atual como Filtro
 
-- the expanded old stage contains exactly $hT$ accepted values;
-- exactly $T$ of those values are divisible by $h$;
-- a real linear 2-gap has exactly two destroyed lifts and $h-2$ lifts whose
-  endpoints survive;
-- every next gap is either copied or is a sum of consecutive old gaps;
-- filtering the base and repeated cycle views yields equal survivor-gap lists.
+O próximo estágio adiciona $h$ à lista de filtros ativos. Sobre uma janela
+expandida completa, essa operação tem uma contagem exata e um efeito
+determinístico sobre as lacunas.
 
-### 5.1 Exact Survivor Count
+- o estágio antigo expandido contém exatamente $hT$ valores aceitos;
+- exatamente $T$ desses valores são divisíveis por $h$;
+- uma lacuna 2 linear real tem exatamente dois levantamentos destruídos e
+  $h-2$ levantamentos cujos extremos sobrevivem;
+- toda próxima lacuna ou é copiada ou é uma soma de lacunas antigas
+  consecutivas;
+- filtrar as visões de ciclo base e ciclo repetido produz listas iguais de
+  lacunas entre sobreviventes.
 
-Consider the accepted values with indexes $r+iT$, where
-$0\le r\lt T$ and $0\le i\lt h$. The block-shift theorem gives
+<a id="51-exact-survivor-count"></a>
+
+### 5.1 Contagem Exata de Sobreviventes
+
+Considere os valores aceitos com índices $r+iT$, onde $0\le r\lt T$ e
+$0\le i\lt h$. O teorema de deslocamento por bloco dá
 
 ```math
 \begin{aligned}
@@ -365,78 +402,83 @@ $0\le r\lt T$ and $0\le i\lt h$. The block-shift theorem gives
 \end{aligned}
 ```
 
-The head $h$ is a prime not present among the smaller-prime factors of $M$,
-so $\gcd(M,h)=1$. Multiplication by $M$ permutes the residues modulo $h$.
-For each fixed $r$, exactly one offset $i\in\{0,\ldots,h-1\}$ therefore
-satisfies $\ell_r+iM\equiv0\pmod h$. There are $T$ choices of $r$, so
-exactly $T$ old survivors are removed:
+A cabeça $h$ é um primo não presente entre os fatores primos menores de $M$,
+então $\gcd(M,h)=1$. A multiplicação por $M$ permuta os resíduos módulo $h$.
+Para cada $r$ fixo, exatamente um deslocamento $i\in\{0,\ldots,h-1\}$ portanto
+satisfaz $\ell_r+iM\equiv0\pmod h$. Há $T$ escolhas de $r$, então exatamente
+$T$ sobreviventes antigos são removidos:
 
 ```math
 \begin{aligned}
 N_{\mathrm{old}} &= hT
-  &&\text{[Repeated blocks]} \\
+  &&\text{[Blocos repetidos]} \\
 N_{\mathrm{removed}} &= T
-  &&\text{[One zero residue per row]} \\
+  &&\text{[Um resíduo zero por linha]} \\
 N_{\mathrm{survive}}
   &=hT-T \\
   &=T(h-1)
-  &&\blacksquare\ \text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This is an exact full-period theorem, not a probabilistic density estimate.
+Este é um teorema exato de período completo, não uma estimativa probabilística
+de densidade.
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqSurvivorCountProperties::assertSameHeadExtendedFilterCount
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala).
 
-### 5.2 Exact Lifted-Copy Law for a Real 2-Gap
+<a id="52-exact-lifted-copy-law-for-a-real-2-gap"></a>
 
-This subsection concerns the actual deterministic sieve sequence, not a
-random model. Suppose two consecutive values in the real sequence satisfy
-$\ell_{k+1}-\ell_k=2$. Write $p=h$ for the incoming odd prime and $M$ for the
-current tail primorial. The complete lift block contains the $p$ endpoint
-pairs
+### 5.2 Lei Exata de Cópias Levantadas para uma Lacuna 2 Real
+
+Esta subseção diz respeito à sequência de peneira determinística real, não a um
+modelo aleatório. Suponha que dois valores consecutivos na sequência real
+satisfaçam $\ell_{k+1}-\ell_k=2$. Escreva $p=h$ para o primo ímpar entrante e
+$M$ para o primorial da cauda atual. O bloco completo de levantamento contém os
+$p$ pares de extremos
 
 ```math
 (\ell_k+jM,\ \ell_{k+1}+jM),
 \qquad 0\le j\lt p.
 ```
 
-The verified result is deliberately local to one real sequence pair. It does
-not yet aggregate over the cyclic wrap gap or establish a recurrence for the
-total next-stage 2-gap population.
+O resultado verificado é deliberadamente local a um par real da sequência. Ele
+ainda não agrega sobre a lacuna de volta cíclica nem estabelece uma recorrência
+para a população total de lacunas 2 do próximo estágio.
 
-#### 5.2.1 The Two Forbidden Lift Offsets Are Distinct
+<a id="521-the-two-forbidden-lift-offsets-are-distinct"></a>
 
-Each endpoint has one unique lift offset at which the incoming prime divides
-it. Those offsets cannot coincide: if the same prime divided both lifted
-endpoints, it would divide their difference $2$, which is impossible for an
-odd prime. This is the structural fact that prevents the two endpoint strikes
-from collapsing into one destroyed copy.
+#### 5.2.1 Os Dois Deslocamentos de Levantamento Proibidos São Distintos
+
+Cada extremo tem um único deslocamento de levantamento no qual o primo entrante
+o divide. Esses deslocamentos não podem coincidir: se o mesmo primo dividisse
+ambos os extremos levantados, dividiria sua diferença $2$, o que é impossível
+para um primo ímpar. Esse é o fato estrutural que impede que os dois ataques aos
+extremos colapsem em uma única cópia destruída.
 
 ```math
 \begin{aligned}
 j_L,j_R&\in\{0,\ldots,p-1\},
-&&[\text{By Unique Lift Offset}]\\
+&&[\text{Por Deslocamento de Levantamento Único}]\\
 \ell_k+j_LM&\equiv0\pmod p,\\
 \ell_{k+1}+j_RM&\equiv0\pmod p.\\[2pt]
 j_L=j_R=j
 &\Longrightarrow
 (\ell_{k+1}+jM)-(\ell_k+jM)\equiv0\pmod p
-&&[\text{Substitution}]\\
+&&[\text{Substituição}]\\
 &\Longrightarrow 2\equiv0\pmod p
 &&[\ell_{k+1}-\ell_k=2]\\
 &\Longrightarrow 2=0
-&&[\text{By Modulo Property},\ 2\lt p],
+&&[\text{Por Propriedade Modular},\ 2\lt p],
 \end{aligned}
 ```
 
-which is a contradiction. Therefore
+o que é uma contradição. Portanto
 
 ```math
 j_L\ne j_R.
-\qquad\blacksquare\ \text{[Q.E.D.]}
+\qquad\blacksquare\ \text{[C.Q.D.]}
 ```
 
 ```scala
@@ -478,31 +520,34 @@ def assertForbiddenLiftOffsetsDistinct(
 }.holds
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqTwoGapProperties::assertForbiddenLiftOffsetsDistinct
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
 
-#### 5.2.2 Exactly Two Lifted Copies Are Destroyed
+<a id="522-exactly-two-lifted-copies-are-destroyed"></a>
 
-A copied pair is destroyed when at least one endpoint is divisible by $p$.
-The left endpoint is struck once, the right endpoint is struck once, and the
-distinct-offset theorem makes these two singleton strike sets disjoint.
-Consequently their union contains exactly two copy indices.
+#### 5.2.2 Exatamente Duas Cópias Levantadas São Destruídas
+
+Um par copiado é destruído quando pelo menos um extremo é divisível por $p$. O
+extremo esquerdo é atacado uma vez, o extremo direito é atacado uma vez, e o
+teorema de deslocamentos distintos torna esses dois conjuntos unitários de
+ataques disjuntos. Consequentemente, sua união contém exatamente dois índices de
+cópia.
 
 ```math
 \begin{aligned}
 D_L&=\{j:0\le j\lt p,\ p\mid(\ell_k+jM)\},\\
 D_R&=\{j:0\le j\lt p,\ p\mid(\ell_{k+1}+jM)\},
-&&[\text{By Definition}]\\
+&&[\text{Pela Definição}]\\
 |D_L|&=1,
 \qquad |D_R|=1,
-&&[\text{By Unique Lift Offset}]\\
+&&[\text{Por Deslocamento de Levantamento Único}]\\
 D_L\cap D_R&=\varnothing
-&&[\text{By Lemma }j_L\ne j_R]\\
+&&[\text{Pelo Lema }j_L\ne j_R]\\
 D&=D_L\cup D_R,
-&&[\text{By Definition}]\\
+&&[\text{Pela Definição}]\\
 |D|&=|D_L|+|D_R|=2.
-&&\blacksquare\ \text{[Q.E.D.]}
+&&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -543,27 +588,29 @@ def assertExactlyTwoDestroyedCopies(
 }.holds
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqTwoGapProperties::assertExactlyTwoDestroyedCopies
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
 
-#### 5.2.3 Exactly \(p-2\) Lifted Copies Keep Both Endpoints
+<a id="523-exactly-p-2-lifted-copies-keep-both-endpoints"></a>
 
-There are $p$ candidate lifts in the complete block. Removing the two and
-only two destroyed indices leaves exactly $p-2$ copies whose two endpoints
-survive the incoming filter. This is an exact deterministic count, not an
-expected value or an independence heuristic.
+#### 5.2.3 Exatamente \(p-2\) Cópias Levantadas Mantêm Ambos os Extremos
+
+Há $p$ levantamentos candidatos no bloco completo. Remover os dois, e apenas
+dois, índices destruídos deixa exatamente $p-2$ cópias cujos dois extremos
+sobrevivem ao filtro entrante. Esta é uma contagem determinística exata, não um
+valor esperado nem uma heurística de independência.
 
 ```math
 \begin{aligned}
 |\{0,\ldots,p-1\}|&=p,
-&&[\text{By Definition}]\\
+&&[\text{Pela Definição}]\\
 |D|&=2,
-&&[\text{By Lemma: Exactly Two Destroyed Copies}]\\
+&&[\text{Pelo Lema: Exatamente Duas Cópias Destruídas}]\\
 N_{\mathrm{endpoint\text{-}surviving}}
 &=p-|D|\\
 &=p-2.
-&&\text{[Substitution]}\quad\blacksquare\ \text{[Q.E.D.]}
+&&\text{[Substituição]}\quad\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -586,345 +633,374 @@ def assertExactlyHeadMinusTwoCopiesSurvive(
 }.holds
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqTwoGapProperties::assertExactlyHeadMinusTwoCopiesSurvive
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqTwoGapProperties.scala).
 
-### 5.3 Copy-or-Merge Gap Dynamics
+<a id="53-copy-or-merge-gap-dynamics"></a>
 
-Let old consecutive values be $\ell_k\lt\ell_{k+1}$. If both survive the new
-filter, no new accepted value can appear between them, so their difference is
-copied unchanged. If one or more old values are removed, the next surviving
-endpoints are $\ell_k$ and $\ell_j$ for some $j\gt k+1$; telescoping merges the
-intermediate gaps:
+### 5.3 Dinâmica de Lacunas por Copiar-ou-Mesclar
+
+Sejam $\ell_k\lt\ell_{k+1}$ valores antigos consecutivos. Se ambos sobrevivem
+ao novo filtro, nenhum novo valor aceito pode aparecer entre eles, então sua
+diferença é copiada sem mudança. Se um ou mais valores antigos são removidos, os
+próximos extremos sobreviventes são $\ell_k$ e $\ell_j$ para algum
+$j\gt k+1$; o telescopamento mescla as lacunas intermediárias:
 
 ```math
 \begin{aligned}
-\ell_{k+1}\text{ survives}
+\ell_{k+1}\text{ sobrevive}
 &\Longrightarrow
 g'_m=\ell_{k+1}-\ell_k=g_k,
-  &&\text{[Copy]} \\
-\ell_{k+1},\ldots,\ell_{j-1}\text{ removed}
+  &&\text{[Cópia]} \\
+\ell_{k+1},\ldots,\ell_{j-1}\text{ removidos}
 &\Longrightarrow
 g'_m=\ell_j-\ell_k \\
 &=\sum_{i=k}^{j-1}(\ell_{i+1}-\ell_i) \\
 &=\sum_{i=k}^{j-1}g_i.
-  &&\text{[Merge]}\quad\blacksquare\ \text{[Q.E.D.]}
+  &&\text{[Mesclagem]}\quad\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
-The immediate-survivor branch is verified in [
+O ramo de sobrevivente imediato é verificado em [
   SpecSieveSeqNextProperties::assertFilterPreservesNextGap
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
-The skipped-successor branch is verified as a supporting theorem. When the
-immediate old successor is removed, the next gap is the sum of the old gaps up
-to the first later survivor. This supporting property is verified in [
+O ramo de sucessor pulado é verificado como teorema de apoio. Quando o sucessor
+antigo imediato é removido, a próxima lacuna é a soma das lacunas antigas até o
+primeiro sobrevivente posterior. Esta propriedade de apoio é verificada em [
   SpecSieveSeqNextProperties::assertMergeGapEqualsOldGapSum
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
-The general merged prefix is then verified against the next specification's
-gap list. This property is verified in [
+O prefixo mesclado geral é então verificado contra a lista de lacunas da próxima
+especificação. Esta propriedade é verificada em [
   SpecSieveSeqNextProperties::assertMergedGapPrefixMatchesNext
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextProperties.scala).
 
-### 5.4 Filtering the Repeated Cycle Preserves the Semantic Result
+<a id="54-filtering-the-repeated-cycle-preserves-the-semantic-result"></a>
 
-[§4.3](#43-repetition-does-not-change-the-infinite-sequence) proved pointwise equality between the base and repeated cycle
-integrals. Applying the same divisibility predicate at the same positions must
-therefore select identical survivor values. Equal survivor lists have equal
-adjacent-gap lists:
+### 5.4 Filtrar o Ciclo Repetido Preserva o Resultado Semântico
+
+[§4.3](#43-repetition-does-not-change-the-infinite-sequence) provou igualdade pontual entre as integrais do ciclo base e do ciclo
+repetido. Aplicar o mesmo predicado de divisibilidade nas mesmas posições deve,
+portanto, selecionar valores sobreviventes idênticos. Listas iguais de
+sobreviventes têm listas iguais de lacunas adjacentes:
 
 ```math
 \begin{aligned}
 I_{G^{\langle h\rangle}}(k)&=I_G(k)
-  &&\text{[Repeated-cycle equality]} \\
+  &&\text{[Igualdade do ciclo repetido]} \\
 I_{G^{\langle h\rangle}}(k)\not\equiv0\pmod h
 &\Longleftrightarrow I_G(k)\not\equiv0\pmod h
-  &&\text{[Substitution]} \\
+  &&\text{[Substituição]} \\
 \text{survivors}(I_{G^{\langle h\rangle}},h)
 &=\text{survivors}(I_G,h) \\
 \text{gaps}(\text{survivors}(I_{G^{\langle h\rangle}},h))
 &=\text{gaps}(\text{survivors}(I_G,h))
-  &&\blacksquare\ \text{[Q.E.D.]}.
+  &&\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecDerivedRepeatedCycleProperties::assertSpecBaseAndRepeatedGapListMatch
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecDerivedRepeatedCycleProperties.scala).
 
-## 6. The Next Stage
+<a id="6-the-next-stage"></a>
 
-The next stage installs the current head as a filter, starts at the following
-prime, and represents its own accepted sequence by a new finite gap cycle.
-Throughout this section, a prime marks the next stage's own version of each
-object defined in [§2](#2-preliminaries): $S'$ is the next stage, $h'=\ell_1$ its head,
-$M'$ its tail primorial, $\ell'$ its linear enumeration, and $G'$ its gap
-cycle.
+## 6. O Próximo Estágio
 
-- the first old-stage successor is the next prime under the square bound;
-- the semantic merged-gap prefix equals the next specification's gap prefix;
-- a valid next-period boundary lets the next gap cycle reconstruct the next scan.
+O próximo estágio instala a cabeça atual como filtro, começa no primo seguinte e
+representa sua própria sequência aceita por um novo ciclo finito de lacunas. Ao
+longo desta seção, um apóstrofo marca a versão própria do próximo estágio de cada
+objeto definido em [§2](#2-preliminaries): $S'$ é o próximo estágio,
+$h'=\ell_1$ sua cabeça, $M'$ seu primorial de cauda, $\ell'$ sua enumeração
+linear, e $G'$ seu ciclo de lacunas.
 
-### 6.1 Square-Bound Successor Primality
+- o primeiro sucessor do estágio antigo é o próximo primo sob o limite
+  quadrático;
+- o prefixo semântico de lacunas mescladas é igual ao prefixo de lacunas da
+  próxima especificação;
+- uma fronteira válida do próximo período permite que o próximo ciclo de lacunas
+  reconstrua a próxima varredura.
 
-The first old-stage successor is accepted by all filters smaller than $h$.
-If that successor lies below $h^2$, then a composite successor would have a
-prime divisor below $h$, contradicting acceptance. Therefore the successor is
-prime under the square-bound precondition:
+<a id="61-square-bound-successor-primality"></a>
+
+### 6.1 Primalidade do Sucessor pelo Limite Quadrático
+
+O primeiro sucessor do estágio antigo é aceito por todos os filtros menores que
+$h$. Se esse sucessor está abaixo de $h^2$, então um sucessor composto teria um
+divisor primo abaixo de $h$, contradizendo a aceitação. Portanto, o sucessor é
+primo sob a pré-condição do limite quadrático:
 
 ```math
 \begin{aligned}
 \ell_1&\lt h^2, \\
-\ell_1\text{ composite}
+\ell_1\text{ composto}
 &\Longrightarrow
-\exists d\lt h,\ d\text{ prime and }d\mid \ell_1
-  &&\text{[Smallest prime divisor]} \\
+\exists d\lt h,\ d\text{ primo e }d\mid \ell_1
+  &&\text{[Menor divisor primo]} \\
 d\lt h
 &\Longrightarrow d\in\overline{P}
-  &&\text{[All smaller primes are filters]} \\
+  &&\text{[Todos os primos menores são filtros]} \\
 d\mid\ell_1
 &\Longrightarrow \neg A_S(\ell_1)
-  &&\text{[Filter contradiction]} \\
-&\Longrightarrow \ell_1\text{ is prime}.
-  &&\blacksquare\ \text{[Q.E.D.]}
+  &&\text{[Contradição com o filtro]} \\
+&\Longrightarrow \ell_1\text{ é primo}.
+  &&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqHeadIsPrime::assertApplyOneIsPrimeIfBelowHeadSq
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala).
 
-### 6.2 The First Successor Is the Next Prime
+<a id="62-the-first-successor-is-the-next-prime"></a>
 
-Suppose the next prime after $h$ is $p^+$ and $p^+\lt h^2$. The next prime
-passes every smaller-prime filter, so $\ell_1\le p^+$. Conversely, if
-$\ell_1\lt h^2$ were composite, it would have a prime divisor at most
-$\sqrt{\ell_1}\lt h$. That divisor belongs to $\overline{P}$, contradicting
-acceptance. Thus $\ell_1$ is prime. No prime lies strictly between $h$ and
-$p^+$, so $\ell_1=p^+$.
+### 6.2 O Primeiro Sucessor é o Próximo Primo
+
+Suponha que o próximo primo depois de $h$ seja $p^+$ e que $p^+\lt h^2$. O
+próximo primo passa por todo filtro de primo menor, então $\ell_1\le p^+$.
+Reciprocamente, se $\ell_1\lt h^2$ fosse composto, teria um divisor primo no
+máximo $\sqrt{\ell_1}\lt h$. Esse divisor pertence a $\overline{P}$,
+contradizendo a aceitação. Assim, $\ell_1$ é primo. Nenhum primo fica
+estritamente entre $h$ e $p^+$, então $\ell_1=p^+$.
 
 ```math
 \begin{aligned}
-A_S(p^+) &\quad\text{[Distinct larger prime passes old filters]} \\
+A_S(p^+) &\quad\text{[Primo maior distinto passa pelos filtros antigos]} \\
 \ell_1 &\le p^+
-  &&\text{[Least accepted successor]} \\
+  &&\text{[Menor sucessor aceito]} \\
 \ell_1 \lt h^2
-  &\Longrightarrow \ell_1\text{ is prime}
-  &&\text{[Small composite divisor]} \\
+  &\Longrightarrow \ell_1\text{ é primo}
+  &&\text{[Pequeno divisor composto]} \\
 h\lt\ell_1\le p^+,
-\quad \ell_1\text{ prime}
+\quad \ell_1\text{ primo}
   &\Longrightarrow \ell_1=p^+
-  &&\text{[No intervening prime]}\quad\blacksquare\ \text{[Q.E.D.]}.
+  &&\text{[Nenhum primo intermediário]}\quad\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqHeadIsPrime::assertApplyOneEqualsNextPrime
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqHeadIsPrime.scala).
 
-### 6.3 Semantic Pipeline Agreement
+<a id="63-semantic-pipeline-agreement"></a>
 
-Let $T'=T(h-1)$. Under the stated stage-relationship invariants, the semantic
-merge process starts at the first surviving old value and emits $T'$ merged
-gaps. [§5.3](#53-copy-or-merge-gap-dynamics) supplies the copy-or-merge
-induction used to prove that this list equals the first $T'$ gaps of the next
-linear specification:
+### 6.3 Concordância Semântica do Pipeline
+
+Seja $T'=T(h-1)$. Sob as invariantes declaradas de relação entre estágios, o
+processo semântico de mesclagem começa no primeiro valor antigo sobrevivente e
+emite $T'$ lacunas mescladas. [§5.3](#53-copy-or-merge-gap-dynamics) fornece a
+indução por copiar-ou-mesclar usada para provar que essa lista é igual às
+primeiras $T'$ lacunas da próxima especificação linear:
 
 ```math
 \begin{aligned}
 T'&=T(h-1), \\
 \text{mergedGaps}(S,S',1,T')
 &=\text{gapList}(S',0,T')
-  \quad\text{[By copy-or-merge induction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+  \quad\text{[Por indução de copiar-ou-mesclar]}\quad\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqNextStageProperties::assertPipelineOutputMatchesNextGapList
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala).
 
-### 6.4 Conditional Next-Cycle Reconstruction
+<a id="64-conditional-next-cycle-reconstruction"></a>
 
-If $T'$ is known to be the canonical period of the next stage, the generic
-cycle-reconstruction theorem from [§4.2](#42-gap-cycle-reconstruction) applies directly to that stage:
+### 6.4 Reconstrução Condicional do Próximo Ciclo
+
+Se $T'$ é conhecido como o período canônico do próximo estágio, o teorema
+genérico de reconstrução do ciclo de [§4.2](#42-gap-cycle-reconstruction) se
+aplica diretamente a esse estágio:
 
 ```math
 \begin{aligned}
 \ell'_{T'} &= h'+M'
-  &&\text{[Next-period boundary]} \\
+  &&\text{[Fronteira do próximo período]} \\
 G'&=\text{gapList}(S',0,T') \\
 I_{G'}(k-1)&=\ell'_k
-  &&\text{[Cycle reconstruction]}\quad\blacksquare\ \text{[Q.E.D.]}.
+  &&\text{[Reconstrução do ciclo]}\quad\blacksquare\ \text{[C.Q.D.]}.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   SpecSieveSeqNextStageProperties::assertNextCycleReconstructsNextSpec
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqNextStageProperties.scala).
 
-## 7. Exact Proof Boundary
+<a id="7-exact-proof-boundary"></a>
 
-The verified results above do not form an unconditional operational theorem.
-This section states the boundary as part of the theorem.
+## 7. Fronteira Exata da Prova
 
-- **Square bound.** `SpecSieveSequence.next` and the next-head theorem require
-  $p^+\lt h^2$. Bertrand's postulate supplies a prime between $h$ and $2h$;
-  for prime $h\ge2$, this implies the required square bound (with $h=2$
-  checked directly). Ramanujan gives a direct proof of the required postulate
-  [[9]](#ref9), but
-  Bertrand's postulate is an external mathematical dependency here, not a
-  Stainless theorem in this development.
+Os resultados verificados acima não formam um teorema operacional
+incondicional. Esta seção declara a fronteira como parte do teorema.
 
-- **Count-to-period bridge.** [§5.1](#51-exact-survivor-count) verifies that
-  filtering the complete expanded current-stage window leaves exactly
-  $T(h-1)$ values. [§6.3](#63-semantic-pipeline-agreement) separately
-  establishes the semantic gap-prefix agreement, while
-  [§6.4](#64-conditional-next-cycle-reconstruction) reconstructs the next
-  stage when $\ell'_{T'}=h'+M'$ is supplied. The derivation of that next
-  canonical-period equation from the same-head count is a distinct open
-  composition theorem.
+- **Limite quadrático.** `SpecSieveSequence.next` e o teorema da próxima cabeça
+  exigem $p^+\lt h^2$. O postulado de Bertrand fornece um primo entre $h$ e
+  $2h$; para primo $h\ge2$, isso implica o limite quadrático exigido (com
+  $h=2$ checado diretamente). Ramanujan dá uma prova direta do postulado
+  necessário [[9]](#ref9), mas o postulado de Bertrand é aqui uma dependência
+  matemática externa, não um teorema Stainless neste desenvolvimento.
 
-- **Direct cycle-to-cycle construction.** Repetition preserves the represented
-  values; filtering the base and repeated views gives equal survivor lists and
-  gaps; the first survivor is the next head; and the semantic merged-gap prefix
-  agrees with the next specification. The open composition theorem is the
-  equality between the repeated cycle's filtered survivor-gap list and that
-  semantic merged-gap prefix, followed by packaging those gaps into a new
-  integral cycle.
+- **Ponte de contagem para período.** [§5.1](#51-exact-survivor-count) verifica
+  que filtrar a janela completa expandida do estágio atual deixa exatamente
+  $T(h-1)$ valores. [§6.3](#63-semantic-pipeline-agreement) estabelece
+  separadamente a concordância semântica do prefixo de lacunas, enquanto
+  [§6.4](#64-conditional-next-cycle-reconstruction) reconstrói o próximo estágio
+  quando $\ell'_{T'}=h'+M'$ é fornecido. A derivação dessa equação do próximo
+  período canônico a partir da contagem de mesma cabeça é um teorema aberto de
+  composição distinto.
 
-- **No short-window gap-persistence theorem.** [§5.2](#52-exact-lifted-copy-law-for-a-real-2-gap) proves that exactly
-  $h-2$ lifts of one real linear 2-gap keep both endpoints over a complete
-  lift block. It does not imply that one of those lifts lies in a shorter
-  interval such as $[h,h^2)$, nor does it yet aggregate the cyclic wrap gap
-  into a total next-stage recurrence. This article makes no claim about
-  infinitely many twin primes or the survival of 2-gaps in every local window.
+- **Construção direta de ciclo para ciclo.** A repetição preserva os valores
+  representados; filtrar as visões base e repetida dá listas iguais de
+  sobreviventes e lacunas; o primeiro sobrevivente é a próxima cabeça; e o
+  prefixo semântico de lacunas mescladas concorda com a próxima especificação.
+  O teorema aberto de composição é a igualdade entre a lista filtrada de
+  lacunas entre sobreviventes do ciclo repetido e esse prefixo semântico de
+  lacunas mescladas, seguida pelo empacotamento dessas lacunas em uma nova
+  integral de ciclo.
 
-- **No efficiency theorem.** The period grows from $T$ to $T(h-1)$. The finite
-  cycle is analytically useful, but materializing it need not outperform a
-  conventional segmented sieve. No time or space complexity advantage is claimed.
+- **Nenhum teorema de persistência de lacunas em janela curta.** [§5.2](#52-exact-lifted-copy-law-for-a-real-2-gap) prova que exatamente
+  $h-2$ levantamentos de uma lacuna 2 linear real mantêm ambos os extremos ao
+  longo de um bloco completo de levantamento. Isso não implica que um desses
+  levantamentos esteja em um intervalo mais curto como $[h,h^2)$, nem ainda
+  agrega a lacuna de volta cíclica em uma recorrência total do próximo estágio.
+  Este artigo não faz nenhuma afirmação sobre infinitos primos gêmeos nem sobre
+  a sobrevivência de lacunas 2 em toda janela local.
 
-These qualifications are part of the result: they separate the verified
-finite-stage theorem from adjacent mathematical questions.
+- **Nenhum teorema de eficiência.** O período cresce de $T$ para $T(h-1)$. O
+  ciclo finito é analiticamente útil, mas materializá-lo não necessariamente
+  supera uma peneira segmentada convencional. Nenhuma vantagem de complexidade
+  de tempo ou espaço é reivindicada.
 
-## 8. Open Proof Work
+Essas qualificações fazem parte do resultado: elas separam o teorema verificado
+de estágio finito das questões matemáticas adjacentes.
 
-The main open proof obligation is to connect the filtered repeated-cycle survivor
-gaps with the semantic merged-gap prefix. That equality is the missing bridge
-between the local delete-and-merge description and the concrete gap list of
-the next sieve level. Once that bridge is verified, the next `CycleIntegral`
-can be constructed directly from the current repeated and filtered cycle
-rather than being related through a separate semantic transition.
+<a id="8-open-proof-work"></a>
 
-A second open obligation is to derive the next canonical-period boundary from the
-exact survivor count. The article already proves the complete-period counting
-law, but the canonical boundary requires turning that count into the precise
-finite prefix used by the next stage. The square-bound dependency currently
-supplied by Bertrand's postulate is another natural verification target:
-either a Stainless proof of the needed bound or a clearly stated formal
-substitute would make the dependency explicit inside the project.
+## 8. Trabalho de Prova Aberto
 
-Local gap-distribution theorems remain separate from
-the full-period construction results proven here. The full-period facts explain
-how the sieve stage is represented and transformed; they do not by themselves
-settle which gaps appear in a particular finite window.
+A principal obrigação aberta de prova é conectar as lacunas entre sobreviventes
+do ciclo repetido filtrado com o prefixo semântico de lacunas mescladas. Essa
+igualdade é a ponte ausente entre a descrição local de deletar-e-mesclar e a
+lista concreta de lacunas do próximo nível da peneira. Uma vez que essa ponte
+seja verificada, a próxima `CycleIntegral` poderá ser construída diretamente a
+partir do ciclo atual repetido e filtrado, em vez de ser relacionada por meio de
+uma transição semântica separada.
 
-## 9. Conclusion
+Uma segunda obrigação aberta é derivar a próxima fronteira de período canônico a
+partir da contagem exata de sobreviventes. O artigo já prova a lei de contagem
+de período completo, mas a fronteira canônica exige transformar essa contagem no
+prefixo finito preciso usado pelo próximo estágio. A dependência de limite
+quadrático atualmente fornecida pelo postulado de Bertrand é outro alvo natural
+de verificação: ou uma prova em Stainless do limite necessário, ou um substituto
+formal claramente declarado, tornaria a dependência explícita dentro do projeto.
 
-The Sieve Sequence is a finite representation of an infinite accepted-value
-stream. The formalization verifies the following core facts:
+Teoremas locais de distribuição de lacunas permanecem separados dos resultados
+de construção em período completo provados aqui. Os fatos de período completo
+explicam como o estágio da peneira é representado e transformado; eles não
+decidem por si mesmos quais lacunas aparecem em uma janela finita particular.
+
+<a id="9-conclusion"></a>
+
+## 9. Conclusão
+
+A Sequência de Peneira é uma representação finita de um fluxo infinito de
+valores aceitos. A formalização verifica os seguintes fatos centrais:
 
 ```math
 \begin{aligned}
 A_S(v)
 &\Longrightarrow \exists i\ge0,\ \ell_i=v,
-  &&\text{[Complete enumeration]} \\
+  &&\text{[Enumeração completa]} \\
 \ell_{k+1}&\gt\ell_k,
-  &&\text{[Strict increase]} \\
+  &&\text{[Crescimento estrito]} \\
 \ell_{k+nT}&=\ell_k+nM,
-  &&\text{[Block shift]}.
+  &&\text{[Deslocamento por bloco]}.
 \end{aligned}
 ```
 
-The finite gap cycle reconstructs the same stream and remains semantically
-unchanged when the cycle is repeated:
+O ciclo finito de lacunas reconstrói o mesmo fluxo e permanece semanticamente
+inalterado quando o ciclo é repetido:
 
 ```math
 \begin{aligned}
 I_G(k-1)&=\ell_k,
-  &&\text{[Cycle reconstruction]} \\
+  &&\text{[Reconstrução do ciclo]} \\
 I_{G^{\langle h\rangle}}(k)&=I_G(k),
-  &&\text{[Repetition invariance]}.
+  &&\text{[Invariância por repetição]}.
 \end{aligned}
 ```
 
-Installing the current head as a new filter has an exact complete-period count,
-an exact lifted-copy law for each real linear 2-gap, and a copy-or-merge local
-gap update:
+Instalar a cabeça atual como novo filtro tem uma contagem exata de período
+completo, uma lei exata de cópias levantadas para cada lacuna 2 linear real e
+uma atualização local de lacunas por copiar-ou-mesclar:
 
 ```math
 \begin{aligned}
 N_{\mathrm{survive}}&=T(h-1),
-  &&\text{[Exact expanded filtering]} \\
+  &&\text{[Filtragem expandida exata]} \\
 N_{\mathrm{destroyed\ lifts}}(\ell_k,\ell_{k+1})&=2,
-  &&\text{[Real 2-gap endpoint strikes]} \\
+  &&\text{[Ataques aos extremos de lacuna 2 real]} \\
 N_{\mathrm{endpoint\text{-}surviving\ lifts}}(\ell_k,\ell_{k+1})&=h-2,
-  &&\text{[Exact lifted-copy survival]} \\
+  &&\text{[Sobrevivência exata de cópias levantadas]} \\
 g'_m&=g_k
-  \quad\text{or}\quad
+  \quad\text{ou}\quad
   g'_m=\sum_{i=k}^{j-1}g_i,
-  &&\text{[Copy or merge]}.
+  &&\text{[Copiar ou mesclar]}.
 \end{aligned}
 ```
 
-Under the explicit square-bound and period-boundary assumptions, the next head
-and next-stage reconstruction properties are also verified:
+Sob as hipóteses explícitas de limite quadrático e fronteira de período, as
+propriedades da próxima cabeça e da reconstrução do próximo estágio também são
+verificadas:
 
 ```math
 \begin{aligned}
 p^+\lt h^2&\Longrightarrow \ell_1=p^+,
-  &&\text{[Next head]} \\
+  &&\text{[Próxima cabeça]} \\
 \text{mergedGaps}(S,S',1,T')
 &=\text{gapList}(S',0,T'),
-  &&\text{[Semantic transition]} \\
+  &&\text{[Transição semântica]} \\
 \ell'_{T'}=h'+M'
 &\Longrightarrow I_{G'}(k-1)=\ell'_k.
-  &&\text{[Conditional next reconstruction]}
+  &&\text{[Próxima reconstrução condicional]}
 \end{aligned}
 ```
 
-The formalization therefore gives a precise finite-stage account of the sieve:
-the old filter pattern repeats, the new head removes exactly one lift per old
-residue over a complete expanded period, the two endpoint strikes of a real
-linear 2-gap occur at distinct lift offsets, and deletion changes gaps only by
-copying or merging them. The theorem does not infer short-window prime-gap
-persistence, a cyclic population recurrence, or algorithmic efficiency from
-the full-period facts alone.
+A formalização, portanto, dá uma descrição precisa da peneira em estágio finito:
+o padrão antigo de filtros se repete, a nova cabeça remove exatamente um
+levantamento por resíduo antigo ao longo de um período expandido completo, os
+dois ataques aos extremos de uma lacuna 2 linear real ocorrem em deslocamentos
+de levantamento distintos, e a deleção muda lacunas apenas ao copiá-las ou
+mesclá-las. O teorema não infere persistência de lacunas primas em janelas
+curtas, uma recorrência populacional cíclica, nem eficiência algorítmica apenas
+a partir dos fatos de período completo.
 
-## References
+## Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Division and Modulo from Recursive
-Normalization*. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009).
+Normalization*. Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists
-Recursively Defined*. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023).
+Recursively Defined*. Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023).
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 Mata, T. H. (2026). *Formal Verification of Cyclic Lists*.
-Available at: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441).
+Disponível em: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441).
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from
-First Principles*. Available at: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423).
+First Principles*. Disponível em: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423).
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of
-Numbers* (5th ed.). Clarendon Press, Oxford. See Section 5.4 for the Chinese
-Remainder Theorem and Section 15.1 for the sieve of Eratosthenes.
-[Bibliographic record](https://books.google.com/books?id=FlUj0Rk_rF4C).
+Hardy, G. H. e Wright, E. M. (1979). *An Introduction to the Theory of
+Numbers* (5a ed.). Clarendon Press, Oxford. Ver Seção 5.4 para o Teorema
+Chinês dos Restos e Seção 15.1 para a peneira de Eratóstenes.
+[Registro bibliográfico](https://books.google.com/books?id=FlUj0Rk_rF4C).
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
 Pritchard, P. (1987). "Linear prime-number sieves: a family tree."
@@ -936,7 +1012,7 @@ EPFL-LARA. *Stainless documentation: Verification Conditions*.
 [Official documentation](https://epfl-lara.github.io/stainless/verification.html).
 
 <a name="ref8" id="ref8" href="#ref8">[8]</a>
-Hamza, J., Voirol, N., and Kuncak, V. (2019). "System FR: Formalized
+Hamza, J., Voirol, N., e Kuncak, V. (2019). "System FR: Formalized
 Foundations for the Stainless Verifier." *Proceedings of the ACM on Programming
 Languages*, 3(OOPSLA), Article 166.
 [doi:10.1145/3360592](https://doi.org/10.1145/3360592).
@@ -944,4 +1020,4 @@ Languages*, 3(OOPSLA), Article 166.
 <a name="ref9" id="ref9" href="#ref9">[9]</a>
 Ramanujan, S. (1919). "A proof of Bertrand's postulate." *Journal of the
 Indian Mathematical Society*, 11, 181-182.
-[Original paper](https://ramanujan.sirinudi.org/Volumes/published/ram24.pdf).
+[Artigo original](https://ramanujan.sirinudi.org/Volumes/published/ram24.pdf).
