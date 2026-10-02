@@ -1,56 +1,58 @@
-# Formal Verification of Euclid's Theorem on the Infinitude of Primes
+# Verificação Formal do Teorema de Euclides sobre a Infinitude dos Primos
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata<br>
+Pesquisador independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
-**License:** [CC BY 4.0](../LICENSE)\
-**Published:** [Zenodo:10.5281/zenodo.22929220](https://doi.org/10.5281/zenodo.22929220)
+**Licença:** [CC BY 4.0](../LICENSE)<br>
+**Publicado:** [Zenodo:10.5281/zenodo.22929220](https://doi.org/10.5281/zenodo.22929220)
 
 ---
 
-## Abstract
+## Resumo
 
-We present a formally verified proof of Euclid's Theorem — that there are infinitely many primes — using the Stainless verification system. The proof uses the familiar primorial-plus-one specialization of Euclid's finite-list construction: given any finite list of primes, compute their product plus one, and show that this number has a prime divisor not in the original list. The formalization builds on a zero-prior-knowledge foundation of modular arithmetic and list operations, all previously verified from first principles. The described theorem and supporting lemmas are machine-checked using a minimal, self-contained framework.
+Apresentamos uma prova formalmente verificada do Teorema de Euclides — de que há infinitos números primos — usando o sistema de verificação Stainless. A prova usa a especialização familiar do primorial mais um da construção de Euclides para listas finitas: dada qualquer lista finita de primos, calculamos o produto deles mais um e mostramos que esse número tem um divisor primo que não está na lista original. A formalização se apoia em uma base de conhecimento prévio zero de aritmética modular e operações sobre listas, todas previamente verificadas a partir de primeiros princípios. O teorema descrito e os lemas de suporte são verificados por máquina usando um arcabouço mínimo e autocontido.
 
 ---
 
-## 1. Introduction
+## 1. Introdução
 
-Euclid's theorem — proved in Euclid's *Elements*, Book IX, Proposition 20
-[[7]](#ref7) — states that there are infinitely many prime numbers. Euclid's
-original presentation uses a common multiple of the assigned primes plus one.
-This article formalizes the product (primorial) specialization of that
-construction:
+O teorema de Euclides — provado nos *Elementos* de Euclides, Livro IX, Proposição 20
+[[7]](#ref7) — afirma que há infinitos números primos. A apresentação
+original de Euclides usa um múltiplo comum dos primos dados mais um.
+Este artigo formaliza a especialização por produto (primorial) dessa
+construção:
 
-> Given any finite list of primes $p_1, p_2, \dots, p_k$, let $N = p_1 \cdot p_2 \cdot \dots \cdot p_k + 1$.
-> Then $N$ is either prime itself, or has a prime divisor $d$ that is not among $p_1, \dots, p_k$.
-> In either case, a new prime is found, proving the list cannot contain all primes.
+> Dada qualquer lista finita de primos $p_1, p_2, \dots, p_k$, seja $N = p_1 \cdot p_2 \cdot \dots \cdot p_k + 1$.
+> Então $N$ ou é ele próprio primo, ou tem um divisor primo $d$ que não está entre $p_1, \dots, p_k$.
+> Em ambos os casos, um novo primo é encontrado, provando que a lista não pode conter todos os primos.
 
-In this article, we formalize and verify this proof using [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1), a verification framework for pure Scala programs. Our approach follows the zero-prior-knowledge methodology established in earlier articles: modular arithmetic [[2]](#ref2), lists [[3]](#ref3), and prime utilities are all defined from scratch and verified independently.
+Neste artigo, formalizamos e verificamos essa prova usando [Scala Stainless](https://epfl-lara.github.io/stainless/intro.html) [[1]](#ref1), um arcabouço de verificação para programas Scala puros. Nossa abordagem segue a metodologia de conhecimento prévio zero estabelecida em artigos anteriores: aritmética modular [[2]](#ref2), listas [[3]](#ref3) e utilitários de primos são todos definidos desde o início e verificados independentemente.
 
-This article verifies:
+Este artigo verifica:
 
-- Primorial-plus-one coprime to all list primes — [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes)
-- New prime found via the Euclid construction — [§3.2](#32-stage-2-finding-a-new-prime)
-- The new prime is not in the original list — [§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list)
-- Euclid's theorem: primes are infinite — [§3.4](#34-the-main-theorem)
-- Supporting verified prime lemmas — [§4](#4-supporting-verified-lemmas)
+- O primorial mais um é coprimo com todos os primos da lista — [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes)
+- Um novo primo é encontrado pela construção de Euclides — [§3.2](#32-stage-2-finding-a-new-prime)
+- O novo primo não está na lista original — [§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list)
+- Teorema de Euclides: os primos são infinitos — [§3.4](#34-the-main-theorem)
+- Lemas verificados de suporte sobre primos — [§4](#4-supporting-verified-lemmas)
 
-## 2. Preliminaries
+<a id="2-preliminaries"></a>
+## 2. Preliminares
 
-We reuse several basic operations and their verified properties from companion articles:
+Reutilizamos várias operações básicas e suas propriedades verificadas de artigos complementares:
 
-- **Modular Arithmetic** [[2]](#ref2): Division, modulo, quotient invariance, mod idempotence
-- **Lists** [[3]](#ref3): Size, append, sum, slicing, tail shift
-- **Prime Utilities:** Primorial computation, primality testing, and finite divisor search, specified below
+- **Aritmética Modular** [[2]](#ref2): divisão, módulo, invariância do quociente, idempotência do módulo
+- **Listas** [[3]](#ref3): tamanho, concatenação, soma, fatiamento, deslocamento da cauda
+- **Utilitários de Primos:** cálculo de primorial, teste de primalidade e busca finita de divisores, especificados abaixo
 
-### 2.1 Key Definitions
+<a id="21-key-definitions"></a>
+### 2.1 Definições Principais
 
-Let $L = [p_1, p_2, \dots, p_k] \in \mathbb{N}^k$ be a non-empty list of primes, with $p_i > 1$ for all $i$.
+Seja $L = [p_1, p_2, \dots, p_k] \in \mathbb{N}^k$ uma lista não vazia de primos, com $p_i > 1$ para todo $i$.
 
-We define the **primorial** of a list of primes as the product of all primes in the list:
+Definimos o **primorial** de uma lista de primos como o produto de todos os primos na lista:
 
 ```math
 \begin{aligned}
@@ -58,18 +60,19 @@ We define the **primorial** of a list of primes as the product of all primes in 
 \end{aligned}
 ```
 
-A number $n$ is **prime** exactly when it is greater than $1$ and no integer
-in $[2,n)$ divides it:
+Um número $n$ é **primo** exatamente quando é maior que $1$ e nenhum inteiro
+em $[2,n)$ o divide:
 
 ```math
 \text{isPrime}(n) \;:\Longleftrightarrow\; n>1\ \land\
 \forall d\in[2,n),\ \text{mod}(n,d)\ne0.
 ```
 
-### 2.2 Finite Prime Operations and Their Specifications
+<a id="22-finite-prime-operations-and-their-specifications"></a>
+### 2.2 Operações Finitas sobre Primos e Suas Especificações
 
-The article needs only finite search and the definitions below; it does not
-assume an external enumeration of all primes.  Primorial is structural:
+O artigo precisa apenas de busca finita e das definições abaixo; ele não
+assume uma enumeração externa de todos os primos. O primorial é estrutural:
 
 ```math
 \begin{aligned}
@@ -78,9 +81,9 @@ assume an external enumeration of all primes.  Primorial is structural:
 \end{aligned}
 ```
 
-For $n>1$ and $2\leq s\leq n$, `findSmallestDivisor(n,s)` tests
-$s,s+1,\ldots,n$ in order and returns the first divisor.  It terminates
-because $n$ itself divides $n$.  Its specification is therefore
+Para $n>1$ e $2\leq s\leq n$, `findSmallestDivisor(n,s)` testa
+$s,s+1,\ldots,n$ em ordem e retorna o primeiro divisor. Ela termina
+porque o próprio $n$ divide $n$. Portanto, sua especificação é
 
 ```math
 \begin{aligned}
@@ -90,23 +93,24 @@ d &= \text{findSmallestDivisor}(n,s) \\
 \end{aligned}
 ```
 
-The recursive scan proves this by induction on $n-s$: either $s$ divides
-$n$, or the same claim is inherited from the call beginning at $s+1$.
-Thus, when $s=2$, `d=n` is equivalent to the prime definition in
-[§2.1](#21-key-definitions); if $d<n$, $d$ is the least non-trivial divisor.
-The divisor-range postcondition is encoded in
+A varredura recursiva prova isso por indução em $n-s$: ou $s$ divide
+$n$, ou a mesma afirmação é herdada da chamada que começa em $s+1$.
+Assim, quando $s=2$, `d=n` é equivalente à definição de primo em
+[§2.1](#21-key-definitions); se $d<n$, então $d$ é o menor divisor não trivial.
+A pós-condição do intervalo de divisores é codificada em
 [`Prime::findSmallestDivisor`](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/Prime.scala).
-Its minimality and its equivalence with an empty divisor range are
-machine-checked by `Prime::assertFindSmallestDivisorMinimality` and
-`Prime::assertFindSmallestDivisorEquivNoDivisorInRange` in the same source.
+Sua minimalidade e sua equivalência com um intervalo de divisores vazio são
+verificadas por máquina por `Prime::assertFindSmallestDivisorMinimality` e
+`Prime::assertFindSmallestDivisorEquivNoDivisorInRange` no mesmo código-fonte.
 
-For a list $P$ of positive integers, `isCoprime(n,P)` means that no member of
-$P$ divides $n$; it is a direct recursion over the list.  This is the only
-list-coprimality meaning used below.
+Para uma lista $P$ de inteiros positivos, `isCoprime(n,P)` significa que nenhum membro de
+$P$ divide $n$; trata-se de uma recursão direta sobre a lista. Esse é o único
+sentido de coprimalidade com lista usado abaixo.
 
-## 3. The Proof Strategy
+<a id="3-the-proof-strategy"></a>
+## 3. A Estratégia da Prova
 
-Euclid's theorem is formalized as the following lemma:
+O teorema de Euclides é formalizado como o seguinte lema:
 
 ```math
 \begin{aligned}
@@ -115,28 +119,29 @@ Euclid's theorem is formalized as the following lemma:
 \end{aligned}
 ```
 
-In the source, this is expressed by `PrimeProperties::euclidTheorem`; the
-verification reference is given in [§3.4](#34-the-main-theorem) and Appendix A.3.
+No código-fonte, isso é expresso por `PrimeProperties::euclidTheorem`; a
+referência de verificação é dada em [§3.4](#34-the-main-theorem) e no Apêndice A.3.
 
-- Stage 1: $\text{primorial}(L)+1$ is coprime to every prime in the list ([§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes))
-- Stage 2: find a prime divisor of $\text{primorial}(L)+1$ via `findSmallestDivisor` ([§3.2](#32-stage-2-finding-a-new-prime))
-- Stage 3: the new prime is not in the original list ([§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list))
-- Main theorem: combine stages 1-3 into Euclid's theorem ([§3.4](#34-the-main-theorem))
+- Etapa 1: $\text{primorial}(L)+1$ é coprimo com todo primo na lista ([§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes))
+- Etapa 2: encontrar um divisor primo de $\text{primorial}(L)+1$ via `findSmallestDivisor` ([§3.2](#32-stage-2-finding-a-new-prime))
+- Etapa 3: o novo primo não está na lista original ([§3.3](#33-stage-3-proving-the-new-prime-is-not-in-the-list))
+- Teorema principal: combinar as etapas 1-3 no teorema de Euclides ([§3.4](#34-the-main-theorem))
 
-The proof proceeds in three stages:
+A prova procede em três etapas:
 
-1. **Primorial-plus-one is not divisible by any prime in the list**: Show that $\text{primorial}(L) + 1 \bmod p_i = 1 \neq 0$ for every $p_i \in L$.
-2. **Smallest divisor is a new prime**: Find the smallest divisor $d > 1$ of $\text{primorial}(L) + 1$. Prove $d$ is prime and is not in the original list.
-3. **Construct the result**: Return either $d$ (if $d < \text{primorial}(L) + 1$) or $\text{primorial}(L) + 1$ itself (if it is prime).
+1. **O primorial mais um não é divisível por nenhum primo da lista**: mostrar que $\text{primorial}(L) + 1 \bmod p_i = 1 \neq 0$ para todo $p_i \in L$.
+2. **O menor divisor é um novo primo**: encontrar o menor divisor $d > 1$ de $\text{primorial}(L) + 1$. Provar que $d$ é primo e não está na lista original.
+3. **Construir o resultado**: retornar ou $d$ (se $d < \text{primorial}(L) + 1$) ou o próprio $\text{primorial}(L) + 1$ (se ele for primo).
 
-### 3.1 Stage 1: Primorial-plus-one Modulo All Primes
+<a id="31-stage-1-primorial-plus-one-modulo-all-primes"></a>
+### 3.1 Etapa 1: Primorial Mais Um Módulo Todos os Primos
 
-The first stage is captured by the lemma `primorialPlusOneModAny`. Let
-$L = [p_1,\dots,p_k]$ be the finite list of known primes and
-$P=\text{primorial}(L)$. For each $p_i \in L$, the product $P$
-contains $p_i$ as one factor, so $P$ is divisible by $p_i$. Adding one moves
-the residue from $0$ to $1$, and because every prime is greater than $1$, that
-residue is nonzero.
+A primeira etapa é capturada pelo lema `primorialPlusOneModAny`. Seja
+$L = [p_1,\dots,p_k]$ a lista finita de primos conhecidos e
+$P=\text{primorial}(L)$. Para cada $p_i \in L$, o produto $P$
+contém $p_i$ como um fator, portanto $P$ é divisível por $p_i$. Adicionar um desloca
+o resíduo de $0$ para $1$, e como todo primo é maior que $1$, esse
+resíduo é não zero.
 
 ```math
 \begin{aligned}
@@ -156,15 +161,15 @@ residue is nonzero.
 \end{aligned}
 ```
 
-The verified source proves this by induction over the list. At each step, the
-current prime is split out of the primorial product, the divisibility of the
-remaining product is preserved by multiplication, and the induction hypothesis
-continues over the tail. The loop step is built from three verified arithmetic
-properties.
+O código-fonte verificado prova isso por indução sobre a lista. Em cada passo, o
+primo atual é separado do produto primorial, a divisibilidade do
+produto restante é preservada pela multiplicação, e a hipótese de indução
+continua sobre a cauda. O passo do laço é construído a partir de três propriedades
+aritméticas verificadas.
 
-**Small Dividend Remainder.** A nonnegative dividend smaller than the divisor is
-already its own remainder. In the Euclid step, this gives both
-$\text{mod}(0,p)=0$ and $\text{mod}(1,p)=1$ because $p>1$.
+**Resto de Dividendo Pequeno.** Um dividendo não negativo menor que o divisor já é
+seu próprio resto. No passo de Euclides, isso dá tanto
+$\text{mod}(0,p)=0$ quanto $\text{mod}(1,p)=1$ porque $p>1$.
 
 ```math
 \begin{aligned}
@@ -178,13 +183,13 @@ p>1
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModSmallDividend::modSmallDividend
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModSmallDividend.scala).
 
-**Zero Remainder Preserved by Multiplication.** If a number is divisible by
-$b$, multiplying it by any nonnegative factor preserves divisibility by $b$.
-This is the step that turns the explicit factor $p$ in the primorial into
+**Resto Zero Preservado por Multiplicação.** Se um número é divisível por
+$b$, multiplicá-lo por qualquer fator não negativo preserva a divisibilidade por $b$.
+Este é o passo que transforma o fator explícito $p$ no primorial em
 $\text{mod}(p\cdot k,p)=0$.
 
 ```math
@@ -198,14 +203,14 @@ $\text{mod}(p\cdot k,p)=0$.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   AdditionAndMultiplication::ATimesBSameMod
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/AdditionAndMultiplication.scala).
 
-**Adding One After a Multiple.** Once the primorial part is known to be
-divisible by $p$, adding one gives the same remainder as one itself.
-Together with the small-dividend property, this proves the Euclid number has
-nonzero remainder modulo every original prime.
+**Adicionar Um Após um Múltiplo.** Uma vez que se sabe que a parte primorial é
+divisível por $p$, adicionar um produz o mesmo resto que o próprio um.
+Junto com a propriedade de dividendo pequeno, isso prova que o número de Euclides tem
+resto não zero módulo todo primo original.
 
 ```math
 \begin{aligned}
@@ -220,18 +225,19 @@ nonzero remainder modulo every original prime.
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   ModOperations::modZeroPlusC
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter2/div/properties/ModOperations.scala).
 
-This property is verified in [
+Esta propriedade é verificada em [
   PrimeProperties::primorialPlusOneModAny
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.1.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). Um trecho curto do invólucro público está incluído no Apêndice A.1.
 
-### 3.2 Stage 2: Finding a New Prime
+<a id="32-stage-2-finding-a-new-prime"></a>
+### 3.2 Etapa 2: Encontrando um Novo Primo
 
-Once we know $\text{primorial}(L)+1$ is not divisible by any prime in
-$L$, let
+Depois que sabemos que $\text{primorial}(L)+1$ não é divisível por nenhum primo em
+$L$, seja
 
 ```math
 \begin{aligned}
@@ -240,11 +246,11 @@ d &= \text{findSmallestDivisor}(N,2).
 \end{aligned}
 ```
 
-There are two cases. If $d=N$, the divisor search found no proper divisor in
-$[2,N)$, so $N$ is prime. If $d < N$, then $d$ divides $N$ and no smaller integer
-greater than $1$ divides $N$. If $d$ were composite, it would have a non-trivial
-divisor $e$ with $1 < e < d$; since $e$ divides $d$ and $d$ divides $N$, $e$ would
-divide $N$, contradicting the minimality of $d$. Hence $d$ is prime.
+Há dois casos. Se $d=N$, a busca de divisor não encontrou nenhum divisor próprio em
+$[2,N)$, portanto $N$ é primo. Se $d < N$, então $d$ divide $N$ e nenhum inteiro menor
+maior que $1$ divide $N$. Se $d$ fosse composto, ele teria um divisor não trivial
+$e$ com $1 < e < d$; como $e$ divide $d$ e $d$ divide $N$, $e$ também
+dividiria $N$, contradizendo a minimalidade de $d$. Logo $d$ é primo.
 
 ```math
 \begin{aligned}
@@ -255,22 +261,23 @@ d=N
 \end{aligned}
 ```
 
-The construction of the new prime is verified in [
+A construção do novo primo é verificada em [
   PrimeProperties::newPrimeFromEuclid
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). A short public wrapper excerpt is included in Appendix A.2.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). Um trecho curto do invólucro público está incluído no Apêndice A.2.
 
-### 3.3 Stage 3: Proving the New Prime is Not in the List
+<a id="33-stage-3-proving-the-new-prime-is-not-in-the-list"></a>
+### 3.3 Etapa 3: Provando que o Novo Primo Não Está na Lista
 
-The final and most subtle step is proving that the newly found prime $d$ (or
-$N$ itself) is **not** in the original list.
+A etapa final e mais sutil é provar que o primo recém-encontrado $d$ (ou
+o próprio $N$) **não** está na lista original.
 
-Let $v$ be the divisor chosen in Stage 2: either $v=N$ when $N$ is prime, or
-$v=d$ when $d$ is the smallest proper divisor of $N$. In both cases,
-$\text{mod}(N,v)=0$. Now take any prime $p$ from the original list.
-Because $N=\text{primorial}(L)+1$, the same argument from Stage 1 gives
-$\text{mod}(N,p)=1$. If $p=v$, then $N$ would have two incompatible
-remainders modulo the same positive divisor: $0$ and $1$. Therefore no element
-of $L$ equals $v$.
+Seja $v$ o divisor escolhido na Etapa 2: ou $v=N$ quando $N$ é primo, ou
+$v=d$ quando $d$ é o menor divisor próprio de $N$. Em ambos os casos,
+$\text{mod}(N,v)=0$. Agora tome qualquer primo $p$ da lista original.
+Como $N=\text{primorial}(L)+1$, o mesmo argumento da Etapa 1 dá
+$\text{mod}(N,p)=1$. Se $p=v$, então $N$ teria dois restos incompatíveis
+módulo o mesmo divisor positivo: $0$ e $1$. Portanto, nenhum elemento
+de $L$ é igual a $v$.
 
 ```math
 \begin{aligned}
@@ -295,18 +302,19 @@ p=v
 \end{aligned}
 ```
 
-This non-membership argument is verified by the private helper
-`euclidTailLoop`, which establishes `valueNotMatchesAny(primes, v)` for the
-chosen divisor $v$ in [
+Esse argumento de não pertencimento é verificado pelo auxiliar privado
+`euclidTailLoop`, que estabelece `valueNotMatchesAny(primes, v)` para o
+divisor escolhido $v$ em [
   PrimeProperties
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
-### 3.4 The Main Theorem
+<a id="34-the-main-theorem"></a>
+### 3.4 O Teorema Principal
 
-The main theorem combines the primorial-plus-one lemma, smallest-divisor
-primality, and non-membership argument. If $N$ is prime, then $N$ itself is
-the new prime. Otherwise, the smallest divisor $d$ of $N$ is prime and cannot
-belong to the original list.
+O teorema principal combina o lema do primorial mais um, a primalidade do
+menor divisor e o argumento de não pertencimento. Se $N$ é primo, então o próprio $N$ é
+o novo primo. Caso contrário, o menor divisor $d$ de $N$ é primo e não pode
+pertencer à lista original.
 
 ```math
 \begin{aligned}
@@ -324,30 +332,32 @@ d < N
 \end{aligned}
 ```
 
-This property is verified in [
+Esta propriedade é verificada em [
   PrimeProperties::euclidTheorem
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). The public theorem wrapper is shown in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). O invólucro público do teorema é mostrado no Apêndice A.3.
 
-## 4. Supporting Verified Lemmas
+<a id="4-supporting-verified-lemmas"></a>
+## 4. Lemas Verificados de Suporte
 
-The theorem above is the article's main result. We also record a few closely
-related lemmas that reuse the same prime and divisibility foundations.
-They are included here as supporting results, not as additional headline
-claims.
+O teorema acima é o principal resultado do artigo. Também registramos alguns lemas
+intimamente relacionados que reutilizam as mesmas bases sobre primos e divisibilidade.
+Eles são incluídos aqui como resultados de suporte, não como afirmações principais
+adicionais.
 
-- Finite-prefix consequence: a complete finite prime prefix has a larger prime — [§4.1](#41-corollary-greater-than-a-complete-finite-prefix)
-- Divisor-search bounds: composite inputs have a proper smallest divisor below their square root — [§4.2](#42-smallest-divisor-bounds-for-composite-numbers)
-- Finite-prefix primality: coprimality plus factor coverage excludes all proper divisors — [§4.3](#43-finite-prefix-primality-criterion)
-- Bézout product lemmas: a prime divisor of a product is forced onto a factor — [§4.4](#44-bézout-and-prime-product-lemmas)
+- Consequência de prefixo finito: um prefixo finito completo dos primos tem um primo maior — [§4.1](#41-corollary-greater-than-a-complete-finite-prefix)
+- Limites da busca de divisores: entradas compostas têm um menor divisor próprio abaixo de sua raiz quadrada — [§4.2](#42-smallest-divisor-bounds-for-composite-numbers)
+- Critério de primalidade para prefixo finito: coprimalidade mais cobertura por fatores exclui todos os divisores próprios — [§4.3](#43-finite-prefix-primality-criterion)
+- Lemas de produto de Bézout: um divisor primo de um produto é forçado a aparecer em um fator — [§4.4](#44-bézout-and-prime-product-lemmas)
 
-### 4.1 Corollary: Greater Than a Complete Finite Prefix
+<a id="41-corollary-greater-than-a-complete-finite-prefix"></a>
+### 4.1 Corolário: Maior que um Prefixo Finito Completo
 
-A direct corollary of Euclid's construction is that a complete finite prefix
-of the primes is never closed. Let $P=[p_1,\dots,p_k]$ be a sorted finite list
-that contains every prime up to its largest element $h=p_k$. Let $q$ be the
-prime produced by the Euclid construction from $P$. Since [§3](#3-the-proof-strategy) proves
-$q\notin P$, $q$ cannot be at or below $h$: every prime at or below $h$ is
-already contained in the complete prefix. Therefore $q > h$.
+Um corolário direto da construção de Euclides é que um prefixo finito completo
+dos primos nunca é fechado. Seja $P=[p_1,\dots,p_k]$ uma lista finita ordenada
+que contém todo primo até seu maior elemento $h=p_k$. Seja $q$ o
+primo produzido pela construção de Euclides a partir de $P$. Como [§3](#3-the-proof-strategy) prova
+$q\notin P$, $q$ não pode estar em $h$ nem abaixo de $h$: todo primo menor ou igual a $h$ já está
+contido no prefixo completo. Portanto $q > h$.
 
 ```math
 \begin{aligned}
@@ -369,10 +379,10 @@ q\le h
 \end{aligned}
 ```
 
-This is the ordered-prefix form of the Euclid theorem: from any complete finite
-prefix of the primes, the construction produces a prime beyond that prefix.
+Essa é a forma de prefixo ordenado do teorema de Euclides: a partir de qualquer prefixo finito completo
+dos primos, a construção produz um primo além desse prefixo.
 
-This corollary is verified in [
+Este corolário é verificado em [
   PrimeProperties::newPrimeNotInList
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
   PrimeProperties::notContainsFromValueNotMatchesAny
@@ -380,17 +390,18 @@ This corollary is verified in [
   PrimeProperties::euclidPrimeGreaterThanHead
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
-### 4.2 Smallest-Divisor Bounds for Composite Numbers
+<a id="42-smallest-divisor-bounds-for-composite-numbers"></a>
+### 4.2 Limites do Menor Divisor para Números Compostos
 
-The primality test used in Euclid's proof relies on `findSmallestDivisor(n, 2)`,
-which scans candidates from 2 upward until it finds the smallest divisor of $n$.
-Two lemmas characterize why this scan is both correct and efficient.
+O teste de primalidade usado na prova de Euclides depende de `findSmallestDivisor(n, 2)`,
+que varre candidatos a partir de 2 até encontrar o menor divisor de $n$.
+Dois lemas caracterizam por que essa varredura é correta e eficiente.
 
-**Composite has a divisor below n.** If $n$ is composite and $d$ is its smallest
-non-trivial divisor, then $d < n$. This is immediate from the definition of
-composite — there exists a proper divisor — but must be proved against the
-`findSmallestDivisor` algorithm, which scans upward until a divisor is found
-or $n$ itself is reached.
+**Todo composto tem um divisor abaixo de n.** Se $n$ é composto e $d$ é seu menor
+divisor não trivial, então $d < n$. Isso é imediato pela definição de
+composto — existe um divisor próprio — mas deve ser provado em relação ao
+algoritmo `findSmallestDivisor`, que varre para cima até que um divisor seja encontrado
+ou que o próprio $n$ seja alcançado.
 
 ```math
 \begin{aligned}
@@ -399,20 +410,20 @@ n > 1 \;\land\; \neg \text{isPrime}(n) &\Rightarrow \\
 \end{aligned}
 ```
 
-**Proof.** Since $n$ is composite, it has a proper divisor
-$e\in[2,n)$. The minimality specification from [§2.2](#22-finite-prime-operations-and-their-specifications) gives
-$2\leq d\leq e<n$ and $\text{mod}(n,d)=0$.
+**Prova.** Como $n$ é composto, ele tem um divisor próprio
+$e\in[2,n)$. A especificação de minimalidade de [§2.2](#22-finite-prime-operations-and-their-specifications) dá
+$2\leq d\leq e<n$ e $\text{mod}(n,d)=0$.
 
 ```math
 \therefore\ 2\leq d\lt n\ \land\ \text{mod}(n,d)=0.
 \quad \blacksquare\ \text{[Q.E.D.]}
 ```
 
-**Smallest divisor is at most sqrt(n).** When $n$ is composite with smallest
-divisor $d$, the factor $q = n / d$ satisfies $q \ge d$. Then $d \cdot d \le d \cdot q = n$,
-so $d^2 \le n$. This means the scan only needs to check divisors up to $\sqrt{n}$
-— any divisor beyond that would have a co-factor below $d$, violating
-minimality.
+**O menor divisor é no máximo sqrt(n).** Quando $n$ é composto com menor
+divisor $d$, o fator $q = n / d$ satisfaz $q \ge d$. Então $d \cdot d \le d \cdot q = n$,
+logo $d^2 \le n$. Isso significa que a varredura só precisa verificar divisores até $\sqrt{n}$
+— qualquer divisor além disso teria um cofator abaixo de $d$, violando
+a minimalidade.
 
 ```math
 \begin{aligned}
@@ -421,19 +432,19 @@ d = \text{findSmallestDivisor}(n, 2) &: d \cdot d \leq n.
 \end{aligned}
 ```
 
-**Proof.** Put $q=n/d$. Since $d$ divides $n$, $dq=n$. Because $d<n$,
-$q>1$; hence $q\ge2$. If $q<d$, then $q\in[2,d)$ is a divisor of $n$,
-contradicting the minimality of $d$.
-Hence $d\leq q$, and
+**Prova.** Tome $q=n/d$. Como $d$ divide $n$, $dq=n$. Como $d<n$,
+$q>1$; portanto $q\ge2$. Se $q<d$, então $q\in[2,d)$ é um divisor de $n$,
+contradizendo a minimalidade de $d$.
+Logo $d\leq q$, e
 
 ```math
 d^2\leq dq=n.\quad\blacksquare\ \text{[Q.E.D.]}
 ```
 
-**Packaged composite divisor.** The wrapper `assertCompositeSmallestPrimeDivisor`
-combines the previous results into a reusable form: every
-composite number has a non-trivial prime divisor, the divisor really divides
-the number, and it lies at or below the square root bound.
+**Divisor composto empacotado.** O invólucro `assertCompositeSmallestPrimeDivisor`
+combina os resultados anteriores em uma forma reutilizável: todo
+número composto tem um divisor primo não trivial, o divisor realmente divide
+o número, e ele está no limite da raiz quadrada ou abaixo dele.
 
 ```math
 \begin{aligned}
@@ -447,12 +458,12 @@ n > 1 \;\land\; \neg \text{isPrime}(n)
 \end{aligned}
 ```
 
-**Proof.** From the composite assumption, `assertCompositeHasDivisorStrictlyBelowN(n)`
-gives $d < n$ with $\text{mod}(n, d) = 0$. Let $q = n / d$, so $q \cdot d = n$.
-If $q < d$, then $q$ is a divisor of $n$ smaller than $d$, contradicting $d$
-being the smallest divisor. Therefore $q \ge d$, and $d \cdot d \le d \cdot q = n$.
+**Prova.** A partir da hipótese de composição, `assertCompositeHasDivisorStrictlyBelowN(n)`
+dá $d < n$ com $\text{mod}(n, d) = 0$. Seja $q = n / d$, então $q \cdot d = n$.
+Se $q < d$, então $q$ é um divisor de $n$ menor que $d$, contradizendo que $d$
+é o menor divisor. Portanto $q \ge d$, e $d \cdot d \le d \cdot q = n$.
 
-These properties are verified in the [
+Essas propriedades são verificadas em [
   PrimeProperties::assertSmallestDivisorAtMostSqrt
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala), [
   PrimeProperties::assertCompositeHasDivisorStrictlyBelowN
@@ -460,16 +471,17 @@ These properties are verified in the [
   PrimeProperties::assertCompositeSmallestPrimeDivisor
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
-### 4.3 Finite-Prefix Primality Criterion
+<a id="43-finite-prefix-primality-criterion"></a>
+### 4.3 Critério de Primalidade por Prefixo Finito
 
-The next supporting result is a local primality criterion. If a candidate
-number is coprime to all primes in a finite filter list, and every integer in
-the range $[2, head)$ has a prime factor among those filters, then the
-candidate itself is prime.
+O próximo resultado de suporte é um critério local de primalidade. Se um número
+candidato é coprimo com todos os primos em uma lista finita de filtros, e todo inteiro no
+intervalo $[2, head)$ tem um fator primo entre esses filtros, então o
+próprio candidato é primo.
 
-This is not Euclid's infinitude theorem; it is a finite-prefix primality
-criterion. It turns coverage of all smaller possible divisors into primality
-of the candidate.
+Este não é o teorema da infinitude de Euclides; é um critério de primalidade por prefixo finito.
+Ele transforma cobertura de todos os divisores possíveis menores em primalidade
+do candidato.
 
 ```math
 \begin{aligned}
@@ -481,29 +493,30 @@ head > 1
 \end{aligned}
 ```
 
-The proof is by contradiction over possible divisors. If a divisor $d$ of
-$head$ existed in $[2, head)$, the range-coverage assumption would provide a
-prime factor from the finite filter list dividing $d$. Divisibility would then
-propagate from that factor through $d$ into $head$, contradicting that $head$
-is coprime to every filter prime.
+A prova é por contradição sobre possíveis divisores. Se existisse um divisor $d$ de
+$head$ em $[2, head)$, a hipótese de cobertura do intervalo forneceria um
+fator primo da lista finita de filtros dividindo $d$. A divisibilidade então
+se propagaria desse fator por $d$ até $head$, contradizendo que $head$
+é coprimo com todo primo de filtro.
 
-This property is verified in [
+Esta propriedade é verificada em [
   PrimeProperties::assertHeadIsPrime
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). Its main range helper is [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala). Seu principal auxiliar de intervalo é [
   PrimeProperties::assertNoDivisorInRangeFromHelper
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala).
 
-### 4.4 Bézout and Prime-Product Lemmas
+<a id="44-bézout-and-prime-product-lemmas"></a>
+### 4.4 Lemas de Bézout e Produto por Primo
 
-Several arguments about prime-filtered products use a product form of
-primality: for a prime $p$, divisibility of a nonnegative product by $p$ can
-be pushed onto a factor, and if neither nonnegative factor is divisible by
-$p$, then the product is not divisible by $p$. The verified proof goes through
-Bézout's identity.
+Vários argumentos sobre produtos filtrados por primos usam uma forma de produto da
+primalidade: para um primo $p$, a divisibilidade de um produto não negativo por $p$ pode
+ser empurrada para um fator, e se nenhum fator não negativo é divisível por
+$p$, então o produto não é divisível por $p$. A prova verificada passa pela
+identidade de Bézout.
 
-First, if $0 < h < p$, $p$ is prime, and $h$ is not divisible by $p$, then
-$h$ and $p$ have greatest common divisor $1$, and the extended Euclidean
-algorithm exposes a linear combination:
+Primeiro, se $0 < h < p$, $p$ é primo, e $h$ não é divisível por $p$, então
+$h$ e $p$ têm máximo divisor comum $1$, e o algoritmo euclidiano estendido
+expõe uma combinação linear:
 
 ```math
 \begin{aligned}
@@ -515,11 +528,10 @@ algorithm exposes a linear combination:
 \end{aligned}
 ```
 
-For completeness, the subtractive extended Euclidean algorithm repeatedly
-replaces the larger positive input by its difference with the smaller. Common
-divisors are preserved and the positive sum decreases, so it reaches equal
-values. Reversing either subtraction step preserves a linear-combination
-witness:
+Para completude, o algoritmo euclidiano estendido subtrativo substitui repetidamente
+a maior entrada positiva por sua diferença com a menor. Divisores comuns
+são preservados e a soma positiva diminui, então ele alcança valores iguais.
+Reverter qualquer passo de subtração preserva uma testemunha de combinação linear:
 
 ```math
 \begin{aligned}
@@ -528,12 +540,12 @@ ax+(b-a)y=g &\implies a(x-y)+by=g.
 \end{aligned}
 ```
 
-Every common divisor of $h$ and the prime $p$ is either $1$ or $p$; it cannot
-be $p$ because $0<h<p$. The terminal gcd is therefore $1$, which gives the
-displayed Bézout identity. [Q.E.D.]
+Todo divisor comum de $h$ e do primo $p$ é ou $1$ ou $p$; ele não pode
+ser $p$ porque $0<h<p$. Portanto, o mdc terminal é $1$, o que dá a
+identidade de Bézout exibida. [Q.E.D.]
 
-Multiplying that identity by $k$ gives $k h x + k p y = k$. If $p$ divides
-$k h$, then $p$ divides both terms on the left and therefore divides $k$.
+Multiplicar essa identidade por $k$ dá $k h x + k p y = k$. Se $p$ divide
+$k h$, então $p$ divide ambos os termos à esquerda e, portanto, divide $k$.
 
 ```math
 \begin{aligned}
@@ -546,7 +558,7 @@ $k h$, then $p$ divides both terms on the left and therefore divides $k$.
 \end{aligned}
 ```
 
-The contrapositive form used by product and density arguments is:
+A forma contrapositiva usada por argumentos de produto e densidade é:
 
 ```math
 \begin{aligned}
@@ -559,7 +571,7 @@ The contrapositive form used by product and density arguments is:
 \end{aligned}
 ```
 
-The full proof bodies are verified in [
+Os corpos completos das provas são verificados em [
   BezoutUtils::assertCoprimeLinearCombinationOne
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala), [
   BezoutUtils::assertPrimeDivKhImpliesDivK
@@ -567,46 +579,46 @@ The full proof bodies are verified in [
   BezoutUtils::assertPrimeProductNotDivisible
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/BezoutUtils.scala).
 
-## 5. Verification Status
+## 5. Estado da Verificação
 
-The properties described in this article are verified by Stainless through the
-source-linked proof functions cited in the relevant sections and in Appendix A.
-The repository-wide verification-condition count is intentionally omitted
-because it changes as unrelated verified modules are added; the stable claim is
-that the Euclid theorem proof and its supporting prime lemmas are
-machine-checked in the current source.
+As propriedades descritas neste artigo são verificadas pelo Stainless por meio das
+funções de prova vinculadas ao código-fonte citadas nas seções relevantes e no Apêndice A.
+A contagem de condições de verificação de todo o repositório é omitida intencionalmente
+porque ela muda à medida que módulos verificados não relacionados são adicionados; a afirmação estável é
+que a prova do teorema de Euclides e seus lemas de suporte sobre primos são
+verificados por máquina no código-fonte atual.
 
-## 6. Related Work
+## 6. Trabalhos Relacionados
 
-The modular-arithmetic and list foundations used here are cited in
-[§2](#2-preliminaries). Euclid's classical construction supplies the
-mathematical argument; this article contributes its recursive Scala/Stainless
-formalization together with the explicitly specified finite divisor search.
-For comparison, Mathlib also formalizes the infinitude of primes as
-`Nat.exists_infinite_primes` [[8]](#ref8). That theorem has a different
-library setting and statement form; it is related work, not a dependency of
-this development.
+Os fundamentos de aritmética modular e listas usados aqui são citados em
+[§2](#2-preliminaries). A construção clássica de Euclides fornece o
+argumento matemático; este artigo contribui com sua formalização recursiva em Scala/Stainless
+junto com a busca finita de divisores especificada explicitamente.
+Para comparação, a Mathlib também formaliza a infinitude dos primos como
+`Nat.exists_infinite_primes` [[8]](#ref8). Esse teorema tem um
+ambiente de biblioteca e uma forma de enunciado diferentes; é trabalho relacionado, não uma dependência
+deste desenvolvimento.
 
-## 7. Conclusion
+## 7. Conclusão
 
-This article formalizes Euclid's theorem from the same first-principles
-foundation used throughout the preceding chapters. The proof follows the
-classical primorial-plus-one construction: from a finite list of primes it
-builds a number that is congruent to one modulo every prime in the list, then
-uses the existence of a smallest divisor to extract a prime factor outside that
-list. The contradiction is mathematical before it is computational: no member
-of the original list can divide the constructed number, while the constructed
-number must still have a prime divisor.
+Este artigo formaliza o teorema de Euclides a partir da mesma base de primeiros princípios
+usada ao longo dos capítulos anteriores. A prova segue a construção clássica do
+primorial mais um: a partir de uma lista finita de primos, ela constrói
+um número que é congruente a um módulo todo primo da lista, e então
+usa a existência de um menor divisor para extrair um fator primo fora dessa
+lista. A contradição é matemática antes de ser computacional: nenhum membro
+da lista original pode dividir o número construído, enquanto o número construído
+ainda deve ter um divisor primo.
 
-The Stainless development verifies each step that the article relies on:
-small-remainder facts, zero-remainder preservation under multiplication,
-divisibility of product members, smallest-divisor primality, and the final
-non-membership theorem. The result is a source-backed formal proof of the
-infinitude of primes, with the supporting finite-prefix corollaries separated
-from the theorem spine rather than folded into the main claim.
+O desenvolvimento em Stainless verifica cada passo do qual o artigo depende:
+fatos sobre restos pequenos, preservação de resto zero sob multiplicação,
+divisibilidade de membros de produtos, primalidade do menor divisor e o teorema final
+de não pertencimento. O resultado é uma prova formal, respaldada por código-fonte, da
+infinitude dos primos, com os corolários de prefixo finito separados
+do eixo do teorema em vez de incorporados à afirmação principal.
 
-The theorem spine can be read compactly as the following verified chain.  Let
-$P=\text{primorial}(L)$ and $N=P+1$:
+O eixo do teorema pode ser lido de forma compacta como a seguinte cadeia verificada. Seja
+$P=\text{primorial}(L)$ e $N=P+1$:
 
 ```math
 \begin{aligned}
@@ -623,7 +635,7 @@ v\mid N\ \land\ p\in L
 \end{aligned}
 ```
 
-Thus either $N$, or its least non-trivial divisor $d$, is a prime outside
+Assim, ou $N$, ou seu menor divisor não trivial $d$, é um primo fora de
 $L$:
 
 ```math
@@ -631,60 +643,60 @@ L\ne[]\ \Rightarrow\ \exists p:\text{isPrime}(p)\land p\notin L.
 \quad\blacksquare\ \text{[Q.E.D.]}
 ```
 
-## 8. Future Work
+## 8. Trabalhos Futuros
 
-The most natural continuation is the Fundamental Theorem of Arithmetic, since
-Euclid's theorem already establishes the existence side of prime
-decomposition. A verified uniqueness proof would require a stronger library of
-divisibility and coprimality lemmas, but it would extend the present result in
-a direct and structurally compatible way.
+A continuação mais natural é o Teorema Fundamental da Aritmética, pois
+o teorema de Euclides já estabelece o lado de existência da decomposição
+em primos. Uma prova verificada de unicidade exigiria uma biblioteca mais forte de
+lemas de divisibilidade e coprimalidade, mas estenderia o resultado presente de
+modo direto e estruturalmente compatível.
 
-Further work could then move from existence to distribution. Dirichlet's
-theorem would require arithmetic progressions and substantially richer modular
-reasoning, while the Prime Number Theorem would require asymptotic analysis far
-beyond the finite arithmetic developed here. Those directions are intentionally
-outside the scope of this article, but this proof supplies a verified starting
-point for them.
+Trabalhos futuros poderiam então passar da existência para a distribuição. O
+teorema de Dirichlet exigiria progressões aritméticas e raciocínio modular substancialmente
+mais rico, enquanto o Teorema dos Números Primos exigiria análise assintótica muito
+além da aritmética finita desenvolvida aqui. Essas direções estão intencionalmente
+fora do escopo deste artigo, mas esta prova fornece um ponto de partida verificado
+para elas.
 
-## References
+## Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*. Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*. Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
+Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*. Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Available at: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
+Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*. Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Available at: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
+Mata, T. H. (2026). *Formal Verification of Discrete Integration Properties from First Principles*. Disponível em: [https://doi.org/10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2026). *Formal Verification of Cyclic Lists*. Available at: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
+Mata, T. H. (2026). *Formal Verification of Cyclic Lists*. Disponível em: [https://doi.org/10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
 
 <a name="ref6" id="ref6" href="#ref6">[6]</a>
-Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Available at: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
+Mata, T. H. (2026). *Formal Verification of Cycle Integral Properties from First Principles*. Disponível em: [https://doi.org/10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
 
 <a name="ref7" id="ref7" href="#ref7">[7]</a>
-Euclid. *Elements*, Book IX, Proposition 20. Translation and notes by David E.
-Joyce. Available at: [https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html](https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html)
+Euclides. *Elementos*, Livro IX, Proposição 20. Tradução e notas de David E.
+Joyce. Disponível em: [https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html](https://aleph0.clarku.edu/~djoyce/java/elements/bookIX/propIX20.html)
 
 <a name="ref8" id="ref8" href="#ref8">[8]</a>
 The Mathlib Community. *Mathlib.Data.Nat.Prime.Infinite*: `Nat.exists_infinite_primes`.
-Mathlib documentation. Available at: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html)
+Documentação da Mathlib. Disponível em: [https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Infinite.html)
 
 ---
 
-## Appendix A: Verification Source References
+## Apêndice A: Referências ao Código-Fonte de Verificação
 
 ### A.1 `primorialPlusOneModAny`
 
-**Source**: [
+**Fonte**: [
   PrimeProperties.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Short source excerpt for Stage 1 (Section 3.1):
+Trecho curto do código-fonte para a Etapa 1 (Seção 3.1):
 
 ```scala
 def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
@@ -694,15 +706,15 @@ def primorialPlusOneModAny(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-This lemma establishes that $\text{primorial}(\text{primes}) + 1$ is not divisible by any prime in the list, via the recursive `primorialPlusOneTailLoop` helper and the modular arithmetic lemmas cited in [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes).
+Este lema estabelece que $\text{primorial}(\text{primes}) + 1$ não é divisível por nenhum primo da lista, por meio do auxiliar recursivo `primorialPlusOneTailLoop` e dos lemas de aritmética modular citados em [§3.1](#31-stage-1-primorial-plus-one-modulo-all-primes).
 
 ### A.2 `newPrimeFromEuclid`
 
-**Source**: [
+**Fonte**: [
   PrimeProperties.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Short source excerpt for Stage 2 (Section 3.2):
+Trecho curto do código-fonte para a Etapa 2 (Seção 3.2):
 
 ```scala
 def newPrimeFromEuclid(primes: List[Prime]): Prime = {
@@ -724,15 +736,15 @@ def newPrimeFromEuclid(primes: List[Prime]): Prime = {
 }
 ```
 
-This function constructs a new `Prime` value by finding the smallest divisor of $n = \text{primorial}(\text{primes}) + 1$. If $d = n$, then $n$ itself is prime; otherwise $d$ is a prime divisor. In either case, the result is a prime not in the original list.
+Esta função constrói um novo valor `Prime` encontrando o menor divisor de $n = \text{primorial}(\text{primes}) + 1$. Se $d = n$, então o próprio $n$ é primo; caso contrário, $d$ é um divisor primo. Em ambos os casos, o resultado é um primo que não está na lista original.
 
 ### A.3 `euclidTheorem`
 
-**Source**: [
+**Fonte**: [
   PrimeProperties.scala
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter5/prime/properties/PrimeProperties.scala)
 
-Short source excerpt for the main theorem (Section 3.4):
+Trecho curto do código-fonte para o teorema principal (Seção 3.4):
 
 ```scala
 def euclidTheorem(primes: List[Prime]): Boolean = {
@@ -756,10 +768,10 @@ def euclidTheorem(primes: List[Prime]): Boolean = {
 }.holds
 ```
 
-This source proof is the machine-checked form of the main theorem: every
-non-empty finite list of primes admits a prime outside the list.
+Esta prova no código-fonte é a forma verificada por máquina do teorema principal: toda
+lista finita não vazia de primos admite um primo fora da lista.
 
-## Appendix B: Stainless Verification Log Output
+## Apêndice B: Saída do Log de Verificação do Stainless
 
-The latest `just verify` run verifies the described properties without errors.
-The full log output is available at [logs/verify-ch-5-v1-chapter5-_.log](https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/logs/verify-ch-5-v1-chapter5-_.log).
+A execução mais recente de `just verify` verifica as propriedades descritas sem erros.
+A saída completa do log está disponível em [logs/verify-ch-5-v1-chapter5-_.log](https://github.com/thiagomata/prime-numbers/blob/euclid-theorem-article-v1.0.0/logs/verify-ch-5-v1-chapter5-_.log).

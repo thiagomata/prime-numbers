@@ -34,7 +34,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/sieve-sequence.md`
 - `articles/chapter7/survival-frontiers.md`
 
-`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, `articles/chapter4/cycle.md`, `articles/chapter4/integral.md`, and `articles/chapter4/integral-cycle.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
+`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, `articles/chapter4/cycle.md`, `articles/chapter4/integral.md`, `articles/chapter4/integral-cycle.md`, and `articles/chapter5/euclid-theorem.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
 
 ## What is Learned
 
@@ -47,6 +47,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter4/cycle.md` has 164 fence markers, balanced after translation, 16 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - `articles/chapter4/integral.md` has 108 fence markers, balanced after translation, 9 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - `articles/chapter4/integral-cycle.md` has 220 fence markers, balanced after translation, 26 compatibility anchors for old internal section slugs, and passes `git diff --check`.
+- `articles/chapter5/euclid-theorem.md` has 58 fence markers, balanced after translation, 13 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 
 ## Failed Paths
 
@@ -61,7 +62,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Commit and push the completed `articles/chapter4/integral-cycle.md` translation, then continue with `articles/chapter5/euclid-theorem.md`.
+Commit and push the completed `articles/chapter5/euclid-theorem.md` translation, then continue with `articles/chapter6/gap-dynamics.md`.
 
 ## Expected State
 
@@ -125,3 +126,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | `articles/chapter4/cycle.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/cycle.md` passes, and English residual search only reports bibliography title/names. | Commit/push this checkpoint and continue with `articles/chapter4/integral.md`. |
 | 2026-10-02 | `articles/chapter4/integral.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/integral.md` passes, and English residual search only reports math labels, code comments, and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter4/integral-cycle.md`. |
 | 2026-10-02 | `articles/chapter4/integral-cycle.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/integral-cycle.md` passes, and English residual search only reports math labels, code comments, and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter5/euclid-theorem.md`. |
+| 2026-10-02 | `articles/chapter5/euclid-theorem.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter5/euclid-theorem.md` passes, and English residual search only reports math labels and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter6/gap-dynamics.md`. |
