@@ -34,7 +34,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/sieve-sequence.md`
 - `articles/chapter7/survival-frontiers.md`
 
-`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, `articles/chapter4/cycle.md`, `articles/chapter4/integral.md`, `articles/chapter4/integral-cycle.md`, `articles/chapter5/euclid-theorem.md`, `articles/chapter6/gap-dynamics.md`, `articles/chapter6/relaxed-almost-prime.md`, and `articles/chapter6/sieve-sequence.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
+All 10 target Markdown articles have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
 
 ## What is Learned
 
@@ -53,6 +53,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/gap-dynamics.md` has 262 fence markers, balanced after translation, 27 compatibility anchors for old internal section slugs, no missing old internal anchor targets, and passes `git diff --check`. Descriptive math text such as proof side labels and `\text{...}` comments was translated while identifiers and formal symbols were preserved.
 - `articles/chapter6/relaxed-almost-prime.md` has 102 fence markers, balanced after translation, 13 compatibility anchors for old section slugs, and passes `git diff --check`. Descriptive math labels and `\text{...}` prose were translated; citation titles and source-note titles remain unchanged.
 - `articles/chapter6/sieve-sequence.md` has 62 fence markers, balanced after translation, 29 compatibility anchors for old section slugs, no missing old internal anchor targets, and passes `git diff --check`. Descriptive math labels, image alt text, captions, and proof prose were translated while Scala identifiers and source names were preserved.
+- `articles/chapter7/survival-frontiers.md` has 382 fence markers, balanced after translation, 46 compatibility anchors for old section slugs, no missing old internal anchor targets, and passes `git diff --check`. Descriptive math labels, image alt text, captions, tables, and proof prose were translated while formal notation, links, paths, and citation titles were preserved.
 
 ## Failed Paths
 
@@ -67,7 +68,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Commit and push `articles/chapter6/sieve-sequence.md`, then continue with `articles/chapter7/survival-frontiers.md`.
+Commit and push `articles/chapter7/survival-frontiers.md`. The 10-article Markdown translation pass is complete after that push.
 
 ## Expected State
 
@@ -136,3 +137,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | `articles/chapter6/gap-dynamics.md` translation completed with descriptive math text translated. Fences remain balanced, `git diff --check -- articles/chapter6/gap-dynamics.md` passes, and old internal link anchors are covered. | Commit/push this checkpoint and continue with `articles/chapter6/relaxed-almost-prime.md`. |
 | 2026-10-02 | `articles/chapter6/relaxed-almost-prime.md` translation completed with descriptive math text translated. Fences remain balanced, `git diff --check -- articles/chapter6/relaxed-almost-prime.md` passes, and remaining English scan hits are citation titles or compatibility anchors. | Commit/push this checkpoint and continue with `articles/chapter6/sieve-sequence.md`. |
 | 2026-10-02 | `articles/chapter6/sieve-sequence.md` translation completed with descriptive math text, image alt text, and proof labels translated. Fences remain balanced, `git diff --check -- articles/chapter6/sieve-sequence.md` passes, and old internal link anchors are covered. | Commit/push this checkpoint and continue with `articles/chapter7/survival-frontiers.md`. |
+| 2026-10-03 | `articles/chapter7/survival-frontiers.md` translation completed with descriptive math text, image alt text, tables, proof labels, conclusion, references labels, and appendix proof records translated. Fences remain balanced, `git diff --check -- articles/chapter7/survival-frontiers.md` passes, and old internal link anchors are covered. | Commit/push this final article checkpoint. |

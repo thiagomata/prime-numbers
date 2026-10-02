@@ -1,274 +1,289 @@
-# Survival Frontiers in Balanced 2-Gap Companion Processes
+# Fronteiras de Sobrevivência em Processos Companheiros Balanceados de Lacunas 2
 
-**Author:** Thiago Henrique Ramos da Mata
-Independent Researcher  
+**Autor:** Thiago Henrique Ramos da Mata
+Pesquisador Independente<br>
 **Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
 **ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)  
 **GitHub:** [@thiagomata](https://github.com/thiagomata)  
 **License:** [CC BY 4.0](../LICENSE)<br>
 **DOI:** [10.5281/zenodo.22955798](https://doi.org/10.5281/zenodo.22955798)
 
-**Proof status:** The companion-process identities are proved exactly; the
-asymptotic theorems are conditional on the premises stated with each result
-(see [§1.1](#11-scope-and-evidence)). Stainless verification is pending. No
-result is claimed for the real sieve.
+**Status da prova:** As identidades dos processos companheiros são provadas
+exatamente; os teoremas assintóticos são condicionais às premissas declaradas
+com cada resultado (ver [§1.1](#11-scope-and-evidence)). A verificação em
+Stainless está pendente. Nenhum resultado é reivindicado para a peneira real.
 
-## Abstract
+## Resumo
 
 <div align="justify">
 <p style="text-align: justify">
 
-This article examines companion processes that reproduce the exact global
-growth of 2-gaps but change where each filter removes them. Every parent
-produces $r$ copies and exactly two are removed, as in the sieve sequence. The
-companion may place those two removals randomly, protect a chosen target, or
-direct them toward it.
-This construction separates the number of surviving 2-gaps from their
-location near the head.
+Este artigo examina processos companheiros que reproduzem o crescimento global
+exato das lacunas 2, mas mudam onde cada filtro as remove. Todo pai produz $r$
+cópias e exatamente duas são removidas, como na sequência de peneira. O
+companheiro pode colocar essas duas remoções aleatoriamente, proteger um alvo
+escolhido, ou direcioná-las para ele. Essa construção separa o número de
+lacunas 2 sobreviventes de sua localização perto da cabeça.
 
-A filter's local destruction fraction $f_r$ is compared with the random rate
-$2/r$ through $w_r=rf_r/2$. Under the stated blind-placement premise, the cumulative
-product proves that every fixed finite value of $w_r$ preserves
-square-window 2-gaps; with the additional availability and mixing
-conditions, it produces head 2-gaps infinitely often.
-The first boundary occurs when $w_r=1+c\log r$: square windows survive for
-$c < 1$, while head recurrence survives for $c < 1/2$. Under the same spatial
-premises, a separate exact-quota random-location model gives the same local
-frontiers when its normalized quotas satisfy the CRT-rate cumulative sum and
-summable finite-population error conditions derived below. It preserves an
-accepted-strike count, rather than the balanced per-parent recurrence; retaining
-one CRT strike count alone is insufficient.
-None of the spatial, availability, or mixing premises used by these
-conditional theorems is proved for the real sieve.
-Therefore, proving that the real sieve remains below the head frontier,
-together with persistent availability and the deterministic discrepancy bound
-stated in [§10](#10-conclusion), would establish the twin-prime conjecture.
+A fração local de destruição $f_r$ de um filtro é comparada com a taxa aleatória
+$2/r$ por meio de $w_r=rf_r/2$. Sob a premissa declarada de posicionamento cego,
+o produto cumulativo prova que todo valor finito fixo de $w_r$ preserva lacunas
+2 em janelas quadradas; com as condições adicionais de disponibilidade e mistura,
+ele produz lacunas 2 na cabeça infinitas vezes. A primeira fronteira ocorre
+quando $w_r=1+c\log r$: janelas quadradas sobrevivem para $c < 1$, enquanto a
+recorrência na cabeça sobrevive para $c < 1/2$. Sob as mesmas premissas
+espaciais, um modelo separado de localização aleatória com quota exata dá as
+mesmas fronteiras locais quando suas quotas normalizadas satisfazem a soma
+cumulativa na taxa CRT e as condições de erro somável de população finita
+derivadas abaixo. Ele preserva uma contagem de ataques aceitos, em vez da
+recorrência balanceada por pai; manter apenas uma contagem de ataques CRT é
+insuficiente. Nenhuma das premissas espaciais, de disponibilidade ou de mistura
+usadas por esses teoremas condicionais é provada para a peneira real. Portanto,
+provar que a peneira real permanece abaixo da fronteira da cabeça, junto com
+disponibilidade persistente e o limite determinístico de discrepância declarado
+em [§10](#10-conclusion), estabeleceria a conjectura dos primos gêmeos.
 </p>
 </div>
 
-## 1. Introduction
+<a id="1-introduction"></a>
 
-Begin with the positive integers and remove multiples of prime numbers one
-prime at a time. At a stage headed by the prime $p$, the accepted values are
-precisely the integers not divisible by any prime smaller than $p$. These
-survivors repeat periodically. If $e_i$ and $e_{i+1}$ are consecutive
-survivors, then $e_{i+1}-e_i$ is their gap; the gaps across one complete period
-form a finite cycle.
+## 1. Introdução
 
-This periodic accepted-value object is the **Sieve Sequence**, introduced and
-formally verified in [Formal Verification of Sieve Sequence Stages and Their
-Transitions](https://doi.org/10.5281/zenodo.22955782) [[1]](#ref1); its finite gap cycle is the
-representation used throughout this article.
+Comece com os inteiros positivos e remova os múltiplos de números primos, um
+primo por vez. Em um estágio encabeçado pelo primo $p$, os valores aceitos são
+precisamente os inteiros não divisíveis por nenhum primo menor que $p$. Esses
+sobreviventes se repetem periodicamente. Se $e_i$ e $e_{i+1}$ são sobreviventes
+consecutivos, então $e_{i+1}-e_i$ é sua lacuna; as lacunas ao longo de um
+período completo formam um ciclo finito.
 
-After multiples of $2$ have been removed, every survivor is odd. Every gap is
-therefore even, and $2$ is the smallest possible gap. A **2-gap** is a pair of
-consecutive survivors $x$ and $x+2$. At the stage headed by a prime $Q$, all
-primes below $Q$ have been installed as filters. A surviving 2-gap whose
-endpoints lie in the square-safe window $[Q,Q^2)$ is therefore a twin-prime
-pair: any composite number below $Q^2$ has a prime divisor below $Q$ and would
-already have been removed.
+Esse objeto periódico de valores aceitos é a **Sequência de Peneira**,
+introduzida e formalmente verificada em [Formal Verification of Sieve Sequence Stages and Their
+Transitions](https://doi.org/10.5281/zenodo.22955782) [[1]](#ref1); seu ciclo finito de lacunas é a
+representação usada ao longo deste artigo.
 
-When the sieve later reaches the stage headed by $x$, the same pair appears as
-the first gap after the head. Infinitely many such head 2-gaps would give
-infinitely many twin-prime pairs. But survival can be asked at three different
-spatial scales:
+Depois que os múltiplos de $2$ foram removidos, todo sobrevivente é ímpar. Toda
+lacuna é, portanto, par, e $2$ é a menor lacuna possível. Uma **lacuna 2** é um
+par de sobreviventes consecutivos $x$ e $x+2$. No estágio encabeçado por um
+primo $Q$, todos os primos abaixo de $Q$ foram instalados como filtros. Uma
+lacuna 2 sobrevivente cujos extremos estejam na janela segura pelo quadrado
+$[Q,Q^2)$ é, portanto, um par de primos gêmeos: qualquer número composto abaixo
+de $Q^2$ tem um divisor primo abaixo de $Q$ e já teria sido removido.
 
-1. some 2-gap exists somewhere in the complete period at every layer;
-2. a 2-gap occurs in each sufficiently large square-safe window; or
-3. the first gap after the distinguished head equals $2$ infinitely often.
+Quando a peneira mais tarde alcança o estágio encabeçado por $x$, o mesmo par
+aparece como a primeira lacuna após a cabeça. Infinitas lacunas 2 desse tipo na
+cabeça dariam infinitos pares de primos gêmeos. Mas a sobrevivência pode ser
+perguntada em três escalas espaciais diferentes:
 
-The first statement is global and purely combinatorial. The second is local
-but benefits from a window whose length grows quadratically. The third concerns
-one position and therefore has no window-size reserve. Mixing these meanings
-hides the actual threshold.
+1. alguma lacuna 2 existe em algum lugar do período completo em toda camada;
+2. uma lacuna 2 ocorre em cada janela segura pelo quadrado suficientemente grande; ou
+3. a primeira lacuna após a cabeça distinguida é igual a $2$ infinitas vezes.
 
-The following two empirical views make the distinction visible in the
-deterministic Sieve Sequence. They use the same 200 stages and the same
-2-focused compression: every 2-gap receives its own green cell, while each
-maximal run of consecutive non-2 gaps is collapsed into one colored cell equal
-to its sum. An internal colored cell therefore measures the total distance
-between two consecutive 2-gaps. Both views display $1{,}400$ compressed units
-from every row; they differ only in where those rows are placed horizontally.
+A primeira afirmação é global e puramente combinatória. A segunda é local, mas
+se beneficia de uma janela cujo comprimento cresce quadraticamente. A terceira
+diz respeito a uma posição e, portanto, não tem reserva de tamanho de janela.
+Misturar esses significados esconde o limiar real.
 
-**View A — independent compressed snapshots.** Every row begins at column zero,
-so its horizontal coordinate counts compressed units from that stage's own
-head. This is the original view. It honestly shows the texture within each
-stage, but its curved or noisy-looking vertical drift must not be read as a
-2-gap changing before the square boundary: equal columns in adjacent rows need
-not represent the same surviving values.
+As duas visões empíricas a seguir tornam a distinção visível na Sequência de
+Peneira determinística. Elas usam os mesmos 200 estágios e a mesma compressão
+focada em 2: toda lacuna 2 recebe sua própria célula verde, enquanto cada
+sequência maximal de lacunas consecutivas que não são 2 é colapsada em uma
+célula colorida igual à sua soma. Uma célula colorida interna, portanto, mede a
+distância total entre duas lacunas 2 consecutivas. Ambas as visões exibem
+$1{,}400$ unidades comprimidas de cada linha; elas diferem apenas em onde essas
+linhas são posicionadas horizontalmente.
 
-![Independent 2-focused snapshots of 200 Sieve Sequence stages: every row restarts at its own head](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-heatmap-2focused.svg)
+**Visão A — instantâneos comprimidos independentes.** Toda linha começa na
+coluna zero, então sua coordenada horizontal conta unidades comprimidas a partir
+da própria cabeça daquele estágio. Esta é a visão original. Ela mostra
+honestamente a textura dentro de cada estágio, mas sua deriva vertical curva ou
+ruidosa não deve ser lida como uma lacuna 2 mudando antes da fronteira
+quadrada: colunas iguais em linhas adjacentes não precisam representar os mesmos
+valores sobreviventes.
 
-**View B — shared-safe-2 alignment.** For each pair of adjacent rows, let $h$ be
-the previous stage's head. A safe anchor is a 2-gap with the same raw starting
-value in both rows and with both endpoints strictly below $h^2$. The alignment
-calculation compares the compressed indices of every such shared safe 2-gap
-and shifts the later row by their common difference. Across the 199 observed
-transitions, the 200-stage dataset exhibits 118 differences of zero and 81 of
-one; every safe anchor within each transition agrees with that row's difference.
-Accumulating those differences produces the alternative view below.
+![Instantâneos independentes focados em 2 de 200 estágios da Sequência de Peneira: toda linha recomeça em sua própria cabeça](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-heatmap-2focused.svg)
 
-![Shared-safe-2 aligned compression of 200 Sieve Sequence stages: unchanged pre-square 2-gaps form vertical green lines](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-heatmap-2focused-aligned.svg)
+**Visão B — alinhamento seguro-2 compartilhado.** Para cada par de linhas
+adjacentes, seja $h$ a cabeça do estágio anterior. Uma âncora segura é uma
+lacuna 2 com o mesmo valor inicial bruto em ambas as linhas e com ambos os
+extremos estritamente abaixo de $h^2$. O cálculo de alinhamento compara os
+índices comprimidos de toda lacuna 2 segura compartilhada desse tipo e desloca a
+linha posterior pela diferença comum delas. Ao longo das 199 transições
+observadas, o conjunto de dados de 200 estágios exibe 118 diferenças de zero e
+81 de um; toda âncora segura dentro de cada transição concorda com a diferença
+daquela linha. Acumular essas diferenças produz a visão alternativa abaixo.
 
-The left white wedge is intentional padding created by the cumulative offsets.
-A zero shift occurs when advancing the head merely shortens the leading
-collapsed non-2 run; a one-cell shift occurs when that step removes an entire
-compressed run or a standalone 2-gap cell. Thus the straight green lines in
-View B and the curved texture in View A describe the same data under different
-coordinates.
+![Compressão alinhada por seguro-2 compartilhado de 200 estágios da Sequência de Peneira: lacunas 2 pré-quadrado inalteradas formam linhas verdes verticais](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/gap-heatmap-2focused-aligned.svg)
 
-The sieve does not rotate this compressed row as an atomic list. Within the
-safe prefix, it advances the head through one raw gap; only afterward does the
-visualization collapse the remaining consecutive non-2 gaps. Thus a raw prefix
-$[4,6,8,2,\ldots]$ appears over successive rows as
-$[18,2,\ldots] \to [14,2,\ldots] \to [8,2,\ldots] \to [2,\ldots]$. The long
-blue feature is not one unchanged merged gap reused in several sequences; it is
-the decreasing suffix of one raw run. Rotating one compressed cell per row
-would show that block only once, but it would define a different dynamics from
-the Sieve Sequence.
+A cunha branca à esquerda é preenchimento intencional criado pelos deslocamentos
+cumulativos. Um deslocamento zero ocorre quando avançar a cabeça apenas encurta a
+execução inicial colapsada de lacunas não 2; um deslocamento de uma célula
+ocorre quando esse passo remove uma execução comprimida inteira ou uma célula de
+lacuna 2 isolada. Assim, as linhas verdes retas na Visão B e a textura curva na
+Visão A descrevem os mesmos dados sob coordenadas diferentes.
 
-| View | Horizontal coordinate | What vertical comparison supports |
+A peneira não rotaciona essa linha comprimida como uma lista atômica. Dentro do
+prefixo seguro, ela avança a cabeça por uma lacuna bruta; só depois a
+visualização colapsa as lacunas consecutivas restantes que não são 2. Assim, um
+prefixo bruto $[4,6,8,2,\ldots]$ aparece em linhas sucessivas como
+$[18,2,\ldots] \to [14,2,\ldots] \to [8,2,\ldots] \to [2,\ldots]$. O longo
+elemento azul não é uma lacuna mesclada inalterada reutilizada em várias
+sequências; é o sufixo decrescente de uma execução bruta. Rotacionar uma célula
+comprimida por linha mostraria esse bloco apenas uma vez, mas definiria uma
+dinâmica diferente da Sequência de Peneira.
+
+| Visão | Coordenada horizontal | O que a comparação vertical sustenta |
 |---|---|---|
-| Independent snapshots | Compressed units from each row's own head | Within-stage density and spacing texture; not cell-by-cell lineage |
-| Shared-safe-2 aligned | Cumulative columns fixed by shared 2-gaps below the previous $h^2$ | Exact alignment of the observed safe prefix; not full lineage beyond it |
+| Instantâneos independentes | Unidades comprimidas a partir da própria cabeça de cada linha | Densidade e textura de espaçamento dentro do estágio; não linhagem célula a célula |
+| Alinhado por seguro-2 compartilhado | Colunas cumulativas fixadas por lacunas 2 compartilhadas abaixo do $h^2$ anterior | Alinhamento exato do prefixo seguro observado; não linhagem completa além dele |
 
-These figures provide empirical context for the placement problem; neither is
-evidence for the companion-model survival thresholds derived below. They are
-generated by the [gap-heatmap calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/gap_heatmap.py) from a dataset containing the
-[first 100,000 gaps of each stage](https://github.com/thiagomata/prime-numbers/blob/master/data/sieve-sequence/first_gaps_per_seq.csv).
+Essas figuras fornecem contexto empírico para o problema de posicionamento;
+nenhuma delas é evidência para os limiares de sobrevivência dos modelos
+companheiros derivados abaixo. Elas são geradas pelo [cálculo do mapa de calor de lacunas](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/gap_heatmap.py) a partir de um conjunto de dados contendo as
+[primeiras 100.000 lacunas de cada estágio](https://github.com/thiagomata/prime-numbers/blob/master/data/sieve-sequence/first_gaps_per_seq.csv).
 
-The central question is therefore not what fixed percentage of behavior may be
-called adversarial. It is how large the realized local destruction may be
-relative to the random benchmark $2/r$, and how that damage is allocated near
-the head.
+A pergunta central, portanto, não é qual porcentagem fixa de comportamento pode
+ser chamada de adversarial. É quão grande pode ser a destruição local realizada
+em relação ao benchmark aleatório $2/r$, e como esse dano é alocado perto da
+cabeça.
 
-The balanced companions are designed to separate them. They retain the real
-sieve's exact number of descendants but replace the arithmetic rule selecting
-which descendants die. This makes global survival identical in every companion
-while allowing local behavior to range from maximally protective, through
-position-blind random, to maximally hostile.
+Os companheiros balanceados são projetados para separar essas questões. Eles
+retêm o número exato de descendentes da peneira real, mas substituem a regra
+aritmética que seleciona quais descendentes morrem. Isso torna a sobrevivência
+global idêntica em todo companheiro, enquanto permite que o comportamento local
+varie de maximamente protetor, passando por aleatório cego à posição, até
+maximamente hostil.
 
-We establish:
+Estabelecemos:
 
-- the exact allocation-independent global recurrence $N_{k+1}=(r_k-2)N_k$;
-- the cumulative local-hazard law $P(Q)=e^{-D(Q)}$ and its fixed-factor and
-  logarithmic survival frontiers;
-- the distinct square-window and head thresholds for adversarial/random and adversarial/protective
-  mixtures;
-- sharp finite allocation bounds separating adversarial-label budget from positional
-  information; and
-- exact-quota and biased exact-quota companions that preserve CRT strike counts
-  while randomizing their locations.
+- a recorrência global exata independente de alocação $N_{k+1}=(r_k-2)N_k$;
+- a lei cumulativa de risco local $P(Q)=e^{-D(Q)}$ e suas fronteiras de
+  sobrevivência de fator fixo e logarítmicas;
+- os limiares distintos de janela quadrada e cabeça para misturas
+  adversarial/aleatória e adversarial/protetora;
+- limites finitos agudos de alocação separando orçamento de rótulo adversarial
+  de informação posicional; e
+- companheiros de quota exata e quota exata enviesada que preservam contagens
+  de ataques CRT enquanto aleatorizam suas localizações.
 
-### 1.1 Scope and Evidence
+<a id="11-scope-and-evidence"></a>
 
-We prove exact identities for the finite companion processes and conditional
-theorems for their asymptotic local behavior. Whenever a result needs spatial
-uniformity, head availability, or cross-layer mixing, we state that premise in
-the property itself before using it. The comparison with the real sieve then
-shows what additional arithmetic information would transfer the companion
-result.
+### 1.1 Escopo e Evidência
 
-The companion theorems below are proved mathematically under their stated
-premises; Stainless verification remains pending and is outside this article's
-scope.
+Provamos identidades exatas para os processos companheiros finitos e teoremas
+condicionais para seu comportamento local assintótico. Sempre que um resultado
+precisa de uniformidade espacial, disponibilidade na cabeça ou mistura entre
+camadas, declaramos essa premissa na própria propriedade antes de usá-la. A
+comparação com a peneira real mostra então qual informação aritmética adicional
+transferiria o resultado companheiro.
 
-## 2. Preliminaries and Companion Models
+Os teoremas companheiros abaixo são provados matematicamente sob suas premissas
+declaradas; a verificação em Stainless permanece pendente e está fora do escopo
+deste artigo.
 
-Let $\mathcal G_k$ be the 2-gap descendants before installing prime $r$. Each
-parent $g\in\mathcal G_k$ produces the indexed copies
+<a id="2-preliminaries-and-companion-models"></a>
+
+## 2. Preliminares e Modelos Companheiros
+
+Seja $\mathcal G_k$ o conjunto de descendentes de lacunas 2 antes de instalar o
+primo $r$. Cada pai $g\in\mathcal G_k$ produz as cópias indexadas
 
 ```math
 (g,0),(g,1),\ldots,(g,r-1).
 ```
 
-Exactly two distinct indices are harmful. Each parent receives one of three
-policies. A **random parent** draws the harmful pair uniformly from the
-two-element subsets of $\mathbb Z/r\mathbb Z$. An **adversarial parent** places
-a deletion on its target child whenever possible. A **protective parent**,
-defined fully in [§5.2](#52-the-protective-parent-policy), places both deletions away from the target whenever
-possible.
+Exatamente dois índices distintos são prejudiciais. Cada pai recebe uma de três
+políticas. Um **pai aleatório** sorteia o par prejudicial uniformemente dos
+subconjuntos de dois elementos de $\mathbb Z/r\mathbb Z$. Um **pai
+adversarial** coloca uma deleção em seu filho-alvo sempre que possível. Um **pai
+protetor**, definido completamente em [§5.2](#52-the-protective-parent-policy),
+coloca ambas as deleções longe do alvo sempre que possível.
 
-Every policy leaves exactly $r-2$ children. The companions therefore change
-the location of the deletions, not the population size.
+Toda política deixa exatamente $r-2$ filhos. Os companheiros, portanto, mudam a
+localização das deleções, não o tamanho da população.
 
-For example, let $r=5$ and suppose child index $1$ is the target. A random
-parent may remove any pair, such as $\{0,4\}$. An adversarial parent chooses a
-pair containing $1$, such as $\{1,4\}$. A protective parent chooses both
-indices outside the target, again allowing $\{0,4\}$. The three parents make
-different local choices, but each leaves exactly three children. This simple
-example is the distinction used throughout the article: global reproduction
-is fixed, while local placement changes.
+Por exemplo, seja $r=5$ e suponha que o índice de filho $1$ seja o alvo. Um pai
+aleatório pode remover qualquer par, como $\{0,4\}$. Um pai adversarial escolhe
+um par contendo $1$, como $\{1,4\}$. Um pai protetor escolhe ambos os índices
+fora do alvo, novamente permitindo $\{0,4\}$. Os três pais fazem escolhas locais
+diferentes, mas cada um deixa exatamente três filhos. Esse exemplo simples é a
+distinção usada ao longo do artigo: a reprodução global é fixa, enquanto o
+posicionamento local muda.
 
-The random, adversarial, and protective companion definitions above are the
-definitions used throughout this article. The corresponding real modular pair
-is derived in [Gap Dynamics §6.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
+As definições de companheiro aleatório, adversarial e protetor acima são as
+definições usadas ao longo deste artigo. O par modular real correspondente é
+derivado em [Dinâmica de Lacunas §6.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
 
-The exact-quota process introduced in [§7](#7-exact-quota-companion-processes)
-is a separate conditional random-location experiment. It draws a fixed number
-of strikes from an eligible population and can strike zero, one, or two
-descendants of a given 2-gap parent. It therefore does not satisfy the
-balanced per-parent $r-2$ recurrence; its role is to compare conditional local
-survival at a fixed strike quota.
+O processo de quota exata introduzido em [§7](#7-exact-quota-companion-processes)
+é um experimento separado de localização aleatória condicional. Ele sorteia um
+número fixo de ataques de uma população elegível e pode atacar zero, um ou dois
+descendentes de um dado pai de lacuna 2. Portanto, ele não satisfaz a
+recorrência balanceada por pai $r-2$; seu papel é comparar a sobrevivência local
+condicional sob uma quota fixa de ataques.
 
-### 2.1 Notation
+<a id="21-notation"></a>
 
-We use the following notation throughout:
+### 2.1 Notação
 
-| Symbol | Meaning |
+Usamos a seguinte notação ao longo do texto:
+
+| Símbolo | Significado |
 |---|---|
-| $r$ | incoming filter prime |
-| $Q$ | target prime head |
-| $N_k$ | complete-period 2-gap population at layer $k$ |
-| $f_r$ | conditional destruction probability of an eligible tracked lineage |
-| $\widehat f_r$ | observed destruction fraction in a specified finite population |
-| $w_r=rf_r/2$ | destruction relative to the random benchmark $2/r$ |
-| $D(Q)=\sum_{r < Q}-\log(1-f_r)$ | cumulative local hazard |
-| $\alpha_r$ | scheduled absolute adversarial share in a mixture |
-| $A(Q)=\sum_{r < Q}-\log(1-\alpha_r)$ | cumulative adversarial-share hazard |
-| $J_r/N_r=u_r$ | exact-quota strike fraction |
-| $\beta_r$ | raw endpoint preference in a biased quota |
-| $\kappa_r$ | effective destruction skew, equal to $w_r$ when measured from $f_r$ |
+| $r$ | primo de filtro entrante |
+| $Q$ | cabeça prima alvo |
+| $N_k$ | população de lacunas 2 em período completo na camada $k$ |
+| $f_r$ | probabilidade condicional de destruição de uma linhagem elegível rastreada |
+| $\widehat f_r$ | fração de destruição observada em uma população finita especificada |
+| $w_r=rf_r/2$ | destruição relativa ao benchmark aleatório $2/r$ |
+| $D(Q)=\sum_{r < Q}-\log(1-f_r)$ | risco local cumulativo |
+| $\alpha_r$ | parcela adversarial absoluta programada em uma mistura |
+| $A(Q)=\sum_{r < Q}-\log(1-\alpha_r)$ | risco cumulativo da parcela adversarial |
+| $J_r/N_r=u_r$ | fração de ataques de quota exata |
+| $\beta_r$ | preferência bruta por extremos em uma quota enviesada |
+| $\kappa_r$ | viés efetivo de destruição, igual a $w_r$ quando medido a partir de $f_r$ |
 
-Unless a different range is displayed, filter products and sums run over
-primes $r_0\le r < Q$, with a fixed $r_0\ge5$. Every finite prefix has strictly
-positive survival factors. Tail schedules are imposed only once their hazards
-lie in $[0,1)$. A lethal prefix cannot be absorbed into a positive constant.
+Salvo quando um intervalo diferente é exibido, produtos e somas de filtros
+percorrem primos $r_0\le r < Q$, com $r_0\ge5$ fixo. Todo prefixo finito tem
+fatores de sobrevivência estritamente positivos. Programações de cauda são
+impostas apenas depois que seus riscos estão em $[0,1)$. Um prefixo letal não
+pode ser absorvido em uma constante positiva.
 
-For probability statements, all candidate events are defined on one probability
-space. For each candidate, $f_r$ is its deterministic conditional probability
-of destruction given initial eligibility and survival through the earlier
-filters. The common-hazard model assumes these probabilities are the same for
-the candidates being compared. The chain rule then gives a candidate survival
-probability $P(Q)$; independence between candidates is a separate issue.
+Para afirmações probabilísticas, todos os eventos candidatos são definidos em
+um único espaço de probabilidade. Para cada candidato, $f_r$ é sua probabilidade
+condicional determinística de destruição, dada a elegibilidade inicial e a
+sobrevivência pelos filtros anteriores. O modelo de risco comum assume que essas
+probabilidades são as mesmas para os candidatos comparados. A regra da cadeia
+então dá uma probabilidade de sobrevivência candidata $P(Q)$; a independência
+entre candidatos é uma questão separada.
 
-Window applications assume $B(Q)\asymp Q^2$ eligible candidate histories,
-each with survival probability $P(Q)$. Head applications assume an eligibility
-probability $b_Q$ bounded below by a positive constant and the same survival
-law conditional on eligibility. Consequently,
+Aplicações em janelas assumem $B(Q)\asymp Q^2$ histórias candidatas elegíveis,
+cada uma com probabilidade de sobrevivência $P(Q)$. Aplicações na cabeça
+assumem uma probabilidade de elegibilidade $b_Q$ limitada inferiormente por uma
+constante positiva e a mesma lei de sobrevivência condicional à elegibilidade.
+Consequentemente,
 
 ```math
 \begin{aligned}
 \lambda_Q:=\mathbb E[X_Q]&=B(Q)P(Q)
-&&[\text{Linearity Of Expectation}],\\
+&&[\text{Linearidade da Esperança}],\\
 \Pr(H_Q)&=b_QP(Q)
-&&[\text{Conditional Probability}].
+&&[\text{Probabilidade Condicional}].
 \end{aligned}
 ```
 
-These marginal assumptions are additional to the balanced branching rule.
-They are not supplied by its global count. Different window and head
-experiments need not describe one nested random sequence of integers.
+Essas hipóteses marginais são adicionais à regra balanceada de ramificação. Elas
+não são fornecidas por sua contagem global. Experimentos diferentes de janela e
+cabeça não precisam descrever uma única sequência aleatória aninhada de
+inteiros.
 
-For the prime-indexed head events $H_Q$, define
+Para os eventos de cabeça $H_Q$ indexados por primos, defina
 
 ```math
 S(X):=
 \sum_{\substack{Q\le X\\Q\text{ prime}}}\Pr(H_Q).
 ```
 
-Throughout this article, **adequate cross-layer mixing** means that whenever
-$S(X)\longrightarrow\infty$,
+Ao longo deste artigo, **mistura adequada entre camadas** significa que, sempre
+que $S(X)\longrightarrow\infty$,
 
 ```math
 \sum_{\substack{P,Q\le X\\P,Q\text{ prime}}}
@@ -277,105 +292,114 @@ $S(X)\longrightarrow\infty$,
 (1+o(1))S(X)^2.
 ```
 
-Mutual independence is a sufficient special case: its diagonal correction is
-$O(S(X))=o(S(X)^2)$. The Kochen--Stone form of the second Borel--Cantelli lemma
-then gives $\Pr(H_Q\text{ infinitely often})=1$ [[3]](#ref3). When $S(X)$ converges, the
-first Borel--Cantelli lemma gives only finitely many head events without any
-mixing premise.
+A independência mútua é um caso especial suficiente: sua correção diagonal é
+$O(S(X))=o(S(X)^2)$. A forma de Kochen--Stone do segundo lema de
+Borel--Cantelli então dá $\Pr(H_Q\text{ infinitas vezes})=1$ [[3]](#ref3).
+Quando $S(X)$ converge, o primeiro lema de Borel--Cantelli dá apenas finitos
+eventos de cabeça sem qualquer premissa de mistura.
 
-Square-window applications use one further named premise. **Blind placement**
-means that the surviving starts are placed in the window so that the
-empty-window bound
+Aplicações em janelas quadradas usam uma premissa nomeada adicional.
+**Posicionamento cego** significa que os inícios sobreviventes são colocados na
+janela de modo que o limite de janela vazia
 
 ```math
 \Pr(X_Q=0)\le e^{-\lambda_Q}
 ```
 
-holds, where $\lambda_Q$ is the expected surviving population of that window
-(for example $\lambda_Q^{\mathrm{mix}}$ in [§4.1](#41-adversarialrandom-parent-square-window-boundary)). This is an assumption about
-the joint placement distribution: it holds for independent uniform placement
-and is not derived in this article for dependent allocators such as exact
-quotas, whole-filter coins, or block balance. Whenever a square-window result
-uses it, the result says so; the same caveat as [§9](#9-limitations) applies — allocators with
-different dependence structures cannot inherit one another's almost-sure
-conclusions.
+vale, onde $\lambda_Q$ é a população sobrevivente esperada dessa janela (por
+exemplo $\lambda_Q^{\mathrm{mix}}$ em [§4.1](#41-adversarialrandom-parent-square-window-boundary)). Esta é uma hipótese sobre
+a distribuição conjunta de posicionamento: ela vale para posicionamento
+uniforme independente e não é derivada neste artigo para alocadores dependentes,
+como quotas exatas, moedas de filtro inteiro ou balanço por blocos. Sempre que
+um resultado de janela quadrada a usa, o resultado diz isso; aplica-se a mesma
+ressalva de [§9](#9-limitations) — alocadores com estruturas de dependência
+diferentes não podem herdar entre si conclusões quase certas.
 
-### 2.2 Mathematical Foundation
+<a id="22-mathematical-foundation"></a>
 
-The companion construction uses three exact sieve-sequence results proved in
-[Gap Dynamics](https://doi.org/10.5281/zenodo.22955786) [[2]](#ref2):
+### 2.2 Fundação Matemática
 
-- the [exact complete-period 2-gap count](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count);
-- the [two harmful copy-index classes](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes); and
-- the [exact accepted-strike count](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes).
+A construção companheira usa três resultados exatos da sequência de peneira
+provados em [Dinâmica de Lacunas](https://doi.org/10.5281/zenodo.22955786) [[2]](#ref2):
 
-The relative local-damage normalization is defined directly in [§3.2](#32-local-destruction-relative-to-random), and its
-allocation refinement is defined in [§6.2](#62-targeting-and-local-hazard).
+- a [contagem exata de lacunas 2 em período completo](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count);
+- as [duas classes prejudiciais de índices de cópia](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes); e
+- a [contagem exata de ataques aceitos](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes).
 
-## 3. Relative Hazard and Survival Frontiers
+A normalização de dano local relativo é definida diretamente em [§3.2](#32-local-destruction-relative-to-random), e seu
+refinamento por alocação é definido em [§6.2](#62-targeting-and-local-hazard).
 
-### 3.1 Global Persistence Is Independent of Allocation
+<a id="3-relative-hazard-and-survival-frontiers"></a>
 
-We begin with the property shared by every balanced companion. No choice of the
-harmful pair changes the number of surviving descendants: random,
-adversarial, protective, and mixed parents all leave the same global
-population. Local extinction must therefore come from placement rather than
-from exhausting the complete-period supply.
+## 3. Risco Relativo e Fronteiras de Sobrevivência
 
-Let $N_k=|\mathcal G_k|$ and assume $N_0>0$. Installing $r_k$ gives
+<a id="31-global-persistence-is-independent-of-allocation"></a>
+
+### 3.1 A Persistência Global é Independente da Alocação
+
+Começamos com a propriedade compartilhada por todo companheiro balanceado.
+Nenhuma escolha do par prejudicial muda o número de descendentes sobreviventes:
+pais aleatórios, adversariais, protetores e mistos deixam todos a mesma
+população global. A extinção local deve, portanto, vir do posicionamento, não do
+esgotamento do suprimento de período completo.
+
+Seja $N_k=|\mathcal G_k|$ e suponha $N_0>0$. Instalar $r_k$ dá
 
 ```math
 \begin{aligned}
 N_{k+1}
 &=\sum_{g\in\mathcal G_k}(r_k-2)
-&&[\text{Exactly Two Copies Removed Per Parent}]\\
+&&[\text{Exatamente Duas Cópias Removidas por Pai}]\\
 &=(r_k-2)N_k.
-&&[\text{Simplification}]
+&&[\text{Simplificação}]
 \end{aligned}
 ```
 
-Consequently,
+Consequentemente,
 
 ```math
 \begin{aligned}
 N_k
 &=N_0\prod_{i < k}(r_i-2)
-&&[\text{Iteration}]\\
+&&[\text{Iteração}]\\
 & > 0
 &&[N_0>0;\ r_i\ge5]\\
 &\longrightarrow\infty.
-&&[\text{Every Factor Is At Least }3]
+&&[\text{Todo Fator é Pelo Menos }3]
 \end{aligned}
 ```
 
-Thus
+Assim
 
 ```math
-\text{global 2-gap persistence holds for every adversarial schedule.}
-\qquad[\text{Q.E.D.}]
+\text{a persistência global de lacunas 2 vale para toda programação adversarial.}
+\qquad[\text{C.Q.D.}]
 ```
 
-The complete proof record appears in [Appendix A.1](#appendix-a1). The
-corresponding real-sieve count is proved in [Gap Dynamics §5.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2).
+O registro completo da prova aparece no [Apêndice A.1](#appendix-a1). A
+contagem correspondente da peneira real é provada em [Dinâmica de Lacunas §5.2](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2).
 
-### 3.2 Local Destruction Relative to Random
+<a id="32-local-destruction-relative-to-random"></a>
 
-Two quantities must be distinguished. If $L_r > 0$ gaps are present in a
-specified finite population and $H_r$ are destroyed, its observed fraction is
+### 3.2 Destruição Local Relativa ao Aleatório
+
+Duas quantidades precisam ser distinguidas. Se $L_r > 0$ lacunas estão presentes
+em uma população finita especificada e $H_r$ são destruídas, sua fração observada é
 
 ```math
 \widehat f_r:=\frac{H_r}{L_r},
 \qquad \widehat w_r:=\frac{r\widehat f_r}{2}.
 ```
 
-The probability model instead uses the conditional lineage hazard $f_r$
-defined in [§2.1](#21-notation). Balanced random selection has conditional destruction rate
+O modelo probabilístico, em vez disso, usa o risco condicional de linhagem
+$f_r$ definido em [§2.1](#21-notation). A seleção aleatória balanceada tem taxa
+condicional de destruição
 
 ```math
 d_r:=\frac2r.
 ```
 
-The dimensionless worse-than-random factor is
+O fator adimensional pior-que-aleatório é
 
 ```math
 w_r
@@ -383,54 +407,54 @@ w_r
 =\frac{rf_r}{2}.
 ```
 
-This is the meaningful adversariality scale because the benchmark itself
-shrinks as filters grow:
+Esta é a escala significativa de adversarialidade porque o próprio benchmark
+encolhe à medida que os filtros crescem:
 
 ```math
 \begin{aligned}
 w_r=0
 &\Longleftrightarrow f_r=0
-&&[\text{Protective Endpoint}],\\
+&&[\text{Extremo Protetor}],\\
 w_r=1
 &\Longleftrightarrow f_r=2/r
-&&[\text{Random Benchmark}],\\
+&&[\text{Benchmark Aleatório}],\\
 w_r=r/2
 &\Longleftrightarrow f_r=1
-&&[\text{Complete Local Destruction}].
+&&[\text{Destruição Local Completa}].
 \end{aligned}
 ```
 
-The range $0\le w_r\le r/2$ compares conditional damage with the neutral law.
-The analogous observed score $\widehat w_r$ can fluctuate above one even for
-a random filter. An observed fraction does not by itself establish the
-conditional probability of destruction of a particular child.
+O intervalo $0\le w_r\le r/2$ compara dano condicional com a lei neutra. O
+escore observado análogo $\widehat w_r$ pode flutuar acima de um mesmo para um
+filtro aleatório. Uma fração observada não estabelece por si só a probabilidade
+condicional de destruição de um filho particular.
 
-#### Absolute Adversarial/Random Share as a Specialization
+#### Parcela Adversarial/Aleatória Absoluta como Especialização
 
-Fix a target: either a square-safe window or one distinguished head position.
-At filter $r$, let
+Fixe um alvo: uma janela segura pelo quadrado ou uma posição distinguida na
+cabeça. No filtro $r$, seja
 
 ```math
 0\le \alpha_r\le 1
 ```
 
-be the adversarial share. The remaining share $1-\alpha_r$ uses the balanced
-random choice.
+a parcela adversarial. A parcela restante $1-\alpha_r$ usa a escolha aleatória
+balanceada.
 
-This can be interpreted parent by parent or as a marginal mixture for one
-locally relevant lineage. For the cumulative product studied below, mixture
-choices for a tracked lineage are independent from one filter to the next.
-The one-lineage calculation at each filter is then the same:
+Isso pode ser interpretado pai por pai ou como uma mistura marginal para uma
+linhagem localmente relevante. Para o produto cumulativo estudado abaixo, as
+escolhas de mistura para uma linhagem rastreada são independentes de um filtro
+para o próximo. O cálculo de uma linhagem em cada filtro é então o mesmo:
 
-- under adversarial selection, its target child is destroyed;
-- under balanced random selection, that child survives with probability
+- sob seleção adversarial, seu filho-alvo é destruído;
+- sob seleção aleatória balanceada, esse filho sobrevive com probabilidade
   $1-2/r$.
 
-The model therefore assumes that the adversarial branch is strong enough to
-identify and kill the locally relevant child. That is exactly what makes it an
-adversarial comparison rather than a description of the real filter.
+O modelo, portanto, assume que o ramo adversarial é forte o bastante para
+identificar e matar o filho localmente relevante. É exatamente isso que o torna
+uma comparação adversarial, em vez de uma descrição do filtro real.
 
-Its total local destruction rate and relative factor are
+Sua taxa total de destruição local e seu fator relativo são
 
 ```math
 \begin{aligned}
@@ -442,22 +466,25 @@ w_r
 \end{aligned}
 ```
 
-Thus a fixed absolute share $\alpha_r=\alpha > 0$ does not represent a fixed
-amount worse than random. It makes $w_r$ grow linearly like $\alpha r/2$.
-This is why the fixed-share model is asymptotically fatal for an essentially
-trivial reason; the nontrivial question is how rapidly $w_r$ itself may grow.
+Assim, uma parcela absoluta fixa $\alpha_r=\alpha > 0$ não representa uma
+quantidade fixa pior que a aleatória. Ela faz $w_r$ crescer linearmente como
+$\alpha r/2$. É por isso que o modelo de parcela fixa é assintoticamente fatal
+por uma razão essencialmente trivial; a pergunta não trivial é quão rapidamente
+o próprio $w_r$ pode crescer.
 
-### 3.3 The General Cumulative Local-Hazard Law
+<a id="33-the-general-cumulative-local-hazard-law"></a>
 
-Follow one eligible candidate through successive filters. By the conditional
-hazard definition, its next survival probability is
+### 3.3 A Lei Geral de Risco Local Cumulativo
+
+Acompanhe um candidato elegível através de filtros sucessivos. Pela definição
+de risco condicional, sua próxima probabilidade de sobrevivência é
 
 ```math
 s_r=1-f_r=1-\frac{2w_r}{r}.
 ```
 
-Assume $f_r < 1$ for every filter in the tracked chain. Define the cumulative
-local hazard
+Assuma $f_r < 1$ para todo filtro na cadeia rastreada. Defina o risco local
+cumulativo
 
 ```math
 D(Q)
@@ -465,32 +492,33 @@ D(Q)
 =\sum_{r < Q}-\log\left(1-\frac{2w_r}{r}\right).
 ```
 
-The complete survival factor is exactly
+O fator completo de sobrevivência é exatamente
 
 ```math
 \begin{aligned}
 P(Q)
 &=\prod_{r < Q}(1-f_r)
-&&[\text{Conditional Probability Chain Rule}]\\
+&&[\text{Regra da Cadeia de Probabilidade Condicional}]\\
 &=\exp\left(\sum_{r < Q}\log(1-f_r)\right)
-&&[\text{Product To Sum}]\\
+&&[\text{Produto para Soma}]\\
 &=e^{-D(Q)}.
-&&[\text{Definition Of }D(Q)]
+&&[\text{Definição de }D(Q)]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-There is also a deterministic version. For a fixed nested cohort with no
-births or immigration, $L_{r^+}=L_r(1-\widehat f_r)$ telescopes to the ratio of
-final to initial cohort size. This is an observed ratio, not a marginal
-probability. Changing the target window or introducing new descendants breaks
-that telescope unless an additional accounting identity is proved.
+Há também uma versão determinística. Para uma coorte aninhada fixa sem
+nascimentos ou imigração, $L_{r^+}=L_r(1-\widehat f_r)$ telescopa para a razão
+entre o tamanho final e inicial da coorte. Esta é uma razão observada, não uma
+probabilidade marginal. Mudar a janela alvo ou introduzir novos descendentes
+quebra esse telescópio, a menos que uma identidade contábil adicional seja
+provada.
 
-The Prime Number Theorem, the prime harmonic estimate, and their
-partial-summation consequences used here and below are classical; we use Hardy
-and Wright [[4]](#ref4).
+O Teorema dos Números Primos, a estimativa harmônica dos primos e suas
+consequências por soma parcial usadas aqui e abaixo são clássicos; usamos Hardy
+e Wright [[4]](#ref4).
 
-For the random benchmark $w_r=1$,
+Para o benchmark aleatório $w_r=1$,
 
 ```math
 \begin{aligned}
@@ -500,27 +528,27 @@ D_{\mathrm{random}}(Q)
 \end{aligned}
 ```
 
-and therefore
+e portanto
 
 ```math
 P_{\mathrm{random}}(Q)
 \asymp\frac{C}{(\log Q)^2}.
 ```
 
-The absolute adversarial/random mixture from [§3.2](#32-local-destruction-relative-to-random) is recovered because
+A mistura adversarial/aleatória absoluta de [§3.2](#32-local-destruction-relative-to-random) é recuperada porque
 
 ```math
 1-f_r
 =(1-\alpha_r)\left(1-\frac2r\right).
 ```
 
-If
+Se
 
 ```math
 A(Q):=\sum_{r < Q}-\log(1-\alpha_r),
 ```
 
-then
+então
 
 ```math
 \begin{aligned}
@@ -531,52 +559,55 @@ P_{\mathrm{adversarial/random}}(Q)
 \end{aligned}
 ```
 
-Thus the earlier $A(Q)$ is an excess hazard created by one particular policy
-mixture. The primary quantity is $D(Q)$, which also applies when no policy label
-$\alpha_r$ exists.
+Assim, o $A(Q)$ anterior é um risco excedente criado por uma mistura particular
+de políticas. A quantidade primária é $D(Q)$, que também se aplica quando não
+existe rótulo de política $\alpha_r$.
 
-If one filter has $f_r=1$, local extinction is immediate and the cumulative
-hazard is infinite from that point.
+Se um filtro tem $f_r=1$, a extinção local é imediata e o risco cumulativo é
+infinito a partir desse ponto.
 
-The complete proof record appears in [Appendix A.2](#appendix-a2).
+O registro completo da prova aparece no [Apêndice A.2](#appendix-a2).
 
-### 3.4 Every Fixed Finite Worsening Factor Survives
+<a id="34-every-fixed-finite-worsening-factor-survives"></a>
 
-The random destruction rate shrinks like $2/r$. We first ask what happens when
-the local filter is a fixed number of times worse than that benchmark. With a
-quadratic supply of eligible starts and blind placement, every fixed factor
-still leaves occupied square windows. If head candidates remain available and
-successive layers mix adequately, the head also returns to a 2-gap infinitely
-often.
+### 3.4 Todo Fator Fixo Finito de Piora Sobrevive
 
-Let $w\ge 0$ be fixed and suppose
+A taxa aleatória de destruição encolhe como $2/r$. Primeiro perguntamos o que
+acontece quando o filtro local é um número fixo de vezes pior que esse
+benchmark. Com um suprimento quadrático de inícios elegíveis e posicionamento
+cego, todo fator fixo ainda deixa janelas quadradas ocupadas. Se candidatos na
+cabeça permanecem disponíveis e camadas sucessivas se misturam adequadamente, a
+cabeça também retorna a uma lacuna 2 infinitas vezes.
+
+Seja $w\ge 0$ fixo e suponha
 
 ```math
 f_r=\frac{2w}{r}
 ```
 
-for all sufficiently large filters. A finite prefix is absorbed into a positive
-constant. Since the quadratic error terms are summable over primes,
+para todos os filtros suficientemente grandes. Um prefixo finito é absorvido em
+uma constante positiva. Como os termos quadráticos de erro são somáveis sobre
+primos,
 
 ```math
 \begin{aligned}
 D_w(Q)
 &=\sum_{r < Q}-\log\left(1-\frac{2w}{r}\right)
-&&[\text{Definition Of }D(Q)]\\
+&&[\text{Definição de }D(Q)]\\
 &=2w\sum_{r < Q}\frac1r+O(1)
-&&[\text{Taylor Expansion; Summable Remainder}]\\
+&&[\text{Expansão de Taylor; Resto Somável}]\\
 &=2w\log\log Q+O(1).
-&&[\text{Prime Harmonic Sum}]
+&&[\text{Soma Harmônica dos Primos}]
 \end{aligned}
 ```
 
-Therefore
+Portanto
 
 ```math
 P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 ```
 
-For a square window with $B(Q)\asymp C_0Q^2$ eligible lineages,
+Para uma janela quadrada com $B(Q)\asymp C_0Q^2$ linhagens elegíveis,
 
 ```math
 \lambda_w(Q)
@@ -585,58 +616,62 @@ C_0\frac{Q^2}{(\log Q)^{2w}}
 \longrightarrow\infty
 ```
 
-for every finite $w$. The growth is strong enough to make the standard
-empty-window bound summable, so only finitely many square windows are empty
-almost surely under the blind-placement premise.
+para todo $w$ finito. O crescimento é forte o suficiente para tornar somável o
+limite padrão de janela vazia, então apenas finitas janelas quadradas são vazias
+quase certamente sob a premissa de posicionamento cego.
 
-For a distinguished head with baseline availability bounded below,
+Para uma cabeça distinguida com disponibilidade de base limitada inferiormente,
 
 ```math
 \Pr(H_Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 ```
 
-The sum of this probability over prime heads diverges for every finite $w$.
-Under adequate mixing, head 2-gaps therefore recur infinitely often almost
-surely.
+A soma dessa probabilidade sobre cabeças primas diverge para todo $w$ finito.
+Sob mistura adequada, lacunas 2 na cabeça, portanto, recorrem infinitas vezes
+quase certamente.
 
-Thus
+Assim
 
 ```math
-\text{there is no finite constant-factor maximum worse than random.}
-\qquad[\text{Q.E.D.}]
+\text{não há máximo finito de fator constante pior que o aleatório.}
+\qquad[\text{C.Q.D.}]
 ```
 
-A filter that is twice, ten times, or one million times worse than the random
-rate still lies in the same asymptotic survival class once $r$ is sufficiently
-large. The nontrivial transition begins only when $w_r$ grows with $r$.
+Um filtro que é duas, dez ou um milhão de vezes pior que a taxa aleatória ainda
+fica na mesma classe assintótica de sobrevivência uma vez que $r$ seja
+suficientemente grande. A transição não trivial começa apenas quando $w_r$
+cresce com $r$.
 
-The complete proof record appears in [Appendix A.3](#appendix-a3).
+O registro completo da prova aparece no [Apêndice A.3](#appendix-a3).
 
-The fixed-factor conclusion is not only asymptotic; it is visible in the
-square-window occupancy itself. The figure below plots
-$\log_{10}\lambda_w(Q)$ against $\log_{10}Q$ for the fixed factors
-$w=1,3,6,10$, a constant $1\%$ adversarial share, and the $c=1$ frontier
-$w_r=1+\log r$. Every fixed finite $w$ climbs without bound -- $w=6$ and
-$w=10$ visibly dip first, because $Q^2$ must first outgrow $(\log Q)^{2w}$ --
-while the constant share collapses rapidly and the exact $c=1$ boundary
-declines only logarithmically: $\lambda_1(Q)\asymp C/(\log Q)^2\to0$. This is
-the failure-side boundary derived in [§3.5](#35-logarithmically-growing-worsening-has-two-thresholds), not a surviving curve.
+A conclusão de fator fixo não é apenas assintótica; ela é visível na própria
+ocupação da janela quadrada. A figura abaixo plota $\log_{10}\lambda_w(Q)$
+contra $\log_{10}Q$ para os fatores fixos $w=1,3,6,10$, uma parcela
+adversarial constante de $1\%$ e a fronteira $c=1$, $w_r=1+\log r$. Todo $w$
+finito fixo sobe sem limite -- $w=6$ e $w=10$ caem visivelmente primeiro,
+porque $Q^2$ precisa primeiro ultrapassar $(\log Q)^{2w}$ -- enquanto a parcela
+constante colapsa rapidamente e a fronteira exata $c=1$ declina apenas
+logaritmicamente: $\lambda_1(Q)\asymp C/(\log Q)^2\to0$. Esta é a fronteira do
+lado de falha derivada em [§3.5](#35-logarithmically-growing-worsening-has-two-thresholds), não uma curva sobrevivente.
 
-![Square-window expected occupancy log10(lambda(Q)) on a log scale: every fixed relative-hazard factor w=1,3,6,10 eventually climbs without bound, a constant 1% adversarial share collapses rapidly, and the exact c=1 boundary declines slowly to zero](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/phase-transition-window.svg)
+![Ocupação esperada de janela quadrada log10(lambda(Q)) em escala logarítmica: todo fator fixo de risco relativo w=1,3,6,10 eventualmente sobe sem limite, uma parcela adversarial constante de 1% colapsa rapidamente, e a fronteira exata c=1 declina lentamente até zero](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/phase-transition-window.svg)
 
-### 3.5 Logarithmically Growing Worsening Has Two Thresholds
+<a id="35-logarithmically-growing-worsening-has-two-thresholds"></a>
 
-The first genuine transition appears when the worsening factor grows with the
-filter. Using the same supply, availability, and mixing premises as [§3.4](#34-every-fixed-finite-worsening-factor-survives), we
-let the factor grow logarithmically and compare the reserve supplied by a
-square window with the much thinner reserve at one distinguished head.
+### 3.5 Piora Logaritmicamente Crescente Tem Dois Limiares
+
+A primeira transição genuína aparece quando o fator de piora cresce com o
+filtro. Usando as mesmas premissas de suprimento, disponibilidade e mistura de
+[§3.4](#34-every-fixed-finite-worsening-factor-survives), fazemos o fator
+crescer logaritmicamente e comparamos a reserva fornecida por uma janela
+quadrada com a reserva muito mais fina em uma cabeça distinguida.
 
 ```math
 w_r=1+c\log r,
 \qquad c\ge0.
 ```
 
-The total local destruction rate is
+A taxa total de destruição local é
 
 ```math
 f_r
@@ -644,32 +679,32 @@ f_r
 =\frac2r+2c\frac{\log r}{r}.
 ```
 
-The random contribution supplies the first term, while the second is the
-growing excess. Prime summation gives
+A contribuição aleatória fornece o primeiro termo, enquanto o segundo é o
+excesso crescente. A soma sobre primos dá
 
 ```math
 \begin{aligned}
 D_c(Q)
 &=\sum_{r < Q}-\log(1-f_r)
-&&[\text{Definition Of }D(Q)]\\
+&&[\text{Definição de }D(Q)]\\
 &=2\sum_{r < Q}\frac1r
 &\quad+2c\sum_{r < Q}\frac{\log r}{r}+O(1)
-&&[\text{Substitution; Summable Remainder}]\\
+&&[\text{Substituição; Resto Somável}]\\
 &=2\log\log Q+2c\log Q+O(1).
-&&[\text{Prime-Sum Asymptotics}]
+&&[\text{Assintótica de Soma sobre Primos}]
 \end{aligned}
 ```
 
-Hence
+Logo
 
 ```math
 P_c(Q)
 \asymp
 \frac{C_c}{Q^{2c}(\log Q)^2}.
-\qquad[\text{Exponentiation And Simplification}]
+\qquad[\text{Exponenciação e Simplificação}]
 ```
 
-For a quadratic square-window supply,
+Para um suprimento quadrático de janela quadrada,
 
 ```math
 \lambda_c(Q)
@@ -677,20 +712,20 @@ For a quadratic square-window supply,
 C_0\frac{Q^{2-2c}}{(\log Q)^2}.
 ```
 
-Therefore
+Portanto
 
 ```math
 \begin{aligned}
 c < 1
 &\Longrightarrow
-\text{eventually nonempty square windows almost surely},\\
+\text{janelas quadradas eventualmente não vazias quase certamente},\\
 c\ge1
 &\Longrightarrow
-\text{square-window expectation tends to zero}.
+\text{a esperança da janela quadrada tende a zero}.
 \end{aligned}
 ```
 
-For the head,
+Para a cabeça,
 
 ```math
 \Pr(H_Q)
@@ -698,201 +733,210 @@ For the head,
 \frac{C_c}{Q^{2c}(\log Q)^2}.
 ```
 
-Summing over prime heads has the same convergence behavior as
+Somar sobre cabeças primas tem o mesmo comportamento de convergência que
 
 ```math
 \int^\infty
 \frac{dx}{x^{2c}(\log x)^3}.
 ```
 
-Thus
+Assim
 
 ```math
 \begin{aligned}
 c < \frac12
 &\Longrightarrow
-\text{infinitely many head events almost surely, with mixing},\\
+\text{infinitos eventos de cabeça quase certamente, com mistura},\\
 c\ge\frac12
 &\Longrightarrow
-\text{only finitely many head events almost surely}.
+\text{apenas finitos eventos de cabeça quase certamente}.
 \end{aligned}
 ```
 
-The threshold is the Borel-Cantelli decision rule for the head, and the figure
-below evaluates it directly. It plots the cumulative sum of $\Pr(H_Q)$ over
-real enumerated primes up to $Q$, for $w_r=1+c\log r$ at
-$c=0.0,0.1,0.3,0.5,0.7,1.0$. Below the threshold the sum keeps climbing --
-$c=0.0$ and $c=0.1$ clearly, $c=0.3$ more slowly but provably -- so there are
-infinitely many head events with mixing. At and above the threshold the sum
-flattens: $c=0.5$ only very slowly (it is the boundary itself), $c=0.7$ and
-$c=1.0$ quickly -- so there are only finitely many, almost surely.
+O limiar é a regra de decisão de Borel-Cantelli para a cabeça, e a figura
+abaixo o avalia diretamente. Ela plota a soma cumulativa de $\Pr(H_Q)$ sobre
+primos reais enumerados até $Q$, para $w_r=1+c\log r$ em
+$c=0.0,0.1,0.3,0.5,0.7,1.0$. Abaixo do limiar, a soma continua subindo --
+$c=0.0$ e $c=0.1$ claramente, $c=0.3$ mais lentamente mas de modo provado --
+então há infinitos eventos de cabeça com mistura. No limiar e acima dele, a
+soma achata: $c=0.5$ apenas muito lentamente (é a própria fronteira), $c=0.7$ e
+$c=1.0$ rapidamente -- então há apenas finitos eventos, quase certamente.
 
-![Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/phase-transition-head.svg)
+![Soma cumulativa de Pr(cabeça é uma lacuna 2) sobre primos enumerados, escala logarítmica: c=0.0 e c=0.1 sobem todo o caminho, c=0.3 sobe lentamente, c=0.5 achata apenas muito lentamente na fronteira, e c=0.7 e c=1.0 achatam rapidamente -- o limiar de Borel-Cantelli c=1/2](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/phase-transition-head.svg)
 
-Equivalently, the robust relative-factor regimes are
+Equivalentemente, os regimes robustos de fator relativo são
 
 ```math
 \begin{aligned}
 w_r& < (1-\varepsilon)\log r
-&&[\text{Square-Window Survival}],\\
+&&[\text{Sobrevivência em Janela Quadrada}],\\
 w_r& < \left(\frac12-\varepsilon\right)\log r
-&&[\text{Head Recurrence}],
+&&[\text{Recorrência na Cabeça}],
 \end{aligned}
 ```
 
-up to the asymptotically negligible additive random baseline. In terms of the
-total segment destruction fraction,
+até a base aleatória aditiva assintoticamente desprezível. Em termos da fração
+total de destruição do segmento,
 
 ```math
 \begin{aligned}
 f_r& < (2-\varepsilon)\frac{\log r}{r}
-&&[\text{Square-Window Survival}],\\
+&&[\text{Sobrevivência em Janela Quadrada}],\\
 f_r& < (1-\varepsilon)\frac{\log r}{r}
-&&[\text{Head Recurrence}].
+&&[\text{Recorrência na Cabeça}].
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-These are cumulative asymptotic regimes, not pointwise allowances that reset
-at each filter. Irregular schedules must be evaluated through $D(Q)$.
+Esses são regimes assintóticos cumulativos, não permissões pontuais que
+reiniciam em cada filtro. Programações irregulares precisam ser avaliadas por
+meio de $D(Q)$.
 
-The complete proof record appears in [Appendix A.4](#appendix-a4).
+O registro completo da prova aparece no [Apêndice A.4](#appendix-a4).
 
-### 3.6 Relative-to-Random Phase Diagram
+<a id="36-relative-to-random-phase-diagram"></a>
 
-The answer is not a maximum fixed percentage. It is a growth-rate boundary for
-the realized local damage relative to the random benchmark.
+### 3.6 Diagrama de Fases Relativo ao Aleatório
 
-| Realized relative factor | Total local destruction | Square windows | Head 2-gaps |
+A resposta não é uma porcentagem fixa máxima. É uma fronteira de taxa de
+crescimento para o dano local realizado relativo ao benchmark aleatório.
+
+| Fator relativo realizado | Destruição local total | Janelas quadradas | Lacunas 2 na cabeça |
 |---|---:|---|---|
-| $w_r=1$ | $2/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
-| Any fixed finite $w_r=w$ | $2w/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
-| $w_r=1+c\log r$, $0\le c < 1/2$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Infinitely often with mixing |
-| $w_r=1+c\log r$, $1/2\le c < 1$ | $2/r+2c\log r/r$ | Eventually nonempty almost surely | Only finitely often almost surely |
-| $w_r=1+c\log r$, $c\ge1$ | $2/r+2c\log r/r$ | Expected population tends to zero | Only finitely often almost surely |
-| $f_r=1$ at a tracked step | $1$ | That tracked cohort is lost | That candidate is lost |
+| $w_r=1$ | $2/r$ | Eventualmente não vazias quase certamente | Infinitas vezes com mistura |
+| Qualquer $w_r=w$ finito fixo | $2w/r$ | Eventualmente não vazias quase certamente | Infinitas vezes com mistura |
+| $w_r=1+c\log r$, $0\le c < 1/2$ | $2/r+2c\log r/r$ | Eventualmente não vazias quase certamente | Infinitas vezes com mistura |
+| $w_r=1+c\log r$, $1/2\le c < 1$ | $2/r+2c\log r/r$ | Eventualmente não vazias quase certamente | Apenas finitas vezes quase certamente |
+| $w_r=1+c\log r$, $c\ge1$ | $2/r+2c\log r/r$ | População esperada tende a zero | Apenas finitas vezes quase certamente |
+| $f_r=1$ em um passo rastreado | $1$ | Essa coorte rastreada é perdida | Esse candidato é perdido |
 
-Consequently, there is **no largest finite constant multiple of random**. For
-square-window survival, the filter may become almost $\log r$ times worse than
-random; for infinitely recurring head 2-gaps, it may become almost
-$\tfrac12\log r$ times worse. In total local-destruction terms, the robust
-sufficient regimes are respectively
+Consequentemente, **não há maior múltiplo constante finito do aleatório**. Para
+sobrevivência em janela quadrada, o filtro pode se tornar quase $\log r$ vezes
+pior que o aleatório; para lacunas 2 na cabeça recorrendo infinitamente, ele
+pode se tornar quase $\tfrac12\log r$ vezes pior. Em termos de destruição local
+total, os regimes suficientes robustos são, respectivamente,
 
 ```math
 f_r < (2-\varepsilon)\frac{\log r}{r}
-\qquad\text{and}\qquad
+\qquad\text{e}\qquad
 f_r < (1-\varepsilon)\frac{\log r}{r}.
 ```
 
-These conclusions concern damage realized inside the tracked segment. A small
-global adversarial budget can still cause $f_r=1$ if it is allocated with enough target
-information; the allocation theorem in [§5](#5-allocation-and-the-protective-parent) isolates that second
-axis.
+Essas conclusões dizem respeito ao dano realizado dentro do segmento rastreado.
+Um pequeno orçamento adversarial global ainda pode causar $f_r=1$ se for
+alocado com informação de alvo suficiente; o teorema de alocação em [§5](#5-allocation-and-the-protective-parent) isola esse
+segundo eixo.
 
-## 4. Absolute-Share Mixtures
+<a id="4-absolute-share-mixtures"></a>
 
-### 4.1 Adversarial/Random Parent Square-Window Boundary
+## 4. Misturas de Parcela Absoluta
 
-We now express the general hazard result through an explicit mixture. Each
-parent is adversarial with share $\alpha_r$ and otherwise random. When the
-surviving starts follow the spatial-uniformity model of the balanced random
-companion, a square-safe window has length
+<a id="41-adversarialrandom-parent-square-window-boundary"></a>
+
+### 4.1 Fronteira de Janela Quadrada para Pais Adversariais/Aleatórios
+
+Agora expressamos o resultado geral de risco por meio de uma mistura explícita.
+Cada pai é adversarial com parcela $\alpha_r$ e, caso contrário, aleatório.
+Quando os inícios sobreviventes seguem o modelo de uniformidade espacial do
+companheiro aleatório balanceado, uma janela segura pelo quadrado tem comprimento
 
 ```math
 L_Q\asymp Q^2.
 ```
 
-The expected mixed population is
+A população mista esperada é
 
 ```math
 \begin{aligned}
 \lambda_Q^{\mathrm{mix}}
 &=L_Q\delta_Q^{\mathrm{mix}}
-&&[\text{Expected Uniform Occupancy}]\\
+&&[\text{Ocupação Uniforme Esperada}]\\
 &\asymp
 C\frac{Q^2}{(\log Q)^2}e^{-A(Q)}.
-&&[\text{Substitution}]
+&&[\text{Substituição}]
 \end{aligned}
 ```
 
-Taking logarithms exposes the threshold:
+Tomar logaritmos expõe o limiar:
 
 ```math
 \begin{aligned}
 \log\lambda_Q^{\mathrm{mix}}
 &=2\log Q-2\log\log Q-A(Q)+O(1).
-&&[\text{Logarithm}]
+&&[\text{Logaritmo}]
 \end{aligned}
 ```
 
-Therefore, for every fixed $\varepsilon > 0$,
+Portanto, para todo $\varepsilon > 0$ fixo,
 
 ```math
 \begin{aligned}
 A(Q)\le(2-\varepsilon)\log Q
 &\Longrightarrow
 \lambda_Q^{\mathrm{mix}}\longrightarrow\infty,
-&&[\text{Subcritical Adversarial Budget}]\\
+&&[\text{Orçamento Adversarial Subcrítico}]\\
 A(Q)\ge(2+\varepsilon)\log Q
 &\Longrightarrow
 \lambda_Q^{\mathrm{mix}}\longrightarrow0.
-&&[\text{Supercritical Adversarial Budget}]
+&&[\text{Orçamento Adversarial Supercrítico}]
 \end{aligned}
 ```
 
-The boundary $A(Q)=2\log Q+o(\log Q)$ requires its lower-order terms; the
-$-2\log\log Q$ contribution cannot be discarded there.
+A fronteira $A(Q)=2\log Q+o(\log Q)$ exige seus termos de ordem menor; a
+contribuição $-2\log\log Q$ não pode ser descartada ali.
 
-Under uniform placement, an empty-window estimate has the usual form
+Sob posicionamento uniforme, uma estimativa de janela vazia tem a forma usual
 
 ```math
 \Pr(X_Q=0)\le e^{-\lambda_Q^{\mathrm{mix}}}.
 ```
 
-Whenever
+Sempre que
 
 ```math
 \sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}} < \infty,
 ```
 
-the first Borel-Cantelli lemma gives only finitely many empty square windows
-almost surely. A convenient sufficient condition is
+o primeiro lema de Borel-Cantelli dá apenas finitas janelas quadradas vazias
+quase certamente. Uma condição suficiente conveniente é
 
 ```math
 \lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-for all sufficiently large $Q$. This is stronger than merely requiring
-$\lambda_Q^{\mathrm{mix}}\to\infty$ and prevents a slow divergent expectation
-from being mistaken for an eventual-survival theorem.
+para todo $Q$ suficientemente grande. Isso é mais forte do que meramente exigir
+$\lambda_Q^{\mathrm{mix}}\to\infty$ e impede que uma esperança lentamente
+divergente seja confundida com um teorema de sobrevivência eventual.
 
-This proves eventual safe-window occupancy inside the spatially uniform mixed
-companion. Section 8 states the separate conditions needed to transfer the
-result to the real sieve.
+Isso prova ocupação eventual de janelas seguras dentro do companheiro misto
+espacialmente uniforme. A Seção 8 declara as condições separadas necessárias
+para transferir o resultado para a peneira real.
 
-The complete proof record appears in [Appendix A.5](#appendix-a5).
+O registro completo da prova aparece no [Apêndice A.5](#appendix-a5).
 
-### 4.2 Why a Constant Absolute Adversarial Share Is Locally Fatal
+<a id="42-why-a-constant-absolute-adversarial-share-is-locally-fatal"></a>
 
-A constant adversarial share sounds mild, but it adds the same positive loss
-at every filter while the random benchmark keeps shrinking. We therefore
-expect it to overwhelm local survival. Let one fixed share
-$0 < \alpha < 1$ be adversarial at every filter. Then
+### 4.2 Por que uma Parcela Adversarial Absoluta Constante é Localmente Fatal
+
+Uma parcela adversarial constante soa branda, mas adiciona a mesma perda
+positiva em todo filtro enquanto o benchmark aleatório continua encolhendo.
+Portanto, esperamos que ela sobrecarregue a sobrevivência local. Seja uma
+parcela fixa $0 < \alpha < 1$ adversarial em todo filtro. Então
 
 ```math
 \begin{aligned}
 A(Q)
 &=-\bigl(\pi(Q)+O(1)\bigr)\log(1-\alpha)
-&&[\text{Constant Share}]\\
+&&[\text{Parcela Constante}]\\
 &\asymp
 \bigl[-\log(1-\alpha)\bigr]\frac{Q}{\log Q}.
-&&[\text{Prime Number Theorem}]
+&&[\text{Teorema dos Números Primos}]
 \end{aligned}
 ```
 
-Since $Q/\log Q$ grows faster than $\log Q$, this lies far above the
-square-window critical budget. Hence
+Como $Q/\log Q$ cresce mais rápido do que $\log Q$, isso fica muito acima do
+orçamento crítico da janela quadrada. Logo
 
 ```math
 \begin{aligned}
@@ -900,54 +944,57 @@ square-window critical budget. Hence
 &\asymp
 C\frac{Q^2}{(\log Q)^2}(1-\alpha)^{\pi(Q)}\\
 &\longrightarrow0.
-&&[\text{Exponential Loss Beats Quadratic Growth}]
+&&[\text{Perda Exponencial Supera Crescimento Quadrático}]
 \end{aligned}
 ```
 
-Thus
+Assim
 
 ```math
-\text{every fixed positive per-filter adversarial share is locally fatal}
-\qquad[\text{Q.E.D.}]
+\text{toda parcela adversarial positiva fixa por filtro é localmente fatal}
+\qquad[\text{C.Q.D.}]
 ```
 
-in the repeated-mixture model, even though the complete-period
-population continues to grow without bound.
+no modelo de mistura repetida, embora a população de período completo continue a
+crescer sem limite.
 
-This is different from applying one adversarial dilution after all random
-filters have finished. A one-time dilution multiplies the final count by
-$1-\alpha$ once; the repeated model multiplies it once per prime. Confusing
-these two experiments reverses the asymptotic conclusion.
+Isso é diferente de aplicar uma diluição adversarial depois que todos os filtros
+aleatórios terminaram. Uma diluição única multiplica a contagem final por
+$1-\alpha$ uma vez; o modelo repetido a multiplica uma vez por primo. Confundir
+esses dois experimentos inverte a conclusão assintótica.
 
-### 4.3 Two Decaying Absolute-Share Families
+<a id="43-two-decaying-absolute-share-families"></a>
 
-The useful question is therefore not “what fixed percentage is tolerable?”
-The useful question is how quickly $\alpha_r$ must decay. In this section and
-the comparison in [§5](#5-allocation-and-the-protective-parent), the displayed schedules hold exactly for all sufficiently
-large filters. Mere asymptotic equivalence gives weaker remainder control and
-does not determine the critical cases.
+### 4.3 Duas Famílias de Parcela Absoluta Decrescente
 
-#### Reciprocal Decay: $\alpha_r= c/r$
+A pergunta útil, portanto, não é “qual porcentagem fixa é tolerável?” A
+pergunta útil é quão rapidamente $\alpha_r$ precisa decair. Nesta seção e na
+comparação em [§5](#5-allocation-and-the-protective-parent), as programações
+exibidas valem exatamente para todos os filtros suficientemente grandes. Mera
+equivalência assintótica dá controle mais fraco do resto e não determina os
+casos críticos.
 
-For fixed $c > 0$ and sufficiently large primes,
+#### Decaimento Recíproco: $\alpha_r= c/r$
+
+Para $c > 0$ fixo e primos suficientemente grandes,
 
 ```math
 \begin{aligned}
 A(Q)
 &=c\sum_{r < Q}\frac1r+O(1)
-&&[\text{Taylor Expansion; Summable Error}]\\
+&&[\text{Expansão de Taylor; Erro Somável}]\\
 &=c\log\log Q+O(1).
-&&[\text{Prime Harmonic Sum}]
+&&[\text{Soma Harmônica dos Primos}]
 \end{aligned}
 ```
 
-Therefore
+Portanto
 
 ```math
 e^{-A(Q)}\asymp\frac1{(\log Q)^c}
 ```
 
-and
+e
 
 ```math
 \lambda_Q^{\mathrm{mix}}
@@ -955,25 +1002,27 @@ and
 C\frac{Q^2}{(\log Q)^{2+c}}\longrightarrow\infty.
 ```
 
-The window population grows polynomially faster than its logarithmic losses,
-so the empty-window probabilities are summable under the spatial model.
+A população da janela cresce polinomialmente mais rápido que suas perdas
+logarítmicas, então as probabilidades de janela vazia são somáveis sob o modelo
+espacial.
 
-#### Logarithmic-Over-Linear Decay: $\alpha_r= c\log r/r$
+#### Decaimento Logarítmico-sobre-Linear: $\alpha_r= c\log r/r$
 
-For a finite initial prefix, define the shares separately so that they remain
-in $[0,1)$; this changes only the positive final constant. On the asymptotic tail,
+Para um prefixo inicial finito, defina as parcelas separadamente para que
+permaneçam em $[0,1)$; isso muda apenas a constante final positiva. Na cauda
+assintótica,
 
 ```math
 \begin{aligned}
 A(Q)
 &=c\sum_{r < Q}\frac{\log r}{r}+O(1)
-&&[\text{Taylor Expansion; Summable Error}]\\
+&&[\text{Expansão de Taylor; Erro Somável}]\\
 &=c\log Q+O(1).
-&&[\text{Prime Number Theorem By Partial Summation}]
+&&[\text{Teorema dos Números Primos por Soma Parcial}]
 \end{aligned}
 ```
 
-Consequently,
+Consequentemente,
 
 ```math
 \begin{aligned}
@@ -983,7 +1032,7 @@ e^{-A(Q)}&\asymp Q^{-c},\\
 \end{aligned}
 ```
 
-The square-window phase diagram is therefore
+O diagrama de fases de janela quadrada é, portanto,
 
 ```math
 \begin{aligned}
@@ -992,17 +1041,19 @@ c\ge 2&\Longrightarrow\lambda_Q^{\mathrm{mix}}\longrightarrow0.
 \end{aligned}
 ```
 
-For $c < 2$, the divergence is polynomial, so the empty-window bound is
-summable and every sufficiently large square window is nonempty almost surely
-under the spatial-uniformity premise.
+Para $c < 2$, a divergência é polinomial, então o limite de janela vazia é
+somável e toda janela quadrada suficientemente grande é não vazia quase
+certamente sob a premissa de uniformidade espacial.
 
-### 4.4 Adversarial/Random Parent Head Boundary
+<a id="44-adversarialrandom-parent-head-boundary"></a>
 
-The head contains only one distinguished position, so it receives no
-quadratic window reserve. Under uniform head marginals, its occurrence
-probability is the surviving local density itself. To turn a divergent sum of
-these probabilities into almost-sure recurrence, we also require independence
-or a sufficiently strong weak-mixing substitute.
+### 4.4 Fronteira de Cabeça para Pais Adversariais/Aleatórios
+
+A cabeça contém apenas uma posição distinguida, então não recebe reserva
+quadrática de janela. Sob marginais uniformes na cabeça, sua probabilidade de
+ocorrência é a própria densidade local sobrevivente. Para transformar uma soma
+divergente dessas probabilidades em recorrência quase certa, também exigimos
+independência ou um substituto de mistura fraca suficientemente forte.
 
 ```math
 \Pr(H_Q)
@@ -1012,37 +1063,37 @@ or a sufficiently strong weak-mixing substitute.
 \frac{C}{(\log Q)^2}e^{-A(Q)}.
 ```
 
-Under adequate cross-layer mixing, the second Borel-Cantelli lemma gives
+Sob mistura adequada entre camadas, o segundo lema de Borel-Cantelli dá
 
 ```math
 \sum_{Q\text{ prime}}\Pr(H_Q)=\infty
 \Longrightarrow
-H_Q\text{ occurs infinitely often almost surely}.
+H_Q\text{ ocorre infinitas vezes quase certamente}.
 ```
 
-For $\alpha_r= c/r$,
+Para $\alpha_r= c/r$,
 
 ```math
 \Pr(H_Q)\asymp\frac{C}{(\log Q)^{2+c}},
 ```
 
-and the sum over prime $Q$ diverges for every fixed $c$. Reciprocal decay is
-therefore compatible with infinitely many head events under mixing.
+e a soma sobre primos $Q$ diverge para todo $c$ fixo. O decaimento recíproco é,
+portanto, compatível com infinitos eventos de cabeça sob mistura.
 
-For $\alpha_r= c\log r/r$,
+Para $\alpha_r= c\log r/r$,
 
 ```math
 \Pr(H_Q)\asymp\frac{C}{Q^c(\log Q)^2}.
 ```
 
-Using prime density $dQ/\log Q$, the corresponding series has the same
-convergence behavior as
+Usando a densidade prima $dQ/\log Q$, a série correspondente tem o mesmo
+comportamento de convergência que
 
 ```math
 \int^\infty\frac{dx}{x^c(\log x)^3}.
 ```
 
-Therefore
+Portanto
 
 ```math
 \begin{aligned}
@@ -1053,198 +1104,210 @@ c\ge 1
 &\Longrightarrow
 \sum_{Q\text{ prime}}\Pr(H_Q) < \infty.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-For $c < 1$, adequate mixing implies infinitely many head events almost surely.
-For $c\ge 1$, the first Borel-Cantelli lemma implies only finitely many head
-events almost surely; no independence assumption is needed for that convergent
-direction.
+Para $c < 1$, mistura adequada implica infinitos eventos de cabeça quase
+certamente. Para $c\ge 1$, o primeiro lema de Borel-Cantelli implica apenas
+finitos eventos de cabeça quase certamente; nenhuma hipótese de independência é
+necessária para essa direção convergente.
 
-The head threshold $c=1$ is stricter than the safe-window threshold $c=2$.
-There is an intermediate regime
+O limiar da cabeça $c=1$ é mais estrito que o limiar da janela segura $c=2$.
+Há um regime intermediário
 
 ```math
 1\le c < 2
 ```
 
-in which square-safe windows remain populated almost surely under the spatial
-model, while head recurrence fails almost surely in the mixed companion.
+no qual janelas seguras pelo quadrado permanecem povoadas quase certamente sob o
+modelo espacial, enquanto a recorrência na cabeça falha quase certamente no
+companheiro misto.
 
-### 4.5 Adversarial/Random Parent Phase Diagram
+<a id="45-adversarialrandom-parent-phase-diagram"></a>
 
-For the representative schedule $\alpha_r= c\log r/r$, the companion
-separates into three regimes:
+### 4.5 Diagrama de Fases para Pais Adversariais/Aleatórios
 
-| Adversarial scale | Global 2-gaps | Square-safe windows | Head recurrence |
+Para a programação representativa $\alpha_r= c\log r/r$, o companheiro se
+separa em três regimes:
+
+| Escala adversarial | Lacunas 2 globais | Janelas seguras pelo quadrado | Recorrência na cabeça |
 |---|---:|---:|---:|
-| $0\le c < 1$ | Persist and grow | Eventually nonempty almost surely | Infinite almost surely, with mixing |
-| $1\le c < 2$ | Persist and grow | Eventually nonempty almost surely | Only finitely many almost surely |
-| $c\ge 2$ | Persist and grow | Mixed expectation tends to zero | Only finitely many almost surely |
-| Fixed $\alpha > 0$ | Persist and grow | Mixed expectation tends to zero | Only finitely many almost surely |
+| $0\le c < 1$ | Persistem e crescem | Eventualmente não vazias quase certamente | Infinitas quase certamente, com mistura |
+| $1\le c < 2$ | Persistem e crescem | Eventualmente não vazias quase certamente | Apenas finitas quase certamente |
+| $c\ge 2$ | Persistem e crescem | Esperança mista tende a zero | Apenas finitas quase certamente |
+| $\alpha > 0$ fixo | Persistem e crescem | Esperança mista tende a zero | Apenas finitas quase certamente |
 
-The table's last two columns are statements inside the spatial
-model. The global column is unconditional for every balanced companion.
+As duas últimas colunas da tabela são afirmações dentro do modelo espacial. A
+coluna global é incondicional para todo companheiro balanceado.
 
-### 4.6 Why a Fixed Absolute Percentage Gives the Wrong Maximum
+<a id="46-why-a-fixed-absolute-percentage-gives-the-wrong-maximum"></a>
 
-Within position-blind repeated mixtures, percentages that do not change with
-the filter prime have a blunt but secondary answer. If the same absolute adversarial
-share $\alpha$ is applied at every filter, every $\alpha > 0$ is eventually fatal
-to the local mixed baseline. In that restricted normalization,
+### 4.6 Por que uma Porcentagem Absoluta Fixa Dá o Máximo Errado
+
+Dentro de misturas repetidas cegas à posição, porcentagens que não mudam com o
+primo do filtro têm uma resposta direta, mas secundária. Se a mesma parcela
+adversarial absoluta $\alpha$ é aplicada em todo filtro, todo $\alpha > 0$ é
+eventualmente fatal para a base mista local. Nessa normalização restrita,
 
 ```math
-\text{maximum sustainable fixed absolute adversarial share}=0\%.
+\text{parcela adversarial absoluta fixa máxima sustentável}=0\%.
 ```
 
-This is not the meaningful answer to “how much worse than random can the
-filter be?” Random destruction itself shrinks as $2/r$, while fixed
-$\alpha > 0$ adds a positive floor and makes the relative factor
-$w_r=1+(r-2)\alpha/2$ diverge linearly. The primary answer from [§3.6](#36-relative-to-random-phase-diagram) is instead
-that every fixed finite $w$ survives the companion model defined above, with the first
-transition only when $w_r$ grows on the order of $\log r$.
+Esta não é a resposta significativa para “quão pior que o aleatório o filtro
+pode ser?” A própria destruição aleatória encolhe como $2/r$, enquanto
+$\alpha > 0$ fixo adiciona um piso positivo e faz o fator relativo
+$w_r=1+(r-2)\alpha/2$ divergir linearmente. A resposta primária de [§3.6](#36-relative-to-random-phase-diagram) é, em vez disso,
+que todo $w$ finito fixo sobrevive ao modelo companheiro definido acima, com a
+primeira transição apenas quando $w_r$ cresce na ordem de $\log r$.
 
-The zero-percent statement concerns safe-window and head survival under this
-fixed absolute-share policy. It does not concern the global population, which
-survives even under $100\%$ adversarial selection.
+A afirmação de zero por cento diz respeito à sobrevivência em janela segura e na
+cabeça sob essa política de parcela absoluta fixa. Ela não diz respeito à
+população global, que sobrevive até sob seleção adversarial de $100\%$.
 
-Nonzero adversariality remains supportable when its share decreases with $r$.
-For a fixed margin $\varepsilon > 0$, the representative sufficient schedules
-are
+Adversarialidade não nula permanece suportável quando sua parcela decresce com
+$r$. Para uma margem fixa $\varepsilon > 0$, as programações suficientes
+representativas são
 
 ```math
 \begin{aligned}
 \alpha_r
 &\le(2-\varepsilon)\frac{\log r}{r}
-&&[\text{Square-Window Regime}],\\
+&&[\text{Regime de Janela Quadrada}],\\
 \alpha_r
 &\le(1-\varepsilon)\frac{\log r}{r}
-&&[\text{Head-Recurrence Regime, With Mixing}].
+&&[\text{Regime de Recorrência na Cabeça, com Mistura}].
 \end{aligned}
 ```
 
-Ignoring the required strict margin only to display the boundary curves, these
-become
+Ignorando a margem estrita exigida apenas para exibir as curvas de fronteira,
+isso se torna
 
 ```math
 \begin{aligned}
-\text{square-window boundary percentage}
+\text{porcentagem de fronteira da janela quadrada}
 &=200\frac{\log r}{r}\%,\\
-\text{head-recurrence boundary percentage}
+\text{porcentagem de fronteira da recorrência na cabeça}
 &=100\frac{\log r}{r}\%.
 \end{aligned}
 ```
 
-Here $\log$ is the natural logarithm. Representative values are:
+Aqui $\log$ é o logaritmo natural. Valores representativos são:
 
-| Filter prime $r$ | Square-window boundary | Head-recurrence boundary |
+| Primo de filtro $r$ | Fronteira da janela quadrada | Fronteira da recorrência na cabeça |
 |---:|---:|---:|
 | $101$ | $9.14\%$ | $4.57\%$ |
 | $1{,}000$ | $1.38\%$ | $0.691\%$ |
 | $19{,}000$ | $0.104\%$ | $0.0519\%$ |
 | $100{,}003$ | $0.0230\%$ | $0.0115\%$ |
 
-These entries are asymptotic boundary values, not independent allowances that
-reset at each filter. A schedule may temporarily cross a displayed value and
-remain viable if it spent less adversarial budget earlier; it may also fail
-despite staying below isolated entries if its cumulative behavior is worse on
-other filters. The governing quantities remain
+Essas entradas são valores assintóticos de fronteira, não permissões
+independentes que reiniciam em cada filtro. Uma programação pode cruzar
+temporariamente um valor exibido e permanecer viável se gastou menos orçamento
+adversarial antes; ela também pode falhar apesar de ficar abaixo de entradas
+isoladas se seu comportamento cumulativo for pior em outros filtros. As
+quantidades governantes continuam sendo
 
 ```math
 A(Q)=\sum_{r < Q}-\log(1-\alpha_r)
 ```
 
-for square windows and
+para janelas quadradas e
 
 ```math
 \sum_{Q\text{ prime}}
 \frac{e^{-A(Q)}}{(\log Q)^2}
 ```
 
-for head recurrence.
+para recorrência na cabeça.
 
-### 4.7 What “Percentage Adversarial” Must Specify
+<a id="47-what-percentage-adversarial-must-specify"></a>
 
-There is no unique mixture until we specify what receives the adversarial
-label.
+### 4.7 O que “Porcentagem Adversarial” Precisa Especificar
 
-| Mixture | Choice made | Consequence |
+Não há mistura única até especificarmos o que recebe o rótulo adversarial.
+
+| Mistura | Escolha feita | Consequência |
 |---|---|---|
-| Parent level | Each parent is adversarial with probability $\alpha_r$ | Independent branching interpretation |
-| Whole filter | The complete filter is adversarial with probability $\alpha_r$ | Same one-lineage marginal, stronger dependence between parents |
-| One-time final | One adversarial dilution is applied after random filtering | One factor $1-\alpha$; no cumulative phase transition |
+| Nível do pai | Cada pai é adversarial com probabilidade $\alpha_r$ | Interpretação de ramificação independente |
+| Filtro inteiro | O filtro completo é adversarial com probabilidade $\alpha_r$ | Mesma marginal de uma linhagem, dependência mais forte entre pais |
+| Final único | Uma diluição adversarial é aplicada após filtragem aleatória | Um fator $1-\alpha$; nenhuma transição de fase cumulativa |
 
-The calculations in §§[3](#3-relative-hazard-and-survival-frontiers)--[4](#4-absolute-share-mixtures) concern a repeated share at every filter. Their
-expectations apply to the first two interpretations because one lineage has
-the same marginal survival probability. Their almost-sure conclusions do not
-transfer automatically: a whole-filter choice coordinates all parents and
-therefore needs its own spatial or mixing argument. The one-time model answers
-a different question because it applies the loss only once.
+Os cálculos em §§[3](#3-relative-hazard-and-survival-frontiers)--[4](#4-absolute-share-mixtures) dizem respeito a uma parcela repetida em todo filtro. Suas
+esperanças se aplicam às duas primeiras interpretações porque uma linhagem tem a
+mesma probabilidade marginal de sobrevivência. Suas conclusões quase certas não
+se transferem automaticamente: uma escolha de filtro inteiro coordena todos os
+pais e, portanto, precisa de seu próprio argumento espacial ou de mistura. O
+modelo de uma vez só responde a uma pergunta diferente porque aplica a perda
+apenas uma vez.
 
-## 5. Allocation and the Protective Parent
+<a id="5-allocation-and-the-protective-parent"></a>
 
-### 5.1 The Same Adversarial Percentage Can Produce Different Outcomes
+## 5. Alocação e o Pai Protetor
 
-This property is a capacity comparison. Suppose $K$ parents may use the
-adversarial policy and $L$ parents contribute a child to the target window. A
-target-aware allocator can clear the window exactly when its budget covers all
-the relevant parents:
+<a id="51-the-same-adversarial-percentage-can-produce-different-outcomes"></a>
+
+### 5.1 A Mesma Porcentagem Adversarial Pode Produzir Resultados Diferentes
+
+Esta propriedade é uma comparação de capacidade. Suponha que $K$ pais possam
+usar a política adversarial e que $L$ pais contribuam um filho para a janela
+alvo. Um alocador ciente do alvo pode limpar a janela exatamente quando seu
+orçamento cobre todos os pais relevantes:
 
 ```math
 K\ge L.
 ```
 
-For a fixed adversarial share $\alpha=K/N>0$, if the relevant fraction
-$L/N\longrightarrow0$, then eventually
+Para uma parcela adversarial fixa $\alpha=K/N>0$, se a fração relevante
+$L/N\longrightarrow0$, então eventualmente
 
 ```math
 \alpha\ge\frac LN,
 ```
 
-which is the same condition as $K\ge L$. Thus a fixed adversarial percentage
-may be enough to suppress the head early and, after the target population
-becomes sparse enough, remove every 2-gap from the tracked window. The result
-depends on allocation: a position-blind allocator with the same percentage
-does not automatically select all $L$ relevant parents.
+que é a mesma condição que $K\ge L$. Assim, uma porcentagem adversarial fixa
+pode ser suficiente para suprimir cedo a cabeça e, depois que a população alvo
+fica suficientemente esparsa, remover toda lacuna 2 da janela rastreada. O
+resultado depende da alocação: um alocador cego à posição com a mesma
+porcentagem não seleciona automaticamente todos os $L$ pais relevantes.
 
-We now derive the complete finite range. The target window is shorter than the
-old period, so each parent contributes at most one child to it. Let
+Agora derivamos o intervalo finito completo. A janela alvo é menor que o período
+antigo, então cada pai contribui no máximo um filho para ela. Seja
 
-- $N$ be the total number of parents;
-- $R$ be the set of parents with a child in target region $W$;
+- $N$ o número total de pais;
+- $R$ o conjunto de pais com um filho na região alvo $W$;
 - $L=|R|$;
-- $\mathcal A$ be the set of adversarial parents; and
+- $\mathcal A$ o conjunto de pais adversariais; e
 - $K=|\mathcal A|$.
 
-In this allocation experiment every parent outside $\mathcal A$ is protective:
-it preserves its target child. Thus the only target losses come from
-adversarial parents. A random complement would add further losses and would
-not satisfy the following survivor identity. The number destroyed is
+Neste experimento de alocação, todo pai fora de $\mathcal A$ é protetor: ele
+preserva seu filho-alvo. Assim, as únicas perdas do alvo vêm de pais
+adversariais. Um complemento aleatório adicionaria perdas adicionais e não
+satisfaria a identidade de sobreviventes a seguir. O número destruído é
 
 ```math
 H=|\mathcal A\cap R|,
 ```
 
-and the number surviving is
+e o número sobrevivente é
 
 ```math
 S=L-H.
 ```
 
-The intersection size obeys the sharp bounds
+O tamanho da interseção obedece aos limites agudos
 
 ```math
 \begin{aligned}
 H
 &\le\min(K,L)
-&&[\text{Intersection Cannot Exceed Either Set}],\\
+&&[\text{A Interseção Não Pode Exceder Nenhum dos Conjuntos}],\\
 H
 &\ge\max(0,K-(N-L))
-&&[\text{Only }N-L\text{ Irrelevant Parents Exist}].
+&&[\text{Existem Apenas }N-L\text{ Pais Irrelevantes}].
 \end{aligned}
 ```
 
-Substituting into $S=L-H$ gives
+Substituir em $S=L-H$ dá
 
 ```math
 \max(0,L-K)
@@ -1252,28 +1315,28 @@ Substituting into $S=L-H$ gives
 \min(L,N-K).
 ```
 
-Both endpoints are attainable. A target-aware allocator spends its budget on
-$R$ first:
+Ambos os extremos são atingíveis. Um alocador ciente do alvo gasta seu
+orçamento primeiro em $R$:
 
 ```math
 S_{\mathrm{targeted}}=\max(0,L-K).
 ```
 
-A protective allocator spends the same budget on the $N-L$ irrelevant parents
-first:
+Um alocador protetor gasta o mesmo orçamento primeiro nos $N-L$ pais
+irrelevantes:
 
 ```math
 S_{\mathrm{protective}}=\min(L,N-K).
 ```
 
-Between these endpoints, a position-blind allocator chooses a uniformly random
-size $K$ subset of the $N$ parents. Then
+Entre esses extremos, um alocador cego à posição escolhe um subconjunto
+uniformemente aleatório de tamanho $K$ dos $N$ pais. Então
 
 ```math
 H\sim\text{Hypergeometric}(N,L,K)
 ```
 
-and
+e
 
 ```math
 \begin{aligned}
@@ -1282,7 +1345,7 @@ and
 \end{aligned}
 ```
 
-When $K\ge L$, the exact probability of total local destruction is
+Quando $K\ge L$, a probabilidade exata de destruição local total é
 
 ```math
 \Pr(S=0)
@@ -1292,8 +1355,8 @@ When $K\ge L$, the exact probability of total local destruction is
 \frac{\binom KL}{\binom NL}.
 ```
 
-Thus the same budget can produce complete protection, average proportional
-loss, or total local destruction. In particular,
+Assim, o mesmo orçamento pode produzir proteção completa, perda proporcional
+média ou destruição local total. Em particular,
 
 ```math
 S_{\mathrm{targeted}}=0
@@ -1301,36 +1364,38 @@ S_{\mathrm{targeted}}=0
 K\ge L
 \Longleftrightarrow
 \alpha\ge\frac LN.
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-The three scales should not be confused. At the head, $L=1$, so one correctly
-allocated adversarial parent kills the current head candidate. In a sparse
-tracked window, a fixed share clears the whole window once $K\ge L$. Neither
-statement erases the complete-period 2-gap population: every targeted parent
-still leaves $r-2$ other descendants outside the target, so the global
-recurrence from [§3.1](#31-global-persistence-is-independent-of-allocation) continues to grow. Preventing future head or window 2-gaps
-therefore requires the allocator to repeat the targeted choice at later
-filters.
+As três escalas não devem ser confundidas. Na cabeça, $L=1$, então um pai
+adversarial corretamente alocado mata o candidato atual na cabeça. Em uma janela
+rastreada esparsa, uma parcela fixa limpa a janela inteira assim que $K\ge L$.
+Nenhuma das afirmações apaga a população de lacunas 2 em período completo: todo
+pai direcionado ainda deixa $r-2$ outros descendentes fora do alvo, então a
+recorrência global de [§3.1](#31-global-persistence-is-independent-of-allocation) continua a crescer. Impedir lacunas 2 futuras
+na cabeça ou na janela, portanto, exige que o alocador repita a escolha
+direcionada em filtros posteriores.
 
-The complete finite proof appears in [Appendix A.6](#appendix-a6).
+A prova finita completa aparece no [Apêndice A.6](#appendix-a6).
 
-### 5.2 The Protective Parent Policy
+<a id="52-the-protective-parent-policy"></a>
 
-The protective parent policy is the local opposite of the adversarial parent
-policy. It preserves a parent's target child whenever the exact-two deletion
-rule permits that choice. It does not create extra descendants and cannot
-change the global recurrence.
+### 5.2 A Política do Pai Protetor
 
-For parent $g$, let $T_g(W)$ be the indices of its children in target region
-$W$. In the post-crossover regime,
+A política do pai protetor é o oposto local da política do pai adversarial. Ela
+preserva o filho-alvo de um pai sempre que a regra de exatamente duas deleções
+permite essa escolha. Ela não cria descendentes extras e não pode mudar a
+recorrência global.
+
+Para o pai $g$, seja $T_g(W)$ o conjunto dos índices de seus filhos na região
+alvo $W$. No regime pós-cruzamento,
 
 ```math
 |T_g(W)|\le1.
 ```
 
-Because $r\ge5$, at least $r-1\ge4$ child indices lie outside $T_g(W)$. The
-protective parent policy may therefore choose a harmful pair
+Como $r\ge5$, pelo menos $r-1\ge4$ índices de filhos estão fora de $T_g(W)$. A
+política do pai protetor pode, portanto, escolher um par prejudicial
 
 ```math
 K_{g,r}^{\mathrm{protective}}
@@ -1340,58 +1405,60 @@ K_{g,r}^{\mathrm{protective}}
 |K_{g,r}^{\mathrm{protective}}|=2.
 ```
 
-The adversarial parent policy instead chooses a pair containing the target
-index whenever $T_g(W)$ is nonempty. Both policies remove exactly two children,
-so both leave $r-2$ descendants globally. Their only difference is local
-placement:
+A política do pai adversarial, em vez disso, escolhe um par contendo o índice
+alvo sempre que $T_g(W)$ é não vazio. Ambas as políticas removem exatamente dois
+filhos, então ambas deixam $r-2$ descendentes globalmente. Sua única diferença é
+o posicionamento local:
 
 ```math
 \begin{aligned}
 T_g(W)\ne\varnothing
 &\Longrightarrow
-\text{the protective parent preserves the target child},\\
+\text{o pai protetor preserva o filho-alvo},\\
 T_g(W)\ne\varnothing
 &\Longrightarrow
-\text{the adversarial parent destroys the target child}.
+\text{o pai adversarial destrói o filho-alvo}.
 \end{aligned}
 ```
 
-The protective parent is an oracle comparison, not a plausible random filter.
-It is allowed to see the chosen target and place its two deletions elsewhere.
-Its purpose is to define the protective endpoint of the same balanced family
-in which the adversarial parent defines the pessimistic endpoint.
+O pai protetor é uma comparação-oráculo, não um filtro aleatório plausível. Ele
+tem permissão para ver o alvo escolhido e colocar suas duas deleções em outro
+lugar. Seu propósito é definir o extremo protetor da mesma família balanceada na
+qual o pai adversarial define o extremo pessimista.
 
-### 5.3 Fixed-Cohort Survival Under Adversarial/Protective Parent Mixing
+<a id="53-fixed-cohort-survival-under-adversarialprotective-parent-mixing"></a>
 
-We next alternate the two target-aware endpoint policies without letting the
-allocator inspect current positions. Consider $N_0$ locally relevant lineages
-from distinct initial parents, following one target child per parent through
-the chain. These histories do not share subsequent parents. At filter $r$,
-every surviving lineage independently becomes an
-adversarial parent with probability $\alpha_r$ or a protective parent with
-probability $1-\alpha_r$. The adversarial policy destroys its target child;
-the protective policy preserves it. The calculation changes if the allocator
-may first observe which parents are locally relevant.
+### 5.3 Sobrevivência de Coorte Fixa sob Mistura de Pais Adversariais/Protetores
 
-One lineage survives the complete chain with probability
+Em seguida alternamos as duas políticas extremas cientes do alvo sem deixar o
+alocador inspecionar posições atuais. Considere $N_0$ linhagens localmente
+relevantes de pais iniciais distintos, acompanhando um filho-alvo por pai ao
+longo da cadeia. Essas histórias não compartilham pais subsequentes. No filtro
+$r$, toda linhagem sobrevivente torna-se independentemente um pai adversarial
+com probabilidade $\alpha_r$ ou um pai protetor com probabilidade
+$1-\alpha_r$. A política adversarial destrói seu filho-alvo; a política
+protetora o preserva. O cálculo muda se o alocador puder primeiro observar quais
+pais são localmente relevantes.
+
+Uma linhagem sobrevive à cadeia completa com probabilidade
 
 ```math
 \begin{aligned}
 P_Q
 &=\prod_{r < Q}(1-\alpha_r)
-&&[\text{Survive Every Independent Filter Label}]\\
+&&[\text{Sobrevive a Todo Rótulo Independente de Filtro}]\\
 &=e^{-A(Q)}.
-&&[\text{Definition Of }A(Q)]
+&&[\text{Definição de }A(Q)]
 \end{aligned}
 ```
 
-Independence between parent lineages then gives
+A independência entre linhagens parentais então dá
 
 ```math
 X_Q\sim\text{Binomial}(N_0,P_Q),
 ```
 
-so
+então
 
 ```math
 \begin{aligned}
@@ -1400,7 +1467,7 @@ so
 \end{aligned}
 ```
 
-For one filter this reduces to
+Para um filtro, isso se reduz a
 
 ```math
 X_{k+1}\mid X_k=N
@@ -1408,23 +1475,24 @@ X_{k+1}\mid X_k=N
 \text{Binomial}(N,1-\alpha_r),
 ```
 
-with immediate wipeout probability $\alpha_r^N$. Population redundancy is
-therefore useful under blind parent assignment: every relevant lineage must
-become an adversarial parent in the same transition to erase the cohort.
+com probabilidade de aniquilação imediata $\alpha_r^N$. A redundância
+populacional é, portanto, útil sob atribuição cega de pais: toda linhagem
+relevante precisa se tornar um pai adversarial na mesma transição para apagar a
+coorte.
 
-If $\alpha_r=\alpha > 0$ is constant, then
+Se $\alpha_r=\alpha > 0$ é constante, então
 
 ```math
 P_Q=(1-\alpha)^{\pi(Q)+O(1)}\longrightarrow0.
 ```
 
-Every one of the finite $N_0$ lineages eventually becomes an adversarial parent
-with probability one. Hence the fixed cohort becomes extinct almost surely even
-though every lineage continues to have $r-2$ descendants elsewhere in the
-complete period.
+Cada uma das finitas $N_0$ linhagens eventualmente se torna um pai adversarial
+com probabilidade um. Logo, a coorte fixa se extingue quase certamente, embora
+toda linhagem continue a ter $r-2$ descendentes em outro lugar no período
+completo.
 
-Compared with the adversarial/random mixture, the adversarial/protective law removes the random
-factor $1-2/r$:
+Comparada com a mistura adversarial/aleatória, a lei adversarial/protetora
+remove o fator aleatório $1-2/r$:
 
 ```math
 \begin{aligned}
@@ -1433,22 +1501,25 @@ s_r^{\mathrm{adversarial/random}}
 s_r^{\mathrm{adversarial/protective}}
 &=1-\alpha_r.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-This improvement is local. It does not overcome a fixed positive adversarial
-share repeated through infinitely many filters.
+Essa melhoria é local. Ela não supera uma parcela adversarial positiva fixa
+repetida através de infinitos filtros.
 
-### 5.4 Growing Square Windows Under Adversarial/Protective Parent Mixing
+<a id="54-growing-square-windows-under-adversarialprotective-parent-mixing"></a>
 
-The protective policy removes the balanced-random density penalty by
-preserving every eligible target child. Suppose the fully protective model
-supplies $B(Q)\asymp C_0Q^2$ eligible lineages in the square window, while
-each history has the conditional survival law $e^{-A(Q)}$. The cumulative
-adversarial-label probability is then the only marginal local loss.
+### 5.4 Janelas Quadradas Crescentes sob Mistura de Pais Adversariais/Protetores
 
-From [§5.3](#53-fixed-cohort-survival-under-adversarialprotective-parent-mixing), each of the $B(Q)$ eligible lineages survives with probability
-$e^{-A(Q)}$. If their complete target histories are independent, then
+A política protetora remove a penalidade de densidade aleatória balanceada ao
+preservar todo filho-alvo elegível. Suponha que o modelo totalmente protetor
+forneça $B(Q)\asymp C_0Q^2$ linhagens elegíveis na janela quadrada, enquanto
+cada história tem a lei condicional de sobrevivência $e^{-A(Q)}$. A probabilidade
+cumulativa de rótulo adversarial é então a única perda local marginal.
+
+De [§5.3](#53-fixed-cohort-survival-under-adversarialprotective-parent-mixing), cada uma das $B(Q)$ linhagens elegíveis sobrevive com
+probabilidade $e^{-A(Q)}$. Se suas histórias completas de alvo são
+independentes, então
 
 ```math
 X_Q^{\mathrm{adversarial/protective}}
@@ -1456,7 +1527,7 @@ X_Q^{\mathrm{adversarial/protective}}
 \text{Binomial}\left(B(Q),e^{-A(Q)}\right)
 ```
 
-and
+e
 
 ```math
 \begin{aligned}
@@ -1467,7 +1538,8 @@ and
 \end{aligned}
 ```
 
-Under this additional independence hypothesis, the empty-window probability satisfies
+Sob essa hipótese adicional de independência, a probabilidade de janela vazia
+satisfaz
 
 ```math
 \begin{aligned}
@@ -1478,21 +1550,22 @@ Under this additional independence hypothesis, the empty-window probability sati
 \end{aligned}
 ```
 
-Independent labels at individual parents do not establish independence of
-terminal histories that share ancestors. The binomial model here is an
-additional local experiment, not a consequence of balanced branching alone.
-For the occupancy conclusions below it suffices instead to assume the
-blind-placement bound $\Pr(X_Q=0)\le e^{-\lambda_Q}$ directly; the expectation
-formula uses only the marginal survival law.
+Rótulos independentes em pais individuais não estabelecem independência de
+histórias terminais que compartilham ancestrais. O modelo binomial aqui é um
+experimento local adicional, não uma consequência apenas da ramificação
+balanceada. Para as conclusões de ocupação abaixo, basta em vez disso assumir
+diretamente o limite de posicionamento cego
+$\Pr(X_Q=0)\le e^{-\lambda_Q}$; a fórmula da esperança usa apenas a lei marginal
+de sobrevivência.
 
-Taking logarithms gives the phase boundary
+Tomar logaritmos dá a fronteira de fase
 
 ```math
 \log\lambda_Q^{\mathrm{adversarial/protective}}
 =2\log Q-A(Q)+O(1).
 ```
 
-Hence, for every fixed $\varepsilon > 0$,
+Logo, para todo $\varepsilon > 0$ fixo,
 
 ```math
 \begin{aligned}
@@ -1505,40 +1578,40 @@ A(Q)\ge(2+\varepsilon)\log Q
 \end{aligned}
 ```
 
-In the first regime the expectation grows polynomially, the empty-window
-probabilities are summable, and the first Borel-Cantelli lemma gives only
-finitely many empty square windows almost surely.
+No primeiro regime, a esperança cresce polinomialmente, as probabilidades de
+janela vazia são somáveis e o primeiro lema de Borel-Cantelli dá apenas finitas
+janelas quadradas vazias quase certamente.
 
-For the representative schedule
+Para a programação representativa
 
 ```math
 \alpha_r= c\frac{\log r}{r},
 ```
 
-we have $A(Q)=c\log Q+O(1)$ and therefore
+temos $A(Q)=c\log Q+O(1)$ e, portanto,
 
 ```math
 \lambda_Q^{\mathrm{adversarial/protective}}\asymp C_0Q^{2-c}.
 ```
 
-Thus
+Assim
 
 ```math
 \begin{aligned}
 c < 2
 &\Longrightarrow
-\text{eventually nonempty square windows almost surely},\\
+\text{janelas quadradas eventualmente não vazias quase certamente},\\
 c=2
 &\Longrightarrow
-\text{critical order-one expected population},\\
+\text{população esperada crítica de ordem um},\\
 c > 2
 &\Longrightarrow
-\text{expected population tends to zero}.
+\text{população esperada tende a zero}.
 \end{aligned}
 ```
 
-The leading threshold $c=2$ matches the adversarial/random companion, but the boundary
-term differs:
+O limiar principal $c=2$ coincide com o companheiro adversarial/aleatório, mas o
+termo de fronteira difere:
 
 ```math
 \begin{aligned}
@@ -1547,71 +1620,75 @@ term differs:
 \lambda_Q^{\mathrm{adversarial/protective}}
 &\asymp C_0Q^{2-c}.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-At $c=2$, the random mixture tends to zero while the protective mixture retains only
-an order-one expectation, still insufficient for eventual almost-sure
-nonemptiness.
+Em $c=2$, a mistura aleatória tende a zero enquanto a mistura protetora retém
+apenas uma esperança de ordem um, ainda insuficiente para não vacuidade
+eventual quase certa.
 
-### 5.5 Head Recurrence Under Adversarial/Protective Parent Mixing
+<a id="55-head-recurrence-under-adversarialprotective-parent-mixing"></a>
 
-At the head, the protective policy can preserve an eligible lineage but cannot
-create one. Let $b_Q$ be its availability probability and suppose
-$b_Q\ge b > 0$ for all sufficiently large $Q$. Conditional on availability,
-the lineage must avoid every adversarial assignment in its chain. Independence
-or adequate weak mixing between head events then supplies the recurrence step.
+### 5.5 Recorrência na Cabeça sob Mistura de Pais Adversariais/Protetores
+
+Na cabeça, a política protetora pode preservar uma linhagem elegível, mas não
+pode criar uma. Seja $b_Q$ sua probabilidade de disponibilidade e suponha
+$b_Q\ge b > 0$ para todo $Q$ suficientemente grande. Condicionalmente à
+disponibilidade, a linhagem precisa evitar toda atribuição adversarial em sua
+cadeia. Independência ou mistura fraca adequada entre eventos de cabeça então
+fornece o passo de recorrência.
 
 ```math
 \Pr(H_Q)=b_Qe^{-A(Q)}.
 ```
 
-The lower bound on $b_Q$ makes the recurrence criterion equivalent, up to
-positive constants, to
+O limite inferior em $b_Q$ torna o critério de recorrência equivalente, até
+constantes positivas, a
 
 ```math
 \sum_{Q\text{ prime}}e^{-A(Q)}.
 ```
 
-Under adequate cross-layer mixing, the second Borel-Cantelli lemma gives
+Sob mistura adequada entre camadas, o segundo lema de Borel-Cantelli dá
 
 ```math
 \sum_{Q\text{ prime}}e^{-A(Q)}=\infty
 \Longrightarrow
-H_Q\text{ occurs infinitely often almost surely}.
+H_Q\text{ ocorre infinitas vezes quase certamente}.
 ```
 
-If the series converges, the first Borel-Cantelli lemma gives only finitely many
-head events almost surely without any independence premise.
+Se a série converge, o primeiro lema de Borel-Cantelli dá apenas finitos eventos
+de cabeça quase certamente sem qualquer premissa de independência.
 
-For
+Para
 
 ```math
 \alpha_r= c\frac{\log r}{r},
 ```
 
-we have $e^{-A(Q)}\asymp Q^{-c}$. The prime-head series therefore behaves like
+temos $e^{-A(Q)}\asymp Q^{-c}$. A série sobre cabeças primas, portanto, se
+comporta como
 
 ```math
 \sum_{Q\text{ prime}}\frac1{Q^c}.
 ```
 
-The prime harmonic series diverges at $c=1$, while the series converges for
-$c > 1$. Hence
+A série harmônica dos primos diverge em $c=1$, enquanto a série converge para
+$c > 1$. Logo
 
 ```math
 \begin{aligned}
 c\le1
 &\Longrightarrow
-\text{infinitely many head events almost surely, with mixing},\\
+\text{infinitos eventos de cabeça quase certamente, com mistura},\\
 c > 1
 &\Longrightarrow
-\text{only finitely many head events almost surely}.
+\text{apenas finitos eventos de cabeça quase certamente}.
 \end{aligned}
 ```
 
-The boundary differs from adversarial/random mixing. There the balanced-random head
-density contributes $(\log Q)^{-2}$:
+A fronteira difere da mistura adversarial/aleatória. Ali, a densidade de cabeça
+aleatória balanceada contribui com $(\log Q)^{-2}$:
 
 ```math
 \begin{aligned}
@@ -1620,95 +1697,106 @@ density contributes $(\log Q)^{-2}$:
 \Pr(H_Q^{\mathrm{adversarial/protective}})
 &\asymp\frac{b_Q}{Q^c}.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-At $c=1$, the adversarial/random prime series converges, while the adversarial/protective series
-diverges. Thus the protective parent policy changes the inclusion of the critical boundary,
-even though both mixtures have the same leading threshold scale.
+Em $c=1$, a série prima adversarial/aleatória converge, enquanto a série
+adversarial/protetora diverge. Assim, a política do pai protetor muda a inclusão
+da fronteira crítica, embora ambas as misturas tenham a mesma escala de limiar
+principal.
 
-For the gentler schedule $\alpha_r= c/r$, the occurrence probability is
-comparable to $(\log Q)^{-c}$ and the sum over prime heads diverges for every
-fixed finite $c$.
+Para a programação mais branda $\alpha_r= c/r$, a probabilidade de ocorrência é
+comparável a $(\log Q)^{-c}$ e a soma sobre cabeças primas diverge para todo
+$c$ finito fixo.
 
-### 5.6 Parent-Mixture Comparison
+<a id="56-parent-mixture-comparison"></a>
 
-Under their respective spatial premises, the two position-blind mixtures have
-the following asymptotic behavior:
+### 5.6 Comparação de Misturas Parentais
 
-| Adversarial schedule | Adversarial/random square window | Adversarial/protective square window | Adversarial/random head | Adversarial/protective head |
+Sob suas respectivas premissas espaciais, as duas misturas cegas à posição têm o
+seguinte comportamento assintótico:
+
+| Programação adversarial | Janela quadrada adversarial/aleatória | Janela quadrada adversarial/protetora | Cabeça adversarial/aleatória | Cabeça adversarial/protetora |
 |---|---:|---:|---:|---:|
-| Fixed $\alpha > 0$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
-| $\alpha_r= c/r$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Infinite with mixing | Infinite with mixing |
-| $\alpha_r= c\log r/r$, $c < 1$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Infinite with mixing | Infinite with mixing |
-| $\alpha_r= c\log r/r$, $c=1$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Finitely many almost surely | Infinite with mixing |
-| $\alpha_r= c\log r/r$, $1 < c < 2$ | Eventually nonempty almost surely | Eventually nonempty almost surely | Finitely many almost surely | Finitely many almost surely |
-| $\alpha_r= c\log r/r$, $c=2$ | Expectation tends to zero | Order-one expectation | Finitely many almost surely | Finitely many almost surely |
-| $\alpha_r= c\log r/r$, $c > 2$ | Expectation tends to zero | Expectation tends to zero | Finitely many almost surely | Finitely many almost surely |
+| $\alpha > 0$ fixo | Esperança tende a zero | Esperança tende a zero | Finitas quase certamente | Finitas quase certamente |
+| $\alpha_r= c/r$ | Eventualmente não vazia quase certamente | Eventualmente não vazia quase certamente | Infinita com mistura | Infinita com mistura |
+| $\alpha_r= c\log r/r$, $c < 1$ | Eventualmente não vazia quase certamente | Eventualmente não vazia quase certamente | Infinita com mistura | Infinita com mistura |
+| $\alpha_r= c\log r/r$, $c=1$ | Eventualmente não vazia quase certamente | Eventualmente não vazia quase certamente | Finitas quase certamente | Infinita com mistura |
+| $\alpha_r= c\log r/r$, $1 < c < 2$ | Eventualmente não vazia quase certamente | Eventualmente não vazia quase certamente | Finitas quase certamente | Finitas quase certamente |
+| $\alpha_r= c\log r/r$, $c=2$ | Esperança tende a zero | Esperança de ordem um | Finitas quase certamente | Finitas quase certamente |
+| $\alpha_r= c\log r/r$, $c > 2$ | Esperança tende a zero | Esperança tende a zero | Finitas quase certamente | Finitas quase certamente |
 
-The protective parent policy removes the balanced-random $(\log Q)^{-2}$ loss. This does
-not change the leading square-window threshold $c=2$, because the quadratic
-window dominates logarithmic factors away from the boundary. It does change
-the boundary behavior and, most visibly, includes $c=1$ on the recurrent side
-of the head transition.
+A política do pai protetor remove a perda aleatória balanceada $(\log Q)^{-2}$.
+Isso não muda o limiar principal de janela quadrada $c=2$, porque a janela
+quadrática domina fatores logarítmicos longe da fronteira. Ela muda o
+comportamento na fronteira e, mais visivelmente, inclui $c=1$ no lado recorrente
+da transição na cabeça.
 
-Every entry assumes position-blind adversarial labels. A target-aware allocator
-is governed by [§5.1](#51-the-same-adversarial-percentage-can-produce-different-outcomes) instead and may erase the head with one correctly placed
-adversarial label regardless of this table's percentage regime.
+Toda entrada assume rótulos adversariais cegos à posição. Um alocador ciente do
+alvo é governado por [§5.1](#51-the-same-adversarial-percentage-can-produce-different-outcomes) em vez disso e pode apagar a cabeça com um
+rótulo adversarial corretamente colocado, independentemente do regime percentual
+desta tabela.
 
-## 6. Allocation Mechanisms and Local Damage
+<a id="6-allocation-mechanisms-and-local-damage"></a>
 
-### 6.1 Mechanism Families
+## 6. Mecanismos de Alocação e Dano Local
 
-An adversarial share becomes meaningful only after we say how policies are
-assigned to parents. A useful comparison begins with a position-blind
-allocator and then adds positional information in controlled steps. We write
-$P$ for a protective parent and $A$ for an adversarial parent.
+<a id="61-mechanism-families"></a>
 
-| Mechanism | Adversarial share | Position information | What it measures |
+### 6.1 Famílias de Mecanismos
+
+Uma parcela adversarial só se torna significativa depois que dizemos como as
+políticas são atribuídas aos pais. Uma comparação útil começa com um alocador
+cego à posição e então adiciona informação posicional em passos controlados.
+Escrevemos $P$ para um pai protetor e $A$ para um pai adversarial.
+
+| Mecanismo | Parcela adversarial | Informação posicional | O que mede |
 |---|---:|---:|---|
-| Independent parent coin | Random around $\alpha_r$ | None | Simplest branching law |
-| Exact-quota shuffle | Exactly $K/N$ | None | Canonical finite-population baseline |
-| Shuffled alternation, $P,A,P,A,\ldots$ | Fixed by pattern | None | Balanced deterministic labels after shuffling |
-| Block-balanced shuffle | Fixed inside each block | None | Sensitivity to local clustering |
-| Random cyclic mask | Fixed by pattern | None | Sensitivity to periodic allocation |
-| Position-blind hash | Random around $\alpha_r$ | None | Reproducible parent coins |
-| Delayed adversary | Exactly $K/N$ | Previous layer | Persistence of positional information |
-| Noisy ranking | Exactly $K/N$ | Tunable | Transition from blind to targeted allocation |
-| Perfect adversary | Exactly $K/N$ | Current layer | Worst-case endpoint |
+| Moeda parental independente | Aleatória em torno de $\alpha_r$ | Nenhuma | Lei de ramificação mais simples |
+| Embaralhamento de quota exata | Exatamente $K/N$ | Nenhuma | Base canônica de população finita |
+| Alternância embaralhada, $P,A,P,A,\ldots$ | Fixada pelo padrão | Nenhuma | Rótulos determinísticos balanceados após embaralhamento |
+| Embaralhamento balanceado por blocos | Fixada dentro de cada bloco | Nenhuma | Sensibilidade a agrupamento local |
+| Máscara cíclica aleatória | Fixada pelo padrão | Nenhuma | Sensibilidade à alocação periódica |
+| Hash cego à posição | Aleatória em torno de $\alpha_r$ | Nenhuma | Moedas parentais reprodutíveis |
+| Adversário atrasado | Exatamente $K/N$ | Camada anterior | Persistência da informação posicional |
+| Ranqueamento ruidoso | Exatamente $K/N$ | Ajustável | Transição de alocação cega para direcionada |
+| Adversário perfeito | Exatamente $K/N$ | Camada atual | Extremo de pior caso |
 
-The exact-quota shuffle is the primary null model because it fixes the budget
-without using position. Shuffled patterns and block balance test whether local
-clustering changes the result. A delayed allocator can use only the previous
-layer, while noisy ranking assigns weight $e^{-\beta d_g}$ to a parent at
-distance $d_g$ from the target. Thus $\beta=0$ is uniform allocation and large
-$\beta$ approaches the perfect adversary.
+O embaralhamento de quota exata é o modelo nulo primário porque fixa o
+orçamento sem usar posição. Padrões embaralhados e balanço por blocos testam se
+agrupamento local muda o resultado. Um alocador atrasado pode usar apenas a
+camada anterior, enquanto ranqueamento ruidoso atribui peso $e^{-\beta d_g}$ a
+um pai a distância $d_g$ do alvo. Assim, $\beta=0$ é alocação uniforme e
+$\beta$ grande se aproxima do adversário perfeito.
 
-Every mechanism assigns one policy to a parent; the chosen policy still removes
-exactly two of that parent's children. Alternating labels cannot restore a
-target child destroyed at an earlier filter, and an unshuffled periodic pattern
-may lock to the sieve geometry. We therefore compare mechanisms through their
-realized local damage and targeting strength rather than through the scheduled
-percentage alone.
+Todo mecanismo atribui uma política a um pai; a política escolhida ainda remove
+exatamente dois filhos daquele pai. Rótulos alternados não podem restaurar um
+filho-alvo destruído em um filtro anterior, e um padrão periódico não
+embaralhado pode se travar à geometria da peneira. Portanto, comparamos
+mecanismos por meio de seu dano local realizado e força de direcionamento, em
+vez de apenas pela porcentagem programada.
 
-### 6.2 Targeting and Local Hazard
+<a id="62-targeting-and-local-hazard"></a>
 
-The primary observed state space has two coordinates:
+### 6.2 Direcionamento e Risco Local
+
+O espaço de estados observado primário tem duas coordenadas:
 
 ```math
 (w_r,\theta_r)
 =
-(\text{damage relative to random},\text{realized targeting strength}).
+(\text{dano relativo ao aleatório},\text{força de direcionamento realizada}).
 ```
 
-The first says how much total damage the tracked segment actually received.
-The second says how concentrated the controllable adversarial-label budget was relative
-to the locally relevant parents. The scheduled share $\alpha_r=K_r/N_r$
-remains an experimental input, but it is not itself the local damage.
+A primeira diz quanto dano total o segmento rastreado realmente recebeu. A
+segunda diz quão concentrado o orçamento controlável de rótulos adversariais
+foi em relação aos pais localmente relevantes. A parcela programada
+$\alpha_r=K_r/N_r$ continua sendo uma entrada experimental, mas não é ela mesma
+o dano local.
 
-#### Normalized Targeting Strength
+#### Força de Direcionamento Normalizada
 
-For one nondegenerate transition, retain the notation from [§5.1](#51-the-same-adversarial-percentage-can-produce-different-outcomes) and define
+Para uma transição não degenerada, mantenha a notação de [§5.1](#51-the-same-adversarial-percentage-can-produce-different-outcomes) e defina
 
 ```math
 \begin{aligned}
@@ -1718,9 +1806,9 @@ H_{\max}&=\min(K,L).
 \end{aligned}
 ```
 
-These are the protective minimum, uniform-random mean, and adversarial maximum
-numbers of locally relevant parents hit. When
-$H_{\min} < H_0 < H_{\max}$, normalize the realized hit count $H$ by
+Esses são o mínimo protetor, a média uniforme-aleatória e o máximo adversarial
+do número de pais localmente relevantes atingidos. Quando
+$H_{\min} < H_0 < H_{\max}$, normalize a contagem realizada de atingidos $H$ por
 
 ```math
 \theta(H)=
@@ -1730,40 +1818,40 @@ $H_{\min} < H_0 < H_{\max}$, normalize the realized hit count $H$ by
 \end{cases}
 ```
 
-Then
+Então
 
 ```math
 \begin{aligned}
 \theta=-1&\Longleftrightarrow H=H_{\min}
-&&[\text{Protective Endpoint}],\\
+&&[\text{Extremo Protetor}],\\
 \theta=0&\Longleftrightarrow H=H_0
-&&[\text{Uniform Benchmark}],\\
+&&[\text{Benchmark Uniforme}],\\
 \theta=1&\Longleftrightarrow H=H_{\max}
-&&[\text{Targeted Endpoint}].
+&&[\text{Extremo Direcionado}].
 \end{aligned}
 ```
 
-The center $H_0$ is an expectation and need not be an integer, so a finite
-realization need not attain $\theta=0$ exactly. It remains the neutral reference
-point.
+O centro $H_0$ é uma esperança e não precisa ser inteiro, então uma realização
+finita não precisa atingir $\theta=0$ exatamente. Ele continua sendo o ponto de
+referência neutro.
 
-Degenerate cases with a zero denominator should report the raw tuple
-$(N,L,K,H)$ instead of assigning a synthetic score. In every case the local
-survivor count remains the exact observable
+Casos degenerados com denominador zero devem reportar a tupla bruta
+$(N,L,K,H)$ em vez de atribuir um escore sintético. Em todo caso, a contagem
+local de sobreviventes permanece o observável exato
 
 ```math
 S=L-H.
 ```
 
-The score measures realized placement, not hostile intent. A random shuffle
-may occasionally produce positive $\theta$, and a nominal adversary with poor
-information may produce negative $\theta$.
+O escore mede posicionamento realizado, não intenção hostil. Um embaralhamento
+aleatório pode ocasionalmente produzir $\theta$ positivo, e um adversário
+nominal com pouca informação pode produzir $\theta$ negativo.
 
-#### Realized Local Hazard
+#### Risco Local Realizado
 
-Let $T_r$ be the total number of locally relevant target children destroyed by
-the complete filter, including both random-baseline and adversarial-label destruction.
-Define
+Seja $T_r$ o número total de filhos-alvo localmente relevantes destruídos pelo
+filtro completo, incluindo tanto a destruição da base aleatória quanto a
+destruição por rótulo adversarial. Defina
 
 ```math
 f_r^{\mathrm{local}}=\frac{T_r}{L_r},
@@ -1772,10 +1860,10 @@ w_r^{\mathrm{local}}=\frac{rT_r}{2L_r},
 \qquad L_r > 0.
 ```
 
-In the pure adversarial/protective assignment, an adversarial label destroys
-its target and a protective label preserves it, so $T_r=H_r$. In the
-adversarial/random assignment, $T_r$ also contains the random branch's $2/r$
-baseline. For blind adversarial/random labels,
+Na atribuição adversarial/protetora pura, um rótulo adversarial destrói seu alvo
+e um rótulo protetor o preserva, então $T_r=H_r$. Na atribuição
+adversarial/aleatória, $T_r$ também contém a base $2/r$ do ramo aleatório. Para
+rótulos adversariais/aleatórios cegos,
 
 ```math
 \mathbb E[f_r^{\mathrm{local}}]
@@ -1783,11 +1871,11 @@ baseline. For blind adversarial/random labels,
 \alpha_r+(1-\alpha_r)\frac2r.
 ```
 
-A perfect adversary can make $f_r^{\mathrm{local}}=1$ even when the global
-budget $\alpha_r=K_r/N_r$ is tiny, provided its budget and information cover
-the local target.
+Um adversário perfeito pode fazer $f_r^{\mathrm{local}}=1$ mesmo quando o
+orçamento global $\alpha_r=K_r/N_r$ é minúsculo, desde que seu orçamento e sua
+informação cubram o alvo local.
 
-For a fixed nested cohort, the observed cumulative hazard is
+Para uma coorte aninhada fixa, o risco cumulativo observado é
 
 ```math
 \widehat D(Q)
@@ -1795,172 +1883,184 @@ For a fixed nested cohort, the observed cumulative hazard is
 \sum_{r < Q}-\log\left(1-f_r^{\mathrm{local}}\right),
 ```
 
-whenever every factor is positive. If one transition has
-$f_r^{\mathrm{local}}=1$, the tracked local cohort is extinct and $\widehat D(Q)$ is
-effectively infinite from that point. This diagnostic generalizes $A(Q)$ and
-includes the random baseline rather than counting only the excess adversarial-label
-loss. The separation between scheduled $\alpha_r$, realized
-$w_r^{\mathrm{local}}$, and targeting score $\theta_r$ measures respectively
-policy budget, total relative damage, and the value of positional information.
+sempre que todo fator é positivo. Se uma transição tem
+$f_r^{\mathrm{local}}=1$, a coorte local rastreada está extinta e
+$\widehat D(Q)$ é efetivamente infinito a partir desse ponto. Esse diagnóstico
+generaliza $A(Q)$ e inclui a base aleatória, em vez de contar apenas a perda
+excedente por rótulo adversarial. A separação entre $\alpha_r$ programado,
+$w_r^{\mathrm{local}}$ realizado e escore de direcionamento $\theta_r$ mede,
+respectivamente, orçamento de política, dano relativo total e o valor da
+informação posicional.
 
-When the locally relevant population is redefined at every transition rather
-than following one cohort, $\widehat D(Q)$ is only a cumulative diagnostic; it is not an
-exact survival exponent for a single population.
+Quando a população localmente relevante é redefinida em toda transição, em vez
+de seguir uma coorte, $\widehat D(Q)$ é apenas um diagnóstico cumulativo; não é
+um expoente exato de sobrevivência para uma única população.
 
-We can therefore read the earlier phase calculations with three
-levels of input:
+Podemos, portanto, ler os cálculos de fase anteriores com três níveis de
+entrada:
 
-- $A(Q)$ is the scheduled budget under the blind-allocation model;
-- $\widehat D(Q)$ records observed damage along a specified cohort; and
-- $\theta_r$ records how strongly the controllable budget targeted the segment.
+- $A(Q)$ é o orçamento programado sob o modelo de alocação cega;
+- $\widehat D(Q)$ registra o dano observado ao longo de uma coorte especificada; e
+- $\theta_r$ registra quão fortemente o orçamento controlável direcionou o segmento.
 
-Only the first has a closed form from $\alpha_r$ alone. The probability phase
-diagram uses conditional hazards $D(Q)$ and $w_r$. Applying it to the observed
-scores requires a theorem relating those scores to candidate marginals.
+Somente o primeiro tem forma fechada a partir de $\alpha_r$ sozinho. O diagrama
+de fases probabilístico usa riscos condicionais $D(Q)$ e $w_r$. Aplicá-lo aos
+escores observados exige um teorema que relacione esses escores às marginais dos
+candidatos.
 
-### 6.3 Comparing the Allocation Mechanisms
+<a id="63-comparing-the-allocation-mechanisms"></a>
 
-The mechanisms differ in how much they know about the target, so we compare
-them with the same strike budget and the same target region. Uniform shuffling
-is the neutral reference. Block balance and delayed information show whether
-dependence alone changes the result. Noisy ranking moves continuously toward
-the perfectly targeted endpoint.
+### 6.3 Comparando os Mecanismos de Alocação
 
-| Allocation | Information about the target | Role in the comparison |
+Os mecanismos diferem em quanto sabem sobre o alvo, então os comparamos com o
+mesmo orçamento de ataques e a mesma região alvo. Embaralhamento uniforme é a
+referência neutra. Balanço por blocos e informação atrasada mostram se a
+dependência sozinha muda o resultado. Ranqueamento ruidoso se move
+continuamente em direção ao extremo perfeitamente direcionado.
+
+| Alocação | Informação sobre o alvo | Papel na comparação |
 |---|---|---|
-| Uniform exact quota | None | Random baseline |
-| Block-balanced quota | None, but locally dependent | Clustering test |
-| Delayed allocation | Previous layer only | Memory test |
-| Noisy ranking | Partial current information | Intermediate targeting |
-| Perfect allocation | Complete current information | Adversarial endpoint |
+| Quota exata uniforme | Nenhuma | Base aleatória |
+| Quota balanceada por blocos | Nenhuma, mas localmente dependente | Teste de agrupamento |
+| Alocação atrasada | Apenas camada anterior | Teste de memória |
+| Ranqueamento ruidoso | Informação atual parcial | Direcionamento intermediário |
+| Alocação perfeita | Informação atual completa | Extremo adversarial |
 
-For each transition, the essential observation is the tuple
+Para cada transição, a observação essencial é a tupla
 
 ```math
 (N_r,L_r,K_r,H_r,T_r,w_r^{\mathrm{local}},\theta_r).
 ```
 
-It records the total and locally relevant parents, the available adversarial
-budget, the number of relevant parents selected, the total local destruction,
-the damage relative to random, and the targeting score. Exact-quota companions
-also retain $J_r$, $u_r=J_r/N_r^{\mathrm{strike}}$, and the cumulative sums
+Ela registra os pais totais e localmente relevantes, o orçamento adversarial
+disponível, o número de pais relevantes selecionados, a destruição local total,
+o dano relativo ao aleatório e o escore de direcionamento. Companheiros de
+quota exata também retêm $J_r$, $u_r=J_r/N_r^{\mathrm{strike}}$ e as somas
+cumulativas
 
 ```math
 \sum_{r < Q}u_r
-\qquad\text{and}\qquad
+\qquad\text{e}\qquad
 \sum_{r < Q}\left(u_r^2+\frac{u_r}{N_r^{\mathrm{strike}}}\right),
 ```
 
-because matching one finite strike count does not establish the cumulative
-conditions used in [§7.1](#71-exact-crt-quotas-with-random-locations).
+porque igualar uma contagem finita de ataques não estabelece as condições
+cumulativas usadas em [§7.1](#71-exact-crt-quotas-with-random-locations).
 
-The real modular filter has no assigned parent policy, but the same local
-observations still apply. Its hit count can be compared with the protective
-minimum, uniform mean, and adversarial maximum from [§6.2](#62-targeting-and-local-hazard). Across successive
-heads, $D(Q)$ then shows whether the arithmetic placement remains near the
-random companion or accumulates damage like an informed allocator. This is a
-comparison of behavior, not an attribution of intent.
+O filtro modular real não tem política parental atribuída, mas as mesmas
+observações locais ainda se aplicam. Sua contagem de acertos pode ser comparada
+com o mínimo protetor, a média uniforme e o máximo adversarial de [§6.2](#62-targeting-and-local-hazard). Ao longo de cabeças
+sucessivas, $D(Q)$ então mostra se o posicionamento aritmético permanece perto
+do companheiro aleatório ou acumula dano como um alocador informado. Esta é uma
+comparação de comportamento, não uma atribuição de intenção.
 
-## 7. Exact-Quota Companion Processes
+<a id="7-exact-quota-companion-processes"></a>
 
-### 7.1 Exact CRT Quotas With Random Locations
+## 7. Processos Companheiros de Quota Exata
 
-The random parent model fixes two harmful copy indices per parent. A separate
-statistical companion instead retains the exact number of accepted strikes
-supplied by a chosen CRT population and randomizes only their locations. This
-preserves the real count while removing the arithmetic targeting information,
-but it does not preserve two losses per 2-gap parent or the balanced global
-recurrence. Exact quotas create dependence within one layer, but they do not
-change the one-position survival scale when allocated uniformly on the
-conditioned eligible population. The head result also
-uses persistent availability and cross-layer mixing, while the square-window
-result uses blind placement and a quadratic eligible supply.
+<a id="71-exact-crt-quotas-with-random-locations"></a>
 
-At filter $r$, let $U_r$ contain $N_r$ eligible values and let the CRT quota be
-$J_r$, with $0\le J_r\le N_r-2$. The exact-quota random parent model chooses one
-uniformly random size $J_r$ subset of $U_r$ as its strike set. For a specified
-2-gap whose two endpoints belong to $U_r$, both endpoints survive precisely
-when every strike is selected from the other $N_r-2$ values. Therefore
+### 7.1 Quotas CRT Exatas com Localizações Aleatórias
+
+O modelo de pai aleatório fixa dois índices de cópia prejudiciais por pai. Um
+companheiro estatístico separado, em vez disso, retém o número exato de ataques
+aceitos fornecido por uma população CRT escolhida e aleatoriza apenas suas
+localizações. Isso preserva a contagem real enquanto remove a informação
+aritmética de direcionamento, mas não preserva duas perdas por pai de lacuna 2
+nem a recorrência global balanceada. Quotas exatas criam dependência dentro de
+uma camada, mas não mudam a escala de sobrevivência de uma posição quando
+alocadas uniformemente na população elegível condicionada. O resultado da cabeça
+também usa disponibilidade persistente e mistura entre camadas, enquanto o
+resultado de janela quadrada usa posicionamento cego e suprimento elegível
+quadrático.
+
+No filtro $r$, seja $U_r$ contendo $N_r$ valores elegíveis e seja $J_r$ a quota
+CRT, com $0\le J_r\le N_r-2$. O modelo de pai aleatório com quota exata escolhe
+um subconjunto uniformemente aleatório de tamanho $J_r$ de $U_r$ como seu
+conjunto de ataques. Para uma lacuna 2 especificada cujos dois extremos
+pertencem a $U_r$, ambos os extremos sobrevivem precisamente quando todo ataque
+é selecionado dos outros $N_r-2$ valores. Portanto
 
 ```math
 \begin{aligned}
 s_r
 &=\frac{\binom{N_r-2}{J_r}}{\binom{N_r}{J_r}}
-&&[\text{Uniform Exact-Quota Choice}]\\
+&&[\text{Escolha Uniforme de Quota Exata}]\\
 &=\frac{(N_r-J_r)(N_r-J_r-1)}{N_r(N_r-1)}.
-&&[\text{Factorial Simplification}]
+&&[\text{Simplificação Fatorial}]
 \end{aligned}
 ```
 
-Write the strike fraction as
+Escreva a fração de ataques como
 
 ```math
 u_r:=\frac{J_r}{N_r}.
 ```
 
-The exact formula gives
+A fórmula exata dá
 
 ```math
 \log s_r
 =-2u_r+O\left(u_r^2+\frac{u_r}{N_r}\right).
 ```
 
-This separates the exact finite quota from the cumulative condition needed for
-recurrence. Assume that along the conditioned chain to head $Q$,
+Isso separa a quota finita exata da condição cumulativa necessária para a
+recorrência. Assuma que ao longo da cadeia condicionada até a cabeça $Q$,
 
 ```math
 \begin{aligned}
 \sum_{r < Q}u_r
 &=\log\log Q+O(1),
-&&[\text{CRT-Rate Cumulative Quota}]\\
+&&[\text{Quota Cumulativa na Taxa CRT}]\\
 \sum_{r < Q}
 \left(u_r^2+\frac{u_r}{N_r}\right)
 &=O(1).
-&&[\text{Summable Finite-Population Error}]
+&&[\text{Erro Somável de População Finita}]
 \end{aligned}
 ```
 
-The complete-period CRT benchmark $u_r=1/r$ satisfies these conditions. A
-different local CRT quota must be checked against them; preserving a numerical
-strike count alone does not make the conclusion automatic.
+O benchmark CRT de período completo $u_r=1/r$ satisfaz essas condições. Uma
+quota CRT local diferente precisa ser checada contra elas; preservar apenas uma
+contagem numérica de ataques não torna a conclusão automática.
 
-Multiplying the exact without-replacement factors gives
+Multiplicar os fatores exatos sem reposição dá
 
 ```math
 \begin{aligned}
 P_{\mathrm{quota}}(Q)
 &=\prod_{r < Q}s_r
-&&[\text{Survive Every Filter}]\\
+&&[\text{Sobrevive a Todo Filtro}]\\
 &=\exp\left(\sum_{r < Q}\log s_r\right)
-&&[\text{Product To Sum}]\\
+&&[\text{Produto para Soma}]\\
 &=\exp\left(-2\sum_{r < Q}u_r+O(1)\right)
-&&[\text{Summable Error}]\\
+&&[\text{Erro Somável}]\\
 &\asymp\frac{C}{(\log Q)^2}.
-&&[\text{Cumulative Quota Condition}]
+&&[\text{Condição Cumulativa de Quota}]
 \end{aligned}
 ```
 
-Thus the exact-quota companion has the same one-head survival order as the
-random parent model. It is not an independent Bernoulli filter inside one
-layer; it is a uniform shuffle conditioned on the exact CRT strike count.
+Assim, o companheiro de quota exata tem a mesma ordem de sobrevivência em uma
+cabeça que o modelo de pai aleatório. Ele não é um filtro de Bernoulli
+independente dentro de uma camada; é um embaralhamento uniforme condicionado à
+contagem exata de ataques CRT.
 
-Suppose the distinguished head candidate is eligible with conditional
-probability at least $b_0 > 0$, uniformly for all sufficiently large prime heads,
-and that this availability is compatible with the quota-survival experiment.
-Then
+Suponha que o candidato distinguido na cabeça seja elegível com probabilidade
+condicional pelo menos $b_0 > 0$, uniformemente para todas as cabeças primas
+suficientemente grandes, e que essa disponibilidade seja compatível com o
+experimento de sobrevivência por quota. Então
 
 ```math
 \begin{aligned}
 b_0P_{\mathrm{quota}}(Q)
 &\le\Pr(H_Q)\le P_{\mathrm{quota}}(Q),
-&&[\text{Uniform Availability Bounds}]\\
+&&[\text{Limites Uniformes de Disponibilidade}]\\
 \Pr(H_Q)
 &\asymp\frac{1}{(\log Q)^2}.
-&&[\text{Quota Survival Asymptotic}]
+&&[\text{Assintótica de Sobrevivência por Quota}]
 \end{aligned}
 ```
 
-Consequently,
+Consequentemente,
 
 ```math
 \begin{aligned}
@@ -1968,53 +2068,54 @@ Consequently,
 &\asymp
 \sum_{Q\text{ prime}}\frac{1}{(\log Q)^2}\\
 &=\infty.
-&&[\text{Prime Number Theorem}]
+&&[\text{Teorema dos Números Primos}]
 \end{aligned}
 ```
 
-Under independence or an adequate cross-layer mixing condition, the second
-Borel-Cantelli lemma yields
+Sob independência ou uma condição adequada de mistura entre camadas, o segundo
+lema de Borel-Cantelli produz
 
 ```math
-\Pr(H_Q\text{ occurs infinitely often})=1.
-\qquad[\text{Q.E.D.}]
+\Pr(H_Q\text{ ocorre infinitas vezes})=1.
+\qquad[\text{C.Q.D.}]
 ```
 
-This is an almost-sure theorem, not a guarantee for every random realization.
-The set of realizations with only finitely many head hits has probability zero,
-but it is not logically empty.
+Este é um teorema quase certo, não uma garantia para toda realização aleatória.
+O conjunto de realizações com apenas finitos acertos na cabeça tem probabilidade
+zero, mas não é logicamente vazio.
 
-For square-safe windows, assume $B(Q)\asymp C_0Q^2$ eligible starts and the
-same blind-placement empty-window premise used by the random parent model.
-Then
+Para janelas seguras pelo quadrado, assuma $B(Q)\asymp C_0Q^2$ inícios
+elegíveis e a mesma premissa de posicionamento cego para janela vazia usada
+pelo modelo de pai aleatório. Então
 
 ```math
 \begin{aligned}
 \lambda_{\mathrm{quota}}(Q)
 &=B(Q)P_{\mathrm{quota}}(Q)
-&&[\text{Expected Surviving Starts}]\\
+&&[\text{Inícios Sobreviventes Esperados}]\\
 &\asymp
 C_0\frac{Q^2}{(\log Q)^2}
 \longrightarrow\infty.
-&&[\text{Quadratic Supply Dominates}]
+&&[\text{Suprimento Quadrático Domina}]
 \end{aligned}
 ```
 
-If
+Se
 
 ```math
 \Pr(W_Q\text{ is empty})
 \le e^{-\lambda_{\mathrm{quota}}(Q)},
 ```
 
-the empty probabilities are summable over prime $Q$. The first Borel-Cantelli
-lemma then gives only finitely many empty square windows almost surely. This
-eventual-window statement is stronger than the twin-prime-style target: an
-unbounded sequence of successful windows, or infinitely many head hits, is
-already sufficient for infinitely many distinct certificates.
+as probabilidades de vazio são somáveis sobre primos $Q$. O primeiro lema de
+Borel-Cantelli então dá apenas finitas janelas quadradas vazias quase
+certamente. Essa afirmação de janela eventual é mais forte que o alvo no estilo
+dos primos gêmeos: uma sequência ilimitada de janelas bem-sucedidas, ou
+infinitos acertos na cabeça, já é suficiente para infinitos certificados
+distintos.
 
-For consecutive primes $p < q$, the real accepted-strike count in the next safe
-window is proved in [Gap Dynamics §9.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes) [[2]](#ref2):
+Para primos consecutivos $p < q$, a contagem real de ataques aceitos na próxima
+janela segura é provada em [Dinâmica de Lacunas §9.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes) [[2]](#ref2):
 
 ```math
 A(p,q)
@@ -2023,25 +2124,27 @@ A(p,q)
 -\pi(p-1).
 ```
 
-Using this local quota as $J_r=A(p,q)$ in the random-location companion is well
-defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed
-cumulative conditions for the head proof above. The
-[complete-period count](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2) supplies the
-global density; neither exact count determines local placement in the real
-sieve.
+Usar essa quota local como $J_r=A(p,q)$ no companheiro de localização aleatória
+é bem definido, mas suas frações $u_r=J_r/N_r$ ainda precisam satisfazer as
+condições cumulativas exibidas para a prova de cabeça acima. A [contagem de período completo](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count) [[2]](#ref2) fornece a
+densidade global; nenhuma contagem exata determina o posicionamento local na
+peneira real.
 
-### 7.2 Biased Exact Quotas and the Logarithmic Skew Frontier
+<a id="72-biased-exact-quotas-and-the-logarithmic-skew-frontier"></a>
 
-The neutral exact-quota companion treats every eligible value symmetrically.
-We now keep the same quota $J_r$ while making
-2-gap endpoints proportionally more likely to receive a harmful strike. This
-asks how much positional preference the quota can carry before the almost-sure
-head conclusion changes. We use a group-exchangeable allocation law, assume
-double strikes on one endpoint pair have quadratic order, and retain the
-availability, placement, and mixing premises of [§3.5](#35-logarithmically-growing-worsening-has-two-thresholds) and [§7.1](#71-exact-crt-quotas-with-random-locations).
+### 7.2 Quotas Exatas Enviesadas e a Fronteira Logarítmica de Viés
 
-Let $E_r\subseteq U_r$ be the eligible values that are endpoints of locally
-relevant 2-gaps, and define
+O companheiro neutro de quota exata trata todo valor elegível simetricamente.
+Agora mantemos a mesma quota $J_r$ enquanto tornamos os extremos de lacunas 2
+proporcionalmente mais propensos a receber um ataque prejudicial. Isso pergunta
+quanta preferência posicional a quota pode carregar antes que a conclusão quase
+certa sobre a cabeça mude. Usamos uma lei de alocação trocável por grupos,
+assumimos que ataques duplos em um par de extremos têm ordem quadrática e
+mantemos as premissas de disponibilidade, posicionamento e mistura de
+[§3.5](#35-logarithmically-growing-worsening-has-two-thresholds) e [§7.1](#71-exact-crt-quotas-with-random-locations).
+
+Seja $E_r\subseteq U_r$ o conjunto dos valores elegíveis que são extremos de
+lacunas 2 localmente relevantes, e defina
 
 ```math
 x_r:=\frac{|E_r|}{N_r},
@@ -2049,43 +2152,43 @@ x_r:=\frac{|E_r|}{N_r},
 u_r:=\frac{J_r}{N_r}.
 ```
 
-Stipulate a group-exchangeable size $J_r$ allocation law in which every
-endpoint has marginal inclusion probability $p_r^{E}$, every ordinary value
-has marginal inclusion probability $p_r^{O}$, and the endpoint preference
-ratio is
+Estipule uma lei de alocação de tamanho $J_r$ trocável por grupos na qual todo
+extremo tem probabilidade marginal de inclusão $p_r^{E}$, todo valor ordinário
+tem probabilidade marginal de inclusão $p_r^{O}$, e a razão de preferência por
+extremos é
 
 ```math
 \beta_r:=\frac{p_r^{E}}{p_r^{O}}\ge1.
 ```
 
-We require that these marginals are feasible:
+Exigimos que essas marginais sejam viáveis:
 
 ```math
 0\le p_r^{O},p_r^{E}\le1.
 ```
 
-This condition, together with the fixed-size law, is an assumption on the
-group-exchangeable quota construction rather than a consequence of the ratio
-$\beta_r$ alone.
+Essa condição, junto com a lei de tamanho fixo, é uma hipótese sobre a
+construção de quota trocável por grupos, não uma consequência apenas da razão
+$\beta_r$.
 
-The fixed quota forces the average marginal inclusion probability to equal
-$u_r$. Therefore
+A quota fixa força a probabilidade marginal média de inclusão a ser igual a
+$u_r$. Portanto
 
 ```math
 \begin{aligned}
 x_rp_r^{E}+(1-x_r)p_r^{O}
 &=u_r
-&&[\text{Exact Quota}]\\
+&&[\text{Quota Exata}]\\
 p_r^{O}
 &=\frac{u_r}{1+(\beta_r-1)x_r}
-&&[\text{Substitution}]\\
+&&[\text{Substituição}]\\
 p_r^{E}
 &=\frac{\beta_ru_r}{1+(\beta_r-1)x_r}.
-&&[\text{Simplification}]
+&&[\text{Simplificação}]
 \end{aligned}
 ```
 
-Define the quota-normalized preference
+Defina a preferência normalizada pela quota
 
 ```math
 \kappa_r^{\mathrm{eff}}
@@ -2093,35 +2196,36 @@ Define the quota-normalized preference
 \frac{\beta_r}{1+(\beta_r-1)x_r}.
 ```
 
-For one 2-gap, assume the probability that both endpoints are struck is
-$O((p_r^{E})^2)$. Its destruction fraction then satisfies
+Para uma lacuna 2, assuma que a probabilidade de ambos os extremos serem
+atacados é $O((p_r^{E})^2)$. Sua fração de destruição então satisfaz
 
 ```math
 \begin{aligned}
 f_r
 &=2p_r^{E}-\Pr(\text{both endpoints are struck})
-&&[\text{Inclusion-Exclusion}]\\
+&&[\text{Inclusão-Exclusão}]\\
 &=2u_r\kappa_r^{\mathrm{eff}}
 +O\left((u_r\kappa_r^{\mathrm{eff}})^2\right).
-&&[\text{Normalized Preference}]
+&&[\text{Preferência Normalizada}]
 \end{aligned}
 ```
 
-To use the displayed linear term cumulatively, we additionally require
-$p_r^E=u_r\kappa_r^{\mathrm{eff}}\to0$ and
+Para usar cumulativamente o termo linear exibido, exigimos adicionalmente
+$p_r^E=u_r\kappa_r^{\mathrm{eff}}\to0$ e
 
 ```math
 \sum_{r<\infty}\left(u_r\kappa_r^{\mathrm{eff}}\right)^2<\infty.
 ```
 
-Without this error control, the per-filter expansion does not determine the
-asymptotic cumulative hazard.
+Sem esse controle de erro, a expansão por filtro não determina o risco
+cumulativo assintótico.
 
-The raw weight $\beta_r$ and the effective destruction skew are not identical:
-the exact quota must take probability away from ordinary values when it gives
-more probability to endpoints. For the complete-period eligible-sieve
-population, let $V_r$ be its accepted-value count and $T_r$ its 2-gap count.
-After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and
+O peso bruto $\beta_r$ e o viés efetivo de destruição não são idênticos: a quota
+exata precisa retirar probabilidade de valores ordinários quando dá mais
+probabilidade aos extremos. Para a população elegível da peneira em período
+completo, seja $V_r$ sua contagem de valores aceitos e $T_r$ sua contagem de
+lacunas 2. Após o filtro $3$, lacunas 2 têm extremos disjuntos, então
+$|E_r|=2T_r$ e
 
 ```math
 \begin{aligned}
@@ -2129,13 +2233,13 @@ x_r
 &=\frac{2T_r}{V_r}\\
 &=2\prod_{3\le p\lt r}\frac{p-2}{p-1}\\
 &=\Theta\left(\frac1{\log r}\right).
-&&[\text{Mertens-Type Product Estimate}]
+&&[\text{Estimativa de Produto Tipo Mertens}]
 \end{aligned}
 ```
 
-The prior $\Theta((\log r)^{-2})$ density would be the density among raw
-integers, not among the eligible values $U_r$ used in this quota. For the
-illustrative sharper asymptotics
+A densidade anterior $\Theta((\log r)^{-2})$ seria a densidade entre inteiros
+brutos, não entre os valores elegíveis $U_r$ usados nesta quota. Para as
+assintóticas ilustrativas mais agudas
 
 ```math
 x_r\sim\frac{C}{\log r},
@@ -2150,22 +2254,22 @@ we instead obtain
 =\frac{b}{1+bC}\log r\,(1+o(1)).
 ```
 
-Thus a logarithmic raw preference changes its leading effective coefficient.
-A sparse relation $x_r=O((\log r)^{-2})$ may be imposed as an additional
-assumption for a different local target population, but it is not the
-complete-period eligible-sieve density.
+Assim, uma preferência bruta logarítmica muda seu coeficiente efetivo
+principal. Uma relação esparsa $x_r=O((\log r)^{-2})$ pode ser imposta como
+hipótese adicional para uma população alvo local diferente, mas não é a densidade
+elegível da peneira em período completo.
 
-For the phase theorem, measure skew by the realized effective factor
+Para o teorema de fases, meça o viés pelo fator efetivo realizado
 
 ```math
 \kappa_r
 :=\frac{f_r}{2/r}.
 ```
 
-This is the same quantity called $w_r$ in the general hazard analysis. Its
-cumulative survival is defined once $2\kappa_r < r$. Every regime below satisfies
-this inequality for all sufficiently large filters; the finite prefix is
-absorbed into a positive constant. Thus
+Esta é a mesma quantidade chamada $w_r$ na análise geral de risco. Sua
+sobrevivência cumulativa é definida uma vez que $2\kappa_r < r$. Todo regime
+abaixo satisfaz essa desigualdade para todos os filtros suficientemente grandes;
+o prefixo finito é absorvido em uma constante positiva. Assim
 
 ```math
 P_{\kappa}(Q)
@@ -2174,7 +2278,7 @@ P_{\kappa}(Q)
 =e^{-D_{\kappa}(Q)},
 ```
 
-where
+onde
 
 ```math
 D_{\kappa}(Q)
@@ -2188,106 +2292,111 @@ If $\kappa_r=\kappa < \infty$ is fixed, then
 \begin{aligned}
 D_{\kappa}(Q)
 &=2\kappa\log\log Q+O(1)
-&&[\text{Prime Harmonic Sum}]\\
+&&[\text{Soma Harmônica dos Primos}]\\
 P_{\kappa}(Q)
 &\asymp\frac{C_{\kappa}}{(\log Q)^{2\kappa}}.
-&&[\text{Exponentiation}]
+&&[\text{Exponenciação}]
 \end{aligned}
 ```
 
-The sum of this probability over prime heads diverges for every finite
-$\kappa$. With persistent head availability and adequate cross-layer mixing,
+A soma dessa probabilidade sobre cabeças primas diverge para todo $\kappa$
+finito. Com disponibilidade persistente na cabeça e mistura adequada entre
+camadas,
 
 ```math
-\text{every fixed finite proportional skew gives infinitely many head hits almost surely.}
+\text{todo viés proporcional finito fixo dá infinitos acertos na cabeça quase certamente.}
 ```
 
-Thus there is no finite constant-skew maximum.
+Assim, não há máximo finito de viés constante.
 
-The first transition appears when effective skew grows logarithmically. Set
+A primeira transição aparece quando o viés efetivo cresce logaritmicamente.
+Defina
 
 ```math
 \kappa_r=1+c\log r,
 \qquad c\ge0.
 ```
 
-Then
+Então
 
 ```math
 \begin{aligned}
 D_c(Q)
 &=2\log\log Q+2c\log Q+O(1)
-&&[\text{Prime-Sum Asymptotics}]\\
+&&[\text{Assintótica de Soma sobre Primos}]\\
 P_c(Q)
 &\asymp\frac{C_c}{Q^{2c}(\log Q)^2}.
-&&[\text{Exponentiation}]
+&&[\text{Exponenciação}]
 \end{aligned}
 ```
 
-For prime heads, the occurrence series has the same convergence behavior as
+Para cabeças primas, a série de ocorrência tem o mesmo comportamento de
+convergência que
 
 ```math
 \int^\infty\frac{dx}{x^{2c}(\log x)^3}.
 ```
 
-Therefore
+Portanto
 
 ```math
 \begin{aligned}
 c < \frac12
 &\Longrightarrow
-\text{infinitely many head hits almost surely, with mixing},\\
+\text{infinitos acertos na cabeça quase certamente, com mistura},\\
 c\ge\frac12
 &\Longrightarrow
-\text{only finitely many head hits almost surely}.
+\text{apenas finitos acertos na cabeça quase certamente}.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-In this explicitly normalized family, the equality $c=1/2$ is on the failure
-side because the remaining factor $(\log Q)^{-2}$ makes the boundary prime
-series converge. If $\beta_r$, rather than effective $\kappa_r$, is specified
-at its raw equality boundary, quota normalization changes lower-order terms and
-the cumulative series $D_{\kappa}(Q)$ must be evaluated directly.
+Nesta família explicitamente normalizada, a igualdade $c=1/2$ está no lado de
+falha porque o fator restante $(\log Q)^{-2}$ faz a série prima de fronteira
+convergir. Se $\beta_r$, em vez de $\kappa_r$ efetivo, é especificado em sua
+fronteira bruta de igualdade, a normalização por quota muda termos de ordem
+menor e a série cumulativa $D_{\kappa}(Q)$ precisa ser avaliada diretamente.
 
-The robust head-safe frontier is therefore
+A fronteira robusta segura para a cabeça é, portanto,
 
 ```math
 \kappa_r
 \le
 1+\left(\frac12-\varepsilon\right)\log r
 \quad\Longrightarrow\quad
-\text{head recurrence almost surely, with mixing}.
+\text{recorrência na cabeça quase certamente, com mistura}.
 ```
 
-For square windows, quadratic supply gives the larger robust frontier
+Para janelas quadradas, o suprimento quadrático dá a fronteira robusta maior
 
 ```math
 \kappa_r
 \le
 1+(1-\varepsilon)\log r
 \quad\Longrightarrow\quad
-\text{eventual square-window occupancy almost surely}.
+\text{ocupação eventual de janela quadrada quase certamente}.
 ```
 
-Hence the intermediate range between approximately $(1/2)\log r$ and
-$\log r$ preserves square windows but not infinitely recurring head hits. The
-window statement is stronger than necessary: the twin-prime-style conclusion
-needs only infinitely many successful windows.
+Logo, o intervalo intermediário entre aproximadamente $(1/2)\log r$ e $\log r$
+preserva janelas quadradas, mas não acertos na cabeça recorrendo infinitamente.
+A afirmação sobre janelas é mais forte que o necessário: a conclusão no estilo
+dos primos gêmeos precisa apenas de infinitas janelas bem-sucedidas.
 
-For an irregular skew schedule, the head criterion is
+Para uma programação irregular de viés, o critério da cabeça é
 
 ```math
 \sum_{Q\text{ prime}}e^{-D_{\kappa}(Q)}=\infty,
 ```
 
-together with persistent availability and adequate mixing. A pointwise skew
-percentage cannot replace this cumulative test.
+junto com disponibilidade persistente e mistura adequada. Uma porcentagem
+pontual de viés não pode substituir esse teste cumulativo.
 
-## 8. Relation to the Real Sieve
+<a id="8-relation-to-the-real-sieve"></a>
 
-For a real 2-gap $(a,a+2)$ and incoming prime $r$, the harmful copies are not
-chosen freely. They are fixed by
+## 8. Relação com a Peneira Real
+
+Para uma lacuna 2 real $(a,a+2)$ e primo entrante $r$, as cópias prejudiciais
+não são escolhidas livremente. Elas são fixadas por
 
 ```math
 K_{a,r}^{\mathrm{real}}
@@ -2295,43 +2404,47 @@ K_{a,r}^{\mathrm{real}}
 \{-aM^{-1},-(a+2)M^{-1}\}\pmod r.
 ```
 
-Different parents are coupled through this single arithmetic rule. The real
-filter has neither independent policy coins nor freely allocated protective and
-adversarial labels. It nevertheless has directly measurable local destruction $\widehat f_r$, a
-relative factor $\widehat w_r=r\widehat f_r/2$, and, for a fixed cohort,
-observed hazard $\widehat D(Q)$. These are the empirical quantities of [§3.2](#32-local-destruction-relative-to-random),
-not probabilities assigned to the deterministic sieve. Assigning it an
-effective policy share $\alpha_r$ requires an additional declared companion
-benchmark, while assessing its positional concentration requires the separate
-hit count and targeting normalization from [§6.2](#62-targeting-and-local-hazard).
+Pais diferentes são acoplados por essa única regra aritmética. O filtro real
+não tem moedas de política independentes nem rótulos protetores e adversariais
+livremente alocados. Ainda assim, ele tem destruição local diretamente mensurável
+$\widehat f_r$, um fator relativo $\widehat w_r=r\widehat f_r/2$ e, para uma
+coorte fixa, risco observado $\widehat D(Q)$. Essas são as quantidades empíricas
+de [§3.2](#32-local-destruction-relative-to-random), não probabilidades
+atribuídas à peneira determinística. Atribuir a ela uma parcela efetiva de
+política $\alpha_r$ exige um benchmark companheiro adicional declarado,
+enquanto avaliar sua concentração posicional exige a contagem separada de
+acertos e a normalização de direcionamento de [§6.2](#62-targeting-and-local-hazard).
 
-The relative factor defined in [§3.2](#32-local-destruction-relative-to-random) provides a finite-transition destruction
-normalization. Section 6.2 adds the allocation question: for the same global
-destruction budget, how close is the realized local hit count to the uniform
-mean or targeted maximum?
+O fator relativo definido em [§3.2](#32-local-destruction-relative-to-random) fornece uma normalização de destruição em
+transição finita. A Seção 6.2 adiciona a pergunta de alocação: para o mesmo
+orçamento global de destruição, quão próxima a contagem local realizada de
+acertos fica da média uniforme ou do máximo direcionado?
 
-The companion diagrams identify what a transfer theorem would need to control:
+Os diagramas companheiros identificam o que um teorema de transferência
+precisaria controlar:
 
-- the observed relative damage $\widehat w_r$ and fixed-cohort hazard
-  $\widehat D(Q)$, together with a separate theorem relating them to candidate
-  conditional hazards;
-- the exact-quota fractions $u_r$ and their cumulative deviation from
-  $\sum_{r < Q}1/r$;
-- raw endpoint preference $\beta_r$, quota-normalized effective skew
-  $\kappa_r^{\mathrm{eff}}$, and cumulative skew hazard $D_{\kappa}(Q)$;
-- any scheduled or effective policy budget $A(Q)$ used for a particular
-  companion specialization;
-- the availability and abundance premises for the chosen target; and
-- a deterministic discrepancy bound comparing the real head indicators $I_Q$
-  with the divergent companion reference weights $\rho_Q$, as formalized in
-  [§10](#10-conclusion).
+- o dano relativo observado $\widehat w_r$ e o risco de coorte fixa
+  $\widehat D(Q)$, junto com um teorema separado que os relacione a riscos
+  condicionais candidatos;
+- as frações de quota exata $u_r$ e seu desvio cumulativo de $\sum_{r < Q}1/r$;
+- preferência bruta por extremos $\beta_r$, viés efetivo normalizado por quota
+  $\kappa_r^{\mathrm{eff}}$ e risco cumulativo de viés $D_{\kappa}(Q)$;
+- qualquer orçamento de política programado ou efetivo $A(Q)$ usado para uma
+  especialização companheira particular;
+- as premissas de disponibilidade e abundância para o alvo escolhido; e
+- um limite determinístico de discrepância comparando os indicadores reais de
+  cabeça $I_Q$ com os pesos divergentes de referência companheira $\rho_Q$, como
+  formalizado em [§10](#10-conclusion).
 
-### 8.1 Finite Empirical Comparison With Random
+<a id="81-finite-empirical-comparison-with-random"></a>
 
-We can compare the real sieve with the random companion at two square-window
-scales. The first comparison counts the 2-gaps already present in each
-sequence's own window. For head $h$, let $G_{\mathrm{real}}(h)$ be the number
-of real 2-gap starts in $[h,h^2)$. The random companion expectation is
+### 8.1 Comparação Empírica Finita com o Aleatório
+
+Podemos comparar a peneira real com o companheiro aleatório em duas escalas de
+janela quadrada. A primeira comparação conta as lacunas 2 já presentes na
+própria janela de cada sequência. Para a cabeça $h$, seja
+$G_{\mathrm{real}}(h)$ o número de inícios reais de lacunas 2 em $[h,h^2)$. A
+esperança do companheiro aleatório é
 
 ```math
 E_{\mathrm{random}}(h)
@@ -2339,7 +2452,8 @@ E_{\mathrm{random}}(h)
 \prod_{3\le r < h}\left(1-\frac2r\right).
 ```
 
-The $c=1$ square-window frontier adds the logarithmic excess hazard from [§3.5](#35-logarithmically-growing-worsening-has-two-thresholds):
+A fronteira de janela quadrada $c=1$ adiciona o risco excedente logarítmico de
+[§3.5](#35-logarithmically-growing-worsening-has-two-thresholds):
 
 ```math
 E_{c=1}(h)
@@ -2348,24 +2462,24 @@ E_{c=1}(h)
 \left(1-\frac{2\log r}{r-2}\right).
 ```
 
-The figure compares these two expectations with the real count in every fully
-covered sequence window. Across 188 heads from $3$ through $1129$, the mean
-ratio $G_{\mathrm{real}}/E_{\mathrm{random}}$ is $0.967$. At the largest
-covered head it is $0.947$: the real window contains $10{,}056$ 2-gaps,
-compared with a random expectation of $10{,}616$. The corresponding $c=1$
-frontier expectation is only $0.0845$. Over this finite range, the real
-square-window population follows the random scale and remains far above the
-square-window failure frontier.
+A figura compara essas duas esperanças com a contagem real em toda janela de
+sequência completamente coberta. Ao longo de 188 cabeças de $3$ até $1129$, a
+razão média $G_{\mathrm{real}}/E_{\mathrm{random}}$ é $0.967$. Na maior cabeça
+coberta, ela é $0.947$: a janela real contém $10{,}056$ lacunas 2, comparada com
+uma esperança aleatória de $10{,}616$. A esperança correspondente da fronteira
+$c=1$ é apenas $0.0845$. Ao longo desse intervalo finito, a população real de
+janela quadrada segue a escala aleatória e permanece muito acima da fronteira de
+falha da janela quadrada.
 
-![Real per-sequence square-window 2-gap counts compared with the random expectation and the c=1 square-window frontier](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/per-sequence-frontier.svg)
+![Contagens reais de lacunas 2 por sequência em janela quadrada comparadas com a esperança aleatória e a fronteira de janela quadrada c=1](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/per-sequence-frontier.svg)
 
-The figure is generated by the [per-sequence frontier calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/per_sequence_frontier_chart.py)
-from the [per-sequence survivor data](https://github.com/thiagomata/prime-numbers/blob/master/data/sieve-sequence/first_gaps_per_seq.csv).
+A figura é gerada pelo [cálculo da fronteira por sequência](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/per_sequence_frontier_chart.py)
+a partir dos [dados de sobreviventes por sequência](https://github.com/thiagomata/prime-numbers/blob/master/data/sieve-sequence/first_gaps_per_seq.csv).
 
-The second comparison isolates one transition. For consecutive primes $p<q$,
-let $G_p$ be the pre-filter 2-gap population in $[q,q^2)$ and let $H_p$ be the
-number destroyed when filter $p$ is installed. The observed fraction and its
-relative factor are
+A segunda comparação isola uma transição. Para primos consecutivos $p<q$, seja
+$G_p$ a população de lacunas 2 pré-filtro em $[q,q^2)$ e seja $H_p$ o número
+destruído quando o filtro $p$ é instalado. A fração observada e seu fator
+relativo são
 
 ```math
 f_p^{\mathrm{real}}:=\frac{H_p}{G_p},
@@ -2373,82 +2487,83 @@ f_p^{\mathrm{real}}:=\frac{H_p}{G_p},
 w_p^{\mathrm{real}}:=\frac{pf_p^{\mathrm{real}}}{2}.
 ```
 
-The chart compares $f_p^{\mathrm{real}}$ with the random rate $2/p$ and the
-$c=1$ square-window boundary $2(1+\log p)/p$. Among 187 distinct measured
-transitions from $p=3$ through $p=19{,}429$, 186 lie below the random rate and
-the remaining transition, $p=3$, equals it. Ninety-five transitions destroy no
-2-gap in the measured window. From $p\ge1000$, the largest observed relative
-factor is
+O gráfico compara $f_p^{\mathrm{real}}$ com a taxa aleatória $2/p$ e a fronteira
+de janela quadrada $c=1$, $2(1+\log p)/p$. Entre 187 transições medidas
+distintas de $p=3$ até $p=19{,}429$, 186 ficam abaixo da taxa aleatória e a
+transição restante, $p=3$, é igual a ela. Noventa e cinco transições não
+destroem nenhuma lacuna 2 na janela medida. A partir de $p\ge1000$, o maior
+fator relativo observado é
 
 ```math
 w_p^{\mathrm{real}}=0.0523.
 ```
 
-Thus the measured real transition is not slightly more destructive than the
-random filter; on these windows it is substantially less destructive.
+Assim, a transição real medida não é ligeiramente mais destrutiva que o filtro
+aleatório; nessas janelas, ela é substancialmente menos destrutiva.
 
-![Real per-transition square-window 2-gap destruction compared with the random rate and the c=1 square-window boundary](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/frontier-comparison-stages.svg)
+![Destruição real por transição de lacunas 2 em janela quadrada comparada com a taxa aleatória e a fronteira de janela quadrada c=1](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/frontier-comparison-stages.svg)
 
-The figure is generated by the [per-transition frontier calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/frontier_comparison_stages_chart.py)
-from the [dense](https://github.com/thiagomata/prime-numbers/blob/master/data/candidates/window-measurements.csv) and
-[sparse](https://github.com/thiagomata/prime-numbers/blob/master/data/candidates/window-measurements-sparse.csv) transition data.
-Zero-destruction transitions are displayed on the chart's $10^{-7}$ floor so
-that they remain visible on a logarithmic axis.
+A figura é gerada pelo [cálculo da fronteira por transição](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/frontier_comparison_stages_chart.py)
+a partir dos dados de transição [densos](https://github.com/thiagomata/prime-numbers/blob/master/data/candidates/window-measurements.csv) e
+[esparsos](https://github.com/thiagomata/prime-numbers/blob/master/data/candidates/window-measurements-sparse.csv). Transições de destruição zero são exibidas no piso $10^{-7}$ do
+gráfico para que permaneçam visíveis em um eixo logarítmico.
 
-The two findings are compatible. The first chart measures the population left
-after all earlier filters; the second isolates the next filter acting on a new
-window. Neither dataset follows one fixed cohort through every filter below a
-single head, so their changing-window fractions cannot be multiplied into one
-cumulative hazard.
+Os dois achados são compatíveis. O primeiro gráfico mede a população deixada
+após todos os filtros anteriores; o segundo isola o próximo filtro agindo em uma
+nova janela. Nenhum conjunto de dados segue uma coorte fixa através de todo
+filtro abaixo de uma única cabeça, então suas frações de janela variável não
+podem ser multiplicadas em um único risco cumulativo.
 
-The complete modular cycle supplies an exact reference in two complementary
-views. The first is local to one filter: it asks what fraction of the expanded
-cyclic population that filter destroys. The second is cumulative: it asks how
-much of a normalized starting population remains after those one-filter
-fractions are compounded. The two figures below deliberately mirror these two
-steps of the calculation.
+O ciclo modular completo fornece uma referência exata em duas visões
+complementares. A primeira é local a um filtro: pergunta que fração da população
+cíclica expandida esse filtro destrói. A segunda é cumulativa: pergunta quanto
+de uma população inicial normalizada permanece depois que essas frações de um
+filtro são compostas. As duas figuras abaixo espelham deliberadamente esses dois
+passos do cálculo.
 
-#### Exact Per-Filter Destruction
+#### Destruição Exata por Filtro
 
-If $T$ old cyclic 2-gaps are expanded through a new prime $r$, there are $rT$
-copies and exactly two harmful copy indices per parent. Consequently,
+Se $T$ lacunas 2 cíclicas antigas são expandidas através de um novo primo $r$,
+há $rT$ cópias e exatamente dois índices de cópia prejudiciais por pai.
+Consequentemente,
 
 ```math
 \begin{aligned}
 H_r^{\mathrm{cycle}}
 &=2T
-&&[\text{Two Harmful Copy Classes}],\\
+&&[\text{Duas Classes de Cópias Prejudiciais}],\\
 f_r^{\mathrm{cycle}}
 &=\frac{H_r^{\mathrm{cycle}}}{rT}
 =\frac2r
-&&[\text{Substitution}],\\
+&&[\text{Substituição}],\\
 w_r^{\mathrm{cycle}}
 &=1,
-&&[\text{By Definition}],\\
+&&[\text{Pela Definição}],\\
 D_{\mathrm{cycle}}(R)-D_{\mathrm{random}}(R)
 &=0.
-&&[\text{Termwise Equality; Q.E.D.}]
+&&[\text{Igualdade Termo a Termo; C.Q.D.}]
 \end{aligned}
 ```
 
-Thus the full-cycle destruction fraction equals the neutral benchmark as a
-count identity. This does not say that the harmful positions are independently
-random. The figure below makes the identity visible alongside the $c=1$
-reference on the valid range $29\le r\le251$. Its simplicity is the point:
-the overlap between the exact-cycle and neutral curves is the graphical form
-of the algebra above, while the separated $c=1$ curve shows the scale of the
-hypothetical logarithmic worsening. The chart is strong precisely because the
-reader can verify the stated relationship without additional interpretation.
+Assim, a fração de destruição em ciclo completo é igual ao benchmark neutro como
+identidade de contagem. Isso não diz que as posições prejudiciais são
+independentemente aleatórias. A figura abaixo torna a identidade visível ao lado
+da referência $c=1$ no intervalo válido $29\le r\le251$. Sua simplicidade é o
+ponto: a sobreposição entre as curvas de ciclo exato e neutra é a forma gráfica
+da álgebra acima, enquanto a curva $c=1$ separada mostra a escala da piora
+logarítmica hipotética. O gráfico é forte precisamente porque o leitor pode
+verificar a relação declarada sem interpretação adicional.
 
-![Exact full-cycle 2-gap destruction fraction compared with the neutral rate and the c=1 reference](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-destruction.svg)
+![Fração exata de destruição de lacunas 2 em ciclo completo comparada com a taxa neutra e a referência c=1](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-destruction.svg)
 
-The figure is generated by the [full-cycle destruction calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/full_cycle_destruction_chart.py).
-The underlying two-class result is proved in [Gap Dynamics §6.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
+A figura é gerada pelo [cálculo de destruição de ciclo completo](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/full_cycle_destruction_chart.py).
+O resultado subjacente de duas classes é provado em [Dinâmica de Lacunas §6.1](https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#61-one-new-prime-forbids-two-copy-classes) [[2]](#ref2).
 
-#### Cumulative Survival Consequence
+#### Consequência Cumulativa de Sobrevivência
 
-The first diagram makes the proved one-filter equality visible. Compounding
-those same factors gives the normalized complete-cycle survival reference
+O primeiro diagrama torna visível a igualdade provada de um filtro. Compor
+esses mesmos fatores dá a referência normalizada de sobrevivência em ciclo
+completo
 
 ```math
 \begin{aligned}
@@ -2460,111 +2575,120 @@ P_{c=1}(29,R)
 \end{aligned}
 ```
 
-At $R=251$, these normalized products are $0.3733$ and $0.003676$,
-respectively, a ratio of about $102$. The second figure therefore shows the
-cumulative consequence that the first figure cannot show by itself: the
-repeated per-filter separation from the $c=1$ schedule compounds into a
-separation of more than two orders of magnitude over the plotted range. The anchor $29$ is
-the first plotted prime and keeps every $c=1$ factor in $(0,1)$; changing a
-finite anchor changes the normalizing constants, not the asymptotic exponents.
-This is a reference comparison, not evidence of head recurrence.
+Em $R=251$, esses produtos normalizados são $0.3733$ e $0.003676$,
+respectivamente, uma razão de cerca de $102$. A segunda figura, portanto,
+mostra a consequência cumulativa que a primeira figura não pode mostrar por si
+só: a separação repetida por filtro em relação à programação $c=1$ se compõe em
+uma separação de mais de duas ordens de grandeza ao longo do intervalo plotado.
+A âncora $29$ é o primeiro primo plotado e mantém todo fator $c=1$ em $(0,1)$;
+mudar uma âncora finita muda as constantes de normalização, não os expoentes
+assintóticos. Esta é uma comparação de referência, não evidência de recorrência
+na cabeça.
 
-![Normalized full-cycle 2-gap survival under the exact per-filter law compared with the c=1 schedule](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-survival.svg)
+![Sobrevivência normalizada de lacunas 2 em ciclo completo sob a lei exata por filtro comparada com a programação c=1](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-survival.svg)
 
-The figure is generated by the [full-cycle survival calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/full_cycle_survival_chart.py).
+A figura é gerada pelo [cálculo de sobrevivência de ciclo completo](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/full_cycle_survival_chart.py).
 
-Read together, the two full-cycle figures give a direct progression from the
-one-filter identity to its cumulative effect. A separate fixed-cohort
-experiment then asks the next question: what remains true when a finite window
-cuts through partial cycles? It follows every 2-gap start initially present
-in $[Q,Q^2)$ through all filters $r<Q$. Exact set comparisons at $Q=17$ and
-$Q=101$ confirm that this explicit cohort agrees layer by layer with the
-maintained Reading A lineage. For
+Lidas em conjunto, as duas figuras de ciclo completo dão uma progressão direta
+da identidade de um filtro para seu efeito cumulativo. Um experimento separado
+de coorte fixa então faz a próxima pergunta: o que permanece verdadeiro quando
+uma janela finita corta ciclos parciais? Ele segue todo início de lacuna 2
+inicialmente presente em $[Q,Q^2)$ através de todos os filtros $r<Q$.
+Comparações exatas de conjuntos em $Q=17$ e $Q=101$ confirmam que essa coorte
+explícita concorda camada a camada com a linhagem mantida da Leitura A. Para
 
 ```math
 c_{\mathrm{eff}}(r)
 :=\frac{\widehat D_{\mathrm{real}}(r)-D_{\mathrm{random}}(r)}{2\log r},
 ```
 
-the four runs $Q\in\{17,101,251,503\}$ give signed values between $-0.0353$
-and $0.00908$. The largest positive value is $0.00907$ at $Q=251$; among the
-two larger runs, all absolute values are at most $0.00908$. Because the
-complete-cycle excess is exactly zero, the deviations arise when the fixed
-interval cuts partial cycles. Their size and placement remain finite empirical
-facts; partial-cycle localization can contain the arithmetic difficulty that
-the complete-cycle identity does not see.
+as quatro execuções $Q\in\{17,101,251,503\}$ dão valores sinalizados entre
+$-0.0353$ e $0.00908$. O maior valor positivo é $0.00907$ em $Q=251$; entre as
+duas execuções maiores, todos os valores absolutos são no máximo $0.00908$.
+Como o excesso de ciclo completo é exatamente zero, os desvios surgem quando o
+intervalo fixo corta ciclos parciais. Seu tamanho e posicionamento permanecem
+fatos empíricos finitos; a localização em ciclos parciais pode conter a
+dificuldade aritmética que a identidade de ciclo completo não vê.
 
-![Cumulative hazard of fixed-window 2-gap cohorts for four finite Q values](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/fixed-lineage-hazard.svg)
+![Risco cumulativo de coortes de lacunas 2 em janela fixa para quatro valores finitos de Q](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/fixed-lineage-hazard.svg)
 
-The figure is generated by the [fixed-lineage hazard calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/fixed_lineage_hazard_chart.py)
-from the dedicated fixed-cohort CSVs. Its value is a robustness check: even in
-non-aligned finite windows the boundary deviations are small relative to the
-$c=1/2$ and $c=1$ comparison scales.
+A figura é gerada pelo [cálculo de risco de linhagem fixa](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/fixed_lineage_hazard_chart.py)
+a partir dos CSVs dedicados de coorte fixa. Seu valor é uma checagem de
+robustez: mesmo em janelas finitas não alinhadas, os desvios de fronteira são
+pequenos em relação às escalas de comparação $c=1/2$ e $c=1$.
 
-None of these measurements follows the distinguished pair at the head.
-Transferring the head phase diagram still requires an arithmetic theorem that
-controls coherent CRT-coupled placement together with persistent availability
-and cross-layer dependence.
+Nenhuma dessas medições segue o par distinguido na cabeça. Transferir o diagrama
+de fases da cabeça ainda exige um teorema aritmético que controle o
+posicionamento coerente acoplado por CRT junto com disponibilidade persistente e
+dependência entre camadas.
 
-## 9. Limitations
+<a id="9-limitations"></a>
 
-The balanced companions track descendants of existing 2-gaps rather than a
-coherent randomized sequence of integers. They do not model non-2 gaps, gap
-mergers, or shared endpoint effects. Their adversary is stronger than the real
-filter because it may select harmful copies separately for each parent. The
-protective parent policy is also an oracle: it knows the current target and moves both
-deletions elsewhere. Neither endpoint is a description of the real filter.
+## 9. Limitações
 
-The adversarial/random window theorem assumes spatial uniformity. The adversarial/protective window
-theorem instead assumes a quadratic protective supply $B(Q)$. Its head theorem
-assumes an eligible protective-parent head lineage with availability bounded below.
-None of these premises follows from the exact-two choice alone.
+Os companheiros balanceados rastreiam descendentes de lacunas 2 existentes, em
+vez de uma sequência coerente aleatorizada de inteiros. Eles não modelam lacunas
+que não são 2, mesclagens de lacunas ou efeitos de extremos compartilhados. Seu
+adversário é mais forte que o filtro real porque pode selecionar cópias
+prejudiciais separadamente para cada pai. A política do pai protetor também é um
+oráculo: ela conhece o alvo atual e move ambas as deleções para outro lugar.
+Nenhum dos extremos é uma descrição do filtro real.
 
-The exact-CRT-quota/random-location theorem preserves strike counts but discards
-their deterministic arithmetic locations. Its recurrence conclusion requires
-the cumulative quota conditions in [§7.1](#71-exact-crt-quotas-with-random-locations), persistent head availability,
-and cross-layer mixing. The exact local formula $A(p,q)$ does not establish
-those premises merely by being exact.
+O teorema de janela adversarial/aleatória assume uniformidade espacial. O
+teorema de janela adversarial/protetora, por sua vez, assume um suprimento
+protetor quadrático $B(Q)$. Seu teorema da cabeça assume uma linhagem elegível
+de pai protetor na cabeça com disponibilidade limitada inferiormente. Nenhuma
+dessas premissas segue apenas da escolha de exatamente dois.
 
-The biased-quota theorem additionally assumes a group-exchangeable allocation
-law and quadratic-order double hits on one endpoint pair. Its raw weight
-$\beta_r$ is not the same as effective destruction skew $\kappa_r$: exact-quota
-normalization can change its leading coefficient for the eligible-sieve
-population. A raw equality case must therefore be decided through
-$D_{\kappa}(Q)$ and the quota feasibility conditions.
+O teorema de quota CRT exata/localização aleatória preserva contagens de ataques,
+mas descarta suas localizações aritméticas determinísticas. Sua conclusão de
+recorrência exige as condições cumulativas de quota em [§7.1](#71-exact-crt-quotas-with-random-locations), disponibilidade persistente
+na cabeça e mistura entre camadas. A fórmula local exata $A(p,q)$ não estabelece
+essas premissas apenas por ser exata.
 
-The use of expected population also has a strict boundary. An expectation
-tending to infinity does not alone prove nonempty windows; the summable
-empty-window bound supplies that step under uniform placement. Likewise, a
-divergent head-event series does not alone prove infinite recurrence; adequate
-cross-layer independence or mixing is required. Exact quotas, whole-filter
-coins, block balance, delayed information, and noisy ranking create different
-dependencies and cannot inherit one another's almost-sure conclusions merely
-because they share the same marginal budget or destruction rate.
+O teorema de quota enviesada assume adicionalmente uma lei de alocação trocável
+por grupos e acertos duplos de ordem quadrática em um par de extremos. Seu peso
+bruto $\beta_r$ não é o mesmo que o viés efetivo de destruição $\kappa_r$: a
+normalização por quota exata pode mudar seu coeficiente principal para a
+população elegível da peneira. Um caso bruto de igualdade deve, portanto, ser
+decidido por meio de $D_{\kappa}(Q)$ e das condições de viabilidade da quota.
 
-The empirical comparison in [§8.1](#81-finite-empirical-comparison-with-random) is finite. Two datasets use a different
-square window at each measured stage; the fixed-cohort dataset instead follows
-all initial 2-gap starts in one $[Q,Q^2)$ window. The latter yields a coherent
-window hazard, but its deviation from the exact full-cycle rate comes from
-partial-cycle localization and the cohort is not the distinguished head pair.
-None of the data
-therefore substitutes for persistent availability, cross-layer mixing, or an
-arithmetic proof below the $c=1/2$ head frontier.
+O uso de população esperada também tem uma fronteira estrita. Uma esperança que
+tende ao infinito não prova sozinha janelas não vazias; o limite somável de
+janela vazia fornece esse passo sob posicionamento uniforme. Do mesmo modo, uma
+série divergente de eventos de cabeça não prova sozinha recorrência infinita;
+independência ou mistura adequada entre camadas é necessária. Quotas exatas,
+moedas de filtro inteiro, balanço por blocos, informação atrasada e ranqueamento
+ruidoso criam dependências diferentes e não podem herdar entre si conclusões
+quase certas meramente porque compartilham o mesmo orçamento marginal ou taxa de
+destruição.
 
-We have therefore proved a phase diagram for the defined companions. The
-remaining question is whether the real sieve occupies one of these regimes.
+A comparação empírica em [§8.1](#81-finite-empirical-comparison-with-random) é finita. Dois conjuntos de dados usam uma
+janela quadrada diferente em cada estágio medido; o conjunto de coorte fixa, em
+vez disso, segue todos os inícios iniciais de lacunas 2 em uma janela
+$[Q,Q^2)$. Este último produz um risco coerente de janela, mas seu desvio em
+relação à taxa exata de ciclo completo vem da localização em ciclos parciais, e
+a coorte não é o par distinguido na cabeça. Portanto, nenhum dos dados substitui
+disponibilidade persistente, mistura entre camadas ou uma prova aritmética
+abaixo da fronteira de cabeça $c=1/2$.
 
-## 10. Conclusion
+Portanto, provamos um diagrama de fases para os companheiros definidos. A
+questão restante é se a peneira real ocupa um desses regimes.
 
-Balanced 2-gap companions make global persistence deliberately uninformative:
-every parent always leaves $r-2$ children, so the complete-period population
-grows under protective, random, adversarial, and mixed selection alike. The
-local distinction is carried by conditional destruction relative to random,
-its cumulative hazard, and allocation. Finite real-sieve data instead supply
-observed cohort fractions, which require a separate transfer theorem.
+<a id="10-conclusion"></a>
 
-The proof begins with the exact global recurrence and then replaces population
-counting by cumulative local hazard:
+## 10. Conclusão
+
+Companheiros balanceados de lacunas 2 tornam a persistência global
+deliberadamente não informativa: todo pai sempre deixa $r-2$ filhos, então a
+população de período completo cresce sob seleção protetora, aleatória,
+adversarial e mista igualmente. A distinção local é carregada pela destruição
+condicional relativa ao aleatório, seu risco cumulativo e a alocação. Dados
+finitos da peneira real, em vez disso, fornecem frações observadas de coortes,
+que exigem um teorema de transferência separado.
+
+A prova começa com a recorrência global exata e então substitui a contagem de
+população pelo risco local cumulativo:
 
 ```math
 \begin{aligned}
@@ -2575,194 +2699,201 @@ P(Q)&=e^{-D(Q)}.
 \end{aligned}
 ```
 
-The main answer is that there is no maximum finite constant factor worse than
-random. If $w_r=w < \infty$, local survival decays only as
-$(\log Q)^{-2w}$; quadratic square-window supply still dominates, and the head
-probability series still diverges. Under the stated spatial and
-mixing premises, square windows are eventually nonempty and head 2-gaps recur
-infinitely often for every fixed finite $w$.
+A resposta principal é que não há fator constante finito máximo pior que o
+aleatório. Se $w_r=w < \infty$, a sobrevivência local decai apenas como
+$(\log Q)^{-2w}$; o suprimento quadrático de janela quadrada ainda domina, e a
+série de probabilidades da cabeça ainda diverge. Sob as premissas espaciais e
+de mistura declaradas, janelas quadradas são eventualmente não vazias e lacunas
+2 na cabeça recorrem infinitas vezes para todo $w$ finito fixo.
 
-The first nontrivial boundary occurs when worsening grows with the filter.
-Under [§7.1](#71-exact-crt-quotas-with-random-locations)'s cumulative quota/error conditions and the relevant spatial
-premises, the neutral exact-quota companion recovers the random survival scale.
-The biased exact-quota companion recovers the following general-hazard
-frontiers when its conditional effective skew follows the displayed schedule and
-its placement, availability, and mixing premises hold:
+A primeira fronteira não trivial ocorre quando a piora cresce com o filtro. Sob
+as condições cumulativas de quota/erro de [§7.1](#71-exact-crt-quotas-with-random-locations) e as premissas espaciais
+relevantes, o companheiro neutro de quota exata recupera a escala de
+sobrevivência aleatória. O companheiro de quota exata enviesada recupera as
+seguintes fronteiras gerais de risco quando seu viés efetivo condicional segue
+a programação exibida e suas premissas de posicionamento, disponibilidade e
+mistura valem:
 
 ```math
 \begin{aligned}
 w_r=1+c\log r,\quad c < 1
 &\Longrightarrow
-\text{eventual square-window occupancy},\\
+\text{ocupação eventual de janela quadrada},\\
 w_r=1+c\log r,\quad c < \frac12
 &\Longrightarrow
-\text{infinitely recurring head 2-gaps, with mixing}.
+\text{lacunas 2 na cabeça recorrendo infinitamente, com mistura}.
 \end{aligned}
 ```
 
-The allocation theorem explains why a percentage alone cannot locate a
-process in this phase diagram. Uniform, protective, and targeted allocation
-can apply the same adversarial budget and produce different local damage. The
-quantity that enters the theorem is therefore the conditional local hazard,
-not the policy label by itself.
+O teorema de alocação explica por que uma porcentagem sozinha não pode localizar
+um processo neste diagrama de fases. Alocação uniforme, protetora e direcionada
+podem aplicar o mesmo orçamento adversarial e produzir dano local diferente. A
+quantidade que entra no teorema é, portanto, o risco local condicional, não o
+rótulo de política por si só.
 
-The complete-period comparison is exact: every new filter destroys the
-fraction $2/r$ of expanded cyclic 2-gaps, so its cumulative excess over the
-neutral benchmark is zero. The two full-cycle diagrams expose the two parts of
-this statement separately. The destruction diagram makes the per-filter
-identity immediate; the survival diagram shows what compounding that identity
-does and how strongly it separates from the $c=1$ schedule. Neither diagram is
-weakened by being a direct rendering of the calculation: their value is that
-the local equality and cumulative consequence can each be checked visually in
-the representation best suited to it.
+A comparação de período completo é exata: todo novo filtro destrói a fração
+$2/r$ das lacunas 2 cíclicas expandidas, então seu excesso cumulativo sobre o
+benchmark neutro é zero. Os dois diagramas de ciclo completo expõem as duas
+partes dessa afirmação separadamente. O diagrama de destruição torna imediata a
+identidade por filtro; o diagrama de sobrevivência mostra o que a composição
+dessa identidade faz e quão fortemente ela se separa da programação $c=1$.
+Nenhum diagrama é enfraquecido por ser uma renderização direta do cálculo: seu
+valor é que a igualdade local e a consequência cumulativa podem ser checadas
+visualmente, cada uma na representação mais adequada a ela.
 
-The finite square-window measurements then describe the remaining localization
-question. Through head $1129$, the observed population
-has mean ratio $0.967$ to the random expectation, and the measured one-step
-window rates through filter $19{,}429$ are at or below $2/r$. Fixed cohorts for
-$Q=17,101,251,503$ have signed effective coefficients between $-0.0353$ and
-$0.00908$; these are finite partial-cycle measurements around the exact cycle
-law.
-The measurements remain far from the $c=1$ window-failure scale, but they do
-not locate the distinguished head pair relative to the $c=1/2$ recurrence
-frontier.
+As medições finitas de janela quadrada então descrevem a questão restante de
+localização. Até a cabeça $1129$, a população observada tem razão média $0.967$
+em relação à esperança aleatória, e as taxas medidas de janela em um passo até o
+filtro $19{,}429$ estão em ou abaixo de $2/r$. Coortes fixas para
+$Q=17,101,251,503$ têm coeficientes efetivos sinalizados entre $-0.0353$ e
+$0.00908$; essas são medições finitas de ciclos parciais em torno da lei exata
+de ciclo. As medições permanecem longe da escala de falha de janela $c=1$, mas
+não localizam o par distinguido na cabeça em relação à fronteira de recorrência
+$c=1/2$.
 
-The real sieve question is now expressible as a cumulative comparison rather
-than a vague claim of random or adversarial behavior: measure the observed
-cohort destruction $\widehat f_r$ generated by the CRT-coupled harmful indices,
-normalize it to $\widehat w_r$, and establish whether those observations control
-the relevant candidate hazards and placement near the head.
+A pergunta sobre a peneira real agora é expressável como uma comparação
+cumulativa, em vez de uma afirmação vaga de comportamento aleatório ou
+adversarial: medir a destruição observada da coorte $\widehat f_r$ gerada pelos
+índices prejudiciais acoplados por CRT, normalizá-la para $\widehat w_r$ e
+estabelecer se essas observações controlam os riscos candidatos relevantes e o
+posicionamento perto da cabeça.
 
-Here is one explicit sufficient deterministic counting criterion. Let
-$I_Q\in\{0,1\}$ indicate
-that the real sieve has a 2-gap at prime head $Q$. Let $\rho_Q>0$ be the
-companion reference weight obtained from the below-frontier cumulative hazard
-and the stated availability bound, and define
+Aqui está um critério determinístico explícito suficiente de contagem. Seja
+$I_Q\in\{0,1\}$ indicando que a peneira real tem uma lacuna 2 na cabeça prima
+$Q$. Seja $\rho_Q>0$ o peso de referência companheiro obtido a partir do risco
+cumulativo abaixo da fronteira e do limite de disponibilidade declarado, e
+defina
 
 ```math
 R(X):=\sum_{\substack{Q\le X\\Q\text{ prime}}}\rho_Q.
 ```
 
-Assume
+Assuma
 
 ```math
 \begin{aligned}
 R(X)&\longrightarrow\infty,
-&&[\text{Divergent Reference Mass}]\\
+&&[\text{Massa de Referência Divergente}]\\
 \sum_{\substack{Q\le X\\Q\text{ prime}}}(I_Q-\rho_Q)
 &=o(R(X)).
-&&[\text{Deterministic Discrepancy Bound}]
+&&[\text{Limite Determinístico de Discrepância}]
 \end{aligned}
 ```
 
-Then
+Então
 
 ```math
 \sum_{\substack{Q\le X\\Q\text{ prime}}}I_Q
 =R(X)+o(R(X))
 \longrightarrow\infty.
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-This is an unproved sufficient condition for the real CRT sieve. It is stronger
-than recurrence itself because it asserts an asymptotic counting formula. The
-reference mass must diverge, rather than every individual filter satisfying one
-pointwise bound. “Infinitely often” does not mean that every sufficiently large
-head is a 2-gap. Proving this condition would prove infinitely many head
-2-gaps and therefore the twin-prime conjecture; it does not follow from the
-hazard estimates in this article.
+Esta é uma condição suficiente não provada para a peneira CRT real. Ela é mais
+forte que a própria recorrência porque afirma uma fórmula assintótica de
+contagem. A massa de referência precisa divergir, em vez de todo filtro
+individual satisfazer um limite pontual. “Infinitas vezes” não significa que
+toda cabeça suficientemente grande seja uma lacuna 2. Provar essa condição
+provaria infinitas lacunas 2 na cabeça e, portanto, a conjectura dos primos
+gêmeos; ela não segue das estimativas de risco deste artigo.
 
-## 11. Future Work
+<a id="11-future-work"></a>
 
-The companion theorems reduce the real-sieve question to measurable arithmetic
-inputs. The first direction is to estimate the real local hazard
-$D_{\kappa}(Q)$ from CRT-coupled filter locations and compare it with the head
-frontier without assigning hostile intent to individual filters. The second is
-to replace the stochastic mixing premise with a deterministic decorrelation or
-discrepancy theorem strong enough to transfer a divergent head-event sum to the
-real sequence. The third is to test exact-quota, delayed, block-balanced, and
-noisy-ranking companions on the same transitions, reporting both raw endpoint
-preference and quota-normalized effective skew.
+## 11. Trabalho Futuro
 
-These directions are deliberately separate. A finite experiment can identify
-which companion resembles the observed sieve, but it cannot establish the
-infinite transfer theorem. Conversely, a discrepancy theorem must control
-where the real CRT strikes land, not only how many strikes or global 2-gaps
-exist.
+Os teoremas companheiros reduzem a pergunta sobre a peneira real a entradas
+aritméticas mensuráveis. A primeira direção é estimar o risco local real
+$D_{\kappa}(Q)$ a partir de localizações de filtros acopladas por CRT e compará-lo
+com a fronteira da cabeça sem atribuir intenção hostil a filtros individuais. A
+segunda é substituir a premissa estocástica de mistura por um teorema
+determinístico de descorrelação ou discrepância forte o suficiente para
+transferir uma soma divergente de eventos de cabeça para a sequência real. A
+terceira é testar companheiros de quota exata, atrasados, balanceados por blocos
+e com ranqueamento ruidoso nas mesmas transições, reportando tanto a preferência
+bruta por extremos quanto o viés efetivo normalizado por quota.
 
-## 12. References
+Essas direções são deliberadamente separadas. Um experimento finito pode
+identificar qual companheiro se parece com a peneira observada, mas não pode
+estabelecer o teorema infinito de transferência. Reciprocamente, um teorema de
+discrepância precisa controlar onde os ataques CRT reais pousam, não apenas
+quantos ataques ou lacunas 2 globais existem.
+
+<a id="12-references"></a>
+
+## 12. Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and Their
-Transitions*. Available at: [https://doi.org/10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782).
+Transitions*. Disponível em: [https://doi.org/10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782).
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Mata, T. H. (2026). *Structural Properties and Signed Boundaries of 2-Gaps in
-Sieve Sequences*. Available at: [https://doi.org/10.5281/zenodo.22955786](https://doi.org/10.5281/zenodo.22955786).
+Sieve Sequences*. Disponível em: [https://doi.org/10.5281/zenodo.22955786](https://doi.org/10.5281/zenodo.22955786).
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
-Kochen, S. and Stone, C. (1964). [A note on the Borel--Cantelli lemma](
+Kochen, S. e Stone, C. (1964). [A note on the Borel--Cantelli lemma](
 https://doi.org/10.1215/ijm/1256059668). *Illinois Journal of Mathematics*,
 8(2), 248--251.
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
-Hardy, G. H. and Wright, E. M.; revised by Heath-Brown, D. R. and Silverman,
+Hardy, G. H. e Wright, E. M.; revisado por Heath-Brown, D. R. e Silverman,
 J. H. (2008). [*An Introduction to the Theory of Numbers*](
 https://doi.org/10.1093/oso/9780199219858.001.0001), 6th edition. Oxford
 University Press.
 
-## Appendix A. Selected Companion Proof Records
+## Apêndice A. Registros Selecionados de Provas Companheiras
 
-The body develops every result in its mathematical context. This appendix
-collects six core companion-process proof records with their premises and
-conclusions; it is a selected reference, not a complete catalog of the body.
+O corpo desenvolve todo resultado em seu contexto matemático. Este apêndice
+reúne seis registros centrais de provas de processos companheiros com suas
+premissas e conclusões; é uma referência selecionada, não um catálogo completo
+do corpo.
 
 <a id="appendix-a1"></a>
 
-### A.1 Global Persistence Is Independent of Allocation
+### A.1 A Persistência Global é Independente da Alocação
 
-Once the initial population is nonzero, this result is unconditional with
-respect to allocation inside every balanced companion. Let
-$N_k=|\mathcal G_k|$ be the complete-period 2-gap population before installing
-prime $r_k$, with $N_0>0$. Every parent produces $r_k$ copies and loses exactly
-two, regardless of where those two removals occur. Therefore
+Uma vez que a população inicial é não nula, este resultado é incondicional em
+relação à alocação dentro de todo companheiro balanceado. Seja
+$N_k=|\mathcal G_k|$ a população de lacunas 2 em período completo antes de
+instalar o primo $r_k$, com $N_0>0$. Todo pai produz $r_k$ cópias e perde
+exatamente duas, independentemente de onde essas duas remoções ocorrem. Portanto
 
 ```math
 \begin{aligned}
 N_{k+1}
 &=\sum_{g\in\mathcal G_k}(r_k-2)
-&&[\text{Exactly Two Copies Removed Per Parent}]\\
+&&[\text{Exatamente Duas Cópias Removidas por Pai}]\\
 &=(r_k-2)N_k.
-&&[\text{Simplification}]
+&&[\text{Simplificação}]
 \end{aligned}
 ```
 
-Iterating the recurrence gives
+Iterar a recorrência dá
 
 ```math
 \begin{aligned}
 N_k
 &=N_0\prod_{i < k}(r_i-2)
-&&[\text{Iteration}]\\
+&&[\text{Iteração}]\\
 &>0
 &&[N_0>0;\ r_i\ge5]\\
 &\longrightarrow\infty.
-&&[\text{Every Factor Is At Least }3]
+&&[\text{Todo Fator é Pelo Menos }3]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-Thus allocation may eliminate 2-gaps from the head or a tracked window, but it
-cannot exhaust the complete-period population while the exact-two removal rule
-is preserved.
+Assim, a alocação pode eliminar lacunas 2 da cabeça ou de uma janela rastreada,
+mas não pode esgotar a população de período completo enquanto a regra de remoção
+de exatamente duas é preservada.
 
 <a id="appendix-a2"></a>
 
-### A.2 Cumulative Local-Hazard Law
+### A.2 Lei Cumulativa de Risco Local
 
-Follow one initially eligible candidate through successive filters. Let $f_r$
-be its conditional destruction probability given earlier survival and initial
-eligibility, and assume $0\le f_r < 1$. Define
+Acompanhe um candidato inicialmente elegível através de filtros sucessivos. Seja
+$f_r$ sua probabilidade condicional de destruição, dada a sobrevivência anterior
+e a elegibilidade inicial, e assuma $0\le f_r < 1$. Defina
 
 ```math
 w_r:=\frac{rf_r}{2},
@@ -2770,23 +2901,23 @@ w_r:=\frac{rf_r}{2},
 D(Q):=\sum_{r < Q}-\log(1-f_r).
 ```
 
-The conditional survival factors multiply by the probability chain rule,
-without requiring independent filter events:
+Os fatores condicionais de sobrevivência se multiplicam pela regra da cadeia de
+probabilidade, sem exigir eventos de filtro independentes:
 
 ```math
 \begin{aligned}
 P(Q)
 &=\prod_{r < Q}(1-f_r)
-&&[\text{Survive Every Filter}]\\
+&&[\text{Sobrevive a Todo Filtro}]\\
 &=\exp\left(\sum_{r < Q}\log(1-f_r)\right)
-&&[\text{Product To Sum}]\\
+&&[\text{Produto para Soma}]\\
 &=e^{-D(Q)}.
-&&[\text{Definition Of }D(Q)]
+&&[\text{Definição de }D(Q)]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-For the random benchmark $w_r=1$, the prime harmonic sum gives
+Para o benchmark aleatório $w_r=1$, a soma harmônica dos primos dá
 
 ```math
 \begin{aligned}
@@ -2798,41 +2929,42 @@ P_{\mathrm{random}}(Q)
 \end{aligned}
 ```
 
-This identity determines the candidate's survival probability from its
-conditional hazards. For a fixed nested finite cohort, the analogous product
-of observed fractions gives its final-to-initial size ratio. Neither version
-supplies window abundance, head availability, or cross-layer mixing. A lethal
-step eliminates the tracked candidate or cohort, not every later candidate.
+Essa identidade determina a probabilidade de sobrevivência do candidato a partir
+de seus riscos condicionais. Para uma coorte finita aninhada fixa, o produto
+análogo de frações observadas dá sua razão entre tamanho final e inicial.
+Nenhuma versão fornece abundância de janela, disponibilidade na cabeça ou
+mistura entre camadas. Um passo letal elimina o candidato ou a coorte
+rastreada, não todo candidato posterior.
 
 <a id="appendix-a3"></a>
 
-### A.3 Every Fixed Finite Worsening Factor Survives
+### A.3 Todo Fator Fixo Finito de Piora Sobrevive
 
-Let $w\ge0$ be fixed and suppose $f_r=2w/r$ for all sufficiently large
-filters. A finite prefix changes only the positive leading constant. Since the
-quadratic Taylor remainder is summable over primes, Appendix A.2 gives
+Seja $w\ge0$ fixo e suponha $f_r=2w/r$ para todos os filtros suficientemente
+grandes. Um prefixo finito muda apenas a constante principal positiva. Como o
+resto quadrático de Taylor é somável sobre primos, o Apêndice A.2 dá
 
 ```math
 \begin{aligned}
 D_w(Q)
 &=\sum_{r < Q}-\log\left(1-\frac{2w}{r}\right)
-&&[\text{Definition Of }D(Q)]\\
+&&[\text{Definição de }D(Q)]\\
 &=2w\sum_{r < Q}\frac1r+O(1)
-&&[\text{Taylor Expansion; Summable Remainder}]\\
+&&[\text{Expansão de Taylor; Resto Somável}]\\
 &=2w\log\log Q+O(1).
-&&[\text{Prime Harmonic Sum}]
+&&[\text{Soma Harmônica dos Primos}]
 \end{aligned}
 ```
 
-Therefore
+Portanto
 
 ```math
 P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 ```
 
-Assume first that a square window supplies
-$B(Q)\asymp C_0Q^2$ eligible lineages and that their placement satisfies the
-blind empty-window bound. Its expected surviving population is
+Assuma primeiro que uma janela quadrada fornece $B(Q)\asymp C_0Q^2$ linhagens
+elegíveis e que seu posicionamento satisfaz o limite cego de janela vazia. Sua
+população sobrevivente esperada é
 
 ```math
 \lambda_w(Q)
@@ -2841,48 +2973,47 @@ C_0\frac{Q^2}{(\log Q)^{2w}}
 \longrightarrow\infty.
 ```
 
-This polynomial growth makes the empty-window probabilities summable, so only
-finitely many square windows are empty almost surely. For a distinguished head
-whose baseline availability is bounded below,
+Esse crescimento polinomial torna somáveis as probabilidades de janela vazia,
+então apenas finitas janelas quadradas são vazias quase certamente. Para uma
+cabeça distinguida cuja disponibilidade de base é limitada inferiormente,
 
 ```math
 \Pr(H_Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 ```
 
-The sum over prime heads diverges for every finite $w$. With adequate
-cross-layer mixing, head 2-gaps therefore recur infinitely often almost surely.
-Hence there is no finite constant-factor maximum worse than random.
+A soma sobre cabeças primas diverge para todo $w$ finito. Com mistura adequada
+entre camadas, lacunas 2 na cabeça, portanto, recorrem infinitas vezes quase
+certamente. Logo, não há máximo finito de fator constante pior que o aleatório.
 $\blacksquare$
 
 <a id="appendix-a4"></a>
 
-### A.4 Logarithmically Growing Worsening Has Two Thresholds
+### A.4 Piora Logaritmicamente Crescente Tem Dois Limiares
 
-Retain the supply, availability, placement, and mixing premises of Appendix
-A.3, and set
+Mantenha as premissas de suprimento, disponibilidade, posicionamento e mistura
+do Apêndice A.3, e defina
 
 ```math
 w_r=1+c\log r,
 \qquad c\ge0.
 ```
 
-Then $f_r=2/r+2c\log r/r$. Prime summation and the summable Taylor remainder
-give
+Então $f_r=2/r+2c\log r/r$. A soma sobre primos e o resto somável de Taylor dão
 
 ```math
 \begin{aligned}
 D_c(Q)
 &=\sum_{r < Q}-\log(1-f_r)
-&&[\text{Definition Of }D(Q)]\\
+&&[\text{Definição de }D(Q)]\\
 &=2\sum_{r < Q}\frac1r
 +2c\sum_{r < Q}\frac{\log r}{r}+O(1)
-&&[\text{Substitution; Summable Remainder}]\\
+&&[\text{Substituição; Resto Somável}]\\
 &=2\log\log Q+2c\log Q+O(1).
-&&[\text{Prime-Sum Asymptotics}]
+&&[\text{Assintótica de Soma sobre Primos}]
 \end{aligned}
 ```
 
-Consequently,
+Consequentemente,
 
 ```math
 P_c(Q)
@@ -2890,7 +3021,7 @@ P_c(Q)
 \frac{C_c}{Q^{2c}(\log Q)^2}.
 ```
 
-For a quadratic square-window supply,
+Para um suprimento quadrático de janela quadrada,
 
 ```math
 \lambda_c(Q)
@@ -2898,117 +3029,117 @@ For a quadratic square-window supply,
 C_0\frac{Q^{2-2c}}{(\log Q)^2}.
 ```
 
-Thus $c < 1$ gives eventual square-window occupancy almost surely under the
-blind-placement premise, while $c\ge1$ makes the expected population tend to
-zero. For the head, the prime occurrence series has the same convergence
-behavior as
+Assim, $c < 1$ dá ocupação eventual de janela quadrada quase certamente sob a
+premissa de posicionamento cego, enquanto $c\ge1$ faz a população esperada
+tender a zero. Para a cabeça, a série de ocorrência prima tem o mesmo
+comportamento de convergência que
 
 ```math
 \int^\infty\frac{dx}{x^{2c}(\log x)^3}.
 ```
 
-The integral diverges for $c < 1/2$ and converges for $c\ge1/2$. Therefore
+A integral diverge para $c < 1/2$ e converge para $c\ge1/2$. Portanto
 
 ```math
 \begin{aligned}
 c < 1
 &\Longrightarrow
-\text{eventual square-window occupancy almost surely},\\
+\text{ocupação eventual de janela quadrada quase certamente},\\
 c < \frac12
 &\Longrightarrow
-\text{infinitely recurring head 2-gaps almost surely, with mixing}.
+\text{lacunas 2 na cabeça recorrendo infinitamente quase certamente, com mistura}.
 \end{aligned}
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-The intermediate range $1/2\le c < 1$ preserves square windows but not
-infinitely recurring head events. Irregular schedules must be evaluated by the
-cumulative hazard $D(Q)$ rather than by isolated pointwise values.
+O intervalo intermediário $1/2\le c < 1$ preserva janelas quadradas, mas não
+eventos de cabeça recorrendo infinitamente. Programações irregulares precisam
+ser avaliadas pelo risco cumulativo $D(Q)$, em vez de por valores pontuais
+isolados.
 
 <a id="appendix-a5"></a>
 
-### A.5 Adversarial/Random Square-Window Boundary
+### A.5 Fronteira de Janela Quadrada Adversarial/Aleatória
 
-At filter $r$, let a parent be adversarial with share $\alpha_r$ and random
-otherwise. For one locally relevant lineage,
+No filtro $r$, seja um pai adversarial com parcela $\alpha_r$ e aleatório caso
+contrário. Para uma linhagem localmente relevante,
 
 ```math
 1-f_r
 =(1-\alpha_r)\left(1-\frac2r\right).
 ```
 
-Define the cumulative adversarial-share hazard
+Defina o risco cumulativo da parcela adversarial
 
 ```math
 A(Q):=\sum_{r < Q}-\log(1-\alpha_r).
 ```
 
-The random survival density contributes $(\log Q)^{-2}$, while the repeated
-adversarial share contributes $e^{-A(Q)}$. If the square-safe window has
-length $L_Q\asymp Q^2$ and surviving starts obey the spatial-uniformity model,
-then
+A densidade de sobrevivência aleatória contribui $(\log Q)^{-2}$, enquanto a
+parcela adversarial repetida contribui $e^{-A(Q)}$. Se a janela segura pelo
+quadrado tem comprimento $L_Q\asymp Q^2$ e os inícios sobreviventes obedecem ao
+modelo de uniformidade espacial, então
 
 ```math
 \begin{aligned}
 \lambda_Q^{\mathrm{mix}}
 &=L_Q\delta_Q^{\mathrm{mix}}
-&&[\text{Expected Uniform Occupancy}]\\
+&&[\text{Ocupação Uniforme Esperada}]\\
 &\asymp
 C\frac{Q^2}{(\log Q)^2}e^{-A(Q)}.
-&&[\text{Cumulative Survival}]
+&&[\text{Sobrevivência Cumulativa}]
 \end{aligned}
 ```
 
-Taking logarithms gives
+Tomar logaritmos dá
 
 ```math
 \log\lambda_Q^{\mathrm{mix}}
 =2\log Q-2\log\log Q-A(Q)+O(1).
 ```
 
-Therefore, for every fixed $\varepsilon>0$,
+Portanto, para todo $\varepsilon>0$ fixo,
 
 ```math
 \begin{aligned}
 A(Q)\le(2-\varepsilon)\log Q
 &\Longrightarrow
 \lambda_Q^{\mathrm{mix}}\longrightarrow\infty,
-&&[\text{Subcritical Budget}]\\
+&&[\text{Orçamento Subcrítico}]\\
 A(Q)\ge(2+\varepsilon)\log Q
 &\Longrightarrow
 \lambda_Q^{\mathrm{mix}}\longrightarrow0.
-&&[\text{Supercritical Budget}]
+&&[\text{Orçamento Supercrítico}]
 \end{aligned}
 ```
 
-At the exact boundary, the term $-2\log\log Q$ must be retained. Under uniform
-placement,
+Na fronteira exata, o termo $-2\log\log Q$ precisa ser retido. Sob
+posicionamento uniforme,
 
 ```math
 \Pr(X_Q=0)\le e^{-\lambda_Q^{\mathrm{mix}}}.
 ```
 
-Hence the summability condition
+Logo, a condição de somabilidade
 
 ```math
 \sum_{Q\text{ prime}}e^{-\lambda_Q^{\mathrm{mix}}}<\infty
 ```
 
-implies that only finitely many square windows are empty almost surely. A
-convenient sufficient condition is
-$\lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q$ for all sufficiently large
-$Q$. $\blacksquare$
+implica que apenas finitas janelas quadradas são vazias quase certamente. Uma
+condição suficiente conveniente é
+$\lambda_Q^{\mathrm{mix}}\ge(1+\varepsilon)\log Q$ para todo $Q$ suficientemente
+grande. $\blacksquare$
 
 <a id="appendix-a6"></a>
 
-### A.6 Local Survivor Allocation Range
+### A.6 Intervalo de Alocação de Sobreviventes Locais
 
-Consider a target window shorter than the old period, so each parent
-contributes at most one target child. Let $N$ be the number of parents, let
-$R$ be the set of $L$ relevant parents, and let $\mathcal A$ be the size $K$
-set receiving adversarial treatment. Every parent outside $\mathcal A$ is
-protective and preserves its target child. The number of target children destroyed
-and surviving are
+Considere uma janela alvo menor que o período antigo, de modo que cada pai
+contribui no máximo um filho-alvo. Seja $N$ o número de pais, seja $R$ o
+conjunto dos $L$ pais relevantes, e seja $\mathcal A$ o conjunto de tamanho $K$
+que recebe tratamento adversarial. Todo pai fora de $\mathcal A$ é protetor e
+preserva seu filho-alvo. O número de filhos-alvo destruídos e sobreviventes é
 
 ```math
 H=|\mathcal A\cap R|,
@@ -3016,21 +3147,21 @@ H=|\mathcal A\cap R|,
 S=L-H.
 ```
 
-The intersection cannot exceed either set, and at most $N-L$ adversarial
-labels can be placed outside $R$. Hence
+A interseção não pode exceder nenhum dos conjuntos, e no máximo $N-L$ rótulos
+adversariais podem ser colocados fora de $R$. Logo
 
 ```math
 \begin{aligned}
 H
 &\le\min(K,L),
-&&[\text{Intersection Upper Bound}]\\
+&&[\text{Limite Superior da Interseção}]\\
 H
 &\ge\max(0,K-(N-L)).
-&&[\text{Irrelevant-Parent Capacity}]
+&&[\text{Capacidade dos Pais Irrelevantes}]
 \end{aligned}
 ```
 
-Substitution into $S=L-H$ gives the sharp survivor range
+Substituição em $S=L-H$ dá o intervalo agudo de sobreviventes
 
 ```math
 \max(0,L-K)
@@ -3038,9 +3169,9 @@ Substitution into $S=L-H$ gives the sharp survivor range
 \min(L,N-K).
 ```
 
-Both endpoints are attainable. A target-aware allocator selects relevant
-parents first, while a protective allocator assigns the adversarial labels to
-irrelevant parents first:
+Ambos os extremos são atingíveis. Um alocador ciente do alvo seleciona pais
+relevantes primeiro, enquanto um alocador protetor atribui os rótulos
+adversariais a pais irrelevantes primeiro:
 
 ```math
 \begin{aligned}
@@ -3049,13 +3180,14 @@ S_{\mathrm{protective}}&=\min(L,N-K).
 \end{aligned}
 ```
 
-If $\mathcal A$ is instead a uniformly random size $K$ subset, then
+Se $\mathcal A$ é, em vez disso, um subconjunto uniformemente aleatório de
+tamanho $K$, então
 
 ```math
 H\sim\text{Hypergeometric}(N,L,K),
 ```
 
-so
+então
 
 ```math
 \begin{aligned}
@@ -3064,7 +3196,7 @@ so
 \end{aligned}
 ```
 
-When $K\ge L$, uniform allocation clears the target with probability
+Quando $K\ge L$, a alocação uniforme limpa o alvo com probabilidade
 
 ```math
 \Pr(S=0)
@@ -3072,7 +3204,7 @@ When $K\ge L$, uniform allocation clears the target with probability
 =\frac{\binom KL}{\binom NL}.
 ```
 
-Writing $\alpha=K/N$, the targeted endpoint becomes
+Escrevendo $\alpha=K/N$, o extremo direcionado se torna
 
 ```math
 S_{\mathrm{targeted}}=0
@@ -3080,11 +3212,11 @@ S_{\mathrm{targeted}}=0
 K\ge L
 \Longleftrightarrow
 \alpha\ge\frac LN.
-\qquad[\text{Q.E.D.}]
+\qquad[\text{C.Q.D.}]
 ```
 
-At the head, $L=1$, so one correctly placed adversarial label destroys the
-current candidate. If $L/N\longrightarrow0$ in a tracked window, every fixed
-$\alpha>0$ eventually has enough capacity to clear that window. Appendix A.1
-still applies: the targeted parents leave $r-2$ descendants outside the
-window, so complete-period growth continues.
+Na cabeça, $L=1$, então um rótulo adversarial corretamente colocado destrói o
+candidato atual. Se $L/N\longrightarrow0$ em uma janela rastreada, todo
+$\alpha>0$ fixo eventualmente tem capacidade suficiente para limpar essa
+janela. O Apêndice A.1 ainda se aplica: os pais direcionados deixam $r-2$
+descendentes fora da janela, então o crescimento de período completo continua.
