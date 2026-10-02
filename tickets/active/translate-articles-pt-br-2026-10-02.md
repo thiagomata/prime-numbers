@@ -42,11 +42,13 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - Several target Markdown articles have arXiv LaTeX package counterparts. The user requested Markdown translation, not LaTeX translation; any Markdown/LaTeX language drift should be recorded explicitly rather than hidden.
 - Large-scale translation through an external model CLI requires explicit approval because it transmits article contents outside the local workspace.
 - Translating headings changes generated Markdown slugs, so translated headings that are internal-link targets need explicit HTML anchors preserving the old ids.
+- Descriptive labels and side comments inside Markdown `math` blocks are article prose and should be translated to Brazilian Portuguese; preserve only variables, function names, Scala identifiers, LaTeX commands, and formal symbols.
 - `articles/chapter2/modulo.md` has 102 fence markers, balanced after translation, and passes `git diff --check`.
 - `articles/chapter3/list.md` has 266 fence markers, balanced after translation, 9 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - `articles/chapter4/cycle.md` has 164 fence markers, balanced after translation, 16 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - `articles/chapter4/integral.md` has 108 fence markers, balanced after translation, 9 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - `articles/chapter4/integral-cycle.md` has 220 fence markers, balanced after translation, 26 compatibility anchors for old internal section slugs, and passes `git diff --check`.
+- The already translated files from `chapter2/modulo.md` through `chapter5/euclid-theorem.md` were revisited to translate English proof labels and side comments inside math blocks. They pass `git diff --check`; fence counts remain balanced.
 - `articles/chapter5/euclid-theorem.md` has 58 fence markers, balanced after translation, 13 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 
 ## Failed Paths
@@ -62,7 +64,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Commit and push the completed `articles/chapter5/euclid-theorem.md` translation, then continue with `articles/chapter6/gap-dynamics.md`.
+Commit and push the math-label correction across completed articles, then continue with `articles/chapter6/gap-dynamics.md`.
 
 ## Expected State
 
@@ -127,3 +129,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | `articles/chapter4/integral.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/integral.md` passes, and English residual search only reports math labels, code comments, and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter4/integral-cycle.md`. |
 | 2026-10-02 | `articles/chapter4/integral-cycle.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/integral-cycle.md` passes, and English residual search only reports math labels, code comments, and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter5/euclid-theorem.md`. |
 | 2026-10-02 | `articles/chapter5/euclid-theorem.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter5/euclid-theorem.md` passes, and English residual search only reports math labels and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter6/gap-dynamics.md`. |
+| 2026-10-02 | User clarified that descriptive text inside math blocks, including side tags and comments, should also be translated while functions and variable names remain unchanged. Completed a correction pass over the six translated articles; fences remain balanced and `git diff --check` passes. | Commit/push the correction, then apply the same rule to remaining articles. |

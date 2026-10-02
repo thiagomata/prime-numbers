@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [Zenodo:10.5281/zenodo.22746792](https://doi.org/10.5281/zenodo.22746792)
 
@@ -75,7 +75,7 @@ inicial.
 Reutilizamos várias operações básicas de listas e suas propriedades verificadas
 de um artigo companheiro sobre construção recursiva de listas &mdash; [Usando Verificação Formal para Provar Propriedades de Listas Definidas Recursivamente](
 https://rxiverse.org/abs/2609.0023
-) [[1]](#ref1).  
+) [[1]](#ref1).
 Estas incluem as seguintes funções:
 
 - $\text{sum}(L)$: computa recursivamente a soma total dos elementos de uma lista.
@@ -176,15 +176,15 @@ Como:
 
 ```math
 \begin{aligned}
-I & \ne L_e                               & \qquad \text{[By definition: Integral is not an empty list]} \\
-I_0 & = \text{head}(I)                    & \qquad \text{[List element access and indexing]} \\
-\text{head}(I) & = \text{head}(L) + init  & \qquad \text{[By definition of Integral]} \\
-L_0 & = \text{head}(L)                    & \qquad \text{[List element access and indexing]} \\
-L_0 & = x_0                               & \qquad \text{[By definition of List]} \\
+I & \ne L_e                               & \qquad \text{[Pela definição: Integral não é uma lista vazia]} \\
+I_0 & = \text{head}(I)                    & \qquad \text{[Acesso e indexação de elemento da lista]} \\
+\text{head}(I) & = \text{head}(L) + init  & \qquad \text{[Pela definição de Integral]} \\
+L_0 & = \text{head}(L)                    & \qquad \text{[Acesso e indexação de elemento da lista]} \\
+L_0 & = x_0                               & \qquad \text{[Pela definição de Lista]} \\
 \text{head}(I) & = L_0 + init             & \qquad \text{[Substitute head}(L) \text{ by } L_0] \\
 I_0 & = L_0 + init                        & \qquad \text{[Substitute head}(I) \text{ by } I_0] \\
 I_0 & = x_0 + init                        & \qquad \text{[Substitute } L_0 \text{ by } x_0] \\
-I_0 & = x_0 + init \quad \blacksquare     & \qquad \text{[Q.E.D.]}
+I_0 & = x_0 + init \quad \blacksquare     & \qquad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -209,8 +209,8 @@ posição, mais o valor inicial:
 
 ```math
 \begin{aligned}
-\sum_{i=0}^{0} x_i &= x_0 \qquad & \text{[By definition of sum]} \\
-I_0 & = \mathit{init} + x_0 \qquad & \text{[By definition of integral]} \\
+\sum_{i=0}^{0} x_i &= x_0 \qquad & \text{[Pela definição de soma]} \\
+I_0 & = \mathit{init} + x_0 \qquad & \text{[Pela definição de integral]} \\
     & = \mathit{init} + \sum_{i=0}^{0} x_i & \qquad \text{[Substituting } x_0] \\
 \end{aligned}
 ```
@@ -218,7 +218,7 @@ I_0 & = \mathit{init} + x_0 \qquad & \text{[By definition of integral]} \\
 \therefore
 ```
 ```math
-I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[Q.E.D.]}
+I_0 = \mathit{init} + \sum_{i=0}^{0} x_i \qquad \text{[C.Q.D.]}
 ```
 
 #### Passo indutivo: suponha que a propriedade vale para $k-1$
@@ -228,11 +228,11 @@ I_{k-1} = \mathit{init} + \sum_{i=0}^{k-1} x_i \implies I_k = \mathit{init} + \s
 ```
 ```math
 \begin{aligned}
-I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                     \qquad & \text{[By induction]} \\ 
-I_k & = I_{k-1} + L_k                                                \qquad & \text{[By definition of integral]} \\
-    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k       \qquad & \text{[By induction and } L_k = x_k]  \\
-    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)       \qquad & \text{[Distributivity]} \\
-    &= \mathit{init} + \sum_{i=0}^{k} x_i                            \qquad & \text{[By definition of sum]} \\
+I_{k-1} & = \mathit{init} + \sum_{i=0}^{k-1} x_i                     \qquad & \text{[Por indução]} \\
+I_k & = I_{k-1} + L_k                                                \qquad & \text{[Pela definição de integral]} \\
+    &= \left(\mathit{init} + \sum_{i=0}^{k-1} x_i\right) + x_k       \qquad & \text{[Por indução e } L_k = x_k]  \\
+    &= \mathit{init} + \left(\sum_{i=0}^{k-1} x_i + x_k\right)       \qquad & \text{[Distributividade]} \\
+    &= \mathit{init} + \sum_{i=0}^{k} x_i                            \qquad & \text{[Pela definição de soma]} \\
 \end{aligned}
 ```
 ```math
@@ -240,7 +240,7 @@ I_k & = I_{k-1} + L_k                                                \qquad & \t
 ```
 ```math
 \begin{aligned}
-I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[Q.E.D.]} \\
+I_k = \mathit{init} + \sum_{i=0}^{k} x_i \quad \blacksquare \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -266,15 +266,15 @@ I_{p+1} - I_p & = L_{p+1}
 
 ```math
 \begin{aligned}
-I_1    &= \text{Integral}(\text{tail}(L),\ I_0)_0           & \qquad \text{[By recursive definition for a non-first element]} \\
-       &= \text{Integral}([x_1, \dots, x_n],\ I_0)_0        & \qquad \text{[By tail definition]} \\
-       &= \text{head}([x_1, \dots, x_n]) + I_0              & \qquad \text{[By recursive Integral definition for the first element]} \\
-       &= x_1 + I_0                                         & \qquad \text{[By head definition]} \\
+I_1    &= \text{Integral}(\text{tail}(L),\ I_0)_0           & \qquad \text{[Pela definição recursiva para um elemento não inicial]} \\
+       &= \text{Integral}([x_1, \dots, x_n],\ I_0)_0        & \qquad \text{[Pela definição de cauda]} \\
+       &= \text{head}([x_1, \dots, x_n]) + I_0              & \qquad \text{[Pela definição recursiva de Integral para o primeiro elemento]} \\
+       &= x_1 + I_0                                         & \qquad \text{[Pela definição de cabeça]} \\
 I_1 - I_0 &= (x_1 + I_0) - I_0                              & \qquad \text{[Substituting for } I_1, I_0] \\
-          &= x_1 + I_0 - I_0                                 & \qquad \text{[Distributivity]} \\
-          &= x_1                                             & \qquad \text{[Cancellation of terms]} \\
+          &= x_1 + I_0 - I_0                                 & \qquad \text{[Distributividade]} \\
+          &= x_1                                             & \qquad \text{[Cancelamento dos termos]} \\
           & \therefore \\
-I_1 - I_0 &= x_1                                            & \qquad \text{[Q.E.D.]} \\
+I_1 - I_0 &= x_1                                            & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -282,17 +282,17 @@ I_1 - I_0 &= x_1                                            & \qquad \text{[Q.E.
 
 ```math
 \begin{aligned}
-L &= x_0 :: \text{tail}(L)                                                                                     & \qquad \text{[List decomposition]} \\
-I &= I_0 :: \text{tail}(I)                                                                                     & \qquad \text{[Integral decomposition]} \\
-I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[By indexing: tail of } I \text{ at position } p] \\
-I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } I \text{ at position } p + 1] \\
-I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[By recursive definition of Integral]} \\
+L &= x_0 :: \text{tail}(L)                                                                                     & \qquad \text{[Decomposição da lista]} \\
+I &= I_0 :: \text{tail}(I)                                                                                     & \qquad \text{[Decomposição da integral]} \\
+I_{p+1} &= I_{\text{tail},\ p}                                                             & \qquad \text{[Por indexação: cauda de } I \text{ na posição } p] \\
+I_{p+2} &= I_{\text{tail},\ p+1}                                                           & \qquad \text{[Por indexação: cauda de } I \text{ na posição } p + 1] \\
+I_{\text{tail},\ p+1} &= L_{\text{tail},\ p+1} + I_{\text{tail},\ p}                       & \qquad \text{[Pela definição recursiva de Integral]} \\
 I_{p+2} - I_{p+1} &= I_{\text{tail},\ p+1} - I_{\text{tail},\ p}                           & \qquad \text{[Substituting for } I_{p+2}, I_{p+1}] \\
                    &= (L_{\text{tail},\ p+1} + I_{\text{tail},\ p}) - I_{\text{tail},\ p}   & \qquad \text{[Substituting for } I_{\text{tail},\ p+1}] \\
-                   &= L_{\text{tail},\ p+1}                                                 & \qquad \text{[Cancellation of terms]} \\
-L_{p+2} &= L_{\text{tail},\ p+1}                                                           & \qquad \text{[By indexing: tail of } L \text{ at position } p + 1] \\
+                   &= L_{\text{tail},\ p+1}                                                 & \qquad \text{[Cancelamento dos termos]} \\
+L_{p+2} &= L_{\text{tail},\ p+1}                                                           & \qquad \text{[Por indexação: cauda de } L \text{ na posição } p + 1] \\
 & \therefore \\
-I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                            & \qquad \text{[Q.E.D.]} \\
+I_{p+2} - I_{p+1} &= L_{p+2} \quad \blacksquare                                            & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -346,7 +346,7 @@ b=a+1 &\implies I_{a+1}-I_a=L_{a+1}>0 &&\text{[§4.3]} \\
 I_{b-1}>I_a,\quad I_b-I_{b-1}=L_b>0
        &\implies I_b>I_{b-1}>I_a \\
 \therefore\ I_b &> I_a.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -388,7 +388,7 @@ valor correspondente da lista:
 I_{p+1}>I_p &\implies I_{p+1}-I_p>0 \\
 I_{p+1}-I_p &= L_{p+1} &&\text{[§4.3]} \\
 \therefore\ L_{p+1} &> 0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -482,16 +482,16 @@ lista acumulada.
 
 ```math
 \begin{aligned}
-&L &= x_0 :: \text{tail}(L)                                                           & \qquad \text{[List decomposition]} \\
-&I &= (x_0 + i) :: \text{tail}(I)                                                     & \qquad \text{[Integral decomposition]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                & \qquad \text{[Definition of } \text{acc}] \\
-&I_0 &= x_0 + i = \text{acc}_0                                                        & \qquad \text{[Base case]} \\
-&I_{(p+1)} &= \text{tail}(I)_p                                                        & \qquad \text{[Tail Access Shift Left]} \\
+&L &= x_0 :: \text{tail}(L)                                                           & \qquad \text{[Decomposição da lista]} \\
+&I &= (x_0 + i) :: \text{tail}(I)                                                     & \qquad \text{[Decomposição da integral]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L),(x_0 + i))                & \qquad \text{[Definição de } \text{acc}] \\
+&I_0 &= x_0 + i = \text{acc}_0                                                        & \qquad \text{[Caso base]} \\
+&I_{(p+1)} &= \text{tail}(I)_p                                                        & \qquad \text{[Deslocamento à esquerda no acesso à cauda]} \\
 &\text{acc}_{(p+1)} &= \text{acc}(\text{tail}(L),(x_0 + i))_p                         & \qquad \text{[Recursive accumulation]} \\
-&\text{tail}(I)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Inductive hypothesis]} \\
-&\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[By substitution]} \\
+&\text{tail}(I)_p &= \text{acc}(\text{tail}(L), (x_0 + i))_p                          & \qquad \text{[Hipótese indutiva]} \\
+&\implies \quad I_{p+1} &= \text{acc}_{p+1}                                           & \qquad \text{[Por substituição]} \\
 && \therefore \\
-&\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                 & \qquad \text{[Q.E.D.]}
+&\forall p \in [0..n-1], \quad I_p &= \text{acc}_p \quad \blacksquare                 & \qquad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -512,14 +512,14 @@ correspondente da lista original.
 
 ```math
 \begin{aligned}
-&L &= [x_0, x_1, \dots, x_{n-1} ]                                                           & \qquad \text{[List definition]} \\
-&L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[List decomposition]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definition of acc]} \\
-&\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Base case]} \\
+&L &= [x_0, x_1, \dots, x_{n-1} ]                                                           & \qquad \text{[Definição de lista]} \\
+&L &= x_0 :: \text{tail}(L)                                                                 & \qquad \text{[Decomposição da lista]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                       & \qquad \text{[Definição de acc]} \\
+&\text{acc}_0 &= x_0 + i                                                                    & \qquad \text{[Caso base]} \\
 &\text{acc}_1 &= x_1 + \text{acc}_0                                                         & \qquad \text{[Recursive accumulation]} \\
-&\implies \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                    & \qquad \text{[Cancellation]} \\
+&\implies \quad \text{acc}_1 - \text{acc}_0 &= x_1 = L_1                                    & \qquad \text{[Cancelamento]} \\
 &\text{acc}_{p+1} &= x_{p+1} + \text{acc}_p                                                 & \qquad \text{[Recursive accumulation]} \\
-&\implies \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                        & \qquad \text{[By subtraction]} \\
+&\implies \quad \text{acc}_{p+1} - \text{acc}_p &= x_{p+1} = L_{p+1}                        & \qquad \text{[Por subtração]} \\
 \end{aligned}
 ```
 ```math
@@ -527,7 +527,7 @@ correspondente da lista original.
 ```
 ```math
 \begin{aligned}
-\forall p \in [0..n-2],\quad \text{acc}_{p+1} - \text{acc}_p &= L_{p+1} \quad \blacksquare & \qquad \text{[Q.E.D.]}
+\forall p \in [0..n-2],\quad \text{acc}_{p+1} - \text{acc}_p &= L_{p+1} \quad \blacksquare & \qquad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -551,13 +551,13 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 
 ```math
 \begin{aligned}
-&L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[List definition]} \\
+&L &= [x_0, x_1, \dots, x_{n-1}]                                               & \qquad \text{[Definição de lista]} \\
 &\text{last}(L) &= \begin{cases}
 &x_0 & \text{if } |L| = 1 \\
 &\text{last}(\text{tail}(L)) & \text{if } |L| > 1
-\end{cases}                                                                 & \qquad \text{[Definition of last]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)        & \qquad \text{[Definition of accumulation]} \\
-&I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral as accumulated list]} \\
+\end{cases}                                                                 & \qquad \text{[Definição de last]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)        & \qquad \text{[Definição da acumulação]} \\
+&I &= \text{acc}(L, i)                                                       & \qquad \text{[Integral como lista acumulada]} \\
 \end{aligned}
 ```
 
@@ -565,9 +565,9 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 
 ```math
 \begin{aligned}
-&L &= [x_0]                                                                   & \qquad \text{[Singleton list]} \\
-&\text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[By definition]} \\
-&I &= [x_0 + i]                                                               & \qquad \text{[Integral is acc]} \\
+&L &= [x_0]                                                                   & \qquad \text{[Lista singleton]} \\
+&\text{acc}(L, i) &= [x_0 + i]                                                & \qquad \text{[Pela definição]} \\
+&I &= [x_0 + i]                                                               & \qquad \text{[Integral é acc]} \\
 &\text{last}(I) &= x_0 + i = acc_0 = I_0                                      & \qquad \text{[last on singleton]} \\
 \end{aligned}
 ```
@@ -576,13 +576,13 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 
 ```math
 \begin{aligned}
-&L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[List decomposition]} \\
-&I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Recursive definition]} \\
-&\text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Tail of integral]} \\
-&\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Recursive last]} \\
-&\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Inductive hypothesis]} \\
-& &= acc_{(n - 1)}                                                            & \qquad \text{[Shifted indexing]} \\
-&\implies \ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                     & \qquad \text{[By substitution]} \\
+&L &= x_0 :: \text{tail}(L)                                                   & \qquad \text{[Decomposição da lista]} \\
+&I &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Definição recursiva]} \\
+&\text{tail}(I) &= \text{acc}(\text{tail}(L), x_0 + i)                        & \qquad \text{[Cauda da integral]} \\
+&\text{last}(I) &= \text{last}(\text{tail}(I))                                & \qquad \text{[Último recursivo]} \\
+&\text{last}(\text{tail}(I)) &= \text{acc}(\text{tail}(L), x_0 + i)_{(n - 2)} & \qquad \text{[Hipótese indutiva]} \\
+& &= acc_{(n - 1)}                                                            & \qquad \text{[Indexação deslocada]} \\
+&\implies \ \text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)}                     & \qquad \text{[Por substituição]} \\
 \end{aligned}
 ```
 ```math
@@ -590,7 +590,7 @@ acc_{(n - 1)} & = I_{(n - 1)} \\
 ```
 ```math
 \begin{aligned}
-\text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[Q.E.D.]}
+\text{last}(I) &= acc_{(n - 1)} = I_{(n - 1)} \quad \blacksquare              & \qquad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -610,7 +610,7 @@ O tamanho da lista acumulada é igual ao tamanho da lista original.
 
 ```math
 \begin{aligned}
-&L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[List definition]} \\
+&L &= [x_0, x_1, \dots, x_{n-1}]                                           & \qquad \text{[Definição de lista]} \\
 &\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)      & \qquad \text{[Recursive accumulation]} \\
 \end{aligned}
 ```
@@ -619,9 +619,9 @@ O tamanho da lista acumulada é igual ao tamanho da lista original.
 
 ```math
 \begin{aligned}
-&L &= []                                                                  & \qquad \text{[Empty list]} \\
-&\text{acc}(L, i) &= []                                                   & \qquad \text{[By definition]} \\
-&|\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Equal size]} \\
+&L &= []                                                                  & \qquad \text{[Lista vazia]} \\
+&\text{acc}(L, i) &= []                                                   & \qquad \text{[Pela definição]} \\
+&|\text{acc}(L, i)| &= 0 = |L|                                            & \qquad \text{[Tamanho igual]} \\
 \end{aligned}
 ```
 
@@ -629,9 +629,9 @@ O tamanho da lista acumulada é igual ao tamanho da lista original.
 
 ```math
 \begin{aligned}
-&L &= [x_0]                                                               & \qquad \text{[Singleton list]} \\
-&\text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[By definition]} \\
-&|\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Equal size]} \\
+&L &= [x_0]                                                               & \qquad \text{[Lista singleton]} \\
+&\text{acc}(L, i) &= [x_0 + i]                                            & \qquad \text{[Pela definição]} \\
+&|\text{acc}(L, i)| &= 1 = |L|                                            & \qquad \text{[Tamanho igual]} \\
 \end{aligned}
 ```
 
@@ -639,12 +639,12 @@ O tamanho da lista acumulada é igual ao tamanho da lista original.
 
 ```math
 \begin{aligned}
-&L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposition]} \\
-&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Recursive call]} \\
-&|\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Inductive hypothesis]} \\
-&|\text{acc}(L, i)| &= 1 + |\text{tail}(L)| = |L|                         & \qquad \text{[Cons adds 1]} \\
+&L &= x_0 :: \text{tail}(L)                                               & \qquad \text{[Decomposição]} \\
+&\text{acc}(L, i) &= (x_0 + i) :: \text{acc}(\text{tail}(L), x_0 + i)     & \qquad \text{[Chamada recursiva]} \\
+&|\text{acc}(\text{tail}(L), x_0 + i)| &= |\text{tail}(L)|                & \qquad \text{[Hipótese indutiva]} \\
+&|\text{acc}(L, i)| &= 1 + |\text{tail}(L)| = |L|                         & \qquad \text{[Cons adiciona 1]} \\
 & & \therefore \\
-&|\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[Q.E.D.]}
+&|\text{acc}(L, i)| &= |L| \quad \blacksquare                             & \qquad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -673,20 +673,20 @@ verificamos:
 
 ```math
 \begin{aligned}
-I_0 &= x_0 + init & \text{[Head Value Matches Definition]} \\
-I_k &= init + \sum_{i=0}^k x_i & \text{[Integral Equals Sum Until Position]} \\
-I_{n-1} &= init + \sum_{i=0}^{n-1} x_i & \text{[Final Element Equals Full Sum]} \\
-I_{p+1} - I_p &= x_{p+1} & \text{[Incremental Change Matches List]} \\
-(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n &\implies I_b > I_a & \text{[Strictly Increasing]} \\
-0 \leq p < n-1,\quad I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Gaps Positivity]} \\
+I_0 &= x_0 + init & \text{[Valor da Cabeça Coincide com a Definição]} \\
+I_k &= init + \sum_{i=0}^k x_i & \text{[Integral Igual à Soma Até a Posição]} \\
+I_{n-1} &= init + \sum_{i=0}^{n-1} x_i & \text{[Elemento Final Igual à Soma Completa]} \\
+I_{p+1} - I_p &= x_{p+1} & \text{[Mudança Incremental Coincide com a Lista]} \\
+(\forall x \in L,\ x > 0) \;\land\; 0 \leq a < b < n &\implies I_b > I_a & \text{[Estritamente Crescente]} \\
+0 \leq p < n-1,\quad I_{p+1} > I_p &\implies L_{p+1} > 0 & \text{[Positividade das Lacunas]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-I_k &= acc_k & \text{[Element Consistency]} \\
-\text{last}(I) &= acc_{n-1} = I_{n-1} & \text{[Last Element Agreement]} \\
-acc_{p+1} - acc_p &= x_{p+1} & \text{[Accumulated Delta Consistency]} \\
-|acc| &= |L| & \text{[Size Agreement]} \\
+I_k &= acc_k & \text{[Consistência do elemento]} \\
+\text{last}(I) &= acc_{n-1} = I_{n-1} & \text{[Concordância do Último Elemento]} \\
+acc_{p+1} - acc_p &= x_{p+1} & \text{[Consistência do delta acumulado]} \\
+|acc| &= |L| & \text{[Concordância de tamanho]} \\
 \end{aligned}
 ```
 
@@ -709,7 +709,7 @@ raciocinar sobre somas cumulativas em estruturas cíclicas.
 
 ## 9. Referências
 
-<a name="ref1" id="ref1" href="#ref1">[1]</a>  
+<a name="ref1" id="ref1" href="#ref1">[1]</a>
 Mata, T. H. (2026). *Using Formal Verification to Prove Properties of Lists Recursively Defined*.
 Disponível em: [https://rxiverse.org/abs/2609.0023](https://rxiverse.org/abs/2609.0023)
 

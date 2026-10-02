@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [rxiVerse:2609.0023](https://rxiverse.org/abs/2609.0023)<br>
 **DOI:** [10.5281/zenodo.22955771](https://doi.org/10.5281/zenodo.22955771)
@@ -143,7 +143,7 @@ tail(L_{node}) & = [v_1, \dots, v_{n-1}] \\
 last(L_{node}) & = L_{node(|L| - 1)} \\
 L_{node(0)} & = L_{(0)} = head(L_{node}) \\
 L_{node(n)} & = L_{(n)} = tail(L_{node})({n - 1}) \text{ } \forall \text{ } n > 0 \\
-\end{aligned} 
+\end{aligned}
 ```
 
 ### 2.5 Tamanho da Lista
@@ -199,7 +199,7 @@ $j$, em ordem. A implementação de `slice` está disponível em [ListUtils](htt
 Seja $\text{sum} : 𝕃 \implies 𝕊$ uma função definida recursivamente:
 
 ```math
-sum(L) = 
+sum(L) =
 \begin{cases} 0 & \text{if } L = L_e \\
 head(L) + sum(tail(L)) & \text{otherwise} \\
 \end{cases}
@@ -213,7 +213,7 @@ mais a soma de sua cauda. A implementação de `sum` está disponível em [ListU
 Seja $\text{product} : 𝕃 \implies 𝕊$ uma função definida recursivamente:
 
 ```math
-product(L) = 
+product(L) =
 \begin{cases} 1 & \text{if } L = L_e \\
 head(L) \cdot product(tail(L)) & \text{otherwise} \\
 \end{cases}
@@ -247,11 +247,11 @@ Como:
 
 $$
 \begin{aligned}
-L &= [x_0, x_1, x_2, \dots, x_{n - 1}]                                & \qquad \text{[List definition]} \\
-L &= x_0 :: [x_1, x_2, \dots, x_{n - 1}]                                                  & \qquad \text{[Cons definition]} \\
-L &= \text{head}(L) :: \text{tail}(L)                                                     & \qquad \text{[Head and Tail definition]} \\
-\text{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}]                        & \qquad \text{[Tail definition]} \\
-\text{tail}(L)_i &= x_{i + 1} = L_{i + 1} \text{ } \forall \text{ }  0 \le i < |\text{tail}(L)|  \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+L &= [x_0, x_1, x_2, \dots, x_{n - 1}]                                & \qquad \text{[Definição de lista]} \\
+L &= x_0 :: [x_1, x_2, \dots, x_{n - 1}]                                                  & \qquad \text{[Definição de cons]} \\
+L &= \text{head}(L) :: \text{tail}(L)                                                     & \qquad \text{[Definição de cabeça e cauda]} \\
+\text{tail}(L) &= [x_1, x_2, \dots, x_{n - 1}]                        & \qquad \text{[Definição da cauda]} \\
+\text{tail}(L)_i &= x_{i + 1} = L_{i + 1} \text{ } \forall \text{ }  0 \le i < |\text{tail}(L)|  \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 $$
 
@@ -273,7 +273,7 @@ posição $n - 1$, em que $n = |L|$.
 
 ```math
 \begin{aligned}
-&L &= [x_0, x_1, \dots, x_{n-1}]                                   & \qquad \text{[List definition]} \\
+&L &= [x_0, x_1, \dots, x_{n-1}]                                   & \qquad \text{[Definição de lista]} \\
 \end{aligned}
 ```
 
@@ -281,8 +281,8 @@ posição $n - 1$, em que $n = |L|$.
 
 ```math
 \begin{aligned}
-&L &= [x_0]                                                        & \qquad \text{[Singleton list]} \\
-&\text{last}(L) &= x_0 = L_0 = L_{(n - 1)}                         & \qquad \text{[Definition of last]} \\
+&L &= [x_0]                                                        & \qquad \text{[Lista singleton]} \\
+&\text{last}(L) &= x_0 = L_0 = L_{(n - 1)}                         & \qquad \text{[Definição de last]} \\
 \end{aligned}
 ```
 
@@ -290,11 +290,11 @@ posição $n - 1$, em que $n = |L|$.
 
 ```math
 \begin{aligned}
-&L &= x_0 :: \text{tail}(L)                                        & \qquad \text{[Decomposition]} \\
-&\text{last}(L) &= \text{last}(\text{tail}(L))                     & \qquad \text{[Definition of last]} \\
-&\text{last}(\text{tail}(L)) &= \text{tail}(L)_{(|\text{tail}(L)| - 1)} & \qquad \text{[Inductive hypothesis]} \\
-&\text{tail}(L)_{(|\text{tail}(L)| - 1)} &= L_{(|L| - 1)}          & \qquad \text{[Tail Shift Position]} \\
-&\implies \ \text{last}(L) &= L_{(|L| - 1)}                      & \qquad \text{[By substitution]} \\
+&L &= x_0 :: \text{tail}(L)                                        & \qquad \text{[Decomposição]} \\
+&\text{last}(L) &= \text{last}(\text{tail}(L))                     & \qquad \text{[Definição de last]} \\
+&\text{last}(\text{tail}(L)) &= \text{tail}(L)_{(|\text{tail}(L)| - 1)} & \qquad \text{[Hipótese indutiva]} \\
+&\text{tail}(L)_{(|\text{tail}(L)| - 1)} &= L_{(|L| - 1)}          & \qquad \text{[Posição deslocada na cauda]} \\
+&\implies \ \text{last}(L) &= L_{(|L| - 1)}                      & \qquad \text{[Por substituição]} \\
 \end{aligned}
 ```
 
@@ -358,7 +358,7 @@ prepend dos elementos enquanto recorre para trás.
 ```
 
 ```math
-\text{slice}(L, i, j) := 
+\text{slice}(L, i, j) :=
 \begin{cases}
 L_j :: L_e & \text{if } i = j \\
 \text{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \text{if } i < j
@@ -389,11 +389,11 @@ Mostre:
 
 ```math
 \begin{aligned}
-\text{slice}(L, i, j)  &= \text{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by definition of slice]} \\
-&= L[i \dots (j - 1)] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j - 1 ] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[by Specification]} \\
-&= [ L_k \mid i \leq k \leq j ] & \qquad \text{[by definition of Concatenation]} \\
-&= L[i \dots j] & \qquad  \text{[Q.E.D]} \\
+\text{slice}(L, i, j)  &= \text{slice}(L, i, j - 1) \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[pela definição de fatia]} \\
+&= L[i \dots (j - 1)] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[pela Hipótese Indutiva]} \\
+&= [ L_k \mid i \leq k \leq j - 1 ] \mathbin{\texttt{++}} (L_j :: L_e) & \qquad \text{[pela Especificação]} \\
+&= [ L_k \mid i \leq k \leq j ] & \qquad \text{[pela definição de Concatenação]} \\
+&= L[i \dots j] & \qquad  \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -451,9 +451,9 @@ Mostre:
 
 ```math
 \begin{aligned}
-\text{headRecursiveSlice}(L, i, j) &= L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \qquad \text{[by definition]} \\
-&= L_i :: L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
+\text{headRecursiveSlice}(L, i, j) &= L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \qquad \text{[pela definição]} \\
+&= L_i :: L[i + 1 \dots j] & \qquad \text{[pela Hipótese Indutiva]} \\
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[pela especificação]} \\
 \end{aligned}
 ```
 
@@ -511,9 +511,9 @@ Mostre:
 
 ```math
 \begin{aligned}
-\text{indexRangeValues}(L, i, j) &= L_i :: \text{indexRangeValues}(L, i + 1, j) & \qquad \text{[by definition]} \\
-&= L_i :: L[i + 1 \dots j] & \qquad \text{[by Inductive Hypothesis]} \\
-&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[by specification]} \\
+\text{indexRangeValues}(L, i, j) &= L_i :: \text{indexRangeValues}(L, i + 1, j) & \qquad \text{[pela definição]} \\
+&= L_i :: L[i + 1 \dots j] & \qquad \text{[pela Hipótese Indutiva]} \\
+&= [ L_k \mid i \leq k \leq j ] = L[i \dots j] & \qquad \text{[pela especificação]} \\
 \end{aligned}
 ```
 
@@ -570,8 +570,8 @@ $L = [x_0, x_1, \dots, x_{n-1}]$ e $|L| = n$.
 
 ```math
 \begin{aligned}
-\text{sum}(L) &= 0 & \text{[by definition of sum]} \\
-\sum L &= 0 & \text{[summation over empty list]} \\
+\text{sum}(L) &= 0 & \text{[pela definição de soma]} \\
+\sum L &= 0 & \text{[somatório sobre lista vazia]} \\
 \implies \text{sum}(L) &= \sum L \in 𝕃
 \end{aligned}
 ```
@@ -593,26 +593,26 @@ Seja $P \in 𝕃$, com $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, e suponha:
 
 ```math
 \begin{aligned}
-\text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[by Inductive Hypothesis]} \\
-L = x_0 :: P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[by Definition of Cons]} \\
+\text{sum}(P) & = \sum_{i=1}^{n-1} x_i \in & \qquad \text{[pela Hipótese Indutiva]} \\
+L = x_0 :: P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[pela Definição de Cons]} \\
 \end{aligned}
 ```
 
 Podemos garantir a terminação, pois:
 ```math
 \begin{aligned}
-&|L| &= |P| + 1  & \qquad \text{[by Size Definition]} \\
-&|P| &< |L|      & \qquad \text{[Size Decreases Ensures Termination]} \\
+&|L| &= |P| + 1  & \qquad \text{[pela Definição de Tamanho]} \\
+&|P| &< |L|      & \qquad \text{[Redução do tamanho garante terminação]} \\
 \end{aligned}
 ```
 
 Vamos calcular a soma de $L$:
 ```math
 \begin{aligned}
-\text{sum}(L) &= \text{head}(L) + \text{sum}(\text{tail}(L))  & \qquad \text{[by definition of the recursive function sum]} \\
-              &= x_0 + \text{sum}(P)                          & \qquad \text{[by definition of head and P]} \\
-              &= x_0 + \sum_{i=1}^{n-1} x_i                   & \qquad \text{[by Inductive Hypothesis]} \\
-              &= \sum_{i=0}^{n-1} x_i = \sum L                
+\text{sum}(L) &= \text{head}(L) + \text{sum}(\text{tail}(L))  & \qquad \text{[pela definição da função recursiva sum]} \\
+              &= x_0 + \text{sum}(P)                          & \qquad \text{[pela definição de cabeça e P]} \\
+              &= x_0 + \sum_{i=1}^{n-1} x_i                   & \qquad \text{[pela Hipótese Indutiva]} \\
+              &= \sum_{i=0}^{n-1} x_i = \sum L
 \end{aligned}
 ```
 
@@ -632,7 +632,7 @@ Logo, por indução no tamanho de $L$:
 ```math
 \begin{aligned}
 \forall \text{ } L \text{ } \in 𝕃 \\
-\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[Q.E.D.]}
+\text{sum}(L)  = \sum L = \sum_{i=0}^{n-1} x_i  \in 𝕊  \quad \blacksquare \quad \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -657,8 +657,8 @@ a soma da lista original.
 ```math
 \begin{aligned}
 A & = x :: L  & \qquad \text{[Cons]} \\
-\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A)) & \qquad \text{[By recursive definition of sum]} \\
-              & = x + \text{sum}(L) & \qquad \text{[By recursive definition of head and tail]} \\
+\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A)) & \qquad \text{[Pela definição recursiva de soma]} \\
+              & = x + \text{sum}(L) & \qquad \text{[Pela definição recursiva de cabeça e cauda]} \\
 \end{aligned}
 ```
 
@@ -668,7 +668,7 @@ A & = x :: L  & \qquad \text{[Cons]} \\
 
 ```math
 \begin{aligned}
-\text{sum}(x :: L) & = x + \text{sum}(L)  \quad \blacksquare &  \qquad \text{[Q.E.D.]} \\
+\text{sum}(x :: L) & = x + \text{sum}(L)  \quad \blacksquare &  \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -689,11 +689,11 @@ A soma de duas listas concatenadas é igual à soma de cada lista somadas entre 
 ```math
 \begin{aligned}
   A \mathbin{\texttt{++}} B & = L_e \mathbin{\texttt{++}} B & \text{[A is empty list]} \\
-        & = B & \text{[By definition of concatenation]} \\
-  \text{sum}(A) & = 0 & \text{[By definition of sum]} \\
-  \text{sum}(A \mathbin{\texttt{++}} B) & = \text{sum}(B) & \text{[Since A} \mathbin{\texttt{++}} \text{B equals B]} \\
+        & = B & \text{[Pela definição de concatenação]} \\
+  \text{sum}(A) & = 0 & \text{[Pela definição de soma]} \\
+  \text{sum}(A \mathbin{\texttt{++}} B) & = \text{sum}(B) & \text{[Como A} \mathbin{\texttt{++}} \text{B é igual a B]} \\
                     & = 0 + \text{sum}(B) \\
-                    & = \text{sum}(A) + \text{sum}(B) & \text{[Since sum(A) is zero]} \\
+                    & = \text{sum}(A) + \text{sum}(B) & \text{[Como sum(A) é zero]} \\
 \end{aligned}
 ```
 
@@ -702,12 +702,12 @@ A soma de duas listas concatenadas é igual à soma de cada lista somadas entre 
 ```math
 \begin{aligned}
 C & = \text{tail}(A) \mathbin{\texttt{++}} B \\
-\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A))                & \text{[By definition of sum]} \\
-\text{sum}(C) & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Inductive Step]} \\
-A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt{++}} B)                          & \text{[By definition of head and tail]} \\
-\text{sum}(A \mathbin{\texttt{++}} B) & = \text{head}(A) + \text{sum}(\text{tail}(A) \mathbin{\texttt{++}} B)      & \text{[By definition of sum]} \\
-                  & = head(A) + \text{sum}(\text{tail}(A)) + \text{sum}(B) & \text{[By definition of C]} \\
-                  & = \text{sum}(A) + \text{sum}(B)                        & \text{[Substituting]} \\
+\text{sum}(A) & = \text{head}(A) + \text{sum}(\text{tail}(A))                & \text{[Pela definição de soma]} \\
+\text{sum}(C) & = \text{sum}(\text{tail}(A)) + \text{sum}(B)                           & \text{[Passo Indutivo]} \\
+A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt{++}} B)                          & \text{[Pela definição de cabeça e cauda]} \\
+\text{sum}(A \mathbin{\texttt{++}} B) & = \text{head}(A) + \text{sum}(\text{tail}(A) \mathbin{\texttt{++}} B)      & \text{[Pela definição de soma]} \\
+                  & = head(A) + \text{sum}(\text{tail}(A)) + \text{sum}(B) & \text{[Pela definição de C]} \\
+                  & = \text{sum}(A) + \text{sum}(B)                        & \text{[Substituindo]} \\
 \end{aligned}
 ```
 
@@ -717,7 +717,7 @@ A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt
 
 ```math
 \begin{aligned}
-	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B) & \quad \blacksquare \qquad \text{[Q.E.D.]} \\
+	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B) & \quad \blacksquare \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -736,10 +736,10 @@ A ordem da concatenação não afeta a soma total.
 Como:
 ```math
 \begin{aligned}
-	sum(A \mathbin{\texttt{++}} B) & = sum(A) + sum(B)                        & \text{[Sum over Concatenation]} \\
-	sum(B \mathbin{\texttt{++}} A) & = sum(B) + sum(A)                        & \text{[Sum over Concatenation]} \\
-	sum(B) + sum(A) & = sum(A) + sum(B)                   & \text{[Distributive]} \\
-	sum(B \mathbin{\texttt{++}} A) & = sum(A \mathbin{\texttt{++}} B)  \quad \blacksquare         & \text{[Q.E.D]} \\
+	sum(A \mathbin{\texttt{++}} B) & = sum(A) + sum(B)                        & \text{[Soma sobre concatenação]} \\
+	sum(B \mathbin{\texttt{++}} A) & = sum(B) + sum(A)                        & \text{[Soma sobre concatenação]} \\
+	sum(B) + sum(A) & = sum(A) + sum(B)                   & \text{[Distributiva]} \\
+	sum(B \mathbin{\texttt{++}} A) & = sum(A \mathbin{\texttt{++}} B)  \quad \blacksquare         & \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -791,10 +791,10 @@ O produto de uma lista singleton contendo $x$ é $x$.
 **Prova:**
 ```math
 \begin{aligned}
-\text{product}(x :: L_e) &= \text{head}(x :: L_e) \cdot \text{product}(\text{tail}(x :: L_e)) & \qquad \text{[by definition of product]} \\
-&= x \cdot \text{product}([]) & \qquad \text{[by definition of head and tail]} \\
-&= x \cdot 1 & \qquad \text{[product of empty list is 1]} \\
-&= x \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(x :: L_e) &= \text{head}(x :: L_e) \cdot \text{product}(\text{tail}(x :: L_e)) & \qquad \text{[pela definição de produto]} \\
+&= x \cdot \text{product}([]) & \qquad \text{[pela definição de cabeça e cauda]} \\
+&= x \cdot 1 & \qquad \text{[produto da lista vazia é 1]} \\
+&= x \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -818,9 +818,9 @@ concatenada.
 
 ```math
 \begin{aligned}
-\text{product}(L_e \mathbin{\texttt{++}} (e :: listB)) &= \text{product}(e :: listB) & \qquad \text{[by definition of append and cons]} \\
-&= e \cdot \text{product}(listB) & \qquad \text{[by definition of product]} \\
-&= e \cdot \text{product}(L_e \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(L_e \mathbin{\texttt{++}} (e :: listB)) &= \text{product}(e :: listB) & \qquad \text{[pela definição de concatenação e cons]} \\
+&= e \cdot \text{product}(listB) & \qquad \text{[pela definição de produto]} \\
+&= e \cdot \text{product}(L_e \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -846,9 +846,9 @@ O produto distribui sobre a concatenação de listas.
 
 ```math
 \begin{aligned}
-\text{product}(L_e \mathbin{\texttt{++}} listB) &= \text{product}(listB) & \qquad \text{[by definition of append]} \\
-&= 1 \cdot \text{product}(listB) & \qquad \text{[1 is multiplicative identity]} \\
-&= \text{product}(L_e) \cdot \text{product}(listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(L_e \mathbin{\texttt{++}} listB) &= \text{product}(listB) & \qquad \text{[pela definição de concatenação]} \\
+&= 1 \cdot \text{product}(listB) & \qquad \text{[1 é a identidade multiplicativa]} \\
+&= \text{product}(L_e) \cdot \text{product}(listB) \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -871,10 +871,10 @@ O produto é invariante sob a troca de blocos concatenados.
 **Prova:**
 ```math
 \begin{aligned}
-\text{product}(listA \mathbin{\texttt{++}} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Product over Concatenation]} \\
-\text{product}(listB \mathbin{\texttt{++}} listA) &= \text{product}(listB) \cdot \text{product}(listA) & \qquad \text{[Product over Concatenation]} \\
-&= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Commutativity of multiplication]} \\
-&= \text{product}(listA \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(listA \mathbin{\texttt{++}} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Produto sobre Concatenação]} \\
+\text{product}(listB \mathbin{\texttt{++}} listA) &= \text{product}(listB) \cdot \text{product}(listA) & \qquad \text{[Produto sobre Concatenação]} \\
+&= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Comutatividade da multiplicação]} \\
+&= \text{product}(listA \mathbin{\texttt{++}} listB) \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -937,9 +937,9 @@ A cabeça de uma lista positiva divide o produto da lista inteira.
 **Prova:**
 ```math
 \begin{aligned}
-\text{product}(elements) &= \text{head}(elements) \cdot \text{product}(\text{tail}(elements)) & \qquad \text{[by definition of product]} \\
+\text{product}(elements) &= \text{head}(elements) \cdot \text{product}(\text{tail}(elements)) & \qquad \text{[pela definição de produto]} \\
 \text{product}(elements) \bmod \text{head}(elements) &= (\text{head}(elements) \cdot \text{product}(\text{tail}(elements))) \bmod \text{head}(elements) \\
-&= 0 \quad \blacksquare & \qquad \text{[by modulo identity]} \\
+&= 0 \quad \blacksquare & \qquad \text{[pela identidade modular]} \\
 \end{aligned}
 ```
 
@@ -986,9 +986,9 @@ por esse elemento.
 **Prova:**
 ```math
 \begin{aligned}
-\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) &= e \cdot \text{product}(prefix \mathbin{\texttt{++}} suffix) & \qquad \text{[Product Pull-Out Element]} \\
+\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) &= e \cdot \text{product}(prefix \mathbin{\texttt{++}} suffix) & \qquad \text{[Extração de Elemento do Produto]} \\
 &= e \cdot k & \qquad \text{[where k = product(prefix} \mathbin{\texttt{++}} \text{suffix)]} \\
-\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e &= (e \cdot k) \bmod e = 0 \quad \blacksquare & \qquad \text{[Q.E.D.]} \\
+\text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e &= (e \cdot k) \bmod e = 0 \quad \blacksquare & \qquad \text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -1101,7 +1101,7 @@ satisfaz o mesmo formato de propriedades: preservação por append, preservaçã
 por split e transitividade para uma cota mais frouxa.
 
 ```math
-(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Append]}
+(\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Concatenação]}
 ```
 
 ```math
@@ -1109,11 +1109,11 @@ por split e transitividade para uma cota mais frouxa.
 ```
 
 ```math
-(\forall x \in list,\, x < bound) \implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound) \quad \text{[Split]}
+(\forall x \in list,\, x < bound) \implies (\forall x \in front,\, x < bound) \wedge (\forall x \in back,\, x < bound) \quad \text{[Divisão]}
 ```
 
 ```math
-(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \implies \forall x \in list,\, x < bound_2 \quad \text{[Transitivity]}
+(\forall x \in list,\, x < bound) \wedge bound \leq bound_2 \implies \forall x \in list,\, x < bound_2 \quad \text{[Transitividade]}
 ```
 
 ```math
@@ -1121,7 +1121,7 @@ por split e transitividade para uma cota mais frouxa.
 ```
 
 ```math
-(\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[At Index]}
+(\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[No índice]}
 ```
 
 Essas propriedades são verificadas em [
@@ -1205,7 +1205,7 @@ invariante da case class.
 
 ```math
 \begin{aligned}
-\text{period}(\text{shifted}) = \text{period}(\text{original}) \quad &\text{[Q.E.D.]}
+\text{period}(\text{shifted}) = \text{period}(\text{original}) \quad &\text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1227,7 +1227,7 @@ cumulativa de valor acima.
 ```math
 \begin{aligned}
 \text{value}_{h,G}(i + 1) - \text{value}_{h,G}(i) = G_i
-\quad \text{for } 0 \leq i < \text{size} - 1 \quad &\text{[Q.E.D.]}
+\quad \text{for } 0 \leq i < \text{size} - 1 \quad &\text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1252,9 +1252,9 @@ de gaps é rotacionada por uma posição.
 \begin{aligned}
 \text{value}_{\text{shift}(h,G)}(i + 1) - \text{value}_{\text{shift}(h,G)}(i)
   &= \text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
-  && \text{[Gap translation]} \\
+  && \text{[Tradução de lacunas]} \\
   &= \text{gaps}(i + 1)
-  && \text{[By adjacent-difference identity for both views]}
+  && \text{[Pela identidade de diferença adjacente nas duas visões]}
 \end{aligned}
 ```
 
@@ -1326,7 +1326,7 @@ aparecem, e toda quantidade estrutural derivada da lista é preservada.
 ```math
 \begin{aligned}
 \text{rotateAt}(L, k).\text{contains}(x) &\iff L.\text{contains}(x)
-  &&\text{[Q.E.D.]}
+  &&\text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1335,8 +1335,8 @@ total. A soma sobre `append` é aditiva e comutativa.
 
 ```math
 \begin{aligned}
-|\text{rotateAt}(L, k)| &= |L| &&\text{[Same size]} \\
-\sum \text{rotateAt}(L, k) &= \sum L &&\text{[Same sum]}
+|\text{rotateAt}(L, k)| &= |L| &&\text{[Mesmo tamanho]} \\
+\sum \text{rotateAt}(L, k) &= \sum L &&\text{[Mesma soma]}
 \end{aligned}
 ```
 
@@ -1359,7 +1359,7 @@ original no índice $k + 1$. Este é o lema subjacente à translação de gaps e
 ```math
 \begin{aligned}
 \text{rotateAt}(L, 1)(k) = L(k + 1) \quad \text{for } k + 1 < |L| \quad &
-\text{[Q.E.D.]}
+\text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1416,14 +1416,14 @@ $L,A,B,P,S \in 𝕃$, valores $x,e,v \in 𝕊$ e índices naturais válidos.
 \begin{aligned}
 |L| > 0
 &\implies L_{|L|-1} = \text{last}(L)
-&&\text{[Last Element Identity]} \\
+&&\text{[Identidade do último elemento]} \\
 0 < i < |L|
 &\implies L_i = \text{tail}(L)_{i-1}
-&&\text{[Tail Access Shift]} \\
+&&\text{[Deslocamento no acesso à cauda]} \\
 0 \leq f < t < |L|
 &\implies L[f \dots t]
  = L[f \dots (t - 1)] \mathbin{\texttt{++}} (L_t :: L_e)
-&&\text{[Slice Append Consistency]}
+&&\text{[Consistência de anexação da fatia]}
 \end{aligned}
 ```
 
@@ -1431,19 +1431,19 @@ $L,A,B,P,S \in 𝕃$, valores $x,e,v \in 𝕊$ e índices naturais válidos.
 \begin{aligned}
 \text{sum}(L)
 &= \sum_{i=0}^{|L|-1} L_i
-&&\text{[Sum Matches Summation]} \\
+&&\text{[Soma coincide com o somatório]} \\
 \text{sum}(x :: L)
 &= x + \text{sum}(L)
-&&\text{[Left Append Preserves Sum]} \\
+&&\text{[Anexação à esquerda preserva a soma]} \\
 \text{sum}(A \mathbin{\texttt{++}} B)
 &= \text{sum}(A) + \text{sum}(B)
-&&\text{[Sum over Concatenation]} \\
+&&\text{[Soma sobre concatenação]} \\
 \text{sum}(A \mathbin{\texttt{++}} B)
 &= \text{sum}(B \mathbin{\texttt{++}} A)
-&&\text{[Commutativity of Sum]} \\
+&&\text{[Comutatividade da Soma]} \\
 (\forall x \in L,\ x > 0) \land L \neq L_e
 &\implies \text{sum}(L) > 0
-&&\text{[Sum Positivity]}
+&&\text{[Positividade da Soma]}
 \end{aligned}
 ```
 
@@ -1451,19 +1451,19 @@ $L,A,B,P,S \in 𝕃$, valores $x,e,v \in 𝕊$ e índices naturais válidos.
 \begin{aligned}
 \text{product}(x :: L_e)
 &= x
-&&\text{[Singleton Product]} \\
+&&\text{[Produto singleton]} \\
 \text{product}(A \mathbin{\texttt{++}} (e :: B))
 &= e \cdot \text{product}(A \mathbin{\texttt{++}} B)
-&&\text{[Product Pull-Out Element]} \\
+&&\text{[Extração de Elemento do Produto]} \\
 \text{product}(A \mathbin{\texttt{++}} B)
 &= \text{product}(A) \cdot \text{product}(B)
-&&\text{[Product over Concatenation]} \\
+&&\text{[Produto sobre Concatenação]} \\
 \text{product}(A \mathbin{\texttt{++}} B)
 &= \text{product}(B \mathbin{\texttt{++}} A)
-&&\text{[Commutativity of Product]} \\
+&&\text{[Comutatividade do Produto]} \\
 (\forall x \in L,\ x > 0)
 &\implies \text{product}(L) > 0
-&&\text{[Positive Product]}
+&&\text{[Produto Positivo]}
 \end{aligned}
 ```
 
@@ -1471,13 +1471,13 @@ $L,A,B,P,S \in 𝕃$, valores $x,e,v \in 𝕊$ e índices naturais válidos.
 \begin{aligned}
 L \neq L_e \land (\forall x \in L,\ x > 0)
 &\implies \text{product}(L) \bmod \text{head}(L) = 0
-&&\text{[Head Divides Product]} \\
+&&\text{[Cabeça divide o produto]} \\
 (\forall x \in L,\ x > 0)
 &\implies \forall x \in L,\ \text{product}(L) \bmod x = 0
-&&\text{[All Elements Divide Product]} \\
+&&\text{[Todos os elementos dividem o produto]} \\
 e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 &\implies \text{product}(P \mathbin{\texttt{++}} (e :: S)) \bmod e = 0
-&&\text{[Inserted Element Divides Product]}
+&&\text{[Elemento inserido divide o produto]}
 \end{aligned}
 ```
 
@@ -1485,23 +1485,23 @@ e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 \begin{aligned}
 (\forall x \in L,\ x > v) \land 0 \leq i < |L|
 &\implies L_i > v
-&&\text{[Bound at Index]} \\
+&&\text{[Limite no índice]} \\
 (\forall x \in A,\ x > v) \land (\forall x \in B,\ x > v)
 &\implies \forall x \in A \mathbin{\texttt{++}} B,\ x > v
-&&\text{[Bound over Concatenation]} \\
+&&\text{[Limite sobre concatenação]} \\
 (\forall x \in L,\ x > v) \land 0 \leq k \leq |L|
 &\implies (\forall x \in \text{front},\ x > v) \land (\forall x \in \text{back},\ x > v)
-&&\text{[Split Preserves Lower Bound]} \\
+&&\text{[Divisão preserva limite inferior]} \\
 (\forall x \in A,\ x < b) \land (\forall x \in B,\ x < b)
 &\implies \forall x \in A \mathbin{\texttt{++}} B,\ x < b
-&&\text{[Bound over Concatenation, Upper]} \\
+&&\text{[Limite superior sobre concatenação]} \\
 (\forall x \in L,\ x < b) \land 0 \leq k \leq |L|
 &\implies (\forall x \in \text{front},\ x < b) \land (\forall x \in \text{back},\ x < b)
-&&\text{[Split Preserves Upper Bound]} \\
+&&\text{[Divisão preserva limite superior]} \\
 \text{slice}(L,f,t)
 &= \text{headRecursiveSlice}(L,f,t)
  = \text{indexRangeValues}(L,f,t)
-&&\text{[Slice Equivalence]}
+&&\text{[Equivalência da fatia]}
 \end{aligned}
 ```
 
@@ -1509,20 +1509,20 @@ e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 \begin{aligned}
 \text{value}_{h,G}(i + 1) - \text{value}_{h,G}(i)
 &= G_i
-&&\text{[Adjacent Difference]} \\
+&&\text{[Diferença Adjacente]} \\
 \text{value}_{\text{shift}(h,G)}(i + 1)
  - \text{value}_{\text{shift}(h,G)}(i)
 &= \text{value}_{h,G}(i + 2) - \text{value}_{h,G}(i + 1)
-&&\text{[Gap Translation]} \\
+&&\text{[Tradução de Lacunas]} \\
 \text{rotateAt}(L,k).\text{contains}(x)
 &\iff L.\text{contains}(x)
-&&\text{[Rotation Same Elements]} \\
+&&\text{[Rotação preserva os mesmos elementos]} \\
 |\text{rotateAt}(L,k)|
 &= |L|
-&&\text{[Rotation Same Size]} \\
+&&\text{[Rotação preserva o mesmo tamanho]} \\
 \text{sum}(\text{rotateAt}(L,k))
 &= \text{sum}(L)
-&&\text{[Rotation Same Sum]}
+&&\text{[Rotação preserva a mesma soma]}
 \end{aligned}
 ```
 
@@ -1615,11 +1615,11 @@ estabeleçam sua equivalência com o modelo atual, matematicamente rigoroso.
 ## 15. Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
-Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.  
-Proceedings of the ACM on Programming Languages, OOPSLA Issue. 
+Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.
+Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
-Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
+Wikipedia contributors. (2026). *Formal verification*. Wikipedia.
 Disponível em: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
@@ -1631,7 +1631,7 @@ The Lean Community. *Mathlib: List Rotation*.
 Disponível em: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
-Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*.  
+Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*.
 Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
 ## Apêndice A: Código de Verificação Scala
@@ -1744,9 +1744,9 @@ Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/b
     require(from >= 0)
     require(from < to)
     require(to < list.size)
-    
+
     listSumAddValue(list, list(to))
-    
+
     ListUtils.slice(list, from, to) ==
       ListUtils.slice(list, from, to - 1) ++ List(list(to))
   }.holds

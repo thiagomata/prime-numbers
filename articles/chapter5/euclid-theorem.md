@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [Zenodo:10.5281/zenodo.22929220](https://doi.org/10.5281/zenodo.22929220)
 
@@ -147,17 +147,17 @@ resíduo é não zero.
 \begin{aligned}
 \text{primorial}(L)
   &= p_i \cdot \prod_{j\ne i} p_j
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 \text{mod}(\text{primorial}(L), p_i)
   &= 0
   &&\text{[Product Contains }p_i\text{]} \\
 \text{mod}(\text{primorial}(L)+1, p_i)
   &= \text{mod}(1, p_i)
-  &&\text{[Modulo Shift]} \\
+  &&\text{[Deslocamento Modular]} \\
   &= 1
-  &&\text{[Since }1 < p_i\text{]} \\
+  &&\text{[Como }1 < p_i\text{]} \\
   &\ne 0
-  &&\blacksquare\ \text{[Q.E.D.]}
+  &&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -175,11 +175,11 @@ $\text{mod}(0,p)=0$ quanto $\text{mod}(1,p)=1$ porque $p>1$.
 \begin{aligned}
 0 \le a < b
 &\Rightarrow \text{mod}(a,b)=a
-&&\text{[Small Dividend]} \\
+&&\text{[Dividendo Pequeno]} \\
 p>1
 &\Rightarrow \text{mod}(0,p)=0
 \land \text{mod}(1,p)=1
-&&\text{[Substitution]}
+&&\text{[Substituição]}
 \end{aligned}
 ```
 
@@ -196,10 +196,10 @@ $\text{mod}(p\cdot k,p)=0$.
 \begin{aligned}
 \text{mod}(a,b)=0
 &\Rightarrow \text{mod}(a\cdot m,b)=0
-&&\text{[Multiplication Preserves Zero Remainder]} \\
+&&\text{[Multiplicação Preserva Resto Zero]} \\
 \text{mod}(p,p)=0
 &\Rightarrow \text{mod}(p\cdot k,p)=0
-&&\text{[Substitution]}
+&&\text{[Substituição]}
 \end{aligned}
 ```
 
@@ -216,12 +216,12 @@ resto não zero módulo todo primo original.
 \begin{aligned}
 \text{mod}(m,b)=0
 &\Rightarrow \text{mod}(m+c,b)=\text{mod}(c,b)
-&&\text{[Modulo Shift]} \\
+&&\text{[Deslocamento Modular]} \\
 \text{mod}(p\cdot k,p)=0
 &\Rightarrow \text{mod}(p\cdot k+1,p)=\text{mod}(1,p)=1
-&&\text{[Substitution]} \\
+&&\text{[Substituição]} \\
 &\Rightarrow \text{mod}(p\cdot k+1,p)\ne0
-&&\blacksquare\ \text{[Q.E.D.]}
+&&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -255,9 +255,9 @@ dividiria $N$, contradizendo a minimalidade de $d$. Logo $d$ é primo.
 ```math
 \begin{aligned}
 d=N
-&\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0.         &&\text{[No Proper Divisor Found]} \\
-&\Rightarrow \text{isPrime}(N)                              &&\text{[Prime Definition]} \\
-&d < N \land \text{mod}(N,d)=0 \Rightarrow \text{isPrime}(d)  &&\text{[Minimal Divisor]} \\
+&\Rightarrow \forall e\in[2,N),\text{mod}(N,e)\ne0.         &&\text{[Nenhum Divisor Próprio Encontrado]} \\
+&\Rightarrow \text{isPrime}(N)                              &&\text{[Definição de Primo]} \\
+&d < N \land \text{mod}(N,d)=0 \Rightarrow \text{isPrime}(d)  &&\text{[Divisor Mínimo]} \\
 \end{aligned}
 ```
 
@@ -282,7 +282,7 @@ de $L$ é igual a $v$.
 ```math
 \begin{aligned}
 N &= \text{primorial}(L) + 1
-&&\text{[Euclid Construction]} \\
+&&\text{[Construção de Euclides]} \\
   &= p \cdot k + 1
 &&\text{[Unfold Product at }p\text{]} \\
 \text{mod}(N,p)
@@ -290,15 +290,15 @@ N &= \text{primorial}(L) + 1
   &= \text{mod}(1,p)
 &&\text{[Multiple of }p\text{ Drops Out]} \\
   &= 1
-&&\text{[Since }p>1\text{]} \\
+&&\text{[Como }p>1\text{]} \\
 \text{mod}(N,v)
   &= 0
-&&\text{[Chosen Divisor]} \\
+&&\text{[Divisor Escolhido]} \\
 p=v
   &\Rightarrow 1=0
-&&\text{[Contradiction]} \\
+&&\text{[Contradição]} \\
 \therefore\ p &\ne v
-&&\blacksquare\ \text{[Q.E.D.]}
+&&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -323,12 +323,12 @@ N &= \text{primorial}(L)+1 \\
 d &= \text{findSmallestDivisor}(N,2) \\
 d=N
 &\Rightarrow \text{isPrime}(N)\land N\notin L
-&&\text{[Stages 2 and 3]} \\
+&&\text{[Etapas 2 e 3]} \\
 d < N
 &\Rightarrow \text{isPrime}(d)\land d\notin L
-&&\text{[Stages 2 and 3]} \\
+&&\text{[Etapas 2 e 3]} \\
 \therefore\ \exists p:\text{isPrime}(p)\land p\notin L
-&&\text{[Case Split]}\quad\blacksquare\ \text{[Q.E.D.]}
+&&\text{[Divisão de Casos]}\quad\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -362,20 +362,20 @@ contido no prefixo completo. Portanto $q > h$.
 ```math
 \begin{aligned}
 P &= [p_1,\dots,p_k],\quad h=p_k
-&&\text{[Finite Prime Prefix]} \\
+&&\text{[Prefixo Finito de Primos]} \\
 \forall r,\ \text{isPrime}(r)\land r\le h
 &\Rightarrow r\in P
-&&\text{[Prefix Complete Through }h\text{]} \\
+&&\text{[Prefixo Completo Até }h\text{]} \\
 \text{isPrime}(q)\land q\notin P
-&&\text{[Euclid Construction]} \\
+&&\text{[Construção de Euclides]} \\
 q\le h
 &\Rightarrow q\in P
-&&\text{[Prefix Completeness]} \\
+&&\text{[Completude do Prefixo]} \\
 q\le h
 &\Rightarrow q\in P\land q\notin P
-&&\text{[Contradiction]} \\
+&&\text{[Contradição]} \\
 \therefore\ q&>h
-&&\blacksquare\ \text{[Q.E.D.]}
+&&\blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -416,7 +416,7 @@ $2\leq d\leq e<n$ e $\text{mod}(n,d)=0$.
 
 ```math
 \therefore\ 2\leq d\lt n\ \land\ \text{mod}(n,d)=0.
-\quad \blacksquare\ \text{[Q.E.D.]}
+\quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 **O menor divisor é no máximo sqrt(n).** Quando $n$ é composto com menor
@@ -438,7 +438,7 @@ contradizendo a minimalidade de $d$.
 Logo $d\leq q$, e
 
 ```math
-d^2\leq dq=n.\quad\blacksquare\ \text{[Q.E.D.]}
+d^2\leq dq=n.\quad\blacksquare\ \text{[C.Q.D.]}
 ```
 
 **Divisor composto empacotado.** O invólucro `assertCompositeSmallestPrimeDivisor`
@@ -454,7 +454,7 @@ n > 1 \;\land\; \neg \text{isPrime}(n)
 \;\land\; \text{isPrime}(d)
 \;\land\; d^2 \le n
 \;\land\; \text{Calc.mod}(n,d)=0
-  &&\text{[Composite Smallest Prime Divisor]}
+  &&\text{[Menor Divisor Primo de um Composto]}
 \end{aligned}
 ```
 
@@ -542,7 +542,7 @@ ax+(b-a)y=g &\implies a(x-y)+by=g.
 
 Todo divisor comum de $h$ e do primo $p$ é ou $1$ ou $p$; ele não pode
 ser $p$ porque $0<h<p$. Portanto, o mdc terminal é $1$, o que dá a
-identidade de Bézout exibida. [Q.E.D.]
+identidade de Bézout exibida. [C.Q.D.]
 
 Multiplicar essa identidade por $k$ dá $k h x + k p y = k$. Se $p$ divide
 $k h$, então $p$ divide ambos os termos à esquerda e, portanto, divide $k$.
@@ -623,15 +623,15 @@ $P=\text{primorial}(L)$ e $N=P+1$:
 ```math
 \begin{aligned}
 \forall p\in L,\quad \text{mod}(N,p)&=1\ne0
-&&\text{[Stage 1]} \\
+&&\text{[Etapa 1]} \\
 d=\text{findSmallestDivisor}(N,2),\quad d=N
 &\Rightarrow \text{isPrime}(N) \\
 d\lt N
 &\Rightarrow \text{isPrime}(d)
-&&\text{[Stage 2]} \\
+&&\text{[Etapa 2]} \\
 v\mid N\ \land\ p\in L
 &\Rightarrow p\ne v
-&&\text{[Stage 3].}
+&&\text{[Etapa 3].}
 \end{aligned}
 ```
 
@@ -640,7 +640,7 @@ $L$:
 
 ```math
 L\ne[]\ \Rightarrow\ \exists p:\text{isPrime}(p)\land p\notin L.
-\quad\blacksquare\ \text{[Q.E.D.]}
+\quad\blacksquare\ \text{[C.Q.D.]}
 ```
 
 ## 8. Trabalhos Futuros

@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [Zenodo:10.5281/zenodo.22865441](https://doi.org/10.5281/zenodo.22865441)
 
@@ -180,22 +180,22 @@ f > t, \quad 0 \leq i < |L|\\
 
 ```math
 \begin{aligned}
-&|L| &> 0 &\implies \text{tail}(L) &= &L[x_1, x_2, \dots, x_{n-1}] \quad &\text{[Tail Identity]} \\
-&|L| &> 0 &\implies L_{0} &= &\text{ }\text{head}(L) \quad &\text{[Head Identity]} \\
-&|L| &> 0 &\implies L_{|L|-1} &= &\text{ }\text{last}(L) \quad &\text{[Last Element Identity]} \\
-&|L| - 1 &> i > 0 &\implies L_i &= &\text{ }\text{tail}(L)_{i-1} \quad &\text{[Access Tail Shift Left]} \\
-&|L| - 2 &> i > 1 \text{ } &\implies \text{tail}(L)_i &= &L_{i+1} \quad &\text{[Access Tail Shift Right]} \\
+&|L| &> 0 &\implies \text{tail}(L) &= &L[x_1, x_2, \dots, x_{n-1}] \quad &\text{[Identidade da cauda]} \\
+&|L| &> 0 &\implies L_{0} &= &\text{ }\text{head}(L) \quad &\text{[Identidade da cabeça]} \\
+&|L| &> 0 &\implies L_{|L|-1} &= &\text{ }\text{last}(L) \quad &\text{[Identidade do último elemento]} \\
+&|L| - 1 &> i > 0 &\implies L_i &= &\text{ }\text{tail}(L)_{i-1} \quad &\text{[Deslocamento à esquerda no acesso à cauda]} \\
+&|L| - 2 &> i > 1 \text{ } &\implies \text{tail}(L)_i &= &L_{i+1} \quad &\text{[Deslocamento à direita no acesso à cauda]} \\
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
-&|L| &= &\text{size}(L)                        \quad &\text{[Size Identity]} \\
-&\sum L &= &\text{sum}(L)                      \quad &\text{[Sum matches Summation]} \\
-&\sum (v :: L) &= &v + \sum L                 \quad &\text{[Left Append Preserves Sum]} \\
-&\sum (A \mathbin{\texttt{++}} B) &= &\sum A + \sum B              \quad &\text{[Sum over Concatenation]} \\
-&\sum (A \mathbin{\texttt{++}} B) &= &\sum (B \mathbin{\texttt{++}} A)                 \quad &\text{[Commutativity of Sum over Concatenation]} \\
-&L[f \dots t] &= &L[f \dots {(t - 1)}] \mathbin{\texttt{++}} [L_t] \quad &\text{[Slice Append Consistency]} \\
+&|L| &= &\text{size}(L)                        \quad &\text{[Identidade do tamanho]} \\
+&\sum L &= &\text{sum}(L)                      \quad &\text{[Soma coincide com o somatório]} \\
+&\sum (v :: L) &= &v + \sum L                 \quad &\text{[Anexação à esquerda preserva a soma]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum A + \sum B              \quad &\text{[Soma sobre concatenação]} \\
+&\sum (A \mathbin{\texttt{++}} B) &= &\sum (B \mathbin{\texttt{++}} A)                 \quad &\text{[Comutatividade da Soma sobre Concatenação]} \\
+&L[f \dots t] &= &L[f \dots {(t - 1)}] \mathbin{\texttt{++}} [L_t] \quad &\text{[Consistência de anexação da fatia]} \\
 \end{aligned}
 ```
 
@@ -264,7 +264,7 @@ sequência periódica significa. O que ainda precisa ser provado é se a defini�
 baseada em módulo abaixo computa os mesmos valores; essa equivalência é provada
 na [Seção 4](#4-cycle-equivalence).
 
-O ciclo recursivo é definido em [RecursiveCycle](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
+O ciclo recursivo é definido em [Ciclo Recursivo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter4/cycle/recursive/RecursiveCycle.scala):
 
 ```scala
 case class RecursiveCycle(values: List[BigInt]) {
@@ -347,7 +347,7 @@ encapsulado como `ModCycle(values)`.
 ```math
 \begin{aligned}
 \text{MemCycle}(L)_i
-  &= \text{ModCycle}(L)_i && \text{[By MemCycle.apply delegating to its wrapped ModCycle]}
+  &= \text{ModCycle}(L)_i && \text{[Por MemCycle.apply delegar ao ModCycle encapsulado]}
 \end{aligned}
 ```
 
@@ -420,12 +420,12 @@ elemento da lista diretamente.
 
 ```math
 \begin{aligned}
-i < n \implies i \text{ mod } n &= i                  \quad &\text{[Trivial Mod For Small Dividend]} \\
-\text{ModCycle}_i &= L_{(i \text{ mod } n)}           \quad &\text{[ModCycle Definition]} \\
-                  &= L_i                              \quad &\text{[Since } i < n \text{, } i \text{ mod } n = i \text{]} \\
-\text{RecCycle}_i &= L_i                              \quad &\text{[Since } i < n \text{, by RecCycle Definition]} \\
+i < n \implies i \text{ mod } n &= i                  \quad &\text{[Módulo trivial para dividendo pequeno]} \\
+\text{ModCycle}_i &= L_{(i \text{ mod } n)}           \quad &\text{[Definição de ModCycle]} \\
+                  &= L_i                              \quad &\text{[Como } i < n \text{, } i \text{ mod } n = i \text{]} \\
+\text{RecCycle}_i &= L_i                              \quad &\text{[Como } i < n \text{, by RecCycle Definition]} \\
 \therefore \\
-i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text{[Q.E.D.]} \\
+i < n \implies\text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare  &\text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -442,16 +442,16 @@ período do ciclo e dependem da hipótese indutiva.
 
 ```math
 \begin{aligned}
-\text{ModCycle}_{(i - n)}           &= \text{RecCycle}_{(i - n)}   \quad &\text{[By Induction Hypothesis]} \\
+\text{ModCycle}_{(i - n)}           &= \text{RecCycle}_{(i - n)}   \quad &\text{[Pela Hipótese de Indução]} \\
 i \geq n \implies i \text{ mod } n  &= (i - n) \text{ mod } n  \quad &\text{[Quotient Invariance Under Linear Shift]} \\
-\text{ModCycle}_i   &= L_{(i \text{ mod } n)}        \quad &\text{[ModCycle Definition]} \\
-                    &= L_{((i - n) \text{ mod } n)}  \quad &\text{[Since } i \geq n \text{, } i \text{ mod } n = (i - n) \text{ mod } n \text{]} \\
-                    &= \text{ModCycle}_{(i - n)}     \quad &\text{[By Definition]} \\
-                    &= \text{RecCycle}_{(i - n)}     \quad &\text{[By Substitution]} \\
-\text{RecCycle}_{i} &= \text{RecCycle}_{(i - n)}     \quad &\text{[By RecCycle Definition]} \\
-                    &= \text{ModCycle}_{i}           \quad &\text{[By Substitution]} \\
+\text{ModCycle}_i   &= L_{(i \text{ mod } n)}        \quad &\text{[Definição de ModCycle]} \\
+                    &= L_{((i - n) \text{ mod } n)}  \quad &\text{[Como } i \geq n \text{, } i \text{ mod } n = (i - n) \text{ mod } n \text{]} \\
+                    &= \text{ModCycle}_{(i - n)}     \quad &\text{[Pela Definição]} \\
+                    &= \text{RecCycle}_{(i - n)}     \quad &\text{[Por Substituição]} \\
+\text{RecCycle}_{i} &= \text{RecCycle}_{(i - n)}     \quad &\text{[Pela Definição de RecCycle]} \\
+                    &= \text{ModCycle}_{i}           \quad &\text{[Por Substituição]} \\
 \therefore \\
-i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\text{[Q.E.D.]} \\
+i \geq n \implies \text{ModCycle}_i &= \text{RecCycle}_i  \quad \blacksquare &\text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -473,7 +473,7 @@ esta seção, `MemCycle` e `ModCycle` iguais por delegação
 \therefore\quad
 \text{RecCycle}(L)_i
   &= \text{ModCycle}(L)_i
-   = \text{MemCycle}(L)_i && \text{[Three-Way Equality]}
+   = \text{MemCycle}(L)_i && \text{[Igualdade em Três Vias]}
 \end{aligned}
 ```
 
@@ -525,14 +525,14 @@ posição módulo o período do ciclo.
 
 ```math
 \begin{aligned}
-\text{Cycle}_i &= \text{RecCycle}_i \quad &\text{[§3.1 Definition]} \\
-              &= \text{ModCycle}_i \quad &\text{[§4 Cycle Equivalence]} \\
-              &= L[i \bmod n]      \quad &\text{[ModCycle Definition]}
+\text{Cycle}_i &= \text{RecCycle}_i \quad &\text{[Definição da §3.1]} \\
+              &= \text{ModCycle}_i \quad &\text{[Equivalência de Ciclos da §4]} \\
+              &= L[i \bmod n]      \quad &\text{[Definição de ModCycle]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{Cycle}_i = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{Cycle}_i = L[i \bmod n] \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 A propriedade de [Equivalência de Ciclos](#4-cycle-equivalence) foi provada e
@@ -559,13 +559,13 @@ i < n \implies \text{Cycle}_i = L_i
 
 ```math
 \begin{aligned}
-\text{Cycle}_i &= \text{RecCycle}_i \quad &\text{[§3.1 Definition]} \\
-i < n \implies \text{RecCycle}_i &= L_i \quad &\text{[RecCycle Definition]}
+\text{Cycle}_i &= \text{RecCycle}_i \quad &\text{[Definição da §3.1]} \\
+i < n \implies \text{RecCycle}_i &= L_i \quad &\text{[Definição de RecCycle]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ i < n \implies \text{Cycle}_i = L_i \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ i < n \implies \text{Cycle}_i = L_i \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Este passo precisa apenas da nomeação `Cycle := RecCycle` de
@@ -593,15 +593,15 @@ período do ciclo à chave de acesso.
 
 ```math
 \begin{aligned}
-\text{Cycle}_{(i + n \cdot m)} &= \text{RecCycle}_{(i + n \cdot m)} \quad &\text{[§3.1 Definition]} \\
-                               &= \text{ModCycle}_{(i + n \cdot m)} \quad &\text{[§4 Cycle Equivalence]} \\
-                               &= L[(i + n \cdot m) \bmod n]        \quad &\text{[ModCycle Definition]} \\
+\text{Cycle}_{(i + n \cdot m)} &= \text{RecCycle}_{(i + n \cdot m)} \quad &\text{[Definição da §3.1]} \\
+                               &= \text{ModCycle}_{(i + n \cdot m)} \quad &\text{[Equivalência de Ciclos da §4]} \\
+                               &= L[(i + n \cdot m) \bmod n]        \quad &\text{[Definição de ModCycle]} \\
                                &= L[i \bmod n] \quad &\text{[Quotient Invariance Under Linear Shift by Multiplier]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{Cycle}_{(i + n \cdot m)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{Cycle}_{(i + n \cdot m)} = L[i \bmod n] \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 O lema [Invariância do Quociente sob Deslocamento Linear](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#65-quotient-invariance-under-linear-shift) e sua variante com multiplicador foram provados e verificados em [Divisão e Módulo por Normalização Recursiva](http://ai.viXra.org/abs/2609.0009) [[3]](#ref3).
@@ -628,13 +628,13 @@ $m_1$ quanto em $m_2$:
 
 ```math
 \begin{aligned}
-\text{Cycle}_{(i + n \cdot m_1)} &= L[i \bmod n] \quad &\text{[§5.3, Value Match After Many Loops]} \\
-\text{Cycle}_{(i + n \cdot m_2)} &= L[i \bmod n] \quad &\text{[§5.3, Value Match After Many Loops]}
+\text{Cycle}_{(i + n \cdot m_1)} &= L[i \bmod n] \quad &\text{[§5.3, Correspondência de Valor Após Muitos Ciclos]} \\
+\text{Cycle}_{(i + n \cdot m_2)} &= L[i \bmod n] \quad &\text{[§5.3, Correspondência de Valor Após Muitos Ciclos]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{Cycle}_{(i + n \cdot m_1)} = \text{Cycle}_{(i + n \cdot m_2)} = L[i \bmod n] \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{Cycle}_{(i + n \cdot m_1)} = \text{Cycle}_{(i + n \cdot m_2)} = L[i \bmod n] \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -663,14 +663,14 @@ positivo `d` preserva essa mesma redução à posição-base.
 ```math
 \begin{aligned}
 \text{Cycle}_i
-  &= \text{RecCycle}_i &&\text{[§3.1 Definition]} \\
-  &= \text{ModCycle}_i &&\text{[§4 Cycle Equivalence]} \\
-  &= L_{i \bmod n} &&\text{[ModCycle Definition]}
+  &= \text{RecCycle}_i &&\text{[Definição da §3.1]} \\
+  &= \text{ModCycle}_i &&\text{[Equivalência de Ciclos da §4]} \\
+  &= L_{i \bmod n} &&\text{[Definição de ModCycle]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{Cycle}_i \bmod d = L_{i \bmod n} \bmod d \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{Cycle}_i \bmod d = L_{i \bmod n} \bmod d \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -716,14 +716,14 @@ C^{(t)} &\text{ — repeated cycle}, \quad \text{values}(C^{(t)}) = V^{(t)}
 ```math
 \begin{aligned}
 C^{(t)}(\text{pos}) &= V^{(t)}(\text{mod}(\text{pos},\; \text{period}))
-  && \text{[MemCycle access via modular index]} \\
+  && \text{[Acesso MemCycle por índice modular]} \\
   &= V(\text{mod}(\text{mod}(\text{pos},\; t \cdot n),\; n))
-  && \text{[Repeated list access pattern]} \\
+  && \text{[Padrão de acesso à lista repetida]} \\
   &= V(\text{mod}(\text{pos},\; n))
   && \text{[ModOperations::modByPositiveMultipleThenBase]} \\
   &= C(\text{pos})
   && \text{[Original cycle access]} \\
-  &\quad\blacksquare && \text{[Q.E.D.]}
+  &\quad\blacksquare && \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -769,7 +769,7 @@ negativos, o que é essencial para raciocínio sobre integrais e gaps.
 **Prova.** Por [§5.1](#51-cycle-element-access), `Cycle_pos = L[pos mod n]`, e `pos mod n` é um índice válido em `L` (em `[0, n)`). Logo, `Cycle_pos` é um dos valores de `L` — e todo valor de `L` é não negativo por hipótese, portanto `Cycle_pos >= 0`.
 
 ```math
-\therefore \ (\forall x \in L,\ x \geq 0) \land |L| > 0 \implies \text{Cycle}_{\text{pos}} \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ (\forall x \in L,\ x \geq 0) \land |L| > 0 \implies \text{Cycle}_{\text{pos}} \geq 0 \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -792,9 +792,9 @@ hipótese:
 ```math
 \begin{aligned}
 \text{Cycle}_{\text{pos}} &= L[\text{pos} \bmod n] &&\text{[§5.1]} \\
-L[\text{pos} \bmod n] &> x &&\text{[Base-list lower bound]} \\
+L[\text{pos} \bmod n] &> x &&\text{[Limite inferior da lista-base]} \\
 \therefore\ \text{Cycle}_{\text{pos}} &> x.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -833,19 +833,19 @@ deslocamento $k$:
 \begin{aligned}
 \text{rotateAt}(\text{Cycle}, k)_i
   &= \text{rotateAt}(L, k)[i \bmod n]
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
   &= L[(k + (i \bmod n)) \bmod n]
-  &&\text{[By Definition, since } i \bmod n \in [0, n) \text{]} \\
+  &&\text{[Pela Definição, como } i \bmod n \in [0, n) \text{]} \\
   &= L[(k + i) \bmod n]
   &&\text{[Modulo Idempotence + Distributivity over Addition]} \\
   &= \text{Cycle}_{i + k}
-  &&\text{[§5.1 Cycle Element Access]}
+  &&\text{[Acesso ao Elemento do Ciclo da §5.1]}
 \end{aligned}
 ```
 
 ```math
 \therefore \ \text{rotateAt}(\text{Cycle}, k)_i = \text{Cycle}_{i + k} \quad
-\text{for } k \geq 0,\ i \geq 0 \quad \blacksquare\ \text{[Q.E.D.]}
+\text{for } k \geq 0,\ i \geq 0 \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 O terceiro passo compõe [Idempotência do Módulo](https://github.com/thiagomata/prime-numbers/blob/cycle-article-v1.0.0/articles/chapter2/modulo.md#68-modulo-idempotence)
@@ -879,15 +879,15 @@ correspondente de `ModCycle`, em vez de derivar algo novo:
 ```math
 \begin{aligned}
 \text{Cycle}_{key} &= L[key \bmod n]
-  &&\text{[Element Access]} \\
+  &&\text{[Acesso ao elemento]} \\
 key < n &\implies \text{Cycle}_{key} = L[key]
-  &&\text{[Small Value Lookup]} \\
+  &&\text{[Consulta de valor pequeno]} \\
 \text{Cycle}_{key} &= \text{Cycle}_{key + n \cdot m}
-  &&\text{[Periodic Invariance]} \\
+  &&\text{[Invariância Periódica]} \\
 \text{Cycle}_{key + n \cdot m_1} &= \text{Cycle}_{key + n \cdot m_2}
-  &&\text{[Multi-Loop Consistency]} \\
+  &&\text{[Consistência de múltiplas voltas]} \\
 \text{Cycle}_{key} \bmod d &= L[key \bmod n] \bmod d
-  &&\text{[Mod Propagation]}
+  &&\text{[Propagação Modular]}
 \end{aligned}
 ```
 
@@ -960,16 +960,16 @@ mod `d` — isto é, `countModZero(L, d)` conta todos os `n` valores:
 ```math
 \begin{aligned}
 \text{allZero}(d) &\implies \forall x \in L,\ x \bmod d = 0
-  && \text{[Definition of countModZero]} \\
+  && \text{[Definição de countModZero]} \\
 \text{Cycle}_k &= L[k \bmod n]
-  && \text{[§5.1 Cycle Element Access]} \\
+  && \text{[Acesso ao Elemento do Ciclo da §5.1]} \\
 \implies \text{Cycle}_k \bmod d &= 0
   && \text{[}L[k \bmod n]\text{ is a value of } L\text{]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{allZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{allZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 `allZero` é `MemCycle.allModValuesAreZero`, definido e definido por `checkMod`
@@ -1002,16 +1002,16 @@ valor de `L` é ≡ 0 mod `d` — `countModZero(L, d)` não conta nenhum:
 ```math
 \begin{aligned}
 \text{noneZero}(d) &\implies \forall x \in L,\ x \bmod d \neq 0
-  && \text{[Definition of countModZero]} \\
+  && \text{[Definição de countModZero]} \\
 \text{Cycle}_k &= L[k \bmod n]
-  && \text{[§5.1 Cycle Element Access]} \\
+  && \text{[Acesso ao Elemento do Ciclo da §5.1]} \\
 \implies \text{Cycle}_k \bmod d &\neq 0
   && \text{[}L[k \bmod n]\text{ is a value of } L\text{]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{noneZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d \neq 0 \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{noneZero}(d) \implies \forall k,\ \text{Cycle}_k \bmod d \neq 0 \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 `noneZero` é `MemCycle.noModValuesAreZero`, definido e definido por `checkMod`
@@ -1054,15 +1054,15 @@ $L_{j_0} \bmod d = 0$ e $L_{j_1} \bmod d \neq 0$.
 ```math
 \begin{aligned}
 j_0, j_1 < n &\implies \text{Cycle}_{j_0} = L_{j_0} \;\land\; \text{Cycle}_{j_1} = L_{j_1}
-  && \text{[§5.2 Small Value in Cycle]} \\
+  && \text{[Valor Pequeno no Ciclo da §5.2]} \\
 &\implies \text{Cycle}_{j_0} \bmod d = 0 \;\land\; \text{Cycle}_{j_1} \bmod d \neq 0
-  && \text{[Substitution]}
+  && \text{[Substituição]}
 \end{aligned}
 ```
 
 ```math
 \therefore \ \text{someZero}(d) \implies \exists\, k_0, k_1,\ \text{Cycle}_{k_0} \bmod d = 0 \;\land\; \text{Cycle}_{k_1} \bmod d \neq 0
-  \quad (k_0 := j_0,\ k_1 := j_1) \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad (k_0 := j_0,\ k_1 := j_1) \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 `someZero` é `MemCycle.someModValuesAreZero`, definido e definido por
@@ -1095,35 +1095,35 @@ n &= |L| \\
 ```
 ```math
 \begin{aligned}
-\text{RecCycle}_i = \text{ModCycle}_i = \text{MemCycle}_i \quad &\text{[Three-Way Equivalence]} \\
+\text{RecCycle}_i = \text{ModCycle}_i = \text{MemCycle}_i \quad &\text{[Equivalência em Três Vias]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-\text{Cycle}_i &= L[i \bmod n] \quad &\text{[Cycle Element Access]} \\
-\text{key} < n &\implies \text{Cycle}_\text{key} = L_\text{key} \quad &\text{[Small Value Direct Lookup]} \\
-\text{Cycle}_{i} \bmod d &= \text{Cycle}_{(i \bmod n)} \bmod d \quad &\text{[Mod Propagation]} \\
+\text{Cycle}_i &= L[i \bmod n] \quad &\text{[Acesso ao Elemento do Ciclo]} \\
+\text{key} < n &\implies \text{Cycle}_\text{key} = L_\text{key} \quad &\text{[Consulta direta de valor pequeno]} \\
+\text{Cycle}_{i} \bmod d &= \text{Cycle}_{(i \bmod n)} \bmod d \quad &\text{[Propagação Modular]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-\text{Cycle}_{(i + n \cdot m)} &= L [i \bmod n] \quad &\text{[Value Match After Many Loops]} \\
-\text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} \quad &\text{[Two Multiples]} \\
-\text{Cycle}^{(t)}_\text{pos} &= \text{Cycle}_\text{pos} \quad \forall t > 0 \quad &\text{[Repeated-Cycle Invariance]} \\
+\text{Cycle}_{(i + n \cdot m)} &= L [i \bmod n] \quad &\text{[Correspondência de Valor Após Muitos Ciclos]} \\
+\text{Cycle}_{(i + n \cdot m_1)} &= \text{Cycle}_{(i + n \cdot m_2)} \quad &\text{[Dois Múltiplos]} \\
+\text{Cycle}^{(t)}_\text{pos} &= \text{Cycle}_\text{pos} \quad \forall t > 0 \quad &\text{[Invariância por Ciclo Repetido]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-(\forall x \in L,\ x \geq 0) &\implies \text{Cycle}_{\text{pos}} \geq 0 \quad &\text{[Cycle Value Positivity]} \\
-(\forall y \in L,\ y > x) &\implies \text{Cycle}_{\text{pos}} > x \quad &\text{[Cycle Value Greater Than]} \\
-\text{rotateAt}(\text{Cycle}, k)_i &= \text{Cycle}_{i + k} \quad &\text{[Rotation Invariance]} \\
+(\forall x \in L,\ x \geq 0) &\implies \text{Cycle}_{\text{pos}} \geq 0 \quad &\text{[Positividade do Valor do Ciclo]} \\
+(\forall y \in L,\ y > x) &\implies \text{Cycle}_{\text{pos}} > x \quad &\text{[Valor do Ciclo Maior Que]} \\
+\text{rotateAt}(\text{Cycle}, k)_i &= \text{Cycle}_{i + k} \quad &\text{[Invariância por Rotação]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
-\text{allZero}(d) &\implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad &\text{[All-Zero Residue Transfer]} \\
-\text{noneZero}(d) &\implies \forall k,\ \text{Cycle}_k \bmod d \neq 0 \quad &\text{[None-Zero Residue Transfer]} \\
-\text{someZero}(d) &\implies \exists\, k_0, k_1,\ \text{Cycle}_{k_0} \bmod d = 0 \;\land\; \text{Cycle}_{k_1} \bmod d \neq 0 \quad &\text{[Some-Zero Residue Transfer]} \\
+\text{allZero}(d) &\implies \forall k,\ \text{Cycle}_k \bmod d = 0 \quad &\text{[Transferência de resíduo todos-zero]} \\
+\text{noneZero}(d) &\implies \forall k,\ \text{Cycle}_k \bmod d \neq 0 \quad &\text{[Transferência de resíduo nenhum-zero]} \\
+\text{someZero}(d) &\implies \exists\, k_0, k_1,\ \text{Cycle}_{k_0} \bmod d = 0 \;\land\; \text{Cycle}_{k_1} \bmod d \neq 0 \quad &\text{[Transferência de resíduo alguns-zero]} \\
 \end{aligned}
 ```
 

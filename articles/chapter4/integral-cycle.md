@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [Zenodo:10.5281/zenodo.22868423](https://doi.org/10.5281/zenodo.22868423)
 
@@ -107,9 +107,9 @@ A integral de ciclo estende a integral finita a sequências repetitivas ilimitad
 
 ```math
 \begin{aligned}
-0 \leq i < n \implies w_i = \sum_{j=0}^i L_j + init \quad &\text{[Sum Property]} \\
+0 \leq i < n \implies w_i = \sum_{j=0}^i L_j + init \quad &\text{[Propriedade da Soma]} \\
 i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
-\quad &\text{[Step Property]} \\
+\quad &\text{[Propriedade do Passo]} \\
 \end{aligned}
 ```
 
@@ -135,8 +135,8 @@ i > 0 \implies  \ w_i - w_{i-1} = L_{(i \text{ mod } n)}
 
 ```math
 \begin{aligned}
-RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
-  &= L_{(i \text{ mod } n)} \quad &\text{[Mod Cycle Definition]} \\
+RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Equivalência de Ciclos]} \\
+  &= L_{(i \text{ mod } n)} \quad &\text{[Definição do Ciclo Modular]} \\
 \end{aligned}
 ```
 
@@ -144,22 +144,22 @@ RecCycle(L)_i &=  ModCycle(L)_i \quad &\text{[Cycle Equivalence]} \\
 
 ```math
 \begin{aligned}
-v_0  &= L_0  \quad &\text{[Base Case]} \\
-&= L_{(0 \text{ mod } n)} \quad &\text{[By Modulo Property]} \\
-&= \sum_{j=0}^0 L_j \quad &\text{[Summation Re-indexing]} \\
+v_0  &= L_0  \quad &\text{[Caso Base]} \\
+&= L_{(0 \text{ mod } n)} \quad &\text{[Pela Propriedade Modular]} \\
+&= \sum_{j=0}^0 L_j \quad &\text{[Reindexação do Somatório]} \\
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
 i < n \implies \\
-w_0 &= init + v_0 \quad &\text{[Base Case]} \\
-&= init + \sum_{j=0}^i L_j  \quad &\text{[Summation Re-indexing]} \\
+w_0 &= init + v_0 \quad &\text{[Caso Base]} \\
+&= init + \sum_{j=0}^i L_j  \quad &\text{[Reindexação do Somatório]} \\
 i > 0 \implies \\
-w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[By Definition]}\\
-&= init + v_0 + \sum_{j=1}^i L_j \quad &\text{[Mod of Small Values Property]} \\
-&= init + \sum_{j=0}^i v_j \quad &\text{[Summation Re-indexing]} \\
-\therefore w_i &= init + \sum_{j=0}^i L_j \quad &\text{[Q.E.D.]} \\
+w_i &= init + v_0 + \sum_{j=1}^i v_j \quad &\text{[Pela Definição]}\\
+&= init + v_0 + \sum_{j=1}^i L_j \quad &\text{[Propriedade Modular de Valores Pequenos]} \\
+&= init + \sum_{j=0}^i v_j \quad &\text{[Reindexação do Somatório]} \\
+\therefore w_i &= init + \sum_{j=0}^i L_j \quad &\text{[C.Q.D.]} \\
 \end{aligned}
 ```
 
@@ -171,9 +171,9 @@ CycleIntegralProperties::assertCycleIntegralEqualsSumSmallPositions
 
 ```math
 \begin{aligned}
-w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[By Definition]} \\
-&= v_i \quad &\text{[Simplification]} \\
-&= L_{(i \text{ mod } n)} \quad &\text{[Substitution]} \\
+w_i - w_{i-1} &= v_i + w_{i-1} - w_{i-1} \quad &\text{[Pela Definição]} \\
+&= v_i \quad &\text{[Simplificação]} \\
+&= L_{(i \text{ mod } n)} \quad &\text{[Substituição]} \\
 \end{aligned}
 ```
 
@@ -187,8 +187,8 @@ CycleIntegralProperties::assertDiffEqualsCycleValue
 ```math
 \begin{aligned}
 &\text{ModCycle}(L)_i &:= L_{(i \text{ mod } n)} = [w_0, w_1, \dots ] \\
-&I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral of L]} \\
-&S &:= I_{n-1} \quad &\text{[One full cycle sum]} \\
+&I_k &:= \sum_{j=0}^{k} L_j \quad (0 \leq k < n) \quad &\text{[Integral de L]} \\
+&S &:= I_{n-1} \quad &\text{[Soma de um ciclo completo]} \\
 &\text{ModCycleIntegral}(L, init)_i &:= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init
 \end{aligned}
 ```
@@ -196,7 +196,7 @@ CycleIntegralProperties::assertDiffEqualsCycleValue
 **Propriedade da Soma**:
 
 ```math
-i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Claim to Prove]}
+i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Afirmação a Provar]}
 ```
 
 ```math
@@ -204,17 +204,17 @@ i < n \implies w_i = \sum_{j=0}^i L_j + init \quad \text{[Claim to Prove]}
 i < n \implies  \\
 i \text{ div } n
       \quad &= 0 \quad
-      &\text{[By Div of Small Values Property]} \\
+      &\text{[Pela Propriedade da Divisão de Valores Pequenos]} \\
 w_i &= (i \text{ div } n)\cdot S + I_{(i \text{ mod } n)} + init \quad
-      &\text{[Definition]} \\
-&= 0 \cdot S + I_i + init \quad &\text{[Substitution]} \\
-&= \sum_{j=0}^i L_j + init \quad &\text{[By definition of } I_i]
+      &\text{[Definição]} \\
+&= 0 \cdot S + I_i + init \quad &\text{[Substituição]} \\
+&= \sum_{j=0}^i L_j + init \quad &\text{[Pela definição de } I_i]
 \end{aligned}
 ```
 
 ```math
 \therefore \
-\forall \ i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[Q.E.D.]}
+\forall \ i < n,\quad w_i = \sum_{j=0}^i L_j + init \quad \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -225,23 +225,23 @@ ModCycleIntegralProperties::assertFirstValuesMatchIntegral
 
 ```math
 w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad i>0,\, n>0
-\quad \text{[Claim to Prove]}
+\quad \text{[Afirmação a Provar]}
 ```
 
 **Caso $i \text{ mod } n > 0$:**
 
 ```math
 \begin{aligned}
-&i \text{ mod } n &= ((i-1) \text{ mod } n) + 1 &&\text{[By Modulo Properties]} \\
-&i \text{ div } n &= (i-1) \text{ div } n &&\text{[By Division Properties]} \\
-&w_i &= (i \text{ div } n)\,S + I_{\,i\text{ mod } n} + init &&\text{[Definition]} \\
-     &&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\text{ mod } n)+1} + init &&\text{[Div/Mod property]} \\
-&w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\text{ mod } n} + init &&\text{[Definition]} \\
-&w_i-w_{i-1} &= I_{\,((i-1)\text{ mod } n)+1} - I_{\, (i-1)\text{ mod } n} &&\text{[Cancellation]} \\
+&i \text{ mod } n &= ((i-1) \text{ mod } n) + 1 &&\text{[Pelas Propriedades Modulares]} \\
+&i \text{ div } n &= (i-1) \text{ div } n &&\text{[Pelas Propriedades de Divisão]} \\
+&w_i &= (i \text{ div } n)\,S + I_{\,i\text{ mod } n} + init &&\text{[Definição]} \\
+     &&= (i-1 \text{ div } n)\,S + I_{\,((i-1)\text{ mod } n)+1} + init &&\text{[Propriedade div/mod]} \\
+&w_{i-1} &= (i-1 \text{ div } n)\,S + I_{\, (i-1)\text{ mod } n} + init &&\text{[Definição]} \\
+&w_i-w_{i-1} &= I_{\,((i-1)\text{ mod } n)+1} - I_{\, (i-1)\text{ mod } n} &&\text{[Cancelamento]} \\
     &&= \Big(\sum_{j=0}^{(i-1)\text{ mod } n} L_j + L_{((i-1)\text{ mod } n)+1}\Big)
-       - \sum_{j=0}^{(i-1)\text{ mod } n} L_j &&\text{[Expand sum]} \\
-    &&= L_{((i-1)\text{ mod } n)+1} &&\text{[Cancellation]} \\
-    &&= L_{\,i \text{ mod } n} &&\text{[Modulo property]}.
+       - \sum_{j=0}^{(i-1)\text{ mod } n} L_j &&\text{[Expandir soma]} \\
+    &&= L_{((i-1)\text{ mod } n)+1} &&\text{[Cancelamento]} \\
+    &&= L_{\,i \text{ mod } n} &&\text{[Propriedade modular]}.
 \end{aligned}
 ```
 
@@ -250,25 +250,25 @@ w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad i>0,\, n>0
 ```math
 \begin{aligned}
 w_i &= (i \text{ div } n)\,S + L_0 + init
-&&\text{[Definition]} \\
+&&\text{[Definição]} \\
 w_{i-1} &= (i \text{ div } n -1)\,S + I_{\,n-1} + init
-&&\text{[Div/Mod property]} \\
+&&\text{[Propriedade div/mod]} \\
 w_i-w_{i-1}
     &= (i \text{ div } n)\,S + L_0 + init
        - \big((i \text{ div } n -1)\,S + I_{\,n-1} + init\big)
-&&\text{[Substitution]} \\
+&&\text{[Substituição]} \\
     &= S + L_0 - I_{\,n-1}
-&&\text{[Simplification]} \\
+&&\text{[Simplificação]} \\
     &= L_0
-&&\text{[Since } S = I_{\,n-1}] \\
+&&\text{[Como } S = I_{\,n-1}] \\
     &= L_{\,i \text{ mod } n}
-&&\text{[Modulo property]}.
+&&\text{[Propriedade modular]}.
 \end{aligned}
 ```
 
 ```math
 \therefore \
-w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[Q.E.D.]}
+w_i - w_{i-1} = L_{\, i \text{ mod } n}, \quad \forall \ i > 0 \quad \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -364,12 +364,12 @@ passo indutivo adiciona mais um valor positivo do ciclo.
 
 ```math
 \begin{aligned}
-b=a+1 &\implies CI_b-CI_a=\text{Cycle}(L)_b>0 &&\text{[§3.1 and cycle positivity]} \\
+b=a+1 &\implies CI_b-CI_a=\text{Cycle}(L)_b>0 &&\text{[§3.1 e positividade do ciclo]} \\
        &\implies CI_b>CI_a, \\
 CI_{b-1}>CI_a,\quad CI_b-CI_{b-1}=\text{Cycle}(L)_b>0
        &\implies CI_b>CI_{b-1}>CI_a \\
 \therefore\ CI_b &> CI_a.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -400,7 +400,7 @@ CI_0 &= init+\text{Cycle}(L)_0>0, \\
 CI_{i-1}>0,\quad CI_i-CI_{i-1}=\text{Cycle}(L)_i>0
   &\implies CI_i>0 \\
 \therefore\ CI_i &> 0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -430,9 +430,9 @@ init \geq 0 \implies \text{CycleIntegral}([1], init)_i = init + i + 1
 
 ```math
 \begin{aligned}
-\text{Cycle}([1])_0 &= 1 &&\text{[Unit Cycle]} \\
-CI_0 &= init + \text{Cycle}([1])_0 &&\text{[By Definition]} \\
-&= init + 1 &&\text{[Substitution]}
+\text{Cycle}([1])_0 &= 1 &&\text{[Ciclo Unitário]} \\
+CI_0 &= init + \text{Cycle}([1])_0 &&\text{[Pela Definição]} \\
+&= init + 1 &&\text{[Substituição]}
 \end{aligned}
 ```
 
@@ -440,16 +440,16 @@ CI_0 &= init + \text{Cycle}([1])_0 &&\text{[By Definition]} \\
 
 ```math
 \begin{aligned}
-CI_{i-1} &= init + (i-1) + 1 &&\text{[Induction Hypothesis]} \\
-&= init + i &&\text{[Simplification]} \\
-\text{Cycle}([1])_i &= 1 &&\text{[Unit Cycle]} \\
-CI_i &= CI_{i-1} + \text{Cycle}([1])_i &&\text{[Step Property, §3.1]} \\
-&= init + i + 1 &&\text{[Substitution]}
+CI_{i-1} &= init + (i-1) + 1 &&\text{[Hipótese de Indução]} \\
+&= init + i &&\text{[Simplificação]} \\
+\text{Cycle}([1])_i &= 1 &&\text{[Ciclo Unitário]} \\
+CI_i &= CI_{i-1} + \text{Cycle}([1])_i &&\text{[Propriedade do Passo, §3.1]} \\
+&= init + i + 1 &&\text{[Substituição]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \forall\, i \in \mathbb{N}_0:\ \text{CycleIntegral}([1], init)_i = init + i + 1 \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \forall\, i \in \mathbb{N}_0:\ \text{CycleIntegral}([1], init)_i = init + i + 1 \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -460,14 +460,14 @@ CycleIntegralOnesProperties::assertCycleIntegralOfOnes
 
 ```math
 \begin{aligned}
-CI_b - CI_a &= (init + b + 1) - (init + a + 1) &&\text{[Unit-Cycle Closed Form]} \\
-&= b - a &&\text{[Simplification]} \\
-&> 0 &&\text{[Since } b > a\text{]}
+CI_b - CI_a &= (init + b + 1) - (init + a + 1) &&\text{[Forma Fechada do Ciclo Unitário]} \\
+&= b - a &&\text{[Simplificação]} \\
+&> 0 &&\text{[Como } b > a\text{]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ 0 \leq a < b \implies \text{CycleIntegral}([1], init)_b > \text{CycleIntegral}([1], init)_a \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ 0 \leq a < b \implies \text{CycleIntegral}([1], init)_b > \text{CycleIntegral}([1], init)_a \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -503,16 +503,16 @@ crescente e nunca se repete:
 ```math
 \begin{aligned}
 n &:= \text{period}(ci)
-  &&\text{[Length of the finite backing cycle]} \\
+  &&\text{[Comprimento do ciclo finito de base]} \\
 \text{periodSum}(ci) &:= \sum_{j=0}^{n-1} \text{cycle}(j)
-  &&\text{[Total of one period's gap values]}
+  &&\text{[Total dos valores de lacuna de um período]}
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
 \text{ci}(\text{pos} + \text{period}(ci)) &= \text{ci}(\text{pos}) + \text{periodSum}(ci)
-  && \text{[Full-cycle shift]} \\
+  && \text{[Deslocamento por ciclo completo]} \\
 \text{ci}(\text{pos} + \text{period}(ci) \cdot m) &= \text{ci}(\text{pos}) + m \cdot \text{periodSum}(ci)
   && \text{[Multi-cycle shift, by induction on } m \text{]}
 \end{aligned}
@@ -529,13 +529,13 @@ ciclo — [§1](#1-introduction)) e reordenando a soma finita resultante:
 \begin{aligned}
 ci(\text{period}(ci)) - ci(0)
 &= \text{cycle}(1) + \dots + \text{cycle}(\text{period}(ci) - 1) + \text{cycle}(\text{period}(ci))
-  &&\text{[Telescoping the recursive definition]} \\
+  &&\text{[Telescopagem da definição recursiva]} \\
 &= \text{cycle}(1) + \dots + \text{cycle}(\text{period}(ci) - 1) + \text{cycle}(0)
-  &&\text{[Cycle periodicity]} \\
+  &&\text{[Periodicidade do ciclo]} \\
 &= \text{cycle}(0) + \text{cycle}(1) + \dots + \text{cycle}(\text{period}(ci) - 1)
-  &&\text{[Reorder terms]} \\
+  &&\text{[Reordenar termos]} \\
 &= \text{periodSum}(ci)
-  &&\text{[By Definition of periodSum(ci)]}
+  &&\text{[Pela Definição de periodSum(ci)]}
 \end{aligned}
 ```
 
@@ -552,17 +552,17 @@ ci(\text{period}(ci)) - ci(0)
 ```math
 \begin{aligned}
 ci(\text{pos} - 1 + \text{period}(ci)) &= ci(\text{pos} - 1) + \text{periodSum}(ci)
-  &&\text{[Induction Hypothesis]} \\
+  &&\text{[Hipótese de Indução]} \\
 \text{cycle}(\text{pos} + \text{period}(ci)) &= \text{cycle}(\text{pos})
-  &&\text{[Cycle periodicity]} \\
+  &&\text{[Periodicidade do ciclo]} \\
 ci(\text{pos} + \text{period}(ci)) &= ci(\text{pos} - 1 + \text{period}(ci)) + \text{cycle}(\text{pos} + \text{period}(ci))
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= \big(ci(\text{pos} - 1) + \text{periodSum}(ci)\big) + \text{cycle}(\text{pos})
-  &&\text{[Substitution]} \\
+  &&\text{[Substituição]} \\
 &= \big(ci(\text{pos} - 1) + \text{cycle}(\text{pos})\big) + \text{periodSum}(ci)
-  &&\text{[Regroup]} \\
+  &&\text{[Reagrupamento]} \\
 &= ci(\text{pos}) + \text{periodSum}(ci)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -583,13 +583,13 @@ ci(\text{pos} + \text{period}(ci) \cdot 0) = ci(\text{pos}) = ci(\text{pos}) + 0
 ```math
 \begin{aligned}
 ci(\text{pos} + \text{period}(ci) \cdot (m - 1)) &= ci(\text{pos}) + (m - 1) \cdot \text{periodSum}(ci)
-  &&\text{[Induction Hypothesis]} \\
+  &&\text{[Hipótese de Indução]} \\
 ci\big((\text{pos} + \text{period}(ci) \cdot (m - 1)) + \text{period}(ci)\big) &= ci(\text{pos} + \text{period}(ci) \cdot (m - 1)) + \text{periodSum}(ci)
-  &&\text{[Full-cycle shift]} \\
+  &&\text{[Deslocamento por ciclo completo]} \\
 ci(\text{pos} + \text{period}(ci) \cdot m) &= \big(ci(\text{pos}) + (m - 1) \cdot \text{periodSum}(ci)\big) + \text{periodSum}(ci)
-  &&\text{[Substitution]} \\
+  &&\text{[Substituição]} \\
 &= ci(\text{pos}) + m \cdot \text{periodSum}(ci)
-  &&\text{[Arithmetic]}
+  &&\text{[Aritmética]}
 \end{aligned}
 ```
 
@@ -629,9 +629,9 @@ espinha dorsal aritmética da peneira de Eratóstenes [[5]](#ref5).
 ```math
 \begin{aligned}
 \text{pos} \bmod \text{period}(ci) &= \text{pos}
-  &&\text{[Mod of a value smaller than the divisor]} \\
+  &&\text{[Módulo de um valor menor que o divisor]} \\
 \text{mod}(ci(\text{pos}), m) &= \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m)
-  &&\text{[Substitution]}
+  &&\text{[Substituição]}
 \end{aligned}
 ```
 
@@ -642,24 +642,24 @@ $ci(\text{previous} + \text{period}(ci)) = ci(\text{previous}) + \text{periodSum
 ```math
 \begin{aligned}
 \text{previous} \bmod \text{period}(ci) &= \text{pos} \bmod \text{period}(ci)
-  &&\text{[Subtracting a full period does not change the position's residue]} \\
+  &&\text{[Subtrair um período completo não altera o resíduo da posição]} \\
 \text{mod}(ci(\text{previous}), m) &= \text{mod}(ci(\text{previous} \bmod \text{period}(ci)), m)
-  &&\text{[Induction Hypothesis]} \\
+  &&\text{[Hipótese de Indução]} \\
 ci(\text{pos}) &= ci(\text{previous}) + \text{periodSum}(ci)
-  &&\text{[Full-cycle shift, §5.1]} \\
+  &&\text{[Deslocamento por ciclo completo, §5.1]} \\
 \text{mod}(ci(\text{pos}), m) &= \text{mod}(ci(\text{previous}) + \text{periodSum}(ci), m)
-  &&\text{[Substitution]} \\
+  &&\text{[Substituição]} \\
 &= \text{mod}(ci(\text{previous}), m)
   &&\text{[Since } \text{mod}(\text{periodSum}(ci), m) = 0 \text{]} \\
 &= \text{mod}(ci(\text{previous} \bmod \text{period}(ci)), m)
-  &&\text{[By Induction Hypothesis]} \\
+  &&\text{[Pela Hipótese de Indução]} \\
 &= \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m)
-  &&\text{[By the residue equality above]}
+  &&\text{[Pela igualdade de resíduos acima]}
 \end{aligned}
 ```
 
 ```math
-\therefore \ \text{mod}(\text{periodSum}(ci), m) = 0 \implies \forall \ \text{pos} \in \mathbb{N}_0,\ \text{mod}(ci(\text{pos}), m) = \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m) \quad \blacksquare\ \text{[Q.E.D.]}
+\therefore \ \text{mod}(\text{periodSum}(ci), m) = 0 \implies \forall \ \text{pos} \in \mathbb{N}_0,\ \text{mod}(ci(\text{pos}), m) = \text{mod}(ci(\text{pos} \bmod \text{period}(ci)), m) \quad \blacksquare\ \text{[C.Q.D.]}
 ```
 
 Esta propriedade é verificada em [
@@ -691,9 +691,9 @@ hipótese, o resíduo em qualquer posição $i$ também não pode ser zero.
 ```math
 \begin{aligned}
 \text{mod}(ci(i),v) &= \text{mod}(ci(i \bmod n),v) &&\text{[§5.2]} \\
-                      &\neq 0 &&\text{[In-period hypothesis]} \\
+                      &\neq 0 &&\text{[Hipótese dentro do período]} \\
 \therefore\ \text{mod}(ci(i),v) &\neq 0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -723,9 +723,9 @@ hipótese.
 ```math
 \begin{aligned}
 \text{mod}(ci(i),v) &= \text{mod}(ci(i \bmod n),v) &&\text{[§5.2]} \\
-                      &= 0 &&\text{[In-period hypothesis]} \\
+                      &= 0 &&\text{[Hipótese dentro do período]} \\
 \therefore\ \text{mod}(ci(i),v) &= 0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -763,7 +763,7 @@ Somar essas igualdades cancela $\text{ci}(k)$, então
 \begin{aligned}
 \therefore\ \text{ci}(k+1) - \text{ci}(k-1)
 = \text{cycle}(k) + \text{cycle}(k+1)
-\quad \blacksquare\ \text{[Q.E.D.]}
+\quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -780,12 +780,12 @@ em uma de três categorias de resíduos módulo `d`:
 ```math
 \begin{aligned}
 \text{all-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) = 0
-  && \text{[Filter removes everything]} \\
+  && \text{[Filtro remove tudo]} \\
 \text{none-zero:} &\quad \forall k,\; \text{mod}(\text{cycle}(k), d) \neq 0
-  && \text{[Filter has no effect]} \\
+  && \text{[Filtro não tem efeito]} \\
 \text{some-zero:} &\quad \exists k_0 : \text{mod}(\text{cycle}(k_0), d) = 0
   \;\land\; \exists k_1 : \text{mod}(\text{cycle}(k_1), d) \neq 0
-  && \text{[Filter removes specific positions]}
+  && \text{[Filtro remove posições específicas]}
 \end{aligned}
 ```
 
@@ -826,9 +826,9 @@ Os valores que mudam são as propriedades finitas de armazenamento:
 ```math
 \begin{aligned}
 |L^{(x)}| &= x \cdot |L|
-  \quad &&\text{[Expanded physical period]} \\
+  \quad &&\text{[Período físico expandido]} \\
 \sum L^{(x)} &= x \cdot \sum L
-  \quad &&\text{[Expanded physical sum]}
+  \quad &&\text{[Soma física expandida]}
 \end{aligned}
 ```
 
@@ -841,10 +841,10 @@ Os valores que não mudam são as propriedades semânticas do fluxo:
 ```math
 \begin{aligned}
 L^{(x)}_i &= L_{(i \text{ mod } |L|)}
-  \quad &&\text{[Same cycle lookup]} \\
+  \quad &&\text{[Mesma consulta do ciclo]} \\
 \text{CycleIntegral}(L^{(x)}, init)_i
   &= \text{CycleIntegral}(L, init)_i
-  \quad &&\text{[Same integral stream]}
+  \quad &&\text{[Mesmo fluxo integral]}
 \end{aligned}
 ```
 
@@ -858,14 +858,14 @@ uma invariância do fluxo infinito que o objeto de ciclo representa.
 ```math
 \begin{aligned}
 n &= |L|, \quad L = [v_0, \dots, v_{n-1}]
-  &&\text{[Length of original cycle]} \\
+  &&\text{[Comprimento do ciclo original]} \\
 L^{(x)}
 &:= \underbrace{L \mathbin{\texttt{++}} \dots \mathbin{\texttt{++}} L}_{x \text{ copies}}
   &&\text{[Concatenate } x \text{ copies]} \\
 m &:= |L^{(x)}| = x \cdot n
-  &&\text{[Length of new cycle]} \\
+  &&\text{[Comprimento do novo ciclo]} \\
 T &:= \sum_{j=0}^{n-1} v_j
-  &&\text{[Original cycle sum]} \\
+  &&\text{[Soma do ciclo original]} \\
 \end{aligned}
 ```
 
@@ -876,7 +876,7 @@ A repetição em nível de lista é definida aplicando a lista original no índi
 L^{(x)}_i &= L_{(i \text{ mod } n)}
   \quad &&\text{for } 0 \le i < x \cdot n \\
 \sum L^{(x)} &= x \cdot \sum L
-  \quad &&\text{[Repeated sum]}
+  \quad &&\text{[Soma repetida]}
 \end{aligned}
 ```
 
@@ -892,13 +892,13 @@ ListRepeatProperties::assertRepeatedIndex
 \begin{aligned}
 \text{CycleIntegral}(L^{(x)}, init)_i
 &= (i \,\text{div}\, m)\cdot T^{(x)} + I^{(x)}_{i \bmod m} + init
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= (i \,\text{div}\, (x \cdot n))\cdot (x \cdot T) + I^{(x)}_{i \bmod (x \cdot n)} + init
-  &&\text{[Substitution]} \\
+  &&\text{[Substituição]} \\
 &= (i \,\text{div}\, n)\cdot T + I_{i \bmod n} + init
-  &&\text{[Exact simplification]} \\
+  &&\text{[Simplificação exata]} \\
 &= \text{CycleIntegral}(L, init)_i
-  &&\text{[Exact value reproduction]} \\
+  &&\text{[Reprodução exata do valor]} \\
 \end{aligned}
 ```
 
@@ -919,7 +919,7 @@ Seja $L' \in 𝕃$ o deslocamento à direita de $L \in 𝕃$ por uma posição, 
 \begin{aligned}
 n &= |L|, \quad L = [v_0, \dots, v_{n-1}] \\
 L' &:= [v_1, v_2, \dots, v_{n-1}, v_0] \\
-S' &= S \quad &\text{[Cycle Sum Invariance]} \\
+S' &= S \quad &\text{[Invariância da Soma do Ciclo]} \\
 init' &:= init + L_0 \\
 \end{aligned}
 ```
@@ -946,11 +946,11 @@ B_0 &= init' + L'_0 = (init + L_0) + L'_0 = init + L_0 + L_1 = A_1 \\
 
 ```math
 \begin{aligned}
-B_{i-1} &= A_i \quad &\text{[Induction Hypothesis]} \\
-A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[By Definition]} \\
-B_i &= B_{i-1} + L'_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
-    &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[By Induction Hypothesis]} \\
-    &= A_{i+1} \quad &\text{[By Definition]} \\
+B_{i-1} &= A_i \quad &\text{[Hipótese de Indução]} \\
+A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[Pela Definição]} \\
+B_i &= B_{i-1} + L'_{(i \text{ mod } n)} \quad &\text{[Pela Definição]} \\
+    &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[Pela Hipótese de Indução]} \\
+    &= A_{i+1} \quad &\text{[Pela Definição]} \\
 \end{aligned}
 ```
 
@@ -981,7 +981,7 @@ Seja $L'' \in 𝕃$ o deslocamento à esquerda de $L \in 𝕃$ por uma posição
 \begin{aligned}
 n &= |L|, \quad L = [v_0, \dots, v_{n-1}], \quad n > 1 \\
 L'' &:= [v_{n-1}, v_0, v_1, \dots, v_{n-2}] \\
-S'' &= S \quad &\text{[Cycle Sum Invariance]} \\
+S'' &= S \quad &\text{[Invariância da Soma do Ciclo]} \\
 init'' &:= init + L_0 - L_{n-1} \\
 \end{aligned}
 ```
@@ -1006,11 +1006,11 @@ C_1 &= init'' + L''_0 = (init + L_0 - L_{n-1}) + L''_0 \\
 
 ```math
 \begin{aligned}
-C_{i+1} &= A_i \quad &\text{[Induction Hypothesis]} \\
-A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[By Definition]} \\
-C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} \quad &\text{[By Definition]} \\
-       &= A_i + L_{((i - 1 + n) \text{ mod } n)} \quad &\text{[By Induction Hypothesis]} \\
-       &= A_{i+1} \quad &\text{[By Definition]} \\
+C_{i+1} &= A_i \quad &\text{[Hipótese de Indução]} \\
+A_{i+1} &= A_i + L_{((i + 1) \text{ mod } n)} \quad &\text{[Pela Definição]} \\
+C_{i+1} &= C_{i} + L''_{(i \text{ mod } n)} \quad &\text{[Pela Definição]} \\
+       &= A_i + L_{((i - 1 + n) \text{ mod } n)} \quad &\text{[Pela Hipótese de Indução]} \\
+       &= A_{i+1} \quad &\text{[Pela Definição]} \\
 \end{aligned}
 ```
 
@@ -1044,7 +1044,7 @@ I'_i &= I'_{i-1} + \text{gaps}'_{i-1} \\
      &= I_i + \text{gaps}_i \\
      &= I_{i+1}. \\
 \therefore\ I'_i &= I_{i+1}
-\quad \blacksquare\ \text{[Q.E.D.]}
+\quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1089,9 +1089,9 @@ onde $end := start + count$:
 \big(\forall\, q \in [start, pos),\ \text{mod}(ci(q), f) = 0\big)
   \;\land\; \text{mod}(ci(pos), f) \neq 0
   &\implies \text{head}(S) = ci(pos)
-  && \text{[First survivor]} \\
+  && \text{[Primeiro sobrevivente]} \\
 S &= ci(pos) :: \big[\, ci(q) \mid pos < q < end,\ \text{mod}(ci(q), f) \neq 0 \,\big]
-  && \text{[Structural split]}
+  && \text{[Divisão estrutural]}
 \end{aligned}
 ```
 
@@ -1154,13 +1154,13 @@ uma posição à frente no ponto de mesclagem e depois dele:
 ```math
 \begin{aligned}
 pos < m &\implies ci'(pos) = ci(pos)
-  &&\text{[Before merge]} \\
+  &&\text{[Antes da mesclagem]} \\
 ci'(m) &= ci(m + 1)
-  &&\text{[At merge]} \\
+  &&\text{[Na mesclagem]} \\
 pos > m &\implies ci'(pos) = ci(pos + 1)
-  &&\text{[After merge]} \\
+  &&\text{[Após a mesclagem]} \\
 ci'(n - 1) &= ci(n)
-  &&\text{[Period boundary]}
+  &&\text{[Fronteira do período]}
 \end{aligned}
 ```
 
@@ -1175,11 +1175,11 @@ ponto de mesclagem.
 ```math
 \begin{aligned}
 ci'(0) &= init + \text{cycle}'(0)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= init + \text{cycle}(0)
-  &&\text{[Same initial value; unchanged gap before merge]} \\
+  &&\text{[Mesmo valor inicial; lacuna antes da mesclagem inalterada]} \\
 &= ci(0)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -1188,13 +1188,13 @@ ci'(0) &= init + \text{cycle}'(0)
 ```math
 \begin{aligned}
 ci'(pos - 1) &= ci(pos - 1)
-  &&\text{[Induction Hypothesis]} \\
+  &&\text{[Hipótese de Indução]} \\
 ci'(pos) &= ci'(pos - 1) + \text{cycle}'(pos)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= ci(pos - 1) + \text{cycle}(pos)
-  &&\text{[Substitution; unchanged gap before merge]} \\
+  &&\text{[Substituição; lacuna antes da mesclagem inalterada]} \\
 &= ci(pos)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -1207,15 +1207,15 @@ ci'(pos) &= ci'(pos - 1) + \text{cycle}'(pos)
 ```math
 \begin{aligned}
 ci'(m) &= ci'(m - 1) + \text{cycle}'(m)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= ci(m - 1) + \big(\text{cycle}(m) + \text{cycle}(m + 1)\big)
-  &&\text{[Case 1; merged-gap definition]} \\
+  &&\text{[Caso 1; definição da lacuna mesclada]} \\
 &= \big(ci(m - 1) + \text{cycle}(m)\big) + \text{cycle}(m + 1)
-  &&\text{[Regroup]} \\
+  &&\text{[Reagrupamento]} \\
 &= ci(m) + \text{cycle}(m + 1)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= ci(m + 1)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -1233,11 +1233,11 @@ $ci'(0) = init + \text{cycle}'(0) = init + \text{cycle}(0) + \text{cycle}(1) = c
 ```math
 \begin{aligned}
 ci'(m + 1) &= ci'(m) + \text{cycle}'(m + 1)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= ci(m + 1) + \text{cycle}(m + 2)
-  &&\text{[Case 2; shifted-gap definition]} \\
+  &&\text{[Caso 2; definição da lacuna deslocada]} \\
 &= ci(m + 2)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -1246,13 +1246,13 @@ ci'(m + 1) &= ci'(m) + \text{cycle}'(m + 1)
 ```math
 \begin{aligned}
 ci'(pos - 1) &= ci(pos)
-  &&\text{[Induction Hypothesis]} \\
+  &&\text{[Hipótese de Indução]} \\
 ci'(pos) &= ci'(pos - 1) + \text{cycle}'(pos)
-  &&\text{[By Definition]} \\
+  &&\text{[Pela Definição]} \\
 &= ci(pos) + \text{cycle}(pos + 1)
-  &&\text{[Substitution; shifted-gap definition]} \\
+  &&\text{[Substituição; definição da lacuna deslocada]} \\
 &= ci(pos + 1)
-  &&\text{[By Definition]}
+  &&\text{[Pela Definição]}
 \end{aligned}
 ```
 
@@ -1279,10 +1279,10 @@ que por construção não é ele próprio um múltiplo.
 \begin{aligned}
 \text{mod}(ci(0), f) \neq 0 \;\land\; \text{mod}(ci(m), f) = 0
 &\implies ci'(m) = ci(m + 1)
-&&\text{[Multiple removed]} \\
+&&\text{[Múltiplo removido]} \\
 \text{mod}(ci(m + 1), f) \neq 0
 &\implies \text{mod}(ci'(m), f) \neq 0
-&&\text{[Result is not a multiple]}
+&&\text{[Resultado não é múltiplo]}
 \end{aligned}
 ```
 
@@ -1309,7 +1309,7 @@ reproduz exatamente o que a mesclagem repetida produziria.
 S &:= \text{survivorValues}(ci, f, 0, n) \\
 ci''\text{'s initial value} &= S_0,\quad \text{cycle}''(i) = S_{i+1} - S_i \\
 \implies ci''(k) &= S_{k + 1}
-&&\text{[Direct construction matches survivors]}
+&&\text{[Construção direta coincide com sobreviventes]}
 \end{aligned}
 ```
 
@@ -1348,7 +1348,7 @@ não é múltiplo de $f$
 ci''(k) &= S_{k+1} &&\text{[§6.9]} \\
 \text{mod}(S_{k+1},f) &\neq 0 &&\text{[§6.5]} \\
 \therefore\ \text{mod}(ci''(k),f) &\neq 0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -1402,38 +1402,38 @@ T &= \sum_{j=0}^{n-1} v_j \\
 \text{CycleIntegral}(L, init)_i
 &= \left(i \ \text{div}\ n\right) \cdot T
  + \text{CycleIntegral}(L, init)_{i \text{mod} n}
-\quad &\text{[Modulo Cycle Integral]} \\
+\quad &\text{[Integral de Ciclo Modular]} \\
 \text{CycleIntegral}(L, init)_i
 &= \text{ModCycleIntegral}(L, init)_i
-\quad &\text{[Definition Equivalence]} \\
+\quad &\text{[Equivalência das Definições]} \\
 \text{CycleIntegral}(L, init)_{i+1}
 &- \text{CycleIntegral}(L, init)_i
 = \text{Cycle}(L)_{i+1}
-\quad &\text{[Step Property]} \\
+\quad &\text{[Propriedade do Passo]} \\
 \text{CycleIntegral}(L, init)_{i+1}
 &- \text{CycleIntegral}(L, init)_i \\
 &= \text{CycleIntegral}(L, init)_{i+n+1}
  - \text{CycleIntegral}(L, init)_{i+n}
-\quad &\text{[Same Difference After Full Cycle]} \\
+\quad &\text{[Mesma Diferença Após Ciclo Completo]} \\
 \text{CycleIntegral}(L, init)_i
 &= \text{sum}([init] \mathbin{\texttt{++}}
  [\text{Cycle}(L)_0, \ldots, \text{Cycle}(L)_i])
-\quad &\text{[Sum of Mod Values as List]} \\
+\quad &\text{[Soma de Valores Modulares como Lista]} \\
 init \geq 0 \land (\forall x \in L,\ x > 0) \land b > a
 &\implies
 \text{CycleIntegral}(L, init)_b > \text{CycleIntegral}(L, init)_a
-\quad &\text{[Strictly Increasing]} \\
+\quad &\text{[Estritamente Crescente]} \\
 init \geq 0 \land (\forall x \in L,\ x > 0)
 &\implies
 \text{CycleIntegral}(L, init)_i > 0
-\quad &\text{[Positivity]} \\
+\quad &\text{[Positividade]} \\
 \text{CycleIntegral}([1], init)_i
 &= init + i + 1
-\quad &\text{[Unit-Cycle Generation]} \\
+\quad &\text{[Geração pelo Ciclo Unitário]} \\
 0 \leq a < b \implies
 \text{CycleIntegral}([1], init)_b
 &> \text{CycleIntegral}([1], init)_a
-\quad &\text{[Unit-Cycle Strict Increase]} \\
+\quad &\text{[Crescimento Estrito do Ciclo Unitário]} \\
 \end{aligned}
 ```
 
@@ -1441,26 +1441,26 @@ init \geq 0 \land (\forall x \in L,\ x > 0)
 \begin{aligned}
 ci(pos + \text{period}(ci))
 &= ci(pos) + \text{periodSum}(ci)
-\quad &\text{[Cycle-Period Shift]} \\
+\quad &\text{[Deslocamento por Período de Ciclo]} \\
 \text{mod}(\text{periodSum}(ci), m) = 0
 &\implies
 \text{mod}(ci(pos), m) = \text{mod}(ci(pos \bmod n), m)
-\quad &\text{[General Residue Periodicity]} \\
+\quad &\text{[Periodicidade Geral de Resíduos]} \\
 \text{mod}(\text{periodSum}(ci), m) = 0 \land \big(\forall\, k \in [0,n),\ \text{mod}(ci(k), m) \neq 0\big)
 &\implies
 \forall\, i,\ \text{mod}(ci(i), m) \neq 0
-\quad &\text{[Persistent Non-Zero Residue]} \\
+\quad &\text{[Resíduo Não Zero Persistente]} \\
 \text{mod}(\text{periodSum}(ci), m) = 0 \land \big(\forall\, k \in [0,n),\ \text{mod}(ci(k), m) = 0\big)
 &\implies
 \forall\, i,\ \text{mod}(ci(i), m) = 0
-\quad &\text{[Persistent Zero Residue]} \\
+\quad &\text{[Resíduo Zero Persistente]} \\
 \text{CycleIntegral}(G,h)_{k+1}
 &- \text{CycleIntegral}(G,h)_{k-1}
 = G_{k-1} + G_k
-\quad &\text{[Two-Gap Telescoping]} \\
+\quad &\text{[Telescopagem de Duas Lacunas]} \\
 \text{classify}(I_i,m)
 &\in \{\text{zero},\text{nonzero}\}
-\quad &\text{[Residue Classification]} \\
+\quad &\text{[Classificação de Resíduos]} \\
 \end{aligned}
 ```
 
@@ -1468,32 +1468,32 @@ ci(pos + \text{period}(ci))
 \begin{aligned}
 \text{CycleIntegral}(L^{\langle x\rangle}, init)_i
 &= \text{CycleIntegral}(L, init)_i
-\quad &\text{[Repeated-Cycle Invariance]} \\
+\quad &\text{[Invariância por Ciclo Repetido]} \\
 \text{rotateAt}(G,1)\text{ with head }h+G_0
 &\implies
 I'_{i}=I_{i+1}
-\quad &\text{[Rotation Shift]} \\
+\quad &\text{[Deslocamento por Rotação]} \\
 \text{survivors}(I,m)
 &= \{ I_i \mid I_i \not\equiv 0 \pmod m \}
-\quad &\text{[Survivor Exactness]} \\
+\quad &\text{[Exatidão dos Sobreviventes]} \\
 \big(\forall\, q \in [start,pos),\ \text{mod}(ci(q),f)=0\big) \land \text{mod}(ci(pos),f)\neq 0
 &\implies
 \text{head}(S) = ci(pos)
-\quad &\text{[Survivor Structure]} \\
+\quad &\text{[Estrutura dos Sobreviventes]} \\
 \end{aligned}
 ```
 
 ```math
 \begin{aligned}
 ci'(m) &= ci(m + 1)
-\quad &\text{[Merge Shift Law]} \\
+\quad &\text{[Lei de Deslocamento por Mesclagem]} \\
 \text{mod}(ci(m), f) = 0 \implies ci'(m) &= ci(m + 1)
-\quad &\text{[Removing a Multiple]} \\
+\quad &\text{[Removendo um Múltiplo]} \\
 ci''\text{'s initial value} = S_0 \land \text{cycle}''(i) = S_{i+1} - S_i
 &\implies ci''(k) = S_{k+1}
-\quad &\text{[Direct Construction from Survivors]} \\
+\quad &\text{[Construção Direta a partir dos Sobreviventes]} \\
 \text{mod}(ci(0), f) \neq 0 &\implies \text{mod}(ci''(k), f) \neq 0
-\quad &\text{[Filtered Result Has No Multiples]} \\
+\quad &\text{[Resultado Filtrado Não Tem Múltiplos]} \\
 \end{aligned}
 ```
 

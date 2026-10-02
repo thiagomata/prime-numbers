@@ -2,9 +2,9 @@
 
 **Autor:** Thiago Henrique Ramos da Mata<br>
 Pesquisador independente<br>
-**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)  
-**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)    
-**GitHub:** [@thiagomata](https://github.com/thiagomata)  
+**Email:** [thiago.henrique.mata@gmail.com](mailto:thiago.henrique.mata@gmail.com)
+**ORCID:** [0009-0002-7366-939X](https://orcid.org/0009-0002-7366-939X)
+**GitHub:** [@thiagomata](https://github.com/thiagomata)
 **Licença:** [CC BY 4.0](../LICENSE)<br>
 **Publicado:** [ai.viXra:2609.0009](http://ai.viXra.org/abs/2609.0009)<br>
 **DOI:** [10.5281/zenodo.22955131](https://doi.org/10.5281/zenodo.22955131)
@@ -256,7 +256,7 @@ quociente $1$ e resto $0$:
 n &= n\cdot0+n = n\cdot1+0 \\
 0 &\leq 0 < |n| \\
 \text{DivMod}(n,n,0,n).\text{solve} &= \text{DivMod}(n,n,1,0).
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -287,7 +287,7 @@ necessário.
 \begin{aligned}
 n &= 1\cdot n+0,\qquad 0\leq0<1 \\
 \text{mod}(n,1) &= 0,\qquad \text{div}(n,1)=n.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -347,7 +347,7 @@ a+b &= bq+r+b = b(q+1)+r \\
 a-b &= bq+r-b = b(q-1)+r \\
 \text{DivMod}(a+b,b,q+1,r).\text{solve} &= \text{DivMod}(a+b,b,q+1,r) \\
 \text{DivMod}(a-b,b,q-1,r).\text{solve} &= \text{DivMod}(a-b,b,q-1,r).
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -384,7 +384,7 @@ recém-obtidas.
 \begin{aligned}
 \text{mod}(a+(m+1)b,b) &= \text{mod}((a+mb)+b,b) = \text{mod}(a,b) \\
 \text{div}(a+(m+1)b,b) &= \text{div}(a+mb,b)+1 = \text{div}(a,b)+m+1.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -469,7 +469,7 @@ quociente e o resto de $a+c$:
 a+c &= b(q_a+q_c)+(r_a+r_c) \\
     &= b(q_a+q_c+s)+t \\
 t &= r_a+r_c-b\cdot\text{div}(r_a+r_c,b).
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -506,7 +506,7 @@ negativo:
 a-c &= b(q_a-q_c)+(r_a-r_c) \\
     &= b(q_a-q_c+s)+t \\
 t &= r_a-r_c-b\cdot\text{div}(r_a-r_c,b).
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -539,7 +539,7 @@ idempotência do módulo remove a repetição restante:
 \begin{aligned}
 \text{mod}(a+c,b) &= \text{mod}(\text{mod}(a,b)+\text{mod}(c,b),b) \\
 &= \text{mod}(\text{mod}(c,b),b) \\
-&= \text{mod}(c,b). \quad \blacksquare\ \text{[Q.E.D.]}
+&= \text{mod}(c,b). \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -583,7 +583,7 @@ restos são eles mesmos:
 0\lt k\lt b &\implies \text{mod}(k,b)=k \\
 0\lt b-k\lt b &\implies \text{mod}(b-k,b)=b-k \\
 \text{mod}(k,b)+\text{mod}(b-k,b) &= k+(b-k)=b.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -619,7 +619,7 @@ apenas o primeiro caso pode ocorrer.
 \begin{aligned}
 r=b-1 &\implies a+1=bq+(b-1)+1=b(q+1)+0 \\
 r\lt b-1 &\implies a+1=bq+(r+1),\quad 0\leq r+1\lt b.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -683,7 +683,7 @@ um aplicado a $i$ e $j$ produz $i=j$; logo o $k$ existente é único.
 &\text{mod}(n+i,p)=\text{mod}(n+j,p)=0,\quad i,j\in[0,p)
   \implies i=j \\
 &\therefore\ \exists!\, k\in[0,p):\ \text{mod}(n+k,p)=0.
-  \quad \blacksquare\ \text{[Q.E.D.]}
+  \quad \blacksquare\ \text{[C.Q.D.]}
 \end{aligned}
 ```
 
@@ -715,101 +715,101 @@ canônica e satisfaz as leis algébricas e periódicas esperadas:
 ```math
 \begin{aligned}
 & \forall \text{ } a, b \in \mathbb{N} : b \neq 0 \\
-& a < b \implies a \text{ mod } b & = a &&\text{[Trivial Case]} \\
-& a < b \implies a \text{ div } b & = 0 &&\text{[Trivial Case]} \\
+& a < b \implies a \text{ mod } b & = a &&\text{[Caso Trivial]} \\
+& a < b \implies a \text{ div } b & = 0 &&\text{[Caso Trivial]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } n \in \mathbb{N} : n & \neq 0 \\
-n \text{ mod } n & = 0 &&\text{[Identity]} \\
-n \text{ div } n & = 1 &&\text{[Identity]} \\
+n \text{ mod } n & = 0 &&\text{[Identidade]} \\
+n \text{ div } n & = 1 &&\text{[Identidade]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } n \in \mathbb{N} & : \\
-n \text{ mod } 1 & = 0 &&\text{[Division by One]} \\
-n \text{ div } 1 & = n &&\text{[Division by One]} \\
+n \text{ mod } 1 & = 0 &&\text{[Divisão por Um]} \\
+n \text{ div } 1 & = n &&\text{[Divisão por Um]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{Z} : a \geq 0,\; b > 0 \\
-a \text{ mod } b & = a \mathbin{\%} b &&\text{[Native Modulo Compatibility]} \\
+a \text{ mod } b & = a \mathbin{\%} b &&\text{[Compatibilidade com o Módulo Nativo]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall a,b,q,r \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
-\text{mod}(a + b, b) & = \text{mod}(a, b) &&\text{[Linear Shift]} \\
-\text{div}(a + b, b) & = \text{div}(a, b) + 1 &&\text{[Linear Shift]} \\
-\text{mod}(a - b, b) & = \text{mod}(a, b) &&\text{[Linear Shift]} \\
-\text{div}(a - b, b) & = \text{div}(a, b) - 1 &&\text{[Linear Shift]} \\
+\text{mod}(a + b, b) & = \text{mod}(a, b) &&\text{[Deslocamento Linear]} \\
+\text{div}(a + b, b) & = \text{div}(a, b) + 1 &&\text{[Deslocamento Linear]} \\
+\text{mod}(a - b, b) & = \text{mod}(a, b) &&\text{[Deslocamento Linear]} \\
+\text{div}(a - b, b) & = \text{div}(a, b) - 1 &&\text{[Deslocamento Linear]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall a,b,q,r,m \in \mathbb{Z} &: b \neq 0,\; a = bq + r \\
-\text{mod}(a + m \cdot b, b) & = \text{mod}(a, b) &&\text{[Linear Shift by Multiplier]} \\
-\text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m &&\text{[Linear Shift by Multiplier]} \\
-\text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) &&\text{[Linear Shift by Multiplier]} \\
-\text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m &&\text{[Linear Shift by Multiplier]} \\
+\text{mod}(a + m \cdot b, b) & = \text{mod}(a, b) &&\text{[Deslocamento Linear por Multiplicador]} \\
+\text{div}(a + m \cdot b, b) & = \text{div}(a, b) + m &&\text{[Deslocamento Linear por Multiplicador]} \\
+\text{mod}(a - m \cdot b, b) & = \text{mod}(a, b) &&\text{[Deslocamento Linear por Multiplicador]} \\
+\text{div}(a - m \cdot b, b) & = \text{div}(a, b) - m &&\text{[Deslocamento Linear por Multiplicador]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a,b,q_x,r_x,q_y,r_y & \in \mathbb{N},\; b \neq 0,\; a = bq_x + r_x = bq_y + r_y \\
-DivMod(a,b,q_x,r_x).\text{solve} & = DivMod(a,b,q_y,r_y).\text{solve} &&\text{[Unique Remainder]} \\
+DivMod(a,b,q_x,r_x).\text{solve} & = DivMod(a,b,q_y,r_y).\text{solve} &&\text{[Resto Único]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{Z} : b \neq 0 \\
-a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b &&\text{[Modulo Idempotence]} \\
+a \text{ mod } b & = ( a \text{ mod } b ) \text{ mod } b &&\text{[Idempotência do Módulo]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
-( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b &&\text{[Distributivity, Addition]} \\
-( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b &&\text{[Distributivity, Addition]} \\
-( a +  c) \text{ mod } b & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) &&\text{[Distributivity, Addition]} \\
+( a + c ) \text{ mod } b & = ( a \text{ mod } b + c \text{ mod } b ) \text{ mod } b &&\text{[Distributividade, Adição]} \\
+( a + c ) \text{ div } b & = a \text{ div } b + c \text{ div } b + ( a \text{ mod } b + c \text{ mod } b ) \text{ div } b &&\text{[Distributividade, Adição]} \\
+( a +  c) \text{ mod } b & = (a \text{ mod } b) + (c \text{ mod } b) - b \cdot (((a \text{ mod } b) + (c \text{ mod } b)) \text{ div } b) &&\text{[Distributividade, Adição]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
-( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b &&\text{[Distributivity, Subtraction]} \\
-( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b &&\text{[Distributivity, Subtraction]} \\
-( a - c ) \text{ mod } b & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) &&\text{[Distributivity, Subtraction]} \\
+( a - c ) \text{ mod } b & = ( a \text{ mod } b - c \text{ mod } b ) \text{ mod } b &&\text{[Distributividade, Subtração]} \\
+( a - c ) \text{ div } b & = a \text{ div } b - c \text{ div } b + ( a \text{ mod } b - c \text{ mod } b ) \text{ div } b &&\text{[Distributividade, Subtração]} \\
+( a - c ) \text{ mod } b & = (a \text{ mod } b) - (c \text{ mod } b) - b \cdot (((a \text{ mod } b) - (c \text{ mod } b)) \text{ div } b) &&\text{[Distributividade, Subtração]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b, c & \in \mathbb{Z} : b \neq 0 \\
-a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b &&\text{[Divisible-Base Shift Invariance]} \\
+a \text{ mod } b = 0 & \implies ( a + c ) \text{ mod } b = c \text{ mod } b &&\text{[Invariância de Deslocamento com Base Divisível]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 b &> 0,\quad 0 < k < b \\
-k \text{ mod } b + (b - k) \text{ mod } b & = b &&\text{[Symmetrical Modulo Pairs]}
+k \text{ mod } b + (b - k) \text{ mod } b & = b &&\text{[Pares Simétricos de Módulo]}
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } a, b & \in \mathbb{N} : b \neq 0 \\
-a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 &&\text{[Unit-Step Increment]} \\
-a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 &&\text{[Unit-Step Increment]} \\
-a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 &&\text{[Unit-Step Increment]} \\
-a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b &&\text{[Unit-Step Increment]} \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ mod } b = 0 &&\text{[Incremento de Passo Unitário]} \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ mod } b = (a \text{ mod } b) + 1 &&\text{[Incremento de Passo Unitário]} \\
+a \text{ mod } b = b - 1    & \implies (a + 1) \text{ div } b = (a \text{ div } b) + 1 &&\text{[Incremento de Passo Unitário]} \\
+a \text{ mod } b \neq b - 1 & \implies (a + 1) \text{ div } b = a \text{ div } b &&\text{[Incremento de Passo Unitário]} \\
 \end{aligned}
 ```
 ```math
 \begin{aligned}
 \forall \text{ } n, p & \in \mathbb{N} : p > 1 \\
-\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 &&\text{[Exactly One Zero per Block]} \\
+\exists!\, k \in [0, p) &: \text{mod}(n + k,\; p) = 0 &&\text{[Exatamente um Zero por Bloco]} \\
 \end{aligned}
 ```
 
@@ -817,7 +817,7 @@ Essas propriedades formalmente verificadas estão reunidas em [Summary.scala](ht
 recursiva torna a estrutura da prova transparente: normalize $(q,r)$ sem alterar
 $a=bq+r$, extraia quociente e resto do estado final, e então derive as leis
 algébricas a partir dessa forma normal.
- 
+
 Em conjunto, o teorema da solução canônica, as leis de deslocamento, as
 identidades aritméticas, a transição por passo unitário e o resultado de um zero
 por período caracterizam tanto o estado quociente-resto normalizado quanto seu
