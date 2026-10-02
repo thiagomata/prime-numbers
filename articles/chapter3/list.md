@@ -223,6 +223,8 @@ O produto de uma lista vazia é um; o produto de uma lista não vazia é sua
 cabeça vezes o produto de sua cauda. A implementação de `product` está
 disponível em [ListProduct](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está nos Apêndices A.11 a A.15.
 
+<a id="3-index-and-access-properties"></a>
+
 ## 3. Propriedades de Índice e Acesso
 
 Como as posições se deslocam quando a lista é decomposta em cabeça e cauda, e
@@ -328,24 +330,28 @@ As duas direções são provadas por indução em $k$: o caso da esquerda remove
 elemento de cabeça por vez até que $k$ alcance $0$; o caso da direita remove
 elementos de $A$ até que ela se esgote, e então indexa diretamente em $B$.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::assertAppendApplyLeft
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala) and [
   ListUtilsProperties::assertAppendApplyRight
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala).
 
-## 4. Slice Properties
+<a id="4-slice-properties"></a>
 
-Four constructions for extracting a sublist by index range — all equivalent.
+## 4. Propriedades de Fatia
 
-- [Tail-recursive slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): builds from the end by prepending
-- [Head-recursive slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): builds from the front
-- [Index-range slice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): accumulates by position within a range
-- [Slice append consistency](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): appending a singleton preserves the slice structure
+Quatro construções para extrair uma sublista por intervalo de índices — todas
+equivalentes.
 
-### 4.1 Tail-Recursive Slice
+- [Fatia recursiva pela cauda](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): constrói a partir do fim por prepend
+- [Fatia recursiva pela cabeça](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): constrói a partir da frente
+- [Fatia por intervalo de índices](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): acumula por posição dentro de um intervalo
+- [Consistência de append da fatia](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): adicionar um singleton preserva a estrutura da fatia
 
-The tail-recursive slice builds the sublist from the end, prepending elements as it recurses backward.
+### 4.1 Fatia Recursiva pela Cauda
+
+A fatia recursiva pela cauda constrói a sublista a partir do fim, fazendo
+prepend dos elementos enquanto recorre para trás.
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
@@ -359,27 +365,27 @@ L_j :: L_e & \text{if } i = j \\
 \end{cases}
 ```
 
-**Goal**:
+**Objetivo**:
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{slice}(L, i, j) = L[i \dots j]
 ```
 
-**Proof by induction on $j$, with fixed $i$**
+**Prova por indução em $j$, com $i$ fixo**
 
-**Base case**: $j = i$
+**Caso base**: $j = i$
 
 ```math
 \text{slice}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
-**Inductive step**: Assume
+**Passo indutivo**: suponha
 
 ```math
 \text{slice}(L, i, j - 1) = [ L_k \mid i \leq k \leq j - 1 ]
 ```
 
-Show:
+Mostre:
 
 ```math
 \begin{aligned}
@@ -400,13 +406,14 @@ Show:
 \quad \blacksquare
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtils::slice
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The implementation and verification code are in Appendix A.3.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). A implementação e o código de verificação estão no Apêndice A.3.
 
-### 4.2 Head-Recursive Slice
+### 4.2 Fatia Recursiva pela Cabeça
 
-The head-recursive slice builds the sublist from the front, cons-ing elements as it recurses forward.
+A fatia recursiva pela cabeça constrói a sublista a partir da frente, inserindo
+elementos com cons enquanto recorre para frente.
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
@@ -420,27 +427,27 @@ L_i :: \text{headRecursiveSlice}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
 
-**Goal**:
+**Objetivo**:
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{headRecursiveSlice}(L, i, j) = L[i \dots j]
 ```
 
-**Proof by induction on $j - i$**
+**Prova por indução em $j - i$**
 
-**Base case**: $i = j$
+**Caso base**: $i = j$
 
 ```math
 \text{headRecursiveSlice}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
-**Inductive step**: Assume
+**Passo indutivo**: suponha
 
 ```math
 \text{headRecursiveSlice}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
 ```
 
-Show:
+Mostre:
 
 ```math
 \begin{aligned}
@@ -459,13 +466,14 @@ Show:
 \quad \blacksquare
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   SliceEquivalenceLemmas::headRecursiveSlice
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.4.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). O código Scala completo de verificação está no Apêndice A.4.
 
-### 4.3 Index-Range Slice
+### 4.3 Fatia por Intervalo de Índices
 
-The index-range slice builds the sublist by direct index access, recursing forward through the index range.
+A fatia por intervalo de índices constrói a sublista por acesso direto aos
+índices, recorrendo para frente pelo intervalo de índices.
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L|
@@ -479,27 +487,27 @@ L_i :: \text{indexRangeValues}(L, i + 1, j) & \text{if } i < j
 \end{cases}
 ```
 
-**Goal**:
+**Objetivo**:
 
 ```math
 \forall \text{ } L \in 𝕃, \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \implies \text{indexRangeValues}(L, i, j) = L[i \dots j]
 ```
 
-**Proof by induction on $j - i$**
+**Prova por indução em $j - i$**
 
-**Base case**: $i = j$
+**Caso base**: $i = j$
 
 ```math
 \text{indexRangeValues}(L, i, i) = L_i :: L_e = L[i \dots i]
 ```
 
-**Inductive step**: Assume
+**Passo indutivo**: suponha
 
 ```math
 \text{indexRangeValues}(L, i + 1, j) = [ L_k \mid i + 1 \leq k \leq j ]
 ```
 
-Show:
+Mostre:
 
 ```math
 \begin{aligned}
@@ -518,13 +526,15 @@ Show:
 \quad \blacksquare
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   SliceEquivalenceLemmas::indexRangeValues
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.5.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). O código Scala completo de verificação está no Apêndice A.5.
 
-### 4.4 Slice Append Consistency
+### 4.4 Consistência de Append da Fatia
 
-**Lemma:** A slice of a list from index $f$ to $t$ can be expressed as the slice from $f$ to $t - 1$ concatenated with the element at index $t$, for $f \le t < |L|$.
+**Lema:** Uma fatia de uma lista do índice $f$ até $t$ pode ser expressa como a
+fatia de $f$ até $t - 1$ concatenada com o elemento no índice $t$, para
+$f \le t < |L|$.
 
 ```math
 \begin{aligned}
@@ -534,25 +544,29 @@ L[f \dots t] &= \text{slice}(L, f, t) \\
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::assertAppendToSlice
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.6.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). O código Scala completo de verificação está no Apêndice A.6.
 
-## 5. Sum Properties
+<a id="5-sum-properties"></a>
 
-The recursive `sum` matches the mathematical summation, and addition commutes over concatenation.
+## 5. Propriedades da Soma
 
-- [Sum matches summation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = L[0] + \cdots + L[|L|-1]$
-- [Left append preserves sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
-- [Sum over concatenation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
-- [Commutativity of sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
+A `sum` recursiva coincide com o somatório matemático, e a adição comuta sobre
+a concatenação.
 
-### 5.1 Sum matches Summation
+- [Soma coincide com somatório](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(L) = L[0] + \cdots + L[|L|-1]$
+- [Append à esquerda preserva soma](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(x :: L) = x + \text{sum}(L)$
+- [Soma sobre concatenação](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(A) + \text{sum}(B)$
+- [Comutatividade da soma](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala): $\text{sum}(A \mathbin{\texttt{++}} B) = \text{sum}(B \mathbin{\texttt{++}} A)$
 
-We can prove that the recursive `sum` function over a list $L$ matches the mathematical definition 
-of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$, $|L| = n$.
+### 5.1 Soma Coincide com Somatório
 
-**Base case**: $|L| = 0$
+Podemos provar que a função recursiva `sum` sobre uma lista $L$ coincide com a
+definição matemática do somatório $\sum_{i=0}^{n-1} x_i$, em que
+$L = [x_0, x_1, \dots, x_{n-1}]$ e $|L| = n$.
+
+**Caso base**: $|L| = 0$
 
 ```math
 \begin{aligned}
@@ -573,9 +587,9 @@ of the summation $\sum_{i=0}^{n-1} x_i$, where $L = [x_0, x_1, \dots, x_{n-1}]$,
 \end{aligned}
 ```
 
-**Inductive step**: $|L| > 0$
+**Passo indutivo**: $|L| > 0$
 
-Let $P \in 𝕃$, with $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, and assume:
+Seja $P \in 𝕃$, com $P = [x_1, x_2, \dots, x_{n-1}] \in 𝕃$, e suponha:
 
 ```math
 \begin{aligned}
@@ -584,7 +598,7 @@ L = x_0 :: P & = [x_0, x_1, \dots, x_{n-1}]   & \qquad \text{[by Definition of C
 \end{aligned}
 ```
 
-We can ensure termination, since:
+Podemos garantir a terminação, pois:
 ```math
 \begin{aligned}
 &|L| &= |P| + 1  & \qquad \text{[by Size Definition]} \\
@@ -592,7 +606,7 @@ We can ensure termination, since:
 \end{aligned}
 ```
 
-Let's calculate the sum of $L$:
+Vamos calcular a soma de $L$:
 ```math
 \begin{aligned}
 \text{sum}(L) &= \text{head}(L) + \text{sum}(\text{tail}(L))  & \qquad \text{[by definition of the recursive function sum]} \\
@@ -613,7 +627,7 @@ Let's calculate the sum of $L$:
 \end{aligned}
 ```
 
-Hence, by induction on the size of $L$:
+Logo, por indução no tamanho de $L$:
 
 ```math
 \begin{aligned}
@@ -622,13 +636,14 @@ Hence, by induction on the size of $L$:
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtils::sum
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The implementation and verification code are in Appendix A.7.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). A implementação e o código de verificação estão no Apêndice A.7.
 
-### 5.2 Left Append Preserves Sum
+### 5.2 Append à Esquerda Preserva Soma
 
-The sum of a list with an element prepended equals the element plus the sum of the original list.
+A soma de uma lista com um elemento adicionado à frente é igual ao elemento mais
+a soma da lista original.
 
 ```math
 \begin{aligned}
@@ -637,7 +652,7 @@ The sum of a list with an element prepended equals the element plus the sum of t
 \end{aligned}
 ```
 
-**Proof:**
+**Prova:**
 
 ```math
 \begin{aligned}
@@ -657,19 +672,19 @@ A & = x :: L  & \qquad \text{[Cons]} \\
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtils::listSumAddValue
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.8.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). O código Scala completo de verificação está no Apêndice A.8.
 
-### 5.3 Sum over Concatenation
+### 5.3 Soma sobre Concatenação
 
-The sum of two concatenated lists equals the sum of each list added together.
+A soma de duas listas concatenadas é igual à soma de cada lista somadas entre si.
 
 ```math
 	sum(A \mathbin{\texttt{++}} B) = 	sum(A) + 	sum(B)
 ```
 
-**If list A is empty**:
+**Se a lista A está vazia**:
 
 ```math
 \begin{aligned}
@@ -682,7 +697,7 @@ The sum of two concatenated lists equals the sum of each list added together.
 \end{aligned}
 ```
 
-**If list A is non-empty**:
+**Se a lista A não está vazia**:
 
 ```math
 \begin{aligned}
@@ -706,19 +721,19 @@ A \mathbin{\texttt{++}} B & = \text{head}(A) :: (\text{tail}(A) \mathbin{\texttt
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtils::listCombine
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.9.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). O código Scala completo de verificação está no Apêndice A.9.
 
-### 5.4 Commutativity of Sum over Concatenation
+### 5.4 Comutatividade da Soma sobre Concatenação
 
-The order of concatenation does not affect the total sum.
+A ordem da concatenação não afeta a soma total.
 
 ```math
 	sum(A \mathbin{\texttt{++}} B) = sum(B \mathbin{\texttt{++}} A)
 ```
 
-Since:
+Como:
 ```math
 \begin{aligned}
 	sum(A \mathbin{\texttt{++}} B) & = sum(A) + sum(B)                        & \text{[Sum over Concatenation]} \\
@@ -728,14 +743,14 @@ Since:
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtils::listSwap
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). The full Scala verification code is in Appendix A.10.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala). O código Scala completo de verificação está no Apêndice A.10.
 
-### 5.5 Sum Positivity
+### 5.5 Positividade da Soma
 
-If every element of a non-empty list is greater than zero, the sum of the
-list is greater than zero.
+Se todo elemento de uma lista não vazia é maior que zero, a soma da lista é
+maior que zero.
 
 ```math
 \begin{aligned}
@@ -743,34 +758,37 @@ list is greater than zero.
 \end{aligned}
 ```
 
-The base case is the singleton list, where the sum is just the one positive
-element. The inductive step adds a positive head to a tail whose sum is
-already known to be positive by the inductive hypothesis.
+O caso base é a lista singleton, em que a soma é apenas o único elemento
+positivo. O passo indutivo adiciona uma cabeça positiva a uma cauda cuja soma já
+é conhecida como positiva pela hipótese indutiva.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::assertSumPositive
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala).
 
-## 6. Product Properties
+<a id="6-product-properties"></a>
 
-The product operation, from singleton identity through concatenation distributivity to positivity.
+## 6. Propriedades do Produto
 
-- [Singleton product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: \text{empty}) = x$
-- [Product pull-out element](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
-- [Product over concatenation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
-- [Commutativity of product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
-- [Positive product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): product of all-positive list is positive
+A operação de produto, da identidade singleton à distributividade sobre
+concatenação e à positividade.
 
-### 6.1 Singleton Product
+- [Produto singleton](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: \text{empty}) = x$
+- [Extração de elemento do produto](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(x :: L) = x \cdot \text{product}(L)$
+- [Produto sobre concatenação](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(A) \cdot \text{product}(B)$
+- [Comutatividade do produto](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): $\text{product}(A \mathbin{\texttt{++}} B) = \text{product}(B \mathbin{\texttt{++}} A)$
+- [Produto positivo](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala): o produto de uma lista toda positiva é positivo
 
-The product of a singleton list containing $x$ is $x$.
+### 6.1 Produto Singleton
+
+O produto de uma lista singleton contendo $x$ é $x$.
 
 ```math
 \forall \text{ } x \in 𝕊 \\
 \text{product}(x :: L_e) = x
 ```
 
-**Proof:**
+**Prova:**
 ```math
 \begin{aligned}
 \text{product}(x :: L_e) &= \text{head}(x :: L_e) \cdot \text{product}(\text{tail}(x :: L_e)) & \qquad \text{[by definition of product]} \\
@@ -780,22 +798,23 @@ The product of a singleton list containing $x$ is $x$.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProduct::singletonProduct
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.11.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está no Apêndice A.11.
 
-### 6.2 Product Pull-Out Element
+### 6.2 Extração de Elemento do Produto
 
-A single element can be factored out of the product of a concatenated list.
+Um único elemento pode ser fatorado para fora do produto de uma lista
+concatenada.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃, \forall \text{ } e \in 𝕊 \\
 \text{product}(listA \mathbin{\texttt{++}} (e :: listB)) = e \cdot \text{product}(listA \mathbin{\texttt{++}} listB)
 ```
 
-**Proof by induction on $listA$**
+**Prova por indução em $listA$**
 
-**Base case**: $listA = L_e$
+**Caso base**: $listA = L_e$
 
 ```math
 \begin{aligned}
@@ -805,24 +824,25 @@ A single element can be factored out of the product of a concatenated list.
 \end{aligned}
 ```
 
-**Inductive step**: Assume for $listA$, prove for $\text{head}(A) :: listA$.
+**Passo indutivo**: suponha para $listA$, prove para
+$\text{head}(A) :: listA$.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProduct::productPullOutElement
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.12.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está no Apêndice A.12.
 
-### 6.3 Product over Concatenation
+### 6.3 Produto sobre Concatenação
 
-Product distributes over list concatenation.
+O produto distribui sobre a concatenação de listas.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃 \\
 \text{product}(listA \mathbin{\texttt{++}} listB) = \text{product}(listA) \cdot \text{product}(listB)
 ```
 
-**Proof by induction on $listA$**
+**Prova por indução em $listA$**
 
-**Base case**: $listA = L_e$
+**Caso base**: $listA = L_e$
 
 ```math
 \begin{aligned}
@@ -832,22 +852,23 @@ Product distributes over list concatenation.
 \end{aligned}
 ```
 
-**Inductive step**: For $\text{head}(A) :: listA$, the recursive definition of product and the inductive hypothesis give the result.
+**Passo indutivo**: Para $\text{head}(A) :: listA$, a definição recursiva do
+produto e a hipótese indutiva dão o resultado.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProduct::productConcatLemma
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.13.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está no Apêndice A.13.
 
-### 6.4 Commutativity of Product
+### 6.4 Comutatividade do Produto
 
-Product is invariant under swapping concatenated blocks.
+O produto é invariante sob a troca de blocos concatenados.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃 \\
 \text{product}(listA \mathbin{\texttt{++}} listB) = \text{product}(listB \mathbin{\texttt{++}} listA)
 ```
 
-**Proof:**
+**Prova:**
 ```math
 \begin{aligned}
 \text{product}(listA \mathbin{\texttt{++}} listB) &= \text{product}(listA) \cdot \text{product}(listB) & \qquad \text{[Product over Concatenation]} \\
@@ -857,22 +878,23 @@ Product is invariant under swapping concatenated blocks.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProduct::productConcatCommutative
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.14.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está no Apêndice A.14.
 
-### 6.5 Positive Product
+### 6.5 Produto Positivo
 
-If every element of a list is strictly positive, then the product is strictly positive.
+Se todo elemento de uma lista é estritamente positivo, então o produto é
+estritamente positivo.
 
 ```math
 \forall \text{ } elements \in 𝕃 \\
 (\forall \text{ } x \in elements,\ x > 0) \implies \text{product}(elements) > 0
 ```
 
-**Proof by induction on $elements$**
+**Prova por indução em $elements$**
 
-**Base case**: $elements = L_e$
+**Caso base**: $elements = L_e$
 
 ```math
 \begin{aligned}
@@ -880,35 +902,39 @@ If every element of a list is strictly positive, then the product is strictly po
 \end{aligned}
 ```
 
-**Inductive step**: For $\text{head}(e) :: tail$, we have $e > 0$ and $\text{product}(tail) > 0$ by inductive hypothesis. The product of two positive numbers is positive.
+**Passo indutivo**: Para $\text{head}(e) :: tail$, temos $e > 0$ e
+$\text{product}(tail) > 0$ pela hipótese indutiva. O produto de dois números
+positivos é positivo.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProduct::positiveProduct
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). The full Scala verification code is in Appendix A.15.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala). O código Scala completo de verificação está no Apêndice A.15.
 
-## 7. Product Divisibility Properties
+<a id="7-product-divisibility-properties"></a>
 
-Every element of a list divides its total product. The proofs below apply the
-quotient-invariance-under-shift law $\text{mod}(a + m \cdot b, b) = \text{mod}(a, b)$
-at $a = 0$ to derive $(a \cdot b) \bmod a = 0$; that law is verified in the
-companion article [Division and Modulo from Recursive
-Normalization](http://ai.viXra.org/abs/2609.0009) [[5]](#ref5)
-and reused here as a foundational primitive.
+## 7. Propriedades de Divisibilidade do Produto
 
-- [Head divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
-- [All elements divide product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): every element divides $\text{product}(L)$
-- [Inserted element divides product](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $x$ divides $\text{product}(x :: L)$
+Todo elemento de uma lista divide seu produto total. As provas abaixo aplicam a
+lei de invariância do quociente sob deslocamento
+$\text{mod}(a + m \cdot b, b) = \text{mod}(a, b)$ em $a = 0$ para derivar
+$(a \cdot b) \bmod a = 0$; essa lei é verificada no artigo companheiro
+[Divisão e Módulo por Normalização Recursiva](http://ai.viXra.org/abs/2609.0009) [[5]](#ref5)
+e reutilizada aqui como primitiva fundamental.
 
-### 7.1 Head Divides Product
+- [Cabeça divide o produto](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $\text{product}(L) \bmod \text{head}(L) = 0$
+- [Todos os elementos dividem o produto](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): todo elemento divide $\text{product}(L)$
+- [Elemento inserido divide o produto](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala): $x$ divide $\text{product}(x :: L)$
 
-The head of a positive list divides the product of the entire list.
+### 7.1 A Cabeça Divide o Produto
+
+A cabeça de uma lista positiva divide o produto da lista inteira.
 
 ```math
 \forall \text{ } elements \in 𝕃,\ elements \neq L_e \\
 (\forall \text{ } x \in elements,\ x > 0) \implies \text{product}(elements) \bmod \text{head}(elements) = 0
 ```
 
-**Proof:**
+**Prova:**
 ```math
 \begin{aligned}
 \text{product}(elements) &= \text{head}(elements) \cdot \text{product}(\text{tail}(elements)) & \qquad \text{[by definition of product]} \\
@@ -917,32 +943,39 @@ The head of a positive list divides the product of the entire list.
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProductDiv::ListProductDiv
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.16.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). O código Scala completo de verificação está no Apêndice A.16.
 
-### 7.2 All Elements Divide Product
+### 7.2 Todos os Elementos Dividem o Produto
 
-Every element of a positive list divides the product of the list.
+Todo elemento de uma lista positiva divide o produto da lista.
 
 ```math
 \forall \text{ } elements \in 𝕃 \\
 (\forall \text{ } x \in elements,\ x > 0) \implies (\forall \text{ } x \in elements,\ \text{product}(elements) \bmod x = 0)
 ```
 
-**Proof by induction on $elements$**
+**Prova por indução em $elements$**
 
-**Base case**: $elements = L_e$ — vacuously true.
+**Caso base**: $elements = L_e$ — verdadeiro vacuamente.
 
-**Inductive step**: For $\text{head}(p) :: tail$, we have $\text{product}(elements) = p \cdot \text{product}(tail)$. By modulo identity, $p$ divides the product. By the inductive hypothesis, every element of $tail$ appears as the head of some recursive sublist and divides that sublist's product. Multiplying that sublist product by the preceding positive factors preserves divisibility, so every tail element also divides $p \cdot \text{product}(tail) = \text{product}(elements)$.
+**Passo indutivo**: Para $\text{head}(p) :: tail$, temos
+$\text{product}(elements) = p \cdot \text{product}(tail)$. Pela identidade de
+módulo, $p$ divide o produto. Pela hipótese indutiva, todo elemento de $tail$
+aparece como cabeça de alguma sublista recursiva e divide o produto dessa
+sublista. Multiplicar esse produto de sublista pelos fatores positivos
+precedentes preserva a divisibilidade, portanto todo elemento da cauda também
+divide $p \cdot \text{product}(tail) = \text{product}(elements)$.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProductDiv::allElementsDivideProduct
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.17.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). O código Scala completo de verificação está no Apêndice A.17.
 
-### 7.3 Inserted Element Divides Product
+### 7.3 Elemento Inserido Divide o Produto
 
-Inserting an element into a list guarantees that the resulting product is divisible by that element.
+Inserir um elemento em uma lista garante que o produto resultante é divisível
+por esse elemento.
 
 ```math
 \forall \text{ } prefix, suffix \in 𝕃,\ \forall \text{ } e \in 𝕊,\ e > 0 \\
@@ -950,7 +983,7 @@ Inserting an element into a list guarantees that the resulting product is divisi
 \implies \text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) \bmod e = 0
 ```
 
-**Proof:**
+**Prova:**
 ```math
 \begin{aligned}
 \text{product}(prefix \mathbin{\texttt{++}} (e :: suffix)) &= e \cdot \text{product}(prefix \mathbin{\texttt{++}} suffix) & \qquad \text{[Product Pull-Out Element]} \\
@@ -959,35 +992,40 @@ Inserting an element into a list guarantees that the resulting product is divisi
 \end{aligned}
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListProductDiv::insertedElementDividesProduct
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). The full Scala verification code is in Appendix A.18.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala). O código Scala completo de verificação está no Apêndice A.18.
 
-## 8. Bound and Order Properties
+<a id="8-bound-and-order-properties"></a>
 
-How the property $\forall x \in L,\, x > v$ propagates from a whole list to its elements and through concatenation.
+## 8. Propriedades de Cota e Ordem
 
-- [All greater than at index](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
-- [Append preserves all greater than](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
-- [All greater than head and tail](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): the head/tail decomposition propagates the bound
-- [Index checking lemmas](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): efficient bound verification
+Como a propriedade $\forall x \in L,\, x > v$ se propaga de uma lista inteira
+para seus elementos e através da concatenação.
 
-### 8.1 All Greater Than at Index
+- [Todos maiores que no índice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in L,\, x > v) \implies L(pos) > v$
+- [Append preserva todos maiores que](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): $(\forall x \in A,\, x > v) \wedge (\forall x \in B,\, x > v) \implies \forall x \in (A \mathbin{\texttt{++}} B),\, x > v$
+- [Todos maiores que na cabeça e na cauda](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala): a decomposição cabeça/cauda propaga a cota
+- [Lemas de checagem por índice](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala): verificação eficiente de cotas
 
-For every list where all elements are greater than a value, any element at a valid position is also greater than that value.
+### 8.1 Todos Maiores que no Índice
+
+Para toda lista em que todos os elementos são maiores que um valor, qualquer
+elemento em uma posição válida também é maior que esse valor.
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
 (\forall x \in list,\, x > value) \implies list(pos) > value
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListBoundUtils::assertGreaterThanAtIndex
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.19.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). O código Scala completo de verificação está no Apêndice A.19.
 
-### 8.2 Append Preserves All Greater Than
+### 8.2 Append Preserva Todos Maiores que
 
-If both lists have all elements greater than a value, then their concatenation also has all elements greater than that value.
+Se ambas as listas têm todos os elementos maiores que um valor, então sua
+concatenação também tem todos os elementos maiores que esse valor.
 
 ```math
 \forall \text{ } listA, listB \in 𝕃,\ \forall \text{ } value \in 𝕊 \\
@@ -995,53 +1033,56 @@ If both lists have all elements greater than a value, then their concatenation a
 \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x > value
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListBoundUtils::assertAppendGreaterThan
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.20.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). O código Scala completo de verificação está no Apêndice A.20.
 
-### 8.3 All Greater Than Head and Tail
+### 8.3 Todos Maiores que na Cabeça e na Cauda
 
-For a non-empty list where all elements are greater than a value, the head is greater than that value and the tail also satisfies the property.
+Para uma lista não vazia em que todos os elementos são maiores que um valor, a
+cabeça é maior que esse valor e a cauda também satisfaz a propriedade.
 
 ```math
 \forall \text{ } list \in 𝕃,\ list \neq L_e,\ \forall \text{ } value \in 𝕊 \\
 (\forall x \in list,\, x > value) \implies list.head > value \wedge (\forall x \in list.tail,\, x > value)
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListBoundUtils::assertGreaterThanHeadTail
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). The full Scala verification code is in Appendix A.21.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala). O código Scala completo de verificação está no Apêndice A.21.
 
-### 8.4 Check All Bigger at Index
+### 8.4 Checar Todos Maiores no Índice
 
-For every list where all elements are bigger than a value, any element at a valid position is also bigger.
+Para toda lista em que todos os elementos são maiores que um valor, qualquer
+elemento em uma posição válida também é maior.
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ \forall \text{ } pos \in ℕ,\ pos < |list| \\
 \text{checkAllBiggerThanValue}(list, value) \implies list(pos) > value
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::checkAllBiggerThanValueAtIndex
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.22.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). O código Scala completo de verificação está no Apêndice A.22.
 
-### 8.5 Check All Bigger Head and Tail
+### 8.5 Checar Todos Maiores na Cabeça e na Cauda
 
-For a non-empty list where all elements are bigger than a value, the head is bigger and the tail also satisfies the property.
+Para uma lista não vazia em que todos os elementos são maiores que um valor, a
+cabeça é maior e a cauda também satisfaz a propriedade.
 
 ```math
 \forall \text{ } list \in 𝕃,\ list \neq L_e,\ \forall \text{ } value \in 𝕊 \\
 \text{checkAllBiggerThanValue}(list, value) \implies list.head > value \wedge \text{checkAllBiggerThanValue}(list.tail, value)
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListUtilsProperties::checkAllBiggerThanValueHeadTail
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). The full Scala verification code is in Appendix A.23.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala). O código Scala completo de verificação está no Apêndice A.23.
 
-### 8.6 Split Preserves All Greater Than
+### 8.6 Split Preserva Todos Maiores que
 
-Splitting a lower-bounded list at any valid index preserves the bound on
-both halves.
+Dividir uma lista limitada inferiormente em qualquer índice válido preserva a
+cota nas duas metades.
 
 ```math
 \forall \text{ } list \in 𝕃,\ \forall \text{ } value \in 𝕊,\ 0 \leq index \leq |list| \\
@@ -1049,15 +1090,15 @@ both halves.
 \text{where } (front, back) = \text{splitAt}(list, index)
 ```
 
-This property is verified in the [
+Esta propriedade é verificada em [
   ListBoundUtils::assertSplitAtPreservesAllGreaterThan
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala).
 
-### 8.7 The All Less Than Family
+### 8.7 A Família Todos Menores que
 
-The upper-bound mirror of the property above, $\forall x \in L,\, x < b$,
-satisfies the same shape of properties: append preservation, split preservation, and
-transitivity across a looser bound.
+O espelho por cota superior da propriedade acima, $\forall x \in L,\, x < b$,
+satisfaz o mesmo formato de propriedades: preservação por append, preservação
+por split e transitividade para uma cota mais frouxa.
 
 ```math
 (\forall x \in listA,\, x < bound) \wedge (\forall x \in listB,\, x < bound) \implies \forall x \in (listA \mathbin{\texttt{++}} listB),\, x < bound \quad \text{[Append]}
@@ -1083,58 +1124,69 @@ transitivity across a looser bound.
 (\forall x \in list,\, x < bound) \implies list(pos) < bound \quad \text{[At Index]}
 ```
 
-These properties are verified in the [
+Essas propriedades são verificadas em [
   ListBoundUtils::assertAppendLessThan
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), [
   ListBoundUtils::assertSplitAtPreservesAllLessThan
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), [
   ListBoundUtils::assertTransitiveLessThan
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala), e [
   ListBoundUtils::assertLessThanAtIndex
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala).
 
-## 9. Equivalence Properties
+<a id="9-equivalence-properties"></a>
 
-All three slice constructions produce identical results for every valid input.
+## 9. Propriedades de Equivalência
 
-- [Slice equivalence](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): tail-recursive, head-recursive, and index-range slices are identical for all valid inputs
+Todas as três construções de fatia produzem resultados idênticos para toda
+entrada válida.
 
-### 9.1 Slice Equivalence Lemma
+- [Equivalência de fatias](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala): as fatias recursiva pela cauda, recursiva pela cabeça e por intervalo de índices são idênticas para todas as entradas válidas
 
-All three slice implementations — tail-recursive, head-recursive, and index-range — produce the same result for any valid input.
+### 9.1 Lema de Equivalência de Fatias
+
+Todas as três implementações de fatia — recursiva pela cauda, recursiva pela
+cabeça e por intervalo de índices — produzem o mesmo resultado para qualquer
+entrada válida.
 
 ```math
 \forall \text{ } L \in 𝕃,\ \forall \text{ } i, j \in \mathbb{N},\ i \leq j < |L| \\
 \text{slice}(L, i, j) = \text{headRecursiveSlice}(L, i, j) = \text{indexRangeValues}(L, i, j)
 ```
 
-**Proof by induction on $j - i$**
+**Prova por indução em $j - i$**
 
-**Base case**: $i = j$ — all three produce $L_i :: L_e$.
+**Caso base**: $i = j$ — todas as três produzem $L_i :: L_e$.
 
-**Inductive step**: For $i < j$, each function decomposes into a head element plus a recursive call on $(i+1, j)$ or $(i, j-1)$. By the inductive hypothesis, the recursive calls produce equal sublists, and the head element is the same, so the results are equal.
+**Passo indutivo**: Para $i < j$, cada função se decompõe em um elemento de
+cabeça mais uma chamada recursiva em $(i+1, j)$ ou $(i, j-1)$. Pela hipótese
+indutiva, as chamadas recursivas produzem sublistas iguais, e o elemento de
+cabeça é o mesmo; portanto, os resultados são iguais.
 
-This property is verified in the [
+Esta propriedade é verificada em [
   SliceEquivalenceLemmas::tailHeadAndIndexRangeSlicesAreEqual
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). The full Scala verification code is in Appendix A.24.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala). O código Scala completo de verificação está no Apêndice A.24.
 
-## 10. Shifted List Properties
+<a id="10-shifted-list-properties"></a>
 
-A shifted list advances the head by one gap and re-indexes positions. Three lemmas characterize this operation.
+## 10. Propriedades de Lista Deslocada
 
-- [Same period](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting does not change the period (gap list length)
-- [Adjacent difference equals gap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): consecutive shifted-list values differ by the corresponding gap
-- [Gap translation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): shifting translates the gap sequence by one index
+Uma lista deslocada avança a cabeça por um gap e reindexa as posições. Três
+lemas caracterizam essa operação.
 
-A shifted list is a value sequence viewed one position later, with
-the head advanced by the first gap. Unlike rotation (which re-indexes without
-changing values), a shift changes the head and re-indexes positions.
+- [Mesmo período](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): deslocar não altera o período (comprimento da lista de gaps)
+- [Diferença adjacente igual ao gap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): valores consecutivos da lista deslocada diferem pelo gap correspondente
+- [Translação de gap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala): deslocar translada a sequência de gaps por um índice
 
-Shifting is the list-level operation that advances a
-position in a cumulative value sequence. When a sequence of adjacent
-differences is known (the gap list), advancing the head by the first gap
-and rotating the gap list yields the view from the next position — without
-recomputing the cumulative sums.
+Uma lista deslocada é uma sequência de valores vista uma posição adiante, com a
+cabeça avançada pelo primeiro gap. Diferentemente da rotação (que reindexa sem
+alterar valores), um deslocamento muda a cabeça e reindexa posições.
+
+Deslocar é a operação no nível de lista que avança uma posição em uma sequência
+cumulativa de valores. Quando uma sequência de diferenças adjacentes é conhecida
+(a lista de gaps), avançar a cabeça pelo primeiro gap e rotacionar a lista de
+gaps produz a vista a partir da próxima posição — sem recomputar as somas
+cumulativas.
 
 ```math
 \begin{aligned}
@@ -1145,10 +1197,11 @@ recomputing the cumulative sums.
 \end{aligned}
 ```
 
-### 10.1 Same Period
+### 10.1 Mesmo Período
 
-Shifting does not change the period: the gap list remains the same length. The
-structural property $\text{size} = |\text{gaps}|$ is an invariant of the case class.
+Deslocar não altera o período: a lista de gaps permanece com o mesmo
+comprimento. A propriedade estrutural $\text{size} = |\text{gaps}|$ é um
+invariante da case class.
 
 ```math
 \begin{aligned}
@@ -1156,7 +1209,7 @@ structural property $\text{size} = |\text{gaps}|$ is an invariant of the case cl
 \end{aligned}
 ```
 
-Source: [ShiftedList::assertSamePeriod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Fonte: [ShiftedList::assertSamePeriod](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertSamePeriod(otherSize: BigInt): Boolean = {
@@ -1165,11 +1218,11 @@ def assertSamePeriod(otherSize: BigInt): Boolean = {
 }.holds
 ```
 
-### 10.2 Adjacent Difference Equals Gap
+### 10.2 Diferença Adjacente Igual ao Gap
 
-For any valid position, the difference between consecutive shifted-list values
-equals the gap at that position. This is a direct consequence of the cumulative
-value definition above.
+Para qualquer posição válida, a diferença entre valores consecutivos da lista
+deslocada é igual ao gap nessa posição. Isso é consequência direta da definição
+cumulativa de valor acima.
 
 ```math
 \begin{aligned}
@@ -1178,7 +1231,7 @@ value definition above.
 \end{aligned}
 ```
 
-Source: [ShiftedList::assertAdjacentDifferenceEqualsGap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Fonte: [ShiftedList::assertAdjacentDifferenceEqualsGap](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
@@ -1188,12 +1241,12 @@ def assertAdjacentDifferenceEqualsGap(position: BigInt): Boolean = {
 }.holds
 ```
 
-### 10.3 Gap Translation
+### 10.3 Translação de Gap
 
-Shifting the head and rotating the gaps by one translates the adjacent-gap
-sequence by one index: the shifted sequence's gap at $i$ equals the original
-sequence's gap at $i + 1$. Both sides reduce to $G_{i+1}$ because the gap list
-is rotated by one position.
+Deslocar a cabeça e rotacionar os gaps por um translada a sequência de gaps
+adjacentes por um índice: o gap da sequência deslocada em $i$ é igual ao gap da
+sequência original em $i + 1$. Ambos os lados reduzem a $G_{i+1}$ porque a lista
+de gaps é rotacionada por uma posição.
 
 ```math
 \begin{aligned}
@@ -1205,7 +1258,7 @@ is rotated by one position.
 \end{aligned}
 ```
 
-Source: [ShiftedList::assertGapTranslation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
+Fonte: [ShiftedList::assertGapTranslation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala)
 
 ```scala
 def assertGapTranslation(
@@ -1221,33 +1274,37 @@ def assertGapTranslation(
 }.holds
 ```
 
-These properties are verified in the [
+Essas propriedades são verificadas em [
   ShiftedList::assertSamePeriod
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala), [
   ShiftedList::assertAdjacentDifferenceEqualsGap
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala), and [
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala), e [
   ShiftedList::assertGapTranslation
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ShiftedList.scala).
 
-## 11. Rotation Properties
+<a id="11-rotation-properties"></a>
 
-Cyclic permutation preserves every structural invariant: the same elements, same size, same sum, and same bounds.
+## 11. Propriedades de Rotação
 
-- [Same elements](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
-- [Same size and sum](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $|\text{rotateAt}(L, k)| = |L|$, $\sum \text{rotateAt}(L, k) = \sum L$
-- [Bound preservation](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $(\forall x \in L,\, x > v) \implies \forall x \in \text{rotateAt}(L, k),\, x > v$, and likewise for the upper bound $\forall x \in L,\, x < b$
-- [Index shift by one](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, 1)(i) = L(i + 1)$
+A permutação cíclica preserva todo invariante estrutural: os mesmos elementos,
+o mesmo tamanho, a mesma soma e as mesmas cotas.
 
-Rotating a list at index `k` swaps the front (first `k` elements)
-and back (remaining elements) — a cyclic permutation. Rotation preserves every
-structural invariant: size, sum, element membership, and bound properties are
-unchanged, because the multiset of elements is the same under any cyclic
-reordering.
+- [Mesmos elementos](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, k).\text{contains}(x) \iff L.\text{contains}(x)$
+- [Mesmo tamanho e soma](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $|\text{rotateAt}(L, k)| = |L|$, $\sum \text{rotateAt}(L, k) = \sum L$
+- [Preservação de cotas](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $(\forall x \in L,\, x > v) \implies \forall x \in \text{rotateAt}(L, k),\, x > v$, e de modo análogo para a cota superior $\forall x \in L,\, x < b$
+- [Deslocamento de índice por um](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala): $\text{rotateAt}(L, 1)(i) = L(i + 1)$
 
-Cyclic permutations arise whenever a fixed set of values
-is viewed from a different starting position — for example, shifting a
-circular buffer or aligning a periodic sequence. Rotation invariance means no
-structural property is lost when the viewing window moves.
+Rotacionar uma lista no índice `k` troca a frente (os primeiros `k` elementos)
+com o fundo (os elementos restantes) — uma permutação cíclica. A rotação
+preserva todo invariante estrutural: tamanho, soma, pertinência de elementos e
+propriedades de cota permanecem inalterados, porque o multiconjunto de elementos
+é o mesmo sob qualquer reordenação cíclica.
+
+Permutações cíclicas surgem sempre que um conjunto fixo de valores é visto a
+partir de uma posição inicial diferente — por exemplo, ao deslocar um buffer
+circular ou alinhar uma sequência periódica. A invariância por rotação significa
+que nenhuma propriedade estrutural é perdida quando a janela de observação se
+move.
 
 ```math
 \begin{aligned}
@@ -1257,14 +1314,14 @@ structural property is lost when the viewing window moves.
 \end{aligned}
 ```
 
-### 11.1 Permutation Invariants
+### 11.1 Invariantes de Permutação
 
-Rotation is a permutation of the underlying multiset: the same elements appear,
-and every structural quantity derived from the list is preserved.
+A rotação é uma permutação do multiconjunto subjacente: os mesmos elementos
+aparecem, e toda quantidade estrutural derivada da lista é preservada.
 
-**Membership.** An element belongs to the original list if and only if it
-belongs to the rotated list. Since `append` order doesn't affect membership,
-swapping `front` and `back` preserves the element set.
+**Pertinência.** Um elemento pertence à lista original se e somente se pertence
+à lista rotacionada. Como a ordem de `append` não afeta a pertinência, trocar
+`front` e `back` preserva o conjunto de elementos.
 
 ```math
 \begin{aligned}
@@ -1273,8 +1330,8 @@ swapping `front` and `back` preserves the element set.
 \end{aligned}
 ```
 
-**Size and sum.** The rotated list has the same length and the same total sum.
-Sum over `append` is additive and commutative.
+**Tamanho e soma.** A lista rotacionada tem o mesmo comprimento e a mesma soma
+total. A soma sobre `append` é aditiva e comutativa.
 
 ```math
 \begin{aligned}
@@ -1283,8 +1340,8 @@ Sum over `append` is additive and commutative.
 \end{aligned}
 ```
 
-**Bound preservation.** If every element of `L` is strictly greater than `v`
-(or strictly less than `b`), the same holds after rotation.
+**Preservação de cotas.** Se todo elemento de `L` é estritamente maior que `v`
+(ou estritamente menor que `b`), o mesmo vale após a rotação.
 
 ```math
 \begin{aligned}
@@ -1293,11 +1350,11 @@ Sum over `append` is additive and commutative.
 \end{aligned}
 ```
 
-### 11.2 Index Shift Under Rotation by One
+### 11.2 Deslocamento de Índice sob Rotação por Um
 
-Rotating by one position and looking up index $k$ gives the original list's
-element at index $k + 1$. This is the lemma that underlies gap translation
-in `ShiftedList`.
+Rotacionar por uma posição e consultar o índice $k$ dá o elemento da lista
+original no índice $k + 1$. Este é o lema subjacente à translação de gaps em
+`ShiftedList`.
 
 ```math
 \begin{aligned}
@@ -1306,7 +1363,7 @@ in `ShiftedList`.
 \end{aligned}
 ```
 
-Source: [RotationProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
+Fonte: [RotationProperties](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala)
 
 ```scala
 def assertRotateContainsForward(
@@ -1339,20 +1396,21 @@ def assertRotatedAtIndexPlusOne(list: List[BigInt], k: BigInt): Boolean = {
 }.holds
 ```
 
-These properties are verified in the [
+Essas propriedades são verificadas no módulo [
   RotationProperties
-](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) module (11 lemmas total). The forward/backward membership pair and the
-upper/lower bound pair cover all permutation invariants; the remaining
-lemmas (`assertAppendContainsLeft/Right/Decompose/Swap`) are structural
-helpers consumed by the main rotation proofs.
+](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/RotationProperties.scala) (11 lemas no total). O par de pertinência direta/inversa e o par
+de cotas superior/inferior cobrem todos os invariantes de permutação; os lemas
+restantes (`assertAppendContainsLeft/Right/Decompose/Swap`) são auxiliares
+estruturais consumidos pelas provas principais de rotação.
 
-## 12. Conclusion
+## 12. Conclusão
 
-This article established a formally verified property calculus for finite integer lists
-represented by recursive head–tail decomposition.
+Este artigo estabeleceu um cálculo de propriedades formalmente verificado para
+listas finitas de inteiros representadas por decomposição recursiva
+cabeça-cauda.
 
-The core proved properties can be summarized as follows, for lists
-$L,A,B,P,S \in 𝕃$, values $x,e,v \in 𝕊$, and valid natural indices.
+As propriedades centrais provadas podem ser resumidas como segue, para listas
+$L,A,B,P,S \in 𝕃$, valores $x,e,v \in 𝕊$ e índices naturais válidos.
 
 ```math
 \begin{aligned}
@@ -1468,82 +1526,93 @@ e > 0 \land (\forall x \in P,\ x > 0) \land (\forall x \in S,\ x > 0)
 \end{aligned}
 ```
 
-All of these properties are verified in the source references cited throughout
-the article. Appendix A collects the Scala excerpts that are useful to keep
-near the text; each excerpt links back to its maintained source file.
+Todas essas propriedades são verificadas nas referências de código-fonte citadas
+ao longo do artigo. O Apêndice A reúne os trechos Scala que são úteis manter
+próximos ao texto; cada trecho aponta de volta para seu arquivo-fonte mantido.
 
-Collectively, these results give one verified calculus for decomposing and composing
-finite lists, aggregating and bounding their values, relating their elements to list
-products, preserving period while tracking adjacent values and gaps under shifted-list
-transformations, and preserving membership, size, sum, and element bounds under rotation.
+Coletivamente, esses resultados fornecem um cálculo verificado para decompor e
+compor listas finitas, agregar e limitar seus valores, relacionar seus elementos
+a produtos de listas, preservar período enquanto se rastreiam valores adjacentes
+e gaps sob transformações de listas deslocadas, e preservar pertinência,
+tamanho, soma e cotas de elementos sob rotação.
 
-## 13. Future Work
+## 13. Trabalho Futuro
 
-Extending lists via integration (cumulative sums) and derivation (gap extraction)
-would formalize two dual operations that map between a list and its accumulated
-or decomposed form. These operations connect the finite list algebra presented
-here to the theory of discrete sequences and differences.
+Estender listas por integração (somas cumulativas) e derivação (extração de
+gaps) formalizaria duas operações duais que mapeiam entre uma lista e sua forma
+acumulada ou decomposta. Essas operações conectam a álgebra de listas finitas
+apresentada aqui à teoria de sequências e diferenças discretas.
 
-Two related list disciplines have verified source proofs but are not developed
-here as headline properties: maintaining ascending order under insertion and
-filtering (`SortedList`), and preserving a lower or upper numeric bound under
-filtering alone rather than the append/split operations covered in [§8](#8-bound-and-order-properties)
-(`MinBoundList`, `MaxBoundList`). A dedicated treatment of ordered and
-bounded-filter list variants is left as future work.
+Duas disciplinas relacionadas de listas têm provas verificadas no código-fonte,
+mas não são desenvolvidas aqui como propriedades principais: manter ordem
+ascendente sob inserção e filtragem (`SortedList`), e preservar uma cota
+numérica inferior ou superior apenas sob filtragem, em vez das operações de
+append/split cobertas em [§8](#8-bound-and-order-properties) (`MinBoundList`,
+`MaxBoundList`). Um tratamento dedicado de variantes de listas ordenadas e de
+filtro limitado fica como trabalho futuro.
 
-## 14. Limitations
+## 14. Limitações
 
-This article restricts the implementation and verification to immutable,
- finite lists of integers represented using the `stainless.collection.List` data type. 
-The focus is on **correctness**, not on performance or scalability. Our summation and
- accumulation models follow a **recursive definition**, aligned with mathematical formalism.
-However, this approach may introduce performance limitations in practical applications involving large lists.
+Este artigo restringe a implementação e a verificação a listas finitas e
+imutáveis de inteiros representadas usando o tipo de dados
+`stainless.collection.List`. O foco está na **correção**, não em desempenho ou
+escalabilidade. Nossos modelos de somatório e acumulação seguem uma
+**definição recursiva**, alinhada ao formalismo matemático. Contudo, essa
+abordagem pode introduzir limitações de desempenho em aplicações práticas que
+envolvem listas grandes.
 
-### 14.1 Overflow and Memory Limits Are Out of Scope
+### 14.1 Overflow e Limites de Memória Estão Fora do Escopo
 
-By using `BigInt` and immutable lists, the model assumes unbounded integer arithmetic and infinite list capacity. 
-This choice avoids overflow and out-of-memory errors, but it does not reflect the constraints of fixed-size integer
- types or limited system memory in real-world environments.
+Ao usar `BigInt` e listas imutáveis, o modelo assume aritmética inteira
+ilimitada e capacidade infinita de listas. Essa escolha evita erros de overflow
+e falta de memória, mas não reflete as restrições de tipos inteiros de tamanho
+fixo ou de memória de sistema limitada em ambientes reais.
 
-### 14.2 Side Effects Are Excluded
+### 14.2 Efeitos Colaterais São Excluídos
 
-All list operations are pure and referentially transparent. Mutation, I/O, and performance overhead are outside the 
- scope of this model.
+Todas as operações de lista são puras e referencialmente transparentes. Mutação,
+I/O e overhead de desempenho estão fora do escopo deste modelo.
 
-### 14.3 No Parallelism or Laziness
+### 14.3 Sem Paralelismo ou Avaliação Preguiçosa
 
-Unlike streaming libraries or lazy sequences, this model is strictly eager and sequential, without support for parallel 
- computation or lazy evaluation.
+Ao contrário de bibliotecas de streaming ou sequências preguiçosas, este modelo
+é estritamente ansioso e sequencial, sem suporte a computação paralela ou
+avaliação preguiçosa.
 
-### 14.4 Limitations Imposed by Stainless Verification Tool
+### 14.4 Limitações Impostas pela Ferramenta de Verificação Stainless
 
-Due to current limitations in the Scala Stainless verifier (version 0.9.8.8), formal proofs must often rely on concrete
- numeric types such as `BigInt`.
-Stainless does not yet fully support generic numeric abstractions or type classes like `Numeric[T]`,
-which hinders verification of implementations parameterized over arbitrary numeric types.
+Devido a limitações atuais do verificador Scala Stainless (versão 0.9.8.8),
+provas formais muitas vezes precisam depender de tipos numéricos concretos como
+`BigInt`. O Stainless ainda não oferece suporte completo a abstrações numéricas
+genéricas ou type classes como `Numeric[T]`, o que dificulta a verificação de
+implementações parametrizadas por tipos numéricos arbitrários.
 
-As a result, while the mathematical properties in this work conceptually apply to any numeric domain satisfying the 
-required algebraic laws, practical verification is constrained to `BigInt`.
-Overcoming these tool limitations is an important direction for future enhancements, enabling broader generality 
-and more flexible formal verification.
+Como resultado, embora as propriedades matemáticas deste trabalho se apliquem
+conceitualmente a qualquer domínio numérico que satisfaça as leis algébricas
+exigidas, a verificação prática fica restrita a `BigInt`. Superar essas
+limitações da ferramenta é uma direção importante para melhorias futuras,
+permitindo maior generalidade e verificação formal mais flexível.
 
-### 14.5 Scope of Correctness
+### 14.5 Escopo da Correção
 
-This article emphasizes the **mathematical correctness** of recursive definitions and verified properties,
- rather than runtime behavior or system-level efficiency.
+Este artigo enfatiza a **correção matemática** de definições recursivas e
+propriedades verificadas, em vez de comportamento em tempo de execução ou
+eficiência em nível de sistema.
 
-The use of `BigInt` and conceptually unbounded lists abstracts away concerns like stack overflows, memory usage,
- and execution time.
-It also circumvents limitations of the current version of Scala Stainless with respect to generic numeric reasoning.
+O uso de `BigInt` e de listas conceitualmente ilimitadas abstrai preocupações
+como estouros de pilha, uso de memória e tempo de execução. Ele também contorna
+limitações da versão atual do Scala Stainless em relação ao raciocínio numérico
+genérico.
 
-While limiting practical use in some contexts, these assumptions maintain the focus on proving functional correctness
-as defined by recursive specifications.
+Embora limitem o uso prático em alguns contextos, essas hipóteses mantêm o foco
+em provar correção funcional conforme definida por especificações recursivas.
 
-Future work may include developing alternative implementations of these data structures that explicitly address 
-real-world constraints, such as bounded memory and side effects, alongside formal proofs establishing their equivalence
-with the current, mathematically rigorous model.
+Trabalhos futuros podem incluir o desenvolvimento de implementações alternativas
+dessas estruturas de dados que tratem explicitamente restrições do mundo real,
+como memória limitada e efeitos colaterais, junto com provas formais que
+estabeleçam sua equivalência com o modelo atual, matematicamente rigoroso.
 
-## 15. References
+## 15. Referências
 
 <a name="ref1" id="ref1" href="#ref1">[1]</a>
 Hamza, J., Voirol, N., & Kuncak, V. (2019). *System FR: Formalized foundations for the Stainless verifier*.  
@@ -1551,25 +1620,25 @@ Proceedings of the ACM on Programming Languages, OOPSLA Issue.
 
 <a name="ref2" id="ref2" href="#ref2">[2]</a>
 Wikipedia contributors. (2026). *Formal verification*. Wikipedia.  
-Available at: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
+Disponível em: [https://en.wikipedia.org/wiki/Formal_verification](https://en.wikipedia.org/wiki/Formal_verification)
 
 <a name="ref3" id="ref3" href="#ref3">[3]</a>
 The Rocq Development Team. *The Rocq Standard Library: Lists*.
-Available at: [https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html](https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html)
+Disponível em: [https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html](https://docs.rocq-prover.org/v8.16/stdlib/Coq.Lists.List.html)
 
 <a name="ref4" id="ref4" href="#ref4">[4]</a>
 The Lean Community. *Mathlib: List Rotation*.
-Available at: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
+Disponível em: [https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html](https://leanprover-community.github.io/mathlib_docs/data/list/rotate.html)
 
 <a name="ref5" id="ref5" href="#ref5">[5]</a>
 Mata, T. H. (2026). *Division and Modulo from Recursive Normalization*.  
-Available at: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
+Disponível em: [http://ai.viXra.org/abs/2609.0009](http://ai.viXra.org/abs/2609.0009)
 
-## Appendix A: Scala Verification Code
+## Apêndice A: Código de Verificação Scala
 
-### A.1 Tail Access Shift — accessTailShiftRight
+### A.1 Deslocamento de Acesso pela Cauda — accessTailShiftRight
 
-Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def accessTailShiftRight[T](list: List[T], position: BigInt): Boolean = {
@@ -1578,7 +1647,7 @@ Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/
   }.holds
 ```
 
-Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Fonte: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertTailShiftLeft[T](list: List[T], position: BigInt): Boolean = {
@@ -1598,9 +1667,9 @@ Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.2 Last Element Identity — assertLastEqualsLastPosition
+### A.2 Identidade do Último Elemento — assertLastEqualsLastPosition
 
-Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def assertLastEqualsLastPosition[T](list: List[T]): Boolean = {
@@ -1618,9 +1687,9 @@ Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/
   }.holds
 ```
 
-### A.3 Tail-Recursive Slice — slice
+### A.3 Fatia Recursiva pela Cauda — slice
 
-Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
+Fonte: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def slice(list: List[BigInt], from: BigInt, to: BigInt): List[BigInt] = {
@@ -1640,9 +1709,9 @@ Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/maste
   }
 ```
 
-### A.4 Head-Recursive Slice — headRecursiveSlice
+### A.4 Fatia Recursiva pela Cabeça — headRecursiveSlice
 
-Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Fonte: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
 def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -1653,9 +1722,9 @@ def headRecursiveSlice[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 }
 ```
 
-### A.5 Index-Range Slice — indexRangeValues
+### A.5 Fatia por Intervalo de Índices — indexRangeValues
 
-Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Fonte: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
 def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
@@ -1666,9 +1735,9 @@ def indexRangeValues[A](list: List[A], from: BigInt, to: BigInt): List[A] = {
 }
 ```
 
-### A.6 Slice Append Consistency — assertAppendToSlice
+### A.6 Consistência de Append da Fatia — assertAppendToSlice
 
-Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def assertAppendToSlice(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -1683,9 +1752,9 @@ Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/
   }.holds
 ```
 
-### A.7 Sum Implementation — sum
+### A.7 Implementação da Soma — sum
 
-Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
+Fonte: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def sum(loopList: List[BigInt]): BigInt = {
@@ -1697,9 +1766,9 @@ Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/maste
   }
 ```
 
-### A.8 Left Append Preserves Sum — listSumAddValue
+### A.8 Append à Esquerda Preserva Soma — listSumAddValue
 
-Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
+Fonte: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
 def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
@@ -1707,9 +1776,9 @@ def listSumAddValue(list: List[BigInt], value: BigInt): Boolean = {
   }.holds
 ```
 
-### A.9 Sum over Concatenation — listCombine
+### A.9 Soma sobre Concatenação — listCombine
 
-Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
+Fonte: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def listCombine(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -1730,9 +1799,9 @@ Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/maste
   }.holds
 ```
 
-### A.10 Commutativity of Sum — listSwap
+### A.10 Comutatividade da Soma — listSwap
 
-Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
+Fonte: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListUtils.scala)
 
 ```scala
   def listSwap(listA: List[BigInt], listB: List[BigInt]): Boolean = {
@@ -1745,9 +1814,9 @@ Source: [ListUtils.scala](https://github.com/thiagomata/prime-numbers/blob/maste
   }.holds
 ```
 
-### A.11 Singleton Product — singletonProduct
+### A.11 Produto Singleton — singletonProduct
 
-Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Fonte: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def singletonProduct(x: BigInt): Boolean = {
@@ -1755,9 +1824,9 @@ Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/mas
   }.holds
 ```
 
-### A.12 Product Pull-Out Element — productPullOutElement
+### A.12 Extração de Elemento do Produto — productPullOutElement
 
-Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Fonte: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productPullOutElement(
@@ -1776,9 +1845,9 @@ Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/mas
   }.holds
 ```
 
-### A.13 Product over Concatenation — productConcatLemma
+### A.13 Produto sobre Concatenação — productConcatLemma
 
-Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Fonte: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productConcatLemma(
@@ -1812,9 +1881,9 @@ Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/mas
   }.holds
 ```
 
-### A.14 Commutativity of Product — productConcatCommutative
+### A.14 Comutatividade do Produto — productConcatCommutative
 
-Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Fonte: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def productConcatCommutative(
@@ -1845,9 +1914,9 @@ Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/mas
   }.holds
 ```
 
-### A.15 Positive Product — positiveProduct
+### A.15 Produto Positivo — positiveProduct
 
-Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
+Fonte: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProduct.scala)
 
 ```scala
   def positiveProduct(elements: List[BigInt]): Boolean = {
@@ -1865,9 +1934,9 @@ Source: [ListProduct.scala](https://github.com/thiagomata/prime-numbers/blob/mas
   }.holds
 ```
 
-### A.16 Head Divides Product — ListProductDiv
+### A.16 Cabeça Divide o Produto — ListProductDiv
 
-Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Fonte: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def ListProductDiv(
@@ -1902,9 +1971,9 @@ Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.17 All Elements Divide Product — allElementsDivideProduct
+### A.17 Todos os Elementos Dividem o Produto — allElementsDivideProduct
 
-Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Fonte: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def allElementsDivideProduct(
@@ -1949,9 +2018,9 @@ Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.18 Inserted Element Divides Product — insertedElementDividesProduct
+### A.18 Elemento Inserido Divide o Produto — insertedElementDividesProduct
 
-Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
+Fonte: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListProductDiv.scala)
 
 ```scala
   def insertedElementDividesProduct(
@@ -1998,9 +2067,9 @@ Source: [ListProductDiv.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.19 All Greater Than at Index — assertGreaterThanAtIndex
+### A.19 Todos Maiores que no Índice — assertGreaterThanAtIndex
 
-Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Fonte: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertGreaterThanAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -2017,9 +2086,9 @@ Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.20 Append Preserves All Greater Than — assertAppendGreaterThan
+### A.20 Append Preserva Todos Maiores que — assertAppendGreaterThan
 
-Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Fonte: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertAppendGreaterThan(listA: List[BigInt], listB: List[BigInt], value: BigInt): Boolean = {
@@ -2037,9 +2106,9 @@ Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.21 All Greater Than Head and Tail — assertGreaterThanHeadTail
+### A.21 Todos Maiores que na Cabeça e na Cauda — assertGreaterThanHeadTail
 
-Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
+Fonte: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/ListBoundUtils.scala)
 
 ```scala
   def assertGreaterThanHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -2049,9 +2118,9 @@ Source: [ListBoundUtils.scala](https://github.com/thiagomata/prime-numbers/blob/
   }.holds
 ```
 
-### A.22 Check All Bigger at Index — checkAllBiggerThanValueAtIndex
+### A.22 Checar Todos Maiores no Índice — checkAllBiggerThanValueAtIndex
 
-Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def checkAllBiggerThanValueAtIndex(list: List[BigInt], value: BigInt, pos: BigInt): Boolean = {
@@ -2061,9 +2130,9 @@ Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/
   }.holds
 ```
 
-### A.23 Check All Bigger Head and Tail — checkAllBiggerThanValueHeadTail
+### A.23 Checar Todos Maiores na Cabeça e na Cauda — checkAllBiggerThanValueHeadTail
 
-Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
+Fonte: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/ListUtilsProperties.scala)
 
 ```scala
   def checkAllBiggerThanValueHeadTail(list: List[BigInt], value: BigInt): Boolean = {
@@ -2073,9 +2142,9 @@ Source: [ListUtilsProperties.scala](https://github.com/thiagomata/prime-numbers/
   }.holds
 ```
 
-### A.24 Slice Equivalence — tailHeadAndIndexRangeSlicesAreEqual
+### A.24 Equivalência de Fatias — tailHeadAndIndexRangeSlicesAreEqual
 
-Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
+Fonte: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter3/list/properties/SliceEquivalenceLemmas.scala)
 
 ```scala
   def tailHeadAndIndexRangeSlicesAreEqual(list: List[BigInt], from: BigInt, to: BigInt): Boolean = {
@@ -2107,6 +2176,8 @@ Source: [SliceEquivalenceLemmas.scala](https://github.com/thiagomata/prime-numbe
   }.holds
 ```
 
-## Appendix B: Stainless Verification Log Output
+## Apêndice B: Saída do Log de Verificação Stainless
 
-The latest `just verify` run verifies all the described properties without errors. The full log output is available at: [logs/verify-ch-3-v1-chapter3-_.log](https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/logs/verify-ch-3-v1-chapter3-_.log)
+A execução mais recente de `just verify` verifica todas as propriedades
+descritas sem erros. A saída completa do log está disponível em:
+[logs/verify-ch-3-v1-chapter3-_.log](https://github.com/thiagomata/prime-numbers/blob/list-article-v1.0.2/logs/verify-ch-3-v1-chapter3-_.log)

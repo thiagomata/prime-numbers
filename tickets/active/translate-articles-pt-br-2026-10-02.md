@@ -34,7 +34,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/sieve-sequence.md`
 - `articles/chapter7/survival-frontiers.md`
 
-`articles/chapter2/modulo.md` has been translated to Brazilian Portuguese in place. `articles/chapter3/list.md` is partially translated through Section 3.3, with Section 4 onward still needing translation. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
+`articles/chapter2/modulo.md` and `articles/chapter3/list.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
 
 ## What is Learned
 
@@ -43,7 +43,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - Large-scale translation through an external model CLI requires explicit approval because it transmits article contents outside the local workspace.
 - Translating headings changes generated Markdown slugs, so translated headings that are internal-link targets need explicit HTML anchors preserving the old ids.
 - `articles/chapter2/modulo.md` has 102 fence markers, balanced after translation, and passes `git diff --check`.
-- `articles/chapter3/list.md` is being translated in chunks. After translating metadata, abstract, introduction, definitions, and Section 3, it has 266 fence markers, balanced, and passes `git diff --check`.
+- `articles/chapter3/list.md` has 266 fence markers, balanced after translation, 9 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 
 ## Failed Paths
 
@@ -58,7 +58,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Continue translating `articles/chapter3/list.md` from Section 4 onward, preserving code/math fences and adding compatibility anchors for translated headings that are internal-link targets.
+Commit and push the completed `articles/chapter3/list.md` translation, then continue with `articles/chapter4/cycle.md`.
 
 ## Expected State
 
@@ -117,3 +117,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | User requested doing the translation article by article in-chat. `articles/chapter2/modulo.md` translated; fences balanced and `git diff --check -- articles/chapter2/modulo.md` passed after replacing translated metadata hard-break spaces with `<br>`. | Continue with `articles/chapter3/list.md`. |
 | 2026-10-02 | `articles/chapter3/list.md` translated through Section 3.3. Fences remain balanced and `git diff --check -- articles/chapter3/list.md` passes. | Continue with Section 4 of `list.md`. |
 | 2026-10-02 | User asked to commit and push the branch, then move to the next article, and explicitly said not to worry about creating the PDF. | Commit/push the current checkpoint, then continue translating `list.md`. |
+| 2026-10-02 | `articles/chapter3/list.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter3/list.md` passes, and English residual search only reports bibliography titles/names. | Commit/push this checkpoint and continue with `articles/chapter4/cycle.md`. |
