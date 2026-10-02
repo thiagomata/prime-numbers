@@ -34,7 +34,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter6/sieve-sequence.md`
 - `articles/chapter7/survival-frontiers.md`
 
-`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, `articles/chapter4/cycle.md`, `articles/chapter4/integral.md`, `articles/chapter4/integral-cycle.md`, and `articles/chapter5/euclid-theorem.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
+`articles/chapter2/modulo.md`, `articles/chapter3/list.md`, `articles/chapter4/cycle.md`, `articles/chapter4/integral.md`, `articles/chapter4/integral-cycle.md`, `articles/chapter5/euclid-theorem.md`, and `articles/chapter6/gap-dynamics.md` have been translated to Brazilian Portuguese in place. A non-interactive external-model CLI translation attempt was blocked before execution because it would send repository article contents to another model service without explicit user approval for that data egress.
 
 ## What is Learned
 
@@ -50,6 +50,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 - `articles/chapter4/integral-cycle.md` has 220 fence markers, balanced after translation, 26 compatibility anchors for old internal section slugs, and passes `git diff --check`.
 - The already translated files from `chapter2/modulo.md` through `chapter5/euclid-theorem.md` were revisited to translate English proof labels and side comments inside math blocks. They pass `git diff --check`; fence counts remain balanced.
 - `articles/chapter5/euclid-theorem.md` has 58 fence markers, balanced after translation, 13 compatibility anchors for old internal section slugs, and passes `git diff --check`.
+- `articles/chapter6/gap-dynamics.md` has 262 fence markers, balanced after translation, 27 compatibility anchors for old internal section slugs, no missing old internal anchor targets, and passes `git diff --check`. Descriptive math text such as proof side labels and `\text{...}` comments was translated while identifiers and formal symbols were preserved.
 
 ## Failed Paths
 
@@ -64,7 +65,7 @@ Branch `codex/translate-articles-pt-br` has been created. The target Markdown fi
 
 ## Next Action
 
-Commit and push the math-label correction across completed articles, then continue with `articles/chapter6/gap-dynamics.md`.
+Commit and push `articles/chapter6/gap-dynamics.md`, then continue with `articles/chapter6/relaxed-almost-prime.md`.
 
 ## Expected State
 
@@ -130,3 +131,4 @@ Translate the existing files directly, preserving paths and article organization
 | 2026-10-02 | `articles/chapter4/integral-cycle.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter4/integral-cycle.md` passes, and English residual search only reports math labels, code comments, and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter5/euclid-theorem.md`. |
 | 2026-10-02 | `articles/chapter5/euclid-theorem.md` translation completed. Fences remain balanced, `git diff --check -- articles/chapter5/euclid-theorem.md` passes, and English residual search only reports math labels and bibliography names/titles. | Commit/push this checkpoint and continue with `articles/chapter6/gap-dynamics.md`. |
 | 2026-10-02 | User clarified that descriptive text inside math blocks, including side tags and comments, should also be translated while functions and variable names remain unchanged. Completed a correction pass over the six translated articles; fences remain balanced and `git diff --check` passes. | Commit/push the correction, then apply the same rule to remaining articles. |
+| 2026-10-02 | `articles/chapter6/gap-dynamics.md` translation completed with descriptive math text translated. Fences remain balanced, `git diff --check -- articles/chapter6/gap-dynamics.md` passes, and old internal link anchors are covered. | Commit/push this checkpoint and continue with `articles/chapter6/relaxed-almost-prime.md`. |
