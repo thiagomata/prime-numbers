@@ -33,6 +33,10 @@ This separates the exact finite quota from the cumulative condition needed for r
 \end{aligned}
 \end{equation*}
 The complete-period CRT benchmark $u_r=1/r$ satisfies these conditions. A different local CRT quota must be checked against them; preserving a numerical strike count alone does not make the conclusion automatic.
+The prime-head summation below uses the Prime Number Theorem in the form
+cited from Hardy and Wright \cite{hardywright2008}, and the
+infinite-recurrence conclusion uses the Borel-Cantelli/Kochen--Stone
+mixing premise stated in Section~2.1 \cite{kochenstone1964}.
 Multiplying the exact without-replacement factors gives
 \begin{equation*}
 \begin{aligned}
@@ -154,7 +158,7 @@ To use the displayed linear term cumulatively, we additionally require $p_r^E=u_
 \sum_{r<\infty}\left(u_r\kappa_r^{\mathrm{eff}}\right)^2<\infty.
 \end{equation*}
 Without this error control, the per-filter expansion does not determine the asymptotic cumulative hazard.
-The raw weight $\beta_r$ and the effective destruction skew are not identical: the exact quota must take probability away from ordinary values when it gives more probability to endpoints. For the complete-period eligible-sieve population, let $V_r$ be its accepted-value count and $T_r$ its 2-gap count. After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and
+The raw weight $\beta_r$ and the effective destruction skew are not identical: the exact quota must take probability away from ordinary values when it gives more probability to endpoints. For the complete-period eligible-sieve population, let $V_r$ be its accepted-value count and $T_r$ its 2-gap count. After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and the displayed product estimate is the standard Mertens-type product asymptotic cited from Hardy and Wright \cite{hardywright2008}:
 \begin{equation*}
 \begin{aligned}
 x_r

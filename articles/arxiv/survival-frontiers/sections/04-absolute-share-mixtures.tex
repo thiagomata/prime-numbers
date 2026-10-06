@@ -1,4 +1,10 @@
 \section{Absolute-Share Mixtures}
+This section uses the same external analytic and probabilistic inputs as
+the relative-hazard calculation: Prime Number Theorem estimates and
+prime-sum consequences from Hardy and Wright \cite{hardywright2008}, and
+Borel-Cantelli style almost-sure conclusions in the form stated in
+Section~2.1, with the Kochen--Stone reference \cite{kochenstone1964} for
+the divergent mixed case.
 \subsection{Adversarial/Random Parent Square-Window Boundary}
 We now express the general hazard result through an explicit mixture. Each parent is adversarial with share $\alpha_r$ and otherwise random. When the surviving starts follow the spatial-uniformity model of the balanced random companion, a square-safe window has length
 \begin{equation*}
@@ -84,6 +90,10 @@ in the repeated-mixture model, even though the complete-period population contin
 This is different from applying one adversarial dilution after all random filters have finished. A one-time dilution multiplies the final count by $1-\alpha$ once; the repeated model multiplies it once per prime. Confusing these two experiments reverses the asymptotic conclusion.
 \subsection{Two Decaying Absolute-Share Families}
 The useful question is therefore not “what fixed percentage is tolerable?” The useful question is how quickly $\alpha_r$ must decay. In this section and the comparison in Section~5, the displayed schedules hold exactly for all sufficiently large filters. Mere asymptotic equivalence gives weaker remainder control and does not determine the critical cases.
+The estimates below use the Taylor expansion of $-\log(1-x)$ with
+summable remainders, together with the prime harmonic estimate and Prime
+Number Theorem partial-summation consequences; we use Hardy and Wright
+\cite{hardywright2008} for these classical analytic number theory inputs.
 \subsubsection*{Reciprocal Decay: $\alpha_r= c/r$}
 For fixed $c > 0$ and sufficiently large primes,
 \begin{equation*}
