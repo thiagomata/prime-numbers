@@ -64,6 +64,11 @@ counts. The note separates derived mathematical identities from open
 quantitative bounds. These directions have no new empirical classification
 or Stainless verification and are not numbered sufficient-condition hypotheses.
 
+[Five wave-based directions](continuous-wave-twin-research.md) proposes wave
+folding, a bounded twin amplitude, quadratic divisor heights, sixfold coordinate
+reduction, and independent integer-count estimates. It is an unnumbered
+research program; identities and open distribution obligations are separated.
+
 ## Common Notation
 
 The repository-wide meanings of populations, windows, filter scope,
