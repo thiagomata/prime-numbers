@@ -43,6 +43,93 @@ All imaginary contributions are nonnegative. Taking squared modulus prevents
 cancellation between filters. The same finite geometric-sum identity works
 for composite moduli as for prime moduli.
 
+### 1.1 Equivalent sine-wave construction
+
+The construction can be understood directly as adding continuous waves,
+without first calculating divisor counts. Begin with
+
+```math
+F_1(t)=t+i\sin^2(\pi t),
+```
+
+which touches the real axis at every integer. For each next integer m>=2,
+define the continuous wave
+
+```math
+W_m(t)=
+\begin{cases}
+\displaystyle\left(\frac{\sin(\pi t)}{m\sin(\pi t/m)}\right)^2,
+&t\notin m\mathbb Z,\\[6pt]
+1,&t\in m\mathbb Z.
+\end{cases}
+```
+
+The apparent holes at multiples of m are removable. At t=km, the limit of
+the unsquared ratio is (-1)^(k(m-1)); its square is one. This proves that
+the specified value makes W_m continuous. Away from those points it is a
+quotient of continuous functions with nonzero denominator.
+
+At integer inputs the sine numerator vanishes. If the integer is not a
+multiple of m, its denominator is nonzero, giving zero. At multiples, the
+extension gives one. With the same activation a_m as above, the update is
+
+```math
+\boxed{F_m(t)=F_{m-1}(t)+i a_m(t)W_m(t).}
+```
+
+It adds zero at every nonmultiple integer and one at every integer multiple
+strictly after m. All real inputs t<=m, including the filter's own integer,
+remain unchanged by that step. For filter 4 the changes are:
+
+| Integer input | Added imaginary height |
+|---|---:|
+| 4 | 0: its own value is protected |
+| 5, 6, 7 | 0 |
+| 8 | 1 |
+| 9, 10, 11 | 0 |
+| 12 | 1 |
+
+In particular, adding filter 4 leaves the existing heights at 6 and 10
+unchanged, although earlier filters already rejected those inputs. The height
+at 8 rises again because 8 is a later multiple of 4.
+
+The exact zero-change statement concerns nonmultiple integer inputs. Between
+integers the new wave may change the curve. A continuous wave cannot be
+positive at an isolated multiple while vanishing at every neighboring real
+input. Squaring also keeps each contribution nonnegative, preventing accidental
+cancellation with the baseline or other filters.
+
+This is the same function as the complex-exponential detector, not a different
+sieve. The geometric-sum identity gives, away from removable points,
+
+```math
+\begin{aligned}
+D_m(t)&=e^{\pi i(m-1)t/m}
+\frac{\sin(\pi t)}{m\sin(\pi t/m)},\\
+|D_m(t)|^2&=W_m(t).
+\end{aligned}
+```
+
+The phase has modulus one. Continuity extends the equality to multiples of m.
+There is also a finite cosine-sum form without any quotients or holes:
+
+```math
+\boxed{
+W_m(t)=\frac1{m^2}\left[
+m+2\sum_{r=1}^{m-1}(m-r)\cos\left(\frac{2\pi rt}{m}\right)
+\right].
+}
+```
+
+To derive it, expand the squared modulus of D_m as a double sum. Difference
+zero occurs m times; differences r and -r each occur m-r times. Pairing the
+two exponentials yields the displayed cosine term. Thus a selective wave is
+generally a combination of harmonics, not one ordinary sine wave. For example,
+W_2(t)=cos^2(pi t/2).
+
+The divisor-count heights derived next are a consequence of summing these
+waves at integer inputs, not a prerequisite or a replacement definition.
+
 ## 2. Integer height is a truncated proper-divisor count
 
 At integer n, the geometric-sum ratio is z=exp(2 pi i n/m). If m divides n,

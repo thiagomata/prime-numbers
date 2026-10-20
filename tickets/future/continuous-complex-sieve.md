@@ -4,11 +4,10 @@ Date: 2026-10-20
 
 ## START HERE
 
-Current micro-goal (2026-10-21): uniform construction and mathematical
-properties saved and reviewed; deliver this conversation's related notes and
-animations in a local commit on feature/imaginay_function. The exact commit
-scope is documented below. The user prioritizes mathematical
-proofs; Stainless formalization is not a requirement for this work.
+Current micro-goal (2026-10-21): save the user's wave-first interpretation as
+an equivalent sine/cosine formulation, commit/push the two documentation files,
+and include it in a draft PR for feature/imaginay_function. The user prioritizes
+mathematical proofs; Stainless formalization is not a requirement.
 
 Preserve the discussion of Fourier cycle integrals and a continuous complex
 curve whose real-axis contacts encode sieve survivors. These are mathematical
@@ -32,6 +31,15 @@ preserving the prime itself. Compare this value-coordinate representation with
 the Fourier representation in survivor-index coordinates.
 
 ## Current State
+
+Latest follow-up: sine-ratio wave and finite cosine-sum equivalents are saved
+in uniform-continuous-divisor-sieve.md section1.1, including continuous
+extension, exact integer-selective changes and the filter4 example. This is
+documentation-only; whitespace checks pass and no runtime gates apply.
+Existing branch commits4912f037 and4ac732ab are already pushed. No open PR
+exists. Live GitHub comparison against master also includes inherited article
+commit932fcbbc and merge05bdcc71. Preserve that history and disclose it in a
+draft PR rather than claiming this documentation update revalidated articles.
 
 Discussion saved with definitions and mathematical arguments. No runtime gates
 are applicable to this Markdown-only note. Stainless verification and any
@@ -251,6 +259,10 @@ Stainless verification of this construction.
 
 ## Failed Paths
 
+- Sine-wave follow-up: two patch attempts used unmatched wrapped-line context
+  (one ticket hunk, one property hunk) and failed atomically. Corrected only
+  those same files using exact existing paragraph/heading anchors. No failed
+  mathematical strategy or runtime validation occurred.
 - 2026-10-21: first ticket-update patch had an unmatched context line; patch
   application failed atomically without changing the file. Retried only the
   same ticket with exact existing context. No mathematical approach failed.
@@ -279,10 +291,10 @@ Stainless verification of this construction.
 
 ## Next Action
 
-Finish the reviewed local commit on feature/imaginay_function after final
-Python and staged-scope checks; report its hash. No push requested. Future
-research may investigate pair-height distribution bounds independently of
-optional formal implementation.
+Review the sine-wave subsection, commit only the property note and this
+ticket, and push feature/imaginay_function normally. Create/attach the draft
+PR against master with explicit inherited-article scope and accurate validation
+limits. Do not modify or stage unrelated work; no merge or force push.
 
 ## Learning Log
 
@@ -297,3 +309,4 @@ optional formal implementation.
 | 2026-10-21 | User prefers math-only development and requested saving/committing the all-integer variant. | Branch name corrected by user to feature/imaginay_function; existing scene checks pass; begin exact-scope documentation and commit. |
 | 2026-10-21 | Uniform recurrence has divisor-count heights and prime-step contact changes; local finiteness supplies continuity. | Saved complete mathematical proofs and candidate link; review passed; isolated branch/commit next. |
 | 2026-10-21 | User's team branch convention takes precedence over the default prefix. | Created feature/imaginay_function; reviewed exact 14-file commit scope, excluding unrelated work. |
+| 2026-10-21 | User clarified a wave-first construction: each step leaves nonmultiple integer values unchanged. | Saved sine-ratio and finite-cosine formulas, continuous extension and equivalence to the existing detector; prepare documentation commit and draft PR with inherited scope disclosed. |
