@@ -130,6 +130,76 @@ W_2(t)=cos^2(pi t/2).
 The divisor-count heights derived next are a consequence of summing these
 waves at integer inputs, not a prerequisite or a replacement definition.
 
+### 1.2 From the recurrence to one infinite sum
+
+Every step adds a wave; it does not transform or rescale the previous curve.
+We can therefore substitute the recurrence repeatedly:
+
+```math
+\begin{aligned}
+F_2(t)&=F_1(t)+i a_2(t)W_2(t),\\
+F_3(t)&=F_1(t)+i a_2(t)W_2(t)+i a_3(t)W_3(t).
+\end{aligned}
+```
+
+For any integer M>=2, sum the differences F_m-F_(m-1) from m=2 to M.
+Every intermediate F_m cancels, leaving F_M-F_1. This telescoping gives
+
+```math
+\begin{aligned}
+F_M(t)-F_1(t)
+&=\sum_{m=2}^{M}\bigl(F_m(t)-F_{m-1}(t)\bigr)\\
+&=i\sum_{m=2}^{M}a_m(t)W_m(t).
+\end{aligned}
+```
+
+```math
+\boxed{F_M(t)=t+i\left[\sin^2(\pi t)+\sum_{m=2}^{M}a_m(t)W_m(t)\right].}
+```
+
+The same expression holds at M=1 with an empty sum. Extending the index to
+infinity defines the completed curve directly, without computing its earlier
+stages:
+
+```math
+\boxed{
+F(t)=t+i\left[\sin^2(\pi t)+
+\sum_{m=2}^{\infty}a_m(t)W_m(t)\right].
+}
+```
+
+Despite the infinite notation, every fixed input has only finitely many
+active waves: a_m(t)=0 whenever m>=t. At t=12.5, for example, only filters
+2 through 12 can contribute. At t=12, even filter12 is inactive, so only
+filters2 through11 can contribute.
+
+This also justifies the limit rigorously. On any bounded interval [2,B],
+all terms indexed m>=B vanish identically. Once M>=ceil(B), F_M and F agree
+everywhere in that interval. Consequently the sequence converges uniformly
+on each compact interval by eventual exact equality, and F is continuous
+there as a finite sum of continuous functions. No global uniform-convergence
+claim on the entire unbounded domain is needed.
+
+If H(t) denotes the real expression inside the brackets, the completed
+twin-contact curve is
+
+```math
+\begin{aligned}
+H(t)&=\sin^2(\pi t)+\sum_{m=2}^{\infty}a_m(t)W_m(t),\\
+T(t)&=t+i\bigl(H(t)+H(t+2)\bigr).
+\end{aligned}
+```
+
+H is the same limiting height denoted h below. For t in [2,B], the shifted
+height uses inputs through B+2, so enough finite stages must cover that larger
+interval when drawing T. These formulas retain t as the real coordinate;
+adding the complex values F(t) and F(t+2) instead would change that coordinate.
+
+The recurrence and the infinite sum are two descriptions of the same
+construction. The recurrence exposes each filter's effect; the sum describes
+the completed function. Neither form alone supplies a new estimate for the
+number or spacing of prime or twin-prime contacts.
+
 ## 2. Integer height is a truncated proper-divisor count
 
 At integer n, the geometric-sum ratio is z=exp(2 pi i n/m). If m divides n,

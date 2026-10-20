@@ -4,10 +4,10 @@ Date: 2026-10-20
 
 ## START HERE
 
-Current micro-goal (2026-10-21): save the user's wave-first interpretation as
-an equivalent sine/cosine formulation, commit/push the two documentation files,
-and include it in a draft PR for feature/imaginay_function. The user prioritizes
-mathematical proofs; Stainless formalization is not a requirement.
+Current micro-goal (2026-10-21): add the explicit recurrence-to-infinite-sum
+derivation in the sine-wave notation, then commit/push the two documentation
+files to existing draft PR64 on feature/imaginay_function. Mathematical proofs
+are the priority; Stainless formalization is not a requirement.
 
 Preserve the discussion of Fourier cycle integrals and a continuous complex
 curve whose real-axis contacts encode sieve survivors. These are mathematical
@@ -32,12 +32,19 @@ the Fourier representation in survivor-index coordinates.
 
 ## Current State
 
+Recurrence follow-up: section1.2 now derives the finite sum by telescoping,
+states the infinite sum with W_m, gives the12.5/12 activation examples and
+proves local eventual equality on bounded intervals. Twin-contact formula
+and the shifted endpoint range are explicit. Only this ticket and the math
+note change; no code or runtime instructions change. Whitespace checks pass.
+
 Latest follow-up: sine-ratio wave and finite cosine-sum equivalents are saved
 in uniform-continuous-divisor-sieve.md section1.1, including continuous
 extension, exact integer-selective changes and the filter4 example. This is
 documentation-only; whitespace checks pass and no runtime gates apply.
-Existing branch commits4912f037 and4ac732ab are already pushed. No open PR
-exists. Live GitHub comparison against master also includes inherited article
+Existing commits4912f037,4ac732ab and828ee3da are pushed. Draft PR64 exists at
+https://github.com/thiagomata/prime-numbers/pull/64 and is attached to this chat.
+GitHub comparison against master also includes inherited article
 commit932fcbbc and merge05bdcc71. Preserve that history and disclose it in a
 draft PR rather than claiming this documentation update revalidated articles.
 
@@ -291,10 +298,9 @@ Stainless verification of this construction.
 
 ## Next Action
 
-Review the sine-wave subsection, commit only the property note and this
-ticket, and push feature/imaginay_function normally. Create/attach the draft
-PR against master with explicit inherited-article scope and accurate validation
-limits. Do not modify or stage unrelated work; no merge or force push.
+Review section1.2, commit only the property note and this ticket, and push
+feature/imaginay_function normally to update existing PR64. No new PR, merge
+or force push; preserve unrelated working changes and inherited-scope disclosure.
 
 ## Learning Log
 
@@ -310,3 +316,4 @@ limits. Do not modify or stage unrelated work; no merge or force push.
 | 2026-10-21 | Uniform recurrence has divisor-count heights and prime-step contact changes; local finiteness supplies continuity. | Saved complete mathematical proofs and candidate link; review passed; isolated branch/commit next. |
 | 2026-10-21 | User's team branch convention takes precedence over the default prefix. | Created feature/imaginay_function; reviewed exact 14-file commit scope, excluding unrelated work. |
 | 2026-10-21 | User clarified a wave-first construction: each step leaves nonmultiple integer values unchanged. | Saved sine-ratio and finite-cosine formulas, continuous extension and equivalence to the existing detector; prepare documentation commit and draft PR with inherited scope disclosed. |
+| 2026-10-21 | Additive recurrence telescopes to one locally finite infinite sum; no global uniform-convergence assumption is needed. | Added section1.2 with finite/infinite forms, compact-limit proof and twin-contact formula; update existing PR64 via two-file documentation commit. |
