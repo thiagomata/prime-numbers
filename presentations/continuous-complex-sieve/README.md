@@ -127,3 +127,70 @@ hand-pinned histograms, separator phase and period reconstruction, the analytic
 bad-channel detector, cyclic survival bound, noninteger midpoint samples and
 zoom removal markers. Compilation/import, encoded video metadata and four
 representative rendered frames also passed inspection.
+
+## Uniform all-integer prime and twin-contact curves
+
+- [Animation: 35.53 seconds, 1920x1080, 30 fps](output/uniform-prime-twins.mp4)
+- [Final plot of both limiting functions](output/uniform-prime-twins.png)
+- [Timed narration and expanded explanation](uniform-prime-twins-narration.md)
+- [Standalone source](uniform_prime_twins.py)
+- [Mathematical definition and proofs](../../properties/sieve-sequence/uniform-continuous-divisor-sieve.md)
+
+This scene applies every integer filter2,3,4,...,32, including composites.
+It plots two complex-valued functions of real t on [2,31]:
+
+```math
+F_M(t)=t+i h_M(t),\qquad
+T_M(t)=t+i\bigl(h_M(t)+h_M(t+2)\bigr).
+```
+
+At finite stages, real-axis contacts are candidates. In the final upper
+panel, contacts are precisely the prime values through31. In the final lower
+panel, contacts are precisely starts3,5,11,17,29 of the twin pairs
+(3,5),(5,7),(11,13),(17,19),(29,31). These are zero imaginary heights, not
+zeros of the entire complex-valued function. Both panels use the same
+horizontal scale; their vertical scales differ and have explicit tick labels.
+
+The final curves are exact restrictions of the infinite uniform construction,
+apart from graphical/numerical sampling. The lower panel evaluates heights
+through t+2=33. Every filter indexed33 or greater is inactive throughout those
+inputs, so filters through32 suffice for the complete continuous shape.
+No approximation by omitting active infinite terms is involved.
+
+### Viewing guide
+
+- Approximately0–4seconds: no filters; every integer starts as a contact.
+- Approximately4–14seconds: filters2 through6, including composite4 and6.
+  Composite steps increase some heights without removing new integer contacts.
+  The p-squared captions refer specifically to the top panel: a pair start
+  can disappear earlier when its second endpoint is struck.
+- Approximately14–28seconds: advance through the remaining integer filters.
+  Integer contacts already settled after filter5 in this bounded window;
+  the subsequent filters continue changing heights and the continuous shape.
+- Approximately29–35seconds: display both limiting curves and their selected
+  primes/twin starts. The lower curve touches at a start only when both
+  endpoint heights vanish; subtraction would also admit equal positive heights.
+
+Using the same environment and saved configuration:
+
+```bash
+/private/tmp/continuous-sieve-manim-venv/bin/python presentations/continuous-complex-sieve/uniform_prime_twins.py --check
+```
+
+```bash
+MPLCONFIGDIR=/private/tmp/continuous-sieve-mpl /private/tmp/continuous-sieve-manim-venv/bin/manimgl \
+  presentations/continuous-complex-sieve/uniform_prime_twins.py UniformPrimeTwins \
+  -w -r 1920x1080 \
+  --config_file presentations/continuous-complex-sieve/manim.yml \
+  --video_dir presentations/continuous-complex-sieve/output \
+  --file_name uniform-prime-twins
+```
+
+Validation passed1024 integer-stage comparisons with direct proper-divisor
+counts, final divisor-count and trial-primality checks, composite-step contact
+invariance, activation boundary and noninteger midpoint checks, plot bounds,
+and exact local stabilization after adding filters33 through35. Compilation,
+configured import, encoded metadata and four representative frames passed.
+The illustration establishes no new prime-distribution or twin-prime
+infinitude result; mathematical proofs are documented separately without
+requiring Stainless formalization.
