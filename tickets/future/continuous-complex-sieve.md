@@ -78,6 +78,10 @@ These are context links, not claims that those tickets establish this constructi
 
 ### 1. Fourier representation of a fixed cycle integral
 
+This uses classical finite Fourier inversion and geometric summation, rather
+than a newly discovered general integration formula. Rein van den Boomgaard's
+DTFS exposition and Raya and Eberl's formalization are cited below.
+
 For a repeating real gap list g_0,...,g_(N-1), define a starting value before
 accumulation and its sequence by
 
@@ -115,6 +119,10 @@ mixing frequencies. Merely putting rejected entries on the imaginary axis
 also retains their old positions.
 
 ### 2. A continuous divisibility detector
+
+The squared detector is a normalized **Fejér kernel**, named for Lipót Fejér.
+His original1900 paper and a modern normalization reference are listed below.
+Classical roots-of-unity orthogonality supplies its divisibility samples.
 
 For a prime p and real input t, define
 
@@ -244,17 +252,16 @@ and cosine waves: activation introduces an additional piecewise function.
 
 ## Bibliography
 
-The following sources were cited during the discussion. The mathematical
-references support the Fourier and roots-of-unity ingredients; the activated
-continuous sieve construction and its arguments are derived in these notes,
-not attributed to those sources. External formal verification does not imply
-Stainless verification of this construction.
+These sources distinguish classical ingredients from the specific activated
+interpolation presented here. Its historical priority has not been determined;
+an independent derivation is not evidence of novelty. External formal
+verification does not imply Stainless verification of this construction.
 
-1. University of Amsterdam, *Signal Processing*,
+1. Rein van den Boomgaard, University of Amsterdam, *Signal Processing*,
    [3.4. Discrete Time Fourier Series](https://staff.fnwi.uva.nl/r.vandenboomgaard/SignalProcessing/FrequencyDomain/DTP.html).
    Reference for expressing a finite-period sequence as a finite sum of
    complex exponentials and recovering it by Fourier inversion.
-2. Archive of Formal Proofs,
+2. Rodrigo Raya and Manuel Eberl (2019), Archive of Formal Proofs,
    [Gauss Sums and the Polya–Vinogradov Inequality](https://www.isa-afp.org/browser_info/current/AFP/Gauss_Sums/document.pdf).
    Formal reference for geometric sums of roots of unity, including the
    unity-root-sum identity underlying the integer divisibility detector.
@@ -263,6 +270,21 @@ Stainless verification of this construction.
    Proposed tool for plotting the complex curve and animating successive
    filters. This is a software reference, not a source for the mathematical
    claims. The linked repository is ManimGL, distinct from Manim Community.
+4. L. Fejér (1900),
+   [*Sur les fonctions bornées et intégrables*](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf),
+   *Comptes rendus de l'Académie des sciences*,131,984–987.
+   Original historical source for Fejér's Fourier-averaging work. The normalized
+   kernel used here is described by a modern convention in
+   [MIT18.102, Lecture16, Proposition173](https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/eb44436072623f60f8f416875d4b2c11_MIT18_102s21_lec16.pdf).
+5. NIST DLMF, [section27.18](https://dlmf.nist.gov/27.18) and
+   [section27.3](https://dlmf.nist.gov/27.3).
+   Modern references for the sieve of Eratosthenes, square-root certification,
+   and classical divisor identities used in the later all-integer version.
+
+The [claim-level attribution inventory](../../properties/sieve-sequence/research/continuous-sieve-attribution.md)
+also records earlier Holt–Rudd gap-cycle research and unresolved priority
+questions. These source roles replace any implication that “derived here”
+means “first discovered here.”
 
 ## Failed Paths
 
@@ -309,7 +331,7 @@ or force push; preserve unrelated working changes and inherited-scope disclosure
 | 2026-10-20 | Continuous real-axis contacts avoid survivor reindexing when representing the accepted set. | Saved the value-coordinate construction and its tradeoffs. |
 | 2026-10-20 | Filters must activate after their own primes to retain primes in the limit. | Recorded activation, recursive heads, and the contact proof. |
 | 2026-10-20 | Activation makes the infinite series locally finite; positive geometric weights additionally give uniform convergence. | Recorded both continuity arguments and verification limits. |
-| 2026-10-20 | Supporting references should accompany the saved discussion without attributing the new construction to them. | Added the cited Fourier, roots-of-unity, and ManimGL references with their respective roles. |
+| 2026-10-20 | Supporting references should accompany the saved discussion without attributing the specific activated construction to them; its priority was not established. | Added the cited Fourier, roots-of-unity, and ManimGL references with their respective roles. |
 | 2026-10-20 | User requested preservation of four proposed research directions. | Began documentation-only candidate save; separate derived identities from open quantitative targets. |
 | 2026-10-20 | Height and pair-height identities provide interfaces, while damped counts need independent lower bounds. | Saved candidates/continuous-contact-research-directions.md, linked its four directions from the candidate README, and completed mathematical/status review; no new failed approach. |
 | 2026-10-21 | User prefers math-only development and requested saving/committing the all-integer variant. | Branch name corrected by user to feature/imaginay_function; existing scene checks pass; begin exact-scope documentation and commit. |
@@ -317,3 +339,4 @@ or force push; preserve unrelated working changes and inherited-scope disclosure
 | 2026-10-21 | User's team branch convention takes precedence over the default prefix. | Created feature/imaginay_function; reviewed exact 14-file commit scope, excluding unrelated work. |
 | 2026-10-21 | User clarified a wave-first construction: each step leaves nonmultiple integer values unchanged. | Saved sine-ratio and finite-cosine formulas, continuous extension and equivalence to the existing detector; prepare documentation commit and draft PR with inherited scope disclosed. |
 | 2026-10-21 | Additive recurrence telescopes to one locally finite infinite sum; no global uniform-convergence assumption is needed. | Added section1.2 with finite/infinite forms, compact-limit proof and twin-contact formula; update existing PR64 via two-file documentation commit. |
+| 2026-10-21 | User requested credit for previously discovered properties. Proof and historical priority are separate. | Named Fejer and the modern expositors/formalizers, added classical sieve/divisor references, and linked the claim-level attribution audit. Exact interpolation priority remains unresolved. |

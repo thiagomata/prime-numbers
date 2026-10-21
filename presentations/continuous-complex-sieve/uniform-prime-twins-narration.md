@@ -142,3 +142,23 @@ a finite interval. It does not establish infinitely many twin primes or a
 new bound on their spacing. Mathematical definitions and proofs are in
 [Uniform Continuous Divisor Sieve](../../properties/sieve-sequence/uniform-continuous-divisor-sieve.md);
 source and rendering commands are in the [animation README](README.md).
+
+## Sources and credit (outside the timed narration)
+
+The selective wave is a normalized **Fejér kernel**, named for **Lipót Fejér**;
+see his [1900 paper](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf).
+Its use here combines classical roots-of-unity sampling with an activation
+chosen to preserve each filter's own integer. Historical priority of this
+exact interpolation has not been established.
+
+The sieve of Eratosthenes and the square-root certification underlying the
+settled contacts are classical; [DLMF27.18](https://dlmf.nist.gov/27.18) is a
+modern reference. The integer heights rewrite the classical divisor function,
+whose product and multiplicativity formulas appear in
+[DLMF27.3](https://dlmf.nist.gov/27.3). These modern sources are not being
+identified as the original discoverers of those facts.
+
+The [attribution inventory](../../properties/sieve-sequence/research/continuous-sieve-attribution.md)
+maps the claims to their sources and distinguishes established ingredients
+from the presentation explored here. These credits accompany the reading
+guide; the timed script and existing video have not been changed.

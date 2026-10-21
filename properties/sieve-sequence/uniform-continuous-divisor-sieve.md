@@ -4,6 +4,11 @@
 required for this research note. Distribution estimates and twin-prime
 existence beyond the stated equivalences remain open.
 
+The arithmetic and Fourier ingredients below are classical. The activated
+interpolation is presented here without a historical-priority claim; see the
+[attribution inventory](research/continuous-sieve-attribution.md) for the
+distinction between original sources, modern references and unresolved priority.
+
 ## Purpose
 
 Apply the same filter rule at every integer 2,3,4,..., rather than selecting
@@ -44,6 +49,14 @@ cancellation between filters. The same finite geometric-sum identity works
 for composite moduli as for prime moduli.
 
 ### 1.1 Equivalent sine-wave construction
+
+The selective wave is a normalized **Fejér kernel**, named for Lipót Fejér;
+see his [1900 paper, *Sur les fonctions bornées et intégrables*](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf).
+With the convention mathcal F_m(theta)=m^(-1)|sum exp(i r theta)|^2,
+our W_m(t)=mathcal F_m(2 pi t/m)/m. A modern formula with its normalization
+specified appears in [MIT's Lecture16, Proposition173](https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/eb44436072623f60f8f416875d4b2c11_MIT18_102s21_lec16.pdf).
+The sine quotient and Fourier coefficients are classical kernel formulas;
+the activation is an additional choice of this interpolation.
 
 The construction can be understood directly as adding continuous waves,
 without first calculating divisor counts. Begin with
@@ -202,6 +215,11 @@ number or spacing of prime or twin-prime contacts.
 
 ## 2. Integer height is a truncated proper-divisor count
 
+This uses classical roots-of-unity orthogonality. Rodrigo Raya and Manuel
+Eberl's [AFP development](https://isa-afp.org/browser_info/current/AFP/Gauss_Sums/document.pdf),
+section4, gives a modern formal proof (`unity-root-sum`); they are credited
+for that formalization, rather than identified as the original discoverers.
+
 At integer n, the geometric-sum ratio is z=exp(2 pi i n/m). If m divides n,
 every term is one. Otherwise z is not one but z^m=1, and the geometric sum
 vanishes. Consequently
@@ -246,6 +264,8 @@ an uncontrolled infinite sum and a limit is required. Piecewise activation
 does not by itself justify a general smoothness claim.
 
 Let tau(n) be the number of positive divisors of n, including 1 and n.
+This is the classical divisor function d(n) of
+[NIST DLMF section27.2](https://dlmf.nist.gov/27.2).
 The integer-height identity gives
 
 ```math
@@ -289,6 +309,10 @@ For pair curves using t+2, preservation must be interpreted at each endpoint.
 
 ## 5. Only prime steps remove new integer contacts
 
+This is the usual sieve-of-Eratosthenes rejection rule expressed in contact
+language; a modern reference is [NIST DLMF section27.18](https://dlmf.nist.gov/27.18).
+The change in representation does not make the underlying sieve fact new.
+
 Suppose M is composite. Any integer n whose height increases satisfies
 M|n and n>M. Choose a prime divisor r of M; then r<M<n and r|n. Filter r
 already gave n positive height. Therefore a composite step removes no new
@@ -313,6 +337,9 @@ characterization, not an efficiency claim about testing infinitely many inputs.
 
 ## 6. A growing certified region
 
+The certification uses the classical square-root divisor test, also stated
+in [NIST DLMF section27.18](https://dlmf.nist.gov/27.18).
+
 After applying filters through integer M>=1, every contact in
 
 ```math
@@ -331,6 +358,10 @@ whereas no installed divisor divides q^2. This sharper description uses q
 for analysis; q is not needed in the recurrence.
 
 ## 7. Low heights reveal factorization types
+
+The input is the standard divisor-product formula
+[DLMF27.3.5](https://dlmf.nist.gov/27.3.E5); the following cases translate
+that classical formula into height notation.
 
 The prime factorization n=product p_j^(e_j) gives
 
@@ -353,6 +384,10 @@ For example, height two means tau(n)=4, whose multiplicative partitions are
 
 ## 8. Odd heights detect perfect squares
 
+This is the classical parity property of the divisor function, also immediate
+from [its product formula](https://dlmf.nist.gov/27.3.E5). No first-discoverer
+attribution has been established in this source audit.
+
 Divisors normally pair as d and n/d. A divisor pairs with itself precisely
 when d^2=n. Therefore tau(n) is odd exactly when n is a perfect square.
 Subtracting two does not change parity:
@@ -363,6 +398,10 @@ Subtracting two does not change parity:
 ```
 
 ## 9. Coprime multiplication law
+
+This rewrites the classical multiplicativity of the divisor function;
+see [DLMF27.3.1](https://dlmf.nist.gov/27.3.E1). The reference is a modern
+exposition, not a historical-priority attribution to its authors.
 
 For coprime integers a,b>=2, every divisor of ab factors uniquely into a
 divisor of a times a divisor of b. Hence tau(ab)=tau(a)tau(b), giving
@@ -421,8 +460,10 @@ of new number-theoretic discoveries.
   existing prime-filter and pair-filter animations; these do not yet animate
   the all-integer recurrence.
 
-The finite Fourier and roots-of-unity ingredients are described in the
-[University of Amsterdam discrete Fourier series notes](https://staff.fnwi.uva.nl/r.vandenboomgaard/SignalProcessing/FrequencyDomain/DTP.html)
-and the [Archive of Formal Proofs roots-of-unity development](https://www.isa-afp.org/browser_info/current/AFP/Gauss_Sums/document.pdf).
-These references support the ingredients; the activated construction is
-derived here rather than attributed to those sources.
+For finite Fourier inversion, see Rein van den Boomgaard's
+[University of Amsterdam notes](https://staff.fnwi.uva.nl/r.vandenboomgaard/SignalProcessing/FrequencyDomain/DTP.html).
+For the formal roots-of-unity ingredient, see Raya and Eberl's AFP development
+cited above. These modern expositions complement the original Fejér source;
+none is being credited with this specific activated sieve. The priority of
+that combination has not been determined. Full source roles and the remaining
+article audit are recorded in the [attribution inventory](research/continuous-sieve-attribution.md).

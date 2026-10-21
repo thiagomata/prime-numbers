@@ -25,6 +25,17 @@ so it still defines a continuous curve. The finite animation stops at filter
 5; it does not depict all filters of the infinite construction on this window.
 Curves are sampled, with every displayed integer explicitly included.
 
+The squared wave is a normalized **Fejér kernel**: credit Lipót Fejér's
+[1900 paper](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf).
+Roots-of-unity orthogonality is classical; Rodrigo Raya and Manuel Eberl's
+[AFP development](https://isa-afp.org/entries/Gauss_Sums.html) provides a modern
+formalization. The sieve of Eratosthenes and the divisor-function identities
+behind the heights are classical too; modern references are
+[DLMF27.18](https://dlmf.nist.gov/27.18) and
+[DLMF27.3](https://dlmf.nist.gov/27.3).
+The specific activated interpolation has unestablished historical priority.
+See the [claim-level attribution inventory](../../properties/sieve-sequence/research/continuous-sieve-attribution.md).
+
 ## Reproduce
 
 Use [3b1b ManimGL](https://github.com/3b1b/manim), distinct from Manim Community.
@@ -100,6 +111,15 @@ Before filtering, R=10 is bad for7 because7 divides R+4; R=4 is good.
 Badness permits deletion of both neighboring pairs but does not force it.
 Fourteen bad separators among21 give a cyclic lower bound of4 surviving
 two-gaps; the actual transition leaves15.
+
+Earlier work by **Fred B. Holt and Helgi Rudd**,
+[*Eratosthenes sieve and the gaps between primes*](https://arxiv.org/abs/1408.6002)
+(2014), section2 and Corollary6.3, describes gap-cycle expansion/closure and
+the complete-period 2-gap count recurrence. Here the old period has3 pairs;
+expansion gives7*3=21 and filtering leaves(7-2)*3=15. The factor applies to
+the old period's count. This credits the earlier cycle/count result; the
+particular focused-separator histogram and lower-bound calculation need their
+own derivations and are not attributed to that paper by this citation.
 
 The contacts are surviving pairs at distance two, not a claim that all
 endpoints are prime. After installing7, endpoints below the next head's

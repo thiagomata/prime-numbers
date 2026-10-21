@@ -7,6 +7,13 @@ No global novelty claim or new empirical evidence is asserted.
 
 ## Context
 
+The wave is a normalized **Fejér kernel**, a classical object named for
+Lipót Fejér; see his [1900 paper](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf)
+and [MIT's modern kernel formula](https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/eb44436072623f60f8f416875d4b2c11_MIT18_102s21_lec16.pdf),
+Proposition173. The exact activated combinations below have unestablished
+historical priority. A new research direction here need not be a new theorem
+in the literature.
+
 Use the continuous waves and activations from
 [Uniform Continuous Divisor Sieve](../properties/sieve-sequence/uniform-continuous-divisor-sieve.md):
 
@@ -22,6 +29,9 @@ continuous-contact-research-directions.md), concentrating on the wave algebra.
 It does not add numbered sufficient-condition hypotheses to the main catalog.
 
 ## 1. Folding translated waves
+
+This is a direct consequence of classical Fourier coefficients and
+roots-of-unity orthogonality, not a claimed new general kernel theorem.
 
 For integers m>=2 and k>=1, investigate the exact folding identity
 
@@ -44,6 +54,11 @@ waves plus explicit activation-boundary terms. Determine what is actually
 compressed; one translated identity does not compress all unshifted filters.
 
 ## 2. Bounded continuous twin amplitude
+
+The integer product uses standard complementary sieve indicators; expanding
+such products is inclusion-exclusion. Paul Pollack's
+[2009 book](https://www.pollack-math.net/NABDofficial.pdf), Chapter6, section3.1,
+is a modern exposition, not an original source for this particular curve.
 
 For M>=1 and real t>=2, define
 
@@ -68,6 +83,10 @@ must be audited before using an integral to count twins.
 
 ## 3. Quadratic divisor-height minimum
 
+This rewrites classical divisor-function multiplicativity
+([DLMF27.3.1](https://dlmf.nist.gov/27.3.E1)) and the
+[divisor-product formula](https://dlmf.nist.gov/27.3.E5).
+
 For odd integer n>=3, n and n+2 are coprime. Let h be the completed additive
 height, h(n)=tau(n)-2, and B(n)=h(n)+h(n+2). Divisor multiplication suggests
 
@@ -88,6 +107,9 @@ re-encodes the same information, and the larger argument may cost more.
 
 ## 4. Sixfold coordinate and filter reduction
 
+The6k±1 restriction is elementary congruence arithmetic, obtained by removing
+multiples of2 and3. No original discoverer has been verified in this audit.
+
 Except for (3,5), twin primes have endpoints6k-1 and6k+1 for integer k>=1.
 Every divisor of either endpoint is coprime to6. Consider
 
@@ -98,7 +120,7 @@ G(k)=\sin^2(\pi k)+
 ```
 
 At integer k>=1 this equals the original pair height at start6k-1.
-Off-grid it is a new interpolation: its sine baseline enforces integer k.
+Off-grid it is a different interpolation: its sine baseline enforces integer k.
 The infinite sum is locally finite on k>=1. It removes the filter indices
 containing factors2 or3, but still includes composite indices coprime to6.
 
@@ -139,7 +161,9 @@ Relevant existing work includes [Fourier Correlation Bound](
 and [Weighted Deletion Conservation](
 ../properties/sieve-sequence/weighted-deletion-conservation-law.md).
 
-The waves are scaled Fejer kernels, whose standard Fourier properties are
-described in [MIT's Topics in Fourier Analysis notes](https://ocw.mit.edu/courses/res-18-015-topics-in-fourier-analysis-spring-2024/mitres_18_015_s24_full_lec.pdf).
-The proposed activated sieve constructions and research obligations are not
-attributed to that reference.
+Proofs of folding, its activation correction and the bounded amplitude are
+recorded in the [wave analysis](../properties/sieve-sequence/research/continuous-wave-twin-analysis.md).
+The [attribution inventory](../properties/sieve-sequence/research/continuous-sieve-attribution.md)
+separates original sources, modern expositions, elementary consequences and
+unresolved priority. These references do not establish novelty of the proposed
+activated combinations or supply the open distribution estimates.

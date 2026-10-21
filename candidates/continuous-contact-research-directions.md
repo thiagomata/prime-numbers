@@ -19,6 +19,14 @@ The quantitative survival questions below remain open.
 
 ## Common definitions and scope
 
+The squared detector below is a normalized **Fejér kernel**, named for Lipót
+Fejér; see his [1900 paper](https://history-of-approximation-theory.com/fpapers/fej1OCR.pdf).
+Its integer sampling uses classical roots-of-unity orthogonality, with a
+modern formal proof in Rodrigo Raya and Manuel Eberl's
+[AFP development](https://isa-afp.org/browser_info/current/AFP/Gauss_Sums/document.pdf),
+section4. These are established ingredients; priority of this exact activated
+interpolation has not been determined.
+
 For a finite set P of prime filters and real t >= 2, use the unweighted height
 
 ```math
@@ -43,6 +51,10 @@ not a verified implementation claim.
 
 ## Direction 1: bounded-window contact stabilization
 
+This is the classical square-root sieve certificate in contact notation;
+see [NIST DLMF section27.18](https://dlmf.nist.gov/27.18), which describes
+the sieve of Eratosthenes and the square-root divisor test.
+
 **Derived statement:** For B >= 2, if P contains every prime p <= sqrt(B),
 the integer contacts in [2,B] are exactly the primes in that interval.
 Adding any further prime filters cannot change that contact set.
@@ -63,6 +75,13 @@ property. Investigate incremental certificates of contact stability; no
 algorithmic improvement follows from the reformulation alone.
 
 ## Direction 2: height records overlapping filter strikes
+
+The underlying arithmetic quantity is the classical number of distinct prime
+divisors, denoted nu in [DLMF section27.2(i)](https://dlmf.nist.gov/27.2.i)
+and often omega elsewhere. The activation excludes a prime's own divisor:
+after all prime filters, this unweighted height is omega(n)-1_(n prime).
+The truncated proper-divisor identity is not a claim to have discovered
+a new arithmetic function.
 
 **Derived identity:** At every integer n >= 2,
 
@@ -89,6 +108,10 @@ be compared with existing residue-collision and deletion-conservation bounds;
 the count identity itself supplies no new distribution estimate.
 
 ## Direction 3: two-gap survival as simultaneous contact
+
+The zero-sum equivalence is an elementary consequence of nonnegativity.
+Its role here is to encode a pair test, rather than assert a new general
+theorem about zeros.
 
 Define pair height for an integer start n >= 2 by
 
@@ -134,6 +157,10 @@ classes. Any useful contact-height bound must improve or complement that
 interface, rather than rename it.
 
 ## Direction 4: exponentially damped counts of contacts
+
+The finite-sum limit and error estimate below follow from a unit gap between
+zero and positive integer heights. They are elementary threshold estimates;
+the open task is an independent bound for these particular sieve sums.
 
 For a finite integer window W contained in [2,infinity) and lambda>0, set
 
@@ -184,3 +211,10 @@ independent estimate is still unspecified.
 Curvature, area and valley width depend on how the function is interpolated
 between integers. They become relevant to the sieve only after proving a
 connection to integer contacts. No such connection or bound is claimed here.
+
+For earlier gap-cycle research, Fred B. Holt and Helgi Rudd's
+[2014 paper](https://arxiv.org/abs/1408.6002), section2 and Corollary6.3,
+develops expansion/closure and complete-period 2-gap counts. This is relevant
+prior work, not a source of a proved short-window bound for the activated
+curves here. The [attribution inventory](../properties/sieve-sequence/research/continuous-sieve-attribution.md)
+records source roles and unresolved historical priority.
