@@ -69,8 +69,11 @@ review. Earlier Holt-Rudd gap-cycle/count research is credited beside the
 focused animation and in the ledger. The wider article review is explicitly
 queued, not claimed complete. Nine-file documentation checks passed: local
 links resolve, fences/whitespace are clean, tracked math/bash blocks are
-unchanged, and timed narration is unchanged. The untracked analysis contains
+unchanged, and timed narration is unchanged. The analysis contains
 the three reviewed proofs, not a claim of historically new theorems.
+The nine-file package is committed and pushed as2bd35cd6. PR64's description
+was updated and its exact readback verified; it remains an open draft on
+feature/imaginay_function with the inherited-article disclosure preserved.
 No runtime gates apply.
 Branch is feature/imaginay_function.
 Unrelated OBJECTS/index/Scala/Python/cluster/article changes remain untouched.
@@ -82,7 +85,8 @@ Unrelated OBJECTS/index/Scala/Python/cluster/article changes remain untouched.
 - Keep m>=2 in folding, or explicitly define W_1=1 when needed; shift count
   is a positive integer.
 - Activation means raw-wave identities may need boundary corrections. Check
-  V_4=W_2 only at t>=5 and derive the exact defect below that threshold.
+  V_4=W_2 throughout t>=5 and derive the exact defect below that threshold;
+  isolated earlier equalities are possible.
 - Bounded product uses factors in [0,1]; prove exact binary integer values,
   noninteger exclusion, local finiteness and continuity separately.
 - Quadratic height requires odd integer n>=3 for coprime endpoints.
@@ -141,6 +145,10 @@ Record exact counterexamples and reopening conditions if these are established.
   metadata/text and the modern MIT normalization were checked separately.
   Do not claim visual inspection of the original formula. Retry raster
   inspection only with a working PDF viewer; source text remains usable.
+- Closure checkpoint: another placeholder patch used a partial line rather
+  than the actual wrapped line and failed atomically. Read the exact current
+  sections before applying the same-file correction. Do not send placeholder
+  patches; retry only with inspected full-line context.
 
 ## Open Concerns
 
@@ -155,11 +163,13 @@ form and activated interpolation, remain unassigned.
 
 ## Next Action
 
-Commit and push the exact nine-file reviewed note/provenance package to PR64,
-then update its description with the attribution audit and proof scope while
-preserving the inherited-article disclosure. The broader article audit remains
-queued. Subsequent research can resume the local vanishing law and remaining
-directions with claim-level source/priority checks.
+Continue the broader claim-level article audit, starting with Gap Dynamics'
+complete-period counts/recursion versus Holt-Rudd. Any article corrections must
+also update its arXiv edition and pass the required build/parity gates.
+The original research program remains pending beyond the three proved
+sections: local vanishing law, quadratic height, sixfold reduction and
+continuous-versus-integer counting. Apply source/priority checks before
+presenting these as contributions.
 
 ## Learning Log
 
@@ -172,3 +182,4 @@ directions with claim-level source/priority checks.
 | 2026-10-21 | Bounded amplitude has exact binary integer values and locally finite continuation; a proof does not establish novelty. | Section3 passed independent review. User requested attribution across drafts; paused new results for source audit and inline citations. |
 | 2026-10-21 | Verified earlier sources include Fejer1900 for the kernel and Holt-Rudd2014 for gap-cycle recursion/counts. Modern references do not establish original discovery. | Saved/reviewed claim-level attribution ledger and uniform-note inline sources; remaining conversation notes next, broader articles queued. |
 | 2026-10-21 | Classical ingredients now have point-of-use credit across the current conversation notes; first discovery is not inferred from our proofs. | Updated both candidate notes, analysis, original notes, README and untimed narration credits; independent review and nine-file documentation checks passed. Timed script, formulas, commands and rendered media preserved; exact scoped commit/push next. |
+| 2026-10-21 | Note-level attribution pass delivered; wider article attribution and remaining research are distinct unfinished obligations. | Commit2bd35cd6 pushed with matching upstream hash; PR64 exact description readback passed, still an open draft. Recorded source-viewing/atomic-patch limitations; broader claim-level audit is next. |
