@@ -176,6 +176,18 @@ survivor count, copy-or-merge transition, next-stage agreement, and head
 primality facts. The model does not depend on those property objects; they are
 source-backed evidence for the mathematical properties stated in the article.
 
+The proof spine should be read in four layers:
+
+1. **Definitions.** `SpecSieveSequence` defines the accepted-value predicate,
+   the linear sequence, the period, and the gap cycle.
+2. **Structural lemmas.** The period and cycle properties show that the finite
+   gap list reconstructs the infinite stage.
+3. **Transition lemmas.** The survivor-count and copy-or-merge properties show
+   what changes when the current head becomes a new filter.
+4. **Boundary lemmas.** The next-head and next-cycle statements explain which
+   parts are fully verified and which parts depend on explicit mathematical
+   hypotheses.
+
 The construction builds on the verified modulo [[1]](#ref1), list [[2]](#ref2),
 cycle [[3]](#ref3), and cycle-integral [[4]](#ref4) foundations.
 
@@ -353,6 +365,14 @@ window, this operation has an exact count and a deterministic effect on gaps.
   endpoints survive;
 - every next gap is either copied or is a sum of consecutive old gaps;
 - filtering the base and repeated cycle views yields equal survivor-gap lists.
+
+Read this section as a chain of increasingly local facts. First, the whole
+expanded window has an exact survivor count. Next, one real 2-gap is examined
+copy by copy to show that two and only two lifted copies are destroyed. Finally,
+the gap list is updated by the copy-or-merge rule: a surviving neighbor copies
+its old gap, while removed intermediate values merge adjacent old gaps into one
+larger gap. These are deterministic statements about the sieve stage, not
+random-model estimates.
 
 ### 5.1 Exact Survivor Count
 

@@ -54,6 +54,21 @@ For #17 and #18, an expanded exact sweep covers 53 heads and 1,837 layers:
 every capacity minimum occurs at `r=7`, and neither the disjoint nor canonical
 block certificate count vanishes.
 
+## Exploratory research directions
+
+[Continuous-contact research directions](continuous-contact-research-directions.md)
+records four unnumbered proposals from the continuous complex sieve:
+bounded-window contact stabilization, integer heights as overlapping filter
+strikes, simultaneous contacts for 2-gaps, and exponentially damped contact
+counts. The note separates derived mathematical identities from open
+quantitative bounds. These directions have no new empirical classification
+or Stainless verification and are not numbered sufficient-condition hypotheses.
+
+[Five wave-based directions](continuous-wave-twin-research.md) proposes wave
+folding, a bounded twin amplitude, quadratic divisor heights, sixfold coordinate
+reduction, and independent integer-count estimates. It is an unnumbered
+research program; identities and open distribution obligations are separated.
+
 ## Common Notation
 
 The repository-wide meanings of populations, windows, filter scope,

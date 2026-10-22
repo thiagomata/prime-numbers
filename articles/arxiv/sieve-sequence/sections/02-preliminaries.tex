@@ -120,6 +120,22 @@ transition, next-stage agreement, and head primality facts. The model
 does not depend on those property objects; they are source-backed
 evidence for the mathematical properties stated in the article.
 
+The proof spine should be read in four layers:
+
+\begin{enumerate}
+  \item \textbf{Definitions.} \texttt{SpecSieveSequence} defines the
+    accepted-value predicate, the linear sequence, the period, and the gap
+    cycle.
+  \item \textbf{Structural lemmas.} The period and cycle properties show
+    that the finite gap list reconstructs the infinite stage.
+  \item \textbf{Transition lemmas.} The survivor-count and copy-or-merge
+    properties show what changes when the current head becomes a new
+    filter.
+  \item \textbf{Boundary lemmas.} The next-head and next-cycle statements
+    explain which parts are fully verified and which parts depend on
+    explicit mathematical hypotheses.
+\end{enumerate}
+
 The construction builds on the verified modulo \cite{mata2026modulo},
 list \cite{mata2026lists}, cycle \cite{mata2026cycle}, and cycle-integral
 \cite{mata2026integralcycle} foundations.
