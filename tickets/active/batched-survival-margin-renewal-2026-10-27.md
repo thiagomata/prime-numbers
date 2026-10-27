@@ -2,11 +2,15 @@
 
 ## START HERE
 
-Micro-goal: assess the joint supply-and-rejection bound explicitly chosen
-by the user. Derive a pointwise signed weight, then test whether its joint
-arithmetic estimate provides information beyond the identity |G|-B.
-Sections14–15's failed separate-budget certificate remains documented;
-actual twin survival remains open.
+Micro-goal completed: the joint supply-and-rejection assessment chosen
+by the user is saved as Section16 of the classical-sieve input note and
+independently reviewed. The pointwise signed weight has the exact sum
+T-B=2T-|G|; every tested input class is parity-blind, with the pure
+lower sieve at s=2theta<2<beta_2 at every distribution level. The
+sieve-arithmetic route of this note terminates at the parity barrier.
+Sections13–15's failed separate-budget certificate and Section16's
+parity assessment are committed (016a2606, follow-up pending) and
+pushed; actual twin survival remains open.
 
 ## Goal
 
@@ -31,6 +35,23 @@ progress and no favourable joint estimate is presumed.
 
 ## Current State
 
+The user authorized commit, push and completion of the missing
+joint-assessment action. Sections11–15 are committed as016a2606 and
+pushed with the two earlier reviewed checkpoints. Section16 of the
+classical-sieve input note is now saved: the pointwise signed weight
+sigma has exact sum T-B=2T-|G|; the excess E=B-T below (1-delta)|G|
+would prove a twin; Test1 gives s=2theta<2<beta_2 at the primality
+cutoff for every level including the Elliott–Halberstam boundary;
+Test2 shows the upper inputs cap only parts of B or the common sifted
+set, quantitatively 12.85C_2 versus5C_2; Test3 shows Richert r=1
+degenerates to the vanishing lower main term and switching supplies
+only the recorded upper budgets. Independent review verified the
+mathematics and corrected the Watkins pointer (Section10, not3.1),
+the Halberstam–Richert weighted-sieve chapters (9–10, not5), and three
+wording imprecisions; all fixes are applied. Hub, candidate and ticket
+scopes are synchronized. The sieve-arithmetic route terminates at the
+parity barrier; no positive survivor count or survivor absence follows.
+
 The user explicitly selected "Assess a joint supply-and-rejection bound".
 That continuation is authorized. The first micro-goal is a pointwise
 signed weight followed by an independent test of its joint estimate.
@@ -48,8 +69,9 @@ No actual rejection lower bound or absence of survivors follows. Hub and
 candidate assessments have separate Monitor post-PASS;22-file Markdown,
 anchors and diff checks PASS. Final Critic/Monitor scope reviews PASS.
 The user's subsequent joint-assessment selection is recorded above; this
-paragraph describes the completed comparison checkpoint. The latest edits
-remain uncommitted. No article/code changes or push.
+paragraph describes the completed comparison checkpoint. The Sections11-15
+bundle is committed as016a2606 and pushed to origin/feature/imaginay_function
+together with the two earlier reviewed checkpoints. No article/code changes.
 
 Section14 is saved and exact-text Critic/Monitor post-reviewed PASS. With
 the same remainder level, the fixed-cutoff DHR leading coefficient cannot
@@ -186,6 +208,22 @@ epsilon<min(1/20,1/4-1/(2alpha)). No final-survivor claim follows.
 
 ## What is Learned
 
+The joint signed certificate is exact but parity-blocked. The weight
+sum is T-B=2T-|G|, so an upper bound on E=B-T of the form (1-delta)|G|
+in one large window proves a twin. Three tests close the route:
+primality certification of a partner needs cutoff sqrt(X+2), whose
+sifting parameter s=log D/log z=2theta is below2<beta_2 at every level
+theta<=1, including the Elliott–Halberstam boundary; the Sections10–15
+upper inputs cap parts of B or the common sifted set, never their
+difference; Richert's weighted sieve at r=1 degenerates to the same
+vanishing lower main term and switching yields only upper budgets. The
+needed estimate is an instance of the classical parity phenomenon
+(Watkins Section10; Friedlander–Iwaniec), and the pair a,a+2 lacks the
+bilinear structure of the known bypasses. Review corrections: Watkins's
+parity material is Section10 (10.1, 10.1.1), not3.1; Halberstam–Richert's
+weighted sieve is Chapters9–10 (Theorem9.1), with Greaves Chapter5 as
+the accessible exposition.
+
 The whole-family upper coefficient5C_2 is already below the current
 rejection allowance16C_2*kappa_geom. Consequently better evaluation of
 the lower constant cannot rescue this separate-budget certificate. The
@@ -316,6 +354,16 @@ existing just PDF gates; current plan changes no articles.
 
 ## Failed Paths
 
+The joint signed certificate is parity-blocked, not merely numerically
+insufficient. Section16 proves the weight sum equals2T-|G| exactly, and
+every tested input class fails structurally: lower sieve s=2theta<2<beta_2
+at all levels theta<=1, upper inputs cap B or the common sifted set,
+weighted r=1 demand vanishes with the lower main term, switching gives
+upper budgets only. Retry only with genuinely new arithmetic input
+outside the tested sieve classes (for example a Type-II twin-correlation
+estimate or a bilinear reorganization of the family); repackaging the
+identity or re-tuning sieve parameters is insufficient.
+
 The Section13 separate-budget certificate is quantitatively insufficient
 for the exact rough Chen family G. Section15 proves every valid eventual
 lower constant is at most5C_2, while the displayed rejection allowance
@@ -381,15 +429,16 @@ preserve them. A scoped research commit is now authorized; no push is requested.
 
 ## Next Action
 
-The user selected the joint supply/rejection assessment. Derive one
-pointwise signed certificate with supply and rejection weights kept
-together, then test the arithmetic estimate it needs against primary
-weighted/switching results and the actual remainder level. Distinguish
-finite identities from new control of correlations. Do not restart the
-failed constant-tuning argument or claim that a re-expression proves
-positivity. New mathematical results require independent review before
-saving; no article or executable changes are planned.
-Broader margin-renewal objectives below remain open.
+The joint-assessment action requested by the user is complete and the
+sieve-arithmetic route is closed at the parity barrier (Section16).
+The checkpoint is committed and pushed. No further sieve-level analysis
+of this family is planned; restarting constant tuning, re-weighting or
+switching on the same inputs is a recorded failed path. If work resumes
+on this branch, it must begin from genuinely new arithmetic input or a
+different structure, and requires a fresh user-selected direction.
+Broader margin-renewal objectives below remain open; the unrelated
+working-tree threads (Oct6–7 Scala/cluster work, Oct22 article draft)
+remain uncommitted and untouched.
 
 The documentation and block-proof checkpoint is complete; broader renewal
 research remains open. The next analytical target is a signed
@@ -408,6 +457,8 @@ transport properties for exponent11/5 rather than importing square results.
 
 | Date | Learning | Action |
 |---|---|---|
+| 2026-10-28 | Section16 joint assessment saved: the signed certificate is exact (T-B=2T-\|G\|) but every tested input class is parity-blind; s=2theta<2<beta_2 at all levels theta<=1. | Independent review verified the math and corrected two citations (Watkins Section10; HR Chapters9–10) plus three wordings; hub/candidate/ticket synchronized; markdown/diff checks run before commit. |
+| 2026-10-28 | The reviewed Sections11-15 bundle is committed as016a2606 and pushed with the two earlier checkpoints; unrelated working-tree threads (Oct 6-7 Scala/cluster work, Oct 22 article draft) are intentionally left uncommitted. | User authorized commit, push and completion of the missing joint-assessment action; scoped four-file staging only, whitespace/diff checks PASS. |
 | 2026-10-28 | The user explicitly selected a joint supply/rejection assessment after the separate-budget obstruction. | Authorized continuation recorded; pointwise weight and actual joint estimate are the first test, with no favourable theorem claimed. |
 | 2026-10-28 | The whole-family upper coefficient5C_2 is below the separate rejection allowance16C_2*kappa_geom, so that certificate cannot prove positivity. | Section15 exact Critic/Monitor post-PASS; narrow failed path and retry conditions recorded, hub/candidate synchronized,22-file checks PASS; final Critic/Monitor scope reviews PASS. User direction requested before replacement research; edits uncommitted. |
 | 2026-10-28 | Fixed-level DHR cutoff tuning cannot lower16C_2; this concerns upper expressions only. | Section14 exact Critic/Monitor post-PASS; prospective whole-family comparison remains under source/normalization review. |

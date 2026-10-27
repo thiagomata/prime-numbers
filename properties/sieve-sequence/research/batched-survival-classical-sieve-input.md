@@ -1217,3 +1217,134 @@ a joint weighted treatment retaining the shared arithmetic of supply and
 rejections, or a different candidate family would require a new analysis.
 Only the present separate-budget certificate is ruled out. The ingredients
 are classical; this application is not a novelty claim or a Stainless result.
+
+## 16. A Joint Signed Weight and the Parity Barrier
+
+Sections13–15 compared two separately estimated budgets. The joint
+assessment keeps supply and rejection attached pointwise: one signed
+weight per candidate, evaluated by a single arithmetic estimate rather
+than a difference of two. This section derives that weight, states the
+exact estimate it needs, and tests the estimate against each input class
+used in this note together with its classical weighted and switched
+extensions. The outcome is negative
+and structural: the needed estimate is an instance of the parity barrier.
+All variables retain the Section7 definitions, with Y=X+2.
+
+For each integer a in (X/2,X] define the pointwise signed weight
+
+```math
+\sigma(a)=\mathbf 1_{\substack{a\text{ prime}\\ a+2\text{ prime}}}
+-\mathbf 1_{\substack{a\text{ prime}\\ a+2=uv,\ Z<u<v\text{ prime}}}.
+```
+
+Prime-square partners are excluded from both indicators; Section7 already
+removed the at most floor(sqrt(X+2)) of them. Writing T for the twin
+count and B for the semiprime-partner count (B=B_total of Section12),
+the family splits disjointly into its twin members and its semiprime
+members, and the weight sum is the exact identity
+
+```math
+\boxed{\sum_{X/2<a\le X}\sigma(a)=T-B=2T-|\mathcal G(p,q)|.}
+```
+
+The identity itself carries no arithmetic information. Under a
+hypothetical last twin start L<X/2 one has T=0 and the sum equals
+-|G|<=-(c_1/2)X/log squared X by Section7's bound. Conversely, any bound
+
+```math
+\sum_{X/2<a\le X}\sigma(a)\ge-(1-\delta)|\mathcal G(p,q)|
+\qquad(\delta>0\text{ fixed})
+```
+
+forces T>=delta*|G|/2>0 eventually, hence a twin in that window. The
+joint target is therefore the excess
+
+```math
+E:=B-T=|\mathcal G|-2T:
+```
+
+an upper bound E<=(1-delta)|G| for one arbitrarily large window proves a
+twin there. On the family G the weight is the parity function of the
+partner: sigma(a)=(-1)^(Omega(a+2)+1), with Omega=1 giving +1 and Omega=2
+with factors Z<u<v giving -1; all other integers, including prime-square
+partners, contribute 0. Everything below tests whether any admissible
+input measures this parity.
+
+**Test1: the pure lower sieve at any level.** Certifying primality of a
+partner by a distribution-based sieve requires sieving every prime up to
+sqrt(a+2)<=sqrt(Y), that is cutoff z=sqrt(X+2). Let D be any level with
+D<=Y^(1-epsilon), fixed epsilon>0, and write theta=log D/log Y. The
+dimension-two sifting parameter at the primality cutoff is exactly
+
+```math
+\boxed{s=\frac{\log D}{\log\sqrt{X+2}}=2\theta<2<\beta_2\approx4.266,}
+```
+
+using Y=X+2. Section3's recorded initial condition f_2(u)=0 for
+u<=beta_2 ([Franze–Kao, equation(20)](https://arxiv.org/pdf/1812.11280#page=5);
+[Franze, Table1](https://arxiv.org/pdf/1012.3809#page=2)) annihilates the
+lower main term for prime partners at every such level. For levels with
+theta<1/2 the cutoff z exceeds D, so the displayed lower-sieve statement
+does not even apply, and the conclusion holds a fortiori. Section3's
+final-cutoff computation is the boundary instance theta->1. No positive
+lower bound for T follows from any pure lower sieve at any level
+contemplated by current hypotheses, including the Elliott–Halberstam
+boundary.
+
+**Test2: the upper expressions cannot separate the signed parts.** For
+every cutoff z<=Z the twin members and the semiprime members lie in one
+common sifted set,
+
+```math
+\{a\in(X/2,X]:\ a\text{ prime},\ a+2\text{ has no prime factor}<z\},
+```
+
+because a twin partner exceeds X/2>Z and both semiprime factors exceed
+Z>=z. Every upper estimate checked in Sections10–15 caps either parts of
+B (Sections10–13, from dimension-two local densities or the switched
+restriction input) or the common sifted set itself (Section15, at cutoff
+Z); none yields information about the difference B-T. The constants
+obtained make the shared scale quantitative: the semiprime allowance
+16C_2*kappa_geom~12.85C_2 exceeds even the whole-family ceiling 5C_2 of
+Section15 by the factor2.57. An upper bound for the semiprime part built
+from this data cannot be pushed below the common main-term scale that
+both parts share.
+
+**Test3: weighted and switched inputs.** Richert's weighted sieve
+(Halberstam–Richert, *Sieve Methods*, Academic Press1974, Chapters9–10,
+Theorem9.1; cf. Greaves, *Sieves in Number Theory*, Springer1996,
+Chapter5) converts the same distribution data into lower bounds for
+partners with at most r prime factors. Its r=2 output in this window is
+precisely the
+Chen-type supply of Section7, already an input; its r=1 demand —
+certifying that a sifted partner has no second large factor — is the
+full-cutoff lower sieve of Test1, whose main term vanishes at every
+theta<=1. The switching principle, tested on the switched forms in
+Sections8–9, produces upper bounds for composite-partner populations;
+those inputs bound B from above only and contribute no estimate of the
+difference B-T. Each tested weighted or switched source supplies exactly
+one of the two already-recorded budgets, never their difference.
+
+The common obstruction is the parity phenomenon: sieve information —
+records of divisibility of a and a+2 by primes below a cutoff, together
+with distribution of the remainder sums — is insensitive to the parity
+of the number of prime factors of a+2, and no weighting or switching
+constructed from that information isolates the odd-parity part. This
+phenomenon is classical and documented; see
+[Watkins, Section10, especially10.1 and10.1.1, *Selberg's example* (the parity problem)](https://magma.maths.usyd.edu.au/~watkins/papers/SIEVES.pdf)
+and [Friedlander–Iwaniec, *Opera de Cribro*](https://doi.org/10.1090/coll/057).
+Known bypasses require bilinear structure among the sifted forms — the
+structure that made x^2+y^4 primes accessible — and the pair a,a+2 is a
+pair of linear forms in a single variable, so that structure is absent
+here.
+
+No absolute impossibility is claimed: an input genuinely outside the
+tested class, for example a Type-II estimate for the twin correlation or
+a bilinear reorganization of the family, would be new arithmetic. The
+outcome of the joint assessment is that the signed certificate is exact,
+its evaluation is parity-blocked at every distribution level theta<=1,
+and the sieve-arithmetic route of this note terminates at that barrier.
+Actual twin survival, reserve renewal and the CRT spectral question
+remain open. These tests are applications of classical sieve knowledge;
+no new sieve theorem, historical novelty claim or Stainless verification
+is asserted.

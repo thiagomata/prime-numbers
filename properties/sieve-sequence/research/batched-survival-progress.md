@@ -42,6 +42,7 @@ fifth- and seventh-order scores L_5 and L_7; these must be distinguished from L_
 | Actual first rejections have a uniform per-prime upper bound. | Whole-range bound has the same scale as supply; a fixed late logarithmic band cannot first reject more than half the family. The complement may die earlier. | [Uniform bound and band consequence](batched-survival-classical-sieve-input.md#8-a-uniform-upper-bound-for-each-first-rejection-prime) |
 | Direct interval sieving bounds rejections by actual interval length, and the total length weights have an explicit geometric asymptotic. | Uniform all-length C_0 bound; a later bulk calculation makes the leading total upper coefficient16C_2*kappa_geom explicit. No rejected-count asymptotic follows. | [Direct sieve and explicit coefficient](batched-survival-classical-sieve-input.md#13-an-explicit-leading-rejection-coefficient) |
 | The present separate-budget subtraction cannot certify survival. | Whole-family upper coefficient5C_2 is below the rejection allowance16C_2*kappa_geom; fixed-cutoff tuning cannot repair that allowance. Actual survival and sharper methods remain open. | [Quantitative obstruction](batched-survival-classical-sieve-input.md#15-a-quantitative-obstruction-to-this-subtraction) |
+| The joint signed certificate is parity-blocked at every distribution level. | The pointwise weight sum sigma=T-B=2T-\|G\| is exact; the primality cutoff forces s=2theta<2<beta_2, upper inputs cap only B or the common sifted set, and weighted/switched sources supply only the already-recorded budgets. | [Joint weight and parity barrier](batched-survival-classical-sieve-input.md#16-a-joint-signed-weight-and-the-parity-barrier) |
 
 For the square rule, p is the starting prime, s its successor, q the first
 prime greater than p squared, and t the first prime greater than s squared.
@@ -265,6 +266,21 @@ improving its lower constant or tuning that cutoff is insufficient.
 This does not show that actual rejections fill the allowance. A sharper
 rejection estimate or a joint arithmetic treatment requires new analysis;
 the broader batching identities remain valid and actual twin survival remains open.
+
+The [joint signed-weight assessment](batched-survival-classical-sieve-input.md#16-a-joint-signed-weight-and-the-parity-barrier)
+performs that joint treatment. Its pointwise weight sigma has the exact
+sum T-B=2T-|G|, and an upper bound on the excess E=B-T of the form
+(1-delta)|G| would prove a twin in one large window. The assessment
+tests the three available input classes and finds each parity-blind:
+the pure lower sieve at the primality cutoff has s=2theta<2<beta_2 at
+every distribution level up to the Elliott–Halberstam boundary; the
+upper inputs of Sections10–15 cap only parts of B or the common sifted
+set; Richert's r=1 weighted demand degenerates to the same vanishing
+lower main term, and switching supplies only the recorded upper budgets.
+The signed evaluation is an instance of the classical parity phenomenon,
+so the sieve-arithmetic route of this note terminates at that barrier.
+No absolute impossibility is claimed; genuinely new arithmetic input
+remains the stated condition for any renewal of this route.
 
 ## What Remains Open
 

@@ -328,6 +328,21 @@ A sharper rejection bound, a joint treatment of supply and rejections,
 or a different family needs new analysis; the broader batching proposal
 and final twin survival remain open.
 
+The [joint signed-weight assessment](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#16-a-joint-signed-weight-and-the-parity-barrier)
+carries out that joint treatment and closes this sieve route at the
+classical barrier. Its pointwise weight has the exact sum T-B=2T-|G|,
+so bounding the excess E=B-T below (1-delta)|G| in one large window
+would prove a twin there. Every tested input class is parity-blind: the
+lower sieve at the partner-primality cutoff has sifting parameter
+s=2theta<2<beta_2 at every distribution level including the
+Elliott–Halberstam boundary, the upper estimates cap only parts of B or
+the common sifted set, and the weighted/switched sources reproduce only
+the two recorded budgets. The needed signed estimate is an instance of
+the parity phenomenon, not a missing constant. Actual twin survival and
+the broader proposal remain open; genuinely new arithmetic input beyond
+the tested sieve classes is the recorded condition for revisiting this
+route.
+
 ## Development Plan and Remaining Obligations
 
 The research direction is retained provisionally: the failed shortcuts do
