@@ -69,6 +69,32 @@ folding, a bounded twin amplitude, quadratic divisor heights, sixfold coordinate
 reduction, and independent integer-count estimates. It is an unnumbered
 research program; identities and open distribution obligations are separated.
 
+[Batched window survival](batched-window-survival.md) proposes a generic threshold:
+sufficiently many old cyclic 2-gaps force a positive number of survivors in the
+destination safe window after all intervening filters are applied together.
+The threshold is OPEN; exact batch identities and conditional destruction
+bounds are separated from it. The destination q can be any later prime head
+under a specified rule; the first prime above p squared is one proposed choice,
+unlike the consecutive-head convention used below. A linked 36-case finite
+audit found positive classical cubic overlap certificates in every tested case;
+uniform positivity remains unproved.
+The [current analytical progress](../properties/sieve-sequence/research/batched-survival-progress.md)
+includes proved small relative transition losses; sustaining an actual
+positive margin remains open.
+The linked [block estimate](../properties/sieve-sequence/research/batched-survival-block-reserve.md)
+also controls actual cumulative losses over a growing finite run; positive
+survival throughout still requires a positive starting reserve.
+The [higher-order refinement](../properties/sieve-sequence/research/batched-survival-propagation-check-2026-10-27.md#fifth-order-weights-eliminate-the-shared-penalty)
+removes J_5 exactly and conditionally retains L_7 over fixed-factor head
+intervals. Fresh-pair supply and reserve renewal remain open.
+The [moment calibration and product reduction](../properties/sieve-sequence/research/batched-survival-analytic-main-and-error.md#6-high-order-moments-require-nonnegligible-density-corrections)
+show why near-exact scores do not justify negligible individual density errors,
+and isolate an unestimated triple-product correlation in the fifth penalty.
+The [classical sieve input](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md)
+proves DHR old-candidate abundance for exponent11/5 with positive cubic
+density, and stronger rough Chen abundance at the original square rule
+with prime-or-semiprime partners. Final twin survival remains open.
+
 ## Common Notation
 
 The repository-wide meanings of populations, windows, filter scope,
