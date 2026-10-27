@@ -289,6 +289,15 @@ a population known to reach q^eta. A later larger factor does not count
 as another first rejection. The band is narrow in logarithmic exponent,
 not additive length. This restriction remains compatible with a last twin.
 
+The [exact-window upper bound](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#10-keeping-the-exact-product-window-in-the-upper-bound)
+retains the actual v>u and X/2<uv-2<=X restrictions using an interval
+kernel and Hölder's inequality. Against the displayed pre-coarsened
+Section8 expression, the ratio of the upper expressions has a uniform
+asymptotic upper bound of (2/3)^(1/4). This is not a reduction of the
+actual rejection population.
+The estimate still retains its ambient N^(3/4) factor, has the same total
+order and does not give a favourable comparison with the Chen supply.
+
 ## Development Plan and Remaining Obligations
 
 The research direction is retained provisionally: the failed shortcuts do

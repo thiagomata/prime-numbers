@@ -641,3 +641,96 @@ for fixed eta<1, q-q^eta is asymptotic to q. No numerical eta or onset is
 computed here. The result is a consequence of the cited classical inputs
 and the uniform bound, not a twin-prime theorem or a claimed new classical
 sieve result.
+
+## 10. Keeping the Exact Product Window in the Upper Bound
+
+Section8 deliberately counted all v<=N. The actual semiprime partners
+also require v>u and X/2<uv-2<=X. These restrictions can be retained
+without translating the polynomial coefficients outside the cited theorem's
+uniform range. The device is a finite interval kernel and Hölder's
+inequality, applied to the same unshifted exponential sum.
+
+Keep Y=X+2, Z<u<sqrt(Y) and N=floor(Y/u). The exact integer interval is
+
+```math
+\begin{aligned}
+\ell_u&=\max\left\{u+1,
+           \left\lfloor\frac{X/2+2}{u}\right\rfloor+1\right\},\\
+\mathcal I_u&=\{v\in\mathbb Z:\ell_u\le v\le N\},\\
+L_u&=\max\{0,N-\ell_u+1\},\\
+b_u&=|\{v\in\mathcal I_u:v\text{ prime},\ uv-2\text{ prime}\}|.
+\end{aligned}
+```
+
+Here b_u counts precisely the members of G with smaller factor u.
+If L_u=0 the count is zero. Since (X/2+2)/u=(Y/2+1)/u>=N/2,
+
+```math
+\left\lfloor\frac{X/2+2}{u}\right\rfloor
+ \ge\lfloor N/2\rfloor,
+\qquad L_u\le\lceil N/2\rceil.
+```
+
+For any nonempty consecutive integer interval I of length L, put
+D_I(theta)=sum over v in I of exp(2 pi i v theta). Translation changes
+only a unit-modulus factor, so the geometric-series estimate gives
+
+```math
+|D_I(\theta)|\le\min\{L,(2\|\theta\|)^{-1}\},
+```
+
+where the double bars denote distance to the nearest integer and the
+second term is interpreted as infinite at integers. Integrating over the
+circle, split at distance 1/(2L):
+
+```math
+\begin{aligned}
+\|D_I\|_{4/3}^{4/3}
+&\le2\int_0^{1/2}\min\{L,(2t)^{-1}\}^{4/3}\,dt\\
+&=4L^{1/3}-3\le4L^{1/3},\\
+\|D_I\|_{4/3}&\le2\sqrt2\,L^{1/4}.
+\end{aligned}
+```
+
+Use the same T_u, E_u, singular series and absolute constant A as in
+Section8. Orthogonality selects the interval exactly; Hölder with conjugate
+exponents4 and4/3 then gives
+
+```math
+\begin{aligned}
+b_u
+&\le|T_u\cap\mathcal I_u|
+ =\int_{\mathbb R/\mathbb Z}E_u(\theta)
+                  \overline{D_{\mathcal I_u}(\theta)}\,d\theta\\
+&\le\|E_u\|_4\|D_{\mathcal I_u}\|_{4/3}\\
+&\le2\sqrt2\,A\mathfrak S_u
+            \frac{N^{3/4}L_u^{1/4}}{(\log N)^2}.
+\end{aligned}
+```
+
+Only the kernel is translated. The forms v and uv-2 and their coefficient
+bounds are unchanged, so this still uses the checked coefficient-uniform
+classical input rather than an unproved shifted-interval version.
+
+This improves the particular upper expression displayed in Section8 before
+its constants and logarithms were coarsened. For nonempty intervals, the
+ratio of the two expressions is bounded by
+
+```math
+\frac{2\sqrt2\,A\mathfrak S_u N^{3/4}L_u^{1/4}/(\log N)^2}
+     {2\,3^{1/4}A\mathfrak S_u N/(\log N)^2}
+\le\frac{\sqrt2}{3^{1/4}}
+     \left(\frac{\lceil N/2\rceil}{N}\right)^{1/4}
+\longrightarrow\left(\frac23\right)^{1/4}<1.
+```
+
+The limiting comparison is uniform over the allowed u because
+N>sqrt(Y)-1. Empty intervals contribute zero. This is a constant-factor
+sharpening of these upper-bound expressions, not a proved reduction of
+the actual semiprime population or an optimality statement.
+
+The ambient factor N^(3/4) remains when the interval is very short; the
+bound is not linear in L_u. The total bound still has scale Y/log squared Y,
+and no comparison below the Chen lower constant follows. This finite
+physical prime-form estimate does not establish the separate open CRT
+spectral-localization bound, positive final twins or reserve renewal.

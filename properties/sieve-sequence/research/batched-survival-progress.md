@@ -221,6 +221,18 @@ narrow in logarithmic exponent, not additive length; eta and the onset
 are not numerically evaluated. Actual rejection-location control is proved,
 while final survival remains open.
 
+The [exact-product-window refinement](batched-survival-classical-sieve-input.md#10-keeping-the-exact-product-window-in-the-upper-bound)
+retains v>u and X/2<uv-2<=X rather than counting every v<=N. Its
+integer interval has length L<=ceil(N/2). A finite interval kernel and
+Hölder's inequality give a bound proportional to
+N^(3/4)*L^(1/4)/(log N)^2, with unchanged polynomial coefficients. Compared
+with the displayed Section8 bound before coarsening constants, the ratio
+of these upper expressions has a uniform asymptotic upper bound of
+(2/3)^(1/4). This
+does not assert that the actual semiprime population falls by that factor.
+The ambient N^(3/4) remains, the total order is unchanged, and no favourable
+comparison with the Chen lower bound or positive twin count follows.
+
 ## What Remains Open
 
 The branch is retained provisionally. The results rule out automatic reserve

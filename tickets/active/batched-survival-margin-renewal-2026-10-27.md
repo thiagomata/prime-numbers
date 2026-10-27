@@ -2,9 +2,9 @@
 
 ## START HERE
 
-Micro-goal: uniform semiprime upper bounds and late-first-rejection control
-are proved and reviewed. Next test sharpness under the exact smaller-factor
-and product-window restrictions; do not assume favourable constants.
+Micro-goal: the exact-window Fourier upper bound is proved and reviewed.
+Next test a direct interval upper sieve with uniform local densities and
+remainders; do not assume a linear-length theorem or favourable constants.
 Final twin survival remains open.
 
 ## Goal
@@ -25,15 +25,20 @@ compensation directly. Review any new proof before saving it.
 
 ## Current State
 
-The user has authorized a commit of this research checkpoint and continued
-work. Commit scope is under audit on feature/imaginay_function; the index
-was empty at inspection. Preserve unrelated article, Scala, Python and
-earlier research edits. Stage only reviewed batch research and necessary
-link prerequisites, with index-only partial staging of mixed README files.
-No push is requested. The exact-factor/window sharpness test remains next.
-The prerequisite audit approves35 Markdown files in the same research chain.
-The two README files will be staged only for batch entries; preparation of
-the manifest and index-only patch bundle is pending, with no staging yet.
+Committed the reviewed35-document checkpoint as a2abbe9b on
+feature/imaginay_function. Exact committed path/content, parent, empty index,
+and unchanged unrelated working-file checks passed; no push was performed.
+Mixed README files were staged for batch entries only. The initial metadata
+permission failure was resolved by the approved same-target retry; cached
+validation then caught two terminal blank lines in previously untracked
+notes. Each was corrected without changing its body, and the full cached
+gate passed before commit.
+Section10's exact-window Fourier-kernel/Hölder bound is saved and exact-text
+Critic/Monitor post-reviewed PASS. Hub and candidate scopes are synchronized
+and separately post-reviewed PASS; all22 related Markdown files/new anchors
+and git diff --check PASS. This follow-up concerns only four tracked research
+files; a separate scoped follow-up commit is authorized. It concerns physical
+prime forms and does not resolve the existing CRT spectral-localization gap.
 
 Section8 is saved and independently post-reviewed PASS. Green--Tao's
 coefficient-uniform restriction estimate gives M_u<=K*Y/(u*log^2(Y))
@@ -124,6 +129,14 @@ epsilon<min(1/20,1/4-1/(2alpha)). No final-survivor claim follows.
 - [Original batch proposal](batched-window-survival-candidate-save-2026-10-27.md).
 
 ## What is Learned
+
+The exact partner constraints define a consecutive integer interval of
+length L_u<=ceil(N/2). An interval kernel and Hölder retain that range while
+leaving the source theorem's polynomial coefficients unchanged. Relative
+to Section8 before coarsening, the ratio of the upper expressions has a
+uniform asymptotic upper bound (2/3)^(1/4), not an actual-count ratio.
+Its N^(3/4) factor remains; no linear-in-length short-interval estimate or
+favourable Chen comparison has yet been proved here.
 
 The late-band corollary is unconditional on twin existence: actual bounds
 and fixed positive/finite constants establish an eta once and for all.
@@ -264,13 +277,14 @@ preserve them. A scoped research commit is now authorized; no push is requested.
 
 ## Next Action
 
-Current checkpoint: Sections8–9 are complete. Next inspect whether the exact
-restrictions v>u and X/2<uv-2<=X permit an independently justified sharper
-upper bound than counting all v<=floor(Y/u). Verify uniformity over the
-moving coefficients and intervals, and evaluate constants before any
-comparison with the Chen supply. This is an open test, not a forecast of
-positive subtraction. Do not replace the missing estimate by a conditional
-positivity definition. No further theorem or article changes before review.
+Current checkpoint: Section10 completes the exact-window Fourier test.
+Next inspect a direct upper sieve on its integer interval: verify root
+densities for v(uv-2), remainder bounds uniform in the varying prime u
+and interval position, and the available level/cutoff before asserting any
+bound linear in interval length. Then evaluate constants before comparison
+with the Chen supply. This is an open test, not a forecast of positive
+subtraction. Do not replace the missing estimate by a conditional positivity
+definition. No further theorem or article changes before review.
 Broader margin-renewal objectives below remain open.
 
 The documentation and block-proof checkpoint is complete; broader renewal
@@ -290,6 +304,9 @@ transport properties for exponent11/5 rather than importing square results.
 
 | Date | Learning | Action |
 |---|---|---|
+| 2026-10-28 | Summary compression must distinguish convergence of an upper envelope from convergence of the actual expression ratio. | Critic caught ambiguous wording; hub/candidate/ticket corrected to uniform asymptotic upper bound, with the exact proof unchanged. |
+| 2026-10-28 | Exact product-window restrictions sharpen the displayed upper bound via an interval kernel without shifting the prime-form coefficients. | Section10 and hub/candidate scopes independent post-PASS;22-file checks/diff PASS; scoped four-file follow-up commit authorized, no final twin inference. |
+| 2026-10-28 | Committed the exact35-file reviewed research scope as a2abbe9b; untracked-file EOF issues were visible only after staging and were fixed without body changes. | Commit/postchecks PASS, unrelated work preserved and no push; exact-window kernel estimate separately reviewed and pending save. |
 | 2026-10-28 | Link closure requires35 related Markdown files, including earlier research prerequisites; mixed README additions need partial staging. | Critic/Monitor scope checkpoint PASS; bundle preparation pending, unrelated work remains outside the commit. |
 | 2026-10-28 | User requests a commit and continued research; the branch has substantial unrelated pending work. | Scoped commit authorized; Critic/Monitor checkpoint pre-PASS, prerequisite and index-scope audit in progress, no staging yet. |
 | 2026-10-28 | Actual first-rejection bounds force a fixed late logarithmic band to account for at most half the guaranteed family; the complement may all be rejected earlier. | Sections8–9 exact independent post-PASS; hub/candidate scopes synchronized; all22 Markdown/anchor and diff checks PASS; final scope review pending. |
