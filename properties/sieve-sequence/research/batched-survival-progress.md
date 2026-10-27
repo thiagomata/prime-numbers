@@ -40,6 +40,8 @@ fifth- and seventh-order scores L_5 and L_7; these must be distinguished from L_
 | The fifth-order penalty is a balanced squarefree triple-product count plus a small remainder. | Proved L_5=S-T_33-D with D>=0 negligible relative to F; T_33 is unestimated. | [Triple-product reduction](batched-survival-analytic-main-and-error.md#7-the-fifth-penalty-reduces-to-a-balanced-triple-product-correlation) |
 | Original square windows contain many candidates with a prime first endpoint and a prime-or-semiprime partner. | Classical rough Chen consequence; survives filters below Z, but final prime partners remain uncounted. | [Rough Chen input](batched-survival-classical-sieve-input.md#7-a-rough-chen-family-at-the-original-square-jump) |
 | Actual first rejections have a uniform per-prime upper bound. | Whole-range bound has the same scale as supply; a fixed late logarithmic band cannot first reject more than half the family. The complement may die earlier. | [Uniform bound and band consequence](batched-survival-classical-sieve-input.md#8-a-uniform-upper-bound-for-each-first-rejection-prime) |
+| Direct interval sieving bounds rejections by actual interval length, and the total length weights have an explicit geometric asymptotic. | Uniform all-length C_0 bound; a later bulk calculation makes the leading total upper coefficient16C_2*kappa_geom explicit. No rejected-count asymptotic follows. | [Direct sieve and explicit coefficient](batched-survival-classical-sieve-input.md#13-an-explicit-leading-rejection-coefficient) |
+| The present separate-budget subtraction cannot certify survival. | Whole-family upper coefficient5C_2 is below the rejection allowance16C_2*kappa_geom; fixed-cutoff tuning cannot repair that allowance. Actual survival and sharper methods remain open. | [Quantitative obstruction](batched-survival-classical-sieve-input.md#15-a-quantitative-obstruction-to-this-subtraction) |
 
 For the square rule, p is the starting prime, s its successor, q the first
 prime greater than p squared, and t the first prime greater than s squared.
@@ -232,6 +234,37 @@ of these upper expressions has a uniform asymptotic upper bound of
 does not assert that the actual semiprime population falls by that factor.
 The ambient N^(3/4) remains, the total order is unchanged, and no favourable
 comparison with the Chen lower bound or positive twin count follows.
+
+The [direct interval upper sieve](batched-survival-classical-sieve-input.md#11-a-direct-interval-upper-sieve-removes-the-ambient-range)
+now removes that ambient N factor. For all allowed smaller primes in the
+sufficiently-large-Y family it proves b_u<=C_0*Phi(L_u), where Phi(0)=0
+and Phi(L)=L/(1+log L)^2 for L>=1. Local densities and position-independent
+weighted remainders are checked uniformly. This strengthens the dependence
+on interval length; it does not establish that its uncomputed constant
+gives a smaller numerical bound than every earlier estimate.
+
+The [geometric summation](batched-survival-classical-sieve-input.md#12-summing-the-actual-interval-length-weights)
+computes the actual sum of Phi(L_u) asymptotically. Its coefficient is
+kappa_geom=5/16+(1/2)log(8/3), with a separate negligible bound for tiny
+and empty edge intervals. Thus the actual semiprime count is at most
+C_0*(kappa_geom+o(1))*Y/log squared Y. This is not an asymptotic formula
+for rejected pairs. The subsequent [leading-coefficient extraction](batched-survival-classical-sieve-input.md#13-an-explicit-leading-rejection-coefficient)
+sharpens the total upper bound to (16C_2*kappa_geom+o(1))*Y/log squared Y,
+where C_2 is the twin-prime product. A bulk cutoff with s=2 evaluates the
+classical sieve factor explicitly; the short-edge constant C_0 does not
+enter this leading coefficient.
+
+The [cutoff-tuning test](batched-survival-classical-sieve-input.md#14-the-limit-of-cutoff-tuning-in-this-upper-bound)
+shows that changing a fixed cutoff at this same level cannot improve the
+leading16C_2 factor. More decisively, the [whole-family comparison](batched-survival-classical-sieve-input.md#15-a-quantitative-obstruction-to-this-subtraction)
+proves |G|<=(5C_2+o(1))*Y/log squared Y by a classical prime-conditioned
+linear sieve. Since5C_2<16C_2*kappa_geom, no valid lower constant for
+this family can exceed this particular rejection allowance. The current
+separate-budget subtraction therefore cannot certify positive survival;
+improving its lower constant or tuning that cutoff is insufficient.
+This does not show that actual rejections fill the allowance. A sharper
+rejection estimate or a joint arithmetic treatment requires new analysis;
+the broader batching identities remain valid and actual twin survival remains open.
 
 ## What Remains Open
 

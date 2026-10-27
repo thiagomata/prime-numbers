@@ -734,3 +734,486 @@ bound is not linear in L_u. The total bound still has scale Y/log squared Y,
 and no comparison below the Chen lower constant follows. This finite
 physical prime-form estimate does not establish the separate open CRT
 spectral-localization bound, positive final twins or reserve renewal.
+
+## 11. A Direct Interval Upper Sieve Removes the Ambient Range
+
+An upper sieve applied directly to the exact integer interval gives a
+stronger dependence on its length. There are absolute constants C_0 and
+Y_0 such that every member of the square-rule family with Y>=Y_0 and
+every allowed prime Z<u<sqrt(Y) satisfies
+
+```math
+\boxed{b_u\le C_0\Phi(L_u),\qquad
+\Phi(L)=\begin{cases}
+0,&L=0,\\
+L/(1+\log L)^2,&L\ge1.
+\end{cases}}
+```
+
+Here the interval and b_u are exactly those of Section10. The estimate is
+uniform even when an interval is empty or much shorter than N. This
+statement concerns this sufficiently-large-Y family; no common onset for
+unrelated polynomial intervals is asserted.
+
+Write L=L_u>0. Sieve all integers v in the interval, with indexed values
+F_u(v)=v(uv-2). These values are strictly increasing on the positive
+interval, so the size parameter is its cardinality L, not the largest
+polynomial value. For squarefree d the number of local roots is
+
+```math
+\rho_u(2)=1,\qquad \rho_u(u)=1,\qquad
+\rho_u(\ell)=2\quad(\ell>2,\ \ell\ne u),
+\qquad \rho_u(d)=\prod_{\ell\mid d}\rho_u(\ell).
+```
+
+At u the second linear factor equals -2; at any other odd prime the
+two roots are distinct. Counting these residue classes in any L consecutive
+integers gives a position-independent remainder:
+
+```math
+|A_d|=L\frac{\rho_u(d)}d+R_u(d),\qquad
+|R_u(d)|\le\rho_u(d)\le2^{\omega(d)}.
+```
+
+Thus the elementary divisor-sum proof from Section1 applies with L in
+place of H, uniformly over u and interval position:
+
+```math
+\sum_{d<D}\mu^2(d)7^{\omega(d)}|R_u(d)|
+\le D(1+\log D)^{13}.
+```
+
+The uniform dimension condition is also checked, rather than assumed.
+The densities equal the generic dimension-two densities of Section2
+except at u, where the density is smaller. Every inverse product over
+prime factors is consequently at most its generic counterpart, with the
+same absolute dimension-condition constant. This remains true when u
+varies with Y.
+
+For sufficiently large L choose
+
+```math
+D=\frac L{(\log L)^{20}},\qquad z=L^{1/3},\qquad
+s=\frac{\log D}{\log z}
+ =3-60\frac{\log\log L}{\log L}\longrightarrow3.
+```
+
+There is an absolute L_0 such that 2<=z<=D and s stays in a fixed
+neighbourhood of3 for L>=L_0. Uniformly over the allowed factor primes,
+
+```math
+L\le N\le Y/u<Y/Z,\qquad
+\frac{Z^4}{Y}\longrightarrow\infty,
+\qquad z<(Y/Z)^{1/3}<Z<u
+```
+
+once Y is sufficiently large. Hence the sieve product V_u(z) equals
+the generic V(z), which is comparable to1/log squared L. The actual
+prime pairs have v>u>z and uv-2>X/2>z, so every one survives this
+integer upper sieve.
+
+Apply the classical DHR upper estimate as stated in
+[Franze–Kao, Section4, equation (19)](https://arxiv.org/pdf/1812.11280#page=5).
+Its size is L and its checked dimension is2. With
+R_4 the weighted remainder restricted to d dividing P(z),
+
+```math
+\begin{aligned}
+b_u&\le S(A,z)\\
+&\le LV(z)\left\{F_2(s)+O\!\left(
+   \frac{(\log\log D)^2}{(\log D)^{1/6}}\right)\right\}
+   +2R_4,\\
+R_4&=O\!\left(\frac L{(\log L)^7}\right).
+\end{aligned}
+```
+
+The function F_2 is bounded near3, and the product/error constants above
+are independent of u and interval position. Therefore there is an absolute
+C such that b_u<=C L/(log L)^2 for every L>=L_0 in this large-Y family.
+This is a consequence of the classical upper sieve and the explicitly
+checked local arithmetic, not a new sieve theorem or a Stainless result.
+
+For 1<=L<L_0, the trivial count b_u<=L applies. Enlarging one absolute
+constant absorbs this finite range and replaces log L by1+log L; for
+example take C_0 at least both4C and (1+log L_0)^2, increasing L_0
+to at least e if necessary. Empty intervals contribute zero. This proves
+the displayed all-length bound with absolute constants and a single
+sufficiently-large-Y threshold.
+
+The ambient N^(3/4) factor of Section10 has been removed. No numerical
+constant or onset is evaluated, and the bound does not by itself place
+the total semiprime contribution below the Chen lower supply. Final twin
+survival, reserve renewal and the separate CRT spectral problem remain open.
+
+## 12. Summing the Actual Interval-Length Weights
+
+The sum of the weights in Section11 can be evaluated, including the short
+intervals near the largest possible smaller factor. The result is about
+the known interval lengths, not an asymptotic formula for rejected pairs:
+
+```math
+\begin{aligned}
+\sum_{\substack{Z<u<\sqrt Y\\u\text{ prime}}}\Phi(L_u)
+ &=\bigl(\kappa_{\mathrm{geom}}+o(1)\bigr)
+                  \frac Y{(\log Y)^2},\\
+\kappa_{\mathrm{geom}}
+ &=\frac5{16}+\frac12\log\frac83.
+\end{aligned}
+```
+
+All variables retain the square-rule definitions. Split the primes into
+the bulk Z<u<=sqrt(Y)/2 and the edge sqrt(Y)/2<u<sqrt(Y).
+In the bulk, u^2<=Y/4 makes the product-window lower endpoint dominate
+the condition v>u. The exact floors therefore give
+
+```math
+\begin{aligned}
+L_u&=\left\lfloor\frac Yu\right\rfloor
+       -\left\lfloor\frac{Y/2+1}{u}\right\rfloor
+     =\frac{Y}{2u}+O(1),\\
+L_u&\ge\sqrt Y-2,\\
+\Phi(L_u)
+ &=\left(1+O\!\left(\frac1{\log Y}\right)\right)
+       \frac{Y}{2u\,\log^2(Y/u)}.
+\end{aligned}
+```
+
+These errors are uniform over the whole bulk: its lengths are at least
+of order sqrt(Y), and log(Y/u) is comparable to log Y.
+
+For the edge, all lengths satisfy 0<=L_u<=2sqrt(Y). Extending Phi to
+real L>=1, its derivative has sign log L-1. Consequently
+
+```math
+\max_{\substack{L\in\mathbb Z\\0\le L\le2\sqrt Y}}\Phi(L)
+\le\max\{1,\Phi(2\sqrt Y)\}
+=O\!\left(\frac{\sqrt Y}{(\log Y)^2}\right).
+```
+
+The maximum includes the separately defined value Phi(0)=0. Chebyshev's
+upper bound gives O(sqrt(Y)/log Y) edge primes, so their total weight is
+O(Y/(log Y)^3), negligible on the asserted scale. This explicitly covers
+tiny and empty intervals, where replacing log L by log Y would be invalid.
+See [Pollack, Theorem3.5](https://www.pollack-math.net/NABDofficial.pdf#page=102)
+for the classical prime-count bound.
+
+For the bulk, apply Mertens' reciprocal-prime estimate and partial
+summation with t=log u/log Y. Its remainder is o(1) uniformly for endpoints
+at least Z, since Z tends to infinity. The normalized test function
+(1-t)^(-2) and its derivative are bounded on the fixed exponent range.
+Thus the limits log Z/log Y to3/11 and
+log(sqrt(Y)/2)/log Y to1/2 give
+
+```math
+\begin{aligned}
+\sum_{\substack{Z<u\le\sqrt Y/2\\u\text{ prime}}}
+       \frac1{u\,\log^2(Y/u)}
+ &=\frac1{(\log Y)^2}
+     \left\{\int_{3/11}^{1/2}\frac{dt}{t(1-t)^2}+o(1)\right\},\\
+\int_{3/11}^{1/2}\frac{dt}{t(1-t)^2}
+ &=\left[\log\frac t{1-t}+\frac1{1-t}\right]_{3/11}^{1/2}
+  =\frac58+\log\frac83.
+\end{aligned}
+```
+
+The classical reciprocal-prime estimate is stated in
+[Pollack, Theorem3.14](https://www.pollack-math.net/NABDofficial.pdf#page=110).
+Multiplying the bulk expression by Y/2 and adding the negligible edge
+proves the displayed weight-sum asymptotic.
+
+Unique smaller factors now give an actual global upper bound:
+
+```math
+B_{\mathrm{total}}
+=\sum_{\substack{Z<u<\sqrt Y\\u\text{ prime}}}b_u
+\le C_0\bigl(\kappa_{\mathrm{geom}}+o(1)\bigr)
+              \frac Y{(\log Y)^2}.
+```
+
+The known geometric coefficient is separated from the uncomputed sieve
+constant C_0. The rejected-pair count itself has not been shown asymptotic
+to this expression. No inequality putting C_0*kappa_geom below the Chen
+lower constant is established, and earlier-rejection alternatives remain
+possible. This computes actual geometric weights rather than assuming
+local full-cycle density; it supplies no final twin or novelty claim.
+
+## 13. An Explicit Leading Rejection Coefficient
+
+The unspecified constant needed for all interval lengths can be removed
+from the leading total. On the bulk intervals, a stronger admissible cutoff
+also lets us use an explicit initial value of the classical sieve function.
+The result, with all square-rule definitions unchanged, is
+
+```math
+\boxed{B_{\mathrm{total}}
+\le\left(16C_2\kappa_{\mathrm{geom}}+o(1)\right)
+           \frac Y{(\log Y)^2},\qquad
+16C_2\kappa_{\mathrm{geom}}
+=C_2\left(5+8\log\frac83\right).}
+```
+
+Here C_2 is the positive twin-prime product defined in Section2. This
+is an upper bound for the semiprime rejections, not their asymptotic count.
+It is a mathematical consequence of classical sieve estimates; no Stainless
+verification or optimality of this coefficient is claimed.
+
+Use the bulk Z<u<=sqrt(Y)/2 from Section12. Its lengths satisfy
+L=L_u>=sqrt(Y)-2, so D and z tend to infinity uniformly with the choices:
+
+```math
+D=\frac L{(\log L)^{20}},\qquad z=\sqrt D,\qquad
+s=\frac{\log D}{\log z}=2,\qquad
+\frac{\log D}{\log L}=1-o(1).
+```
+
+For sufficiently large Y, 2<=z<=D. The local root counts, the uniform
+dimension condition and the weighted remainder bound of Section11 still
+apply. Unlike its earlier cutoff, z can exceed u. That changes precisely
+one factor in the product:
+
+```math
+\frac{V_u(z)}{V(z)}=
+\begin{cases}
+1,&z\le u,\\
+\dfrac{u-1}{u-2},&z>u,
+\end{cases}
+\qquad \frac{V_u(z)}{V(z)}=1+O(1/Z).
+```
+
+The correction is uniform because u>Z tends to infinity. Actual prime
+pairs are still counted among the sifted values. Indeed, the exact lower
+endpoint of the product interval gives v>(Y/2+1)/u>=sqrt(Y), whereas
+L<Y/Z=O(Y^(8/11)) gives z<=sqrt(L)=O(Y^(4/11))=o(sqrt(Y)). The other
+prime value uv-2 exceeds X/2 and hence z as well. This explicitly checks
+prime survival for the new cutoff, without assuming z<u.
+
+The DHR initial-value normalization is stated in
+[Booker–Browning, Theorem3.1, equations (7)–(8)](https://arxiv.org/pdf/1511.00601#page=5).
+In dimension two it gives
+
+```math
+\sigma_2(t)=\frac{t^2}{8e^{2\gamma}}\quad(0<t\le2),\qquad
+F_2(2)=\frac1{\sigma_2(2)}=2e^{2\gamma}.
+```
+
+The initial range of F_2 includes2 since alpha_2>beta_2>2. Combining
+Section2's product identity with Mertens' product theorem, with gamma
+Euler's constant, now keeps the leading constant explicitly:
+
+```math
+\begin{aligned}
+V(z)&=\frac{2C_2e^{-2\gamma}+o(1)}{(\log z)^2},\\
+V_u(z)&=\frac{8C_2e^{-2\gamma}+o(1)}{(\log D)^2}.
+\end{aligned}
+```
+
+Apply [Franze–Kao, equation (19)](https://arxiv.org/pdf/1812.11280#page=5)
+at s=2. Its error tends to zero uniformly, and the checked remainder
+is O(L/(log L)^7). Therefore, throughout the bulk,
+
+```math
+\begin{aligned}
+b_u&\le LV_u(z)\left(F_2(2)+o(1)\right)
+                 +O\!\left(\frac L{(\log L)^7}\right)\\
+&\le\left(16C_2+o(1)\right)\frac L{(\log L)^2}.
+\end{aligned}
+```
+
+Uniformity matters when summing this inequality. Since all bulk lengths
+tend to infinity uniformly, L/(log L)^2=(1+o(1))*Phi(L) uniformly there.
+Section12 evaluates their sum with coefficient kappa_geom. On the edge,
+the older all-length bound remains sufficient: its total is
+C_0*O(Y/(log Y)^3), so the finite-small-length enlargement of C_0
+does not enter the leading coefficient. Adding bulk and edge proves the
+boxed inequality.
+
+The coefficient multiplying C_2 is approximately12.8466, just an evaluation
+of 5+8log(8/3). The rough Chen input supplies a positive lower constant
+c_* but has not supplied a comparison c_*>16C_2*kappa_geom. Consequently
+subtracting this upper bound from that lower bound has not proved a
+positive twin count. The new result makes the quantitative comparison
+explicit; it does not establish that the comparison succeeds.
+
+## 14. The Limit of Cutoff Tuning in This Upper Bound
+
+Changing only the cutoff cannot improve Section13's leading coefficient
+within the same DHR upper expression and remainder level. This identifies
+a limit of this particular estimate, rather than a lower bound for actual
+rejections or an optimality statement about other sieve methods.
+
+Keep D=L/(log L)^20 and choose a fixed s>=1 with z=D^(1/s). Only
+cutoffs satisfying 2<=z<=D and preserving the actual prime pairs are
+admissible. The product calculation from Section13 then makes the leading
+local upper-expression coefficient
+
+```math
+\begin{aligned}
+K(s)&=2C_2e^{-2\gamma}s^2F_2(s),\\
+K(s)&\ge16C_2,\\
+K(s)&=16C_2\quad(1\le s\le2),\qquad
+K(s)>16C_2\quad(s>2).
+\end{aligned}
+```
+
+To prove the assertion about the classical function, put Q(s)=s^2F_2(s).
+The initial values in [Booker–Browning, Theorem3.1](https://arxiv.org/pdf/1511.00601#page=5)
+give Q(s)=8e^(2gamma) for 0<s<=2. Write alpha=alpha_2>2. On
+2<s<=alpha, F_2(s)=1/sigma_2(s); the differential equation gives
+
+```math
+\begin{aligned}
+H(s)&=s^{-2}\sigma_2(s),\qquad Q(s)=\frac1{H(s)},\\
+H'(s)&=-2s^{-3}\sigma_2(s-2)<0,\\
+Q'(s)&=\frac{2\sigma_2(s-2)}{s^3H(s)^2}>0.
+\end{aligned}
+```
+
+The signs are justified by the source's positivity: F_2 decreases to1,
+so it is positive, and sigma_2=1/F_2 is positive throughout its initial
+range. Both s and s-2 lie in that range here. Beyond alpha, the other
+DHR equation yields
+
+```math
+Q'(s)=2s f_2(s-1)\ge0\qquad(s>\alpha).
+```
+
+Indeed, f_2 is initially zero and is nondecreasing. Continuity at2 and
+alpha joins the three ranges. Q is constant up to2, increases strictly
+between2 and alpha, and never decreases thereafter. This proves the
+displayed bound and its equality range without numerical integration.
+These differential identities and monotonicity statements are also recorded
+in [Franze–Kao, equations (21)–(24)](https://arxiv.org/pdf/1812.11280#page=5).
+
+For a fixed admissible s, Mertens' product estimate and the same uniform
+exceptional-u correction give
+
+```math
+LV_u(z)F_2(s)
+=\left(K(s)+o(1)\right)\frac L{(\log L)^2}.
+```
+
+Thus summing these bulk upper expressions cannot produce a coefficient
+below16C_2*kappa_geom by selecting a different fixed s. Section13's s=2
+is admissible and attains this floor. Some other s in the formal equality
+range may be inadmissible because a prime value falls below z; no such
+cutoff is used. This result concerns leading expressions at the specified
+level only. Different remainder levels, sieve weights, arithmetic estimates
+or treatments of the rejection correlations are outside its scope, and
+no lower bound on the actual semiprime population follows. This is an
+application of classical sieve-function identities, not a new sieve theorem
+or a Stainless-verified property.
+
+## 15. A Quantitative Obstruction to This Subtraction
+
+The entire rough Chen family has an upper bound smaller than Section13's
+rejection allowance. Therefore evaluating a better lower constant for that
+same family cannot make this particular subtraction prove survival. This
+is a limitation of the displayed rejection estimate, not evidence that all
+candidates are actually rejected.
+
+With G denoting the exact family mathcal G of Section7, the claim is
+
+```math
+\begin{aligned}
+|\mathcal G|&\le\left(5C_2+o(1)\right)\frac Y{(\log Y)^2},\\
+5C_2&<16C_2\kappa_{\mathrm{geom}}
+ =C_2\left(5+8\log\frac83\right).
+\end{aligned}
+```
+
+The coefficient5 is a convenient upper bound, not a claim of optimality.
+We derive it using the classical prime-conditioned linear sieve. The
+needed statement and function normalization appear in
+[Tao's Supplement5, Theorem2, equations (10) and (12)](https://terrytao.wordpress.com/2015/01/29/254a-supplement-5-the-linear-sieve-and-chens-theorem-optional/).
+The same source's equation (39) supplies the Bombieri–Vinogradov remainder
+input for the shifted prime problem.
+
+Let Lambda be the von Mangoldt function and give each integer a the
+nonnegative weight Lambda(a) when X/2<a<=X, and zero otherwise. Its
+unsifted main mass is X/2. For each odd prime ell forbid a congruent to
+-2 modulo ell; the event at2 is empty. The multiplicative density is
+
+```math
+g(2)=0,\qquad g(\ell)=\frac1{\ell-1}\quad(\ell>2),\qquad
+g(\ell)=\frac1\ell+O(1/\ell^2),\quad 0\le g(\ell)\le\frac12.
+```
+
+For odd squarefree d, the residue -2 is coprime to d. The classical
+Bombieri–Vinogradov estimate consequently gives the required local formula
+and summed remainders at the fixed level below:
+
+```math
+\begin{aligned}
+\sum_{\substack{X/2<a\le X\\a\equiv-2\pmod d}}\Lambda(a)
+ &=g(d)\frac X2+r_d,\\
+D&=(X/2)^{2/5},\qquad
+\sum_{\substack{d\le D\\d\text{ odd, squarefree}}}|r_d|
+ =O\!\left(\frac X{(\log X)^{10}}\right).
+\end{aligned}
+```
+
+Even d have empty events, density zero and remainder zero. The source's
+interval is [X/2,X-2]; changing to (X/2,X] changes O(1) endpoints.
+Each remainder changes by O(log X), so their total change is at most
+O(D log X), still negligible relative to X/log X. Its stated fixed-power
+distribution range includes this D: any fixed exponent strictly between
+2/5 and1/2 suffices. No distribution claim about prime pairs is assumed.
+
+Write W(z) for the product of1-g(ell). The product identity of Section2
+and Mertens' theorem evaluate its normalization:
+
+```math
+\begin{aligned}
+W(z)&=\prod_{3\le\ell<z}\frac{\ell-2}{\ell-1}
+ =\frac{V(z)}{\prod_{\ell<z}(1-1/\ell)}
+ =\frac{2C_2e^{-\gamma}+o(1)}{\log z},\\
+s&=\frac{\log D}{\log Z}=\frac{22}{15}\in(1,3),\qquad
+F_1(s)=\frac{2e^\gamma}{s}.
+\end{aligned}
+```
+
+Here Z=(X/2)^(3/11), so s is exactly constant. The prime density bounds
+above meet the linear-sieve hypotheses. Applying its upper estimate gives
+
+```math
+\begin{aligned}
+S_\Lambda
+&:=\sum_{X/2<a\le X}\Lambda(a)
+     \prod_{\substack{3\le\ell<Z\\\ell\text{ prime}}}
+            1_{\ell\nmid a+2}\\
+&\le\left(F_1(s)+o(1)\right)\frac X2 W(Z)
+       +o\!\left(\frac X{\log X}\right)\\
+&\le\left(2C_2+o(1)\right)\frac X{\log D}
+ =\left(5C_2+o(1)\right)\frac X{\log X}.
+\end{aligned}
+```
+
+To justify the o(1) from the source's arbitrarily small sieve error,
+fix its error parameter first, take X sufficiently large, then take
+the resulting upper limit as that parameter tends to zero. No uniform
+onset for a moving error parameter is assumed.
+
+Every member a of G is prime, has a+2 free of primes below Z, and
+contributes Lambda(a)=log a>=log(X/2) to this nonnegative sum. Extra
+prime powers in S_Lambda only enlarge the upper bound. Hence
+
+```math
+|\mathcal G|\log(X/2)\le S_\Lambda,\qquad
+|\mathcal G|\le\left(5C_2+o(1)\right)\frac Y{(\log Y)^2},
+```
+
+using Y=X+2. This proves the claimed whole-family bound.
+
+In particular, any constant c_* for an eventual lower bound
+|G|>=c_*Y/(log Y)^2 must satisfy c_*<=5C_2. Section13's allowance has
+strictly larger coefficient. Thus the lower expression obtained by
+subtracting that allowance cannot have a positive leading coefficient,
+even with the largest possible valid lower constant for this G. Section14
+also rules out repairing that allowance by fixed-cutoff tuning alone.
+
+This conclusion does not show that actual rejections attain their upper
+bound, nor that actual survivors are absent. A sharper rejection estimate,
+a joint weighted treatment retaining the shared arithmetic of supply and
+rejections, or a different candidate family would require a new analysis.
+Only the present separate-budget certificate is ruled out. The ingredients
+are classical; this application is not a novelty claim or a Stainless result.

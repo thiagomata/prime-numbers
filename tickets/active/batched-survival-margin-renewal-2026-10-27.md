@@ -2,10 +2,11 @@
 
 ## START HERE
 
-Micro-goal: the exact-window Fourier upper bound is proved and reviewed.
-Next test a direct interval upper sieve with uniform local densities and
-remainders; do not assume a linear-length theorem or favourable constants.
-Final twin survival remains open.
+Micro-goal: assess the joint supply-and-rejection bound explicitly chosen
+by the user. Derive a pointwise signed weight, then test whether its joint
+arithmetic estimate provides information beyond the identity |G|-B.
+Sections14–15's failed separate-budget certificate remains documented;
+actual twin survival remains open.
 
 ## Goal
 
@@ -22,8 +23,52 @@ experiments and historical Learning Logs. Inspect articles for contradictions;
 do not promote research results into articles without their conversion gates.
 Then examine normalized recurrence, multi-step losses and arithmetic
 compensation directly. Review any new proof before saving it.
+The user has now authorized a joint supply/rejection assessment. Keep
+candidate weights attached to their rejection conditions before estimating
+them. Inspect classical weighted/switching methods and test the resulting
+arithmetic input explicitly; a renamed exact identity is not sufficient
+progress and no favourable joint estimate is presumed.
 
 ## Current State
+
+The user explicitly selected "Assess a joint supply-and-rejection bound".
+That continuation is authorized. The first micro-goal is a pointwise
+signed weight followed by an independent test of its joint estimate.
+Primary weighted/switching sources are under inspection. No new joint
+bound or positive survivor count has been established at this checkpoint.
+
+Section15 is saved and exact-text Critic/Monitor post-reviewed PASS. A
+classical prime-conditioned linear sieve gives the whole-family upper
+bound |G|<=(5C_2+o(1))*Y/log squared Y. Therefore any valid lower
+constant for this family is at most5C_2, strictly below Section13's
+allowance coefficient C_2*(5+8log(8/3)). The displayed separate-budget
+subtraction cannot certify survival, even with the best lower constant;
+Section14 rules out repairing it by fixed-cutoff tuning at this level.
+No actual rejection lower bound or absence of survivors follows. Hub and
+candidate assessments have separate Monitor post-PASS;22-file Markdown,
+anchors and diff checks PASS. Final Critic/Monitor scope reviews PASS.
+The user's subsequent joint-assessment selection is recorded above; this
+paragraph describes the completed comparison checkpoint. The latest edits
+remain uncommitted. No article/code changes or push.
+
+Section14 is saved and exact-text Critic/Monitor post-reviewed PASS. With
+the same remainder level, the fixed-cutoff DHR leading coefficient cannot
+fall below16C_2: equality holds for1<=s<=2 and it is larger for s>2.
+This is not optimality across other methods or a lower bound for actual
+rejections. This intermediate checkpoint preceded the now-completed
+whole-family comparison in Section15.
+
+Section13 is saved and exact-text Critic/Monitor post-reviewed PASS. The
+leading total rejection bound is (16C_2*kappa_geom+o(1))*Y/log squared Y,
+where C_2 is the twin-prime product. The bulk cutoff s=2 uses the DHR
+initial normalization in Booker–Browning, arXiv:1511.00601, Theorem3.1;
+the institutional mirror returned403, while arXiv was readable. The
+exceptional local prime u contributes only a uniform1+O(1/Z) correction.
+The old all-length constant affects a negligible edge, not this leading
+term. Hub and candidate summaries have separate Monitor post-PASS;
+22-file Markdown/new-anchor and diff checks PASS. Final Critic and Monitor
+scope reviews PASS. These edits remain uncommitted; no favourable Chen comparison,
+all-method optimality or final twin survival has been proved.
 
 Committed the reviewed35-document checkpoint as a2abbe9b on
 feature/imaginay_function. Exact committed path/content, parent, empty index,
@@ -36,9 +81,20 @@ gate passed before commit.
 Section10's exact-window Fourier-kernel/Hölder bound is saved and exact-text
 Critic/Monitor post-reviewed PASS. Hub and candidate scopes are synchronized
 and separately post-reviewed PASS; all22 related Markdown files/new anchors
-and git diff --check PASS. This follow-up concerns only four tracked research
-files; a separate scoped follow-up commit is authorized. It concerns physical
+and git diff --check PASS. The four-file follow-up is committed as373601c4;
+exact parent/path/content checks passed and no push was performed. It concerns physical
 prime forms and does not resolve the existing CRT spectral-localization gap.
+Section11's direct interval upper bound is saved and exact-text Critic and
+Monitor post-reviewed PASS. For all allowed u and all interval lengths once
+Y is sufficiently large, b_u<=C_0*Phi(L_u), with Phi(0)=0 and
+Phi(L)=L/(1+log L)^2 for L>=1. The constants are absolute but not
+numerically evaluated. Section12's actual weight sum is also saved and
+exact-text Critic/Monitor post-reviewed PASS: its geometric coefficient is
+5/16+(1/2)log(8/3), with the short edge negligible. The rejected count has
+only the corresponding C_0-weighted upper bound. Hub and candidate scopes
+are synchronized and separately post-reviewed PASS;22-file Markdown/new
+anchor checks and git diff --check PASS. These new research edits are not
+part of the two earlier commits; no stage, push or article/code changes.
 
 Section8 is saved and independently post-reviewed PASS. Green--Tao's
 coefficient-uniform restriction estimate gives M_u<=K*Y/(u*log^2(Y))
@@ -130,13 +186,49 @@ epsilon<min(1/20,1/4-1/(2alpha)). No final-survivor claim follows.
 
 ## What is Learned
 
+The whole-family upper coefficient5C_2 is already below the current
+rejection allowance16C_2*kappa_geom. Consequently better evaluation of
+the lower constant cannot rescue this separate-budget certificate. The
+linear-sieve application uses nonnegative von Mangoldt weights, exact
+s=22/15, a fixed Bombieri–Vinogradov level below1/2, and checked
+dyadic endpoints. It does not infer actual rejection saturation. A new
+upper estimate or joint treatment must genuinely change the arithmetic
+bound; repackaging this constant comparison is insufficient.
+
+Within the specified DHR upper expression at D=L/(log L)^20, cutoff
+tuning alone cannot improve the leading16C_2 coefficient. The proof uses
+the classical differential equations for s^2*F_2(s), not sampled values.
+Other remainder levels, weights and arithmetic inputs are outside its scope.
+
+The leading rejection coefficient can be extracted without the enlarged
+all-length C_0. On the bulk, z=sqrt(D) gives s=2 and F_2(2)=2e^(2gamma),
+hence the uniform bound b_u<=(16C_2+o(1))*L_u/log squared L_u. Even
+when z exceeds u, its single local product correction is1+O(1/Z).
+The actual prime values exceed z uniformly. Summing and adding the
+negligible edge yields coefficient C_2*(5+8log(8/3)). This is an upper
+bound only; no comparison with a rigorous Chen lower constant is proved.
+
+The actual Phi(L_u) sum can be evaluated by exact floor geometry in the
+bulk and a separate edge bound handling zero/tiny lengths. Mertens partial
+summation gives kappa_geom=5/16+(1/2)log(8/3). This is an asymptotic for
+geometric weights; the bad-pair count remains upper-bounded only. For sharp
+constant work, extract the leading large-length sieve coefficient before
+enlarging C_0 to cover finitely many short intervals: the edge is negligible
+on the relevant global scale.
+
+The integer upper sieve has position- and factor-uniform local remainders.
+Its level and cutoff are admissible uniformly in the stated large-Y
+family, giving an actual all-length bound without the ambient N^(3/4).
+Tiny and empty intervals are covered separately; constants and the global
+comparison with the Chen supply remain open.
+
 The exact partner constraints define a consecutive integer interval of
 length L_u<=ceil(N/2). An interval kernel and Hölder retain that range while
 leaving the source theorem's polynomial coefficients unchanged. Relative
 to Section8 before coarsening, the ratio of the upper expressions has a
 uniform asymptotic upper bound (2/3)^(1/4), not an actual-count ratio.
-Its N^(3/4) factor remains; no linear-in-length short-interval estimate or
-favourable Chen comparison has yet been proved here.
+The Section10 estimate retains N^(3/4); Section11 now supplies stronger
+interval-length dependence. A favourable Chen comparison is still unproved.
 
 The late-band corollary is unconditional on twin existence: actual bounds
 and fixed positive/finite constants establish an eta once and for all.
@@ -224,6 +316,17 @@ existing just PDF gates; current plan changes no articles.
 
 ## Failed Paths
 
+The Section13 separate-budget certificate is quantitatively insufficient
+for the exact rough Chen family G. Section15 proves every valid eventual
+lower constant is at most5C_2, while the displayed rejection allowance
+has coefficient16C_2*kappa_geom>5C_2. Section14 also proves fixed-cutoff
+tuning at the same level cannot reduce its16C_2 factor. Thus neither
+better lower-constant evaluation nor this cutoff tuning can rescue the
+certificate. Retry only after an independently sharper rejection estimate,
+a joint weighted treatment retaining shared arithmetic, or a genuinely
+different candidate family with newly checked supply/loss bounds. This
+does not rule out actual survival, other methods or the broader branch.
+
 The tested uniform switched upper bound is genuine but only gives
 O(Y/log^2(Y)) over the whole semiprime range, matching the lower supply's
 scale. Subtracting these orders alone cannot force positivity. Retry only
@@ -263,12 +366,13 @@ transfer the square-rule positive benchmark automatically.
 
 ## Open Concerns
 
-The strengthened square-rule family's semiprime partners now have an actual
-upper bound, but it is not sharp enough to exclude exhaustion of the
-guaranteed count. Such a favourable comparison would be twin-strength
-information; the proved late-band restriction does not supply it. Cutoff,
-localization and repeated factors are resolved in Sections6–9. Prime
-partners, positive L3 and reserve renewal remain open.
+The current separate upper budget is provably too large even relative to
+an upper bound for the whole family. Actual rejections may be much smaller;
+their saturation is not proved. A different bound requires substantive
+reassessment rather than more parameter tuning. The proved late-band
+restriction does not resolve earlier rejections. Candidate localization
+and repeated factors are resolved in Sections6–9. Prime partners,
+positive L3 and reserve renewal remain open.
 
 Actual margin renewal remains unproved. Existing documents are descriptive
 research records, not mathematical authority in place of their derivations.
@@ -277,14 +381,14 @@ preserve them. A scoped research commit is now authorized; no push is requested.
 
 ## Next Action
 
-Current checkpoint: Section10 completes the exact-window Fourier test.
-Next inspect a direct upper sieve on its integer interval: verify root
-densities for v(uv-2), remainder bounds uniform in the varying prime u
-and interval position, and the available level/cutoff before asserting any
-bound linear in interval length. Then evaluate constants before comparison
-with the Chen supply. This is an open test, not a forecast of positive
-subtraction. Do not replace the missing estimate by a conditional positivity
-definition. No further theorem or article changes before review.
+The user selected the joint supply/rejection assessment. Derive one
+pointwise signed certificate with supply and rejection weights kept
+together, then test the arithmetic estimate it needs against primary
+weighted/switching results and the actual remainder level. Distinguish
+finite identities from new control of correlations. Do not restart the
+failed constant-tuning argument or claim that a re-expression proves
+positivity. New mathematical results require independent review before
+saving; no article or executable changes are planned.
 Broader margin-renewal objectives below remain open.
 
 The documentation and block-proof checkpoint is complete; broader renewal
@@ -304,6 +408,14 @@ transport properties for exponent11/5 rather than importing square results.
 
 | Date | Learning | Action |
 |---|---|---|
+| 2026-10-28 | The user explicitly selected a joint supply/rejection assessment after the separate-budget obstruction. | Authorized continuation recorded; pointwise weight and actual joint estimate are the first test, with no favourable theorem claimed. |
+| 2026-10-28 | The whole-family upper coefficient5C_2 is below the separate rejection allowance16C_2*kappa_geom, so that certificate cannot prove positivity. | Section15 exact Critic/Monitor post-PASS; narrow failed path and retry conditions recorded, hub/candidate synchronized,22-file checks PASS; final Critic/Monitor scope reviews PASS. User direction requested before replacement research; edits uncommitted. |
+| 2026-10-28 | Fixed-level DHR cutoff tuning cannot lower16C_2; this concerns upper expressions only. | Section14 exact Critic/Monitor post-PASS; prospective whole-family comparison remains under source/normalization review. |
+| 2026-10-28 | A bulk cutoff at s=2 makes the total leading rejection coefficient explicit:16C_2*kappa_geom; the finite-length constant affects only the negligible edge. | Section13 exact Critic/Monitor post-PASS; hub/candidate updated with separate Monitor post-PASS;22-file Markdown/anchor/diff PASS, final Critic/Monitor scope reviews PASS. No favourable comparison or optimality proved; edits uncommitted. |
+| 2026-10-28 | Leading bulk constants must be extracted before the finite-length enlargement. | Primary Booker–Browning source located/under inspection via readable arXiv after mirror403; no new theorem claimed. |
+| 2026-10-28 | The direct interval bound removes ambient N, and actual length weights have geometric coefficient5/16+(1/2)log(8/3). | Sections11–12 exact independent post-PASS; hub/candidate scopes synchronized;22-file Markdown/anchor and diff checks PASS, final scope review pending. |
+| 2026-10-28 | Direct interval sieving proves an all-length upper bound with absolute constants in the large-Y family. | Section11 exact independent post-PASS; bulk/short-edge summation is next under review, with no total coefficient claimed yet. |
+| 2026-10-28 | Follow-up373601c4 is committed; the direct DHR upper statement is located, while its exact-interval application remains under review. | Checkpoint Critic/Monitor pre-PASS; no new interval-length theorem claimed. |
 | 2026-10-28 | Summary compression must distinguish convergence of an upper envelope from convergence of the actual expression ratio. | Critic caught ambiguous wording; hub/candidate/ticket corrected to uniform asymptotic upper bound, with the exact proof unchanged. |
 | 2026-10-28 | Exact product-window restrictions sharpen the displayed upper bound via an interval kernel without shifting the prime-form coefficients. | Section10 and hub/candidate scopes independent post-PASS;22-file checks/diff PASS; scoped four-file follow-up commit authorized, no final twin inference. |
 | 2026-10-28 | Committed the exact35-file reviewed research scope as a2abbe9b; untracked-file EOF issues were visible only after staging and were fixed without body changes. | Commit/postchecks PASS, unrelated work preserved and no push; exact-window kernel estimate separately reviewed and pending save. |

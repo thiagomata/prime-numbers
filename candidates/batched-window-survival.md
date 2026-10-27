@@ -298,6 +298,36 @@ actual rejection population.
 The estimate still retains its ambient N^(3/4) factor, has the same total
 order and does not give a favourable comparison with the Chen supply.
 
+The later [direct interval sieve](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#11-a-direct-interval-upper-sieve-removes-the-ambient-range)
+proves b_u<=C_0*Phi(L_u) for every allowed u and interval length once Y
+is sufficiently large, with Phi(0)=0 and Phi(L)=L/(1+log L)^2 otherwise.
+It removes the ambient N^(3/4) dependence. Its constant is uncomputed,
+so stronger length dependence does not imply a smaller numerical bound
+than every earlier estimate.
+
+The [sum of the actual interval weights](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#12-summing-the-actual-interval-length-weights)
+is asymptotic to kappa_geom*Y/log squared Y, where
+kappa_geom=5/16+(1/2)log(8/3). The short edge, including empty and tiny
+intervals, is negligible. Consequently the semiprime count is at most
+C_0*(kappa_geom+o(1))*Y/log squared Y; its own asymptotic count has not
+been established. The later [leading-coefficient extraction](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#13-an-explicit-leading-rejection-coefficient)
+sharpens the total upper bound to (16C_2*kappa_geom+o(1))*Y/log squared Y,
+where C_2 is the twin-prime product. The classical bulk sieve factor is
+evaluated at s=2; the finite-small-length constant C_0 does not enter the
+leading term because the edge is negligible.
+
+The [fixed-level cutoff test](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#14-the-limit-of-cutoff-tuning-in-this-upper-bound)
+proves that tuning a fixed cutoff alone cannot improve that leading16C_2
+factor. The [whole-family bound](../properties/sieve-sequence/research/batched-survival-classical-sieve-input.md#15-a-quantitative-obstruction-to-this-subtraction)
+then gives |G|<=(5C_2+o(1))*Y/log squared Y, strictly below the displayed
+rejection allowance. Thus no valid lower constant for this family can
+make that particular separate-budget subtraction positive. Its failure is
+now proved, rather than an unevaluated constant comparison. This does not
+show that actual rejections attain the allowance or that survivors are absent.
+A sharper rejection bound, a joint treatment of supply and rejections,
+or a different family needs new analysis; the broader batching proposal
+and final twin survival remain open.
+
 ## Development Plan and Remaining Obligations
 
 The research direction is retained provisionally: the failed shortcuts do
