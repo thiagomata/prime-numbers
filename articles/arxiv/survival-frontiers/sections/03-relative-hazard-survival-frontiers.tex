@@ -1,4 +1,19 @@
 \section{Relative Hazard and Survival Frontiers}
+This section is the article's main calculation spine. It proceeds in four
+steps:
+\begin{enumerate}
+  \item keep the global population count separate from local placement;
+  \item normalize local damage by the random benchmark $2/r$;
+  \item multiply one-lineage survival factors and rewrite the product as
+    $P(Q)=e^{-D(Q)}$;
+  \item compare the resulting survival scale with either a quadratic
+    square-window supply or a single distinguished head position.
+\end{enumerate}
+The same hazard calculation supports both the fixed-factor result and the
+logarithmic thresholds. The difference between the square-window and head
+frontiers comes from available supply: a square window has about $Q^2$
+possible starts, while the head has only one distinguished position.
+
 \subsection{Global Persistence Is Independent of Allocation}
 We begin with the property shared by every balanced companion. No choice of the harmful pair changes the number of surviving descendants: random, adversarial, protective, and mixed parents all leave the same global population. Local extinction must therefore come from placement rather than from exhausting the complete-period supply.
 Let $N_k=|\mathcal G_k|$ and assume $N_0>0$. Installing $r_k$ gives
@@ -35,6 +50,8 @@ Two quantities must be distinguished. If $L_r > 0$ gaps are present in a specifi
 \widehat f_r:=\frac{H_r}{L_r},
 \qquad \widehat w_r:=\frac{r\widehat f_r}{2}.
 \end{equation*}
+This first display is only a measurement convention: it says how to score a finite dataset after the fact. The next displays define the model quantity used in the proofs. The point is to compare any conditional destruction rate with the neutral random rate for the same incoming filter.
+
 The probability model instead uses the conditional lineage hazard $f_r$ defined in Section~2.1. Balanced random selection has conditional destruction rate
 \begin{equation*}
 d_r:=\frac2r.
@@ -45,6 +62,8 @@ w_r
 :=\frac{f_r}{d_r}
 =\frac{rf_r}{2}.
 \end{equation*}
+So $w_r$ is not a new probability. It is a ratio: $w_r=1$ means ``exactly as destructive as random at this filter,'' while $w_r>1$ means ``worse than random'' by that factor.
+
 This is the meaningful adversariality scale because the benchmark itself shrinks as filters grow:
 \begin{equation*}
 \begin{aligned}
@@ -59,6 +78,8 @@ w_r=r/2
 &&[\text{Complete Local Destruction}].
 \end{aligned}
 \end{equation*}
+The display proves the calibration of the scale. Zero means perfect local protection, one means the random benchmark, and $r/2$ is the largest possible score because it corresponds to certain destruction.
+
 The range $0\le w_r\le r/2$ compares conditional damage with the neutral law. The analogous observed score $\widehat w_r$ can fluctuate above one even for a random filter. An observed fraction does not by itself establish the conditional probability of destruction of a particular child.
 \subsubsection*{Absolute Adversarial/Random Share as a Specialization}
 Fix a target: either a square-safe window or one distinguished head position. At filter $r$, let
@@ -67,9 +88,14 @@ Fix a target: either a square-safe window or one distinguished head position. At
 \end{equation*}
 be the adversarial share. The remaining share $1-\alpha_r$ uses the balanced random choice.
 This can be interpreted parent by parent or as a marginal mixture for one locally relevant lineage. For the cumulative product studied below, mixture choices for a tracked lineage are independent from one filter to the next. The one-lineage calculation at each filter is then the same:
-- under adversarial selection, its target child is destroyed; - under balanced random selection, that child survives with probability $1-2/r$.
+\begin{itemize}
+\item under adversarial selection, its target child is destroyed;
+\item under balanced random selection, that child survives with probability $1-2/r$.
+\end{itemize}
+
 The model therefore assumes that the adversarial branch is strong enough to identify and kill the locally relevant child. That is exactly what makes it an adversarial comparison rather than a description of the real filter.
-Its total local destruction rate and relative factor are
+
+The next block computes the effective hazard of that mixture. It has two pieces: the adversarial share contributes certain destruction, and the remaining random share contributes the neutral $2/r$ destruction rate.
 \begin{equation*}
 \begin{aligned}
 f_r
@@ -79,19 +105,19 @@ w_r
 &=1+\frac{r-2}{2}\alpha_r.
 \end{aligned}
 \end{equation*}
-Thus a fixed absolute share $\alpha_r=\alpha > 0$ does not represent a fixed amount worse than random. It makes $w_r$ grow linearly like $\alpha r/2$. This is why the fixed-share model is asymptotically fatal for an essentially trivial reason; the nontrivial question is how rapidly $w_r$ itself may grow.
+This proves why the absolute-share parameter is dangerous. A fixed $\alpha_r=\alpha>0$ does not mean ``a fixed amount worse than random''; after normalization by $2/r$, it makes $w_r$ grow linearly like $\alpha r/2$. This is why the fixed-share model is asymptotically fatal for an essentially trivial reason; the nontrivial question is how rapidly $w_r$ itself may grow.
 \subsection{The General Cumulative Local-Hazard Law}
 Follow one eligible candidate through successive filters. By the conditional hazard definition, its next survival probability is
 \begin{equation*}
 s_r=1-f_r=1-\frac{2w_r}{r}.
 \end{equation*}
-Assume $f_r < 1$ for every filter in the tracked chain. Define the cumulative local hazard
+Assume $f_r < 1$ for every filter in the tracked chain. The purpose of the next definition is to turn a product of many small survival losses into a sum. That sum is the cumulative local hazard:
 \begin{equation*}
 D(Q)
 :=\sum_{r < Q}-\log(1-f_r)
 =\sum_{r < Q}-\log\left(1-\frac{2w_r}{r}\right).
 \end{equation*}
-The complete survival factor is exactly
+With this definition, the complete survival factor is exactly the exponential of minus the accumulated hazard:
 \begin{equation*}
 \begin{aligned}
 P(Q)
@@ -104,6 +130,8 @@ P(Q)
 \end{aligned}
 \qquad[\text{Q.E.D.}]
 \end{equation*}
+This proves the reusable translation used throughout the article: survival products become $P(Q)=e^{-D(Q)}$. The identity is exact inside the stated conditional model; all later threshold arguments come from estimating the size of $D(Q)$.
+
 There is also a deterministic version. For a fixed nested cohort with no births or immigration, $L_{r^+}=L_r(1-\widehat f_r)$ telescopes to the ratio of final to initial cohort size. This is an observed ratio, not a marginal probability. Changing the target window or introducing new descendants breaks that telescope unless an additional accounting identity is proved.
 The Prime Number Theorem, the prime harmonic estimate, and their partial-summation consequences used here and below are classical; we use Hardy and Wright \cite{hardywright2008}.
 For the random benchmark $w_r=1$,
@@ -119,6 +147,8 @@ and therefore
 P_{\mathrm{random}}(Q)
 \asymp\frac{C}{(\log Q)^2}.
 \end{equation*}
+So the random benchmark has survival on the order of $(\log Q)^{-2}$. This is the baseline against which the later worse-than-random schedules are compared.
+
 The absolute adversarial/random mixture from Section~3.2 is recovered because
 \begin{equation*}
 1-f_r
@@ -146,7 +176,7 @@ Let $w\ge 0$ be fixed and suppose
 \begin{equation*}
 f_r=\frac{2w}{r}
 \end{equation*}
-for all sufficiently large filters. A finite prefix is absorbed into a positive constant. Since the quadratic error terms are summable over primes,
+for all sufficiently large filters. The calculation below asks only for the growth scale of the hazard; any finite prefix is absorbed into a positive constant. Since the quadratic error terms are summable over primes,
 \begin{equation*}
 \begin{aligned}
 D_w(Q)
@@ -162,6 +192,8 @@ Therefore
 \begin{equation*}
 P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 \end{equation*}
+This is the first important frontier calculation. A fixed factor $w$ changes only the power of $\log Q$; it does not introduce any power of $Q$.
+
 For a square window with $B(Q)\asymp C_0Q^2$ eligible lineages,
 \begin{equation*}
 \lambda_w(Q)
@@ -169,7 +201,7 @@ For a square window with $B(Q)\asymp C_0Q^2$ eligible lineages,
 C_0\frac{Q^2}{(\log Q)^{2w}}
 \longrightarrow\infty
 \end{equation*}
-for every finite $w$. The growth is strong enough to make the standard empty-window bound summable, so only finitely many square windows are empty almost surely under the blind-placement premise.
+for every finite $w$. The quadratic supply beats every fixed logarithmic loss. The growth is strong enough to make the standard empty-window bound summable, so only finitely many square windows are empty almost surely under the blind-placement premise.
 For a distinguished head with baseline availability bounded below,
 \begin{equation*}
 \Pr(H_Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
@@ -259,11 +291,11 @@ c\ge\frac12
 \end{aligned}
 \end{equation*}
 The threshold is the Borel-Cantelli decision rule for the head, and the figure below evaluates it directly. It plots the cumulative sum of $\Pr(H_Q)$ over real enumerated primes up to $Q$, for $w_r=1+c\log r$ at $c=0.0,0.1,0.3,0.5,0.7,1.0$. Below the threshold the sum keeps climbing -- $c=0.0$ and $c=0.1$ clearly, $c=0.3$ more slowly but provably -- so there are infinitely many head events with mixing. At and above the threshold the sum flattens: $c=0.5$ only very slowly (it is the boundary itself), $c=0.7$ and $c=1.0$ quickly -- so there are only finitely many, almost surely.
-\begin{figure}[htbp]
+\begin{center}
 \centering
-\includegraphics[width=\textwidth]{figures/phase-transition-head.pdf}
-\caption{Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold}
-\end{figure}
+\includegraphics[width=0.82\textwidth]{figures/phase-transition-head.pdf}
+\parbox{0.82\textwidth}{\centering\small Figure 4: Cumulative sum of Pr(head is a 2-gap) over enumerated primes, log scale: c=0.0 and c=0.1 climb the whole way, c=0.3 climbs slowly, c=0.5 flattens only very slowly at the boundary, and c=0.7 and c=1.0 flatten quickly -- the c=1/2 Borel-Cantelli threshold}
+\end{center}
 Equivalently, the robust relative-factor regimes are
 \begin{equation*}
 \begin{aligned}
