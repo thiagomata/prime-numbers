@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="520" viewBox="0 0 920 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="72" y="26" font-family="Arial, sans-serif" font-size="18" font-weight="700">Aggressive Filter Sweep</text>
+<line x1="72" y1="452" x2="765" y2="452" stroke="#222"/>
+<line x1="72" y1="44" x2="72" y2="452" stroke="#222"/>
+<line x1="72" y1="452.00" x2="765" y2="452.00" stroke="#e7e7e7"/>
+<text x="62" y="456.00" text-anchor="end" font-family="Arial, sans-serif" font-size="11">0.00</text>
+<line x1="72" y1="350.00" x2="765" y2="350.00" stroke="#e7e7e7"/>
+<text x="62" y="354.00" text-anchor="end" font-family="Arial, sans-serif" font-size="11">0.25</text>
+<line x1="72" y1="248.00" x2="765" y2="248.00" stroke="#e7e7e7"/>
+<text x="62" y="252.00" text-anchor="end" font-family="Arial, sans-serif" font-size="11">0.50</text>
+<line x1="72" y1="146.00" x2="765" y2="146.00" stroke="#e7e7e7"/>
+<text x="62" y="150.00" text-anchor="end" font-family="Arial, sans-serif" font-size="11">0.75</text>
+<line x1="72" y1="44.00" x2="765" y2="44.00" stroke="#e7e7e7"/>
+<text x="62" y="48.00" text-anchor="end" font-family="Arial, sans-serif" font-size="11">1.00</text>
+<line x1="72.00" y1="452" x2="72.00" y2="457" stroke="#222"/>
+<text x="72.00" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">0.0</text>
+<line x1="210.60" y1="452" x2="210.60" y2="457" stroke="#222"/>
+<text x="210.60" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">4.0</text>
+<line x1="349.20" y1="452" x2="349.20" y2="457" stroke="#222"/>
+<text x="349.20" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">8.0</text>
+<line x1="487.80" y1="452" x2="487.80" y2="457" stroke="#222"/>
+<text x="487.80" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">12.0</text>
+<line x1="626.40" y1="452" x2="626.40" y2="457" stroke="#222"/>
+<text x="626.40" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">16.0</text>
+<line x1="765.00" y1="452" x2="765.00" y2="457" stroke="#222"/>
+<text x="765.00" y="474" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">20.0</text>
+<path d="M 106.65 137.76 L 123.53 183.44 L 140.41 205.31 L 157.29 226.75 L 174.17 241.10 L 191.05 254.96 L 207.93 265.59 L 224.82 275.39 L 241.70 285.55 L 258.58 295.76 L 275.46 304.15 L 292.34 311.92 L 309.22 319.14 L 326.10 325.36 L 342.98 331.60 L 359.86 338.03 L 376.74 343.72 L 393.62 349.09 L 410.50 353.65 L 427.38 358.03 L 444.27 362.57 L 461.15 366.73 L 478.03 370.78 L 494.91 374.32 L 511.79 377.81 L 528.67 381.48 L 545.55 385.24 L 562.43 388.72 L 579.31 392.09 L 596.19 395.35 L 613.07 398.19 L 629.95 400.79 L 646.83 403.26 L 663.72 405.81 L 680.60 408.66 L 697.48 411.05 L 714.36 413.61 L 731.24 415.81 L 748.12 417.86 L 765.00 420.01" fill="none" stroke="#165a8f" stroke-width="3"/>
+<path d="M 106.65 452.00 L 123.53 391.36 L 140.41 376.56 L 157.29 351.35 L 174.17 338.82 L 191.05 321.40 L 207.93 311.02 L 224.82 310.90 L 241.70 309.76 L 258.58 297.29 L 275.46 286.02 L 292.34 275.31 L 309.22 266.46 L 326.10 266.08 L 342.98 264.14 L 359.86 255.25 L 376.74 244.31 L 393.62 237.15 L 410.50 228.99 L 427.38 228.12 L 444.27 226.00 L 461.15 220.01 L 478.03 212.10 L 494.91 211.94 L 511.79 211.45 L 528.67 210.22 L 545.55 207.61 L 562.43 201.84 L 579.31 192.03 L 596.19 187.42 L 613.07 179.93 L 629.95 179.75 L 646.83 179.14 L 663.72 178.06 L 680.60 175.47 L 697.48 171.04 L 714.36 163.59 L 731.24 162.12 L 748.12 159.43 L 765.00 154.74" fill="none" stroke="#c85f2b" stroke-width="3" stroke-dasharray="8 5"/>
+<line x1="787" y1="62" x2="821" y2="62" stroke="#165a8f" stroke-width="3"/>
+<text x="829" y="66" font-family="Arial, sans-serif" font-size="12">avg survival</text>
+<line x1="787" y1="87" x2="821" y2="87" stroke="#c85f2b" stroke-width="3" stroke-dasharray="8 5"/>
+<text x="829" y="91" font-family="Arial, sans-serif" font-size="12">extinction rate</text>
+<text x="418.5" y="496" text-anchor="middle" font-family="Arial, sans-serif" font-size="13">aggression multiplier on baseline hit probability</text>
+<text x="18" y="248.0" transform="rotate(-90 18 248.0)" text-anchor="middle" font-family="Arial, sans-serif" font-size="13">rate</text>
+</svg>

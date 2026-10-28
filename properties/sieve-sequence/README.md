@@ -21,9 +21,11 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | Global 2-Gap Cluster Count | Exact Global `(2,4,2)` Two-Gap Cluster Count | [exact-global-two-gap-cluster-count.md](exact-global-two-gap-cluster-count.md) |
 | Batched 2-Gap Survival | Exact Batched 2-Gap Survival | [exact-batched-two-gap-survival.md](exact-batched-two-gap-survival.md) |
 | Copy-Index Filter Frequency | Exact Filter Frequency Across Repeated Copies | [copy-index-filter-frequency.md](copy-index-filter-frequency.md) |
+| Fixed Shot Distance | Fixed Shot Distance For 2-Gap Copies | [fixed-shot-distance.md](fixed-shot-distance.md) |
 | 2-Gap Isolation | Isolation of 2-Gaps After Filtering by 3 | [two-gap-isolation-after-filter-three.md](two-gap-isolation-after-filter-three.md) |
 | Accepted Local Strikes | Exact Accepted Local Filter Strikes | [exact-accepted-local-filter-strikes.md](exact-accepted-local-filter-strikes.md) |
 | Local Survival Threshold | Sharp Local 2-Gap Survival Threshold | [sharp-local-two-gap-survival-threshold.md](sharp-local-two-gap-survival-threshold.md) |
+| Cumulative Shot-Survival Proposal | Cumulative Max-Shot Survival Proposal | [cumulative-max-shot-survival-proposal.md](cumulative-max-shot-survival-proposal.md) |
 | Pre-Final Twin Decomposition | Pre-Final-Filter Twin/Semiprime Decomposition | [pre-final-filter-twin-semiprime-decomposition.md](pre-final-filter-twin-semiprime-decomposition.md) |
 | Safe-Window Certification | Safe-Window 2-Gaps Certify Twin Primes | [safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md) |
 | Coherent Head-Suppression Cover | Coherent Head Suppression Is Shifted Prime-Shot Coverage | [coherent-head-suppression-is-shifted-prime-shot-coverage.md](coherent-head-suppression-is-shifted-prime-shot-coverage.md) |

@@ -26,6 +26,7 @@ sieve-sequence-phase-transition-window = "sieve_sequence.phase_transition_window
 sieve-sequence-phase-transition-head = "sieve_sequence.phase_transition_head_cli:main"
 sieve-sequence-hazard = "sieve_sequence.hazard_cli:main"
 sieve-sequence-deferred3 = "sieve_sequence.deferred3_cli:main"
+sieve-sequence-cluster-exposure = "sieve_sequence.cluster_exposure_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

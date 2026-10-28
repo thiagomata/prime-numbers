@@ -3,7 +3,7 @@ package v1.chapter6.sieve.seq.spec.properties
 import stainless.lang.*
 import v1.chapter2.div.Calc
 import v1.chapter2.div.properties.{ModOperations, ModSmallDividend}
-import v1.chapter5.prime.BezoutUtils
+import v1.chapter5.prime.{BezoutUtils, Prime}
 import v1.chapter6.sieve.seq.spec.{SieveUtils, SpecSieveSequence}
 
 object SpecSieveSeqTwoGapProperties {
@@ -52,6 +52,91 @@ object SpecSieveSeqTwoGapProperties {
     } else {
       leftOffset != rightOffset
     }
+  }.holds
+
+  /**
+   * The forbidden lift offsets of a real 2-gap are separated by the fixed
+   * inverse-step offset whose stepped residue is 2 modulo the incoming head.
+   */
+  def assertRightForbiddenLiftOffsetHasFixedSeparation(
+    seq: SpecSieveSequence,
+    k: BigInt
+  ): Boolean = {
+    require(k >= BigInt(0))
+    require(seq.head.value > BigInt(2))
+    require(Calc.mod(seq.tailPrimorial, seq.head.value) != BigInt(0))
+    require(seq.apply(k + BigInt(1)) - seq.apply(k) == BigInt(2))
+
+    val p = seq.head.value
+    val step = seq.tailPrimorial
+    val left = seq.apply(k)
+    val right = seq.apply(k + BigInt(1))
+    val leftOffset = BezoutUtils.coprimeStepZeroOffset(left, step, p)
+    val rightOffset = BezoutUtils.coprimeStepZeroOffset(right, step, p)
+    val fixedSeparation = BezoutUtils.coprimeStepResidueOffset(step, p, BigInt(2))
+    val shiftedRightOffset = Calc.mod(rightOffset + fixedSeparation, p)
+
+    assert(Prime.isPrime(p))
+    assert(right == left + BigInt(2))
+    assert(fixedSeparation >= BigInt(0))
+    assert(fixedSeparation < p)
+    assert(Calc.mod(fixedSeparation * step, p) == BigInt(2))
+    assert(rightOffset >= BigInt(0))
+    assert(rightOffset < p)
+    assert(shiftedRightOffset >= BigInt(0))
+    assert(shiftedRightOffset < p)
+
+    assert(ModOperations.modAdd(rightOffset * step, p, fixedSeparation * step))
+    assert(Calc.mod(rightOffset * step + fixedSeparation * step, p) ==
+      Calc.mod(Calc.mod(rightOffset * step, p) + Calc.mod(fixedSeparation * step, p), p))
+    assert(Calc.mod(right + rightOffset * step, p) == BigInt(0))
+    assert(ModOperations.modZeroPlusC(right + rightOffset * step, p, fixedSeparation * step))
+    assert(Calc.mod(right + rightOffset * step + fixedSeparation * step, p) ==
+      Calc.mod(fixedSeparation * step, p))
+    assert(Calc.mod(right + rightOffset * step + fixedSeparation * step, p) == BigInt(2))
+    assert(right == left + BigInt(2))
+    assert(right + rightOffset * step + fixedSeparation * step ==
+      left + BigInt(2) + rightOffset * step + fixedSeparation * step)
+    assert(left + (rightOffset * step + fixedSeparation * step) + BigInt(2) ==
+      right + rightOffset * step + fixedSeparation * step)
+
+    assert(BezoutUtils.assertModRepresentativePreservesScaledResidue(
+      rightOffset + fixedSeparation,
+      step,
+      p
+    ))
+    assert(Calc.mod(shiftedRightOffset * step, p) ==
+      Calc.mod((rightOffset + fixedSeparation) * step, p))
+    assert((rightOffset + fixedSeparation) * step ==
+      rightOffset * step + fixedSeparation * step)
+    assert(Calc.mod(shiftedRightOffset * step, p) ==
+      Calc.mod(rightOffset * step + fixedSeparation * step, p))
+
+    assert(ModOperations.modAdd(left, p, shiftedRightOffset * step))
+    assert(ModOperations.modAdd(left, p, rightOffset * step + fixedSeparation * step))
+    assert(Calc.mod(left + shiftedRightOffset * step, p) ==
+      Calc.mod(left + rightOffset * step + fixedSeparation * step, p))
+    assert(left + rightOffset * step + fixedSeparation * step + BigInt(2) ==
+      right + rightOffset * step + fixedSeparation * step)
+    assert(ModOperations.modLess(
+      right + rightOffset * step + fixedSeparation * step,
+      p,
+      BigInt(2)
+    ))
+    assert(Calc.mod(left + rightOffset * step + fixedSeparation * step, p) ==
+      Calc.mod(
+        Calc.mod(right + rightOffset * step + fixedSeparation * step, p) -
+          Calc.mod(BigInt(2), p),
+        p
+      ))
+    assert(ModSmallDividend.modSmallDividend(BigInt(2), p))
+    assert(Calc.mod(BigInt(2), p) == BigInt(2))
+    assert(Calc.mod(left + rightOffset * step + fixedSeparation * step, p) ==
+      BigInt(0))
+    assert(Calc.mod(left + shiftedRightOffset * step, p) == BigInt(0))
+
+    assert(BezoutUtils.assertCoprimeStepZeroOffsetUnique(left, step, p, shiftedRightOffset))
+    leftOffset == shiftedRightOffset
   }.holds
 
   /** Exactly two copies of a real 2-gap are destroyed in one full lift block. */
