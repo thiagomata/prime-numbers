@@ -93,14 +93,19 @@ No Scala or Stainless gate applies to this plotting/document-only task.
 
 ## Next Action
 
-None. The Markdown figure-rendering gap was found and closed on 2026-10-28:
+None. The thread is committed as44956e10 and pushed to
+origin/feature/imaginay_function: the article, the full arXiv package
+with the rebuilt PDF, the standalone figure generator with tests, the
+exported assets, both tickets, and the research-note link. The
+Markdown figure-rendering gap was found and closed on 2026-10-28:
 the three figure links pointed at the vector PDFs, which Markdown viewers
 do not render, while the exported PNG previews sat only in the
 presentation output. The PNGs are now colocated with the package PDFs and
-the Markdown links repointed (TeX keeps the vector PDFs). The PDF was
-rebuilt and `just arxiv-parity draft-continuous-divisor-sieve` passes all
-gates (freshness, 18 headings, 48 labels, 9 URLs). The whole thread
-remains uncommitted pending the user's scoped-commit decision.
+the Markdown links repointed (TeX keeps the vector PDFs). Figure 1's
+alt text was additionally made bracket-free after nested square brackets
+broke its rendering. The PDF was rebuilt and
+`just arxiv-parity draft-continuous-divisor-sieve` passes all gates
+(freshness, 18 headings, 48 labels, 9 URLs).
 
 ## Learning Log
 
