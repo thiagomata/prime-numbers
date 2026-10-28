@@ -271,9 +271,19 @@ Only re-run `just verify` after making a code change.
     3. The LaTeX build is a validation gate under <rule id="green-to-green"/>
        for article changes: a red or stale PDF build is a non-green state.
     4. If the LaTeX update cannot be completed in the same unit of work,
-       record the drift explicitly in the active ticket (Open Concerns /
-       Next Action) before moving on — never leave a Markdown/LaTeX desync
-       silent.
+      record the drift explicitly in the active ticket (Open Concerns /
+      Next Action) before moving on — never leave a Markdown/LaTeX desync
+      silent.
+  </rule>
+  <rule id="no-image-only-pages" priority="high">
+    arXiv PDFs must not contain pages whose substantive content is only one
+    image/figure. Each figure page must include nearby explanatory prose,
+    equations, tables, or another related figure/caption block. When a render
+    produces an image-only page, fix the LaTeX layout in the same unit of work:
+    resize the figure, move it closer to its explanatory text, split or add
+    prose around it, or make it an in-place block if floating separates it from
+    the relevant explanation. After the fix, rebuild the PDF and visually
+    inspect the affected rendered pages before marking the article done.
   </rule>
   <rule id="red-cascade" priority="critical">
     After a change produces a **non-green state** in any applicable gate

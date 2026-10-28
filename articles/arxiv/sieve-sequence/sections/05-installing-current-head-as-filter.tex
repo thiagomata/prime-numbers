@@ -16,6 +16,14 @@ effect on gaps.
     survivor-gap lists.
 \end{itemize}
 
+Read this section as a chain of increasingly local facts. First, the
+whole expanded window has an exact survivor count. Next, one real 2-gap
+is examined copy by copy to show that two and only two lifted copies are
+destroyed. Finally, the gap list is updated by the copy-or-merge rule: a
+surviving neighbor copies its old gap, while removed intermediate values
+merge adjacent old gaps into one larger gap. These are deterministic
+statements about the sieve stage, not random-model estimates.
+
 \subsection{Exact Survivor Count}
 \label{sec:exact-survivor-count}
 

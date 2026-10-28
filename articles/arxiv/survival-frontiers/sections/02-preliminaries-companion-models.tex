@@ -28,6 +28,15 @@ $\beta_r$ & raw endpoint preference in a biased quota \\
 $\kappa_r$ & effective destruction skew, equal to $w_r$ when measured from $f_r$ \\
 \bottomrule
 \end{longtable}
+We write $F(Q)\asymp G(Q)$, sometimes read as $F(Q)\simeq G(Q)$ up to
+constant factors, when there are constants $0<c\le C<\infty$ and a
+threshold $Q_0$ such that
+\begin{equation*}
+cG(Q)\le F(Q)\le CG(Q)
+\qquad\text{for all }Q\ge Q_0.
+\end{equation*}
+Thus $\asymp$ describes the eventual growth or decay scale, not an exact
+numerical equality at a fixed value of $Q$.
 Unless a different range is displayed, filter products and sums run over primes $r_0\le r < Q$, with a fixed $r_0\ge5$. Every finite prefix has strictly positive survival factors. Tail schedules are imposed only once their hazards lie in $[0,1)$. A lethal prefix cannot be absorbed into a positive constant.
 For probability statements, all candidate events are defined on one probability space. For each candidate, $f_r$ is its deterministic conditional probability of destruction given initial eligibility and survival through the earlier filters. The common-hazard model assumes these probabilities are the same for the candidates being compared. The chain rule then gives a candidate survival probability $P(Q)$; independence between candidates is a separate issue.
 Window applications assume $B(Q)\asymp Q^2$ eligible candidate histories, each with survival probability $P(Q)$. Head applications assume an eligibility probability $b_Q$ bounded below by a positive constant and the same survival law conditional on eligibility. Consequently,

@@ -153,8 +153,7 @@ We establish:
 - the exact allocation-independent global recurrence $N_{k+1}=(r_k-2)N_k$;
 - the cumulative local-hazard law $P(Q)=e^{-D(Q)}$ and its fixed-factor and
   logarithmic survival frontiers;
-- the distinct square-window and head thresholds for adversarial/random and adversarial/protective
-  mixtures;
+- the distinct square-window and head thresholds for the two mixture models;
 - sharp finite allocation bounds separating adversarial-label budget from positional
   information; and
 - exact-quota and biased exact-quota companions that preserve CRT strike counts
@@ -168,6 +167,23 @@ uniformity, head availability, or cross-layer mixing, we state that premise in
 the property itself before using it. The comparison with the real sieve then
 shows what additional arithmetic information would transfer the companion
 result.
+
+The evidence in the article has four different levels:
+
+1. **Exact companion identities.** Recurrences such as
+   $N_{k+1}=(r_k-2)N_k$ are finite model identities. They do not use an
+   asymptotic approximation.
+2. **Conditional asymptotic derivations.** The survival frontiers follow from
+   the stated local-hazard, placement, availability, and mixing premises. The
+   formulas explain what those premises imply; they do not prove the premises
+   for the real sieve.
+3. **Empirical context.** The heatmaps and finite comparisons illustrate the
+   placement problem in computed sieve data. They motivate the questions but
+   are not used as proof of the asymptotic thresholds.
+4. **Formal-verification status.** The companion-process derivations are
+   mathematical proof records in this article. Stainless verification for this
+   article remains pending, unlike the earlier sieve-sequence and gap-dynamics
+   source properties it cites.
 
 The companion theorems below are proved mathematically under their stated
 premises; Stainless verification remains pending and is outside this article's
@@ -229,6 +245,18 @@ We use the following notation throughout:
 | $J_r/N_r=u_r$ | exact-quota strike fraction |
 | $\beta_r$ | raw endpoint preference in a biased quota |
 | $\kappa_r$ | effective destruction skew, equal to $w_r$ when measured from $f_r$ |
+
+We write $F(Q)\asymp G(Q)$, sometimes read as $F(Q)\simeq G(Q)$ up to
+constant factors, when there are constants $0<c\le C<\infty$ and a threshold
+$Q_0$ such that
+
+```math
+cG(Q)\le F(Q)\le CG(Q)
+\qquad\text{for all }Q\ge Q_0.
+```
+
+Thus $\asymp$ describes the eventual growth or decay scale, not an exact
+numerical equality at a fixed value of $Q$.
 
 Unless a different range is displayed, filter products and sums run over
 primes $r_0\le r < Q$, with a fixed $r_0\ge5$. Every finite prefix has strictly
@@ -314,6 +342,21 @@ allocation refinement is defined in [§6.2](#62-targeting-and-local-hazard).
 
 ## 3. Relative Hazard and Survival Frontiers
 
+This section is the article's main calculation spine. It proceeds in four
+steps:
+
+1. keep the global population count separate from local placement;
+2. normalize local damage by the random benchmark $2/r$;
+3. multiply one-lineage survival factors and rewrite the product as
+   $P(Q)=e^{-D(Q)}$;
+4. compare the resulting survival scale with either a quadratic square-window
+   supply or a single distinguished head position.
+
+The same hazard calculation supports both the fixed-factor result and the
+logarithmic thresholds. The difference between the square-window and head
+frontiers comes from available supply: a square window has about $Q^2$ possible
+starts, while the head has only one distinguished position.
+
 ### 3.1 Global Persistence Is Independent of Allocation
 
 We begin with the property shared by every balanced companion. No choice of the
@@ -368,6 +411,11 @@ specified finite population and $H_r$ are destroyed, its observed fraction is
 \qquad \widehat w_r:=\frac{r\widehat f_r}{2}.
 ```
 
+This first display is only a measurement convention: it says how to score a
+finite dataset after the fact. The next displays define the model quantity
+used in the proofs. The point is to compare any conditional destruction rate
+with the neutral random rate for the same incoming filter.
+
 The probability model instead uses the conditional lineage hazard $f_r$
 defined in [§2.1](#21-notation). Balanced random selection has conditional destruction rate
 
@@ -382,6 +430,10 @@ w_r
 :=\frac{f_r}{d_r}
 =\frac{rf_r}{2}.
 ```
+
+So $w_r$ is not a new probability. It is a ratio: $w_r=1$ means “exactly as
+destructive as random at this filter,” while $w_r>1$ means “worse than random”
+by that factor.
 
 This is the meaningful adversariality scale because the benchmark itself
 shrinks as filters grow:
@@ -399,6 +451,10 @@ w_r=r/2
 &&[\text{Complete Local Destruction}].
 \end{aligned}
 ```
+
+The display proves the calibration of the scale. Zero means perfect local
+protection, one means the random benchmark, and $r/2$ is the largest possible
+score because it corresponds to certain destruction.
 
 The range $0\le w_r\le r/2$ compares conditional damage with the neutral law.
 The analogous observed score $\widehat w_r$ can fluctuate above one even for
@@ -430,7 +486,9 @@ The model therefore assumes that the adversarial branch is strong enough to
 identify and kill the locally relevant child. That is exactly what makes it an
 adversarial comparison rather than a description of the real filter.
 
-Its total local destruction rate and relative factor are
+The next block computes the effective hazard of that mixture. It has two
+pieces: the adversarial share contributes certain destruction, and the
+remaining random share contributes the neutral $2/r$ destruction rate.
 
 ```math
 \begin{aligned}
@@ -442,9 +500,10 @@ w_r
 \end{aligned}
 ```
 
-Thus a fixed absolute share $\alpha_r=\alpha > 0$ does not represent a fixed
-amount worse than random. It makes $w_r$ grow linearly like $\alpha r/2$.
-This is why the fixed-share model is asymptotically fatal for an essentially
+This proves why the absolute-share parameter is dangerous. A fixed
+$\alpha_r=\alpha>0$ does not mean “a fixed amount worse than random”; after
+normalization by $2/r$, it makes $w_r$ grow linearly like $\alpha r/2$. This
+is why the fixed-share model is asymptotically fatal for an essentially
 trivial reason; the nontrivial question is how rapidly $w_r$ itself may grow.
 
 ### 3.3 The General Cumulative Local-Hazard Law
@@ -456,8 +515,9 @@ hazard definition, its next survival probability is
 s_r=1-f_r=1-\frac{2w_r}{r}.
 ```
 
-Assume $f_r < 1$ for every filter in the tracked chain. Define the cumulative
-local hazard
+Assume $f_r < 1$ for every filter in the tracked chain. The purpose of the
+next definition is to turn a product of many small survival losses into a sum.
+That sum is the cumulative local hazard:
 
 ```math
 D(Q)
@@ -465,7 +525,8 @@ D(Q)
 =\sum_{r < Q}-\log\left(1-\frac{2w_r}{r}\right).
 ```
 
-The complete survival factor is exactly
+With this definition, the complete survival factor is exactly the exponential
+of minus the accumulated hazard:
 
 ```math
 \begin{aligned}
@@ -479,6 +540,11 @@ P(Q)
 \end{aligned}
 \qquad[\text{Q.E.D.}]
 ```
+
+This proves the reusable translation used throughout the article: survival
+products become $P(Q)=e^{-D(Q)}$. The identity is exact inside the stated
+conditional model; all later threshold arguments come from estimating the size
+of $D(Q)$.
 
 There is also a deterministic version. For a fixed nested cohort with no
 births or immigration, $L_{r^+}=L_r(1-\widehat f_r)$ telescopes to the ratio of
@@ -506,6 +572,9 @@ and therefore
 P_{\mathrm{random}}(Q)
 \asymp\frac{C}{(\log Q)^2}.
 ```
+
+So the random benchmark has survival on the order of $(\log Q)^{-2}$. This is
+the baseline against which the later worse-than-random schedules are compared.
 
 The absolute adversarial/random mixture from [§3.2](#32-local-destruction-relative-to-random) is recovered because
 
@@ -555,7 +624,8 @@ Let $w\ge 0$ be fixed and suppose
 f_r=\frac{2w}{r}
 ```
 
-for all sufficiently large filters. A finite prefix is absorbed into a positive
+for all sufficiently large filters. The calculation below asks only for the
+growth scale of the hazard; any finite prefix is absorbed into a positive
 constant. Since the quadratic error terms are summable over primes,
 
 ```math
@@ -576,6 +646,9 @@ Therefore
 P_w(Q)\asymp\frac{C_w}{(\log Q)^{2w}}.
 ```
 
+This is the first important frontier calculation. A fixed factor $w$ changes
+only the power of $\log Q$; it does not introduce any power of $Q$.
+
 For a square window with $B(Q)\asymp C_0Q^2$ eligible lineages,
 
 ```math
@@ -585,9 +658,10 @@ C_0\frac{Q^2}{(\log Q)^{2w}}
 \longrightarrow\infty
 ```
 
-for every finite $w$. The growth is strong enough to make the standard
-empty-window bound summable, so only finitely many square windows are empty
-almost surely under the blind-placement premise.
+for every finite $w$. The quadratic supply beats every fixed logarithmic loss.
+The growth is strong enough to make the standard empty-window bound summable,
+so only finitely many square windows are empty almost surely under the
+blind-placement premise.
 
 For a distinguished head with baseline availability bounded below,
 
@@ -791,6 +865,12 @@ axis.
 
 ## 4. Absolute-Share Mixtures
 
+This section uses the same external analytic and probabilistic inputs as the
+relative-hazard calculation: Prime Number Theorem estimates and prime-sum
+consequences from Hardy and Wright [[4]](#ref4), and Borel-Cantelli style
+almost-sure conclusions in the form stated in [§2.1](#21-notation), with the
+Kochen-Stone reference [[3]](#ref3) for the divergent mixed case.
+
 ### 4.1 Adversarial/Random Parent Square-Window Boundary
 
 We now express the general hazard result through an explicit mixture. Each
@@ -926,6 +1006,11 @@ The useful question is how quickly $\alpha_r$ must decay. In this section and
 the comparison in [§5](#5-allocation-and-the-protective-parent), the displayed schedules hold exactly for all sufficiently
 large filters. Mere asymptotic equivalence gives weaker remainder control and
 does not determine the critical cases.
+
+The estimates below use the Taylor expansion of $-\log(1-x)$ with summable
+remainders, together with the prime harmonic estimate and Prime Number Theorem
+partial-summation consequences; we use Hardy and Wright [[4]](#ref4) for these
+classical analytic number theory inputs.
 
 #### Reciprocal Decay: $\alpha_r= c/r$
 
@@ -1924,6 +2009,11 @@ The complete-period CRT benchmark $u_r=1/r$ satisfies these conditions. A
 different local CRT quota must be checked against them; preserving a numerical
 strike count alone does not make the conclusion automatic.
 
+The prime-head summation below uses the Prime Number Theorem in the form cited
+from Hardy and Wright [[4]](#ref4), and the infinite-recurrence conclusion uses
+the Borel-Cantelli/Kochen-Stone mixing premise stated in [§2.1](#21-notation)
+[[3]](#ref3).
+
 Multiplying the exact without-replacement factors gives
 
 ```math
@@ -2122,6 +2212,8 @@ the exact quota must take probability away from ordinary values when it gives
 more probability to endpoints. For the complete-period eligible-sieve
 population, let $V_r$ be its accepted-value count and $T_r$ its 2-gap count.
 After filter $3$, 2-gaps have disjoint endpoints, so $|E_r|=2T_r$ and
+the displayed product estimate is the standard Mertens-type product
+asymptotic cited from Hardy and Wright [[4]](#ref4):
 
 ```math
 \begin{aligned}
@@ -2297,13 +2389,16 @@ K_{a,r}^{\mathrm{real}}
 
 Different parents are coupled through this single arithmetic rule. The real
 filter has neither independent policy coins nor freely allocated protective and
-adversarial labels. It nevertheless has directly measurable local destruction $\widehat f_r$, a
+adversarial labels.
+
+It nevertheless has directly measurable local destruction $\widehat f_r$, a
 relative factor $\widehat w_r=r\widehat f_r/2$, and, for a fixed cohort,
 observed hazard $\widehat D(Q)$. These are the empirical quantities of [§3.2](#32-local-destruction-relative-to-random),
-not probabilities assigned to the deterministic sieve. Assigning it an
-effective policy share $\alpha_r$ requires an additional declared companion
-benchmark, while assessing its positional concentration requires the separate
-hit count and targeting normalization from [§6.2](#62-targeting-and-local-hazard).
+not probabilities assigned to the deterministic sieve.
+
+Assigning it an effective policy share $\alpha_r$ requires an additional
+declared companion benchmark. Assessing its positional concentration requires
+the separate hit count and targeting normalization from [§6.2](#62-targeting-and-local-hazard).
 
 The relative factor defined in [§3.2](#32-local-destruction-relative-to-random) provides a finite-transition destruction
 normalization. Section 6.2 adds the allocation question: for the same global
@@ -2349,13 +2444,16 @@ E_{c=1}(h)
 ```
 
 The figure compares these two expectations with the real count in every fully
-covered sequence window. Across 188 heads from $3$ through $1129$, the mean
-ratio $G_{\mathrm{real}}/E_{\mathrm{random}}$ is $0.967$. At the largest
-covered head it is $0.947$: the real window contains $10{,}056$ 2-gaps,
-compared with a random expectation of $10{,}616$. The corresponding $c=1$
-frontier expectation is only $0.0845$. Over this finite range, the real
-square-window population follows the random scale and remains far above the
-square-window failure frontier.
+covered sequence window.
+
+Across 188 heads from $3$ through $1129$, the mean ratio
+$G_{\mathrm{real}}/E_{\mathrm{random}}$ is $0.967$. At the largest covered head
+it is $0.947$: the real window contains $10{,}056$ 2-gaps, compared with a
+random expectation of $10{,}616$.
+
+The corresponding $c=1$ frontier expectation is only $0.0845$. Over this finite
+range, the real square-window population follows the random scale and remains
+far above the square-window failure frontier.
 
 ![Real per-sequence square-window 2-gap counts compared with the random expectation and the c=1 square-window frontier](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/per-sequence-frontier.svg)
 
@@ -2374,11 +2472,13 @@ w_p^{\mathrm{real}}:=\frac{pf_p^{\mathrm{real}}}{2}.
 ```
 
 The chart compares $f_p^{\mathrm{real}}$ with the random rate $2/p$ and the
-$c=1$ square-window boundary $2(1+\log p)/p$. Among 187 distinct measured
-transitions from $p=3$ through $p=19{,}429$, 186 lie below the random rate and
-the remaining transition, $p=3$, equals it. Ninety-five transitions destroy no
-2-gap in the measured window. From $p\ge1000$, the largest observed relative
-factor is
+$c=1$ square-window boundary $2(1+\log p)/p$.
+
+Among 187 distinct measured transitions from $p=3$ through $p=19{,}429$, 186
+lie below the random rate and the remaining transition, $p=3$, equals it.
+Ninety-five transitions destroy no 2-gap in the measured window.
+
+From $p\ge1000$, the largest observed relative factor is
 
 ```math
 w_p^{\mathrm{real}}=0.0523.
@@ -2433,12 +2533,16 @@ D_{\mathrm{cycle}}(R)-D_{\mathrm{random}}(R)
 
 Thus the full-cycle destruction fraction equals the neutral benchmark as a
 count identity. This does not say that the harmful positions are independently
-random. The figure below makes the identity visible alongside the $c=1$
-reference on the valid range $29\le r\le251$. Its simplicity is the point:
-the overlap between the exact-cycle and neutral curves is the graphical form
-of the algebra above, while the separated $c=1$ curve shows the scale of the
-hypothetical logarithmic worsening. The chart is strong precisely because the
-reader can verify the stated relationship without additional interpretation.
+random.
+
+The figure below makes the identity visible alongside the $c=1$ reference on
+the valid range $29\le r\le251$. Its simplicity is the point: the overlap
+between the exact-cycle and neutral curves is the graphical form of the algebra
+above, while the separated $c=1$ curve shows the scale of the hypothetical
+logarithmic worsening.
+
+The chart is strong precisely because the reader can verify the stated
+relationship without additional interpretation.
 
 ![Exact full-cycle 2-gap destruction fraction compared with the neutral rate and the c=1 reference](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-destruction.svg)
 
@@ -2461,25 +2565,31 @@ P_{c=1}(29,R)
 ```
 
 At $R=251$, these normalized products are $0.3733$ and $0.003676$,
-respectively, a ratio of about $102$. The second figure therefore shows the
-cumulative consequence that the first figure cannot show by itself: the
-repeated per-filter separation from the $c=1$ schedule compounds into a
-separation of more than two orders of magnitude over the plotted range. The anchor $29$ is
-the first plotted prime and keeps every $c=1$ factor in $(0,1)$; changing a
-finite anchor changes the normalizing constants, not the asymptotic exponents.
-This is a reference comparison, not evidence of head recurrence.
+respectively, a ratio of about $102$.
+
+The second figure therefore shows the cumulative consequence that the first
+figure cannot show by itself: the repeated per-filter separation from the $c=1$
+schedule compounds into a separation of more than two orders of magnitude over
+the plotted range.
+
+The anchor $29$ is the first plotted prime and keeps every $c=1$ factor in
+$(0,1)$. Changing a finite anchor changes the normalizing constants, not the
+asymptotic exponents. This is a reference comparison, not evidence of head
+recurrence.
 
 ![Normalized full-cycle 2-gap survival under the exact per-filter law compared with the c=1 schedule](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/full-cycle-survival.svg)
 
 The figure is generated by the [full-cycle survival calculation](https://github.com/thiagomata/prime-numbers/blob/master/python/src/sieve_sequence/full_cycle_survival_chart.py).
 
 Read together, the two full-cycle figures give a direct progression from the
-one-filter identity to its cumulative effect. A separate fixed-cohort
-experiment then asks the next question: what remains true when a finite window
-cuts through partial cycles? It follows every 2-gap start initially present
-in $[Q,Q^2)$ through all filters $r<Q$. Exact set comparisons at $Q=17$ and
-$Q=101$ confirm that this explicit cohort agrees layer by layer with the
-maintained Reading A lineage. For
+one-filter identity to its cumulative effect.
+
+A separate fixed-cohort experiment then asks the next question: what remains
+true when a finite window cuts through partial cycles? It follows every 2-gap
+start initially present in $[Q,Q^2)$ through all filters $r<Q$.
+
+Exact set comparisons at $Q=17$ and $Q=101$ confirm that this explicit cohort
+agrees layer by layer with the maintained Reading A lineage. For
 
 ```math
 c_{\mathrm{eff}}(r)
@@ -2488,11 +2598,12 @@ c_{\mathrm{eff}}(r)
 
 the four runs $Q\in\{17,101,251,503\}$ give signed values between $-0.0353$
 and $0.00908$. The largest positive value is $0.00907$ at $Q=251$; among the
-two larger runs, all absolute values are at most $0.00908$. Because the
-complete-cycle excess is exactly zero, the deviations arise when the fixed
-interval cuts partial cycles. Their size and placement remain finite empirical
-facts; partial-cycle localization can contain the arithmetic difficulty that
-the complete-cycle identity does not see.
+two larger runs, all absolute values are at most $0.00908$.
+
+Because the complete-cycle excess is exactly zero, the deviations arise when
+the fixed interval cuts partial cycles. Their size and placement remain finite
+empirical facts; partial-cycle localization can contain the arithmetic
+difficulty that the complete-cycle identity does not see.
 
 ![Cumulative hazard of fixed-window 2-gap cohorts for four finite Q values](https://raw.githubusercontent.com/thiagomata/prime-numbers/master/charts/fixed-lineage-hazard.svg)
 
@@ -2510,21 +2621,25 @@ and cross-layer dependence.
 
 The balanced companions track descendants of existing 2-gaps rather than a
 coherent randomized sequence of integers. They do not model non-2 gaps, gap
-mergers, or shared endpoint effects. Their adversary is stronger than the real
-filter because it may select harmful copies separately for each parent. The
-protective parent policy is also an oracle: it knows the current target and moves both
-deletions elsewhere. Neither endpoint is a description of the real filter.
+mergers, or shared endpoint effects.
+
+Their adversary is stronger than the real filter because it may select harmful
+copies separately for each parent. The protective parent policy is also an
+oracle: it knows the current target and moves both deletions elsewhere. Neither
+endpoint is a description of the real filter.
 
 The adversarial/random window theorem assumes spatial uniformity. The adversarial/protective window
 theorem instead assumes a quadratic protective supply $B(Q)$. Its head theorem
 assumes an eligible protective-parent head lineage with availability bounded below.
 None of these premises follows from the exact-two choice alone.
 
-The exact-CRT-quota/random-location theorem preserves strike counts but discards
-their deterministic arithmetic locations. Its recurrence conclusion requires
-the cumulative quota conditions in [§7.1](#71-exact-crt-quotas-with-random-locations), persistent head availability,
-and cross-layer mixing. The exact local formula $A(p,q)$ does not establish
-those premises merely by being exact.
+The exact-CRT-quota/random-location theorem preserves strike counts but
+discards their deterministic arithmetic locations. Its recurrence conclusion
+requires the cumulative quota conditions in [§7.1](#71-exact-crt-quotas-with-random-locations),
+persistent head availability, and cross-layer mixing.
+
+The exact local formula $A(p,q)$ does not establish those premises merely by
+being exact.
 
 The biased-quota theorem additionally assumes a group-exchangeable allocation
 law and quadratic-order double hits on one endpoint pair. Its raw weight
@@ -2542,14 +2657,16 @@ coins, block balance, delayed information, and noisy ranking create different
 dependencies and cannot inherit one another's almost-sure conclusions merely
 because they share the same marginal budget or destruction rate.
 
-The empirical comparison in [§8.1](#81-finite-empirical-comparison-with-random) is finite. Two datasets use a different
-square window at each measured stage; the fixed-cohort dataset instead follows
-all initial 2-gap starts in one $[Q,Q^2)$ window. The latter yields a coherent
-window hazard, but its deviation from the exact full-cycle rate comes from
-partial-cycle localization and the cohort is not the distinguished head pair.
-None of the data
-therefore substitutes for persistent availability, cross-layer mixing, or an
-arithmetic proof below the $c=1/2$ head frontier.
+The empirical comparison in [§8.1](#81-finite-empirical-comparison-with-random)
+is finite. Two datasets use a different square window at each measured stage;
+the fixed-cohort dataset instead follows all initial 2-gap starts in one
+$[Q,Q^2)$ window.
+
+The latter yields a coherent window hazard, but its deviation from the exact
+full-cycle rate comes from partial-cycle localization and the cohort is not the
+distinguished head pair. None of the data therefore substitutes for persistent
+availability, cross-layer mixing, or an arithmetic proof below the $c=1/2$ head
+frontier.
 
 We have therefore proved a phase diagram for the defined companions. The
 remaining question is whether the real sieve occupies one of these regimes.
@@ -2787,6 +2904,7 @@ P(Q)
 ```
 
 For the random benchmark $w_r=1$, the prime harmonic sum gives
+the standard prime-harmonic estimate cited from Hardy and Wright [[4]](#ref4):
 
 ```math
 \begin{aligned}
@@ -2810,7 +2928,8 @@ step eliminates the tracked candidate or cohort, not every later candidate.
 
 Let $w\ge0$ be fixed and suppose $f_r=2w/r$ for all sufficiently large
 filters. A finite prefix changes only the positive leading constant. Since the
-quadratic Taylor remainder is summable over primes, Appendix A.2 gives
+quadratic Taylor remainder is summable over primes, and using the prime
+harmonic estimate from Hardy and Wright [[4]](#ref4), Appendix A.2 gives
 
 ```math
 \begin{aligned}
@@ -2867,7 +2986,8 @@ w_r=1+c\log r,
 ```
 
 Then $f_r=2/r+2c\log r/r$. Prime summation and the summable Taylor remainder
-give
+give the following estimate, again using the Prime Number Theorem and partial
+summation consequences cited from Hardy and Wright [[4]](#ref4):
 
 ```math
 \begin{aligned}
