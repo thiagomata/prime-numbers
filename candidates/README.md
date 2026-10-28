@@ -69,6 +69,17 @@ folding, a bounded twin amplitude, quadratic divisor heights, sixfold coordinate
 reduction, and independent integer-count estimates. It is an unnumbered
 research program; identities and open distribution obligations are separated.
 
+[Primorial-neighbor twin pairs](primorial-neighbor-twin-pairs.md) studies the
+particular pair `(P#-1,P#+1)` through modular endpoint tests and absorption of
+earlier rejecting primes. Elementary deductions are proved separately from
+the concluding open conjecture of infinitely many primorial twin pairs. This
+is an unnumbered exploratory direction with no systematic empirical claim.
+
+[Protected arithmetic families](protected-arithmetic-families.md) records the
+three-candidate one-filter guarantee, old-filter admissibility restrictions,
+explicit failures of collective protection, and open preservation or rebuilding
+forks. It is an unnumbered research direction with no systematic measurements.
+
 [Batched window survival](batched-window-survival.md) proposes a generic threshold:
 sufficiently many old cyclic 2-gaps force a positive number of survivors in the
 destination safe window after all intervening filters are applied together.

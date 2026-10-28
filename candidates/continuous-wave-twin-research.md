@@ -28,7 +28,13 @@ program complements the earlier [continuous-contact directions](
 continuous-contact-research-directions.md), concentrating on the wave algebra.
 It does not add numbered sufficient-condition hypotheses to the main catalog.
 
+A complementary [primorial-neighbor research direction](primorial-neighbor-twin-pairs.md)
+fixes the pair `(P#-1,P#+1)` and studies its finite future-prime product test.
+It separates elementary modular identities from the stronger open conjecture
+of infinitely many such twin pairs, without invoking population estimates.
+
 ## 1. Folding translated waves
+
 
 This is a direct consequence of classical Fourier coefficients and
 roots-of-unity orthogonality, not a claimed new general kernel theorem.
