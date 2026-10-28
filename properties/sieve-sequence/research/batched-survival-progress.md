@@ -4,6 +4,10 @@
 finite observations are distinguished below. No infinite twin-prime theorem,
 historical novelty, or Stainless verification of these research proofs is claimed.
 
+For the self-contained article edition of the classical-sieve assessment
+(Sections3-16), see
+[Batched Twin Survival at Square Jumps](../../articles/chapter7/draft-batched-twin-survival.md).
+
 ## The Idea in Simple Terms
 
 Start with one sieve sequence, expand it to accommodate many future filters,
