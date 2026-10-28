@@ -1,0 +1,81 @@
+\section{Preliminaries}
+We use integer filter indices $m\ge2$, a finite stage index $M\ge1$,
+and a real sieve input $t\ge2$. The waves themselves are defined for all
+real arguments; integer samples are denoted by $n$. Empty sums and products
+have values zero and one respectively.
+
+\begin{itemize}
+\item Continuous kernel bounds and exact integer divisibility samples.
+\item Equivalent complex-exponential, sine, and cosine forms.
+\end{itemize}
+
+For every integer $m\ge2$ and real $t$, a finite average of unit complex
+waves selects multiples of $m$ at integer inputs. Squaring its modulus makes
+it nonnegative, so later filters cannot cancel earlier rejections. This is a
+normalized Fejér kernel \cite{fejer1900}, \cite{mit2021}.
+\begin{equation*}
+\begin{aligned}
+D_m(t)&=\frac1m\sum_{r=0}^{m-1}e^{2\pi i r t/m},\\
+W_m(t)&=|D_m(t)|^2.
+\end{aligned}
+\end{equation*}
+
+With the convention $\mathcal F_m(\theta)=m^{-1}|\sum_{r=0}^{m-1}e^{ir\theta}|^2$,
+we have $W_m(t)=\mathcal F_m(2\pi t/m)/m$. MIT's convention \cite{mit2021}
+uses $K_{m-1}$ instead: $W_m(t)=(2\pi/m)K_{m-1}(2\pi t/m)$.
+These are normalization choices for a classical kernel, not different sieves.
+
+The wave is continuous, lies between zero and one, and samples
+exact divisibility at every integer $n$. The triangle inequality gives the
+bound, and a finite geometric sum gives the integer values. Continuity follows
+from a finite sum of continuous exponentials and the squared modulus:
+\begin{equation*}
+\begin{aligned}
+|D_m(t)|&\le\frac1m\sum_{r=0}^{m-1}1=1
+&&[\text{By Definition}]\\
+0&\le W_m(t)\le1.
+&&[\text{Squaring}]
+\end{aligned}
+\end{equation*}
+
+For integer $n$, set $z=e^{2\pi i n/m}$. If $m$ divides $n$, every term is one.
+Otherwise $z\ne1$ but $z^m=1$, so the geometric sum vanishes. Roots-of-unity
+orthogonality is classical; \cite{rayaeberl2019} is a modern formal reference.
+\begin{equation*}
+\begin{aligned}
+D_m(n)&=\frac{1-z^m}{m(1-z)}=0\quad(m\nmid n)
+&&[\text{Geometric Sum}]\\
+W_m(n)&=\begin{cases}1,&m\mid n,\\0,&m\nmid n.\end{cases}
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The same geometric-sum calculation gives the sine form below. At $t=km$,
+the limit of the unsquared ratio is $(-1)^{k(m-1)}$, whose square is one.
+Thus the apparent holes are removable, consistently with the finite-sum definition.
+\begin{equation*}
+\begin{aligned}
+D_m(t)&=e^{\pi i(m-1)t/m}\frac{\sin(\pi t)}{m\sin(\pi t/m)}
+\quad(t\notin m\mathbb Z),\\
+W_m(t)&=\begin{cases}
+\left(\dfrac{\sin(\pi t)}{m\sin(\pi t/m)}\right)^2,&t\notin m\mathbb Z,\\
+1,&t\in m\mathbb Z.
+\end{cases}
+\end{aligned}
+\end{equation*}
+
+Expanding $|D_m|^2$ pairs frequencies whose difference is $r$. Difference zero
+occurs $m$ times, and each nonzero difference $r$ with $|r| < m$ occurs $m-|r|$
+times. Pairing conjugate terms yields a formula with no variable denominator:
+\begin{equation*}
+\begin{aligned}
+W_m(t)&=\frac1{m^2}\sum_{|r| < m}(m-|r|)e^{2\pi i r t/m}
+&&[\text{Expansion}]\\
+&=\frac1{m^2}\left[m+2\sum_{r=1}^{m-1}(m-r)
+\cos\left(\frac{2\pi r t}{m}\right)\right].
+&&\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+A selective wave is therefore a finite combination of harmonics; it need
+not be a single sine. For example, $W_2(t)=\cos^2(\pi t/2)$.

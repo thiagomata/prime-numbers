@@ -1,0 +1,60 @@
+\section{Translated Wave Folding}
+The Fourier coefficients of the selective wave give an exact simplification
+when the required translations are present. A group of higher-period waves
+folds into one lower-period wave. This calculation uses the classical kernel
+coefficients and roots-of-unity sum; priority of this particular displayed
+form has not been established.
+
+\begin{itemize}
+\item An exact translated-wave folding identity.
+\item The translation and activation conditions needed to use it.
+\end{itemize}
+
+For integers $m\ge2$, $k\ge1$ and every real $t$,
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{k-1}W_{km}(t+jm)&=W_m(t).
+\end{aligned}
+\end{equation*}
+
+To prove it, use the finite Fourier expansion from Section~2, with $N=km$:
+\begin{equation*}
+\begin{aligned}
+W_N(t)&=\frac1{N^2}\sum_{|r| < N}(N-|r|)e^{2\pi i r t/N}.
+\end{aligned}
+\end{equation*}
+
+Translation by $jm$ multiplies frequency $r$ by $e^{2\pi i rj/k}$.
+Summing over $j$ removes precisely the frequencies not divisible by $k$:
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{k-1}e^{2\pi i rj/k}
+&=\begin{cases}k,&k\mid r,\\0,&k\nmid r.\end{cases}
+\quad[\text{Roots-of-Unity Sum}]
+\end{aligned}
+\end{equation*}
+
+Writing the remaining indices as $r=ks$ now gives
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{k-1}W_{km}(t+jm)
+&=\frac1{k^2m^2}\sum_{|s| < m}k(km-k|s|)e^{2\pi i s t/m}\\
+&=\frac1{m^2}\sum_{|s| < m}(m-|s|)e^{2\pi i s t/m}\\
+&=W_m(t).
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Every sum is finite, so the calculation also holds at the removable points
+of the sine representation. For the twin shift, $k=m=2$ yields
+\begin{equation*}
+\begin{aligned}
+W_4(t)+W_4(t+2)&=W_2(t).
+\end{aligned}
+\end{equation*}
+
+The translation pattern is part of the theorem. General folding needs all
+shifts $0,m,\ldots,(k-1)m$, whereas a twin curve contains only the two
+endpoint shifts $0$ and $2$. Thus the identity does not automatically compress
+the entire filter sum. It also concerns bare waves; activation must be
+accounted for separately.

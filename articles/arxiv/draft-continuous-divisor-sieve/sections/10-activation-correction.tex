@@ -1,0 +1,60 @@
+\section{Activation Correction}
+The filter-$4$ pair wave can be folded exactly once its activation defect is
+retained. The defect is confined to an initial interval, so it separates the
+valid tail simplification from the protected early values.
+
+\begin{itemize}
+\item An explicit correction for the activated filter-$4$ pair.
+\item A valid tail identity with protected initial values.
+\end{itemize}
+
+For real $t\ge2$, the pair contribution $V_4$ is already defined in Section~8.
+Define its correction by
+\begin{equation*}
+\begin{aligned}
+C_4(t)&=(1-a_4(t))W_4(t)\\
+&\quad +(1-a_4(t+2))W_4(t+2).
+\end{aligned}
+\end{equation*}
+
+Adding and subtracting the corresponding bare waves gives
+\begin{equation*}
+\begin{aligned}
+V_4(t)
+&=W_4(t)+W_4(t+2)-C_4(t)\\
+&=W_2(t)-C_4(t).
+\quad[\text{By Wave Folding}]
+\end{aligned}
+\end{equation*}
+
+Both $V_4$ and $C_4$ are nonnegative, because all wave values and both
+activation coefficients lie between zero and one. Therefore
+\begin{equation*}
+\begin{aligned}
+0&\le V_4(t)\le W_2(t),\\
+t\ge5&\ \Longrightarrow\ C_4(t)=0,\quad V_4(t)=W_2(t).
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The last implication holds because both endpoint activations are one when
+$t\ge5$. Earlier equality is possible at isolated inputs; it is not guaranteed
+throughout the initial interval. Direct substitution at integers gives
+\begin{equation*}
+\begin{aligned}
+C_4(2)&=1,\qquad C_4(4)=1,\qquad C_4(3)=0.
+\end{aligned}
+\end{equation*}
+
+At $t=2$, for example, the endpoint $4$ is protected by its own activation.
+Thus $V_4(2)=0$ although $W_2(2)=1$. At $t=3$ both bare waves vanish, so
+folding already agrees without a nonzero correction.
+
+The identity simplifies one activated pair contribution into a coarser wave
+and an explicit boundary term. Omitting that term would change the function
+on its initial interval. This is different from the contact-set redundancy
+of a composite filter: equal contact sets need not imply equal heights or
+equal curves between integers.
+
+This calculation checks the chosen activation; historical priority of the
+exact formula is not claimed.

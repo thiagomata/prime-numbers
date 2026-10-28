@@ -4,6 +4,9 @@
 required for this research note. Distribution estimates and twin-prime
 existence beyond the stated equivalences remain open.
 
+For the self-contained article edition, see
+[Continuous Divisor Sieves and Twin-Prime Contacts](../../articles/chapter6/draft-continuous-divisor-sieve.md).
+
 The arithmetic and Fourier ingredients below are classical. The activated
 interpolation is presented here without a historical-priority claim; see the
 [attribution inventory](research/continuous-sieve-attribution.md) for the
