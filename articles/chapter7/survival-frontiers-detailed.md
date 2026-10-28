@@ -8,6 +8,11 @@ slows down the hazard calculations, the threshold tests, and the quota model.
 The original article remains the complete statement of the conditional results
 and their limitations.
 
+For the earlier real-sieve global recurrence, see Holt and Rudd (2014),
+[*Eratosthenes sieve and the gaps between primes*](https://arxiv.org/abs/1408.6002v1),
+Corollary 6.3. The companion construction stipulates this count; its allocation,
+placement, availability, and mixing assumptions are separate model premises.
+
 ## 1. The Basic Question
 
 A 2-gap is a pair of consecutive surviving values with difference `2`.

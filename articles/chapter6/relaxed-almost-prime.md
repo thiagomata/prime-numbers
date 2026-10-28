@@ -2,7 +2,7 @@
 
 **Proof status:** The Sieve Sequence foundation is Stainless-verified in the
 companion chapter article; the algebraic results introduced here are proved
-mathematically. The new properties are not yet Stainless-verified.
+mathematically. The properties studied here are not yet Stainless-verified.
 
 **Author:** Thiago Henrique Ramos da Mata
 Independent Researcher

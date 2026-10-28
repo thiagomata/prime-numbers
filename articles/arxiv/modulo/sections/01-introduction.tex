@@ -7,6 +7,13 @@ known, rigorous formalization and verification, particularly via recursive
 definitions, offer an interesting alternative to the traditional axiomatic
 model.
 
+The underlying congruence laws are classical. Gauss's \emph{Disquisitiones
+arithmeticae} (1801), Section~I, articles~2--7 \cite{gauss1801}, already describes
+residue classes, the unique representative of a class in a consecutive block,
+and the addition and multiplication rules. This is an earlier exposition,
+not a claim that Gauss first discovered every rule. The contribution here is
+their recursive Stainless formalization, not the discovery of those laws.
+
 This article takes the recursive route. Instead of assuming native division
 and modulo, it defines a state $DivMod(a,b,q,r)$ where $a = bq + r$, then proves
 that normalizing the pair $(q,r)$ preserves the represented dividend and

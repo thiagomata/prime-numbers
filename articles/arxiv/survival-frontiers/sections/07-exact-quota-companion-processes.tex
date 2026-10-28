@@ -97,14 +97,14 @@ If
 \le e^{-\lambda_{\mathrm{quota}}(Q)},
 \end{equation*}
 the empty probabilities are summable over prime $Q$. The first Borel-Cantelli lemma then gives only finitely many empty square windows almost surely. This eventual-window statement is stronger than the twin-prime-style target: an unbounded sequence of successful windows, or infinitely many head hits, is already sufficient for infinitely many distinct certificates.
-For consecutive primes $p < q$, the real accepted-strike count in the next safe window is proved in \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#91-exact-accepted-strikes}{Gap Dynamics \S{}9.1} \cite{gapdynamics2026}:
+For consecutive primes $p < q$, the real accepted-strike count in the next safe window is proved in \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#43-exact-accepted-local-filter-strikes}{Gap Dynamics \S{}4.3} \cite{gapdynamics2026}:
 \begin{equation*}
 A(p,q)
 =
 \pi\left(\left\lfloor\frac{q^2-1}{p}\right\rfloor\right)
 -\pi(p-1).
 \end{equation*}
-Using this local quota as $J_r=A(p,q)$ in the random-location companion is well defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed cumulative conditions for the head proof above. The \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#52-exact-non-recursive-global-count}{complete-period count} \cite{gapdynamics2026} supplies the global density; neither exact count determines local placement in the real sieve.
+Using this local quota as $J_r=A(p,q)$ in the random-location companion is well defined, but its fractions $u_r=J_r/N_r$ must still satisfy the displayed cumulative conditions for the head proof above. The \href{https://github.com/thiagomata/prime-numbers/blob/master/articles/chapter6/gap-dynamics.md#31-exact-global-2-gap-count}{complete-period count} \cite{gapdynamics2026} supplies the global density; neither exact count determines local placement in the real sieve.
 \subsection{Biased Exact Quotas and the Logarithmic Skew Frontier}
 The neutral exact-quota companion treats every eligible value symmetrically. We now keep the same quota $J_r$ while making 2-gap endpoints proportionally more likely to receive a harmful strike. This asks how much positional preference the quota can carry before the almost-sure head conclusion changes. We use a group-exchangeable allocation law, assume double strikes on one endpoint pair have quadratic order, and retain the availability, placement, and mixing premises of Section~3.5 and Section~7.1.
 Let $E_r\subseteq U_r$ be the eligible values that are endpoints of locally relevant 2-gaps, and define

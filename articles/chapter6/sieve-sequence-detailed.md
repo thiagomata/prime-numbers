@@ -7,6 +7,12 @@ This is a detailed companion version. It does not replace the full article.
 Its purpose is to slow down the advanced steps, show the arithmetic in small
 pieces, and make the proof boundary easier to see.
 
+The gap-cycle expansion/closure mechanism and two-strike counts have earlier
+sources in Fred B. Holt and Helgi Rudd's
+[*Eratosthenes sieve and the gaps between primes*](https://arxiv.org/abs/1408.6002v1)
+(2014), Lemma 2.1 and Corollary 6.3. This guide explains the present
+Stainless formalization; it does not claim discovery of those mechanisms.
+
 ## 1. What A Sieve Stage Is
 
 A sieve stage has two pieces of data:

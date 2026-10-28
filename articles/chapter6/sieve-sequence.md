@@ -56,6 +56,13 @@ idea itself. It is the explicit decomposition of the stage and transition into
 contracts that can be checked by Stainless, a verifier for Scala programs
 [[7]](#ref7), against a first-principles arithmetic and list library.
 
+Holt and Rudd's earlier gap-cycle treatment [[10]](#ref10), Section 2,
+Lemma 2.1, constructs the next wheel by repeating a gap cycle and closing
+adjacent gaps. Their Corollary 6.3 also uses the two-gap survival factor
+$r-2$. These are prior mathematical mechanisms, not discoveries claimed
+here. Their cyclic counts provide related work for the finite linear-index
+contracts verified in this article; they do not verify this Scala implementation.
+
 The proof is organized into these property groups:
 
 - stage semantics and complete increasing enumeration - [§3](#3-linear-stage-semantics);
@@ -411,6 +418,10 @@ This property is verified in [
 ](https://github.com/thiagomata/prime-numbers/blob/master/src/main/scala/v1/chapter6/sieve/seq/spec/properties/SpecSieveSeqSurvivorCountProperties.scala).
 
 ### 5.2 Exact Lifted-Copy Law for a Real 2-Gap
+
+The two endpoint-strike mechanism also underlies Holt and Rudd's cyclic
+gap counts [[10]](#ref10). Here it is specified and verified for the actual
+linear-indexed pairs and preconditions below.
 
 This subsection concerns the actual deterministic sieve sequence, not a
 random model. Suppose two consecutive values in the real sequence satisfy
@@ -965,3 +976,8 @@ Languages*, 3(OOPSLA), Article 166.
 Ramanujan, S. (1919). "A proof of Bertrand's postulate." *Journal of the
 Indian Mathematical Society*, 11, 181-182.
 [Original paper](https://ramanujan.sirinudi.org/Volumes/published/ram24.pdf).
+
+<a name="ref10" id="ref10" href="#ref10">[10]</a>
+Holt, F. B. and Rudd, H. (2014). *Eratosthenes sieve and the gaps between
+primes*. arXiv:1408.6002, v1. Section 2, Lemma 2.1, and Corollary 6.3.
+[Earlier paper](https://arxiv.org/abs/1408.6002v1).

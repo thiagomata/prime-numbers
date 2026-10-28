@@ -27,8 +27,8 @@ The full argument reduces survival to a single signed quantity. A weighted conse
 Cauchy--Schwarz corollary give a sharp terminal threshold on the harmful-excess
 energy. A closed exhaustion argument—capacity envelopes, native-period Bessel,
 fixed and moving cuts, and the stability-gap repair—shows that no
-unsigned-capacity route can clear that threshold. The new contribution is
-consequently signed and local. At filter $7$, exact residue order gives the
+unsigned-capacity route can clear that threshold. The subsequent analysis is
+signed and local. At filter $7$, exact residue order gives the
 sharp interval bound $|b_7|\le18/7$, replacing a capacity estimate that grows
 quadratically with the window scale. More generally, when an old period is
 copied through an incoming prime $r$, the centered harmful excess in copy
@@ -84,6 +84,20 @@ article develops the following properties:
 15. the classified routes and the live program — [§10](#10-routes-that-are-now-classified); and
 16. the fixed-seed scale conflict ([§10.1](#101-the-fixed-seed-scale-conflict)) and the Type-II barrier ([§11.1](#111-why-this-is-hard-the-type-ii-barrier)).
 
+The complete-period counts and gap-cycle mechanisms have earlier sources in
+Holt and Rudd [[2]](#ref2): their Section 1.2 gives the two-gap product,
+Lemma 2.1 gives cycle expansion and closure, and Lemma 3.1 treats intact
+constellation copies. We rederive these established ingredients in the present
+notation. Their primorial includes the last installed prime; our stage is
+indexed by the next head, so the cyclic counts agree after this change of
+index and origin.
+
+The weighted identities and energy bounds apply standard telescoping,
+Cauchy–Schwarz and cyclic reindexing to the stated sieve observables.
+Historical priority of the particular signed/local formulations and sharp
+fixed-wheel calculation is not established here. A proof given in this article
+does not by itself make its conclusion a new mathematical discovery.
+
 The final sections separate the proved complete-block control from the open
 partial-boundary and cross-layer estimates. No complete-period theorem is used
 as a short-window lower bound.
@@ -105,7 +119,7 @@ This article takes those verified construction facts as inputs. It then
 studies mathematical properties of 2-gap populations and signed interval
 discrepancies. The division is deliberate: the companion article fixes and
 machine-checks the sieve object; this article expands the mathematical theory
-of that object without claiming that every new theorem has a Scala encoding.
+of that object without claiming that every result proved here has a Scala encoding.
 
 ### 2.1 Roles, Populations, And Scopes
 
@@ -150,6 +164,10 @@ These identities are exact because every installed prime contributes a full
 residue system. They are not statements about a local square window.
 
 ### 3.1 Exact Global 2-Gap Count
+
+The product count below already appears in Holt and Rudd's Section 1.2
+[[2]](#ref2); their Corollary 6.3 also uses its one-filter recurrence.
+The CRT proof here recalls that established complete-period result.
 
 After filter $2$ is installed, every accepted value is odd, so accepted
 endpoints $x$ and $x+2$ are consecutive survivors: the intermediate value is
@@ -342,6 +360,11 @@ The derivation above proves the finite-batch formula and its complete-period
 limitation.
 
 ### 3.4 Exact Global `(2,4,2)` Cluster Count
+
+Holt and Rudd [[2]](#ref2), Lemma 3.1, give the intact-copy mechanism for a
+constellation of length three and explicitly discuss `(2,4,2)`. The four
+closures below are that known mechanism. The total-count recurrence also
+requires the no-new-occurrence argument supplied below.
 
 The label $(2,4,2)$ names the sequence of consecutive gaps inside a
 four-term cluster
@@ -1755,10 +1778,23 @@ family of future heads.
 1. Mata, T. H. (2026). *Formal Verification of Sieve Sequence Stages and
    Their Transitions*. Available at: [https://doi.org/10.5281/zenodo.22955782](https://doi.org/10.5281/zenodo.22955782).
 
+<a name="ref2" id="ref2" href="#ref2">[2]</a>
+Holt, F. B. and Rudd, H. (2014). *Eratosthenes sieve and the gaps between
+primes*. arXiv:1408.6002, v1. Section 1.2, Lemmas 2.1 and 3.1, and
+Corollary 6.3. [Earlier paper](https://arxiv.org/abs/1408.6002v1).
+
+<a name="ref3" id="ref3" href="#ref3">[3]</a>
+Hardy, G. H. and Wright, E. M.; revised by Heath-Brown, D. R. and Silverman,
+J. H. (2008). *An Introduction to the Theory of Numbers*, 6th edition.
+Oxford University Press. [Modern reference](https://doi.org/10.1093/oso/9780199219858.001.0001).
+
 ## Appendix A: Evidence And Verification Status
 
-The table separates the verified construction foundation from the new
-mathematical results and the open frontier. The rotation operation's
+The table separates the verified construction foundation from the
+mathematical results discussed here and the open frontier. Proof status is
+distinct from historical priority: established results rederived here are
+credited above, and priority of the specific signed/local formulations remains
+unestablished. The rotation operation's
 underlying membership and size behavior is Stainless-verified, but its exact
 gap-multiplicity theorem belongs to the mathematical layer.
 
@@ -1768,12 +1804,14 @@ gap-multiplicity theorem belongs to the mathematical layer.
 | Complete-period, local, weighted, capacity-exhaustion, filter-seven, and copy-block results | Mathematically proved | [§§3--7](#3-complete-period-2-gap-properties), [§9](#9-copy-block-harmful-excess-and-residue-energy), and Appendix C |
 | Accepted-boundary discrepancy and residue-collision energy | Exact reductions proved; required estimates open | [§8](#8-open-estimates-and-their-proven-reductions) |
 
-External mathematical inputs are confined to two theorems: Bertrand's
+Classical number-theoretic inputs enter as follows: Bertrand's
 postulate supports the exact accepted-local-strikes characterization of
 [§4.3](#43-exact-accepted-local-filter-strikes) and the asymptotic corollaries
 in Appendix C, and the Prime Number Theorem (with Mertens estimates) supports
 the asymptotic stability-gap discussion of
-[§6.6](#66-the-stability-gap-repair-is-negligible).
+[§6.6](#66-the-stability-gap-repair-is-negligible). Hardy and Wright
+[[3]](#ref3) provide a modern reference for these classical inputs, not an
+attribution of their original discovery.
 
 The operational Sieve Sequence construction used by these mathematical
 properties is Stainless-verified separately in [Formal Verification of Sieve

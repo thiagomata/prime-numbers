@@ -33,6 +33,13 @@ Integer division and modulo operations are central tools in discrete mathematics
 While their properties are well known, rigorous formalization and verification, particularly via recursive definitions,
 offer an interesting alternative to the traditional axiomatic model.
 
+The underlying congruence laws are classical. Gauss's *Disquisitiones
+arithmeticae* (1801), Section I, articles 2–7 [[2]](#ref2), already describes
+residue classes, the unique representative of a class in a consecutive block,
+and the addition and multiplication rules. This is an earlier exposition,
+not a claim that Gauss first discovered every rule. The contribution here is
+their recursive Stainless formalization, not the discovery of those laws.
+
 This article takes the recursive route. Instead of assuming native division and
 modulo, it defines a state $DivMod(a,b,q,r)$ where $a = bq + r$, then proves
 that normalizing the pair $(q,r)$ preserves the represented dividend and reaches
@@ -793,6 +800,11 @@ established here.
 Hardy, G. H. and Wright, E. M. (1979). *An Introduction to the Theory of
 Numbers* (5th ed.). Clarendon Press, Oxford. See Section 5.4 for the Chinese
 Remainder Theorem.
+
+<a name="ref2" id="ref2" href="#ref2">[2]</a>
+Gauss, C. F. (1801). *Disquisitiones arithmeticae*. Fleischer, Leipzig.
+Section I, articles 2–7.
+[Original edition, ETH-Bibliothek](https://www.e-rara.ch/download/pdf/1706845.pdf).
 
 ## 9. Appendix
 

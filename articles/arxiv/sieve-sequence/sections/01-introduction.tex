@@ -17,6 +17,13 @@ checked by Stainless, a verifier for Scala programs
 \cite{stainless2024verification}, against a first-principles arithmetic
 and list library.
 
+Holt and Rudd's earlier gap-cycle treatment \cite{holtrudd2014}, Section~2,
+Lemma~2.1, constructs the next wheel by repeating a gap cycle and closing
+adjacent gaps. Their Corollary~6.3 also uses the two-gap survival factor
+$r-2$. These are prior mathematical mechanisms, not discoveries claimed
+here. Their cyclic counts provide related work for the finite linear-index
+contracts verified in this article; they do not verify this Scala implementation.
+
 The proof is organized into these property groups:
 
 \begin{itemize}

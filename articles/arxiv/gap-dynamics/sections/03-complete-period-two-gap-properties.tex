@@ -9,6 +9,10 @@ square window.
 \subsection{Exact Global 2-Gap Count}
 \label{sec:exact-global-two-gap-count}
 
+The product count below already appears in Holt and Rudd's Section~1.2
+\cite{holtrudd2014}; their Corollary~6.3 also uses its one-filter recurrence.
+The CRT proof here recalls that established complete-period result.
+
 After filter $2$ is installed, every accepted value is odd, so accepted
 endpoints $x$ and $x+2$ are consecutive survivors: the intermediate value
 is even. For every prime stage after filter $2$, this property counts all
@@ -211,6 +215,11 @@ complete-period limitation. \par}
 
 \subsection{Exact Global \texorpdfstring{\texttt{(2,4,2)}}{(2,4,2)} Cluster Count}
 \label{sec:exact-global-242-cluster-count}
+
+Holt and Rudd \cite{holtrudd2014}, Lemma~3.1, give the intact-copy mechanism for a
+constellation of length three and explicitly discuss \texttt{(2,4,2)}. The four
+closures below are that known mechanism. The total-count recurrence also
+requires the no-new-occurrence argument supplied below.
 
 The label $(2,4,2)$ names the sequence of consecutive gaps inside a
 four-term cluster
