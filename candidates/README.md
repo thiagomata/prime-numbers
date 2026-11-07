@@ -80,6 +80,15 @@ three-candidate one-filter guarantee, old-filter admissibility restrictions,
 explicit failures of collective protection, and open preservation or rebuilding
 forks. It is an unnumbered research direction with no systematic measurements.
 
+[Twin-analysis advancement plan](twin-analysis-advancement-plan.md) records
+the adopted roadmap after the parity assessment closed the classical-sieve
+subtraction: generalize the fixed-separation lemma to arbitrary gaps, finish
+the rigid-pair companion against the cluster-exposure data, draft the bridge
+between sequence stages and imaginary functions, and extend batched transport
+accounting across a bounded gap family. Priorities, first steps and progress
+criteria are listed per item; the stopped route and its reopening conditions
+are recorded.
+
 [Batched window survival](batched-window-survival.md) proposes a generic threshold:
 sufficiently many old cyclic 2-gaps force a positive number of survivors in the
 destination safe window after all intervening filters are applied together.
