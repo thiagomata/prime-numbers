@@ -20,7 +20,7 @@ Fix a future prime head `Q` and a conditioned filter layer with incoming prime
 `r`, where
 
 ```math
-5\le r<Q.
+5\le r\lt Q.
 ```
 
 Let
@@ -32,9 +32,9 @@ W_Q=[Q,Q^2)
 and suppose the layer contains `N` complete 2-gaps in this window, with starts
 
 ```math
-Q\le x_1<x_2<\cdots<x_N
+Q\le x_1\lt x_2<\cdots\lt x_N
 \qquad\text{and}\qquad
-x_i+2<Q^2.
+x_i+2\lt Q^2.
 ```
 
 Because every quantity is an integer, completeness gives

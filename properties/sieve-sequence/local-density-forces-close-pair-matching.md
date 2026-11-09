@@ -19,7 +19,7 @@ grows along every future-window chain.
 Fix an incoming filter `r>=5`. Let
 
 ```math
-x_1<x_2<\cdots<x_N
+x_1\lt x_2<\cdots\lt x_N
 ```
 
 be `N>=1` complete 2-gap starts at a post-filter-3 layer, contained in an
@@ -44,7 +44,7 @@ x_{i+1}+2-x_i<2r,
 equivalently, when
 
 ```math
-x_{i+1}-x_i<d.
+x_{i+1}-x_i\lt d.
 ```
 
 Let `P` be the number of qualifying edges, and let `D` be the maximum number

@@ -14,7 +14,7 @@ filters. This property counts exactly the multiples that are still accepted.
 Let `p>=5` be the current head, let `q` be the next prime after `p`, and let
 
 ```math
-M=\prod_{r<p}r.
+M=\prod_{r\lt p}r.
 ```
 
 The transition installs filter `p`. Consider the next safe window

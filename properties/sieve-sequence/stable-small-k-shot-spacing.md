@@ -9,7 +9,7 @@ For a periodic sieve stage, define the cofactor-spacing quantity
 ```math
 s_r(k)
 =
-\min_{0\le i<T_r}
+\min_{0\le i\lt T_r}
 \sum_{t=0}^{k-2}g_{i+t},
 \qquad
 g_i\text{ are the cyclic cofactor gaps}.
@@ -46,16 +46,16 @@ s_X(k)
 For a primorial wheel, one period of `A` can be written as
 
 ```math
-0\le e_0<e_1<\cdots<e_{T-1}<M,
+0\le e_0\lt e_1<\cdots\lt e_{T-1}\lt M,
 \qquad
-T=\varphi(M)=\prod_{q<r}(q-1).
+T=\varphi(M)=\prod_{q\lt r}(q-1).
 ```
 
 and `s_A(k)` is equivalently the minimum sum of `k-1` consecutive cyclic
 cofactor gaps:
 
 ```math
-s_A(k)=\min_{0\le i<T}\sum_{t=0}^{k-2}g_{i+t}
+s_A(k)=\min_{0\le i\lt T}\sum_{t=0}^{k-2}g_{i+t}
 ```
 
 (where the indices of `g` are periodic).
@@ -77,7 +77,7 @@ for `s_A(k)` therefore gives the scaled lower bound for that layer.
 Choose any `k` consecutive elements of `B`,
 
 ```math
-b_i<b_{i+1}<\cdots<b_{i+k-1}.
+b_i\lt b_{i+1}<\cdots\lt b_{i+k-1}.
 ```
 
 Because `B` is a subset of `A`, these are also `k` elements of `A`, although
@@ -180,7 +180,7 @@ reduction modulo `M`, are accepted by the wheel.
 Because
 
 ```math
-D(k)\le(k-1)B_k<M,
+D(k)\le(k-1)B_k\lt M,
 ```
 
 the translated points are distinct and lie in one cyclic arc of length
@@ -197,13 +197,13 @@ Choose a cyclic block of `k` consecutive accepted residues attaining
 `s_P(k)`, and unwrap its arc. The upper bound already proved gives
 
 ```math
-s_P(k)\le D(k)<M,
+s_P(k)\le D(k)\lt M,
 ```
 
 so the unwrapped block has `k` distinct integer offsets
 
 ```math
-H'=\{0=h_0<h_1<\cdots<h_{k-1}=s_P(k)\}.
+H'=\{0=h_0\lt h_1<\cdots\lt h_{k-1}=s_P(k)\}.
 ```
 
 Let `a` be the starting residue of the unwrapped block. For every prime

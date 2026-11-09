@@ -286,7 +286,7 @@ E_b
 \ge
 \frac{T^2}{2W_-}
 +
-\max_{0\le i<m}
+\max_{0\le i\lt m}
 \frac{
 \left(
 K_i^\star-C_i

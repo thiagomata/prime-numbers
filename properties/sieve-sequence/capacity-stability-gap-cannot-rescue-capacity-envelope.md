@@ -37,7 +37,7 @@ r_0=5,
 \qquad
 r_1=7,
 \qquad
-r_0<r_1<\cdots<r_{m-1}<Q.
+r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Write
@@ -47,7 +47,7 @@ D=Q^2-Q-3,
 \qquad
 a_i=1-\frac2{r_i},
 \qquad
-P_i=\prod_{j<i}a_j,
+P_i=\prod_{j\lt i}a_j,
 ```
 
 ```math
@@ -390,7 +390,7 @@ Prime Mertens gives
 ```math
 P_i
 =
-\prod_{5\le p<r_i}
+\prod_{5\le p\lt r_i}
 \left(1-\frac2p\right)
 \asymp
 \frac1{(\log r_i)^2}.
@@ -401,7 +401,7 @@ Together with PNT and partial summation,
 ```math
 S
 =
-\sum_{i<m}\frac1{P_i}
+\sum_{i\lt m}\frac1{P_i}
 \asymp
 Q\log Q,
 \qquad

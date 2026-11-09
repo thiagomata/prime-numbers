@@ -25,7 +25,7 @@ multipliers.
 Use the harmless inverse phases
 
 ```math
-v_a=u+sa+\mathbf 1_{a<b},
+v_a=u+sa+\mathbf 1_{a\lt b},
 \qquad
 a\in H,
 \qquad

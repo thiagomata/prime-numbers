@@ -13,13 +13,13 @@ head's square are not merely candidates: they are primes.
 Let `q` be prime and let
 
 ```math
-P_q=\prod_{r<q}r,
+P_q=\prod_{r\lt q}r,
 ```
 
 where `r` ranges over primes. Consider an integer `n` satisfying
 
 ```math
-q\le n<q^2
+q\le n\lt q^2
 \qquad\text{and}\qquad
 \gcd(n,P_q)=1.
 ```
@@ -31,7 +31,7 @@ The integer `n` is prime. Consequently, if both endpoints of a 2-gap satisfy
 ```math
 q\le x
 \qquad\text{and}\qquad
-x+2<q^2
+x+2\lt q^2
 ```
 
 and both are accepted after all filters below `q`, then `(x,x+2)` is a genuine

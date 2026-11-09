@@ -130,7 +130,7 @@ D_r^*\le\min(N,2B),
 and
 
 ```math
-\boxed{N>2B\quad\Longrightarrow\quad D_r^*<N.}
+\boxed{N>2B\quad\Longrightarrow\quad D_r^*\lt N.}
 ```
 
 This threshold is sharp using only population size, fixed harmful distance,

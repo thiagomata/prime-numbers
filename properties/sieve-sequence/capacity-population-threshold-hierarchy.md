@@ -24,7 +24,7 @@ local collision threshold only in an explicit small-capacity range.
 Let `Q>=7` and let `r` be an odd prime with
 
 ```math
-5\le r<Q.
+5\le r\lt Q.
 ```
 
 Put
@@ -313,7 +313,7 @@ pairs
 ```math
 7\le Q\le211,
 \qquad
-5\le r<Q,
+5\le r\lt Q,
 ```
 
 and over additional symbolic integer values of `L>=6r`. No violation was

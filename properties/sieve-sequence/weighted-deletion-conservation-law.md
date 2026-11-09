@@ -18,7 +18,7 @@ count.
 Fix a future prime head `Q` and a conditioned chain
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}<Q.
+5\le r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Let `S_0` be the complete 2-gap starts in `[Q,Q^2)` before the chain begins.
@@ -27,7 +27,7 @@ For `x in S_0`, define the alive indicator before layer `i` by
 ```math
 f_i(x)
 =
-\prod_{j<i}
+\prod_{j\lt i}
 \mathbf 1_{r_j\nmid x(x+2)}.
 ```
 
@@ -117,7 +117,7 @@ For `x in S_0`, define its first hit time
 ```math
 \tau(x)
 =
-\min\{i:0\le i<m,\ h_i(x)=1\},
+\min\{i:0\le i\lt m,\ h_i(x)=1\},
 ```
 
 and set `tau(x)=m` if no filter in the chain hits either endpoint.
@@ -231,7 +231,7 @@ N_0A_{0,m}
 The condition
 
 ```math
-\sum_iw_ib_i<N_0A_{0,m}
+\sum_iw_ib_i\lt N_0A_{0,m}
 ```
 
 is exactly equivalent to `N_m>0`. It cannot serve as the missing theorem

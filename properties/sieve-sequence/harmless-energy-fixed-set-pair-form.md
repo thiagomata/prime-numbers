@@ -338,7 +338,7 @@ Then
 ```math
 f_{i+1}(x)f_{i+1}(y)
 =
-\mathbf 1_{i<t_h(x,y)}.
+\mathbf 1_{i\lt t_h(x,y)}.
 ```
 
 Writing `d=x-y`, the pair kernel is therefore
@@ -407,11 +407,11 @@ for `t>=1`. Consequently,
 \boxed{
 \kappa_d^{(h)}(t)
 =
-\sum_{\substack{i<t\\r_i\mid d}}w_i
+\sum_{\substack{i\lt t\\r_i\mid d}}w_i
 -
 \frac{w_{t-1}-A_{0,m}}2
 -
-\sum_{i<t}
+\sum_{i\lt t}
 \frac{2w_i}{r_i(r_i-2)}.
 }
 ```
@@ -424,7 +424,7 @@ Relative to the full centered divisor kernel with the same stopping time,
 ```math
 \boxed{
 -
-\sum_{i<t}
+\sum_{i\lt t}
 \frac{2w_i}{r_i(r_i-2)}.
 }
 ```
@@ -445,7 +445,7 @@ For `x\ne y`, every positive divisibility term satisfies
 ```math
 r_i\mid x-y,
 \qquad
-i<t_h(x,y).
+i\lt t_h(x,y).
 ```
 
 Thus both starts survive `r_i` in the same harmless residue class. The product
@@ -453,7 +453,7 @@ of all distinct primes contributing positive terms for one pair divides
 `|x-y|`. Since `x,y` lie in `[Q,Q^2)`,
 
 ```math
-0<|x-y|<Q^2-Q.
+0<|x-y|\lt Q^2-Q.
 ```
 
 This gives the same exact pairwise prime-product restriction as the full
@@ -464,7 +464,7 @@ collision kernel, now only for post-filter harmless pairs.
 Every collision weight satisfies
 
 ```math
-0<w_i\le1.
+0\lt w_i\le1.
 ```
 
 Also,
@@ -482,7 +482,7 @@ Consequently, for every stopping time `t`,
 \begin{aligned}
 0
 &\le
-\sum_{i<t}
+\sum_{i\lt t}
 \frac{2w_i}{r_i(r_i-2)}\\
 &\le
 \sum_{\substack{n\ge5\\n\text{ odd}}}

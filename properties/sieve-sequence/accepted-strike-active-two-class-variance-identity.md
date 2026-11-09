@@ -151,7 +151,7 @@ deletion class and all later classes.
 A useful continuation must retain the additional distances
 
 ```math
-\sum_{i<j<\ell}\frac{c_j}{r_j^2}
+\sum_{i\lt j<\ell}\frac{c_j}{r_j^2}
 ```
 
 and the terminal coordinate of the later deletion class, or prove arithmetic

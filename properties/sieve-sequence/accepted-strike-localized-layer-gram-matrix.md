@@ -21,7 +21,7 @@ Use the nested squarefree chain
 
 ```math
 P_{i+1}=P_i r_i
-\qquad(0\le i<m)
+\qquad(0\le i\lt m)
 ```
 
 and an integer interval `I` of length `L`. Define

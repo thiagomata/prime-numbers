@@ -32,7 +32,7 @@ Let
 
 ```math
 P_{i+1}=P_i r_i
-\qquad(0\le i<m),
+\qquad(0\le i\lt m),
 ```
 
 where `P_0` is squarefree, the `r_i` are distinct primes not dividing
@@ -112,7 +112,7 @@ of distinct earlier observables also gives
 ```math
 \boxed{
 \mathbb E\left[g_{j_1}\cdots g_{j_k}g_i\right]=0
-\qquad(j_1<\cdots<j_k<i):
+\qquad(j_1<\cdots\lt j_k\lt i):
 }
 ```
 
@@ -126,8 +126,8 @@ may depend on all layers before `i`, but not on `a mod r_i`). Then
 
 ```math
 \begin{aligned}
-\mathbb E\left[\left(\sum_{i<m}h_i(a)g_i(a)\right)^2\right]
-&=\sum_{i<m}\mathbb E\left[h_i(a)^2g_i(a)^2\right].
+\mathbb E\left[\left(\sum_{i\lt m}h_i(a)g_i(a)\right)^2\right]
+&=\sum_{i\lt m}\mathbb E\left[h_i(a)^2g_i(a)^2\right].
 \end{aligned}
 ```
 

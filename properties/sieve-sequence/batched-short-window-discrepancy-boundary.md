@@ -14,7 +14,7 @@ The difference between those two counts is the precise missing quantity.
 Let
 
 ```math
-P_Q=\prod_{r<Q}r
+P_Q=\prod_{r\lt Q}r
 ```
 
 and define the fully filtered 2-gap starts in an interval `W` by
@@ -27,7 +27,7 @@ and define the fully filtered 2-gap starts in an interval `W` by
 Over a complete interval of length `P_Q`, CRT gives exactly
 
 ```math
-\prod_{\substack{3\le r<Q\\r\text{ prime}}}(r-2)
+\prod_{\substack{3\le r\lt Q\\r\text{ prime}}}(r-2)
 ```
 
 surviving start classes.
@@ -37,7 +37,7 @@ The corresponding complete-period density is
 ```math
 \delta_Q
 =\frac12
-\prod_{\substack{3\le r<Q\\r\text{ prime}}}
+\prod_{\substack{3\le r\lt Q\\r\text{ prime}}}
 \left(1-\frac2r\right).
 ```
 
@@ -46,7 +46,7 @@ The corresponding complete-period density is
 For the safe window
 
 ```math
-W_Q=\{x:Q\le x,\ x+2<Q^2\},
+W_Q=\{x:Q\le x,\ x+2\lt Q^2\},
 ```
 
 write

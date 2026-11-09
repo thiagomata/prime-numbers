@@ -238,7 +238,7 @@ are `-1/r_i`. Therefore
 +
 \sum_{i=u}^{m-1}\frac{c_i}{r_i^2},
 \qquad
-t<u.
+t\lt u.
 }
 ```
 

@@ -23,7 +23,7 @@ information about deletion-class masses.
 Use the First-Deletion Variance Identity property's class counts
 
 ```math
-n_k=H_k\quad(k<m),
+n_k=H_k\quad(k\lt m),
 \qquad
 n_m=A_m,
 ```
@@ -54,7 +54,7 @@ three values:
 \begin{array}{c|c|c}
 \text{classes} & \text{total mass} & \text{coordinate value}\\
 \hline
-k<i & A_0-A_i & 0\\
+k\lt i & A_0-A_i & 0\\
 k=i & H_i & 1-1/r_i\\
 k>i & A_{i+1} & -1/r_i.
 \end{array}

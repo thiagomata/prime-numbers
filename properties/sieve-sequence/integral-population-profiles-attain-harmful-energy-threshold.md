@@ -34,7 +34,7 @@ information about which gap starts the prime filters can actually delete.
 Fix a nonempty chain
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}.
+5\le r_0\lt r_1<\cdots\lt r_{m-1}.
 ```
 
 Define
@@ -136,7 +136,7 @@ N_0>N_1>\cdots>N_{m-1}>N_m=0.
 In particular, the profile obeys
 
 ```math
-0<K_i\le N_i,
+0\lt K_i\le N_i,
 \qquad
 N_{i+1}=N_i-K_i.
 ```

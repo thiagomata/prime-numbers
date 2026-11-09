@@ -260,7 +260,7 @@ Thus the general deterministic bound is
 \le
 2N\left(1-\frac2r\right)
 +2\sqrt{kV_r},
-\qquad 0\le k<r.
+\qquad 0\le k\lt r.
 }
 ```
 

@@ -30,13 +30,13 @@ rs\equiv1\pmod P,
 \qquad
 A=ur+b,
 \qquad
-0\le b<r,
+0\le b\lt r,
 ```
 
 and
 
 ```math
-v_a=u+sa+\mathbf 1_{a<b}.
+v_a=u+sa+\mathbf 1_{a\lt b}.
 ```
 
 Let
@@ -117,7 +117,7 @@ In particular,
 
 ```math
 \boxed{
-q\mu_q<r+2q.
+q\mu_q\lt r+2q.
 }
 ```
 

@@ -25,7 +25,7 @@ Let `Q` be a future prime head, and let the complete conditioned chain contain
 every prime
 
 ```math
-5\le r_i<Q.
+5\le r_i\lt Q.
 ```
 
 Write
@@ -46,7 +46,7 @@ H=D+1=Q^2-Q-2.
 Fix a cut
 
 ```math
-2\le k<m.
+2\le k\lt m.
 ```
 
 Its native modulus is
@@ -54,9 +54,9 @@ Its native modulus is
 ```math
 M_k
 =
-\prod_{p<r_k}p
+\prod_{p\lt r_k}p
 =
-2\cdot3\prod_{i<k}r_i.
+2\cdot3\prod_{i\lt k}r_i.
 ```
 
 Let

@@ -28,7 +28,7 @@ and let `L<U` be integers. Define the old-accepted count
 ```math
 C_P(L,U)
 =
-\#\{n\in\mathbb Z:L\le n<U,\ \gcd(n,P)=1\}.
+\#\{n\in\mathbb Z:L\le n\lt U,\ \gcd(n,P)=1\}.
 ```
 
 Write
@@ -44,7 +44,7 @@ H
 =
 \#\{
 n\in\mathbb Z:
-L\le n<U,\ 
+L\le n\lt U,\ 
 \gcd(n,P)=1,\ 
 r\mid n
 \}.
@@ -75,7 +75,7 @@ Every struck integer has a unique form `n=rk`. Since `gcd(r,P)=1`,
 The interval condition is equivalent to
 
 ```math
-L_r\le k<U_r.
+L_r\le k\lt U_r.
 ```
 
 Therefore

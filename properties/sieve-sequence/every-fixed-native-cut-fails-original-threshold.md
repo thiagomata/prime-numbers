@@ -23,7 +23,7 @@ lower bound for the actual harmful-excess energy.
 Consider a conditioned chain
 
 ```math
-r_0=5<r_1<\cdots<r_{m-1}<Q
+r_0=5\lt r_1<\cdots\lt r_{m-1}\lt Q
 ```
 
 with
@@ -31,7 +31,7 @@ with
 ```math
 Q\ge17,
 \qquad
-2\le k<m.
+2\le k\lt m.
 ```
 
 Define
@@ -41,7 +41,7 @@ D=Q^2-Q-3,
 \qquad
 a_i=1-\frac2{r_i},
 \qquad
-P_i=\prod_{j<i}a_j.
+P_i=\prod_{j\lt i}a_j.
 ```
 
 Let `N_0` be the complete 2-gap-start population before filter `5`. Assume

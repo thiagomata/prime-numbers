@@ -287,7 +287,7 @@ The exact global 2-gap count gives
 ```math
 \frac PN
 =
-6\prod_{\substack{r\text{ prime}\\5\le r<p}}
+6\prod_{\substack{r\text{ prime}\\5\le r\lt p}}
 \frac r{r-2}.
 ```
 

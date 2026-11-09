@@ -22,7 +22,7 @@ certifies both endpoints as prime.
 Let an initial stage have prime head `p` and modulus
 
 ```math
-M=\prod_{r<p}r.
+M=\prod_{r\lt p}r.
 ```
 
 Let `(a,a+2)` represent a cyclic 2-gap modulo `M`. Its absolute repeated copies
@@ -36,13 +36,13 @@ For a chosen copy `x`, define its certification head
 
 ```math
 q(x)=
-\min\{q:q\text{ is prime},\ q\ge p,\ x+2<q^2\}.
+\min\{q:q\text{ is prime},\ q\ge p,\ x+2\lt q^2\}.
 ```
 
 The filters installed between the initial and certification stages are
 
 ```math
-\mathcal R(p,q)=\{r:r\text{ is prime and }p\le r<q\}.
+\mathcal R(p,q)=\{r:r\text{ is prime and }p\le r\lt q\}.
 ```
 
 Their number is exactly
@@ -72,7 +72,7 @@ The chosen copy must lie inside the safe window of its certification head:
 ```math
 q(x)\le x
 \qquad\text{and}\qquad
-x+2<q(x)^2.
+x+2\lt q(x)^2.
 ```
 
 The second inequality holds by the definition of `q(x)`. The first prevents
@@ -119,7 +119,7 @@ One successful scenario proves one eventual head 2-gap. Infinitely many twin
 prime pairs require an unbounded family of successful coordinates:
 
 ```math
-x_1<x_2<x_3<\cdots
+x_1\lt x_2\lt x_3<\cdots
 \qquad\text{and}\qquad
 x_n\longrightarrow\infty.
 ```
@@ -182,7 +182,7 @@ For a proposed head `q`, define the batch-allowed copy indices
 \left\{j:
 \begin{array}{l}
 j\text{ avoids both forbidden classes modulo every prime }r,\\
-p\le r<q
+p\le r\lt q
 \end{array}
 \right\}.
 ```

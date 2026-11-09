@@ -165,7 +165,7 @@ k_0=\left\lceil\frac Lm\right\rceil,
 \ell_m=|K_m[L,U)|,
 \qquad
 \ell_m=qR+s,
-\quad 0\le s<R.
+\quad 0\le s\lt R.
 ```
 
 Let `C_m(k_0,s)` count the allowed residues among
@@ -241,8 +241,8 @@ Then `z<Q`, so every prime in `Z` is also in `W`. For every divisor with
 \rho_{Q,z}
 =
 \frac12
-\prod_{2<p<z}\left(1-\frac2p\right)
-\prod_{z\le p<Q}\left(1-\frac1p\right).
+\prod_{2\lt p\lt z}\left(1-\frac2p\right)
+\prod_{z\le p\lt Q}\left(1-\frac1p\right).
 }
 ```
 
