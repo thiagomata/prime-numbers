@@ -49,6 +49,17 @@ user's follow-up (browser pane unavailable in this session).
   `$...$` in prose (1, renders fine, left alone).
 - User confirmed the root cause is the `<`-as-HTML-tag issue (same as the
   articles before PR #60) and approved fixing all three breakers in one PR.
+- 2026-11-09: All three fixes applied on branch
+  `docs/properties-github-math-rendering`, one commit per pattern:
+  - `801bf234` — 246 `<`+letter -> `\lt ` substitutions, 64 files.
+  - `039bafe7` — 30 `\operatorname` -> `\text` substitutions, 15 files
+    (one prose-backtick occurrence left alone: no math processing there).
+  - `3a2b7bf3` — 5 post-`\end{aligned}` fragments moved onto the last
+    aligned row, 3 files (4 changed).
+- Validation gates all green: local KaTeX parses 1945/1945 properties
+  fences before and after every step; round-trip audits prove prose is
+  byte-identical and fences changed by exactly the intended substitution;
+  rule-8 scanner reports zero remaining violations.
 
 ## What Is Learned
 
@@ -83,11 +94,15 @@ user's follow-up (browser pane unavailable in this session).
 
 ## Next Action
 
-1. Create branch `docs/properties-github-math-rendering`.
-2. Apply fix 1 (`\lt` sweep), validate (KaTeX + diff audit), commit.
-3. Apply fix 2 (`\operatorname` -> `\text`), validate, commit.
-4. Apply fix 3 (5 post-`\end{aligned}` blocks), validate, commit.
+1. ~~Create branch~~ done.
+2. ~~Apply fix 1, validate, commit~~ done (`801bf234`).
+3. ~~Apply fix 2, validate, commit~~ done (`039bafe7`).
+4. ~~Apply fix 3, validate, commit~~ done (`3a2b7bf3`).
 5. Push branch, open PR against master.
+6. After merge (or on the branch blob page): user re-opens
+   `properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md`
+   in GitHub and confirms the math renders with no red errors, then this
+   ticket can be closed.
 
 ## Learning Log
 
@@ -96,6 +111,8 @@ user's follow-up (browser pane unavailable in this session).
 | 2026-11-09 | User reports "Extra open brace or missing close brace" on `incomplete-block-bessel-excludes-no-capacity.md`. | Same error class PR #60 fixed in articles: bare `<`+letter inside math fences. |
 | 2026-11-09 | Scan: 191 `<`+letter blocks across 64 property files; 28 `\operatorname`; 5 post-`\end{aligned}` blocks; boxed-aligned and `\\[6pt]` hits are false positives. | Scope the PR to the three documented breakers; user approved. |
 | 2026-11-09 | Browser pane and web search unavailable in this session. | Rely on KaTeX parse gate + mechanical diff audit + user's rendered-page confirmation; record rendered verification as user follow-up. |
+| 2026-11-09 | Baseline KaTeX run: all 1945 properties fences parse — the tree is valid TeX; every failure is GitHub-side pre-processing/macro restriction. | Gate for this PR is "1945/1945 parse after each step", which held at every step. |
+| 2026-11-09 | The `\lt` sweep: `<\cdots`, `<=`, `<`+digit untouched by design; `\boxed` untouched (user confirmed `<` is the breaker). | Kept the substitution strictly to `<`+letter, matching PR #60's verified rule. |
 
 ## Related Tickets
 
