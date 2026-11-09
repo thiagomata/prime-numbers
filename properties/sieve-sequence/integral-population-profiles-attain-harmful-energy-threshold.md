@@ -209,9 +209,8 @@ E_b
 &=
 \frac{P_mN_0^2}{2S}\\
 &=
-\boxed{\frac{T^2}{2W_-}}.
+\boxed{\frac{T^2}{2W_-}}.\qquad[\text{Q.E.D.}]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
 ```
 
 ## Clearing Denominators

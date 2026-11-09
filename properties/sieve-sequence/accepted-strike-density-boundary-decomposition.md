@@ -292,9 +292,8 @@ H_i-\frac{A_i}{r_i}
 &=
 \boxed{
 \left(1-\frac1{r_i}\right)E_i-E_{i+1}.
-}
+}\qquad[\text{Q.E.D.}]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
 ```
 
 Set

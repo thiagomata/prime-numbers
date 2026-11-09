@@ -200,9 +200,8 @@ explicit progressions modulo `6p`. If `p` is `1 modulo 6`, then
 \begin{aligned}
 p\mid R+4&\Longleftrightarrow R=2p-4+6pk,\\
 p\mid R&\Longleftrightarrow R=4p+6pk,\\
-p\mid R+2&\Longleftrightarrow R=6p-2+6pk,
+p\mid R+2&\Longleftrightarrow R=6p-2+6pk,\qquad k\ge0.
 \end{aligned}
-\qquad k\ge0.
 ```
 
 If `p` is `5 modulo 6`, then
@@ -211,9 +210,8 @@ If `p` is `5 modulo 6`, then
 \begin{aligned}
 p\mid R&\Longleftrightarrow R=2p+6pk,\\
 p\mid R+4&\Longleftrightarrow R=4p-4+6pk,\\
-p\mid R+2&\Longleftrightarrow R=6p-2+6pk,
+p\mid R+2&\Longleftrightarrow R=6p-2+6pk,\qquad k\ge0.
 \end{aligned}
-\qquad k\ge0.
 ```
 
 These formulas calculate the frequency exactly from the run-value histogram.

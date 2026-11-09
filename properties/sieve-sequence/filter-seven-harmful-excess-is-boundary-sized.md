@@ -170,9 +170,8 @@ the residue certificate above. Consequently,
 |7b_7(I)|
 &\le18,\\
 |b_7(I)|
-&\le\boxed{\frac{18}{7}}.
+&\le\boxed{\frac{18}{7}}.\qquad[\text{Q.E.D.}]
 \end{aligned}
-\qquad[\text{Q.E.D.}]
 ```
 
 The integer interval from `47` through `161` within one period attains
