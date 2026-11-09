@@ -75,7 +75,7 @@ Because the two congruence systems have coprime moduli `30` and `7`, this
 observable is periodic modulo
 
 ```math
-\operatorname{lcm}(30,7)=210.
+\text{lcm}(30,7)=210.
 ```
 
 ## Exact Modulo-210 Certificate

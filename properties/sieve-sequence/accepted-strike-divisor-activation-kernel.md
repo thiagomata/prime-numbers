@@ -268,7 +268,7 @@ The kernel is a Gram matrix:
 \mathcal K
 =
 \Theta^*
-\operatorname{diag}(c_0,\ldots,c_{m-1})
+\text{diag}(c_0,\ldots,c_{m-1})
 \Theta.
 ```
 

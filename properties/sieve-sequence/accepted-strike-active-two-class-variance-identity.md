@@ -120,7 +120,7 @@ Inserted into the First-Deletion Variance Identity property's global variance id
 ```math
 \mathcal E_D
 \le
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_i c_iH_iA_{i+1}.
 ```

@@ -220,7 +220,7 @@ Let `G` be the complete-period population of the CRT word. The existing exact
 conductor identity is
 
 ```math
-\sum_{\operatorname{cond}(m)=q}
+\sum_{\text{cond}(m)=q}
 |\widehat g_0(m)|^2
 =
 G^2a(q),

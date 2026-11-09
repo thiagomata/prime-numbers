@@ -243,7 +243,7 @@ If `N=sum_R C_p(R)`, both cases imply the universal frequency bound
 \le
 \frac{T_R/N}{2p-4}
 =
-\frac{\operatorname{average}(R)}{2p-4}.
+\frac{\text{average}(R)}{2p-4}.
 }
 ```
 
@@ -251,7 +251,7 @@ For the complete pre-filter period, the classical Mertens product estimate
 applied to the exact ratio below gives
 
 ```math
-\operatorname{average}(R)
+\text{average}(R)
 =
 \frac PN-2
 =O(\log^2p).

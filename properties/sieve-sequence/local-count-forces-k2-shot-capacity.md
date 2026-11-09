@@ -182,7 +182,7 @@ identity is
 The close-pair conclusion therefore gives
 
 ```math
-\operatorname{len}(J_r)
+\text{len}(J_r)
 =x_{i+1}+2-x_i
 <2r
 =\sigma_r(2).

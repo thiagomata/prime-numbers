@@ -226,7 +226,7 @@ Let `dist_P` denote cyclic distance modulo `P`. Since
 
 ```math
 \boxed{
-\operatorname{dist}_P(v_a,v_c)
+\text{dist}_P(v_a,v_c)
 \ge
 \frac{P-r+1}{r}-1.
 }
@@ -337,7 +337,7 @@ sampled values `E_ell(v_a)`. But the trigonometric polynomial has frequencies
 through the full modulus `P`. Its large-sieve factor is consequently of size
 
 ```math
-P+\operatorname{spacing}^{-1}
+P+\text{spacing}^{-1}
 \asymp
 P+r
 \asymp

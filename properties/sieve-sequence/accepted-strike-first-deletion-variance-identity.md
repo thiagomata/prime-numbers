@@ -180,7 +180,7 @@ Because
 ```math
 \sum_kn_k\lVert u_k\rVert^2
 =
-\operatorname{tr}(CG),
+\text{tr}(CG),
 ```
 
 this is equivalently
@@ -189,7 +189,7 @@ this is equivalently
 \boxed{
 \mathcal E_C
 =
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_{k<\ell}
 n_kn_\ell
@@ -200,7 +200,7 @@ n_kn_\ell
 Thus the generic bound
 
 ```math
-\mathcal E_C\le A_0\operatorname{tr}(CG)
+\mathcal E_C\le A_0\text{tr}(CG)
 ```
 
 loses exactly the displayed first-deletion dispersion.
@@ -274,7 +274,7 @@ Then `mathcal E_C=mathcal E_D`, candidate #23's exact weighted energy. Hence
 \boxed{
 \mathcal E_D
 =
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_{k<\ell}
 n_kn_\ell

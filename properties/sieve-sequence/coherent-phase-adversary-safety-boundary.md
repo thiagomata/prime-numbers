@@ -101,7 +101,7 @@ holds exactly when every occupied residue is one of the two harmful residues:
 \boxed{
 D_r^*=N
 \quad\Longleftrightarrow\quad
-\operatorname{supp}(n)
+\text{supp}(n)
 \subseteq\{s,s-2\}
 \text{ for some }s.
 }

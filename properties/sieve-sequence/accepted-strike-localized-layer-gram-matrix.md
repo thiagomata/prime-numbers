@@ -171,7 +171,7 @@ Because the weighted Gram matrix is positive semidefinite,
 ```math
 \lambda_{\max}\left(C^{1/2}GC^{1/2}\right)
 \le
-\operatorname{tr}(CG).
+\text{tr}(CG).
 ```
 
 Consequently,
@@ -253,7 +253,7 @@ The exact matrix isolates a sharper possible route:
 ```math
 \lambda_{\max}\left(C^{1/2}GC^{1/2}\right)
 \ll
-\operatorname{tr}(CG).
+\text{tr}(CG).
 ```
 
 Such an improvement cannot come from positive semidefiniteness alone. It

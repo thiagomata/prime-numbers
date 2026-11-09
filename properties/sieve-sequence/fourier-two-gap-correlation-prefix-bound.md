@@ -401,7 +401,7 @@ conductor `q` and using CRT factorization gives
 
 ```math
 \begin{aligned}
-\sum_{\operatorname{cond}(\chi)=q}
+\sum_{\text{cond}(\chi)=q}
 |\widehat f(\chi)|^2
 &=
 \prod_{p\nmid q}(p-2)^2
@@ -416,7 +416,7 @@ Hence
 
 ```math
 \boxed{
-\sum_{\operatorname{cond}(\chi)=q}
+\sum_{\text{cond}(\chi)=q}
 |\widehat f(\chi)|^2
 =
 G^2
@@ -552,7 +552,7 @@ For exact conductor `q`, CRT factorization of the fourth moment gives
 
 ```math
 \boxed{
-\sum_{\operatorname{cond}(\chi)=q}
+\sum_{\text{cond}(\chi)=q}
 |\widehat f(\chi)|^4
 =
 G^4
@@ -566,7 +566,7 @@ Let
 ```math
 T_q(H;r)
 =
-\sum_{\operatorname{cond}(\chi)=q}
+\sum_{\text{cond}(\chi)=q}
 |D_H(\chi;r)|^2.
 ```
 
@@ -590,7 +590,7 @@ Apply Cauchy--Schwarz separately inside each exact-conductor block:
 \frac1n
 \sum_{\substack{q\mid n\\q>1}}
 \sqrt{
-\sum_{\operatorname{cond}(\chi)=q}
+\sum_{\text{cond}(\chi)=q}
 |\widehat f(\chi)|^4
 }
 \sqrt{T_q(H;r)}\\

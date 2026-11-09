@@ -31,7 +31,7 @@ n_m=A_m,
 and first-deletion vectors `v_k`. Let
 
 ```math
-C=\operatorname{diag}(c_0,\ldots,c_{m-1}),
+C=\text{diag}(c_0,\ldots,c_{m-1}),
 \qquad c_i>0.
 ```
 
@@ -151,7 +151,7 @@ Thus
 
 ```math
 \boxed{
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \mathcal V_{\mathrm{del}}
 =
