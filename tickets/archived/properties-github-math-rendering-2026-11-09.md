@@ -1,7 +1,7 @@
 # Properties GitHub Math Rendering Fixes
 
 **Created:** 2026-11-09
-**Status:** Active
+**Status:** Closed — user verified the rendered pages clean on the branch (2026-11-10); merged via PR #65
 
 ## START HERE
 
@@ -60,6 +60,9 @@ user's follow-up (browser pane unavailable in this session).
   fences before and after every step; round-trip audits prove prose is
   byte-identical and fences changed by exactly the intended substitution;
   rule-8 scanner reports zero remaining violations.
+- 2026-11-10: User opened the example file on the PR branch in GitHub and
+  confirmed the math renders clean — the rendered-page follow-up is
+  satisfied. Ticket closed; moved to `tickets/archived/`.
 
 ## What Is Learned
 
@@ -98,11 +101,9 @@ user's follow-up (browser pane unavailable in this session).
 2. ~~Apply fix 1, validate, commit~~ done (`801bf234`).
 3. ~~Apply fix 2, validate, commit~~ done (`039bafe7`).
 4. ~~Apply fix 3, validate, commit~~ done (`3a2b7bf3`).
-5. Push branch, open PR against master.
-6. After merge (or on the branch blob page): user re-opens
-   `properties/sieve-sequence/incomplete-block-bessel-excludes-no-capacity.md`
-   in GitHub and confirms the math renders with no red errors, then this
-   ticket can be closed.
+5. ~~Push branch, open PR against master~~ done (PR #65).
+6. ~~User re-opens the example file in GitHub and confirms clean
+   rendering~~ done (2026-11-10). Ticket closed.
 
 ## Learning Log
 
@@ -113,6 +114,7 @@ user's follow-up (browser pane unavailable in this session).
 | 2026-11-09 | Browser pane and web search unavailable in this session. | Rely on KaTeX parse gate + mechanical diff audit + user's rendered-page confirmation; record rendered verification as user follow-up. |
 | 2026-11-09 | Baseline KaTeX run: all 1945 properties fences parse — the tree is valid TeX; every failure is GitHub-side pre-processing/macro restriction. | Gate for this PR is "1945/1945 parse after each step", which held at every step. |
 | 2026-11-09 | The `\lt` sweep: `<\cdots`, `<=`, `<`+digit untouched by design; `\boxed` untouched (user confirmed `<` is the breaker). | Kept the substitution strictly to `<`+letter, matching PR #60's verified rule. |
+| 2026-11-10 | User verified the example page renders clean on the PR branch. | Close the ticket; rendered-page follow-up satisfied. |
 
 ## Related Tickets
 
