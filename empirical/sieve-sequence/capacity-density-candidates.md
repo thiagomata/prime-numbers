@@ -60,7 +60,7 @@ The proved property
 ```math
 \rho(Q,r)>1
 \quad\Longrightarrow\quad
-\text{candidate #14's }k=2\text{ premise holds at layer }r.
+\text{candidate \#14's }k=2\text{ premise holds at layer }r.
 ```
 
 The early inequality is no longer only empirical. The
