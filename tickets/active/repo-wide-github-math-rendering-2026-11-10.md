@@ -91,9 +91,22 @@ tracked files so untracked user work cannot be touched.
 
 ## Failed Paths
 
-- None yet on this ticket. (Prior-session constraints — browser pane and
-  web search unavailable — carry over; rendered-page verification is
-  again the user's follow-up.)
+- **2026-11-10 staging error (PR #66, fixed same day):** the lt-sweep
+  commit used `git add -A ':!tickets'`, which staged the untracked user
+  file `candidates/twin-analysis-advancement-plan.md` (byte-identical,
+  never modified, but exposed in the pushed PR) and simultaneously
+  excluded the two `tickets/active` files the sweep had fixed. Root
+  cause: sweeping over `git ls-files` (correct) but staging with a
+  broad pathspec instead of the changed-file list. Remediation (user
+  chose surgical fix): `git rm --cached` the file (returns to
+  untracked), commit the two omitted fixes, push. Net PR diff verified
+  correct (37 intended files, no user files). Lesson: stage exactly the
+  files a scripted change wrote — derive the path list from the script's
+  own output, never from `-A` with exclusions. The file's content
+  remains visible in PR #66's intermediate commit `068a1be4` (user
+  accepted this).
+- Prior-session constraints — browser pane and web search unavailable —
+  carry over; rendered-page verification is the user's follow-up.
 
 ## Open Concerns
 
@@ -123,6 +136,7 @@ tracked files so untracked user work cannot be touched.
 | 2026-11-10 | survival-frontiers-detailed.md (PR #63) reintroduced bare `<` after the audit. | Include it in the sweep; note the process gap in What Is Learned. |
 | 2026-11-10 | The `\operatorname` sweep surfaced two forms the fence regex missed: the starred `\operatorname*{arg\,min}` and inline `$...$` math in tickets/future. | Fixed both with targeted edits; disclosed as scope additions. `\operatorname` inside backtick code spans left alone (no math processing). |
 | 2026-11-10 | Final gate: 3640 fences repo-wide, 0 KaTeX failures, 0 remaining breakers in tracked fences. | Ready for PR. |
+| 2026-11-10 | PR-content verification caught an accidentally staged untracked user file and two omitted tickets/active fixes (bad `git add -A ':!tickets'` pathspec). | Stop-and-ask; user chose surgical fix; remediated and re-verified net diff (37 files). Rule for next time: stage the script's changed-file list, not `-A`. |
 
 ## Related Tickets
 
