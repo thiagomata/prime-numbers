@@ -392,7 +392,7 @@ modulo `q`. The two affine phase runs give
 +
 \left\lceil\frac{r_i-b}{q}\right\rceil,
 \qquad
-q\mu_q<r_i+2q.
+q\mu_q\lt r_i+2q.
 ```
 
 Hence the squared centered block norm is at most `q mu_q`, replacing the full

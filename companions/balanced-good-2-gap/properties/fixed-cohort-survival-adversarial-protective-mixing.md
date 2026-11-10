@@ -26,7 +26,7 @@ target child is destroyed) or the protective label with probability
 `1-alpha_r` (its target child is preserved), and
 
 ```math
-A(Q):=\sum_{r<Q}-\log(1-\alpha_r).
+A(Q):=\sum_{r\lt Q}-\log(1-\alpha_r).
 ```
 
 ## Property

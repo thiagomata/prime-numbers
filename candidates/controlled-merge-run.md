@@ -17,7 +17,7 @@ Project the expanded old stage to its cyclic 2-gap starts. Assume:
 - for infinitely many transitions,
 
 ```math
-(R_p+1)D_{max,old}<q^2-q-2.
+(R_p+1)D_{max,old}\lt q^2-q-2.
 ```
 
 ## Why It Is Sufficient

@@ -317,7 +317,7 @@ not a requirement for balance in every residue class.
 The explicit survival condition is
 
 ```math
-H\left(\frac{2L}{N}+\eta_p\right)<L.
+H\left(\frac{2L}{N}+\eta_p\right)\lt L.
 ```
 
 It implies `K < L` and therefore `L-K>0`. At least one square-safe 2-gap
@@ -330,7 +330,7 @@ A concise stronger specialization is bounded multiplicative target bias:
 \le
 C\frac{2L}{N},
 \qquad
-2CH<N.
+2CH\lt N.
 ```
 
 Indeed, these inequalities give `K < L`. This endpoint formulation is a

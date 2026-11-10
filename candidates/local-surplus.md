@@ -141,7 +141,7 @@ Immediately before installing `p`, the exact complete-period density of
 \delta_p
 =
 \frac12
-\prod_{\substack{3\le r<p\\r\text{ prime}}}
+\prod_{\substack{3\le r\lt p\\r\text{ prime}}}
 \left(1-\frac2r\right).
 ```
 
@@ -159,7 +159,7 @@ length is not the cardinality of the eligible 2-gap-start window. Under the
 canonical endpoint convention
 
 ```math
-W_q=\{x:q\le x\text{ and }x+2<q^2\},
+W_q=\{x:q\le x\text{ and }x+2\lt q^2\},
 \qquad
 |W_q|=q^2-q-2.
 ```

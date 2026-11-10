@@ -55,7 +55,7 @@ The use of distinct residues is essential: different vertices can produce the
 same forbidden start class. Assume
 
 ```math
-\nu_p(w)<p.
+\nu_p(w)\lt p.
 ```
 
 If `K_w(J)` is the number of occurrences destroyed by the filter, the union
@@ -214,7 +214,7 @@ N_{(2),a}(J)-\frac Gp
 and
 
 ```math
-2E<G\left(1-\frac2p\right),
+2E\lt G\left(1-\frac2p\right),
 ```
 
 while its same-sign harmful deviations lie outside candidate #21's scalar

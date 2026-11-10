@@ -71,7 +71,7 @@ The stronger empirical target is eventual uniformity:
 ```math
 \boxed{
 \text{For every sufficiently large prime }Q
-\text{ and every prime }5\le r<Q,\quad
+\text{ and every prime }5\le r\lt Q,\quad
 \rho(Q,r)\ge\rho(Q,7)>1.
 }
 ```
@@ -179,14 +179,14 @@ is the proof. Neither result controls later conditioned layers.
 For each measured future head, compute
 
 ```math
-m(Q)=\min_{5\le r<Q}\rho(Q,r)
+m(Q)=\min_{5\le r\lt Q}\rho(Q,r)
 ```
 
 and an attaining layer
 
 ```math
 r_{\min}(Q)\in
-\operatorname*{arg\,min}_{5\le r<Q}\rho(Q,r).
+\operatorname*{arg\,min}_{5\le r\lt Q}\rho(Q,r).
 ```
 
 The measurements have three immediate interpretations:

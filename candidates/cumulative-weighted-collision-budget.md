@@ -38,7 +38,7 @@ leverage unavailable for that leaner target.
 Fix a future prime head `Q` and let
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}<Q
+5\le r_0\lt r_1<\cdots\lt r_{m-1}\lt Q
 ```
 
 be the missing primes installed in the conditioned chain. Let `S_i` be the
@@ -157,7 +157,7 @@ Every changing population can be represented on the initial set `S_0` by
 ```math
 f_i(x)
 =
-\prod_{j<i}
+\prod_{j\lt i}
 \mathbf 1_{r_j\nmid x(x+2)}.
 ```
 
@@ -190,7 +190,7 @@ t(x,y)=\min(s(x),s(y)):
 
 ```math
 \boxed{
-\sum_{i<t(x,y)}
+\sum_{i\lt t(x,y)}
 w_i
 \left(
 \mathbf 1_{r_i\mid d}-\frac1{r_i}
@@ -202,7 +202,7 @@ For `x!=y`, the positive primes in this kernel divide a nonzero difference
 with
 
 ```math
-|d|<Q^2-Q.
+|d|\lt Q^2-Q.
 ```
 
 Their product is therefore smaller than `Q^2`. This is the candidate's
@@ -226,7 +226,7 @@ Therefore the stopped kernel is exactly
 
 ```math
 \boxed{
-\sum_{\substack{i<t(x,y)\\r_i\mid d}}w_i
+\sum_{\substack{i\lt t(x,y)\\r_i\mid d}}w_i
 -
 \frac{w_{t(x,y)-1}-A_{0,m}}2
 }
@@ -347,7 +347,7 @@ E_b
 \ge
 \frac{(T-N_m)^2}{2W_-},
 \qquad
-W_-<W.
+W_-\lt W.
 }
 ```
 

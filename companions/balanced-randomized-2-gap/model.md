@@ -161,7 +161,7 @@ density. As established in `properties/sieve-sequence/realized-filter-adversaria
 and `python/src/sieve_sequence/spacing.py`:
 
 ```math
-\delta_Q = \delta_0 \prod_{p_0<r<Q}\left(1-\frac2r\right) \asymp \frac{C}{(\log Q)^2}.
+\delta_Q = \delta_0 \prod_{p_0\lt r\lt Q}\left(1-\frac2r\right) \asymp \frac{C}{(\log Q)^2}.
 ```
 
 **Additional premise for this section (not yet proved -- see "What Remains

@@ -29,7 +29,7 @@ prime `r`. In canonical residue coordinates, let its modulus be `M_r` and its
 accepted cofactor residues be
 
 ```math
-0\le e_0<e_1<\cdots<e_{T_r-1}<M_r.
+0\le e_0\lt e_1<\cdots\lt e_{T_r-1}\lt M_r.
 ```
 
 Define the cyclic cofactor gaps by
@@ -37,7 +37,7 @@ Define the cyclic cofactor gaps by
 ```math
 g_i=
 \begin{cases}
-e_{i+1}-e_i,&0\le i<T_r-1,\\
+e_{i+1}-e_i,&0\le i\lt T_r-1,\\
 M_r+e_0-e_{T_r-1},&i=T_r-1.
 \end{cases}
 ```
@@ -50,7 +50,7 @@ h_{nT_r+i}=r(e_i+nM_r),
 \qquad
 n\in\mathbb Z,
 \quad
-0\le i<T_r.
+0\le i\lt T_r.
 ```
 
 A rotation or translation used by the stage representation changes the origin,
@@ -80,7 +80,7 @@ For `2\le k\le T_r`, define the minimum span of `k` consecutive shots:
 ```math
 \sigma_r(k)
 =
-\min_{0\le i<T_r}
+\min_{0\le i\lt T_r}
 \sum_{t=0}^{k-2}\Delta_{i+t},
 ```
 
@@ -441,7 +441,7 @@ candidate-#12 deviation
 
 ```math
 E=
-\max_{0\le a<r}
+\max_{0\le a\lt r}
 \left|N_a-\frac Nr\right|.
 ```
 

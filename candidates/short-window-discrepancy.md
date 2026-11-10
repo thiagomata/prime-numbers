@@ -13,7 +13,7 @@ Let the exact complete-period density of post-filter 2-gap starts be
 ```math
 \delta_q=
 \frac12
-\prod_{\substack{3\le r<q\\r\text{ prime}}}
+\prod_{\substack{3\le r\lt q\\r\text{ prime}}}
 \left(1-\frac2r\right).
 ```
 

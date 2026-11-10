@@ -94,7 +94,7 @@ E_{30030}(19,361)
 Thus the boundary error changes sign when filter `13` is installed:
 
 ```math
-E_{2310}(19,361)<0<E_{30030}(19,361).
+E_{2310}(19,361)<0\lt E_{30030}(19,361).
 ```
 
 This one exact transition refutes both universal statements.

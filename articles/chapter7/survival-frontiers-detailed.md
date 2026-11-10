@@ -126,7 +126,7 @@ To survive every filter below `Q`, it must survive the first one, then the next,
 then the next, and so on. Conditional probabilities multiply:
 
 ```math
-P(Q)=\prod_{r<Q}(1-f_r).
+P(Q)=\prod_{r\lt Q}(1-f_r).
 ```
 
 Products are hard to estimate directly, so the article converts the product
@@ -135,15 +135,15 @@ into a sum by taking logarithms:
 ```math
 \begin{aligned}
 \log P(Q)
-&=\log\left(\prod_{r<Q}(1-f_r)\right)\\
-&=\sum_{r<Q}\log(1-f_r).
+&=\log\left(\prod_{r\lt Q}(1-f_r)\right)\\
+&=\sum_{r\lt Q}\log(1-f_r).
 \end{aligned}
 ```
 
 Define the cumulative hazard:
 
 ```math
-D(Q)=\sum_{r<Q}-\log(1-f_r).
+D(Q)=\sum_{r\lt Q}-\log(1-f_r).
 ```
 
 Then:
@@ -186,14 +186,14 @@ So
 ```math
 D_{\mathrm{random}}(Q)
 \approx
-\sum_{r<Q}\frac{2}{r}
-=2\sum_{r<Q}\frac{1}{r}.
+\sum_{r\lt Q}\frac{2}{r}
+=2\sum_{r\lt Q}\frac{1}{r}.
 ```
 
 The sum is over primes `r`. A standard prime-number-theory estimate says:
 
 ```math
-\sum_{r<Q,\ r\text{ prime}}\frac{1}{r}
+\sum_{r\lt Q,\ r\text{ prime}}\frac{1}{r}
 =\log\log Q+O(1).
 ```
 
@@ -236,8 +236,8 @@ The same calculation gives:
 \begin{aligned}
 D_w(Q)
 &\approx
-\sum_{r<Q}\frac{2w}{r}\\
-&=2w\sum_{r<Q}\frac{1}{r}\\
+\sum_{r\lt Q}\frac{2w}{r}\\
+&=2w\sum_{r\lt Q}\frac{1}{r}\\
 &=2w\log\log Q+O(1).
 \end{aligned}
 ```
@@ -311,23 +311,23 @@ The hazard has two parts:
 \begin{aligned}
 D_c(Q)
 &\approx
-\sum_{r<Q}\frac{2}{r}
+\sum_{r\lt Q}\frac{2}{r}
 +
-\sum_{r<Q}\frac{2c\log r}{r}.
+\sum_{r\lt Q}\frac{2c\log r}{r}.
 \end{aligned}
 ```
 
 The first sum is the familiar random part:
 
 ```math
-\sum_{r<Q}\frac{2}{r}
+\sum_{r\lt Q}\frac{2}{r}
 =2\log\log Q+O(1).
 ```
 
 The second prime sum grows like:
 
 ```math
-\sum_{r<Q}\frac{\log r}{r}
+\sum_{r\lt Q}\frac{\log r}{r}
 =\log Q+O(1).
 ```
 
@@ -503,7 +503,7 @@ When the finite-population errors are controlled, the logarithm behaves like:
 Thus, if the cumulative quota satisfies
 
 ```math
-\sum_{r<Q}u_r=\log\log Q+O(1),
+\sum_{r\lt Q}u_r=\log\log Q+O(1),
 ```
 
 then:
@@ -511,7 +511,7 @@ then:
 ```math
 \begin{aligned}
 P_{\mathrm{quota}}(Q)
-&=\prod_{r<Q}s_r\\
+&=\prod_{r\lt Q}s_r\\
 &\asymp
 e^{-2\log\log Q}\\
 &\asymp

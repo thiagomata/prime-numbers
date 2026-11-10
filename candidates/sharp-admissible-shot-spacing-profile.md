@@ -215,7 +215,7 @@ and their forbidden classes to an interval `J` satisfying
 ```math
 G_r(J)\ge k,
 \qquad
-\text{len}(J)<rD(k).
+\text{len}(J)\lt rD(k).
 ```
 
 Finding such a copy-index-to-cluster theorem is a downstream application of

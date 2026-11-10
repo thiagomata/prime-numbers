@@ -13,7 +13,7 @@ every available ground-truth point reported for prime heads from `13` through
 Let `p` be a prime sieve-sequence head and let
 
 ```math
-M=\prod_{\substack{r<p\\r\text{ prime}}}r.
+M=\prod_{\substack{r\lt p\\r\text{ prime}}}r.
 ```
 
 Define the number of stage-`p` survivors strictly inside the square-safe window
@@ -26,7 +26,7 @@ A(p)=\#\{n\in[p,p^2):\gcd(n,M)=1\}.
 The practical density estimate is
 
 ```math
-\widehat A(p)=(p^2-p)\prod_{\substack{r<p\\r\text{ prime}}}\left(1-\frac1r\right).
+\widehat A(p)=(p^2-p)\prod_{\substack{r\lt p\\r\text{ prime}}}\left(1-\frac1r\right).
 ```
 
 ## Candidate Hypothesis
@@ -75,7 +75,7 @@ improvement of the ratio.
 Mertens' product theorem controls
 
 ```math
-\prod_{\substack{r<p\\r\text{ prime}}}\left(1-\frac1r\right),
+\prod_{\substack{r\lt p\\r\text{ prime}}}\left(1-\frac1r\right),
 ```
 
 which describes a global or full-period density. The candidate needs a lower
