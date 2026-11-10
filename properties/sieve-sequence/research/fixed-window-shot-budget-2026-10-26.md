@@ -23,7 +23,7 @@ fixed endpoint window [lo,hi]. Let G_t count its complete candidate pairs,
 and let P_t contain the still-uninstalled primes at most sqrt(hi). Define
 
 ```math
-U_t=\sum_{p\in P_t}\#\{v\in V_t:p<v,\ p\mid v\}.
+U_t=\sum_{p\in P_t}\#\{v\in V_t:p\lt v,\ p\mid v\}.
 ```
 
 U_t is calculated using the current accepted values, before running the

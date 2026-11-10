@@ -12,11 +12,11 @@ below s in both windows and define
 
 ```math
 \begin{aligned}
-M_s&=\prod_{\ell<s,\ \ell\ \mathrm{prime}}\ell,\\
-\mathcal H&=\{a\in\mathbb Z:t\le a,\ a+2<q^2,
+M_s&=\prod_{\ell\lt s,\ \ell\ \mathrm{prime}}\ell,\\
+\mathcal H&=\{a\in\mathbb Z:t\le a,\ a+2\lt q^2,
                         \ \gcd(a(a+2),M_s)=1\},\\
-h(a)&=|\{\ell:s\le\ell<q,\ \ell\ \mathrm{prime},\ \ell\mid a(a+2)\}|,\\
-j(a)&=|\{r:q\le r<t,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
+h(a)&=|\{\ell:s\le\ell\lt q,\ \ell\ \mathrm{prime},\ \ell\mid a(a+2)\}|,\\
+j(a)&=|\{r:q\le r\lt t,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
 K_i&=|\{a\in\mathcal H:j(a)=i\}|,\qquad i=1,2.
 \end{aligned}
 ```
@@ -45,7 +45,7 @@ the first prime above s squared. Thus t=q. Equality q=s squared is impossible
 because q is prime and s squared is composite. Consequently
 
 ```math
-\boxed{t=q\quad\text{or}\quad q<s^2.}
+\boxed{t=q\quad\text{or}\quad q\lt s^2.}
 ```
 
 In the first case there are no new filters and J=K_1=K_2=0. All following
@@ -57,7 +57,7 @@ Take a shared candidate and a new filter prime r in [q,t) dividing its
 endpoint n. The endpoint lies in [t,q squared), so n=r*u gives
 
 ```math
-1<u<q<s^2.
+1\lt u\lt q\lt s^2.
 ```
 
 Here u>1 follows from n>=t>r, and u<q from n<q squared and r>=q. Old
@@ -65,7 +65,7 @@ acceptance excludes every prime factor below s from u. If u were composite,
 it would therefore be at least s squared. This is impossible. Hence
 
 ```math
-\boxed{n=r\ell,\qquad q\le r<t,\quad s\le\ell<q,
+\boxed{n=r\ell,\qquad q\le r\lt t,\quad s\le\ell\lt q,
        \quad r,\ell\text{ prime}.}
 ```
 

@@ -75,7 +75,7 @@ This is the exact form a successful cumulative max-shot proof would need.
 The exact complete-period count
 
 ```math
-\prod_{r<p}(r-2)
+\prod_{r\lt p}(r-2)
 ```
 
 counts cyclic residue gaps over a full period. It does not imply that the
@@ -134,7 +134,7 @@ populations are nested; and
 
 ```math
 \text{(Certification)}quad
-x+2<q^2
+x+2\lt q^2
 \Longrightarrow
 (x,x+2)\text{ is a twin-prime pair after the }q\text{-filters}.
 ```

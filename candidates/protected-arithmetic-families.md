@@ -14,7 +14,7 @@ After installing a finite set of prime filters containing 2 and 3, consider K
 existing candidate pairs with equally spaced starts
 
 ```math
-x_j=a+jd,\qquad (x_j,x_j+2),\qquad 0\le j<K,
+x_j=a+jd,\qquad (x_j,x_j+2),\qquad 0\le j\lt K,
 ```
 
 where a and d are positive integers and a exceeds every installed prime.
@@ -83,7 +83,7 @@ arithmetic as the established [Bad-Separator Deletion property](
 Let
 
 ```math
-H_{K,d}=\{jd,jd+2:0\le j<K\}.
+H_{K,d}=\{jd,jd+2:0\le j\lt K\}.
 ```
 
 For an installed prime r, a surviving translated family requires

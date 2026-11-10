@@ -32,8 +32,8 @@ Let p>=5 and q>p be primes. Write
 
 ```math
 \begin{aligned}
-M&=\prod_{\substack{r<p\\r\ \mathrm{prime}}}r,
-&\mathcal B&=\{r:r\ \mathrm{prime},\ p\le r<q\},\\
+M&=\prod_{\substack{r\lt p\\r\ \mathrm{prime}}}r,
+&\mathcal B&=\{r:r\ \mathrm{prime},\ p\le r\lt q\},\\
 b&=|\mathcal B|,
 &H&=q^2-q-2.
 \end{aligned}
@@ -239,7 +239,7 @@ Since Q_b>=1, it follows that
 
 ```math
 \boxed{
-H<M\quad\Longrightarrow\quad
+H\lt M\quad\Longrightarrow\quad
 \frac HM B_3<1\le Q_b.
 }
 ```
@@ -269,7 +269,7 @@ At m=11, m(m-1)/2-(4m+6)=5; increasing m by one increases this difference
 by m-4>0. Consequently, for all such m,
 
 ```math
-H<q^2<4p^4<2^{4m+6}<2^{m(m-1)/2}<M.
+H\lt q^2<4p^4<2^{4m+6}<2^{m(m-1)/2}\lt M.
 ```
 
 The preceding obstruction now applies to every square-jump starting head in
@@ -441,8 +441,8 @@ requiring six distinct batch primes with
 
 ```math
 r_1r_2r_3+2=s_1s_2s_3,
-\qquad q\le r_1r_2r_3<q^2-2,
-\qquad p\le r_i,s_i<q.
+\qquad q\le r_1r_2r_3\lt q^2-2,
+\qquad p\le r_i,s_i\lt q.
 ```
 
 Ordinary prime counts alone do not automatically estimate this correlation

@@ -155,7 +155,7 @@ itself. Instead use
 a_p(t)=
 \begin{cases}
 0,&t\le p,\\
-t-p,&p<t<p+1,\\
+t-p,&p\lt t\lt p+1,\\
 1,&t\ge p+1.
 \end{cases}
 ```
@@ -174,7 +174,7 @@ Let p_0=2 and start with Z_0(t)=t+i sin^2(pi t). At stage k use
 \beta_k&=2^{-(k+1)},\\
 Z_{k+1}(t)&=Z_k(t)+i\beta_k a_{p_k}(t)|D_{p_k}(t)|^2,\\
 p_{k+1}&=\min\{n\in\mathbb Z:n>p_k,
-                   \operatorname{Im}Z_{k+1}(n)=0\}.
+                   \text{Im}Z_{k+1}(n)=0\}.
 \end{aligned}
 ```
 

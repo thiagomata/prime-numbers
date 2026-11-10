@@ -13,7 +13,7 @@ are 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 and 31.
 The plotted height is
 
 ```math
-\operatorname{Im}Z_P(t)=\sin^2(\pi t)+
+\text{Im}Z_P(t)=\sin^2(\pi t)+
 \sum_{p\in P}\min(1,\max(0,t-p))
 \left|\frac1p\sum_{\ell=0}^{p-1}e^{2\pi i\ell t/p}\right|^2.
 ```

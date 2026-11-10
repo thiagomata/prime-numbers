@@ -140,8 +140,8 @@ multiplicatively. The sieve product over primes below $y$ is
 
 ```math
 \begin{aligned}
-V(y)&=\prod_{\ell<y}\left(1-\frac{\rho(\ell)}{\ell}\right)
-     =2C_2(y)\left(\prod_{\ell<y}\left(1-\frac1\ell\right)\right)^2,
+V(y)&=\prod_{\ell\lt y}\left(1-\frac{\rho(\ell)}{\ell}\right)
+     =2C_2(y)\left(\prod_{\ell\lt y}\left(1-\frac1\ell\right)\right)^2,
 &&[\text{By Definition}]
 \end{aligned}
 ```
@@ -149,7 +149,7 @@ V(y)&=\prod_{\ell<y}\left(1-\frac{\rho(\ell)}{\ell}\right)
 where
 
 ```math
-C_2(y)=\prod_{3\le\ell<y}\left(1-\frac1{(\ell-1)^2}\right)
+C_2(y)=\prod_{3\le\ell\lt y}\left(1-\frac1{(\ell-1)^2}\right)
 ```
 
 has a positive limit $C_2$. Mertens' product estimate
@@ -173,7 +173,7 @@ dimension two,
 
 ```math
 \begin{aligned}
-\sigma_2(t)&=\frac{t^2}{8e^{2\gamma}}\quad(0<t\le2),
+\sigma_2(t)&=\frac{t^2}{8e^{2\gamma}}\quad(0\lt t\le2),
 & F_2(2)&=\frac1{\sigma_2(2)}=2e^{2\gamma};
 \end{aligned}
 ```
@@ -223,7 +223,7 @@ Define the family of this article by
 \begin{aligned}
 \mathcal G(p,q)=\{a\in(X/2,X]:\;&a\text{ prime},\\
 &a+2\text{ prime, or }a+2=uv
- \text{ with primes }Z<u<v\}.
+ \text{ with primes }Z\lt u\lt v\}.
 \end{aligned}
 ```
 
@@ -252,7 +252,7 @@ If the partner is composite, its smaller factor satisfies
 
 ```math
 \begin{aligned}
-Z&<u<\sqrt{a+2}\le\sqrt Y,
+Z&\lt u<\sqrt{a+2}\le\sqrt Y,
 &&[\text{Least Factor}]
 \end{aligned}
 ```
@@ -354,7 +354,7 @@ exponent range $[3/11,1/2]$,
 
 ```math
 \begin{aligned}
-\sum_{\substack{Z<u\le\sqrt Y/2\\u\text{ prime}}}
+\sum_{\substack{Z\lt u\le\sqrt Y/2\\u\text{ prime}}}
   \frac1{u\,\log^2(Y/u)}
 &=\frac1{(\log Y)^2}
   \left\{\int_{3/11}^{1/2}\frac{dt}{t(1-t)^2}+o(1)\right\}
@@ -425,7 +425,7 @@ the local formula and the summed remainders at the fixed level
 
 ```math
 \begin{aligned}
-\sum_{\substack{X/2<a\le X\\a\equiv-2\pmod d}}\Lambda(a)
+\sum_{\substack{X/2\lt a\le X\\a\equiv-2\pmod d}}\Lambda(a)
 &=g(d)\frac X2+r_d,
 & D&=(X/2)^{2/5},&
 \sum_{\substack{d\le D\\d\text{ odd, sqfree}}}|r_d|
@@ -440,8 +440,8 @@ complement densities is, by the identity of
 
 ```math
 \begin{aligned}
-W(Z)&=\prod_{3\le\ell<Z}\frac{\ell-2}{\ell-1}
-=\frac{V(Z)}{\prod_{\ell<Z}(1-1/\ell)}
+W(Z)&=\prod_{3\le\ell\lt Z}\frac{\ell-2}{\ell-1}
+=\frac{V(Z)}{\prod_{\ell\lt Z}(1-1/\ell)}
 =\frac{2C_2e^{-\gamma}+o(1)}{\log Z}.
 &&[\text{Mertens Product}]
 \end{aligned}
@@ -530,7 +530,7 @@ Diamond--Halberstam--Richert differential equations, as recorded in
 ```math
 \begin{aligned}
 Q'(s)&=\frac{2\sigma_2(s-2)}{s^3\sigma_2(s)^2}>0
-\quad(2<s\le\alpha_2),
+\quad(2\lt s\le\alpha_2),
 &&[\text{Differential Equation}]\\
 Q'(s)&=2s\,f_2(s-1)\ge0\quad(s>\alpha_2),
 &&[\text{Differential Equation}]
@@ -562,7 +562,7 @@ each integer $a\in(X/2,X]$, the signed weight
 ```math
 \begin{aligned}
 \sigma(a)=\mathbf 1_{\substack{a\text{ prime}\\ a+2\text{ prime}}}
--\mathbf 1_{\substack{a\text{ prime}\\ a+2=uv,\ Z<u<v\text{ prime}}}.
+-\mathbf 1_{\substack{a\text{ prime}\\ a+2=uv,\ Z\lt u\lt v\text{ prime}}}.
 &&[\text{By Definition}]
 \end{aligned}
 ```
@@ -577,7 +577,7 @@ family partitions into its twin members and its semiprime members, so
 \begin{aligned}
 |\mathcal G|&=T+B
 &&[\text{Partition}]\\
-\sum_{X/2<a\le X}\sigma(a)&=T-B=2T-|\mathcal G|.
+\sum_{X/2\lt a\le X}\sigma(a)&=T-B=2T-|\mathcal G|.
 &&[\text{Substitution}]
 \end{aligned}
 ```
@@ -589,7 +589,7 @@ any fixed $\delta>0$,
 
 ```math
 \begin{aligned}
-\sum_{X/2<a\le X}\sigma(a)\ge-(1-\delta)|\mathcal G|
+\sum_{X/2\lt a\le X}\sigma(a)\ge-(1-\delta)|\mathcal G|
 &\Longrightarrow
 2T\ge\delta|\mathcal G|
 &&[\text{Substitution}]\\
@@ -664,7 +664,7 @@ lie in one common sifted set,
 
 ```math
 \begin{aligned}
-\{a\in(X/2,X]:\;&a\text{ prime},\ a+2\text{ has no prime factor}<z\},
+\{a\in(X/2,X]:\;&a\text{ prime},\ a+2\text{ has no prime factor}\lt z\},
 &&[\text{By Definition}]
 \end{aligned}
 ```
@@ -755,7 +755,7 @@ of the attempt:
 &&[\text{Allowance}]\\
 |\mathcal G|&\le5C_2\frac Y{(\log Y)^2},
 &&[\text{Ceiling}]\\
-\sum_{X/2<a\le X}\sigma(a)&=2T-|\mathcal G|,
+\sum_{X/2\lt a\le X}\sigma(a)&=2T-|\mathcal G|,
 &&[\text{Identity}]\\
 s&=2\theta<2<\beta_2\quad(\theta\le1).
 &&[\text{Barrier}]

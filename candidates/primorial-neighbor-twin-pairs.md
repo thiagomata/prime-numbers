@@ -107,7 +107,7 @@ Together with the old-prime protection, this confines a possible first
 rejection to
 
 ```math
-P<q\le\sqrt{m_k+1},\qquad q\text{ prime}.
+P\lt q\le\sqrt{m_k+1},\qquad q\text{ prime}.
 ```
 
 The existence of a small prime divisor is the fact used here; it would be
@@ -117,7 +117,7 @@ Define the finite product, with an empty product interpreted as one,
 
 ```math
 R_k=
-\prod_{\substack{P<q\le\sqrt{m_k+1}\\q\text{ prime}}}
+\prod_{\substack{P\lt q\le\sqrt{m_k+1}\\q\text{ prime}}}
 \left(1-\delta_q(m_k^2-1)\right).
 ```
 
@@ -168,7 +168,7 @@ m_k-1>L, so at least one endpoint is composite. Choose q_k to be the smallest
 prime dividing a composite endpoint. Then
 
 ```math
-p_k<q_k\le\sqrt{m_k+1},\qquad m_k^2\equiv1\pmod{q_k}.
+p_k\lt q_k\le\sqrt{m_k+1},\qquad m_k^2\equiv1\pmod{q_k}.
 ```
 
 Since p_k tends to infinity, q_k must also exceed every fixed bound eventually.

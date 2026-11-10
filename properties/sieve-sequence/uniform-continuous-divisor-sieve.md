@@ -302,7 +302,7 @@ particularly simple:
 ```math
 h_M(n)-h_{M-1}(n)=
 \begin{cases}
-1,&M<n\text{ and }M\mid n,\\
+1,&M\lt n\text{ and }M\mid n,\\
 0,&\text{otherwise}.
 \end{cases}
 ```

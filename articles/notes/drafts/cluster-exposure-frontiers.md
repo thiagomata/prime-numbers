@@ -589,7 +589,7 @@ from the binomial law with that hit probability:
 \begin{aligned}
 H_{p,\alpha}^{rand}(W)
 &\sim
-\operatorname{Binomial}(N,\pi_\alpha(p))
+\text{Binomial}(N,\pi_\alpha(p))
 &&\text{[Independent Companion Hits]}.
 \end{aligned}
 ```

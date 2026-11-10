@@ -78,7 +78,7 @@ p(1+1/(log p)^3), the number m of transitions is asymptotic to p/(log p)^4,
 and the actual cumulative budget satisfies
 
 ```math
-\frac{\sum_{i<m}B_i}{F_0}=O(1/\log p)\longrightarrow0.
+\frac{\sum_{i\lt m}B_i}{F_0}=O(1/\log p)\longrightarrow0.
 ```
 
 This estimate is proved without a positive-margin assumption. If the starting

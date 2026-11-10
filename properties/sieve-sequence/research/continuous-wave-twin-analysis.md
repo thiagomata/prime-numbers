@@ -56,7 +56,7 @@ Expanding a squared modulus and grouping the differences between its two
 indices gives the finite Fourier expression
 
 ```math
-W_N(t)=\frac1{N^2}\sum_{|r|<N}(N-|r|)e^{2\pi irt/N}.
+W_N(t)=\frac1{N^2}\sum_{|r|\lt N}(N-|r|)e^{2\pi irt/N}.
 ```
 
 Indeed, the difference r occurs N-|r| times in the double sum. Set N=km.
@@ -66,8 +66,8 @@ The sum over j is k when k divides r and zero otherwise. Only r=ks remain:
 ```math
 \begin{aligned}
 \sum_{j=0}^{k-1}W_{km}(t+jm)
-&=\frac1{k^2m^2}\sum_{|s|<m}k(km-k|s|)e^{2\pi ist/m}\\
-&=\frac1{m^2}\sum_{|s|<m}(m-|s|)e^{2\pi ist/m}\\
+&=\frac1{k^2m^2}\sum_{|s|\lt m}k(km-k|s|)e^{2\pi ist/m}\\
+&=\frac1{m^2}\sum_{|s|\lt m}(m-|s|)e^{2\pi ist/m}\\
 &=W_m(t).
 \end{aligned}
 ```

@@ -22,7 +22,7 @@ Let p tend to infinity through prime values. Put
 \begin{aligned}
 x&=p\left(1+\frac1{(\log p)^3}\right),\\
 P&=\max\{r\le x:r\text{ prime}\},\\
-p_0=p<p_1<\cdots<p_m&=P,\\
+p_0=p\lt p_1<\cdots\lt p_m&=P,\\
 q_i&=\min\{r>p_i^2:r\text{ prime}\},\\
 L_i&=L(p_i,q_i),\qquad F_0=F(p,q_0).
 \end{aligned}
@@ -66,7 +66,7 @@ We use de la Vallée Poussin's classical quantitative prime number theorem
 [Evertse's notes, equation (1.1), printed p.53](https://pub.math.leidenuniv.nl/~evertsejh/ant18-1.pdf#page=3):
 
 ```math
-\pi(y)=\operatorname{Li}(y)
+\pi(y)=\text{Li}(y)
        +O\!\left(ye^{-c\sqrt{\log y}}\right),\qquad c>0.
 ```
 
@@ -107,8 +107,8 @@ The fresh-region bounds telescope rather than acquire a factor m:
 
 ```math
 \begin{aligned}
-\sum_{i<m}|N_i|
-&\le\frac{35}{6}\sum_{i<m}(q_{i+1}^2-q_i^2)\\
+\sum_{i\lt m}|N_i|
+&\le\frac{35}{6}\sum_{i\lt m}(q_{i+1}^2-q_i^2)\\
 &=\frac{35}{6}(q_m^2-q_0^2)
  =O\!\left(\frac{p^4}{(\log p)^3}\right).
 \end{aligned}
@@ -117,7 +117,7 @@ The fresh-region bounds telescope rather than acquire a factor m:
 The lost-region caps obey
 
 ```math
-\sum_{i<m}R_{{\rm cap},i}
+\sum_{i\lt m}R_{{\rm cap},i}
 \le\frac{q_m-q_0}{6}+m
 =O\!\left(\frac{p^2}{(\log p)^3}+p\right).
 ```
@@ -126,8 +126,8 @@ The new-filter intervals [q_i,q_{i+1}) are disjoint. Their prime counts
 therefore telescope, too:
 
 ```math
-\sum_{i<m}J_i
-\le3\pi(q_m)\sum_{i<m}b_i
+\sum_{i\lt m}J_i
+\le3\pi(q_m)\sum_{i\lt m}b_i
 =3\pi(q_m)\bigl(\pi(q_m-1)-\pi(q_0-1)\bigr).
 ```
 
@@ -140,7 +140,7 @@ Quantitative PNT and q_i comparable to p squared give
 &=O\!\left(\frac{q_m-q_0}{\log p}
                +p^2e^{-c'\sqrt{\log p}}\right)\\
 &=O\!\left(\frac{p^2}{(\log p)^4}\right),\\
-\sum_{i<m}J_i&=O\!\left(\frac{p^4}{(\log p)^5}\right).
+\sum_{i\lt m}J_i&=O\!\left(\frac{p^4}{(\log p)^5}\right).
 \end{aligned}
 ```
 
@@ -152,7 +152,7 @@ assumed when that length might vanish.
 Combining these estimates with the lower bound on F_0 proves
 
 ```math
-\boxed{\frac1{F_0}\sum_{i<m}B_i
+\boxed{\frac1{F_0}\sum_{i\lt m}B_i
        =O\!\left(\frac1{\log p}\right)\longrightarrow0.}
 ```
 
@@ -164,8 +164,8 @@ individual ratios B_i/F_i. Since B_i>=0, it bounds every prefix uniformly.
 For each 0<=j<=m, summing the actual transition inequalities gives
 
 ```math
-L_j\ge L_0-\sum_{i<j}B_i
-    \ge L_0-\sum_{i<m}B_i.
+L_j\ge L_0-\sum_{i\lt j}B_i
+    \ge L_0-\sum_{i\lt m}B_i.
 ```
 
 Consequently, for each fixed eta>0, every sufficiently late starting prime

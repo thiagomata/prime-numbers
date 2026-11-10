@@ -86,7 +86,7 @@ a new arithmetic function.
 **Derived identity:** At every integer n >= 2,
 
 ```math
-H_P(n)=\sum_{p\in P}\mathbf 1_{p<n,\ p\mid n}.
+H_P(n)=\sum_{p\in P}\mathbf 1_{p\lt n,\ p\mid n}.
 ```
 
 The sine term vanishes. Each prime detector is one precisely at its integer
@@ -95,7 +95,7 @@ distinct proper prime divisors, without multiplicity. In particular,
 
 ```math
 H_{P\cup\{q\}}(n)-H_P(n)
-=\mathbf 1_{q<n,\ q\mid n}\in\{0,1\},\qquad q\notin P.
+=\mathbf 1_{q\lt n,\ q\mid n}\in\{0,1\},\qquad q\notin P.
 ```
 
 For P={2,3,5}, the exact examples are H_P(7)=0, H_P(25)=1 and H_P(30)=3.
@@ -137,8 +137,8 @@ For a new filter q not in P, pair-height increment is exactly
 
 ```math
 B_{P\cup\{q\}}(n)-B_P(n)
-=\mathbf 1_{q<n,\ q\mid n}
-+\mathbf 1_{q<n+2,\ q\mid n+2}.
+=\mathbf 1_{q\lt n,\ q\mid n}
++\mathbf 1_{q\lt n+2,\ q\mid n+2}.
 ```
 
 For q>2 it is at most one, since q cannot divide both endpoints.

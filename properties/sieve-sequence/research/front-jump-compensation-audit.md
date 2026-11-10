@@ -17,7 +17,7 @@ Define
 
 ```math
 A_p(X)=\min\{a\ge X:\ s\nmid a(a+2)
-\text{ for every prime }s<p\}.
+\text{ for every prime }s\lt p\}.
 ```
 
 For consecutive prime heads p<q<r, let

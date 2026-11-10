@@ -12,10 +12,10 @@ filters below s and put
 
 ```math
 \begin{aligned}
-M_s&=\prod_{r<s,\ r\ \mathrm{prime}}r,\\
+M_s&=\prod_{r\lt s,\ r\ \mathrm{prime}}r,\\
 W_u&=\{a\in\mathbb Z:u\le a\le u^2-3\},\\
 \mathcal A_{s,u}&=\{a\in W_u:\gcd(a(a+2),M_s)=1\},\\
-h_{s,u}(a)&=|\{r:s\le r<u,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
+h_{s,u}(a)&=|\{r:s\le r\lt u,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
 w(h)&=1-h+\binom h2-\binom h3,\\
 \mathcal V_{\rm new}&=\mathcal A_{s,t}\setminus\mathcal A_{s,q},\\
 N&=\sum_{a\in\mathcal V_{\rm new}}w(h_{s,t}(a)).
@@ -35,7 +35,7 @@ Bertrand's postulate gives s<2p and t<2s squared, whence
 
 ```math
 \begin{aligned}
-t&<2s^2<8p^2<p^4-2<q^2-2 \qquad(p\ge5),\\
+t&<2s^2<8p^2\lt p^4-2\lt q^2-2 \qquad(p\ge5),\\
 W_t\setminus W_q&=\{q^2-2,\ldots,t^2-3\},\\
 D:=|W_t\setminus W_q|&=t^2-q^2.
 \end{aligned}
@@ -63,7 +63,7 @@ under the remaining old filters is used.
 Every fresh endpoint n is smaller than t squared. Bertrand and s>=7 give
 
 ```math
-n<t^2<4s^4<s^5.
+n\lt t^2<4s^4\lt s^5.
 ```
 
 All its prime factors are at least s, by old acceptance. Five distinct batch
@@ -99,7 +99,7 @@ Poussin (1899), in the form stated in
 [Evertse's Leiden notes, equation (1.1), printed p.53](https://pub.math.leidenuniv.nl/~evertsejh/ant18-1.pdf#page=3):
 
 ```math
-\pi(x)=\operatorname{Li}(x)+O\!\left(xe^{-c\sqrt{\log x}}\right),
+\pi(x)=\text{Li}(x)+O\!\left(xe^{-c\sqrt{\log x}}\right),
 \qquad c>0.
 ```
 
@@ -109,7 +109,7 @@ at x+d and x gives
 
 ```math
 \begin{aligned}
-\operatorname{Li}(x+d)-\operatorname{Li}(x)
+\text{Li}(x+d)-\text{Li}(x)
  &=\int_x^{x+d}\frac{du}{\log u}
  \sim\frac{x}{(\log x)^{m+1}},\\
 xe^{-c\sqrt{\log x}}

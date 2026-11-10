@@ -24,10 +24,10 @@ For destination u>=s, define
 
 ```math
 \begin{aligned}
-M_s&=\prod_{r<s,\ r\ \mathrm{prime}}r,\\
+M_s&=\prod_{r\lt s,\ r\ \mathrm{prime}}r,\\
 W_u&=\{a\in\mathbb Z:u\le a\le u^2-3\},\\
 \mathcal A_{s,u}&=\{a\in W_u:\gcd(a(a+2),M_s)=1\},\\
-h_u(a)&=|\{r:s\le r<u,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
+h_u(a)&=|\{r:s\le r\lt u,\ r\ \mathrm{prime},\ r\mid a(a+2)\}|,\\
 w(h)&=1-h+\binom h2-\binom h3.
 \end{aligned}
 ```
@@ -114,9 +114,9 @@ For completeness, the complete-period pair density has an unconditional
 product estimate. Define
 
 ```math
-P(p)=\prod_{r<p,\ r\ \mathrm{prime}}\left(1-\frac1r\right),
+P(p)=\prod_{r\lt p,\ r\ \mathrm{prime}}\left(1-\frac1r\right),
 \qquad
-C_2(p)=\prod_{3\le r<p,\ r\ \mathrm{prime}}
+C_2(p)=\prod_{3\le r\lt p,\ r\ \mathrm{prime}}
             \left(1-\frac1{(r-1)^2}\right).
 ```
 
@@ -128,7 +128,7 @@ Factoring each odd-prime term gives
  &=\left(1-\frac1r\right)^2
    \left(1-\frac1{(r-1)^2}\right),\\
 \delta_p
- &=\frac12\prod_{3\le r<p}\left(1-\frac2r\right)
+ &=\frac12\prod_{3\le r\lt p}\left(1-\frac2r\right)
  =2C_2(p)P(p)^2.
 \end{aligned}
 ```
@@ -192,9 +192,9 @@ The old accepted endpoints have no prime divisor below s. The square rule
 and Bertrand give, for every p>=5,
 
 ```math
-q<2p^2<p^3<s^3,
+q<2p^2\lt p^3\lt s^3,
 \qquad
-q^2<4p^4<p^5<s^5.
+q^2<4p^4\lt p^5\lt s^5.
 ```
 
 These inequalities place a finite budget on their distinct prime factors.

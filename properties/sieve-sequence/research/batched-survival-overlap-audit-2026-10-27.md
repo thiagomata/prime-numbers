@@ -34,7 +34,7 @@ window is [q,q squared), with both endpoints of a pair inside it. Define
 
 ```math
 \begin{aligned}
-\mathcal A&=\{a\in\mathbb Z:q\le a,\ a+2<q^2,\ \gcd(a(a+2),M)=1\},\\
+\mathcal A&=\{a\in\mathbb Z:q\le a,\ a+2\lt q^2,\ \gcd(a(a+2),M)=1\},\\
 C&=|\mathcal A|,\\
 h(a)&=|\{r\in\mathcal B:r\mid a(a+2)\}|,\\
 N_j&=|\{a\in\mathcal A:h(a)=j\}|,\\
@@ -101,7 +101,7 @@ hit by at least four contributes a nonpositive penalty. Summing yields
 Consequently,
 
 ```math
-\boxed{I_1-I_2+I_3<C\quad\Longrightarrow\quad S\ge L_3>0.}
+\boxed{I_1-I_2+I_3\lt C\quad\Longrightarrow\quad S\ge L_3>0.}
 ```
 
 This condition is sufficient, not necessary. If no pair receives four hits,

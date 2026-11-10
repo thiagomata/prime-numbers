@@ -35,10 +35,10 @@ batch construction. Define
 
 ```math
 \begin{aligned}
-M_p&=\prod_{\substack{r<p\\r\ \mathrm{prime}}}r,\\
-\mathcal B&=\{r:r\ \mathrm{prime},\ p\le r<q\},\\
+M_p&=\prod_{\substack{r\lt p\\r\ \mathrm{prime}}}r,\\
+\mathcal B&=\{r:r\ \mathrm{prime},\ p\le r\lt q\},\\
 K&=\prod_{r\in\mathcal B}r,\qquad M_q=M_pK,\\
-W_q&=\{a\in\mathbb Z:q\le a,\ a+2<q^2\}.
+W_q&=\{a\in\mathbb Z:q\le a,\ a+2\lt q^2\}.
 \end{aligned}
 ```
 
@@ -99,7 +99,7 @@ of distinct such values removed by the entire batch:
 
 ```math
 \begin{aligned}
-\mathcal V&=\{n\in\mathbb Z:q\le n<q^2,\ \gcd(n,M_p)=1\},\\
+\mathcal V&=\{n\in\mathbb Z:q\le n\lt q^2,\ \gcd(n,M_p)=1\},\\
 T&=|\{n\in\mathcal V:\gcd(n,K)>1\}|,\\
 D&=|\{a\in\mathcal A:\gcd(a(a+2),K)>1\}|.
 \end{aligned}

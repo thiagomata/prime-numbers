@@ -35,7 +35,7 @@ W_q&=\{a\in\mathbb Z:q\le a\le q^2-3\},\\
 \mathcal A_{p,q}
  &=\{a\in W_q:\gcd(a(a+2),M_p)=1\},\\
 h_{p,q}(a)
- &=|\{r:r\text{ prime},\ p\le r<q,\ r\mid a(a+2)\}|,\\
+ &=|\{r:r\text{ prime},\ p\le r\lt q,\ r\mid a(a+2)\}|,\\
 w(h)&=1-h+\binom h2-\binom h3,\\
 L(p,q)&=\sum_{a\in\mathcal A_{p,q}}w(h_{p,q}(a)).
 \end{aligned}
@@ -154,7 +154,7 @@ destination q fixed. At the terminal head the remaining batch is empty, so
 every accepted start has h=0 and P(q,q)=0. Telescoping proves
 
 ```math
-\boxed{\sum_{i<k}A_i=P(p,q).}
+\boxed{\sum_{i\lt k}A_i=P(p,q).}
 ```
 
 Thus all fixed-target purification gain repays exactly the certificate's
@@ -296,7 +296,7 @@ At a square destination, Bertrand gives q<2p squared. Every accepted
 endpoint n therefore satisfies
 
 ```math
-n<q^2<4p^4<p^5\qquad(p\ge5).
+n\lt q^2<4p^4\lt p^5\qquad(p\ge5).
 ```
 
 Old acceptance excludes factors below p. Thus each endpoint has at most

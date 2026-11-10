@@ -21,8 +21,8 @@ installed exactly the prime filters smaller than `p`. Define
 
 ```math
 \begin{aligned}
-M_p&=\prod_{\substack{r<p\\r\ \mathrm{prime}}}r,\\
-\mathcal B_{p,q}&=\{r:r\ \mathrm{prime},\ p\le r<q\},\\
+M_p&=\prod_{\substack{r\lt p\\r\ \mathrm{prime}}}r,\\
+\mathcal B_{p,q}&=\{r:r\ \mathrm{prime},\ p\le r\lt q\},\\
 K_{p,q}&=\prod_{r\in\mathcal B_{p,q}}r,\\
 M_q&=M_pK_{p,q}.
 \end{aligned}
@@ -31,7 +31,7 @@ M_q&=M_pK_{p,q}.
 Represent the old cycle by its canonical residues
 
 ```math
-R_p=\{a\in\mathbb Z:0\le a<M_p,\ \gcd(a,M_p)=1\}.
+R_p=\{a\in\mathbb Z:0\le a\lt M_p,\ \gcd(a,M_p)=1\}.
 ```
 
 Repeating the gap cycle by each successive prime in the batch is equivalent to
@@ -39,7 +39,7 @@ repeating it `K_{p,q}` times. In terms of values, these are translated copies,
 not repeated identical integers. The complete expanded residue set is
 
 ```math
-E_{p,q}=\{a+jM_p:a\in R_p,\ 0\le j<K_{p,q},\ j\in\mathbb Z\}.
+E_{p,q}=\{a+jM_p:a\in R_p,\ 0\le j\lt K_{p,q},\ j\in\mathbb Z\}.
 ```
 
 Filter this set once by all primes in the batch. The resulting identity is
@@ -47,7 +47,7 @@ Filter this set once by all primes in the batch. The resulting identity is
 ```math
 \begin{aligned}
 \{n\in E_{p,q}:\forall r\in\mathcal B_{p,q},\ r\nmid n\}
-&=\{n\in\mathbb Z:0\le n<M_q,\ \gcd(n,M_q)=1\}\\
+&=\{n\in\mathbb Z:0\le n\lt M_q,\ \gcd(n,M_q)=1\}\\
 &=R_q.
 \end{aligned}
 ```
@@ -60,10 +60,10 @@ filter adds exactly the missing primes below `q`:
 ```math
 \begin{aligned}
 n\in E_{p,q}\ \land\ \forall r\in\mathcal B_{p,q},\ r\nmid n
-&\iff 0\le n<M_q\ \land\ \gcd(n,M_p)=1
+&\iff 0\le n\lt M_q\ \land\ \gcd(n,M_p)=1
        \ \land\ \gcd(n,K_{p,q})=1
 &&[\text{By Definition}]\\
-&\iff 0\le n<M_q\ \land\ \gcd(n,M_q)=1
+&\iff 0\le n\lt M_q\ \land\ \gcd(n,M_q)=1
 &&[\text{By Prime Factorization}]\\
 &\iff n\in R_q.
 &&[\text{Q.E.D.}]

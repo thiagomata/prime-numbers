@@ -19,7 +19,7 @@ largest polynomial value, is the size parameter in the sieve. For z>=3 put
 
 ```math
 \begin{aligned}
-P(z)&=\prod_{\ell<z,\ \ell\ \mathrm{prime}}\ell,\\
+P(z)&=\prod_{\ell\lt z,\ \ell\ \mathrm{prime}}\ell,\\
 \mathcal C_q(z)&=|\{a\in W_q:\gcd(a(a+2),P(z))=1\}|.
 \end{aligned}
 ```
@@ -54,7 +54,7 @@ For real D>=2, the harmonic-sum bound therefore gives
 
 ```math
 \begin{aligned}
-\sum_{d<D}\mu^2(d)7^{\omega(d)}|R_d|
+\sum_{d\lt D}\mu^2(d)7^{\omega(d)}|R_d|
 &\le\sum_{n\le D}\tau_{14}(n)\\
 &\le D\left(\sum_{n\le D}\frac1n\right)^{13}
  \le D(1+\log D)^{13}.
@@ -69,7 +69,7 @@ most D only increases this upper bound.
 For sufficiently large H, set D=H/(log H)^20, so D>=2. Then
 
 ```math
-\boxed{\sum_{d<D}\mu^2(d)7^{\omega(d)}|R_d|
+\boxed{\sum_{d\lt D}\mu^2(d)7^{\omega(d)}|R_d|
        =O\!\left(\frac H{(\log H)^7}\right).}
 ```
 
@@ -83,7 +83,7 @@ Only squarefree d enter this requirement; their multiplicative density is
 The sieve dimension is2. Mertens' weighted-prime estimate yields
 
 ```math
-\sum_{\ell<y}\frac{\rho(\ell)\log\ell}{\ell}
+\sum_{\ell\lt y}\frac{\rho(\ell)\log\ell}{\ell}
  =2\log y+O(1).
 ```
 
@@ -92,8 +92,8 @@ The prime2 changes only a constant. See Pollack,
 for the classical weighted estimate. The corresponding product is
 
 ```math
-V(z)=\prod_{\ell<z}\left(1-\frac{\rho(\ell)}\ell\right)
- =\frac12\prod_{3\le\ell<z}\left(1-\frac2\ell\right)
+V(z)=\prod_{\ell\lt z}\left(1-\frac{\rho(\ell)}\ell\right)
+ =\frac12\prod_{3\le\ell\lt z}\left(1-\frac2\ell\right)
  \asymp\frac1{(\log z)^2}.
 ```
 
@@ -111,8 +111,8 @@ classical lower sieve. Factoring odd-prime terms as in the component analysis,
 
 ```math
 \begin{aligned}
-V(y)&=2C_2(y)\left(\prod_{\ell<y}(1-1/\ell)\right)^2,\\
-C_2(y)&=\prod_{3\le\ell<y}\left(1-\frac1{(\ell-1)^2}\right).
+V(y)&=2C_2(y)\left(\prod_{\ell\lt y}(1-1/\ell)\right)^2,\\
+C_2(y)&=\prod_{3\le\ell\lt y}\left(1-\frac1{(\ell-1)^2}\right).
 \end{aligned}
 ```
 
@@ -138,7 +138,7 @@ Choosing a larger fixed constant L absorbs the bounded range of smaller w.
 Thus, for every 2<=w<=z,
 
 ```math
-\boxed{\prod_{w\le\ell<z}\left(1-\frac{\rho(\ell)}\ell\right)^{-1}
+\boxed{\prod_{w\le\ell\lt z}\left(1-\frac{\rho(\ell)}\ell\right)^{-1}
 \le\left(\frac{\log z}{\log w}\right)^2
    \left(1+\frac L{\log w}\right).}
 ```
@@ -162,7 +162,7 @@ H, the verified multiplicative density and level D. A convenient statement is
  -2\mathcal R_4(D,z),\\
 u&=\frac{\log D}{\log z},\qquad 2\le z\le D,\\
 \mathcal R_4(D,z)
-&=\sum_{\substack{d<D\\d\mid P(z)}}4^{\omega(d)}|R_d|.
+&=\sum_{\substack{d\lt D\\d\mid P(z)}}4^{\omega(d)}|R_d|.
 \end{aligned}
 ```
 
@@ -209,7 +209,7 @@ different destination rule, permitted by the general batch construction.
 Bertrand gives
 
 ```math
-p^{11/5}<q<2p^{11/5},\qquad
+p^{11/5}\lt q<2p^{11/5},\qquad
 H\asymp p^{22/5},\qquad
 \frac{\log D}{\log p}\longrightarrow\frac{22}5>\beta_2.
 ```
@@ -245,7 +245,7 @@ The new candidate bound does not require a certificate, but its compatibility
 with the cubic benchmark can be checked independently. Put
 
 ```math
-\lambda(p,q)=\sum_{p\le\ell<q}\frac2\ell,
+\lambda(p,q)=\sum_{p\le\ell\lt q}\frac2\ell,
 \qquad B_3(p,q)=1-e_1+e_2-e_3.
 ```
 
@@ -366,7 +366,7 @@ z^5=X^{6/5}>X+2\ge a+2,
 If a+2 is composite, its least prime factor ell satisfies
 
 ```math
-z\le\ell\le\sqrt{a+2}<q.
+z\le\ell\le\sqrt{a+2}\lt q.
 ```
 
 So a remaining filter can still reject the pair. The partner is either
@@ -409,7 +409,7 @@ For q>3, the whole interval (X/2,X] lies inside W_q. Define
 \begin{aligned}
 \mathcal G(p,q)=\{a\in(X/2,X]:\;&a\text{ prime},\\
 &a+2\text{ prime, or }a+2=uv
- \text{ with primes }Z<u<v\}.
+ \text{ with primes }Z\lt u\lt v\}.
 \end{aligned}
 ```
 
@@ -448,7 +448,7 @@ remains a true limitation of that estimate, not of candidate existence.
 If the partner is composite, its smaller factor still satisfies
 
 ```math
-Z<u<\sqrt{a+2}<q.
+Z\lt u<\sqrt{a+2}\lt q.
 ```
 
 Thus a remaining filter can reject it. No positive count of prime partners,
@@ -541,14 +541,14 @@ Absorbing the preceding absolute constants into K yields
 
 ```math
 \boxed{M_u\le K\frac{Y}{u(\log Y)^2}
-\quad\text{for every prime }Z<u<\sqrt Y.}
+\quad\text{for every prime }Z\lt u<\sqrt Y.}
 ```
 
 For any set J of possible least factors, define
 
 ```math
 B(J)=|\{a\in\mathcal G(p,q):a+2=uv,
-                  \ Z<u<v\text{ prime},\ u\in J\}|.
+                  \ Z\lt u\lt v\text{ prime},\ u\in J\}|.
 ```
 
 Unique factorization assigns exactly one smaller factor to each such
@@ -556,7 +556,7 @@ partner. Thus this is a bound on actual first rejections:
 
 ```math
 \boxed{B(J)\le\frac{KY}{(\log Y)^2}
-             \sum_{\substack{u\in J\\Z<u<\sqrt Y\\u\text{ prime}}}\frac1u.}
+             \sum_{\substack{u\in J\\Z\lt u<\sqrt Y\\u\text{ prime}}}\frac1u.}
 ```
 
 The first endpoint is prime and greater than q, so u really is the first
@@ -566,7 +566,7 @@ below q, but it does not create a second first rejection.
 For the whole factor range, Mertens' reciprocal-prime estimate gives
 
 ```math
-\sum_{Z<u<\sqrt Y}\frac1u
+\sum_{Z\lt u<\sqrt Y}\frac1u
 =\log\left(\frac{\log\sqrt Y}{\log Z}\right)+o(1)
 \longrightarrow\log(11/6).
 ```
@@ -598,7 +598,7 @@ reciprocal-prime estimate and the uniform bound give
 
 ```math
 \begin{aligned}
-\sum_{q^\eta\le u<q}\frac1u
+\sum_{q^\eta\le u\lt q}\frac1u
  &=\log(1/\eta)+o(1),\\
 B_{\mathrm{late}}
  &\le\frac{KY}{(\log Y)^2}
@@ -779,7 +779,7 @@ Thus the elementary divisor-sum proof from Section1 applies with L in
 place of H, uniformly over u and interval position:
 
 ```math
-\sum_{d<D}\mu^2(d)7^{\omega(d)}|R_u(d)|
+\sum_{d\lt D}\mu^2(d)7^{\omega(d)}|R_u(d)|
 \le D(1+\log D)^{13}.
 ```
 
@@ -802,9 +802,9 @@ There is an absolute L_0 such that 2<=z<=D and s stays in a fixed
 neighbourhood of3 for L>=L_0. Uniformly over the allowed factor primes,
 
 ```math
-L\le N\le Y/u<Y/Z,\qquad
+L\le N\le Y/u\lt Y/Z,\qquad
 \frac{Z^4}{Y}\longrightarrow\infty,
-\qquad z<(Y/Z)^{1/3}<Z<u
+\qquad z<(Y/Z)^{1/3}\lt Z\lt u
 ```
 
 once Y is sufficiently large. Hence the sieve product V_u(z) equals
@@ -853,7 +853,7 @@ the known interval lengths, not an asymptotic formula for rejected pairs:
 
 ```math
 \begin{aligned}
-\sum_{\substack{Z<u<\sqrt Y\\u\text{ prime}}}\Phi(L_u)
+\sum_{\substack{Z\lt u<\sqrt Y\\u\text{ prime}}}\Phi(L_u)
  &=\bigl(\kappa_{\mathrm{geom}}+o(1)\bigr)
                   \frac Y{(\log Y)^2},\\
 \kappa_{\mathrm{geom}}
@@ -906,7 +906,7 @@ log(sqrt(Y)/2)/log Y to1/2 give
 
 ```math
 \begin{aligned}
-\sum_{\substack{Z<u\le\sqrt Y/2\\u\text{ prime}}}
+\sum_{\substack{Z\lt u\le\sqrt Y/2\\u\text{ prime}}}
        \frac1{u\,\log^2(Y/u)}
  &=\frac1{(\log Y)^2}
      \left\{\int_{3/11}^{1/2}\frac{dt}{t(1-t)^2}+o(1)\right\},\\
@@ -925,7 +925,7 @@ Unique smaller factors now give an actual global upper bound:
 
 ```math
 B_{\mathrm{total}}
-=\sum_{\substack{Z<u<\sqrt Y\\u\text{ prime}}}b_u
+=\sum_{\substack{Z\lt u<\sqrt Y\\u\text{ prime}}}b_u
 \le C_0\bigl(\kappa_{\mathrm{geom}}+o(1)\bigr)
               \frac Y{(\log Y)^2}.
 ```
@@ -992,7 +992,7 @@ The DHR initial-value normalization is stated in
 In dimension two it gives
 
 ```math
-\sigma_2(t)=\frac{t^2}{8e^{2\gamma}}\quad(0<t\le2),\qquad
+\sigma_2(t)=\frac{t^2}{8e^{2\gamma}}\quad(0\lt t\le2),\qquad
 F_2(2)=\frac1{\sigma_2(2)}=2e^{2\gamma}.
 ```
 
@@ -1144,7 +1144,7 @@ and summed remainders at the fixed level below:
 
 ```math
 \begin{aligned}
-\sum_{\substack{X/2<a\le X\\a\equiv-2\pmod d}}\Lambda(a)
+\sum_{\substack{X/2\lt a\le X\\a\equiv-2\pmod d}}\Lambda(a)
  &=g(d)\frac X2+r_d,\\
 D&=(X/2)^{2/5},\qquad
 \sum_{\substack{d\le D\\d\text{ odd, squarefree}}}|r_d|
@@ -1164,8 +1164,8 @@ and Mertens' theorem evaluate its normalization:
 
 ```math
 \begin{aligned}
-W(z)&=\prod_{3\le\ell<z}\frac{\ell-2}{\ell-1}
- =\frac{V(z)}{\prod_{\ell<z}(1-1/\ell)}
+W(z)&=\prod_{3\le\ell\lt z}\frac{\ell-2}{\ell-1}
+ =\frac{V(z)}{\prod_{\ell\lt z}(1-1/\ell)}
  =\frac{2C_2e^{-\gamma}+o(1)}{\log z},\\
 s&=\frac{\log D}{\log Z}=\frac{22}{15}\in(1,3),\qquad
 F_1(s)=\frac{2e^\gamma}{s}.
@@ -1178,8 +1178,8 @@ above meet the linear-sieve hypotheses. Applying its upper estimate gives
 ```math
 \begin{aligned}
 S_\Lambda
-&:=\sum_{X/2<a\le X}\Lambda(a)
-     \prod_{\substack{3\le\ell<Z\\\ell\text{ prime}}}
+&:=\sum_{X/2\lt a\le X}\Lambda(a)
+     \prod_{\substack{3\le\ell\lt Z\\\ell\text{ prime}}}
             1_{\ell\nmid a+2}\\
 &\le\left(F_1(s)+o(1)\right)\frac X2 W(Z)
        +o\!\left(\frac X{\log X}\right)\\
@@ -1234,7 +1234,7 @@ For each integer a in (X/2,X] define the pointwise signed weight
 
 ```math
 \sigma(a)=\mathbf 1_{\substack{a\text{ prime}\\ a+2\text{ prime}}}
--\mathbf 1_{\substack{a\text{ prime}\\ a+2=uv,\ Z<u<v\text{ prime}}}.
+-\mathbf 1_{\substack{a\text{ prime}\\ a+2=uv,\ Z\lt u\lt v\text{ prime}}}.
 ```
 
 Prime-square partners are excluded from both indicators; Section7 already
@@ -1244,7 +1244,7 @@ the family splits disjointly into its twin members and its semiprime
 members, and the weight sum is the exact identity
 
 ```math
-\boxed{\sum_{X/2<a\le X}\sigma(a)=T-B=2T-|\mathcal G(p,q)|.}
+\boxed{\sum_{X/2\lt a\le X}\sigma(a)=T-B=2T-|\mathcal G(p,q)|.}
 ```
 
 The identity itself carries no arithmetic information. Under a
@@ -1252,7 +1252,7 @@ hypothetical last twin start L<X/2 one has T=0 and the sum equals
 -|G|<=-(c_1/2)X/log squared X by Section7's bound. Conversely, any bound
 
 ```math
-\sum_{X/2<a\le X}\sigma(a)\ge-(1-\delta)|\mathcal G(p,q)|
+\sum_{X/2\lt a\le X}\sigma(a)\ge-(1-\delta)|\mathcal G(p,q)|
 \qquad(\delta>0\text{ fixed})
 ```
 
@@ -1296,7 +1296,7 @@ every cutoff z<=Z the twin members and the semiprime members lie in one
 common sifted set,
 
 ```math
-\{a\in(X/2,X]:\ a\text{ prime},\ a+2\text{ has no prime factor}<z\},
+\{a\in(X/2,X]:\ a\text{ prime},\ a+2\text{ has no prime factor}\lt z\},
 ```
 
 because a twin partner exceeds X/2>Z and both semiprime factors exceed
