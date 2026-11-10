@@ -16,14 +16,14 @@ extremal threshold exactly.
 Let `p>=5`, let `q` be the next prime, and let
 
 ```math
-M=\prod_{r<p}r.
+M=\prod_{r\lt p}r.
 ```
 
 Assume the safe-window start positions map injectively modulo `M`; it is enough
 that
 
 ```math
-q^2-q<M.
+q^2-q\lt M.
 ```
 
 Let `G_global(p)` be the complete-period 2-gap count. Define
@@ -37,7 +37,7 @@ C(q)=
 This is the number of integers `x` with
 
 ```math
-q\le x,\qquad x+2<q^2,\qquad x\equiv5\pmod6.
+q\le x,\qquad x+2\lt q^2,\qquad x\equiv5\pmod6.
 ```
 
 Finally define the exact accepted strike count

@@ -128,7 +128,7 @@ For an integer `H>=0`, write
 ```math
 H=qM'+s,
 \qquad
-0\le s<M'.
+0\le s\lt M'.
 ```
 
 Periodicity and the complete-period theorem give

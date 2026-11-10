@@ -29,7 +29,7 @@ Let `q` be the prime head of the certification stage. Its square-safe starts
 are the integers
 
 ```math
-J_q=\{n:q\le n\text{ and }n+2<q^2\}.
+J_q=\{n:q\le n\text{ and }n+2\lt q^2\}.
 ```
 
 Equivalently,
@@ -41,7 +41,7 @@ J_q=\{q,q+1,\ldots,q^2-3\}.
 Define
 
 ```math
-P(q)=\prod_{r<q}r,
+P(q)=\prod_{r\lt q}r,
 ```
 
 where `r` ranges over primes. A perfect safe-window survivor is an `n` such
@@ -72,7 +72,7 @@ Suppose the generator returns `n`. Then neither `n` nor `n+2` has a prime
 divisor smaller than `q`. Both values are at least `q`, and
 
 ```math
-n+2<q^2.
+n+2\lt q^2.
 ```
 
 If either endpoint were composite, it would have a prime factor no larger than
@@ -93,7 +93,7 @@ perfect scenario at head `q`.
 Choose any earlier prime stage `p<q` whose ancestry is to be recorded, and let
 
 ```math
-M_p=\prod_{r<p}r.
+M_p=\prod_{r\lt p}r.
 ```
 
 For a returned endpoint `n`, define

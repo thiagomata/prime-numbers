@@ -19,7 +19,7 @@ linear cancellation: it creates a genuine positive energy.
 Let
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}
+5\le r_0\lt r_1<\cdots\lt r_{m-1}
 ```
 
 be increasing odd primes. Define

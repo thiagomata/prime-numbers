@@ -46,7 +46,7 @@ t_{i,k}^{\star}
 \left\{
 c_{i,k},
 \left(
-s_k-\sum_{j<i}c_{j,k}
+s_k-\sum_{j\lt i}c_{j,k}
 \right)_+
 \right\}.
 ```
@@ -58,7 +58,7 @@ Define the normalized capacity overflow
 e_k
 :=
 \left(
-\sum_{i<k}c_{i,k}-s_k
+\sum_{i\lt k}c_{i,k}-s_k
 \right)_+.
 }
 ```
@@ -82,12 +82,12 @@ inside the Bessel budget, and otherwise uses exactly the full budget `s_k`.
 Therefore
 
 ```math
-\sum_{i<k}t_{i,k}^{\star}
+\sum_{i\lt k}t_{i,k}^{\star}
 =
 \min
 \left(
 s_k,
-\sum_{i<k}c_{i,k}
+\sum_{i\lt k}c_{i,k}
 \right).
 ```
 
@@ -103,18 +103,18 @@ Every `delta_(i,k)` is nonnegative, and
 
 ```math
 \begin{aligned}
-\sum_{i<k}\delta_{i,k}
+\sum_{i\lt k}\delta_{i,k}
 &=
-\sum_{i<k}c_{i,k}
+\sum_{i\lt k}c_{i,k}
 -
 \min
 \left(
 s_k,
-\sum_{i<k}c_{i,k}
+\sum_{i\lt k}c_{i,k}
 \right)\\
 &=
 \left(
-\sum_{i<k}c_{i,k}-s_k
+\sum_{i\lt k}c_{i,k}-s_k
 \right)_+\\
 &=
 \boxed{e_k}.
@@ -136,7 +136,7 @@ The suffix contribution is identical in `U_cap` and
 \qquad
 \mathcal H_k
 =
-\sum_{i<k}\beta_{i,k}t_{i,k}^{\star}.
+\sum_{i\lt k}\beta_{i,k}t_{i,k}^{\star}.
 ```
 
 Hence
@@ -145,7 +145,7 @@ Hence
 \boxed{
 \Delta_k
 =
-\sum_{i<k}\beta_{i,k}\delta_{i,k}.
+\sum_{i\lt k}\beta_{i,k}\delta_{i,k}.
 }
 ```
 

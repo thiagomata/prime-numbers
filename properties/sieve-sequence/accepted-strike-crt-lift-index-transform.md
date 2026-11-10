@@ -76,7 +76,7 @@ where `[.]_r^(0)` denotes the least nonnegative residue modulo `r`.
 Thus the lift index is explicit and satisfies
 
 ```math
-0\le t_{x,r}(e)<r.
+0\le t_{x,r}(e)\lt r.
 ```
 
 ## CRT Split Of A Boundary Summand

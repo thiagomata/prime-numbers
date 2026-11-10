@@ -238,7 +238,7 @@ LR\max_i\frac{w_id_i}{r_i}.
 Now let
 
 ```math
-P_i=A_{0,i}=\prod_{j<i}a_j.
+P_i=A_{0,i}=\prod_{j\lt i}a_j.
 ```
 
 The paired-survivor densities and terminal weights satisfy

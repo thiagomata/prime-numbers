@@ -22,7 +22,7 @@ Let `G_local(p,q)` count the pre-filter 2-gaps `(x,x+2)` satisfying
 ```math
 q\le x
 \qquad\text{and}\qquad
-x+2<q^2.
+x+2\lt q^2.
 ```
 
 Let

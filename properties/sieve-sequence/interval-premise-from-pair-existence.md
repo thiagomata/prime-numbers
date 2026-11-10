@@ -47,7 +47,7 @@ Its length satisfies
 
 ```math
 \begin{aligned}
-\operatorname{len}(J_r)
+\text{len}(J_r)
 &=x_2+2-x_1
 \quad\text{[By Definition]}\\
 &<2r

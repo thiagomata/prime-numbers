@@ -126,7 +126,7 @@ Let `p` be the prime installed by a transition and `q` the next prime head. The
 eligible 2-gap-start window is
 
 ```math
-W_q=\{x:q\le x\text{ and }x+2<q^2\}.
+W_q=\{x:q\le x\text{ and }x+2\lt q^2\}.
 ```
 
 Let `S_old` be the pre-filter 2-gap starts and `S_q` the starts that remain

@@ -252,7 +252,7 @@ The inequalities were checked for every prime pair
 ```math
 7\le Q\le1009,
 \qquad
-5\le r<Q,
+5\le r\lt Q,
 ```
 
 and for the integer boundaries immediately below and above

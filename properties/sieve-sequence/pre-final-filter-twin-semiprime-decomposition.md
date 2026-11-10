@@ -21,7 +21,7 @@ Let p<q be consecutive primes, p>=5, with every prime below p installed.
 Use complete pairs with starts in
 
 ```math
-W_q=\{x\in\mathbb Z:q\le x,\ x+2<q^2\}.
+W_q=\{x\in\mathbb Z:q\le x,\ x+2\lt q^2\}.
 ```
 
 Let L count prefilter 2-gap starts in W_q, T count genuine twin-prime starts
@@ -82,7 +82,7 @@ bound gives
 ```math
 \begin{aligned}
 A&\le2d+\left\lceil\frac{d^2}{p}\right\rceil,\\
-0<d<p&\ \Longrightarrow\ A\le3p.
+0\lt d\lt p&\ \Longrightarrow\ A\le3p.
 \end{aligned}
 ```
 
@@ -161,7 +161,7 @@ L&=T+O(p)
 The project's complete-period benchmark is
 
 ```math
-\delta_p=\frac12\prod_{3\le\ell<p\ \mathrm{prime}}
+\delta_p=\frac12\prod_{3\le\ell\lt p\ \mathrm{prime}}
 \left(1-\frac2\ell\right),
 \qquad
 \widehat L=(q^2-q)\delta_p.

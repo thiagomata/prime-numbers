@@ -31,13 +31,13 @@ rs=1+kP,
 \qquad
 A=qr+b,
 \qquad
-0\le b<r.
+0\le b\lt r.
 ```
 
 For `0<=a<r`, set
 
 ```math
-\varepsilon_a=\mathbf 1_{a<b},
+\varepsilon_a=\mathbf 1_{a\lt b},
 \qquad
 v_a=q+sa+\varepsilon_a\pmod P.
 ```
@@ -94,7 +94,7 @@ There are three cases.
 If `delta=0`, then
 
 ```math
-0<|d|<r<P,
+0<|d|\lt r\lt P,
 ```
 
 so `P` cannot divide `d`.
@@ -102,7 +102,7 @@ so `P` cannot divide `d`.
 If `delta=1`, then `a<b<=c`, so `d<0` and
 
 ```math
-1\le d+r\le r-1<P.
+1\le d+r\le r-1\lt P.
 ```
 
 If `delta=-1`, then `c<b<=a`, so `d>0` and

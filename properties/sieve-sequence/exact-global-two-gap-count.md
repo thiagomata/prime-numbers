@@ -14,7 +14,7 @@ Let `p` be the head prime of a sieve stage. All primes smaller than `p` have
 already been installed as filters. Define the stage modulus
 
 ```math
-M_p=\prod_{r<p}r,
+M_p=\prod_{r\lt p}r,
 ```
 
 where every `r` in the product is prime.
@@ -28,7 +28,7 @@ values because `x+1` is even.
 The exact number of cyclic 2-gaps in one complete period is
 
 ```math
-G_2(p)=\prod_{\substack{3\le r<p\\r\text{ prime}}}(r-2).
+G_2(p)=\prod_{\substack{3\le r\lt p\\r\text{ prime}}}(r-2).
 ```
 
 The empty product is `1`, so the formula also covers the first odd stage.

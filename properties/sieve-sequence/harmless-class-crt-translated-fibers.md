@@ -40,7 +40,7 @@ P>r\ge5,
 Let `s` be the canonical inverse of `r modulo P`:
 
 ```math
-1\le s<P,
+1\le s\lt P,
 \qquad
 rs\equiv1\pmod P.
 ```
@@ -54,7 +54,7 @@ rs=1+kP.
 Because `1<=s<P`,
 
 ```math
-1\le k<r.
+1\le k\lt r.
 ```
 
 Moreover,
@@ -71,7 +71,7 @@ Fix an integer interval
 ```math
 I=[A,B),
 \qquad
-A<B.
+A\lt B.
 ```
 
 For a canonical residue `0<=a<r`, define
@@ -184,7 +184,7 @@ Write
 ```math
 A=qr+b,
 \qquad
-0\le b<r.
+0\le b\lt r.
 ```
 
 Then
@@ -192,7 +192,7 @@ Then
 ```math
 \lambda_a
 =
-q+\mathbf 1_{a<b},
+q+\mathbf 1_{a\lt b},
 ```
 
 so the non-inverse part of `v_a` changes by at most one between any two
@@ -226,7 +226,7 @@ Let `dist_P` denote cyclic distance modulo `P`. Since
 
 ```math
 \boxed{
-\operatorname{dist}_P(v_a,v_c)
+\text{dist}_P(v_a,v_c)
 \ge
 \frac{P-r+1}{r}-1.
 }
@@ -337,7 +337,7 @@ sampled values `E_ell(v_a)`. But the trigonometric polynomial has frequencies
 through the full modulus `P`. Its large-sieve factor is consequently of size
 
 ```math
-P+\operatorname{spacing}^{-1}
+P+\text{spacing}^{-1}
 \asymp
 P+r
 \asymp

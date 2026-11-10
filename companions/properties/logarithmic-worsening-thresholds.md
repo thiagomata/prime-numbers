@@ -42,8 +42,8 @@ Prime summation gives
 D_c(Q)
 &=\sum_{r < Q}-\log(1-f_r)
 &&[\text{Definition Of }D(Q)]\\
-&=2\sum_{r<Q}\frac1r
-\;+\;2c\sum_{r<Q}\frac{\log r}{r}+O(1)
+&=2\sum_{r\lt Q}\frac1r
+\;+\;2c\sum_{r\lt Q}\frac{\log r}{r}+O(1)
 &&[\text{Substitution; Summable Remainder}]\\
 &=2\log\log Q+2c\log Q+O(1).
 &&[\text{Prime-Sum Asymptotics}]

@@ -32,7 +32,7 @@ For a gap of width `h`, its upper endpoint is newly exposed exactly when its
 start `x` satisfies
 
 ```math
-p^2\le x+h<q^2.
+p^2\le x+h\lt q^2.
 ```
 
 Thus the geometric newly exposed start interval is
@@ -71,7 +71,7 @@ Define
 X_D(p,q)=
 \left\{
 x\in\mathbb Z:
-p^2+4\le x<q^2-2,
+p^2+4\le x\lt q^2-2,
 \quad x\equiv5\pmod6
 \right\}.
 ```
@@ -144,7 +144,7 @@ The compulsory strike `p^2=p*p` is included in `A(p,q)`. Indeed, Bertrand's
 postulate gives `q<2p`, and `2p<p^2` for `p>=5`, so
 
 ```math
-q<p^2<q^2.
+q\lt p^2\lt q^2.
 ```
 
 No prime below `p` divides `p^2`, so this value survives every old filter and

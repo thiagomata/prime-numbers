@@ -344,10 +344,17 @@ deferred, and an early check can falsely report whole-page failure).
 7. **Do not end the last content line of a `math` fence with `\\`.** A
    trailing line-break immediately before the closing fence renders stray
    `$` artifacts after the math.
-8. **Everything inside a `math` fence must be inside `\begin{aligned}...
-   \end{aligned}`.** A line placed after `\end{aligned}` but still inside the
-   fence (e.g. a `\forall ...` qualifier) breaks the block and leaks raw
-   source. Move the line inside the environment instead.
+8. **Content after `\end{aligned}` inside a `math` fence is allowed.** A
+   marker or qualifier line placed after `\end{aligned}` but still inside
+   the fence (e.g. `\qquad[\text{Q.E.D.}]`) renders correctly — verified
+   in the rendered page: `survival-frontiers.md` carried ten such markers
+   at the commit the PR #61 audit browser-verified clean. The fence
+   originally blamed for this pattern (`cycle.md`) also carried the
+   trailing-`\\` defect of rule 7, and the fix removed both at once, so
+   the leak was never isolated to the after-`\end{aligned}` line. Treat
+   rule 7 as the likely culprit when a fence shows both forms; moving
+   trailing content inside the environment (as PR #65 did for five
+   properties fences) is harmless but not required.
 
 Verification protocol: count rendered `<math>` elements and search visible
 text for raw `\text{`, `\blacksquare`, `$...$` fragments. Filter to *visible*

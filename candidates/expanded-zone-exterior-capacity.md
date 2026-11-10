@@ -163,7 +163,7 @@ Let a current 2-gap or `(2,4,2)` cluster begin at `a_i` in a stage of period
 ```math
 a_i+j_iM_i,
 \qquad
-0\le j_i<r_i.
+0\le j_i\lt r_i.
 ```
 
 An individual 2-gap has `r_i-2` safe copy indices; a complete cluster has
@@ -179,7 +179,7 @@ scenarios, some safe branch and later certification head `q` satisfy
 ```math
 q\le a_i
 \qquad\text{and}\qquad
-a_i+2<q^2
+a_i+2\lt q^2
 ```
 
 for a surviving 2-gap, or `a_i+8<q^2` for a complete cluster.
@@ -217,7 +217,7 @@ For consecutive primes `p<q` with `p>=5`, reuse the phase-compatible coordinate 
 X_D(p,q)=
 \left\{
 x\in\mathbb Z:
-p^2+4\le x<q^2-2,
+p^2+4\le x\lt q^2-2,
 \quad x\equiv5\pmod6
 \right\}.
 ```
@@ -225,7 +225,7 @@ p^2+4\le x<q^2-2,
 Define a distinct pre-filter counting function
 
 ```math
-S_{<p}(X)
+S_{\lt p}(X)
 =
 \#\{\text{actual 2-gap starts in }X
 \text{ after filters below }p\}.
@@ -234,7 +234,7 @@ S_{<p}(X)
 This is not the post-filter observable `S_q` used above. In particular,
 
 ```math
-L_D(p,q)=S_{<p}(X_D(p,q)).
+L_D(p,q)=S_{\lt p}(X_D(p,q)).
 ```
 
 Choose an exactly countable expansion with
@@ -246,9 +246,9 @@ X_D(p,q)\subseteq\widetilde X_D
 and prove pre-filter bounds
 
 ```math
-S_{<p}(\widetilde X_D)\ge B_D,
+S_{\lt p}(\widetilde X_D)\ge B_D,
 \qquad
-S_{<p}(\widetilde X_D\setminus X_D(p,q))\le U_D.
+S_{\lt p}(\widetilde X_D\setminus X_D(p,q))\le U_D.
 ```
 
 Exterior subtraction would then give
@@ -257,8 +257,8 @@ Exterior subtraction would then give
 \begin{aligned}
 L_D(p,q)
 &=
-S_{<p}(\widetilde X_D)
--S_{<p}(\widetilde X_D\setminus X_D(p,q)),\\
+S_{\lt p}(\widetilde X_D)
+-S_{\lt p}(\widetilde X_D\setminus X_D(p,q)),\\
 &\ge B_D-U_D.
 \end{aligned}
 ```

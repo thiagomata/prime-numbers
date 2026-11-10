@@ -120,7 +120,7 @@ Inserted into the First-Deletion Variance Identity property's global variance id
 ```math
 \mathcal E_D
 \le
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_i c_iH_iA_{i+1}.
 ```
@@ -151,7 +151,7 @@ deletion class and all later classes.
 A useful continuation must retain the additional distances
 
 ```math
-\sum_{i<j<\ell}\frac{c_j}{r_j^2}
+\sum_{i\lt j<\ell}\frac{c_j}{r_j^2}
 ```
 
 and the terminal coordinate of the later deletion class, or prove arithmetic

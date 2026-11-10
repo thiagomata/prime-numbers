@@ -71,11 +71,11 @@ hypothesis controls every off-diagonal entry of `G^{(W)}`. Writing
 \begin{aligned}
 \sum_{n\in W}S(n)^2
 &=\sum_i G^{(W)}_{ii}
-+2\sum_{i<j}G^{(W)}_{ij}
++2\sum_{i\lt j}G^{(W)}_{ij}
 &&[\text{Expansion}]\\
 &\le
 \sum_i\left(\text{typical}_i+O(\text{fluctuation})\right)
-+2\sum_{i<j}\kappa\cdot\text{fluctuation}_{ij}
++2\sum_{i\lt j}\kappa\cdot\text{fluctuation}_{ij}
 &&[\text{Hypothesis}]
 \end{aligned}
 ```

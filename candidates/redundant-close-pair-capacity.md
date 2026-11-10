@@ -38,7 +38,7 @@ W_Q=[Q,Q^2)
 as
 
 ```math
-x_1<x_2<\cdots<x_N.
+x_1\lt x_2<\cdots\lt x_N.
 ```
 
 A consecutive pair index `i` is **qualifying** when
@@ -53,7 +53,7 @@ Let the raw qualifying-pair count be
 P(Q,r)
 =
 \#\left\{
-1\le i<N:
+1\le i\lt N:
 x_{i+1}+2-x_i<2r
 \right\}.
 ```

@@ -109,7 +109,7 @@ Therefore the full pointwise candidate #12 hypothesis holds:
 Candidate #12's strict one-step margin for the word `(2)` is
 
 ```math
-2E<G\left(1-\frac2r\right).
+2E\lt G\left(1-\frac2r\right).
 ```
 
 Here
@@ -130,7 +130,7 @@ Because `r-1<r`,
 
 ```math
 \boxed{
-2E<G\left(1-\frac2r\right).
+2E\lt G\left(1-\frac2r\right).
 }
 ```
 

@@ -25,7 +25,7 @@ Let
 ```math
 Q\ge17,
 \qquad
-7\le r<Q,
+7\le r\lt Q,
 ```
 
 and define
@@ -195,7 +195,7 @@ nonnegative contribution, the Envelope Width Floor property therefore yields
 e_k
 \ge
 \left(
-\sum_{\substack{i<k\\r_i\ge7}}
+\sum_{\substack{i\lt k\\r_i\ge7}}
 \frac{B_i^2}{M_kd_ip_ia_i}
 -s_k
 \right)_+.

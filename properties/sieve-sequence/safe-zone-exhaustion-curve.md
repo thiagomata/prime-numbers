@@ -79,7 +79,7 @@ violations.
 ## Property 3 (unproven, empirical): A Much Tighter Practical Estimate
 
 ```math
-\hat A(p) = (p^2-p)\prod_{r<p}\left(1-\frac1r\right)
+\hat A(p) = (p^2-p)\prod_{r\lt p}\left(1-\frac1r\right)
 ```
 
 fits the true `A(p)` far more closely in practice: checked against every

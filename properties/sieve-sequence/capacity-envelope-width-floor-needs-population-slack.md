@@ -231,7 +231,7 @@ The Native-Period Capacity Overflow property defines
 e_k
 =
 \left(
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{M_kd_ip_ia_i}
 -
 s_k
@@ -247,7 +247,7 @@ e_k
 \underline e_k
 :=
 \left(
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{\sigma_i^2}{4M_kd_ip_ia_i}
 -
 s_k

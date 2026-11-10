@@ -16,7 +16,7 @@ that the maximum matching is monotone.
 Let the old complete 2-gap starts be
 
 ```math
-x_1<x_2<\cdots<x_N
+x_1\lt x_2<\cdots\lt x_N
 ```
 
 and let the new starts be an ordered subsequence obtained by deleting `H`
@@ -62,7 +62,7 @@ subsequence. Their difference is unchanged and satisfies
 ```math
 \begin{aligned}
 x_{i+1}-x_i
-&<d
+&\lt d
 &&[\text{Old Selected Edge Is Qualifying}]\\
 &\le d'.
 &&[\text{Threshold Does Not Decrease}]

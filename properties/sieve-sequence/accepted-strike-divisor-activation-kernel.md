@@ -238,7 +238,7 @@ are `-1/r_i`. Therefore
 +
 \sum_{i=u}^{m-1}\frac{c_i}{r_i^2},
 \qquad
-t<u.
+t\lt u.
 }
 ```
 
@@ -268,7 +268,7 @@ The kernel is a Gram matrix:
 \mathcal K
 =
 \Theta^*
-\operatorname{diag}(c_0,\ldots,c_{m-1})
+\text{diag}(c_0,\ldots,c_{m-1})
 \Theta.
 ```
 

@@ -200,9 +200,8 @@ explicit progressions modulo `6p`. If `p` is `1 modulo 6`, then
 \begin{aligned}
 p\mid R+4&\Longleftrightarrow R=2p-4+6pk,\\
 p\mid R&\Longleftrightarrow R=4p+6pk,\\
-p\mid R+2&\Longleftrightarrow R=6p-2+6pk,
+p\mid R+2&\Longleftrightarrow R=6p-2+6pk,\qquad k\ge0.
 \end{aligned}
-\qquad k\ge0.
 ```
 
 If `p` is `5 modulo 6`, then
@@ -211,9 +210,8 @@ If `p` is `5 modulo 6`, then
 \begin{aligned}
 p\mid R&\Longleftrightarrow R=2p+6pk,\\
 p\mid R+4&\Longleftrightarrow R=4p-4+6pk,\\
-p\mid R+2&\Longleftrightarrow R=6p-2+6pk,
+p\mid R+2&\Longleftrightarrow R=6p-2+6pk,\qquad k\ge0.
 \end{aligned}
-\qquad k\ge0.
 ```
 
 These formulas calculate the frequency exactly from the run-value histogram.
@@ -243,7 +241,7 @@ If `N=sum_R C_p(R)`, both cases imply the universal frequency bound
 \le
 \frac{T_R/N}{2p-4}
 =
-\frac{\operatorname{average}(R)}{2p-4}.
+\frac{\text{average}(R)}{2p-4}.
 }
 ```
 
@@ -251,7 +249,7 @@ For the complete pre-filter period, the classical Mertens product estimate
 applied to the exact ratio below gives
 
 ```math
-\operatorname{average}(R)
+\text{average}(R)
 =
 \frac PN-2
 =O(\log^2p).
@@ -287,7 +285,7 @@ The exact global 2-gap count gives
 ```math
 \frac PN
 =
-6\prod_{\substack{r\text{ prime}\\5\le r<p}}
+6\prod_{\substack{r\text{ prime}\\5\le r\lt p}}
 \frac r{r-2}.
 ```
 

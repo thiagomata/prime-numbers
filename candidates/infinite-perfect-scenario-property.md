@@ -53,7 +53,7 @@ Every prime smaller than `p` is already an installed filter. Define their
 product
 
 ```math
-M=\prod_{r<p}r,
+M=\prod_{r\lt p}r,
 ```
 
 where `r` ranges over primes.
@@ -90,14 +90,14 @@ lie in the interval under consideration.
 Let
 
 ```math
-p_0<p_1<\cdots<p_k=q
+p_0\lt p_1<\cdots\lt p_k=q
 ```
 
 be consecutive primes, with `k>=1`. Define the consecutive prime gaps
 
 ```math
 g_i=p_{i+1}-p_i
-\qquad(0\le i<k)
+\qquad(0\le i\lt k)
 ```
 
 and their cumulative sums
@@ -136,13 +136,13 @@ The proposed perfect scenario additionally requires the complete prime chain
 to fit below the initial square boundary:
 
 ```math
-\boxed{q=p_k<p^2.}
+\boxed{q=p_k\lt p^2.}
 ```
 
 Using the cumulative gap representation, this is equivalent to
 
 ```math
-\boxed{G_k<p^2-p.}
+\boxed{G_k\lt p^2-p.}
 ```
 
 This condition places every prime needed to describe the finite filter chain
@@ -166,7 +166,7 @@ Hence
 ```math
 p>2^k
 \quad\Longrightarrow\quad
-p_k<2^k p<p^2.
+p_k<2^k p\lt p^2.
 ```
 
 If a particular finite gap word `(g_0,...,g_{k-1})` is fixed, square
@@ -194,7 +194,7 @@ q\le a+jM
 and
 
 ```math
-a+jM+2<q^2.
+a+jM+2\lt q^2.
 ```
 
 Therefore the geometrically eligible copy indices are the integers in
@@ -216,7 +216,7 @@ Fix one filter prime
 
 ```math
 p_i=p+G_i
-\qquad(0\le i<k).
+\qquad(0\le i\lt k).
 ```
 
 It destroys copy `j` exactly when it divides one endpoint:
@@ -258,7 +258,7 @@ j:
 \begin{array}{l}
 j\not\equiv-aM^{-1}\pmod{p_i},\\
 j\not\equiv-(a+2)M^{-1}\pmod{p_i},\\
-\text{for every }0\le i<k
+\text{for every }0\le i\lt k
 \end{array}
 \right\}.
 ```
@@ -301,7 +301,7 @@ The chain length satisfies `k>=1`.
 ### PS4. Common Square-Horizon Containment
 
 ```math
-q<p^2,
+q\lt p^2,
 ```
 
 equivalently `G_k<p^2-p`.
@@ -352,7 +352,7 @@ PS5 gives
 ```math
 q\le x
 \qquad\text{and}\qquad
-x+2<q^2.
+x+2\lt q^2.
 ```
 
 Any composite integer below `q^2` has a prime divisor smaller than `q`.

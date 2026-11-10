@@ -19,7 +19,7 @@ G=(g_0,g_1,\ldots,g_{T-1})
 be a cyclic gap list. For an offset `j`, its rotation is
 
 ```math
-\operatorname{rot}_j(G)
+\text{rot}_j(G)
 =(g_j,g_{j+1},\ldots,g_{T-1},g_0,\ldots,g_{j-1}).
 ```
 
@@ -30,7 +30,7 @@ For every gap value `d`, rotation preserves its multiplicity:
 ```math
 \#\{i:g_i=d\}
 =
-\#\{i:\operatorname{rot}_j(G)_i=d\}.
+\#\{i:\text{rot}_j(G)_i=d\}.
 ```
 
 In particular, rotation preserves the global cyclic 2-gap count exactly.

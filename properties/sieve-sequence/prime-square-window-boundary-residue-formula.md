@@ -25,7 +25,7 @@ C_P(Q,Q^2)
 =
 \#\{
 n\in\mathbb Z:
-Q\le n<Q^2,\ 
+Q\le n\lt Q^2,\ 
 \gcd(n,P)=1
 \}.
 ```

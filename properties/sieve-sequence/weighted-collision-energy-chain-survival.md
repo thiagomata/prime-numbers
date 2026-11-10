@@ -19,7 +19,7 @@ whose control is sufficient for a square-window survivor.
 Fix a future prime head `Q` and a conditioned chain of incoming odd primes
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}<Q.
+5\le r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Let `S_i` be the set of complete 2-gap starts in
@@ -62,7 +62,7 @@ e_i=\sqrt{2V_i}.
 Because `r_i>2`,
 
 ```math
-0<a_i<1.
+0\lt a_i<1.
 ```
 
 ## One-Layer Recurrence
@@ -323,7 +323,7 @@ For `x in S_0`, define its deletion time
 ```math
 \tau(x)
 =
-\min\{i:0\le i<m,\ r_i\mid x(x+2)\},
+\min\{i:0\le i\lt m,\ r_i\mid x(x+2)\},
 ```
 
 and set `tau(x)=m` when no layer hits either endpoint. Then
@@ -339,7 +339,7 @@ present immediately before that filter, while a final survivor is present
 before every layer. Therefore
 
 ```math
-f_i(x)=\mathbf 1_{i<s(x)}.
+f_i(x)=\mathbf 1_{i\lt s(x)}.
 ```
 
 For a pair `(x,y)`, let
@@ -353,7 +353,7 @@ The coefficient product becomes
 ```math
 f_i(x)f_i(y)
 =
-\mathbf 1_{i<t(x,y)}.
+\mathbf 1_{i\lt t(x,y)}.
 ```
 
 Writing `d=x-y`, the pair's contribution to the fixed-domain bilinear form is
@@ -372,7 +372,7 @@ w_i
 For an off-diagonal pair in `W_Q`,
 
 ```math
-0<|d|<Q^2-Q.
+0<|d|\lt Q^2-Q.
 ```
 
 Thus the primes contributing positive divisor terms have a product dividing
@@ -428,7 +428,7 @@ Thus the stopped kernel for difference `d` is exactly
 
 ```math
 \boxed{
-\sum_{\substack{0\le i<t\\r_i\mid d}}w_i
+\sum_{\substack{0\le i\lt t\\r_i\mid d}}w_i
 -
 \frac{w_{t-1}-A_{0,m}}2.
 }
@@ -460,7 +460,7 @@ For `t>=1`, the telescoped form is
 ```math
 \kappa_d(t)
 =
-\sum_{\substack{0\le i<t\\r_i\mid d}}w_i
+\sum_{\substack{0\le i\lt t\\r_i\mid d}}w_i
 -
 \frac{w_{t-1}-A_{0,m}}2,
 ```

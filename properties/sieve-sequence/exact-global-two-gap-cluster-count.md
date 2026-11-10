@@ -37,7 +37,7 @@ The expanded cycle contains `r` copies of every old cluster:
 ```math
 a+jM+\{0,2,6,8\},
 \qquad
-0\le j<r.
+0\le j\lt r.
 ```
 
 Exactly four copies are struck at one of their four endpoints, and the other

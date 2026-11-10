@@ -31,7 +31,7 @@ Fix a future prime head `Q` and one conditioned layer with incoming prime
 `r`, where
 
 ```math
-5\le r<Q.
+5\le r\lt Q.
 ```
 
 Let `S_r(W_Q)` be the set of complete 2-gap starts present immediately before

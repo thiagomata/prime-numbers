@@ -25,7 +25,7 @@ multipliers.
 Use the harmless inverse phases
 
 ```math
-v_a=u+sa+\mathbf 1_{a<b},
+v_a=u+sa+\mathbf 1_{a\lt b},
 \qquad
 a\in H,
 \qquad
@@ -107,19 +107,19 @@ Its squared Hilbert--Schmidt norm is
 \begin{aligned}
 \|\mathsf X_{q,q'}\|_{\mathrm{HS}}^2
 &=
-\operatorname{tr}
+\text{tr}
 \left(
 \mathsf X_{q,q'}\mathsf X_{q,q'}^*
 \right)\\
 &=
-\operatorname{tr}
+\text{tr}
 \left(
 \mathsf A_q^*C
 \mathsf A_{q'}\mathsf A_{q'}^*
 C\mathsf A_q
 \right)\\
 &=
-\operatorname{tr}
+\text{tr}
 \left(
 C\mathsf R_{q'}C\mathsf R_q C
 \right).
@@ -132,7 +132,7 @@ Therefore
 \boxed{
 \|\mathsf A_q^*C\mathsf A_{q'}\|_{\mathrm{HS}}^2
 =
-\operatorname{tr}
+\text{tr}
 \left(
 C\mathsf R_qC\mathsf R_{q'}C
 \right).
