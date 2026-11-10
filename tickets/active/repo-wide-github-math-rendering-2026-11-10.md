@@ -45,6 +45,27 @@ tracked files so untracked user work cannot be touched.
   (4 lt + the `#` KaTeX error), `tickets/active/` (2), root
   `VOCABULARY.md` (3).
 - User approved: fix all + rule-8 correction in one PR.
+- 2026-11-10: All fixes applied on branch
+  `docs/repo-wide-github-math-rendering`:
+  - `54456332` — `#` escaped as `\#` in the empirical fence; KaTeX
+    baseline to 0 failures.
+  - `068a1be4` — 115 `<`+letter -> `\lt ` substitutions in 32 tracked
+    files.
+  - `16eaa482` — 9 fence `\operatorname` -> `\text` substitutions in 6
+    files, the starred `\operatorname*{arg\,min}` form in
+    seven-layer-capacity-floor.md, and 4 inline `$...$` instances in
+    tickets/future/sieve-property-landscape.md (same breaker, inline
+    form; scope addition discovered during the sweep).
+  - `89102311` — PROOF_GUIDE rule 8 corrected to match the evidence.
+- Final verification: zero remaining `<`+letter or `\operatorname` in
+  any tracked markdown math fence repo-wide; 3640 fences (properties +
+  everything else) all parse under local KaTeX; confirmed the detailed
+  edition's content is absent from articles/arxiv/survival-frontiers/
+  (zero tex mentions), so no LaTeX sync applies.
+- Left alone deliberately: `\operatorname` inside backtick code spans
+  (companions/balanced-randomized-2-gap/model.md — code spans run no
+  math processing) and prose mentions in guides/tickets that document
+  the macro itself.
 
 ## What Is Learned
 
@@ -85,14 +106,14 @@ tracked files so untracked user work cannot be touched.
 
 ## Next Action
 
-1. Create branch `docs/repo-wide-github-math-rendering`.
-2. Commit ticket; verify detailed-article content is absent from the
-   survival-frontiers tex package.
-3. Fix the `#` KaTeX error; KaTeX gate to 0 failures repo-wide; commit.
-4. `\lt` sweep over tracked files; round-trip audit + KaTeX gate; commit.
-5. `\operatorname` sweep; audits + gate; commit.
-6. PROOF_GUIDE rule-8 correction; commit.
-7. Push, open PR, user verifies rendering, merge.
+1. ~~Create branch~~ done.
+2. ~~Ticket commit; arXiv-package check~~ done (detailed edition absent
+   from the tex package).
+3. ~~`#` fix; KaTeX gate to 0~~ done (`54456332`).
+4. ~~`\lt` sweep~~ done (`068a1be4`).
+5. ~~`\operatorname` sweep~~ done (`16eaa482`).
+6. ~~PROOF_GUIDE rule-8 correction~~ done (`89102311`).
+7. Push, open PR, user verifies rendering, merge, close ticket.
 
 ## Learning Log
 
@@ -100,6 +121,8 @@ tracked files so untracked user work cannot be touched.
 |------|-------------|----------|
 | 2026-11-10 | Repo-wide scan (210 md files, 1695 non-properties fences): 34 files with the two proven breakers; 1 genuine KaTeX failure (`#` in `\text{}`); after-end blocks proven safe via ad23485a evidence. | User approved fix-all + rule-8 correction. |
 | 2026-11-10 | survival-frontiers-detailed.md (PR #63) reintroduced bare `<` after the audit. | Include it in the sweep; note the process gap in What Is Learned. |
+| 2026-11-10 | The `\operatorname` sweep surfaced two forms the fence regex missed: the starred `\operatorname*{arg\,min}` and inline `$...$` math in tickets/future. | Fixed both with targeted edits; disclosed as scope additions. `\operatorname` inside backtick code spans left alone (no math processing). |
+| 2026-11-10 | Final gate: 3640 fences repo-wide, 0 KaTeX failures, 0 remaining breakers in tracked fences. | Ready for PR. |
 
 ## Related Tickets
 
