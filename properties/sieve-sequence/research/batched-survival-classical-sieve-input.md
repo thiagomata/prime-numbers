@@ -224,7 +224,7 @@ Consequently every sufficiently large starting prime satisfies
 \begin{aligned}
 C(p,q)=\mathcal C_q(p)
 &\ge\frac12 f_2(22/5)\,H V(p),\\
-\boxed{C(p,q)&\gg\frac H{(\log p)^2}
+&\boxed{C(p,q)\gg\frac H{(\log p)^2}
              \asymp\frac{p^{22/5}}{(\log p)^2}.}
 \end{aligned}
 ```

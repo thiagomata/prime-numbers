@@ -83,7 +83,7 @@ Summing over the actual fresh candidates proves
 ```math
 \begin{aligned}
 -35C_{\rm new}&\le N\le C_{\rm new},\\
-\boxed{|N|&\le\frac{35}{6}(t^2-q^2).}
+&\boxed{|N|\le\frac{35}{6}(t^2-q^2).}
 \end{aligned}
 ```
 
