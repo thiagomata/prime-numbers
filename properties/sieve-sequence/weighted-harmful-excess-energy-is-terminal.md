@@ -25,7 +25,7 @@ already prove the desired survival conclusion.
 Fix a future head `Q` and a nonempty conditioned chain
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}<Q.
+5\le r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Let `N_i` be the number of complete 2-gap starts in the stated window
@@ -171,19 +171,19 @@ does not use empirical sampling.
 For every layer,
 
 ```math
-0<a_i<1.
+0\lt a_i<1.
 ```
 
 Therefore
 
 ```math
-w_{i-1}=a_iw_i<w_i,
+w_{i-1}=a_iw_i\lt w_i,
 ```
 
 and summing gives
 
 ```math
-\boxed{W_-<W.}
+\boxed{W_-\lt W.}
 ```
 
 Suppose first that the final population is zero. Then

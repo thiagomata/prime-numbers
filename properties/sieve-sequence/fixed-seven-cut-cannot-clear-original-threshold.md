@@ -32,7 +32,7 @@ r_2=11,
 \qquad
 \cdots,
 \qquad
-r_{m-1}<Q,
+r_{m-1}\lt Q,
 ```
 
 with
@@ -48,7 +48,7 @@ Define
 ```math
 D=Q^2-Q-3,
 \qquad
-P_i=\prod_{j<i}a_j,
+P_i=\prod_{j\lt i}a_j,
 \qquad
 a_j=1-\frac2{r_j}.
 ```

@@ -17,7 +17,7 @@ raw close-pair count is monotone.
 Let the old complete 2-gap starts be
 
 ```math
-x_1<x_2<\cdots<x_N
+x_1\lt x_2<\cdots\lt x_N
 ```
 
 and let the new starts be an ordered subsequence obtained by deleting `H`
@@ -32,7 +32,7 @@ d'\ge d.
 An old adjacent edge `(x_i,x_{i+1})` is qualifying when
 
 ```math
-x_{i+1}-x_i<d.
+x_{i+1}-x_i\lt d.
 ```
 
 Let `P_old` and `P_new` be the old and new qualifying-edge counts, using
@@ -68,7 +68,7 @@ unchanged and satisfies
 ```math
 \begin{aligned}
 x_{i+1}-x_i
-&<d
+&\lt d
 &&[\text{Old Edge Is Qualifying}]\\
 &\le d'.
 &&[\text{Threshold Does Not Decrease}]

@@ -224,7 +224,7 @@ The contribution of layers earlier than `t` to the terminal block is
 H_t
 =
 \sum_{(x,y)\in\mathcal P_t}
-\sum_{i<t}
+\sum_{i\lt t}
 w_i
 \left(
 \mathbf 1_{r_i\mid x-y}-\frac1{r_i}
@@ -243,7 +243,7 @@ finite sum interchange gives
 \boxed{
 H_t
 =
-\sum_{i<t}
+\sum_{i\lt t}
 w_i
 \left(
 V_{r_i}(S_t)-V_{r_i}(S_{t+1})
@@ -257,7 +257,7 @@ history contribution is
 ```math
 H_m
 =
-\sum_{i<m}w_iV_{r_i}(S_m).
+\sum_{i\lt m}w_iV_{r_i}(S_m).
 ```
 
 For each fixed `i`, summing the history differences over
@@ -278,11 +278,11 @@ Consequently, the complete weighted energy has the exact decomposition
 
 ```math
 \boxed{
-\sum_{i<m}w_iV_i
+\sum_{i\lt m}w_iV_i
 =
-\sum_{t<m}T_t
+\sum_{t\lt m}T_t
 +
-\sum_{i<m}w_iV_{r_i}(S_{i+1}).
+\sum_{i\lt m}w_iV_{r_i}(S_{i+1}).
 }
 ```
 
@@ -331,7 +331,7 @@ Write
 ```math
 M=qh+s,
 \qquad
-0\le s<h.
+0\le s\lt h.
 ```
 
 The sum of squares is minimized when `s` classes have size `q+1` and the
@@ -365,7 +365,7 @@ write
 ```math
 M=q_BB+u,
 \qquad
-0\le u<B.
+0\le u\lt B.
 ```
 
 Convexity now maximizes the square sum by filling `q_B` classes to capacity,

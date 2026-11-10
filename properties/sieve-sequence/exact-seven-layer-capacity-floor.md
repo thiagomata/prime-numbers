@@ -27,7 +27,7 @@ immediately before filter `7`. Thus
 ```math
 Q\le x
 \qquad\text{and}\qquad
-x+2<Q^2.
+x+2\lt Q^2.
 ```
 
 Define

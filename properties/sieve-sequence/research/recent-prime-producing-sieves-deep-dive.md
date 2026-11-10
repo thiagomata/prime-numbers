@@ -53,11 +53,11 @@ prime `q` obey the proposed common-square condition `q<p^2`, then the old
 primorial period is eventually much larger than the final safe window:
 
 ```math
-M_p=\prod_{r<p}r,
+M_p=\prod_{r\lt p}r,
 \qquad
 \log M_p=\vartheta(p)\sim p,
 \qquad
-q^2<p^4.
+q^2\lt p^4.
 ```
 
 Therefore
@@ -84,14 +84,14 @@ research constraints.
 Let
 
 ```math
-P(z)=\prod_{r<z}r,
+P(z)=\prod_{r\lt z}r,
 ```
 
 where `r` ranges over primes. At a final prime head `q`, consider the upper
 part of the safe window
 
 ```math
-J_q=\{n:q^2/2<n\le q^2-3\}.
+J_q=\{n:q^2/2\lt n\le q^2-3\}.
 ```
 
 Define the symmetric pair-survivor weight
@@ -225,7 +225,7 @@ For every interval `I`, one needs a bound of the shape
 \tau_B(m)
 \max_I
 \left|
-\sum_{\substack{X/2<mn\le X\\n\in I}}w_{mn}
+\sum_{\substack{X/2\lt mn\le X\\n\in I}}w_{mn}
 \right|
 \le
 \frac{X}{(\log X)^B}.
@@ -241,7 +241,7 @@ needs
 
 ```math
 \left|
-\sum_{\substack{(X/2)^\theta<m\le X^{\theta+\nu}\\X/2<mn\le X}}
+\sum_{\substack{(X/2)^\theta\lt m\le X^{\theta+\nu}\\X/2\lt mn\le X}}
 \xi_m\kappa_n w_{mn}
 \right|
 \le
@@ -345,20 +345,20 @@ The proposed perfect scenario asks for a consecutive prime chain from `p` to
 `q` with
 
 ```math
-q<p^2.
+q\lt p^2.
 ```
 
 This makes the number of transition filters comparatively short. But the old
 period is the primorial
 
 ```math
-M_p=\prod_{r<p}r.
+M_p=\prod_{r\lt p}r.
 ```
 
 By the prime number theorem in Chebyshev-theta form,
 
 ```math
-\log M_p=\sum_{r<p}\log r\sim p.
+\log M_p=\sum_{r\lt p}\log r\sim p.
 ```
 
 The safe window has length below `q^2<p^4`, whereas `M_p` grows like `e^p`.
@@ -486,7 +486,7 @@ and the relaxed family
 
 ```math
 A_{q,z}(n)=\mathbf 1_{\gcd(n(n+2),P(z))=1},
-\qquad z<q.
+\qquad z\lt q.
 ```
 
 Record whether the experiment averages over all old seed residues or fixes one

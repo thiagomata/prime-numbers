@@ -26,7 +26,7 @@ localized residue estimates.
 Use the complete conditioned chain
 
 ```math
-r_0=5<r_1<\cdots<r_{m-1}<Q
+r_0=5\lt r_1<\cdots\lt r_{m-1}\lt Q
 ```
 
 for a future prime head `Q>=17`. Define
@@ -40,7 +40,7 @@ H=D+1=Q^2-Q-2,
 ```math
 a_i=1-\frac2{r_i},
 \qquad
-P_i=\prod_{j<i}a_j.
+P_i=\prod_{j\lt i}a_j.
 ```
 
 Fix a cut `2<=k<m`. The paired-survivor density before filter `r_i` is
@@ -108,7 +108,7 @@ For every `i<k`, monotonicity gives
 ```math
 P_i\ge P_k,
 \qquad
-r_i<r_k.
+r_i\lt r_k.
 ```
 
 The function
@@ -140,7 +140,7 @@ coordinates gives
 
 ```math
 \boxed{
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{q_{i,k}}
 \le
 \frac{
@@ -182,7 +182,7 @@ M_kP_k
 the normalized capacity bound gives
 
 ```math
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{q_{i,k}}
 \le H=s_k.
 ```
@@ -193,7 +193,7 @@ The Native-Period Capacity Overflow property defines
 e_k
 =
 \left(
-\sum_{i<k}\frac{X_i}{q_{i,k}}-s_k
+\sum_{i\lt k}\frac{X_i}{q_{i,k}}-s_k
 \right)_+.
 ```
 
@@ -223,7 +223,7 @@ The prefix product has the exact form
 ```math
 M_kP_k
 =
-6\prod_{i<k}(r_i-2).
+6\prod_{i\lt k}(r_i-2).
 ```
 
 Since `r_i-2>=r_i/2` for `r_i>=5`,
@@ -290,11 +290,11 @@ The logarithm of the right side of the finite zero-overflow criterion is only
 `O(log Q)`, because
 
 ```math
-k<Q,
+k\lt Q,
 \qquad
-D<H<Q^2,
+D\lt H\lt Q^2,
 \qquad
-r_k<Q.
+r_k\lt Q.
 ```
 
 Thus, for every sufficiently large future head, the finite product inequality

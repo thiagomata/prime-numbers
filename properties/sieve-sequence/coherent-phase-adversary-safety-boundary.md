@@ -101,7 +101,7 @@ holds exactly when every occupied residue is one of the two harmful residues:
 \boxed{
 D_r^*=N
 \quad\Longleftrightarrow\quad
-\operatorname{supp}(n)
+\text{supp}(n)
 \subseteq\{s,s-2\}
 \text{ for some }s.
 }
@@ -130,7 +130,7 @@ D_r^*\le\min(N,2B),
 and
 
 ```math
-\boxed{N>2B\quad\Longrightarrow\quad D_r^*<N.}
+\boxed{N>2B\quad\Longrightarrow\quad D_r^*\lt N.}
 ```
 
 This threshold is sharp using only population size, fixed harmful distance,

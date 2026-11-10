@@ -20,7 +20,7 @@ Fix a future prime head `Q` and a conditioned filter layer with incoming prime
 `r`, where
 
 ```math
-5\le r<Q.
+5\le r\lt Q.
 ```
 
 Let
@@ -94,7 +94,7 @@ Thus distinct starts in one class modulo `r` are separated by at least `6r`.
 If that class contains ordered starts
 
 ```math
-x_1<x_2<\cdots<x_t,
+x_1\lt x_2<\cdots\lt x_t,
 ```
 
 then

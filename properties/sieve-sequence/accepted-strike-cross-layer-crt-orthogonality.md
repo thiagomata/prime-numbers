@@ -20,7 +20,7 @@ Let
 
 ```math
 P_{i+1}=P_i r_i
-\qquad(0\le i<m),
+\qquad(0\le i\lt m),
 ```
 
 where `P_0` is squarefree, the `r_i` are distinct primes, and

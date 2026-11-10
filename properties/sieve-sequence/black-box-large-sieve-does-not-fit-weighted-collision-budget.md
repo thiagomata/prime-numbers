@@ -22,7 +22,7 @@ prime, but that issue is not needed for this negative audit.
 Use the full post-3 filtering chain
 
 ```math
-5=r_0<r_1<\cdots<r_{m-1}<Q.
+5=r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Let
@@ -30,11 +30,11 @@ Let
 ```math
 a_i=1-\frac2{r_i},
 \qquad
-A=A_{0,m}=\prod_{i<m}a_i,
+A=A_{0,m}=\prod_{i\lt m}a_i,
 \qquad
 w_i=A_{i+1,m},
 \qquad
-W=\sum_{i<m}w_i.
+W=\sum_{i\lt m}w_i.
 ```
 
 Let `S` be a fixed set of `N` 2-gap starts in an interval of diameter `L`,
@@ -56,7 +56,7 @@ identity for residue variance, has the form
 
 ```math
 \boxed{
-\sum_{i<m}r_iV_i
+\sum_{i\lt m}r_iV_i
 \le
 (L+Q^2)N.
 }
@@ -132,11 +132,11 @@ The granted fixed-set bound gives
 
 ```math
 \begin{aligned}
-\sum_{i<m}w_iV_i
+\sum_{i\lt m}w_iV_i
 &=
-\sum_{i<m}\lambda_i(r_iV_i)\\
+\sum_{i\lt m}\lambda_i(r_iV_i)\\
 &\le
-\lambda_0\sum_{i<m}r_iV_i\\
+\lambda_0\sum_{i\lt m}r_iV_i\\
 &\le
 \boxed{
 \frac A3(L+Q^2)N.
@@ -147,7 +147,7 @@ The granted fixed-set bound gives
 Candidate #21's second-moment condition is
 
 ```math
-2W\sum_{i<m}w_iV_i
+2W\sum_{i\lt m}w_iV_i
 <
 (NA)^2.
 ```

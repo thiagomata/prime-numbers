@@ -39,13 +39,13 @@ Write the lower endpoint as
 ```math
 A=qr+b,
 \qquad
-0\le b<r.
+0\le b\lt r.
 ```
 
 For each canonical residue `0<=a<r`, set
 
 ```math
-\varepsilon_a=\mathbf 1_{a<b},
+\varepsilon_a=\mathbf 1_{a\lt b},
 \qquad
 v_a=q+sa+\varepsilon_a\pmod P.
 ```
@@ -172,9 +172,9 @@ The denominator is nonzero: `zeta_m=1` would imply `m=0 modulo P` because
 Define
 
 ```math
-\delta_0=\mathbf 1_{0<b},
+\delta_0=\mathbf 1_{0\lt b},
 \qquad
-\delta_-=\mathbf 1_{r-2<b}.
+\delta_-=\mathbf 1_{r-2\lt b}.
 ```
 
 Removing classes `0` and `r-2` gives the exact harmless phase sum

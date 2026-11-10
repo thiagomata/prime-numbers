@@ -108,7 +108,7 @@ Let
 ```math
 s_k=L\bmod M_k,
 \qquad
-0\le s_k<M_k.
+0\le s_k\lt M_k.
 ```
 
 Each complete interval block of length `M_k` contributes zero to every
@@ -145,15 +145,15 @@ The proved prefix constraints become
 ```math
 0\le t_i\le c_{i,k},
 \qquad
-\sum_{i<k}t_i\le s_k.
+\sum_{i\lt k}t_i\le s_k.
 ```
 
 The prefix energy is
 
 ```math
-\sum_{i<k}\alpha_iy_i
+\sum_{i\lt k}\alpha_iy_i
 =
-\sum_{i<k}\beta_{i,k}t_i,
+\sum_{i\lt k}\beta_{i,k}t_i,
 ```
 
 where
@@ -198,7 +198,7 @@ t_{i,k}^{\star}
 \left\{
 c_{i,k},
 \left(
-s_k-\sum_{j<i}c_{j,k}
+s_k-\sum_{j\lt i}c_{j,k}
 \right)_+
 \right\}.
 }
@@ -285,7 +285,7 @@ For a fixed positive cut `k`, the full prefix capacity vector is feasible for
 the Bessel constraint exactly when
 
 ```math
-\sum_{i<k}c_{i,k}\le s_k.
+\sum_{i\lt k}c_{i,k}\le s_k.
 ```
 
 In that case `t_(i,k)^star=c_(i,k)` for every prefix coordinate and the hybrid
@@ -295,7 +295,7 @@ If instead
 
 ```math
 \boxed{
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{M_kd_ip_ia_i}
 >
 s_k,
@@ -308,7 +308,7 @@ energy coefficient is positive,
 ```math
 \mathcal H_k
 <
-\sum_{i<k}\alpha_iX_i,
+\sum_{i\lt k}\alpha_iX_i,
 ```
 
 and therefore

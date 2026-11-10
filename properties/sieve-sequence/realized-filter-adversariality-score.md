@@ -105,7 +105,7 @@ The score regions mean only
 
 ```math
 \begin{aligned}
-C_p(f)<\frac12&\iff f<d_p,\\
+C_p(f)<\frac12&\iff f\lt d_p,\\
 C_p(f)=\frac12&\iff f=d_p,\\
 C_p(f)>\frac12&\iff f>d_p.
 \end{aligned}
@@ -121,7 +121,7 @@ Strict monotonicity and the endpoint anchor give
 ```math
 \begin{aligned}
 L-K>0
-&\iff K<L,\\
+&\iff K\lt L,\\
 &\iff \frac KL<1,\\
 &\iff C_p(K/L)<1.
 \end{aligned}
@@ -149,7 +149,7 @@ This bound alone forces survival exactly while its right side remains below
 `L`:
 
 ```math
-d_pL+x<L
+d_pL+x\lt L
 \iff
 x<(1-d_p)L.
 ```
@@ -387,7 +387,7 @@ satisfies the full-window membership condition `W_Q=[Q,Q^2)` only for primes
 `Q` in the bounded range
 
 ```math
-\sqrt{x+2}<Q\le x.
+\sqrt{x+2}\lt Q\le x.
 ```
 
 Consequently, no finite set of twin-prime pairs can supply
@@ -410,7 +410,7 @@ Combining both facts:
 &G_{\mathrm{surviving}}(p,Q)>0
 \text{ at infinitely many transitions}\\
 \Longleftrightarrow\quad
-&K_D(p,q)<L_D(p,q)
+&K_D(p,q)\lt L_D(p,q)
 \text{ at infinitely many danger-annulus transitions}\\
 \Longleftrightarrow\quad
 &\text{infinitely many twin primes exist.}
@@ -451,9 +451,9 @@ does.
 \begin{aligned}
 N_{\mathrm{friendly}}(Q)&=N_0
 &&\text{(}f=0\text{ at every step; trivial ceiling, survivors can never exceed }N_0\text{)}\\[4pt]
-N_{\mathrm{random}}(Q)&=N_0\prod_{p_0<r\le Q}\left(1-\frac2r\right)
+N_{\mathrm{random}}(Q)&=N_0\prod_{p_0\lt r\le Q}\left(1-\frac2r\right)
 &&\text{(}f=d_p=2/r\text{ at every step; Section 24's anchored projection)}\\[4pt]
-N_{\mathrm{adversarial}}(Q)&=\max\!\left(0,\;N_0-\!\!\sum_{p_0<r\le Q}\!\!A(\cdot,r)\right)
+N_{\mathrm{adversarial}}(Q)&=\max\!\left(0,\;N_0-\!\!\sum_{p_0\lt r\le Q}\!\!A(\cdot,r)\right)
 &&\text{(}f=1\text{ applied only up to the proved capacity }A\text{ at each step)}
 \end{aligned}
 ```

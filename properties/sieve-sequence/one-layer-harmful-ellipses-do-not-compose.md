@@ -179,7 +179,7 @@ E_b
 \ge
 \frac{(T-N_m)^2}{2W_-},
 \qquad
-W_-<W.
+W_-\lt W.
 ```
 
 Since

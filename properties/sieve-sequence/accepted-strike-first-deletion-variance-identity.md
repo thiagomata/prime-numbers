@@ -24,7 +24,7 @@ Let
 
 ```math
 P_{i+1}=P_i r_i
-\qquad(0\le i<m)
+\qquad(0\le i\lt m)
 ```
 
 and let `I` be an integer interval. Define
@@ -50,7 +50,7 @@ A_{i+1}=A_i-H_i.
 Put
 
 ```math
-n_k=H_k\quad(0\le k<m),
+n_k=H_k\quad(0\le k\lt m),
 \qquad
 n_m=A_m.
 ```
@@ -84,7 +84,7 @@ For `k<m`, define `v_k in R^m` by
 (v_k)_i
 =
 \begin{cases}
--1/r_i,&i<k,\\
+-1/r_i,&i\lt k,\\
 1-1/r_k,&i=k,\\
 0,&i>k.
 \end{cases}
@@ -180,7 +180,7 @@ Because
 ```math
 \sum_kn_k\lVert u_k\rVert^2
 =
-\operatorname{tr}(CG),
+\text{tr}(CG),
 ```
 
 this is equivalently
@@ -189,7 +189,7 @@ this is equivalently
 \boxed{
 \mathcal E_C
 =
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_{k<\ell}
 n_kn_\ell
@@ -200,7 +200,7 @@ n_kn_\ell
 Thus the generic bound
 
 ```math
-\mathcal E_C\le A_0\operatorname{tr}(CG)
+\mathcal E_C\le A_0\text{tr}(CG)
 ```
 
 loses exactly the displayed first-deletion dispersion.
@@ -213,7 +213,7 @@ For `k<m`,
 \boxed{
 \lVert u_k\rVert^2
 =
-\sum_{i<k}\frac{c_i}{r_i^2}
+\sum_{i\lt k}\frac{c_i}{r_i^2}
 +
 c_k\left(1-\frac1{r_k}\right)^2.
 }
@@ -225,7 +225,7 @@ For the survivor class,
 \boxed{
 \lVert u_m\rVert^2
 =
-\sum_{i<m}\frac{c_i}{r_i^2}.
+\sum_{i\lt m}\frac{c_i}{r_i^2}.
 }
 ```
 
@@ -237,7 +237,7 @@ If `k<ell<m`, direct subtraction gives
 =
 c_k
 +
-\sum_{k<i<\ell}\frac{c_i}{r_i^2}
+\sum_{k\lt i<\ell}\frac{c_i}{r_i^2}
 +
 c_\ell\left(1-\frac1{r_\ell}\right)^2.
 }
@@ -251,7 +251,7 @@ If `k<m` and `ell=m`, then
 =
 c_k
 +
-\sum_{k<i<m}\frac{c_i}{r_i^2}.
+\sum_{k\lt i\lt m}\frac{c_i}{r_i^2}.
 }
 ```
 
@@ -274,7 +274,7 @@ Then `mathcal E_C=mathcal E_D`, candidate #23's exact weighted energy. Hence
 \boxed{
 \mathcal E_D
 =
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_{k<\ell}
 n_kn_\ell
