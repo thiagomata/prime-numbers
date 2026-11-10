@@ -1,7 +1,7 @@
 # Repo-Wide GitHub Math Rendering Sweep
 
 **Created:** 2026-11-10
-**Status:** Active
+**Status:** Closed — user verified the rendered pages clean on the branch (2026-11-10); merged via PR #66
 
 ## START HERE
 
@@ -66,6 +66,11 @@ tracked files so untracked user work cannot be touched.
   (companions/balanced-randomized-2-gap/model.md — code spans run no
   math processing) and prose mentions in guides/tickets that document
   the macro itself.
+- 2026-11-10: User spot-checked the rendered pages on the branch
+  (detailed article + candidates) and confirmed clean rendering.
+  Remediation of the staging incident verified in the final net diff
+  (37 intended files, no user files). Ticket closed; moved to
+  `tickets/archived/`.
 
 ## What Is Learned
 
@@ -126,7 +131,8 @@ tracked files so untracked user work cannot be touched.
 4. ~~`\lt` sweep~~ done (`068a1be4`).
 5. ~~`\operatorname` sweep~~ done (`16eaa482`).
 6. ~~PROOF_GUIDE rule-8 correction~~ done (`89102311`).
-7. Push, open PR, user verifies rendering, merge, close ticket.
+7. ~~Push, open PR, user verifies rendering, merge, close ticket~~ done
+   (PR #66; user verified 2026-11-10; ticket closed).
 
 ## Learning Log
 
@@ -137,6 +143,7 @@ tracked files so untracked user work cannot be touched.
 | 2026-11-10 | The `\operatorname` sweep surfaced two forms the fence regex missed: the starred `\operatorname*{arg\,min}` and inline `$...$` math in tickets/future. | Fixed both with targeted edits; disclosed as scope additions. `\operatorname` inside backtick code spans left alone (no math processing). |
 | 2026-11-10 | Final gate: 3640 fences repo-wide, 0 KaTeX failures, 0 remaining breakers in tracked fences. | Ready for PR. |
 | 2026-11-10 | PR-content verification caught an accidentally staged untracked user file and two omitted tickets/active fixes (bad `git add -A ':!tickets'` pathspec). | Stop-and-ask; user chose surgical fix; remediated and re-verified net diff (37 files). Rule for next time: stage the script's changed-file list, not `-A`. |
+| 2026-11-10 | User verified rendered pages clean on the branch. | Close the ticket; merge PR #66. |
 
 ## Related Tickets
 
