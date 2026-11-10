@@ -59,7 +59,7 @@ K^{\mathrm{real}}_{g,r} = \{-aM^{-1},\ -(a+2)M^{-1}\} \pmod r.
 This companion process replaces that deterministic pair with
 
 ```math
-K^{\mathrm{random}}_{g,r} \sim \operatorname{Uniform}\binom{\mathbb Z/r\mathbb Z}{2}.
+K^{\mathrm{random}}_{g,r} \sim \text{Uniform}\binom{\mathbb Z/r\mathbb Z}{2}.
 ```
 
 Only the *locations* of the two casualties are randomized. Their *number* is

@@ -49,9 +49,9 @@ A structural insight: the sieve transition is not arbitrary — it only copies t
 
 ### Monotonic exclusion theorem
 
-Define $\operatorname{Possible}_k(X)$ = "gap pattern $X$ occurs somewhere in $S_k$". The transition rule has the property that it **cannot create certain patterns** — only expand existing ones and delete elements. This gives:
+Define $\text{Possible}_k(X)$ = "gap pattern $X$ occurs somewhere in $S_k$". The transition rule has the property that it **cannot create certain patterns** — only expand existing ones and delete elements. This gives:
 
-> If $\neg \operatorname{Possible}_k(X)$ and the transition $S_k \to S_{k+1}$ cannot create $X$, then $\neg \operatorname{Possible}_{k+1}(X)$.
+> If $\neg \text{Possible}_k(X)$ and the transition $S_k \to S_{k+1}$ cannot create $X$, then $\neg \operatorname{Possible}_{k+1}(X)$.
 
 By induction: if $X$ is absent at stage $k$, it is absent in all $S_j$ for $j > k$.
 
@@ -66,7 +66,7 @@ By induction: if $X$ is absent at stage $k$, it is absent in all $S_j$ for $j > 
 | # | Candidate | Notes |
 |---|-----------|-------|
 | A | **Maximal gap value** $E_k$: If a gap larger than $q$ is absent at stage $k$, can it reappear later? | Merging smaller gaps can produce larger gaps (e.g. $2+4=6$), so this is NOT a forbidden state — large gaps CAN be created. But the growth may have bounds. |
-| B | **Small gap values 2,4,6,8,10**: Once a specific small gap value is absent, can it reappear? | If no two gaps in $S_k$ sum to $d$, then $d$ cannot appear in $S_{k+1}$ because new gaps are sums of consecutive old gaps. A useful predicate: $\operatorname{NoPairSummingTo}_k(d)$. |
+| B | **Small gap values 2,4,6,8,10**: Once a specific small gap value is absent, can it reappear? | If no two gaps in $S_k$ sum to $d$, then $d$ cannot appear in $S_{k+1}$ because new gaps are sums of consecutive old gaps. A useful predicate: $\text{NoPairSummingTo}_k(d)$. |
 | C | **Leftmost survivor position**: If no survivor exists in $[0, L)$ at stage $k$, can a survivor appear there later? | Period expansion moves everything right, so the leftmost survivor can only increase. This is already the $m_k$ invariant (#10). |
 | D | **Gap parity**: If no odd gap exists at stage $k$, can an odd gap appear later? | Since gaps are sums of consecutive existing gaps, if all gaps are even, sums are even. Odd gaps would require an odd ancestor — so parity absence is likely preserved. |
 | E | **Gap pattern "2, X, 2"**: If a specific 2-gap boundary pattern is absent, can it reappear? | Requires tracking specific gap neighborhoods. More complex but follows the same monotonic exclusion principle. |
@@ -74,7 +74,7 @@ By induction: if $X$ is absent at stage $k$, it is absent in all $S_j$ for $j > 
 ### Proof structure (formalizable in Stainless)
 
 1. Define the transition function $T : \text{GapList}_k \to \text{GapList}_{k+1}$ (already exists via `survivorValues` + `gapsFromValues`).
-2. Define predicate $\operatorname{Possible}_k(X)$ for a pattern $X$.
+2. Define predicate $\text{Possible}_k(X)$ for a pattern $X$.
 3. Prove a **non-generation lemma**: for each candidate pattern $X$, prove:
    ```
    ∀ L. ¬Possible_k(X) ∧ T(L) = L' ⇒ ¬∃ position p. pattern X occurs in L' at p

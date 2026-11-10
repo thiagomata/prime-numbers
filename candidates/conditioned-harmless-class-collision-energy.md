@@ -416,7 +416,7 @@ The Ramanujan Cross-Conductor Geometry property calculates the cross-conductor g
 ```math
 \|\mathsf A_q^*C\mathsf A_{q'}\|_{\mathrm{HS}}^2
 =
-\operatorname{tr}
+\text{tr}
 \left(
 C\mathsf R_qC\mathsf R_{q'}C
 \right),

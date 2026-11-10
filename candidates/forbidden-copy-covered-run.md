@@ -14,7 +14,7 @@ prime forbids two copy-index classes. Let `C` be the union of all those
 forbidden classes, and let
 
 ```math
-\operatorname{coverRun}(C)
+\text{coverRun}(C)
 =\max\{|J|:J\text{ is consecutive and }J\subseteq C\}.
 ```
 
@@ -22,7 +22,7 @@ Let `I(a,M,q)` be the consecutive copy-index interval placing both endpoints
 inside `W_q`. Suppose, for infinitely many finite scenarios,
 
 ```math
-|I(a,M,q)|>\operatorname{coverRun}(C).
+|I(a,M,q)|>\text{coverRun}(C).
 ```
 
 ## Why It Is Sufficient

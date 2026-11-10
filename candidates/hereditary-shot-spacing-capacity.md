@@ -92,13 +92,13 @@ Let
 ```math
 J=[u,v),
 \qquad
-\operatorname{len}(J)=v-u
+\text{len}(J)=v-u
 ```
 
 be a half-open numerical interval. If
 
 ```math
-\operatorname{len}(J)<\sigma_r(k),
+\text{len}(J)<\sigma_r(k),
 ```
 
 then `J` contains at most `k-1` shots. Otherwise, its first and kth shots would
@@ -131,7 +131,7 @@ such that
 ```math
 G_r(J_r)\ge k_r
 \qquad\text{and}\qquad
-\operatorname{len}(J_r)<\sigma_r(k_r).
+\text{len}(J_r)<\sigma_r(k_r).
 ```
 
 Here `G_r(J_r)` counts the complete 2-gaps present immediately before filter

@@ -186,7 +186,7 @@ and an attaining layer
 
 ```math
 r_{\min}(Q)\in
-\operatorname*{arg\,min}_{5\le r\lt Q}\rho(Q,r).
+\text{arg\,min}_{5\le r\lt Q}\rho(Q,r).
 ```
 
 The measurements have three immediate interpretations:

@@ -16,7 +16,7 @@ interval `I` contained in `[q,q^2)` and at least two endpoint-disjoint
 pre-filter 2-gaps whose four endpoints all lie in `I`, with
 
 ```math
-\operatorname{width}(I)\lt p.
+\text{width}(I)\lt p.
 ```
 
 ## Why It Is Sufficient
