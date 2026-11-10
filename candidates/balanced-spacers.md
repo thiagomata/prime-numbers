@@ -25,7 +25,7 @@ D_{max}(q)\le C(q)\overline D_q
 and, for infinitely many `q`,
 
 ```math
-C(q)\frac{M_q}{G_q}<q^2-q-2.
+C(q)\frac{M_q}{G_q}\lt q^2-q-2.
 ```
 
 ## Why It Is Sufficient

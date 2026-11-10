@@ -60,7 +60,7 @@ The proved property
 ```math
 \rho(Q,r)>1
 \quad\Longrightarrow\quad
-\text{candidate #14's }k=2\text{ premise holds at layer }r.
+\text{candidate \#14's }k=2\text{ premise holds at layer }r.
 ```
 
 The early inequality is no longer only empirical. The
@@ -72,7 +72,7 @@ the open later-layer comparison `rho(Q,r)>=rho(Q,7)`.
 For redundancy, write the local starts as
 
 ```math
-x_1<x_2<\cdots<x_N.
+x_1\lt x_2<\cdots\lt x_N.
 ```
 
 The sweep records:
@@ -238,7 +238,7 @@ For every measured head:
 ```math
 \rho(Q,r)>1
 \qquad
-\text{at every layer }5\le r<Q.
+\text{at every layer }5\le r\lt Q.
 ```
 
 There were:
@@ -309,7 +309,7 @@ No measured layer was a one-certificate edge case:
 The chain minimum
 
 ```math
-D_{\min}(Q)=\min_{5\le r<Q}D(Q,r)
+D_{\min}(Q)=\min_{5\le r\lt Q}D(Q,r)
 ```
 
 grew from `8` at Q17 to `4,043` at Q997.
@@ -361,10 +361,10 @@ Let
 \begin{aligned}
 P_{\mathrm{alg,min}}(Q)
 &=
-\min_{5\le r<Q}P_{\mathrm{alg}}(Q,r),\\
+\min_{5\le r\lt Q}P_{\mathrm{alg}}(Q,r),\\
 D_{\mathrm{alg,min}}(Q)
 &=
-\min_{5\le r<Q}D_{\mathrm{alg}}(Q,r).
+\min_{5\le r\lt Q}D_{\mathrm{alg}}(Q,r).
 \end{aligned}
 ```
 

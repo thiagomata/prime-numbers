@@ -89,13 +89,13 @@ consecutive accepted values. For one complete period of coordinate length
 `P`, write
 
 ```math
-0\le a_0<a_1<\cdots<a_{m-1}<P.
+0\le a_0\lt a_1<\cdots\lt a_{m-1}\lt P.
 ```
 
 Its raw cyclic gaps are
 
 ```math
-g_j=a_{j+1}-a_j\quad(0\le j<m-1),
+g_j=a_{j+1}-a_j\quad(0\le j\lt m-1),
 \qquad
 g_{m-1}=P+a_0-a_{m-1}.
 ```
@@ -218,7 +218,7 @@ gap before calling every start in this interval square-safe.
 The **eligible square-safe 2-gap-start window** is
 
 ```math
-W_Q=\{x:Q\le x\text{ and }x+2<Q^2\}.
+W_Q=\{x:Q\le x\text{ and }x+2\lt Q^2\}.
 ```
 
 The strict upper inequality belongs to the definition. If every missing prime

@@ -92,7 +92,7 @@ primes `p` for which `Omega(p+2)<=2`. For each sufficiently large such `p`,
 Bertrand's postulate supplies a prime
 
 ```math
-\sqrt p<Q<2\lceil\sqrt p\rceil<p.
+\sqrt p\lt Q<2\lceil\sqrt p\rceil\lt p.
 ```
 
 Consequently `p\in[Q,Q^2)`. Because `p` is prime, it survives every filter
@@ -184,8 +184,8 @@ and
 \rho_{Q,z}
 =
 \frac12
-\prod_{2<p<z}\left(1-\frac2p\right)
-\prod_{z\le p<Q}\left(1-\frac1p\right).
+\prod_{2\lt p\lt z}\left(1-\frac2p\right)
+\prod_{z\le p\lt Q}\left(1-\frac1p\right).
 }
 ```
 

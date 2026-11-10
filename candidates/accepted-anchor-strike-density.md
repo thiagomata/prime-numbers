@@ -664,7 +664,7 @@ identity
 \boxed{
 \mathcal E_D
 =
-A_0\operatorname{tr}(CG)
+A_0\text{tr}(CG)
 -
 \sum_{k<\ell}
 n_kn_\ell

@@ -235,7 +235,7 @@ through every layer of infinitely many conditioned chains.
 A useful intermediate theorem would be a hereditary lower envelope
 
 ```math
-\inf_{5\le r<Q}
+\inf_{5\le r\lt Q}
 \frac{
 G_r(W_Q)
 }{

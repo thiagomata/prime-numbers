@@ -392,7 +392,7 @@ modulo `q`. The two affine phase runs give
 +
 \left\lceil\frac{r_i-b}{q}\right\rceil,
 \qquad
-q\mu_q<r_i+2q.
+q\mu_q\lt r_i+2q.
 ```
 
 Hence the squared centered block norm is at most `q mu_q`, replacing the full
@@ -416,7 +416,7 @@ The Ramanujan Cross-Conductor Geometry property calculates the cross-conductor g
 ```math
 \|\mathsf A_q^*C\mathsf A_{q'}\|_{\mathrm{HS}}^2
 =
-\operatorname{tr}
+\text{tr}
 \left(
 C\mathsf R_qC\mathsf R_{q'}C
 \right),

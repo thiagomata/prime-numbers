@@ -37,7 +37,7 @@ those heads.
 Fix a future prime head `Q` and a nonempty conditioned chain
 
 ```math
-5\le r_0<r_1<\cdots<r_{m-1}<Q.
+5\le r_0\lt r_1<\cdots\lt r_{m-1}\lt Q.
 ```
 
 Let `S_i` be the complete 2-gap starts in the stated square window immediately
@@ -271,13 +271,13 @@ E_b
 Also,
 
 ```math
-w_{i-1}=a_iw_i<w_i,
+w_{i-1}=a_iw_i\lt w_i,
 ```
 
 so
 
 ```math
-W_-<W
+W_-\lt W
 ```
 
 and hence
@@ -571,7 +571,7 @@ q_{i,k}=M_kd_ip_ia_i,
 native-period Bessel gives the joint prefix constraint
 
 ```math
-\sum_{i<k}\frac{b_i^2}{q_{i,k}}\le s_k.
+\sum_{i\lt k}\frac{b_i^2}{q_{i,k}}\le s_k.
 ```
 
 Intersect this with the Harmful-Capacity Excess Envelope property's individual bounds `b_i^2<=X_i`. After the
@@ -601,7 +601,7 @@ t_{i,k}^{\star}
 \left\{
 c_{i,k},
 \left(
-s_k-\sum_{j<i}c_{j,k}
+s_k-\sum_{j\lt i}c_{j,k}
 \right)_+
 \right\}.
 ```
@@ -611,7 +611,7 @@ With
 ```math
 \mathcal H_k
 =
-\sum_{i<k}\beta_{i,k}t_{i,k}^{\star},
+\sum_{i\lt k}\beta_{i,k}t_{i,k}^{\star},
 ```
 
 The Native-Period Hybrid Envelope property proves
@@ -636,7 +636,7 @@ E_b
 The gain at a fixed positive cut is strict exactly when
 
 ```math
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{M_kd_ip_ia_i}
 >
 s_k.
@@ -669,7 +669,7 @@ The Native-Period Capacity Overflow property compresses the exact greedy gain to
 e_k
 =
 \left(
-\sum_{i<k}\frac{X_i}{M_kd_ip_ia_i}
+\sum_{i\lt k}\frac{X_i}{M_kd_ip_ia_i}
 -
 s_k
 \right)_+.
@@ -748,7 +748,7 @@ e_k
 \underline e_k
 :=
 \left(
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{\sigma_i^2}{4M_kd_ip_ia_i}
 -
 s_k
@@ -943,7 +943,7 @@ inside the Bessel budget, so this remaining native-period step gives no gain.
 The Incomplete-Block Bessel Bound property closes that final native-period step. For `M_k>H`, it proves
 
 ```math
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{q_{i,k}}
 \le
 \frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.

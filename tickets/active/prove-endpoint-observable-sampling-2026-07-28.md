@@ -202,7 +202,7 @@ The Capacity Threshold Hierarchy property compares the resulting population obli
 #14 and #19. In the square-window domain,
 
 ```math
-2B<\rho_*(r)B<T_{14},
+2B<\rho_*(r)B\lt T_{14},
 ```
 
 so #14's count floor always implies the scalar criterion. Candidate #19's

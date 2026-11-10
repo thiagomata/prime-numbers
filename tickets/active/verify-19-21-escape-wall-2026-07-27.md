@@ -71,7 +71,7 @@ The Native-Period Capacity Overflow property defines the normalized capacity ove
 e_k
 =
 \left(
-\sum_{i<k}
+\sum_{i\lt k}
 \frac{X_i}{M_kd_ip_ia_i}
 -
 s_k
@@ -168,7 +168,7 @@ The remaining native-period question is the Bessel constraint on that single
 incomplete block. The Incomplete-Block Bessel Bound property closes that question. For every cut,
 
 ```math
-\sum_{i<k}\frac{X_i}{q_{i,k}}
+\sum_{i\lt k}\frac{X_i}{q_{i,k}}
 \le
 \frac{3kD^2r_k^2}{25M_kP_k(r_k-2)}.
 ```

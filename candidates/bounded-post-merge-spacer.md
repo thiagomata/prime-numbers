@@ -19,7 +19,7 @@ be the largest cyclic distance between consecutive starts. Suppose, for
 infinitely many `q`,
 
 ```math
-D_{max}(q)<q^2-q-2.
+D_{max}(q)\lt q^2-q-2.
 ```
 
 ## Why It Is Sufficient
