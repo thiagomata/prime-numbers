@@ -114,3 +114,9 @@ classes contributed by each prime in the batch.
 The displayed main term is not itself a lower bound. Replacing the exact local
 count by its complete-period density without controlling `E_Q` would assume
 the positional conclusion that remains to be proved.
+
+The [current research summary](research/batched-survival-progress.md) records
+proved small relative loss budgets for square-destination transitions and a
+conditional next-step positivity result. An actual positive reserve that
+renews indefinitely remains open; those bounds do not establish the missing
+discrepancy inequality in this note.

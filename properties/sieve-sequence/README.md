@@ -21,9 +21,11 @@ nothing else in the repo should be treated as authoritative for the mapping.
 | Global 2-Gap Cluster Count | Exact Global `(2,4,2)` Two-Gap Cluster Count | [exact-global-two-gap-cluster-count.md](exact-global-two-gap-cluster-count.md) |
 | Batched 2-Gap Survival | Exact Batched 2-Gap Survival | [exact-batched-two-gap-survival.md](exact-batched-two-gap-survival.md) |
 | Copy-Index Filter Frequency | Exact Filter Frequency Across Repeated Copies | [copy-index-filter-frequency.md](copy-index-filter-frequency.md) |
+| Fixed Shot Distance | Fixed Shot Distance For 2-Gap Copies | [fixed-shot-distance.md](fixed-shot-distance.md) |
 | 2-Gap Isolation | Isolation of 2-Gaps After Filtering by 3 | [two-gap-isolation-after-filter-three.md](two-gap-isolation-after-filter-three.md) |
 | Accepted Local Strikes | Exact Accepted Local Filter Strikes | [exact-accepted-local-filter-strikes.md](exact-accepted-local-filter-strikes.md) |
 | Local Survival Threshold | Sharp Local 2-Gap Survival Threshold | [sharp-local-two-gap-survival-threshold.md](sharp-local-two-gap-survival-threshold.md) |
+| Cumulative Shot-Survival Proposal | Cumulative Max-Shot Survival Proposal | [cumulative-max-shot-survival-proposal.md](cumulative-max-shot-survival-proposal.md) |
 | Pre-Final Twin Decomposition | Pre-Final-Filter Twin/Semiprime Decomposition | [pre-final-filter-twin-semiprime-decomposition.md](pre-final-filter-twin-semiprime-decomposition.md) |
 | Safe-Window Certification | Safe-Window 2-Gaps Certify Twin Primes | [safe-window-two-gaps-certify-twin-primes.md](safe-window-two-gaps-certify-twin-primes.md) |
 | Coherent Head-Suppression Cover | Coherent Head Suppression Is Shifted Prime-Shot Coverage | [coherent-head-suppression-is-shifted-prime-shot-coverage.md](coherent-head-suppression-is-shifted-prime-shot-coverage.md) |
@@ -122,6 +124,20 @@ nothing else in the repo should be treated as authoritative for the mapping.
      product while keeping short-window placement explicitly open.
 3. [Exact Batched 2-Gap Survival](exact-batched-two-gap-survival.md)
    - Applies any finite range of new prime filters in one CRT calculation.
+   - [Current batched-window research](research/batched-survival-progress.md)
+     separates proved transition-loss estimates from open actual-margin renewal.
+   - [Growing-block reserve](research/batched-survival-block-reserve.md)
+     bounds actual cumulative losses; positivity requires a starting reserve.
+   - [Higher-order transport and retention](research/batched-survival-propagation-check-2026-10-27.md#fifth-order-weights-eliminate-the-shared-penalty)
+     removes J_5 exactly; a starting reserve conditionally retains L_7 over
+     fixed-factor head intervals without proving fresh-pair supply.
+   - [Moment calibration and triple-product remainder](research/batched-survival-analytic-main-and-error.md#6-high-order-moments-require-nonnegligible-density-corrections)
+     proves nonnegligible individual density errors and isolates an unestimated
+     fifth-penalty correlation; no fresh reserve follows from the reduction.
+   - [Classical lower-sieve input](research/batched-survival-classical-sieve-input.md)
+     proves DHR old-candidate abundance at exponent11/5 with positive cubic
+     density, and stronger rough Chen abundance at the original square rule
+     with prime-or-semiprime partners. Final twin survival remains open.
 4. [Exact Filter Frequency Across Repeated Copies](copy-index-filter-frequency.md)
    - Locates the two forbidden copy-index classes for every new filter.
 5. [Isolation of 2-Gaps After Filtering by 3](two-gap-isolation-after-filter-three.md)

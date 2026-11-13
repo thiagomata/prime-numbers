@@ -1,7 +1,7 @@
 # Rigid-Pair Shot Companion for Survival Frontiers
 
 **Created:** 2026-09-21
-**Updated:** 2026-09-21
+**Updated:** 2026-10-07
 **Status:** Plan phase
 **Depends on:** none hard (builds on verified `SpecSieveSeqTwoGapProperties` lemmas and the coherent winding law notes in `backward-head-two-gap-bound-2026-08-29.md`)
 
@@ -122,9 +122,13 @@ verification. Rationale for ordering: cheapest-and-foundational first, and the
 
 ## Current State
 
-Nothing started. The inventory above was assembled by a full search on
+Path A is complete. The fixed-distance lemma is verified, indexed in
+`OBJECTS.md`, and promoted to `properties/sieve-sequence/fixed-shot-distance.md`.
+The inventory above was assembled by a full search on
 2026-09-21 (properties/, candidates/, src/main/scala, articles/, OBJECTS.md,
-tickets/). Key existing facts this ticket builds on:
+tickets/). On 2026-10-06 the working tree was clean and the Chapter 6 baseline
+was green (`logs/verify-ch-6-v1-chapter6-_.log`: total 4593, valid 4593).
+Key existing facts this ticket builds on:
 
 - The two forbidden classes and their distinctness are Stainless-verified
   (`assertForbiddenLiftOffsetsDistinct` — phrased as "p cannot divide two
@@ -134,6 +138,29 @@ tickets/). Key existing facts this ticket builds on:
   the rigid-pair change affects distributions/correlations, not the mean.
 - The coherent winding law and circular phase law exist only as ticket notes
   (see Related Tickets), not as properties.
+- `BezoutUtils.coprimeStepResidueOffset(step,p,target)` exposes the reusable
+  inverse-step witness surface: it returns the unique offset in `[0,p)` with
+  `mod(offset*step,p) == target`. This is likely a better proof target than
+  introducing a separate inverse notation.
+- New lemma `assertRightForbiddenLiftOffsetHasFixedSeparation` is focused-green
+  (`just verify assertRightForbiddenLiftOffsetHasFixedSeparation`: total 98,
+  valid 98). It states
+  `leftOffset == mod(rightOffset + fixedSeparation, p)`, where
+  `fixedSeparation` is the canonical offset with
+  `mod(fixedSeparation * step, p) == 2`.
+- Chapter 6 regression is green after the lemma:
+  `just verify-ch 6` produced `total: 4691 valid: 4691`.
+- Permanent records updated:
+  `OBJECTS.md`, `properties/sieve-sequence/README.md`, and
+  `properties/sieve-sequence/fixed-shot-distance.md`.
+- (2026-10-07) Editorial pass over
+  `articles/notes/drafts/cluster-exposure-frontiers.md`: every reported
+  number was checked against the generated CSVs (all matched except one), and
+  the fix set was applied — exact extinction count 39384 (was ~39387, a
+  rounding slip), row-level direct/effective equality wording, relative SVG
+  links, head-67 global-max adversariality 5.36 clarification, an
+  aggregate-histogram mixture explanation, and a stride-1 overlap caveat in
+  Limitations. Markdown-only; no runtime gates.
 
 ## Expected State
 
@@ -336,6 +363,79 @@ verification (label as empirical).
 - (2026-09-21) The mean `2/r` is model-invariant; only distributions,
   correlations, and boundary behavior distinguish the models — this bounds
   what the rigid-pair companion can improve.
+- (2026-10-06) Chapter 6 baseline before Path A is green:
+  `total: 4593 valid: 4593` in `logs/verify-ch-6-v1-chapter6-_.log`.
+- (2026-10-06) Existing code has no isolated fixed-Δ lemma in
+  `SpecSieveSeqTwoGapProperties` or `OBJECTS.md`; the closest reusable
+  primitive is `BezoutUtils.coprimeStepResidueOffset`, whose postcondition
+  gives `mod(offset * step, p) == target`.
+- (2026-10-06) The solver accepted the fixed-separation form
+  `leftOffset == mod(rightOffset + fixedSeparation, p)`. This orients the
+  distance from the right endpoint's forbidden lift offset back to the left
+  endpoint's forbidden lift offset, matching the equation
+  `right = left + 2`.
+- (2026-10-06) Path A documentation is now promoted: the fixed-distance fact
+  has a property note and an `OBJECTS.md` entry. No article was edited, so
+  `arxiv-sync` was not triggered.
+- (2026-10-06) The fixed-distance property should be explained as object
+  geometry as well as algebra: the two harmful lift indices are endpoint tests
+  attached to one copied 2-gap object, so the object's internal length `2`
+  forces the offset separation before any companion randomness is introduced.
+- (2026-10-06) The richer cluster/forest question is a separate article idea,
+  not a section to mix deeply into survival-frontiers. Drafted the concept at
+  `articles/notes/drafts/cluster-exposure-local-extinction.md`.
+- (2026-10-06) Added a Python empirical helper for the first generated
+  sequences: `sieve_sequence.cluster_exposure_cli` reads
+  `first_gaps_per_seq.csv`, slides fixed-size clusters over consecutive
+  2-gap candidates, and writes an exposure curve plus per-stage summary stats.
+- (2026-10-06) First empirical run over the first 20 generated sequences with
+  prefix length 10000, cluster size 25, stride 1 produced 54056 clusters:
+  exposure min 0, max 17, avg 5.78254, stddev 5.89357; adversariality min 0,
+  max 5.36, avg 1.04205, stddev 0.607146. Outputs:
+  `data/candidates/cluster-exposure-curve.csv`,
+  `data/candidates/cluster-exposure-summary.csv`,
+  `data/candidates/cluster-exposure-curve.svg`.
+- (2026-10-06) Added a fixed-seed random baseline overlay to the cluster
+  exposure curve. For the same first-20 run with seed 1, baseline exposure
+  min 0, max 24, avg 5.74491, stddev 6.11429. The measured prefix curve and
+  baseline curve now share `cluster-exposure-curve.csv` and the same SVG plot.
+- (2026-10-06) Reworked the SVG from a bar histogram into distribution lines:
+  one faint CDF line per stage, a thick aggregate measured-prefix CDF, and a
+  dashed random baseline CDF.
+- (2026-10-06) Renamed the empirical curve labels from "real" to "measured" /
+  "prefix" to avoid overclaiming. The plot is a prefix-data measurement plus a
+  random baseline, not the true underlying sieve law.
+- (2026-10-06) Added a first post-merge effective survival metric: after
+  deleting values divisible by the stage head, count 2-gaps remaining inside
+  the same cluster value span. For the first-20 run, direct and effective
+  survival rates coincide: min 0.32, max 1, avg 0.768698, stddev 0.235743.
+  This suggests endpoint deletion removes original local 2-gaps but does not
+  create replacement 2-gaps inside these measured spans.
+- (2026-10-06) Added an aggression sweep for the random companion filter:
+  keep the measured prefix curve fixed, then multiply the companion hit
+  probability scale until local cluster extinction appears. For the first-20
+  run with aggression max 20 and 40 steps, the midpoint threshold is
+  `extinction_rate >= 0.5` at aggression `8.79487`; at aggression `20`, average
+  survival is `0.0784061` and extinction rate is `0.728578`. Outputs:
+  `data/candidates/cluster-exposure-aggression.csv` and
+  `data/candidates/cluster-exposure-aggression.svg`. This is a pressure-test
+  companion curve, not a claim that the deterministic sieve has been solved.
+- (2026-10-06) Drafted an article-shaped note at
+  `articles/notes/drafts/cluster-exposure-frontiers.md`, using the existing
+  article structure: author/status metadata, abstract, introduction,
+  preliminaries/evidence boundary, model definitions, empirical figures,
+  limitations, conclusion, and reproducibility. It is intentionally framed as
+  finite prefix measurement plus companion simulation, with no asymptotic claim
+  for the real sieve.
+- (2026-10-06) Refined the draft article to show the calculation process
+  explicitly: row-level endpoint exposure, random mean, adversariality,
+  direct/effective survival, histogram/CDF aggregation, mean/stddev formulas,
+  and aggression-sweep survival/extinction calculations are now derived
+  step-by-step instead of only reported as final numbers.
+- (2026-10-06) Retuned the calculation sections toward the existing article
+  proof style: prose prepares each math block, aligned equations carry
+  bracketed right-side tags such as `[By Definition]`, `[Substitution]`, and
+  `[Q.E.D.]`, and each block is followed by a short interpretation.
 
 ## Failed Paths
 
@@ -351,8 +451,30 @@ lift offset equals the first minus `2*M^(-1) (mod r)` for a 2-gap, modeled on
 bodies (search-primacy), and confirm no equivalent lemma exists under another
 name.
 
+Micro-goal for the next step: start Path B by drafting
+`companions/candidates/rigid-pair-companion.md`. Keep it markdown-only unless
+an executable measurement recipe is added; derive the single-index `2/p`
+result first and leave the short-block case explicitly bounded if it starts
+to sprawl.
+
 ## Learning Log
 
 | Date | Learning | Action |
 |------|----------|--------|
 | 2026-09-21 | Ticket created from user proposal. Full inventory search done: ingredients proved (copy law, wrap lemmas, coherence), fixed-Δ never isolated, no rigid-pair companion exists, circular correction and empirical `ŵ_r` absent. | Start Path A: draft fixed-Δ `.holds` lemma. |
+| 2026-10-06 | Re-read ticket discipline, LEARNINGS, `SpecSieveSeqTwoGapProperties`, `BezoutUtils.coprimeStepZeroOffset`, and searched for existing offset/mod lemmas. Baseline Chapter 6 is green at 4593/4593; no fixed-Δ theorem exists yet. | Add one lemma using `coprimeStepResidueOffset(step,p,2)` as the fixed separation witness, then verify only that lemma. |
+| 2026-10-06 | Added `assertRightForbiddenLiftOffsetHasFixedSeparation`; focused verification passed (`total: 98 valid: 98`). | Run `just verify-ch 6` before updating docs. |
+| 2026-10-06 | Chapter 6 regression passed (`total: 4691 valid: 4691`). Updated `OBJECTS.md`, the property README registry, and added `fixed-shot-distance.md`. | Start Path B rigid-pair companion candidate. |
+| 2026-10-06 | Enriched `fixed-shot-distance.md` with the object-geometry framing: endpoint shots are coupled by one copied 2-gap object, and the algebra is the coordinate expression of that geometry. | Reuse this framing in Path B and any later article edit. |
+| 2026-10-06 | Drafted a separate forest-level concept note for cluster exposure curves, extinction thresholds, and adversariality scores. | Keep survival-frontiers clear; use the draft as a later article seed. |
+| 2026-10-06 | Implemented the first empirical cluster-exposure script and tests. The CLI generated curve, summary, and SVG outputs for the first 20 sequences; Python regression passed (`30 passed`). | Use the generated curve as the first empirical picture; next refinement would add effective post-merge exposure. |
+| 2026-10-06 | Added the random baseline companion curve to the same CSV/SVG plot. Python regression passed (`32 passed`). | Compare real-vs-baseline tails before deciding whether to add merge-effective exposure. |
+| 2026-10-06 | Corrected the visualization from a bar chart to multi-line distribution curves. Python regression still passes (`32 passed`). | Use the SVG as the visual comparison artifact. |
+| 2026-10-06 | Corrected overconfident "real" labels to "measured prefix" / "prefix aggregate" in code, CSV, SVG, and tests. | Keep empirical language humble until an algebraic distribution law is proved. |
+| 2026-10-06 | Added direct and effective post-filter survival rates. The first-20 run has identical direct/effective survival aggregates, and Python regression passed (`33 passed`). | Treat merge side effects as a boundary effect to inspect with wider spans/cyclic windows, not as a replacement-2-gap source in these prefix clusters. |
+| 2026-10-06 | Added an aggression sweep that scales the random companion filter until cluster extinction becomes common. The first-20 run crosses 50% extinct clusters at aggression `8.79487`; at aggression `20`, average survival is about `7.84%` and extinction is about `72.86%`. Python regression passed (`35 passed`). | Use the aggression plot as the extinction-frontier baseline, then stratify by cluster density / average 2-gap spacing relative to `p` if we want to test the user's nearby-gap hypothesis. |
+| 2026-10-06 | Drafted `cluster-exposure-frontiers.md` in the notes draft folder and tuned it toward the tone/structure of the existing articles. | Next article-level refinement is density stratification; no published chapter article was edited, so arXiv sync was not triggered. |
+| 2026-10-06 | Added explicit step-by-step calculation blocks to the cluster exposure draft so the reported empirical numbers are reproducible from the definitions in the text. | Keep this style for later empirical articles: formulas first, rows/tables second, interpretation third. |
+| 2026-10-06 | Adjusted the calculation blocks to match the house article rhythm: preparation prose, bracketed proof-step tags on the right, and a summary sentence after each block. | Use this as the style target before promoting the draft beyond `articles/notes/drafts/`. |
+| 2026-10-07 | Verified all draft numbers against the cluster-exposure CSVs (all matched except the extinction count) and applied the editorial fix set: extinction count is exactly 39384 (old ~39387 came from multiplying by the rounded rate 0.7286), row-level direct/effective equality, relative SVG links, head-67 max adversariality 5.36, aggregate-histogram mixture explanation, stride-1 overlap caveat. | Density stratification remains the next measurement. Promotion beyond `notes/drafts/` would require dropping the `properties/` link per the no-internal-materials rule for articles. |
+| 2026-10-07 | User call: image embeds stay absolute during draft editing. Relative image links are tied to git state — the drafts folder and the `data/candidates/cluster-exposure-*` outputs are untracked, and master does not have them — so the relative form would break as soon as the files move, and only works after commit + merge. | Keep `![...](/Users/...)` until the draft and its data are committed; convert to relative links in the same unit of work as the commit/promotion (tracked in the improvement-notes item 3). |

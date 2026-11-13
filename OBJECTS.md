@@ -748,6 +748,7 @@ operate on the canonical `CycleIntegral` class; use
 | Lemma                                                 | Statement                                                                                     |
 |-------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | **assertForbiddenLiftOffsetsDistinct(seq,k)**         | For a real sieve-sequence 2-gap and incoming head `p > 2`, its two unique forbidden lift offsets in `[0,p)` are distinct |
+| **assertRightForbiddenLiftOffsetHasFixedSeparation(seq,k)** | For a real sieve-sequence 2-gap, the endpoint forbidden lift offsets differ by the fixed inverse-step offset with stepped residue `2` |
 | **assertExactlyTwoDestroyedCopies(seq,k)**            | Exactly two indices in the complete `[0,p)` lift block lose at least one endpoint             |
 | **assertExactlyHeadMinusTwoCopiesSurvive(seq,k)**     | The complement of the destroyed-copy set contains exactly `p - 2` lift indices               |
 | **countDestroyedTwoGapCopies(left,step,p,i)**          | Counts remaining lift indices in `[i,p)` where at least one copied 2-gap endpoint is divisible by `p` |

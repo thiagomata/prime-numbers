@@ -1,0 +1,65 @@
+\section{Prime Contacts}
+The height has an exact arithmetic meaning at integer inputs. Each active
+wave contributes one for a discovered proper divisor and zero otherwise.
+This identifies the contacts without making divisor counting part of the
+recurrence itself.
+
+\begin{itemize}
+\item Truncated proper-divisor counts at finite stages.
+\item Divisor height and exact prime contacts in the limit.
+\end{itemize}
+
+Let $n\ge2$ be an integer. Write $\mathbf 1_{m\mid n}$ for the indicator
+that equals one when $m$ divides $n$, and zero otherwise. At an integer,
+$a_m(n)$ is one if $m < n$ and zero if $m\ge n$. Hence
+\begin{equation*}
+\begin{aligned}
+h_M(n)
+&=\sum_{m=2}^{M}a_m(n)W_m(n)
+&&[\sin(\pi n)=0]\\
+&=\sum_{m=2}^{\min(M,n-1)}\mathbf 1_{m\mid n}.
+&&[\text{Integer Wave Values}]
+\end{aligned}
+\end{equation*}
+
+Let $\tau(n)$ count the positive divisors of $n$, including $1$ and $n$.
+This is the classical divisor function, denoted $d(n)$ in DLMF \cite{dlmfdivisors}.
+Once every possible proper divisor is covered, the height is
+\begin{equation*}
+\begin{aligned}
+h(n)&=\sum_{m=2}^{n-1}\mathbf 1_{m\mid n}
+&&[\text{Local Stabilization}]\\
+&=\tau(n)-2.
+&&[\text{By Definition}]
+\end{aligned}
+\end{equation*}
+
+A prime has exactly its two trivial divisors. Every composite integer has
+at least one additional divisor. Noninteger inputs cannot create extra
+contacts because the baseline is strictly positive there:
+\begin{equation*}
+\begin{aligned}
+t\notin\mathbb Z&\ \Longrightarrow\ h(t)\ge\sin^2(\pi t) > 0,\\
+n\in\mathbb Z,\ n\ge2&\ \Longrightarrow\
+h(n)=0\ \Longleftrightarrow\ \tau(n)=2.
+\end{aligned}
+\end{equation*}
+
+Together these statements give the exact contact characterization:
+\begin{equation*}
+\begin{aligned}
+F(t)\in\mathbb R
+&\ \Longleftrightarrow\ h(t)=0\\
+&\ \Longleftrightarrow\ t\text{ is prime},\qquad t\ge2.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+For example, $h(7)=0$, whereas $h(12)=4$ because $2,3,4,6$ are its
+nontrivial proper divisors. The height records overlaps between filters,
+while its zero set records primality.
+
+Selecting real-axis contacts is essential. Since the real part of $F(t)$ is
+always $t$, projecting the entire curve onto the real axis would retain every
+input. This construction represents accepted values in value coordinates;
+it does not enumerate primes by their position in a sequence.

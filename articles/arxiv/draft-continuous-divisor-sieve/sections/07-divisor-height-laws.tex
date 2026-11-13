@@ -1,0 +1,98 @@
+\section{Divisor Height Laws}
+Away from zero, integer heights retain factorization information. These
+properties translate classical divisor-function laws \cite{dlmfdivisors} into the
+height notation. They concern unweighted filters: changing the positive
+weights can preserve contacts while destroying these numerical identities.
+
+\begin{itemize}
+\item Divisor factorization and low-height classifications.
+\item Square parity and coprime multiplication.
+\end{itemize}
+
+\subsection{Factorization and Low Heights}
+
+Let $n\ge2$ have prime factorization $n=\prod_{j=1}^{s}p_j^{e_j}$, with
+distinct primes $p_j$ and positive exponents $e_j$. A positive divisor chooses
+an exponent independently from $0$ through $e_j$ at each prime. Therefore
+\begin{equation*}
+\begin{aligned}
+h(n)+2&=\tau(n)
+&&[\text{Integer Height Identity}]\\
+&=\prod_{j=1}^{s}(e_j+1).
+&&[\text{Divisor Exponent Choices}]
+\end{aligned}
+\end{equation*}
+
+This is the divisor-product formula of DLMF equation 27.3.5 \cite{dlmfdivisors}.
+Small heights now have exact classifications. The following forms use suitable primes $p$ and $q$:
+\begin{equation*}
+\begin{aligned}
+h(n)=0&\ \Longleftrightarrow\ n=p,\\
+h(n)=1&\ \Longleftrightarrow\ n=p^2,\\
+h(n)=2&\ \Longleftrightarrow\ n=p^3\text{ or }n=pq\ (p\ne q),\\
+h(n)=3&\ \Longleftrightarrow\ n=p^4.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Indeed, the possible values of $\tau(n)$ are respectively $2,3,4,5$.
+The prime values $2,3,5$ force a single exponent factor; $4$ has the
+multiplicative partitions $4$ and $2\cdot2$, giving a cube or two distinct
+prime factors. For example, $h(9)=1$, $h(8)=h(10)=2$, and $h(16)=3$.
+
+Low height is thus arithmetic information, not only a visual distance from
+the real axis. Height two alone does not distinguish a prime cube from a
+product of two distinct primes.
+
+
+\subsection{Odd Heights and Perfect Squares}
+
+The parity of the height detects a perfect square. Divisors pair as $d$ and
+$n/d$; every pair contains two distinct divisors unless $d^2=n$. There is
+exactly one unpaired divisor when $n$ is a square, and none otherwise.
+Consequently, for every integer $n\ge2$,
+\begin{equation*}
+\begin{aligned}
+\tau(n)\text{ is odd}
+&\ \Longleftrightarrow\ n\text{ is a perfect square}
+&&[\text{Divisor Pairing}]\\
+h(n)\text{ is odd}
+&\ \Longleftrightarrow\ n\text{ is a perfect square}.
+&&\blacksquare\ [\text{Subtracting Two}]
+\end{aligned}
+\end{equation*}
+
+This classical divisor-function property is also immediate from the product
+formula \cite{dlmfdivisors}: its product is odd exactly when every exponent $e_j$
+is even. Thus the parity observation does not assert primality. For example,
+$9$ has height one and $16$ has height three; both have already been rejected.
+
+
+\subsection{Coprime Multiplication}
+
+For coprime integers $a,b\ge2$, the divisor choices are independent. Every
+divisor of $ab$ factors uniquely as a divisor of $a$ times a divisor of $b$,
+because the two prime factorizations have no common prime. The standard
+multiplicativity law \cite{dlmfdivisors}, equation 27.3.1, therefore gives
+\begin{equation*}
+\begin{aligned}
+h(ab)+2&=\tau(ab)
+&&[\text{Integer Height Identity}]\\
+&=\tau(a)\tau(b)
+&&[\gcd(a,b)=1]\\
+&=(h(a)+2)(h(b)+2).
+&&[\text{Substitution}]
+\end{aligned}
+\end{equation*}
+
+Equivalently,
+\begin{equation*}
+\begin{aligned}
+h(ab)&=h(a)h(b)+2h(a)+2h(b)+2.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The coprimality premise cannot be dropped. For a prime $p$,
+$\tau(p^2)=3$, whereas $\tau(p)\tau(p)=4$. Shared prime factors couple the
+exponent choices; the height product then requires different bookkeeping.

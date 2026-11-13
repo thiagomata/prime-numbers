@@ -1,0 +1,6 @@
+directories:
+  cache: /private/tmp/continuous-sieve-manim-cache
+camera:
+  background_color: "#101827"
+text:
+  font: "DejaVu Sans"

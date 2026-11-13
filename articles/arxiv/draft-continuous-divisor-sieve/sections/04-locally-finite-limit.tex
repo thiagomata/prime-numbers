@@ -1,0 +1,53 @@
+\section{Locally Finite Limit}
+The recurrence determines every finite stage. To obtain one continuous
+function on an unbounded domain, we must also justify its infinite sum.
+Here activation gives something stronger than pointwise convergence: on
+each bounded interval, sufficiently late stages agree exactly.
+
+\begin{itemize}
+\item Exact stabilization on bounded intervals.
+\item Continuity of the completed curve.
+\end{itemize}
+
+For real $t\ge2$, define
+\begin{equation*}
+\begin{aligned}
+h(t)&=\sin^2(\pi t)+\sum_{m=2}^{\infty}a_m(t)W_m(t),\\
+F(t)&=t+i h(t).
+\end{aligned}
+\end{equation*}
+
+Fix $X\ge2$. Every term with $m\ge X$ vanishes throughout $[2,X]$, since
+$t\le X\le m$ implies $a_m(t)=0$. Thus the infinite expression is a finite
+sum on that entire interval. In particular,
+\begin{equation*}
+\begin{aligned}
+M\ge\lceil X\rceil
+&\ \Longrightarrow\ h_M(t)=h(t)\quad(2\le t\le X)
+&&[\text{Activation}]\\
+\sup_{2\le t\le X}|h_M(t)-h(t)|&=0.
+&&[\text{By Definition}]
+\end{aligned}
+\end{equation*}
+
+Each finite stage is continuous. Exact agreement on compact intervals
+therefore proves both local uniform convergence and continuity of the limit:
+\begin{equation*}
+\begin{aligned}
+h_M&\longrightarrow h\quad\text{uniformly on every }[2,X],\\
+F&\text{ is continuous on }[2,\infty).
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+Local finiteness refers to the number of active filter terms on a bounded
+input interval. It does not bound the number of primes represented by the
+whole curve. At $t=12$, only indices $2$ through $11$ can contribute; at
+$t=12.5$, index $12$ can contribute as well. Increasing the input permits
+further filters without changing the function already defined on earlier
+bounded intervals.
+
+No global uniform-convergence claim on $[2,\infty)$ is needed. Nor does a
+continuous piecewise-linear activation establish differentiability at its
+breakpoints. The construction is a continuous complex-valued function of a
+real variable; holomorphicity is not asserted.

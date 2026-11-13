@@ -1,0 +1,97 @@
+\section{Filter Effects and Certification}
+Applying every integer filter makes the update rule uniform. The resulting
+heights contain redundant divisor information, but the integer contact set
+changes only at prime steps. This is the usual sieve-of-Eratosthenes mechanism
+\cite{dlmfsieve}, expressed through height increments. For a standard book
+treatment of the sieve, see Hardy and Wright \cite{hardywright1979}.
+
+\begin{itemize}
+\item Composite-filter redundancy and the first prime-step rejection.
+\item Sufficient and sharp finite-stage certification boundaries.
+\end{itemize}
+
+\subsection{Which Filters Remove Contacts}
+
+Suppose $M$ is composite. If the new filter raises the height at integer $n$,
+then $M\mid n$ and $n > M$. Choose a prime divisor $r$ of $M$. Since
+$r < M < n$ and $r\mid n$, filter $r$ has already made the height positive:
+\begin{equation*}
+\begin{aligned}
+a_M(n)W_M(n)=1
+&\ \Longrightarrow\ r\mid M\mid n,\quad r < M < n,\\
+h_{M-1}(n)&\ge a_r(n)W_r(n)=1.
+\quad[\text{Earlier Prime Filter}]
+\end{aligned}
+\end{equation*}
+
+A composite filter therefore removes no new integer contact. It can still
+change positive heights and the curve between integers.
+
+Now let $M=p$ be prime. The only nontrivial proper divisor of $p^2$ is $p$,
+so no earlier filter has rejected it. Installing $p$ gives
+\begin{equation*}
+\begin{aligned}
+h_{p-1}(p^2)&=0,\\
+h_p(p^2)&=1.
+\quad[\text{Integer Height Identity}]
+\end{aligned}
+\end{equation*}
+
+No smaller integer contact disappears at this step. The input $p$ is
+protected. A later multiple $n=kp < p^2$ has $2\le k < p$, so a prime divisor
+of $k$ is smaller than $p$ and has already rejected $n$. Hence
+\begin{equation*}
+\begin{aligned}
+p^2&\text{ is the first new integer contact removed at step }p,\\
+\text{step }M\text{ removes a new integer contact}
+&\ \Longleftrightarrow\ M\text{ is prime}.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The equivalence concerns the entire unbounded contact set. It does not supply
+an efficient primality test by searching that set. It explains why composite
+filters can simplify the definition without changing the accepted integers.
+
+
+\subsection{A Certified Region}
+
+Finite stages retain some composite candidates because their rejecting
+filters have not yet been installed. Nevertheless, the square-root divisor
+test \cite{dlmfsieve} gives a growing interval in which every contact is already
+prime. For integer $M\ge1$, the sufficient bound is
+\begin{equation*}
+\begin{aligned}
+2\le n < (M+1)^2.
+\end{aligned}
+\end{equation*}
+
+If a composite integer $n$ lay in this interval, it would have a prime
+divisor $r\le\sqrt n < M+1$. Since $r$ is an integer, that filter is already
+installed and contributes one:
+\begin{equation*}
+\begin{aligned}
+n\text{ composite},\ n < (M+1)^2
+&\ \Longrightarrow\ 2\le r\le M,\quad r < n,\quad r\mid n,\\
+h_M(n)&\ge a_r(n)W_r(n)=1.
+\quad[\text{Square-Root Divisor Test}]
+\end{aligned}
+\end{equation*}
+
+Conversely, every prime is protected from every installed filter, and the
+sine baseline excludes noninteger contacts. Therefore
+\begin{equation*}
+\begin{aligned}
+F_M(t)\in\mathbb R
+&\ \Longleftrightarrow\ t\text{ is prime},\\
+&\hspace{12mm}2\le t < (M+1)^2.
+\quad\blacksquare\ \text{[Q.E.D.]}
+\end{aligned}
+\end{equation*}
+
+The bound is sufficient and need not be sharp. If $q$ is the least prime greater
+than $M$, every composite below $q^2$ has a prime divisor smaller than $q$
+and therefore at most $M$. No installed index divides $q^2$, whose only
+nontrivial proper divisor is $q$. Thus the first composite contact of $F_M$
+is exactly $q^2$. This observation uses $q$ to describe the stage; the
+recurrence itself does not need to find $q$ in advance.

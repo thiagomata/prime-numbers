@@ -1,0 +1,175 @@
+\section{Conclusion}
+We have constructed continuous curves whose real-axis contacts recover prime
+values and twin-prime starts. The proofs connect exact integer samples of
+normalized Fejér waves with the divisor function. Activation makes the
+infinite construction locally finite, while nonnegative heights make a joint
+zero an exact simultaneous survival condition.
+
+For integer $m\ge2$ and integer $n$, the kernel bounds and samples are
+\begin{equation*}
+\begin{aligned}
+0&\le W_m(t)\le1
+&&\text{[Wave Bounds]}\\
+W_m(n)&=\mathbf 1_{m\mid n}.
+&&\text{[Divisibility Samples]}
+\end{aligned}
+\end{equation*}
+
+For $M\ge2$ and $t\ge2$, the activated update preserves the real coordinate
+and raises only imaginary height:
+\begin{equation*}
+\begin{aligned}
+F_M(t)&=F_{M-1}(t)+i a_M(t)W_M(t)
+&&\text{[Activated Recurrence]}\\
+h_M(t)&\ge h_{M-1}(t).
+&&\text{[Monotone Height]}
+\end{aligned}
+\end{equation*}
+
+The added term is zero on $[2,M]$. On any interval $[2,X]$, $X\ge2$,
+sufficiently late stages agree with the continuous limit exactly:
+\begin{equation*}
+\begin{aligned}
+M\ge\lceil X\rceil&\ \Longrightarrow\ F_M(t)=F(t)\quad(2\le t\le X).
+&&\text{[Compact Stabilization]}
+\end{aligned}
+\end{equation*}
+
+At integers $n\ge2$ the height is the classical divisor count minus two;
+noninteger exclusion then identifies every real-axis contact on $t\ge2$:
+\begin{equation*}
+\begin{aligned}
+h(n)&=\tau(n)-2
+&&\text{[Divisor Height]}\\
+F(t)\in\mathbb R&\ \Longleftrightarrow\ t\text{ is prime}.
+&&\text{[Prime Contacts]}
+\end{aligned}
+\end{equation*}
+
+For composite $M$ and integer $n\ge2$, a filter can add divisor information
+without changing contact membership:
+\begin{equation*}
+\begin{aligned}
+h_M(n)=0&\ \Longleftrightarrow\ h_{M-1}(n)=0.
+&&\text{[Composite Redundancy]}
+\end{aligned}
+\end{equation*}
+
+At prime step $p$, the first newly rejected integer is $p^2$:
+\begin{equation*}
+\begin{aligned}
+h_{p-1}(p^2)&=0,\quad h_p(p^2)=1.
+&&\text{[Prime-Square Rejection]}
+\end{aligned}
+\end{equation*}
+
+For every integer $M\ge1$ and integer $n\ge2$, the finite-stage certificate is
+\begin{equation*}
+\begin{aligned}
+2\le n < (M+1)^2,\ h_M(n)=0
+&\ \Longrightarrow\ n\text{ is prime}.
+&&\text{[Finite Certification]}
+\end{aligned}
+\end{equation*}
+
+If $q$ is the least prime greater than $M\ge1$, the sharper boundary is
+\begin{equation*}
+\begin{aligned}
+n\text{ composite},\ 2\le n < q^2
+&\ \Longrightarrow\ h_M(n) > 0
+&&\text{[Sharp Certification]}\\
+h_M(q^2)&=0.
+&&\text{[First Composite Contact]}
+\end{aligned}
+\end{equation*}
+
+For $n=\prod_jp_j^{e_j}\ge2$, the divisor-product formula yields the low-height
+classifications and square-parity law:
+\begin{equation*}
+\begin{aligned}
+h(n)+2&=\prod_j(e_j+1)
+&&\text{[Divisor Factorization]}\\
+h(n)\text{ is odd}&\ \Longleftrightarrow\ n\text{ is a square}.
+&&\text{[Square Parity]}
+\end{aligned}
+\end{equation*}
+
+The low-height forms, for integer $n\ge2$ and suitable primes $p,q$, are
+\begin{equation*}
+\begin{aligned}
+h(n)=0&\ \Longleftrightarrow\ n=p
+&&\text{[Prime Height]}\\
+h(n)=1&\ \Longleftrightarrow\ n=p^2
+&&\text{[Prime-Square Height]}\\
+h(n)=2&\ \Longleftrightarrow\ n=p^3\text{ or }n=pq\ (p\ne q)
+&&\text{[Height-Two Types]}\\
+h(n)=3&\ \Longleftrightarrow\ n=p^4.
+&&\text{[Prime-Fourth-Power Height]}
+\end{aligned}
+\end{equation*}
+
+For coprime integers $a,b\ge2$, independent divisor choices give
+\begin{equation*}
+\begin{aligned}
+h(ab)+2&=(h(a)+2)(h(b)+2).
+&&\text{[Coprime Multiplication]}
+\end{aligned}
+\end{equation*}
+
+Applying the same waves at both endpoints gives the pair height. For $t\ge2$
+and integer $n\ge2$,
+\begin{equation*}
+\begin{aligned}
+B_M(t)&=2\sin^2(\pi t)+\sum_{m=2}^{M}V_m(t)
+&&\text{[Pair-Wave Construction]}\\
+B(n)&=\tau(n)+\tau(n+2)-4.
+&&\text{[Pair Divisor Height]}
+\end{aligned}
+\end{equation*}
+\begin{equation*}
+\begin{aligned}
+T(t)\in\mathbb R
+&\ \Longleftrightarrow\ t\text{ and }t+2\text{ are prime}.
+&&\text{[Twin Contacts]}
+\end{aligned}
+\end{equation*}
+
+The same finite-stage conclusion holds in the certified range
+$n+2 < (M+1)^2$. Bare-wave folding holds for integer $m\ge2$, $k\ge1$ and
+all real $t$:
+\begin{equation*}
+\begin{aligned}
+\sum_{j=0}^{k-1}W_{km}(t+jm)&=W_m(t).
+&&\text{[Translated Folding]}
+\end{aligned}
+\end{equation*}
+
+For the activated filter-$4$ pair on $t\ge2$, the correction preserves exact
+initial values and disappears throughout $t\ge5$:
+\begin{equation*}
+\begin{aligned}
+V_4(t)&=W_2(t)-C_4(t)
+&&\text{[Activation Correction]}\\
+t\ge5&\ \Longrightarrow\ C_4(t)=0.
+&&\text{[Tail Identity]}
+\end{aligned}
+\end{equation*}
+
+Finally, the complementary product gives the same twin contacts with bounded
+imaginary height:
+\begin{equation*}
+\begin{aligned}
+0&\le A(t)\le1
+&&\text{[Bounded Amplitude]}\\
+\widetilde T(t)\in\mathbb R&\ \Longleftrightarrow\ A(t)=1
+&&\text{[Unit-Level Contacts]}\\
+A(t)=1&\ \Longleftrightarrow\ t,t+2\text{ are prime},\quad t\ge2.
+&&\text{[Twin Equivalence]}
+\end{aligned}
+\end{equation*}
+
+Together, these properties characterize the contact sets and their finite
+filter updates in two continuous representations. They also identify the
+precise arithmetic meaning of the additive height. The location and
+frequency of simultaneous contacts remain the quantitative question, and no
+twin-prime infinitude theorem follows from these representations alone.
